@@ -1,18 +1,18 @@
 # Meta Workflow
 
-> v5.0.0 — Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. The meta session runs five activities that identify a target client workflow, match any saved session, create or resume the client session as a child of meta, resolve target_path, dispatch the client orchestrator and mediate its checkpoint loop, and close out. Provides the universal skill repository for all client workflows.
+> v5.0.0 — Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. The meta session runs five activities that identify a target client workflow, match any saved session, create or resume the client session as a child of meta, resolve target_path, dispatch the client orchestrator and mediate its checkpoint loop, and close out. Provides the universal technique repository for all client workflows.
 
 ---
 
 ## Overview
 
-The meta workflow is the structural home for the orchestration logic that used to live in skill prose. Every meta activity runs in the meta session as a real activity with formal steps, checkpoints, decisions, and transitions. Universal skills live under [skills/](skills/) and are auto-resolved for any client workflow via the loader's universal-skill fallback.
+The meta workflow is the structural home for the orchestration logic that used to live in skill prose. Every meta activity runs in the meta session as a real activity with formal steps, checkpoints, decisions, and transitions. Universal techniques live under [techniques/](techniques/) and are auto-resolved for any client workflow via the loader's workflow-local → `meta` fallback.
 
 **Key characteristics:**
 
 - Excluded from `list_workflows` — not a user-facing workflow.
 - Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) calls `start_session({ workflow_id: "meta", agent_id: "orchestrator" })` directly and saves the returned `session_index`. There is no separate START / RESUME branching in bootstrap — `discover-session` owns target identification and saved-session matching.
-- Universal skills resolve for any session via the loader's workflow-specific → cross-workflow → universal fallback chain.
+- Universal techniques resolve for any session via the loader's workflow-local → `meta` fallback chain.
 - State persistence is server-managed. Every authenticated tool call atomically writes `session.json` + `.session-token` (seal) into the planning folder, so there are no agent-side persist or restore steps.
 
 | # | Activity | Est. Time | Purpose |
@@ -26,7 +26,7 @@ The meta workflow is the structural home for the orchestration logic that used t
 **Detailed documentation:**
 
 - **Activities:** see [activities/README.md](./activities/README.md) for steps, checkpoints, transitions, and condition tables.
-- **Skills:** see [skills/README.md](./skills/README.md) for the universal skills and the rule-authority map.
+- **Techniques:** see [techniques/](./techniques/) for the universal techniques and the rule-authority map (the [`agent-conduct`](./techniques/agent-conduct.md) technique is the single source of truth for cross-cutting rules).
 - **Resources:** see [resources/README.md](./resources/README.md) for the bootstrap protocol and prompt templates.
 
 ---
@@ -91,33 +91,34 @@ The `meta/techniques/` and `meta/resources/` folders carry double duty. They
 are the local content for the meta workflow itself AND the cross-workflow
 shared layer — when any workflow asks for a technique that has no
 workflow-local definition, the loader resolves it from `meta/techniques/`.
-The ontology and section conventions every `SKILL.md` follows are defined in
-[`meta/resources/workflow-canonical/SKILL.md`](./resources/workflow-canonical.md).
+The ontology and section conventions every technique follows are defined in
+[`meta/resources/workflow-canonical.md`](./resources/workflow-canonical.md).
 
-Markdown techniques live under [`meta/techniques/`](techniques/) — one folder
-per technique containing `SKILL.md` plus optional sibling `{op}.md` files for
-operations-as-child-files techniques. The legacy `meta/skills/` TOON tree
-below is retained during the transition window of [#125](https://github.com/m2ux/workflow-server/issues/125) and removed in
-Phase C.
+Markdown techniques live under [`meta/techniques/`](techniques/). A standalone
+technique is a single `<slug>.md` file; a grouped technique is a `<group>/`
+folder containing `TECHNIQUE.md` (the index/base contract) plus one `<op>.md`
+per operation, each addressed `<group>::<op>`. The
+[`meta/techniques/TECHNIQUE.md`](techniques/TECHNIQUE.md) root base contract
+is inherited by every meta technique.
 
 ---
 
-## Skills (legacy TOON, removed in Phase C of #125)
+## Techniques
 
-Universal skills referenced by canonical ID. Numeric prefixes order the files for humans; the loader strips them.
+Universal techniques referenced by canonical ID (the file/folder slug).
 
-| # | Skill | Capability |
-|---|-------|------------|
-| 00 | [`workflow-engine`](skills/00-workflow-engine.toon) | Operations and rules for workflow execution — session lifecycle, activity dispatch, transition evaluation, checkpoint protocol. Server-managed state (no agent-side persist/restore). |
-| 01 | [`agent-conduct`](skills/01-agent-conduct.toon) | Cross-cutting behavioural boundaries — single source of truth for file sensitivity, communication tone, attribution, code commentary, operational discipline, checkpoint discipline (worker / workflow-orchestrator / meta-orchestrator role split), and orchestrator discipline (`no-domain-work`, `no-inline-on-resume`, `target-path-scope`, `automatic-transitions`, `no-ad-hoc-interaction`) |
-| 02 | [`version-control`](skills/02-version-control.toon) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
-| 03 | [`github-cli-protocol`](skills/03-github-cli-protocol.toon) | GitHub CLI usage with GraphQL-deprecation workarounds — REST API for mutations |
-| 04 | [`knowledge-base-search`](skills/04-knowledge-base-search.toon) | Optimised concept-rag searches via pre-indexed domain maps |
-| 05 | [`atlassian-operations`](skills/05-atlassian-operations.toon) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
-| 06 | [`gitnexus-operations`](skills/06-gitnexus-operations.toon) | Codebase queries via the GitNexus knowledge graph: explore, impact, debug, refactor |
-| 07 | [`harness-compat`](skills/07-harness-compat.toon) | Harness-independent operations (`spawn-agent`, `continue-agent`, `spawn-concurrent`) abstracting cross-tool dispatch |
+| Technique | Capability |
+|-----------|------------|
+| [`workflow-engine`](techniques/workflow-engine/TECHNIQUE.md) | Operations and rules for workflow execution — session lifecycle, activity dispatch, transition evaluation, checkpoint protocol. Server-managed state (no agent-side persist/restore). |
+| [`agent-conduct`](techniques/agent-conduct.md) | Cross-cutting behavioural boundaries — single source of truth for file sensitivity, communication tone, attribution, code commentary, operational discipline, checkpoint discipline (worker / workflow-orchestrator / meta-orchestrator role split), and orchestrator discipline (`no-domain-work`, `no-inline-on-resume`, `target-path-scope`, `automatic-transitions`, `no-ad-hoc-interaction`) |
+| [`version-control`](techniques/version-control/TECHNIQUE.md) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
+| [`github-cli-protocol`](techniques/github-cli-protocol/TECHNIQUE.md) | GitHub CLI usage with GraphQL-deprecation workarounds — REST API for mutations |
+| [`knowledge-base-search`](techniques/knowledge-base-search/TECHNIQUE.md) | Optimised concept-rag searches via pre-indexed domain maps |
+| [`atlassian-operations`](techniques/atlassian-operations/TECHNIQUE.md) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
+| [`gitnexus-operations`](techniques/gitnexus-operations/TECHNIQUE.md) | Codebase queries via the GitNexus knowledge graph: explore, impact, debug, refactor |
+| [`harness-compat`](techniques/harness-compat/TECHNIQUE.md) | Harness-independent operations (`spawn-agent`, `continue-agent`, `spawn-concurrent`) abstracting cross-tool dispatch |
 
-> Cross-cutting rules live in `agent-conduct`. Capability skills (`workflow-engine`, `version-control`, etc.) reference but do not restate them. This is the single-source-of-truth boundary anti-pattern 27 calls for.
+> Cross-cutting rules live in `agent-conduct`. Capability techniques (`workflow-engine`, `version-control`, etc.) reference but do not restate them. This is the single-source-of-truth boundary anti-pattern 27 calls for.
 
 ---
 
@@ -175,17 +176,22 @@ workflows/meta/
 │   ├── 02-resolve-target.toon               # Detect repo type, set target_path
 │   ├── 03-dispatch-client-workflow.toon     # Dispatch + doWhile checkpoint loop
 │   └── 04-end-workflow.toon                 # Outcome verification, summary
-├── skills/
-│   ├── 00-workflow-engine.toon              # Session lifecycle, dispatch, transitions, checkpoint protocol
-│   ├── 01-agent-conduct.toon                # Cross-cutting rules (single source of truth)
-│   ├── 02-version-control.toon
-│   ├── 03-github-cli-protocol.toon
-│   ├── 04-knowledge-base-search.toon
-│   ├── 05-atlassian-operations.toon
-│   ├── 06-gitnexus-operations.toon
-│   └── 07-harness-compat.toon
+├── techniques/
+│   ├── TECHNIQUE.md                         # Root base contract (inherited by every meta technique)
+│   ├── agent-conduct.md                     # Cross-cutting rules (single source of truth)
+│   ├── workflow-engine/                     # Session lifecycle, dispatch, transitions, checkpoint protocol
+│   │   ├── TECHNIQUE.md                     #   group index / base contract
+│   │   └── {op}.md                          #   one file per operation (create-session, dispatch-activity, ...)
+│   ├── version-control/
+│   │   ├── TECHNIQUE.md
+│   │   └── {op}.md
+│   ├── github-cli-protocol/
+│   ├── knowledge-base-search/
+│   ├── atlassian-operations/
+│   ├── gitnexus-operations/
+│   └── harness-compat/
 └── resources/
-    ├── bootstrap-protocol/SKILL.md          # Pre-session navigation primer
-    ├── activity-worker-prompt/SKILL.md
-    └── workflow-orchestrator-prompt/SKILL.md
+    ├── bootstrap-protocol.md                # Pre-session navigation primer
+    ├── activity-worker-prompt.md
+    └── workflow-orchestrator-prompt.md
 ```

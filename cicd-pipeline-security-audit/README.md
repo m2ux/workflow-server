@@ -66,16 +66,17 @@ cicd-pipeline-security-audit/
 │   ├── 05-sub-workflow-scan.toon          # Per-submodule scan (sub-agent)
 │   ├── 06-sub-verification.toon           # Coverage verification (sub-agent)
 │   └── 07-sub-merge.toon                  # Finding merge (sub-agent)
-├── skills/
-│   ├── 00-execute-cicd-audit.toon         # Orchestrator coordination
-│   ├── 01-score-cicd-severity.toon        # Impact x Exploitability scoring
-│   ├── 02-inventory-workflows.toon        # File discovery + classification
-│   ├── 03-scan-injection-patterns.toon    # 7-pattern detection engine
-│   ├── 04-dispatch-scanners.toon          # Agent dispatch + collection
-│   ├── 05-verify-scan-output.toon         # Coverage verification
-│   ├── 06-merge-scan-findings.toon        # Dedup + reconciliation
-│   ├── 07-write-cicd-report.toon          # Report generation
-│   └── 08-execute-sub-agent.toon          # Sub-agent bootstrap + structured output
+├── techniques/
+│   ├── TECHNIQUE.md                        # Inherited base contract
+│   ├── execute-cicd-audit.md              # Orchestrator coordination
+│   ├── score-cicd-severity.md             # Impact x Exploitability scoring
+│   ├── inventory-workflows.md             # File discovery + classification
+│   ├── scan-injection-patterns.md         # 7-pattern detection engine
+│   ├── dispatch-scanners.md               # Agent dispatch + collection
+│   ├── verify-scan-output.md              # Coverage verification
+│   ├── merge-scan-findings.md             # Dedup + reconciliation
+│   ├── write-cicd-report.md               # Report generation
+│   └── execute-sub-agent.md               # Sub-agent bootstrap + structured output
 └── resources/
     ├── 00-start-here.md                   # Quick reference
     ├── 01-injection-pattern-catalog.md    # Pattern signatures + examples
@@ -88,7 +89,7 @@ cicd-pipeline-security-audit/
 
 The sequential phases of the audit — each activity represents a distinct stage that must complete before the next begins.
 
-| # | Activity | Purpose | Skills |
+| # | Activity | Purpose | Techniques |
 |---|----------|---------|--------|
 | [01](activities/01-scope-setup.toon) | Scope Setup | Discover targets, inventory workflows, create planning folder | execute-cicd-audit, inventory-workflows |
 | [02](activities/02-reconnaissance.toon) | Reconnaissance | Classify triggers, map permissions, assign scanner agents | execute-cicd-audit, inventory-workflows |
@@ -105,11 +106,11 @@ Delegated work units that run inside Phase 3 — each is executed by a dedicated
 | [06](activities/06-sub-verification.toon) | Verification | V | Verify file + pattern coverage across all scanners |
 | [07](activities/07-sub-merge.toon) | Finding Merge | M | Deduplicate, correlate, reconcile findings |
 
-## Skills
+## Techniques
 
-Reusable capabilities that activities invoke — each skill encapsulates a specific analytical or orchestration technique.
+Reusable capabilities that activities invoke — each technique encapsulates a specific analytical or orchestration capability.
 
-| Order | Skill | Capability | Used By |
+| Order | Technique | Capability | Used By |
 |---|-------|------------|---------|
 | 00 | [execute-cicd-audit](./techniques/execute-cicd-audit.md) | Orchestrate audit phases | All main activities (01-04) |
 | 01 | [score-cicd-severity](./techniques/score-cicd-severity.md) | Impact x Exploitability severity scoring | Report Generation |

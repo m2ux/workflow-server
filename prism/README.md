@@ -156,9 +156,9 @@ graph TD
 
 ---
 
-## Skills
+## Techniques
 
-| # | Skill | Capability | Role |
+| # | Technique | Capability | Role |
 |---|-------|------------|------|
 | 00 | `structural-analysis` | Single-pass L12 structural analysis | Standalone / Worker |
 | 01 | `full-prism` | Execute one isolated pass of the Full Prism pipeline | Worker |
@@ -168,7 +168,7 @@ graph TD
 | 05 | `behavioral-pipeline` | Execute 4+1 behavioral pipeline with labeled synthesis | Worker |
 | 06 | `generate-report` | Produce clean final report from analysis artifacts | Worker |
 
-**Detailed documentation:** See [skills/README.md](techniques/TECHNIQUE.md) for protocol flows and skill details.
+**Detailed documentation:** See [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md) for the inherited base contract; each technique's `techniques/<slug>.md` file documents its protocol flow.
 
 ---
 
@@ -291,15 +291,15 @@ workflows/prism/
 │   ├── 05-behavioral-synthesis-pass.toon # Behavioral synthesis (behavioral only)
 │   ├── 06-audit-finalize.toon            # Audit report finalization (security audits only)
 │   └── 07-generate-report.toon           # Generate clean REPORT.md from analysis artifacts
-├── skills/
-│   ├── 00-structural-analysis.toon       # Single-pass L12
-│   ├── 01-full-prism.toon               # Full Prism worker pass
-│   ├── 02-portfolio-analysis.toon        # Portfolio lenses (40+ lenses)
-│   ├── 03-plan-analysis.toon             # Analysis planning (58 goal mappings)
-│   ├── 04-orchestrate-prism.toon         # Pipeline orchestration
-│   ├── 05-behavioral-pipeline.toon       # Behavioral pipeline worker pass
-│   ├── 06-generate-report.toon           # Report generation from analysis artifacts
-│   └── README.md
+├── techniques/
+│   ├── TECHNIQUE.md                      # Inherited base contract
+│   ├── structural-analysis.md            # Single-pass L12
+│   ├── full-prism.md                     # Full Prism worker pass
+│   ├── portfolio-analysis.md             # Portfolio lenses (40+ lenses)
+│   ├── plan-analysis.md                  # Analysis planning (58 goal mappings)
+│   ├── orchestrate-prism.md              # Pipeline orchestration
+│   ├── behavioral-pipeline.md            # Behavioral pipeline worker pass
+│   └── generate-report.md                # Report generation from analysis artifacts
 └── resources/
     ├── 00–02: L12 pipeline
     ├── 06–11: Portfolio lenses

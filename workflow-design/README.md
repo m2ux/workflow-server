@@ -183,13 +183,14 @@ workflows/workflow-design/
 │   ├── 09-validate-and-commit.toon       # Validate and commit
 │   └── 10-post-update-review.toon       # Post-commit compliance audit (update mode)
 ├── techniques/
-│   ├── workflow-design/SKILL.md          # Primary technique
-│   └── toon-authoring/SKILL.md           # Supporting technique
+│   ├── TECHNIQUE.md                      # Workflow-root base contract (inherited by all techniques)
+│   ├── workflow-design.md                # Primary technique
+│   └── toon-authoring.md                 # Supporting technique
 └── resources/
     ├── README.md                         # Resource index
-    ├── design-principles/SKILL.md        # 14 principles reference
-    ├── schema-construct-inventory/SKILL.md  # Construct mapping tables
-    ├── anti-patterns/SKILL.md            # 40 anti-patterns
-    ├── update-mode-guide/SKILL.md        # Update mode guide
-    └── review-mode-guide/SKILL.md        # Review mode guide
+    ├── design-principles.md              # 14 principles reference
+    ├── schema-construct-inventory.md     # Construct mapping tables
+    ├── anti-patterns.md                  # 40 anti-patterns
+    ├── update-mode-guide.md              # Update mode guide
+    └── review-mode-guide.md              # Review mode guide
 ```

@@ -1,6 +1,6 @@
 # Workflows
 
-This orphan branch contains workflow definitions, activities, skills, and resources for the MCP Workflow Server.
+This orphan branch contains workflow definitions, activities, techniques, and resources for the MCP Workflow Server.
 
 ## Branch Structure
 
@@ -10,40 +10,43 @@ This orphan branch contains workflow definitions, activities, skills, and resour
 ## Directory Structure
 
 ```
-workflows/                    # Worktree checkout
-├── meta/                     # Lifecycle workflow + cross-workflow shared layer
-│   ├── README.md             # Meta documentation with Mermaid diagrams
-│   ├── workflow.toon         # Meta definition (activities for lifecycle management)
-│   ├── activities/           # Lifecycle activities (indexed)
-│   │   └── {NN}-{id}.toon    # 00-discover-session, 01-initialize-session, ...
-│   ├── techniques/           # Markdown techniques (canonical source of truth)
-│   │   └── {slug}/SKILL.md   #   workflow-engine, agent-conduct, harness-compat, ...
-│   │                         #   + sibling <op>.md files for op-as-child-files techniques
-│   ├── resources/            # Markdown resources
-│   │   └── {slug}/SKILL.md   #   bootstrap-protocol, activity-worker-prompt, workflow-canonical, ...
-│   └── skills/               # LEGACY TOON skills (removed in Phase C of #125)
-│       └── {NN}-{id}.toon
-├── {workflow-id}/            # Each workflow folder
-│   ├── README.md             # Workflow documentation with Mermaid diagrams
-│   ├── workflow.toon         # Workflow definition
-│   ├── activities/           # Activity subdirectory (indexed)
-│   │   └── {NN}-{id}.toon    # Activities for this workflow
-│   ├── techniques/           # Workflow-local markdown techniques
-│   │   └── {slug}/SKILL.md   #   workflow-local technique (overrides any meta technique of the same name)
-│   ├── resources/            # Workflow-local markdown resources
-│   │   └── {slug}/SKILL.md
-│   └── skills/               # LEGACY TOON skills (removed in Phase C of #125)
-│       └── {NN}-{id}.toon
+workflows/                        # Worktree checkout
+├── meta/                         # Lifecycle workflow + cross-workflow shared layer
+│   ├── README.md                 # Meta documentation with Mermaid diagrams
+│   ├── workflow.toon             # Meta definition (activities for lifecycle management)
+│   ├── activities/               # Lifecycle activities (indexed)
+│   │   └── {NN}-{id}.toon        # 00-discover-session, 01-initialize-session, ...
+│   ├── techniques/               # Markdown techniques (canonical source of truth)
+│   │   ├── TECHNIQUE.md          #   root base contract — inherited by every technique here
+│   │   ├── {slug}.md             #   standalone technique (agent-conduct, version-control, ...)
+│   │   └── {group}/              #   grouped technique (workflow-engine, harness-compat, ...)
+│   │       ├── TECHNIQUE.md      #     group index / base contract
+│   │       └── {op}.md           #     one file per operation, addressed {group}::{op}
+│   └── resources/                # Markdown resources
+│       └── {slug}.md             #   bootstrap-protocol, activity-worker-prompt, workflow-canonical, ...
+├── {workflow-id}/                # Each workflow folder
+│   ├── README.md                 # Workflow documentation with Mermaid diagrams
+│   ├── workflow.toon             # Workflow definition
+│   ├── activities/               # Activity subdirectory (indexed)
+│   │   └── {NN}-{id}.toon        # Activities for this workflow
+│   ├── techniques/               # Workflow-local markdown techniques
+│   │   ├── TECHNIQUE.md          #   root base contract for this workflow
+│   │   ├── {slug}.md             #   standalone technique (overrides any meta technique of the same name)
+│   │   └── {group}/
+│   │       ├── TECHNIQUE.md
+│   │       └── {op}.md
+│   └── resources/                # Workflow-local markdown resources
+│       └── {slug}.md
 ```
 
 ### Precedence: workflow-local → `meta`
 
-Skill / technique resolution is workflow-local first, then `meta` ([ADR forthcoming under #125](https://github.com/m2ux/workflow-server/issues/125)). The
+Technique resolution is workflow-local first, then `meta`. The
 `meta` workflow's `techniques/` and `resources/` carry double duty — they are
 both the local content for the meta workflow itself AND the cross-workflow
 shared layer for every other workflow. The
 [workflow-canonical](./meta/resources/workflow-canonical.md) resource
-defines the ontology and section conventions that every `SKILL.md` follows.
+defines the ontology and section conventions that every technique follows.
 
 ## Available Workflows
 
@@ -58,22 +61,22 @@ defines the ontology and section conventions that every `SKILL.md` follows.
 | [`prism-evaluate`](prism-evaluate/) | Multi-dimensional evaluation of proposals, documents, or codebases through configurable analytical dimensions mapped to prism lenses |
 | [`workflow-design`](workflow-design/) | Create or update workflow definitions with guided elicitation, schema expressiveness enforcement, and convention conformance |
 
-## Universal Skills ([meta/skills/](meta/skills/))
+## Universal Techniques ([meta/techniques/](meta/techniques/))
 
-Available for any workflow session.
+Available for any workflow session, resolved via the workflow-local → `meta` fallback chain.
 
-Skills are referenced by canonical ID (the filename minus the `NN-` prefix). The numeric prefix orders the files for humans; the loader strips it.
+Techniques are referenced by canonical ID (the file/folder slug). Standalone techniques live at `meta/techniques/<slug>.md`; grouped techniques live at `meta/techniques/<group>/TECHNIQUE.md` with one `<op>.md` per operation.
 
-| Skill | Description |
-|-------|-------------|
-| [`workflow-engine`](meta/skills/00-workflow-engine.toon) | Operations and rules for workflow execution: session lifecycle (resume or create), activity dispatch, transition evaluation, checkpoint protocol. State persistence is server-managed (atomic `session.json` + `.session-token` seal write on every authenticated call). |
-| [`agent-conduct`](meta/skills/01-agent-conduct.toon) | Cross-cutting behavioural boundaries: file sensitivity, communication tone, attribution prohibition, operational discipline, checkpoint discipline, orchestrator discipline |
-| [`version-control`](meta/skills/02-version-control.toon) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
-| [`github-cli-protocol`](meta/skills/03-github-cli-protocol.toon) | GitHub CLI usage: GraphQL-deprecation workarounds, REST API for mutations |
-| [`knowledge-base-search`](meta/skills/04-knowledge-base-search.toon) | Optimised concept-rag searches via pre-indexed domain maps |
-| [`atlassian-operations`](meta/skills/05-atlassian-operations.toon) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
-| [`gitnexus-operations`](meta/skills/06-gitnexus-operations.toon) | Codebase queries via the GitNexus knowledge graph: explore, impact, debug, refactor |
-| [`harness-compat`](meta/skills/07-harness-compat.toon) | Harness-independent operations (spawn-agent, continue-agent, spawn-concurrent) abstracting cross-tool dispatch |
+| Technique | Description |
+|-----------|-------------|
+| [`workflow-engine`](meta/techniques/workflow-engine/TECHNIQUE.md) | Operations and rules for workflow execution: session lifecycle (resume or create), activity dispatch, transition evaluation, checkpoint protocol. State persistence is server-managed (atomic `session.json` + `.session-token` seal write on every authenticated call). |
+| [`agent-conduct`](meta/techniques/agent-conduct.md) | Cross-cutting behavioural boundaries: file sensitivity, communication tone, attribution prohibition, operational discipline, checkpoint discipline, orchestrator discipline |
+| [`version-control`](meta/techniques/version-control/TECHNIQUE.md) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
+| [`github-cli-protocol`](meta/techniques/github-cli-protocol/TECHNIQUE.md) | GitHub CLI usage: GraphQL-deprecation workarounds, REST API for mutations |
+| [`knowledge-base-search`](meta/techniques/knowledge-base-search/TECHNIQUE.md) | Optimised concept-rag searches via pre-indexed domain maps |
+| [`atlassian-operations`](meta/techniques/atlassian-operations/TECHNIQUE.md) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
+| [`gitnexus-operations`](meta/techniques/gitnexus-operations/TECHNIQUE.md) | Codebase queries via the GitNexus knowledge graph: explore, impact, debug, refactor |
+| [`harness-compat`](meta/techniques/harness-compat/TECHNIQUE.md) | Harness-independent operations (spawn-agent, continue-agent, spawn-concurrent) abstracting cross-tool dispatch |
 
 ## Worktree Setup
 
@@ -89,7 +92,7 @@ git worktree add ./workflows workflows
 1. Create `{workflow-id}/` directory
 2. Add `workflow.toon` workflow definition
 3. Add `README.md` with Mermaid diagrams documenting the workflow
-4. Add `activities/`, `resources/`, `skills/` subdirectories as needed
+4. Add `activities/`, `resources/`, `techniques/` subdirectories as needed
 5. Commit to this branch
 
 **Activities:**
@@ -104,14 +107,13 @@ git worktree add ./workflows workflows
 3. Commit to this branch
 
 **Techniques (markdown source of truth):**
-1. Create `{workflow-id}/techniques/{slug}/SKILL.md` (or `meta/techniques/{slug}/SKILL.md` for the cross-workflow shared layer)
-2. Follow the canonical sections defined in [meta/resources/workflow-canonical/SKILL.md](./meta/resources/workflow-canonical.md)
-3. For flat operation libraries (`cargo-operations`, `gitnexus-operations`, ...), add sibling `{op}.md` children (no frontmatter) — the loader materialises them into the technique's `operations` map keyed by op basename
-4. Commit to this branch
+1. For a standalone technique, create `{workflow-id}/techniques/{slug}.md` (or `meta/techniques/{slug}.md` for the cross-workflow shared layer) with frontmatter (`name`, `metadata.version`), a required `## Capability` section, and optional `## Inputs` / `## Protocol` / `## Outputs` / `## Rules` / `## Errors` sections.
+2. For a grouped technique (operation library such as `gitnexus-operations`), create `{group}/TECHNIQUE.md` as the group index/base contract plus one `{group}/{op}.md` per operation (op files have no frontmatter; each carries `## Protocol`). Operations are addressed `{group}::{op}`.
+3. Optionally add a per-workflow root base contract at `{workflow-id}/techniques/TECHNIQUE.md` — isomorphic to a technique, carrying no technique list. Its Inputs / Outputs / Rules / Errors / Protocol are inherited by every technique in the workflow.
+4. Follow the canonical sections defined in [meta/resources/workflow-canonical.md](./meta/resources/workflow-canonical.md)
+5. Commit to this branch
 
-**Skills (legacy TOON, removed in Phase C of #125):**
-1. The `{workflow-id}/skills/{NN}-{skill-id}.toon` and `meta/skills/{NN}-{skill-id}.toon` files predate the markdown migration and remain in place during the transition window only
-2. Authoring new content here is discouraged — use the markdown technique shape above instead
+Cross-reference links between techniques and resources are file-relative and end in the target's real filename (`<slug>.md`, `<group>/TECHNIQUE.md`, or `<group>/<op>.md`) — never `/SKILL.md`.
 
 ## Validation
 

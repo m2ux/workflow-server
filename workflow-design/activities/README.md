@@ -2,7 +2,7 @@
 
 > Part of the [Workflow Design Workflow](../README.md)
 
-Ten sequential activities that guide an agent from free-form description to validated, committed workflow files. Activities 3–7 are mode-dependent (skipped in review mode). Activity 10 runs only in update mode as an automatic post-commit compliance audit. Each activity section below includes its purpose, skills, steps, checkpoints, transitions, and mode overrides.
+Ten sequential activities that guide an agent from free-form description to validated, committed workflow files. Activities 3–7 are mode-dependent (skipped in review mode). Activity 10 runs only in update mode as an automatic post-commit compliance audit. Each activity section below includes its purpose, techniques, steps, checkpoints, transitions, and mode overrides.
 
 ---
 
@@ -10,7 +10,7 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 **Purpose:** Accept the user's free-form description, classify as create/update/review, and extract initial design intent. In update mode, loads the existing workflow and parses the change request. In review mode, loads the target workflow and presents its structure for audit.
 
-**Skills:** primary [`workflow-design`](../techniques/TECHNIQUE.md#skill-protocol-workflow-design-00)
+**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md)
 
 **Steps:**
 
@@ -33,7 +33,7 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 **Purpose:** Load schema definitions, read existing workflows to understand conventions, and verify TOON format comprehension. Gates all subsequent content production via `format_literacy_confirmed` and `schema_constructs_confirmed` variables.
 
-**Skills:** primary [`workflow-design`](../techniques/TECHNIQUE.md#skill-protocol-workflow-design-00), supporting [`toon-authoring`](../techniques/TECHNIQUE.md#skill-protocol-toon-authoring-01)
+**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md), supporting [`toon-authoring`](../techniques/toon-authoring.md)
 
 **Steps:**
 
@@ -54,7 +54,7 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 **Purpose:** Systematically elicit workflow design details one question at a time. Each design dimension has its own checkpoint to enforce atomic, sequential elicitation.
 
-**Skills:** primary [`workflow-design`](../techniques/TECHNIQUE.md#skill-protocol-workflow-design-00)
+**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md)
 
 **Steps:** 8 steps covering purpose, activities, activity model, checkpoints, artifacts, variables, skills, and rules.
 
@@ -70,7 +70,7 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 **Purpose:** Audit 2+ existing workflows of the same type to extract reusable structural and content patterns. Present patterns alongside proposed structure.
 
-**Skills:** primary [`workflow-design`](../techniques/TECHNIQUE.md#skill-protocol-workflow-design-00)
+**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md)
 
 **Steps:** Select reference workflows, extract structural patterns, extract content patterns, present comparison.
 
@@ -86,7 +86,7 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 **Purpose:** For update mode only. Enumerate all files in the existing workflow, identify affected files, check transition and reference integrity, flag content that will be removed.
 
-**Skills:** primary [`workflow-design`](../techniques/TECHNIQUE.md#skill-protocol-workflow-design-00)
+**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md)
 
 **Steps:** Enumerate existing files, classify impact, check transition integrity, check reference integrity, flag content removal.
 
@@ -102,7 +102,7 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 **Purpose:** Define the complete file manifest and structural design. Enumerates every file to create, modify, or remove, and proposes the folder structure and implementation order.
 
-**Skills:** primary [`workflow-design`](../techniques/TECHNIQUE.md#skill-protocol-workflow-design-00)
+**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md)
 
 **Steps:** Verify worktree, design folder structure, enumerate file manifest, present structural design, present approach.
 
@@ -118,7 +118,7 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 **Purpose:** Draft or modify each file in the scope manifest with per-file approach and review checkpoints. Validates all TOON files against the schema immediately after drafting.
 
-**Skills:** primary [`workflow-design`](../techniques/TECHNIQUE.md#skill-protocol-workflow-design-00), supporting [`toon-authoring`](../techniques/TECHNIQUE.md#skill-protocol-toon-authoring-01)
+**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md), supporting [`toon-authoring`](../techniques/toon-authoring.md)
 
 **Steps:** Present file approach, draft file content, validate against schema, present for review, advance to next file.
 
@@ -136,9 +136,9 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 **Purpose:** Four review passes over all content: schema expressiveness, convention conformance, rule hygiene, and rule-to-structure (enforcement) audit. Each pass has its own checkpoint.
 
-**Skills:** primary [`workflow-design`](../techniques/TECHNIQUE.md#skill-protocol-workflow-design-00)
+**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md)
 
-**Steps:** 8 steps — review and present findings for each of the four passes. Uses [schema-construct-inventory](../resources/schema-construct-inventory.md) for expressiveness audit and [anti-patterns](../resources/anti-patterns.md) for anti-pattern scan. The `rule-hygiene-audit` step applies a worker-visibility carve-out when checking cross-level rule duplication: behavioural rules that workers must read cannot be lifted to the workflow root, since workers receive `get_activity` and `get_skill` responses but never `workflow.toon`. Per-skill duplication of worker-directed rules is the correct mechanism and is not flagged.
+**Steps:** 8 steps — review and present findings for each of the four passes. Uses [schema-construct-inventory](../resources/schema-construct-inventory.md) for expressiveness audit and [anti-patterns](../resources/anti-patterns.md) for anti-pattern scan. The `rule-hygiene-audit` step applies a worker-visibility carve-out when checking cross-level rule duplication: behavioural rules that workers must read cannot be lifted to the workflow root, since workers receive `get_activity` and `get_technique` responses but never `workflow.toon`. Per-technique duplication of worker-directed rules is the correct mechanism and is not flagged.
 
 **Checkpoints:** `expressiveness-confirmed`, `conformance-confirmed`, `rule-hygiene-confirmed`, `enforcement-confirmed`.
 
@@ -152,7 +152,7 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 **Purpose:** Run schema validation, re-verify scope manifest, generate/update README, commit to the workflows worktree. In review mode, save the compliance report as an artifact.
 
-**Skills:** primary [`workflow-design`](../techniques/TECHNIQUE.md#skill-protocol-workflow-design-00), supporting [`toon-authoring`](../techniques/TECHNIQUE.md#skill-protocol-toon-authoring-01)
+**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md), supporting [`toon-authoring`](../techniques/toon-authoring.md)
 
 **Steps:** Run schema validation, verify scope manifest, generate README (create) or update README (update), stage and commit, verify commit.
 
@@ -168,7 +168,7 @@ Ten sequential activities that guide an agent from free-form description to vali
 
 **Purpose:** Automatically runs after validate-and-commit in update mode. Reloads the updated workflow from the workflow-server and runs all 5 audit passes (schema expressiveness, convention conformance, rule enforcement, anti-pattern scan, schema validation) to verify the update did not introduce new compliance issues.
 
-**Skills:** primary [`workflow-design`](../techniques/TECHNIQUE.md#skill-protocol-workflow-design-00)
+**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md)
 
 **Steps:** Reload updated workflow, run 5 audit passes, compile findings summary, present results, save review snapshot.
 

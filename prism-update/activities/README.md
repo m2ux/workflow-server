@@ -4,7 +4,7 @@
 
 ## Activity Sequence
 
-| # | Activity | Skill | Checkpoints | Transitions |
+| # | Activity | Technique | Checkpoints | Transitions |
 |---|----------|-------|-------------|-------------|
 | 00 | **Discover Changes** | `diff-upstream` | — | → review-changes |
 | 01 | **Review Changes** | `diff-upstream` | `change-review` (blocking) | → import-resources |
@@ -38,11 +38,11 @@ Applies all approved resource file changes in four stages (sync modified, apply 
 
 ### 03 — Update Routing
 
-Updates all prism workflow skills (plan-analysis, portfolio-analysis, behavioral-pipeline, orchestrate-prism) to reflect resource changes: fixes renamed references, adds goal-mapping entries, expands catalogs.
+Updates all prism workflow techniques (plan-analysis, portfolio-analysis, behavioral-pipeline, orchestrate-prism) to reflect resource changes: fixes renamed references, adds goal-mapping entries, expands catalogs.
 
 ### 04 — Update Docs
 
-Rebuilds documentation across resources/README.md, workflow README.md, and skills/README.md with updated catalog tables, prompt guide entries, and model sensitivity data.
+Rebuilds documentation across resources/README.md, workflow README.md, and techniques/TECHNIQUE.md with updated catalog tables, prompt guide entries, and model sensitivity data.
 
 ### 05 — Verify
 

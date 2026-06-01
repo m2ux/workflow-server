@@ -1,6 +1,6 @@
 # Prism Update Workflow
 
-> v1.0.0 — Sync the prism workflow's resources, skills, and documentation with upstream changes from the agi-in-md project.
+> v1.0.0 — Sync the prism workflow's resources, techniques, and documentation with upstream changes from the agi-in-md project.
 
 ---
 
@@ -46,7 +46,7 @@ graph TD
 
 ## Activities
 
-| # | Activity | Skill | Description |
+| # | Activity | Technique | Description |
 |---|----------|-------|-------------|
 | 00 | **Discover Changes** | `diff-upstream` | Diff upstream prisms/ against current resources, categorize changes |
 | 01 | **Review Changes** | — | Present change summary, user confirms scope and exclusions |
@@ -58,13 +58,13 @@ graph TD
 
 ---
 
-## Skills
+## Techniques
 
-| # | Skill | Capability |
+| # | Technique | Capability |
 |---|-------|------------|
 | 00 | `diff-upstream` | Diff upstream prisms against current resources, classify changes by type and family |
 | 01 | `sync-resources` | Apply file changes: copy modified, git mv renames, import new with indexed names, remove deleted |
-| 02 | `update-skill-routing` | Update goal-mapping matrix, portfolio catalog, model sensitivity, resource lists in all prism skills |
+| 02 | `update-skill-routing` | Update goal-mapping matrix, portfolio catalog, model sensitivity, resource lists in all prism techniques |
 | 03 | `update-prism-docs` | Rebuild resource catalog, prompt guide entries, model sensitivity table, file structure |
 | 04 | `verify-prism-consistency` | Grep for stale references, verify prompt routing, check counts and duplicate indices |
 
@@ -133,10 +133,11 @@ workflows/prism-update/
 │   ├── 04-update-docs.toon
 │   ├── 05-verify.toon
 │   └── 06-commit-and-submit.toon
-└── skills/
-    ├── 00-diff-upstream.toon
-    ├── 01-sync-resources.toon
-    ├── 02-update-skill-routing.toon
-    ├── 03-update-prism-docs.toon
-    └── 04-verify-prism-consistency.toon
+└── techniques/
+    ├── TECHNIQUE.md
+    ├── diff-upstream.md
+    ├── sync-resources.md
+    ├── update-skill-routing.md
+    ├── update-prism-docs.md
+    └── verify-prism-consistency.md
 ```

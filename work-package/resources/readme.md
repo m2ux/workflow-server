@@ -184,5 +184,5 @@ Consolidate external references (Jira ticket, parent epic, PR) into a single Lin
 
 ## Related Guides
 
-- [Work Package Implementation Workflow](../workflow.toon)
-- [Work Packages Workflow](../../work-packages/workflow.toon)
+- [Work Package Implementation Workflow](../README.md)
+- [Work Packages Workflow](../../work-packages/README.md)

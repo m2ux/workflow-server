@@ -6,7 +6,7 @@
 
 ## Overview
 
-This workflow guides the complete lifecycle of a single work package through 14 activities total — 13 main activities plus 1 sub-flow (codebase comprehension, entered from design-philosophy or assumptions-review). Each activity has defined skills, checkpoints, and transitions. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
+This workflow guides the complete lifecycle of a single work package through 14 activities total — 13 main activities plus 1 sub-flow (codebase comprehension, entered from design-philosophy or assumptions-review). Each activity has defined techniques, checkpoints, and transitions. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
 
 | # | Activity | Required | Description |
 |---|----------|----------|-------------|
@@ -28,7 +28,7 @@ This workflow guides the complete lifecycle of a single work package through 14 
 **Detailed documentation:**
 
 - **Activities:** See [activities/README.md](./activities/README.md) for detailed per-activity documentation including mermaid diagrams, steps, checkpoints, artifacts, and transitions.
-- **Skills:** See [skills/README.md](./skills/README.md) for the full skill inventory (26 workflow-specific skills plus 6 cross-workflow references) and protocol flow diagrams.
+- **Techniques:** See [techniques/](./techniques/) for the full technique inventory (26 workflow-specific techniques plus 6 cross-workflow references) and protocol flows.
 - **Resources:** See [resources/README.md](./resources/README.md) for the resource index (28 resources).
 
 ---
@@ -81,7 +81,7 @@ graph TD
 
 ## Activities Summary
 
-| # | Activity | Primary Skill | Supporting Skills | Checkpoints | artifactPrefix |
+| # | Activity | Primary Technique | Supporting Techniques | Checkpoints | artifactPrefix |
 |---|----------|--------------|-------------------|-------------|----------------|
 | 01 | [Start Work Package](./activities/README.md#01-start-work-package) | `create-issue` | `manage-git`, `manage-artifacts`, `atlassian-operations` | 8 | — |
 | 02 | [Design Philosophy](./activities/README.md#02-design-philosophy) | `classify-problem` | `review-assumptions`, `reconcile-assumptions` | 2 | `02` |
@@ -133,16 +133,16 @@ sequenceDiagram
     Note over Orch: Continue for all activities...
 ```
 
-**Orchestrator** (skill: `workflow-orchestrator`):
+**Orchestrator** (role: `workflow-orchestrator`):
 - Loads the workflow definition via `get_workflow` (receives schema preamble with all five JSON Schemas)
 - Initializes state variables, detects mode
 - Dispatches activities to the worker one at a time
 - Evaluates transition conditions between activities
 - Manages rework loops (transitions back to earlier activities)
 
-**Worker** (skill: `activity-worker`):
-- Self-bootstraps from `next_activity` and `get_skill`
-- Executes activity steps sequentially using the skill protocol
+**Worker** (role: `activity-worker`):
+- Self-bootstraps from `next_activity` and `get_technique`
+- Executes activity steps sequentially using the technique protocol
 - Handles all checkpoints and user interaction directly
 - Produces artifacts with `artifactPrefix` convention
 - Reports structured results (variable changes, checkpoints, artifacts, steps completed)
@@ -185,7 +185,7 @@ start-work-package → design-philosophy → [research →] implementation-analy
 
 ## Artifact Prefixing
 
-Each review and documentation activity declares an `artifactPrefix` matching its activity number. Skills produce bare artifact names (e.g., `code-review.md`) and the activity's prefix is prepended at write time.
+Each review and documentation activity declares an `artifactPrefix` matching its activity number. Techniques produce bare artifact names (e.g., `code-review.md`) and the activity's prefix is prepended at write time.
 
 **Convention:**
 
@@ -332,7 +332,7 @@ The following 7 rules are declared at the workflow level and apply to all activi
 4. One task at a time — Complete current work before starting new work.
 5. Explicit approval — Get clear "yes" or "proceed" before major actions (within activity checkpoints only — NOT between activities).
 6. Decision points require user choice — When issues are found, user decides whether to proceed or loop back.
-7. **ORCHESTRATION MODEL:** This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: `meta-orchestrator` from `meta/skills`) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (skill: `activity-worker` from `meta/skills`) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a `checkpoint_pending` result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. **CONSTRAINT:** Only ONE level of sub-agent indirection (the worker).
+7. **ORCHESTRATION MODEL:** This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (role: `meta-orchestrator`, techniques from `meta/techniques`) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (role: `activity-worker`, techniques from `meta/techniques`) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a `checkpoint_pending` result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. **CONSTRAINT:** Only ONE level of sub-agent indirection (the worker).
 
 ---
 
