@@ -5,7 +5,7 @@ import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
-import { resolveOperations, formatOperationsBundle, composeTechnique, projectSkillToToon } from '../loaders/skill-loader.js';
+import { resolveOperations, formatOperationsBundle, composeTechnique, projectTechniqueToToon } from '../loaders/technique-loader.js';
 import { encodeToon } from '../utils/toon.js';
 import {
   sessionIndexParam,
@@ -407,15 +407,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       if (!wfResult.success) throw wfResult.error;
 
-      let skillId: string | undefined;
+      let techniqueId: string | undefined;
 
       if (!state.currentActivity) {
         if (step_id) {
           throw new Error('Cannot provide step_id when no activity is active. Call next_activity first.');
         }
-        skillId = wfResult.value.skills?.primary;
-        if (!skillId) {
-          throw new Error(`Workflow '${workflow_id}' does not define a primary skill.`);
+        techniqueId = wfResult.value.techniques?.primary;
+        if (!techniqueId) {
+          throw new Error(`Workflow '${workflow_id}' does not define a primary technique.`);
         }
       } else {
         const activity = getActivity(wfResult.value, state.currentActivity);
@@ -424,25 +424,25 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         }
 
         if (!step_id) {
-          skillId = activity.skills?.primary;
-          if (!skillId) {
-            throw new Error(`Activity '${state.currentActivity}' does not define a primary skill.`);
+          techniqueId = activity.techniques?.primary;
+          if (!techniqueId) {
+            throw new Error(`Activity '${state.currentActivity}' does not define a primary technique.`);
           }
         } else {
           const step = activity.steps?.find(s => s.id === step_id);
           if (step) {
-            skillId = step.skill;
+            techniqueId = step.technique;
           } else if (activity.loops) {
             for (const loop of activity.loops) {
               const loopStep = loop.steps?.find(s => s.id === step_id);
               if (loopStep) {
-                skillId = loopStep.skill;
+                techniqueId = loopStep.technique;
                 break;
               }
             }
           }
 
-          if (!step && !skillId) {
+          if (!step && !techniqueId) {
             const allStepIds = [
               ...(activity.steps?.map(s => s.id) ?? []),
               ...(activity.loops?.flatMap(l => l.steps?.map(s => s.id) ?? []) ?? []),
@@ -450,15 +450,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             throw new Error(`Step '${step_id}' not found in activity '${state.currentActivity}'. Available steps: [${allStepIds.join(', ')}]`);
           }
 
-          if (!skillId) {
-            throw new Error(`Step '${step_id}' in activity '${state.currentActivity}' has no associated skill.`);
+          if (!techniqueId) {
+            throw new Error(`Step '${step_id}' in activity '${state.currentActivity}' has no associated technique.`);
           }
         }
       }
 
-      const composed = await composeTechnique(skillId, config.workflowDir, workflow_id);
+      const composed = await composeTechnique(techniqueId, config.workflowDir, workflow_id);
       if (!composed.success) throw composed.error;
-      const text = projectSkillToToon(composed.value);
+      const text = projectTechniqueToToon(composed.value);
 
       const view = sessionView(state);
       const validation = buildValidation(
@@ -466,7 +466,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       );
 
       const next = advanceSession(state, (draft) => {
-        draft.currentSkill = skillId as string;
+        draft.currentTechnique = techniqueId as string;
       });
       await saveSessionForTool(loaded, next);
 
@@ -479,7 +479,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_resource',
-    'Load a single resource\'s full content by its id. Use this to fetch resources referenced in skill _resources arrays. The resource_id is a text-only slug — bare (e.g., "review-mode") resolves within the session\'s workflow, or prefixed cross-workflow (e.g., "meta/bootstrap-protocol") resolves from the named workflow. Returns the resource content, id, and version.',
+    'Load a single resource\'s full content by its id. Use this to fetch resources referenced in technique _resources arrays. The resource_id is a text-only slug — bare (e.g., "review-mode") resolves within the session\'s workflow, or prefixed cross-workflow (e.g., "meta/bootstrap-protocol") resolves from the named workflow. Returns the resource content, id, and version.',
     {
       ...sessionIndexParam,
       resource_id: z.string().describe('Resource id (text-only slug) — bare (e.g., "review-mode") resolves within the session workflow, prefixed (e.g., "meta/bootstrap-protocol") resolves from the specified workflow'),
@@ -525,9 +525,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'resolve_operations',
-    'Resolve a flat list of skill::element references to their bodies. Each ref is in skill-id::element-name form (e.g., "agent-conduct::file-sensitivity", "workflow-orchestrator::evaluate-transition"). Optionally workflow-prefixed: "meta/agent-conduct::file-sensitivity". Returns a bundle grouped by kind: `operations` and `errors` are objects keyed by `<skill-id>::<name>` → body; `rules` is a flat array of [rule-name, rule-line] tuples (one tuple per line, with global rules from any touched skill auto-included); `unresolved` lists refs that did not resolve. Empty groups are omitted. No session_index required — this is a structural lookup.',
+    'Resolve a flat list of technique::element references to their bodies. Each ref is in technique-id::element-name form (e.g., "agent-conduct::file-sensitivity", "workflow-orchestrator::evaluate-transition"). Optionally workflow-prefixed: "meta/agent-conduct::file-sensitivity". Returns a bundle grouped by kind: `operations` and `errors` are objects keyed by `<technique-id>::<name>` → body; `rules` is a flat array of [rule-name, rule-line] tuples (one tuple per line, with global rules from any touched technique auto-included); `unresolved` lists refs that did not resolve. Empty groups are omitted. No session_index required — this is a structural lookup.',
     {
-      operations: z.array(z.string()).min(1).describe('List of skill::element references to resolve. Each entry is "skill-id::element-name" or "workflow/skill-id::element-name".'),
+      operations: z.array(z.string()).min(1).describe('List of technique::element references to resolve. Each entry is "technique-id::element-name" or "workflow/technique-id::element-name".'),
     },
     withAuditLog('resolve_operations', async ({ operations }) => {
       const resolved = await resolveOperations(operations, config.workflowDir);

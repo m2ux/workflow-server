@@ -2,18 +2,18 @@ import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
-import { SkillNotFoundError } from '../errors.js';
+import { TechniqueNotFoundError } from '../errors.js';
 import { logWarn } from '../logging.js';
-import type { Skill, ProtocolBlock } from '../schema/skill.schema.js';
-import { safeValidateSkill } from '../schema/skill.schema.js';
+import type { Technique, ProtocolBlock } from '../schema/technique.schema.js';
+import { safeValidateTechnique } from '../schema/technique.schema.js';
 
 /**
- * Markdown skill loader.
+ * Markdown technique loader.
  *
  * Reads the canonical SKILL.md (single-file) or SKILL.md + sibling <op>.md
  * children (op-as-child-files) shape from a technique folder under
- * `{workflowDir}/{workflowId}/techniques/<slug>/`, materialising a Skill
- * object that validates against SkillSchema.
+ * `{workflowDir}/{workflowId}/techniques/<slug>/`, materialising a Technique
+ * object that validates against TechniqueSchema.
  *
  * Canonical section set (per the workflow-canonical ontology resource):
  *   SKILL.md:    Capability, Inputs?, Protocol?, Operations?, Outputs?, Rules?, Errors?
@@ -38,8 +38,8 @@ interface Section {
 }
 
 /** Parser-level error surfaced as a Zod-like failure. */
-export class MarkdownSkillParseError extends Error {
-  override readonly name = 'MarkdownSkillParseError';
+export class MarkdownTechniqueParseError extends Error {
+  override readonly name = 'MarkdownTechniqueParseError';
   constructor(message: string) {
     super(message);
   }
@@ -211,7 +211,7 @@ function bodyAsList(body: string): string[] {
 }
 
 /* -------------------------------------------------------------------------- */
-/* SKILL.md → Skill object                                                     */
+/* SKILL.md → Technique object                                                     */
 /* -------------------------------------------------------------------------- */
 
 interface IndexParse {
@@ -231,19 +231,19 @@ function parseSkillIndex(raw: string, sourcePath: string): IndexParse {
   const { frontmatter, body } = parseFrontmatter(raw);
 
   const name = String(frontmatter['name'] ?? '').trim();
-  if (!name) throw new MarkdownSkillParseError(`Missing 'name' in frontmatter at ${sourcePath}`);
+  if (!name) throw new MarkdownTechniqueParseError(`Missing 'name' in frontmatter at ${sourcePath}`);
 
   const description = (frontmatter['description'] as string | undefined)?.trim() || undefined;
   const meta = (frontmatter['metadata'] ?? {}) as Record<string, unknown>;
   const version = String(meta['version'] ?? '').trim();
-  if (!version) throw new MarkdownSkillParseError(`Missing 'metadata.version' in frontmatter at ${sourcePath}`);
+  if (!version) throw new MarkdownTechniqueParseError(`Missing 'metadata.version' in frontmatter at ${sourcePath}`);
 
   const sections = splitSections(body, 2);
 
   const capabilitySection = findSection(sections, 'Capability');
-  if (!capabilitySection) throw new MarkdownSkillParseError(`Missing '## Capability' section at ${sourcePath}`);
+  if (!capabilitySection) throw new MarkdownTechniqueParseError(`Missing '## Capability' section at ${sourcePath}`);
   const capability = bodyParagraphs(capabilitySection.body);
-  if (!capability) throw new MarkdownSkillParseError(`Empty '## Capability' section at ${sourcePath}`);
+  if (!capability) throw new MarkdownTechniqueParseError(`Empty '## Capability' section at ${sourcePath}`);
 
   return {
     id: name,
@@ -547,11 +547,11 @@ function parseOperationBody(body: string, sourcePath: string, description: strin
   // transitionally until the content migration renames all op files.
   const protocolSection = findSection(sections, 'Protocol') ?? findSection(sections, 'Procedure');
   if (!protocolSection) {
-    throw new MarkdownSkillParseError(`Missing required '## Protocol' section at ${sourcePath}`);
+    throw new MarkdownTechniqueParseError(`Missing required '## Protocol' section at ${sourcePath}`);
   }
   const protocol = protocolBlocksFromBody(protocolSection.body);
   if (!protocol || protocol.length === 0) {
-    throw new MarkdownSkillParseError(`Empty '## Protocol' section at ${sourcePath}`);
+    throw new MarkdownTechniqueParseError(`Empty '## Protocol' section at ${sourcePath}`);
   }
   op.protocol = protocol;
 
@@ -605,17 +605,17 @@ const GROUPED_INDEX_NAMES = ['TECHNIQUE.md', 'SKILL.md'] as const;
 /**
  * Locate a technique by id.
  * Resolution order:
- *   1. Standalone flat file: `<techniquesDir>/<skillId>.md`.
- *   2. Grouped folder: `<techniquesDir>/<skillId>/TECHNIQUE.md` (or transitional `SKILL.md`).
+ *   1. Standalone flat file: `<techniquesDir>/<techniqueId>.md`.
+ *   2. Grouped folder: `<techniquesDir>/<techniqueId>/TECHNIQUE.md` (or transitional `SKILL.md`).
  * Returns null when neither exists.
  */
-async function locateTechnique(techniquesDir: string, skillId: string): Promise<LocatedTechnique | null> {
+async function locateTechnique(techniquesDir: string, techniqueId: string): Promise<LocatedTechnique | null> {
   if (!existsSync(techniquesDir)) return null;
 
-  const flat = join(techniquesDir, `${skillId}.md`);
+  const flat = join(techniquesDir, `${techniqueId}.md`);
   if (existsSync(flat)) return { kind: 'flat', index: flat };
 
-  const folder = join(techniquesDir, skillId);
+  const folder = join(techniquesDir, techniqueId);
   for (const indexName of GROUPED_INDEX_NAMES) {
     const index = join(folder, indexName);
     if (existsSync(index)) return { kind: 'grouped', folder, index };
@@ -624,17 +624,17 @@ async function locateTechnique(techniquesDir: string, skillId: string): Promise<
 }
 
 /**
- * Try to load a markdown technique as a Skill object.
- * Returns `null` when no `<techniquesDir>/<skillId>/SKILL.md` exists at the given location.
+ * Try to load a markdown technique as a Technique object.
+ * Returns `null` when no `<techniquesDir>/<techniqueId>/SKILL.md` exists at the given location.
  * On parse / validation failure logs a warning and returns null (mirrors tryLoadSkill semantics).
  *
  * Callers pass the techniques directory (e.g. `{workflowDir}/meta/techniques` or
  * `{workflowDir}/{workflowId}/techniques`), NOT a base workflow root, so the same function
  * works for both workflow-local and meta lookups.
  */
-export async function tryLoadMarkdownSkill(techniquesDir: string, skillId: string): Promise<Skill | null> {
+export async function tryLoadMarkdownTechnique(techniquesDir: string, techniqueId: string): Promise<Technique | null> {
   try {
-    const located = await locateTechnique(techniquesDir, skillId);
+    const located = await locateTechnique(techniquesDir, techniqueId);
     if (!located) return null;
     const indexPath = located.index;
     const indexRaw = await readFile(indexPath, 'utf-8');
@@ -658,23 +658,23 @@ export async function tryLoadMarkdownSkill(techniquesDir: string, skillId: strin
       }
     }
 
-    const skill: Record<string, unknown> = {
+    const technique: Record<string, unknown> = {
       id: parsed.id,
       version: parsed.version,
       capability: parsed.capability,
     };
-    if (parsed.description !== undefined) skill['description'] = parsed.description;
-    if (parsed.inputs && parsed.inputs.length > 0) skill['inputs'] = parsed.inputs;
-    if (parsed.protocol && parsed.protocol.length > 0) skill['protocol'] = parsed.protocol;
-    if (parsed.output && parsed.output.length > 0) skill['output'] = parsed.output;
-    if (parsed.rules && Object.keys(parsed.rules).length > 0) skill['rules'] = parsed.rules;
-    if (parsed.errors && Object.keys(parsed.errors).length > 0) skill['errors'] = parsed.errors;
-    if (Object.keys(operations).length > 0) skill['operations'] = operations;
+    if (parsed.description !== undefined) technique['description'] = parsed.description;
+    if (parsed.inputs && parsed.inputs.length > 0) technique['inputs'] = parsed.inputs;
+    if (parsed.protocol && parsed.protocol.length > 0) technique['protocol'] = parsed.protocol;
+    if (parsed.output && parsed.output.length > 0) technique['output'] = parsed.output;
+    if (parsed.rules && Object.keys(parsed.rules).length > 0) technique['rules'] = parsed.rules;
+    if (parsed.errors && Object.keys(parsed.errors).length > 0) technique['errors'] = parsed.errors;
+    if (Object.keys(operations).length > 0) technique['operations'] = operations;
 
-    const result = safeValidateSkill(skill);
+    const result = safeValidateTechnique(technique);
     if (!result.success) {
-      logWarn('Markdown skill validation failed', {
-        skillId,
+      logWarn('Markdown technique validation failed', {
+        techniqueId,
         path: indexPath,
         errors: result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`),
       });
@@ -682,14 +682,14 @@ export async function tryLoadMarkdownSkill(techniquesDir: string, skillId: strin
     }
     return result.data;
   } catch (error) {
-    if (error instanceof MarkdownSkillParseError) {
+    if (error instanceof MarkdownTechniqueParseError) {
       // Propagate parser errors so callers can surface them as Result.err — the loader contract
-      // distinguishes "not found" (null) from "malformed" (thrown). The wrapper in skill-loader.ts
-      // converts this to a SkillNotFoundError today; future work tracks a richer error path.
+      // distinguishes "not found" (null) from "malformed" (thrown). The wrapper in technique-loader.ts
+      // converts this to a TechniqueNotFoundError today; future work tracks a richer error path.
       throw error;
     }
-    logWarn('Failed to load markdown skill', {
-      skillId,
+    logWarn('Failed to load markdown technique', {
+      techniqueId,
       techniquesDir,
       error: error instanceof Error ? error.message : String(error),
     });
@@ -699,17 +699,17 @@ export async function tryLoadMarkdownSkill(techniquesDir: string, skillId: strin
 
 /**
  * Try to read a raw markdown technique and return the projected TOON wire form.
- * Delegates to tryLoadMarkdownSkill and then projects via the injected projector
- * (passed by skill-loader.ts to avoid an import cycle).
+ * Delegates to tryLoadMarkdownTechnique and then projects via the injected projector
+ * (passed by technique-loader.ts to avoid an import cycle).
  */
-export async function tryReadMarkdownSkillRaw(
+export async function tryReadMarkdownTechniqueRaw(
   techniquesDir: string,
-  skillId: string,
-  project: (skill: Skill) => string,
+  techniqueId: string,
+  project: (technique: Technique) => string,
 ): Promise<string | null> {
-  const skill = await tryLoadMarkdownSkill(techniquesDir, skillId);
-  if (!skill) return null;
-  return project(skill);
+  const technique = await tryLoadMarkdownTechnique(techniquesDir, techniqueId);
+  if (!technique) return null;
+  return project(technique);
 }
 
 /**
@@ -728,12 +728,12 @@ async function listOpChildFiles(folder: string): Promise<string[]> {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Helpers for the public skill loader                                         */
+/* Helpers for the public technique loader                                         */
 /* -------------------------------------------------------------------------- */
 
 /**
  * Return the techniques directory for a workflow.
- * Hides the `techniques` path segment so callers in skill-loader.ts can keep passing the
+ * Hides the `techniques` path segment so callers in technique-loader.ts can keep passing the
  * workflowDir + workflowId pair that the legacy code already accepts.
  */
 export function getWorkflowTechniquesDir(workflowDir: string, workflowId: string): string {
@@ -741,21 +741,21 @@ export function getWorkflowTechniquesDir(workflowDir: string, workflowId: string
 }
 
 /**
- * Wrap tryLoadMarkdownSkill in a Result-returning facade for direct use by callers that
- * already speak Result<Skill, SkillNotFoundError>. Used by skill-loader.ts.
+ * Wrap tryLoadMarkdownTechnique in a Result-returning facade for direct use by callers that
+ * already speak Result<Technique, TechniqueNotFoundError>. Used by technique-loader.ts.
  */
-export async function readMarkdownSkill(
+export async function readMarkdownTechnique(
   techniquesDir: string,
-  skillId: string,
-): Promise<Result<Skill, SkillNotFoundError>> {
+  techniqueId: string,
+): Promise<Result<Technique, TechniqueNotFoundError>> {
   try {
-    const skill = await tryLoadMarkdownSkill(techniquesDir, skillId);
-    if (!skill) return err(new SkillNotFoundError(skillId));
-    return ok(skill);
+    const technique = await tryLoadMarkdownTechnique(techniquesDir, techniqueId);
+    if (!technique) return err(new TechniqueNotFoundError(techniqueId));
+    return ok(technique);
   } catch (error) {
-    if (error instanceof MarkdownSkillParseError) {
-      logWarn('Markdown skill parse error', { skillId, techniquesDir, error: error.message });
+    if (error instanceof MarkdownTechniqueParseError) {
+      logWarn('Markdown technique parse error', { techniqueId, techniquesDir, error: error.message });
     }
-    return err(new SkillNotFoundError(skillId));
+    return err(new TechniqueNotFoundError(techniqueId));
   }
 }

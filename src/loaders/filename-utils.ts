@@ -1,5 +1,5 @@
 /**
- * Parse an activity or skill filename to extract index and id.
+ * Parse an activity or technique filename to extract index and id.
  * Expected format: {NN}-{id}.toon (e.g., "01-start-workflow.toon")
  * Uses \d+ to allow indices wider than two digits.
  */

@@ -2,20 +2,20 @@ import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
-import { SkillNotFoundError } from '../errors.js';
+import { TechniqueNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
 import { decodeToonRaw, encodeToon } from '../utils/toon.js';
-import type { Skill, ProtocolBlock } from '../schema/skill.schema.js';
-import { safeValidateSkill } from '../schema/skill.schema.js';
+import type { Technique, ProtocolBlock } from '../schema/technique.schema.js';
+import { safeValidateTechnique } from '../schema/technique.schema.js';
 import { parseActivityFilename } from './filename-utils.js';
 import {
-  tryLoadMarkdownSkill,
-  tryReadMarkdownSkillRaw,
+  tryLoadMarkdownTechnique,
+  tryReadMarkdownTechniqueRaw,
   getWorkflowTechniquesDir,
-} from './markdown-skill-loader.js';
+} from './markdown-technique-loader.js';
 
 /** Environment-driven safety fallback. When set to "true", the loader continues to read legacy TOON
- *  skills as a fallback after the markdown reader misses. Removed in Phase C — defaults off. */
+ *  techniques as a fallback after the markdown reader misses. Removed in Phase C — defaults off. */
 const LEGACY_TOON_ENABLED = process.env['SKILL_LOADER_LEGACY_TOON'] === 'true';
 
 /* -------------------------------------------------------------------------- */
@@ -23,34 +23,34 @@ const LEGACY_TOON_ENABLED = process.env['SKILL_LOADER_LEGACY_TOON'] === 'true';
 /* -------------------------------------------------------------------------- */
 
 /**
- * Project an in-memory Skill object into its TOON wire form.
+ * Project an in-memory Technique object into its TOON wire form.
  *
- * Used by readSkillRaw (and indirectly by get_skill / get_skills / get_workflow's primary-skill preamble)
+ * Used by readTechniqueRaw (and indirectly by get_skill / get_skills / get_workflow's primary-technique preamble)
  * to render markdown-sourced techniques in the same shape consumers parsed pre-migration.
  *
- * Field-ordering follows the canonical SkillSchema field declaration order — encodeToon serialises
+ * Field-ordering follows the canonical TechniqueSchema field declaration order — encodeToon serialises
  * object keys in insertion order, so we construct the projection with the fields in the intended sequence
  * (id, version, capability, description, then the optional structured fields) instead of letting the
  * caller-built object's accidental key order leak into the wire payload.
  */
-export function projectSkillToToon(skill: Skill): string {
+export function projectTechniqueToToon(technique: Technique): string {
   const ordered: Record<string, unknown> = {};
-  ordered['id'] = skill.id;
-  ordered['version'] = skill.version;
-  ordered['capability'] = skill.capability;
-  if (skill.description !== undefined) ordered['description'] = skill.description;
-  if (skill.inputs !== undefined) ordered['inputs'] = skill.inputs;
-  if (skill.protocol !== undefined) ordered['protocol'] = skill.protocol;
-  if (skill.output !== undefined) ordered['output'] = skill.output;
-  if (skill.rules !== undefined) ordered['rules'] = skill.rules;
-  if (skill.errors !== undefined) ordered['errors'] = skill.errors;
-  if (skill.resources !== undefined) ordered['resources'] = skill.resources;
-  if (skill.operations !== undefined) ordered['operations'] = skill.operations;
+  ordered['id'] = technique.id;
+  ordered['version'] = technique.version;
+  ordered['capability'] = technique.capability;
+  if (technique.description !== undefined) ordered['description'] = technique.description;
+  if (technique.inputs !== undefined) ordered['inputs'] = technique.inputs;
+  if (technique.protocol !== undefined) ordered['protocol'] = technique.protocol;
+  if (technique.output !== undefined) ordered['output'] = technique.output;
+  if (technique.rules !== undefined) ordered['rules'] = technique.rules;
+  if (technique.errors !== undefined) ordered['errors'] = technique.errors;
+  if (technique.resources !== undefined) ordered['resources'] = technique.resources;
+  if (technique.operations !== undefined) ordered['operations'] = technique.operations;
   // Trail with the catch-all extension surface — anything an authoring path adds that the canonical
   // ordering above does not cover is still emitted, just at the end.
-  for (const key of Object.keys(skill) as (keyof Skill)[]) {
-    if (!(key in ordered) && skill[key] !== undefined) {
-      ordered[String(key)] = skill[key];
+  for (const key of Object.keys(technique) as (keyof Technique)[]) {
+    if (!(key in ordered) && technique[key] !== undefined) {
+      ordered[String(key)] = technique[key];
     }
   }
   return encodeToon(ordered);
@@ -60,37 +60,37 @@ export function projectSkillToToon(skill: Skill): string {
 /* Legacy TOON loader (retained behind SKILL_LOADER_LEGACY_TOON until Phase C) */
 /* -------------------------------------------------------------------------- */
 
-/** Find a legacy TOON skill file by ID inside the workflow's legacy `skills/` directory. */
-async function findLegacySkillFile(skillDir: string, skillId: string): Promise<string | null> {
-  if (!existsSync(skillDir)) return null;
+/** Find a legacy TOON technique file by ID inside the workflow's legacy `techniques/` directory. */
+async function findLegacySkillFile(techniqueDir: string, techniqueId: string): Promise<string | null> {
+  if (!existsSync(techniqueDir)) return null;
   try {
-    const files = await readdir(skillDir);
+    const files = await readdir(techniqueDir);
     const matchingFile = files.find((f) => {
       const parsed = parseActivityFilename(f);
-      return parsed && parsed.id === skillId;
+      return parsed && parsed.id === techniqueId;
     });
-    return matchingFile ? join(skillDir, matchingFile) : null;
+    return matchingFile ? join(techniqueDir, matchingFile) : null;
   } catch (error) {
-    logWarn('Failed to read legacy skill directory', { skillDir, error: error instanceof Error ? error.message : String(error) });
+    logWarn('Failed to read legacy technique directory', { techniqueDir, error: error instanceof Error ? error.message : String(error) });
     return null;
   }
 }
 
 function getWorkflowLegacySkillsDir(workflowDir: string, workflowId: string): string {
-  return join(workflowDir, workflowId, 'skills');
+  return join(workflowDir, workflowId, 'techniques');
 }
 
-async function tryLoadLegacyToonSkill(skillDir: string, skillId: string): Promise<Skill | null> {
-  const filePath = await findLegacySkillFile(skillDir, skillId);
+async function tryLoadLegacyToonSkill(techniqueDir: string, techniqueId: string): Promise<Technique | null> {
+  const filePath = await findLegacySkillFile(techniqueDir, techniqueId);
   if (!filePath) return null;
 
   try {
     const content = await readFile(filePath, 'utf-8');
     const decoded = decodeToonRaw(content);
-    const result = safeValidateSkill(decoded);
+    const result = safeValidateTechnique(decoded);
     if (!result.success) {
-      logWarn('Legacy TOON skill validation failed', {
-        skillId,
+      logWarn('Legacy TOON technique validation failed', {
+        techniqueId,
         path: filePath,
         errors: result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`),
       });
@@ -98,22 +98,22 @@ async function tryLoadLegacyToonSkill(skillDir: string, skillId: string): Promis
     }
     return result.data;
   } catch (error) {
-    logWarn('Failed to decode legacy TOON skill', { skillId, path: filePath, error: error instanceof Error ? error.message : String(error) });
+    logWarn('Failed to decode legacy TOON technique', { techniqueId, path: filePath, error: error instanceof Error ? error.message : String(error) });
     return null;
   }
 }
 
-async function tryReadLegacyToonSkillRaw(skillDir: string, skillId: string): Promise<string | null> {
-  const filePath = await findLegacySkillFile(skillDir, skillId);
+async function tryReadLegacyToonSkillRaw(techniqueDir: string, techniqueId: string): Promise<string | null> {
+  const filePath = await findLegacySkillFile(techniqueDir, techniqueId);
   if (!filePath) return null;
 
   try {
     const content = await readFile(filePath, 'utf-8');
     const decoded = decodeToonRaw(content);
-    const result = safeValidateSkill(decoded);
+    const result = safeValidateTechnique(decoded);
     if (!result.success) {
-      logWarn('Legacy TOON skill validation failed', {
-        skillId,
+      logWarn('Legacy TOON technique validation failed', {
+        techniqueId,
         path: filePath,
         errors: result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`),
       });
@@ -121,7 +121,7 @@ async function tryReadLegacyToonSkillRaw(skillDir: string, skillId: string): Pro
     }
     return content;
   } catch (error) {
-    logWarn('Failed to decode legacy TOON skill', { skillId, path: filePath, error: error instanceof Error ? error.message : String(error) });
+    logWarn('Failed to decode legacy TOON technique', { techniqueId, path: filePath, error: error instanceof Error ? error.message : String(error) });
     return null;
   }
 }
@@ -131,39 +131,39 @@ async function tryReadLegacyToonSkillRaw(skillDir: string, skillId: string): Pro
 /* -------------------------------------------------------------------------- */
 
 /**
- * Try to load a skill from a workflow's techniques directory, falling back to the legacy TOON
- * `skills/` directory when SKILL_LOADER_LEGACY_TOON is enabled.
+ * Try to load a technique from a workflow's techniques directory, falling back to the legacy TOON
+ * `techniques/` directory when SKILL_LOADER_LEGACY_TOON is enabled.
  *
- * The signature accepts `workflowDir + workflowId` rather than a pre-joined `skillDir` so a single
- * call site here owns the path layout (techniques vs skills) — callers in readSkill / readSkillRaw
+ * The signature accepts `workflowDir + workflowId` rather than a pre-joined `techniqueDir` so a single
+ * call site here owns the path layout (techniques vs techniques) — callers in readTechnique / readTechniqueRaw
  * don't need to know about either.
  */
-async function tryLoadSkillInWorkflow(workflowDir: string, workflowId: string, skillId: string): Promise<Skill | null> {
+async function tryLoadSkillInWorkflow(workflowDir: string, workflowId: string, techniqueId: string): Promise<Technique | null> {
   try {
-    const md = await tryLoadMarkdownSkill(getWorkflowTechniquesDir(workflowDir, workflowId), skillId);
+    const md = await tryLoadMarkdownTechnique(getWorkflowTechniquesDir(workflowDir, workflowId), techniqueId);
     if (md) return md;
   } catch (error) {
     // Markdown parser surfaced a loud-failure on a malformed technique. Log and treat as "not found"
     // so the caller's Result-typed contract isn't broken by a synchronous throw deep in the parser.
-    logWarn('Markdown skill parse error', { skillId, workflowId, error: error instanceof Error ? error.message : String(error) });
+    logWarn('Markdown technique parse error', { techniqueId, workflowId, error: error instanceof Error ? error.message : String(error) });
     return null;
   }
   if (LEGACY_TOON_ENABLED) {
-    return tryLoadLegacyToonSkill(getWorkflowLegacySkillsDir(workflowDir, workflowId), skillId);
+    return tryLoadLegacyToonSkill(getWorkflowLegacySkillsDir(workflowDir, workflowId), techniqueId);
   }
   return null;
 }
 
-async function tryReadSkillRawInWorkflow(workflowDir: string, workflowId: string, skillId: string): Promise<string | null> {
+async function tryReadSkillRawInWorkflow(workflowDir: string, workflowId: string, techniqueId: string): Promise<string | null> {
   try {
-    const md = await tryReadMarkdownSkillRaw(getWorkflowTechniquesDir(workflowDir, workflowId), skillId, projectSkillToToon);
+    const md = await tryReadMarkdownTechniqueRaw(getWorkflowTechniquesDir(workflowDir, workflowId), techniqueId, projectTechniqueToToon);
     if (md !== null) return md;
   } catch (error) {
-    logWarn('Markdown skill parse error', { skillId, workflowId, error: error instanceof Error ? error.message : String(error) });
+    logWarn('Markdown technique parse error', { techniqueId, workflowId, error: error instanceof Error ? error.message : String(error) });
     return null;
   }
   if (LEGACY_TOON_ENABLED) {
-    return tryReadLegacyToonSkillRaw(getWorkflowLegacySkillsDir(workflowDir, workflowId), skillId);
+    return tryReadLegacyToonSkillRaw(getWorkflowLegacySkillsDir(workflowDir, workflowId), techniqueId);
   }
   return null;
 }
@@ -197,25 +197,25 @@ async function listMarkdownTechniqueIds(techniquesDir: string): Promise<string[]
   }
 }
 
-async function listLegacyToonSkillIds(skillDir: string): Promise<string[]> {
-  if (!existsSync(skillDir)) return [];
+async function listLegacyToonSkillIds(techniqueDir: string): Promise<string[]> {
+  if (!existsSync(techniqueDir)) return [];
   try {
-    const files = await readdir(skillDir);
+    const files = await readdir(techniqueDir);
     return files
       .map((f) => parseActivityFilename(f)?.id)
       .filter((id): id is string => id !== undefined)
       .sort();
   } catch (error) {
-    logWarn('Failed to list legacy TOON skills', { skillDir, error: error instanceof Error ? error.message : String(error) });
+    logWarn('Failed to list legacy TOON techniques', { techniqueDir, error: error instanceof Error ? error.message : String(error) });
     return [];
   }
 }
 
 /**
- * List skill IDs available in a workflow's techniques (or legacy skills) directory.
+ * List technique IDs available in a workflow's techniques (or legacy techniques) directory.
  * Markdown techniques are the primary source; legacy TOON ids are appended when the safety flag is on.
  */
-export async function listWorkflowSkillIds(workflowDir: string, workflowId: string): Promise<string[]> {
+export async function listWorkflowTechniqueIds(workflowDir: string, workflowId: string): Promise<string[]> {
   const md = await listMarkdownTechniqueIds(getWorkflowTechniquesDir(workflowDir, workflowId));
   if (md.length > 0 || !LEGACY_TOON_ENABLED) return md;
   return listLegacyToonSkillIds(getWorkflowLegacySkillsDir(workflowDir, workflowId));
@@ -228,97 +228,97 @@ export async function listWorkflowSkillIds(workflowDir: string, workflowId: stri
 const META_WORKFLOW_ID = 'meta';
 
 /**
- * Read a skill by ID.
+ * Read a technique by ID.
  *
  * Resolution order:
- *   0. Explicit prefix (`{workflow}/{skillId}`): load only from that workflow's techniques folder.
- *   1. Workflow-local (workflowId provided): `{workflowDir}/{workflowId}/techniques/{skillId}/SKILL.md`.
- *   2. Meta fallback: `{workflowDir}/meta/techniques/{skillId}/SKILL.md`.
+ *   0. Explicit prefix (`{workflow}/{techniqueId}`): load only from that workflow's techniques folder.
+ *   1. Workflow-local (workflowId provided): `{workflowDir}/{workflowId}/techniques/{techniqueId}/SKILL.md`.
+ *   2. Meta fallback: `{workflowDir}/meta/techniques/{techniqueId}/SKILL.md`.
  *
  * The legacy cross-workflow scan-all fallback is gone; meta now plays the explicit shared-layer role.
- * When SKILL_LOADER_LEGACY_TOON is on, every step above also tries the workflow's `skills/` TOON
+ * When SKILL_LOADER_LEGACY_TOON is on, every step above also tries the workflow's `techniques/` TOON
  * directory as a safety net.
  */
-export async function readSkill(
-  skillId: string,
+export async function readTechnique(
+  techniqueId: string,
   workflowDir: string,
   workflowId?: string,
-): Promise<Result<Skill, SkillNotFoundError>> {
-  if (skillId.includes('/')) {
-    const [targetWorkflow, actualSkillId] = skillId.split('/', 2);
+): Promise<Result<Technique, TechniqueNotFoundError>> {
+  if (techniqueId.includes('/')) {
+    const [targetWorkflow, actualSkillId] = techniqueId.split('/', 2);
     if (!targetWorkflow || !actualSkillId) {
-      return err(new SkillNotFoundError(skillId));
+      return err(new TechniqueNotFoundError(techniqueId));
     }
-    const skill = await tryLoadSkillInWorkflow(workflowDir, targetWorkflow, actualSkillId);
-    if (skill) {
-      logInfo('Skill loaded (explicit prefix)', { id: skillId, targetWorkflow });
-      return ok(skill);
+    const technique = await tryLoadSkillInWorkflow(workflowDir, targetWorkflow, actualSkillId);
+    if (technique) {
+      logInfo('Technique loaded (explicit prefix)', { id: techniqueId, targetWorkflow });
+      return ok(technique);
     }
-    return err(new SkillNotFoundError(skillId));
+    return err(new TechniqueNotFoundError(techniqueId));
   }
 
   if (workflowId) {
-    const local = await tryLoadSkillInWorkflow(workflowDir, workflowId, skillId);
+    const local = await tryLoadSkillInWorkflow(workflowDir, workflowId, techniqueId);
     if (local) {
-      logInfo('Skill loaded (workflow-local)', { id: skillId, workflowId });
+      logInfo('Technique loaded (workflow-local)', { id: techniqueId, workflowId });
       return ok(local);
     }
   }
 
   // Fall back to the meta shared layer (unless the caller already targeted meta).
   if (workflowId !== META_WORKFLOW_ID) {
-    const shared = await tryLoadSkillInWorkflow(workflowDir, META_WORKFLOW_ID, skillId);
+    const shared = await tryLoadSkillInWorkflow(workflowDir, META_WORKFLOW_ID, techniqueId);
     if (shared) {
-      logInfo('Skill loaded (meta shared layer)', { id: skillId, workflowId: workflowId ?? '(none)' });
+      logInfo('Technique loaded (meta shared layer)', { id: techniqueId, workflowId: workflowId ?? '(none)' });
       return ok(shared);
     }
   }
 
-  return err(new SkillNotFoundError(skillId));
+  return err(new TechniqueNotFoundError(techniqueId));
 }
 
 /**
- * Read a skill's projected TOON wire form by ID. Same precedence as readSkill.
+ * Read a technique's projected TOON wire form by ID. Same precedence as readTechnique.
  *
- * The output is the projection `projectSkillToToon(loadedSkill)` for markdown techniques, or the
- * original on-disk TOON for legacy skills (when SKILL_LOADER_LEGACY_TOON is on). Either way it
- * decodes back to a Skill object that validates against SkillSchema.
+ * The output is the projection `projectTechniqueToToon(loadedSkill)` for markdown techniques, or the
+ * original on-disk TOON for legacy techniques (when SKILL_LOADER_LEGACY_TOON is on). Either way it
+ * decodes back to a Technique object that validates against TechniqueSchema.
  */
-export async function readSkillRaw(
-  skillId: string,
+export async function readTechniqueRaw(
+  techniqueId: string,
   workflowDir: string,
   workflowId?: string,
-): Promise<Result<string, SkillNotFoundError>> {
-  if (skillId.includes('/')) {
-    const [targetWorkflow, actualSkillId] = skillId.split('/', 2);
+): Promise<Result<string, TechniqueNotFoundError>> {
+  if (techniqueId.includes('/')) {
+    const [targetWorkflow, actualSkillId] = techniqueId.split('/', 2);
     if (!targetWorkflow || !actualSkillId) {
-      return err(new SkillNotFoundError(skillId));
+      return err(new TechniqueNotFoundError(techniqueId));
     }
     const raw = await tryReadSkillRawInWorkflow(workflowDir, targetWorkflow, actualSkillId);
     if (raw !== null) {
-      logInfo('Skill loaded raw (explicit prefix)', { id: skillId, targetWorkflow });
+      logInfo('Technique loaded raw (explicit prefix)', { id: techniqueId, targetWorkflow });
       return ok(raw);
     }
-    return err(new SkillNotFoundError(skillId));
+    return err(new TechniqueNotFoundError(techniqueId));
   }
 
   if (workflowId) {
-    const local = await tryReadSkillRawInWorkflow(workflowDir, workflowId, skillId);
+    const local = await tryReadSkillRawInWorkflow(workflowDir, workflowId, techniqueId);
     if (local !== null) {
-      logInfo('Skill loaded raw (workflow-local)', { id: skillId, workflowId });
+      logInfo('Technique loaded raw (workflow-local)', { id: techniqueId, workflowId });
       return ok(local);
     }
   }
 
   if (workflowId !== META_WORKFLOW_ID) {
-    const shared = await tryReadSkillRawInWorkflow(workflowDir, META_WORKFLOW_ID, skillId);
+    const shared = await tryReadSkillRawInWorkflow(workflowDir, META_WORKFLOW_ID, techniqueId);
     if (shared !== null) {
-      logInfo('Skill loaded raw (meta shared layer)', { id: skillId, workflowId: workflowId ?? '(none)' });
+      logInfo('Technique loaded raw (meta shared layer)', { id: techniqueId, workflowId: workflowId ?? '(none)' });
       return ok(shared);
     }
   }
 
-  return err(new SkillNotFoundError(skillId));
+  return err(new TechniqueNotFoundError(techniqueId));
 }
 
 /* -------------------------------------------------------------------------- */
@@ -335,7 +335,7 @@ export interface ResolvedOperation {
   ref: string;
 }
 
-function parseOperationRef(ref: string): { workflow?: string; skill: string; name: string } | null {
+function parseOperationRef(ref: string): { workflow?: string; technique: string; name: string } | null {
   const sepIdx = ref.indexOf('::');
   if (sepIdx < 0) return null;
   const skillPart = ref.slice(0, sepIdx);
@@ -345,17 +345,17 @@ function parseOperationRef(ref: string): { workflow?: string; skill: string; nam
   const slashIdx = skillPart.indexOf('/');
   if (slashIdx > 0) {
     const workflow = skillPart.slice(0, slashIdx);
-    const skill = skillPart.slice(slashIdx + 1);
-    if (!workflow || !skill) return null;
-    return { workflow, skill, name };
+    const technique = skillPart.slice(slashIdx + 1);
+    if (!workflow || !technique) return null;
+    return { workflow, technique, name };
   }
-  return { skill: skillPart, name };
+  return { technique: skillPart, name };
 }
 
 /**
- * Resolve a list of skill::element references into their bodies.
+ * Resolve a list of technique::element references into their bodies.
  *
- * Behaviour preserved verbatim from the pre-migration loader — only the underlying skill load
+ * Behaviour preserved verbatim from the pre-migration loader — only the underlying technique load
  * is now markdown-sourced. Auto-inclusion of global rules and the not-found surfacing both stay.
  */
 export async function resolveOperations(
@@ -364,10 +364,10 @@ export async function resolveOperations(
 ): Promise<ResolvedOperation[]> {
   const results: ResolvedOperation[] = [];
   const explicitRules = new Set<string>();
-  const touchedSkills = new Map<string, { workflow: string | undefined; skill: string; cached: Skill }>();
+  const touchedSkills = new Map<string, { workflow: string | undefined; technique: string; cached: Technique }>();
 
-  const skillKey = (workflow: string | undefined, skill: string) => `${workflow ?? ''}::${skill}`;
-  const ruleKey = (workflow: string | undefined, skill: string, name: string) => `${workflow ?? ''}::${skill}::${name}`;
+  const skillKey = (workflow: string | undefined, technique: string) => `${workflow ?? ''}::${technique}`;
+  const ruleKey = (workflow: string | undefined, technique: string, name: string) => `${workflow ?? ''}::${technique}::${name}`;
 
   for (const ref of refs) {
     const parsed = parseOperationRef(ref);
@@ -376,67 +376,67 @@ export async function resolveOperations(
       continue;
     }
 
-    const skillResult = await readSkill(
-      parsed.workflow ? `${parsed.workflow}/${parsed.skill}` : parsed.skill,
+    const skillResult = await readTechnique(
+      parsed.workflow ? `${parsed.workflow}/${parsed.technique}` : parsed.technique,
       workflowDir,
     );
     if (!skillResult.success) {
-      results.push({ source: parsed.skill, workflow: parsed.workflow, name: parsed.name, type: 'not-found', body: null, ref });
+      results.push({ source: parsed.technique, workflow: parsed.workflow, name: parsed.name, type: 'not-found', body: null, ref });
       continue;
     }
-    const skill = skillResult.value;
+    const technique = skillResult.value;
 
-    if (skill.operations && parsed.name in skill.operations) {
+    if (technique.operations && parsed.name in technique.operations) {
       results.push({
-        source: parsed.skill,
+        source: parsed.technique,
         workflow: parsed.workflow,
         name: parsed.name,
         type: 'operation',
-        body: skill.operations[parsed.name],
+        body: technique.operations[parsed.name],
         ref,
       });
-      touchedSkills.set(skillKey(parsed.workflow, parsed.skill), { workflow: parsed.workflow, skill: parsed.skill, cached: skill });
+      touchedSkills.set(skillKey(parsed.workflow, parsed.technique), { workflow: parsed.workflow, technique: parsed.technique, cached: technique });
       continue;
     }
-    if (skill.rules && parsed.name in skill.rules) {
-      explicitRules.add(ruleKey(parsed.workflow, parsed.skill, parsed.name));
+    if (technique.rules && parsed.name in technique.rules) {
+      explicitRules.add(ruleKey(parsed.workflow, parsed.technique, parsed.name));
       results.push({
-        source: parsed.skill,
+        source: parsed.technique,
         workflow: parsed.workflow,
         name: parsed.name,
         type: 'rule',
-        body: skill.rules[parsed.name],
+        body: technique.rules[parsed.name],
         ref,
       });
-      touchedSkills.set(skillKey(parsed.workflow, parsed.skill), { workflow: parsed.workflow, skill: parsed.skill, cached: skill });
+      touchedSkills.set(skillKey(parsed.workflow, parsed.technique), { workflow: parsed.workflow, technique: parsed.technique, cached: technique });
       continue;
     }
-    if (skill.errors && parsed.name in skill.errors) {
+    if (technique.errors && parsed.name in technique.errors) {
       results.push({
-        source: parsed.skill,
+        source: parsed.technique,
         workflow: parsed.workflow,
         name: parsed.name,
         type: 'error',
-        body: skill.errors[parsed.name],
+        body: technique.errors[parsed.name],
         ref,
       });
-      touchedSkills.set(skillKey(parsed.workflow, parsed.skill), { workflow: parsed.workflow, skill: parsed.skill, cached: skill });
+      touchedSkills.set(skillKey(parsed.workflow, parsed.technique), { workflow: parsed.workflow, technique: parsed.technique, cached: technique });
       continue;
     }
-    results.push({ source: parsed.skill, workflow: parsed.workflow, name: parsed.name, type: 'not-found', body: null, ref });
+    results.push({ source: parsed.technique, workflow: parsed.workflow, name: parsed.name, type: 'not-found', body: null, ref });
   }
 
-  for (const { workflow, skill: skillId, cached: skill } of touchedSkills.values()) {
-    if (!skill.rules) continue;
-    for (const [ruleName, ruleBody] of Object.entries(skill.rules)) {
-      if (explicitRules.has(ruleKey(workflow, skillId, ruleName))) continue;
+  for (const { workflow, technique: techniqueId, cached: technique } of touchedSkills.values()) {
+    if (!technique.rules) continue;
+    for (const [ruleName, ruleBody] of Object.entries(technique.rules)) {
+      if (explicitRules.has(ruleKey(workflow, techniqueId, ruleName))) continue;
       results.push({
-        source: skillId,
+        source: techniqueId,
         workflow,
         name: ruleName,
         type: 'rule',
         body: ruleBody,
-        ref: `${workflow ? workflow + '/' : ''}${skillId}::${ruleName}`,
+        ref: `${workflow ? workflow + '/' : ''}${techniqueId}::${ruleName}`,
       });
     }
   }
@@ -449,7 +449,7 @@ export async function resolveOperations(
 /* -------------------------------------------------------------------------- */
 
 /** Filename stem of the per-workflow root index. Loadable for its contract, but never an
- *  addressable technique (excluded from listWorkflowSkillIds). */
+ *  addressable technique (excluded from listWorkflowTechniqueIds). */
 const ROOT_INDEX_ID = 'TECHNIQUE';
 
 /** Union two id-keyed arrays (inputs/outputs); child entries override parent entries by `id`. */
@@ -476,8 +476,8 @@ function concatProtocol(parent: ProtocolBlock[] | undefined, child: ProtocolBloc
 }
 
 /** Load the executing workflow's root index (`techniques/TECHNIQUE.md`) for its contract, or null. */
-async function loadWorkflowRoot(workflowDir: string, workflowId: string): Promise<Skill | null> {
-  return tryLoadMarkdownSkill(getWorkflowTechniquesDir(workflowDir, workflowId), ROOT_INDEX_ID);
+async function loadWorkflowRoot(workflowDir: string, workflowId: string): Promise<Technique | null> {
+  return tryLoadMarkdownTechnique(getWorkflowTechniquesDir(workflowDir, workflowId), ROOT_INDEX_ID);
 }
 
 /**
@@ -492,29 +492,29 @@ export async function composeTechnique(
   techniqueId: string,
   workflowDir: string,
   workflowId: string,
-): Promise<Result<Skill, SkillNotFoundError>> {
-  const base = await readSkill(techniqueId, workflowDir, workflowId);
+): Promise<Result<Technique, TechniqueNotFoundError>> {
+  const base = await readTechnique(techniqueId, workflowDir, workflowId);
   if (!base.success) return base;
-  const skill = base.value;
+  const technique = base.value;
 
   const root = await loadWorkflowRoot(workflowDir, workflowId);
-  if (!root || root.id === skill.id) return ok(skill); // no root, or the skill IS the root index
+  if (!root || root.id === technique.id) return ok(technique); // no root, or the technique IS the root index
 
-  const composed: Record<string, unknown> = { ...skill };
-  const inputs = mergeById(root.inputs, skill.inputs);
-  const output = mergeById(root.output, skill.output);
-  const rules = mergeKeyed(root.rules, skill.rules);
-  const errors = mergeKeyed(root.errors, skill.errors);
-  const protocol = concatProtocol(root.protocol, skill.protocol);
+  const composed: Record<string, unknown> = { ...technique };
+  const inputs = mergeById(root.inputs, technique.inputs);
+  const output = mergeById(root.output, technique.output);
+  const rules = mergeKeyed(root.rules, technique.rules);
+  const errors = mergeKeyed(root.errors, technique.errors);
+  const protocol = concatProtocol(root.protocol, technique.protocol);
   if (inputs) composed['inputs'] = inputs; else delete composed['inputs'];
   if (output) composed['output'] = output; else delete composed['output'];
   if (rules) composed['rules'] = rules; else delete composed['rules'];
   if (errors) composed['errors'] = errors; else delete composed['errors'];
   if (protocol) composed['protocol'] = protocol; else delete composed['protocol'];
 
-  if (skill.operations) {
+  if (technique.operations) {
     const ops: Record<string, unknown> = {};
-    for (const [name, opRaw] of Object.entries(skill.operations)) {
+    for (const [name, opRaw] of Object.entries(technique.operations)) {
       const op = opRaw as Record<string, unknown>;
       const composedOp: Record<string, unknown> = { ...op };
       const opRules = mergeKeyed(rules as Record<string, unknown> | undefined, op['rules'] as Record<string, unknown> | undefined);
@@ -528,14 +528,14 @@ export async function composeTechnique(
     composed['operations'] = ops;
   }
 
-  const result = safeValidateSkill(composed);
+  const result = safeValidateTechnique(composed);
   if (!result.success) {
     logWarn('Composed technique failed validation; returning uncomposed', {
       techniqueId,
       workflowId,
       errors: result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`),
     });
-    return ok(skill);
+    return ok(technique);
   }
   return ok(result.data);
 }

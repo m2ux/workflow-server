@@ -37,14 +37,14 @@ function parseToolResponse(result: any): any {
 }
 
 /**
- * Parse a get_workflow response which may contain a primary skill section
+ * Parse a get_workflow response which may contain a primary technique section
  * followed by a --- separator and the workflow definition.
  * Returns the workflow portion as a parsed object.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseWorkflowResponse(result: any): any {
   const text = (result.content[0] as { type: 'text'; text: string }).text;
-  // Split on --- separator (skill comes first, workflow after)
+  // Split on --- separator (technique comes first, workflow after)
   const sepIdx = text.indexOf('\n\n---\n\n');
   const workflowText = sepIdx >= 0 ? text.substring(sepIdx + 5) : text;
   // Try JSON first
@@ -408,7 +408,7 @@ describe('mcp-server integration', () => {
     });
 
     it('errors when the workflow declares no primary technique (migrated to operations[])', async () => {
-      // Workflows declare operations[] and no longer declare skills.primary;
+      // Workflows declare operations[] and no longer declare techniques.primary;
       // get_technique without a step_id has no primary to compose and errors.
       const result = await client.callTool({
         name: 'get_technique',
@@ -722,7 +722,7 @@ describe('mcp-server integration', () => {
       const preamble = text.substring(0, sepIdx);
       const decoded = decode(preamble) as Record<string, unknown>;
       expect(decoded.operations).toBeDefined();
-      // Bundle shape: operations keyed by `<skill>::<name>`, rules as [header, line] tuples.
+      // Bundle shape: operations keyed by `<technique>::<name>`, rules as [header, line] tuples.
       expect(typeof decoded.operations).toBe('object');
       expect(Array.isArray(decoded.operations)).toBe(false);
     });
@@ -757,12 +757,12 @@ describe('mcp-server integration', () => {
 
       const fullText = (fullResult.content[0] as { type: 'text'; text: string }).text;
       const summaryText = (summaryResult.content[0] as { type: 'text'; text: string }).text;
-      // Full definition includes raw workflow TOON with skills, modes, tags etc.
+      // Full definition includes raw workflow TOON with techniques, modes, tags etc.
       // Summary includes activity stubs but omits raw details
       expect(fullText).not.toBe(summaryText);
       // Full raw TOON includes fields not in summary
       const fullParsed = parseWorkflowResponse(fullResult);
-      expect(fullParsed.skills).toBeDefined();
+      expect(fullParsed.techniques).toBeDefined();
       expect(fullParsed.modes).toBeDefined();
     });
 
@@ -772,8 +772,8 @@ describe('mcp-server integration', () => {
         arguments: { session_index: sessionToken, summary: false },
       });
       const wf = parseWorkflowResponse(result);
-      // Full raw workflow TOON includes fields like skills, modes, tags that summary omits
-      expect(wf.skills).toBeDefined();
+      // Full raw workflow TOON includes fields like techniques, modes, tags that summary omits
+      expect(wf.techniques).toBeDefined();
       expect(wf.modes).toBeDefined();
       expect(wf.tags).toBeDefined();
     });

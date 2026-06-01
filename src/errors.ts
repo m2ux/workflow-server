@@ -28,9 +28,9 @@ export class WorkflowValidationError extends Error {
   }
 }
 
-export class SkillNotFoundError extends Error {
+export class TechniqueNotFoundError extends Error {
   readonly code: ErrorCode = ERROR_CODES.SKILL_NOT_FOUND;
-  constructor(public readonly skillId: string) { super(`Skill not found: ${skillId}`); this.name = 'SkillNotFoundError'; }
+  constructor(public readonly techniqueId: string) { super(`Technique not found: ${techniqueId}`); this.name = 'TechniqueNotFoundError'; }
 }
 
 export class ActivityNotFoundError extends Error {

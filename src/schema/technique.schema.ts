@@ -85,7 +85,7 @@ export const ResumptionSchema = z.object({
 export type Resumption = z.infer<typeof ResumptionSchema>;
 
 export const InputItemDefinitionSchema = z.object({
-  id: z.string().describe('Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining skills.'),
+  id: z.string().describe('Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining techniques.'),
   description: z.string().optional().describe('Human-readable description of this input'),
   required: z.boolean().default(true).describe('Whether this input must be supplied. Defaults to true — only set to false for optional inputs.'),
   default: z.unknown().optional().describe('Default value when not supplied'),
@@ -99,7 +99,7 @@ export const ProtocolStepSchema = z.object({
 });
 export type ProtocolStep = z.infer<typeof ProtocolStepSchema>;
 
-export const InputsDefinitionSchema = z.array(InputItemDefinitionSchema).describe('Inputs the skill expects from context: array of named items (mirrors output structure for deterministic binding)');
+export const InputsDefinitionSchema = z.array(InputItemDefinitionSchema).describe('Inputs the technique expects from context: array of named items (mirrors output structure for deterministic binding)');
 export type InputsDefinition = z.infer<typeof InputsDefinitionSchema>;
 
 /** A single protocol block: an optional label and an ordered list of imperative step bullets. */
@@ -139,7 +139,7 @@ export const OutputItemDefinitionSchema = z.object({
 });
 export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;
 
-export const OutputDefinitionSchema = z.array(OutputItemDefinitionSchema).describe('What the skill produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
+export const OutputDefinitionSchema = z.array(OutputItemDefinitionSchema).describe('What the technique produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
 export type OutputDefinition = z.infer<typeof OutputDefinitionSchema>;
 
 /** Operation definition: a named operation with description, inputs, output, procedure, tools, errors, rules, and optional reference prose. */
@@ -162,7 +162,7 @@ export const OperationDefinitionSchema = z.object({
   note: z.string().optional().describe('Additional notes about the operation'),
 });
 
-export const SkillSchema = z.object({
+export const TechniqueSchema = z.object({
   id: z.string(),
   version: SemanticVersionSchema,
   capability: z.string(),
@@ -188,10 +188,10 @@ export const SkillSchema = z.object({
   inputs: InputsDefinitionSchema.optional(),
   protocol: ProtocolDefinitionSchema.optional(),
   output: OutputDefinitionSchema.optional(),
-  resources: z.array(z.string()).optional().describe('Resource indices or IDs this skill depends on (e.g. 02, 04, 08)'),
-  operations: z.record(OperationDefinitionSchema).optional().describe('Named operations this skill defines (e.g. spawn-agent, continue-agent)'),
+  resources: z.array(z.string()).optional().describe('Resource indices or IDs this technique depends on (e.g. 02, 04, 08)'),
+  operations: z.record(OperationDefinitionSchema).optional().describe('Named operations this technique defines (e.g. spawn-agent, continue-agent)'),
 }).strict();
-export type Skill = z.infer<typeof SkillSchema>;
+export type Technique = z.infer<typeof TechniqueSchema>;
 
-export function validateSkill(data: unknown): Skill { return SkillSchema.parse(data); }
-export function safeValidateSkill(data: unknown) { return SkillSchema.safeParse(data); }
+export function validateTechnique(data: unknown): Technique { return TechniqueSchema.parse(data); }
+export function safeValidateTechnique(data: unknown) { return TechniqueSchema.safeParse(data); }

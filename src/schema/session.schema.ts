@@ -82,7 +82,7 @@ const SessionFileBaseSchema = z.object({
 
   /** Current execution position. */
   currentActivity: z.string().default(''),
-  currentSkill: z.string().default(''),
+  currentTechnique: z.string().default(''),
   condition: z.string().default(''),
 
   /** Outstanding checkpoint, if one is active. */
@@ -134,7 +134,7 @@ export interface SessionFile {
   ts: number;
   startedAt: string;
   currentActivity: string;
-  currentSkill: string;
+  currentTechnique: string;
   condition: string;
   activeCheckpoint?: ActiveCheckpoint;
   variables: Record<string, unknown>;
@@ -234,7 +234,7 @@ export function createInitialSessionFile(args: {
     ts: Math.floor(now.getTime() / 1000),
     startedAt: now.toISOString(),
     currentActivity: '',
-    currentSkill: '',
+    currentTechnique: '',
     condition: '',
     variables: {},
     completedActivities: [],

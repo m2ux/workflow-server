@@ -52,27 +52,27 @@ export function validateActivityTransition(view: SessionView, workflow: Workflow
   return null;
 }
 
-export function validateSkillAssociation(workflow: Workflow, activityId: string, skillId: string): string | null {
-  if (!activityId) return 'Skill association check skipped: no current activity in session';
+export function validateTechniqueAssociation(workflow: Workflow, activityId: string, techniqueId: string): string | null {
+  if (!activityId) return 'Technique association check skipped: no current activity in session';
 
   const activity = getActivity(workflow, activityId);
-  if (!activity) return `Skill association check skipped: activity '${activityId}' not found in workflow`;
+  if (!activity) return `Technique association check skipped: activity '${activityId}' not found in workflow`;
 
   const declared = new Set<string>();
 
-  if (activity.skills?.primary) declared.add(activity.skills.primary);
-  if (activity.skills?.supporting) activity.skills.supporting.forEach(s => declared.add(s));
+  if (activity.techniques?.primary) declared.add(activity.techniques.primary);
+  if (activity.techniques?.supporting) activity.techniques.supporting.forEach(s => declared.add(s));
 
   if (activity.steps) {
     for (const step of activity.steps) {
-      if (step.skill) declared.add(step.skill);
+      if (step.technique) declared.add(step.technique);
     }
   }
   if (activity.loops) {
     for (const loop of activity.loops) {
       if (loop.steps) {
         for (const step of loop.steps) {
-          if (step.skill) declared.add(step.skill);
+          if (step.technique) declared.add(step.technique);
         }
       }
     }
@@ -80,8 +80,8 @@ export function validateSkillAssociation(workflow: Workflow, activityId: string,
 
   if (declared.size === 0) return null;
 
-  if (!declared.has(skillId)) {
-    return `Skill '${skillId}' is not declared by activity '${activityId}'. Declared skills: [${[...declared].join(', ')}]`;
+  if (!declared.has(techniqueId)) {
+    return `Technique '${techniqueId}' is not declared by activity '${activityId}'. Declared techniques: [${[...declared].join(', ')}]`;
   }
   return null;
 }

@@ -22,7 +22,7 @@ export {
   DecisionSchema, 
   TransitionSchema, 
   LoopSchema, 
-  SkillsReferenceSchema,
+  TechniquesReferenceSchema,
   WorkflowTriggerSchema,
   ActivitySchema,
   validateActivity, 

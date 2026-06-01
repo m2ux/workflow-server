@@ -90,7 +90,7 @@ const TOP_LEVEL_KEY_PRIORITY = [
   'agentId',
   'sessionIndex',
   'currentActivity',
-  'currentSkill',
+  'currentTechnique',
   'condition',
   'activeCheckpoint',
   'seq',

@@ -28,7 +28,7 @@ export interface ResourceEntry {
 
 /**
  * Extract a YAML-frontmatter scalar value (e.g. `name`, `version`) by key.
- * Mirrors the canonical frontmatter shape used by markdown-skill-loader.ts.
+ * Mirrors the canonical frontmatter shape used by markdown-technique-loader.ts.
  */
 function extractFrontmatterScalar(content: string, key: string): string | undefined {
   const fmMatch = content.match(/^---\s*\r?\n([\s\S]*?)\r?\n---/);
@@ -213,7 +213,7 @@ function parseStructuredFrontmatter(raw: string): { name: string | undefined; ve
   const frontmatter = fmMatch[1] ?? '';
   const body = (fmMatch[2] ?? '').trim();
 
-  // Canonical SKILL.md uses `name:` (sibling to markdown-skill-loader).
+  // Canonical SKILL.md uses `name:` (sibling to markdown-technique-loader).
   // `version:` lives under either `version:` at top level or `metadata.version:` nested.
   const nameMatch = frontmatter.match(/^name:\s*(.+)$/m);
   const topVersionMatch = frontmatter.match(/^version:\s*(.+)$/m);

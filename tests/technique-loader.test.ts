@@ -1,23 +1,23 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { readSkill, readSkillRaw, projectSkillToToon, listWorkflowSkillIds, composeTechnique } from '../src/loaders/skill-loader.js';
+import { readTechnique, readTechniqueRaw, projectTechniqueToToon, listWorkflowTechniqueIds, composeTechnique } from '../src/loaders/technique-loader.js';
 import { resolve, join } from 'node:path';
 import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { decodeToonRaw } from '../src/utils/toon.js';
-import { safeValidateSkill } from '../src/schema/skill.schema.js';
+import { safeValidateTechnique } from '../src/schema/technique.schema.js';
 
 const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
-const FIXTURE_DIR = resolve(import.meta.dirname, 'fixtures/markdown-skills');
+const FIXTURE_DIR = resolve(import.meta.dirname, 'fixtures/markdown-techniques');
 
 /* -------------------------------------------------------------------------- */
 /* Existing real-content checks — pin the markdown loader against the          */
 /* migrated workflows/ content (TC-16 backward compatibility).                 */
 /* -------------------------------------------------------------------------- */
 
-describe('skill-loader', () => {
-  describe('readSkill (real content)', () => {
+describe('technique-loader', () => {
+  describe('readTechnique (real content)', () => {
     it('loads meta/agent-conduct (rules-only technique)', async () => {
-      const result = await readSkill('meta/agent-conduct', WORKFLOW_DIR);
+      const result = await readTechnique('meta/agent-conduct', WORKFLOW_DIR);
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('agent-conduct');
@@ -26,7 +26,7 @@ describe('skill-loader', () => {
     });
 
     it('loads meta/workflow-engine', async () => {
-      const result = await readSkill('meta/workflow-engine', WORKFLOW_DIR);
+      const result = await readTechnique('meta/workflow-engine', WORKFLOW_DIR);
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('workflow-engine');
@@ -35,32 +35,32 @@ describe('skill-loader', () => {
       }
     });
 
-    it('returns SkillNotFoundError for non-existent skill', async () => {
-      const result = await readSkill('non-existent-skill', WORKFLOW_DIR);
+    it('returns TechniqueNotFoundError for non-existent technique', async () => {
+      const result = await readTechnique('non-existent-technique', WORKFLOW_DIR);
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.name).toBe('SkillNotFoundError');
+        expect(result.error.name).toBe('TechniqueNotFoundError');
         expect(result.error.code).toBe('SKILL_NOT_FOUND');
       }
     });
 
     it('materialises workflow-engine operations and rules from markdown', async () => {
-      const result = await readSkill('meta/workflow-engine', WORKFLOW_DIR);
+      const result = await readTechnique('meta/workflow-engine', WORKFLOW_DIR);
       expect(result.success).toBe(true);
       if (result.success) {
-        const skill = result.value;
-        expect(skill.operations).toBeDefined();
+        const technique = result.value;
+        expect(technique.operations).toBeDefined();
         // Thresholds below are deliberately lower bounds, not exact counts, so
         // they tolerate organic growth of the meta/workflow-engine content.
         // They are coupled to the live content at
         // workflows/meta/techniques/workflow-engine/ (≥ 6 ops, ≥ 3 rules at
         // time of writing). A content restructure that drops below either
         // bound will fail this test by design — that signal is intentional.
-        expect(Object.keys(skill.operations!).length).toBeGreaterThanOrEqual(6);
-        expect(skill.rules).toBeDefined();
-        expect(Object.keys(skill.rules!).length).toBeGreaterThanOrEqual(3);
+        expect(Object.keys(technique.operations!).length).toBeGreaterThanOrEqual(6);
+        expect(technique.rules).toBeDefined();
+        expect(Object.keys(technique.rules!).length).toBeGreaterThanOrEqual(3);
 
-        const opsWithErrors = Object.values(skill.operations!).filter(
+        const opsWithErrors = Object.values(technique.operations!).filter(
           (op) => (op as { errors?: Record<string, unknown> }).errors !== undefined,
         );
         expect(opsWithErrors.length).toBeGreaterThanOrEqual(1);
@@ -68,7 +68,7 @@ describe('skill-loader', () => {
     });
 
     it('materialises per-operation errors with cause + recovery', async () => {
-      const result = await readSkill('meta/workflow-engine', WORKFLOW_DIR);
+      const result = await readTechnique('meta/workflow-engine', WORKFLOW_DIR);
       expect(result.success).toBe(true);
       if (result.success && result.value.operations) {
         for (const [opName, opDef] of Object.entries(result.value.operations)) {
@@ -88,8 +88,8 @@ describe('skill-loader', () => {
   /* ------------------------------------------------------------------------ */
 
   describe('markdown fixtures (PR126-TC suite)', () => {
-    it('PR126-TC-03: materialises op-as-child-files into Skill.operations keyed by op basename', async () => {
-      const result = await readSkill('cargo-operations', FIXTURE_DIR, 'work-package');
+    it('PR126-TC-03: materialises op-as-child-files into Technique.operations keyed by op basename', async () => {
+      const result = await readTechnique('cargo-operations', FIXTURE_DIR, 'work-package');
       expect(result.success).toBe(true);
       if (result.success) {
         const ops = result.value.operations ?? {};
@@ -103,7 +103,7 @@ describe('skill-loader', () => {
     });
 
     it('PR126-TC-04: falls back to meta when no workflow-local override exists', async () => {
-      const result = await readSkill('agent-conduct', FIXTURE_DIR, 'work-package');
+      const result = await readTechnique('agent-conduct', FIXTURE_DIR, 'work-package');
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.description).toMatch(/meta-version/i);
@@ -111,7 +111,7 @@ describe('skill-loader', () => {
     });
 
     it('PR126-TC-05: workflow-local override suppresses the meta version', async () => {
-      const result = await readSkill('build-comprehension', FIXTURE_DIR, 'work-package');
+      const result = await readTechnique('build-comprehension', FIXTURE_DIR, 'work-package');
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.description).toMatch(/workflow-local override/i);
@@ -126,7 +126,7 @@ describe('skill-loader', () => {
       // `description: workflow-local override`) so the assertion can confirm
       // the meta-side value is returned despite the override existing. Uses a
       // dedicated slug to avoid coupling with TC-04's no-override premise.
-      const result = await readSkill('meta/explicit-prefix-target', FIXTURE_DIR, 'work-package');
+      const result = await readTechnique('meta/explicit-prefix-target', FIXTURE_DIR, 'work-package');
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.description).toMatch(/meta-version/i);
@@ -135,34 +135,34 @@ describe('skill-loader', () => {
     });
 
     it('PR126-TC-06: malformed op-child file (missing Procedure) raises a loader error', async () => {
-      const result = await readSkill('malformed-ops', FIXTURE_DIR, 'work-package');
+      const result = await readTechnique('malformed-ops', FIXTURE_DIR, 'work-package');
       // Contract: a parse failure in an op-child file must surface as
-      // SkillNotFoundError (the loader wraps parse failures as not-found at the
+      // TechniqueNotFoundError (the loader wraps parse failures as not-found at the
       // public boundary). Asserting both the success flag AND the error name
-      // distinguishes "parser surfaced the error" from "skill is missing for an
+      // distinguishes "parser surfaced the error" from "technique is missing for an
       // unrelated reason" — closes the regression gap where a silent op-drop
       // would still satisfy `result.success === false`.
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.name).toBe('SkillNotFoundError');
+        expect(result.error.name).toBe('TechniqueNotFoundError');
       }
     });
 
-    it('PR126-TC-07: returns SkillNotFoundError when neither workflow-local nor meta has the skill', async () => {
-      const result = await readSkill('no-such-technique', FIXTURE_DIR, 'work-package');
+    it('PR126-TC-07: returns TechniqueNotFoundError when neither workflow-local nor meta has the technique', async () => {
+      const result = await readTechnique('no-such-technique', FIXTURE_DIR, 'work-package');
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.code).toBe('SKILL_NOT_FOUND');
       }
     });
 
-    it('PR126-TC-08: projectSkillToToon round-trip preserves the Skill object', async () => {
-      const result = await readSkill('cargo-operations', FIXTURE_DIR, 'work-package');
+    it('PR126-TC-08: projectTechniqueToToon round-trip preserves the Technique object', async () => {
+      const result = await readTechnique('cargo-operations', FIXTURE_DIR, 'work-package');
       expect(result.success).toBe(true);
       if (result.success) {
-        const toon = projectSkillToToon(result.value);
+        const toon = projectTechniqueToToon(result.value);
         const decoded = decodeToonRaw(toon);
-        const parsed = safeValidateSkill(decoded);
+        const parsed = safeValidateTechnique(decoded);
         expect(parsed.success).toBe(true);
         if (parsed.success) {
           expect(parsed.data.id).toBe(result.value.id);
@@ -174,18 +174,18 @@ describe('skill-loader', () => {
       }
     });
 
-    it('PR126-TC-15: skill-loader.ts no longer imports parseActivityFilename under a parseSkillFilename alias', async () => {
-      const source = await readFile(resolve(import.meta.dirname, '../src/loaders/skill-loader.ts'), 'utf-8');
+    it('PR126-TC-15: technique-loader.ts no longer imports parseActivityFilename under a parseSkillFilename alias', async () => {
+      const source = await readFile(resolve(import.meta.dirname, '../src/loaders/technique-loader.ts'), 'utf-8');
       expect(source).not.toMatch(/parseActivityFilename\s+as\s+parseSkillFilename/);
       expect(source).not.toMatch(/parseSkillFilename\b/);
     });
 
-    it('readSkillRaw returns projected TOON (decodes back to a valid Skill)', async () => {
-      const result = await readSkillRaw('cargo-operations', FIXTURE_DIR, 'work-package');
+    it('readTechniqueRaw returns projected TOON (decodes back to a valid Technique)', async () => {
+      const result = await readTechniqueRaw('cargo-operations', FIXTURE_DIR, 'work-package');
       expect(result.success).toBe(true);
       if (result.success) {
         const decoded = decodeToonRaw(result.value);
-        const parsed = safeValidateSkill(decoded);
+        const parsed = safeValidateTechnique(decoded);
         expect(parsed.success).toBe(true);
       }
     });
@@ -199,25 +199,25 @@ describe('skill-loader', () => {
     let tempDir: string;
 
     beforeEach(async () => {
-      tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'skill-test-')));
+      tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'technique-test-')));
     });
 
     afterEach(async () => {
       await rm(tempDir, { recursive: true, force: true });
     });
 
-    it('returns SkillNotFoundError when no SKILL.md exists', async () => {
-      const result = await readSkill('does-not-exist', tempDir);
+    it('returns TechniqueNotFoundError when no SKILL.md exists', async () => {
+      const result = await readTechnique('does-not-exist', tempDir);
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.name).toBe('SkillNotFoundError');
+        expect(result.error.name).toBe('TechniqueNotFoundError');
       }
     });
 
     it('rejects a SKILL.md with no frontmatter as validation failure', async () => {
       await mkdir(join(tempDir, 'meta', 'techniques', 'malformed'), { recursive: true });
       await writeFile(join(tempDir, 'meta', 'techniques', 'malformed', 'SKILL.md'), 'just a plain string', 'utf-8');
-      const result = await readSkill('malformed', tempDir);
+      const result = await readTechnique('malformed', tempDir);
       expect(result.success).toBe(false);
     });
 
@@ -229,7 +229,7 @@ describe('skill-loader', () => {
         ['---', 'name: minimal', 'description: minimal description', 'metadata:', '  version: 1.0.0', '---', '', '# Minimal', '', '## Capability', '', 'A minimal capability statement.', ''].join('\n'),
         'utf-8',
       );
-      const result = await readSkill('minimal', tempDir);
+      const result = await readTechnique('minimal', tempDir);
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('minimal');
@@ -243,7 +243,7 @@ describe('skill-loader', () => {
     const FM = (name: string) => ['---', `name: ${name}`, `description: ${name} desc`, 'metadata:', '  version: 1.0.0', '---', ''];
 
     beforeEach(async () => {
-      tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'skill-flat-')));
+      tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'technique-flat-')));
     });
     afterEach(async () => {
       await rm(tempDir, { recursive: true, force: true });
@@ -257,7 +257,7 @@ describe('skill-loader', () => {
         [...FM('classify'), '## Capability', '', 'Classify the thing.', ''].join('\n'),
         'utf-8',
       );
-      const result = await readSkill('classify', tempDir);
+      const result = await readTechnique('classify', tempDir);
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('classify');
@@ -279,7 +279,7 @@ describe('skill-loader', () => {
         ['commit a thing', '', '## Protocol', '', '1. Stage files', '2. Commit', ''].join('\n'),
         'utf-8',
       );
-      const result = await readSkill('vc', tempDir);
+      const result = await readTechnique('vc', tempDir);
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.id).toBe('vc');
@@ -298,7 +298,7 @@ describe('skill-loader', () => {
       await writeFile(join(dir, 'grp', 'TECHNIQUE.md'), [...FM('grp'), '## Capability', '', 'Grouped.', ''].join('\n'), 'utf-8');
       await writeFile(join(dir, 'grp', 'op.md'), ['an op', '', '## Protocol', '', '1. Do it', ''].join('\n'), 'utf-8');
 
-      const ids = await listWorkflowSkillIds(tempDir, 'meta');
+      const ids = await listWorkflowTechniqueIds(tempDir, 'meta');
       expect(ids).toContain('standalone');
       expect(ids).toContain('grp');
       expect(ids).not.toContain('TECHNIQUE');

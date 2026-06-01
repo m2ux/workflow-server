@@ -129,7 +129,7 @@ async function readActivityFromWorkflow(
     
     logInfo('Activity loaded', { id: activityId, workflowId, path: filePath });
     
-    const primaryStep = activity.steps?.find(s => s.skill);
+    const primaryStep = activity.steps?.find(s => s.technique);
 
     const activityWithGuidance: ActivityWithGuidance = {
       ...activity,
@@ -247,9 +247,9 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
       const validation = safeValidateActivity(decoded);
       const activity = validation.success ? validation.data : decoded as Activity;
       
-      const primarySkill = activity.skills?.primary
-        ?? activity.steps?.find(s => s.skill)?.skill;
-      const primaryStep = activity.steps?.find(s => s.skill);
+      const primarySkill = activity.techniques?.primary
+        ?? activity.steps?.find(s => s.technique)?.technique;
+      const primaryStep = activity.steps?.find(s => s.technique);
 
       const activityEntry: ActivityIndex['activities'][number] = {
         id: activity.id,
@@ -277,7 +277,7 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
   }
   
   const index: ActivityIndex = {
-    description: 'Match user goal to an activity. Activities use skills to achieve outcomes.',
+    description: 'Match user goal to an activity. Activities use techniques to achieve outcomes.',
     usage: 'Call the tool in next_action first (start_session), then proceed to the matched activity.',
     next_action: {
       tool: 'start_session',

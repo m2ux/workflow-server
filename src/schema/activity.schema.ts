@@ -4,12 +4,12 @@ import { SemanticVersionSchema } from './common.js';
 
 const TimeEstimateSchema = z.string().regex(/^\d+(-\d+)?\s*(m|min|h|hr|hours?|d|days?)?$/i).optional();
 
-// Skills reference (activity-level — optional when steps declare their own skills)
-export const SkillsReferenceSchema = z.object({
-  primary: z.string().optional().describe('Primary skill ID for this activity. Optional when steps declare individual skills.'),
-  supporting: z.array(z.string()).optional().describe('Supporting skill IDs'),
+// Skills reference (activity-level — optional when steps declare their own techniques)
+export const TechniquesReferenceSchema = z.object({
+  primary: z.string().optional().describe('Primary technique ID for this activity. Optional when steps declare individual techniques.'),
+  supporting: z.array(z.string()).optional().describe('Supporting technique IDs'),
 });
-export type SkillsReference = z.infer<typeof SkillsReferenceSchema>;
+export type SkillsReference = z.infer<typeof TechniquesReferenceSchema>;
 
 // Action schema
 export const ActionSchema = z.object({
@@ -38,15 +38,15 @@ export type WorkflowTrigger = z.infer<typeof WorkflowTriggerSchema>;
 export const StepSchema = z.object({
   id: z.string().describe('Unique identifier for this step'),
   name: z.string().optional().describe('LEGACY: Human-readable step name. Optional — id + description are usually sufficient.'),
-  description: z.string().optional().describe('Detailed guidance for executing this step. Carries inline operation invocations of the form `skill-id::operation-name(arg: {var}, ...)` when a step wraps a known operation.'),
-  skill: z.string().optional().describe('LEGACY: Skill ID to apply for this step. Prefer inline operation invocation in description.'),
+  description: z.string().optional().describe('Detailed guidance for executing this step. Carries inline operation invocations of the form `technique-id::operation-name(arg: {var}, ...)` when a step wraps a known operation.'),
+  technique: z.string().optional().describe('LEGACY: Technique ID to apply for this step. Prefer inline operation invocation in description.'),
   checkpoint: z.string().optional().describe('Optional checkpoint ID. If present, the worker MUST yield this checkpoint to the orchestrator before executing the step.'),
   required: z.boolean().default(true),
   when: z.string().optional().describe('Inline boolean expression that gates this step. Examples: "has_saved_state == true", "is_monorepo == true", "client_workflow_completed == false". Evaluated against current variable state at runtime.'),
   condition: ConditionSchema.optional().describe('LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons.'),
   actions: z.array(ActionSchema).optional(),
   triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows to trigger from this step'),
-  skill_args: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('LEGACY: Arguments to pass to the skill. Prefer inline operation invocation in description.'),
+  skill_args: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('LEGACY: Arguments to pass to the technique. Prefer inline operation invocation in description.'),
 });
 export type Step = z.infer<typeof StepSchema>;
 
@@ -143,10 +143,10 @@ export const ActivitySchema = z.object({
   recognition: z.array(z.string()).optional().describe('Patterns to match user intent to this activity'),
   
   // Skills (LEGACY — primary/supporting model). Optional. Prefer operations.
-  skills: SkillsReferenceSchema.optional(),
+  techniques: TechniquesReferenceSchema.optional(),
 
-  // Operations (NEW — flat array of skill-id::operation-name refs the activity uses)
-  operations: z.array(z.string()).optional().describe('Flat array of skill-id::operation-name (or skill-id::rule-name) references the activity uses. Resolved via resolve_operations and bundled into get_activity.'),
+  // Operations (NEW — flat array of technique-id::operation-name refs the activity uses)
+  operations: z.array(z.string()).optional().describe('Flat array of technique-id::operation-name (or technique-id::rule-name) references the activity uses. Resolved via resolve_operations and bundled into get_activity.'),
 
   // Execution
   steps: z.array(StepSchema).optional().describe('Ordered execution steps for this activity'),

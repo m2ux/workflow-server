@@ -7,7 +7,7 @@
  * union of (workflow.operations + core orchestrator ops), and get_activity
  * returns the union of (activity.operations + core worker ops).
  *
- * Operations live in the meta workflow's capability skills (workflow-engine,
+ * Operations live in the meta workflow's capability techniques (workflow-engine,
  * agent-conduct). The lists below name the specific operation refs that
  * constitute the runtime baseline.
  */
