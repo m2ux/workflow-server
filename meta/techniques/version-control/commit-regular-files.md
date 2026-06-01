@@ -1,5 +1,3 @@
-# commit-regular-files
-
 Stage, commit, and push files in a regular (non-submodule) directory of the parent repo.
 
 ## Inputs
@@ -16,7 +14,7 @@ Conventional Commits message (e.g., `docs(work-package): activity-X artifacts`)
 
 Branch to push to (typically the current branch — do NOT create a new branch in the parent repo)
 
-## Procedure
+## Protocol
 
 1. `git add {paths}`.
 2. `git commit -s -m '{message}'`.

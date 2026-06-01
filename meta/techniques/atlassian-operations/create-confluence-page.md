@@ -1,12 +1,10 @@
-# create-confluence-page
-
 Create a Confluence page.
 
 ## Inputs
 
 ### cloudId
 
-From [resolve-cloud-id](resolve-cloud-id.md)
+From [resolve-cloud-id](./resolve-cloud-id.md)
 
 ### spaceId
 
@@ -24,6 +22,6 @@ Page title (optional)
 
 Optional parent page ID
 
-## Procedure
+## Protocol
 
 1. Call `createConfluencePage { cloudId, spaceId, body, contentFormat: 'markdown', title?, parentId? }`.

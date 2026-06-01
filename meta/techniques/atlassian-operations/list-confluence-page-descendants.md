@@ -1,12 +1,10 @@
-# list-confluence-page-descendants
-
 List child pages of a Confluence page.
 
 ## Inputs
 
 ### cloudId
 
-From [resolve-cloud-id](resolve-cloud-id.md)
+From [resolve-cloud-id](./resolve-cloud-id.md)
 
 ### pageId
 
@@ -20,6 +18,6 @@ Optional traversal depth
 
 Optional result limit
 
-## Procedure
+## Protocol
 
 1. Call `getConfluencePageDescendants { cloudId, pageId, depth?, limit? }`.

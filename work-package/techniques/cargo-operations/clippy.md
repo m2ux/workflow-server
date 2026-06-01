@@ -1,5 +1,3 @@
-# clippy
-
 Run the linter against all targets, denying warnings.
 
 ## Inputs
@@ -20,9 +18,9 @@ Optional --features flags (empty string when none)
 
 ### lint_diagnostics
 
-Captured stdout/stderr (used by [validate-build](../validate-build/SKILL.md)::[analyze-failure](../validate-build/analyze-failure.md))
+Captured stdout/stderr (used by [validate-build](../validate-build/TECHNIQUE.md)::[analyze-failure](../validate-build/analyze-failure.md))
 
-## Procedure
+## Protocol
 
 1. `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo clippy {scope} --all-targets {features} -- -D warnings`
 

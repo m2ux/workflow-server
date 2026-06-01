@@ -1,5 +1,3 @@
-# read-process
-
 Read a process resource for a step-by-step execution trace.
 
 ## Inputs
@@ -12,6 +10,6 @@ Repository name
 
 Process identifier
 
-## Procedure
+## Protocol
 
 1. Read the MCP resource `gitnexus://repo/{repo_name}/process/{process_name}`.

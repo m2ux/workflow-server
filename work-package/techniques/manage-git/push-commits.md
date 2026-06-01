@@ -1,5 +1,3 @@
-# push-commits
-
 Push local commits on the feature branch to the remote.
 
 ## Inputs
@@ -12,7 +10,7 @@ The working directory (worktree)
 
 Feature branch being pushed
 
-## Procedure
+## Protocol
 
 1. From `target_path`, push all local commits on `branch_name` to origin.
 2. Verify the push succeeded.

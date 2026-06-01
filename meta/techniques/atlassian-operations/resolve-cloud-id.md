@@ -1,5 +1,3 @@
-# resolve-cloud-id
-
 Obtain the `cloudId` for the target Atlassian site.
 
 ## Output
@@ -8,7 +6,7 @@ Obtain the `cloudId` for the target Atlassian site.
 
 UUID of the cloud site, used by every product-specific tool
 
-## Procedure
+## Protocol
 
 1. Call `getAccessibleAtlassianResources` and use the first `cloudId` returned (or the one matching the user's site).
 
@@ -18,7 +16,7 @@ UUID of the cloud site, used by every product-specific tool
 
 **Cause:** A product-specific Atlassian tool was called without resolving `cloudId` first.
 
-**Recovery:** Apply [resolve-cloud-id](resolve-cloud-id.md), then retry the original operation with the returned `cloudId`.
+**Recovery:** Apply [resolve-cloud-id](./resolve-cloud-id.md), then retry the original operation with the returned `cloudId`.
 
 ### permission_denied
 

@@ -1,12 +1,10 @@
-# comment-jira-issue
-
 Add a comment to a Jira issue.
 
 ## Inputs
 
 ### cloudId
 
-From [resolve-cloud-id](resolve-cloud-id.md)
+From [resolve-cloud-id](./resolve-cloud-id.md)
 
 ### issueIdOrKey
 
@@ -16,6 +14,6 @@ Issue key
 
 Markdown comment body
 
-## Procedure
+## Protocol
 
 1. Call `addCommentToJiraIssue { cloudId, issueIdOrKey, commentBody }`.

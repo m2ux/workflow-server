@@ -1,5 +1,3 @@
-# fmt-check
-
 Canonical formatting check; matches CI exactly. Does not compile, so does not need build-jobs caps.
 
 ## Inputs
@@ -18,7 +16,7 @@ Canonical formatting check; matches CI exactly. Does not compile, so does not ne
 
 Concise summary of files needing formatting (when not passed)
 
-## Procedure
+## Protocol
 
 1. `nice -n 19 cargo fmt {scope} -- --check`
 
@@ -28,4 +26,4 @@ Concise summary of files needing formatting (when not passed)
 
 **Cause:** Source files do not match rustfmt configuration
 
-**Recovery:** Apply [fmt-fix](fmt-fix.md) to apply formatting, then commit the result
+**Recovery:** Apply [fmt-fix](./fmt-fix.md) to apply formatting, then commit the result

@@ -1,5 +1,3 @@
-# list-prs
-
 List PRs (read-only — safe via gh CLI).
 
 ## Inputs
@@ -8,6 +6,6 @@ List PRs (read-only — safe via gh CLI).
 
 Optional flags (e.g., `--state open --author @me`)
 
-## Procedure
+## Protocol
 
 1. `gh pr list {filters}`.

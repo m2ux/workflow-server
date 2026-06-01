@@ -1,5 +1,3 @@
-# fmt-fix
-
 Apply rustfmt formatting in place.
 
 ## Inputs
@@ -8,6 +6,6 @@ Apply rustfmt formatting in place.
 
 `'--all'` for the full workspace, or omit for the local crate
 
-## Procedure
+## Protocol
 
 1. `nice -n 19 cargo fmt {scope}`

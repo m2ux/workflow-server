@@ -1,5 +1,3 @@
-# match-target-workflow
-
 Match a user request against the workflow catalog and surface ambiguity.
 
 ## Inputs
@@ -10,7 +8,7 @@ User's free-form request
 
 ### catalog
 
-Array of workflow entries from [list-workflows](list-workflows.md)
+Array of workflow entries from [list-workflows](./list-workflows.md)
 
 ## Output
 
@@ -22,6 +20,6 @@ Best-match workflow id, or null when no candidate matches
 
 true when more than one workflow matches with similar confidence
 
-## Procedure
+## Protocol
 
 1. Score each catalog entry against `user_request` by title, description keywords, and recognition tags; return the top match and set `ambiguous` when the top scores are close.

@@ -1,13 +1,11 @@
-# list-confluence-spaces
-
 List spaces accessible to the current user.
 
 ## Inputs
 
 ### cloudId
 
-From [resolve-cloud-id](resolve-cloud-id.md)
+From [resolve-cloud-id](./resolve-cloud-id.md)
 
-## Procedure
+## Protocol
 
 1. Call `getConfluenceSpaces { cloudId, ...filters }`.

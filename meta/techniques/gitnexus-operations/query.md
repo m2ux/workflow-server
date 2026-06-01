@@ -1,5 +1,3 @@
-# query
-
 Find execution flows related to a concept or term.
 
 ## Inputs
@@ -18,7 +16,7 @@ Concept, error text, or keyword
 
 Process-grouped result list ranked by relevance
 
-## Procedure
+## Protocol
 
 1. Call `gitnexus query({ repo_name, search_term })`.
 
@@ -28,4 +26,4 @@ Process-grouped result list ranked by relevance
 
 **Cause:** `query()` returned no execution flows for the search term.
 
-**Recovery:** Try broader search terms, or apply [cypher](cypher.md) for direct graph traversal.
+**Recovery:** Try broader search terms, or apply [cypher](./cypher.md) for direct graph traversal.

@@ -14,9 +14,9 @@ The L12 pipeline runs three sequential passes with context isolation between eac
 
 | Index | Resource | Words | Key Question | Purpose |
 |-------|----------|-------|-------------|---------|
-| `00` | [L12](00-l12.md) | ~330 | "What code IS" | Conservation law + meta-law + classified bug table |
-| `01` | [L12 Complement Adversarial](01-l12-complement-adversarial.md) | ~150 | — | Challenge structural findings: wrong predictions, overclaims, underclaims |
-| `02` | [L12 Synthesis](02-l12-synthesis.md) | ~130 | — | Reconcile structural + adversarial into corrected conservation law |
+| `00` | [L12](l12.md) | ~330 | "What code IS" | Conservation law + meta-law + classified bug table |
+| `01` | [L12 Complement Adversarial](l12-complement-adversarial.md) | ~150 | — | Challenge structural findings: wrong predictions, overclaims, underclaims |
+| `02` | [L12 Synthesis](l12-synthesis.md) | ~130 | — | Reconcile structural + adversarial into corrected conservation law |
 
 **Pass dependency chain:** `00` (standalone) → `01` (requires output of `00`) → `02` (requires output of both `00` and `01`)
 
@@ -30,12 +30,12 @@ Six standalone lenses that each activate a distinct analytical operation. Zero o
 
 | Index | Resource | Words | Key Question | Best For |
 |-------|----------|-------|-------------|----------|
-| `06` | [Pedagogy](06-pedagogy.md) | ~75 | "What patterns transfer?" | Understanding why patterns were adopted and where they silently break |
-| `07` | [Claim](07-claim.md) | ~80 | "What assumptions hide?" | Exposing hidden assumptions about timing, causality, resources |
-| `08` | [Scarcity](08-scarcity.md) | ~60 | "What runs out?" | Discovering what the design assumes will never be exhausted |
-| `09` | [Rejected Paths](09-rejected-paths.md) | ~65 | "What was given up?" | Revealing design trade-offs and the problems they swap |
-| `10` | [Degradation](10-degradation.md) | ~65 | "What decays?" | Assessing maintainability and time-dependent risk |
-| `11` | [Contract](11-contract.md) | ~80 | "What promises break?" | Finding interface violations and caller mistakes (code-only) |
+| `06` | [Pedagogy](pedagogy.md) | ~75 | "What patterns transfer?" | Understanding why patterns were adopted and where they silently break |
+| `07` | [Claim](claim.md) | ~80 | "What assumptions hide?" | Exposing hidden assumptions about timing, causality, resources |
+| `08` | [Scarcity](scarcity.md) | ~60 | "What runs out?" | Discovering what the design assumes will never be exhausted |
+| `09` | [Rejected Paths](rejected-paths.md) | ~65 | "What was given up?" | Revealing design trade-offs and the problems they swap |
+| `10` | [Degradation](degradation.md) | ~65 | "What decays?" | Assessing maintainability and time-dependent risk |
+| `11` | [Contract](contract.md) | ~80 | "What promises break?" | Finding interface violations and caller mistakes (code-only) |
 
 ---
 
@@ -45,13 +45,13 @@ Single-pass lenses targeting specific architectural concerns. 3 concrete steps e
 
 | Index | Resource | Words | Key Question | Target Type |
 |-------|----------|-------|-------------|-------------|
-| `12` | [Deep Scan (SDL-1)](12-deep-scan.md) | ~180 | "What structure HIDES" | code |
-| `13` | [Trust Topology (SDL-2)](13-sdl-trust.md) | ~190 | "Where AUTHORITY inverts" | code |
-| `14` | [Coupling Clock (SDL-3)](14-sdl-coupling.md) | ~200 | "When ORDER matters" | code |
-| `15` | [Abstraction Leak (SDL-4)](15-sdl-abstraction.md) | ~195 | "What LEAKS across layers" | code + general |
-| `16` | [Fix-Cascade (SDL-REC)](16-fix-cascade.md) | ~175 | "What FIXES hide" | code |
-| `17` | [Identity (SDL-5)](17-identity.md) | ~180 | "What code CLAIMS vs reality" | code |
-| `18` | [L12-Universal](18-l12-universal.md) | ~73 | "What code IS" (compressed) | code + general (**Sonnet-only**) |
+| `12` | [Deep Scan (SDL-1)](deep-scan.md) | ~180 | "What structure HIDES" | code |
+| `13` | [Trust Topology (SDL-2)](sdl-trust.md) | ~190 | "Where AUTHORITY inverts" | code |
+| `14` | [Coupling Clock (SDL-3)](sdl-coupling.md) | ~200 | "When ORDER matters" | code |
+| `15` | [Abstraction Leak (SDL-4)](sdl-abstraction.md) | ~195 | "What LEAKS across layers" | code + general |
+| `16` | [Fix-Cascade (SDL-REC)](fix-cascade.md) | ~175 | "What FIXES hide" | code |
+| `17` | [Identity (SDL-5)](identity.md) | ~180 | "What code CLAIMS vs reality" | code |
+| `18` | [L12-Universal](l12-universal.md) | ~73 | "What code IS" (compressed) | code + general (**Sonnet-only**) |
 
 > **Model note:** Deep Scan (12) and Fix-Cascade (16) produce best results on Opus. L12-Universal (18) requires Sonnet minimum — Haiku fails below this compression floor.
 
@@ -63,11 +63,11 @@ Four independent lenses + one synthesis lens forming the behavioral pipeline. Ea
 
 | Index | Resource | Words | Role Label | Key Question |
 |-------|----------|-------|-----------|-------------|
-| `19` | [Error Resilience (V11)](19-error-resilience.md) | ~165 | ERRORS | "How code BREAKS" |
-| `20` | [Optimize (V14)](20-optimize.md) | ~120 | COSTS | "What code COSTS" |
-| `21` | [Evolution (V10)](21-evolution.md) | ~130 | CHANGES | "How code CHANGES" |
-| `22` | [API Surface (V3)](22-api-surface.md) | ~130 | PROMISES | "What code PROMISES vs does" |
-| `23` | [Behavioral Synthesis](23-behavioral-synthesis.md) | ~150 | SYNTHESIS | Convergence + blind spots + unified law |
+| `19` | [Error Resilience (V11)](error-resilience.md) | ~165 | ERRORS | "How code BREAKS" |
+| `20` | [Optimize (V14)](optimize.md) | ~120 | COSTS | "What code COSTS" |
+| `21` | [Evolution (V10)](evolution.md) | ~130 | CHANGES | "How code CHANGES" |
+| `22` | [API Surface (V3)](api-surface.md) | ~130 | PROMISES | "What code PROMISES vs does" |
+| `23` | [Behavioral Synthesis](behavioral-synthesis.md) | ~150 | SYNTHESIS | Convergence + blind spots + unified law |
 
 **Pipeline structure:**
 ```
@@ -92,9 +92,9 @@ Domain-neutral rewrites of behavioral lenses for non-code targets. Quality is ~0
 
 | Index | Resource | Words | Code-Specific Equivalent | Quality Gap |
 |-------|----------|-------|-------------------------|-------------|
-| `24` | [Error Resilience Neutral](24-error-resilience-neutral.md) | ~175 | 19 (error-resilience) | -0.5 to -1.0 |
-| `25` | [API Surface Neutral](25-api-surface-neutral.md) | ~155 | 22 (api-surface) | -0.7 to -1.0 |
-| `26` | [Evolution Neutral](26-evolution-neutral.md) | ~165 | 21 (evolution) | -0.5 to -0.7 (weakest) |
+| `24` | [Error Resilience Neutral](error-resilience-neutral.md) | ~175 | 19 (error-resilience) | -0.5 to -1.0 |
+| `25` | [API Surface Neutral](api-surface-neutral.md) | ~155 | 22 (api-surface) | -0.7 to -1.0 |
+| `26` | [Evolution Neutral](evolution-neutral.md) | ~165 | 21 (evolution) | -0.5 to -0.7 (weakest) |
 
 > **No optimize_neutral** exists — optimize (20) uses strongly code-oriented vocabulary. For general performance analysis, use scarcity (08) instead.
 
@@ -106,8 +106,8 @@ Shorter versions of error-resilience for model optimization. Use when Haiku need
 
 | Index | Resource | Words | Full-Length Equivalent |
 |-------|----------|-------|-----------------------|
-| `27` | [Error Resilience Compact](27-error-resilience-compact.md) | ~100 | 19 (error-resilience, ~165w) |
-| `28` | [Error Resilience 70w](28-error-resilience-70w.md) | ~70 | 19 (error-resilience, ~165w) |
+| `27` | [Error Resilience Compact](error-resilience-compact.md) | ~100 | 19 (error-resilience, ~165w) |
+| `28` | [Error Resilience 70w](error-resilience-70w.md) | ~70 | 19 (error-resilience, ~165w) |
 
 ---
 
@@ -117,10 +117,10 @@ Standalone lenses for specific analytical concerns. All are code-only and portfo
 
 | Index | Resource | Words | Key Question | Notes |
 |-------|----------|-------|-------------|-------|
-| `29` | [Evidence Cost](29-evidence-cost.md) | ~160 | "What validation costs?" | Hybrid of error-resilience × optimize |
-| `30` | [Reachability](30-reachability.md) | ~160 | "What code is dead?" | Dead code, unreachable paths |
-| `31` | [Fidelity (SDL-9)](31-fidelity.md) | ~215 | "What documentation lies?" | Doc-code drift, stale comments |
-| `32` | [State Audit](32-state-audit.md) | ~205 | "What state breaks?" | State machine violations |
+| `29` | [Evidence Cost](evidence-cost.md) | ~160 | "What validation costs?" | Hybrid of error-resilience × optimize |
+| `30` | [Reachability](reachability.md) | ~160 | "What code is dead?" | Dead code, unreachable paths |
+| `31` | [Fidelity (SDL-9)](fidelity.md) | ~215 | "What documentation lies?" | Doc-code drift, stale comments |
+| `32` | [State Audit](state-audit.md) | ~205 | "What state breaks?" | State machine violations |
 
 ---
 
@@ -130,13 +130,13 @@ Lenses for structural deep-dives into specific concerns: temporal behavior, code
 
 | Index | Resource | Words | Key Question | Model | Target Type |
 |-------|----------|-------|-------------|-------|-------------|
-| `33` | [Archaeology](33-archaeology.md) | ~175 | "What's foundational vs sediment?" | Sonnet (9.0+) | code |
-| `34` | [Audit-Code](34-audit-code.md) | ~200 | "Where are registration gaps?" | Haiku (9.0) | code |
-| `35` | [Cultivation](35-cultivation.md) | ~190 | "What resists change?" | Sonnet (9.0+) | code |
-| `36` | [SDL-Simulation](36-sdl-simulation.md) | ~155 | "What breaks under maintenance?" | Haiku (8.5-9.0) | code |
-| `37` | [Security V1](37-security-v1.md) | ~130 | "Where are exploit chains?" | Haiku (8.5) | code |
-| `38` | [Simulation](38-simulation.md) | ~170 | "What calcifies over time?" | Sonnet (9.0+) | code |
-| `39` | [Testability V1](39-testability-v1.md) | ~130 | "What can't be tested in isolation?" | Haiku (8.0) | code |
+| `33` | [Archaeology](archaeology.md) | ~175 | "What's foundational vs sediment?" | Sonnet (9.0+) | code |
+| `34` | [Audit-Code](audit-code.md) | ~200 | "Where are registration gaps?" | Haiku (9.0) | code |
+| `35` | [Cultivation](cultivation.md) | ~190 | "What resists change?" | Sonnet (9.0+) | code |
+| `36` | [SDL-Simulation](sdl-simulation.md) | ~155 | "What breaks under maintenance?" | Haiku (8.5-9.0) | code |
+| `37` | [Security V1](security-v1.md) | ~130 | "Where are exploit chains?" | Haiku (8.5) | code |
+| `38` | [Simulation](simulation.md) | ~170 | "What calcifies over time?" | Sonnet (9.0+) | code |
+| `39` | [Testability V1](testability-v1.md) | ~130 | "What can't be tested in isolation?" | Haiku (8.0) | code |
 
 > **SDL-Simulation (36) vs Simulation (38):** SDL-Simulation is a 3-step Haiku-optimized compression of the full Simulation prism. Use SDL-Simulation for quick temporal fragility scans; use Simulation for deeper 5-cycle temporal analysis.
 
@@ -148,11 +148,11 @@ Lenses for assessing the reliability and verifiability of analytical claims. Par
 
 | Index | Resource | Words | Key Question | Model | Target Type |
 |-------|----------|-------|-------------|-------|-------------|
-| `40` | [Knowledge-Audit](40-knowledge-audit.md) | ~180 | "What claims are confabulated?" | Sonnet | any |
-| `41` | [Knowledge-Boundary](41-knowledge-boundary.md) | ~200 | "Where does analysis depend on unverifiable facts?" | Sonnet | any |
-| `42` | [Knowledge-Typed](42-knowledge-typed.md) | ~160 | "What is each claim's epistemic type?" | Sonnet | any |
-| `43` | [L12-G](43-l12g.md) | ~350 | "L12 with zero confabulation" | Sonnet | code |
-| `44` | [Oracle](44-oracle.md) | ~400 | "Maximum-trust 5-phase analysis" | Sonnet | any |
+| `40` | [Knowledge-Audit](knowledge-audit.md) | ~180 | "What claims are confabulated?" | Sonnet | any |
+| `41` | [Knowledge-Boundary](knowledge-boundary.md) | ~200 | "Where does analysis depend on unverifiable facts?" | Sonnet | any |
+| `42` | [Knowledge-Typed](knowledge-typed.md) | ~160 | "What is each claim's epistemic type?" | Sonnet | any |
+| `43` | [L12-G](l12g.md) | ~350 | "L12 with zero confabulation" | Sonnet | code |
+| `44` | [Oracle](oracle.md) | ~400 | "Maximum-trust 5-phase analysis" | Sonnet | any |
 
 **Epistemic pipeline:** Use `40` + `41` together for post-hoc verification of any analysis. Use `43` (L12-G) for single-pass self-correcting analysis. Use `44` (Oracle) when epistemic integrity is the top priority.
 
@@ -166,9 +166,9 @@ Lenses for assessing the reliability and verifiability of analytical claims. Par
 
 | Index | Resource | Words | Role | Model |
 |-------|----------|-------|------|-------|
-| `45` | [Writer](45-writer.md) | ~400 | Generate rewrite | Sonnet (8.9) |
-| `46` | [Writer-Critique](46-writer-critique.md) | ~130 | Critique the rewrite | Opus (8.9) |
-| `47` | [Writer-Synthesis](47-writer-synthesis.md) | ~200 | Synthesize final version | Opus (8.9) |
+| `45` | [Writer](writer.md) | ~400 | Generate rewrite | Sonnet (8.9) |
+| `46` | [Writer-Critique](writer-critique.md) | ~130 | Critique the rewrite | Opus (8.9) |
+| `47` | [Writer-Synthesis](writer-synthesis.md) | ~200 | Synthesize final version | Opus (8.9) |
 
 **Pipeline structure:** `45` (standalone) → `46` (requires output of `45` + original) → `47` (requires original + `45` output + `46` output)
 
@@ -178,7 +178,7 @@ Lenses for assessing the reliability and verifiability of analytical claims. Par
 
 | Index | Resource | Words | Key Question | Model | Target Type |
 |-------|----------|-------|-------------|-------|-------------|
-| `48` | [Strategist](48-strategist.md) | ~300 | "What's the optimal analysis strategy?" | Sonnet | any |
+| `48` | [Strategist](strategist.md) | ~300 | "What's the optimal analysis strategy?" | Sonnet | any |
 
 The strategist is a meta-agent that knows all prism capabilities and plans the optimal strategy to achieve any analytical goal. It selects modes, prisms, pipelines, and ordering.
 
@@ -190,10 +190,10 @@ Lenses that produce design alternatives and creative output rather than diagnost
 
 | Index | Resource | Words | Key Question | Model | Target Type |
 |-------|----------|-------|-------------|-------|-------------|
-| `50` | [Arc Code](50-arc-code.md) | ~130 | "How to solve grid transformations?" | Haiku | spatial (ARC) |
-| `51` | [Architect](51-architect.md) | ~230 | "What alternative architectures exist?" | Sonnet | code |
-| `53` | [Codegen](53-codegen.md) | ~130 | "Interface-first implementation" | Sonnet | code |
-| `57` | [Genesis](57-genesis.md) | ~190 | "What system would break the conservation law?" | Sonnet | code + general |
+| `50` | [Arc Code](arc-code.md) | ~130 | "How to solve grid transformations?" | Haiku | spatial (ARC) |
+| `51` | [Architect](architect.md) | ~230 | "What alternative architectures exist?" | Sonnet | code |
+| `53` | [Codegen](codegen.md) | ~130 | "Interface-first implementation" | Sonnet | code |
+| `57` | [Genesis](genesis.md) | ~190 | "What system would break the conservation law?" | Sonnet | code + general |
 
 > **Arc-Code (50)** is domain-specific — for ARC grid puzzle solving with Python code output. **Codegen (53)** is a code-generation prism, not an analytical lens.
 
@@ -205,9 +205,9 @@ Lenses that analyze the analytical framework itself or test the validity of stru
 
 | Index | Resource | Words | Key Question | Model | Target Type |
 |-------|----------|-------|-------------|-------|-------------|
-| `52` | [Blindspot](52-blindspot.md) | ~195 | "What does the catalog miss?" | Sonnet | any |
-| `56` | [Falsify](56-falsify.md) | ~210 | "Is this conservation law genuine?" | Sonnet | any |
-| `60` | [Significance](60-significance.md) | ~180 | "Do these findings matter?" | Sonnet | any |
+| `52` | [Blindspot](blindspot.md) | ~195 | "What does the catalog miss?" | Sonnet | any |
+| `56` | [Falsify](falsify.md) | ~210 | "Is this conservation law genuine?" | Sonnet | any |
+| `60` | [Significance](significance.md) | ~180 | "Do these findings matter?" | Sonnet | any |
 
 > Run **Blindspot (52)** periodically on the catalog itself. Run **Falsify (56)** after any scan that produces a conservation law. Run **Significance (60)** to rank findings by actionability.
 
@@ -219,8 +219,8 @@ Lenses exploring design decisions and their alternatives through structural evid
 
 | Index | Resource | Words | Key Question | Model | Target Type |
 |-------|----------|-------|-------------|-------|-------------|
-| `54` | [Counterfactual](54-counterfactual.md) | ~200 | "What if the opposite choice was made?" | Sonnet | code |
-| `58` | [History](58-history.md) | ~200 | "Why does the code look this way?" | Sonnet | code |
+| `54` | [Counterfactual](counterfactual.md) | ~200 | "What if the opposite choice was made?" | Sonnet | code |
+| `58` | [History](history.md) | ~200 | "Why does the code look this way?" | Sonnet | code |
 
 ---
 
@@ -228,7 +228,7 @@ Lenses exploring design decisions and their alternatives through structural evid
 
 | Index | Resource | Words | Key Question | Model | Target Type |
 |-------|----------|-------|-------------|-------|-------------|
-| `55` | [Emergence](55-emergence.md) | ~195 | "What arises from interactions, not components?" | Sonnet | code |
+| `55` | [Emergence](emergence.md) | ~195 | "What arises from interactions, not components?" | Sonnet | code |
 
 ---
 
@@ -238,8 +238,8 @@ Lenses for pre-analysis preparation and post-analysis claim verification.
 
 | Index | Resource | Words | Key Question | Model | Target Type |
 |-------|----------|-------|-------------|-------|-------------|
-| `59` | [Prereq](59-prereq.md) | ~150 | "What knowledge is needed before starting?" | Sonnet | any |
-| `61` | [Verify Claims](61-verify-claims.md) | ~150 | "Which claims are testable?" | Sonnet | code |
+| `59` | [Prereq](prereq.md) | ~150 | "What knowledge is needed before starting?" | Sonnet | any |
+| `61` | [Verify Claims](verify-claims.md) | ~150 | "Which claims are testable?" | Sonnet | code |
 
 > Run **Prereq (59)** before analysis to ground the model. Run **Verify Claims (61)** after analysis to extract testable behavioral claims.
 

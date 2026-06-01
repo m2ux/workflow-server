@@ -1,5 +1,3 @@
-# rename
-
 Multi-file rename driven by the call graph (preview or apply).
 
 ## Inputs
@@ -26,7 +24,7 @@ true to preview edits without applying
 
 Per-file edit list (when `dry_run`) or applied summary
 
-## Procedure
+## Protocol
 
 1. Always run with `dry_run: true` first; review the change list with the user.
 2. Re-run with `dry_run: false` to apply.

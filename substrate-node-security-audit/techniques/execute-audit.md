@@ -1,0 +1,91 @@
+---
+name: execute-audit
+description: Execute security audit phases with consistent tool usage, concurrent multi-agent coordination, and §3 checklist completeness verification
+metadata:
+  ontology: workflow-canonical
+  kind: technique
+  version: 3.1.0
+  order: 0
+  legacy_id: 0
+---
+
+## Capability
+
+Execute security audit phases with consistent tool usage, concurrent multi-agent coordination, and §3 checklist completeness verification
+
+## Protocol
+
+### 1. Setup
+
+- Extract target submodule and commit from initial request — fail if not specified
+- Checkout submodule at target commit
+- Run cargo audit / cargo deny or fallback to manual dependency inspection
+- Create planning folder and initialize artifacts (see [start-here](../resources/start-here.md) for workflow orientation)
+
+### 2. Reconnaissance
+
+- Dispatch reconnaissance sub-agent (R) to identify crates, map architecture, build function registry, and write output files to planning folder
+- Dispatch architectural analysis sub-agent (Arch) with R's output files to produce security decomposition
+- Read R and Arch output files from planning folder (orchestrator does NOT read source code)
+- Map vulnerability domains by binding architectural analysis to §3 verification procedures, using the [vulnerability-pattern-vocabulary](../resources/vulnerability-pattern-vocabulary.md) as a recognition aid for known cross-project patterns
+- Assign agent groups per target profile and route reconnaissance leads to specific agents
+
+### 3. Primary Audit
+
+- Dispatch all primary agents (A1-A7, B, D1, D2) concurrently with the [§3 checklist](../resources/audit-template-reference.md), cross-crate supplementary files, toolkit minimum checklist, and relevant calibration benchmarks
+- Collect all results from primary agents and persist each agent's full output as JSON in the planning folder
+- Dispatch verification sub-agent (V) to validate output completeness against target profile, act on gap report, extract table-derived findings
+- Re-dispatch targeted follow-up agents for any gaps identified by the verification agent
+- Dispatch merge sub-agent (M) to perform structured merge, dedup, severity scoring with bidirectional calibration, reconciliation, and observation elevation in a fresh context window
+- Validate M's reconciliation table — Unaccounted must equal zero (HARD STOP)
+- Verify §3 checklist completeness from M's output
+
+### 4. Adversarial
+
+- Extract all PASS items from agent scratchpads
+- Decompose each PASS into constituent properties
+- Enumerate all fields/sites for multi-instance properties
+- Verify each property independently — output CONFIRMED/REFUTED/INSUFFICIENT
+
+### 5. Consolidation
+
+- Integrate adversarial results into structured merge table (from M's output)
+- Apply bidirectional severity scoring rubric (Impact x Feasibility) with calibration example cross-check against ALL findings, not just High/Critical
+- Verify coverage gate (§5.14)
+- Verify elevation completeness via merge table mapping
+- Include reconciliation table in report as auditable evidence of zero finding loss
+
+### 6. Track
+
+- Track current_phase — which phase is active (setup, reconnaissance, primary, adversarial, report, ensemble, gap)
+- Track agent_status — status of dispatched sub-agents
+- Track findings_count — running count of identified findings
+- Track pass_count — running count of PASS items in scratchpads
+- Track coverage_files — list of files read by agents
+- Track checklist_coverage — §3 coverage matrix showing per-item evaluation status
+
+## Errors
+
+### submodule_not_found
+
+**Cause:** Target submodule path does not exist
+
+**Recovery:** Fail with descriptive error — do not ask interactively
+
+### commit_not_found
+
+**Cause:** Target commit hash not found in submodule history
+
+**Recovery:** Fail with error showing recent commits via git log
+
+### template_not_found
+
+**Cause:** Audit prompt template not at expected path
+
+**Recovery:** Fail with error showing expected path
+
+### agent_timeout
+
+**Cause:** Sub-agent did not return within expected time
+
+**Recovery:** Check terminal output; resume or re-dispatch the agent

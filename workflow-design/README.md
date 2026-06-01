@@ -10,22 +10,22 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 
 | # | Activity | Mode | Est. Time | Purpose |
 |---|----------|------|-----------|---------|
-| 01 | [**Intake**](activities/README.md#01-intake) | All | 5-10m | Accept description, classify mode, load target workflow |
-| 02 | [**Context and Literacy**](activities/README.md#02-context-and-literacy) | All | 10-15m | Load schemas, read existing workflows, verify TOON format understanding |
-| 03 | [**Requirements Refinement**](activities/README.md#03-requirements-refinement) | Create, Update | 15-30m | Elicit design details one question at a time (8 checkpoints) |
-| 04 | [**Pattern Analysis**](activities/README.md#04-pattern-analysis) | Create only | 10-15m | Audit 2+ reference workflows for reusable patterns |
-| 05 | [**Impact Analysis**](activities/README.md#05-impact-analysis) | Update only | 10-20m | Enumerate affected files, check integrity, flag removals |
-| 06 | [**Scope and Structure**](activities/README.md#06-scope-and-structure) | Create, Update | 10-20m | Define file manifest, folder structure, implementation order |
-| 07 | [**Content Drafting**](activities/README.md#07-content-drafting) | Create, Update | 30-60m | Draft each file with per-file approach and review checkpoints |
-| 08 | [**Quality Review**](activities/README.md#08-quality-review) | All | 15-25m | Expressiveness, conformance, rule-to-structure, and anti-pattern audits |
-| 09 | [**Validate and Commit**](activities/README.md#09-validate-and-commit) | All | 10-15m | Schema validation and commit (create/update) or save compliance report (review) |
-| 10 | [**Post-Update Review**](activities/README.md#10-post-update-review) | Update only | 10-15m | Automatic post-commit compliance audit of the updated workflow |
+| 01 | [**Intake**](./activities/README.md#01-intake) | All | 5-10m | Accept description, classify mode, load target workflow |
+| 02 | [**Context and Literacy**](./activities/README.md#02-context-and-literacy) | All | 10-15m | Load schemas, read existing workflows, verify TOON format understanding |
+| 03 | [**Requirements Refinement**](./activities/README.md#03-requirements-refinement) | Create, Update | 15-30m | Elicit design details one question at a time (8 checkpoints) |
+| 04 | [**Pattern Analysis**](./activities/README.md#04-pattern-analysis) | Create only | 10-15m | Audit 2+ reference workflows for reusable patterns |
+| 05 | [**Impact Analysis**](./activities/README.md#05-impact-analysis) | Update only | 10-20m | Enumerate affected files, check integrity, flag removals |
+| 06 | [**Scope and Structure**](./activities/README.md#06-scope-and-structure) | Create, Update | 10-20m | Define file manifest, folder structure, implementation order |
+| 07 | [**Content Drafting**](./activities/README.md#07-content-drafting) | Create, Update | 30-60m | Draft each file with per-file approach and review checkpoints |
+| 08 | [**Quality Review**](./activities/README.md#08-quality-review) | All | 15-25m | Expressiveness, conformance, rule-to-structure, and anti-pattern audits |
+| 09 | [**Validate and Commit**](./activities/README.md#09-validate-and-commit) | All | 10-15m | Schema validation and commit (create/update) or save compliance report (review) |
+| 10 | [**Post-Update Review**](./activities/README.md#10-post-update-review) | Update only | 10-15m | Automatic post-commit compliance audit of the updated workflow |
 
 **Detailed documentation:**
 
-- **Activities:** See [activities/README.md](activities/README.md) for detailed per-activity documentation including steps, checkpoints, transitions, and mode overrides.
+- **Activities:** See [activities/README.md](./activities/README.md) for detailed per-activity documentation including steps, checkpoints, transitions, and mode overrides.
 - **Techniques:** See [techniques/](techniques/) for the full technique inventory (2 techniques) with protocol flows and rules.
-- **Resources:** See [resources/README.md](resources/README.md) for the resource index (5 resources) with usage context and cross-workflow access.
+- **Resources:** See [resources/README.md](./resources/README.md) for the resource index (5 resources) with usage context and cross-workflow access.
 
 ---
 
@@ -93,20 +93,20 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 
 | # | Principle | Enforcement |
 |---|-----------|-------------|
-| 1 | Internalize before producing | [Context and Literacy](activities/README.md#02-context-and-literacy) gate checkpoints |
-| 2 | Define complete scope before execution | [Scope and Structure](activities/README.md#06-scope-and-structure) `scope-confirmed` checkpoint |
-| 3 | One question at a time | [Requirements Refinement](activities/README.md#03-requirements-refinement) — 8 separate checkpoints |
-| 4 | Maximize schema expressiveness | [Quality Review](activities/README.md#08-quality-review) `expressiveness-confirmed` checkpoint |
-| 5 | Convention over invention | [Quality Review](activities/README.md#08-quality-review) `conformance-confirmed` checkpoint |
+| 1 | Internalize before producing | [Context and Literacy](./activities/README.md#02-context-and-literacy) gate checkpoints |
+| 2 | Define complete scope before execution | [Scope and Structure](./activities/README.md#06-scope-and-structure) `scope-confirmed` checkpoint |
+| 3 | One question at a time | [Requirements Refinement](./activities/README.md#03-requirements-refinement) — 8 separate checkpoints |
+| 4 | Maximize schema expressiveness | [Quality Review](./activities/README.md#08-quality-review) `expressiveness-confirmed` checkpoint |
+| 5 | Convention over invention | [Quality Review](./activities/README.md#08-quality-review) `conformance-confirmed` checkpoint |
 | 6 | Never modify upward | Schema validation on every TOON file |
-| 7 | Confirm before irreversible changes | [Impact Analysis](activities/README.md#05-impact-analysis) checkpoints (update mode) |
+| 7 | Confirm before irreversible changes | [Impact Analysis](./activities/README.md#05-impact-analysis) checkpoints (update mode) |
 | 8 | Corrections must persist | Cross-cutting: tracked throughout all activities |
-| 9 | Modular over inline | [Quality Review](activities/README.md#08-quality-review) conformance check |
-| 10 | Encode constraints as structure | [Quality Review](activities/README.md#08-quality-review) `enforcement-confirmed` checkpoint |
-| 11 | Plan before acting | [Content Drafting](activities/README.md#07-content-drafting) `file-approach-confirmed` checkpoint |
-| 12 | Non-destructive updates | [Content Drafting](activities/README.md#07-content-drafting) `preservation-check` checkpoint (update mode) |
-| 13 | Format literacy before content | [Context and Literacy](activities/README.md#02-context-and-literacy) `format-literacy` checkpoint |
-| 14 | Complete documentation structure | [Validate and Commit](activities/README.md#09-validate-and-commit) README generation/update |
+| 9 | Modular over inline | [Quality Review](./activities/README.md#08-quality-review) conformance check |
+| 10 | Encode constraints as structure | [Quality Review](./activities/README.md#08-quality-review) `enforcement-confirmed` checkpoint |
+| 11 | Plan before acting | [Content Drafting](./activities/README.md#07-content-drafting) `file-approach-confirmed` checkpoint |
+| 12 | Non-destructive updates | [Content Drafting](./activities/README.md#07-content-drafting) `preservation-check` checkpoint (update mode) |
+| 13 | Format literacy before content | [Context and Literacy](./activities/README.md#02-context-and-literacy) `format-literacy` checkpoint |
+| 14 | Complete documentation structure | [Validate and Commit](./activities/README.md#09-validate-and-commit) README generation/update |
 
 ---
 
@@ -114,8 +114,8 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 
 | Order | Technique | Capability | Used By |
 |---|-------|------------|---------|
-| 00 | [`workflow-design`](techniques/workflow-design/SKILL.md) | Design and draft workflow definitions maximizing schema expressiveness | All activities (primary) |
-| 01 | [`toon-authoring`](techniques/toon-authoring/SKILL.md) | Author syntactically valid TOON files that pass schema validation | Context and Literacy, Content Drafting, Validate and Commit (supporting) |
+| 00 | [`workflow-design`](./techniques/workflow-design.md) | Design and draft workflow definitions maximizing schema expressiveness | All activities (primary) |
+| 01 | [`toon-authoring`](./techniques/toon-authoring.md) | Author syntactically valid TOON files that pass schema validation | Context and Literacy, Content Drafting, Validate and Commit (supporting) |
 
 ---
 
@@ -123,11 +123,11 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 
 | Order | Resource | Purpose | Used By |
 |---|----------|---------|---------|
-| 00 | [Design Principles](resources/design-principles/SKILL.md) | Condensed reference of all 14 principles | All activities |
-| 01 | [Schema Construct Inventory](resources/schema-construct-inventory/SKILL.md) | Prose-to-formal construct mapping tables | Quality Review, Content Drafting |
-| 02 | [Anti-Patterns](resources/anti-patterns/SKILL.md) | 40 prohibited patterns by category | Quality Review, Review Mode |
-| 03 | [Update Mode Guide](resources/update-mode-guide/SKILL.md) | Content preservation and impact analysis procedures | Update mode activities |
-| 04 | [Review Mode Guide](resources/review-mode-guide/SKILL.md) | Compliance audit procedure and report structure | Review mode activities |
+| 00 | [Design Principles](./resources/design-principles.md) | Condensed reference of all 14 principles | All activities |
+| 01 | [Schema Construct Inventory](./resources/schema-construct-inventory.md) | Prose-to-formal construct mapping tables | Quality Review, Content Drafting |
+| 02 | [Anti-Patterns](./resources/anti-patterns.md) | 40 prohibited patterns by category | Quality Review, Review Mode |
+| 03 | [Update Mode Guide](./resources/update-mode-guide.md) | Content preservation and impact analysis procedures | Update mode activities |
+| 04 | [Review Mode Guide](./resources/review-mode-guide.md) | Compliance audit procedure and report structure | Review mode activities |
 
 ---
 

@@ -1,5 +1,3 @@
-# list-issues
-
 List issues (read-only — safe via gh CLI).
 
 ## Inputs
@@ -8,6 +6,6 @@ List issues (read-only — safe via gh CLI).
 
 Optional flags (e.g., `--state open --label bug`)
 
-## Procedure
+## Protocol
 
 1. `gh issue list {filters}`.

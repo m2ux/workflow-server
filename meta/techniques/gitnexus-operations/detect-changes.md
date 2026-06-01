@@ -1,5 +1,3 @@
-# detect-changes
-
 Verify the scope of recent edits — confirm only expected files / symbols changed.
 
 ## Inputs
@@ -14,6 +12,6 @@ Repository name
 
 Changed symbols / processes since last scan
 
-## Procedure
+## Protocol
 
 1. Call `gitnexus detect_changes({ repo_name })`.

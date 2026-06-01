@@ -1,12 +1,10 @@
-# create-jira-issue
-
 Create a new Jira issue.
 
 ## Inputs
 
 ### cloudId
 
-From [resolve-cloud-id](resolve-cloud-id.md)
+From [resolve-cloud-id](./resolve-cloud-id.md)
 
 ### projectKey
 
@@ -14,7 +12,7 @@ Project key
 
 ### issueTypeName
 
-Issue type name from [list-jira-issue-types](list-jira-issue-types.md)
+Issue type name from [list-jira-issue-types](./list-jira-issue-types.md)
 
 ### summary
 
@@ -30,7 +28,7 @@ Optional object with description, assignee, labels, etc.
 
 Created issue key (e.g., `ENG-123`)
 
-## Procedure
+## Protocol
 
 1. Call `createJiraIssue { cloudId, projectKey, issueTypeName, summary, description?, additional_fields? }`.
 
@@ -40,4 +38,4 @@ Created issue key (e.g., `ENG-123`)
 
 **Cause:** create-jira-issue called with a non-existent `issueTypeName`.
 
-**Recovery:** Apply [list-jira-issue-types](list-jira-issue-types.md) to discover valid types, then retry.
+**Recovery:** Apply [list-jira-issue-types](./list-jira-issue-types.md) to discover valid types, then retry.

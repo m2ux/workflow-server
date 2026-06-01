@@ -74,7 +74,7 @@ Five sequential activities that run inside the meta session: identify the target
 
 **Steps:**
 
-1. **compose-orchestrator-prompt** — Build the orchestrator prompt from resource [`workflow-orchestrator-prompt`](../resources/workflow-orchestrator-prompt/SKILL.md), substituting `session_index` and other context.
+1. **compose-orchestrator-prompt** — Build the orchestrator prompt from resource [`workflow-orchestrator-prompt`](../resources/workflow-orchestrator-prompt.md), substituting `session_index` and other context.
 2. **dispatch-orchestrator** — `harness-compat::spawn-agent` (foreground, blocking).
 
 **Loop:** `checkpoint-loop` — `doWhile` (`condition: client_workflow_completed == false`, `maxIterations: 200`)

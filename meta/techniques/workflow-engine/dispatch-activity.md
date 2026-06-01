@@ -1,5 +1,3 @@
-# dispatch-activity
-
 Transition the session to a target activity and spawn a worker for it.
 
 ## Inputs
@@ -10,7 +8,7 @@ Activity ID to enter
 
 ### prompt_template
 
-Resource ref for the worker prompt (e.g., [activity-worker-prompt](../../resources/activity-worker-prompt/SKILL.md))
+Resource ref for the worker prompt (e.g., [activity-worker-prompt](../../resources/activity-worker-prompt.md))
 
 ### state
 
@@ -26,11 +24,11 @@ Current variable state for prompt substitution
 
 Trace token captured from `next_activity` response, appended to `trace_tokens`
 
-## Procedure
+## Protocol
 
 1. Call `next_activity { session_index, activity_id, step_manifest }`; capture `_meta.trace_token`.
-2. Apply [compose-prompt](compose-prompt.md) with `prompt_template` substituting `state` values.
-3. Apply [harness-compat](../harness-compat/SKILL.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await result.
+2. Apply [compose-prompt](./compose-prompt.md) with `prompt_template` substituting `state` values.
+3. Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await result.
 
 ## Errors
 
@@ -38,7 +36,7 @@ Trace token captured from `next_activity` response, appended to `trace_tokens`
 
 **Cause:** Worker sub-agent did not return within the expected time.
 
-**Recovery:** Apply [harness-compat](../harness-compat/SKILL.md)::[continue-agent](../harness-compat/continue-agent.md) if still running; otherwise dispatch a fresh worker for the same `activity_id`.
+**Recovery:** Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) if still running; otherwise dispatch a fresh worker for the same `activity_id`.
 
 ### worker_incomplete
 

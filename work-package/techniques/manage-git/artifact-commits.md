@@ -1,5 +1,3 @@
-# artifact-commits
-
 Commit planning artifacts to the parent engineering repo with the activity message pattern, rebasing onto sibling work-package commits to avoid push rejections.
 
 ## Inputs
@@ -24,7 +22,7 @@ List of files to stage and commit
 
 Engineering branch to push to
 
-## Procedure
+## Protocol
 
 1. From `reference_path`, stage the artifact files: `git add <files>`.
 2. Commit with the canonical pattern: `git commit -m "docs(work-package): {activity_name} artifacts for {issue_key}"`. Whether commits are GPG-signed is governed by the user's local git config — do NOT impose `--no-gpg-sign` or `--gpg-sign` overrides.

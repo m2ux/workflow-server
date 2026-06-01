@@ -1,5 +1,3 @@
-# append-task-row
-
 Append a per-task row to provenance-log.md. Creates the file with the canonical header on first call (idempotent init).
 
 ## Inputs
@@ -34,7 +32,7 @@ One-line description of what was generated
 
 Path to the updated provenance-log.md
 
-## Procedure
+## Protocol
 
 1. If `provenance-log.md` does not exist, create it with the canonical header: `| Task ID | Assistant | Model | Prompt Class | Context Scope | Description |` followed by the divider `|---|---|---|---|---|---|`.
 2. Append one row: `| {task_id} | {assistant} | {model_id} | {prompt_class} | {context_scope} | {description} |`.

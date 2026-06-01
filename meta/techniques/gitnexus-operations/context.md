@@ -1,5 +1,3 @@
-# context
-
 Get the 360-degree view of a symbol — callers, callees, and process participation.
 
 ## Inputs
@@ -18,7 +16,7 @@ Symbol name (function, class, method, etc.)
 
 Symbol details with callers, callees, member relationships, and processes
 
-## Procedure
+## Protocol
 
 1. Call `gitnexus context({ repo_name, name })`; if ambiguous, re-call with `file_path` or `uid` from the disambiguation candidates.
 

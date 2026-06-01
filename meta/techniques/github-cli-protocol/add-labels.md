@@ -1,5 +1,3 @@
-# add-labels
-
 Add labels to an issue or PR via REST.
 
 ## Inputs
@@ -20,6 +18,6 @@ Issue or PR number
 
 Comma-separated label names
 
-## Procedure
+## Protocol
 
 1. `gh api repos/{owner}/{repo}/issues/{number}/labels -X POST -f labels={labels}`.

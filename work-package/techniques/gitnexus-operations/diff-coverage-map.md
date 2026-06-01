@@ -1,5 +1,3 @@
-# diff-coverage-map
-
 Drive test-coverage review from the actual changed-symbol set rather than project-wide heuristics. (review-test-suite)
 
 ## Output
@@ -12,10 +10,10 @@ changed symbols with zero test callers
 
 changed symbols whose test callers are stale
 
-## Procedure
+## Protocol
 
-1. Apply [detect-changes](detect-changes.md) to enumerate the changed-symbol set.
-2. For each changed symbol, apply [context](context.md) and inspect incoming references from test files.
+1. Apply [detect-changes](./detect-changes.md) to enumerate the changed-symbol set.
+2. For each changed symbol, apply [context](./context.md) and inspect incoming references from test files.
 3. Symbols with no test callers → coverage_gaps; symbols with stale test callers → update_candidates.
 
 ## Errors

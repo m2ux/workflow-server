@@ -1,5 +1,3 @@
-# record-attestation
-
 Append the attestation section to provenance-log.md at the dco-sign-off checkpoint. Runs once per work package, after task work is complete.
 
 ## Inputs
@@ -26,7 +24,7 @@ One of: `certify` | `flag-legal`
 
 Path to the updated provenance-log.md
 
-## Procedure
+## Protocol
 
 1. Do NOT record the attestation until the human has explicitly selected `certify` or `flag-legal` at the dco-sign-off checkpoint.
 2. Append an `## Attestation` section to provenance-log.md containing: ISO 8601 timestamp, certifier identity (`{certifier_name} <{certifier_email}>`), and the selected option.

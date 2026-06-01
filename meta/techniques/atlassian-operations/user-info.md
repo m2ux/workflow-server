@@ -1,5 +1,3 @@
-# user-info
-
 Get the current user's account ID.
 
 ## Output
@@ -8,6 +6,6 @@ Get the current user's account ID.
 
 Current user's account ID
 
-## Procedure
+## Protocol
 
 1. Call `atlassianUserInfo`.

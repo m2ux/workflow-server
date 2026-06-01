@@ -1,5 +1,3 @@
-# create-pr
-
 Open a draft PR linked to the issue, assigned to the current GitHub user.
 
 ## Inputs
@@ -30,10 +28,10 @@ PR number
 
 URL to the PR
 
-## Procedure
+## Protocol
 
 1. BEFORE creating the PR: commit and push the planning folder to the parent (engineering) repo so the 📐 Engineering link resolves. Verify the URL will return 200 by confirming the commit is on the remote.
-2. Compose the PR body using the Initial template from [pr-description](../../resources/pr-description/SKILL.md). Reference `issue_number` in the PR title and body.
+2. Compose the PR body using the Initial template from [pr-description](../../resources/pr-description.md). Reference `issue_number` in the PR title and body.
 3. From `target_path`, create a draft PR: `gh pr create --draft --title "<title>" --body "<body>"`.
 4. Assign the PR to the current GitHub user: `gh pr edit <number> --add-assignee @me` in `target_path`.
 5. Keep the PR as draft until implementation and review complete.

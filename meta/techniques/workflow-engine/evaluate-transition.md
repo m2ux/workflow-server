@@ -1,5 +1,3 @@
-# evaluate-transition
-
 Pick the next activity from the current activity's `transitions[]`.
 
 ## Inputs
@@ -22,7 +20,7 @@ Optional `activity_id` from a checkpoint effect `transitionTo`
 
 Activity ID to dispatch next, or null if the workflow is complete
 
-## Procedure
+## Protocol
 
 1. If `transition_override` is set, return it.
 2. Iterate `activity.transitions[]` in array order; return the first whose `condition` evaluates true.

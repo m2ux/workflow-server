@@ -1,5 +1,3 @@
-# check
-
 Type-check without producing binaries; the cheapest validation pass.
 
 ## Inputs
@@ -18,7 +16,7 @@ Optional --features flags (empty string when none)
 
 Pass/fail and the rustc diagnostics emitted
 
-## Procedure
+## Protocol
 
 1. `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo check {scope} {features}`
 

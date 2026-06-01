@@ -1,5 +1,3 @@
-# create-session
-
 Dispatch a fresh client workflow as a child of the meta session.
 
 ## Inputs
@@ -18,6 +16,6 @@ Target client workflow id (e.g., `work-package`)
 
 The 6-character base32 `session_index` of the newly created child session
 
-## Procedure
+## Protocol
 
 1. Call `dispatch_child { session_index: <parent_session_index>, workflow_id: <workflow_id>, agent_id: 'orchestrator' }`; capture the returned `session_index` for use in all subsequent calls inside the child workflow. The server appends the child under `parent.triggeredWorkflows[N].state` and embeds the full child SessionFile inline; the agent does not deal with separate child folders.

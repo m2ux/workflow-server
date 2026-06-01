@@ -1,5 +1,3 @@
-# squash-merge
-
 Perform a local signed squash merge into the default branch — used when the GitHub web UI squash flow cannot produce a GPG-signed merge commit.
 
 ## Inputs
@@ -28,7 +26,7 @@ Commit type prefix (feat / fix / chore / docs / etc.)
 
 One-line description for the merge commit message
 
-## Procedure
+## Protocol
 
 1. From `target_path`, check out and update the default branch: `git checkout {default_branch} && git pull`.
 2. Squash all branch commits onto the default branch: `git merge --squash {branch_name}`.

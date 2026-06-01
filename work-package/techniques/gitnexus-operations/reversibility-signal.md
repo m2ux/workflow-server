@@ -1,5 +1,3 @@
-# reversibility-signal
-
 Gauge how reversible a change to a symbol is, to set the reversibility flag on judgement-augmentation assumptions. (review-assumptions)
 
 ## Inputs
@@ -14,9 +12,9 @@ the symbol the assumption touches
 
 `path-committing` (high caller fan-out and broad process participation) or `easily-reversible` (isolated symbol)
 
-## Procedure
+## Protocol
 
-1. Apply [context](context.md) for the symbol.
+1. Apply [context](./context.md) for the symbol.
 2. High caller fan-out and broad process participation → path-committing; an isolated symbol → easily-reversible.
 
 ## Errors

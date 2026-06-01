@@ -1,6 +1,4 @@
-# create-readme
-
-Create README.md in the planning folder from the [readme](../../resources/readme/SKILL.md) template.
+Create README.md in the planning folder from the [readme](../../resources/readme.md) template.
 
 ## Inputs
 
@@ -18,9 +16,9 @@ Path to the planning folder
 
 Full path to the created README.md
 
-## Procedure
+## Protocol
 
-1. Load the README template from [readme](../../resources/readme/SKILL.md).
+1. Load the README template from [readme](../../resources/readme.md).
 2. Populate the header fields (name, date, status, type) from `issue_context`, the Executive Summary placeholder, and the Links table.
 3. Leave Problem Overview and Solution Overview as placeholder text for later activities to populate.
 4. Write the populated README.md at `{planning_folder_path}/README.md`.

@@ -1,5 +1,3 @@
-# scan-saved-sessions
-
 Find saved client sessions matching a target workflow under `.engineering/artifacts/planning/`.
 
 ## Inputs
@@ -14,7 +12,7 @@ Workflow ID to filter candidates by
 
 Array of `{ planning_slug, sessionIndex, savedAt, variables }` entries whose `workflowId` matches
 
-## Procedure
+## Protocol
 
 1. List directories under `.engineering/artifacts/planning/`.
 2. For each directory, read its `session.json` (the server-managed state file) and capture the directory name as the `planning_slug`.

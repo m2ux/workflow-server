@@ -1,5 +1,3 @@
-# analyze-failure
-
 Identify the root cause of a single failed validation check.
 
 ## Inputs
@@ -30,11 +28,11 @@ One-line statement of the root cause
 
 Concrete fix approach (file edit, fmt-fix invocation, dependency install, etc.)
 
-## Procedure
+## Protocol
 
 1. Parse the diagnostics and classify into `failure_class`. Compile and test failures cite a file:line — read that location via the harness Read tool.
 2. Distinguish flaky from real failures by inspecting the diagnostic surface (e.g., timing-related panics, network errors). Mark flaky only when there is a clear signal.
-3. Map `failure_class` to `fix_strategy`: compile-error / test-assertion → source edit; formatting-diff → [cargo-operations](../cargo-operations/SKILL.md)::[fmt-fix](../cargo-operations/fmt-fix.md); lint-violation → either source edit or an explicit allow with justification; environment → surface to the user (do not auto-install).
+3. Map `failure_class` to `fix_strategy`: compile-error / test-assertion → source edit; formatting-diff → [cargo-operations](../cargo-operations/TECHNIQUE.md)::[fmt-fix](../cargo-operations/fmt-fix.md); lint-violation → either source edit or an explicit allow with justification; environment → surface to the user (do not auto-install).
 
 ## Errors
 

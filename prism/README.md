@@ -25,7 +25,7 @@
 
 ## Concepts
 
-Definitions of the analytical [concepts](concept-lexicon.md) used within the Prism workflow (49 entries), including: [conservation law](concept-lexicon.md#conservation-law), [meta-law](concept-lexicon.md#meta-law), [structural invariant](concept-lexicon.md#structural-invariant), [concealment mechanism](concept-lexicon.md#concealment-mechanism), [code geology](concept-lexicon.md#code-geology), [calcification](concept-lexicon.md#calcification), [perturbation-response](concept-lexicon.md#perturbation-response), [confabulation](concept-lexicon.md#confabulation), [epistemic typing](concept-lexicon.md#epistemic-typing), [exploit chain](concept-lexicon.md#exploit-chain), and others.
+Definitions of the analytical [concepts](./concept-lexicon.md) used within the Prism workflow (49 entries), including: [conservation law](./concept-lexicon.md#conservation-law), [meta-law](./concept-lexicon.md#meta-law), [structural invariant](./concept-lexicon.md#structural-invariant), [concealment mechanism](./concept-lexicon.md#concealment-mechanism), [code geology](./concept-lexicon.md#code-geology), [calcification](./concept-lexicon.md#calcification), [perturbation-response](./concept-lexicon.md#perturbation-response), [confabulation](./concept-lexicon.md#confabulation), [epistemic typing](./concept-lexicon.md#epistemic-typing), [exploit chain](./concept-lexicon.md#exploit-chain), and others.
 
 ---
 
@@ -168,7 +168,7 @@ graph TD
 | 05 | `behavioral-pipeline` | Execute 4+1 behavioral pipeline with labeled synthesis | Worker |
 | 06 | `generate-report` | Produce clean final report from analysis artifacts | Worker |
 
-**Detailed documentation:** See [skills/README.md](skills/README.md) for protocol flows and skill details.
+**Detailed documentation:** See [skills/README.md](techniques/TECHNIQUE.md) for protocol flows and skill details.
 
 ---
 
@@ -197,7 +197,7 @@ Resources are indexed markdown files containing lens prompts. Each lens encodes 
 
 Indices 03–05 are deprecated (upstream general L12 variants removed). Index 49 (severity-rubric) has been removed.
 
-**Detailed documentation:** See [resources/README.md](resources/README.md) for the full catalog with model sensitivity, quality scores, and recommended combinations.
+**Detailed documentation:** See [resources/README.md](./resources/README.md) for the full catalog with model sensitivity, quality scores, and recommended combinations.
 
 ---
 

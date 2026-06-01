@@ -1,5 +1,3 @@
-# initialize-folder
-
 Create a planning folder for a new workflow run under `.engineering/artifacts/planning/`.
 
 ## Inputs
@@ -14,7 +12,7 @@ Kebab-case identifier derived from the issue title or work-package description
 
 Absolute path to the created folder
 
-## Procedure
+## Protocol
 
 1. Compose path: `.engineering/artifacts/planning/YYYY-MM-DD-{initiative_name}/`.
 2. `mkdir -p` the path.
@@ -26,4 +24,4 @@ Absolute path to the created folder
 
 **Cause:** Attempted to write an artifact without a planning folder.
 
-**Recovery:** Apply [initialize-folder](initialize-folder.md) first.
+**Recovery:** Apply [initialize-folder](./initialize-folder.md) first.

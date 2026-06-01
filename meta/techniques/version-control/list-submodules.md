@@ -1,5 +1,3 @@
-# list-submodules
-
 Read and parse `.gitmodules` to enumerate submodule paths.
 
 ## Output
@@ -8,6 +6,6 @@ Read and parse `.gitmodules` to enumerate submodule paths.
 
 Array of `{ path, name, url }` entries
 
-## Procedure
+## Protocol
 
 1. Read `.gitmodules`; parse each `[submodule "name"]` section to extract `path` and `url`.

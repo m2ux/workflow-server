@@ -1,12 +1,10 @@
-# comment-confluence-page-inline
-
 Add an inline (in-text) comment to a Confluence page.
 
 ## Inputs
 
 ### cloudId
 
-From [resolve-cloud-id](resolve-cloud-id.md)
+From [resolve-cloud-id](./resolve-cloud-id.md)
 
 ### pageId
 
@@ -20,6 +18,6 @@ Markdown body
 
 Object describing the inline anchor
 
-## Procedure
+## Protocol
 
 1. Call `createConfluenceInlineComment { cloudId, pageId, body, inlineCommentProperties }`.

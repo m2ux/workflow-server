@@ -42,7 +42,7 @@ Skill / technique resolution is workflow-local first, then `meta` ([ADR forthcom
 `meta` workflow's `techniques/` and `resources/` carry double duty — they are
 both the local content for the meta workflow itself AND the cross-workflow
 shared layer for every other workflow. The
-[workflow-canonical](meta/resources/workflow-canonical/SKILL.md) resource
+[workflow-canonical](./meta/resources/workflow-canonical.md) resource
 defines the ontology and section conventions that every `SKILL.md` follows.
 
 ## Available Workflows
@@ -105,7 +105,7 @@ git worktree add ./workflows workflows
 
 **Techniques (markdown source of truth):**
 1. Create `{workflow-id}/techniques/{slug}/SKILL.md` (or `meta/techniques/{slug}/SKILL.md` for the cross-workflow shared layer)
-2. Follow the canonical sections defined in [meta/resources/workflow-canonical/SKILL.md](meta/resources/workflow-canonical/SKILL.md)
+2. Follow the canonical sections defined in [meta/resources/workflow-canonical/SKILL.md](./meta/resources/workflow-canonical.md)
 3. For flat operation libraries (`cargo-operations`, `gitnexus-operations`, ...), add sibling `{op}.md` children (no frontmatter) — the loader materialises them into the technique's `operations` map keyed by op basename
 4. Commit to this branch
 

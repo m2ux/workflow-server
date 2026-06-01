@@ -1,12 +1,10 @@
-# search-jira-issues
-
 Search Jira issues with JQL.
 
 ## Inputs
 
 ### cloudId
 
-From [resolve-cloud-id](resolve-cloud-id.md)
+From [resolve-cloud-id](./resolve-cloud-id.md)
 
 ### jql
 
@@ -16,6 +14,6 @@ JQL query string
 
 Optional array of fields to return
 
-## Procedure
+## Protocol
 
 1. Call `searchJiraIssuesUsingJql { cloudId, jql, fields, maxResults }`.

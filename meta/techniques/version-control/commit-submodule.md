@@ -1,5 +1,3 @@
-# commit-submodule
-
 Two-step submodule commit: commit + push inside the submodule, then update the parent's submodule pointer.
 
 ## Inputs
@@ -20,7 +18,7 @@ Conventional Commits message for the submodule commit
 
 Branch to push the parent commit to
 
-## Procedure
+## Protocol
 
 1. Read `{submodule_path}/AGENTS.md` (when present). If it forbids Co-Authored-By, LLM attribution, or similar trailers, strip them from `{submodule_message}` BEFORE committing — fixing it after commit usually requires a force push, which this skill forbids.
 2. `cd {submodule_path}`.

@@ -1,5 +1,3 @@
-# commit-and-persist
-
 Post-activity hook: commit source-side changes and engineering artifacts.
 
 ## Inputs
@@ -16,10 +14,10 @@ Path to the planning folder
 
 Path to the target submodule where source-side changes live (typically the application repo)
 
-## Procedure
+## Protocol
 
-1. If `target_path` has uncommitted changes (`git status --porcelain` non-empty), apply [version-control](../version-control/SKILL.md)::[commit-submodule](../version-control/commit-submodule.md) with `paths=changed files`, `submodule_message='<type>(<workflow-id>): <activity-id> source changes'` (pick the Conventional Commits type that fits the activity — feat for implement, fix for post-impl-review fixes, refactor for cleanup, etc.), and `parent_branch=current parent branch`. Skip when the working tree is clean.
-2. Apply [version-control](../version-control/SKILL.md)::[commit-regular-files](../version-control/commit-regular-files.md) for ALL changes under `.engineering/artifacts/` (including `session.json` and `.session-token`, which the server has already written via its atomic persist on every authenticated tool call) with message `docs(<workflow-id>): <activity-id> artifacts`.
+1. If `target_path` has uncommitted changes (`git status --porcelain` non-empty), apply [version-control](../version-control/TECHNIQUE.md)::[commit-submodule](../version-control/commit-submodule.md) with `paths=changed files`, `submodule_message='<type>(<workflow-id>): <activity-id> source changes'` (pick the Conventional Commits type that fits the activity — feat for implement, fix for post-impl-review fixes, refactor for cleanup, etc.), and `parent_branch=current parent branch`. Skip when the working tree is clean.
+2. Apply [version-control](../version-control/TECHNIQUE.md)::[commit-regular-files](../version-control/commit-regular-files.md) for ALL changes under `.engineering/artifacts/` (including `session.json` and `.session-token`, which the server has already written via its atomic persist on every authenticated tool call) with message `docs(<workflow-id>): <activity-id> artifacts`.
 
 ## Rules
 

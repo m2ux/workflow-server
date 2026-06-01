@@ -1,0 +1,39 @@
+---
+name: manage-artifacts
+description: Create and organize planning artifacts in .engineering/artifacts/planning/.
+metadata:
+  ontology: workflow-canonical
+  kind: technique
+  version: 3.0.0
+  order: 14
+  legacy_id: 14
+---
+
+# Manage Artifacts
+
+## Capability
+
+Manage planning artifacts — create folders, enforce activity-based artifact prefixing, and organize documents.
+
+## Operations
+
+| Operation | Purpose |
+|---|---|
+| [create-folder](./create-folder.md) | Create the planning folder at `.engineering/artifacts/planning/YYYY-MM-DD-{initiative}/` |
+| [create-readme](./create-readme.md) | Create README.md from the readme template in the planning folder |
+| [write-artifact](./write-artifact.md) | Write artifact content to the planning folder with the activity prefix applied |
+| [verify-readme-conforms](./verify-readme-conforms.md) | Verify the planning folder's README.md matches the template structure |
+
+## Rules
+
+### activity-prefix
+
+Artifact filenames are prefixed with the producing activity's `artifactPrefix` (server-computed from the activity filename). Skills declare bare names (e.g., `code-review.md`); the prefix is applied at write time (e.g., `09-code-review.md`). This groups artifacts by activity and sorts them in workflow order.
+
+### committed-to-parent
+
+Planning artifacts are regular files in the parent repo (`.engineering/artifacts/`). They MUST be committed and pushed to the parent repo before any PR or issue references them via URL, otherwise the link will 404.
+
+### push-before-linking
+
+Any engineering link included in a PR body (📐 Engineering) MUST resolve to a committed file on the remote. Commit and push the planning folder BEFORE creating or updating the PR.

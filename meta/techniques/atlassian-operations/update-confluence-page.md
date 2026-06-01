@@ -1,12 +1,10 @@
-# update-confluence-page
-
 Update a Confluence page (full body replace).
 
 ## Inputs
 
 ### cloudId
 
-From [resolve-cloud-id](resolve-cloud-id.md)
+From [resolve-cloud-id](./resolve-cloud-id.md)
 
 ### pageId
 
@@ -20,6 +18,6 @@ New Markdown body
 
 Optional new title
 
-## Procedure
+## Protocol
 
 1. Call `updateConfluencePage { cloudId, pageId, body, title? }`.

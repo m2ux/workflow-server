@@ -1,5 +1,3 @@
-# catalog-search
-
 Resolve a document name to its full source path.
 
 ## Inputs
@@ -8,6 +6,6 @@ Resolve a document name to its full source path.
 
 Name from the index
 
-## Procedure
+## Protocol
 
 1. Call `catalog_search { name: document_name }`.

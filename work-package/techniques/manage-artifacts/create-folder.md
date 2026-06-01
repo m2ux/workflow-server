@@ -1,5 +1,3 @@
-# create-folder
-
 Create the planning folder at `.engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/`.
 
 ## Inputs
@@ -18,7 +16,7 @@ Issue title used to derive the initiative-name slug
 
 Full path to the created (or existing) planning folder
 
-## Procedure
+## Protocol
 
 1. Derive `initiative-name` from `issue_title` (slugified: lowercase, kebab-case, alphanumerics and hyphens).
 2. Compose the folder path: `{planning_folder_parent}/YYYY-MM-DD-{initiative-name}/` where `YYYY-MM-DD` is today's date.

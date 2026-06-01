@@ -1,5 +1,3 @@
-# sync-branch
-
 Fetch and rebase/merge from the default branch to keep the feature branch current.
 
 ## Inputs
@@ -12,7 +10,7 @@ The working directory (worktree)
 
 Feature branch to sync
 
-## Procedure
+## Protocol
 
 1. From `target_path`, fetch the default branch and rebase or merge to bring the feature branch current.
 2. Resolve any merge conflicts before continuing.

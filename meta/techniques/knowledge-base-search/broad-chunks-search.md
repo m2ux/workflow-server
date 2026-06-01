@@ -1,5 +1,3 @@
-# broad-chunks-search
-
 Search across documents using an indexed concept term.
 
 ## Inputs
@@ -8,7 +6,7 @@ Search across documents using an indexed concept term.
 
 Mapped concept from the index
 
-## Procedure
+## Protocol
 
 1. Call `broad_chunks_search { concept: concept_term }`.
 

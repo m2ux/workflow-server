@@ -1,12 +1,10 @@
-# log-work-jira-issue
-
 Log work time on a Jira issue.
 
 ## Inputs
 
 ### cloudId
 
-From [resolve-cloud-id](resolve-cloud-id.md)
+From [resolve-cloud-id](./resolve-cloud-id.md)
 
 ### issueIdOrKey
 
@@ -16,6 +14,6 @@ Issue key
 
 e.g., `2h`, `30m`
 
-## Procedure
+## Protocol
 
 1. Call `addWorklogToJiraIssue { cloudId, issueIdOrKey, timeSpent }`.

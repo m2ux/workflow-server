@@ -111,15 +111,15 @@ Reusable capabilities that activities invoke — each skill encapsulates a speci
 
 | Order | Skill | Capability | Used By |
 |---|-------|------------|---------|
-| 00 | [execute-cicd-audit](techniques/execute-cicd-audit/SKILL.md) | Orchestrate audit phases | All main activities (01-04) |
-| 01 | [score-cicd-severity](techniques/score-cicd-severity/SKILL.md) | Impact x Exploitability severity scoring | Report Generation |
-| 02 | [inventory-workflows](techniques/inventory-workflows/SKILL.md) | Workflow file discovery + classification | Scope Setup, Reconnaissance |
-| 03 | [scan-injection-patterns](techniques/scan-injection-patterns/SKILL.md) | 7-pattern detection (P1-P7) | Sub-agents S1-Sn (step-level) |
-| 04 | [dispatch-scanners](techniques/dispatch-scanners/SKILL.md) | Sub-agent dispatch + collection | Primary Scan |
-| 05 | [verify-scan-output](techniques/verify-scan-output/SKILL.md) | Coverage verification | Sub-agent V (step-level), Report Generation |
-| 06 | [merge-scan-findings](techniques/merge-scan-findings/SKILL.md) | Dedup + reconciliation | Sub-agent M (step-level) |
-| 07 | [write-cicd-report](techniques/write-cicd-report/SKILL.md) | Report generation | Report Generation |
-| 08 | [execute-sub-agent](techniques/execute-sub-agent/SKILL.md) | Sub-agent bootstrap + structured output | Sub-agents S1-Sn, V, M (primary) |
+| 00 | [execute-cicd-audit](./techniques/execute-cicd-audit.md) | Orchestrate audit phases | All main activities (01-04) |
+| 01 | [score-cicd-severity](./techniques/score-cicd-severity.md) | Impact x Exploitability severity scoring | Report Generation |
+| 02 | [inventory-workflows](./techniques/inventory-workflows.md) | Workflow file discovery + classification | Scope Setup, Reconnaissance |
+| 03 | [scan-injection-patterns](./techniques/scan-injection-patterns.md) | 7-pattern detection (P1-P7) | Sub-agents S1-Sn (step-level) |
+| 04 | [dispatch-scanners](./techniques/dispatch-scanners.md) | Sub-agent dispatch + collection | Primary Scan |
+| 05 | [verify-scan-output](./techniques/verify-scan-output.md) | Coverage verification | Sub-agent V (step-level), Report Generation |
+| 06 | [merge-scan-findings](./techniques/merge-scan-findings.md) | Dedup + reconciliation | Sub-agent M (step-level) |
+| 07 | [write-cicd-report](./techniques/write-cicd-report.md) | Report generation | Report Generation |
+| 08 | [execute-sub-agent](./techniques/execute-sub-agent.md) | Sub-agent bootstrap + structured output | Sub-agents S1-Sn, V, M (primary) |
 
 ## Resources
 
@@ -127,11 +127,11 @@ Reference material loaded by the agent at runtime — pattern catalogs, scoring 
 
 | Order | Resource | Purpose |
 |---|----------|---------|
-| 00 | [Start Here](resources/start-here/SKILL.md) | Quick reference + methodology overview |
-| 01 | [Injection Pattern Catalog](resources/injection-pattern-catalog/SKILL.md) | Grep patterns, untrusted contexts, campaign examples |
-| 02 | [CI/CD Severity Rubric](resources/cicd-severity-rubric/SKILL.md) | Impact x Exploitability matrix + calibration anchors |
-| 03 | [Remediation Playbook](resources/remediation-playbook/SKILL.md) | Per-pattern fix guidance with before/after examples |
-| 04 | [Sub-Agent Output Schema](resources/sub-agent-output-schema/SKILL.md) | Scanner output JSON schema + validation rules |
+| 00 | [Start Here](./resources/start-here.md) | Quick reference + methodology overview |
+| 01 | [Injection Pattern Catalog](./resources/injection-pattern-catalog.md) | Grep patterns, untrusted contexts, campaign examples |
+| 02 | [CI/CD Severity Rubric](./resources/cicd-severity-rubric.md) | Impact x Exploitability matrix + calibration anchors |
+| 03 | [Remediation Playbook](./resources/remediation-playbook.md) | Per-pattern fix guidance with before/after examples |
+| 04 | [Sub-Agent Output Schema](./resources/sub-agent-output-schema.md) | Scanner output JSON schema + validation rules |
 
 ## Variables
 

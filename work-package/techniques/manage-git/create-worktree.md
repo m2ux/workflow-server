@@ -1,5 +1,3 @@
-# create-worktree
-
 Materialise a working directory as a git worktree on a new feature branch off the component's default branch. Creates the target_path AND the feature branch in one step.
 
 ## Inputs
@@ -26,7 +24,7 @@ Feature branch name (derived from issue per the convention `type/issue-number-sh
 
 Boolean — true when the worktree exists at `target_path` on `branch_name`
 
-## Procedure
+## Protocol
 
 1. Determine the component's git directory: when `reference_path` is a monorepo and `{reference_path}/{component_name}` exists, use `{reference_path}/{component_name}`; otherwise use `reference_path` itself (standalone case).
 2. Fetch first: `git -C {component_git_dir} fetch origin` so `origin/{default_branch}` is current before the worktree is materialised. Resolve `{default_branch}` via `git -C {component_git_dir} symbolic-ref refs/remotes/origin/HEAD` (fall back to `main`, then `master`).

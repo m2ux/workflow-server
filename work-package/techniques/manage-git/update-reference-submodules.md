@@ -1,5 +1,3 @@
-# update-reference-submodules
-
 Refresh the monorepo reference's submodules to their tracked remote HEADs, with locking and skip-if-recent semantics to coordinate concurrent invocations from sibling work packages.
 
 ## Inputs
@@ -8,7 +6,7 @@ Refresh the monorepo reference's submodules to their tracked remote HEADs, with 
 
 *(optional)* Path to the reference checkout (monorepo root or standalone-repo primary checkout)
 
-## Procedure
+## Protocol
 
 1. Run only when `reference_path` is set AND points at a monorepo (i.e. `{reference_path}/.gitmodules` exists). Skip silently when `reference_path` is empty or the reference is a standalone repo with no submodules.
 2. Coordinate concurrent invocations from sibling work packages: serialize via an exclusive flock on `{reference_path}/.git/.workflow-submodule-refresh.lock` (blocking). Concrete form: `flock {reference_path}/.git/.workflow-submodule-refresh.lock -c <command>`. The lock prevents two parallel start-work-package activities from racing on `.git/index.lock` during the submodule update.

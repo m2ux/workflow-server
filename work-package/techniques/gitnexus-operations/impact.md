@@ -1,5 +1,3 @@
-# impact
-
 Symbol blast radius — what depends on a symbol, at depth 1/2/3, with confidence and a risk level. The primary pre-edit safety check.
 
 ## Inputs
@@ -26,7 +24,7 @@ optional confidence floor (e.g. `0.8` to keep only high-confidence edges)
 
 d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY NEED TESTING); affected execution flows; risk level (LOW / MEDIUM / HIGH / CRITICAL)
 
-## Procedure
+## Protocol
 
 1. Call `gitnexus_impact {target, direction, maxDepth, minConfidence}`.
 2. Read d=1 items first — these WILL break. Weight high-confidence (>0.8) edges.

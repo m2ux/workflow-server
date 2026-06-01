@@ -1,5 +1,3 @@
-# write-artifact
-
 Write artifact content to the planning folder with the activity prefix applied.
 
 ## Inputs
@@ -26,7 +24,7 @@ Artifact content to write
 
 Full path to the written artifact
 
-## Procedure
+## Protocol
 
 1. Compose the full filename: `{artifact_prefix}-{bare_filename}` (e.g., `09-code-review.md`).
 2. Compose the full path: `{planning_folder_path}/{full_filename}`.

@@ -1,5 +1,3 @@
-# update-pr-title
-
 Update the title of an existing PR via REST.
 
 ## Inputs
@@ -16,6 +14,6 @@ Repo name
 
 PR number
 
-## Procedure
+## Protocol
 
 1. `gh api repos/{owner}/{repo}/pulls/{number} -X PATCH -f title=<title>`.

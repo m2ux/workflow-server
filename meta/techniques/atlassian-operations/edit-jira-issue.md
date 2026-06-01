@@ -1,12 +1,10 @@
-# edit-jira-issue
-
 Update fields on an existing Jira issue.
 
 ## Inputs
 
 ### cloudId
 
-From [resolve-cloud-id](resolve-cloud-id.md)
+From [resolve-cloud-id](./resolve-cloud-id.md)
 
 ### issueIdOrKey
 
@@ -16,6 +14,6 @@ Issue key
 
 Object of field updates
 
-## Procedure
+## Protocol
 
 1. Call `editJiraIssue { cloudId, issueIdOrKey, fields }`.

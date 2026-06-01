@@ -384,4 +384,4 @@ Resources contain detailed reference content loaded on demand by skills.
 | Ensemble | `second-pass-findings.md` | Raw findings from second-pass run |
 | Gap Analysis | `02-gap-analysis.md` | Comparison against reference report |
 
-See [CHANGELOG.md](CHANGELOG.md) for version history.
+See [CHANGELOG.md](./CHANGELOG.md) for version history.

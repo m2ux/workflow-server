@@ -1,5 +1,3 @@
-# view-pr
-
 View an existing PR (read-only — safe via gh CLI).
 
 ## Inputs
@@ -8,6 +6,6 @@ View an existing PR (read-only — safe via gh CLI).
 
 PR number or URL
 
-## Procedure
+## Protocol
 
 1. `gh pr view {identifier}`.

@@ -11,23 +11,23 @@ The meta workflow is the structural home for the orchestration logic that used t
 **Key characteristics:**
 
 - Excluded from `list_workflows` — not a user-facing workflow.
-- Bootstrap (resource [`bootstrap-protocol`](resources/bootstrap-protocol/SKILL.md)) calls `start_session({ workflow_id: "meta", agent_id: "orchestrator" })` directly and saves the returned `session_index`. There is no separate START / RESUME branching in bootstrap — `discover-session` owns target identification and saved-session matching.
+- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) calls `start_session({ workflow_id: "meta", agent_id: "orchestrator" })` directly and saves the returned `session_index`. There is no separate START / RESUME branching in bootstrap — `discover-session` owns target identification and saved-session matching.
 - Universal skills resolve for any session via the loader's workflow-specific → cross-workflow → universal fallback chain.
 - State persistence is server-managed. Every authenticated tool call atomically writes `session.json` + `.session-token` (seal) into the planning folder, so there are no agent-side persist or restore steps.
 
 | # | Activity | Est. Time | Purpose |
 |---|----------|-----------|---------|
-| 00 | [**Discover Session**](activities/README.md#00-discover-session) | 1-2m | Catalog workflows, match user request to `target_workflow_id`, scan for saved client sessions, present resume / workflow-selection checkpoints |
-| 01 | [**Initialize Session**](activities/README.md#01-initialize-session) | 1-2m | Dispatch the client workflow as a child of meta via `dispatch_child({ session_index, workflow_id, agent_id })`; server embeds the child SessionFile inline (or creates a new top-level folder when meta is transient). Variables are restored automatically by the server on resume. |
-| 02 | [**Resolve Target**](activities/README.md#02-resolve-target) | 1-2m | Detect repo type (regular vs. submodule monorepo) and resolve `target_path` for downstream git operations |
-| 03 | [**Dispatch Client Workflow**](activities/README.md#03-dispatch-client-workflow) | variable | Compose the orchestrator prompt, dispatch the orchestrator, drive the doWhile checkpoint-yield loop until `client_workflow_completed` |
-| 04 | [**End Workflow**](activities/README.md#04-end-workflow) | 2-3m | Verify outcomes, generate summary, completion checkpoint (with abort-back path to dispatch). Final state is already on disk — the server has persisted every authenticated call. |
+| 00 | [**Discover Session**](./activities/README.md#00-discover-session) | 1-2m | Catalog workflows, match user request to `target_workflow_id`, scan for saved client sessions, present resume / workflow-selection checkpoints |
+| 01 | [**Initialize Session**](./activities/README.md#01-initialize-session) | 1-2m | Dispatch the client workflow as a child of meta via `dispatch_child({ session_index, workflow_id, agent_id })`; server embeds the child SessionFile inline (or creates a new top-level folder when meta is transient). Variables are restored automatically by the server on resume. |
+| 02 | [**Resolve Target**](./activities/README.md#02-resolve-target) | 1-2m | Detect repo type (regular vs. submodule monorepo) and resolve `target_path` for downstream git operations |
+| 03 | [**Dispatch Client Workflow**](./activities/README.md#03-dispatch-client-workflow) | variable | Compose the orchestrator prompt, dispatch the orchestrator, drive the doWhile checkpoint-yield loop until `client_workflow_completed` |
+| 04 | [**End Workflow**](./activities/README.md#04-end-workflow) | 2-3m | Verify outcomes, generate summary, completion checkpoint (with abort-back path to dispatch). Final state is already on disk — the server has persisted every authenticated call. |
 
 **Detailed documentation:**
 
-- **Activities:** see [activities/README.md](activities/README.md) for steps, checkpoints, transitions, and condition tables.
-- **Skills:** see [skills/README.md](skills/README.md) for the universal skills and the rule-authority map.
-- **Resources:** see [resources/README.md](resources/README.md) for the bootstrap protocol and prompt templates.
+- **Activities:** see [activities/README.md](./activities/README.md) for steps, checkpoints, transitions, and condition tables.
+- **Skills:** see [skills/README.md](./skills/README.md) for the universal skills and the rule-authority map.
+- **Resources:** see [resources/README.md](./resources/README.md) for the bootstrap protocol and prompt templates.
 
 ---
 
@@ -92,7 +92,7 @@ are the local content for the meta workflow itself AND the cross-workflow
 shared layer — when any workflow asks for a technique that has no
 workflow-local definition, the loader resolves it from `meta/techniques/`.
 The ontology and section conventions every `SKILL.md` follows are defined in
-[`meta/resources/workflow-canonical/SKILL.md`](resources/workflow-canonical/SKILL.md).
+[`meta/resources/workflow-canonical/SKILL.md`](./resources/workflow-canonical.md).
 
 Markdown techniques live under [`meta/techniques/`](techniques/) — one folder
 per technique containing `SKILL.md` plus optional sibling `{op}.md` files for
@@ -125,9 +125,9 @@ Universal skills referenced by canonical ID. Numeric prefixes order the files fo
 
 | Resource ID | Resource | Purpose |
 |-------------|----------|---------|
-| `bootstrap-protocol` | [Bootstrap Protocol](resources/bootstrap-protocol/SKILL.md) | Pre-session navigation primer — load schemas, then `start_session({ workflow_id: "meta", agent_id: "orchestrator" })`. The meta workflow does the rest. |
-| `activity-worker-prompt` | [Activity Worker Prompt](resources/activity-worker-prompt/SKILL.md) | Template prompt for spawning an activity-worker sub-agent (substitutes `session_index`). |
-| `workflow-orchestrator-prompt` | [Workflow Orchestrator Prompt](resources/workflow-orchestrator-prompt/SKILL.md) | Template prompt for spawning a workflow-orchestrator sub-agent (substitutes `session_index`). |
+| `bootstrap-protocol` | [Bootstrap Protocol](./resources/bootstrap-protocol.md) | Pre-session navigation primer — load schemas, then `start_session({ workflow_id: "meta", agent_id: "orchestrator" })`. The meta workflow does the rest. |
+| `activity-worker-prompt` | [Activity Worker Prompt](./resources/activity-worker-prompt.md) | Template prompt for spawning an activity-worker sub-agent (substitutes `session_index`). |
+| `workflow-orchestrator-prompt` | [Workflow Orchestrator Prompt](./resources/workflow-orchestrator-prompt.md) | Template prompt for spawning a workflow-orchestrator sub-agent (substitutes `session_index`). |
 
 > The on-disk session-state shape is defined by [`schemas/session-file.schema.json`](../../schemas/session-file.schema.json); see [`docs/state_management_model.md`](../../docs/state_management_model.md) for the persistence model.
 

@@ -1,5 +1,3 @@
-# read-cluster
-
 Read a functional-area cluster resource — area members and cohesion score.
 
 ## Inputs
@@ -12,6 +10,6 @@ Repository name
 
 Cluster identifier
 
-## Procedure
+## Protocol
 
 1. Read the MCP resource `gitnexus://repo/{repo_name}/cluster/{cluster_name}`.
