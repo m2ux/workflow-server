@@ -432,7 +432,7 @@ function parseInlineOperations(section: Section | undefined, sourcePath: string)
   if (items.length === 0) return undefined;
   const result: Record<string, unknown> = {};
   for (const item of items) {
-    if (!/^##\s+Procedure\b/m.test(item.body)) continue;
+    if (!/^##\s+(Protocol|Procedure)\b/m.test(item.body)) continue;
     result[item.title] = parseOperationBody(item.body, `${sourcePath}#${item.title}`);
   }
   return Object.keys(result).length > 0 ? result : undefined;
@@ -530,13 +530,15 @@ function parseOperationBody(body: string, sourcePath: string, description: strin
     if (output.length > 0) op.output = output;
   }
 
-  const procedureSection = findSection(sections, 'Procedure');
+  // Operation step sequence: canonical heading is '## Protocol'; '## Procedure' is accepted
+  // transitionally until the content migration renames all op files.
+  const procedureSection = findSection(sections, 'Protocol') ?? findSection(sections, 'Procedure');
   if (!procedureSection) {
-    throw new MarkdownSkillParseError(`Missing required '## Procedure' section at ${sourcePath}`);
+    throw new MarkdownSkillParseError(`Missing required '## Protocol' section at ${sourcePath}`);
   }
   const procedure = bodyAsList(procedureSection.body);
   if (procedure.length === 0) {
-    throw new MarkdownSkillParseError(`Empty '## Procedure' section at ${sourcePath}`);
+    throw new MarkdownSkillParseError(`Empty '## Protocol' section at ${sourcePath}`);
   }
   op.procedure = procedure;
 
@@ -576,15 +578,36 @@ function parseOpInputsOrOutputs(section: Section): Array<Record<string, string>>
 /* -------------------------------------------------------------------------- */
 
 /**
- * Locate a technique folder.
- * Returns the absolute folder path when `<skillDir>/<skillId>/SKILL.md` exists, otherwise null.
+ * Located technique on disk. Either a standalone flat file (`<id>.md`, no children)
+ * or a grouped folder (`<id>/TECHNIQUE.md` index + `<op>.md` children).
  */
-async function findTechniqueFolder(techniquesDir: string, skillId: string): Promise<string | null> {
+type LocatedTechnique =
+  | { kind: 'flat'; index: string }
+  | { kind: 'grouped'; folder: string; index: string };
+
+/** Index filenames recognised inside a grouped folder, in precedence order.
+ *  `SKILL.md` is transitional — retained until the content migration completes the hard cutover. */
+const GROUPED_INDEX_NAMES = ['TECHNIQUE.md', 'SKILL.md'] as const;
+
+/**
+ * Locate a technique by id.
+ * Resolution order:
+ *   1. Standalone flat file: `<techniquesDir>/<skillId>.md`.
+ *   2. Grouped folder: `<techniquesDir>/<skillId>/TECHNIQUE.md` (or transitional `SKILL.md`).
+ * Returns null when neither exists.
+ */
+async function locateTechnique(techniquesDir: string, skillId: string): Promise<LocatedTechnique | null> {
   if (!existsSync(techniquesDir)) return null;
+
+  const flat = join(techniquesDir, `${skillId}.md`);
+  if (existsSync(flat)) return { kind: 'flat', index: flat };
+
   const folder = join(techniquesDir, skillId);
-  const indexPath = join(folder, 'SKILL.md');
-  if (!existsSync(indexPath)) return null;
-  return folder;
+  for (const indexName of GROUPED_INDEX_NAMES) {
+    const index = join(folder, indexName);
+    if (existsSync(index)) return { kind: 'grouped', folder, index };
+  }
+  return null;
 }
 
 /**
@@ -598,20 +621,23 @@ async function findTechniqueFolder(techniquesDir: string, skillId: string): Prom
  */
 export async function tryLoadMarkdownSkill(techniquesDir: string, skillId: string): Promise<Skill | null> {
   try {
-    const folder = await findTechniqueFolder(techniquesDir, skillId);
-    if (!folder) return null;
-    const indexPath = join(folder, 'SKILL.md');
+    const located = await locateTechnique(techniquesDir, skillId);
+    if (!located) return null;
+    const indexPath = located.index;
     const indexRaw = await readFile(indexPath, 'utf-8');
     const parsed = parseSkillIndex(indexRaw, indexPath);
 
-    // Assemble the operations map: prefer op-child files when present, fall back to inline ops.
+    // Assemble the operations map: grouped techniques contribute op-child files; flat
+    // standalone techniques carry only their inline Operations section. Inline ops fill any gaps.
     const operations: Record<string, unknown> = {};
-    const childFiles = await listOpChildFiles(folder);
-    for (const child of childFiles) {
-      const opName = child.replace(/\.md$/, '');
-      const childPath = join(folder, child);
-      const childRaw = await readFile(childPath, 'utf-8');
-      operations[opName] = parseOperationFile(childRaw, childPath);
+    if (located.kind === 'grouped') {
+      const childFiles = await listOpChildFiles(located.folder);
+      for (const child of childFiles) {
+        const opName = child.replace(/\.md$/, '');
+        const childPath = join(located.folder, child);
+        const childRaw = await readFile(childPath, 'utf-8');
+        operations[opName] = parseOperationFile(childRaw, childPath);
+      }
     }
     if (parsed.inlineOperations) {
       for (const [name, value] of Object.entries(parsed.inlineOperations)) {
@@ -681,7 +707,7 @@ async function listOpChildFiles(folder: string): Promise<string[]> {
   try {
     const entries = await readdir(folder);
     return entries
-      .filter((f) => f.endsWith('.md') && f !== 'SKILL.md' && f !== 'README.md')
+      .filter((f) => f.endsWith('.md') && f !== 'TECHNIQUE.md' && f !== 'SKILL.md' && f !== 'README.md')
       .sort();
   } catch {
     return [];

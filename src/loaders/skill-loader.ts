@@ -176,13 +176,21 @@ async function listMarkdownTechniqueIds(techniquesDir: string): Promise<string[]
   if (!existsSync(techniquesDir)) return [];
   try {
     const entries = await readdir(techniquesDir, { withFileTypes: true });
-    const result: string[] = [];
+    const result = new Set<string>();
     for (const entry of entries) {
-      if (!entry.isDirectory()) continue;
-      const indexPath = join(techniquesDir, entry.name, 'SKILL.md');
-      if (existsSync(indexPath)) result.push(entry.name);
+      if (entry.isDirectory()) {
+        // Grouped technique: folder with a TECHNIQUE.md index (SKILL.md transitional).
+        const folder = join(techniquesDir, entry.name);
+        if (existsSync(join(folder, 'TECHNIQUE.md')) || existsSync(join(folder, 'SKILL.md'))) {
+          result.add(entry.name);
+        }
+      } else if (entry.isFile() && entry.name.endsWith('.md')) {
+        // Standalone technique: flat <slug>.md. Exclude the workflow-root index and READMEs.
+        if (entry.name === 'TECHNIQUE.md' || entry.name === 'README.md') continue;
+        result.add(entry.name.replace(/\.md$/, ''));
+      }
     }
-    return result.sort();
+    return [...result].sort();
   } catch (error) {
     logWarn('Failed to list markdown techniques', { techniquesDir, error: error instanceof Error ? error.message : String(error) });
     return [];

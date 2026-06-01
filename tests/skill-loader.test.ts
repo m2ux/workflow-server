@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { readSkill, readSkillRaw, projectSkillToToon } from '../src/loaders/skill-loader.js';
+import { readSkill, readSkillRaw, projectSkillToToon, listWorkflowSkillIds } from '../src/loaders/skill-loader.js';
 import { resolve, join } from 'node:path';
 import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -234,6 +234,73 @@ describe('skill-loader', () => {
         expect(result.value.id).toBe('minimal');
         expect(result.value.capability).toMatch(/minimal capability/);
       }
+    });
+  });
+
+  describe('flattened-shape resolution (TECHNIQUE.md model)', () => {
+    let tempDir: string;
+    const FM = (name: string) => ['---', `name: ${name}`, `description: ${name} desc`, 'metadata:', '  version: 1.0.0', '---', ''];
+
+    beforeEach(async () => {
+      tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'skill-flat-')));
+    });
+    afterEach(async () => {
+      await rm(tempDir, { recursive: true, force: true });
+    });
+
+    it('resolves a standalone technique from a flat <slug>.md file', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(dir, 'classify.md'),
+        [...FM('classify'), '## Capability', '', 'Classify the thing.', ''].join('\n'),
+        'utf-8',
+      );
+      const result = await readSkill('classify', tempDir);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.id).toBe('classify');
+        expect(result.value.capability).toMatch(/Classify the thing/);
+        expect(result.value.operations).toBeUndefined();
+      }
+    });
+
+    it('resolves a grouped technique from <group>/TECHNIQUE.md + op children with ## Protocol', async () => {
+      const dir = join(tempDir, 'meta', 'techniques', 'vc');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(dir, 'TECHNIQUE.md'),
+        [...FM('vc'), '## Capability', '', 'Version control ops.', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'commit.md'),
+        ['commit a thing', '', '## Protocol', '', '1. Stage files', '2. Commit', ''].join('\n'),
+        'utf-8',
+      );
+      const result = await readSkill('vc', tempDir);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.id).toBe('vc');
+        expect(result.value.operations).toBeDefined();
+        expect(result.value.operations?.['commit']).toBeDefined();
+        const op = result.value.operations?.['commit'] as { procedure?: string[] };
+        expect(op.procedure).toEqual(['Stage files', 'Commit']);
+      }
+    });
+
+    it('lists flat + grouped technique ids and excludes the root TECHNIQUE.md index', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(join(dir, 'grp'), { recursive: true });
+      await writeFile(join(dir, 'TECHNIQUE.md'), [...FM('TECHNIQUE'), '## Capability', '', 'Root index.', ''].join('\n'), 'utf-8');
+      await writeFile(join(dir, 'standalone.md'), [...FM('standalone'), '## Capability', '', 'Standalone.', ''].join('\n'), 'utf-8');
+      await writeFile(join(dir, 'grp', 'TECHNIQUE.md'), [...FM('grp'), '## Capability', '', 'Grouped.', ''].join('\n'), 'utf-8');
+      await writeFile(join(dir, 'grp', 'op.md'), ['an op', '', '## Protocol', '', '1. Do it', ''].join('\n'), 'utf-8');
+
+      const ids = await listWorkflowSkillIds(tempDir, 'meta');
+      expect(ids).toContain('standalone');
+      expect(ids).toContain('grp');
+      expect(ids).not.toContain('TECHNIQUE');
     });
   });
 });

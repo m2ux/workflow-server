@@ -68,21 +68,31 @@ async function findResourceSkillMd(workflowDir: string, workflowId: string, id: 
   const resourceDir = getResourceDir(workflowDir, workflowId);
   if (!resourceDir) return null;
 
-  // 1. Direct folder match by slug.
+  // 1. Flat file match by slug: `<resourceDir>/<id>.md`.
+  const flat = join(resourceDir, `${id}.md`);
+  if (existsSync(flat)) return flat;
+
+  // 2. Folder match by slug (transitional `<id>/SKILL.md`, retained until hard cutover).
   const direct = join(resourceDir, id, 'SKILL.md');
   if (existsSync(direct)) return direct;
 
-  // 2. Frontmatter-name match across folder children.
+  // 3. Frontmatter-name match across flat files and folder children.
   try {
     const entries = await readdir(resourceDir, { withFileTypes: true });
     for (const entry of entries) {
-      if (!entry.isDirectory()) continue;
-      const candidate = join(resourceDir, entry.name, 'SKILL.md');
-      if (!existsSync(candidate)) continue;
+      let candidate: string | null = null;
+      if (entry.isFile() && entry.name.endsWith('.md') && entry.name !== 'README.md') {
+        candidate = join(resourceDir, entry.name);
+      } else if (entry.isDirectory()) {
+        const inner = join(resourceDir, entry.name, 'SKILL.md');
+        if (existsSync(inner)) candidate = inner;
+      }
+      if (!candidate) continue;
       try {
         const content = await readFile(candidate, 'utf-8');
         const name = extractFrontmatterScalar(content, 'name');
-        if (name === id || entry.name === id) return candidate;
+        const slug = entry.isFile() ? entry.name.replace(/\.md$/, '') : entry.name;
+        if (name === id || slug === id) return candidate;
       } catch { /* ignore */ }
     }
   } catch { /* ignore */ }
@@ -143,14 +153,29 @@ export async function listResources(workflowDir: string, workflowId: string): Pr
   try {
     const entries = await readdir(resourceDir, { withFileTypes: true });
     for (const entry of entries) {
-      if (!entry.isDirectory()) continue;
-      const candidate = join(resourceDir, entry.name, 'SKILL.md');
-      if (!existsSync(candidate)) continue;
+      let candidate: string | null = null;
+      let slug: string;
+      let relPath: string;
+      if (entry.isFile() && entry.name.endsWith('.md') && entry.name !== 'README.md') {
+        // Flat resource file `<slug>.md`.
+        candidate = join(resourceDir, entry.name);
+        slug = entry.name.replace(/\.md$/, '');
+        relPath = `resources/${entry.name}`;
+      } else if (entry.isDirectory()) {
+        // Transitional folder shape `<slug>/SKILL.md`.
+        const inner = join(resourceDir, entry.name, 'SKILL.md');
+        if (!existsSync(inner)) continue;
+        candidate = inner;
+        slug = entry.name;
+        relPath = `resources/${entry.name}/SKILL.md`;
+      } else {
+        continue;
+      }
       try {
         const content = await readFile(candidate, 'utf-8');
-        const id = extractFrontmatterScalar(content, 'name') ?? entry.name;
-        const title = entry.name.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-        resources.push({ id, name: entry.name, title, path: `resources/${entry.name}/SKILL.md`, format: 'markdown' });
+        const id = extractFrontmatterScalar(content, 'name') ?? slug;
+        const title = slug.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        resources.push({ id, name: slug, title, path: relPath, format: 'markdown' });
       } catch {
         // ignore unreadable entries
       }
