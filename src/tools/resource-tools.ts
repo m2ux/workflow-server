@@ -5,7 +5,7 @@ import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
-import { readSkillRaw, resolveOperations, formatOperationsBundle } from '../loaders/skill-loader.js';
+import { resolveOperations, formatOperationsBundle, composeTechnique, projectSkillToToon } from '../loaders/skill-loader.js';
 import { encodeToon } from '../utils/toon.js';
 import {
   sessionIndexParam,
@@ -388,66 +388,16 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     }), traceOpts)
   );
 
-  // ============== Skill Tools ==============
+  // ============== Technique Tool ==============
 
   server.tool(
-    'get_skills',
-    'DEPRECATED: prefer get_workflow which now bundles the workflow-level operations (resolved from workflow.skill_operations + core orchestrator ops) directly in its response. Use resolve_operations for ad-hoc operation lookups. Retained for backwards compatibility with workflows still on the legacy primary-skill model. Loads the workflow-level primary skill as raw TOON.',
+    'get_technique',
+    'Load a single composed technique within the current workflow or activity. If called before next_activity (no current activity), it loads the workflow primary technique. During an activity, it resolves the technique reference from the activity definition; with step_id, it loads the technique assigned to that step; without step_id, the activity primary technique. The returned technique is fully COMPOSED: it inherits its workflow-root `techniques/TECHNIQUE.md` base contract recursively (inputs/outputs/rules/errors merged, root protocol prepended) — never the meta root for a non-meta workflow. Techniques are loaded one at a time.',
     {
       ...sessionIndexParam,
+      step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the primary technique for the activity, or the workflow primary technique if no activity is active.'),
     },
-    withAuditLog('get_skills', withSessionStoreErrors(async ({ session_index }) => {
-      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
-      const { state } = loaded;
-      assertNoActiveCheckpoint(state);
-      const workflow_id = state.workflowId;
-      const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
-      if (!wfResult.success) throw wfResult.error;
-
-      const workflow = wfResult.value;
-      const skillIds: string[] = workflow.skills?.primary ? [workflow.skills.primary] : [];
-
-      const rawBlocks: string[] = [];
-      const failedSkills: string[] = [];
-
-      for (const sid of skillIds) {
-        const rawResult = await readSkillRaw(sid, config.workflowDir, workflow_id);
-        if (rawResult.success) {
-          rawBlocks.push(rawResult.value);
-        } else {
-          failedSkills.push(sid);
-        }
-      }
-
-      const view = sessionView(state);
-      const validation = buildValidation(
-        validateWorkflowVersion(view, wfResult.value),
-      );
-
-      const next = advanceSession(state);
-      await saveSessionForTool(loaded, next);
-
-      const header = [
-        `scope: workflow`,
-        `session_index: ${session_index}`,
-        ...(failedSkills.length > 0 ? [`failed_skills: ${failedSkills.join(', ')}`] : []),
-      ];
-
-      return {
-        content: [{ type: 'text' as const, text: header.join('\n') + '\n\n---\n\n' + rawBlocks.join('\n\n---\n\n') }],
-        _meta: { session_index, validation },
-      };
-    }), traceOpts)
-  );
-
-  server.tool(
-    'get_skill',
-    'Load a skill within the current workflow or activity. If called before next_activity (no current activity in session), it loads the primary skill for the workflow. If called during an activity, it resolves the skill reference from the activity definition. If step_id is provided, it loads the skill explicitly assigned to that step. If step_id is omitted during an activity, it loads the primary skill for the entire activity. Returns the skill definition with resource references in _resources.',
-    {
-      ...sessionIndexParam,
-      step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the primary skill for the activity, or the workflow primary skill if no activity is active.'),
-    },
-    withAuditLog('get_skill', withSessionStoreErrors(async ({ session_index, step_id }) => {
+    withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, step_id }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
       const { state } = loaded;
       const workflow_id = state.workflowId;
@@ -506,8 +456,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      const rawResult = await readSkillRaw(skillId, config.workflowDir, workflow_id);
-      if (!rawResult.success) throw rawResult.error;
+      const composed = await composeTechnique(skillId, config.workflowDir, workflow_id);
+      if (!composed.success) throw composed.error;
+      const text = projectSkillToToon(composed.value);
 
       const view = sessionView(state);
       const validation = buildValidation(
@@ -520,7 +471,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       await saveSessionForTool(loaded, next);
 
       return {
-        content: [{ type: 'text' as const, text: `session_index: ${session_index}\n\n${rawResult.value}` }],
+        content: [{ type: 'text' as const, text: `session_index: ${session_index}\n\n${text}` }],
         _meta: { session_index, validation },
       };
     }), traceOpts)

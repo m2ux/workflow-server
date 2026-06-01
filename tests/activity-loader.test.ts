@@ -191,7 +191,7 @@ describe('activity-loader', () => {
           expect(activity.workflowId).toBeDefined();
           expect(activity.problem).toBeDefined();
           if (activity.next_action) {
-            expect(activity.next_action.tool).toBe('get_skill');
+            expect(activity.next_action.tool).toBe('get_technique');
             expect(activity.next_action.parameters.step_id).toBeDefined();
           }
         }

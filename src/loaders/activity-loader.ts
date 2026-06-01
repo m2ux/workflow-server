@@ -136,7 +136,7 @@ async function readActivityFromWorkflow(
       workflowId,
       ...(primaryStep ? {
         next_action: {
-          tool: 'get_skill',
+          tool: 'get_technique',
           parameters: { step_id: primaryStep.id },
         },
       } : {}),
@@ -258,7 +258,7 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
         ...(primarySkill ? { primary_skill: primarySkill } : {}),
         ...(primaryStep ? {
           next_action: {
-            tool: 'get_skill',
+            tool: 'get_technique',
             parameters: { step_id: primaryStep.id },
           },
         } : {}),

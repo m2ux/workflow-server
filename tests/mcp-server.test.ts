@@ -398,33 +398,23 @@ describe('mcp-server integration', () => {
 
   // ============== Resource Tools ==============
 
-  describe('tool: get_skill', () => {
+  describe('tool: get_technique', () => {
     it('should error when step_id is provided but no activity in session token', async () => {
       const result = await client.callTool({
-        name: 'get_skill',
+        name: 'get_technique',
         arguments: { session_index: metaToken, step_id: 'create-issue' },
       });
       expect(result.isError).toBe(true);
     });
 
-    it('get_skill returns an error when the workflow declares no primary skill', async () => {
-      // Workflows have migrated to operations[] and no longer declare skills.primary.
-      // get_skill without a step_id has no primary to load and errors.
+    it('errors when the workflow declares no primary technique (migrated to operations[])', async () => {
+      // Workflows declare operations[] and no longer declare skills.primary;
+      // get_technique without a step_id has no primary to compose and errors.
       const result = await client.callTool({
-        name: 'get_skill',
+        name: 'get_technique',
         arguments: { session_index: sessionToken },
       });
       expect(result.isError).toBe(true);
-    });
-
-    it('get_skills returns the workflow scope but no primary-skill body for migrated workflows', async () => {
-      const result = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_index: sessionToken },
-      });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
-      expect(response.scope).toBe('workflow');
     });
 
     it('should error when step_id not found in activity', async () => {
@@ -432,37 +422,21 @@ describe('mcp-server integration', () => {
       const actToken = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
-        name: 'get_skill',
+        name: 'get_technique',
         arguments: { session_index: actToken, step_id: 'nonexistent-step' },
       });
       expect(result.isError).toBe(true);
     });
 
-    it('should error when step has no associated skill', async () => {
+    it('should error when step has no associated technique', async () => {
       const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
       const actToken = await resolveCheckpoints(client, nextToken, actResponse);
 
       const result = await client.callTool({
-        name: 'get_skill',
+        name: 'get_technique',
         arguments: { session_index: actToken, step_id: 'resolve-target' },
       });
       expect(result.isError).toBe(true);
-    });
-
-  });
-
-
-  describe('resource refs in skill responses', () => {
-    it('get_skills returns scope and session_index for migrated workflows', async () => {
-      const result = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_index: sessionToken },
-      });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
-      expect(response.scope).toBe('workflow');
-      const meta = result._meta as Record<string, unknown>;
-      expect(meta['session_index']).toBeDefined();
     });
   });
 
@@ -517,75 +491,6 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBe(true);
     });
   });
-
-  // ============== Token-Driven Skill Loading ==============
-
-  describe('tool: get_skills', () => {
-    it('should return workflow scope when no primary skill is declared', async () => {
-      const result = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_index: sessionToken },
-      });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
-      expect(response.scope).toBe('workflow');
-      // Migrated workflows declare operations[] instead of skills.primary; get_skills returns no primary-skill body for them.
-    });
-
-    it.skip('should return workflow-level skills even after entering an activity', async () => {
-      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
-      const actToken = await resolveCheckpoints(client, nextToken, actResponse);
-      const result = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_index: actToken },
-      });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
-      expect(response.scope).toBe('workflow');
-      expect(response._body).toBeDefined();
-      expect(response._body).not.toContain('id: create-issue');
-    });
-
-    it.skip('should include resource references in raw skill TOON', async () => {
-      // Legacy assertion — workflows now declare operations[] and resources are
-      // surfaced via get_workflow / get_activity bundles instead of primary-skill body.
-      const result = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_index: sessionToken },
-      });
-      const response = parseToolResponse(result);
-      expect(response._body).toContain('resources');
-    });
-
-    it('should return updated token in _meta', async () => {
-      const result = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_index: sessionToken },
-      });
-      const meta = result._meta as Record<string, unknown>;
-      expect(meta['session_index']).toBeDefined();
-    });
-
-    it('should return empty body for workflows that have migrated to skill_operations', async () => {
-      // Meta workflow under v5 declares skill_operations[] and has no skills.primary;
-      // get_skills (legacy) returns no primary-skill body for such workflows.
-      const metaSession = await client.callTool({
-        name: 'start_session',
-        arguments: { agent_id: 'test-agent' },
-      });
-      const metaToken = parseToolResponse(metaSession).session_index;
-      const result = await client.callTool({
-        name: 'get_skills',
-        arguments: { session_index: metaToken },
-      });
-      expect(result.isError).toBeFalsy();
-      const response = parseToolResponse(result);
-      expect(response.scope).toBe('workflow');
-    });
-  });
-
-  // Agent-ID meta-skill loading tests removed — get_skills always returns workflow.skills only.
-  // Step-level skills are loaded via get_skill per step.
 
   // ============== Cross-Workflow Resource Resolution ==============
 
@@ -975,8 +880,8 @@ describe('mcp-server integration', () => {
 
     it('accumulated trace tokens resolve via get_trace (IT-8)', async () => {
       await client.callTool({
-        name: 'get_skills',
-        arguments: { session_index: sessionToken },
+        name: 'get_resource',
+        arguments: { session_index: sessionToken, resource_id: 'github-issue-creation' },
       });
 
       const { actMeta: meta1, nextToken: nextToken1, actResponse: act1Response } = await transitionToActivity(client, sessionToken, 'start-work-package');
@@ -1375,7 +1280,7 @@ describe('mcp-server integration', () => {
       expect(parseToolResponse(act2).activity_id).toBe('design-philosophy');
     });
 
-    it('get_skill should be gated when a checkpoint is yielded', async () => {
+    it('get_technique should be gated when a checkpoint is yielded', async () => {
       const act = await client.callTool({
         name: 'next_activity',
         arguments: { session_index: sessionToken, activity_id: 'start-work-package' },
@@ -1390,7 +1295,7 @@ describe('mcp-server integration', () => {
       const tokenWithBcp = (yieldResult._meta as Record<string, unknown>)['session_index'] as string;
 
       const result = await client.callTool({
-        name: 'get_skill',
+        name: 'get_technique',
         arguments: { session_index: tokenWithBcp, step_id: 'create-issue' },
       });
       expect(result.isError).toBe(true);
