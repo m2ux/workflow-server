@@ -126,7 +126,7 @@ export const OutputComponentsDefinitionSchema = z.record(z.string()).describe('N
 export type OutputComponentsDefinition = z.infer<typeof OutputComponentsDefinitionSchema>;
 
 export const OutputArtifactSchema = z.object({
-  name: z.string().describe('Artifact filename when this output is persisted (e.g. 01-audit-report.md).'),
+  name: z.string().describe('Artifact filename when this output is persisted. A literal (e.g. 01-audit-report.md) or a token-template with {variable} placeholders the worker interpolates from in-scope inputs/variables at runtime (e.g. {package-name}-plan.md). Declare the name here, never hardcode it in Protocol prose.'),
   action: z.enum(['create', 'update']).default('create').optional().describe('Whether this output creates a new artifact or updates an existing one'),
 });
 export type OutputArtifact = z.infer<typeof OutputArtifactSchema>;

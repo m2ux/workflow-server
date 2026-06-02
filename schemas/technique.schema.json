@@ -83,7 +83,7 @@
     "outputArtifact": {
       "type": "object",
       "properties": {
-        "name": { "type": "string", "description": "Artifact filename when this output is persisted (e.g. 01-audit-report.md)." },
+        "name": { "type": "string", "description": "Artifact filename when this output is persisted. A literal (e.g. 01-audit-report.md) or a token-template with {variable} placeholders the worker interpolates from in-scope inputs/variables at runtime (e.g. {package-name}-plan.md). Declare the name here, never hardcode it in Protocol prose." },
         "action": { "type": "string", "enum": ["create", "update"], "default": "create", "description": "Whether this output creates a new artifact or updates an existing one" }
       },
       "required": [ "name" ],
