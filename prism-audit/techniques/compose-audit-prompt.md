@@ -95,7 +95,7 @@ Directory to write the audit prompt artifact
 
 ### audit-prompt
 
-The composed audit prompt document
+The composed [audit prompt document](../resources/audit-prompt-template.md#audit-prompt-template)
 
 - **artifact**: `audit-prompt.md`
 - **overview**: Codebase architecture and structure

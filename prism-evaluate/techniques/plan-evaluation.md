@@ -84,7 +84,7 @@ Directory to write the evaluation plan artifact
 
 ### evaluation-plan
 
-The composed evaluation plan document
+The composed [evaluation plan](../resources/evaluation-plan-template.md#evaluation-plan-template) document
 
 - **artifact**: `evaluation-plan.md`
 - **target_overview**: Target classification and structure summary

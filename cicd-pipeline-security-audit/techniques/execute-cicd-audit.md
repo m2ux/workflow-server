@@ -53,7 +53,7 @@ Path to the planning folder for artifacts
 
 ### audit-report
 
-Complete CI/CD security audit report
+Complete CI/CD security [audit report](../resources/cicd-audit-report-template.md#cicd-audit-report-template)
 
 - **findings**: All findings with pattern ID, severity, source, sink, remediation
 - **coverage**: Workflow file coverage verification

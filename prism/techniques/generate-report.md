@@ -102,7 +102,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 
 ### report
 
-Clean final report artifact
+Clean final [report](../resources/final-output-template.md#reportmd-template) artifact
 
 - **artifact**: `REPORT.md`
 - **report_path**: Full filesystem path to REPORT.md

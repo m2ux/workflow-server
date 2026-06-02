@@ -39,7 +39,7 @@ Path to the reference report artifact.
 
 ### gap-analysis
 
-Gap analysis report. When persisted, use artifact name.
+[Gap analysis report](../resources/gap-analysis-template.md#gap-analysis-template). When persisted, use artifact name.
 
 - **artifact**: `02-gap-analysis.md`
 - **summary**: Metrics table: total findings each side, matched, partial, gaps, AI-only, overlap rate

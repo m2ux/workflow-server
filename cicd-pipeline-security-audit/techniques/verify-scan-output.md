@@ -19,7 +19,7 @@ The per-submodule scanner [output files](../resources/sub-agent-output-schema.md
 
 ### workflow-inventory
 
-Complete inventory of workflow files with classification data
+Complete [inventory of workflow files](../resources/intermediate-artifact-schemas.md#workflow-inventory) with classification data
 
 ### output-schema
 
@@ -53,7 +53,7 @@ Expected scanner output schema from [sub-agent-output-schema](../resources/sub-a
 
 ### verification-report
 
-Scan completeness verification with gaps and re-scan recommendations
+Scan completeness [verification](../resources/intermediate-artifact-schemas.md#verification-report) with gaps and re-scan recommendations
 
 - **file_coverage**: Scanned vs total files
 - **pattern_coverage**: Per-scanner pattern application status

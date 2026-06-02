@@ -59,7 +59,7 @@ Scan completeness verification data (file and per-pattern coverage)
 
 ### audit-report
 
-Complete CI/CD security audit report
+Complete CI/CD security [audit report](../resources/cicd-audit-report-template.md#cicd-audit-report-template)
 
 - **artifact**: `01-cicd-audit-report.md`
 

@@ -14,7 +14,7 @@ Completed activities, checkpoint decisions, artifacts produced
 
 ### summary_markdown
 
-Markdown string ready to present to the user
+[Markdown string](../../resources/session-summary-template.md#session-summary-template) ready to present to the user
 
 ## Protocol
 

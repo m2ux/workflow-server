@@ -15,7 +15,7 @@ Propose and apply finding-specific mitigations through structured one-by-one dia
 
 ### evaluation-report
 
-The consolidated evaluation report containing findings with IDs, severities, titles, descriptions, and referenced target sections
+The consolidated [evaluation report](../resources/evaluation-report-template.md#evaluation-report-template) containing findings with IDs, severities, titles, descriptions, and referenced target sections
 
 ### target_path
 
@@ -74,7 +74,7 @@ Original evaluation description for context
 
 ### mitigation-plan
 
-Comprehensive mitigation plan with all finding dispositions
+Comprehensive [mitigation plan](../resources/mitigation-plan-template.md#mitigation-plan-template) with all finding dispositions
 
 - **artifact**: `MITIGATION-PLAN.md`
 - **summary_table**: Finding ID, severity, tier, decision for every finding

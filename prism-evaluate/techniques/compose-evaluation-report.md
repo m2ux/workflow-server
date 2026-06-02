@@ -83,7 +83,7 @@ Original evaluation description, used for report context
 
 ### evaluation-report
 
-The consolidated evaluation report
+The consolidated [evaluation report](../resources/evaluation-report-template.md#evaluation-report-template)
 
 - **artifact**: `EVALUATION-REPORT.md`
 - **executive_summary**: Overall assessment with finding counts and core insight

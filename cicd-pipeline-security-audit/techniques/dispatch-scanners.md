@@ -15,7 +15,7 @@ Compose and concurrently dispatch per-submodule scanner sub-agents — each rece
 
 ### scanner-assignments
 
-Agent-to-submodule mapping for the scanner roster
+[Agent-to-submodule mapping](../resources/intermediate-artifact-schemas.md#scanner-assignments) for the scanner roster
 
 ### reconnaissance-data
 

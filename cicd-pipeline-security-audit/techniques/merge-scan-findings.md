@@ -50,7 +50,7 @@ The per-submodule scanner [output files](../resources/sub-agent-output-schema.md
 
 ### merged-findings
 
-Unified finding set
+Unified [finding set](../resources/intermediate-artifact-schemas.md#merged-findings)
 
 - **findings**: Deduplicated and correlated findings
 - **compounds**: Compound vulnerability chains
@@ -58,7 +58,7 @@ Unified finding set
 
 ### reconciliation
 
-Per-scanner finding mapping to merged findings
+Per-scanner finding mapping to merged findings — the [reconciliation table](../resources/intermediate-artifact-schemas.md#reconciliation)
 
 ## Rules
 
