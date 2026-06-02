@@ -45,8 +45,7 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 
 ### 4. Document Analysis
 
-- Create the analysis document using the appropriate template from the resource
-- Store as 01-COMPLETION-ANALYSIS.md or 02-CONTEXT-ANALYSIS.md in the planning-folder
+- Create the analysis-document in the planning-folder using the appropriate template
 - Set analysis_document variable to the document path
 
 ### 5. Present Findings
@@ -58,7 +57,7 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 
 ### analysis-document
 
-Analysis document with findings and recommendations
+Analysis document with findings and recommendations, persisted as 01-COMPLETION-ANALYSIS.md (completion) or 02-CONTEXT-ANALYSIS.md (context)
 
 - **analysis_type**: completion or context
 - **key_findings**: Summary of analysis findings

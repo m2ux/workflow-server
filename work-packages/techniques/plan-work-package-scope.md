@@ -57,7 +57,7 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 ### 6. Document Plan
 
 - Use attached [package-plan-template](../resources/package-plan-template.md) (package-plan-template) for the document structure
-- Create NN-{package-name}-plan.md in the planning-folder using the template
+- Create the package-plan in the planning-folder using its template
 
 ## Outputs
 
