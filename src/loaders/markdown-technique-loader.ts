@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { readFile, readdir } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { TechniqueNotFoundError } from '../errors.js';
@@ -10,17 +10,19 @@ import { safeValidateTechnique } from '../schema/technique.schema.js';
 /**
  * Markdown technique loader.
  *
- * Reads the canonical SKILL.md (single-file) or SKILL.md + sibling <op>.md
- * children (op-as-child-files) shape from a technique folder under
- * `{workflowDir}/{workflowId}/techniques/<slug>/`, materialising a Technique
- * object that validates against TechniqueSchema.
+ * Reads a standalone technique (`techniques/<slug>.md`) or a grouped technique
+ * (`techniques/<group>/TECHNIQUE.md` index + sibling `<op>.md` operation files),
+ * materialising a Technique object that validates against TechniqueSchema.
+ *
+ * Identity comes from the path (the `<slug>` filename or `<group>` folder name),
+ * not a frontmatter field. Frontmatter carries only `metadata.version`.
  *
  * Canonical section set (per the workflow-canonical ontology resource):
- *   SKILL.md:    Capability, Inputs?, Protocol?, Operations?, Outputs?, Rules?, Errors?
- *   <op>.md:     Inputs?, Output?, Procedure (required), Errors?, Rules?
+ *   <slug>.md / TECHNIQUE.md:  Capability, Inputs?, Protocol?, Outputs?, Rules?, Errors?
+ *   <op>.md:                   Inputs?, Output?, Protocol (required), Errors?, Rules?
  *
  * The parser fails loudly on a malformed op child (missing canonical sections
- * that the schema treats as required, e.g. a child with no Procedure body)
+ * that the schema treats as required, e.g. a child with no Protocol body)
  * rather than silently dropping the operation.
  */
 
@@ -211,13 +213,12 @@ function bodyAsList(body: string): string[] {
 }
 
 /* -------------------------------------------------------------------------- */
-/* SKILL.md → Technique object                                                     */
+/* TECHNIQUE.md → Technique object                                                 */
 /* -------------------------------------------------------------------------- */
 
 interface IndexParse {
   id: string;
   version: string;
-  description: string | undefined;
   capability: string;
   inputs: Array<{ id: string; description?: string; required?: boolean }> | undefined;
   protocol: ProtocolBlock[] | undefined;
@@ -226,13 +227,12 @@ interface IndexParse {
   errors: Record<string, { cause?: string; recovery?: string }> | undefined;
 }
 
-function parseSkillIndex(raw: string, sourcePath: string): IndexParse {
+function parseTechniqueIndex(raw: string, sourcePath: string, id: string): IndexParse {
   const { frontmatter, body } = parseFrontmatter(raw);
 
-  const name = String(frontmatter['name'] ?? '').trim();
-  if (!name) throw new MarkdownTechniqueParseError(`Missing 'name' in frontmatter at ${sourcePath}`);
-
-  const description = (frontmatter['description'] as string | undefined)?.trim() || undefined;
+  // Identity is carried by the filename / folder name (the `id` the caller resolved), not a
+  // `name:` frontmatter field — that is redundant with the path. The legacy `description:` field
+  // is gone too: its content has been folded into `## Capability`, the single capability statement.
   const meta = (frontmatter['metadata'] ?? {}) as Record<string, unknown>;
   const version = String(meta['version'] ?? '').trim();
   if (!version) throw new MarkdownTechniqueParseError(`Missing 'metadata.version' in frontmatter at ${sourcePath}`);
@@ -245,9 +245,8 @@ function parseSkillIndex(raw: string, sourcePath: string): IndexParse {
   if (!capability) throw new MarkdownTechniqueParseError(`Empty '## Capability' section at ${sourcePath}`);
 
   return {
-    id: name,
+    id,
     version,
-    description,
     capability,
     inputs: parseInputsSection(findSection(sections, 'Inputs')),
     protocol: parseProtocolSection(findSection(sections, 'Protocol')),
@@ -615,7 +614,7 @@ export async function tryLoadMarkdownTechnique(techniquesDir: string, techniqueI
     if (!located) return null;
     const indexPath = located.index;
     const indexRaw = await readFile(indexPath, 'utf-8');
-    const parsed = parseSkillIndex(indexRaw, indexPath);
+    const parsed = parseTechniqueIndex(indexRaw, indexPath, techniqueId);
 
     // A technique carries its own contract only. Operations are independent `<op>.md` files
     // resolved on demand (see tryLoadOperationFile / resolveOperations) — never materialised here.

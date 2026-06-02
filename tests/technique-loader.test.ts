@@ -220,7 +220,7 @@ describe('technique-loader', () => {
       await mkdir(dir, { recursive: true });
       await writeFile(
         join(dir, 'minimal.md'),
-        ['---', 'name: minimal', 'description: minimal description', 'metadata:', '  version: 1.0.0', '---', '', '# Minimal', '', '## Capability', '', 'A minimal capability statement.', ''].join('\n'),
+        ['---', 'metadata:', '  version: 1.0.0', '---', '', '# Minimal', '', '## Capability', '', 'A minimal capability statement.', ''].join('\n'),
         'utf-8',
       );
       const result = await readTechnique('minimal', tempDir);
@@ -234,7 +234,9 @@ describe('technique-loader', () => {
 
   describe('flattened-shape resolution (TECHNIQUE.md model)', () => {
     let tempDir: string;
-    const FM = (name: string) => ['---', `name: ${name}`, `description: ${name} desc`, 'metadata:', '  version: 1.0.0', '---', ''];
+    // Identity comes from the filename/folder, not frontmatter — so the synthetic frontmatter
+    // carries only metadata.version. The id arg is retained at call sites to document intent.
+    const FM = (_id: string) => ['---', 'metadata:', '  version: 1.0.0', '---', ''];
 
     beforeEach(async () => {
       tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'technique-flat-')));

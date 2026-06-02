@@ -27,7 +27,7 @@ import {
  *
  * Field-ordering follows the canonical TechniqueSchema field declaration order — encodeToon serialises
  * object keys in insertion order, so we construct the projection with the fields in the intended sequence
- * (id, version, capability, description, then the optional structured fields) instead of letting the
+ * (id, version, capability, then the optional structured fields) instead of letting the
  * caller-built object's accidental key order leak into the wire payload.
  */
 export function projectTechniqueToToon(technique: Technique): string {
