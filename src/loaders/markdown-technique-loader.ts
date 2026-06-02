@@ -212,6 +212,25 @@ function bodyAsList(body: string): string[] {
   return items;
 }
 
+/**
+ * Rewrite technique-relative resource hyperlinks into get_resource-callable refs.
+ *
+ * Authoring uses normal markdown links so the raw file resolves in editors/GitHub:
+ *   [log](../resources/assumption-reconciliation.md#integration-with-assumptions-log)
+ *   [x](../../prism/resources/lens.md#section)         (cross-workflow)
+ * The agent-facing projection needs the id form get_resource accepts
+ * (`<id>[#section]` or `<workflow>/<id>[#section]`), mirroring how `technique::operation`
+ * refs surface in the protocol. Only links whose path is under a `resources/` segment are
+ * rewritten; technique links (`./<group>/TECHNIQUE.md`, `<op>.md`) are left untouched.
+ */
+function rewriteResourceLinks(text: string): string {
+  return text.replace(
+    /\[([^\]]+)\]\((?:\.\.?\/)+(?:([A-Za-z0-9_-]+)\/)?resources\/([A-Za-z0-9_-]+)\.md(#[A-Za-z0-9_-]+)?\)/g,
+    (_full, label: string, workflow: string | undefined, id: string, anchor: string | undefined) =>
+      `[${label}](${workflow ? `${workflow}/` : ''}${id}${anchor ?? ''})`,
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 /* TECHNIQUE.md → Technique object                                                 */
 /* -------------------------------------------------------------------------- */
@@ -237,7 +256,7 @@ function parseTechniqueIndex(raw: string, sourcePath: string, id: string): Index
   const version = String(meta['version'] ?? '').trim();
   if (!version) throw new MarkdownTechniqueParseError(`Missing 'metadata.version' in frontmatter at ${sourcePath}`);
 
-  const sections = splitSections(body, 2);
+  const sections = splitSections(rewriteResourceLinks(body), 2);
 
   const capabilitySection = findSection(sections, 'Capability');
   if (!capabilitySection) throw new MarkdownTechniqueParseError(`Missing '## Capability' section at ${sourcePath}`);
@@ -475,7 +494,7 @@ export interface OperationParse {
  */
 function parseOperationFile(raw: string, sourcePath: string): OperationParse {
   // Strip leading H1 (op name) — capture the description paragraph that follows.
-  const lines = raw.split(/\r?\n/);
+  const lines = rewriteResourceLinks(raw).split(/\r?\n/);
   let i = 0;
   // Skip any leading frontmatter (op files are not expected to have any, but be defensive).
   if (lines[0]?.startsWith('---')) {

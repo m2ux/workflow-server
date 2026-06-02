@@ -262,6 +262,39 @@ describe('technique-loader', () => {
       }
     });
 
+    it('rewrites technique-relative resource links to get_resource refs; leaves technique links', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(join(dir, 'grp'), { recursive: true });
+      await writeFile(
+        join(dir, 'reslink.md'),
+        [
+          ...FM('reslink'),
+          '## Capability', '', 'Cap.', '',
+          '## Inputs', '',
+          '### log', '',
+          'The running [log](../resources/assumption-reconciliation.md#integration-with-assumptions-log) of items',
+          '', '### lens', '',
+          'A [lens](../../prism/resources/portfolio.md#scoring) cross-workflow ref',
+          '', '## Protocol', '',
+          '1. Use [grp](./grp/TECHNIQUE.md)::[op](./grp/op.md), then read [guide](../resources/guide.md)',
+          '',
+        ].join('\n'),
+        'utf-8',
+      );
+      const result = await readTechnique('reslink', tempDir);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const toon = projectTechniqueToToon(result.value);
+        // resource links: path + .md stripped, anchor kept; cross-workflow keeps the wf prefix
+        expect(toon).toContain('[log](assumption-reconciliation#integration-with-assumptions-log)');
+        expect(toon).toContain('[lens](prism/portfolio#scoring)');
+        expect(toon).toContain('[guide](guide)');
+        expect(toon).not.toContain('../resources/');
+        // technique links are NOT rewritten
+        expect(toon).toContain('[grp](./grp/TECHNIQUE.md)');
+      }
+    });
+
     it('resolves an operation from a grouped <group>/<op>.md; the index has no operations map', async () => {
       const dir = join(tempDir, 'meta', 'techniques', 'vc');
       await mkdir(dir, { recursive: true });

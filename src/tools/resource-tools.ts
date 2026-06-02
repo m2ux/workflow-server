@@ -52,12 +52,53 @@ import { resolve } from 'node:path';
  * Examples: "meta/bootstrap-protocol" → { workflowId: "meta", id: "bootstrap-protocol" }
  *           "review-mode"             → { workflowId: undefined, id: "review-mode" }
  */
-function parseResourceRef(ref: string): { workflowId: string | undefined; id: string } {
-  const slashIdx = ref.indexOf('/');
-  if (slashIdx > 0) {
-    return { workflowId: ref.substring(0, slashIdx), id: ref.substring(slashIdx + 1) };
+function parseResourceRef(ref: string): { workflowId: string | undefined; id: string; section: string | undefined } {
+  // Split off an optional `#section` anchor (e.g. "assumption-reconciliation#log-format").
+  let section: string | undefined;
+  let base = ref.trim();
+  const hashIdx = base.indexOf('#');
+  if (hashIdx >= 0) {
+    section = base.substring(hashIdx + 1).trim() || undefined;
+    base = base.substring(0, hashIdx);
   }
-  return { workflowId: undefined, id: ref };
+  // Tolerate a trailing `.md` (the projection emits bare ids, but a path-y form may arrive).
+  base = base.replace(/\.md$/, '');
+  const slashIdx = base.indexOf('/');
+  if (slashIdx > 0) {
+    return { workflowId: base.substring(0, slashIdx), id: base.substring(slashIdx + 1), section };
+  }
+  return { workflowId: undefined, id: base, section };
+}
+
+/**
+ * Extract a single markdown section by its GitHub-style heading anchor: returns the heading line
+ * and everything beneath it up to (not including) the next heading of the same or higher level.
+ * Returns null when no heading matches the anchor.
+ */
+function extractMarkdownSection(content: string, anchor: string): string | null {
+  const slugify = (heading: string): string =>
+    heading.trim().toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+  const lines = content.split(/\r?\n/);
+  let startIdx = -1;
+  let startLevel = 0;
+  for (let i = 0; i < lines.length; i++) {
+    const m = lines[i]!.match(/^(#{1,6})\s+(.+?)\s*$/);
+    if (m && slugify(m[2]!) === anchor) {
+      startIdx = i;
+      startLevel = m[1]!.length;
+      break;
+    }
+  }
+  if (startIdx < 0) return null;
+  let endIdx = lines.length;
+  for (let i = startIdx + 1; i < lines.length; i++) {
+    const m = lines[i]!.match(/^(#{1,6})\s+/);
+    if (m && m[1]!.length <= startLevel) {
+      endIdx = i;
+      break;
+    }
+  }
+  return lines.slice(startIdx, endIdx).join('\n').trim();
 }
 
 /**
@@ -479,10 +520,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_resource',
-    'Load a single resource\'s full content by its id. Use this to fetch resources referenced in technique _resources arrays. The resource_id is a text-only slug — bare (e.g., "review-mode") resolves within the session\'s workflow, or prefixed cross-workflow (e.g., "meta/bootstrap-protocol") resolves from the named workflow. Returns the resource content, id, and version.',
+    'Load a resource by its id, optionally narrowed to a single section. Use this to fetch resources referenced in technique content (e.g. a template hyperlinked from an Input/Output). The resource_id is a text-only slug — bare (e.g., "review-mode") resolves within the session\'s workflow, or prefixed cross-workflow (e.g., "meta/bootstrap-protocol") resolves from the named workflow. Append a `#section` anchor (GitHub-style heading slug, e.g. "assumption-reconciliation#integration-with-assumptions-log") to return only that section and its body — used to fetch just the template a technique references without the whole file. Returns the resource content, id, and version.',
     {
       ...sessionIndexParam,
-      resource_id: z.string().describe('Resource id (text-only slug) — bare (e.g., "review-mode") resolves within the session workflow, prefixed (e.g., "meta/bootstrap-protocol") resolves from the specified workflow'),
+      resource_id: z.string().describe('Resource ref — bare slug ("review-mode"), cross-workflow prefixed ("meta/bootstrap-protocol"), each optionally suffixed with a "#section" heading anchor to return only that section (e.g. "assumption-reconciliation#integration-with-assumptions-log")'),
     },
     withAuditLog('get_resource', withSessionStoreErrors(async ({ session_index, resource_id }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
@@ -494,6 +535,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const targetWorkflow = parsed.workflowId ?? workflow_id;
       const result = await readResourceStructured(config.workflowDir, targetWorkflow, parsed.id);
       if (!result.success) throw result.error;
+
+      // When a `#section` anchor is supplied, return only that section to minimise context.
+      if (parsed.section) {
+        const sectionText = extractMarkdownSection(result.value.content, parsed.section);
+        if (sectionText === null) {
+          throw new Error(`Section '#${parsed.section}' not found in resource '${parsed.id}'.`);
+        }
+        result.value.content = sectionText;
+      }
 
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       const view = sessionView(state);

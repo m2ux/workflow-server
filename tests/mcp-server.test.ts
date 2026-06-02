@@ -490,6 +490,27 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBe(true);
     });
+
+    it('returns only the anchored section when resource_id carries a #section', async () => {
+      const result = await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: sessionToken, resource_id: 'assumption-reconciliation#integration-with-assumptions-log' },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      // Body is just that section: starts with its heading, excludes sibling sections.
+      expect(response._body).toMatch(/^#{2,}\s+Integration with Assumptions Log/);
+      expect(response._body).not.toMatch(/##\s+Methodology/);
+      expect(response._body).not.toMatch(/##\s+Scorecard/);
+    });
+
+    it('errors when a #section anchor matches no heading', async () => {
+      const result = await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: sessionToken, resource_id: 'assumption-reconciliation#no-such-section' },
+      });
+      expect(result.isError).toBe(true);
+    });
   });
 
   // ============== Cross-Workflow Resource Resolution ==============
