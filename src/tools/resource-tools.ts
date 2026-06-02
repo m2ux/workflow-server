@@ -75,13 +75,20 @@ function parseResourceRef(ref: string): { workflowId: string | undefined; id: st
  * and everything beneath it up to (not including) the next heading of the same or higher level.
  * Returns null when no heading matches the anchor.
  */
-function extractMarkdownSection(content: string, anchor: string): string | null {
+export function extractMarkdownSection(content: string, anchor: string): string | null {
   const slugify = (heading: string): string =>
     heading.trim().toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
   const lines = content.split(/\r?\n/);
+  const isFence = (l: string): boolean => /^\s*(```|~~~)/.test(l);
+
+  // Headings inside fenced code blocks (e.g. a ```markdown template skeleton) are content, not
+  // section boundaries — track fence state so they neither match the anchor nor terminate the section.
   let startIdx = -1;
   let startLevel = 0;
+  let inFence = false;
   for (let i = 0; i < lines.length; i++) {
+    if (isFence(lines[i]!)) { inFence = !inFence; continue; }
+    if (inFence) continue;
     const m = lines[i]!.match(/^(#{1,6})\s+(.+?)\s*$/);
     if (m && slugify(m[2]!) === anchor) {
       startIdx = i;
@@ -91,7 +98,10 @@ function extractMarkdownSection(content: string, anchor: string): string | null 
   }
   if (startIdx < 0) return null;
   let endIdx = lines.length;
+  inFence = false;
   for (let i = startIdx + 1; i < lines.length; i++) {
+    if (isFence(lines[i]!)) { inFence = !inFence; continue; }
+    if (inFence) continue;
     const m = lines[i]!.match(/^(#{1,6})\s+/);
     if (m && m[1]!.length <= startLevel) {
       endIdx = i;
