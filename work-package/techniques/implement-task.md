@@ -1,6 +1,4 @@
 ---
-name: implement-task
-description: Implement a single task from the plan by writing code changes.
 metadata:
   ontology: workflow-canonical
   kind: technique

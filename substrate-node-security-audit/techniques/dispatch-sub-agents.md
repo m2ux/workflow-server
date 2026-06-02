@@ -1,6 +1,4 @@
 ---
-name: dispatch-sub-agents
-description: Defines the procedure for dispatching sub-agents during a multi-agent orchestrated workflow. The orchestrator provides the agent roster (IDs, activities, context); this technique defines how to compose the sub-agent prompt, include bootstrap instructions, attach context variables and cross-scope supplementary files, and dispatch all agents concurrently. See harness-compat technique for spawn-agent and spawn-concurrent operations.
 metadata:
   ontology: workflow-canonical
   kind: technique

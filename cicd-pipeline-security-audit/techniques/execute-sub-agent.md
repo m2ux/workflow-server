@@ -1,6 +1,4 @@
 ---
-name: execute-sub-agent
-description: This technique defines how a sub-agent (dispatched by the orchestrator during primary-scan) bootstraps the workflow-server MCP, loads its assigned activity definition, and executes the activity's steps with verifiable outputs. The orchestrator passes activity_id and context in the spawn-agent prompt (harness-compat).
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Bootstrap the workflow-server, load an assigned activity, follow its steps sequentially, and return structured output
+Bootstrap the workflow-server MCP from a dispatched session, load an assigned activity definition (from the activity_id passed in the spawn prompt), follow its steps sequentially with verifiable outputs, and return structured output.
 
 ## Protocol
 

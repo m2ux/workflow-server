@@ -1,6 +1,4 @@
 ---
-name: create-test-plan
-description: Define what to test, how to test it, and what constitutes passing.
 metadata:
   ontology: workflow-canonical
   kind: technique

@@ -1,6 +1,4 @@
 ---
-name: dispatch-scanners
-description: Handles the composition and concurrent dispatch of scanner sub-agents for the CI/CD pipeline security audit. Each scanner agent receives its assigned submodule path, workflow file list, reconnaissance data, and the injection pattern catalog. Also dispatches the verification (V) and merge (M) coordination agents after scanner collection.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Compose and dispatch per-submodule scanner sub-agents and coordination agents (V, M)
+Compose and concurrently dispatch per-submodule scanner sub-agents — each receiving its assigned submodule path, workflow file list, reconnaissance data, and injection pattern catalog — then dispatch the verification (V) and merge (M) coordination agents after scanner results are collected.
 
 ## Inputs
 

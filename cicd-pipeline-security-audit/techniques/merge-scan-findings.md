@@ -1,6 +1,4 @@
 ---
-name: merge-scan-findings
-description: Merge technique for the CI/CD pipeline security audit. Loads all scanner outputs, deduplicates findings (same file, same line, same pattern), identifies compound vulnerability chains (multiple patterns converging on one workflow), and produces a reconciled unified finding set. The reconciliation table maps every scanner finding to its merged counterpart.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Merge, deduplicate, and correlate findings from multiple scanner agents into a unified finding set
+Merge findings from multiple scanner agents into a unified set: deduplicate findings sharing the same file, line, and pattern; identify compound vulnerability chains where multiple patterns converge on one workflow; and produce a reconciliation table mapping every scanner finding to its merged counterpart.
 
 ## Inputs
 

@@ -1,6 +1,4 @@
 ---
-name: atlassian-operations
-description: Operations for Jira and Confluence tasks via the Atlassian MCP server.
 metadata:
   ontology: workflow-canonical
   kind: technique

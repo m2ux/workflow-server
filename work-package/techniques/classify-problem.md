@@ -1,6 +1,4 @@
 ---
-name: classify-problem
-description: Classify a problem by type and complexity and select the workflow path.
 metadata:
   ontology: workflow-canonical
   kind: technique

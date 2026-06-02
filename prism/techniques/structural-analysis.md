@@ -1,6 +1,4 @@
 ---
-name: structural-analysis
-description: Apply L12 structural analysis to code.
 metadata:
   ontology: workflow-canonical
   kind: technique

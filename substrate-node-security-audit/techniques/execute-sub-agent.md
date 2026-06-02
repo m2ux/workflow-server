@@ -1,6 +1,4 @@
 ---
-name: execute-sub-agent
-description: This technique defines how a sub-agent (dispatched by the orchestrator during primary-audit) bootstraps the workflow-server MCP, loads its assigned activity definition, and executes the activity's steps with verifiable outputs. The orchestrator passes activity_id and context in the spawn-agent prompt (harness-compat).
 metadata:
   ontology: workflow-canonical
   kind: technique

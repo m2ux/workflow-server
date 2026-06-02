@@ -1,6 +1,4 @@
 ---
-name: extract-invariants
-description: A reusable analysis technique for formal invariant extraction from source code. For each function in a priority set, identifies four categories of invariants that must hold for correctness. The resulting table serves as the basis for checklist application and cross-function comparison.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-For a set of priority functions, enumerate preconditions, postconditions, cross-function invariants, and data source invariants; produce a structured invariant table
+For a set of priority functions, perform formal invariant extraction from source code: enumerate the four categories of invariants that must hold for correctness — preconditions, postconditions, cross-function invariants, and data source invariants — and produce a structured invariant table
 
 ## Inputs
 

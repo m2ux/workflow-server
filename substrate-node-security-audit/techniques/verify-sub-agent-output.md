@@ -1,6 +1,4 @@
 ---
-name: verify-sub-agent-output
-description: A reusable verification technique for multi-agent workflows. After collecting sub-agent results, this technique defines how to check that each agent's output contains all required tables, covers all expected files, and meets structural completeness criteria. Missing outputs are flagged for targeted re-dispatch.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Validate that sub-agent results meet structural completeness requirements, check coverage gates and mandatory output tables, and flag or re-dispatch on failure
+Validate that collected sub-agent results meet structural completeness requirements, check coverage gates (including expected-file coverage) and mandatory output tables, and flag missing outputs for targeted re-dispatch on failure
 
 ## Inputs
 

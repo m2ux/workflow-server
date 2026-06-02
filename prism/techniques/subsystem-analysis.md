@@ -1,6 +1,4 @@
 ---
-name: subsystem-analysis
-description: Decompose code into subsystems, analyze each with an assigned prism, then synthesize cross-boundary findings.
 metadata:
   ontology: workflow-canonical
   kind: technique

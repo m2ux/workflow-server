@@ -1,6 +1,4 @@
 ---
-name: sync-resources
-description: Execute the approved change set against the prism workflow's resources directory. Each change type is committed separately for clean git history.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Apply resource file changes — sync modified, rename, import new, remove deleted
+Apply an approved change set to the resources directory — sync modified, rename, import new, and remove deleted — committing each change type separately for clean git history.
 
 ## Inputs
 

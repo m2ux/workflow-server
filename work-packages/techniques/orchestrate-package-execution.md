@@ -1,6 +1,4 @@
 ---
-name: orchestrate-package-execution
-description: Trigger and manage work-package workflow instances for each planned package.
 metadata:
   ontology: workflow-canonical
   kind: technique

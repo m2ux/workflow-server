@@ -1,6 +1,4 @@
 ---
-name: plan-work-package-scope
-description: Plan an individual work package within a multi-package initiative.
 metadata:
   ontology: workflow-canonical
   kind: technique

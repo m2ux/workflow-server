@@ -1,6 +1,4 @@
 ---
-name: merge-findings
-description: "A reusable technique for consolidating findings from multiple agents or audit passes. Supports three merge strategies: structured-merge (concatenate and dedup), integration (add new items to existing table), and union-merge (combine two independent runs with consensus flagging). The flat table produced is the canonical finding inventory for reporting."
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Concatenate finding lists from multiple sources into a canonical flat table, deduplicate by root cause, assign report finding numbers, and verify elevation completeness
+Consolidate finding lists from multiple sources (e.g. multiple agents or audit passes) into a canonical flat table that serves as the finding inventory, supporting three merge strategies — structured-merge (concatenate and dedup), integration (add new items to an existing table), and union-merge (combine two independent runs with consensus flagging) — deduplicating by root cause, assigning report finding numbers, and verifying elevation completeness
 
 ## Inputs
 

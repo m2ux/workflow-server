@@ -1,6 +1,4 @@
 ---
-name: verify-prism-consistency
-description: "Run four consistency checks: stale name references, prompt guide routing accuracy, resource count alignment, and duplicate index detection."
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Verify consistency across prism workflow resources, techniques, and documentation
+Verify consistency across prism resources, techniques, and documentation by running four checks: stale name references, prompt guide routing accuracy, resource count alignment, and duplicate index detection.
 
 ## Inputs
 

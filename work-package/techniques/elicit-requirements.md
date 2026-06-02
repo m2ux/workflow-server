@@ -1,6 +1,4 @@
 ---
-name: elicit-requirements
-description: Elicit requirements through structured sequential conversation.
 metadata:
   ontology: workflow-canonical
   kind: technique

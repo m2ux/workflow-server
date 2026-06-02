@@ -1,6 +1,4 @@
 ---
-name: compose-evaluation-report
-description: Compose a unified EVALUATION-REPORT.md from per-dimension prism artifacts.
 metadata:
   ontology: workflow-canonical
   kind: technique

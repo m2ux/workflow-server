@@ -1,6 +1,4 @@
 ---
-name: review-diff
-description: Conduct a structured manual diff review using an indexed block table.
 metadata:
   ontology: workflow-canonical
   kind: technique

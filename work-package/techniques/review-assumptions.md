@@ -1,6 +1,4 @@
 ---
-name: review-assumptions
-description: Collect, classify, and review assumptions made during a workflow activity.
 metadata:
   ontology: workflow-canonical
   kind: technique

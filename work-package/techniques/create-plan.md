@@ -1,6 +1,4 @@
 ---
-name: create-plan
-description: Design the implementation approach and produce work-package-plan.md.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Create work package plan with task breakdown, dependencies, and ordering
+Design the implementation approach and create a work package plan with task breakdown, dependencies, and ordering
 
 ## Inputs
 

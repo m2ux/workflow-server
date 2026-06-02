@@ -1,6 +1,4 @@
 ---
-name: finalize-documentation
-description: Finalize work-package documentation after implementation.
 metadata:
   ontology: workflow-canonical
   kind: technique

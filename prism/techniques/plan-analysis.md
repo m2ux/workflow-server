@@ -1,6 +1,4 @@
 ---
-name: plan-analysis
-description: Produce an execution plan mapping each unit of work to a pipeline mode and lens selection.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Plan an analysis strategy by detecting scope, classifying targets, and selecting lenses appropriate to each unit of work
+Plan an analysis strategy by detecting scope, classifying targets, and producing an execution plan that maps each unit of work to a pipeline mode and lens selection
 
 ## Inputs
 

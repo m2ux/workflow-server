@@ -1,6 +1,4 @@
 ---
-name: validate-build
-description: Triage validation failures and aggregate cross-check results.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -13,7 +11,7 @@ metadata:
 
 ## Capability
 
-Triage validation failures and aggregate cross-check results for the validate activity.
+Triage validation failures and aggregate cross-check results.
 
 ## Rules
 

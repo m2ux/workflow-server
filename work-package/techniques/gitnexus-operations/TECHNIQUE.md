@@ -1,6 +1,4 @@
 ---
-name: gitnexus-operations
-description: Parameterized GitNexus operations — primitive tool wrappers and composite analysis recipes — used by work-package techniques.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -13,7 +11,7 @@ metadata:
 
 ## Capability
 
-Parameterized GitNexus operations for the work-package workflow. Primitive operations wrap each GitNexus MCP tool with the canonical work-package parameter set and output interpretation; composite operations encode the multi-call analysis recipes that recur across review and planning techniques. For the underlying tool, resource, and graph-schema reference, see [gitnexus-reference](../../resources/gitnexus-reference.md).
+Parameterized GitNexus operations. Primitive operations wrap each GitNexus MCP tool with a canonical parameter set and output interpretation; composite operations encode the multi-call analysis recipes that recur across review and planning techniques. For the underlying tool, resource, and graph-schema reference, see [gitnexus-reference](../../resources/gitnexus-reference.md).
 
 ## Rules
 

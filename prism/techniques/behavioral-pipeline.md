@@ -1,6 +1,4 @@
 ---
-name: behavioral-pipeline
-description: Execute the behavioral pipeline of 4 lenses plus synthesis.
 metadata:
   ontology: workflow-canonical
   kind: technique

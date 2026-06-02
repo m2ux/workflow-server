@@ -1,6 +1,4 @@
 ---
-name: conduct-retrospective
-description: Conduct a retrospective on the completed work package.
 metadata:
   ontology: workflow-canonical
   kind: technique

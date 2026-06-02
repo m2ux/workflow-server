@@ -1,6 +1,4 @@
 ---
-name: toon-authoring
-description: Supporting technique for authoring valid TOON files.
 metadata:
   ontology: workflow-canonical
   kind: technique

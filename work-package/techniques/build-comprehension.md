@@ -1,6 +1,4 @@
 ---
-name: build-comprehension
-description: Build or augment codebase comprehension via progressive analysis and persistent artifacts.
 metadata:
   ontology: workflow-canonical
   kind: technique

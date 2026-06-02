@@ -1,6 +1,4 @@
 ---
-name: manage-git
-description: Git branch, worktree, and PR lifecycle management.
 metadata:
   ontology: workflow-canonical
   kind: technique

@@ -1,6 +1,4 @@
 ---
-name: agent-conduct
-description: Cross-cutting behavioral boundaries for agents — file sensitivity, communication, operational discipline, checkpoint resolution, and orchestrator constraints.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Cross-cutting behavioral boundaries for agents. This technique has no procedure — its body is a catalogue of rules attached to any activity that touches it. Rules apply to all agent execution contexts (workers and orchestrators) for the duration of a workflow.
+Cross-cutting behavioral boundaries for agents — spanning file sensitivity, communication, operational discipline, checkpoint resolution, and orchestrator constraints. This technique has no procedure — its body is a catalogue of rules attached to any activity that touches it. Rules apply to all agent execution contexts (workers and orchestrators) for the duration of a workflow.
 
 ## Rules
 

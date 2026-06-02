@@ -1,6 +1,4 @@
 ---
-name: update-skill-routing
-description: Fix renamed references, add goal-mapping entries for new prisms, expand lens catalogs, and update resource lists across plan-analysis, portfolio-analysis, behavioral-pipeline, and orchestrate-prism.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Update prism workflow technique files to reflect resource changes
+Update prism routing technique files to reflect resource changes: fix renamed references, add goal-mapping entries for new prisms, expand lens catalogs, and update resource lists.
 
 ## Inputs
 

@@ -1,6 +1,4 @@
 ---
-name: compose-audit-prompt
-description: Compose a self-contained audit prompt tailored to the target codebase.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Analyse a codebase to identify security-relevant characteristics and compose a detailed audit prompt tailored to its architecture, language, and trust boundaries
+Analyse a codebase to identify security-relevant characteristics and compose a detailed, self-contained audit prompt tailored to its architecture, language, and trust boundaries
 
 ## Inputs
 

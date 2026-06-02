@@ -1,6 +1,4 @@
 ---
-name: cargo-operations
-description: Resource-constrained operations for cargo subcommands.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -13,7 +11,7 @@ metadata:
 
 ## Capability
 
-Resource-constrained operations for the cargo subcommands used during the work-package workflow.
+Resource-constrained operations for cargo subcommands.
 
 ## Rules
 

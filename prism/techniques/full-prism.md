@@ -1,6 +1,4 @@
 ---
-name: full-prism
-description: Execute one pass of the Full Prism pipeline.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Execute a single pass of the Full Prism pipeline within the prism workflow's isolation model
+Execute a single pass of the Full Prism pipeline within an isolation model
 
 ## Inputs
 

@@ -1,6 +1,4 @@
 ---
-name: execute-audit
-description: Execute security audit phases with consistent tool usage, concurrent multi-agent coordination, and §3 checklist completeness verification
 metadata:
   ontology: workflow-canonical
   kind: technique

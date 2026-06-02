@@ -1,6 +1,4 @@
 ---
-name: reconcile-assumptions
-description: Iteratively resolve code-analyzable assumptions until only stakeholder-dependent ones remain.
 metadata:
   ontology: workflow-canonical
   kind: technique

@@ -1,6 +1,4 @@
 ---
-name: analyze-initiative-context
-description: Perform completion or context analysis for a multi-package initiative.
 metadata:
   ontology: workflow-canonical
   kind: technique

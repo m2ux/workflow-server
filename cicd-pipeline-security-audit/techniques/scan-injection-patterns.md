@@ -1,6 +1,4 @@
 ---
-name: scan-injection-patterns
-description: Core detection technique for the CI/CD pipeline security audit. Applies seven detection patterns derived from the hackerbot-claw campaign and GitHub's script injection documentation. Each pattern identifies a specific source-to-sink vulnerability class. The scanner traces data flow from attacker-controlled input (source) to privileged execution (sink) and documents the complete chain.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Apply all seven CI/CD injection detection patterns (P1-P7) to GitHub Actions workflow files
+Apply all seven CI/CD injection detection patterns (P1-P7) — derived from the hackerbot-claw campaign and GitHub's script injection documentation, each identifying a specific source-to-sink vulnerability class — to GitHub Actions workflow files, tracing data flow from attacker-controlled input (source) to privileged execution (sink) and documenting the complete chain.
 
 ## Inputs
 

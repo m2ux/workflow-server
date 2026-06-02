@@ -1,6 +1,4 @@
 ---
-name: inventory-workflows
-description: Systematic workflow file discovery and classification. Enumerates all .yml/.yaml files under .github/workflows/ in each target submodule. Classifies each workflow by trigger types, permission scopes, checkout patterns, and referenced scripts. Produces structured inventory data for scanner agent dispatch.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Discover, enumerate, and classify GitHub Actions workflow files across target submodules
+Discover and enumerate all .yml/.yaml files under .github/workflows/ across target submodules, classifying each by trigger types, permission scopes, checkout patterns, and referenced scripts to produce structured inventory data.
 
 ## Inputs
 

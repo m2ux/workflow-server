@@ -1,6 +1,4 @@
 ---
-name: gitnexus-operations
-description: Foundational operations for codebase queries via the GitNexus knowledge graph — index lifecycle, structural queries, and graph traversals.
 metadata:
   ontology: workflow-canonical
   kind: technique

@@ -1,6 +1,4 @@
 ---
-name: verify-scan-output
-description: Verification technique for the CI/CD pipeline security audit. Cross-references scanner outputs against the workflow file inventory and pattern catalog to ensure complete coverage. Identifies gaps (unscanned files, skipped patterns, malformed output) and produces a gap report to drive targeted re-scan.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Verify scan completeness across all scanner outputs and produce gap report
+Verify scan completeness by cross-referencing all scanner outputs against the workflow file inventory and pattern catalog, identifying gaps (unscanned files, skipped patterns, malformed output) and producing a gap report to drive targeted re-scan.
 
 ## Inputs
 

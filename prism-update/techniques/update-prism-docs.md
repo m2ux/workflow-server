@@ -1,6 +1,4 @@
 ---
-name: update-prism-docs
-description: Rebuild documentation across resources/README.md, workflow README.md, and techniques/README.md. Add prompt guide entries for new prisms with concrete example prompts that align with the goal-mapping matrix.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Update prism workflow documentation to reflect the current resource catalog
+Rebuild prism documentation to reflect the current resource catalog, adding prompt guide entries for new prisms with concrete example prompts that align with the goal-mapping matrix.
 
 ## Inputs
 

@@ -1,6 +1,4 @@
 ---
-name: search-pattern-catalog
-description: A reusable technique for systematic pattern-based searching. Given a pattern catalog (loaded from a resource) and a codebase scope, this technique defines the procedure for iterating patterns, executing searches, applying triage criteria, handling zero-hit results, and formatting output. It separates the execution protocol (this technique) from the pattern definitions (the resource) and the step sequencing (the activity).
 metadata:
   ontology: workflow-canonical
   kind: technique

@@ -1,6 +1,4 @@
 ---
-name: compare-finding-sets
-description: A reusable technique for benchmarking one set of findings against a reference set. Defines the mapping protocol (match/partial/gap classification), severity calibration analysis (over-rating/under-rating pattern identification), and root cause taxonomy for missed findings.
 metadata:
   ontology: workflow-canonical
   kind: technique

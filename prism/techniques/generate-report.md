@@ -1,6 +1,4 @@
 ---
-name: generate-report
-description: Generate the clean final REPORT.md from analysis artifacts.
 metadata:
   ontology: workflow-canonical
   kind: technique

@@ -1,6 +1,4 @@
 ---
-name: smart-analysis
-description: Automatically compose an analysis pipeline based on input characteristics.
 metadata:
   ontology: workflow-canonical
   kind: technique

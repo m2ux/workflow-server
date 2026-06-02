@@ -1,6 +1,4 @@
 ---
-name: plan-evaluation
-description: Plan an evaluation by mapping dimensions to prism modes and lenses.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Classify an evaluation target, derive or validate evaluation dimensions, and map each dimension to prism analytical lens configurations
+Classify an evaluation target, derive or validate evaluation dimensions, and map each dimension to prism analytical lens and pipeline-mode configurations
 
 ## Inputs
 

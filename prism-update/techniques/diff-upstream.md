@@ -1,6 +1,4 @@
 ---
-name: diff-upstream
-description: Compare upstream prisms/ against workflow resources/. Produce a categorized change set (new, modified, renamed, deleted) with family classification for new prisms.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Diff upstream prisms directory against current workflow resources and categorize changes
+Diff an upstream prisms directory against current resources, producing a categorized change set (new, modified, renamed, deleted) with family classification for new prisms.
 
 ## Inputs
 

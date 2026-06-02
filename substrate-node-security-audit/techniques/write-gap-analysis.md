@@ -1,6 +1,4 @@
 ---
-name: write-gap-analysis
-description: Produce the gap analysis report comparing AI audit findings against a professional reference report
 metadata:
   ontology: workflow-canonical
   kind: technique

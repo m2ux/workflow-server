@@ -1,6 +1,4 @@
 ---
-name: version-control
-description: Planning-folder initialization and commit operations for regular directories and submodules.
 metadata:
   ontology: workflow-canonical
   kind: technique

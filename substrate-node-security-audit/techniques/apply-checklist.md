@@ -1,6 +1,4 @@
 ---
-name: apply-checklist
-description: A reusable technique for systematic checklist application. The checklist content comes from a resource; the item set comes from a prior enumeration step. This technique defines the iteration protocol, verdict types (PASS/FAIL/NA), evidence requirements, and completeness verification. It prevents skimming by requiring an explicit entry for every item x checklist combination.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Given a checklist (from a resource) and a set of items (functions, crate components, code paths), iterate every item against every checklist entry, produce a verdict matrix, and verify completeness
+Given a checklist (from a resource) and a set of items (functions, crate components, code paths), systematically apply the checklist by iterating every item against every checklist entry, assigning a PASS/FAIL/NA verdict with required evidence for each combination, producing a verdict matrix, and verifying completeness. Requiring an explicit entry for every item-by-checklist combination prevents skimming.
 
 ## Inputs
 

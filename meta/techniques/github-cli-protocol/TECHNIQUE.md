@@ -1,6 +1,4 @@
 ---
-name: github-cli-protocol
-description: GitHub CLI operations for common PR and issue tasks, with GraphQL-deprecation workarounds.
 metadata:
   ontology: workflow-canonical
   kind: technique

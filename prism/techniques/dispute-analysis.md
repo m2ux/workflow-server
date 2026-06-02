@@ -1,6 +1,4 @@
 ---
-name: dispute-analysis
-description: Run two orthogonal prisms and synthesize their disagreements.
 metadata:
   ontology: workflow-canonical
   kind: technique

@@ -1,6 +1,4 @@
 ---
-name: reflect-analysis
-description: Apply recursive meta-analysis to L12 output and synthesize findings.
 metadata:
   ontology: workflow-canonical
   kind: technique

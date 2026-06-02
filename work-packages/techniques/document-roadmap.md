@@ -1,6 +1,4 @@
 ---
-name: document-roadmap
-description: Complete the roadmap documentation.
 metadata:
   ontology: workflow-canonical
   kind: technique

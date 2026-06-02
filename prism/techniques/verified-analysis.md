@@ -1,6 +1,4 @@
 ---
-name: verified-analysis
-description: Run L12 with gap detection and gap-corrected re-analysis.
 metadata:
   ontology: workflow-canonical
   kind: technique

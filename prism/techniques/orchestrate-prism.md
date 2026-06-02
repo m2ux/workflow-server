@@ -1,6 +1,4 @@
 ---
-name: orchestrate-prism
-description: Coordination technique for the prism workflow orchestrator.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Orchestrate the prism workflow with isolated sub-agent passes for analytical independence
+Orchestrate prism analysis with isolated sub-agent passes for analytical independence
 
 ## Inputs
 

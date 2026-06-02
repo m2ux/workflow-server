@@ -1,6 +1,4 @@
 ---
-name: workflow-design
-description: Primary technique for the workflow-design workflow.
 metadata:
   ontology: workflow-canonical
   kind: technique

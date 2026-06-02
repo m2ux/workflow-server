@@ -1,6 +1,4 @@
 ---
-name: decompose-safety-claims
-description: A reusable adversarial analysis technique. When a review produces a PASS verdict on a multi-faceted check, this technique decomposes the claim into independent properties, enumerates every instance/field/site that must satisfy each property, and produces a structured table for independent verification. The goal is to refute, not confirm. When a verification gap report is provided, PASS items in flagged areas are automatically included regardless of severity estimate.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Take a safety claim (PASS verdict), enumerate the constituent properties it asserts, enumerate all instances that must hold, and produce a decomposition table for independent verification. Optionally informed by a verification gap report to target areas with incomplete primary coverage.
+Adversarially decompose a safety claim (PASS verdict on a multi-faceted check) with the goal of refuting rather than confirming it: enumerate the constituent properties it asserts, enumerate every instance/field/site that must hold, and produce a decomposition table for independent verification. Optionally informed by a verification gap report to target areas with incomplete primary coverage.
 
 ## Inputs
 

@@ -1,6 +1,4 @@
 ---
-name: portfolio-analysis
-description: Run two or more portfolio lenses against the same artifact.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Apply multiple complementary portfolio lenses to produce diverse structural findings with zero overlap
+Apply two or more complementary portfolio lenses to the same artifact to produce diverse structural findings with zero overlap
 
 ## Inputs
 

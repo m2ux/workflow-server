@@ -1,6 +1,4 @@
 ---
-name: summarize-architecture
-description: Produce a stakeholder-facing architecture summary with Mermaid diagrams.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Create high-level architecture summary with diagrams for management stakeholders
+Create high-level architecture summary with Mermaid diagrams for management stakeholders
 
 ## Inputs
 

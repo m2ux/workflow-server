@@ -1,6 +1,4 @@
 ---
-name: respond-to-pr-review
-description: Process PR review feedback by categorizing comments, prioritizing by impact, implementing changes, and posting responses.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Analyze and respond to PR review comments systematically
+Analyze and respond to PR review comments systematically — categorizing comments, prioritizing by impact, implementing changes, and posting responses
 
 ## Inputs
 

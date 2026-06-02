@@ -1,6 +1,4 @@
 ---
-name: dco-provenance
-description: Manages Developer Certificate of Origin (DCO) compliance artifacts and AI provenance records for a work package.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -13,4 +11,4 @@ metadata:
 
 ## Capability
 
-DCO compliance and AI provenance tracking — provenance log row appends and attestation recording.
+Developer Certificate of Origin (DCO) compliance and AI provenance tracking — provenance log row appends and attestation recording.

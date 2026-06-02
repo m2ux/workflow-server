@@ -1,6 +1,4 @@
 ---
-name: create-adr
-description: Produce an ADR at .engineering/artifacts/adr/.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Create Architecture Decision Record for moderate or complex implementations
+Create an Architecture Decision Record at .engineering/artifacts/adr/ for moderate or complex implementations
 
 ## Inputs
 

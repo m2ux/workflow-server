@@ -1,6 +1,4 @@
 ---
-name: review-code
-description: Review all implementation changes for architecture adherence, error handling, safety, and Substrate-specific patterns.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Perform comprehensive Rust/Substrate code review following established patterns
+Perform comprehensive Rust/Substrate code review following established patterns, examining all implementation changes for architecture adherence, error handling, safety, and Substrate-specific patterns
 
 ## Inputs
 

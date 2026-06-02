@@ -1,6 +1,4 @@
 ---
-name: assess-initiative-scope
-description: Decompose a multi-package initiative description into distinct work packages.
 metadata:
   ontology: workflow-canonical
   kind: technique

@@ -1,6 +1,4 @@
 ---
-name: knowledge-base-search
-description: Targeted concept-rag searches via pre-indexed domain maps.
 metadata:
   ontology: workflow-canonical
   kind: technique

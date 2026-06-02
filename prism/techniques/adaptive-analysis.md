@@ -1,6 +1,4 @@
 ---
-name: adaptive-analysis
-description: Cost-minimizing depth escalation from cheap to deep analysis.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Automatically escalate analysis depth from cheap/fast to deep/expensive based on signal quality assessment
+Minimize cost by automatically escalating analysis depth from cheap/fast to deep/expensive based on signal quality assessment
 
 ## Inputs
 

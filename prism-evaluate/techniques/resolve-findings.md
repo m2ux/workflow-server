@@ -1,6 +1,4 @@
 ---
-name: resolve-findings
-description: Propose and apply finding-specific mitigations through one-by-one dialogue.
 metadata:
   ontology: workflow-canonical
   kind: technique

@@ -1,6 +1,4 @@
 ---
-name: workflow-engine
-description: Operations and rules for executing a workflow's structured flow — session lifecycle, activity dispatch, transition evaluation, and checkpoint flow.
 metadata:
   ontology: workflow-canonical
   kind: technique

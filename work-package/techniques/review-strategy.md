@@ -1,6 +1,4 @@
 ---
-name: review-strategy
-description: Strategic review of a PR: scope discipline, investigation-artifact removal, and final architecture summary.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Review implementation to ensure changes are minimal, focused, and free of investigation artifacts
+Review implementation to ensure changes are minimal, focused, scope-disciplined, and free of investigation artifacts, and produce a final architecture summary
 
 ## Inputs
 

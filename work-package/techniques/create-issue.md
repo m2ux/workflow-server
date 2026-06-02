@@ -1,6 +1,4 @@
 ---
-name: create-issue
-description: Atomic issue creation and verification on GitHub or Jira.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Create a GitHub or Jira issue with appropriate type, labels, and metadata
+Atomically create and verify a GitHub or Jira issue with appropriate type, labels, and metadata
 
 ## Inputs
 

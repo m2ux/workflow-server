@@ -1,6 +1,4 @@
 ---
-name: analyze-implementation
-description: Analyze the current implementation and establish quantitative baseline metrics.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Analyze current implementation to understand effectiveness, establish baselines, and identify improvement opportunities
+Analyze current implementation to understand effectiveness, establish quantitative baseline metrics, and identify improvement opportunities
 
 ## Inputs
 

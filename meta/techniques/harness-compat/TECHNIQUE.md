@@ -1,6 +1,4 @@
 ---
-name: harness-compat
-description: Harness-independent vocabulary for spawning, continuing, and concurrently dispatching sub-agents.
 metadata:
   ontology: workflow-canonical
   kind: technique

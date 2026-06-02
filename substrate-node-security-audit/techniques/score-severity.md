@@ -1,6 +1,4 @@
 ---
-name: score-severity
-description: Use resource 02 (severity rubric) for the two dimensions and required output format. Use resource 08 (severity calibration) for full rubric scales, calibration examples, severity crosscheck procedure, and bias correction. Use resource 06 (target profile) when present for target-specific benchmarks.
 metadata:
   ontology: workflow-canonical
   kind: technique

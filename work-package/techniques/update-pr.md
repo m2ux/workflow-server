@@ -1,6 +1,4 @@
 ---
-name: update-pr
-description: Finalize the PR for review, or post consolidated review comments in review mode.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Update PR with final implementation details and mark ready for review
+Update PR with final implementation details and mark ready for review, or post consolidated review comments when operating in review mode
 
 ## Inputs
 

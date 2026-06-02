@@ -1,6 +1,4 @@
 ---
-name: review-test-suite
-description: Assess test quality across the work package — coverage gaps, anti-patterns (flaky tests, over-mocking), assertion quality, and test isolation.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Review test suite quality, coverage, and identify anti-patterns
+Review test suite quality and coverage — assessing coverage gaps, assertion quality, and test isolation, and identifying anti-patterns such as flaky tests and over-mocking
 
 ## Inputs
 

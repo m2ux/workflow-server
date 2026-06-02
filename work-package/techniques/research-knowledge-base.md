@@ -1,6 +1,4 @@
 ---
-name: research-knowledge-base
-description: Research the knowledge base and external sources for relevant patterns and resources.
 metadata:
   ontology: workflow-canonical
   kind: technique

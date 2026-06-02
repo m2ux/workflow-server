@@ -1,6 +1,4 @@
 ---
-name: prioritize-packages
-description: Order work packages by dependencies, value, risk, and effort.
 metadata:
   ontology: workflow-canonical
   kind: technique

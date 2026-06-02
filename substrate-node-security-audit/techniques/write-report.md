@@ -1,6 +1,4 @@
 ---
-name: write-report
-description: Produce the final audit report artifact from the scored and elevation-verified merge table
 metadata:
   ontology: workflow-canonical
   kind: technique

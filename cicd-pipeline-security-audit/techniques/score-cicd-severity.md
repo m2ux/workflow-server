@@ -1,6 +1,4 @@
 ---
-name: score-cicd-severity
-description: "Apply severity scoring to CI/CD pipeline findings. Uses a two-dimensional rubric: Impact (what damage can result) x Exploitability (how easily an attacker can trigger it). Calibrated against the hackerbot-claw campaign outcomes where a Pwn Request chain led to full repository takeover (Critical) and expression injection led to code execution (High)."
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -11,7 +9,7 @@ metadata:
 
 ## Capability
 
-Score CI/CD pipeline vulnerabilities using Impact x Exploitability rubric calibrated against real-world attack campaigns
+Score CI/CD pipeline vulnerabilities using a two-dimensional rubric — Impact (what damage can result) x Exploitability (how easily an attacker can trigger it) — calibrated against real-world attack campaign outcomes, such as a Pwn Request chain leading to full repository takeover (Critical) and expression injection leading to code execution (High).
 
 ## Inputs
 

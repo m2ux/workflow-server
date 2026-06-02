@@ -1,6 +1,4 @@
 ---
-name: manage-artifacts
-description: Create and organize planning artifacts in .engineering/artifacts/planning/.
 metadata:
   ontology: workflow-canonical
   kind: technique
@@ -13,7 +11,7 @@ metadata:
 
 ## Capability
 
-Manage planning artifacts — create folders, enforce activity-based artifact prefixing, and organize documents.
+Manage planning artifacts in .engineering/artifacts/planning/ — create folders, enforce activity-based artifact prefixing, and organize documents.
 
 ## Rules
 

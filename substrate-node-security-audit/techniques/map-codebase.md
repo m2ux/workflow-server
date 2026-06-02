@@ -1,6 +1,4 @@
 ---
-name: map-codebase
-description: A reusable technique for codebase reconnaissance. Defines the enumeration protocol (what to enumerate), classification categories (how to categorize), and tracing techniques (how to map data flows and boundaries). Produces structured inventories that serve as inputs for agent assignment, function registry building, and checklist application.
 metadata:
   ontology: workflow-canonical
   kind: technique
