@@ -64,7 +64,7 @@ Summary, description, and context from the linked issue
 
 ### design-philosophy-doc
 
-Records problem classification, design rationale, and workflow path decisions
+Records problem classification, design [rationale](../resources/design-framework.md#design-philosophy-artifact-template), and workflow path decisions
 
 - **artifact**: `design-philosophy.md`
 - **problem_statement**: Clear problem definition with system understanding

@@ -79,7 +79,7 @@ Pre-classified trigger, permission, and checkout data for the workflow files
 
 Structured findings for this submodule
 
-- **artifact**: `s{n}-{submodule}.json`
+- **artifact**: [`s{n}-{submodule}.json`](../resources/sub-agent-output-schema.md#schema)
 - **findings**: Each with pattern_id, source, sink, severity_hint, file, lines, evidence
 - **observations**: Items without clear source-to-sink flow
 - **coverage**: Per-file, per-pattern scan confirmation

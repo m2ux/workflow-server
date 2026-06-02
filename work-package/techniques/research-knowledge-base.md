@@ -57,7 +57,7 @@ Clear problem definition with system understanding, used to focus the research
 
 ### research-document
 
-Knowledge base and web research synthesis for the work package
+Knowledge base and web research [synthesis](../resources/knowledge-base-research.md#planning-artifact) for the work package
 
 - **artifact**: `kb-research.md`
 - **kb_findings**: Findings from concept-rag knowledge base

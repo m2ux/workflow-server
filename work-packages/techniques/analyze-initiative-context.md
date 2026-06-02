@@ -57,7 +57,7 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 
 ### analysis-document
 
-Analysis document with findings and recommendations, persisted as 01-COMPLETION-ANALYSIS.md (completion) or 02-CONTEXT-ANALYSIS.md (context)
+Analysis document with findings and recommendations, persisted as [01-COMPLETION-ANALYSIS.md](../resources/completion-analysis-guide.md#4-document-findings) (completion) or [02-CONTEXT-ANALYSIS.md](../resources/context-analysis-guide.md#5-document-findings) (context)
 
 - **analysis_type**: completion or context
 - **key_findings**: Summary of analysis findings

@@ -49,7 +49,7 @@ Atomic task breakdown with dependencies and ordering for the work package
 
 ### test-plan-document
 
-Test strategy and acceptance criteria
+Test [strategy](../resources/test-plan.md#test-plan-structure) and acceptance criteria
 
 - **artifact**: `test-plan.md`
 - **test_strategy**: What to test, how, and pass criteria

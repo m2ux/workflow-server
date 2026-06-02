@@ -49,7 +49,7 @@ Design philosophy [artifact](../resources/design-framework.md#design-philosophy-
 
 ### adr-document
 
-Architecture Decision Record
+[Architecture Decision Record](../resources/architecture-review.md#adr-template)
 
 - **artifact**: `NNNN-{decision-title}.md`
 - **context**: Problem context and forces

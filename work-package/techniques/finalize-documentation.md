@@ -19,7 +19,7 @@ Path to planning folder containing test plan and artifacts
 
 ### adr
 
-*(optional)* The Architecture Decision Record created for this work package, if one exists
+*(optional)* The [Architecture Decision Record](../resources/architecture-review.md#adr-template) created for this work package, if one exists
 
 ### test-plan
 
@@ -61,7 +61,7 @@ PR number for cross-referencing
 
 ### completion-document
 
-Summary of delivered work, test coverage, and deferred items
+[Summary](../resources/complete-wp.md#section-guidelines) of delivered work, test coverage, and deferred items
 
 - **artifact**: `COMPLETE.md`
 - **deliverables**: What was implemented
