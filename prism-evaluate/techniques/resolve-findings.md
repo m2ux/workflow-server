@@ -13,9 +13,9 @@ Propose and apply finding-specific mitigations through structured one-by-one dia
 
 ## Inputs
 
-### evaluation_report_path
+### evaluation-report
 
-Path to the EVALUATION-REPORT.md consolidated evaluation report containing findings with IDs, severities, titles, descriptions, and referenced target sections
+The consolidated evaluation report containing findings with IDs, severities, titles, descriptions, and referenced target sections
 
 ### target_path
 
@@ -59,7 +59,7 @@ Original evaluation description for context
 
 ### 4. Compile Plan
 
-- After all findings are presented, compile MITIGATION-PLAN.md
+- After all findings are presented, compile the mitigation-plan
 - Structure: Summary table (ID, severity, tier, user decision), detailed changes grouped by tier, implementation priority order
 - Include the full proposed text for each accepted mitigation so the plan is self-contained
 - Verify every finding from the report has a corresponding entry (accepted, modified, or skipped)

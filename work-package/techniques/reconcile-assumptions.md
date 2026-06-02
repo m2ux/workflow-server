@@ -23,7 +23,7 @@ Path to the codebase to analyze
 
 ### comprehension-artifact
 
-*(optional)* Existing comprehension artifact to augment with findings. If absent, findings are recorded only in the assumptions log.
+*(optional)* Existing comprehension [artifact](../resources/codebase-comprehension.md#artifact-template) to augment with findings. If absent, findings are recorded only in the assumptions log.
 
 ## Protocol
 

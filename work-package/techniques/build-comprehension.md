@@ -95,7 +95,7 @@ Path to the target codebase directory
 
 ### comprehension-artifact
 
-Persistent comprehension artifact covering the relevant codebase area
+Persistent comprehension [artifact](../resources/codebase-comprehension.md#artifact-template) covering the relevant codebase area
 
 - **artifact**: `{codebase-area}.md`
 - **architecture_overview**: Module structure, dependencies, and design patterns

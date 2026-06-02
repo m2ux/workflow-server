@@ -41,7 +41,7 @@ Path to planning folder for artifact output
 - Below the index table, generate a '## Block Rationale' section containing one subsection per block (### Block N) with a descriptive paragraph explaining what the change does and why it exists — covering intent, context, and any non-obvious design choices
 - Rationale paragraphs should aid manual review by giving reviewers context before they inspect the diff
 - When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[context](./gitnexus-operations/context.md) `{name: <symbol>}` so the reviewer understands why the diff matters and which execution flows it touches.
-- Write index to change-block-index.md in planning folder
+- Write index to the change-block-index in planning folder
 - Always generate index before asking user to review
 - Follow the structured diff-review process in [manual-diff-review](../resources/manual-diff-review.md)
 
@@ -62,14 +62,14 @@ Path to planning folder for artifact output
 
 ### 7. Create Report
 
-- Create manual-diff-review.md report with all findings
+- Create the manual-diff-review-report with all findings
 - Include flagged rows, interview responses, and severity
 
 ## Outputs
 
 ### change-block-index
 
-Index of changed blocks for external diff review, with per-block rationale paragraphs hyperlinked from the index table to aid manual review
+[Index](../resources/manual-diff-review.md#file-index-generation) of changed blocks for external diff review, with per-block rationale paragraphs hyperlinked from the index table to aid manual review
 
 - **artifact**: `change-block-index.md`
 - **index_table**: Row (hyperlinked to rationale) | Path | File with review time estimate
@@ -78,7 +78,7 @@ Index of changed blocks for external diff review, with per-block rationale parag
 
 ### manual-diff-review-report
 
-Manual diff review findings from user-flagged blocks
+Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-review-report-template) from user-flagged blocks
 
 - **artifact**: `manual-diff-review.md`
 - **findings**: Per-block issues with interview responses

@@ -51,13 +51,13 @@ Summary, description, and context from the linked issue
 
 ### 5. Document Philosophy
 
-- Create design-philosophy.md artifact in planning folder
+- Create the design-philosophy-doc artifact in planning folder
 - Include problem statement, classification, complexity, workflow path rationale
 
 ### 6. Create Assumptions Log
 
 - Identify assumptions made during problem classification and path selection
-- Create assumptions-log.md artifact with initial assumptions
+- Create the assumptions-log artifact with initial assumptions
 - Create assumptions log here — first activity that makes decisions requiring assumptions
 
 ## Outputs
@@ -74,7 +74,7 @@ Records problem classification, design rationale, and workflow path decisions
 
 ### assumptions-log
 
-Log of assumptions made during design philosophy
+[Log](../resources/assumptions-review.md#assumptions-log-template) of assumptions made during design philosophy
 
 - **artifact**: `assumptions-log.md`
 - **assumptions**: Assumptions with categories: Problem Interpretation, Complexity Assessment, Workflow Path

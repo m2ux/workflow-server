@@ -17,9 +17,9 @@ Trigger and manage work-package workflow instances for each planned package in p
 
 Ordered list of packages not yet started
 
-### planning-folder-path
+### planning-folder
 
-Path to the planning folder for status updates
+The [planning folder](../resources/planning-folder-template.md#folder-location) for status updates
 
 ### priority-order
 
@@ -41,7 +41,7 @@ Full priority order for reference
 
 - Use attached [workflow-triggering-protocol](../resources/workflow-triggering-protocol.md) (workflow-triggering-protocol) for the triggering procedure
 - Call get_workflow('work-package') to load the work-package workflow
-- Pass context: package name, scope from plan document, dependencies, planning folder path
+- Pass context: package name, scope from plan document, dependencies, the planning-folder
 
 ### 4. Update Status
 
@@ -73,7 +73,7 @@ Execute one work-package workflow at a time — do not parallelize
 
 ### context-passing
 
-Pass package context (scope, dependencies, planning path) to each work-package workflow instance
+Pass package context (scope, dependencies, the planning-folder) to each work-package workflow instance
 
 ### handle-failures
 

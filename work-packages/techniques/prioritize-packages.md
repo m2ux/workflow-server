@@ -15,7 +15,7 @@ Evaluate and order work packages by dependencies, value, risk, and effort
 
 ### package-plans
 
-List of completed package plan documents with scope, dependencies, and effort
+List of completed package [plan documents](../resources/package-plan-template.md#template) with scope, dependencies, and effort
 
 ### dependency-map
 

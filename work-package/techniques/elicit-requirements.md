@@ -58,14 +58,14 @@ Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)
 
 ### 6. Create Document
 
-- Create requirements-elicitation.md artifact in planning folder
+- Create the requirements-document artifact in planning folder
 - Include elicited requirements, success criteria, scope boundaries, and assumptions
 
 ## Outputs
 
 ### requirements-document
 
-Elicited requirements with success criteria and scope
+Elicited [requirements](../resources/requirements-elicitation.md#document-template) with success criteria and scope
 
 - **artifact**: `requirements-elicitation.md`
 - **requirements**: Captured requirements list

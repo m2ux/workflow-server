@@ -45,7 +45,7 @@ List of files changed in the work package (from git diff)
 ### 5. Document Findings
 
 - Document findings with severity and recommendations
-- Create test-suite-review.md report in planning folder
+- Create the test-suite-review-report in planning folder
 
 ### 6. Present Summary
 
@@ -55,7 +55,7 @@ List of files changed in the work package (from git diff)
 
 ### test-suite-review-report
 
-Test suite review report documenting quality assessment
+Test suite review [report](../resources/test-suite-review.md#test-suite-review-report-template) documenting quality assessment
 
 - **artifact**: `test-suite-review.md`
 - **coverage_assessment**: Coverage analysis relative to changes

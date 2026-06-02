@@ -13,9 +13,9 @@ Produce finalized roadmap documentation with timeline, navigation, and success c
 
 ## Inputs
 
-### planning-folder-path
+### planning-folder
 
-Path to the planning folder containing all artifacts
+The [planning folder](../resources/planning-folder-template.md#folder-location) containing all artifacts
 
 ### priority-order
 
@@ -23,7 +23,7 @@ Ordered list of work packages with execution priority
 
 ### package-plans
 
-List of completed package plan document paths
+List of completed package [plan documents](../resources/package-plan-template.md#template)
 
 ## Protocol
 
@@ -61,13 +61,13 @@ List of completed package plan document paths
 
 ### start-here
 
-Completed START-HERE.md with executive summary, status, timeline, and criteria
+Completed [START-HERE.md](../resources/roadmap-template.md#start-heremd-final-format) with executive summary, status, timeline, and criteria
 
 - **artifact**: `START-HERE.md`
 
 ### readme
 
-Updated README.md with navigation links
+Updated [README.md](../resources/roadmap-template.md#readmemd-final-format) with navigation links
 
 - **artifact**: `README.md`
 

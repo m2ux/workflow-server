@@ -23,7 +23,7 @@ Path to planning folder for context
 
 ### design-philosophy-doc
 
-*(optional)* Design philosophy with scope and rationale
+*(optional)* Design [philosophy](../resources/design-framework.md#design-philosophy-artifact-template) with scope and rationale
 
 ## Protocol
 
@@ -56,7 +56,7 @@ Path to planning folder for context
 
 ### 5. Write Summary
 
-- Create architecture-summary.md in planning folder
+- Create the architecture-summary in planning folder
 - Combine diagrams with narrative explanation
 - Focus on impact, scope, and risk
 - Follow the architecture-summary template in [architecture-summary](../resources/architecture-summary.md)
@@ -65,7 +65,7 @@ Path to planning folder for context
 
 ### architecture-summary
 
-Stakeholder-facing architecture summary with diagrams
+Stakeholder-facing architecture [summary](../resources/architecture-summary.md#architecture-summary-artifact-template) with diagrams
 
 - **artifact**: `architecture-summary.md`
 - **system_context_diagram**: Mermaid system context diagram

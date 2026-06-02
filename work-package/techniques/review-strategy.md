@@ -65,11 +65,11 @@ Pull request number for scope reference
 
 - Read the live PR body via `gh pr view {pr_number} --json body --jq .body`.
 - Run update-pr::protocol.verify-body against the live body.
-- If body_conforms == false, record each body_findings entry in strategic-review-{n}.md under 'PR body conformance'.
+- If body_conforms == false, record each body_findings entry in the strategic-review-doc under 'PR body conformance'.
 
 ### 8. Document Findings
 
-- Document all findings in strategic-review-{n}.md
+- Document all findings in the strategic-review-doc
 - Categorize by type: investigation artifacts, over-engineering, orphaned infrastructure
 - If all changes justified, document clean review result
 
@@ -80,14 +80,14 @@ Pull request number for scope reference
 
 ### 10. Create Architecture Summary
 
-- Create architecture-summary.md following the format defined by the summarize-architecture technique (technique 20), which is the authoritative owner of diagram conventions
+- Create the architecture-summary-doc following the format defined by the summarize-architecture technique (technique 20), which is the authoritative owner of diagram conventions
 - Target stakeholder communication
 
 ## Outputs
 
 ### strategic-review-doc
 
-Strategic review findings and recommendations
+Strategic review [findings](../resources/strategic-review.md#strategic-review-artifact-template) and recommendations
 
 - **artifact**: `strategic-review-{n}.md`
 - **investigation_artifacts**: Extra logging, debug, temporary workarounds found
@@ -97,7 +97,7 @@ Strategic review findings and recommendations
 
 ### architecture-summary-doc
 
-Architecture summary with diagrams for stakeholders
+Architecture [summary](../resources/architecture-summary.md#architecture-summary-artifact-template) with diagrams for stakeholders
 
 - **artifact**: `architecture-summary.md`
 - **uml_diagrams**: UML-style diagrams of implementation

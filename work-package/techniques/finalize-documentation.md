@@ -17,13 +17,13 @@ Finalize documentation — update ADRs, complete test plans, create completion d
 
 Path to planning folder containing test plan and artifacts
 
-### adr-path
+### adr
 
-*(optional)* Path to ADR if one was created for this work package
+*(optional)* The Architecture Decision Record created for this work package, if one exists
 
-### test-plan-path
+### test-plan
 
-Path to test plan artifact
+The [test plan](../resources/test-plan.md#test-plan-structure) artifact for this work package
 
 ### pr-number
 
@@ -33,18 +33,18 @@ PR number for cross-referencing
 
 ### 1. Update Adr
 
-- If ADR exists at adr_path, update status to Accepted
+- If the adr exists, update status to Accepted
 - Record implementation outcome and any deviations
 
 ### 2. Finalize Test Plan
 
-- Load test plan from test_plan_path
+- Load the test-plan
 - Add hyperlinks to actual test source file locations
 - Ensure each test case references its source file and line
 
 ### 3. Create Completion Doc
 
-- Create COMPLETE.md in planning folder
+- Create the completion-document in planning folder
 - Summarize what was delivered
 - Document what was tested and test coverage
 - List deferred items and known limitations

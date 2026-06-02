@@ -19,7 +19,7 @@ Problem complexity assessment (simple|moderate|complex)
 
 ### design-philosophy-doc
 
-Design philosophy artifact with rationale and alternatives
+Design philosophy [artifact](../resources/design-framework.md#design-philosophy-artifact-template) with rationale and alternatives
 
 ### planning-folder-path
 

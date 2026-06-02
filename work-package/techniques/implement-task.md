@@ -19,7 +19,7 @@ A single atomic task to implement (description, affected files, dependencies)
 
 ### test-plan
 
-*(optional)* Test plan with strategy and acceptance criteria for guidance
+*(optional)* Test [plan](../resources/test-plan.md#test-plan-structure) with strategy and acceptance criteria for guidance
 
 ## Protocol
 

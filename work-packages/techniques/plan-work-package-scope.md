@@ -17,9 +17,9 @@ Define scope, dependencies, effort, and success criteria for a single package wi
 
 The work package currently being planned
 
-### planning-folder-path
+### planning-folder
 
-Path to the planning folder for storing plan documents
+The [planning folder](../resources/planning-folder-template.md#folder-location) for storing plan documents
 
 ## Protocol
 
@@ -57,13 +57,13 @@ Path to the planning folder for storing plan documents
 ### 6. Document Plan
 
 - Use attached [package-plan-template](../resources/package-plan-template.md) (package-plan-template) for the document structure
-- Create NN-{package-name}-plan.md in the planning folder using the template
+- Create NN-{package-name}-plan.md in the planning-folder using the template
 
 ## Outputs
 
 ### package-plan
 
-Work package plan document
+Work package [plan document](../resources/package-plan-template.md#template)
 
 - **artifact**: `{package-name}-plan.md`
 - **scope**: In-scope and out-of-scope definitions

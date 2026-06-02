@@ -17,9 +17,9 @@ Perform completion or context analysis for a multi-package initiative
 
 Type of analysis to perform: 'completion' or 'context'.
 
-### planning-folder-path
+### planning-folder
 
-Path to the planning folder for storing the analysis document
+The [planning folder](../resources/planning-folder-template.md#folder-location) for storing the analysis document
 
 ## Protocol
 
@@ -46,7 +46,7 @@ Path to the planning folder for storing the analysis document
 ### 4. Document Analysis
 
 - Create the analysis document using the appropriate template from the resource
-- Store as 01-COMPLETION-ANALYSIS.md or 02-CONTEXT-ANALYSIS.md in the planning folder
+- Store as 01-COMPLETION-ANALYSIS.md or 02-CONTEXT-ANALYSIS.md in the planning-folder
 - Set analysis_document variable to the document path
 
 ### 5. Present Findings

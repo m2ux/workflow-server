@@ -15,7 +15,7 @@ Verify scan completeness by cross-referencing all scanner outputs against the wo
 
 ### scanner-outputs
 
-Paths to all s{n}-{submodule}.json output files
+The per-submodule scanner [output files](../resources/sub-agent-output-schema.md#schema), one per scanner agent
 
 ### workflow-inventory
 
@@ -45,7 +45,7 @@ Expected scanner output schema from [sub-agent-output-schema](../resources/sub-a
 
 ### 4. Produce Gap Report
 
-- Compile all gaps into verification-report.json
+- Compile all gaps into the verification-report
 - Set verification_complete=true only if zero gaps found
 - verification_complete is only set when file and pattern coverage are both 100%
 

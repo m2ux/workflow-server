@@ -15,7 +15,7 @@ Merge findings from multiple scanner agents into a unified set: deduplicate find
 
 ### scanner-outputs
 
-Paths to all s{n}-{submodule}.json output files
+The per-submodule scanner [output files](../resources/sub-agent-output-schema.md#schema), one per scanner agent
 
 ## Protocol
 
@@ -44,7 +44,7 @@ Paths to all s{n}-{submodule}.json output files
 
 ### 5. Write Output
 
-- Produce merged-findings.json and reconciliation-table.json
+- Produce the merged-findings and the reconciliation table
 
 ## Outputs
 

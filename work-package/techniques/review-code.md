@@ -45,7 +45,7 @@ List of files changed in the work package (from git diff)
 ### 4. Document Findings
 
 - Document each finding with severity (critical, high, medium, low, informational)
-- Create code-review.md report in planning folder
+- Create the code-review-report in planning folder
 
 ### 5. Present Summary
 
@@ -55,7 +55,7 @@ List of files changed in the work package (from git diff)
 
 ### code-review-report
 
-Code review report documenting findings by severity
+Code review [report](../resources/rust-substrate-code-review.md#report-template) documenting findings by severity
 
 - **artifact**: `code-review.md`
 - **findings**: All findings with severity, affected file, line numbers, and description

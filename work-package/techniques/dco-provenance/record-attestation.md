@@ -20,14 +20,14 @@ One of: `certify` | `flag-legal`
 
 ## Output
 
-### provenance_log_path
+### provenance-log
 
-Path to the updated provenance-log.md
+The updated provenance log, with the attestation section appended
 
 ## Protocol
 
 1. Do NOT record the attestation until the human has explicitly selected `certify` or `flag-legal` at the dco-sign-off checkpoint.
-2. Append an `## Attestation` section to provenance-log.md containing: ISO 8601 timestamp, certifier identity (`{certifier_name} <{certifier_email}>`), and the selected option.
+2. Append an `## Attestation` section to the provenance-log containing: ISO 8601 timestamp, certifier identity (`{certifier_name} <{certifier_email}>`), and the selected option.
 3. If `option = flag-legal`, include a `Legal Review Note` field with the provided `legal_review_note` text.
 
 ## Errors

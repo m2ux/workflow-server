@@ -74,7 +74,7 @@ Original evaluation description, used for report context
 
 ### 6. Present Results
 
-- Read EVALUATION-REPORT.md from evaluation_report_path. Extract the executive summary: total findings by dimension and severity, the core finding, and top-priority recommendations.
+- Read the evaluation-report. Extract the executive summary: total findings by dimension and severity, the core finding, and top-priority recommendations.
 - Compile evaluation metrics: finding count by dimension, finding count by severity (Critical, High, Medium, Low), dimensions evaluated, number of prism runs triggered, total analysis artifacts produced.
 - Present the evaluation results to the user in a structured format: evaluation summary with finding counts by dimension and severity, core finding highlight, top-priority recommendations, and document index with paths to all deliverables (EVALUATION-REPORT.md, evaluation-plan.md, and all dimension-specific analysis artifacts).
 - List every artifact produced during the evaluation with its path, organised by dimension.

@@ -19,7 +19,7 @@ Which activity is generating assumptions
 
 ### existing-assumptions-log
 
-*(optional)* Path to assumptions-log.md if it exists
+*(optional)* The existing assumptions [log](../resources/assumptions-review.md#assumptions-log-template), if one exists
 
 ## Protocol
 
@@ -30,7 +30,7 @@ Which activity is generating assumptions
 
 ### 2. Write Assumptions
 
-- Write collected assumptions to assumptions-log.md with type, statement, rationale, and alternatives for each
+- Write collected assumptions to the assumptions-log with type, statement, rationale, and alternatives for each
 - The file is the record of truth — do not duplicate assumption content in checkpoint messages
 - Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See [assumption-reconciliation](../resources/assumption-reconciliation.md) for correct vs incorrect examples.
 
@@ -49,7 +49,7 @@ Which activity is generating assumptions
 
 - This technique supports two presentation modes depending on the consuming activity's structure. Batch mode: present all open assumptions together as a structured list, ordered by decision impact. Interview mode: present assumptions one at a time via the activity's forEach loop and per-assumption checkpoint. The activity's steps, loops, and checkpoints determine which mode applies — follow the activity structure.
 - In both modes, each assumption should contain the decision space, trade-offs, non-resolvability rationale, technical context, the agent's current position, and a reversibility flag as assembled by format-judgement-context. Order by decision impact: assumptions whose resolution most affects the implementation approach come first.
-- Include a clickable markdown link to assumptions-log.md for full details and reconciliation history
+- Include a clickable markdown link to the assumptions-log for full details and reconciliation history
 - Frame the review as judgement augmentation: the user is making informed decisions on genuinely open questions, not performing triage or rubber-stamping. The agent has already resolved everything it can.
 - Do not present code-resolved assumptions for re-confirmation — they are already validated with evidence in the assumptions log
 - When presenting 5 or more open assumptions in batch mode, group related assumptions by theme or domain to reduce cognitive load. Present the group heading before its assumptions so the user can orient before diving into details.
@@ -57,14 +57,14 @@ Which activity is generating assumptions
 ### 5. Record Outcomes
 
 - Mark each as confirmed, corrected, or needs-discussion
-- Update assumptions-log.md with outcomes and user responses
+- Update the assumptions-log with outcomes and user responses
 - Preserve all assumptions and their resolution status
 
 ## Outputs
 
 ### updated-assumptions-log
 
-Assumptions log updated with review outcomes — grows across activities
+Assumptions [log](../resources/assumptions-review.md#assumptions-log-template) updated with review outcomes — grows across activities
 
 - **artifact**: `assumptions-log.md`
 - **assumptions**: All assumptions with type, statement, rationale, alternatives

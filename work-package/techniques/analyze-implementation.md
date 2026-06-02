@@ -61,13 +61,13 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 
 - Link gaps to measurable success criteria from requirements
 - Document assumptions about current behavior
-- Create implementation-analysis.md artifact
+- Create the analysis-document artifact
 
 ## Outputs
 
 ### analysis-document
 
-Current implementation analysis with baselines and improvement opportunities
+Current implementation [analysis](../resources/implementation-analysis.md#document-template) with baselines and improvement opportunities
 
 - **artifact**: `implementation-analysis.md`
 - **current_state**: Location, usage, dependencies, architecture

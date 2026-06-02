@@ -28,11 +28,11 @@ One-line description of what was generated
 
 ## Output
 
-### provenance_log_path
+### provenance-log
 
-Path to the updated provenance-log.md
+The updated provenance log, with the appended task row
 
 ## Protocol
 
-1. If `provenance-log.md` does not exist, create it with the canonical header: `| Task ID | Assistant | Model | Prompt Class | Context Scope | Description |` followed by the divider `|---|---|---|---|---|---|`.
+1. If the provenance-log does not exist, create it with the canonical header: `| Task ID | Assistant | Model | Prompt Class | Context Scope | Description |` followed by the divider `|---|---|---|---|---|---|`.
 2. Append one row: `| {task_id} | {assistant} | {model_id} | {prompt_class} | {context_scope} | {description} |`.

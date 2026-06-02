@@ -15,7 +15,7 @@ Design the implementation approach and create a work package plan with task brea
 
 ### design-philosophy
 
-Design philosophy artifact with problem classification and workflow path
+Design philosophy [artifact](../resources/design-framework.md#design-philosophy-artifact-template) with problem classification and workflow path
 
 ### requirements
 
@@ -51,7 +51,7 @@ Elicited requirements with success criteria and scope
 
 ### 4. Write Plan
 
-- Create work-package-plan.md artifact in planning folder
+- Create the plan-document artifact in planning folder
 - Include task breakdown, dependencies, ordering
 - Document design decisions and assumptions
 
