@@ -13,23 +13,23 @@ Iteratively resolve code-analyzable assumptions through targeted codebase analys
 
 ## Inputs
 
-### assumptions-log-path
+### assumptions-log
 
-Path to the current assumptions-log.md
+The running [log](../resources/assumption-reconciliation.md#integration-with-assumptions-log) of open and resolved assumptions
 
 ### target-path
 
 Path to the codebase to analyze
 
-### comprehension-artifact-path
+### comprehension-artifact
 
-*(optional)* Path to existing comprehension artifact to augment with findings. If absent, findings are recorded only in the assumptions log.
+*(optional)* Existing comprehension artifact to augment with findings. If absent, findings are recorded only in the assumptions log.
 
 ## Protocol
 
 ### 1. Classify Resolvability
 
-- Read all open assumptions from assumptions-log.md
+- Read all open assumptions from the assumptions-log
 - For each, determine whether targeted code analysis could validate or invalidate it
 - Code-resolvable: assumptions about code behavior, data flows, type structures, API contracts, test coverage, implementation details, library behavior, ordering guarantees, error handling paths
 - Not code-resolvable: stakeholder decisions, operational questions, strategic judgments, time estimates, deployment status, business priorities, external system behavior
@@ -44,10 +44,10 @@ Path to the codebase to analyze
 
 ### 3. Update Assumptions
 
-- Update assumptions-log.md: mark resolved assumptions with finding, evidence, and resolution status
+- Update the assumptions-log: mark resolved assumptions with finding, evidence, and resolution status
 - Add any newly surfaced assumptions as Open with their classification (code-resolvable or not)
 - Maintain a running count: total, validated, invalidated, partially validated, open code-resolvable, open non-code-resolvable
-- Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See [assumption-reconciliation](../resources/assumption-reconciliation.md) for correct vs incorrect examples.
+- Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See the [formatting rule](../resources/assumption-reconciliation.md#markdown-formatting-rule) for correct vs incorrect examples.
 
 ### 4. Check Convergence
 
@@ -66,7 +66,7 @@ Path to the codebase to analyze
 
 ### reconciled-assumptions
 
-Assumptions log with all code-resolvable assumptions resolved and only stakeholder-dependent assumptions remaining
+Assumptions [log](../resources/assumption-reconciliation.md#integration-with-assumptions-log) with all code-resolvable assumptions resolved and only stakeholder-dependent assumptions remaining
 
 - **artifact**: `assumptions-log.md`
 - **resolution_counts**: Total, validated, invalidated, partially validated, open (with reason for each open item)
