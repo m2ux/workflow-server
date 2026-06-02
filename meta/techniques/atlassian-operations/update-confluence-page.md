@@ -4,7 +4,7 @@ Update a Confluence page (full body replace).
 
 ### cloudId
 
-From [resolve-cloud-id](./resolve-cloud-id.md)
+UUID of the target Atlassian cloud site.
 
 ### pageId
 

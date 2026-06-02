@@ -59,4 +59,4 @@ Collected results from all dispatched sub-agents.
 
 **Cause:** One or more agents in the roster were not dispatched (e.g., skipped due to context pressure)
 
-**Recovery:** Return INCOMPLETE status with the dispatch manifest. The orchestrator MUST dispatch the missing agents in a follow-up or flag the audit as incomplete. Do NOT proceed to structured-merge with missing agents.
+**Recovery:** Return INCOMPLETE status with the dispatch manifest. The orchestrator MUST dispatch the missing agents in a follow-up or flag the audit as incomplete. Do NOT proceed to finding consolidation with missing agents.

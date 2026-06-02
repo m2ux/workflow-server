@@ -21,7 +21,7 @@ Path to the planning folder containing all artifacts
 
 ### priority-order
 
-Ordered list of work packages from prioritization
+Ordered list of work packages with execution priority
 
 ### package-plans
 
@@ -85,4 +85,4 @@ Roadmap must be fully documented and approved before implementation begins
 
 **Cause:** Not all packages have completed plan documents
 
-**Recovery:** Return to package-planning to complete missing plans before finalizing roadmap
+**Recovery:** Complete the missing package plans before finalizing the roadmap

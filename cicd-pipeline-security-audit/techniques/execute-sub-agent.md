@@ -62,7 +62,7 @@ Bootstrap the workflow-server, load an assigned activity, follow its steps seque
 Structured JSON conforming to [sub-agent-output-schema](../resources/sub-agent-output-schema.md) (sub-agent-output-schema).
 
 - **scanner_id**: identifier for this agent instance (e.g., 'S1', 'S2', 'V', 'M')
-- **activity_followed**: the activity ID executed (e.g., 'sub-workflow-scan', 'sub-verification', 'sub-merge')
+- **activity_followed**: the activity ID executed
 - **steps_completed**: list of step IDs completed (must match activity definition)
 - **steps_skipped**: list of step IDs skipped with reasons (should be empty)
 - **findings**: structured list of findings with required fields per finding

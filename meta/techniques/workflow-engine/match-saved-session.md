@@ -4,11 +4,11 @@ Pick the saved-session candidate that best matches an identifying context.
 
 ### context
 
-Identifying context from [extract-identifying-context](./extract-identifying-context.md)
+Map of identifiers to match against: `{ issue_number?, branch_name?, pr_number?, work_package? }`
 
 ### candidates
 
-Saved sessions from [scan-saved-sessions](./scan-saved-sessions.md)
+Array of saved-session candidates `{ planning_slug, sessionIndex, savedAt, variables }` to choose among
 
 ## Output
 

@@ -4,7 +4,7 @@ Move an issue to a new status.
 
 ### cloudId
 
-From [resolve-cloud-id](./resolve-cloud-id.md)
+UUID of the target Atlassian cloud site.
 
 ### issueIdOrKey
 
@@ -12,7 +12,7 @@ Issue key
 
 ### transition
 
-Transition object with `id` from [list-jira-transitions](./list-jira-transitions.md)
+Transition object with an `id` identifying a status transition available for the current issue state
 
 ## Protocol
 

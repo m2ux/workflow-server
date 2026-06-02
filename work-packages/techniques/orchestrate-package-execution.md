@@ -17,7 +17,7 @@ Trigger and manage work-package workflow instances for each planned package in p
 
 ### remaining-packages
 
-Ordered list of packages not yet started, derived from priority order
+Ordered list of packages not yet started
 
 ### planning-folder-path
 

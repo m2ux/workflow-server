@@ -4,7 +4,7 @@ List pages in a Confluence space.
 
 ### cloudId
 
-From [resolve-cloud-id](./resolve-cloud-id.md)
+UUID of the target Atlassian cloud site.
 
 ### spaceId
 

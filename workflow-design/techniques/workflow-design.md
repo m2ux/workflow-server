@@ -73,7 +73,8 @@ Free-form description of the workflow the user wants to create or modify
 
 ### 8. Audit Anti Pattern Scan
 
-- Walk every anti-pattern in [anti-patterns](../resources/anti-patterns.md) (currently 40 entries across 7 categories); for each finding, record file, content, and recommended fix
+- Walk every anti-pattern in [anti-patterns](../resources/anti-patterns.md) (currently 41 entries across 8 categories); for each finding, record file, content, and recommended fix
+- I/O coupling (AP-41): for every technique, inspect its `## Inputs`, `## Output`/`## Outputs`, and `## Errors` sections — flag any entry that names or links a workflow-internal producer or consumer of the value (another technique, an activity, a step, a checkpoint, a loop, or a workflow/activity file) as its source or destination. Markdown links to another technique `.md` and prose forms ("from X", "produced by X", "consumed by X", "for X") are the signal. Exclude `## Protocol`/`## Capability` utilisation references, genuine "apply technique X" error-recovery actions, resource links, and descriptions of a value's intrinsic/external nature ("git diff output", "the user's request", "provided by the server"). For each finding, recommend rewriting the entry to describe the value generically and removing the source/destination naming
 
 ### 9. Audit Schema Validation
 

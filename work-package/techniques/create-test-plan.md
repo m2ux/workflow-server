@@ -21,7 +21,7 @@ Elicited requirements with success criteria
 
 ### plan-tasks
 
-Task breakdown from create-plan technique
+Atomic task breakdown with dependencies and ordering for the work package
 
 ## Protocol
 

@@ -17,7 +17,7 @@ Apply resource file changes — sync modified, rename, import new, remove delete
 
 ### changes
 
-Approved change set from discover-changes
+Approved, categorized change set (new, modified, renamed, deleted entries plus next index) to apply against the resources directory
 
 ### resource-path
 

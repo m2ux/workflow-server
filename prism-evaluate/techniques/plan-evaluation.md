@@ -95,7 +95,7 @@ The composed evaluation plan document
 
 ### dimension-plan
 
-Machine-readable dimension-to-lens mapping for the execute-analysis activity
+Machine-readable dimension-to-lens mapping
 
 - **plan**: Array of { dimension, pipeline_mode, lenses, analysis_focus, output_subdir }
 

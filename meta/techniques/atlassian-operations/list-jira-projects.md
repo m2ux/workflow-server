@@ -4,7 +4,7 @@ Discover Jira projects with their issue types.
 
 ### cloudId
 
-From [resolve-cloud-id](./resolve-cloud-id.md)
+UUID of the target Atlassian cloud site.
 
 ## Protocol
 

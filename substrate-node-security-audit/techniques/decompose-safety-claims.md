@@ -25,7 +25,7 @@ Code files to read for independent verification
 
 ### verification-gaps
 
-*(optional)* Gap report from the verification sub-agent (V). Lists §3 categories with incomplete coverage, missing tables, or unmet target profile obligations. PASS items in flagged categories are auto-included in the adversarial queue.
+*(optional)* Gap report listing §3 categories with incomplete coverage, missing tables, or unmet target profile obligations. PASS items in flagged categories are auto-included in the adversarial queue.
 
 ## Protocol
 

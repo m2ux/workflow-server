@@ -17,11 +17,11 @@ Create a GitHub or Jira issue with appropriate type, labels, and metadata
 
 ### issue-platform
 
-Selected platform for issue creation (github or jira). Set by platform-selection checkpoint.
+Selected platform for issue creation (github or jira)
 
 ### issue-type
 
-Type of issue (feature, bug, task, enhancement, epic). Set by issue-type-selection checkpoint.
+Type of issue (feature, bug, task, enhancement, epic)
 
 ### target-submodule
 

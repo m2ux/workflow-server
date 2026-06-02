@@ -4,7 +4,7 @@ Search within a known document by its resolved path.
 
 ### source_path
 
-Path returned by [catalog-search](./catalog-search.md)
+Resolved full source path of the document to search within
 
 ### query
 

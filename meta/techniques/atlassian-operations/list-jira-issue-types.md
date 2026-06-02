@@ -4,7 +4,7 @@ List issue types available in a project.
 
 ### cloudId
 
-From [resolve-cloud-id](./resolve-cloud-id.md)
+UUID of the target Atlassian cloud site.
 
 ### projectIdOrKey
 

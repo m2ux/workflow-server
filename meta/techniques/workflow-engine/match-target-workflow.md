@@ -8,7 +8,7 @@ User's free-form request
 
 ### catalog
 
-Array of workflow entries from [list-workflows](./list-workflows.md)
+Array of available workflow entries `{ id, title, description, tags }` to match against
 
 ## Output
 

@@ -17,7 +17,7 @@ Implement a single task from the work package plan by writing code changes
 
 ### current-task
 
-The task to implement from the plan (provided by the activity loop iterator)
+A single atomic task to implement (description, affected files, dependencies)
 
 ### test-plan
 

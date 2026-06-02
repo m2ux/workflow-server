@@ -21,7 +21,7 @@ Design philosophy artifact with problem classification and workflow path
 
 ### requirements
 
-Elicited requirements from elicitation activity
+Elicited requirements with success criteria and scope
 
 ### analysis-findings
 

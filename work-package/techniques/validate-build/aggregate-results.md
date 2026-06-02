@@ -4,19 +4,19 @@ Combine per-check outcomes into a single `validation_results` envelope.
 
 ### test_results
 
-Pass/fail and output captured from [cargo-operations](../cargo-operations/TECHNIQUE.md)::[test](../cargo-operations/test.md) (or the project-equivalent test command)
+Pass/fail and output from running the test suite
 
 ### build_status
 
-Pass/fail captured from [cargo-operations](../cargo-operations/TECHNIQUE.md)::[check](../cargo-operations/check.md) or [cargo-operations](../cargo-operations/TECHNIQUE.md)::[build-release](../cargo-operations/build-release.md) (or the project-equivalent build command)
+Pass/fail from the build or type-check step
 
 ### format_status
 
-Pass/fail captured from [cargo-operations](../cargo-operations/TECHNIQUE.md)::[fmt-check](../cargo-operations/fmt-check.md) (or the project-equivalent format check)
+Pass/fail from the format check
 
 ### lint_results
 
-Pass/fail and output captured from [cargo-operations](../cargo-operations/TECHNIQUE.md)::[clippy](../cargo-operations/clippy.md) (or the project-equivalent linter)
+Pass/fail and output from the linter
 
 ## Output
 

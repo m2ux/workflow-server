@@ -17,7 +17,7 @@ For a set of priority functions, enumerate preconditions, postconditions, cross-
 
 ### function-registry
 
-Registry of priority functions to analyze (from build-function-registry technique output)
+Registry of priority functions to analyze, classified by type and priority
 
 ### source-files
 

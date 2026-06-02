@@ -8,7 +8,7 @@ Identifier of the originally failed check
 
 ### fix_strategy
 
-`fix_strategy` from [analyze-failure](./analyze-failure.md)
+Concrete fix approach to execute (file edit, fmt-fix invocation, dependency install, etc.)
 
 ## Output
 
@@ -25,6 +25,6 @@ Boolean — true if the fix was applied; false if the fix requires user input or
 
 ### persistent_failure
 
-**Cause:** A check fails repeatedly after [analyze-failure](./analyze-failure.md) / [apply-fix](./apply-fix.md) iterations
+**Cause:** A check fails repeatedly across successive analyze/fix iterations
 
 **Recovery:** Surface the latest analysis to the user via the activity's checkpoint mechanism

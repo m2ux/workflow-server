@@ -18,7 +18,7 @@ Optional --features flags (empty string when none)
 
 ### lint_diagnostics
 
-Captured stdout/stderr (used by [validate-build](../validate-build/TECHNIQUE.md)::[analyze-failure](../validate-build/analyze-failure.md))
+Captured stdout/stderr from the linter run
 
 ## Protocol
 

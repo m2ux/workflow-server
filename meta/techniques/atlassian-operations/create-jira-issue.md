@@ -4,7 +4,7 @@ Create a new Jira issue.
 
 ### cloudId
 
-From [resolve-cloud-id](./resolve-cloud-id.md)
+UUID of the target Atlassian cloud site.
 
 ### projectKey
 
@@ -12,7 +12,7 @@ Project key
 
 ### issueTypeName
 
-Issue type name from [list-jira-issue-types](./list-jira-issue-types.md)
+Name of an issue type valid for the target project (e.g., `Task`, `Bug`)
 
 ### summary
 

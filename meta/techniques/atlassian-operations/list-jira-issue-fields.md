@@ -4,7 +4,7 @@ Discover the fields for a specific issue type in a project.
 
 ### cloudId
 
-From [resolve-cloud-id](./resolve-cloud-id.md)
+UUID of the target Atlassian cloud site.
 
 ### projectIdOrKey
 
@@ -12,7 +12,7 @@ Project key
 
 ### issueTypeId
 
-Issue type ID from [list-jira-issue-types](./list-jira-issue-types.md)
+Issue type ID identifying the issue type whose fields to discover
 
 ## Protocol
 

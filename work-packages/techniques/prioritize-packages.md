@@ -21,7 +21,7 @@ List of completed package plan documents with scope, dependencies, and effort
 
 ### dependency-map
 
-Inter-package dependency map from package planning
+Inter-package dependency map describing which packages block or depend on which others
 
 ## Protocol
 

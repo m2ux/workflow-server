@@ -17,7 +17,7 @@ Create Architecture Decision Record for moderate or complex implementations
 
 ### complexity
 
-Problem complexity from design-philosophy (simple|moderate|complex)
+Problem complexity assessment (simple|moderate|complex)
 
 ### design-philosophy-doc
 

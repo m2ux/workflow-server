@@ -17,11 +17,11 @@ Compose and dispatch per-submodule scanner sub-agents and coordination agents (V
 
 ### scanner-assignments
 
-Agent-to-submodule mapping from reconnaissance
+Agent-to-submodule mapping for the scanner roster
 
 ### reconnaissance-data
 
-Per-workflow classification data from reconnaissance
+Per-workflow trigger, permission, and checkout classification data
 
 ## Protocol
 

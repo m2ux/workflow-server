@@ -17,11 +17,11 @@ Research knowledge base and external sources to discover best practices, pattern
 
 ### requirements
 
-Elicited requirements from the elicitation activity
+Elicited requirements with success criteria and scope, used to focus the research
 
 ### problem-statement
 
-Problem statement from design philosophy
+Clear problem definition with system understanding, used to focus the research
 
 ## Protocol
 

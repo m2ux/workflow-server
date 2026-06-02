@@ -134,7 +134,7 @@ Human-readable analysis plan artifact
 
 ### analysis-units
 
-Machine-readable ordered array of analysis unit objects — drives the workflow's iteration loop
+Machine-readable ordered array of analysis unit objects, each specifying a target, mode, and lens selection to execute
 
 - **units**: Array of { target, target_type, pipeline_mode, lenses, role, risk, rationale, unit_output_subdir }
 

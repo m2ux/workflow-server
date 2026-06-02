@@ -17,7 +17,7 @@ Perform completion or context analysis for a multi-package initiative
 
 ### analysis-type
 
-Type of analysis to perform: 'completion' or 'context'. Set by the analysis-type-selection checkpoint.
+Type of analysis to perform: 'completion' or 'context'.
 
 ### planning-folder-path
 

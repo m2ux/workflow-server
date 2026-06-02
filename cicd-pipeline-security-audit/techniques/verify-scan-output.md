@@ -21,7 +21,7 @@ Paths to all s{n}-{submodule}.json output files
 
 ### workflow-inventory
 
-Complete workflow file inventory from scope-setup
+Complete inventory of workflow files with classification data
 
 ### output-schema
 

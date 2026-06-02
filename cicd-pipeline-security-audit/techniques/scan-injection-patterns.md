@@ -21,7 +21,7 @@ List of workflow file paths to scan
 
 ### reconnaissance-data
 
-Pre-classified trigger, permission, and checkout data from reconnaissance
+Pre-classified trigger, permission, and checkout data for the workflow files
 
 ### ai-config-inventory
 

@@ -17,11 +17,11 @@ Analyze current implementation to understand effectiveness, establish baselines,
 
 ### requirements
 
-Elicited requirements from the elicitation activity
+Elicited requirements with success criteria and scope, used to focus the analysis and link baselines to measurable criteria
 
 ### problem-statement
 
-Problem statement from design philosophy
+Clear problem definition with system understanding, used to scope the analysis
 
 ### target-submodule
 

@@ -17,7 +17,7 @@ Define scope, dependencies, effort, and success criteria for a single package wi
 
 ### current-package
 
-The work package currently being planned (from the forEach loop)
+The work package currently being planned
 
 ### planning-folder-path
 

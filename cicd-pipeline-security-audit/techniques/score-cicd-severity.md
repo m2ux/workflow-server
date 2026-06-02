@@ -17,7 +17,7 @@ Score CI/CD pipeline vulnerabilities using Impact x Exploitability rubric calibr
 
 ### findings
 
-List of findings from the merge agent, each with pattern ID, source, sink, and evidence
+Unified list of findings, each with pattern ID, source, sink, and evidence
 
 ## Protocol
 

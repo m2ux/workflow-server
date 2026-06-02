@@ -4,7 +4,7 @@ Read a Confluence page as Markdown.
 
 ### cloudId
 
-From [resolve-cloud-id](./resolve-cloud-id.md)
+UUID of the target Atlassian cloud site.
 
 ### pageId
 

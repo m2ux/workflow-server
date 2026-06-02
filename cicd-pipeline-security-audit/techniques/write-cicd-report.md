@@ -17,11 +17,11 @@ Produce the final CI/CD security audit report with findings, severity scores, an
 
 ### scored-findings
 
-Merged findings with severity scores from the scoring technique
+Merged findings annotated with severity levels and scoring rationale
 
 ### coverage-data
 
-Coverage verification data from the verification agent
+Scan completeness verification data (file and per-pattern coverage)
 
 ## Protocol
 

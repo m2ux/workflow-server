@@ -17,7 +17,7 @@ Propose and apply finding-specific mitigations through structured one-by-one dia
 
 ### evaluation_report_path
 
-Path to the EVALUATION-REPORT.md produced by the consolidate-report activity
+Path to the EVALUATION-REPORT.md consolidated evaluation report containing findings with IDs, severities, titles, descriptions, and referenced target sections
 
 ### target_path
 

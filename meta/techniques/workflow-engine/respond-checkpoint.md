@@ -26,7 +26,7 @@ Variable updates returned by the server, to pass back down to the worker on resu
 
 **Cause:** `respond_checkpoint` returned `no active checkpoint on session`.
 
-**Recovery:** The session has no active checkpoint to resolve. Verify `session_index` references the correct worker session and that [present-checkpoint-to-user](./present-checkpoint-to-user.md) reported a checkpoint before this call.
+**Recovery:** The session has no active checkpoint to resolve. Verify `session_index` references the correct worker session and that an active checkpoint was reported before this call.
 
 ## Rules
 

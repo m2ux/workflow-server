@@ -8,7 +8,7 @@ Path to the planning folder
 
 ### artifact_prefix
 
-The activity's `artifactPrefix` (server-computed from the activity filename, e.g., `09` from `09-post-impl-review.toon`); provided by the server in the activity definition
+The numeric `artifactPrefix` that orders artifacts (e.g., `09`); provided by the server in the activity definition
 
 ### bare_filename
 

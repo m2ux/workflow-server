@@ -29,11 +29,11 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 
 ### dispatch-manifest
 
-*(optional)* Dispatch manifest from the dispatch-sub-agents technique showing assigned vs dispatched agents
+*(optional)* Dispatch manifest showing assigned vs dispatched agents
 
 ### agent-assignments
 
-*(optional)* Crate-to-agent-group assignments from reconnaissance
+*(optional)* Crate-to-agent-group assignments
 
 ## Protocol
 
@@ -98,7 +98,7 @@ Verification report with gap list and re-dispatch recommendations.
 
 **Cause:** One or more assigned agents were not dispatched
 
-**Recovery:** HARD STOP — dispatch missing agents before proceeding to structured-merge
+**Recovery:** HARD STOP — dispatch missing agents before proceeding to finding consolidation
 
 ### coverage_gate_failure
 

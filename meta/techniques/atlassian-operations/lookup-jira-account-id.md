@@ -4,7 +4,7 @@ Resolve a name or email to a Jira account ID.
 
 ### cloudId
 
-From [resolve-cloud-id](./resolve-cloud-id.md)
+UUID of the target Atlassian cloud site.
 
 ### searchString
 

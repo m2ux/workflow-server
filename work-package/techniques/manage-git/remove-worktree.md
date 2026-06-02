@@ -16,7 +16,7 @@ The worktree path to remove
 
 ### worktree_created
 
-Must be true (set by [create-worktree](./create-worktree.md)); if false, this operation is a no-op
+Boolean — whether a worktree exists at `target_path`. Must be true to proceed; if false, this operation is a no-op
 
 ## Output
 

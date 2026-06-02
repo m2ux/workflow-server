@@ -21,7 +21,7 @@ Directory containing all evaluation artifacts and where the report will be writt
 
 ### dimension_plan
 
-The dimension-to-lens mapping from dimension-planning, used to locate and interpret artifacts
+The dimension-to-lens mapping, used to locate and interpret artifacts
 
 ### completed_analyses
 

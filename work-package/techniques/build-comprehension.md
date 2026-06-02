@@ -17,7 +17,7 @@ Build or augment codebase comprehension through progressive analysis and persist
 
 ### problem-statement
 
-Problem statement from design philosophy — focuses the comprehension on relevant areas
+Clear problem definition with system understanding — focuses the comprehension on relevant areas
 
 ### target-path
 

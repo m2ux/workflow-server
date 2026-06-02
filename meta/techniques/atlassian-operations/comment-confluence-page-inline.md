@@ -4,7 +4,7 @@ Add an inline (in-text) comment to a Confluence page.
 
 ### cloudId
 
-From [resolve-cloud-id](./resolve-cloud-id.md)
+UUID of the target Atlassian cloud site.
 
 ### pageId
 
