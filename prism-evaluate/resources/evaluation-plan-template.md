@@ -1,6 +1,6 @@
 ---
 name: evaluation-plan-template
-description: Template for the evaluation plan document produced by the plan-evaluation technique.
+description: Template for the evaluation plan document.
 metadata:
   order: 2
   legacy_id: 2
@@ -8,10 +8,9 @@ metadata:
 
 # Evaluation Plan Template
 
-Template for the human-readable evaluation plan produced by the plan-evaluation technique. The plan
+Template for the human-readable evaluation plan. The plan
 classifies the target, surveys its structure, maps each dimension to prism lens and pipeline-mode
-configurations, and groups dimensions for execution. The three sections below mirror the technique's
-write-evaluation-plan protocol step.
+configurations, and groups dimensions for execution.
 
 ## Evaluation Plan Template
 

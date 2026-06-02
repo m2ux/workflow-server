@@ -1,6 +1,6 @@
 ---
 name: final-output-template
-description: Document skeleton for the clean final REPORT.md produced by the generate-report technique. Defines front-matter, Executive Summary, Core Finding, severity-ordered Findings sections, Corrections Required, and the Traceability appendix. Methodology-free, factual voice.
+description: Document skeleton for the clean final REPORT.md. Defines front-matter, Executive Summary, Core Finding, severity-ordered Findings sections, Corrections Required, and the Traceability appendix. Methodology-free, factual voice.
 metadata:
   order: 49
   legacy_id: 49
@@ -9,10 +9,9 @@ metadata:
   type: template
 ---
 
-This resource defines the faithful structure of the final report artifact. The structure mirrors the
-`generate-report` technique's `## Outputs > report` components (report_path, finding_count, core_finding)
-and its Compose Report protocol step. Findings are written in factual declarative voice with no attribution
-to passes, lenses, or analytical process.
+This resource defines the faithful structure of the final report artifact. The report carries a
+`report_path`, a `finding_count`, and a `core_finding`. Findings are written in factual declarative
+voice with no attribution to passes, lenses, or analytical process.
 
 ## REPORT.md Template
 

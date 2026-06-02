@@ -9,7 +9,7 @@ metadata:
 
 # Scanner Sub-Agent Output Schema
 
-Each per-submodule scanner agent (S1-Sn) writes a JSON file to the planning folder following this schema. The verification agent (V) validates outputs against this schema. The merge agent (M) consumes these files to produce the unified finding set.
+Each per-submodule scanner agent (S1-Sn) writes a JSON file to the planning folder following this schema.
 
 ## File Naming Convention
 
@@ -134,7 +134,7 @@ Where `{n}` is the scanner agent number (1-based) and `{submodule}` is the submo
 |-------|------|----------|-------------|
 | `id` | string | Yes | Unique ID: `{scanner_id}-F{nnn}` |
 | `pattern_id` | string | Yes | P1 through P7 |
-| `severity_hint` | string | Yes | Scanner's severity estimate (final scoring by M/report) |
+| `severity_hint` | string | Yes | Scanner's severity estimate (final scoring applied downstream) |
 | `title` | string | Yes | Brief description of the vulnerability |
 | `source` | object | Yes | Attacker-controlled input: type, description, entry_point |
 | `sink` | object | Yes | Privileged execution: type, description, execution_context |
@@ -150,7 +150,7 @@ Same as finding fields but represent items without a confirmed source-to-sink fl
 
 ## Validation Rules
 
-The verification agent (V) checks:
+A valid output satisfies:
 
 1. `patterns_applied` contains all seven patterns
 2. `workflow_files_scanned` equals `workflow_files_total` (or `coverage.files.skipped` explains gaps)

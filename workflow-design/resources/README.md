@@ -8,13 +8,13 @@ Five markdown resources providing the design principles, construct inventories, 
 
 ## Resource Index
 
-| Index | Resource | Purpose | Used By |
-|-------|----------|---------|---------|
-| `00` | [Design Principles](design-principles.md) | Condensed reference of all 14 design principles with enforcement mechanisms | All activities — loaded during [Context and Literacy](../activities/README.md#02-context-and-literacy), referenced throughout |
-| `01` | [Schema Construct Inventory](schema-construct-inventory.md) | Prose-to-formal construct mapping tables for activity, workflow, technique, and condition schemas | [Quality Review](../activities/README.md#08-quality-review) (expressiveness audit), [Content Drafting](../activities/README.md#07-content-drafting) (construct selection) |
-| `02` | [Anti-Patterns](anti-patterns.md) | 40 prohibited patterns organized by category: structural, interaction, schema, rule hygiene, description hygiene, tool-technique-doc consistency, execution | [Quality Review](../activities/README.md#08-quality-review) (anti-pattern scan), review mode (compliance audit) |
-| `03` | [Update Mode Guide](update-mode-guide.md) | Content preservation rules, impact analysis procedure, side-effect detection patterns | Update mode: [Intake](../activities/README.md#01-intake), [Impact Analysis](../activities/README.md#05-impact-analysis), [Content Drafting](../activities/README.md#07-content-drafting) |
-| `04` | [Review Mode Guide](review-mode-guide.md) | Supplementary guide: activation, activity flow, compliance report template, transition-to-update-mode contract. **The audit procedure itself is canonical in the `workflow-design` technique protocol's `audit-*` steps** — this resource does not duplicate it. | Review mode: [Quality Review](../activities/README.md#08-quality-review), [Validate and Commit](../activities/README.md#09-validate-and-commit) |
+| Index | Resource | Purpose |
+|-------|----------|---------|
+| `00` | [Design Principles](design-principles.md) | Condensed reference of all 14 design principles with enforcement mechanisms |
+| `01` | [Schema Construct Inventory](schema-construct-inventory.md) | Prose-to-formal construct mapping tables for activity, workflow, technique, and condition schemas |
+| `02` | [Anti-Patterns](anti-patterns.md) | 40 prohibited patterns organized by category: structural, interaction, schema, rule hygiene, description hygiene, tool-technique-doc consistency, execution |
+| `03` | [Update Mode Guide](update-mode-guide.md) | Content preservation rules, impact analysis procedure, side-effect detection patterns |
+| `04` | [Review Mode Guide](review-mode-guide.md) | Supplementary guide: activation, activity flow, compliance report template, transition-to-update-mode contract. **The audit procedure itself is canonical in the `workflow-design` technique protocol's `audit-*` steps** — this resource does not duplicate it. |
 
 ---
 
@@ -22,7 +22,7 @@ Five markdown resources providing the design principles, construct inventories, 
 
 ### 00 — Design Principles
 
-The 14 design principles derived from analysis of 175+ historical workflow creation sessions across two projects. Each principle entry includes the rule statement and the structural enforcement mechanism that backs it. This resource is the authoritative checklist for the quality review activity.
+The 14 design principles derived from analysis of 175+ historical workflow creation sessions across two projects. Each principle entry includes the rule statement and the structural enforcement mechanism that backs it. This resource is the authoritative checklist for design-principle compliance.
 
 ### 01 — Schema Construct Inventory
 

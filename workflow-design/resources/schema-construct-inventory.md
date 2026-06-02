@@ -8,7 +8,7 @@ metadata:
 
 # Schema Construct Inventory
 
-Maps informal patterns (what agents tend to write as prose) to their formal schema equivalents. During quality review, every piece of prose must be checked against this inventory — if a formal construct exists, it must be used.
+Maps informal patterns (what agents tend to write as prose) to their formal schema equivalents. Every piece of prose must be checked against this inventory — if a formal construct exists, it must be used.
 
 **Authoritative schema sources:**
 

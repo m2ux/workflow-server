@@ -9,7 +9,7 @@ metadata:
 
 # Audit Prompt
 
-**Purpose:** Template for the self-contained security audit prompt produced by the compose-audit-prompt technique. The prompt is tailored to the target codebase's architecture, language, and trust boundaries, and becomes the `analysis_focus` for the triggered prism workflow.
+**Purpose:** Template for the self-contained security audit prompt. The prompt is tailored to the target codebase's architecture, language, and trust boundaries, and becomes the `analysis_focus` for the triggered prism workflow.
 
 **What good looks like:** A reviewer (human or agent) can read the prompt and begin auditing with no context beyond the codebase path. Every domain names concrete modules, patterns, and questions; trust-boundary data appears only when GitNexus indexed the target.
 

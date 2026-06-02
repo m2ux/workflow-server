@@ -1,6 +1,6 @@
 ---
 name: cicd-audit-report-template
-description: Document skeleton for the final CI/CD security audit report produced by write-cicd-report.
+description: Document skeleton for the final CI/CD security audit report.
 metadata:
   version: 1.0.0
   order: 6
@@ -9,7 +9,7 @@ metadata:
 
 # CI/CD Audit Report
 
-Document skeleton for the final report produced by `write-cicd-report`. The section order follows the technique's protocol — executive summary, finding details, severity distribution, remediation roadmap, methodology — and every finding block carries the fields the `finding-format` rule requires (number, pattern ID, severity, source, sink, evidence snippet, remediation). Written to `01-cicd-audit-report.md`.
+Document skeleton for the final report. The section order is executive summary, finding details, severity distribution, remediation roadmap, methodology — and every finding block carries the fields number, pattern ID, severity, source, sink, evidence snippet, and remediation. Written to `01-cicd-audit-report.md`.
 
 What good looks like: every finding has a confirmed source-to-sink flow and a specific remediation; compound chains are documented as priority items; observations without a confirmed flow are listed separately as informational; and the reconciliation table appears as an appendix.
 

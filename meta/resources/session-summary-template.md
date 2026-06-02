@@ -5,9 +5,9 @@ description: Skeleton for the markdown session summary composed at workflow clos
 
 # Session Summary
 
-Composed by [`workflow-engine::generate-summary`](../techniques/workflow-engine/generate-summary.md)
-from the `workflow` definition (id, title, outcomes) and the run `trace` (completed
-activities, checkpoint decisions, artifacts produced), then presented to the user.
+A markdown summary built from the `workflow` definition (id, title, outcomes) and
+the run `trace` (completed activities, checkpoint decisions, artifacts produced),
+then presented to the user.
 
 ## Session Summary Template
 

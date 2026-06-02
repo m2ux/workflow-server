@@ -10,12 +10,12 @@ Tool reference content for Atlassian, GitNexus, and state management has moved i
 
 ## Resource Index
 
-| Resource ID | Resource | Purpose | Used By |
-|-------------|----------|---------|---------|
-| `bootstrap-protocol` | [Bootstrap Protocol](./bootstrap-protocol.md) | Pre-session navigation primer — load schemas, then `start_session({ workflow_id: "meta", agent_id: "orchestrator" })` and save the returned `session_index`. | The agent at a blank-slate prompt |
-| `activity-worker-prompt` | [Activity Worker Prompt](./activity-worker-prompt.md) | Template prompt for spawning an activity-worker sub-agent | [`workflow-engine::dispatch-activity`](../techniques/workflow-engine/dispatch-activity.md) |
-| `workflow-orchestrator-prompt` | [Workflow Orchestrator Prompt](./workflow-orchestrator-prompt.md) | Template prompt for spawning a workflow-orchestrator sub-agent | Meta dispatch-client-workflow activity |
-| `session-summary-template` | [Session Summary Template](./session-summary-template.md) | Skeleton for the markdown session summary composed at workflow close | [`workflow-engine::generate-summary`](../techniques/workflow-engine/generate-summary.md) |
+| Resource ID | Resource | Purpose |
+|-------------|----------|---------|
+| `bootstrap-protocol` | [Bootstrap Protocol](./bootstrap-protocol.md) | Pre-session navigation primer — load schemas, then `start_session({ workflow_id: "meta", agent_id: "orchestrator" })` and save the returned `session_index`. |
+| `activity-worker-prompt` | [Activity Worker Prompt](./activity-worker-prompt.md) | Template prompt for spawning an activity-worker sub-agent |
+| `workflow-orchestrator-prompt` | [Workflow Orchestrator Prompt](./workflow-orchestrator-prompt.md) | Template prompt for spawning a workflow-orchestrator sub-agent |
+| `session-summary-template` | [Session Summary Template](./session-summary-template.md) | Skeleton for the markdown session summary composed at workflow close |
 
 ### Removed in v5/v6
 

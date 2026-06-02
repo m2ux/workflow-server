@@ -9,7 +9,7 @@ metadata:
 
 # Planning Folder Template
 
-**Purpose:** Templates for the initial planning folder structure created during folder-setup.
+**Purpose:** Templates for the initial planning folder structure.
 
 ---
 

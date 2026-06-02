@@ -1,6 +1,6 @@
 ---
 name: gap-analysis-template
-description: Document skeleton for the gap-analysis report (02-gap-analysis.md) produced by the write-gap-analysis technique, comparing AI audit findings against a professional reference report.
+description: Document skeleton for the gap-analysis report (02-gap-analysis.md), comparing AI audit findings against a professional reference report.
 metadata:
   order: 10
   legacy_id: 10
@@ -10,12 +10,10 @@ metadata:
 
 ## Overview
 
-The gap-analysis report is produced by the [write-gap-analysis](../techniques/write-gap-analysis.md)
-technique during the gap-analysis phase. It compares the AI audit findings (`01-audit-report.md`)
-against a professional reference report, which is loaded for the first and only time during this
-phase (contamination prevention). The skeleton below mirrors the technique's declared output
-components: extract the reference finding list, then map/classify/analyze every finding before
-writing the artifact.
+The gap-analysis report compares the AI audit findings (`01-audit-report.md`)
+against a professional reference report, which is loaded for the first and only time during the
+gap-analysis phase (contamination prevention). The skeleton below structures the output: extract
+the reference finding list, then map/classify/analyze every finding before writing the artifact.
 
 ## gap-analysis Template
 

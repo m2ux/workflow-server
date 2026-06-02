@@ -9,11 +9,11 @@ metadata:
 
 # Intermediate Artifact Schemas
 
-JSON shapes for the intermediate artifacts that flow between phases of the CI/CD audit: the reconnaissance inventory, the scanner roster, the verification gap report, and the merge outputs. The per-scanner output is documented separately in [sub-agent-output-schema](sub-agent-output-schema.md). Each section below lists every field, its type, and its meaning, derived from the producing technique's declared outputs and protocol.
+JSON shapes for the intermediate artifacts that flow between phases of the CI/CD audit: the reconnaissance inventory, the scanner roster, the verification gap report, and the merge outputs. The per-scanner output is documented separately in [sub-agent-output-schema](sub-agent-output-schema.md). Each section below lists every field, its type, and its meaning.
 
 ## workflow-inventory
 
-Produced by `inventory-workflows`. Complete inventory of workflow files with classification data, mirroring the four declared output components (`file_list`, `trigger_classification`, `permission_map`, `checkout_patterns`) and the script identification step.
+Complete inventory of workflow files with classification data, comprising four output components (`file_list`, `trigger_classification`, `permission_map`, `checkout_patterns`) plus an identified-scripts component.
 
 ```json
 {
@@ -85,7 +85,7 @@ Produced by `inventory-workflows`. Complete inventory of workflow files with cla
 
 ## scanner-assignments
 
-The agent-to-submodule mapping for the scanner roster, consumed by `dispatch-scanners`. One scanner agent is assigned per submodule that contains workflows; each entry carries the context variables the dispatcher composes into the scanner sub-agent prompt.
+The agent-to-submodule mapping for the scanner roster. One scanner agent is assigned per submodule that contains workflows; each entry carries the context variables composed into the scanner sub-agent prompt.
 
 ```json
 {
@@ -128,7 +128,7 @@ The agent-to-submodule mapping for the scanner roster, consumed by `dispatch-sca
 
 ## verification-report
 
-Produced by `verify-scan-output`. Scan completeness verification with gaps and re-scan recommendations, mirroring the four declared output components (`file_coverage`, `pattern_coverage`, `gaps`, `recommendation`).
+Scan completeness verification with gaps and re-scan recommendations, comprising four output components (`file_coverage`, `pattern_coverage`, `gaps`, `recommendation`).
 
 ```json
 {
@@ -188,7 +188,7 @@ Produced by `verify-scan-output`. Scan completeness verification with gaps and r
 
 ## merged-findings
 
-Produced by `merge-scan-findings`. The unified finding set after deduplication and cross-pattern correlation, mirroring the three declared output components (`findings`, `compounds`, `observations`).
+The unified finding set after deduplication and cross-pattern correlation, comprising three output components (`findings`, `compounds`, `observations`).
 
 ```json
 {
@@ -246,7 +246,7 @@ Produced by `merge-scan-findings`. The unified finding set after deduplication a
 
 ## reconciliation
 
-Produced by `merge-scan-findings`. Per-scanner finding mapping to merged findings — every original scanner finding maps to a merged finding number or is marked duplicate, and `unaccounted` must equal zero for every scanner.
+Per-scanner finding mapping to merged findings — every original scanner finding maps to a merged finding number or is marked duplicate, and `unaccounted` must equal zero for every scanner.
 
 ```json
 {

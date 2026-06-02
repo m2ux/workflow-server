@@ -251,7 +251,7 @@ Target-specific checks for the Group D toolkit review agents (D1: ledger helpers
 
 ## Vulnerability Domain Hints
 
-Pre-identified vulnerability domain targets for this codebase. The `map-vulnerability-domains` technique uses these as seed hints during reconnaissance. They accelerate domain mapping but do not replace dynamic analysis.
+Pre-identified vulnerability domain targets for this codebase, usable as seed hints during reconnaissance. They accelerate domain mapping but do not replace dynamic analysis.
 
 | §3 Class | Trigger Location | Pattern |
 |----------|-----------------|---------|

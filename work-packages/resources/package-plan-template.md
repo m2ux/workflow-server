@@ -9,7 +9,7 @@ metadata:
 
 # Package Plan Template
 
-**Purpose:** Template for individual work package plan documents created during the package-planning loop.
+**Purpose:** Template for individual work package plan documents.
 
 ---
 

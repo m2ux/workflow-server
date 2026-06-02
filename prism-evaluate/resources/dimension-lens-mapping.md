@@ -8,7 +8,7 @@ metadata:
 
 # Dimension-to-Lens Mapping Matrix
 
-Maps evaluation dimensions to prism pipeline modes and lens configurations. Used by the plan-evaluation technique during the map-dimensions-to-lenses protocol step.
+Maps evaluation dimensions to prism pipeline modes and lens configurations.
 
 ## Standard Mappings
 

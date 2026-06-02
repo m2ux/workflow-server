@@ -1,6 +1,6 @@
 ---
 name: roadmap-template
-description: "Update the START-HERE.md skeleton (created during folder-setup) with completed content:"
+description: "Update the START-HERE.md skeleton with completed content:"
 metadata:
   version: 1.0.0
   order: 5
@@ -15,7 +15,7 @@ metadata:
 
 ## START-HERE.md Final Format
 
-Update the START-HERE.md skeleton (created during folder-setup) with completed content:
+Update the START-HERE.md skeleton with completed content:
 
 ```markdown
 # {Initiative Name}

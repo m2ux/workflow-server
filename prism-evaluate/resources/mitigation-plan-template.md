@@ -1,6 +1,6 @@
 ---
 name: mitigation-plan-template
-description: Template for the mitigation plan produced by the resolve-findings technique.
+description: Template for the mitigation plan.
 metadata:
   order: 4
   legacy_id: 4
@@ -8,10 +8,9 @@ metadata:
 
 # Mitigation Plan Template
 
-Template for the mitigation plan produced by the resolve-findings technique. The plan records the
+Template for the mitigation plan. The plan records the
 disposition of every finding from the evaluation report after one-by-one dialogue with the user, with
-the full proposed text for each accepted mitigation so the plan is self-contained. The sections below
-mirror the technique's compile-plan protocol step. Findings are classified into tiers: T1 (direct
+the full proposed text for each accepted mitigation so the plan is self-contained. Findings are classified into tiers: T1 (direct
 correction), T2 (reframing & caveating), T3 (novel mitigation), T4 (structural / immovable).
 
 ## Mitigation Plan Template

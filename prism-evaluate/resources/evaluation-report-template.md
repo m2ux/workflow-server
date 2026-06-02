@@ -1,6 +1,6 @@
 ---
 name: evaluation-report-template
-description: Template for the consolidated evaluation report produced by the compose-evaluation-report technique.
+description: Template for the consolidated evaluation report.
 metadata:
   order: 3
   legacy_id: 3
@@ -8,9 +8,9 @@ metadata:
 
 # Evaluation Report Template
 
-Template for the consolidated evaluation report produced by the compose-evaluation-report technique. The
+Template for the consolidated evaluation report. The
 report consolidates prism analysis artifacts across all evaluation dimensions into a unified, standalone
-document. The sections below mirror the technique's compose-report protocol step. The report MUST NOT
+document. The report MUST NOT
 contain methodology metadata — no lens names, pipeline modes, pass descriptions, or process narratives;
 findings are presented as conclusions.
 
