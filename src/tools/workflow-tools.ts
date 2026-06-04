@@ -131,7 +131,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           rules: wf.rules,
           variables: wf.variables,
           initialActivity: wf.initialActivity,
-          activities: wf.activities?.map((a: { id: string; name?: string; required?: boolean }) => ({ id: a.id, name: a.name, required: a.required })) ?? [],
+          activities: wf.activities?.map((a: { id: string; name?: string; required?: boolean; artifactPrefix?: string | undefined }) => ({ id: a.id, name: a.name, required: a.required, artifactPrefix: a.artifactPrefix })) ?? [],
           session_index,
         };
 

@@ -49,12 +49,14 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       ],
       "stepsExecuted": [
         "resolve-reference",
+        "update-reference-submodules",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
         "detect-merge-strategy",
         "detect-project-type",
         "check-issue",
         "activate-issue",
+        "initialize-planning-folder",
         "present-problem-overview",
         "derive-branch-name",
         "compute-canonical-target-path",
@@ -62,7 +64,6 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "check-branch",
         "check-pr",
         "create-pr",
-        "initialize-planning-folder",
         "determine-next-activity",
       ],
       "unresolved": [],
@@ -74,8 +75,8 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "design-philosophy.md",
-        "assumptions-log.md",
+        "02-design-philosophy.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -141,8 +142,8 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "test-plan.md",
       ],
       "artifactsWritten": [
-        "work-package-plan.md",
-        "test-plan.md",
+        "06-work-package-plan.md",
+        "06-test-plan.md",
       ],
       "checkpoints": [
         {
@@ -175,7 +176,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "assumptions-log.md",
+        "07-assumptions-log.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -194,8 +195,8 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "provenance-log.md",
       ],
       "artifactsWritten": [
-        "assumptions-log.md",
-        "provenance-log.md",
+        "08-assumptions-log.md",
+        "08-provenance-log.md",
       ],
       "checkpoints": [
         {
@@ -226,12 +227,12 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "structural-findings.md",
       ],
       "artifactsWritten": [
-        "change-block-index.md",
-        "manual-diff-review.md",
-        "code-review.md",
-        "test-suite-review.md",
-        "architecture-summary.md",
-        "structural-findings.md",
+        "09-change-block-index.md",
+        "09-manual-diff-review.md",
+        "09-code-review.md",
+        "09-test-suite-review.md",
+        "09-architecture-summary.md",
+        "09-structural-findings.md",
       ],
       "checkpoints": [
         {
@@ -280,8 +281,8 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "strategic-review-{n}.md",
-        "architecture-summary.md",
+        "11-strategic-review-n.md",
+        "11-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -358,8 +359,8 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
-        "COMPLETE.md",
-        "workflow-retrospective.md",
+        "13-COMPLETE.md",
+        "13-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -391,7 +392,6 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
     "design-philosophy",
     "codebase-comprehension",
     "requirements-elicitation",
-    "research",
     "implementation-analysis",
     "plan-prepare",
     "assumptions-review",
@@ -433,12 +433,14 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       ],
       "stepsExecuted": [
         "resolve-reference",
+        "update-reference-submodules",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
         "detect-merge-strategy",
         "detect-project-type",
         "check-issue",
         "activate-issue",
+        "initialize-planning-folder",
         "present-problem-overview",
         "derive-branch-name",
         "compute-canonical-target-path",
@@ -446,7 +448,6 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "check-branch",
         "check-pr",
         "create-pr",
-        "initialize-planning-folder",
         "determine-next-activity",
       ],
       "unresolved": [],
@@ -458,8 +459,8 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "design-philosophy.md",
-        "assumptions-log.md",
+        "02-design-philosophy.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -524,7 +525,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "requirements-elicitation.md",
       ],
       "artifactsWritten": [
-        "requirements-elicitation.md",
+        "03-requirements-elicitation.md",
       ],
       "checkpoints": [
         {
@@ -543,7 +544,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         },
       ],
       "manifestStatus": "valid",
-      "next": "research",
+      "next": "implementation-analysis",
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "stakeholder-discussion",
@@ -556,51 +557,12 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "unresolved": [],
     },
     {
-      "activity": "research",
-      "artifacts": [
-        "kb-research.md",
-      ],
-      "artifactsWritten": [
-        "kb-research.md",
-      ],
-      "checkpoints": [
-        {
-          "id": "research-findings",
-          "option": "sufficient",
-          "setVariable": undefined,
-        },
-        {
-          "id": "context-scope-declaration",
-          "option": "repo-only",
-          "setVariable": {
-            "context_scope": "repo-only",
-          },
-        },
-      ],
-      "manifestStatus": "valid",
-      "next": "implementation-analysis",
-      "orphanCheckpoints": [],
-      "stepsExecuted": [
-        "kb-research",
-        "web-research",
-        "synthesize",
-        "collect-assumptions",
-        "document",
-        "update-assumptions-log",
-        "reconcile-assumptions",
-        "present-resolved-assumptions",
-        "declare-context-scope",
-        "interview-open-assumptions",
-      ],
-      "unresolved": [],
-    },
-    {
       "activity": "implementation-analysis",
       "artifacts": [
         "implementation-analysis.md",
       ],
       "artifactsWritten": [
-        "implementation-analysis.md",
+        "05-implementation-analysis.md",
       ],
       "checkpoints": [
         {
@@ -632,8 +594,8 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "test-plan.md",
       ],
       "artifactsWritten": [
-        "work-package-plan.md",
-        "test-plan.md",
+        "06-work-package-plan.md",
+        "06-test-plan.md",
       ],
       "checkpoints": [
         {
@@ -666,7 +628,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "assumptions-log.md",
+        "07-assumptions-log.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -685,8 +647,8 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "provenance-log.md",
       ],
       "artifactsWritten": [
-        "assumptions-log.md",
-        "provenance-log.md",
+        "08-assumptions-log.md",
+        "08-provenance-log.md",
       ],
       "checkpoints": [
         {
@@ -717,12 +679,12 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "structural-findings.md",
       ],
       "artifactsWritten": [
-        "change-block-index.md",
-        "manual-diff-review.md",
-        "code-review.md",
-        "test-suite-review.md",
-        "architecture-summary.md",
-        "structural-findings.md",
+        "09-change-block-index.md",
+        "09-manual-diff-review.md",
+        "09-code-review.md",
+        "09-test-suite-review.md",
+        "09-architecture-summary.md",
+        "09-structural-findings.md",
       ],
       "checkpoints": [
         {
@@ -771,8 +733,8 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "strategic-review-{n}.md",
-        "architecture-summary.md",
+        "11-strategic-review-n.md",
+        "11-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -849,8 +811,8 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
-        "COMPLETE.md",
-        "workflow-retrospective.md",
+        "13-COMPLETE.md",
+        "13-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -926,12 +888,14 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       ],
       "stepsExecuted": [
         "resolve-reference",
+        "update-reference-submodules",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
         "detect-merge-strategy",
         "detect-project-type",
         "check-issue",
         "activate-issue",
+        "initialize-planning-folder",
         "present-problem-overview",
         "derive-branch-name",
         "compute-canonical-target-path",
@@ -939,7 +903,6 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "check-branch",
         "check-pr",
         "create-pr",
-        "initialize-planning-folder",
         "determine-next-activity",
       ],
       "unresolved": [],
@@ -951,8 +914,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "design-philosophy.md",
-        "assumptions-log.md",
+        "02-design-philosophy.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -1017,7 +980,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "requirements-elicitation.md",
       ],
       "artifactsWritten": [
-        "requirements-elicitation.md",
+        "03-requirements-elicitation.md",
       ],
       "checkpoints": [
         {
@@ -1054,7 +1017,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "kb-research.md",
       ],
       "artifactsWritten": [
-        "kb-research.md",
+        "04-kb-research.md",
       ],
       "checkpoints": [
         {
@@ -1093,7 +1056,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "implementation-analysis.md",
       ],
       "artifactsWritten": [
-        "implementation-analysis.md",
+        "05-implementation-analysis.md",
       ],
       "checkpoints": [
         {
@@ -1125,8 +1088,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "test-plan.md",
       ],
       "artifactsWritten": [
-        "work-package-plan.md",
-        "test-plan.md",
+        "06-work-package-plan.md",
+        "06-test-plan.md",
       ],
       "checkpoints": [
         {
@@ -1159,7 +1122,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "assumptions-log.md",
+        "07-assumptions-log.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -1178,8 +1141,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "provenance-log.md",
       ],
       "artifactsWritten": [
-        "assumptions-log.md",
-        "provenance-log.md",
+        "08-assumptions-log.md",
+        "08-provenance-log.md",
       ],
       "checkpoints": [
         {
@@ -1210,12 +1173,12 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "structural-findings.md",
       ],
       "artifactsWritten": [
-        "change-block-index.md",
-        "manual-diff-review.md",
-        "code-review.md",
-        "test-suite-review.md",
-        "architecture-summary.md",
-        "structural-findings.md",
+        "09-change-block-index.md",
+        "09-manual-diff-review.md",
+        "09-code-review.md",
+        "09-test-suite-review.md",
+        "09-architecture-summary.md",
+        "09-structural-findings.md",
       ],
       "checkpoints": [
         {
@@ -1264,8 +1227,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "strategic-review-{n}.md",
-        "architecture-summary.md",
+        "11-strategic-review-n.md",
+        "11-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -1342,8 +1305,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
-        "COMPLETE.md",
-        "workflow-retrospective.md",
+        "13-COMPLETE.md",
+        "13-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -1418,12 +1381,14 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       ],
       "stepsExecuted": [
         "resolve-reference",
+        "update-reference-submodules",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
         "detect-merge-strategy",
         "detect-project-type",
         "check-issue",
         "activate-issue",
+        "initialize-planning-folder",
         "present-problem-overview",
         "derive-branch-name",
         "compute-canonical-target-path",
@@ -1431,7 +1396,6 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "check-branch",
         "check-pr",
         "create-pr",
-        "initialize-planning-folder",
         "determine-next-activity",
       ],
       "unresolved": [],
@@ -1443,8 +1407,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "design-philosophy.md",
-        "assumptions-log.md",
+        "02-design-philosophy.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -1509,7 +1473,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "kb-research.md",
       ],
       "artifactsWritten": [
-        "kb-research.md",
+        "04-kb-research.md",
       ],
       "checkpoints": [
         {
@@ -1548,7 +1512,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "implementation-analysis.md",
       ],
       "artifactsWritten": [
-        "implementation-analysis.md",
+        "05-implementation-analysis.md",
       ],
       "checkpoints": [
         {
@@ -1580,8 +1544,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "test-plan.md",
       ],
       "artifactsWritten": [
-        "work-package-plan.md",
-        "test-plan.md",
+        "06-work-package-plan.md",
+        "06-test-plan.md",
       ],
       "checkpoints": [
         {
@@ -1614,7 +1578,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "assumptions-log.md",
+        "07-assumptions-log.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -1633,8 +1597,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "provenance-log.md",
       ],
       "artifactsWritten": [
-        "assumptions-log.md",
-        "provenance-log.md",
+        "08-assumptions-log.md",
+        "08-provenance-log.md",
       ],
       "checkpoints": [
         {
@@ -1665,12 +1629,12 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "structural-findings.md",
       ],
       "artifactsWritten": [
-        "change-block-index.md",
-        "manual-diff-review.md",
-        "code-review.md",
-        "test-suite-review.md",
-        "architecture-summary.md",
-        "structural-findings.md",
+        "09-change-block-index.md",
+        "09-manual-diff-review.md",
+        "09-code-review.md",
+        "09-test-suite-review.md",
+        "09-architecture-summary.md",
+        "09-structural-findings.md",
       ],
       "checkpoints": [
         {
@@ -1719,8 +1683,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "strategic-review-{n}.md",
-        "architecture-summary.md",
+        "11-strategic-review-n.md",
+        "11-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -1797,8 +1761,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
-        "COMPLETE.md",
-        "workflow-retrospective.md",
+        "13-COMPLETE.md",
+        "13-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -1880,17 +1844,18 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "detect-review-mode",
         "capture-pr-reference",
         "resolve-reference",
+        "update-reference-submodules",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
         "detect-merge-strategy",
         "detect-project-type",
         "check-issue",
         "activate-issue",
+        "initialize-planning-folder",
         "present-problem-overview",
         "compute-canonical-target-path",
         "create-review-worktree",
         "check-branch",
-        "initialize-planning-folder",
         "determine-next-activity",
       ],
       "unresolved": [],
@@ -1902,8 +1867,8 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "design-philosophy.md",
-        "assumptions-log.md",
+        "02-design-philosophy.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -1978,8 +1943,8 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "test-plan.md",
       ],
       "artifactsWritten": [
-        "work-package-plan.md",
-        "test-plan.md",
+        "06-work-package-plan.md",
+        "06-test-plan.md",
       ],
       "checkpoints": [
         {
@@ -2012,7 +1977,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "assumptions-log.md",
+        "07-assumptions-log.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -2031,8 +1996,8 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "provenance-log.md",
       ],
       "artifactsWritten": [
-        "assumptions-log.md",
-        "provenance-log.md",
+        "08-assumptions-log.md",
+        "08-provenance-log.md",
       ],
       "checkpoints": [
         {
@@ -2063,12 +2028,12 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "structural-findings.md",
       ],
       "artifactsWritten": [
-        "change-block-index.md",
-        "manual-diff-review.md",
-        "code-review.md",
-        "test-suite-review.md",
-        "architecture-summary.md",
-        "structural-findings.md",
+        "09-change-block-index.md",
+        "09-manual-diff-review.md",
+        "09-code-review.md",
+        "09-test-suite-review.md",
+        "09-architecture-summary.md",
+        "09-structural-findings.md",
       ],
       "checkpoints": [
         {
@@ -2118,8 +2083,8 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "strategic-review-{n}.md",
-        "architecture-summary.md",
+        "11-strategic-review-n.md",
+        "11-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -2197,8 +2162,8 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
-        "COMPLETE.md",
-        "workflow-retrospective.md",
+        "13-COMPLETE.md",
+        "13-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -2266,12 +2231,14 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       ],
       "stepsExecuted": [
         "resolve-reference",
+        "update-reference-submodules",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
         "detect-merge-strategy",
         "detect-project-type",
         "check-issue",
         "activate-issue",
+        "initialize-planning-folder",
         "present-problem-overview",
         "derive-branch-name",
         "compute-canonical-target-path",
@@ -2279,7 +2246,6 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "check-branch",
         "check-pr",
         "create-pr",
-        "initialize-planning-folder",
         "determine-next-activity",
       ],
       "unresolved": [],
@@ -2291,8 +2257,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "design-philosophy.md",
-        "assumptions-log.md",
+        "02-design-philosophy.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -2358,8 +2324,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "test-plan.md",
       ],
       "artifactsWritten": [
-        "work-package-plan.md",
-        "test-plan.md",
+        "06-work-package-plan.md",
+        "06-test-plan.md",
       ],
       "checkpoints": [
         {
@@ -2392,7 +2358,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "assumptions-log.md",
+        "07-assumptions-log.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -2411,8 +2377,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "provenance-log.md",
       ],
       "artifactsWritten": [
-        "assumptions-log.md",
-        "provenance-log.md",
+        "08-assumptions-log.md",
+        "08-provenance-log.md",
       ],
       "checkpoints": [
         {
@@ -2443,12 +2409,12 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "structural-findings.md",
       ],
       "artifactsWritten": [
-        "change-block-index.md",
-        "manual-diff-review.md",
-        "code-review.md",
-        "test-suite-review.md",
-        "architecture-summary.md",
-        "structural-findings.md",
+        "09-change-block-index.md",
+        "09-manual-diff-review.md",
+        "09-code-review.md",
+        "09-test-suite-review.md",
+        "09-architecture-summary.md",
+        "09-structural-findings.md",
       ],
       "checkpoints": [
         {
@@ -2497,8 +2463,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "strategic-review-{n}.md",
-        "architecture-summary.md",
+        "11-strategic-review-n.md",
+        "11-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -2575,8 +2541,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
-        "COMPLETE.md",
-        "workflow-retrospective.md",
+        "13-COMPLETE.md",
+        "13-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",

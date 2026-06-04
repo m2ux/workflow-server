@@ -315,13 +315,16 @@ function findOrphanCheckpoints(act: ActivityDef): string[] {
 }
 
 /** Write a stub file for each planning-location artifact the activity declares. Returns filenames. */
-function writeArtifactStubs(act: ActivityDef, variables: Record<string, unknown>, planningFolder: string): string[] {
+function writeArtifactStubs(act: ActivityDef, variables: Record<string, unknown>, planningFolder: string, prefix?: string): string[] {
   const written: string[] = [];
   for (const art of act.artifacts ?? []) {
     if (art.location && art.location !== 'planning') continue; // only planning-folder artifacts here
-    let name = interpolate(art.name, variables);
-    const prefix = act.artifactPrefix;
-    if (prefix && !/^\d/.test(name)) name = `${prefix}-${name}`;
+    // Interpolate {var}; strip braces from any still-unresolved token so the filename is clean.
+    let name = interpolate(art.name, variables).replace(/\{([^}]+)\}/g, '$1');
+    // artifactPrefix is server-computed and not present in the raw activity TOON;
+    // it is supplied from the get_workflow summary (see walk()).
+    const pfx = prefix ?? act.artifactPrefix;
+    if (pfx && !/^\d/.test(name)) name = `${pfx}-${name}`;
     try {
       writeFileSync(join(planningFolder, name), `<!-- robot-worker stub artifact for activity ${act.id} -->\n`);
       written.push(name);
@@ -378,7 +381,9 @@ export async function walk(
   if (isError(wfRes)) throw new Error('get_workflow failed');
   const wf = parseWorkflowResponse(wfRes);
   const orchestratorUnresolved = (parseBundle(wfRes).unresolved as string[] | undefined) ?? [];
-  const declaredActivities = ((wf.activities as Array<{ id: string }> | undefined) ?? []).map(a => a.id);
+  const wfActivities = (wf.activities as Array<{ id: string; artifactPrefix?: string }> | undefined) ?? [];
+  const declaredActivities = wfActivities.map(a => a.id);
+  const activityPrefixes = new Map(wfActivities.map(a => [a.id, a.artifactPrefix] as const));
 
   const variables: Record<string, unknown> = { ...defaultVariables(wf), ...(policy.initialVariables ?? {}) };
   const initialActivity = (wf.initialActivity
@@ -419,7 +424,7 @@ export async function walk(
       transitionOverride = exec.transitionOverride;
       stepsExecuted = exec.stepsExecuted;
       pendingManifest = exec.manifest;
-      artifactsWritten = writeArtifactStubs(act, variables, planningFolder);
+      artifactsWritten = writeArtifactStubs(act, variables, planningFolder, activityPrefixes.get(current));
     } else {
       cpRecords = [];
       for (const cp of act.checkpoints ?? []) {

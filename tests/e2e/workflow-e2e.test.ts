@@ -27,11 +27,9 @@ describe('work-package E2E walk (Layer 1: machinery)', () => {
     { policy: skipOptionalPolicy, mustExclude: ['requirements-elicitation', 'research'] },
     { policy: fullWorkflowPolicy, mustInclude: ['requirements-elicitation', 'research', 'implementation-analysis'] },
     { policy: researchOnlyPolicy, mustInclude: ['research'], mustExclude: ['requirements-elicitation'] },
-    // NOTE: elicitation-only sets needs_research=false, yet the graph still
-    // routes requirements-elicitation → research unconditionally (that activity's
-    // only forward edge), so the research activity IS visited on this path.
-    // Reported as a label-vs-graph finding; assertion reflects actual behaviour.
-    { policy: elicitationOnlyPolicy, mustInclude: ['requirements-elicitation', 'research'] },
+    // B1 fix: elicitation-only (needs_research=false) now skips the research
+    // activity — requirements-elicitation routes straight to implementation-analysis.
+    { policy: elicitationOnlyPolicy, mustInclude: ['requirements-elicitation', 'implementation-analysis'], mustExclude: ['research'] },
     { policy: reviewModePolicy },
   ];
 
