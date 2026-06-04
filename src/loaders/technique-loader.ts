@@ -239,21 +239,35 @@ function projectTechniqueBody(t: Technique): Record<string, unknown> {
   return body;
 }
 
-function parseOperationRef(ref: string): { workflow?: string; technique: string; name: string } | null {
-  const sepIdx = ref.indexOf('::');
-  if (sepIdx < 0) return null;
-  const skillPart = ref.slice(0, sepIdx);
-  const name = ref.slice(sepIdx + 2);
-  if (!name) return null;
-
-  const slashIdx = skillPart.indexOf('/');
-  if (slashIdx > 0) {
-    const workflow = skillPart.slice(0, slashIdx);
-    const technique = skillPart.slice(slashIdx + 1);
-    if (!workflow || !technique) return null;
-    return { workflow, technique, name };
+/**
+ * Parse a technique reference path. The canonical form is a `::`-delimited path
+ * `[workflow::]technique[::sub-technique[::...]]`. The parent workflow is
+ * IMPLICIT for same-workflow refs (omit it — the current workflow is filled in
+ * at resolution); include it only to reach another workflow. Legacy
+ * `workflow/technique` is accepted and normalised.
+ *
+ * Returns `subName` = undefined for a whole-technique ref (deliver its protocol),
+ * or the `/`-joined sub-technique path for a sub-technique/rule ref.
+ */
+function parseTechniquePath(ref: string, workflowDir: string): { workflow?: string | undefined; technique: string; subName?: string | undefined } | null {
+  // Normalise a legacy `workflow/technique` leading segment to `workflow::technique`.
+  const head = ref.split('::', 1)[0] ?? ref;
+  let normalized = ref;
+  if (head.includes('/')) {
+    const slash = head.indexOf('/');
+    normalized = `${head.slice(0, slash)}::${head.slice(slash + 1)}${ref.slice(head.length)}`;
   }
-  return { technique: skillPart, name };
+  const segs = normalized.split('::').filter(s => s.length > 0);
+  if (segs.length === 0) return null;
+  // Canonical leading-workflow segment (only when explicitly a known workflow);
+  // otherwise the parent workflow stays implicit (resolved current-first).
+  let workflow: string | undefined;
+  if (segs.length >= 2 && existsSync(getWorkflowTechniquesDir(workflowDir, segs[0] as string))) {
+    workflow = segs.shift();
+  }
+  const technique = segs[0];
+  if (!technique) return null;
+  return { workflow, technique, subName: segs.length > 1 ? segs.slice(1).join('/') : undefined };
 }
 
 /**
@@ -275,29 +289,29 @@ export async function resolveOperations(
   const ruleKey = (workflow: string | undefined, technique: string, name: string) => `${workflow ?? ''}::${technique}::${name}`;
 
   for (const ref of refs) {
-    // Whole-technique reference (no '::'): deliver the technique's own protocol,
-    // capability, and interface, and auto-include its rules. A technique IS
-    // deliverable — not only its sub-techniques — so a bare `supporting[]` ref
-    // (standalone or grouped parent) reaches the worker with its full body.
-    if (!ref.includes('::')) {
-      const slashIdx = ref.indexOf('/');
-      const wf = slashIdx > 0 ? ref.slice(0, slashIdx) : undefined;
-      const techId = slashIdx > 0 ? ref.slice(slashIdx + 1) : ref;
-      const tRes = await readTechnique(wf ? `${wf}/${techId}` : techId, workflowDir, wf ?? currentWorkflow);
+    const path = parseTechniquePath(ref, workflowDir);
+    if (!path) {
+      results.push({ source: '', name: '', type: 'not-found', body: null, ref });
+      continue;
+    }
+
+    // Whole-technique reference (no sub-technique segment): deliver the technique's
+    // own protocol, capability and interface (standalone OR grouped parent) and
+    // auto-include its rules. A technique IS deliverable — not just its subs. The
+    // parent workflow is implicit (current-first) unless the path names one.
+    if (path.subName === undefined) {
+      const tRes = await readTechnique(path.workflow ? `${path.workflow}/${path.technique}` : path.technique, workflowDir, path.workflow ?? currentWorkflow);
       if (tRes.success) {
-        results.push({ source: techId, workflow: wf, name: '', type: 'technique', body: projectTechniqueBody(tRes.value), ref });
-        touchedSkills.set(skillKey(wf, techId), { workflow: wf, technique: techId, cached: tRes.value });
+        results.push({ source: path.technique, workflow: path.workflow, name: '', type: 'technique', body: projectTechniqueBody(tRes.value), ref });
+        touchedSkills.set(skillKey(path.workflow, path.technique), { workflow: path.workflow, technique: path.technique, cached: tRes.value });
       } else {
-        results.push({ source: techId, workflow: wf, name: '', type: 'not-found', body: null, ref });
+        results.push({ source: path.technique, workflow: path.workflow, name: '', type: 'not-found', body: null, ref });
       }
       continue;
     }
 
-    const parsed = parseOperationRef(ref);
-    if (!parsed) {
-      results.push({ source: '', name: '', type: 'not-found', body: null, ref });
-      continue;
-    }
+    // Sub-technique reference — resolved below as an `<sub>.md` file, else a rule/error.
+    const parsed = { workflow: path.workflow, technique: path.technique, name: path.subName };
 
     const techRef = parsed.workflow ? `${parsed.workflow}/${parsed.technique}` : parsed.technique;
 
