@@ -45,6 +45,9 @@ const KEEP = args.includes('--keep');
 // so it cannot create real worktrees/branches outside the sandbox. --full enables
 // Bash for a faithful run once the plumbing is validated.
 const FULL = args.includes('--full');
+// 'policy' (3a): deterministic orchestrator. 'agent' (3b): a real orchestrator
+// agent makes checkpoint decisions (present_checkpoint -> judge -> respond_checkpoint).
+const ORCHESTRATOR = getArg('orchestrator', 'policy');
 const policy = defaultPolicy;
 
 function log(msg: string) { process.stdout.write(`[orchestrator] ${msg}\n`); }
@@ -94,8 +97,13 @@ function runWorker(prompt: string, cfgPath: string, target: string, resumeId: st
 
 const WORKER_BRIEF = readFileSync(join(HERE, 'worker-brief.md'), 'utf8');
 
+const ORCHESTRATOR_BRIEF = readFileSync(join(HERE, 'orchestrator-brief.md'), 'utf8');
+
 function initialPrompt(sessionIndex: string): string {
   return `${WORKER_BRIEF}\n\n---\nsession_index: ${sessionIndex}\nThis is your first turn for the current activity. Begin executing it now.`;
+}
+function orchestratorPrompt(sessionIndex: string): string {
+  return `${ORCHESTRATOR_BRIEF}\n\n---\nsession_index: ${sessionIndex}\nResolve the active checkpoint now.`;
 }
 function resumePrompt(sessionIndex: string, checkpointId: string, optionId: string): string {
   return `session_index: ${sessionIndex}\nThe orchestrator resolved checkpoint "${checkpointId}" with option "${optionId}". Call resume_checkpoint to get the variable updates, apply them, then continue executing the remaining steps of this activity (yield again at the next checkpoint, or report when the activity's steps are complete).`;
@@ -108,7 +116,7 @@ async function main() {
   if (!existsSync(CLAUDE_BIN)) throw new Error(`claude not found at ${CLAUDE_BIN}`);
 
   const sb = setupSandbox();
-  log(`sandbox: ${sb.root} (model=${MODEL}, activities<=${MAX_ACTIVITIES}, policy=${policy.name})`);
+  log(`sandbox: ${sb.root} (model=${MODEL}, activities<=${MAX_ACTIVITIES}, orchestrator=${ORCHESTRATOR}, policy=${policy.name})`);
 
   const h = await createHarness({ workspaceDir: sb.workspace });
   const transcript: Array<Record<string, unknown>> = [];
@@ -157,15 +165,41 @@ async function main() {
         const active = state.activeCheckpoint;
         if (active && active.checkpointId) {
           const cp = (act.checkpoints ?? []).find((c: CheckpointDef) => c.id === active.checkpointId);
-          const optionId = cp ? policy.choose({ activityId: current, checkpoint: cp, variables }) : active.checkpointId;
-          log(`worker yielded checkpoint "${active.checkpointId}" → orchestrator responds "${optionId}"`);
-          const resp = parseToolResponse(await h.client.callTool({
-            name: 'respond_checkpoint', arguments: { session_index: sessionIndex, option_id: optionId },
-          }));
-          const effect = (resp.effect ?? {}) as Record<string, unknown>;
-          const sv = (effect.setVariable ?? effect.variablesSet) as Record<string, unknown> | undefined;
+          let optionId: string;
+          let sv: Record<string, unknown> | undefined;
+          let decidedBy = ORCHESTRATOR;
+
+          if (ORCHESTRATOR === 'agent') {
+            // 3b: a real orchestrator agent calls present_checkpoint + respond_checkpoint.
+            runWorker(orchestratorPrompt(sessionIndex), sb.cfgPath, sb.target, null);
+            const after = JSON.parse(readFileSync(sessionPath, 'utf8'));
+            const rec = after.checkpointResponses?.[`${current}-${active.checkpointId}`];
+            if (!after.activeCheckpoint && rec) {
+              optionId = rec.optionId;
+              sv = rec.effects?.variablesSet as Record<string, unknown> | undefined;
+            } else {
+              // Orchestrator agent didn't resolve it — fall back to policy so the run proceeds.
+              decidedBy = 'policy-fallback';
+              optionId = cp ? policy.choose({ activityId: current, checkpoint: cp, variables }) : active.checkpointId;
+              const resp = parseToolResponse(await h.client.callTool({
+                name: 'respond_checkpoint', arguments: { session_index: sessionIndex, option_id: optionId },
+              }));
+              const effect = (resp.effect ?? {}) as Record<string, unknown>;
+              sv = (effect.setVariable ?? effect.variablesSet) as Record<string, unknown> | undefined;
+            }
+          } else {
+            // 3a: deterministic orchestrator.
+            optionId = cp ? policy.choose({ activityId: current, checkpoint: cp, variables }) : active.checkpointId;
+            const resp = parseToolResponse(await h.client.callTool({
+              name: 'respond_checkpoint', arguments: { session_index: sessionIndex, option_id: optionId },
+            }));
+            const effect = (resp.effect ?? {}) as Record<string, unknown>;
+            sv = (effect.setVariable ?? effect.variablesSet) as Record<string, unknown> | undefined;
+          }
+
+          log(`worker yielded "${active.checkpointId}" → ${decidedBy} responds "${optionId}"`);
           if (sv) Object.assign(variables, sv);
-          cpRecords.push({ checkpointId: active.checkpointId, optionId, setVariable: sv });
+          cpRecords.push({ checkpointId: active.checkpointId, optionId, setVariable: sv, decidedBy });
           pendingResume = { checkpointId: active.checkpointId, optionId };
           continue; // re-dispatch worker (resume) to call resume_checkpoint + continue
         }

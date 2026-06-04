@@ -14,7 +14,7 @@ realistic/most-expensive. Pick by what you need to learn.
 | **Deterministic suite** (vitest) | no | full | seconds, free | machinery wired? refs resolve? all branches reach the end? |
 | **Standalone 3c run** (`run-3c.ts`) | no | full | seconds, free | *show me* one walk: steps, checkpoints, artifacts created |
 | **3a agent smoke-run** | worker only | low | minutes, tokens | can a real worker *interpret* and execute the migrated workflow? |
-| **3b dual-agent run** | both | none | minutes+, more tokens | does the full two-agent (orchestrator+worker) system work? *(planned)* |
+| **3b dual-agent run** | both | none | minutes+, more tokens | does the full two-agent (orchestrator+worker) system work? |
 
 All four share one engine (`walker.ts`) and one set of decision policies
 (`policies.ts`). A **policy** decides which option to pick at each checkpoint,
@@ -129,13 +129,20 @@ scoped** (`--activities=1` or `2`) before a full walk.
 
 ---
 
-## 4. Dual-agent run (Layer 3b) — *planned*
+## 4. Dual-agent run (Layer 3b) — `--orchestrator=agent`
 
-Same plumbing as 3a, but the **orchestrator is also an agent** (no deterministic
-policy). It's the only mechanism that tests the *orchestrator's* interpretation
-and the orchestrator-side missing-conduct-rules impact. Most realistic, most
+```bash
+npx tsx scripts/smoke/smoke-orchestrator.ts --orchestrator=agent --activities=2
+```
+
+Same driver/plumbing as 3a, but the **orchestrator is also an agent**: when the
+worker yields, an orchestrator agent calls `present_checkpoint`, judges, and
+calls `respond_checkpoint` (falling back to the policy if it fails to resolve).
+It's the only mechanism that tests the *orchestrator's* interpretation and the
+orchestrator-side missing-conduct-rules impact (`orchestrator-discipline`, etc.).
+Transitions stay deterministic (graph/variable-determined). Most realistic, most
 expensive, fully non-deterministic — a "run it a few times for confidence" check,
-never a gate. Not yet built.
+never a gate. Run scoped first.
 
 ---
 

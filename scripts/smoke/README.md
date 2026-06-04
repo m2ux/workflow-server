@@ -64,8 +64,24 @@ worker therefore receives those degraded bundles — so this run also measures t
 **agent-facing impact** of that finding: does the worker misbehave without its
 conduct disciplines? Capture that in the worker's `notes`.
 
-## Layer 3b (separate)
+## Layer 3b — dual agent (`--orchestrator=agent`)
 
-A variant where BOTH orchestrator and worker are agents (no deterministic
-policy) lives separately — same plumbing, orchestrator decisions made by a
-second agent. Not built yet.
+Same driver and plumbing as 3a, but the checkpoint decision is made by a real
+**orchestrator agent** instead of the deterministic policy. When the worker
+yields, the driver dispatches a short-lived orchestrator agent (brief in
+`orchestrator-brief.md`) that calls `present_checkpoint`, judges the options, and
+calls `respond_checkpoint`; the driver reads the chosen option back from the
+shared session and re-dispatches the worker to resume. If the orchestrator agent
+fails to resolve the checkpoint, the driver falls back to the policy so the run
+proceeds (recorded as `policy-fallback` in the transcript).
+
+```bash
+npx tsx scripts/smoke/smoke-orchestrator.ts --orchestrator=agent --activities=2
+```
+
+This is the only mechanism that exercises the orchestrator agent's
+interpretation — and the orchestrator-side missing-conduct-rules impact
+(`orchestrator-discipline`, `bubble-checkpoint-up`, `persist`). Transitions are
+still computed deterministically by the driver (the transition target is
+graph/variable-determined, not a judgement call). Most token-heavy and fully
+non-reproducible; run scoped first.
