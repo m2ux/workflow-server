@@ -11,9 +11,9 @@ required: false
 estimatedTime: 20-45m
 techniques:
   supporting[6]:
-    - dco-provenance
+    - "dco-provenance::append-task-row"
     - knowledge-base-search
-    - manage-artifacts
+    - "manage-artifacts::write-artifact"
     - reconcile-assumptions
     - research-knowledge-base
     - review-assumptions

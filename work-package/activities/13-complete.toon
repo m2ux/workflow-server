@@ -29,11 +29,11 @@ artifacts[4]:
     description: "PR review analysis document"
 techniques:
   supporting[5]:
-    - cargo-operations
+    - "cargo-operations::doc"
     - conduct-retrospective
     - create-adr
     - finalize-documentation
-    - manage-git
+    - "manage-git::remove-worktree"
 steps[10]:
   - id: create-adr
     name: Create Architecture Decision Record

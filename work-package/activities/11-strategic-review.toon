@@ -11,7 +11,7 @@ required: true
 estimatedTime: 15-30m
 techniques:
   supporting[2]:
-    - manage-git
+    - "manage-git::artifact-commits"
     - review-strategy
 artifacts[2]:
   - id: strategic-review-doc

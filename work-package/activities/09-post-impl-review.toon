@@ -22,7 +22,7 @@ techniques:
     - review-diff
     - review-test-suite
     - summarize-architecture
-    - version-control
+    - "version-control::commit-regular-files"
 artifacts[6]:
   - id: change-block-index
     name: "change-block-index.md"

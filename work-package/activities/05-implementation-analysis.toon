@@ -12,7 +12,7 @@ estimatedTime: 10-20m
 techniques:
   supporting[4]:
     - analyze-implementation
-    - manage-artifacts
+    - "manage-artifacts::write-artifact"
     - reconcile-assumptions
     - review-assumptions
 steps[12]:

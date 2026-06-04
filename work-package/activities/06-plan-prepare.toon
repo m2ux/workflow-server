@@ -14,7 +14,7 @@ techniques:
     - classify-problem
     - create-plan
     - create-test-plan
-    - manage-git
+    - "manage-git::sync-branch"
     - reconcile-assumptions
     - review-assumptions
     - update-pr

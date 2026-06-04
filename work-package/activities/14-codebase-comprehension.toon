@@ -14,7 +14,7 @@ estimatedTime: 20-45m
 techniques:
   supporting[3]:
     - build-comprehension
-    - manage-artifacts
+    - "manage-artifacts::write-artifact"
     - prism/portfolio-analysis
 rules[3]:
   - "The initial deep-dive is mandatory and always performed — it attempts to resolve every open question from the first pass without user selection"

@@ -16,12 +16,14 @@ entryActions[1]:
   - action: log
     message: Starting issue management
 techniques:
-  supporting[8]:
+  supporting[10]:
     - create-issue
     - github-cli-protocol
     - atlassian-operations
     - "gitnexus-operations::analyze"
-    - manage-git
+    - "manage-git::update-reference-submodules"
+    - "manage-git::detect-merge-strategy"
+    - "manage-git::create-worktree"
     - "version-control::initialize-folder"
     - "manage-artifacts::create-readme"
     - "manage-artifacts::write-artifact"

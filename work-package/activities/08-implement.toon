@@ -23,11 +23,13 @@ artifacts[2]:
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
 techniques:
-  supporting[7]:
-    - cargo-operations
-    - dco-provenance
+  supporting[9]:
+    - "cargo-operations::test"
+    - "cargo-operations::check"
+    - "cargo-operations::clippy"
+    - "dco-provenance::append-task-row"
     - implement-task
-    - manage-git
+    - "manage-git::artifact-commits"
     - reconcile-assumptions
     - review-assumptions
     - validate-build

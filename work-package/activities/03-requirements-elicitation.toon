@@ -12,7 +12,7 @@ estimatedTime: 15-30m
 techniques:
   supporting[4]:
     - elicit-requirements
-    - manage-artifacts
+    - "manage-artifacts::write-artifact"
     - reconcile-assumptions
     - review-assumptions
 steps[6]:
