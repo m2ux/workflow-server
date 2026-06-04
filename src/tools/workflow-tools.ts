@@ -326,9 +326,17 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const resolvedOps = await resolveOperations(workerOps, config.workflowDir, workflow_id);
       const opsSection = encodeToon(formatOperationsBundle(resolvedOps)) + '\n\n---\n\n';
 
+      // artifactPrefix is server-computed from the activity filename and is NOT in
+      // the raw activity TOON, so surface it in the header (and _meta) — the worker
+      // needs it to name artifacts as {artifactPrefix}-{bare_filename}.
+      const artifactPrefix = (activity as { artifactPrefix?: string } | undefined)?.artifactPrefix;
+      const header = artifactPrefix
+        ? `session_index: ${session_index}\nartifact_prefix: ${artifactPrefix}`
+        : `session_index: ${session_index}`;
+
       return {
-        content: [{ type: 'text' as const, text: opsSection + `session_index: ${session_index}\n\n${rawResult.value}` }],
-        _meta: { session_index, validation },
+        content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${rawResult.value}` }],
+        _meta: { session_index, validation, artifact_prefix: artifactPrefix },
       };
     }), traceOpts));
 
