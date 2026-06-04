@@ -272,30 +272,25 @@ export async function resolveOperations(
 
     const techRef = parsed.workflow ? `${parsed.workflow}/${parsed.technique}` : parsed.technique;
 
-    // 1. Operation: an `<op>.md` file under the technique's grouped folder. Unprefixed refs resolve
-    //    under meta (mirrors readTechnique's no-workflowId precedence); a `workflow/technique::op`
-    //    prefix targets that workflow. Operations are files — never a materialised map on a technique.
-    const opTechniquesDir = getWorkflowTechniquesDir(workflowDir, parsed.workflow ?? META_WORKFLOW_ID);
+    // 1. Operation: an `<op>.md` file under the technique's grouped folder. A
+    //    `workflow/technique::op` prefix targets that workflow exactly. For an
+    //    UNPREFIXED ref, the convention is "the current workflow's own technique"
+    //    — so try the current workflow FIRST (its technique shadows a same-named
+    //    meta one), then fall back to meta. Operations are files — never a
+    //    materialised map on a technique.
+    //    `undefined` in the candidate list means "meta (bare ref)".
+    const candidates: Array<string | undefined> = parsed.workflow
+      ? [parsed.workflow]
+      : (currentWorkflow && currentWorkflow !== META_WORKFLOW_ID ? [currentWorkflow, undefined] : [undefined]);
     let opBody: unknown = null;
     let opWorkflow = parsed.workflow; // workflow where the operation was actually found
-    try {
-      opBody = await tryLoadOperationFile(opTechniquesDir, parsed.technique, parsed.name);
-    } catch (error) {
-      if (!(error instanceof MarkdownTechniqueParseError)) throw error;
-      logWarn('Malformed operation file', { ref, error: error.message });
-      opBody = null; // surface as not-found below
-    }
-    // Fallback: an unprefixed ref to the CURRENT workflow's own technique. Activities
-    // reference sibling techniques by bare name (e.g. cargo-operations::run-suite from
-    // work-package), so when the meta lookup misses, try the current workflow.
-    if (!opBody && !parsed.workflow && currentWorkflow && currentWorkflow !== META_WORKFLOW_ID) {
+    for (const wf of candidates) {
       try {
-        opBody = await tryLoadOperationFile(getWorkflowTechniquesDir(workflowDir, currentWorkflow), parsed.technique, parsed.name);
-        if (opBody) opWorkflow = currentWorkflow;
+        const body = await tryLoadOperationFile(getWorkflowTechniquesDir(workflowDir, wf ?? META_WORKFLOW_ID), parsed.technique, parsed.name);
+        if (body) { opBody = body; opWorkflow = wf; break; }
       } catch (error) {
         if (!(error instanceof MarkdownTechniqueParseError)) throw error;
         logWarn('Malformed operation file', { ref, error: error.message });
-        opBody = null;
       }
     }
     if (opBody) {
