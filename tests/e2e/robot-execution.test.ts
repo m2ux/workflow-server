@@ -1,7 +1,26 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { readdirSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { createHarness, type Harness } from './harness.js';
 import { walk, type WalkResult } from './walker.js';
 import { fullWorkflowPolicy } from './policies.js';
+
+/**
+ * Source of truth for the expected numeric prefix of each activity, read from
+ * the activity FILENAMES (e.g. 02-design-philosophy.toon → design-philosophy: "02").
+ * This is independent of the server's artifactPrefix computation, so comparing
+ * written artifact names against it verifies the whole chain: filename →
+ * server artifactPrefix → get_workflow exposure → robot application.
+ */
+function expectedActivityPrefixes(): Map<string, string> {
+  const dir = resolve(import.meta.dirname, '../../workflows/work-package/activities');
+  const map = new Map<string, string>();
+  for (const f of readdirSync(dir)) {
+    const m = f.match(/^(\d+)-(.+)\.toon$/);
+    if (m) map.set(m[2], m[1]);
+  }
+  return map;
+}
 
 /**
  * Layer 3c — deterministic robot-worker execution. Walks the workflow executing
@@ -36,6 +55,20 @@ describe('work-package robot execution (Layer 3c)', () => {
     const dp = full.steps.find(s => s.activityId === 'design-philosophy');
     expect(dp?.artifactsWritten.some(n => n.endsWith('design-philosophy.md')), 'design-philosophy.md written').toBe(true);
     expect(dp?.artifactsWritten.some(n => n.endsWith('assumptions-log.md')), 'assumptions-log.md written').toBe(true);
+  });
+
+  it('prefixes every written artifact with its activity\'s filename-derived number', () => {
+    const expected = expectedActivityPrefixes();
+    const wrong: string[] = [];
+    for (const s of full.steps) {
+      const prefix = expected.get(s.activityId);
+      expect(prefix, `no filename prefix known for activity ${s.activityId}`).toBeDefined();
+      for (const name of s.artifactsWritten) {
+        // Every written artifact must lead with "<NN>-" matching the activity's number.
+        if (!name.startsWith(`${prefix}-`)) wrong.push(`${s.activityId}: ${name} (expected ${prefix}-*)`);
+      }
+    }
+    expect(wrong, 'artifacts whose prefix does not match the activity filename').toEqual([]);
   });
 
   it('submits step manifests the server accepts (no validation errors)', () => {
