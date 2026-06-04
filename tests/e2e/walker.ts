@@ -12,7 +12,7 @@
  * remains the source of truth and validates each transition. A divergence
  * surfaces as a thrown error — itself a useful consistency signal.
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { evaluateCondition, type Condition } from '../../src/schema/condition.schema.js';
@@ -44,14 +44,32 @@ export interface TransitionDef {
   isDefault?: boolean;
 }
 
+export interface StepAction {
+  action: string;
+  target?: string;
+  value?: unknown;
+}
+
+export interface StepDef {
+  id: string;
+  checkpoint?: string;
+  /** Inline boolean gate, e.g. "is_monorepo == true". */
+  when?: string;
+  /** Structured gate (legacy). */
+  condition?: Condition;
+  actions?: StepAction[];
+}
+
 export interface ActivityDef {
   id: string;
-  steps?: Array<{ id: string; checkpoint?: string }>;
+  steps?: StepDef[];
   checkpoints?: CheckpointDef[];
   transitions?: TransitionDef[];
   operations?: string[];
   techniques?: { primary?: string; supporting?: string[] };
+  artifactPrefix?: string;
   artifacts?: Array<{ id?: string; name: string; location?: string }>;
+  loops?: Array<{ id?: string; steps?: StepDef[] }>;
 }
 
 export interface PolicyContext {
@@ -88,7 +106,16 @@ export interface CheckpointRecord {
 export interface WalkStep {
   activityId: string;
   checkpoints: CheckpointRecord[];
+  /** Declared artifact filenames for the activity (interpolated). */
   artifacts: string[];
+  /** Artifact stub files the robot worker actually wrote to disk (3c mode). */
+  artifactsWritten: string[];
+  /** Step ids the robot worker executed in order (3c mode). */
+  stepsExecuted: string[];
+  /** next_activity manifest-validation status when leaving this activity (3c mode). */
+  manifestStatus?: string;
+  /** Checkpoints declared by the activity but referenced by no step/loop step (definition smell). */
+  orphanCheckpoints: string[];
   /** Operation refs the activity bundle could not resolve (Layer 2 signal). */
   unresolved: string[];
   /** Number of operation refs the activity declares (from its definition). */
@@ -115,6 +142,15 @@ export interface WalkOptions {
   agentId?: string;
   /** Max times any single activity may be entered before the walk aborts. */
   maxVisits?: number;
+  /**
+   * 'robot' (default, Layer 3c): execute each activity's steps in order, firing
+   * checkpoints at the step that declares them, writing declared artifact stubs,
+   * and submitting step manifests. 'graph' (Layer 1): resolve all activity
+   * checkpoints in array order without step execution — lighter, faster.
+   */
+  mode?: 'graph' | 'robot';
+  /** Absolute planning folder; required for 'robot' mode to write artifact stubs. */
+  planningFolder?: string;
 }
 
 /** Build the initial variable bag from the workflow's declared defaults. */
@@ -169,15 +205,128 @@ async function getActivity(client: Client, sessionIndex: string): Promise<{ def:
   return { def, unresolved };
 }
 
-async function transition(client: Client, sessionIndex: string, activityId: string): Promise<void> {
-  const res = await client.callTool({
-    name: 'next_activity',
-    arguments: { session_index: sessionIndex, activity_id: activityId },
-  });
+async function transition(
+  client: Client,
+  sessionIndex: string,
+  activityId: string,
+  stepManifest?: Array<{ step_id: string; output: string }>,
+): Promise<{ manifestStatus?: string }> {
+  const args: Record<string, unknown> = { session_index: sessionIndex, activity_id: activityId };
+  if (stepManifest && stepManifest.length) args.step_manifest = stepManifest;
+  const res = await client.callTool({ name: 'next_activity', arguments: args });
   if (isError(res)) {
     const text = (res.content?.[0] as { text?: string })?.text ?? JSON.stringify(res.content);
     throw new Error(`next_activity(${activityId}) failed: ${text}`);
   }
+  const validation = (res._meta as { validation?: { status?: string } } | undefined)?.validation;
+  return { manifestStatus: validation?.status };
+}
+
+/** Resolve a dot-path against the variable bag. */
+function getVar(path: string, vars: Record<string, unknown>): unknown {
+  let cur: unknown = vars;
+  for (const part of path.split('.')) {
+    if (cur === null || cur === undefined || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[part];
+  }
+  return cur;
+}
+
+/** Evaluate a step's inline `when` expression. Unparseable expressions don't gate (execute). */
+function evaluateWhen(expr: string, vars: Record<string, unknown>): boolean {
+  const m = expr.match(/^\s*([\w.]+)\s*(==|!=)\s*(.+?)\s*$/);
+  if (!m) {
+    // Bare variable → truthiness.
+    const bare = expr.trim().match(/^[\w.]+$/);
+    if (bare) return Boolean(getVar(expr.trim(), vars));
+    return true;
+  }
+  const [, key, op, raw] = m;
+  let expected: unknown = raw;
+  if (raw === 'true') expected = true;
+  else if (raw === 'false') expected = false;
+  else if (raw === 'null') expected = null;
+  else if (/^["'].*["']$/.test(raw)) expected = raw.slice(1, -1);
+  else if (/^-?\d+$/.test(raw)) expected = Number(raw);
+  const actual = getVar(key, vars);
+  return op === '==' ? actual === expected : actual !== expected;
+}
+
+interface StepExecution {
+  cpRecords: CheckpointRecord[];
+  manifest: Array<{ step_id: string; output: string }>;
+  stepsExecuted: string[];
+  transitionOverride?: string;
+}
+
+/**
+ * Robot worker (3c): execute an activity's steps in order. Gates on step
+ * when/condition, fires the checkpoint a step declares (yield→respond→resume)
+ * at that step, applies step `set` actions with explicit values, and builds the
+ * step manifest. Mechanical only — no LLM — so it is reproducible.
+ */
+async function executeActivitySteps(
+  client: Client,
+  sessionIndex: string,
+  activityId: string,
+  act: ActivityDef,
+  variables: Record<string, unknown>,
+  policy: Policy,
+): Promise<StepExecution> {
+  const cpRecords: CheckpointRecord[] = [];
+  const manifest: Array<{ step_id: string; output: string }> = [];
+  const stepsExecuted: string[] = [];
+  let transitionOverride: string | undefined;
+
+  for (const step of act.steps ?? []) {
+    if (step.condition && !evaluateCondition(step.condition, variables)) continue;
+    if (step.when && !evaluateWhen(step.when, variables)) continue;
+    stepsExecuted.push(step.id);
+    manifest.push({ step_id: step.id, output: 'done' });
+
+    if (step.checkpoint) {
+      const cp = (act.checkpoints ?? []).find(c => c.id === step.checkpoint);
+      if (cp && (!cp.condition || evaluateCondition(cp.condition, variables))) {
+        const optionId = policy.choose({ activityId, checkpoint: cp, variables });
+        const effect = await resolveCheckpoint(client, sessionIndex, cp.id, optionId);
+        if (effect.setVariable) Object.assign(variables, effect.setVariable);
+        if (effect.transitionTo) transitionOverride = effect.transitionTo;
+        cpRecords.push({
+          activityId, checkpointId: cp.id, optionId,
+          setVariable: effect.setVariable, transitionTo: effect.transitionTo, skipActivities: effect.skipActivities,
+        });
+      }
+    }
+
+    for (const a of step.actions ?? []) {
+      if (a.action === 'set' && a.target && a.value !== undefined) variables[a.target] = a.value;
+    }
+  }
+  return { cpRecords, manifest, stepsExecuted, transitionOverride };
+}
+
+/** Checkpoints the activity declares but no step (or loop step) references. */
+function findOrphanCheckpoints(act: ActivityDef): string[] {
+  const referenced = new Set<string>();
+  for (const s of act.steps ?? []) if (s.checkpoint) referenced.add(s.checkpoint);
+  for (const loop of act.loops ?? []) for (const s of loop.steps ?? []) if (s.checkpoint) referenced.add(s.checkpoint);
+  return (act.checkpoints ?? []).map(c => c.id).filter(id => !referenced.has(id));
+}
+
+/** Write a stub file for each planning-location artifact the activity declares. Returns filenames. */
+function writeArtifactStubs(act: ActivityDef, variables: Record<string, unknown>, planningFolder: string): string[] {
+  const written: string[] = [];
+  for (const art of act.artifacts ?? []) {
+    if (art.location && art.location !== 'planning') continue; // only planning-folder artifacts here
+    let name = interpolate(art.name, variables);
+    const prefix = act.artifactPrefix;
+    if (prefix && !/^\d/.test(name)) name = `${prefix}-${name}`;
+    try {
+      writeFileSync(join(planningFolder, name), `<!-- robot-worker stub artifact for activity ${act.id} -->\n`);
+      written.push(name);
+    } catch { /* ignore write failures (e.g. missing subdir) */ }
+  }
+  return written;
 }
 
 /** Run one checkpoint's yield → respond → resume cycle, returning its effect. */
@@ -234,11 +383,16 @@ export async function walk(
   const initialActivity = (wf.initialActivity
     ?? (wf.activities as Array<{ id: string }> | undefined)?.[0]?.id) as string;
 
+  const mode = opts.mode ?? 'robot';
+  const planningFolder = opts.planningFolder
+    ?? join(harness.workspaceDir, '.engineering/artifacts/planning', planningSlug);
+
   const path: string[] = [];
   const steps: WalkStep[] = [];
   const visits = new Map<string, number>();
 
   let current: string | null = initialActivity;
+  let pendingManifest: Array<{ step_id: string; output: string }> | undefined;
   while (current) {
     const v = (visits.get(current) ?? 0) + 1;
     visits.set(current, v);
@@ -246,27 +400,38 @@ export async function walk(
       throw new Error(`Loop guard tripped: "${current}" entered ${v}× under policy "${policy.name}" (path: ${path.join(' → ')})`);
     }
 
-    await transition(client, sessionIndex, current);
+    // Transition in, carrying the manifest for the activity we just left (3c).
+    const { manifestStatus } = await transition(client, sessionIndex, current, pendingManifest);
+    pendingManifest = undefined;
     path.push(current);
 
     const { def: act, unresolved } = await getActivity(client, sessionIndex);
 
-    const cpRecords: CheckpointRecord[] = [];
+    let cpRecords: CheckpointRecord[];
     let transitionOverride: string | undefined;
-    for (const cp of act.checkpoints ?? []) {
-      if (cp.condition && !evaluateCondition(cp.condition, variables)) continue;
-      const optionId = policy.choose({ activityId: current, checkpoint: cp, variables });
-      const effect = await resolveCheckpoint(client, sessionIndex, cp.id, optionId);
-      if (effect.setVariable) Object.assign(variables, effect.setVariable);
-      if (effect.transitionTo) transitionOverride = effect.transitionTo;
-      cpRecords.push({
-        activityId: current,
-        checkpointId: cp.id,
-        optionId,
-        setVariable: effect.setVariable,
-        transitionTo: effect.transitionTo,
-        skipActivities: effect.skipActivities,
-      });
+    let stepsExecuted: string[] = [];
+    let artifactsWritten: string[] = [];
+
+    if (mode === 'robot') {
+      const exec = await executeActivitySteps(client, sessionIndex, current, act, variables, policy);
+      cpRecords = exec.cpRecords;
+      transitionOverride = exec.transitionOverride;
+      stepsExecuted = exec.stepsExecuted;
+      pendingManifest = exec.manifest;
+      artifactsWritten = writeArtifactStubs(act, variables, planningFolder);
+    } else {
+      cpRecords = [];
+      for (const cp of act.checkpoints ?? []) {
+        if (cp.condition && !evaluateCondition(cp.condition, variables)) continue;
+        const optionId = policy.choose({ activityId: current, checkpoint: cp, variables });
+        const effect = await resolveCheckpoint(client, sessionIndex, cp.id, optionId);
+        if (effect.setVariable) Object.assign(variables, effect.setVariable);
+        if (effect.transitionTo) transitionOverride = effect.transitionTo;
+        cpRecords.push({
+          activityId: current, checkpointId: cp.id, optionId,
+          setVariable: effect.setVariable, transitionTo: effect.transitionTo, skipActivities: effect.skipActivities,
+        });
+      }
     }
 
     // Model agent-determined step outcomes (loop-exit / convergence signals)
@@ -279,6 +444,10 @@ export async function walk(
       activityId: current,
       checkpoints: cpRecords,
       artifacts: artifactNames(act, variables),
+      artifactsWritten,
+      stepsExecuted,
+      manifestStatus,
+      orphanCheckpoints: findOrphanCheckpoints(act),
       unresolved,
       declaredOperations: (act.operations ?? []).length,
       nextActivity: next,

@@ -12,6 +12,10 @@ export interface StepSnapshot {
   activity: string;
   checkpoints: Array<{ id: string; option: string; setVariable?: Record<string, unknown> }>;
   artifacts: string[];
+  artifactsWritten: string[];
+  stepsExecuted: string[];
+  manifestStatus?: string;
+  orphanCheckpoints: string[];
   unresolved: string[];
   next: string | null;
 }
@@ -38,6 +42,10 @@ export function snapshotWalk(w: WalkResult): WalkSnapshot {
       activity: s.activityId,
       checkpoints: s.checkpoints.map(c => ({ id: c.checkpointId, option: c.optionId, setVariable: c.setVariable })),
       artifacts: s.artifacts,
+      artifactsWritten: s.artifactsWritten,
+      stepsExecuted: s.stepsExecuted,
+      manifestStatus: s.manifestStatus,
+      orphanCheckpoints: [...s.orphanCheckpoints].sort(),
       unresolved: [...s.unresolved].sort(),
       next: s.nextActivity,
     })),
