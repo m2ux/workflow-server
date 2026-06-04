@@ -5,7 +5,7 @@ import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
-import { resolveOperations, formatOperationsBundle, composeTechnique, projectTechniqueToToon } from '../loaders/technique-loader.js';
+import { resolveTechniques, formatTechniqueBundle, composeTechnique, projectTechniqueToToon } from '../loaders/technique-loader.js';
 import { encodeToon } from '../utils/toon.js';
 import {
   sessionIndexParam,
@@ -590,9 +590,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       operations: z.array(z.string()).min(1).describe('List of technique::element references to resolve. Each entry is "technique-id::element-name" or "workflow/technique-id::element-name".'),
     },
     withAuditLog('resolve_operations', async ({ operations }) => {
-      const resolved = await resolveOperations(operations, config.workflowDir);
+      const resolved = await resolveTechniques(operations, config.workflowDir);
       return {
-        content: [{ type: 'text' as const, text: encodeToon(formatOperationsBundle(resolved)) }],
+        content: [{ type: 'text' as const, text: encodeToon(formatTechniqueBundle(resolved)) }],
       };
     })
   );

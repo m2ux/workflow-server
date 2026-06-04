@@ -143,16 +143,16 @@ export const OutputDefinitionSchema = z.array(OutputItemDefinitionSchema).descri
 export type OutputDefinition = z.infer<typeof OutputDefinitionSchema>;
 
 /** Operation definition: a named operation with description, inputs, output, procedure, tools, errors, rules, and optional reference prose. */
-export const OperationInputSchema = z.object({
+export const SubTechniqueInputSchema = z.object({
 }).catchall(z.string().describe('Input name → description'));
 
-export const OperationOutputSchema = z.object({
+export const SubTechniqueOutputSchema = z.object({
 }).catchall(z.string().describe('Output name → description'));
 
-export const OperationDefinitionSchema = z.object({
+export const SubTechniqueDefinitionSchema = z.object({
   description: z.string().describe('What this operation does'),
-  inputs: z.array(OperationInputSchema).optional().describe('Positional input entries — each item is a single-key object mapping input name to its description'),
-  output: z.array(OperationOutputSchema).optional().describe('Output entries produced by this operation — same shape as inputs'),
+  inputs: z.array(SubTechniqueInputSchema).optional().describe('Positional input entries — each item is a single-key object mapping input name to its description'),
+  output: z.array(SubTechniqueOutputSchema).optional().describe('Output entries produced by this operation — same shape as inputs'),
   protocol: ProtocolDefinitionSchema.optional().describe('Ordered list of step blocks describing how to perform the operation (formerly "procedure"; unified with technique Protocol).'),
   tools: z.record(z.array(z.string())).optional().describe('Map of source → array of tool names. Source is an MCP server name (workflow-server, atlassian, gitnexus, concept-rag, ...), or one of the reserved keys "shell" (regular shell programs) and "harness" (agent built-ins like Read, Write, AskQuestion). Provenance hint only — tool specs come from the tool descriptions themselves.'),
   resources: z.array(z.string()).optional().describe('Resource refs (text-only ids, e.g., "meta/bootstrap-protocol") this operation needs. Resources are scoped per-operation — only included in resolved-operation output for operations actually requested.'),

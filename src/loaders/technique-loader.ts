@@ -219,11 +219,11 @@ export async function readTechniqueRaw(
 /* has flipped from TOON to markdown).                                         */
 /* -------------------------------------------------------------------------- */
 
-export interface ResolvedOperation {
+export interface ResolvedTechnique {
   source: string;
   workflow?: string | undefined;
   name: string;
-  type: 'operation' | 'rule' | 'error' | 'technique' | 'not-found';
+  type: 'sub-technique' | 'rule' | 'error' | 'technique' | 'not-found';
   body: unknown;
   ref: string;
 }
@@ -276,12 +276,12 @@ function parseTechniquePath(ref: string, workflowDir: string): { workflow?: stri
  * Behaviour preserved verbatim from the pre-migration loader — only the underlying technique load
  * is now markdown-sourced. Auto-inclusion of global rules and the not-found surfacing both stay.
  */
-export async function resolveOperations(
+export async function resolveTechniques(
   refs: string[],
   workflowDir: string,
   currentWorkflow?: string,
-): Promise<ResolvedOperation[]> {
-  const results: ResolvedOperation[] = [];
+): Promise<ResolvedTechnique[]> {
+  const results: ResolvedTechnique[] = [];
   const explicitRules = new Set<string>();
   const touchedSkills = new Map<string, { workflow: string | undefined; technique: string; cached: Technique }>();
 
@@ -337,7 +337,7 @@ export async function resolveOperations(
       }
     }
     if (opBody) {
-      results.push({ source: parsed.technique, workflow: opWorkflow, name: parsed.name, type: 'operation', body: opBody, ref });
+      results.push({ source: parsed.technique, workflow: opWorkflow, name: parsed.name, type: 'sub-technique', body: opBody, ref });
       // Cache the group index so its shared rules auto-include below.
       const idxRef = opWorkflow ? `${opWorkflow}/${parsed.technique}` : parsed.technique;
       const idxResult = await readTechnique(idxRef, workflowDir);
@@ -508,8 +508,8 @@ export async function composeTechnique(
  * Shape a resolved-operations array for tool-response output.
  * Bundle shape is wire-stable — no markdown-migration-driven changes.
  */
-export function formatOperationsBundle(resolved: ResolvedOperation[]): Record<string, unknown> {
-  const operations: Record<string, unknown> = {};
+export function formatTechniqueBundle(resolved: ResolvedTechnique[]): Record<string, unknown> {
+  const subTechniques: Record<string, unknown> = {};
   const techniques: Record<string, unknown> = {};
   const errors: Record<string, unknown> = {};
   const rules: Array<[string, string]> = [];
@@ -518,8 +518,8 @@ export function formatOperationsBundle(resolved: ResolvedOperation[]): Record<st
   for (const entry of resolved) {
     if (entry.type === 'technique') {
       techniques[entry.workflow ? `${entry.workflow}/${entry.source}` : entry.source] = entry.body;
-    } else if (entry.type === 'operation') {
-      operations[`${entry.source}::${entry.name}`] = entry.body;
+    } else if (entry.type === 'sub-technique') {
+      subTechniques[`${entry.source}::${entry.name}`] = entry.body;
     } else if (entry.type === 'error') {
       errors[`${entry.source}::${entry.name}`] = entry.body;
     } else if (entry.type === 'rule') {
@@ -534,7 +534,7 @@ export function formatOperationsBundle(resolved: ResolvedOperation[]): Record<st
 
   const out: Record<string, unknown> = {};
   if (Object.keys(techniques).length > 0) out['techniques'] = techniques;
-  if (Object.keys(operations).length > 0) out['operations'] = operations;
+  if (Object.keys(subTechniques).length > 0) out['sub-techniques'] = subTechniques;
   if (rules.length > 0) out['rules'] = rules;
   if (Object.keys(errors).length > 0) out['errors'] = errors;
   if (unresolved.length > 0) out['unresolved'] = unresolved;

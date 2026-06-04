@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { readTechnique, readTechniqueRaw, projectTechniqueToToon, listWorkflowTechniqueIds, composeTechnique, resolveOperations } from '../src/loaders/technique-loader.js';
+import { readTechnique, readTechniqueRaw, projectTechniqueToToon, listWorkflowTechniqueIds, composeTechnique, resolveTechniques } from '../src/loaders/technique-loader.js';
 import { resolve, join } from 'node:path';
 import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -53,22 +53,22 @@ describe('technique-loader', () => {
         expect(result.value.rules).toBeDefined();
         expect(Object.keys(result.value.rules!).length).toBeGreaterThanOrEqual(3);
       }
-      // Operations resolve from their `<op>.md` files via resolveOperations.
-      const resolved = await resolveOperations(
+      // Operations resolve from their `<op>.md` files via resolveTechniques.
+      const resolved = await resolveTechniques(
         ['workflow-engine::dispatch-activity', 'workflow-engine::evaluate-transition', 'workflow-engine::commit-and-persist'],
         WORKFLOW_DIR,
       );
-      const ops = resolved.filter((r) => r.type === 'operation');
+      const ops = resolved.filter((r) => r.type === 'sub-technique');
       expect(ops.length).toBe(3);
       expect((ops[0]!.body as { protocol?: unknown }).protocol).toBeDefined();
     });
 
     it('resolved operation errors carry cause + recovery', async () => {
-      const resolved = await resolveOperations(
+      const resolved = await resolveTechniques(
         ['workflow-engine::dispatch-activity', 'workflow-engine::evaluate-transition', 'workflow-engine::handle-sub-workflow'],
         WORKFLOW_DIR,
       );
-      for (const entry of resolved.filter((r) => r.type === 'operation')) {
+      for (const entry of resolved.filter((r) => r.type === 'sub-technique')) {
         const errors = (entry.body as { errors?: Record<string, { cause?: string; recovery?: string }> }).errors;
         if (!errors) continue;
         for (const [errorName, info] of Object.entries(errors)) {
@@ -84,14 +84,14 @@ describe('technique-loader', () => {
   /* ------------------------------------------------------------------------ */
 
   describe('markdown fixtures (PR126-TC suite)', () => {
-    it('PR126-TC-03: resolves op-as-child-files via resolveOperations (group::op -> op file)', async () => {
-      const resolved = await resolveOperations(
+    it('PR126-TC-03: resolves op-as-child-files via resolveTechniques (group::op -> op file)', async () => {
+      const resolved = await resolveTechniques(
         ['work-package/cargo-operations::check', 'work-package/cargo-operations::test'],
         FIXTURE_DIR,
       );
       const byName = Object.fromEntries(resolved.map((r) => [r.name, r]));
-      expect(byName['check']?.type).toBe('operation');
-      expect(byName['test']?.type).toBe('operation');
+      expect(byName['check']?.type).toBe('sub-technique');
+      expect(byName['test']?.type).toBe('sub-technique');
       const check = byName['check']!.body as { protocol?: Array<{ steps: string[] }> };
       expect(Array.isArray(check.protocol)).toBe(true);
       expect(check.protocol!.flatMap((b) => b.steps).length).toBeGreaterThan(0);
@@ -134,9 +134,9 @@ describe('technique-loader', () => {
     });
 
     it('PR126-TC-06: a malformed op file (missing Protocol) does not resolve as an operation', async () => {
-      // broken.md has no `## Protocol`; the op parser throws and resolveOperations surfaces the ref
+      // broken.md has no `## Protocol`; the op parser throws and resolveTechniques surfaces the ref
       // as not-found rather than a partial/silent operation. The grouped index still loads fine.
-      const resolved = await resolveOperations(['work-package/malformed-ops::broken'], FIXTURE_DIR);
+      const resolved = await resolveTechniques(['work-package/malformed-ops::broken'], FIXTURE_DIR);
       expect(resolved[0]!.type).toBe('not-found');
       const idx = await readTechnique('malformed-ops', FIXTURE_DIR, 'work-package');
       expect(idx.success).toBe(true);
@@ -314,8 +314,8 @@ describe('technique-loader', () => {
         expect(idx.value.id).toBe('vc');
         expect((idx.value as { operations?: unknown }).operations).toBeUndefined();
       }
-      const resolved = await resolveOperations(['vc::commit'], tempDir);
-      expect(resolved[0]!.type).toBe('operation');
+      const resolved = await resolveTechniques(['vc::commit'], tempDir);
+      expect(resolved[0]!.type).toBe('sub-technique');
       const op = resolved[0]!.body as { protocol?: Array<{ steps: string[] }> };
       expect(op.protocol).toEqual([{ steps: ['Stage files', 'Commit'] }]);
     });

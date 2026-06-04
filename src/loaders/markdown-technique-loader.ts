@@ -452,7 +452,7 @@ function matchLabelledParagraph(body: string, label: string): string | undefined
 
 
 /* -------------------------------------------------------------------------- */
-/* <op>.md → OperationDefinition                                               */
+/* <op>.md → SubTechniqueDefinition                                               */
 /* -------------------------------------------------------------------------- */
 
 export interface OperationParse {
@@ -465,7 +465,7 @@ export interface OperationParse {
 }
 
 /**
- * Parse an <op>.md child file into an OperationDefinition.
+ * Parse an <op>.md child file into an SubTechniqueDefinition.
  *
  * Expected shape:
  *   # <op-name>
@@ -636,7 +636,7 @@ export async function tryLoadMarkdownTechnique(techniquesDir: string, techniqueI
     const parsed = parseTechniqueIndex(indexRaw, indexPath, techniqueId);
 
     // A technique carries its own contract only. Operations are independent `<op>.md` files
-    // resolved on demand (see tryLoadOperationFile / resolveOperations) — never materialised here.
+    // resolved on demand (see tryLoadOperationFile / resolveTechniques) — never materialised here.
     const technique: Record<string, unknown> = {
       id: parsed.id,
       version: parsed.version,

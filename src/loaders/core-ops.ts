@@ -16,7 +16,7 @@
  * Operations every orchestrator needs at the workflow level. Returned by
  * get_workflow alongside the workflow's declared operations.
  */
-export const CORE_ORCHESTRATOR_OPS: readonly string[] = [
+export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   // Engine traversal
   'workflow-engine::dispatch-activity',
   'workflow-engine::evaluate-transition',
@@ -49,7 +49,7 @@ export const CORE_ORCHESTRATOR_OPS: readonly string[] = [
  * Operations every activity worker needs at the activity level. Returned by
  * get_activity alongside the activity's declared operations.
  */
-export const CORE_WORKER_OPS: readonly string[] = [
+export const CORE_WORKER_TECHNIQUES: readonly string[] = [
   // Step execution surface
   'workflow-engine::yield-checkpoint',
   'workflow-engine::resume-from-checkpoint',

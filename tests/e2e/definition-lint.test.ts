@@ -25,14 +25,14 @@ import {
  *
  * RESOLVED (was the headline finding): every operation ref now resolves, so the
  * baseline is empty. The fixes:
- *  - Group-prefix rule expansion in resolveOperations: a bare group ref like
+ *  - Group-prefix rule expansion in resolveTechniques: a bare group ref like
  *    agent-conduct::checkpoint-discipline now pulls all checkpoint-discipline-*
  *    rules (markdown flattens groups into <group>-<specifier> rule headings).
  *  - core-ops.ts: agent-conduct::orchestrator-discipline → ::orchestrator (the
  *    rules are named orchestrator-*); dropped stale workflow-engine::persist and
  *    ::bubble-checkpoint-up (no such op files; commit-and-persist + present/
  *    respond-checkpoint cover them).
- *  - resolveOperations falls back to the CURRENT workflow for unprefixed refs,
+ *  - resolveTechniques falls back to the CURRENT workflow for unprefixed refs,
  *    so work-package activities resolve their own techniques (cargo-operations,
  *    validate-build, manage-artifacts) by bare name as authored.
  */

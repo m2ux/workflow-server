@@ -742,10 +742,10 @@ describe('mcp-server integration', () => {
       expect(sepIdx).toBeGreaterThan(0);
       const preamble = text.substring(0, sepIdx);
       const decoded = decode(preamble) as Record<string, unknown>;
-      expect(decoded.operations).toBeDefined();
-      // Bundle shape: operations keyed by `<technique>::<name>`, rules as [header, line] tuples.
-      expect(typeof decoded.operations).toBe('object');
-      expect(Array.isArray(decoded.operations)).toBe(false);
+      // Sub-technique bodies (formerly "operations") keyed by `<technique>::<name>`.
+      expect(decoded['sub-techniques']).toBeDefined();
+      expect(typeof decoded['sub-techniques']).toBe('object');
+      expect(Array.isArray(decoded['sub-techniques'])).toBe(false);
     });
 
     it('should return lightweight summary by default', async () => {

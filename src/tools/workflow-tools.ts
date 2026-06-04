@@ -2,8 +2,8 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, readActivityRaw, readWorkflowRaw } from '../loaders/workflow-loader.js';
-import { readTechniqueRaw, resolveOperations, formatOperationsBundle } from '../loaders/technique-loader.js';
-import { CORE_ORCHESTRATOR_OPS, CORE_WORKER_OPS } from '../loaders/core-ops.js';
+import { readTechniqueRaw, resolveTechniques, formatTechniqueBundle } from '../loaders/technique-loader.js';
+import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { withAuditLog } from '../logging.js';
 import { encodeToon } from '../utils/toon.js';
@@ -113,9 +113,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const wfTech = (wf as { techniques?: { primary?: string; supporting?: string[] } }).techniques;
       const wfTechRefs = [...(wfTech?.primary ? [wfTech.primary] : []), ...(wfTech?.supporting ?? [])];
       const declaredOps = (wf as { operations?: string[] }).operations ?? [];
-      const orchestratorOps = Array.from(new Set([...wfTechRefs, ...declaredOps, ...CORE_ORCHESTRATOR_OPS]));
-      const resolvedOps = await resolveOperations(orchestratorOps, config.workflowDir, workflow_id);
-      const opsBlock = encodeToon(formatOperationsBundle(resolvedOps));
+      const orchestratorOps = Array.from(new Set([...wfTechRefs, ...declaredOps, ...CORE_ORCHESTRATOR_TECHNIQUES]));
+      const resolvedOps = await resolveTechniques(orchestratorOps, config.workflowDir, workflow_id);
+      const opsBlock = encodeToon(formatTechniqueBundle(resolvedOps));
 
       // Pre-separator preamble holds the legacy primary-technique body (when present)
       // followed by the resolved-operations bundle. Tests and clients split on
@@ -328,9 +328,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const actTech = (activity as { techniques?: { primary?: string; supporting?: string[] } } | undefined)?.techniques;
       const techRefs = [...(actTech?.primary ? [actTech.primary] : []), ...(actTech?.supporting ?? [])];
       const declaredOps = (activity as { operations?: string[] } | undefined)?.operations ?? [];
-      const workerOps = Array.from(new Set([...techRefs, ...declaredOps, ...CORE_WORKER_OPS]));
-      const resolvedOps = await resolveOperations(workerOps, config.workflowDir, workflow_id);
-      const opsSection = encodeToon(formatOperationsBundle(resolvedOps)) + '\n\n---\n\n';
+      const workerOps = Array.from(new Set([...techRefs, ...declaredOps, ...CORE_WORKER_TECHNIQUES]));
+      const resolvedOps = await resolveTechniques(workerOps, config.workflowDir, workflow_id);
+      const opsSection = encodeToon(formatTechniqueBundle(resolvedOps)) + '\n\n---\n\n';
 
       // artifactPrefix is server-computed from the activity filename and is NOT in
       // the raw activity TOON, so surface it in the header (and _meta) — the worker
