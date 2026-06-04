@@ -1,29 +1,32 @@
-Get the 360-degree view of a symbol — callers, callees, and process participation.
+360-degree view of one symbol — callers, callees, and the execution flows it participates in.
 
 ## Inputs
 
-### repo_name
-
-Repository name
-
 ### name
 
-Symbol name (function, class, method, etc.)
+the symbol to inspect
 
 ## Output
 
-### context
+### context_report
 
-Symbol details with callers, callees, member relationships, and processes
+incoming calls (callers), outgoing calls (callees), process membership with step positions
 
 ## Protocol
 
-1. Call `gitnexus context({ repo_name, name })`; if ambiguous, re-call with `file_path` or `uid` from the disambiguation candidates.
+1. Call `gitnexus_context {name}`.
+2. Read caller fan-out as a blast-radius signal: many callers and broad process participation → the symbol is path-committing; an isolated symbol is low-risk to touch.
 
 ## Errors
 
-### symbol_ambiguous
+### stale_index
 
-**Cause:** Multiple symbols share the same name — `context()` returns disambiguation candidates.
+**Cause:** the index is out of date
 
-**Recovery:** Re-call `context()` with the `file_path` or `uid` from one of the candidates.
+**Recovery:** run `npx gitnexus analyze`, then retry
+
+### symbol_not_found
+
+**Cause:** name does not resolve
+
+**Recovery:** verify the symbol name; fall back to grep when unindexed

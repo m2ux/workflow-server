@@ -1,15 +1,37 @@
-Run a custom Cypher query over the GitNexus graph.
+Raw graph query for traces and filters not covered by the higher-level operations.
 
 ## Inputs
 
-### repo_name
-
-Repository name
-
 ### query
 
-Cypher query string. Graph schema for query authoring — **Nodes:** `File`, `Function`, `Class`, `Interface`, `Method`, `Community`, `Process`. **Edges** (via `CodeRelation.type`): `CALLS`, `IMPORTS`, `EXTENDS`, `IMPLEMENTS`, `DEFINES`, `MEMBER_OF`, `STEP_IN_PROCESS`.
+a Cypher query string
+
+### name
+
+repo name (usually the current repo)
+
+## Output
+
+### rows
+
+the query result rows
 
 ## Protocol
 
-1. Call `gitnexus cypher({ repo_name, query })`.
+1. Read `gitnexus://repo/{name}/schema` first to confirm node labels and `CodeRelation.type` edge values.
+2. Call `gitnexus_cypher {query}`.
+3. Reserve this for custom call-chain traces, ordering/error-path assertions, and visibility filters; prefer [impact](./impact.md) / [context](./context.md) / [query](./query.md) when they suffice.
+
+## Errors
+
+### stale_index
+
+**Cause:** the index is out of date
+
+**Recovery:** run `npx gitnexus analyze`, then retry
+
+### schema_mismatch
+
+**Cause:** the query references labels/edges not in the schema
+
+**Recovery:** re-read `gitnexus://repo/{name}/schema` and correct the query
