@@ -22,11 +22,18 @@ export const CORE_ORCHESTRATOR_OPS: readonly string[] = [
   'workflow-engine::evaluate-transition',
   'workflow-engine::commit-and-persist',
   'workflow-engine::handle-sub-workflow',
+  // compose-prompt is invoked inline by dispatch-activity's body; inline refs are
+  // not re-resolved, so it must be bundled explicitly to reach the orchestrator.
+  'workflow-engine::compose-prompt',
   // Checkpoint flow at orchestrator level
   'workflow-engine::present-checkpoint-to-user',
   'workflow-engine::respond-checkpoint',
-  // State persistence (commit-and-persist above is the operation; the former
-  // 'persist' and 'bubble-checkpoint-up' refs were stale — no such op files).
+  // State persistence: commit-and-persist invokes these inline (same inline-ref
+  // caveat), so bundle them so the orchestrator gets the submodule/regular-file
+  // commit protocols. (The former 'persist'/'bubble-checkpoint-up' refs were
+  // stale — no such op files.)
+  'version-control::commit-submodule',
+  'version-control::commit-regular-files',
   // Sub-agent dispatch primitives — dispatch-activity invokes spawn-agent in
   // its body, so the orchestrator must receive the harness-specific prose for
   // these to actually dispatch instead of improvising / inlining.
