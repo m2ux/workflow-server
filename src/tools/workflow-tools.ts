@@ -110,8 +110,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       // Bundle operations: workflow.operations + core orchestrator ops.
       // Deduplicate by ref so a workflow that explicitly lists a core op only resolves it once.
+      const wfTech = (wf as { techniques?: { primary?: string; supporting?: string[] } }).techniques;
+      const wfTechRefs = [...(wfTech?.primary ? [wfTech.primary] : []), ...(wfTech?.supporting ?? [])];
       const declaredOps = (wf as { operations?: string[] }).operations ?? [];
-      const orchestratorOps = Array.from(new Set([...declaredOps, ...CORE_ORCHESTRATOR_OPS]));
+      const orchestratorOps = Array.from(new Set([...wfTechRefs, ...declaredOps, ...CORE_ORCHESTRATOR_OPS]));
       const resolvedOps = await resolveOperations(orchestratorOps, config.workflowDir, workflow_id);
       const opsBlock = encodeToon(formatOperationsBundle(resolvedOps));
 
@@ -319,10 +321,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         result.success ? validateWorkflowVersion(view, result.value) : null,
       );
 
-      // Bundle operations: activity.operations + core worker ops.
+      // Bundle techniques the activity references (primary + supporting — delivered
+      // as full protocols), the legacy operations[] (transitional alias), and core
+      // worker techniques. supporting[] is now the primary delivery declaration.
       const activity = result.success ? getActivity(result.value, activity_id) : undefined;
+      const actTech = (activity as { techniques?: { primary?: string; supporting?: string[] } } | undefined)?.techniques;
+      const techRefs = [...(actTech?.primary ? [actTech.primary] : []), ...(actTech?.supporting ?? [])];
       const declaredOps = (activity as { operations?: string[] } | undefined)?.operations ?? [];
-      const workerOps = Array.from(new Set([...declaredOps, ...CORE_WORKER_OPS]));
+      const workerOps = Array.from(new Set([...techRefs, ...declaredOps, ...CORE_WORKER_OPS]));
       const resolvedOps = await resolveOperations(workerOps, config.workflowDir, workflow_id);
       const opsSection = encodeToon(formatOperationsBundle(resolvedOps)) + '\n\n---\n\n';
 

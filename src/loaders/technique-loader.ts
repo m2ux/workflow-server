@@ -223,9 +223,20 @@ export interface ResolvedOperation {
   source: string;
   workflow?: string | undefined;
   name: string;
-  type: 'operation' | 'rule' | 'error' | 'not-found';
+  type: 'operation' | 'rule' | 'error' | 'technique' | 'not-found';
   body: unknown;
   ref: string;
+}
+
+/** The deliverable body of a whole-technique reference (protocol + interface). */
+function projectTechniqueBody(t: Technique): Record<string, unknown> {
+  const body: Record<string, unknown> = {};
+  if (t.capability) body['capability'] = t.capability;
+  if (t.flow) body['flow'] = t.flow;
+  if (t.inputs) body['inputs'] = t.inputs;
+  if (t.protocol) body['protocol'] = t.protocol;
+  if (t.output) body['output'] = t.output;
+  return body;
 }
 
 function parseOperationRef(ref: string): { workflow?: string; technique: string; name: string } | null {
@@ -264,6 +275,24 @@ export async function resolveOperations(
   const ruleKey = (workflow: string | undefined, technique: string, name: string) => `${workflow ?? ''}::${technique}::${name}`;
 
   for (const ref of refs) {
+    // Whole-technique reference (no '::'): deliver the technique's own protocol,
+    // capability, and interface, and auto-include its rules. A technique IS
+    // deliverable — not only its sub-techniques — so a bare `supporting[]` ref
+    // (standalone or grouped parent) reaches the worker with its full body.
+    if (!ref.includes('::')) {
+      const slashIdx = ref.indexOf('/');
+      const wf = slashIdx > 0 ? ref.slice(0, slashIdx) : undefined;
+      const techId = slashIdx > 0 ? ref.slice(slashIdx + 1) : ref;
+      const tRes = await readTechnique(wf ? `${wf}/${techId}` : techId, workflowDir, wf ?? currentWorkflow);
+      if (tRes.success) {
+        results.push({ source: techId, workflow: wf, name: '', type: 'technique', body: projectTechniqueBody(tRes.value), ref });
+        touchedSkills.set(skillKey(wf, techId), { workflow: wf, technique: techId, cached: tRes.value });
+      } else {
+        results.push({ source: techId, workflow: wf, name: '', type: 'not-found', body: null, ref });
+      }
+      continue;
+    }
+
     const parsed = parseOperationRef(ref);
     if (!parsed) {
       results.push({ source: '', name: '', type: 'not-found', body: null, ref });
@@ -467,12 +496,15 @@ export async function composeTechnique(
  */
 export function formatOperationsBundle(resolved: ResolvedOperation[]): Record<string, unknown> {
   const operations: Record<string, unknown> = {};
+  const techniques: Record<string, unknown> = {};
   const errors: Record<string, unknown> = {};
   const rules: Array<[string, string]> = [];
   const unresolved: string[] = [];
 
   for (const entry of resolved) {
-    if (entry.type === 'operation') {
+    if (entry.type === 'technique') {
+      techniques[entry.workflow ? `${entry.workflow}/${entry.source}` : entry.source] = entry.body;
+    } else if (entry.type === 'operation') {
       operations[`${entry.source}::${entry.name}`] = entry.body;
     } else if (entry.type === 'error') {
       errors[`${entry.source}::${entry.name}`] = entry.body;
@@ -487,6 +519,7 @@ export function formatOperationsBundle(resolved: ResolvedOperation[]): Record<st
   }
 
   const out: Record<string, unknown> = {};
+  if (Object.keys(techniques).length > 0) out['techniques'] = techniques;
   if (Object.keys(operations).length > 0) out['operations'] = operations;
   if (rules.length > 0) out['rules'] = rules;
   if (Object.keys(errors).length > 0) out['errors'] = errors;
