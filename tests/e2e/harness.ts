@@ -96,6 +96,23 @@ export function rawText(result: ToolResult): string {
   return (result.content[0] as { type: 'text'; text: string }).text;
 }
 
+/**
+ * Extract the resolved-operations bundle that get_activity / get_workflow
+ * prepend before the `\n\n---\n\n` separator. Returns {} when no bundle is
+ * present. The bundle shape is { operations?, rules?, errors?, unresolved? };
+ * a non-empty `unresolved` array means the activity references operations that
+ * the technique loader could not resolve (a dangling ref).
+ */
+export function parseBundle(result: ToolResult): Record<string, unknown> {
+  const text = rawText(result);
+  const sepIdx = text.indexOf('\n\n---\n\n');
+  if (sepIdx < 0) return {};
+  const head = text.substring(0, sepIdx);
+  try { return JSON.parse(head); } catch { /* not JSON */ }
+  try { return decode(head) as Record<string, unknown>; } catch { /* not TOON */ }
+  return {};
+}
+
 export function isError(result: ToolResult): boolean {
   return Boolean(result.isError);
 }

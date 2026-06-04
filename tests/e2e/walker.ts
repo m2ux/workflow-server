@@ -16,7 +16,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { evaluateCondition, type Condition } from '../../src/schema/condition.schema.js';
-import { parseToolResponse, parseWorkflowResponse, isError, type Harness } from './harness.js';
+import { parseToolResponse, parseWorkflowResponse, parseBundle, isError, type Harness } from './harness.js';
 
 export interface CheckpointOption {
   id: string;
@@ -89,6 +89,10 @@ export interface WalkStep {
   activityId: string;
   checkpoints: CheckpointRecord[];
   artifacts: string[];
+  /** Operation refs the activity bundle could not resolve (Layer 2 signal). */
+  unresolved: string[];
+  /** Number of operation refs the activity declares (from its definition). */
+  declaredOperations: number;
   nextActivity: string | null;
 }
 
@@ -97,6 +101,10 @@ export interface WalkResult {
   policy: string;
   sessionIndex: string;
   initialActivity: string;
+  /** All activity ids the workflow declares (for coverage / reachability checks). */
+  declaredActivities: string[];
+  /** Unresolved orchestrator-side operation refs from the workflow bundle. */
+  orchestratorUnresolved: string[];
   path: string[];
   steps: WalkStep[];
   variables: Record<string, unknown>;
@@ -152,10 +160,13 @@ function interpolate(template: string, variables: Record<string, unknown>): stri
   });
 }
 
-async function getActivity(client: Client, sessionIndex: string): Promise<ActivityDef> {
+async function getActivity(client: Client, sessionIndex: string): Promise<{ def: ActivityDef; unresolved: string[] }> {
   const res = await client.callTool({ name: 'get_activity', arguments: { session_index: sessionIndex } });
   if (isError(res)) throw new Error(`get_activity failed: ${JSON.stringify(res.content)}`);
-  return parseWorkflowResponse(res) as unknown as ActivityDef;
+  const def = parseWorkflowResponse(res) as unknown as ActivityDef;
+  const bundle = parseBundle(res);
+  const unresolved = (bundle.unresolved as string[] | undefined) ?? [];
+  return { def, unresolved };
 }
 
 async function transition(client: Client, sessionIndex: string, activityId: string): Promise<void> {
@@ -216,6 +227,8 @@ export async function walk(
   const wfRes = await client.callTool({ name: 'get_workflow', arguments: { session_index: sessionIndex, summary: true } });
   if (isError(wfRes)) throw new Error('get_workflow failed');
   const wf = parseWorkflowResponse(wfRes);
+  const orchestratorUnresolved = (parseBundle(wfRes).unresolved as string[] | undefined) ?? [];
+  const declaredActivities = ((wf.activities as Array<{ id: string }> | undefined) ?? []).map(a => a.id);
 
   const variables: Record<string, unknown> = { ...defaultVariables(wf), ...(policy.initialVariables ?? {}) };
   const initialActivity = (wf.initialActivity
@@ -236,7 +249,7 @@ export async function walk(
     await transition(client, sessionIndex, current);
     path.push(current);
 
-    const act = await getActivity(client, sessionIndex);
+    const { def: act, unresolved } = await getActivity(client, sessionIndex);
 
     const cpRecords: CheckpointRecord[] = [];
     let transitionOverride: string | undefined;
@@ -262,7 +275,14 @@ export async function walk(
     if (simulated) Object.assign(variables, simulated);
 
     const next = pickNext(act, variables, transitionOverride);
-    steps.push({ activityId: current, checkpoints: cpRecords, artifacts: artifactNames(act, variables), nextActivity: next });
+    steps.push({
+      activityId: current,
+      checkpoints: cpRecords,
+      artifacts: artifactNames(act, variables),
+      unresolved,
+      declaredOperations: (act.operations ?? []).length,
+      nextActivity: next,
+    });
 
     if (!next) break;
     current = next;
@@ -277,5 +297,9 @@ export async function walk(
     finalStatus = (JSON.parse(readFileSync(sessionPath, 'utf8')).status as string) ?? 'unknown';
   } catch { /* leave as unknown */ }
 
-  return { workflowId, policy: policy.name, sessionIndex, initialActivity, path, steps, variables, finalStatus };
+  return {
+    workflowId, policy: policy.name, sessionIndex, initialActivity,
+    declaredActivities, orchestratorUnresolved,
+    path, steps, variables, finalStatus,
+  };
 }

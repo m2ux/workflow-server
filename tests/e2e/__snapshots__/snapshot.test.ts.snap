@@ -1,0 +1,2034 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`work-package walk snapshots (baseline) > [default] matches committed baseline 1`] = `
+{
+  "finalStatus": "completed",
+  "initialActivity": "start-work-package",
+  "orchestratorUnresolved": [
+    "agent-conduct::checkpoint-discipline",
+    "agent-conduct::operational-discipline",
+    "agent-conduct::orchestrator-discipline",
+    "workflow-engine::bubble-checkpoint-up",
+    "workflow-engine::persist",
+  ],
+  "path": [
+    "start-work-package",
+    "design-philosophy",
+    "codebase-comprehension",
+    "plan-prepare",
+    "assumptions-review",
+    "implement",
+    "post-impl-review",
+    "validate",
+    "strategic-review",
+    "submit-for-review",
+    "complete",
+  ],
+  "policy": "default",
+  "steps": [
+    {
+      "activity": "start-work-package",
+      "artifacts": [],
+      "checkpoints": [
+        {
+          "id": "issue-verification",
+          "option": "provide-existing",
+          "setVariable": {
+            "needs_issue_creation": false,
+          },
+        },
+        {
+          "id": "pr-creation",
+          "option": "proceed",
+          "setVariable": {
+            "pr_skipped": false,
+          },
+        },
+      ],
+      "next": "design-philosophy",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "design-philosophy",
+      "artifacts": [
+        "design-philosophy.md",
+        "assumptions-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "classification-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+        {
+          "id": "workflow-path-selected",
+          "option": "skip-optional",
+          "setVariable": {
+            "needs_elicitation": false,
+            "needs_research": false,
+            "path_gating_complexity": "simple",
+            "skip_optional_activities": true,
+          },
+        },
+      ],
+      "next": "codebase-comprehension",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "codebase-comprehension",
+      "artifacts": [
+        "{codebase-area}.md",
+      ],
+      "checkpoints": [],
+      "next": "plan-prepare",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "plan-prepare",
+      "artifacts": [
+        "work-package-plan.md",
+        "test-plan.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "approach-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "assumptions-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "assumptions-review",
+      "artifacts": [
+        "assumptions-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "assumption-decision",
+          "option": "accept",
+          "setVariable": {
+            "assumption_resolved_inline": true,
+          },
+        },
+      ],
+      "next": "implement",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "implement",
+      "artifacts": [
+        "assumptions-log.md",
+        "provenance-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "switch-model-pre-impl",
+          "option": "continue-current",
+          "setVariable": undefined,
+        },
+        {
+          "id": "switch-model-post-impl",
+          "option": "continue-current",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "post-impl-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "post-impl-review",
+      "artifacts": [
+        "change-block-index.md",
+        "manual-diff-review.md",
+        "code-review.md",
+        "test-suite-review.md",
+        "architecture-summary.md",
+        "structural-findings.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "file-index-table",
+          "option": "rationale-confirmed",
+          "setVariable": {
+            "rationale_confirmed": true,
+          },
+        },
+        {
+          "id": "rationale-amendment",
+          "option": "all-accurate",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "validate",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "validate",
+      "artifacts": [],
+      "checkpoints": [],
+      "next": "strategic-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+        "cargo-operations::build-release",
+        "cargo-operations::preflight",
+        "cargo-operations::run-suite",
+        "manage-artifacts::verify-readme-conforms",
+        "validate-build::aggregate-results",
+        "validate-build::analyze-failure",
+        "validate-build::apply-fix",
+      ],
+    },
+    {
+      "activity": "strategic-review",
+      "artifacts": [
+        "strategic-review-{n}.md",
+        "architecture-summary.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "review-findings",
+          "option": "acceptable",
+          "setVariable": {
+            "review_passed": true,
+          },
+        },
+      ],
+      "next": "submit-for-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "submit-for-review",
+      "artifacts": [],
+      "checkpoints": [
+        {
+          "id": "dco-sign-off",
+          "option": "certify",
+          "setVariable": undefined,
+        },
+        {
+          "id": "review-received",
+          "option": "yes-review",
+          "setVariable": undefined,
+        },
+        {
+          "id": "review-outcome",
+          "option": "approved",
+          "setVariable": {
+            "review_requires_changes": false,
+          },
+        },
+        {
+          "id": "body-non-conformant",
+          "option": "proceed-with-override",
+          "setVariable": {
+            "body_conforms": true,
+            "body_override_recorded": true,
+          },
+        },
+      ],
+      "next": "complete",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "complete",
+      "artifacts": [
+        "NNNN-{decision-title}.md",
+        "COMPLETE.md",
+        "workflow-retrospective.md",
+        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
+      ],
+      "checkpoints": [],
+      "next": null,
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+  ],
+  "workflowId": "work-package",
+}
+`;
+
+exports[`work-package walk snapshots (baseline) > [elicitation-only] matches committed baseline 1`] = `
+{
+  "finalStatus": "completed",
+  "initialActivity": "start-work-package",
+  "orchestratorUnresolved": [
+    "agent-conduct::checkpoint-discipline",
+    "agent-conduct::operational-discipline",
+    "agent-conduct::orchestrator-discipline",
+    "workflow-engine::bubble-checkpoint-up",
+    "workflow-engine::persist",
+  ],
+  "path": [
+    "start-work-package",
+    "design-philosophy",
+    "codebase-comprehension",
+    "requirements-elicitation",
+    "research",
+    "implementation-analysis",
+    "plan-prepare",
+    "assumptions-review",
+    "implement",
+    "post-impl-review",
+    "validate",
+    "strategic-review",
+    "submit-for-review",
+    "complete",
+  ],
+  "policy": "elicitation-only",
+  "steps": [
+    {
+      "activity": "start-work-package",
+      "artifacts": [],
+      "checkpoints": [
+        {
+          "id": "issue-verification",
+          "option": "provide-existing",
+          "setVariable": {
+            "needs_issue_creation": false,
+          },
+        },
+        {
+          "id": "pr-creation",
+          "option": "proceed",
+          "setVariable": {
+            "pr_skipped": false,
+          },
+        },
+      ],
+      "next": "design-philosophy",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "design-philosophy",
+      "artifacts": [
+        "design-philosophy.md",
+        "assumptions-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "classification-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+        {
+          "id": "workflow-path-selected",
+          "option": "elicitation-only",
+          "setVariable": {
+            "complexity": "moderate",
+            "needs_elicitation": true,
+            "needs_research": false,
+            "skip_optional_activities": false,
+          },
+        },
+      ],
+      "next": "codebase-comprehension",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "codebase-comprehension",
+      "artifacts": [
+        "{codebase-area}.md",
+      ],
+      "checkpoints": [],
+      "next": "requirements-elicitation",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "requirements-elicitation",
+      "artifacts": [
+        "requirements-elicitation.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "stakeholder-transcript",
+          "option": "provide-transcript",
+          "setVariable": {
+            "has_stakeholder_input": true,
+          },
+        },
+        {
+          "id": "elicitation-complete",
+          "option": "complete",
+          "setVariable": {
+            "elicitation_complete": true,
+          },
+        },
+      ],
+      "next": "research",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "research",
+      "artifacts": [
+        "kb-research.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "research-findings",
+          "option": "sufficient",
+          "setVariable": undefined,
+        },
+        {
+          "id": "context-scope-declaration",
+          "option": "repo-only",
+          "setVariable": {
+            "context_scope": "repo-only",
+          },
+        },
+      ],
+      "next": "implementation-analysis",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "implementation-analysis",
+      "artifacts": [
+        "implementation-analysis.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "analysis-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "plan-prepare",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "plan-prepare",
+      "artifacts": [
+        "work-package-plan.md",
+        "test-plan.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "approach-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "assumptions-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "assumptions-review",
+      "artifacts": [
+        "assumptions-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "assumption-decision",
+          "option": "accept",
+          "setVariable": {
+            "assumption_resolved_inline": true,
+          },
+        },
+      ],
+      "next": "implement",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "implement",
+      "artifacts": [
+        "assumptions-log.md",
+        "provenance-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "switch-model-pre-impl",
+          "option": "continue-current",
+          "setVariable": undefined,
+        },
+        {
+          "id": "switch-model-post-impl",
+          "option": "continue-current",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "post-impl-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "post-impl-review",
+      "artifacts": [
+        "change-block-index.md",
+        "manual-diff-review.md",
+        "code-review.md",
+        "test-suite-review.md",
+        "architecture-summary.md",
+        "structural-findings.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "file-index-table",
+          "option": "rationale-confirmed",
+          "setVariable": {
+            "rationale_confirmed": true,
+          },
+        },
+        {
+          "id": "rationale-amendment",
+          "option": "all-accurate",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "validate",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "validate",
+      "artifacts": [],
+      "checkpoints": [],
+      "next": "strategic-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+        "cargo-operations::build-release",
+        "cargo-operations::preflight",
+        "cargo-operations::run-suite",
+        "manage-artifacts::verify-readme-conforms",
+        "validate-build::aggregate-results",
+        "validate-build::analyze-failure",
+        "validate-build::apply-fix",
+      ],
+    },
+    {
+      "activity": "strategic-review",
+      "artifacts": [
+        "strategic-review-{n}.md",
+        "architecture-summary.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "review-findings",
+          "option": "acceptable",
+          "setVariable": {
+            "review_passed": true,
+          },
+        },
+      ],
+      "next": "submit-for-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "submit-for-review",
+      "artifacts": [],
+      "checkpoints": [
+        {
+          "id": "dco-sign-off",
+          "option": "certify",
+          "setVariable": undefined,
+        },
+        {
+          "id": "review-received",
+          "option": "yes-review",
+          "setVariable": undefined,
+        },
+        {
+          "id": "review-outcome",
+          "option": "approved",
+          "setVariable": {
+            "review_requires_changes": false,
+          },
+        },
+        {
+          "id": "body-non-conformant",
+          "option": "proceed-with-override",
+          "setVariable": {
+            "body_conforms": true,
+            "body_override_recorded": true,
+          },
+        },
+      ],
+      "next": "complete",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "complete",
+      "artifacts": [
+        "NNNN-{decision-title}.md",
+        "COMPLETE.md",
+        "workflow-retrospective.md",
+        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
+      ],
+      "checkpoints": [],
+      "next": null,
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+  ],
+  "workflowId": "work-package",
+}
+`;
+
+exports[`work-package walk snapshots (baseline) > [full-workflow] matches committed baseline 1`] = `
+{
+  "finalStatus": "completed",
+  "initialActivity": "start-work-package",
+  "orchestratorUnresolved": [
+    "agent-conduct::checkpoint-discipline",
+    "agent-conduct::operational-discipline",
+    "agent-conduct::orchestrator-discipline",
+    "workflow-engine::bubble-checkpoint-up",
+    "workflow-engine::persist",
+  ],
+  "path": [
+    "start-work-package",
+    "design-philosophy",
+    "codebase-comprehension",
+    "requirements-elicitation",
+    "research",
+    "implementation-analysis",
+    "plan-prepare",
+    "assumptions-review",
+    "implement",
+    "post-impl-review",
+    "validate",
+    "strategic-review",
+    "submit-for-review",
+    "complete",
+  ],
+  "policy": "full-workflow",
+  "steps": [
+    {
+      "activity": "start-work-package",
+      "artifacts": [],
+      "checkpoints": [
+        {
+          "id": "issue-verification",
+          "option": "provide-existing",
+          "setVariable": {
+            "needs_issue_creation": false,
+          },
+        },
+        {
+          "id": "pr-creation",
+          "option": "proceed",
+          "setVariable": {
+            "pr_skipped": false,
+          },
+        },
+      ],
+      "next": "design-philosophy",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "design-philosophy",
+      "artifacts": [
+        "design-philosophy.md",
+        "assumptions-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "classification-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+        {
+          "id": "workflow-path-selected",
+          "option": "full-workflow",
+          "setVariable": {
+            "complexity": "complex",
+            "needs_elicitation": true,
+            "needs_research": true,
+            "skip_optional_activities": false,
+          },
+        },
+      ],
+      "next": "codebase-comprehension",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "codebase-comprehension",
+      "artifacts": [
+        "{codebase-area}.md",
+      ],
+      "checkpoints": [],
+      "next": "requirements-elicitation",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "requirements-elicitation",
+      "artifacts": [
+        "requirements-elicitation.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "stakeholder-transcript",
+          "option": "provide-transcript",
+          "setVariable": {
+            "has_stakeholder_input": true,
+          },
+        },
+        {
+          "id": "elicitation-complete",
+          "option": "complete",
+          "setVariable": {
+            "elicitation_complete": true,
+          },
+        },
+      ],
+      "next": "research",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "research",
+      "artifacts": [
+        "kb-research.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "research-findings",
+          "option": "sufficient",
+          "setVariable": undefined,
+        },
+        {
+          "id": "context-scope-declaration",
+          "option": "repo-only",
+          "setVariable": {
+            "context_scope": "repo-only",
+          },
+        },
+      ],
+      "next": "implementation-analysis",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "implementation-analysis",
+      "artifacts": [
+        "implementation-analysis.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "analysis-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "plan-prepare",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "plan-prepare",
+      "artifacts": [
+        "work-package-plan.md",
+        "test-plan.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "approach-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "assumptions-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "assumptions-review",
+      "artifacts": [
+        "assumptions-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "assumption-decision",
+          "option": "accept",
+          "setVariable": {
+            "assumption_resolved_inline": true,
+          },
+        },
+      ],
+      "next": "implement",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "implement",
+      "artifacts": [
+        "assumptions-log.md",
+        "provenance-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "switch-model-pre-impl",
+          "option": "continue-current",
+          "setVariable": undefined,
+        },
+        {
+          "id": "switch-model-post-impl",
+          "option": "continue-current",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "post-impl-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "post-impl-review",
+      "artifacts": [
+        "change-block-index.md",
+        "manual-diff-review.md",
+        "code-review.md",
+        "test-suite-review.md",
+        "architecture-summary.md",
+        "structural-findings.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "file-index-table",
+          "option": "rationale-confirmed",
+          "setVariable": {
+            "rationale_confirmed": true,
+          },
+        },
+        {
+          "id": "rationale-amendment",
+          "option": "all-accurate",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "validate",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "validate",
+      "artifacts": [],
+      "checkpoints": [],
+      "next": "strategic-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+        "cargo-operations::build-release",
+        "cargo-operations::preflight",
+        "cargo-operations::run-suite",
+        "manage-artifacts::verify-readme-conforms",
+        "validate-build::aggregate-results",
+        "validate-build::analyze-failure",
+        "validate-build::apply-fix",
+      ],
+    },
+    {
+      "activity": "strategic-review",
+      "artifacts": [
+        "strategic-review-{n}.md",
+        "architecture-summary.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "review-findings",
+          "option": "acceptable",
+          "setVariable": {
+            "review_passed": true,
+          },
+        },
+      ],
+      "next": "submit-for-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "submit-for-review",
+      "artifacts": [],
+      "checkpoints": [
+        {
+          "id": "dco-sign-off",
+          "option": "certify",
+          "setVariable": undefined,
+        },
+        {
+          "id": "review-received",
+          "option": "yes-review",
+          "setVariable": undefined,
+        },
+        {
+          "id": "review-outcome",
+          "option": "approved",
+          "setVariable": {
+            "review_requires_changes": false,
+          },
+        },
+        {
+          "id": "body-non-conformant",
+          "option": "proceed-with-override",
+          "setVariable": {
+            "body_conforms": true,
+            "body_override_recorded": true,
+          },
+        },
+      ],
+      "next": "complete",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "complete",
+      "artifacts": [
+        "NNNN-{decision-title}.md",
+        "COMPLETE.md",
+        "workflow-retrospective.md",
+        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
+      ],
+      "checkpoints": [],
+      "next": null,
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+  ],
+  "workflowId": "work-package",
+}
+`;
+
+exports[`work-package walk snapshots (baseline) > [research-only] matches committed baseline 1`] = `
+{
+  "finalStatus": "completed",
+  "initialActivity": "start-work-package",
+  "orchestratorUnresolved": [
+    "agent-conduct::checkpoint-discipline",
+    "agent-conduct::operational-discipline",
+    "agent-conduct::orchestrator-discipline",
+    "workflow-engine::bubble-checkpoint-up",
+    "workflow-engine::persist",
+  ],
+  "path": [
+    "start-work-package",
+    "design-philosophy",
+    "codebase-comprehension",
+    "research",
+    "implementation-analysis",
+    "plan-prepare",
+    "assumptions-review",
+    "implement",
+    "post-impl-review",
+    "validate",
+    "strategic-review",
+    "submit-for-review",
+    "complete",
+  ],
+  "policy": "research-only",
+  "steps": [
+    {
+      "activity": "start-work-package",
+      "artifacts": [],
+      "checkpoints": [
+        {
+          "id": "issue-verification",
+          "option": "provide-existing",
+          "setVariable": {
+            "needs_issue_creation": false,
+          },
+        },
+        {
+          "id": "pr-creation",
+          "option": "proceed",
+          "setVariable": {
+            "pr_skipped": false,
+          },
+        },
+      ],
+      "next": "design-philosophy",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "design-philosophy",
+      "artifacts": [
+        "design-philosophy.md",
+        "assumptions-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "classification-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+        {
+          "id": "workflow-path-selected",
+          "option": "research-only",
+          "setVariable": {
+            "complexity": "moderate",
+            "needs_elicitation": false,
+            "needs_research": true,
+            "skip_optional_activities": false,
+          },
+        },
+      ],
+      "next": "codebase-comprehension",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "codebase-comprehension",
+      "artifacts": [
+        "{codebase-area}.md",
+      ],
+      "checkpoints": [],
+      "next": "research",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "research",
+      "artifacts": [
+        "kb-research.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "research-findings",
+          "option": "sufficient",
+          "setVariable": undefined,
+        },
+        {
+          "id": "context-scope-declaration",
+          "option": "repo-only",
+          "setVariable": {
+            "context_scope": "repo-only",
+          },
+        },
+      ],
+      "next": "implementation-analysis",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "implementation-analysis",
+      "artifacts": [
+        "implementation-analysis.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "analysis-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "plan-prepare",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "plan-prepare",
+      "artifacts": [
+        "work-package-plan.md",
+        "test-plan.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "approach-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "assumptions-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "assumptions-review",
+      "artifacts": [
+        "assumptions-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "assumption-decision",
+          "option": "accept",
+          "setVariable": {
+            "assumption_resolved_inline": true,
+          },
+        },
+      ],
+      "next": "implement",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "implement",
+      "artifacts": [
+        "assumptions-log.md",
+        "provenance-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "switch-model-pre-impl",
+          "option": "continue-current",
+          "setVariable": undefined,
+        },
+        {
+          "id": "switch-model-post-impl",
+          "option": "continue-current",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "post-impl-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "post-impl-review",
+      "artifacts": [
+        "change-block-index.md",
+        "manual-diff-review.md",
+        "code-review.md",
+        "test-suite-review.md",
+        "architecture-summary.md",
+        "structural-findings.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "file-index-table",
+          "option": "rationale-confirmed",
+          "setVariable": {
+            "rationale_confirmed": true,
+          },
+        },
+        {
+          "id": "rationale-amendment",
+          "option": "all-accurate",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "validate",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "validate",
+      "artifacts": [],
+      "checkpoints": [],
+      "next": "strategic-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+        "cargo-operations::build-release",
+        "cargo-operations::preflight",
+        "cargo-operations::run-suite",
+        "manage-artifacts::verify-readme-conforms",
+        "validate-build::aggregate-results",
+        "validate-build::analyze-failure",
+        "validate-build::apply-fix",
+      ],
+    },
+    {
+      "activity": "strategic-review",
+      "artifacts": [
+        "strategic-review-{n}.md",
+        "architecture-summary.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "review-findings",
+          "option": "acceptable",
+          "setVariable": {
+            "review_passed": true,
+          },
+        },
+      ],
+      "next": "submit-for-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "submit-for-review",
+      "artifacts": [],
+      "checkpoints": [
+        {
+          "id": "dco-sign-off",
+          "option": "certify",
+          "setVariable": undefined,
+        },
+        {
+          "id": "review-received",
+          "option": "yes-review",
+          "setVariable": undefined,
+        },
+        {
+          "id": "review-outcome",
+          "option": "approved",
+          "setVariable": {
+            "review_requires_changes": false,
+          },
+        },
+        {
+          "id": "body-non-conformant",
+          "option": "proceed-with-override",
+          "setVariable": {
+            "body_conforms": true,
+            "body_override_recorded": true,
+          },
+        },
+      ],
+      "next": "complete",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "complete",
+      "artifacts": [
+        "NNNN-{decision-title}.md",
+        "COMPLETE.md",
+        "workflow-retrospective.md",
+        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
+      ],
+      "checkpoints": [],
+      "next": null,
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+  ],
+  "workflowId": "work-package",
+}
+`;
+
+exports[`work-package walk snapshots (baseline) > [review-mode] matches committed baseline 1`] = `
+{
+  "finalStatus": "completed",
+  "initialActivity": "start-work-package",
+  "orchestratorUnresolved": [
+    "agent-conduct::checkpoint-discipline",
+    "agent-conduct::operational-discipline",
+    "agent-conduct::orchestrator-discipline",
+    "workflow-engine::bubble-checkpoint-up",
+    "workflow-engine::persist",
+  ],
+  "path": [
+    "start-work-package",
+    "design-philosophy",
+    "codebase-comprehension",
+    "plan-prepare",
+    "assumptions-review",
+    "implement",
+    "post-impl-review",
+    "validate",
+    "strategic-review",
+    "submit-for-review",
+    "complete",
+  ],
+  "policy": "review-mode",
+  "steps": [
+    {
+      "activity": "start-work-package",
+      "artifacts": [],
+      "checkpoints": [
+        {
+          "id": "issue-verification",
+          "option": "provide-existing",
+          "setVariable": {
+            "needs_issue_creation": false,
+          },
+        },
+        {
+          "id": "pr-creation",
+          "option": "proceed",
+          "setVariable": {
+            "pr_skipped": false,
+          },
+        },
+        {
+          "id": "review-mode-detection",
+          "option": "confirm-review",
+          "setVariable": {
+            "is_review_mode": true,
+          },
+        },
+        {
+          "id": "review-pr-reference",
+          "option": "pr-provided",
+          "setVariable": {
+            "review_pr_captured": true,
+          },
+        },
+      ],
+      "next": "design-philosophy",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "design-philosophy",
+      "artifacts": [
+        "design-philosophy.md",
+        "assumptions-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "classification-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+        {
+          "id": "workflow-path-selected",
+          "option": "skip-optional",
+          "setVariable": {
+            "needs_elicitation": false,
+            "needs_research": false,
+            "path_gating_complexity": "simple",
+            "skip_optional_activities": true,
+          },
+        },
+        {
+          "id": "ticket-completeness",
+          "option": "refactor-ticket",
+          "setVariable": {
+            "ticket_refactor_needed": true,
+          },
+        },
+      ],
+      "next": "codebase-comprehension",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "codebase-comprehension",
+      "artifacts": [
+        "{codebase-area}.md",
+      ],
+      "checkpoints": [],
+      "next": "plan-prepare",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "plan-prepare",
+      "artifacts": [
+        "work-package-plan.md",
+        "test-plan.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "approach-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "assumptions-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "assumptions-review",
+      "artifacts": [
+        "assumptions-log.md",
+      ],
+      "checkpoints": [],
+      "next": "implement",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "implement",
+      "artifacts": [
+        "assumptions-log.md",
+        "provenance-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "switch-model-pre-impl",
+          "option": "continue-current",
+          "setVariable": undefined,
+        },
+        {
+          "id": "switch-model-post-impl",
+          "option": "continue-current",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "post-impl-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "post-impl-review",
+      "artifacts": [
+        "change-block-index.md",
+        "manual-diff-review.md",
+        "code-review.md",
+        "test-suite-review.md",
+        "architecture-summary.md",
+        "structural-findings.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "file-index-table",
+          "option": "rationale-confirmed",
+          "setVariable": {
+            "rationale_confirmed": true,
+          },
+        },
+        {
+          "id": "rationale-amendment",
+          "option": "all-accurate",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "validate",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "validate",
+      "artifacts": [],
+      "checkpoints": [],
+      "next": "strategic-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+        "cargo-operations::build-release",
+        "cargo-operations::preflight",
+        "cargo-operations::run-suite",
+        "manage-artifacts::verify-readme-conforms",
+        "validate-build::aggregate-results",
+        "validate-build::analyze-failure",
+        "validate-build::apply-fix",
+      ],
+    },
+    {
+      "activity": "strategic-review",
+      "artifacts": [
+        "strategic-review-{n}.md",
+        "architecture-summary.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "review-findings",
+          "option": "acceptable",
+          "setVariable": {
+            "review_passed": true,
+          },
+        },
+      ],
+      "next": "submit-for-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "submit-for-review",
+      "artifacts": [],
+      "checkpoints": [
+        {
+          "id": "dco-sign-off",
+          "option": "certify",
+          "setVariable": undefined,
+        },
+        {
+          "id": "review-received",
+          "option": "yes-review",
+          "setVariable": undefined,
+        },
+        {
+          "id": "review-outcome",
+          "option": "approved",
+          "setVariable": {
+            "review_requires_changes": false,
+          },
+        },
+        {
+          "id": "review-summary-approval",
+          "option": "post-review",
+          "setVariable": {
+            "review_posted": true,
+          },
+        },
+        {
+          "id": "body-non-conformant",
+          "option": "proceed-with-override",
+          "setVariable": {
+            "body_conforms": true,
+            "body_override_recorded": true,
+          },
+        },
+      ],
+      "next": "complete",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "complete",
+      "artifacts": [
+        "NNNN-{decision-title}.md",
+        "COMPLETE.md",
+        "workflow-retrospective.md",
+        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
+      ],
+      "checkpoints": [],
+      "next": null,
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+  ],
+  "workflowId": "work-package",
+}
+`;
+
+exports[`work-package walk snapshots (baseline) > [skip-optional] matches committed baseline 1`] = `
+{
+  "finalStatus": "completed",
+  "initialActivity": "start-work-package",
+  "orchestratorUnresolved": [
+    "agent-conduct::checkpoint-discipline",
+    "agent-conduct::operational-discipline",
+    "agent-conduct::orchestrator-discipline",
+    "workflow-engine::bubble-checkpoint-up",
+    "workflow-engine::persist",
+  ],
+  "path": [
+    "start-work-package",
+    "design-philosophy",
+    "codebase-comprehension",
+    "plan-prepare",
+    "assumptions-review",
+    "implement",
+    "post-impl-review",
+    "validate",
+    "strategic-review",
+    "submit-for-review",
+    "complete",
+  ],
+  "policy": "skip-optional",
+  "steps": [
+    {
+      "activity": "start-work-package",
+      "artifacts": [],
+      "checkpoints": [
+        {
+          "id": "issue-verification",
+          "option": "provide-existing",
+          "setVariable": {
+            "needs_issue_creation": false,
+          },
+        },
+        {
+          "id": "pr-creation",
+          "option": "proceed",
+          "setVariable": {
+            "pr_skipped": false,
+          },
+        },
+      ],
+      "next": "design-philosophy",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "design-philosophy",
+      "artifacts": [
+        "design-philosophy.md",
+        "assumptions-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "classification-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+        {
+          "id": "workflow-path-selected",
+          "option": "skip-optional",
+          "setVariable": {
+            "needs_elicitation": false,
+            "needs_research": false,
+            "path_gating_complexity": "simple",
+            "skip_optional_activities": true,
+          },
+        },
+      ],
+      "next": "codebase-comprehension",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "codebase-comprehension",
+      "artifacts": [
+        "{codebase-area}.md",
+      ],
+      "checkpoints": [],
+      "next": "plan-prepare",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "plan-prepare",
+      "artifacts": [
+        "work-package-plan.md",
+        "test-plan.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "approach-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "assumptions-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "assumptions-review",
+      "artifacts": [
+        "assumptions-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "assumption-decision",
+          "option": "accept",
+          "setVariable": {
+            "assumption_resolved_inline": true,
+          },
+        },
+      ],
+      "next": "implement",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "implement",
+      "artifacts": [
+        "assumptions-log.md",
+        "provenance-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "switch-model-pre-impl",
+          "option": "continue-current",
+          "setVariable": undefined,
+        },
+        {
+          "id": "switch-model-post-impl",
+          "option": "continue-current",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "post-impl-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "post-impl-review",
+      "artifacts": [
+        "change-block-index.md",
+        "manual-diff-review.md",
+        "code-review.md",
+        "test-suite-review.md",
+        "architecture-summary.md",
+        "structural-findings.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "file-index-table",
+          "option": "rationale-confirmed",
+          "setVariable": {
+            "rationale_confirmed": true,
+          },
+        },
+        {
+          "id": "rationale-amendment",
+          "option": "all-accurate",
+          "setVariable": undefined,
+        },
+      ],
+      "next": "validate",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "validate",
+      "artifacts": [],
+      "checkpoints": [],
+      "next": "strategic-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+        "cargo-operations::build-release",
+        "cargo-operations::preflight",
+        "cargo-operations::run-suite",
+        "manage-artifacts::verify-readme-conforms",
+        "validate-build::aggregate-results",
+        "validate-build::analyze-failure",
+        "validate-build::apply-fix",
+      ],
+    },
+    {
+      "activity": "strategic-review",
+      "artifacts": [
+        "strategic-review-{n}.md",
+        "architecture-summary.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "review-findings",
+          "option": "acceptable",
+          "setVariable": {
+            "review_passed": true,
+          },
+        },
+      ],
+      "next": "submit-for-review",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "submit-for-review",
+      "artifacts": [],
+      "checkpoints": [
+        {
+          "id": "dco-sign-off",
+          "option": "certify",
+          "setVariable": undefined,
+        },
+        {
+          "id": "review-received",
+          "option": "yes-review",
+          "setVariable": undefined,
+        },
+        {
+          "id": "review-outcome",
+          "option": "approved",
+          "setVariable": {
+            "review_requires_changes": false,
+          },
+        },
+        {
+          "id": "body-non-conformant",
+          "option": "proceed-with-override",
+          "setVariable": {
+            "body_conforms": true,
+            "body_override_recorded": true,
+          },
+        },
+      ],
+      "next": "complete",
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+    {
+      "activity": "complete",
+      "artifacts": [
+        "NNNN-{decision-title}.md",
+        "COMPLETE.md",
+        "workflow-retrospective.md",
+        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
+      ],
+      "checkpoints": [],
+      "next": null,
+      "unresolved": [
+        "agent-conduct::checkpoint-discipline",
+        "agent-conduct::code-commentary",
+        "agent-conduct::file-sensitivity",
+        "agent-conduct::operational-discipline",
+      ],
+    },
+  ],
+  "workflowId": "work-package",
+}
+`;
