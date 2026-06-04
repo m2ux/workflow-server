@@ -4,13 +4,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
 {
   "finalStatus": "completed",
   "initialActivity": "start-work-package",
-  "orchestratorUnresolved": [
-    "agent-conduct::checkpoint-discipline",
-    "agent-conduct::operational-discipline",
-    "agent-conduct::orchestrator-discipline",
-    "workflow-engine::bubble-checkpoint-up",
-    "workflow-engine::persist",
-  ],
+  "orchestratorUnresolved": [],
   "path": [
     "start-work-package",
     "design-philosophy",
@@ -71,12 +65,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "initialize-planning-folder",
         "determine-next-activity",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "design-philosophy",
@@ -117,12 +106,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "create-assumptions-log",
         "reconcile-assumptions",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "codebase-comprehension",
@@ -148,12 +132,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "revise-initial-questions",
         "deep-dive-loop",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "plan-prepare",
@@ -188,12 +167,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "sync-branch",
         "update-pr",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "assumptions-review",
@@ -211,12 +185,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "evaluate-open-assumptions",
         "update-assumptions-log",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "implement",
@@ -244,12 +213,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "interview-open-assumptions",
         "update-assumptions-log",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "post-impl-review",
@@ -293,12 +257,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "architecture-summary",
         "classify-and-route-findings",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "validate",
@@ -312,19 +271,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "evaluate-results",
         "fix-failures",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-        "cargo-operations::build-release",
-        "cargo-operations::preflight",
-        "cargo-operations::run-suite",
-        "manage-artifacts::verify-readme-conforms",
-        "validate-build::aggregate-results",
-        "validate-build::analyze-failure",
-        "validate-build::apply-fix",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "strategic-review",
@@ -359,12 +306,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "create-architecture-summary",
         "analyze-strategic-findings",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "submit-for-review",
@@ -405,12 +347,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "determine-review-outcome",
         "analyze-review-outcome",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "complete",
@@ -437,12 +374,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "update-status",
         "select-next",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
   ],
   "workflowId": "work-package",
@@ -453,13 +385,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
 {
   "finalStatus": "completed",
   "initialActivity": "start-work-package",
-  "orchestratorUnresolved": [
-    "agent-conduct::checkpoint-discipline",
-    "agent-conduct::operational-discipline",
-    "agent-conduct::orchestrator-discipline",
-    "workflow-engine::bubble-checkpoint-up",
-    "workflow-engine::persist",
-  ],
+  "orchestratorUnresolved": [],
   "path": [
     "start-work-package",
     "design-philosophy",
@@ -523,12 +449,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "initialize-planning-folder",
         "determine-next-activity",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "design-philosophy",
@@ -569,12 +490,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "create-assumptions-log",
         "reconcile-assumptions",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "codebase-comprehension",
@@ -600,12 +516,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "revise-initial-questions",
         "deep-dive-loop",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "requirements-elicitation",
@@ -642,12 +553,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "update-assumptions-log",
         "reconcile-assumptions",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "research",
@@ -686,12 +592,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "declare-context-scope",
         "interview-open-assumptions",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "implementation-analysis",
@@ -722,12 +623,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "present-resolved-assumptions",
         "interview-open-assumptions",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "plan-prepare",
@@ -762,12 +658,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "sync-branch",
         "update-pr",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "assumptions-review",
@@ -785,12 +676,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "evaluate-open-assumptions",
         "update-assumptions-log",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "implement",
@@ -818,12 +704,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "interview-open-assumptions",
         "update-assumptions-log",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "post-impl-review",
@@ -867,12 +748,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "architecture-summary",
         "classify-and-route-findings",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "validate",
@@ -886,19 +762,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "evaluate-results",
         "fix-failures",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-        "cargo-operations::build-release",
-        "cargo-operations::preflight",
-        "cargo-operations::run-suite",
-        "manage-artifacts::verify-readme-conforms",
-        "validate-build::aggregate-results",
-        "validate-build::analyze-failure",
-        "validate-build::apply-fix",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "strategic-review",
@@ -933,12 +797,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "create-architecture-summary",
         "analyze-strategic-findings",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "submit-for-review",
@@ -979,12 +838,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "determine-review-outcome",
         "analyze-review-outcome",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "complete",
@@ -1013,12 +867,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "update-status",
         "select-next",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
   ],
   "workflowId": "work-package",
@@ -1029,13 +878,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
 {
   "finalStatus": "completed",
   "initialActivity": "start-work-package",
-  "orchestratorUnresolved": [
-    "agent-conduct::checkpoint-discipline",
-    "agent-conduct::operational-discipline",
-    "agent-conduct::orchestrator-discipline",
-    "workflow-engine::bubble-checkpoint-up",
-    "workflow-engine::persist",
-  ],
+  "orchestratorUnresolved": [],
   "path": [
     "start-work-package",
     "design-philosophy",
@@ -1099,12 +942,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "initialize-planning-folder",
         "determine-next-activity",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "design-philosophy",
@@ -1145,12 +983,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "create-assumptions-log",
         "reconcile-assumptions",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "codebase-comprehension",
@@ -1176,12 +1009,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "revise-initial-questions",
         "deep-dive-loop",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "requirements-elicitation",
@@ -1218,12 +1046,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "update-assumptions-log",
         "reconcile-assumptions",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "research",
@@ -1262,12 +1085,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "declare-context-scope",
         "interview-open-assumptions",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "implementation-analysis",
@@ -1298,12 +1116,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "present-resolved-assumptions",
         "interview-open-assumptions",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "plan-prepare",
@@ -1338,12 +1151,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "sync-branch",
         "update-pr",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "assumptions-review",
@@ -1361,12 +1169,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "evaluate-open-assumptions",
         "update-assumptions-log",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "implement",
@@ -1394,12 +1197,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "interview-open-assumptions",
         "update-assumptions-log",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "post-impl-review",
@@ -1443,12 +1241,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "architecture-summary",
         "classify-and-route-findings",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "validate",
@@ -1462,19 +1255,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "evaluate-results",
         "fix-failures",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-        "cargo-operations::build-release",
-        "cargo-operations::preflight",
-        "cargo-operations::run-suite",
-        "manage-artifacts::verify-readme-conforms",
-        "validate-build::aggregate-results",
-        "validate-build::analyze-failure",
-        "validate-build::apply-fix",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "strategic-review",
@@ -1509,12 +1290,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "create-architecture-summary",
         "analyze-strategic-findings",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "submit-for-review",
@@ -1555,12 +1331,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "determine-review-outcome",
         "analyze-review-outcome",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "complete",
@@ -1589,12 +1360,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "update-status",
         "select-next",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
   ],
   "workflowId": "work-package",
@@ -1605,13 +1371,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
 {
   "finalStatus": "completed",
   "initialActivity": "start-work-package",
-  "orchestratorUnresolved": [
-    "agent-conduct::checkpoint-discipline",
-    "agent-conduct::operational-discipline",
-    "agent-conduct::orchestrator-discipline",
-    "workflow-engine::bubble-checkpoint-up",
-    "workflow-engine::persist",
-  ],
+  "orchestratorUnresolved": [],
   "path": [
     "start-work-package",
     "design-philosophy",
@@ -1674,12 +1434,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "initialize-planning-folder",
         "determine-next-activity",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "design-philosophy",
@@ -1720,12 +1475,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "create-assumptions-log",
         "reconcile-assumptions",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "codebase-comprehension",
@@ -1751,12 +1501,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "revise-initial-questions",
         "deep-dive-loop",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "research",
@@ -1795,12 +1540,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "declare-context-scope",
         "interview-open-assumptions",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "implementation-analysis",
@@ -1831,12 +1571,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "present-resolved-assumptions",
         "interview-open-assumptions",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "plan-prepare",
@@ -1871,12 +1606,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "sync-branch",
         "update-pr",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "assumptions-review",
@@ -1894,12 +1624,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "evaluate-open-assumptions",
         "update-assumptions-log",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "implement",
@@ -1927,12 +1652,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "interview-open-assumptions",
         "update-assumptions-log",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "post-impl-review",
@@ -1976,12 +1696,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "architecture-summary",
         "classify-and-route-findings",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "validate",
@@ -1995,19 +1710,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "evaluate-results",
         "fix-failures",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-        "cargo-operations::build-release",
-        "cargo-operations::preflight",
-        "cargo-operations::run-suite",
-        "manage-artifacts::verify-readme-conforms",
-        "validate-build::aggregate-results",
-        "validate-build::analyze-failure",
-        "validate-build::apply-fix",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "strategic-review",
@@ -2042,12 +1745,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "create-architecture-summary",
         "analyze-strategic-findings",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "submit-for-review",
@@ -2088,12 +1786,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "determine-review-outcome",
         "analyze-review-outcome",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "complete",
@@ -2122,12 +1815,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "update-status",
         "select-next",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
   ],
   "workflowId": "work-package",
@@ -2138,13 +1826,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
 {
   "finalStatus": "completed",
   "initialActivity": "start-work-package",
-  "orchestratorUnresolved": [
-    "agent-conduct::checkpoint-discipline",
-    "agent-conduct::operational-discipline",
-    "agent-conduct::orchestrator-discipline",
-    "workflow-engine::bubble-checkpoint-up",
-    "workflow-engine::persist",
-  ],
+  "orchestratorUnresolved": [],
   "path": [
     "start-work-package",
     "design-philosophy",
@@ -2211,12 +1893,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "initialize-planning-folder",
         "determine-next-activity",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "design-philosophy",
@@ -2266,12 +1943,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "assess-ticket-completeness",
         "set-review-mode-path",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "codebase-comprehension",
@@ -2297,12 +1969,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "revise-initial-questions",
         "deep-dive-loop",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "plan-prepare",
@@ -2337,12 +2004,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "sync-branch",
         "update-pr",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "assumptions-review",
@@ -2360,12 +2022,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "evaluate-open-assumptions",
         "update-assumptions-log",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "implement",
@@ -2393,12 +2050,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "interview-open-assumptions",
         "update-assumptions-log",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "post-impl-review",
@@ -2442,12 +2094,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "architecture-summary",
         "classify-and-route-findings",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "validate",
@@ -2462,19 +2109,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "document-failures",
         "assess-test-coverage",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-        "cargo-operations::build-release",
-        "cargo-operations::preflight",
-        "cargo-operations::run-suite",
-        "manage-artifacts::verify-readme-conforms",
-        "validate-build::aggregate-results",
-        "validate-build::analyze-failure",
-        "validate-build::apply-fix",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "strategic-review",
@@ -2509,12 +2144,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "create-architecture-summary",
         "analyze-strategic-findings",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "submit-for-review",
@@ -2556,12 +2186,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "determine-review-outcome",
         "analyze-review-outcome",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "complete",
@@ -2585,12 +2210,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "update-status",
         "select-next",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
   ],
   "workflowId": "work-package",
@@ -2601,13 +2221,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
 {
   "finalStatus": "completed",
   "initialActivity": "start-work-package",
-  "orchestratorUnresolved": [
-    "agent-conduct::checkpoint-discipline",
-    "agent-conduct::operational-discipline",
-    "agent-conduct::orchestrator-discipline",
-    "workflow-engine::bubble-checkpoint-up",
-    "workflow-engine::persist",
-  ],
+  "orchestratorUnresolved": [],
   "path": [
     "start-work-package",
     "design-philosophy",
@@ -2668,12 +2282,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "initialize-planning-folder",
         "determine-next-activity",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "design-philosophy",
@@ -2714,12 +2323,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "create-assumptions-log",
         "reconcile-assumptions",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "codebase-comprehension",
@@ -2745,12 +2349,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "revise-initial-questions",
         "deep-dive-loop",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "plan-prepare",
@@ -2785,12 +2384,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "sync-branch",
         "update-pr",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "assumptions-review",
@@ -2808,12 +2402,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "evaluate-open-assumptions",
         "update-assumptions-log",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "implement",
@@ -2841,12 +2430,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "interview-open-assumptions",
         "update-assumptions-log",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "post-impl-review",
@@ -2890,12 +2474,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "architecture-summary",
         "classify-and-route-findings",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "validate",
@@ -2909,19 +2488,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "evaluate-results",
         "fix-failures",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-        "cargo-operations::build-release",
-        "cargo-operations::preflight",
-        "cargo-operations::run-suite",
-        "manage-artifacts::verify-readme-conforms",
-        "validate-build::aggregate-results",
-        "validate-build::analyze-failure",
-        "validate-build::apply-fix",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "strategic-review",
@@ -2956,12 +2523,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "create-architecture-summary",
         "analyze-strategic-findings",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "submit-for-review",
@@ -3002,12 +2564,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "determine-review-outcome",
         "analyze-review-outcome",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
     {
       "activity": "complete",
@@ -3034,12 +2591,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "update-status",
         "select-next",
       ],
-      "unresolved": [
-        "agent-conduct::checkpoint-discipline",
-        "agent-conduct::code-commentary",
-        "agent-conduct::file-sensitivity",
-        "agent-conduct::operational-discipline",
-      ],
+      "unresolved": [],
     },
   ],
   "workflowId": "work-package",

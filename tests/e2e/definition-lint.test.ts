@@ -23,33 +23,20 @@ import {
  * (run retroactively against main) determines whether the baseline set itself
  * is a migration regression or pre-existing.
  *
- * KNOWN FINDING (pending legacy confirmation): the core conduct ops in
- * src/loaders/core-ops.ts reference GROUP names (agent-conduct::checkpoint-
- * discipline, ::operational-discipline, ::file-sensitivity, ::code-commentary,
- * workflow-engine::persist, ...), but the migrated agent-conduct.md defines
- * only FLATTENED rules (checkpoint-discipline-workers-yield-only, ...). The
- * group refs no longer resolve, so every worker/orchestrator bundle is missing
- * its core conduct rules. Suspected regression from grouped→flattened rule
- * renaming during the markdown migration.
+ * RESOLVED (was the headline finding): every operation ref now resolves, so the
+ * baseline is empty. The fixes:
+ *  - Group-prefix rule expansion in resolveOperations: a bare group ref like
+ *    agent-conduct::checkpoint-discipline now pulls all checkpoint-discipline-*
+ *    rules (markdown flattens groups into <group>-<specifier> rule headings).
+ *  - core-ops.ts: agent-conduct::orchestrator-discipline → ::orchestrator (the
+ *    rules are named orchestrator-*); dropped stale workflow-engine::persist and
+ *    ::bubble-checkpoint-up (no such op files; commit-and-persist + present/
+ *    respond-checkpoint cover them).
+ *  - resolveOperations falls back to the CURRENT workflow for unprefixed refs,
+ *    so work-package activities resolve their own techniques (cargo-operations,
+ *    validate-build, manage-artifacts) by bare name as authored.
  */
-const BASELINE_UNRESOLVED = [
-  // Core/meta conduct ops (group-name refs in core-ops.ts vs. flattened rules).
-  'agent-conduct::checkpoint-discipline',
-  'agent-conduct::code-commentary',
-  'agent-conduct::file-sensitivity',
-  'agent-conduct::operational-discipline',
-  'agent-conduct::orchestrator-discipline',
-  'workflow-engine::bubble-checkpoint-up',
-  'workflow-engine::persist',
-  // Grouped (folder-based) work-package technique operations not resolving.
-  'cargo-operations::build-release',
-  'cargo-operations::preflight',
-  'cargo-operations::run-suite',
-  'manage-artifacts::verify-readme-conforms',
-  'validate-build::aggregate-results',
-  'validate-build::analyze-failure',
-  'validate-build::apply-fix',
-].sort();
+const BASELINE_UNRESOLVED: string[] = [];
 
 describe('work-package definition lint (Layer 2: resolution)', () => {
   let h: Harness;

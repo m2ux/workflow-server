@@ -254,6 +254,7 @@ function parseOperationRef(ref: string): { workflow?: string; technique: string;
 export async function resolveOperations(
   refs: string[],
   workflowDir: string,
+  currentWorkflow?: string,
 ): Promise<ResolvedOperation[]> {
   const results: ResolvedOperation[] = [];
   const explicitRules = new Set<string>();
@@ -276,6 +277,7 @@ export async function resolveOperations(
     //    prefix targets that workflow. Operations are files — never a materialised map on a technique.
     const opTechniquesDir = getWorkflowTechniquesDir(workflowDir, parsed.workflow ?? META_WORKFLOW_ID);
     let opBody: unknown = null;
+    let opWorkflow = parsed.workflow; // workflow where the operation was actually found
     try {
       opBody = await tryLoadOperationFile(opTechniquesDir, parsed.technique, parsed.name);
     } catch (error) {
@@ -283,12 +285,26 @@ export async function resolveOperations(
       logWarn('Malformed operation file', { ref, error: error.message });
       opBody = null; // surface as not-found below
     }
+    // Fallback: an unprefixed ref to the CURRENT workflow's own technique. Activities
+    // reference sibling techniques by bare name (e.g. cargo-operations::run-suite from
+    // work-package), so when the meta lookup misses, try the current workflow.
+    if (!opBody && !parsed.workflow && currentWorkflow && currentWorkflow !== META_WORKFLOW_ID) {
+      try {
+        opBody = await tryLoadOperationFile(getWorkflowTechniquesDir(workflowDir, currentWorkflow), parsed.technique, parsed.name);
+        if (opBody) opWorkflow = currentWorkflow;
+      } catch (error) {
+        if (!(error instanceof MarkdownTechniqueParseError)) throw error;
+        logWarn('Malformed operation file', { ref, error: error.message });
+        opBody = null;
+      }
+    }
     if (opBody) {
-      results.push({ source: parsed.technique, workflow: parsed.workflow, name: parsed.name, type: 'operation', body: opBody, ref });
+      results.push({ source: parsed.technique, workflow: opWorkflow, name: parsed.name, type: 'operation', body: opBody, ref });
       // Cache the group index so its shared rules auto-include below.
-      const idxResult = await readTechnique(techRef, workflowDir);
+      const idxRef = opWorkflow ? `${opWorkflow}/${parsed.technique}` : parsed.technique;
+      const idxResult = await readTechnique(idxRef, workflowDir);
       if (idxResult.success) {
-        touchedSkills.set(skillKey(parsed.workflow, parsed.technique), { workflow: parsed.workflow, technique: parsed.technique, cached: idxResult.value });
+        touchedSkills.set(skillKey(opWorkflow, parsed.technique), { workflow: opWorkflow, technique: parsed.technique, cached: idxResult.value });
       }
       continue;
     }
@@ -325,6 +341,29 @@ export async function resolveOperations(
       });
       touchedSkills.set(skillKey(parsed.workflow, parsed.technique), { workflow: parsed.workflow, technique: parsed.technique, cached: technique });
       continue;
+    }
+    // 3. Group-prefix rule reference: `technique::group` resolves to every rule
+    //    named `group-<specifier>`. Markdown techniques flatten a rule group into
+    //    individually-headed rules (e.g. checkpoint-discipline → checkpoint-
+    //    discipline-workers-yield-only, ...), so a bare group ref must expand to
+    //    its members. Scoped to the matched group only (not the whole technique),
+    //    so role-specific groups don't leak across worker/orchestrator bundles.
+    if (technique.rules) {
+      const groupRules = Object.keys(technique.rules).filter(rn => rn.startsWith(`${parsed.name}-`));
+      if (groupRules.length > 0) {
+        for (const rn of groupRules) {
+          explicitRules.add(ruleKey(parsed.workflow, parsed.technique, rn));
+          results.push({
+            source: parsed.technique,
+            workflow: parsed.workflow,
+            name: rn,
+            type: 'rule',
+            body: technique.rules[rn],
+            ref: `${techRef}::${rn}`,
+          });
+        }
+        continue;
+      }
     }
     results.push({ source: parsed.technique, workflow: parsed.workflow, name: parsed.name, type: 'not-found', body: null, ref });
   }

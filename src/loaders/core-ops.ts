@@ -25,16 +25,15 @@ export const CORE_ORCHESTRATOR_OPS: readonly string[] = [
   // Checkpoint flow at orchestrator level
   'workflow-engine::present-checkpoint-to-user',
   'workflow-engine::respond-checkpoint',
-  'workflow-engine::bubble-checkpoint-up',
-  // State persistence
-  'workflow-engine::persist',
+  // State persistence (commit-and-persist above is the operation; the former
+  // 'persist' and 'bubble-checkpoint-up' refs were stale — no such op files).
   // Sub-agent dispatch primitives — dispatch-activity invokes spawn-agent in
   // its body, so the orchestrator must receive the harness-specific prose for
   // these to actually dispatch instead of improvising / inlining.
   'harness-compat::spawn-agent',
   'harness-compat::continue-agent',
-  // Cross-cutting orchestrator rules
-  'agent-conduct::orchestrator-discipline',
+  // Cross-cutting orchestrator rules (group-prefix refs → all `<group>-*` rules)
+  'agent-conduct::orchestrator',
   'agent-conduct::checkpoint-discipline',
   'agent-conduct::operational-discipline',
 ];

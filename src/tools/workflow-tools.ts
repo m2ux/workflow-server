@@ -112,7 +112,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // Deduplicate by ref so a workflow that explicitly lists a core op only resolves it once.
       const declaredOps = (wf as { operations?: string[] }).operations ?? [];
       const orchestratorOps = Array.from(new Set([...declaredOps, ...CORE_ORCHESTRATOR_OPS]));
-      const resolvedOps = await resolveOperations(orchestratorOps, config.workflowDir);
+      const resolvedOps = await resolveOperations(orchestratorOps, config.workflowDir, workflow_id);
       const opsBlock = encodeToon(formatOperationsBundle(resolvedOps));
 
       // Pre-separator preamble holds the legacy primary-technique body (when present)
@@ -323,7 +323,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const activity = result.success ? getActivity(result.value, activity_id) : undefined;
       const declaredOps = (activity as { operations?: string[] } | undefined)?.operations ?? [];
       const workerOps = Array.from(new Set([...declaredOps, ...CORE_WORKER_OPS]));
-      const resolvedOps = await resolveOperations(workerOps, config.workflowDir);
+      const resolvedOps = await resolveOperations(workerOps, config.workflowDir, workflow_id);
       const opsSection = encodeToon(formatOperationsBundle(resolvedOps)) + '\n\n---\n\n';
 
       return {
@@ -691,11 +691,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const traceEvents = config.traceStore ? config.traceStore.getEvents(state.sessionIndex) : [];
-      const completedActivities: string[] = [];
-      const activitySet = new Set<string>();
-      for (const event of traceEvents) {
-        if (event.name === 'next_activity' && event.act && event.s === 'ok') {
-          if (!activitySet.has(event.act)) {
+
+      // Completed activities come from authoritative session state (the trace
+      // store may be disabled). Fall back to trace-derived only if state is empty.
+      let completedActivities: string[] = Array.isArray(state.completedActivities) ? [...state.completedActivities] : [];
+      if (completedActivities.length === 0 && traceEvents.length > 0) {
+        const activitySet = new Set<string>();
+        for (const event of traceEvents) {
+          if (event.name === 'next_activity' && event.act && event.s === 'ok' && !activitySet.has(event.act)) {
             activitySet.add(event.act);
             completedActivities.push(event.act);
           }
@@ -710,6 +713,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         status,
         current_activity: clientAct || 'none',
         completed_activities: completedActivities,
+        // Rolled-up variable bag from session state, so workers/orchestrators can
+        // read decisions and computed values on resume without re-deriving them.
+        variables: state.variables ?? {},
         workflow: workflow ? {
           id: workflow.id,
           version: workflow.version,
