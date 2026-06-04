@@ -161,8 +161,9 @@ agents read (technique/activity wording, operation bundles), not just structure.
 ## Findings & baselines
 
 The deterministic layers record current state as baselines and fail on *new*
-drift, surfacing known issues without going red:
+drift, surfacing known issues without going red.
 
+**From the deterministic layers (L2 / 3c):**
 - **Unresolved op refs** (`definition-lint.test.ts`): core conduct ops
   (`agent-conduct::*`, `workflow-engine::*`) and some grouped-technique ops
   (`cargo-operations`, `validate-build`, `manage-artifacts`) don't resolve — so
@@ -172,6 +173,28 @@ drift, surfacing known issues without going red:
   checkpoints aren't bound to a step; only the agent runs reach them.
 - **Routing**: `elicitation-only` still routes through the `research` activity.
 
-Classifying these as migration regressions vs. pre-existing is the job of the
-**legacy comparison** (run the same suite against a `main`/skill.toon build and
-diff) — deferred for now.
+**From the agent runs (3a/3b) — things no deterministic layer can see:**
+- A full 3a walk **completed all 11 activities** (skip-optional path), all 13
+  checkpoints resolved, all declared artifacts created. **The missing conduct
+  rules caused no observable worker misbehavior** on this path (step descriptions
+  were self-contained) — but that's a latent risk on harder work packages where
+  the disciplines actually bite.
+- **Artifact path divergence**: the worker wrote artifacts under its CWD
+  (`target/.engineering`) rather than the orchestrator's
+  `workspace/.engineering`. Worth investigating.
+- **`get_workflow_status` gap**: returns empty `variables` /
+  `completed_activities` even though `session.json` holds them, forcing the
+  worker to infer state from artifacts.
+- **Resource-layer refs also unresolved**: `classify-problem`,
+  `reconcile-assumptions`, and prism lenses returned "not found" — broader than
+  the op-ref set, harmless here only because step descriptions stood alone.
+- **Definition smells** the worker flagged: an inverted-looking
+  `update-reference-submodules` condition, and `present-problem-overview`
+  ordered before `initialize-planning-folder`.
+- 3b confirmed the orchestrator *agent* can resolve checkpoints by its own
+  judgement (it chose `skip-issue` where the deterministic policy chose
+  `provide-existing`).
+
+Classifying the resolution findings as migration regressions vs. pre-existing is
+the job of the **legacy comparison** (run the same suite against a
+`main`/skill.toon build and diff) — deferred for now.
