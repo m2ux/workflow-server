@@ -127,6 +127,7 @@ export interface WalkResult {
   workflowId: string;
   policy: string;
   sessionIndex: string;
+  planningSlug: string;
   initialActivity: string;
   /** All activity ids the workflow declares (for coverage / reachability checks). */
   declaredActivities: string[];
@@ -467,7 +468,7 @@ export async function walk(
   } catch { /* leave as unknown */ }
 
   return {
-    workflowId, policy: policy.name, sessionIndex, initialActivity,
+    workflowId, policy: policy.name, sessionIndex, planningSlug, initialActivity,
     declaredActivities, orchestratorUnresolved,
     path, steps, variables, finalStatus,
   };
