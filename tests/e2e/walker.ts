@@ -133,7 +133,7 @@ function defaultVariables(wf: Record<string, unknown>): Record<string, unknown> 
  * Select the next activity id from an activity's transitions, or null when the
  * activity is terminal. A checkpoint `transitionTo` effect overrides the graph.
  */
-function pickNext(act: ActivityDef, variables: Record<string, unknown>, override?: string): string | null {
+export function pickNext(act: ActivityDef, variables: Record<string, unknown>, override?: string): string | null {
   if (override) return override;
   const transitions = act.transitions ?? [];
   let fallback: string | null = null;

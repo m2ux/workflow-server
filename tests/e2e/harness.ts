@@ -21,9 +21,14 @@ export interface Harness {
   close(): Promise<void>;
 }
 
-/** Create a connected client + server pair backed by a fresh temp workspace. */
-export async function createHarness(): Promise<Harness> {
-  const workspaceDir = mkdtempSync(join(tmpdir(), 'wf-e2e-'));
+export interface HarnessOptions {
+  /** Use a specific workspace dir (e.g. a sandbox shared with a worker process) instead of a fresh temp. */
+  workspaceDir?: string;
+}
+
+/** Create a connected client + server pair backed by a workspace (fresh temp by default). */
+export async function createHarness(opts: HarnessOptions = {}): Promise<Harness> {
+  const workspaceDir = opts.workspaceDir ?? mkdtempSync(join(tmpdir(), 'wf-e2e-'));
   const config = {
     workflowDir: resolve(import.meta.dirname, '../../workflows'),
     schemasDir: resolve(import.meta.dirname, '../../schemas'),
@@ -46,7 +51,10 @@ export async function createHarness(): Promise<Harness> {
     async close() {
       await client.close();
       await server.close();
-      try { rmSync(workspaceDir, { recursive: true, force: true }); } catch { /* ignore */ }
+      // Only clean up workspaces we created; caller-supplied sandboxes are theirs to keep/remove.
+      if (!opts.workspaceDir) {
+        try { rmSync(workspaceDir, { recursive: true, force: true }); } catch { /* ignore */ }
+      }
     },
   };
 }

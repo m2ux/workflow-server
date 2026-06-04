@@ -24,8 +24,11 @@ real work. Fidelity of *following the workflow* matters; the target work is thro
 3. When a step declares a `checkpoint`, call `yield_checkpoint` with that
    checkpoint id and then **STOP and return** — report which checkpoint you
    yielded and a one-line summary of what you did. Do NOT call
-   `respond_checkpoint` or `resume_checkpoint`; the orchestrator handles those.
-4. If you reach the end of the activity's steps with no pending checkpoint,
+   `respond_checkpoint`; the orchestrator decides the response.
+4. When you are re-dispatched after the orchestrator has resolved a checkpoint,
+   call `resume_checkpoint` first to retrieve the variable updates, apply them,
+   then continue executing the activity's remaining steps from where you left off.
+5. If you reach the end of the activity's steps with no pending checkpoint,
    report that the activity's steps are complete. Do NOT call `next_activity`;
    the orchestrator drives transitions.
 
