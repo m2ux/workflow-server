@@ -23,6 +23,10 @@ techniques:
     - gitnexus-operations
     - manage-artifacts
     - manage-git
+operations[3]:
+  - "manage-artifacts::create-folder"
+  - "manage-artifacts::create-readme"
+  - "manage-artifacts::write-artifact"
 steps[27]:
   - id: detect-review-mode
     name: Detect Review Mode
@@ -170,7 +174,11 @@ steps[27]:
       value: true
   - id: initialize-planning-folder
     name: Initialize Planning Folder
-    description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management technique. Derive initiative-name from issue title. Use attached resource readme for the README.md template — populate header fields, Executive Summary, Links table, and Progress table from issue context. Leave Problem Overview and Solution Overview as placeholder text. Must precede any step that writes into the planning README."
+    description: "Invoke manage-artifacts::create-folder(planning_folder_parent: .engineering/artifacts/planning/, issue_title: {issue_title}) from the target component repo (your CWD is target_path) to create this work package's planning subfolder .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/. Set planning_folder_path to the returned folder_path — every downstream activity writes its artifacts THERE via manage-artifacts::write-artifact (one per-work-package subfolder; never the planning root, never relative to an arbitrary CWD). Then create README.md in that folder from the attached resource readme template via manage-artifacts::create-readme — populate header fields, Executive Summary, Links table, and Progress table from issue context; leave Problem Overview and Solution Overview as placeholder text. Must precede any step that writes into the planning folder."
+    actions[1]:
+      - action: set
+        target: planning_folder_path
+        description: "This work package's planning subfolder, returned by create-folder: target-relative .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/. Canonical write location for ALL of this work package's artifacts (with the per-activity artifactPrefix applied to each filename)."
   - id: present-problem-overview
     name: Present Problem Overview
     description: "Synthesize and present a plain-language problem overview to the user. Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders. The first paragraph should describe what the system currently does and why that is problematic. The second paragraph should describe the consequences — what can go wrong and why it matters. Do not use jargon without explanation. Base the overview on the issue details, ticket description, and any context gathered during this activity. After generating the overview, write it into the planning folder README.md by replacing the placeholder text under the '## Problem Overview' section."

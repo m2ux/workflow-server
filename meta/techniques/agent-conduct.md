@@ -85,6 +85,10 @@ Do NOT read workflow resource files directly from disk — load them via `get_re
 
 `cargo fmt` is exempt from `nice` — it is fast and should run at normal priority.
 
+### operational-discipline-artifact-location
+
+All workflow artifacts live in the TARGET component repository (your CWD is `target_path`) under `.engineering/artifacts/planning/<work-package-subfolder>/` — exactly ONE subfolder per work package. The subfolder path is provided by the workflow's planning-folder variable (e.g. `planning_folder_path`); write every artifact there. NEVER write artifacts to the bare `planning/` root, and NEVER resolve the path relative to an arbitrary working directory other than `target_path`. Each artifact filename carries the server-provided `artifactPrefix` for its activity (e.g. `09-code-review.md`). This path is relative to the target repo and resolves correctly even when the target component is the workflow-server repository itself.
+
 ### orchestrator-no-domain-work
 
 The orchestrator (meta or workflow) MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker.
