@@ -142,25 +142,11 @@ export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;
 export const OutputDefinitionSchema = z.array(OutputItemDefinitionSchema).describe('What the technique produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
 export type OutputDefinition = z.infer<typeof OutputDefinitionSchema>;
 
-/** Operation definition: a named operation with description, inputs, output, procedure, tools, errors, rules, and optional reference prose. */
-export const SubTechniqueInputSchema = z.object({
-}).catchall(z.string().describe('Input name → description'));
-
-export const SubTechniqueOutputSchema = z.object({
-}).catchall(z.string().describe('Output name → description'));
-
-export const SubTechniqueDefinitionSchema = z.object({
-  description: z.string().describe('What this operation does'),
-  inputs: z.array(SubTechniqueInputSchema).optional().describe('Positional input entries — each item is a single-key object mapping input name to its description'),
-  output: z.array(SubTechniqueOutputSchema).optional().describe('Output entries produced by this operation — same shape as inputs'),
-  protocol: ProtocolDefinitionSchema.optional().describe('Ordered list of step blocks describing how to perform the operation (formerly "procedure"; unified with technique Protocol).'),
-  tools: z.record(z.array(z.string())).optional().describe('Map of source → array of tool names. Source is an MCP server name (workflow-server, atlassian, gitnexus, concept-rag, ...), or one of the reserved keys "shell" (regular shell programs) and "harness" (agent built-ins like Read, Write, AskQuestion). Provenance hint only — tool specs come from the tool descriptions themselves.'),
-  resources: z.array(z.string()).optional().describe('Resource refs (text-only ids, e.g., "meta/bootstrap-protocol") this operation needs. Resources are scoped per-operation — only included in resolved-operation output for operations actually requested.'),
-  errors: z.record(ErrorDefinitionSchema).optional().describe('Errors this operation can encounter, keyed by error name. Each entry is { cause, recovery, ... }. Errors are scoped per-operation — only included in resolved-operation output for operations actually requested.'),
-  rules: RulesDefinitionSchema.optional().describe('Behavioural rules specific to this operation. Scoped per-operation so role-specific rules do not leak across orchestrator / worker bundles.'),
-  prose: z.string().optional().describe('Freeform markdown content for tables, examples, harness-specific implementations, and any reference material specific to this operation that does not fit the structured fields.'),
-  note: z.string().optional().describe('Additional notes about the operation'),
-});
+// Sub-techniques are isomorphic with techniques: a sub-technique (`<sub>.md`)
+// validates against the same TechniqueSchema below — there is no separate
+// "operation"/sub-technique schema. (Removed SubTechniqueDefinitionSchema and
+// its Input/Output schemas; they had no callers — sub-techniques are parsed
+// into the technique shape by the markdown loader and delivered isomorphically.)
 
 export const TechniqueSchema = z.object({
   id: z.string(),

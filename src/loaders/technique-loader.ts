@@ -10,9 +10,10 @@ import { safeValidateTechnique } from '../schema/technique.schema.js';
 import {
   tryLoadMarkdownTechnique,
   tryReadMarkdownTechniqueRaw,
-  tryLoadOperationFile,
+  tryLoadSubTechniqueFile,
   getWorkflowTechniquesDir,
   MarkdownTechniqueParseError,
+  type SubTechniqueParse,
 } from './markdown-technique-loader.js';
 
 /* -------------------------------------------------------------------------- */
@@ -240,6 +241,23 @@ function projectTechniqueBody(t: Technique): Record<string, unknown> {
 }
 
 /**
+ * Project a sub-technique (the parsed `<sub>.md` body) into the SAME field shape
+ * as a whole technique. Techniques are isomorphic — a sub-technique is just a
+ * technique — so its `description` surfaces as `capability`, alongside the shared
+ * inputs/protocol/output/rules/errors. No parent-specific fields, no sub-index.
+ */
+function projectSubTechniqueBody(op: SubTechniqueParse): Record<string, unknown> {
+  const body: Record<string, unknown> = {};
+  if (op.description) body['capability'] = op.description;
+  if (op.inputs) body['inputs'] = op.inputs;
+  if (op.protocol) body['protocol'] = op.protocol;
+  if (op.output) body['output'] = op.output;
+  if (op.rules) body['rules'] = op.rules;
+  if (op.errors) body['errors'] = op.errors;
+  return body;
+}
+
+/**
  * Parse a technique reference path. The canonical form is a `::`-delimited path
  * `[workflow::]technique[::sub-technique[::...]]`. The parent workflow is
  * IMPLICIT for same-workflow refs (omit it — the current workflow is filled in
@@ -329,7 +347,7 @@ export async function resolveTechniques(
     let opWorkflow = parsed.workflow; // workflow where the operation was actually found
     for (const wf of candidates) {
       try {
-        const body = await tryLoadOperationFile(getWorkflowTechniquesDir(workflowDir, wf ?? META_WORKFLOW_ID), parsed.technique, parsed.name);
+        const body = await tryLoadSubTechniqueFile(getWorkflowTechniquesDir(workflowDir, wf ?? META_WORKFLOW_ID), parsed.technique, parsed.name);
         if (body) { opBody = body; opWorkflow = wf; break; }
       } catch (error) {
         if (!(error instanceof MarkdownTechniqueParseError)) throw error;
@@ -337,7 +355,7 @@ export async function resolveTechniques(
       }
     }
     if (opBody) {
-      results.push({ source: parsed.technique, workflow: opWorkflow, name: parsed.name, type: 'sub-technique', body: opBody, ref });
+      results.push({ source: parsed.technique, workflow: opWorkflow, name: parsed.name, type: 'sub-technique', body: projectSubTechniqueBody(opBody as SubTechniqueParse), ref });
       // Cache the group index so its shared rules auto-include below.
       const idxRef = opWorkflow ? `${opWorkflow}/${parsed.technique}` : parsed.technique;
       const idxResult = await readTechnique(idxRef, workflowDir);

@@ -455,7 +455,7 @@ function matchLabelledParagraph(body: string, label: string): string | undefined
 /* <op>.md → SubTechniqueDefinition                                               */
 /* -------------------------------------------------------------------------- */
 
-export interface OperationParse {
+export interface SubTechniqueParse {
   description: string;
   inputs?: Array<Record<string, string>>;
   output?: Array<Record<string, string>>;
@@ -492,7 +492,7 @@ export interface OperationParse {
  *   ### <rule>
  *   <paragraph>
  */
-function parseOperationFile(raw: string, sourcePath: string): OperationParse {
+function parseSubTechniqueFile(raw: string, sourcePath: string): SubTechniqueParse {
   // Strip leading H1 (op name) — capture the description paragraph that follows.
   const lines = rewriteResourceLinks(raw).split(/\r?\n/);
   let i = 0;
@@ -518,7 +518,7 @@ function parseOperationFile(raw: string, sourcePath: string): OperationParse {
   const remainder = lines.slice(i).join('\n');
 
   const sections = splitSections(remainder, 2);
-  return parseOperationBody(stitchSections(sections), sourcePath, description);
+  return parseSubTechniqueBody(stitchSections(sections), sourcePath, description);
 }
 
 function stitchSections(sections: Section[]): string {
@@ -527,19 +527,19 @@ function stitchSections(sections: Section[]): string {
   return sections.map((s) => `## ${s.title}\n${s.body}`).join('\n\n');
 }
 
-function parseOperationBody(body: string, sourcePath: string, description: string = ''): OperationParse {
+function parseSubTechniqueBody(body: string, sourcePath: string, description: string = ''): SubTechniqueParse {
   const sections = splitSections(body, 2);
-  const op: OperationParse = { description };
+  const op: SubTechniqueParse = { description };
 
   const inputsSection = findSection(sections, 'Inputs');
   if (inputsSection) {
-    const inputs = parseOpInputsOrOutputs(inputsSection);
+    const inputs = parseSubTechniqueInputsOrOutputs(inputsSection);
     if (inputs.length > 0) op.inputs = inputs;
   }
 
   const outputSection = findSection(sections, 'Output') ?? findSection(sections, 'Outputs');
   if (outputSection) {
-    const output = parseOpInputsOrOutputs(outputSection);
+    const output = parseSubTechniqueInputsOrOutputs(outputSection);
     if (output.length > 0) op.output = output;
   }
 
@@ -573,7 +573,7 @@ function parseOperationBody(body: string, sourcePath: string, description: strin
   return op;
 }
 
-function parseOpInputsOrOutputs(section: Section): Array<Record<string, string>> {
+function parseSubTechniqueInputsOrOutputs(section: Section): Array<Record<string, string>> {
   const items = splitSections(section.body, 3);
   const result: Array<Record<string, string>> = [];
   for (const item of items) {
@@ -636,7 +636,7 @@ export async function tryLoadMarkdownTechnique(techniquesDir: string, techniqueI
     const parsed = parseTechniqueIndex(indexRaw, indexPath, techniqueId);
 
     // A technique carries its own contract only. Operations are independent `<op>.md` files
-    // resolved on demand (see tryLoadOperationFile / resolveTechniques) — never materialised here.
+    // resolved on demand (see tryLoadSubTechniqueFile / resolveTechniques) — never materialised here.
     const technique: Record<string, unknown> = {
       id: parsed.id,
       version: parsed.version,
@@ -694,11 +694,11 @@ export async function tryReadMarkdownTechniqueRaw(
  * Returns null when the file does not exist. Throws MarkdownTechniqueParseError on a malformed op
  * (e.g. missing `## Protocol`), mirroring the technique parser's loud-failure contract.
  */
-export async function tryLoadOperationFile(techniquesDir: string, group: string, opName: string): Promise<OperationParse | null> {
+export async function tryLoadSubTechniqueFile(techniquesDir: string, group: string, opName: string): Promise<SubTechniqueParse | null> {
   const path = join(techniquesDir, group, `${opName}.md`);
   if (!existsSync(path)) return null;
   const raw = await readFile(path, 'utf-8');
-  return parseOperationFile(raw, path);
+  return parseSubTechniqueFile(raw, path);
 }
 
 /* -------------------------------------------------------------------------- */
