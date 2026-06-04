@@ -16,17 +16,15 @@ entryActions[1]:
   - action: log
     message: Starting issue management
 techniques:
-  supporting[6]:
-    - atlassian-operations
+  supporting[8]:
     - create-issue
     - github-cli-protocol
-    - gitnexus-operations
-    - manage-artifacts
+    - atlassian-operations
+    - "gitnexus-operations::analyze"
     - manage-git
-operations[3]:
-  - "version-control::initialize-folder"
-  - "manage-artifacts::create-readme"
-  - "manage-artifacts::write-artifact"
+    - "version-control::initialize-folder"
+    - "manage-artifacts::create-readme"
+    - "manage-artifacts::write-artifact"
 steps[27]:
   - id: detect-review-mode
     name: Detect Review Mode
