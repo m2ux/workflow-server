@@ -126,14 +126,32 @@ checkpoints[2]:
         effect:
           setVariable:
             elicitation_complete: false
-transitions[2]:
+transitions[3]:
   - to: research
     condition:
-      type: simple
-      variable: elicitation_complete
-      operator: ==
-      value: true
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: elicitation_complete
+          operator: ==
+          value: true
+        - type: simple
+          variable: needs_research
+          operator: ==
+          value: true
     isDefault: true
+  - to: implementation-analysis
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: elicitation_complete
+          operator: ==
+          value: true
+        - type: simple
+          variable: needs_research
+          operator: ==
+          value: false
   - to: requirements-elicitation
     condition:
       type: simple

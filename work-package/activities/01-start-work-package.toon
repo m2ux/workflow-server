@@ -58,7 +58,7 @@ steps[27]:
     condition:
       type: simple
       variable: reference_path
-      operator: notExists
+      operator: exists
   - id: analyze-reference-with-gitnexus
     name: Re-index Reference with GitNexus
     description: "gitnexus-operations::analyze(repo_path: {reference_path}). For a monorepo reference, this MUST be invoked at the monorepo root — gitnexus walks the working tree from there and indexes every source file, including content inside submodule directories, into a single unified index keyed under the monorepo's name. Do not analyze each submodule separately. For a standalone reference, repo_path is simply the repo root. Runs after update-reference-submodules so the index reflects the freshly-pulled reference content. Subsequent activities (codebase-comprehension, implementation-analysis, plan-prepare) read this index for impact and context queries."
@@ -168,6 +168,9 @@ steps[27]:
       variable: issue_skipped
       operator: "!="
       value: true
+  - id: initialize-planning-folder
+    name: Initialize Planning Folder
+    description: "Populate the planning folder README at the server-provided absolute path {planning_folder_path}/README.md (the server creates the folder at start_session — write under {planning_folder_path}, NOT a path relative to the current working directory). Use the artifact-management technique and the attached resource readme template — populate header fields, Executive Summary, Links table, and Progress table from issue context. Leave Problem Overview and Solution Overview as placeholder text. Must precede any step that writes into the planning README."
   - id: present-problem-overview
     name: Present Problem Overview
     description: "Synthesize and present a plain-language problem overview to the user. Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders. The first paragraph should describe what the system currently does and why that is problematic. The second paragraph should describe the consequences — what can go wrong and why it matters. Do not use jargon without explanation. Base the overview on the issue details, ticket description, and any context gathered during this activity. After generating the overview, write it into the planning folder README.md by replacing the placeholder text under the '## Problem Overview' section."
@@ -276,9 +279,6 @@ steps[27]:
           variable: issue_skipped
           operator: "!="
           value: true
-  - id: initialize-planning-folder
-    name: Initialize Planning Folder
-    description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management technique. Derive initiative-name from issue title. Use attached resource readme for the README.md template — populate header fields, Executive Summary, Links table, and Progress table from issue context. Leave Problem Overview and Solution Overview as placeholder text."
   - id: determine-next-activity
     name: Determine Next Activity
     description: "Based on issue details, determine if requirements elicitation is needed"
