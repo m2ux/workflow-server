@@ -10,12 +10,13 @@ recognition[4]:
   - work on
 required: true
 estimatedTime: 1-2m
-operations[5]:
-  - "workflow-engine::list-workflows"
-  - "workflow-engine::match-target-workflow"
-  - "workflow-engine::extract-identifying-context"
-  - "workflow-engine::scan-saved-sessions"
-  - "workflow-engine::match-saved-session"
+techniques:
+  supporting[5]:
+    - "workflow-engine::list-workflows"
+    - "workflow-engine::match-target-workflow"
+    - "workflow-engine::extract-identifying-context"
+    - "workflow-engine::scan-saved-sessions"
+    - "workflow-engine::match-saved-session"
 rules[1]:
   - "Match identifying context against saved sessions even when the user said 'start' — surface saved state via the resume-session checkpoint"
 steps[7]:
