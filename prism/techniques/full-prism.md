@@ -29,14 +29,6 @@ Resource index to load from the prism workflow (00 for structural, 01 for advers
 
 Directory to write the analysis artifact
 
-### target-type
-
-*(optional)* Whether the input is 'code' or 'general'
-
-#### default
-
-code
-
 ## Protocol
 
 ### 1. Load Lens

@@ -25,10 +25,6 @@ Path to the original document, proposal, or artifact set that was evaluated
 
 Directory for writing the MITIGATION-PLAN.md artifact
 
-### evaluation_description
-
-Original evaluation description for context
-
 ## Protocol
 
 ### 1. Load And Classify
