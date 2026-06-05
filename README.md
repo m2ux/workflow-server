@@ -19,9 +19,9 @@ workflows/                        # Worktree checkout
 │   ├── techniques/               # Markdown techniques (canonical source of truth)
 │   │   ├── TECHNIQUE.md          #   root base contract — inherited by every technique here
 │   │   ├── {slug}.md             #   standalone technique (agent-conduct, version-control, ...)
-│   │   └── {group}/              #   grouped technique (workflow-engine, harness-compat, ...)
-│   │       ├── TECHNIQUE.md      #     group index / base contract
-│   │       └── {op}.md           #     one file per operation, addressed {group}::{op}
+│   │   └── {group}/              #   container technique (workflow-engine, harness-compat, ...)
+│   │       ├── TECHNIQUE.md      #     container technique / base contract
+│   │       └── {sub}.md          #     one file per nested technique, addressed {group}::{sub}
 │   └── resources/                # Markdown resources
 │       └── {slug}.md             #   bootstrap-protocol, activity-worker-prompt, workflow-canonical, ...
 ├── {workflow-id}/                # Each workflow folder
@@ -31,10 +31,10 @@ workflows/                        # Worktree checkout
 │   │   └── {NN}-{id}.toon        # Activities for this workflow
 │   ├── techniques/               # Workflow-local markdown techniques
 │   │   ├── TECHNIQUE.md          #   root base contract for this workflow
-│   │   ├── {slug}.md             #   standalone technique (overrides any meta technique of the same name)
+│   │   ├── {slug}.md             #   standalone technique (workflow-local takes precedence over a meta technique of the same name)
 │   │   └── {group}/
 │   │       ├── TECHNIQUE.md
-│   │       └── {op}.md
+│   │       └── {sub}.md
 │   └── resources/                # Workflow-local markdown resources
 │       └── {slug}.md
 ```
@@ -65,11 +65,11 @@ defines the ontology and section conventions that every technique follows.
 
 Available for any workflow session, resolved via the workflow-local → `meta` fallback chain.
 
-Techniques are referenced by canonical ID (the file/folder slug). Standalone techniques live at `meta/techniques/<slug>.md`; grouped techniques live at `meta/techniques/<group>/TECHNIQUE.md` with one `<op>.md` per operation.
+Techniques are referenced by canonical ID (the file/folder slug). Standalone techniques live at `meta/techniques/<slug>.md`; container techniques live at `meta/techniques/<group>/TECHNIQUE.md` with one `<sub>.md` per nested technique.
 
 | Technique | Description |
 |-----------|-------------|
-| [`workflow-engine`](meta/techniques/workflow-engine/TECHNIQUE.md) | Operations and rules for workflow execution: session lifecycle (resume or create), activity dispatch, transition evaluation, checkpoint protocol. State persistence is server-managed (atomic `session.json` + `.session-token` seal write on every authenticated call). |
+| [`workflow-engine`](meta/techniques/workflow-engine/TECHNIQUE.md) | Protocol and rules for workflow execution: session lifecycle (resume or create), activity dispatch, transition evaluation, checkpoint protocol. State persistence is server-managed (atomic `session.json` + `.session-token` seal write on every authenticated call). |
 | [`agent-conduct`](meta/techniques/agent-conduct.md) | Cross-cutting behavioural boundaries: file sensitivity, communication tone, attribution prohibition, operational discipline, checkpoint discipline, orchestrator discipline |
 | [`version-control`](meta/techniques/version-control/TECHNIQUE.md) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
 | [`github-cli-protocol`](meta/techniques/github-cli-protocol/TECHNIQUE.md) | GitHub CLI usage: GraphQL-deprecation workarounds, REST API for mutations |
@@ -107,13 +107,13 @@ git worktree add ./workflows workflows
 3. Commit to this branch
 
 **Techniques (markdown source of truth):**
-1. For a standalone technique, create `{workflow-id}/techniques/{slug}.md` (or `meta/techniques/{slug}.md` for the cross-workflow shared layer) with frontmatter (`name`, `metadata.version`), a required `## Capability` section, and optional `## Inputs` / `## Protocol` / `## Outputs` / `## Rules` / `## Errors` sections.
-2. For a grouped technique (operation library such as `gitnexus-operations`), create `{group}/TECHNIQUE.md` as the group index/base contract plus one `{group}/{op}.md` per operation (op files have no frontmatter; each carries `## Protocol`). Operations are addressed `{group}::{op}`.
-3. Optionally add a per-workflow root base contract at `{workflow-id}/techniques/TECHNIQUE.md` — isomorphic to a technique, carrying no technique list. Its Inputs / Outputs / Rules / Errors / Protocol are inherited by every technique in the workflow.
+1. For a standalone technique, create `{workflow-id}/techniques/{slug}.md` (or `meta/techniques/{slug}.md` for the cross-workflow shared layer) with frontmatter (`metadata.version`), a required `## Capability` section, and optional `## Inputs` / `## Protocol` / `## Output(s)` / `## Rules` sections.
+2. For a container technique (such as `gitnexus-operations`), create `{group}/TECHNIQUE.md` as the container technique/base contract plus one `{group}/{sub}.md` per nested technique. Each nested technique file carries `metadata.version` frontmatter and a `## Capability` section. Nested techniques are addressed `{group}::{sub}`.
+3. Optionally add a per-workflow root base contract at `{workflow-id}/techniques/TECHNIQUE.md` — isomorphic to a technique, carrying no technique list. Its Inputs / Outputs / Rules / Protocol are inherited by every technique in the workflow.
 4. Follow the canonical sections defined in [meta/resources/workflow-canonical.md](./meta/resources/workflow-canonical.md)
 5. Commit to this branch
 
-Cross-reference links between techniques and resources are file-relative and end in the target's real filename (`<slug>.md`, `<group>/TECHNIQUE.md`, or `<group>/<op>.md`) — never `/SKILL.md`.
+Cross-reference links between techniques and resources are file-relative and end in the target's real filename (`<slug>.md`, `<group>/TECHNIQUE.md`, or `<group>/<sub>.md`).
 
 ## Validation
 

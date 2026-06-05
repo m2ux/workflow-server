@@ -18,7 +18,7 @@ Condensed, agent-executable reference of the 14 design principles governing work
 
 **Enforcement:** `02-context-and-literacy` activity with `format-literacy` and `constructs-confirmed` checkpoints. Both must pass before content drafting can begin.
 
-**Review mode:** Those checkpoints are skipped; intake uses `review-scope-confirmed`, then `02-context-and-literacy` runs a shortened step set and transitions directly to `08-quality-review` once `review_scope_confirmed` is true (see `[review-mode-guide](./review-mode-guide.md)`).
+**Review mode:** Those checkpoints are skipped; intake uses `review-scope-confirmed`, then `02-context-and-literacy` runs a shortened step set and transitions directly to `08-quality-review` once `review_scope_confirmed` is true (see [review-mode-guide](./review-mode-guide.md)).
 
 ## 2. Define Complete Scope Before Execution
 

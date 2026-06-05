@@ -43,7 +43,7 @@ Update mode is activated by recognition patterns: "update workflow", "modify wor
 List all files in the target workflow directory with their purpose:
 - `workflow.toon` — root definition
 - `activities/*.toon` — activity definitions
-- `techniques/*.toon` — technique definitions
+- `techniques/*.md` — technique definitions (`techniques/<slug>.md` standalone, `techniques/<group>/TECHNIQUE.md` container base contracts, `techniques/<group>/<sub>.md` nested)
 - `resources/*.md` — resource files
 - `README.md` — documentation
 
@@ -64,7 +64,7 @@ If activities are being added, removed, or reordered:
 
 ### Step 4: Check Reference Integrity
 
-- Verify all `techniques.primary` and `techniques.supporting` references resolve to existing technique files
+- Verify all `techniques.primary` and `techniques.supporting` references (`::`-path / slug references) resolve to existing technique `.md` files
 - Verify all resource index references resolve to existing resource files
 - Verify all `artifactLocations` keys used by activities exist in the workflow
 

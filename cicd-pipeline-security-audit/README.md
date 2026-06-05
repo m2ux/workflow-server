@@ -78,11 +78,13 @@ cicd-pipeline-security-audit/
 │   ├── write-cicd-report.md               # Report generation
 │   └── execute-sub-agent.md               # Sub-agent bootstrap + structured output
 └── resources/
-    ├── 00-start-here.md                   # Quick reference
-    ├── 01-injection-pattern-catalog.md    # Pattern signatures + examples
-    ├── 02-cicd-severity-rubric.md         # Severity scoring matrix
-    ├── 03-remediation-playbook.md         # Per-pattern remediation
-    └── 04-sub-agent-output-schema.md      # Scanner output JSON schema
+    ├── start-here.md                      # Quick reference
+    ├── injection-pattern-catalog.md       # Pattern signatures + examples
+    ├── cicd-severity-rubric.md            # Severity scoring matrix
+    ├── remediation-playbook.md            # Per-pattern remediation
+    ├── sub-agent-output-schema.md         # Scanner output JSON schema
+    ├── intermediate-artifact-schemas.md   # JSON shapes for intermediate artifacts
+    └── cicd-audit-report-template.md      # Final report document skeleton
 ```
 
 ## Activities
@@ -133,6 +135,8 @@ Reference material loaded by the agent at runtime — pattern catalogs, scoring 
 | 02 | [CI/CD Severity Rubric](./resources/cicd-severity-rubric.md) | Impact x Exploitability matrix + calibration anchors |
 | 03 | [Remediation Playbook](./resources/remediation-playbook.md) | Per-pattern fix guidance with before/after examples |
 | 04 | [Sub-Agent Output Schema](./resources/sub-agent-output-schema.md) | Scanner output JSON schema + validation rules |
+| 05 | [Intermediate Artifact Schemas](./resources/intermediate-artifact-schemas.md) | JSON shapes for artifacts between reconnaissance, dispatch, verification, and merge |
+| 06 | [CI/CD Audit Report Template](./resources/cicd-audit-report-template.md) | Document skeleton for the final audit report |
 
 ## Variables
 

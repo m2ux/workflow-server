@@ -32,7 +32,7 @@ Four mapping tables that translate informal prose patterns into their formal sch
 |-------|--------|-------------------|
 | Activity-level | `activity.schema.json` | Steps, checkpoints, decisions, loops, transitions, triggers, actions, artifacts, outcomes, conditions, mode overrides, rules |
 | Workflow-level | `workflow.schema.json` | Variables, modes, workflow rules, artifact locations, initial activity |
-| Technique-level | `technique.schema.json` | Protocol, inputs, outputs, rules, tools, errors, interpretation, resumption |
+| Technique-level | `technique.schema.json` | Protocol, inputs, output, rules (failure handling is inline in the triggering protocol step) |
 | Condition-level | `condition.schema.json` | Simple comparisons, AND/OR/NOT combinators, existence checks |
 
 Also includes checkpoint effect types (`setVariable`, `transitionTo`, `skipActivities`) and action types (`log`, `validate`, `set`, `emit`, `message`).
@@ -75,9 +75,9 @@ Supplementary guide for review mode. The audit procedure itself is canonical in 
 These resources can be loaded by any workflow via:
 
 ```
-get_resource({ workflow_id: "workflow-design", index: "00" })   # Design principles
-get_resource({ workflow_id: "workflow-design", index: "01" })   # Construct inventory
-get_resource({ workflow_id: "workflow-design", index: "02" })   # Anti-patterns
+get_resource({ session_index, resource_id: "workflow-design/design-principles" })            # Design principles
+get_resource({ session_index, resource_id: "workflow-design/schema-construct-inventory" })    # Construct inventory
+get_resource({ session_index, resource_id: "workflow-design/anti-patterns" })                 # Anti-patterns
 ```
 
 This is useful for workflows that want to self-audit against the design principles without running the full review mode.

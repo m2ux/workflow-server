@@ -80,8 +80,8 @@ graph TD
 
 **Purpose:** Create planning folder structure with initial documentation skeletons.
 
-**Primary Technique:** `workflow-execution`  
-**Supporting Technique:** `artifact-management`
+**Primary Technique:** `workflow-engine`  
+**Supporting Technique:** `manage-artifacts`
 
 ```mermaid
 graph TD
@@ -97,7 +97,7 @@ graph TD
         cp1 -->|adjust| f1
     end
     
-    technique((artifact-management))
+    technique((manage-artifacts))
     f1 -.-> technique
 ```
 
@@ -323,8 +323,8 @@ graph TD
 | `prioritize-packages` | Workflow-specific | Evaluate and order packages | Prioritization |
 | `document-roadmap` | Workflow-specific | Produce finalized roadmap documentation | Finalize Roadmap |
 | `orchestrate-package-execution` | Workflow-specific | Trigger and manage work-package workflow instances | Implementation |
-| `workflow-execution` | Universal | Execute workflows following schema patterns | All activities (supporting) |
-| `artifact-management` | Universal | Manage planning artifacts folder structure | Folder Setup |
+| `workflow-engine` | Universal | Execute workflows following schema patterns | All activities (supporting) |
+| `manage-artifacts` | Universal | Manage planning artifacts folder structure | Folder Setup |
 
 ## Resources
 
@@ -341,6 +341,8 @@ graph TD
 ---
 
 ## Context Preserved
+
+The workflow declares its variables in [`workflow.toon`](workflow.toon). Key variables include:
 
 | Variable | Description |
 |----------|-------------|
