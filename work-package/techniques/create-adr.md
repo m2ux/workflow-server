@@ -27,18 +27,22 @@ Design philosophy [artifact](../resources/design-framework.md#design-philosophy-
 
 ## Protocol
 
-### 1. Determine Number
+### 1. Gate On Complexity
+
+- Proceed only when {complexity} is moderate or complex. For a simple assessment, do not create an ADR — simple changes do not warrant one — and return without an {adr-document}.
+
+### 2. Determine Number
 
 - Scan .engineering/artifacts/adr/ for existing ADR files
 - Determine next sequential NNNN number
 
-### 2. Gather Context
+### 3. Gather Context
 
 - Read the {design-philosophy-doc} for decision rationale, alternatives, and trade-offs
 - Review implementation analysis and plan from {planning-folder-path} for architectural choices
 - Identify alternatives that were considered and rejected
 
-### 3. Write Adr
+### 4. Write Adr
 
 - Write the {adr-document} as NNNN-{decision-title}.md at .engineering/artifacts/adr/
 - Use standard ADR format (Title, Status, Context, Decision, Consequences)
@@ -72,10 +76,6 @@ Why this decision over alternatives
 Expected positive and negative consequences
 
 ## Rules
-
-### complexity-gate
-
-Only create ADRs for moderate or complex implementations — simple changes do not warrant ADRs
 
 ### alternatives-required
 
