@@ -742,10 +742,11 @@ describe('mcp-server integration', () => {
       expect(sepIdx).toBeGreaterThan(0);
       const preamble = text.substring(0, sepIdx);
       const decoded = decode(preamble) as Record<string, unknown>;
-      // Sub-technique bodies (formerly "operations") keyed by `<technique>::<name>`.
-      expect(decoded['sub-techniques']).toBeDefined();
-      expect(typeof decoded['sub-techniques']).toBe('object');
-      expect(Array.isArray(decoded['sub-techniques'])).toBe(false);
+      // All techniques — standalone and nested — live in the single `techniques` bucket,
+      // nested ones keyed by their `<technique>::<name>` path. There is no separate sub-technique bucket.
+      expect(decoded['techniques']).toBeDefined();
+      expect(typeof decoded['techniques']).toBe('object');
+      expect(Array.isArray(decoded['techniques'])).toBe(false);
     });
 
     it('should return lightweight summary by default', async () => {

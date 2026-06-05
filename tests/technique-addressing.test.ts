@@ -12,14 +12,14 @@ const WF_DIR = resolve(import.meta.dirname, '../workflows');
 describe('technique addressing (:: path)', () => {
   it('resolves an implicit same-workflow sub-technique', async () => {
     const [r] = await resolveTechniques(['cargo-operations::run-suite'], WF_DIR, 'work-package');
-    expect(r.type).toBe('sub-technique');
+    expect(r.type).toBe('technique');
     expect(r.source).toBe('cargo-operations');
     expect(r.name).toBe('run-suite');
   });
 
   it('resolves the full canonical path workflow::technique::sub', async () => {
     const [r] = await resolveTechniques(['work-package::cargo-operations::run-suite'], WF_DIR, 'meta');
-    expect(r.type).toBe('sub-technique');
+    expect(r.type).toBe('technique');
     expect(r.workflow).toBe('work-package');
     expect(r.name).toBe('run-suite');
   });

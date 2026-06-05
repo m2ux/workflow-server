@@ -1,4 +1,9 @@
-# test
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
 
 Run the test suite.
 

@@ -58,7 +58,7 @@ describe('technique-loader', () => {
         ['workflow-engine::dispatch-activity', 'workflow-engine::evaluate-transition', 'workflow-engine::commit-and-persist'],
         WORKFLOW_DIR,
       );
-      const ops = resolved.filter((r) => r.type === 'sub-technique');
+      const ops = resolved.filter((r) => r.type === 'technique');
       expect(ops.length).toBe(3);
       expect((ops[0]!.body as { protocol?: unknown }).protocol).toBeDefined();
     });
@@ -68,7 +68,7 @@ describe('technique-loader', () => {
         ['workflow-engine::dispatch-activity', 'workflow-engine::evaluate-transition', 'workflow-engine::handle-sub-workflow'],
         WORKFLOW_DIR,
       );
-      for (const entry of resolved.filter((r) => r.type === 'sub-technique')) {
+      for (const entry of resolved.filter((r) => r.type === 'technique')) {
         const errors = (entry.body as { errors?: Record<string, { cause?: string; recovery?: string }> }).errors;
         if (!errors) continue;
         for (const [errorName, info] of Object.entries(errors)) {
@@ -90,8 +90,8 @@ describe('technique-loader', () => {
         FIXTURE_DIR,
       );
       const byName = Object.fromEntries(resolved.map((r) => [r.name, r]));
-      expect(byName['check']?.type).toBe('sub-technique');
-      expect(byName['test']?.type).toBe('sub-technique');
+      expect(byName['check']?.type).toBe('technique');
+      expect(byName['test']?.type).toBe('technique');
       const check = byName['check']!.body as { protocol?: Array<{ steps: string[] }> };
       expect(Array.isArray(check.protocol)).toBe(true);
       expect(check.protocol!.flatMap((b) => b.steps).length).toBeGreaterThan(0);
@@ -305,7 +305,7 @@ describe('technique-loader', () => {
       );
       await writeFile(
         join(dir, 'commit.md'),
-        ['commit a thing', '', '## Protocol', '', '1. Stage files', '2. Commit', ''].join('\n'),
+        [...FM('commit'), '## Capability', '', 'commit a thing', '', '## Protocol', '', '1. Stage files', '2. Commit', ''].join('\n'),
         'utf-8',
       );
       const idx = await readTechnique('vc', tempDir);
@@ -315,7 +315,7 @@ describe('technique-loader', () => {
         expect((idx.value as { operations?: unknown }).operations).toBeUndefined();
       }
       const resolved = await resolveTechniques(['vc::commit'], tempDir);
-      expect(resolved[0]!.type).toBe('sub-technique');
+      expect(resolved[0]!.type).toBe('technique');
       const op = resolved[0]!.body as { protocol?: Array<{ steps: string[] }> };
       expect(op.protocol).toEqual([{ steps: ['Stage files', 'Commit'] }]);
     });

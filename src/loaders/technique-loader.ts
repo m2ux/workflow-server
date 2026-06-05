@@ -10,10 +10,9 @@ import { safeValidateTechnique } from '../schema/technique.schema.js';
 import {
   tryLoadMarkdownTechnique,
   tryReadMarkdownTechniqueRaw,
-  tryLoadSubTechniqueFile,
+  tryLoadNestedTechnique,
   getWorkflowTechniquesDir,
   MarkdownTechniqueParseError,
-  type SubTechniqueParse,
 } from './markdown-technique-loader.js';
 
 /* -------------------------------------------------------------------------- */
@@ -224,12 +223,17 @@ export interface ResolvedTechnique {
   source: string;
   workflow?: string | undefined;
   name: string;
-  type: 'sub-technique' | 'rule' | 'error' | 'technique' | 'not-found';
+  type: 'rule' | 'error' | 'technique' | 'not-found';
   body: unknown;
   ref: string;
 }
 
-/** The deliverable body of a whole-technique reference (protocol + interface). */
+/**
+ * The deliverable body of a technique reference (protocol + interface). One projection for ALL
+ * techniques — standalone or nested. A nested technique ("sub-technique" informally) is just a
+ * technique; its rules surface as `rule` entries via the auto-include pass, exactly like a
+ * standalone technique's, rather than being inlined here.
+ */
 function projectTechniqueBody(t: Technique): Record<string, unknown> {
   const body: Record<string, unknown> = {};
   if (t.capability) body['capability'] = t.capability;
@@ -237,23 +241,9 @@ function projectTechniqueBody(t: Technique): Record<string, unknown> {
   if (t.inputs) body['inputs'] = t.inputs;
   if (t.protocol) body['protocol'] = t.protocol;
   if (t.output) body['output'] = t.output;
-  return body;
-}
-
-/**
- * Project a sub-technique (the parsed `<sub>.md` body) into the SAME field shape
- * as a whole technique. Techniques are isomorphic — a sub-technique is just a
- * technique — so its `description` surfaces as `capability`, alongside the shared
- * inputs/protocol/output/rules/errors. No parent-specific fields, no sub-index.
- */
-function projectSubTechniqueBody(op: SubTechniqueParse): Record<string, unknown> {
-  const body: Record<string, unknown> = {};
-  if (op.description) body['capability'] = op.description;
-  if (op.inputs) body['inputs'] = op.inputs;
-  if (op.protocol) body['protocol'] = op.protocol;
-  if (op.output) body['output'] = op.output;
-  if (op.rules) body['rules'] = op.rules;
-  if (op.errors) body['errors'] = op.errors;
+  // Errors are delivered in-body for every technique (rules go via the auto-include pass, so
+  // they are NOT duplicated here; errors have no auto-include, so no duplication risk).
+  if (t.errors) body['errors'] = t.errors;
   return body;
 }
 
@@ -328,35 +318,36 @@ export async function resolveTechniques(
       continue;
     }
 
-    // Sub-technique reference — resolved below as an `<sub>.md` file, else a rule/error.
+    // Nested reference — resolved below as a `<group>/<op>.md` technique file, else a rule/error.
     const parsed = { workflow: path.workflow, technique: path.technique, name: path.subName };
 
     const techRef = parsed.workflow ? `${parsed.workflow}/${parsed.technique}` : parsed.technique;
 
-    // 1. Operation: an `<op>.md` file under the technique's grouped folder. A
-    //    `workflow/technique::op` prefix targets that workflow exactly. For an
-    //    UNPREFIXED ref, the convention is "the current workflow's own technique"
-    //    — so try the current workflow FIRST (its technique shadows a same-named
-    //    meta one), then fall back to meta. Operations are files — never a
-    //    materialised map on a technique.
+    // 1. Nested technique: a `<group>/<op>.md` file. A `workflow/technique::op` prefix targets
+    //    that workflow exactly. For an UNPREFIXED ref, the convention is "the current workflow's
+    //    own technique" — so try the current workflow FIRST (its technique shadows a same-named
+    //    meta one), then fall back to meta. A nested technique is just a technique.
     //    `undefined` in the candidate list means "meta (bare ref)".
     const candidates: Array<string | undefined> = parsed.workflow
       ? [parsed.workflow]
       : (currentWorkflow && currentWorkflow !== META_WORKFLOW_ID ? [currentWorkflow, undefined] : [undefined]);
-    let opBody: unknown = null;
-    let opWorkflow = parsed.workflow; // workflow where the operation was actually found
+    let nested: Technique | null = null;
+    let opWorkflow = parsed.workflow; // workflow where the nested technique was found
     for (const wf of candidates) {
       try {
-        const body = await tryLoadSubTechniqueFile(getWorkflowTechniquesDir(workflowDir, wf ?? META_WORKFLOW_ID), parsed.technique, parsed.name);
-        if (body) { opBody = body; opWorkflow = wf; break; }
+        const t = await tryLoadNestedTechnique(getWorkflowTechniquesDir(workflowDir, wf ?? META_WORKFLOW_ID), parsed.technique, parsed.name);
+        if (t) { nested = t; opWorkflow = wf; break; }
       } catch (error) {
         if (!(error instanceof MarkdownTechniqueParseError)) throw error;
-        logWarn('Malformed operation file', { ref, error: error.message });
+        logWarn('Malformed nested technique file', { ref, error: error.message });
       }
     }
-    if (opBody) {
-      results.push({ source: parsed.technique, workflow: opWorkflow, name: parsed.name, type: 'sub-technique', body: projectSubTechniqueBody(opBody as SubTechniqueParse), ref });
-      // Cache the group index so its shared rules auto-include below.
+    if (nested) {
+      results.push({ source: parsed.technique, workflow: opWorkflow, name: parsed.name, type: 'technique', body: projectTechniqueBody(nested), ref });
+      // A nested technique delivers its own rules the same way a standalone one does — via the
+      // auto-include pass below. Cache the nested technique (its own rules) AND its group index
+      // (the group's shared rules).
+      touchedSkills.set(skillKey(opWorkflow, `${parsed.technique}::${parsed.name}`), { workflow: opWorkflow, technique: `${parsed.technique}::${parsed.name}`, cached: nested });
       const idxRef = opWorkflow ? `${opWorkflow}/${parsed.technique}` : parsed.technique;
       const idxResult = await readTechnique(idxRef, workflowDir);
       if (idxResult.success) {
@@ -527,7 +518,6 @@ export async function composeTechnique(
  * Bundle shape is wire-stable — no markdown-migration-driven changes.
  */
 export function formatTechniqueBundle(resolved: ResolvedTechnique[]): Record<string, unknown> {
-  const subTechniques: Record<string, unknown> = {};
   const techniques: Record<string, unknown> = {};
   const errors: Record<string, unknown> = {};
   const rules: Array<[string, string]> = [];
@@ -535,9 +525,10 @@ export function formatTechniqueBundle(resolved: ResolvedTechnique[]): Record<str
 
   for (const entry of resolved) {
     if (entry.type === 'technique') {
-      techniques[entry.workflow ? `${entry.workflow}/${entry.source}` : entry.source] = entry.body;
-    } else if (entry.type === 'sub-technique') {
-      subTechniques[`${entry.source}::${entry.name}`] = entry.body;
+      // A technique is keyed by its full path. A nested technique carries a `name` (the op),
+      // appended as `::name`; a standalone has an empty name. No separate sub-technique bucket.
+      const base = entry.workflow ? `${entry.workflow}/${entry.source}` : entry.source;
+      techniques[entry.name ? `${base}::${entry.name}` : base] = entry.body;
     } else if (entry.type === 'error') {
       errors[`${entry.source}::${entry.name}`] = entry.body;
     } else if (entry.type === 'rule') {
@@ -552,7 +543,6 @@ export function formatTechniqueBundle(resolved: ResolvedTechnique[]): Record<str
 
   const out: Record<string, unknown> = {};
   if (Object.keys(techniques).length > 0) out['techniques'] = techniques;
-  if (Object.keys(subTechniques).length > 0) out['sub-techniques'] = subTechniques;
   if (rules.length > 0) out['rules'] = rules;
   if (Object.keys(errors).length > 0) out['errors'] = errors;
   if (unresolved.length > 0) out['unresolved'] = unresolved;

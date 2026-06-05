@@ -459,139 +459,6 @@ function matchLabelledParagraph(body: string, label: string): string | undefined
 }
 
 
-/* -------------------------------------------------------------------------- */
-/* <op>.md → SubTechniqueDefinition                                               */
-/* -------------------------------------------------------------------------- */
-
-export interface SubTechniqueParse {
-  description: string;
-  inputs?: Array<Record<string, string>>;
-  output?: Array<Record<string, string>>;
-  protocol?: ProtocolBlock[];
-  errors?: Record<string, { cause?: string; recovery?: string }>;
-  rules?: Record<string, string>;
-}
-
-/**
- * Parse an <op>.md child file into an SubTechniqueDefinition.
- *
- * Expected shape:
- *   # <op-name>
- *
- *   <description paragraph>
- *
- *   ## Inputs       (optional)
- *   ### <input>
- *   <input description>
- *
- *   ## Output       (optional, plural also accepted)
- *   ### <output>
- *   <output description>
- *
- *   ## Procedure    (required)
- *   1. <step>
- *
- *   ## Errors       (optional)
- *   ### <error>
- *   **Cause:** ...
- *   **Recovery:** ...
- *
- *   ## Rules        (optional)
- *   ### <rule>
- *   <paragraph>
- */
-function parseSubTechniqueFile(raw: string, sourcePath: string): SubTechniqueParse {
-  // Strip leading H1 (op name) — capture the description paragraph that follows.
-  const lines = rewriteResourceLinks(raw).split(/\r?\n/);
-  let i = 0;
-  // Skip any leading frontmatter (op files are not expected to have any, but be defensive).
-  if (lines[0]?.startsWith('---')) {
-    const close = lines.indexOf('---', 1);
-    if (close > 0) i = close + 1;
-  }
-  // Skip blank lines.
-  while (i < lines.length && !lines[i]!.trim()) i++;
-  // Optional H1.
-  if (lines[i]?.startsWith('# ')) i++;
-  // Skip blank lines.
-  while (i < lines.length && !lines[i]!.trim()) i++;
-
-  // Collect the description until the first level-2 heading.
-  const descLines: string[] = [];
-  while (i < lines.length && !lines[i]!.startsWith('## ')) {
-    descLines.push(lines[i] ?? '');
-    i++;
-  }
-  const description = bodyParagraphs(descLines.join('\n')) || '';
-  const remainder = lines.slice(i).join('\n');
-
-  const sections = splitSections(remainder, 2);
-  return parseSubTechniqueBody(stitchSections(sections), sourcePath, description);
-}
-
-function stitchSections(sections: Section[]): string {
-  // Reconstruct a synthetic body where each section is preceded by its '## Heading' line so
-  // splitSections() can re-parse them downstream.
-  return sections.map((s) => `## ${s.title}\n${s.body}`).join('\n\n');
-}
-
-function parseSubTechniqueBody(body: string, sourcePath: string, description: string = ''): SubTechniqueParse {
-  const sections = splitSections(body, 2);
-  const op: SubTechniqueParse = { description };
-
-  const inputsSection = findSection(sections, 'Inputs');
-  if (inputsSection) {
-    const inputs = parseSubTechniqueInputsOrOutputs(inputsSection);
-    if (inputs.length > 0) op.inputs = inputs;
-  }
-
-  const outputSection = findSection(sections, 'Output') ?? findSection(sections, 'Outputs');
-  if (outputSection) {
-    const output = parseSubTechniqueInputsOrOutputs(outputSection);
-    if (output.length > 0) op.output = output;
-  }
-
-  // Operation step sequence lives under '## Protocol'.
-  const protocolSection = findSection(sections, 'Protocol');
-  if (!protocolSection) {
-    throw new MarkdownTechniqueParseError(`Missing required '## Protocol' section at ${sourcePath}`);
-  }
-  const protocol = protocolBlocksFromBody(protocolSection.body);
-  if (!protocol || protocol.length === 0) {
-    throw new MarkdownTechniqueParseError(`Empty '## Protocol' section at ${sourcePath}`);
-  }
-  op.protocol = protocol;
-
-  const errorsSection = findSection(sections, 'Errors');
-  if (errorsSection) {
-    const errs = parseErrorsSection(errorsSection);
-    if (errs) op.errors = errs;
-  }
-
-  const rulesSection = findSection(sections, 'Rules');
-  if (rulesSection) {
-    const rules = parseRulesSection(rulesSection);
-    if (rules) {
-      const flat: Record<string, string> = {};
-      for (const [k, v] of Object.entries(rules)) flat[k] = Array.isArray(v) ? v.join('\n') : v;
-      op.rules = flat;
-    }
-  }
-
-  return op;
-}
-
-function parseSubTechniqueInputsOrOutputs(section: Section): Array<Record<string, string>> {
-  const items = splitSections(section.body, 3);
-  const result: Array<Record<string, string>> = [];
-  for (const item of items) {
-    const para = bodyParagraphs(item.body);
-    if (!para) continue;
-    const cleaned = para.replace(/^\*?\(?\s*optional\s*\)?\*?\s*/i, '').trim();
-    result.push({ [item.title]: cleaned });
-  }
-  return result;
-}
 
 /* -------------------------------------------------------------------------- */
 /* Public API                                                                  */
@@ -635,37 +502,43 @@ async function locateTechnique(techniquesDir: string, techniqueId: string): Prom
  * `{workflowDir}/{workflowId}/techniques`), NOT a base workflow root, so the same function
  * works for both workflow-local and meta lookups.
  */
+/**
+ * Build and validate a Technique from a parsed file. Shared by every technique load — whether
+ * the file is a standalone `<id>.md`, a grouped `<id>/TECHNIQUE.md` index, or a nested
+ * `<group>/<op>.md`. There is no separate "sub-technique" shape: a nested technique is a
+ * technique, built exactly the same way.
+ */
+function buildTechnique(parsed: IndexParse, sourcePath: string, techniqueId: string): Technique | null {
+  const technique: Record<string, unknown> = {
+    id: parsed.id,
+    version: parsed.version,
+    capability: parsed.capability,
+  };
+  if (parsed.inputs && parsed.inputs.length > 0) technique['inputs'] = parsed.inputs;
+  if (parsed.protocol && parsed.protocol.length > 0) technique['protocol'] = parsed.protocol;
+  if (parsed.output && parsed.output.length > 0) technique['output'] = parsed.output;
+  if (parsed.rules && Object.keys(parsed.rules).length > 0) technique['rules'] = parsed.rules;
+  if (parsed.errors && Object.keys(parsed.errors).length > 0) technique['errors'] = parsed.errors;
+
+  const result = safeValidateTechnique(technique);
+  if (!result.success) {
+    logWarn('Markdown technique validation failed', {
+      techniqueId,
+      path: sourcePath,
+      errors: result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`),
+    });
+    return null;
+  }
+  return result.data;
+}
+
 export async function tryLoadMarkdownTechnique(techniquesDir: string, techniqueId: string): Promise<Technique | null> {
   try {
     const located = await locateTechnique(techniquesDir, techniqueId);
     if (!located) return null;
-    const indexPath = located.index;
-    const indexRaw = await readFile(indexPath, 'utf-8');
-    const parsed = parseTechniqueIndex(indexRaw, indexPath, techniqueId);
-
-    // A technique carries its own contract only. Operations are independent `<op>.md` files
-    // resolved on demand (see tryLoadSubTechniqueFile / resolveTechniques) — never materialised here.
-    const technique: Record<string, unknown> = {
-      id: parsed.id,
-      version: parsed.version,
-      capability: parsed.capability,
-    };
-    if (parsed.inputs && parsed.inputs.length > 0) technique['inputs'] = parsed.inputs;
-    if (parsed.protocol && parsed.protocol.length > 0) technique['protocol'] = parsed.protocol;
-    if (parsed.output && parsed.output.length > 0) technique['output'] = parsed.output;
-    if (parsed.rules && Object.keys(parsed.rules).length > 0) technique['rules'] = parsed.rules;
-    if (parsed.errors && Object.keys(parsed.errors).length > 0) technique['errors'] = parsed.errors;
-
-    const result = safeValidateTechnique(technique);
-    if (!result.success) {
-      logWarn('Markdown technique validation failed', {
-        techniqueId,
-        path: indexPath,
-        errors: result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`),
-      });
-      return null;
-    }
-    return result.data;
+    const indexRaw = await readFile(located.index, 'utf-8');
+    const parsed = parseTechniqueIndex(indexRaw, located.index, techniqueId);
+    return buildTechnique(parsed, located.index, techniqueId);
   } catch (error) {
     if (error instanceof MarkdownTechniqueParseError) {
       // Propagate parser errors so callers can surface them as Result.err — the loader contract
@@ -698,15 +571,17 @@ export async function tryReadMarkdownTechniqueRaw(
 }
 
 /**
- * Load a single operation from `<techniquesDir>/<group>/<op>.md`, parsed as an operation body.
- * Returns null when the file does not exist. Throws MarkdownTechniqueParseError on a malformed op
- * (e.g. missing `## Protocol`), mirroring the technique parser's loud-failure contract.
+ * Load a technique nested inside a group folder: `<techniquesDir>/<group>/<opName>.md`.
+ * A nested technique is parsed and built EXACTLY like a standalone one — same parser, same
+ * Technique shape. Returns null when the file does not exist. Throws MarkdownTechniqueParseError
+ * on a malformed file (e.g. missing `## Capability` or `## Protocol`).
  */
-export async function tryLoadSubTechniqueFile(techniquesDir: string, group: string, opName: string): Promise<SubTechniqueParse | null> {
+export async function tryLoadNestedTechnique(techniquesDir: string, group: string, opName: string): Promise<Technique | null> {
   const path = join(techniquesDir, group, `${opName}.md`);
   if (!existsSync(path)) return null;
   const raw = await readFile(path, 'utf-8');
-  return parseSubTechniqueFile(raw, path);
+  const parsed = parseTechniqueIndex(raw, path, opName);
+  return buildTechnique(parsed, path, opName);
 }
 
 /* -------------------------------------------------------------------------- */
