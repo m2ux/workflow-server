@@ -206,13 +206,6 @@
         "rules": {
           "$ref": "#/definitions/rulesDefinition"
         },
-        "errors": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/errorDefinition"
-          },
-          "description": "Error definitions and recovery strategies"
-        },
         "inputs": { "$ref": "#/definitions/inputsDefinition" },
         "protocol": { "$ref": "#/definitions/protocolDefinition" },
         "output": { "$ref": "#/definitions/outputDefinition" }

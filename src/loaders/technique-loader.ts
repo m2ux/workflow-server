@@ -39,7 +39,6 @@ export function projectTechniqueToToon(technique: Technique): string {
   if (technique.protocol !== undefined) ordered['protocol'] = technique.protocol;
   if (technique.output !== undefined) ordered['output'] = technique.output;
   if (technique.rules !== undefined) ordered['rules'] = technique.rules;
-  if (technique.errors !== undefined) ordered['errors'] = technique.errors;
   // Trail with the catch-all extension surface — anything an authoring path adds that the canonical
   // ordering above does not cover is still emitted, just at the end.
   for (const key of Object.keys(technique) as (keyof Technique)[]) {
@@ -223,7 +222,7 @@ export interface ResolvedTechnique {
   source: string;
   workflow?: string | undefined;
   name: string;
-  type: 'rule' | 'error' | 'technique' | 'not-found';
+  type: 'rule' | 'technique' | 'not-found';
   body: unknown;
   ref: string;
 }
@@ -241,9 +240,6 @@ function projectTechniqueBody(t: Technique): Record<string, unknown> {
   if (t.inputs) body['inputs'] = t.inputs;
   if (t.protocol) body['protocol'] = t.protocol;
   if (t.output) body['output'] = t.output;
-  // Errors are delivered in-body for every technique (rules go via the auto-include pass, so
-  // they are NOT duplicated here; errors have no auto-include, so no duplication risk).
-  if (t.errors) body['errors'] = t.errors;
   return body;
 }
 
@@ -380,18 +376,6 @@ export async function resolveTechniques(
         name: parsed.name,
         type: 'rule',
         body: technique.rules[parsed.name],
-        ref,
-      });
-      touchedSkills.set(skillKey(parsed.workflow, parsed.technique), { workflow: parsed.workflow, technique: parsed.technique, cached: technique });
-      continue;
-    }
-    if (technique.errors && parsed.name in technique.errors) {
-      results.push({
-        source: parsed.technique,
-        workflow: parsed.workflow,
-        name: parsed.name,
-        type: 'error',
-        body: technique.errors[parsed.name],
         ref,
       });
       touchedSkills.set(skillKey(parsed.workflow, parsed.technique), { workflow: parsed.workflow, technique: parsed.technique, cached: technique });
@@ -544,7 +528,6 @@ export async function composeTechnique(
   const inputs = mergeById(root.inputs, technique.inputs);
   const output = mergeById(root.output, technique.output);
   const rules = mergeKeyed(root.rules, technique.rules);
-  const errors = mergeKeyed(root.errors, technique.errors);
   // The workflow root is the technique's sole ancestor here (readTechnique resolves whole
   // techniques, never deeper-nested ops). Wrap with the root's Initial/Final only — other root
   // protocol blocks are root-only and surface when the root is referenced directly.
@@ -555,7 +538,6 @@ export async function composeTechnique(
   if (inputs) composed['inputs'] = inputs; else delete composed['inputs'];
   if (output) composed['output'] = output; else delete composed['output'];
   if (rules) composed['rules'] = rules; else delete composed['rules'];
-  if (errors) composed['errors'] = errors; else delete composed['errors'];
   if (protocol) composed['protocol'] = protocol; else delete composed['protocol'];
 
   const result = safeValidateTechnique(composed);
@@ -576,7 +558,6 @@ export async function composeTechnique(
  */
 export function formatTechniqueBundle(resolved: ResolvedTechnique[]): Record<string, unknown> {
   const techniques: Record<string, unknown> = {};
-  const errors: Record<string, unknown> = {};
   const rules: Array<[string, string]> = [];
   const unresolved: string[] = [];
 
@@ -586,8 +567,6 @@ export function formatTechniqueBundle(resolved: ResolvedTechnique[]): Record<str
       // appended as `::name`; a standalone has an empty name. No separate sub-technique bucket.
       const base = entry.workflow ? `${entry.workflow}/${entry.source}` : entry.source;
       techniques[entry.name ? `${base}::${entry.name}` : base] = entry.body;
-    } else if (entry.type === 'error') {
-      errors[`${entry.source}::${entry.name}`] = entry.body;
     } else if (entry.type === 'rule') {
       const lines = Array.isArray(entry.body) ? entry.body : [entry.body];
       for (const line of lines) {
@@ -601,7 +580,6 @@ export function formatTechniqueBundle(resolved: ResolvedTechnique[]): Record<str
   const out: Record<string, unknown> = {};
   if (Object.keys(techniques).length > 0) out['techniques'] = techniques;
   if (rules.length > 0) out['rules'] = rules;
-  if (Object.keys(errors).length > 0) out['errors'] = errors;
   if (unresolved.length > 0) out['unresolved'] = unresolved;
   return out;
 }

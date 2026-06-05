@@ -63,18 +63,15 @@ describe('technique-loader', () => {
       expect((ops[0]!.body as { protocol?: unknown }).protocol).toBeDefined();
     });
 
-    it('resolved operation errors carry cause + recovery', async () => {
+    it('does not deliver an errors field — the Errors section is deprecated (folded into protocol)', async () => {
       const resolved = await resolveTechniques(
         ['workflow-engine::dispatch-activity', 'workflow-engine::evaluate-transition', 'workflow-engine::handle-sub-workflow'],
         WORKFLOW_DIR,
       );
-      for (const entry of resolved.filter((r) => r.type === 'technique')) {
-        const errors = (entry.body as { errors?: Record<string, { cause?: string; recovery?: string }> }).errors;
-        if (!errors) continue;
-        for (const [errorName, info] of Object.entries(errors)) {
-          expect(info.cause, `${entry.name}::${errorName} should have 'cause'`).toBeDefined();
-          expect(info.recovery, `${entry.name}::${errorName} should have 'recovery'`).toBeDefined();
-        }
+      const techniques = resolved.filter((r) => r.type === 'technique');
+      expect(techniques.length).toBeGreaterThan(0);
+      for (const entry of techniques) {
+        expect((entry.body as { errors?: unknown }).errors, `${entry.name} must not carry a deprecated errors field`).toBeUndefined();
       }
     });
   });

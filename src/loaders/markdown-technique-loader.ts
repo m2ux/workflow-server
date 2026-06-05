@@ -243,7 +243,6 @@ interface IndexParse {
   protocol: ProtocolBlock[] | undefined;
   output: Array<{ id: string; description?: string; artifact?: { name: string }; components?: Record<string, string> }> | undefined;
   rules: Record<string, string | string[]> | undefined;
-  errors: Record<string, { cause?: string; recovery?: string }> | undefined;
 }
 
 function parseTechniqueIndex(raw: string, sourcePath: string, id: string): IndexParse {
@@ -271,7 +270,6 @@ function parseTechniqueIndex(raw: string, sourcePath: string, id: string): Index
     protocol: parseProtocolSection(findSection(sections, 'Protocol')),
     output: parseOutputsSection(findSection(sections, 'Outputs') ?? findSection(sections, 'Output')),
     rules: parseRulesSection(findSection(sections, 'Rules')),
-    errors: parseErrorsSection(findSection(sections, 'Errors')),
   };
 }
 
@@ -406,57 +404,6 @@ function parseRulesSection(section: Section | undefined): IndexParse['rules'] {
   return Object.keys(result).length > 0 ? result : undefined;
 }
 
-function parseErrorsSection(section: Section | undefined): IndexParse['errors'] {
-  if (!section) return undefined;
-  const items = splitSections(section.body, 3);
-  if (items.length === 0) return undefined;
-  const result: Record<string, { cause?: string; recovery?: string }> = {};
-  for (const item of items) {
-    const { cause, recovery } = extractCauseRecovery(item.body);
-    const entry: { cause?: string; recovery?: string } = {};
-    if (cause !== undefined) entry.cause = cause;
-    if (recovery !== undefined) entry.recovery = recovery;
-    result[item.title] = entry;
-  }
-  return Object.keys(result).length > 0 ? result : undefined;
-}
-
-function extractCauseRecovery(body: string): { cause?: string; recovery?: string } {
-  const cause = matchLabelledParagraph(body, 'Cause');
-  const recovery = matchLabelledParagraph(body, 'Recovery');
-  const out: { cause?: string; recovery?: string } = {};
-  if (cause !== undefined) out.cause = cause;
-  if (recovery !== undefined) out.recovery = recovery;
-  return out;
-}
-
-function matchLabelledParagraph(body: string, label: string): string | undefined {
-  // Match patterns like "**Cause:** <text...>" (may span multiple lines until next blank line or another **Label:**).
-  const lines = body.split(/\r?\n/);
-  let collecting = false;
-  const buffer: string[] = [];
-  const startRegex = new RegExp(`^\\*\\*${label}:\\*\\*\\s*(.*)$`);
-  const otherLabelRegex = /^\*\*[A-Za-z][A-Za-z _-]*:\*\*/;
-
-  for (const line of lines) {
-    const start = line.match(startRegex);
-    if (start) {
-      collecting = true;
-      const first = start[1] ?? '';
-      if (first.trim()) buffer.push(first.trim());
-      continue;
-    }
-    if (collecting) {
-      if (!line.trim()) {
-        if (buffer.length > 0) break;
-        continue;
-      }
-      if (otherLabelRegex.test(line)) break;
-      buffer.push(line.trim());
-    }
-  }
-  return buffer.length > 0 ? buffer.join(' ').trim() : undefined;
-}
 
 
 
@@ -518,7 +465,6 @@ function buildTechnique(parsed: IndexParse, sourcePath: string, techniqueId: str
   if (parsed.protocol && parsed.protocol.length > 0) technique['protocol'] = parsed.protocol;
   if (parsed.output && parsed.output.length > 0) technique['output'] = parsed.output;
   if (parsed.rules && Object.keys(parsed.rules).length > 0) technique['rules'] = parsed.rules;
-  if (parsed.errors && Object.keys(parsed.errors).length > 0) technique['errors'] = parsed.errors;
 
   const result = safeValidateTechnique(technique);
   if (!result.success) {

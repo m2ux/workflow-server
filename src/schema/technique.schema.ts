@@ -170,7 +170,6 @@ export const TechniqueSchema = z.object({
   interpretation: InterpretationSchema.optional(),
   resumption: ResumptionSchema.optional(),
   rules: RulesDefinitionSchema.optional(),
-  errors: z.record(ErrorDefinitionSchema).optional(),
   inputs: InputsDefinitionSchema.optional(),
   protocol: ProtocolDefinitionSchema.optional(),
   output: OutputDefinitionSchema.optional(),
