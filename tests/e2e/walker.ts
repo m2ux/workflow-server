@@ -12,7 +12,7 @@
  * remains the source of truth and validates each transition. A divergence
  * surfaces as a thrown error — itself a useful consistency signal.
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { evaluateCondition, type Condition } from '../../src/schema/condition.schema.js';
@@ -314,20 +314,33 @@ function findOrphanCheckpoints(act: ActivityDef): string[] {
   return (act.checkpoints ?? []).map(c => c.id).filter(id => !referenced.has(id));
 }
 
-/** Write a stub file for each planning-location artifact the activity declares. Returns filenames. */
+/**
+ * Write a stub for each planning-location artifact the activity declares, using
+ * find-or-create keyed on the bare filename: if an instance (`<NN>-<bare>` or
+ * `<bare>`) already exists in the planning folder, UPDATE it in place (preserving
+ * its original number); otherwise CREATE `<prefix>-<bare>` with this activity's
+ * prefix. Mirrors the manage-artifacts::write-artifact protocol, so a logical
+ * artifact keeps exactly one numbered instance across the whole walk.
+ */
 function writeArtifactStubs(act: ActivityDef, variables: Record<string, unknown>, planningFolder: string, prefix?: string): string[] {
   const written: string[] = [];
+  let existing: string[] = [];
+  try { existing = readdirSync(planningFolder); } catch { /* folder not created yet */ }
   for (const art of act.artifacts ?? []) {
     if (art.location && art.location !== 'planning') continue; // only planning-folder artifacts here
     // Interpolate {var}; strip braces from any still-unresolved token so the filename is clean.
-    let name = interpolate(art.name, variables).replace(/\{([^}]+)\}/g, '$1');
-    // artifactPrefix is server-computed and not present in the raw activity TOON;
-    // it is supplied from the get_workflow summary (see walk()).
-    const pfx = prefix ?? act.artifactPrefix;
-    if (pfx && !/^\d/.test(name)) name = `${pfx}-${name}`;
+    const bare = interpolate(art.name, variables).replace(/\{([^}]+)\}/g, '$1');
+    const bareRe = new RegExp(`^(\\d+-)?${bare.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
+    // Find-or-create: reuse an existing instance (update in place), else create with this prefix.
+    let name = existing.find(f => bareRe.test(f));
+    if (!name) {
+      const pfx = prefix ?? act.artifactPrefix;
+      name = pfx && !/^\d/.test(bare) ? `${pfx}-${bare}` : bare;
+    }
     try {
       writeFileSync(join(planningFolder, name), `<!-- robot-worker stub artifact for activity ${act.id} -->\n`);
-      written.push(name);
+      if (!written.includes(name)) written.push(name);
+      if (!existing.includes(name)) existing.push(name);
     } catch { /* ignore write failures (e.g. missing subdir) */ }
   }
   return written;

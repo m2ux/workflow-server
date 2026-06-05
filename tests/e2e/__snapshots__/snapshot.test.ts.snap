@@ -176,7 +176,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "07-assumptions-log.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -195,7 +195,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "provenance-log.md",
       ],
       "artifactsWritten": [
-        "08-assumptions-log.md",
+        "02-assumptions-log.md",
         "08-provenance-log.md",
       ],
       "checkpoints": [
@@ -282,7 +282,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       ],
       "artifactsWritten": [
         "11-strategic-review-n.md",
-        "11-architecture-summary.md",
+        "09-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -628,7 +628,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "07-assumptions-log.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -647,7 +647,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "provenance-log.md",
       ],
       "artifactsWritten": [
-        "08-assumptions-log.md",
+        "02-assumptions-log.md",
         "08-provenance-log.md",
       ],
       "checkpoints": [
@@ -734,7 +734,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       ],
       "artifactsWritten": [
         "11-strategic-review-n.md",
-        "11-architecture-summary.md",
+        "09-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -1122,7 +1122,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "07-assumptions-log.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -1141,7 +1141,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "provenance-log.md",
       ],
       "artifactsWritten": [
-        "08-assumptions-log.md",
+        "02-assumptions-log.md",
         "08-provenance-log.md",
       ],
       "checkpoints": [
@@ -1228,7 +1228,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       ],
       "artifactsWritten": [
         "11-strategic-review-n.md",
-        "11-architecture-summary.md",
+        "09-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -1578,7 +1578,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "07-assumptions-log.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -1597,7 +1597,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "provenance-log.md",
       ],
       "artifactsWritten": [
-        "08-assumptions-log.md",
+        "02-assumptions-log.md",
         "08-provenance-log.md",
       ],
       "checkpoints": [
@@ -1684,7 +1684,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       ],
       "artifactsWritten": [
         "11-strategic-review-n.md",
-        "11-architecture-summary.md",
+        "09-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -1977,7 +1977,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "07-assumptions-log.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -1996,7 +1996,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "provenance-log.md",
       ],
       "artifactsWritten": [
-        "08-assumptions-log.md",
+        "02-assumptions-log.md",
         "08-provenance-log.md",
       ],
       "checkpoints": [
@@ -2084,7 +2084,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       ],
       "artifactsWritten": [
         "11-strategic-review-n.md",
-        "11-architecture-summary.md",
+        "09-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -2358,7 +2358,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "assumptions-log.md",
       ],
       "artifactsWritten": [
-        "07-assumptions-log.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -2377,7 +2377,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "provenance-log.md",
       ],
       "artifactsWritten": [
-        "08-assumptions-log.md",
+        "02-assumptions-log.md",
         "08-provenance-log.md",
       ],
       "checkpoints": [
@@ -2464,7 +2464,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       ],
       "artifactsWritten": [
         "11-strategic-review-n.md",
-        "11-architecture-summary.md",
+        "09-architecture-summary.md",
       ],
       "checkpoints": [
         {

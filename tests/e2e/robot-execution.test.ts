@@ -57,18 +57,41 @@ describe('work-package robot execution (Layer 3c)', () => {
     expect(dp?.artifactsWritten.some(n => n.endsWith('assumptions-log.md')), 'assumptions-log.md written').toBe(true);
   });
 
-  it('prefixes every written artifact with its activity\'s filename-derived number', () => {
+  it('prefixes each artifact with its CREATING activity\'s filename-derived number', () => {
+    // With update-in-place, an artifact keeps the prefix of the activity that
+    // first created it; later activities that update it reuse that same file.
+    // So check each artifact against the FIRST activity (walk order) that wrote it.
     const expected = expectedActivityPrefixes();
+    const seen = new Set<string>();
     const wrong: string[] = [];
     for (const s of full.steps) {
       const prefix = expected.get(s.activityId);
       expect(prefix, `no filename prefix known for activity ${s.activityId}`).toBeDefined();
       for (const name of s.artifactsWritten) {
-        // Every written artifact must lead with "<NN>-" matching the activity's number.
-        if (!name.startsWith(`${prefix}-`)) wrong.push(`${s.activityId}: ${name} (expected ${prefix}-*)`);
+        const bare = name.replace(/^\d+-/, '');
+        if (seen.has(bare)) continue; // already created by an earlier activity — keeps its prefix
+        seen.add(bare);
+        if (!name.startsWith(`${prefix}-`)) wrong.push(`${s.activityId} created ${name} (expected ${prefix}-*)`);
       }
     }
-    expect(wrong, 'artifacts whose prefix does not match the activity filename').toEqual([]);
+    expect(wrong, 'newly-created artifacts whose prefix does not match the creating activity').toEqual([]);
+  });
+
+  it('keeps exactly one numbered instance per logical artifact (update-in-place)', () => {
+    // Group every written artifact by its bare filename (strip the <NN>- prefix);
+    // a logical artifact must map to exactly one distinct full filename across the walk.
+    const byBare = new Map<string, Set<string>>();
+    for (const s of full.steps) {
+      for (const f of s.artifactsWritten) {
+        const bare = f.replace(/^\d+-/, '');
+        if (!byBare.has(bare)) byBare.set(bare, new Set());
+        byBare.get(bare)!.add(f);
+      }
+    }
+    const multi = [...byBare.entries()]
+      .filter(([, set]) => set.size > 1)
+      .map(([bare, set]) => `${bare}: ${[...set].sort().join(', ')}`);
+    expect(multi, 'logical artifacts written under more than one number').toEqual([]);
   });
 
   it('submits step manifests the server accepts (no validation errors)', () => {
