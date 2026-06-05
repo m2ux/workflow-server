@@ -16,13 +16,12 @@
  *
  * Scoped by default (--activities=2) to validate plumbing cheaply before a full
  * 13-activity run. The sandbox lives at a CONSISTENT root (default
- * <tmpdir>/wf-smoke-runs, override with --root=); runs are never deleted, and
+ * /tmp/claude/wf-smoke-runs, override with --root=); runs are never deleted, and
  * each lands a uniquely-named planning subfolder under the shared planning root,
  * so you can add that root to your IDE and watch every run in real time.
  */
 import { execFileSync } from 'node:child_process';
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
-import { tmpdir } from 'node:os';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHarness } from '../../tests/e2e/harness.js';
@@ -43,10 +42,10 @@ const getArg = (k: string, def: string) => {
 };
 const MAX_ACTIVITIES = parseInt(getArg('activities', '2'), 10);
 const MODEL = getArg('model', 'sonnet');
-// Consistent root (override with --root=). Every run reuses this base, so its
-// planning folder is always at <ROOT>/target/.engineering/artifacts/planning/ —
+// Consistent root (override with --root=). A fixed, env-independent path so the
+// planning folder is ALWAYS at <ROOT>/target/.engineering/artifacts/planning/ —
 // add that to your IDE and watch each run land as a unique <RUN_ID> subfolder.
-const ROOT = getArg('root', join(tmpdir(), 'wf-smoke-runs'));
+const ROOT = getArg('root', '/tmp/claude/wf-smoke-runs');
 const RUN_ID = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14);
 // By default the worker has NO Bash (it narrates shell/git steps per the brief),
 // so it cannot create real worktrees/branches outside the sandbox. --full enables

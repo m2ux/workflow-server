@@ -46,10 +46,10 @@ Why this works without shared memory:
 
 ## Watching runs (consistent root)
 
-The sandbox lives at a **consistent root** — `<tmpdir>/wf-smoke-runs` by default,
-overridable with `--root=DIR` — that persists across runs (nothing is ever
-deleted). The worker's CWD is `<root>/target`, so every run's planning artifacts
-land under one stable folder:
+The sandbox lives at a **consistent root** — `/tmp/claude/wf-smoke-runs` by
+default (a fixed, env-independent path), overridable with `--root=DIR` — that
+persists across runs (nothing is ever deleted). The worker's CWD is
+`<root>/target`, so every run's planning artifacts land under one stable folder:
 
 ```
 <root>/target/.engineering/artifacts/planning/
