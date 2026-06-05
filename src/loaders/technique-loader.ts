@@ -403,6 +403,18 @@ export async function resolveTechniques(
     results.push({ source: parsed.technique, workflow: parsed.workflow, name: parsed.name, type: 'not-found', body: null, ref });
   }
 
+  // Mirror composeTechnique: include the executing workflow-root contract rules in every bundle.
+  // Inserted into touchedSkills before the auto-include pass so the existing dedup logic applies.
+  if (currentWorkflow) {
+    const rootKey = skillKey(currentWorkflow, ROOT_INDEX_ID);
+    if (!touchedSkills.has(rootKey)) {
+      const root = await loadWorkflowRoot(workflowDir, currentWorkflow);
+      if (root) {
+        touchedSkills.set(rootKey, { workflow: currentWorkflow, technique: ROOT_INDEX_ID, cached: root });
+      }
+    }
+  }
+
   for (const { workflow, technique: techniqueId, cached: technique } of touchedSkills.values()) {
     if (!technique.rules) continue;
     for (const [ruleName, ruleBody] of Object.entries(technique.rules)) {

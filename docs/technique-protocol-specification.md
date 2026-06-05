@@ -109,10 +109,24 @@ and outputs.
 Titled blocks group a protocol's phases; a flat list suits an atomic procedure. The titles `Initial`
 and `Final` position an ancestor's content around its descendants (§6).
 
+A step is an imperative action the agent performs. A standing prohibition, invariant, or precondition
+is not a step: a constraint that governs the technique (or several steps) is a rule (§3.4); a
+constraint that qualifies one step's action folds into that step as a guard ("append the attestation
+— but only after the user has signed off"). A bullet whose whole substance is "never X" or "always Y"
+with no action of its own is mis-modelled and belongs in one of those two places.
+
 ### 3.4 Rules
 
-`### <rule-name>` under `## Rules` is a cross-cutting behavioral constraint. A constraint specific to
-one step belongs in that step.
+`### <rule-name>` under `## Rules` is a cross-cutting behavioral constraint — an invariant that
+governs the technique as a whole, not a single action. A rule lives at the smallest containment scope
+that covers everything it governs:
+
+- A constraint specific to one step belongs in that step, not in `## Rules`.
+- A constraint a protocol step already states is not restated as a rule.
+- A constraint shared by sibling techniques belongs on their common container — the group or
+  workflow-root `TECHNIQUE.md` — which delivers it to each by inheritance (§5), not duplicated onto
+  each sibling.
+- A constraint that governs only one child belongs on that child, not on the container.
 
 ### 3.5 Error handling
 
@@ -147,13 +161,21 @@ current-workflow-first precedence of §2.
 
 ## 5. Contract inheritance
 
-A workflow-root `TECHNIQUE.md` defines Inputs, Outputs, and Rules shared by every technique in the
-workflow (`composeTechnique`, against the executing workflow's root). Keyed sections union, with the
-technique-local entry taking precedence by id or name.
+A container `TECHNIQUE.md` — a group's or the workflow root's — defines Inputs, Outputs, and Rules
+shared by the techniques it contains. Keyed sections union, with the technique-local entry taking
+precedence by id or name.
 
-A technique's rules reach the agent as `rule` entries (§7.2); a containing group's shared rules reach
-a nested technique the same way — the group's `TECHNIQUE.md` is included when one of its children is
-referenced.
+How a shared rule reaches the agent depends on the delivery path:
+
+- On the bundle path (§7.2), a referenced technique contributes its own rules; a referenced nested
+  technique additionally contributes its group container's rules — the group's `TECHNIQUE.md` is
+  bundled whenever one of its children is referenced.
+- On the `get_technique` path, `composeTechnique` additionally merges the executing workflow-root
+  container's shared rules into the technique.
+
+A rule shared across a group's members is therefore authored on that group's container, where both
+paths deliver it. Placing it on the workflow root alone shares it only on the `get_technique` path;
+the bundle path does not fold the workflow root into an individual technique.
 
 ---
 
@@ -199,9 +221,8 @@ on the `get_technique` path, where the workflow root is the ancestor.
 
 ### 7.1 Body
 
-A delivered technique body (`projectTechniqueBody`) carries `capability`, `flow?`, `inputs?`,
-`protocol?` (wrapped per §6), and `output?`. A technique's rules are delivered as `rule` entries
-(§7.2).
+A delivered technique body (`projectTechniqueBody`) carries `capability`, `inputs?`, `protocol?`
+(wrapped per §6), and `output?`. A technique's rules are delivered as `rule` entries (§7.2).
 
 ### 7.2 Bundle
 
@@ -240,7 +261,11 @@ The protocol-relevant rules:
   declaration (literal, `{token}`-template, or discriminator-keyed).
 - A capability or description states what a construct is; the sequence of steps and phases lives in
   `protocol[]`.
-- A behavioral constraint is a rule (`## Rules`); a description states meaning.
+- A protocol step is an action. A standing prohibition or invariant is a rule (§3.4) or a guard
+  folded into the step it qualifies — never a step on its own.
+- A behavioral constraint is a rule (`## Rules`); a description states meaning. A rule lives at the
+  smallest container that covers what it governs (§3.4): inline in a step if step-specific, on the
+  common container if shared by siblings, on the child if it governs only that child.
 - A resource describes what it is; it does not name the techniques that use it.
 
 ---
