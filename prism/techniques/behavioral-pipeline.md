@@ -68,15 +68,10 @@ Directory to write the analysis artifact
 ### 6. Apply Synthesis Lens
 
 - Apply the behavioral_synthesis lens (index 23) against the constructed input
-- Write the synthesis artifact to {output-path}/behavioral-synthesis.md
 
 ### 7. Write Artifact
 
-- Write the complete analysis to the artifact file, producing the behavioral-artifact for this pass
-- Return the full artifact path of the behavioral-artifact in the output
-- If the artifact cannot be written to the output path, verify that the output-path directory exists and is writable
-- {behavioral-artifact}.artifact follows the role name: behavioral-errors (19), behavioral-costs (20), behavioral-changes (21), behavioral-promises (22), behavioral-synthesis (23).
-- Every artifact MUST be written to the filesystem. Return artifact paths so subsequent passes can read them.
+- Write the complete analysis as {behavioral-artifact} into {output-path}. If the write fails, verify {output-path} exists and is writable.
 
 ## Outputs
 
@@ -86,7 +81,7 @@ Behavioral analysis artifact written to the filesystem
 
 #### artifact
 
-`{artifact-filename}`
+`behavioral-errors.md` (19) / `behavioral-costs.md` (20) / `behavioral-changes.md` (21) / `behavioral-promises.md` (22) / `behavioral-synthesis.md` (23)
 
 #### artifact_path
 

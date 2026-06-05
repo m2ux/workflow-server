@@ -61,10 +61,7 @@ Directory to write the analysis artifact
 
 ### 5. Write Artifact
 
-- Derive {pass-artifact}.artifact from the pass type: structural (index 00), adversarial (index 01), synthesis (index 02) — following the template `{pass-type}-analysis.md`
-- Write the complete analysis to {output-path}/{artifact-filename}, producing the pass-artifact. If the write fails, verify the output-path directory exists and is writable.
-- Return the full pass-artifact path in the output
-- The analysis MUST be written to the filesystem. Return the pass-artifact path to the orchestrator so subsequent passes can read it.
+- Write the complete analysis as {pass-artifact} into {output-path}. If the write fails, verify {output-path} exists and is writable.
 
 ### 6. Format Output
 
@@ -81,7 +78,7 @@ Analysis artifact written to the filesystem
 
 #### artifact
 
-`{pass-type}-analysis.md`
+`structural-analysis.md` (index 00) / `adversarial-analysis.md` (index 01) / `synthesis.md` (index 02)
 
 #### artifact_path
 

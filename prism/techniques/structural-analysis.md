@@ -60,10 +60,8 @@ The code to analyze. Can be a file path (agent reads it), a diff, or inline code
 
 ### 5. Write Artifact
 
-- Write the complete analysis to {output-path}/structural-analysis.md
-- If the artifact cannot be written to the output path, verify the output-path directory exists and is writable
+- Write the complete analysis as {structural-analysis} into {output-path}. If the write fails, verify {output-path} exists and is writable.
 - Include a YAML front-matter header with target file, analysis date, and lens used (L12 structural)
-- The analysis MUST be written to the filesystem as an artifact. In-memory-only output is not acceptable — downstream passes and callers depend on reading the artifact file.
 
 ### 6. Format Output
 

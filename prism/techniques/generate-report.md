@@ -98,7 +98,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 
 ### 8. Write Artifact
 
-- Write the complete report as {report} to {report}.report_path
+- Write the complete report as {report} into {output-path}
 
 ## Outputs
 

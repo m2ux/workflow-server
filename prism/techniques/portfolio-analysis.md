@@ -62,16 +62,14 @@ The code or text to analyze. Can be a file path or inline content.
 
 ### 5. Write Artifacts
 
-- Write each lens output (see [writer](../resources/writer.md)) to {output-path}/portfolio-{lens-name}.md (e.g., portfolio-claim.md, portfolio-degradation.md) — these are the per-lens-artifacts, one per applied lens. If a write to the output path fails, verify the output-path directory exists and is writable before retrying.
-- Record the path of every per-lens-artifact in portfolio_output_paths
-- Every lens output and the synthesis MUST be written as separate artifacts. In-memory-only output is not acceptable.
+- Write each lens output (see [writer](../resources/writer.md)) as {per-lens-artifacts} into {output-path}, one artifact per applied lens. If a write fails, verify {output-path} exists and is writable.
 
 ### 6. Cross Lens Synthesis
 
 - After all lenses complete, identify where findings converge (same structural property found via different operations)
 - Identify where findings diverge (each lens found a different property — this is expected and is the value of portfolio analysis)
 - Produce a summary table: finding, which lens(es) found it, convergent or unique
-- Write the synthesis to {output-path}/portfolio-synthesis.md
+- Write the synthesis as {portfolio-synthesis} into {output-path}
 
 ## Outputs
 
