@@ -73,12 +73,27 @@ Done. The technique bundle is produced by `resolveTechniques` + `formatTechnique
 Verification: 363 pass / 2 skip; definition-lint confirms every migrated activity resolves its
 techniques into the bundle.
 
-Pre-existing, separate drift to address when convenient: the zod `TechniqueSchema` carries optional
-legacy fields (`architecture`, `tools`, `flow`, `matching`, `state`, …, `interpretation`,
-`resumption`) absent from `schemas/technique.schema.json`; the activity schema's `techniques`/`skills`
-aliasing. Neither relates to the technique-model change.
+## Schema drift cleanup — zod `TechniqueSchema` legacy fields + `skills` aliasing removed (2026-06-05)
 
-Pre-existing, separate drift to address when convenient: the zod `TechniqueSchema` carries optional
-legacy fields (`architecture`, `tools`, `flow`, `matching`, `state`, …, `interpretation`,
-`resumption`) absent from `schemas/technique.schema.json`; the activity schema's `techniques`/`skills`
-aliasing. Neither relates to the technique-model change.
+Done. Two pre-existing drifts (unrelated to the technique-model change) are resolved:
+
+- **`src/schema/technique.schema.ts`** — `TechniqueSchema` carried optional legacy fields
+  (`architecture`, `tools`, `flow`, `matching`, `state`, `state_structure`, `numeric_format`,
+  `initialization`, `update_patterns`, `checkpoint_response_format`, `decision_outcome_format`,
+  `history_event_types`, `history_entry_format`, `status_values`, `interpretation`, `resumption`)
+  absent from `schemas/technique.schema.json`. None were populated by any loader; only `flow` was ever
+  read. Removed the fields and the now-dead supporting schemas (`ToolDefinitionSchema`,
+  `ArchitectureSchema`, `MatchingSchema`, `StateStructureSchema`, `StateDefinitionSchema`,
+  `InterpretationSchema`, `NumericFormatSchema`, `InitializationSchema`, `UpdatePatternSchema`,
+  `ResumptionSchema`). `TechniqueSchema` now matches the JSON schema: `id`, `version`, `capability`,
+  `rules`, `inputs`, `protocol`, `output`.
+- **`src/loaders/technique-loader.ts`** — removed the `if (t.flow) body['flow'] = …` projection in
+  `projectTechniqueBody` (the field no longer exists).
+- **`schemas/README.md`** — there is no `skills` field; the activity-level `techniques` field uses
+  `TechniquesReferenceSchema` ({primary?, supporting[]}) and the workflow-level field uses
+  `WorkflowTechniquesSchema` ({primary?, supporting[]}). Removed the stale `SkillsReference` type
+  section and the `skills | SkillsReference | LEGACY` activity-table row; folded both into a single
+  `TechniquesReference` description covering activity and workflow use, and updated the
+  workflow-techniques rows to state primary + supporting.
+
+Verification: typecheck clean, build clean, 363 pass / 2 skip.
