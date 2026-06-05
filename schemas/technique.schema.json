@@ -5,35 +5,6 @@
   "description": "Technique definition schema for workflow-server",
   "$ref": "#/definitions/technique",
   "definitions": {
-    "errorDefinition": {
-      "type": "object",
-      "properties": {
-        "cause": {
-          "type": "string",
-          "description": "What causes this error"
-        },
-        "recovery": {
-          "type": "string",
-          "description": "How to recover from this error"
-        },
-        "detection": {
-          "type": "string",
-          "description": "How to detect this error condition"
-        },
-        "resolution": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Steps to resolve the error"
-        },
-        "note": {
-          "type": "string",
-          "description": "Additional notes about the error"
-        }
-      },
-      "additionalProperties": false
-    },
     "inputItemDefinition": {
       "type": "object",
       "properties": {
@@ -64,7 +35,7 @@
     "protocolDefinition": {
       "type": "array",
       "items": { "$ref": "#/definitions/protocolBlock" },
-      "description": "Protocol: a single ordered list of step blocks (no phase construct). Composition concatenates ancestor blocks before a nested technique's own, and the server renumbers for display. Unified across techniques and operations."
+      "description": "Protocol: a single ordered list of step blocks (no phase construct). An ancestor's Initial blocks are placed before, and its Final blocks after, a nested technique's own blocks; the server renumbers the combined sequence for display."
     },
     "rulesDefinition": {
       "type": "object",
@@ -107,85 +78,6 @@
       "type": "array",
       "items": { "$ref": "#/definitions/outputItemDefinition" },
       "description": "What the skill produces: one or more named outputs, each with optional name, description, and components"
-    },
-    "toolDefinition": {
-      "type": "object",
-      "properties": {
-        "when": { "type": "string" },
-        "params": { "type": "string" },
-        "returns": { "type": "string" },
-        "next": { "type": "string" },
-        "action": { "type": "string" },
-        "usage": { "type": "string" },
-        "preserve": { "type": "array", "items": { "type": "string" } }
-      },
-      "additionalProperties": false
-    },
-    "operationDefinition": {
-      "type": "object",
-      "properties": {
-        "description": {
-          "type": "string",
-          "description": "What this operation does"
-        },
-        "inputs": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": { "type": "string" }
-          },
-          "description": "Positional input entries — each item is a single-key object mapping input name to its description"
-        },
-        "output": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": { "type": "string" }
-          },
-          "description": "Output entries produced by this operation — same shape as inputs"
-        },
-        "protocol": {
-          "$ref": "#/definitions/protocolDefinition",
-          "description": "Ordered list of step blocks describing how to perform the operation (unified with technique Protocol)."
-        },
-        "tools": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "array",
-            "items": { "type": "string" }
-          },
-          "description": "Map of source → array of tool names. Source is an MCP server name (workflow-server, atlassian, gitnexus, concept-rag, ...), or one of the reserved keys 'shell' (regular shell programs) and 'harness' (agent built-ins like Read, Write, AskQuestion)."
-        },
-        "resources": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Resource refs (e.g., 'meta/05') this operation needs. Resources are scoped per-operation."
-        },
-        "errors": {
-          "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/errorDefinition" },
-          "description": "Errors this operation can encounter, keyed by error name. Errors are scoped per-operation."
-        },
-        "rules": {
-          "$ref": "#/definitions/rulesDefinition",
-          "description": "Behavioural rules specific to this operation. Scoped per-operation so role-specific rules do not leak across orchestrator / worker bundles."
-        },
-        "prose": {
-          "type": "string",
-          "description": "Freeform markdown content for tables, examples, harness-specific implementations, and any reference material specific to this operation that does not fit the structured fields."
-        },
-        "note": {
-          "type": "string",
-          "description": "Additional notes about the operation"
-        }
-      },
-      "additionalProperties": false,
-      "description": "A single named operation with description, inputs, output, procedure, tools, prose, harness implementations, and optional notes"
-    },
-    "operationsDefinition": {
-      "type": "object",
-      "additionalProperties": { "$ref": "#/definitions/operationDefinition" },
-      "description": "Named harness-independent operations, each with a description, inputs, harness implementations, and optional notes. Used by capability skills (e.g. harness-compat) to define abstract operations that other skills reference."
     },
     "technique": {
       "type": "object",

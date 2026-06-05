@@ -124,12 +124,10 @@ const META_WORKFLOW_ID = 'meta';
  *
  * Resolution order:
  *   0. Explicit prefix (`{workflow}/{techniqueId}`): load only from that workflow's techniques folder.
- *   1. Workflow-local (workflowId provided): `{workflowDir}/{workflowId}/techniques/{techniqueId}/SKILL.md`.
- *   2. Meta fallback: `{workflowDir}/meta/techniques/{techniqueId}/SKILL.md`.
+ *   1. Workflow-local (workflowId provided): `{workflowDir}/{workflowId}/techniques/{techniqueId}.md` (flat) or `.../{techniqueId}/TECHNIQUE.md` (grouped).
+ *   2. Meta fallback: `{workflowDir}/meta/techniques/{techniqueId}.md` or `.../{techniqueId}/TECHNIQUE.md`.
  *
- * The legacy cross-workflow scan-all fallback is gone; meta now plays the explicit shared-layer role.
- * When SKILL_LOADER_LEGACY_TOON is on, every step above also tries the workflow's `techniques/` TOON
- * directory as a safety net.
+ * Meta is the shared layer: an unprefixed reference resolves current-workflow-first, then meta.
  */
 export async function readTechnique(
   techniqueId: string,
@@ -172,9 +170,8 @@ export async function readTechnique(
 /**
  * Read a technique's projected TOON wire form by ID. Same precedence as readTechnique.
  *
- * The output is the projection `projectTechniqueToToon(loadedSkill)` for markdown techniques, or the
- * original on-disk TOON for legacy techniques (when SKILL_LOADER_LEGACY_TOON is on). Either way it
- * decodes back to a Technique object that validates against TechniqueSchema.
+ * The output is the projection `projectTechniqueToToon(loadedTechnique)`, which decodes back to a
+ * Technique object that validates against TechniqueSchema.
  */
 export async function readTechniqueRaw(
   techniqueId: string,
@@ -318,7 +315,7 @@ export async function resolveTechniques(
       continue;
     }
 
-    // Nested reference — resolved below as a `<group>/<op>.md` technique file, else a rule/error.
+    // Nested reference — resolved below as a `<group>/<op>.md` technique file, else a rule.
     const parsed = { workflow: path.workflow, technique: path.technique, name: path.subName };
 
     const techRef = parsed.workflow ? `${parsed.workflow}/${parsed.technique}` : parsed.technique;
@@ -360,7 +357,7 @@ export async function resolveTechniques(
       continue;
     }
 
-    // 2. Rule / error on the technique index.
+    // 2. Rule on the technique index.
     const skillResult = await readTechnique(techRef, workflowDir);
     if (!skillResult.success) {
       results.push({ source: parsed.technique, workflow: parsed.workflow, name: parsed.name, type: 'not-found', body: null, ref });

@@ -11,15 +11,15 @@ import { safeValidateTechnique } from '../schema/technique.schema.js';
  * Markdown technique loader.
  *
  * Reads a standalone technique (`techniques/<slug>.md`) or a grouped technique
- * (`techniques/<group>/TECHNIQUE.md` index + sibling `<op>.md` operation files),
+ * (`techniques/<group>/TECHNIQUE.md` index + sibling `<op>.md` nested techniques),
  * materialising a Technique object that validates against TechniqueSchema.
  *
  * Identity comes from the path (the `<slug>` filename or `<group>` folder name),
  * not a frontmatter field. Frontmatter carries only `metadata.version`.
  *
  * Canonical section set (per the workflow-canonical ontology resource):
- *   <slug>.md / TECHNIQUE.md:  Capability, Inputs?, Protocol?, Outputs?, Rules?, Errors?
- *   <op>.md:                   Inputs?, Output?, Protocol (required), Errors?, Rules?
+ *   <slug>.md / TECHNIQUE.md:  Capability, Inputs?, Protocol?, Outputs?, Rules?
+ *   <op>.md:                   Capability, Inputs?, Output?, Protocol (required), Rules?
  *
  * The parser fails loudly on a malformed op child (missing canonical sections
  * that the schema treats as required, e.g. a child with no Protocol body)
@@ -55,7 +55,7 @@ export class MarkdownTechniqueParseError extends Error {
  * Parse a YAML-frontmatter block delimited by `---` lines.
  * Returns `{frontmatter: {}, body: raw}` when no frontmatter is present.
  *
- * Supports the subset of YAML the canonical SKILL.md frontmatter actually
+ * Supports the subset of YAML technique frontmatter actually
  * uses: scalar key/value pairs at the top level and nested `metadata:`
  * mapping with scalar children. Anything more complex must extend this
  * parser — the canonical ontology does not allow it today.
@@ -441,19 +441,9 @@ async function locateTechnique(techniquesDir: string, techniqueId: string): Prom
 }
 
 /**
- * Try to load a markdown technique as a Technique object.
- * Returns `null` when no `<techniquesDir>/<techniqueId>/SKILL.md` exists at the given location.
- * On parse / validation failure logs a warning and returns null (mirrors tryLoadSkill semantics).
- *
- * Callers pass the techniques directory (e.g. `{workflowDir}/meta/techniques` or
- * `{workflowDir}/{workflowId}/techniques`), NOT a base workflow root, so the same function
- * works for both workflow-local and meta lookups.
- */
-/**
  * Build and validate a Technique from a parsed file. Shared by every technique load — whether
  * the file is a standalone `<id>.md`, a grouped `<id>/TECHNIQUE.md` index, or a nested
- * `<group>/<op>.md`. There is no separate "sub-technique" shape: a nested technique is a
- * technique, built exactly the same way.
+ * `<group>/<op>.md`: a nested technique is built exactly the same way as a standalone one.
  */
 function buildTechnique(parsed: IndexParse, sourcePath: string, techniqueId: string): Technique | null {
   const technique: Record<string, unknown> = {

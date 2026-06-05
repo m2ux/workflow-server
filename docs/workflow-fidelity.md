@@ -57,7 +57,7 @@ flowchart TD
         respondCp["respond_checkpoint\nfor each pending checkpoint"]
         cpTiming{{"L2: Timing enforced\noption validated against definition"}}
         bcpClear["bcp cleared — tools unblocked"]
-        getSkill["get_technique(step_id) + get_resource"]
+        getTechnique["get_technique(step_id) + get_resource"]
         executeSteps["Execute activity steps"]
     end
 
@@ -83,8 +83,8 @@ flowchart TD
     respondCp --> cpTiming
     cpTiming -->|"Each checkpoint resolved"| respondCp
     cpTiming -->|"All checkpoints resolved"| bcpClear
-    bcpClear --> getSkill
-    getSkill -->|"L1: HMAC verified"| executeSteps
+    bcpClear --> getTechnique
+    getTechnique -->|"L1: HMAC verified"| executeSteps
 
     executeSteps --> nextB
     nextB --> hardGate
@@ -281,7 +281,7 @@ Beyond enforcement, the server reduces the context burden on agents:
 
 ### Summary Mode
 
-`get_workflow(summary=true)` returns lightweight metadata (~2KB) instead of the full workflow definition (~13KB). The orchestrator gets rules, variables, `initialActivity`, and activity stubs without consuming its context window with step-level detail. The response is preceded by the workflow's primary technique (when present) and a TOON-encoded `operations` bundle (workflow-declared ops + the core orchestrator op set), so the orchestrator receives its execution surface in a single round-trip.
+`get_workflow(summary=true)` returns lightweight metadata (~2KB) instead of the full workflow definition (~13KB). The orchestrator gets rules, variables, `initialActivity`, and activity stubs without consuming its context window with step-level detail. The response is preceded by the workflow's primary technique (when present) and the technique bundle (the activity's primary plus supporting techniques), so the orchestrator receives its execution surface in a single round-trip.
 
 ### Transitions in Activity Definitions
 
@@ -298,9 +298,9 @@ Beyond enforcement, the server reduces the context burden on agents:
 
 Transitions are also derived from `decisions` (branch `transitionTo` fields) and `checkpoints` (option `effect.transitionTo` fields), giving the orchestrator a complete view of all possible next activities.
 
-### Operation, Technique, and Resource Loading
+### Technique and Resource Loading
 
-`get_workflow` and `get_activity` pre-resolve `operations:` references and return them as bundled TOON in the response preamble — agents read operation bodies directly from the bundle rather than chasing per-step technique loads. `resolve_operations` is exposed for ad-hoc lookups outside the bundled sets. `get_technique` loads a single fully composed technique on demand — the workflow primary technique before any activity, or the technique for the current activity (optionally a `step_id`'s technique). Call `get_resource` with the resource index when an operation references reference material that wasn't bundled.
+`get_workflow` and `get_activity` pre-resolve the activity's `techniques.primary` and `techniques.supporting[]` references and return them as the bundled technique set in the response preamble — agents read technique bodies (capability, flow, inputs, protocol, output) directly from the bundle rather than chasing per-step loads. `get_technique` loads a single fully composed technique on demand — the workflow primary technique before any activity, or the technique for the current activity (optionally a `step_id`'s technique). Call `get_resource` with the resource index when a technique references reference material that wasn't bundled.
 
 ### Self-Describing Bootstrap
 

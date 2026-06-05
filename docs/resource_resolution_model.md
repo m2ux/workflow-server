@@ -1,45 +1,57 @@
-# Technique, Operation & Resource Resolution Architecture
+# Technique & Resource Resolution Architecture
 
 LLM context windows are precious. Loading an entire workflow's worth of instructions, rules, and system prompts into an agent's context window on bootstrap leads to context degradation, high latency, and increased costs.
 
-The Workflow Server solves this via a **lazy-loading resource architecture** layered on top of an **operation-focused technique model**.
+The Workflow Server solves this via a **lazy-loading resource architecture** layered on top of a **technique model** in which all behaviour is composed from techniques.
 
 ## 1. Canonical IDs (Slugs)
 
-Techniques and resources are stored on disk as markdown files whose **slug** is the canonical id. A standalone technique is `techniques/{slug}.md`; a grouped technique is `techniques/{group}/TECHNIQUE.md` plus one `{op}.md` per operation; a resource is `resources/{slug}.md`. The slug equals the filename (and the frontmatter `name:`).
+Techniques and resources are stored on disk as markdown files whose **slug** is the canonical id. A standalone technique is `techniques/{slug}.md`; a grouped technique is a folder `techniques/{group}/TECHNIQUE.md` plus one `{sub}.md` per nested technique; a resource is `resources/{slug}.md`. The slug equals the filename (and the frontmatter `name:`).
 
 * File: `techniques/workflow-engine.md`
 * Canonical ID: `workflow-engine`
 
-Agents always reference techniques, operations, and resources by their canonical slugs.
+Agents reference techniques and resources by their canonical slugs.
 
 ## 2. Techniques
 
-A technique is a markdown file (or grouped folder) defining a capability, plus optional named elements:
+There is one kind of technique. A technique is a markdown file (standalone) or a grouped folder whose `TECHNIQUE.md` index contains nested techniques as sibling `{sub}.md` files. A **nested technique is itself a technique** — it has the same shape and is delivered the same way.
 
-* **`operations`** — individual `{op}.md` files within a grouped technique, each with `inputs`, `output`, a `## Protocol` step list, `tools`, optional per-operation `resources`, `errors`, `rules`, and `prose`.
-* **`rules`** — behavioural invariants (single rule or grouped array) that apply across the technique.
-* **`errors`** — failure-mode definitions with `cause`, `recovery`, `detection`, and `resolution` steps.
+A technique's published shape is:
 
-A technique's published shape is `id`, `version`, `capability`, plus optional `inputs`, `protocol`, `output`, `rules`, and `errors`. It has no `description`, `resources`, or `operations` field on the technique itself — operations are separate `{op}.md` files addressed `{group}::{op}`, and resource refs live per-operation.
+* **`id`**, **`version`**, **`capability`** — the identity and the capability statement.
+* **`inputs`** (optional) — an array of entries, each with `id`, `description`, `required`, `default`, and optional `components` (named sub-members).
+* **`output`** (optional) — an array of entries, each with `id`, `description`, optional `components`, and an optional `artifact` carrying a `name` (the filename produced when the output is persisted).
+* **`protocol`** — an ordered list of blocks `{title?, steps[]}`. Steps are imperative bullets; failure handling is expressed inline within the relevant steps.
+* **`rules`** — named behavioural invariants that apply across the technique. Each key is a rule name (or a group prefix); each value is a single rule string or an array of related rules.
 
 The `tools` map keys an MCP server name (e.g. `workflow-server`, `atlassian`, `gitnexus`) or one of the reserved keys `shell` / `harness`.
 
-## 3. Operation References
+## 3. Technique & Rule References
 
-Activities and workflows compose behaviour by listing operation references in a flat `operations:` array:
+Activities and workflows compose behaviour by listing technique references. A reference is a `::`-delimited path:
 
-```yaml
-operations:
-  - workflow-engine::dispatch-activity
-  - workflow-engine::evaluate-transition
-  - agent-conduct::checkpoint-discipline
-  - meta/agent-conduct::file-sensitivity     # workflow-prefixed
+```
+[workflow::]technique[::nested…]
 ```
 
-Each ref is `group::element-name`, optionally workflow-prefixed (`workflow-id/group::element-name`). The operation `group::op` resolves to the file `{group}/{op}.md`. An element name may map to an `operation`, `rule`, or `error` in the target technique — the resolver tries them in that order.
+```yaml
+techniques:
+  primary: workflow-engine::dispatch-activity
+  supporting:
+    - workflow-engine::evaluate-transition
+    - agent-conduct::checkpoint-discipline
+    - meta::agent-conduct::file-sensitivity     # workflow-prefixed
+```
 
-Inline operation invocations also appear inside step descriptions:
+A same-workflow reference omits the workflow segment; the current workflow is filled in at resolution. Include a leading workflow segment only to reach another workflow. A `workflow/technique` slash form is normalized to the `::` form.
+
+A reference addresses one of two things:
+
+* **A technique** — a standalone `{technique}.md`, a grouped `{group}/TECHNIQUE.md` index, or a nested `{group}/{sub}.md` file (addressed `{group}::{sub}`). A nested technique is a technique.
+* **A rule** — when the trailing segment matches a rule name on the addressed technique. A bare group reference `{technique}::{group}` expands to every rule named `{group}-*` on that technique.
+
+Inline technique invocations also appear inside step descriptions:
 
 ```yaml
 steps:
@@ -47,124 +59,89 @@ steps:
     description: "workflow-engine::dispatch-activity(activity_id: {next}, agent_id: 'worker')"
 ```
 
-The inline form is just a sugar pointing at the same operation body — agents read the operation from the bundled response, not by re-fetching it.
+The inline form points at the same technique body. Agents read the technique from the bundled response rather than re-fetching it.
 
-## 4. Resolution Pipeline (`resolve_operations`)
+## 4. Resolution
 
-The server tool `resolve_operations` takes a list of refs and returns one entry per ref:
+Each reference resolves as follows:
 
-```json
-{
-  "operations": [
-    {
-      "ref": "workflow-engine::dispatch-activity",
-      "source": "workflow-engine",
-      "workflow": null,
-      "name": "dispatch-activity",
-      "type": "operation",
-      "body": { ... }
-    }
-  ]
-}
-```
+1. **Locate the technique.** If the reference carries a workflow segment, load from that workflow's `techniques/` folder. Otherwise resolve **current-workflow-first, then the `meta` shared layer** — the current workflow's technique shadows a same-named `meta` one.
+2. **Whole-technique reference** (no nested segment) — deliver the technique's own body (capability, flow, inputs, protocol, output) and auto-include its rules.
+3. **Nested reference** — try a `{group}/{sub}.md` nested technique first (current-workflow-first, then `meta`); deliver its body and auto-include its rules.
+4. **Rule reference** — if no nested technique matches, match the trailing segment against the technique's rules. A direct name match resolves to that rule. A group prefix `{group}` expands to every `{group}-*` rule.
+5. **Unresolved** — a reference that matches none of the above surfaces explicitly; it is never silently dropped.
 
-Resolution lookup order for each ref:
+**Auto-inclusion of technique rules.** When a technique is resolved, its remaining rules (those not already explicitly requested) are appended as rule entries. This lets an activity reference a single technique and still receive the technique's invariants without enumerating every rule.
 
-1. Locate the technique — if the ref carries a workflow prefix, load from that workflow; otherwise load from the session's workflow with a `meta/` fallback.
-2. Match `name` against the technique's operations (the `{group}/{op}.md` files). If found, return type `operation`.
-3. Otherwise match `name` against the technique's `rules`. If found, return type `rule`.
-4. Otherwise match `name` against the technique's `errors`. If found, return type `error`.
-5. Otherwise emit a `not-found` entry — the resolver never silently drops missing refs.
+The result of resolving a list of references is a bundle grouped into three buckets:
 
-**Auto-inclusion of technique rules.** When at least one element from a technique is successfully resolved, the resolver auto-appends that technique's remaining global rules (those not already explicitly requested) with type `rule`. This lets an activity reference a single operation and still receive the technique's invariants without enumerating every rule.
+* **`techniques`** — keyed by full path (`{workflow}/{technique}` or `{technique}`, with `::{sub}` appended for a nested technique) → technique body.
+* **`rules`** — a flat array of `[rule-name, rule-line]` tuples (one tuple per line).
+* **`unresolved`** — references that did not resolve.
 
-`resolve_operations` requires no session token — it is a structural lookup. Most clients invoke it indirectly through the bundles that `get_workflow` and `get_activity` produce.
+Empty buckets are omitted. The lookup is structural and requires no session token; most clients receive it indirectly through the bundles that `get_workflow` and `get_activity` produce.
 
-## 5. Operation Bundling at Workflow / Activity Granularity
+## 5. Protocol Composition
 
-The server pre-resolves operations for the two main bootstrap calls so agents never need to chain `resolve_operations` themselves at runtime.
+When a technique is delivered, an ancestor container's `Initial` and `Final` protocol blocks wrap the descendant's protocol recursively. Every ancestor along the path — the workflow-root `TECHNIQUE.md` and each containing group's `TECHNIQUE.md` — contributes its `Initial` blocks (before) and `Final` blocks (after) the technique's own protocol. The server renumbers the combined sequence for display. Any other ancestor block is parent-only: it appears solely when that ancestor is referenced directly.
+
+## 6. Delivery at Workflow / Activity Granularity
+
+The server resolves an activity's `techniques.primary` plus its `techniques.supporting[]` and bundles them into the `techniques`, `rules`, and `unresolved` buckets, so agents never chain resolution calls themselves at runtime.
 
 ### `get_workflow` — orchestrator bundle
 
-The response is structured as:
-
-```
-<primary technique body, if any>
-
-<TOON operations bundle>
-
----
-
-<workflow summary or raw body>
-```
-
-The operations bundle is the union of `workflow.operations` (workflow-declared refs) and `CORE_ORCHESTRATOR_OPS` — the engine traversal, checkpoint flow, persistence, and orchestrator discipline ops every orchestrator needs. Duplicates are deduplicated.
+The response is the union of the workflow's declared technique references and the core orchestrator technique references the server auto-includes (`CORE_ORCHESTRATOR_TECHNIQUES` in `src/loaders/core-ops.ts`): the engine traversal, checkpoint flow, state-persistence, sub-agent dispatch, and orchestrator-discipline references every orchestrator needs. Duplicates are deduplicated.
 
 ### `get_activity` — worker bundle
 
-The response is structured as:
+The response is the union of the activity's declared technique references and the core worker technique references the server auto-includes (`CORE_WORKER_TECHNIQUES` in `src/loaders/core-ops.ts`): the yield/resume checkpoint, finalize-activity, and worker-side `agent-conduct` rule references every worker needs.
 
-```
-<TOON operations bundle>
+### Core technique reference sets (`src/loaders/core-ops.ts`)
 
----
+| Set | Technique references |
+|-----|----------------------|
+| `CORE_ORCHESTRATOR_TECHNIQUES` | `workflow-engine::dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `handle-sub-workflow`, `compose-prompt`, `present-checkpoint-to-user`, `respond-checkpoint`; `version-control::commit-submodule`, `commit-regular-files`; `harness-compat::spawn-agent`, `continue-agent`; `agent-conduct::orchestrator`, `checkpoint-discipline`, `operational-discipline` |
+| `CORE_WORKER_TECHNIQUES` | `workflow-engine::yield-checkpoint`, `resume-from-checkpoint`, `finalize-activity`; `agent-conduct::checkpoint-discipline`, `operational-discipline`, `file-sensitivity`, `code-commentary` |
 
-<raw activity body>
-```
+## 7. Shared-Layer Technique Resolution
 
-The bundle is the union of `activity.operations` (activity-declared refs) and `CORE_WORKER_OPS` — yield/resume checkpoint, finalize-activity, plus worker-side `agent-conduct` rules. The activity body retains its declared `operations` array so the worker can re-resolve refs locally if needed.
+Standard agent behaviours (workflow engine procedures, agent conduct rules, etc.) live once in the `meta` shared layer, so a workflow need not redefine them.
 
-### Core operation sets (`src/loaders/core-ops.ts`)
+When resolving a technique, the server uses a two-step path:
 
-| Set | Operations |
-|-----|-----------|
-| `CORE_ORCHESTRATOR_OPS` | `workflow-engine::dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `handle-sub-workflow`, `present-checkpoint-to-user`, `respond-checkpoint`, `bubble-checkpoint-up`; `agent-conduct::orchestrator-discipline`, `checkpoint-discipline`, `operational-discipline` |
-| `CORE_WORKER_OPS` | `workflow-engine::yield-checkpoint`, `resume-from-checkpoint`, `finalize-activity`; `agent-conduct::checkpoint-discipline`, `operational-discipline`, `file-sensitivity`, `code-commentary` |
+1. **Workflow-local scope:** look in the current workflow's technique folder (e.g. `workflows/work-package/techniques/`).
+2. **Meta shared layer:** if not found locally, fall back to `workflows/meta/techniques/`.
 
-## 6. Universal Technique Fallback
+This lets workflows inherit standard meta capability techniques (`workflow-engine`, `agent-conduct`, `atlassian-operations`, …) while still being able to override them — a workflow-local technique of the same id shadows the meta one.
 
-Not every workflow needs to redefine standard agent behaviours (workflow engine procedures, agent conduct rules, etc.).
+## 8. Workflow-Level Primary Technique
 
-When resolving a technique (via `get_technique` or the resolver inside `resolve_operations`), the server uses a fallback path:
+A workflow may declare a `techniques.primary` field. That technique's composed body is returned by `get_technique` (before any activity) and is included as the preamble of `get_workflow`. Workflows compose behaviour by referencing capability techniques rather than maintaining a monolithic primary technique.
 
-1. **Local Scope:** look in the current workflow's technique folder (e.g., `workflows/work-package/techniques/`).
-2. **Universal Scope:** if not found locally, fall back to `workflows/meta/techniques/` and then to a cross-workflow scan.
+## 9. Resources
 
-This lets workflows inherit standard meta capability techniques (`workflow-engine`, `agent-conduct`, `atlassian-operations`, …) for free while still being able to override them when specialised behaviour is needed.
+Even with techniques tightly scoped, large reference material (Git CLI tutorials, API guides, templates) does not belong inline. A technique references a resource by id through a normal markdown hyperlink in its content (for example, a template linked from an Input or Output). When the server projects a technique for delivery, it **rewrites those resource hyperlinks into `get_resource`-callable refs** — the bare id form `{id}[#section]`, or the cross-workflow form `{workflow}/{id}[#section]`. Technique links are left untouched.
 
-## 7. Workflow-Level Primary Technique
+Server responses do not bundle resource bodies. The agent loads a resource only when it actually needs it.
 
-Workflows may declare a `techniques.primary` field. When present, that technique's composed body is returned by `get_technique` (before any activity) and is included as the pre-bundle preamble of `get_workflow`. Workflows are encouraged to compose behaviour via `operations` arrays referencing capability techniques rather than maintaining a monolithic primary technique.
+## 10. Lazy Loading via `get_resource`
 
-## 8. The `resources` Array
-
-Even with operations and techniques tightly scoped, large reference material (Git CLI tutorials, API guides, templates) doesn't belong inline. Individual operations declare a `resources` array of lightweight references:
-
-```yaml
-resources:
-  - "review-mode"                  # bare slug — resolves within the session workflow
-  - "meta/activity-worker-prompt"  # prefixed — resolves by slug from the meta workflow
-```
-
-Resource refs live per-operation. Server responses do not bundle resource bodies — agents call `get_resource` only when they actually need a resource.
-
-## 9. Lazy Loading via `get_resource`
-
-When the agent encounters an operation that needs a resource, it calls:
+When the agent encounters a resource reference it needs, it calls:
 
 ```javascript
 get_resource({ session_index, resource_id: "meta/activity-worker-prompt" })
 ```
 
-The server resolves the reference using `parseResourceRef`:
+The server resolves the reference:
 
-* Bare slugs (e.g., `"review-mode"`) resolve within the session's workflow.
-* Prefixed references (e.g., `"meta/activity-worker-prompt"`) resolve from the named workflow.
+* **Bare slugs** (e.g. `"review-mode"`) resolve within the session's workflow.
+* **Prefixed references** (e.g. `"meta/activity-worker-prompt"`) resolve from the named workflow.
 
-The full content is loaded from `workflows/{workflow}/resources/{slug}.md` and returned alongside the resource `id` and `version`.
+An optional `#section` anchor (a GitHub-style heading slug) narrows the result to that section and its body — used to fetch just the template a technique references without the whole file. The content is loaded from `workflows/{workflow}/resources/{slug}.md` and returned alongside the resource `id` and `version`.
 
 ### Benefits
 
-* **Context Economy:** Agents only load the exact Markdown guides they need for the operation they are currently performing.
-* **Modularity:** Reference guides (PR formatting, Git CLI usage, etc.) live in single markdown files and are referenced from many operations across many workflows without duplication.
-* **Cross-workflow sharing:** The `meta/{slug}` prefix lets operations in any workflow pull from a shared resource library in the `meta` workflow.
+* **Context Economy:** Agents load only the exact Markdown guides they need for the technique they are currently performing.
+* **Modularity:** Reference guides (PR formatting, Git CLI usage, etc.) live in single markdown files and are referenced from many techniques across many workflows without duplication.
+* **Cross-workflow sharing:** The `{workflow}/{slug}` prefix lets techniques in any workflow pull from a shared resource library in the `meta` workflow.

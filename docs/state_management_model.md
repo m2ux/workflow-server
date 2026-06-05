@@ -89,6 +89,6 @@ For each session, the server maintains two files under the planning folder (`<wo
 
 Writes are atomic (write-temp + rename) and ordered: `session.json` first, then `.session-token`. Reads verify the seal before returning state.
 
-The `session_index` is deterministically derived from the planning slug (a single-segment slug for the planning folder under `<workspace>/.engineering/artifacts/planning/<slug>/`). For background, design rationale, and the full file shape, see Phase 3 and Phase 4 of the implementation plan (`05-work-package-plan.md`) and the JSON Schema (`schemas/session-file.schema.json`).
+The `session_index` is deterministically derived from the planning slug (a single-segment slug for the planning folder under `<workspace>/.engineering/artifacts/planning/<slug>/`). For the full file shape, see the JSON Schema (`schemas/session-file.schema.json`).
 
 This enables the session to be safely paused, terminated, or resumed at any point without losing its place in the state machine. Resume is a single call: `start_session({ agent_id, planning_slug })` — the server loads `session.json`, verifies the seal, and returns the same `session_index`. Because state lives in `session.json` (not in the token), server restarts are transparent and there is no "adoption" or "recovery" step for the agent to handle.

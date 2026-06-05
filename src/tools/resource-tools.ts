@@ -443,7 +443,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_technique',
-    'Load a single composed technique within the current workflow or activity. If called before next_activity (no current activity), it loads the workflow primary technique. During an activity, it resolves the technique reference from the activity definition; with step_id, it loads the technique assigned to that step; without step_id, the activity primary technique. The returned technique is fully COMPOSED: it inherits its workflow-root `techniques/TECHNIQUE.md` base contract recursively (inputs/outputs/rules/errors merged, root protocol prepended) — never the meta root for a non-meta workflow. Techniques are loaded one at a time.',
+    'Load a single composed technique within the current workflow or activity. If called before next_activity (no current activity), it loads the workflow primary technique. During an activity, it resolves the technique reference from the activity definition; with step_id, it loads the technique assigned to that step; without step_id, the activity primary technique. The returned technique is fully COMPOSED: it inherits its workflow-root `techniques/TECHNIQUE.md` base contract recursively (inputs/outputs/rules merged; ancestor Initial/Final protocol blocks wrap the descendant protocol and the server renumbers) — never the meta root for a non-meta workflow. Techniques are loaded one at a time.',
     {
       ...sessionIndexParam,
       step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the primary technique for the activity, or the workflow primary technique if no activity is active.'),
@@ -585,7 +585,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'resolve_operations',
-    'Resolve a flat list of technique::element references to their bodies. Each ref is in technique-id::element-name form (e.g., "agent-conduct::file-sensitivity", "workflow-orchestrator::evaluate-transition"). Optionally workflow-prefixed: "meta/agent-conduct::file-sensitivity". Returns a bundle grouped by kind: `operations` and `errors` are objects keyed by `<technique-id>::<name>` → body; `rules` is a flat array of [rule-name, rule-line] tuples (one tuple per line, with global rules from any touched technique auto-included); `unresolved` lists refs that did not resolve. Empty groups are omitted. No session_index required — this is a structural lookup.',
+    'Resolve a flat list of technique::element references to their bodies. Each ref is in technique-id::element-name form (e.g., "agent-conduct::file-sensitivity", "workflow-orchestrator::evaluate-transition"). Optionally workflow-prefixed: "meta/agent-conduct::file-sensitivity". Returns a bundle grouped by kind: `techniques` is an object keyed by `<technique-id>[::<nested>]` → body; `rules` is a flat array of [rule-name, rule-line] tuples (one tuple per line, with global rules from any touched technique auto-included); `unresolved` lists refs that did not resolve. Empty groups are omitted. No session_index required — this is a structural lookup.',
     {
       operations: z.array(z.string()).min(1).describe('List of technique::element references to resolve. Each entry is "technique-id::element-name" or "workflow/technique-id::element-name".'),
     },

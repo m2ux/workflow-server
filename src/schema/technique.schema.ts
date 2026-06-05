@@ -12,15 +12,6 @@ export const ToolDefinitionSchema = z.object({
 });
 export type ToolDefinition = z.infer<typeof ToolDefinitionSchema>;
 
-export const ErrorDefinitionSchema = z.object({
-  cause: z.string().optional(),
-  recovery: z.string().optional(),
-  detection: z.string().optional(),
-  resolution: z.array(z.string()).optional(),
-  note: z.string().optional(),
-});
-export type ErrorDefinition = z.infer<typeof ErrorDefinitionSchema>;
-
 export const ArchitectureSchema = z.object({
   principle: z.string().optional(),
   layers: z.array(z.string()).optional(),
@@ -111,8 +102,8 @@ export const ProtocolBlockSchema = z.object({
 export type ProtocolBlock = z.infer<typeof ProtocolBlockSchema>;
 
 /** Protocol: a single ordered list of step blocks (no "phase" construct). Blocks are positional;
- *  composition concatenates ancestor blocks before a nested technique's own, and the server renumbers
- *  the combined sequence for display. Unified across techniques and operations. */
+ *  an ancestor's Initial blocks are placed before, and its Final blocks after, a nested technique's
+ *  own blocks, and the server renumbers the combined sequence for display. */
 export const ProtocolDefinitionSchema = z.array(ProtocolBlockSchema);
 export type ProtocolDefinition = z.infer<typeof ProtocolDefinitionSchema>;
 
@@ -143,11 +134,8 @@ export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;
 export const OutputDefinitionSchema = z.array(OutputItemDefinitionSchema).describe('What the technique produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
 export type OutputDefinition = z.infer<typeof OutputDefinitionSchema>;
 
-// Sub-techniques are isomorphic with techniques: a sub-technique (`<sub>.md`)
-// validates against the same TechniqueSchema below — there is no separate
-// "operation"/sub-technique schema. (Removed SubTechniqueDefinitionSchema and
-// its Input/Output schemas; they had no callers — sub-techniques are parsed
-// into the technique shape by the markdown loader and delivered isomorphically.)
+// A nested technique (`<sub>.md`) validates against the same TechniqueSchema below: the markdown
+// loader parses it into the technique shape and the server delivers it like any technique.
 
 export const TechniqueSchema = z.object({
   id: z.string(),

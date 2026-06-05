@@ -62,17 +62,17 @@ workflow-server/
 │   ├── loaders/              # File loaders (filesystem → validated objects)
 │   │   ├── workflow-loader.ts
 │   │   ├── activity-loader.ts
-│   │   ├── technique-loader.ts          # Includes resolveOperations (technique::element ref resolver)
+│   │   ├── technique-loader.ts          # Includes resolveTechniques (resolves techniques via :: paths)
 │   │   ├── markdown-technique-loader.ts # Parses markdown technique files into Technique objects
 │   │   ├── resource-loader.ts
-│   │   ├── core-ops.ts       # CORE_ORCHESTRATOR_OPS / CORE_WORKER_OPS (op refs bundled into get_workflow / get_activity)
+│   │   ├── core-ops.ts       # CORE_ORCHESTRATOR_TECHNIQUES / CORE_WORKER_TECHNIQUES (core technique refs bundled into get_workflow / get_activity)
 │   │   ├── schema-loader.ts
 │   │   ├── schema-preamble.ts
 │   │   ├── filename-utils.ts
 │   │   └── index.ts          # Barrel exports
 │   ├── tools/                # MCP tool implementations
 │   │   ├── workflow-tools.ts # discover, list_workflows, get_workflow, next_activity, get_activity, yield_checkpoint, resume_checkpoint, present_checkpoint, respond_checkpoint, get_trace, health_check, get_workflow_status
-│   │   ├── resource-tools.ts # start_session, dispatch_child, get_technique, get_resource, resolve_operations
+│   │   ├── resource-tools.ts # start_session, dispatch_child, get_technique, get_resource
 │   │   └── index.ts          # Tool registration entry point
 │   ├── resources/            # MCP resource registration
 │   │   └── schema-resources.ts # workflow-server://schemas
@@ -138,9 +138,9 @@ npm test -- --run --coverage
 | `workflow-loader.test.ts` | Workflow loading, transitions, validation |
 | `schema-validation.test.ts` | All Zod schemas |
 | `schema-loader.test.ts` | JSON Schema loading and serving |
-| `mcp-server.test.ts` | All MCP tools, trace lifecycle, activity manifest, operation bundles |
+| `mcp-server.test.ts` | All MCP tools, trace lifecycle, activity manifest, technique bundles |
 | `activity-loader.test.ts` | Activity loading and dynamic index |
-| `technique-loader.test.ts` | Technique loading, dynamic index, `resolveOperations` |
+| `technique-loader.test.ts` | Technique loading, dynamic index, technique resolution |
 | `session.test.ts` | Token create/decode/advance, sid, aid, parent context |
 | `trace.test.ts` | TraceStore, trace token encode/decode |
 | `validation.test.ts` | Transition, manifest, condition validation |
@@ -202,24 +202,30 @@ Resources are stored in a `resources/` subdirectory within each workflow as slug
 1. Create `{slug}.md` in `workflows/{workflow-id}/resources/`
 2. The filename slug is the resource id (the frontmatter `name:` should match)
 3. Resources are auto-discovered - no manifest update needed
-4. Access via: `get_resource` with the resource slug (referenced from per-operation `resources` arrays); cross-workflow refs use `{workflow}/{slug}`
+4. Access via: `get_resource` with the resource slug (referenced from a technique); cross-workflow refs use `{workflow}/{slug}`
 5. Commit to the `workflows` branch
 
 Note: For backwards compatibility, the loader also checks the `guides/` folder if `resources/` doesn't exist.
 
 ## Adding New Techniques
 
-Techniques are markdown files. They can be **universal** (apply to all workflows, stored in `meta`) or **workflow-specific**. A technique is one of three shapes:
+Techniques are markdown files. They can be **universal** (apply to all workflows, stored in `meta`) or **workflow-specific**. A technique lives at `techniques/{slug}.md`. A technique can contain nested techniques in its folder; a nested technique is itself a technique, addressed by appending its slug to the parent's path.
 
-- **Standalone technique** — a flat `techniques/{slug}.md`.
-- **Grouped technique** — a `techniques/{group}/TECHNIQUE.md` base contract plus one `{op}.md` file per operation, addressed `{group}::{op}`.
-- **Per-workflow root base contract** — `techniques/TECHNIQUE.md`, inherited recursively by every technique in that workflow.
+### Technique File Format
+
+A technique file has:
+
+- **YAML frontmatter** carrying `metadata.version`.
+- **`## Capability`** — what the technique does.
+- **`## Inputs`** / **`## Output(s)`** (optional) — each `### entry` may carry `####` sub-section components, plus the reserved `#### artifact` (output persistence filename) and `#### default` (input default).
+- **`## Protocol`** — ordered blocks `### N. Title` with step bullets, or a flat list. Failure handling is written inline in the protocol step that gives rise to it.
+- **`## Rules`** — constraints the technique enforces.
 
 ### Universal Techniques
 
 Universal techniques are stored in the `meta` workflow's `techniques/` subdirectory:
 
-1. Create `techniques/{slug}.md` (standalone) or `techniques/{group}/TECHNIQUE.md` + `techniques/{group}/{op}.md` (grouped) under `workflows/meta/`
+1. Create `techniques/{slug}.md` under `workflows/meta/`
 2. Access via: `get_technique` (workflow- or activity-primary technique, optionally a step's technique via `step_id`)
 3. Commit to the `workflows` branch
 
@@ -227,15 +233,15 @@ Universal techniques are stored in the `meta` workflow's `techniques/` subdirect
 
 Workflow-specific techniques are stored in each workflow's `techniques/` subdirectory:
 
-1. Create `techniques/{slug}.md` or `techniques/{group}/...` in `workflows/{workflow-id}/`
+1. Create `techniques/{slug}.md` in `workflows/{workflow-id}/`
 2. Techniques are auto-discovered - no manifest update needed
 3. Access via: `get_technique { session_index, step_id: "{step-id}" }` (when referenced by a step)
 4. Commit to the `workflows` branch
 
 ### Technique Resolution
 
-When loading a technique, the workflow is determined from the session's `session.json` (resolved via `session_index`):
-1. First checks the session's workflow: `{workflow}/techniques/{slug}.md` (or `{group}/TECHNIQUE.md`)
-2. Falls back to `meta/techniques/...` (universal)
+Techniques are addressed by `::`-delimited paths: `[workflow::]technique[::nested…]`. A same-workflow reference omits the workflow prefix. A `{workflow}/{technique}` slash form is normalized to the `::` form.
 
-An operation reference `{group}::{op}` resolves to `{group}/{op}.md` — unprefixed resolves under `meta`, while `{workflow}/{group}::{op}` resolves within the named workflow.
+When loading a technique, the workflow is determined from the session's `session.json` (resolved via `session_index`):
+1. First checks the session's workflow (current-workflow-first)
+2. Falls back to the `meta` layer (universal)

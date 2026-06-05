@@ -89,8 +89,10 @@ flowchart TB
         SK1 --> SKD[Technique Definition]
         SK2 --> SKD
         S -.->|"step.technique"| SKD
+        SKD --> Cap[Capability]
+        SKD --> In[Inputs]
+        SKD --> Out[Output]
         SKD --> Proto[Protocol]
-        SKD --> Tools[Tools]
         SKD --> Rules[Rules]
     end
     
@@ -1439,7 +1441,7 @@ A complete activity definition with workflow trigger:
 
 ## Technique Schema
 
-The technique schema (`technique.schema.json`) defines agent capabilities for workflow execution. Techniques are authored as markdown — a standalone `techniques/<slug>.md`, a grouped `techniques/<group>/TECHNIQUE.md` plus one `<op>.md` per operation, or a per-workflow root base contract `techniques/TECHNIQUE.md` — and the server parses them into the JSON shape below (served at `workflow-server://schemas/technique`).
+The technique schema (`technique.schema.json`) defines agent capabilities for workflow execution. Techniques are authored as markdown — a standalone `techniques/<slug>.md`, a grouped `techniques/<group>/TECHNIQUE.md` plus one `<sub>.md` per nested technique, or a per-workflow root `techniques/TECHNIQUE.md` — and the server parses them into the JSON shape below (served at `workflow-server://schemas/technique`).
 
 ### Top-Level Structure
 
@@ -1448,8 +1450,7 @@ The technique schema (`technique.schema.json`) defines agent capabilities for wo
   "id": "activity-worker",
   "version": "2.0.0",
   "capability": "Bootstrap and execute a single workflow activity with consistent tool usage",
-  "rules": {},
-  "errors": {}
+  "rules": {}
 }
 ```
 
@@ -1466,16 +1467,15 @@ The technique schema (`technique.schema.json`) defines agent capabilities for wo
 | Property | Type | Description |
 |----------|------|-------------|
 | `rules` | object | Name-value pairs: each key is a rule name (e.g. configuration-invariant); each value is a single rule string or an array of rule strings for grouped rules. |
-| `errors` | object | Error definitions and recovery strategies, keyed by error name. |
-| `inputs` | array | Inputs the technique expects from context: array of items. Each item has **id** (required; hyphen-delimited), optional **description**, **required**, **default**. When a protocol step uses an existing artifact (e.g. loads from a path), the technique MUST declare one or more associated input entries. Mirrors output structure. |
-| `protocol` | array | An ordered list of step blocks (no phase construct). Each block has optional **title** and a **steps** array of imperative bullet strings. Composition concatenates ancestor blocks before a nested technique's own. |
-| `output` | array | What the technique produces: array of output items. Each item has **id** (required; generic hyphen-delimited identifier, not a filename), optional **description**, optional **components** (named object), and optional **artifact** (when present: **name** = filename to use when persisting, e.g. `01-audit-report.md`). |
+| `inputs` | array | Inputs the technique expects from context: array of items. Each item has **id** (required; hyphen-delimited), optional **description**, **required**, **default**, and **components** (a name→description map authored as `####` sub-sections). When a protocol step uses an existing artifact (e.g. loads from a path), the technique declares one or more associated input entries. Mirrors output structure. |
+| `protocol` | array | An ordered list of step blocks (no phase construct). Each block has optional **title** and a **steps** array of imperative bullet strings. Failure handling is inline in the steps. |
+| `output` | array | What the technique produces: array of output items. Each item has **id** (required; generic hyphen-delimited identifier, not a filename), optional **description**, optional **components** (named object), and optional **artifact** (when present: **name** = filename to use when persisting, a literal or `{token}`-template, e.g. `01-audit-report.md`). |
 
-There is no `description`, `resources`, or `operations` field on a technique. Operations are individual `<op>.md` files addressed `group::op`; resource refs are declared per-operation.
+A technique has `id`, `capability`, `protocol`, `rules`, and optional `inputs` and `output`. Nested techniques are individual `<sub>.md` files addressed by `::` path and are themselves techniques.
 
 ### Protocol
 
-Protocol is a single ordered list of step blocks (rendered from `## Protocol` in the markdown). Each block carries optional `title` and an ordered `steps` array. Composition prepends an ancestor base contract's blocks before a nested technique's own, and the server renumbers for display.
+Protocol is a single ordered list of step blocks (rendered from `## Protocol` in the markdown). Each block carries optional `title` and an ordered `steps` array. An ancestor's `Initial` protocol blocks are placed before, and its `Final` blocks after, a descendant's own protocol; the server renumbers for display. Failure handling is inline in the steps.
 
 ```json
 {
@@ -1483,56 +1483,6 @@ Protocol is a single ordered list of step blocks (rendered from `## Protocol` in
     { "title": "Load checklist", "steps": ["Read the checklist from the resource.", "Verify version matches workflow."] },
     { "title": "Execute step", "steps": ["Run the step logic.", "Record outcome."] }
   ]
-}
-```
-
-### Operation Tool Definitions
-
-Operations (the `<op>.md` files of a grouped technique) describe how and when to use each tool via a `tools` map keyed by source (an MCP server name, or the reserved `shell` / `harness` keys):
-
-```json
-{
-  "tools": {
-    "workflow-server": ["get_workflow", "next_activity"],
-    "harness": ["Read", "Write"]
-  }
-}
-```
-
-Per-operation tool entries may also be annotated with the following fields:
-
-| Field | Purpose |
-|-------|---------|
-| `when` | Conditions or triggers for using this tool |
-| `params` | Parameters the tool accepts |
-| `returns` | What the tool returns |
-| `next` | Suggested next tool to call |
-| `action` | Action to take with the result |
-| `usage` | How to use the tool effectively |
-| `preserve` | Fields to preserve from the result |
-
-### Error Definitions
-
-Define error conditions and recovery strategies:
-
-```json
-{
-  "errors": {
-    "workflow_not_found": {
-      "cause": "Invalid workflow_id parameter",
-      "recovery": "Call list_workflows to discover valid IDs"
-    },
-    "no_matching_activity": {
-      "cause": "User goal doesn't match any existing activity",
-      "detection": "Goal could be served by an existing technique but no activity maps to it",
-      "resolution": [
-        "1. Identify which technique(s) would serve this goal",
-        "2. Create a new activity that maps goal to technique",
-        "3. Add activity to prompts/intents/ with recognition patterns"
-      ],
-      "note": "This is a design gap, not a user error"
-    }
-  }
 }
 ```
 
@@ -1548,13 +1498,7 @@ A minimal technique demonstrating key concepts:
   "protocol": [
     { "title": "Discover", "steps": ["Call list_workflows to find available workflows.", "Select the appropriate workflow for the task."] },
     { "title": "Execute", "steps": ["Load the activity via next_activity.", "Execute each step following technique guidance."] }
-  ],
-  "errors": {
-    "resource_not_found": {
-      "cause": "Requested resource does not exist",
-      "recovery": "Call list_workflows to see available options"
-    }
-  }
+  ]
 }
 ```
 

@@ -20,8 +20,8 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 ### How It Works
 
 1. **Discover** — The agent calls `discover` to learn available workflows and the bootstrap procedure
-2. **Start session** — `start_session` returns a session token; `get_workflow` returns the workflow structure, the workflow's primary technique (when present), a bundled `operations` block (workflow-declared ops + core orchestrator ops), and the `initialActivity` ID
-3. **Navigate** — `next_activity` advances the session to the next activity; `get_activity` returns the activity's full definition (steps, checkpoints, transitions) along with a bundled worker `operations` block (activity-declared ops + core worker ops). `get_resource` lazy-loads reference material referenced by operations
+2. **Start session** — `start_session` returns a session token; `get_workflow` returns the workflow structure, the workflow's primary technique (when present), its supporting techniques bundled under `techniques` and `rules`, and the `initialActivity` ID
+3. **Navigate** — `next_activity` advances the session to the next activity; `get_activity` returns the activity's full definition (steps, checkpoints, transitions) along with the activity's primary and supporting techniques bundled under `techniques` and `rules`. `get_resource` lazy-loads reference material referenced by a technique
 4. **Execute** — The agent works through activities, with checkpoints for user decisions and transitions governing the flow between activities
 
 ### Architecture
@@ -32,7 +32,7 @@ User Goal → Workflow → Activities → Techniques → Tools
 
 - **Workflows** define the overall process (e.g., implement a feature from issue to merged PR)
 - **Activities** are phases within a workflow (e.g., plan, implement, review, validate)
-- **Techniques** are markdown definitions of a capability, with optional rules, errors, and operations; activities and workflows compose behavior by referencing `technique-id` or `group::operation-name`
+- **Techniques** are markdown definitions of a capability, with optional rules; activities and workflows reference techniques by `::`-delimited path
 - **Tools** are the MCP operations the agent invokes, all correlated by the session token
 
 ### MCP Tools at a Glance
@@ -42,10 +42,10 @@ The server registers 16 MCP tools across five concerns. See [docs/api-reference.
 | Concern | Tools |
 |---------|-------|
 | Bootstrap (no session token) | `discover`, `list_workflows`, `health_check` |
-| Session | `start_session`, `get_workflow_status` |
+| Session | `start_session`, `get_workflow_status`, `dispatch_child` |
 | Workflow / activity navigation | `get_workflow`, `next_activity`, `get_activity` |
 | Checkpoint flow | `yield_checkpoint`, `resume_checkpoint`, `present_checkpoint`, `respond_checkpoint` |
-| Techniques, operations, resources | `get_technique`, `get_resource`, `resolve_operations` |
+| Techniques, resources | `get_technique`, `get_resource` |
 | Trace | `get_trace` |
 
 ---

@@ -108,8 +108,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      // Bundle operations: workflow.operations + core orchestrator ops.
-      // Deduplicate by ref so a workflow that explicitly lists a core op only resolves it once.
+      // Bundle the workflow's declared technique refs + core orchestrator techniques.
+      // Deduplicate by ref so a workflow that explicitly lists a core technique only resolves it once.
       const wfTech = (wf as { techniques?: { primary?: string; supporting?: string[] } }).techniques;
       const wfTechRefs = [...(wfTech?.primary ? [wfTech.primary] : []), ...(wfTech?.supporting ?? [])];
       const declaredOps = (wf as { operations?: string[] }).operations ?? [];
@@ -321,9 +321,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         result.success ? validateWorkflowVersion(view, result.value) : null,
       );
 
-      // Bundle techniques the activity references (primary + supporting — delivered
-      // as full protocols), the legacy operations[] (transitional alias), and core
-      // worker techniques. supporting[] is now the primary delivery declaration.
+      // Bundle the techniques the activity references (primary + supporting, delivered
+      // as full protocols), the activity's declared operations[] refs, and core worker
+      // techniques, deduped.
       const activity = result.success ? getActivity(result.value, activity_id) : undefined;
       const actTech = (activity as { techniques?: { primary?: string; supporting?: string[] } } | undefined)?.techniques;
       const techRefs = [...(actTech?.primary ? [actTech.primary] : []), ...(actTech?.supporting ?? [])];

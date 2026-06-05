@@ -20,9 +20,9 @@ Orchestra defines the grammar and semantic constraints for the four workflow pri
 
 | Primitive | Description | Orchestra Status |
 |-----------|-------------|----------------|
-| **Workflow** | Top-level container: metadata, variables, activity sequencing, orchestrator `operations:` refs | Legacy — Orchestra variant TBD |
-| **Activity** | Execution unit: steps, decisions, loops composed into flows; declares worker `operations:` refs | **Defined in this specification** |
-| **Technique** | Markdown definition of a capability, with named `operations`, `rules`, and `errors` | Legacy — Orchestra variant TBD |
+| **Workflow** | Top-level container: metadata, variables, activity sequencing, orchestrator technique refs | Legacy — Orchestra variant TBD |
+| **Activity** | Execution unit: steps, decisions, loops composed into flows; references techniques via `techniques.primary` / `techniques.supporting[]` | **Defined in this specification** |
+| **Technique** | Markdown definition of a capability, optional inputs/output, an ordered protocol, and rules; may contain nested techniques | Legacy — Orchestra variant TBD |
 | **Resource** | Reference material: documentation, templates, guides | Legacy — Orchestra variant TBD |
 
 This specification fully defines the Orchestra grammar and constraints for **activities**. The workflow, technique, and resource primitives continue to use the prior schema definitions (see `schemas/*.schema.json`) until their Orchestra variants are designed.
@@ -47,11 +47,11 @@ The activity is the primary execution unit. It defines steps, decisions, and loo
 
 #### 3.1.1 Steps
 
-A step is a unit of work. Trivial steps are performed directly by the agent. Non-trivial steps invoke a named operation — either by listing the activity-level `operations:` array (a flat list of `group::operation-name` refs) and writing a plain step description, or by inlining the invocation in the step's description (`group::operation-name(arg: {var}, ...)`). The legacy `skill:` reference (just the technique ID) is still accepted and is resolved through `get_technique(step_id)`, but new activities should prefer operation references.
+A step is a unit of work. Trivial steps are performed directly by the agent. Non-trivial steps name a technique by its `::` path, resolved through `get_technique(step_id)`. A same-workflow path is implicit; an unqualified path resolves current-workflow-first and then falls back to `meta`.
 
-**Input/output resolution**: An operation declares its inputs and outputs by name in the technique definition. At runtime, the agent resolves each input by pattern-matching against variables in the scoping chain (local flow > loop variable > activity-level > workflow-level). Inline invocations may supply arguments explicitly (`group::operation-name(arg: {var}, ...)`), overriding scope resolution for those names. Outputs are injected into the current scope after execution.
+**Input/output resolution**: A technique declares its inputs and output by name in its definition. At runtime, the agent resolves each input by pattern-matching against variables in the scoping chain (local flow > loop variable > activity-level > workflow-level). Outputs are injected into the current scope after execution.
 
-**Rules live in techniques**: Steps do not carry rules. If a step requires behavioural constraints, that signals an operation or rule is needed — both live in the technique definition and are pulled into the activity's bundled response when the activity references at least one element of the source technique (auto-included rules). This keeps steps as pure references and rules co-located with the procedural knowledge that enforces them.
+**Rules live in techniques**: Steps do not carry rules. If a step requires behavioural constraints, that signals a rule is needed, and rules live in the technique definition. They are pulled into the activity's bundled response when the activity references the technique. This keeps steps as pure references and rules co-located with the procedural knowledge that enforces them.
 
 **Deterministic vs. dynamic questions**: Fixed-option questions with known branches are handled by interactive decisions (see Section 2.2). Dynamic questions — where the content, phrasing, or follow-up logic depends on runtime context — are steps backed by a technique. The technique declares its own context inputs (current domain, prior responses, etc.) and produces structured outputs (question text, user response, adaptation signals). These resolve from the environment automatically.
 
@@ -898,13 +898,17 @@ Machine-interpretable rules derived from the Alloy constraints. Each rule has an
 
 ## 4. Technique
 
-TBD — Orchestra grammar and constraints for the technique primitive are not yet defined. See `schemas/technique.schema.json` for the current schema. A technique is authored as markdown — a standalone `techniques/<slug>.md`, a grouped `techniques/<group>/TECHNIQUE.md` plus one `<op>.md` per operation, or a per-workflow root base contract `techniques/TECHNIQUE.md` — and exposes three element kinds:
+TBD — Orchestra grammar and constraints for the technique primitive are not yet defined. See `schemas/technique.schema.json` for the current schema. A technique is authored as markdown. A technique can contain nested techniques, and there is one kind of technique throughout. Its anatomy is:
 
-* **`operations`** — individual `<op>.md` files within a grouped technique, each with `inputs`, `output`, a `## Protocol` step list, `tools`, optional per-operation `resources`, `errors`, `rules`, and `prose`. Referenced from activities/workflows as `group::operation-name`.
-* **`rules`** — named behavioural invariants (string or grouped string array). Referenced as `group::rule-name` and auto-included when any element from the same technique is resolved.
-* **`errors`** — named error definitions with `cause`, `recovery`, `detection`, and `resolution`. Referenced as `group::error-name`.
+* **Frontmatter** — carries `metadata.version`.
+* **`## Capability`** — what the technique accomplishes.
+* **`## Inputs` / `## Output(s)`** (optional) — each entry's component members are listed under `####` headings, including the reserved `#### artifact` and `#### default` components.
+* **`## Protocol`** — the ordered procedure, written either as `### N. Title` blocks or as a flat list. Failure handling is described inline in the protocol step that triggers it.
+* **`## Rules`** — named behavioural invariants, pulled into the bundle when the technique is referenced.
 
-See [Technique, Operation & Resource Resolution Architecture](resource_resolution_model.md) for resolution semantics.
+A technique addresses another by its `::` path: a same-workflow path is implicit, an unqualified path resolves current-workflow-first then `meta`, and slashes are normalized. When a descendant technique is resolved, the server wraps its protocol in each ancestor's `Initial` and `Final` blocks, recursing through the chain, and renumbers the combined protocol. Resolved references are returned in the bundle buckets `techniques`, `rules`, and `unresolved`.
+
+See [Technique & Resource Resolution Architecture](resource_resolution_model.md) for resolution semantics.
 
 ---
 

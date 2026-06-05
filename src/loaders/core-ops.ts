@@ -1,20 +1,20 @@
 /**
- * Core operations bundled into get_workflow and get_activity responses.
+ * Core technique refs bundled into get_workflow and get_activity responses.
  *
- * The orchestrator and worker roles each have a baseline set of operations they
+ * The orchestrator and worker roles each have a baseline set of techniques they
  * always need (session/token mechanics, state persistence, engine traversal,
- * checkpoint flow). Under the operation-focused model, get_workflow returns the
- * union of (workflow.operations + core orchestrator ops), and get_activity
- * returns the union of (activity.operations + core worker ops).
+ * checkpoint flow). get_workflow returns the union of the workflow's declared
+ * technique refs and the core orchestrator techniques; get_activity returns the
+ * union of the activity's declared technique refs and the core worker techniques.
  *
- * Operations live in the meta workflow's capability techniques (workflow-engine,
- * agent-conduct). The lists below name the specific operation refs that
- * constitute the runtime baseline.
+ * These techniques live in the meta workflow's capability techniques
+ * (workflow-engine, agent-conduct). The lists below name the core technique refs
+ * that constitute the runtime baseline.
  */
 
 /**
- * Operations every orchestrator needs at the workflow level. Returned by
- * get_workflow alongside the workflow's declared operations.
+ * Technique refs every orchestrator needs at the workflow level. Returned by
+ * get_workflow alongside the workflow's declared technique refs.
  */
 export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   // Engine traversal
@@ -46,8 +46,8 @@ export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
 ];
 
 /**
- * Operations every activity worker needs at the activity level. Returned by
- * get_activity alongside the activity's declared operations.
+ * Technique refs every activity worker needs at the activity level. Returned by
+ * get_activity alongside the activity's declared technique refs.
  */
 export const CORE_WORKER_TECHNIQUES: readonly string[] = [
   // Step execution surface
