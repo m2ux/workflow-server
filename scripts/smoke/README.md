@@ -41,9 +41,25 @@ Why this works without shared memory:
   activity, yield at checkpoints, sandbox discipline: no real Jira/PR/push).
 - `worker-mcp.template.json` — worker MCP config; `__TECHNIQUE_DIST__` and
   `__SANDBOX_WORKSPACE__` are substituted at runtime.
-- `smoke-orchestrator.ts` — the driver (TODO: built/validated against the first
-  scoped run). Sets up the sandbox, runs the walker as orchestrator, and spawns
-  `/home/mike1/.local/bin/claude -p` workers per activity.
+- `smoke-orchestrator.ts` — the driver. Sets up the sandbox, runs the walker as
+  orchestrator, and spawns `/home/mike1/.local/bin/claude -p` workers per activity.
+
+## Watching runs (consistent root)
+
+The sandbox lives at a **consistent root** — `<tmpdir>/wf-smoke-runs` by default,
+overridable with `--root=DIR` — that persists across runs (nothing is ever
+deleted). The worker's CWD is `<root>/target`, so every run's planning artifacts
+land under one stable folder:
+
+```
+<root>/target/.engineering/artifacts/planning/
+```
+
+Add that folder to your IDE workspace and each invocation appears as a uniquely
+named subfolder (`smoke-<RUN_ID>-…`, where `RUN_ID` is a UTC timestamp), so you
+can watch new runs materialize in real time. Each run also drops a
+`<root>/transcript-<RUN_ID>.json`. The driver logs the planning root and the run
+id on completion.
 
 ## Prerequisites
 

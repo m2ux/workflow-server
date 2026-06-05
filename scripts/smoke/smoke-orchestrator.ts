@@ -12,13 +12,16 @@
  * --resume`, so it remembers which steps it has done.
  *
  * Usage (run from the worktree root):
- *   npx tsx scripts/smoke/smoke-orchestrator.ts [--activities=N] [--model=sonnet] [--keep]
+ *   npx tsx scripts/smoke/smoke-orchestrator.ts [--activities=N] [--model=sonnet] [--root=DIR]
  *
  * Scoped by default (--activities=2) to validate plumbing cheaply before a full
- * 13-activity run.
+ * 13-activity run. The sandbox lives at a CONSISTENT root (default
+ * <tmpdir>/wf-smoke-runs, override with --root=); runs are never deleted, and
+ * each lands a uniquely-named planning subfolder under the shared planning root,
+ * so you can add that root to your IDE and watch every run in real time.
  */
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, writeFileSync, readFileSync, rmSync, existsSync } from 'node:fs';
+import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -40,7 +43,11 @@ const getArg = (k: string, def: string) => {
 };
 const MAX_ACTIVITIES = parseInt(getArg('activities', '2'), 10);
 const MODEL = getArg('model', 'sonnet');
-const KEEP = args.includes('--keep');
+// Consistent root (override with --root=). Every run reuses this base, so its
+// planning folder is always at <ROOT>/target/.engineering/artifacts/planning/ —
+// add that to your IDE and watch each run land as a unique <RUN_ID> subfolder.
+const ROOT = getArg('root', join(tmpdir(), 'wf-smoke-runs'));
+const RUN_ID = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14);
 // By default the worker has NO Bash (it narrates shell/git steps per the brief),
 // so it cannot create real worktrees/branches outside the sandbox. --full enables
 // Bash for a faithful run once the plumbing is validated.
@@ -52,17 +59,27 @@ const policy = defaultPolicy;
 
 function log(msg: string) { process.stdout.write(`[orchestrator] ${msg}\n`); }
 
-/** Create the disposable sandbox: a workspace (for session.json) + a target git repo. */
+/**
+ * Set up the persistent shared sandbox at ROOT (created once, reused by every
+ * run). Workspace holds the server sessions; the target repo is the worker's CWD,
+ * so its .engineering/artifacts/planning/ is the stable root you watch. Each run
+ * writes a unique planning subfolder (named from RUN_ID), so runs accumulate
+ * rather than clobber.
+ */
 function setupSandbox() {
-  const root = mkdtempSync(join(tmpdir(), 'wf-smoke-'));
+  const root = ROOT;
   const workspace = join(root, 'workspace');
   const target = join(root, 'target');
   execFileSync('mkdir', ['-p', workspace, target]);
-  // Trivial, throwaway target repo.
-  writeFileSync(join(target, 'README.md'), '# Sandbox target\n\nThrowaway repo for the work-package smoke run.\n');
-  execFileSync('git', ['init', '-q'], { cwd: target });
-  execFileSync('git', ['add', '.'], { cwd: target });
-  execFileSync('git', ['-c', 'user.email=smoke@test', '-c', 'user.name=smoke', 'commit', '-qm', 'init'], { cwd: target });
+  // Idempotent throwaway target repo — created on first run, reused thereafter.
+  if (!existsSync(join(target, 'README.md'))) {
+    writeFileSync(join(target, 'README.md'), '# Sandbox target\n\nThrowaway repo for work-package smoke runs.\n');
+  }
+  if (!existsSync(join(target, '.git'))) {
+    execFileSync('git', ['init', '-q'], { cwd: target });
+    execFileSync('git', ['add', '.'], { cwd: target });
+    execFileSync('git', ['-c', 'user.email=smoke@test', '-c', 'user.name=smoke', 'commit', '-qm', 'init'], { cwd: target });
+  }
   // Render the worker MCP config from the template.
   const tpl = readFileSync(join(HERE, 'worker-mcp.template.json'), 'utf8');
   const cfg = tpl.replace('__TECHNIQUE_DIST__', TECHNIQUE_DIST).replace('__SANDBOX_WORKSPACE__', workspace);
@@ -100,7 +117,7 @@ const WORKER_BRIEF = readFileSync(join(HERE, 'worker-brief.md'), 'utf8');
 const ORCHESTRATOR_BRIEF = readFileSync(join(HERE, 'orchestrator-brief.md'), 'utf8');
 
 function initialPrompt(sessionIndex: string): string {
-  return `${WORKER_BRIEF}\n\n---\nsession_index: ${sessionIndex}\nThis is your first turn for the current activity. Begin executing it now.`;
+  return `${WORKER_BRIEF}\n\n---\nsession_index: ${sessionIndex}\nThis run's work-package / initiative name is "smoke-${RUN_ID}" — use it when creating the planning folder so this run's planning subfolder is uniquely named (every run shares one planning root). This is your first turn for the current activity. Begin executing it now.`;
 }
 function orchestratorPrompt(sessionIndex: string): string {
   return `${ORCHESTRATOR_BRIEF}\n\n---\nsession_index: ${sessionIndex}\nResolve the active checkpoint now.`;
@@ -214,12 +231,12 @@ async function main() {
 
     const finalState = JSON.parse(readFileSync(sessionPath, 'utf8'));
     log(`final status: ${finalState.status}; activities run: ${count}`);
-    writeFileSync(join(sb.root, 'transcript.json'), JSON.stringify({ sessionIndex, transcript, finalStatus: finalState.status }, null, 2));
-    log(`transcript: ${join(sb.root, 'transcript.json')}`);
+    writeFileSync(join(sb.root, `transcript-${RUN_ID}.json`), JSON.stringify({ runId: RUN_ID, sessionIndex, transcript, finalStatus: finalState.status }, null, 2));
   } finally {
     await h.close();
-    if (!KEEP) { try { rmSync(sb.root, { recursive: true, force: true }); } catch { /* ignore */ } }
-    else log(`sandbox kept: ${sb.root}`);
+    // Persistent root — runs accumulate so they can be watched; nothing is deleted.
+    log(`planning root (add to IDE): ${join(sb.target, '.engineering/artifacts/planning')}`);
+    log(`this run: ${RUN_ID}`);
   }
 }
 
