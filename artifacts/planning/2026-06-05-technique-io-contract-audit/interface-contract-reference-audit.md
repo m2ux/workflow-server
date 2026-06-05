@@ -192,17 +192,20 @@ Threading pass complete (113 techniques): **234 input/output designators threade
 bodies; **3 deferred** as genuinely redundant; the 1 remaining "gap" is the matcher artifact noted
 above (not a real designator). Re-running the analyzer confirms no other input/output gaps remain.
 
-### Deferred input/output cases — for later review
+### Deferred input/output cases — RESOLVED (2026-06-05)
 
-These were intentionally NOT threaded because naming the designator in a step would add no
-procedural meaning (the value is ambient context or a precondition gate, never consumed/branched on
-by a step). Revisit if the contract or procedure changes:
+The 3 deferred cases were reviewed. The principle applied: an input that is neither consumed by a
+step **nor needed by a rule** is not part of the interface contract and is removed; an input that is
+*needed* (e.g. by a gating rule) is kept even though no step references it.
 
-| Technique | Designator | Reason deferred |
-|-----------|------------|-----------------|
-| prism-evaluate/techniques/resolve-findings.md | `evaluation_description` (input) | Context-only; the procedure operates on `evaluation-report` and the target doc — naming this ambient context in a step adds nothing. |
-| prism/techniques/full-prism.md | `target-type` (input) | No step branches on the code/general distinction; the pipeline is keyed on the lens resource index. |
-| work-package/techniques/create-adr.md | `complexity` (input) | A precondition gate (whether the technique runs), already expressed by the complexity-gate rule and Capability; no step branches on it. |
+| Technique | Designator | Resolution |
+|-----------|------------|-----------|
+| prism-evaluate/techniques/resolve-findings.md | `evaluation_description` (input) | **Removed** — context-only; referenced nowhere (no step, no rule). Not part of the contract. |
+| prism/techniques/full-prism.md | `target-type` (input) | **Removed** — optional/defaulted; the per-pass technique is keyed entirely on `lens-resource-index`; target-type belongs to the orchestrator that selects the index, not to this technique. |
+| work-package/techniques/create-adr.md | `complexity` (input) | **Kept** — the `complexity-gate` rule ("only create ADRs for moderate or complex implementations") depends on the complexity assessment, so it is *needed* (a gating input), merely not step-consumed. This is the legitimate gating-input exception to "thread every designator". |
+
+After resolution the only residual analyzer hit is the matcher artifact in `write-report.md`
+(`Issue {number}: {title}` — a template line inside a component body, not a real designator).
 
 ### Errors — still deferred (policy)
 
