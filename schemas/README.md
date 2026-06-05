@@ -304,7 +304,7 @@ A workflow is the top-level container representing a complete process definition
 | `tags`            | string[]   | Categorization labels                                      |
 | `rules`           | string[]   | Execution guidelines                                       |
 | `executionModel`  | ExecutionModel | Agent roles and orchestration model for this workflow (required) |
-| `techniques`      | TechniquesReference | Workflow-level primary technique reference (returned by `get_technique`) |
+| `techniques`      | TechniquesReference | Workflow-level techniques (primary + supporting); bundled into `get_workflow` |
 | `variables`       | Variable[] | State variables                                            |
 | `modes`           | Mode[]     | Execution modes that modify standard workflow behavior     |
 | `artifactLocations` | object   | Named artifact storage locations (keyed by location ID)    |
@@ -328,7 +328,7 @@ A unified activity combines intent matching (problem, recognition) with workflow
 | `description`     | string            | What this activity accomplishes            |
 | `problem`         | string            | User problem this activity addresses       |
 | `recognition`     | string[]          | Patterns to match user intent              |
-| `skills`          | SkillsReference   | LEGACY: Primary and supporting technique references |
+| `techniques`      | TechniquesReference | Primary and supporting technique references (`::` paths) |
 | `steps`           | Step[]            | Individual tasks                           |
 | `checkpoints`     | Checkpoint[]      | User decision points                       |
 | `decisions`       | Decision[]        | Automated branching points                 |
@@ -425,22 +425,14 @@ A loop enables iteration over collections or while conditions hold.
 
 ### Supporting Types
 
-#### SkillsReference
-
-References to the techniques an activity uses (primary and supporting), addressed by `::` path. The `skills` field is an alias of `techniques`, retained for backward compatibility.
-
-| Field        | Type     | Purpose                                |
-| ------------ | -------- | -------------------------------------- |
-| `primary`    | string   | Primary technique ID for this activity |
-| `supporting` | string[] | Supporting technique IDs               |
-
 #### TechniquesReference
 
-Workflow-level primary technique reference.
+References to the techniques used at the activity or workflow level, addressed by `::` path. `primary` is optional — an activity may rely solely on the techniques its steps declare, and a workflow on the core orchestrator techniques.
 
-| Field        | Type     | Purpose                                |
-| ------------ | -------- | -------------------------------------- |
-| `primary`    | string   | Primary technique ID for this workflow |
+| Field        | Type     | Purpose                          |
+| ------------ | -------- | -------------------------------- |
+| `primary`    | string   | Primary technique ID             |
+| `supporting` | string[] | Supporting technique IDs         |
 
 #### Action
 
@@ -543,7 +535,7 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
 | `author` | string | Author name |
 | `tags` | string[] | Categorization tags |
 | `rules` | string[] | Execution rules/guidelines |
-| `techniques` | TechniquesReference | Workflow-level primary technique reference (loaded by `get_technique`) |
+| `techniques` | TechniquesReference | Workflow-level techniques (primary + supporting); bundled into `get_workflow` |
 | `variables` | array | Variable definitions with types and defaults |
 | `modes` | array | Execution modes that modify standard workflow behavior |
 | `artifactLocations` | object | Named artifact storage locations (keys are location IDs, values are path strings or `{path, description, gitignored}` objects) |

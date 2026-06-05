@@ -233,7 +233,6 @@ export interface ResolvedTechnique {
 function projectTechniqueBody(t: Technique): Record<string, unknown> {
   const body: Record<string, unknown> = {};
   if (t.capability) body['capability'] = t.capability;
-  if (t.flow) body['flow'] = t.flow;
   if (t.inputs) body['inputs'] = t.inputs;
   if (t.protocol) body['protocol'] = t.protocol;
   if (t.output) body['output'] = t.output;
