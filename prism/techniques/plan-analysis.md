@@ -52,6 +52,7 @@ standard
 - If target-type was not provided, infer it: code file extensions (.ts, .rs, .py, .go, .java, etc.) → 'code'. Everything else → 'general'.
 - Proceed to the appropriate planning path based on scope
 - A query, question, concept, or inline text input is always 'general' target-type unless it is clearly source code.
+- If you cannot tell whether the target is a file path, directory, or query text, check whether it exists on the filesystem: if it does, use the file/directory scope; if not, treat it as a query.
 
 ### 2. Query Recommendation
 
@@ -70,14 +71,16 @@ standard
 ### 4. Survey Structure
 
 - For scope 'codebase' or 'document-set': list files and directories at the top level
+- If the target directory contains no analyzable files, report the empty directory and check that the path is correct and contains source files or documents.
 - Identify module boundaries from directory layout, build system (workspaces, packages), and naming conventions
-- If GitNexus is available (check via list_repos): use query() to discover functional areas and community clusters — these are better module boundaries than directory layout alone
+- If GitNexus is available (check via list_repos): use query() to discover functional areas and community clusters — these are better module boundaries than directory layout alone. If GitNexus is not indexed for this codebase, fall back to directory-based module detection and role-based risk classification, and note in the plan that fan-in analysis was not available.
 - Record per-module: path, file count, estimated lines, primary language or content type
 
 ### 5. Classify Units
 
 - Categorise each module by role: api-surface, auth-security, state-persistence, business-logic, integration-external, utilities, configuration, types-definitions
 - Assess risk based on role and content signals: auth/crypto/permissions/session → high. state/database/persistence → high. API surface/public interfaces → medium. business logic/domain rules → medium. utilities/helpers → low. config/constants/types → low.
+- If the scope is codebase but no analytical goal was provided, risk cannot be classified meaningfully — ask the caller for an analytical goal. Without one, default to 'bug detection', which maps all modules to L12.
 - If GitNexus is available: use context() to check how many callers each module has — high fan-in modules are higher risk regardless of role
 - If the analytical goal targets a specific concern (e.g., 'security'), elevate all modules touching that concern to high risk
 - Record per-module: role, risk (high/medium/low), classification rationale
@@ -196,29 +199,3 @@ The behavioral pipeline (19-23) is code-only. optimize (20) has no domain-neutra
 ### neutral-variant-routing
 
 When target_type is 'general' and an individual behavioral lens is recommended, prefer the neutral variant: error-resilience → 24, api-surface → 25, evolution → 26. optim has no neutral variant — use the code version (20) or omit.
-
-## Errors
-
-### empty_directory
-
-**Cause:** Target directory contains no analyzable files
-
-**Recovery:** Report the empty directory. Check that the path is correct and contains source files or documents.
-
-### no_goal_for_codebase
-
-**Cause:** Codebase scope detected but no analytical goal provided — cannot classify risk meaningfully
-
-**Recovery:** Ask the caller for an analytical goal. Without one, default to 'bug detection' which maps all modules to L12.
-
-### gitnexus_unavailable
-
-**Cause:** GitNexus is not indexed for this codebase
-
-**Recovery:** Fall back to directory-based module detection and role-based risk classification. Note in the plan that fan-in analysis was not available.
-
-### ambiguous_target
-
-**Cause:** Cannot determine whether the target is a file path, directory, or query text
-
-**Recovery:** Check if the target exists on the filesystem. If it does, use the file/directory scope. If not, treat it as a query.

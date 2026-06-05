@@ -42,6 +42,7 @@ One of: structured-merge (concat + dedup), integrate (add to existing), union-me
 ### 4. Verify Completeness
 
 - Confirm every row has a report finding number. Count merged rows (with justification), promoted rows, and total findings. Emit the completed `merge-table` with its flat table, elevation summary, and any union-merge classification.
+- If a row still lacks a report finding number, auto-promote it to a new finding and note the promotion in the elevation summary.
 
 ## Outputs
 
@@ -60,11 +61,3 @@ total agent findings, total report findings, merged count, promoted count
 #### union_merge_classification
 
 for union-merge: consensus/single-source/escalated classification per finding
-
-## Errors
-
-### unmapped_finding
-
-**Cause:** A row in the flat table has no report finding number
-
-**Recovery:** Auto-promote to a new finding and note in the elevation summary

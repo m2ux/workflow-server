@@ -35,10 +35,11 @@ PR number for cross-referencing
 
 - If the adr exists, update status to Accepted
 - Record implementation outcome and any deviations, cross-referencing the merged PR via its pr-number
+- If no ADR was created for this work package, skip ADR finalization and proceed with the other steps
 
 ### 2. Finalize Test Plan
 
-- Load the test-plan
+- Load the test-plan. If it is not found at the expected path, check the planning folder for alternative names
 - Add hyperlinks to actual test source file locations
 - Ensure each test case references its source file and line
 
@@ -92,17 +93,3 @@ COMPLETE.md is created after implementation is complete and PR is merged. It cap
 ### tool-usage
 
 Rust/Substrate: apply [cargo-operations](./cargo-operations/TECHNIQUE.md)::[doc](./cargo-operations/doc.md) (scope='--workspace --no-deps') to verify documentation builds. Other project types: run the equivalent doc command for the project. This technique does not invoke cargo directly.
-
-## Errors
-
-### no_adr
-
-**Cause:** No ADR was created for this work package
-
-**Recovery:** Skip ADR finalization and proceed with other steps
-
-### missing_test_plan
-
-**Cause:** Test plan not found at expected path
-
-**Recovery:** Check planning folder for alternative names

@@ -16,7 +16,9 @@ Bootstrap the workflow-server MCP from a dispatched session, load an assigned ac
 ### 1. Bootstrap
 
 - Call start_session(session_token, agent_id) to inherit the dispatched session and obtain a session token. The workflow is derived from the token.
+  - If the MCP tool calls fail and the workflow-server is unavailable, fall back to the prompt instructions provided by the orchestrator and note in output that workflow-server was not available.
 - Call next_activity({ activity_id: '<assigned-activity-id>' }) to load the activity definition with its steps.
+  - If next_activity returns an error and the activity cannot be found, fall back to the prompt instructions provided by the orchestrator and note in output that the activity was not loaded.
 
 ### 2. Execute Steps
 
@@ -24,7 +26,7 @@ Bootstrap the workflow-server MCP from a dispatched session, load an assigned ac
 - For each step, read the description field to understand what is required.
 - If a step references a technique (step.technique), call get_technique({ technique_id, workflow_id: 'cicd-pipeline-security-audit' }) and follow its protocol for that step.
 - Produce the REQUIRED OUTPUT defined in the step's description before proceeding to the next step.
-- If a step cannot be completed (e.g., no workflow files found for a pattern), record an explicit N/A with justification — do not silently skip.
+- If a step cannot be completed because it requires data or context that is unavailable, record the step as completed with output 'INCOMPLETE — [reason]', continue to the next step, and flag it in the self-verification — do not silently skip.
 - Track which steps have been completed in a steps_completed list.
 
 ### 3. Verify Output
@@ -61,23 +63,3 @@ structured list of findings with required fields per finding
 #### coverage
 
 per-file, per-pattern scan confirmation
-
-## Errors
-
-### step_cannot_complete
-
-**Cause:** A step requires data or context that is unavailable
-
-**Recovery:** Record the step as completed with output 'INCOMPLETE — [reason]'. Continue to next step. Flag in the self-verification.
-
-### activity_not_found
-
-**Cause:** next_activity returns an error
-
-**Recovery:** Fall back to the prompt instructions provided by the orchestrator. Note in output that activity was not loaded.
-
-### workflow_server_unavailable
-
-**Cause:** MCP tool calls fail
-
-**Recovery:** Fall back to the prompt instructions. Note in output that workflow-server was not available.

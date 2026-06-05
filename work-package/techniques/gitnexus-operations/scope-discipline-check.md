@@ -21,14 +21,6 @@ affected processes that fall outside requirements_scope (scope-creep candidates)
 
 ## Protocol
 
-1. Apply [detect-changes](./detect-changes.md) to obtain the affected execution flows.
+1. Apply [detect-changes](./detect-changes.md) to obtain the affected execution flows. If the index is out of date, run `npx gitnexus analyze`, then retry.
 2. Compare the affected flows against requirements_scope.
 3. Collect any affected flow outside requirements_scope into scope_findings as scope-creep candidates for user decision.
-
-## Errors
-
-### stale_index
-
-**Cause:** the index is out of date
-
-**Recovery:** run `npx gitnexus analyze`, then retry

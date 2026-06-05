@@ -27,6 +27,7 @@ Which activity is generating assumptions
 
 - Identify all implicit decisions and assumptions made
 - Classify by category appropriate to the activity-context generating them
+- If no significant assumptions are identified, explicitly confirm with the user that no assumptions were made before proceeding
 
 ### 2. Write Assumptions
 
@@ -87,11 +88,3 @@ Make implicit decisions explicit — assumptions should be elevated for validati
 ### categorize-per-activity
 
 Use categories appropriate to the current activity phase
-
-## Errors
-
-### no_assumptions
-
-**Cause:** No significant assumptions identified
-
-**Recovery:** Explicitly confirm with user that no assumptions were made

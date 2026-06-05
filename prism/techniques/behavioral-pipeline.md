@@ -34,6 +34,8 @@ Directory to write the analysis artifact
 ### 1. Load Lens
 
 - Resources are attached to technique responses (loaded via get_technique). Resource index lens-resource-index is available in the _resources field after loading the lens prompt
+- If the resource for the given index is not found in the technique response, report the error. Valid behavioral indices are 19-23.
+- The behavioral pipeline is code-only: if invoked with target_type 'general', report that the behavioral pipeline is code-only and recommend portfolio mode with individual neutral variant lenses (24-26) for general targets.
 - The lens prompt is the program — execute its operations in order
 
 ### 2. Read Target
@@ -58,6 +60,7 @@ Directory to write the analysis artifact
 ### 5. Construct Synthesis Input
 
 - For synthesis pass (index 23): read all 4 prior artifacts from prior-artifact-paths
+- If a provided prior artifact path does not exist, report the missing artifact; the orchestrator may need to re-dispatch the independent lens pass that produces it
 - Construct the synthesis input by concatenating each artifact under its role heading: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES — separated by horizontal rules
 - The synthesis lens expects exactly these 4 labeled sections
 - The synthesis input is constructed as: ## ERRORS\n\n{errors_content}\n\n---\n\n## COSTS\n\n{costs_content}\n\n---\n\n## CHANGES\n\n{changes_content}\n\n---\n\n## PROMISES\n\n{promises_content}
@@ -71,6 +74,7 @@ Directory to write the analysis artifact
 
 - Write the complete analysis to the artifact file, producing the behavioral-artifact for this pass
 - Return the full artifact path of the behavioral-artifact in the output
+- If the artifact cannot be written to the output path, verify that the output-path directory exists and is writable
 - Independent lens artifacts use descriptive role names: behavioral-errors.md (19), behavioral-costs.md (20), behavioral-changes.md (21), behavioral-promises.md (22). Synthesis artifact: behavioral-synthesis.md (23).
 - Every artifact MUST be written to the filesystem. Return artifact paths so subsequent passes can read them.
 
@@ -109,29 +113,3 @@ Every step in each lens prompt must be executed. Do not skip or summarize.
 ### evidence-required
 
 All findings must cite specific code: file paths, function names, line ranges.
-
-## Errors
-
-### lens_not_loaded
-
-**Cause:** resource not found in technique response for the given index
-
-**Recovery:** Report the error. Valid behavioral indices: 19-23.
-
-### prior_artifact_not_found
-
-**Cause:** A prior behavioral artifact path was provided but the file does not exist (synthesis pass)
-
-**Recovery:** Report the missing artifact. The orchestrator may need to re-dispatch the independent lens pass.
-
-### general_target
-
-**Cause:** Behavioral pipeline invoked with target_type 'general'
-
-**Recovery:** Report that behavioral pipeline is code-only. Recommend portfolio mode with individual neutral variant lenses (24-26) for general targets.
-
-### write_failed
-
-**Cause:** Could not write artifact to the output path
-
-**Recovery:** Verify the output-path directory exists and is writable.

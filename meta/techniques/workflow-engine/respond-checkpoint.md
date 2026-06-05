@@ -26,14 +26,7 @@ Variable updates returned by the server, to pass back down to the worker on resu
 ## Protocol
 
 1. Call `respond_checkpoint { session_index, ...resolution }`; the server clears `session.json#activeCheckpoint` and returns `effects`. Capture `effects` and propagate them to the worker on resume.
-
-## Errors
-
-### no_active_checkpoint
-
-**Cause:** `respond_checkpoint` returned `no active checkpoint on session`.
-
-**Recovery:** The session has no active checkpoint to resolve. Verify `session_index` references the correct worker session and that an active checkpoint was reported before this call.
+   - If the call returns `no active checkpoint on session`, there is no active checkpoint to resolve: verify `session_index` references the correct worker session and that an active checkpoint was reported before this call.
 
 ## Rules
 

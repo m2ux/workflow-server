@@ -54,7 +54,7 @@ single
 
 ### 2. Resolve Target
 
-- If target_content is a file path, read the file and capture the full text as resolved_content
+- If target_content is a file path, read the file and capture the full text as resolved_content. If the file does not exist, report the error to the user and stop — do not proceed with empty content.
 - If target_content is inline text, use it directly as resolved_content
 - Ensure the output-path directory exists (create if needed)
 
@@ -73,7 +73,7 @@ single
 - Worker prompt must include: (1) the resolved_content, (2) the lens resource index to load, (3) the workflow_id 'prism' for resource loading, (4) the output-path to write its artifact, (5) instruction to load the lens via get_technique (resources attached), execute every operation, and write to {output-path}/structural-analysis.md
 - Worker prompt must NOT include any prior analysis — this is the first pass
 - Capture the artifact path from the worker's response: structural_output_path = {output-path}/structural-analysis.md
-- Verify the artifact was written by reading its first line
+- Verify the artifact was written by reading its first line. If the worker returned without writing its artifact, dispatch a new worker for the same pass with an explicit instruction to write the artifact — do not resume the failed worker.
 - If pipeline_mode is 'single', go to present-result
 
 ### 5. Dispatch Adversarial Pass
@@ -82,6 +82,8 @@ single
 - Worker prompt must include: (1) the resolved_content, (2) structural_output_path — the worker will read this file and label it ANALYSIS 1, (3) the adversarial lens resource index, (4) the output-path, (5) instruction to write to {output-path}/adversarial-analysis.md
 - CRITICAL: Do NOT include the structural analysis text inline. Pass only the file path. The worker reads the artifact from the filesystem.
 - CRITICAL: Do NOT include any information about how the structural analysis was generated
+- If the expected prior-pass artifact (structural_output_path) does not exist on the filesystem, re-dispatch the prior pass worker to produce it — do not proceed to this pass without the artifact.
+- If the adversarial pass comes back agreeing with everything in the structural analysis, dispatch a new adversarial worker with an explicit instruction to find at least one wrong prediction, one overclaim, and one underclaim.
 - Capture adversarial_output_path = {output-path}/adversarial-analysis.md
 - Proceed to dispatch-synthesis-pass
 
@@ -173,29 +175,3 @@ After each pass, verify the artifact was written before dispatching the next pas
 ### tool-usage
 
 spawn-agent via harness-compat for description and prompt — NEVER use continue-agent
-
-## Errors
-
-### worker_incomplete
-
-**Cause:** A pass worker returned without writing its artifact
-
-**Recovery:** Dispatch a new worker for the same pass with explicit instruction to write the artifact. Do not resume the failed worker.
-
-### adversary_too_soft
-
-**Cause:** The adversarial pass agreed with everything in the structural analysis
-
-**Recovery:** Dispatch a new adversarial worker with explicit instruction to find at least one wrong prediction, one overclaim, and one underclaim
-
-### target_not_found
-
-**Cause:** File path provided but file does not exist
-
-**Recovery:** Report the error to the user. Do not proceed with empty content.
-
-### artifact_missing
-
-**Cause:** A prior pass artifact path was expected but the file does not exist
-
-**Recovery:** Re-dispatch the prior pass worker. Do not proceed to the next pass without the artifact.

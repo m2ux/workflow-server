@@ -23,11 +23,13 @@ List of submodule paths to inventory
 
 - For each path in `target-submodules`, enumerate .github/workflows/*.yml and .github/workflows/*.yaml
 - Record file path, file size, and last modified date
+- If a submodule has no .github/workflows/ directory, record it as a zero-workflow submodule and skip it for scanner assignment
 
 ### 2. Classify Triggers
 
 - Parse each workflow YAML for the 'on:' block
 - Extract and classify trigger types with their configurations
+- If a workflow file contains invalid YAML and cannot be parsed, record the parse error and flag the file for manual review
 
 ### 3. Map Permissions
 
@@ -66,17 +68,3 @@ Per-workflow permission scopes
 #### checkout_patterns
 
 Per-workflow checkout configurations
-
-## Errors
-
-### no_workflows
-
-**Cause:** Submodule has no .github/workflows/ directory
-
-**Recovery:** Record as zero-workflow submodule and skip for scanner assignment
-
-### parse_failure
-
-**Cause:** Workflow file contains invalid YAML
-
-**Recovery:** Record parse error and flag file for manual review

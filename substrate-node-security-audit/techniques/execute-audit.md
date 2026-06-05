@@ -17,12 +17,15 @@ Execute security audit phases with consistent tool usage, concurrent multi-agent
 
 - Extract target submodule and commit from initial request — fail if not specified
 - Checkout submodule at target commit
+  - If the target submodule path does not exist, fail with a descriptive error — do not ask interactively
+  - If the target commit hash is not found in the submodule history, fail with an error showing recent commits via git log
 - Run cargo audit / cargo deny or fallback to manual dependency inspection
 - Create planning folder and initialize artifacts (see [start-here](../resources/start-here.md) for workflow orientation)
 
 ### 2. Reconnaissance
 
 - Dispatch reconnaissance sub-agent (R) to identify crates, map architecture, build function registry, and write output files to planning folder
+  - If a dispatched sub-agent does not return within the expected time, check terminal output and resume or re-dispatch the agent
 - Dispatch architectural analysis sub-agent (Arch) with R's output files to produce security decomposition
 - Read R and Arch output files from planning folder (orchestrator does NOT read source code)
 - Map vulnerability domains by binding architectural analysis to §3 verification procedures, using the [vulnerability-pattern-vocabulary](../resources/vulnerability-pattern-vocabulary.md) as a recognition aid for known cross-project patterns
@@ -31,6 +34,7 @@ Execute security audit phases with consistent tool usage, concurrent multi-agent
 ### 3. Primary Audit
 
 - Dispatch all primary agents (A1-A7, B, D1, D2) concurrently with the [§3 checklist](../resources/audit-template-reference.md), cross-crate supplementary files, toolkit minimum checklist, and relevant calibration benchmarks
+  - If the audit prompt template is not at its expected path, fail with an error showing the expected path
 - Collect all results from primary agents and persist each agent's full output as JSON in the planning folder
 - Dispatch verification sub-agent (V) to validate output completeness against target profile, act on gap report, extract table-derived findings
 - Re-dispatch targeted follow-up agents for any gaps identified by the verification agent
@@ -61,29 +65,3 @@ Execute security audit phases with consistent tool usage, concurrent multi-agent
 - Track pass_count — running count of PASS items in scratchpads
 - Track coverage_files — list of files read by agents
 - Track checklist_coverage — §3 coverage matrix showing per-item evaluation status
-
-## Errors
-
-### submodule_not_found
-
-**Cause:** Target submodule path does not exist
-
-**Recovery:** Fail with descriptive error — do not ask interactively
-
-### commit_not_found
-
-**Cause:** Target commit hash not found in submodule history
-
-**Recovery:** Fail with error showing recent commits via git log
-
-### template_not_found
-
-**Cause:** Audit prompt template not at expected path
-
-**Recovery:** Fail with error showing expected path
-
-### agent_timeout
-
-**Cause:** Sub-agent did not return within expected time
-
-**Recovery:** Check terminal output; resume or re-dispatch the agent

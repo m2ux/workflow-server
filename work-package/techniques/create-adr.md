@@ -35,10 +35,11 @@ Design philosophy [artifact](../resources/design-framework.md#design-philosophy-
 
 - Scan .engineering/artifacts/adr/ for existing ADR files
 - Determine next sequential NNNN number
+- If the next number cannot be determined, scan .engineering/artifacts/adr/ for existing files and use the next available number.
 
 ### 3. Gather Context
 
-- Read the {design-philosophy-doc} for decision rationale, alternatives, and trade-offs
+- Read the {design-philosophy-doc} for decision rationale, alternatives, and trade-offs. If the design philosophy document is not found, check the planning folder path and prompt the user to locate the artifact.
 - Review implementation analysis and plan from {planning-folder-path} for architectural choices
 - Identify alternatives that were considered and rejected
 
@@ -80,17 +81,3 @@ Expected positive and negative consequences
 ### alternatives-required
 
 Every ADR must document at least one alternative that was considered
-
-## Errors
-
-### adr_numbering
-
-**Cause:** Cannot determine next ADR number
-
-**Recovery:** Scan .engineering/artifacts/adr/ for existing files and use next available number
-
-### missing_design_philosophy
-
-**Cause:** Design philosophy document not found
-
-**Recovery:** Check planning folder path and prompt user to locate the artifact

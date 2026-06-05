@@ -37,7 +37,7 @@ Original evaluation description, used for report context
 - Use completed_analyses to confirm which prism runs finished and to resolve each run's artifact output path and status before reading
 - Full-prism dimensions produce: structural-analysis.md, adversarial-analysis.md, synthesis.md
 - Portfolio dimensions produce one artifact per lens: e.g., claim-inversion.md (lens 07), knowledge-audit.md (lens 40), rejected-paths.md (lens 09), scarcity.md (lens 08)
-- Verify all expected artifacts exist. Record any missing artifacts for error reporting.
+- Verify all expected artifacts exist. If expected prism output artifacts are missing for one or more dimensions, report which dimensions are missing artifacts, then compose the report from the available dimensions and note the incomplete coverage.
 
 ### 2. Extract Findings Per Dimension
 
@@ -48,6 +48,7 @@ Original evaluation description, used for report context
 - Assign unified finding IDs by dimension prefix: e.g., CON-01 for Consistency, VER-01 for Veracity, PLB-01 for Plausibility, FEA-01 for Feasibility. For custom dimensions, derive a 3-letter prefix from the dimension name.
 - Record per-dimension: dimension name, finding count, finding count by severity, list of findings with IDs
 - All severity labels must be computed from Impact x Feasibility: CRITICAL — flaws directly undermine the target's core purpose or stated goals. HIGH — flaws degrade significant guarantees or create major gaps. MEDIUM — flaws have limited scope or require specific conditions. LOW — informational findings or improvement opportunities.
+- If a dimension's artifacts contain no extractable findings, still include the dimension in the report with a note that no significant findings were identified in it.
 
 ### 3. Identify Cross Dimensional Patterns
 
@@ -55,6 +56,7 @@ Original evaluation description, used for report context
 - Look for: the same underlying issue surfacing in different dimensions (e.g., a feasibility constraint that also creates consistency gaps), systemic asymmetries (e.g., deep specification in one area vs shallow in another), reinforcing risks (multiple dimensions pointing to the same failure mode)
 - Identify the core finding — the single deepest insight that explains the most findings across dimensions. In the VOX evaluation, this was the 'Mathematical-Social Bifurcation': one half deeply specified, the other left to assumption.
 - Record: core_finding (title + description), cross_dimensional_patterns (array of { pattern, affected_dimensions, evidence })
+- If no meaningful pattern spans multiple dimensions, report the per-dimension findings without a cross-dimensional core finding and note that the evaluation dimensions appear to be independent.
 
 ### 4. Compose Report
 
@@ -119,23 +121,3 @@ The report MUST NOT contain references to analytical methodology: no lens names 
 ### finding-id-convention
 
 Finding IDs use a 3-letter dimension prefix followed by a dash and two-digit number: CON-01, VER-03, PLB-01, FEA-07. For custom dimensions, derive the prefix from the first letters or a natural abbreviation.
-
-## Errors
-
-### missing_artifacts
-
-**Cause:** Expected prism output artifacts are missing for one or more dimensions
-
-**Recovery:** Report which dimensions are missing artifacts. Compose the report from available dimensions and note incomplete coverage.
-
-### empty_findings
-
-**Cause:** A dimension's prism artifacts contain no extractable findings
-
-**Recovery:** Include the dimension in the report with a note that no significant findings were identified in this dimension.
-
-### no_cross_dimensional_pattern
-
-**Cause:** No meaningful pattern spans multiple dimensions
-
-**Recovery:** Report per-dimension findings without a cross-dimensional core finding. Note that the evaluation dimensions appear to be independent.

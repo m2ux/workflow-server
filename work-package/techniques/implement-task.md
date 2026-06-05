@@ -28,6 +28,7 @@ A single atomic task to implement (description, affected files, dependencies)
 - Read the `current-task` description and requirements from the plan
 - Identify affected files, dependencies, and related code
 - Review the `test-plan` for acceptance criteria relevant to this task
+- If the task description is ambiguous or missing context, review the plan document and ask the user for clarification before proceeding
 
 ### 2. Pre Edit Impact Check
 
@@ -44,6 +45,7 @@ A single atomic task to implement (description, affected files, dependencies)
 ### 4. Verify Locally
 
 - Check for obvious regressions in affected code
+- If the code changes do not compile, review the error messages, fix the issues, and retry
 - Apply the per-task completion review process from [task-completion-review](../resources/task-completion-review.md)
 
 ### 5. Post Edit Verification
@@ -70,17 +72,3 @@ Brief description of the implementation approach
 ### single-task-focus
 
 Implement exactly one task — do not scope-creep into adjacent tasks
-
-## Errors
-
-### compilation_failure
-
-**Cause:** Code changes do not compile
-
-**Recovery:** Review error messages, fix issues, and retry
-
-### unclear_task
-
-**Cause:** Task description is ambiguous or missing context
-
-**Recovery:** Review plan document and ask user for clarification

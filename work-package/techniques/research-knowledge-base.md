@@ -35,12 +35,14 @@ Clear problem definition with system understanding, used to focus the research
 - Follow the matched activity's technique workflow and tool sequence
 - Identify key concepts, patterns, and specific guidance from results
 - Map findings to work package requirements
+- If the knowledge base has no relevant content, rely on web research and note the gap in findings
 
 ### 3. Perform Web Research
 
 - Use WebSearch for current information and documentation
 - Cross-reference multiple sources for robustness
 - Note publication dates and source freshness
+- Web results may be outdated; cross-reference multiple sources and note dates in the artifact
 
 ### 4. Synthesize Findings
 
@@ -96,17 +98,3 @@ Patterns should be validated across documents
 ### no-narration
 
 Never narrate the search process to the user. Synthesize answers directly and cite sources.
-
-## Errors
-
-### no_kb_results
-
-**Cause:** Knowledge base has no relevant content
-
-**Recovery:** Rely on web research and note gap in findings
-
-### stale_findings
-
-**Cause:** Web results may be outdated
-
-**Recovery:** Cross-reference multiple sources and note dates in artifact

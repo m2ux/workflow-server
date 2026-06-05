@@ -36,12 +36,14 @@ Full priority order for reference
 
 - Take the first package from remaining_packages
 - Set current_package to the selected package
+- If the next package depends on an incomplete package, skip to the next independent package and note the blocked package
 
 ### 3. Trigger Workflow
 
 - Use attached [workflow-triggering-protocol](../resources/workflow-triggering-protocol.md) (workflow-triggering-protocol) for the triggering procedure
 - Call get_workflow('work-package') to load the work-package workflow
 - Pass context: package name, scope from plan document, dependencies, the planning-folder
+- If the work-package workflow cannot be loaded or started, verify it exists via list_workflows, then retry
 
 ### 4. Update Status
 
@@ -86,17 +88,3 @@ Pass package context (scope, dependencies, the planning-folder) to each work-pac
 ### handle-failures
 
 If a package fails, mark it and continue with the next independent package
-
-## Errors
-
-### workflow_trigger_failure
-
-**Cause:** Unable to load or start the work-package workflow
-
-**Recovery:** Verify work-package workflow exists via list_workflows, then retry
-
-### package_blocked
-
-**Cause:** Next package depends on an incomplete package
-
-**Recovery:** Skip to the next independent package and note the blocked package

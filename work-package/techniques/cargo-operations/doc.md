@@ -16,11 +16,4 @@ Generate API documentation to verify inline doc comments compile.
 ## Protocol
 
 1. `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo doc {scope}`
-
-## Errors
-
-### broken_doc_link
-
-**Cause:** rustdoc detected a broken intra-doc link
-
-**Recovery:** Fix the link target or remove the broken reference
+   - If rustdoc reports a broken intra-doc link, fix the link target or remove the broken reference.

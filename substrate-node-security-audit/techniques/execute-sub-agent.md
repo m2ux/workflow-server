@@ -16,7 +16,9 @@ Bootstrap the workflow-server, load an assigned activity, follow its steps seque
 ### 1. Bootstrap
 
 - Call start_session(session_token, agent_id) to inherit the dispatched session and obtain a session token. The workflow is derived from the token.
+  - If these MCP tool calls fail because the workflow-server is unavailable, fall back to the prompt instructions provided by the orchestrator and note in the output that workflow-server was not available.
 - Call next_activity({ activity_id: '<assigned-activity-id>' }) to load the activity definition with its steps.
+  - If next_activity returns an error and the activity cannot be loaded, fall back to the prompt instructions provided by the orchestrator and note in the output that the activity was not loaded.
 
 ### 2. Execute Steps
 
@@ -24,6 +26,7 @@ Bootstrap the workflow-server, load an assigned activity, follow its steps seque
 - For each step, read the description field to understand what is required.
 - Produce the REQUIRED OUTPUT defined in the step's description before proceeding to the next step.
 - If a step cannot be completed (e.g., no StorageMaps in the crate for the lifecycle scan), record an explicit N/A with justification — do not silently skip.
+- If a step requires data or context that is unavailable, record the step as completed with output 'INCOMPLETE — [reason]', continue to the next step, and flag it in the self-verification.
 - Track which steps have been completed in a steps_completed list.
 
 ### 3. Verify Output
@@ -71,23 +74,3 @@ all tables produced by the activity's steps, or null with justification
 #### reconnaissance_leads
 
 observations not formal findings but for orchestrator review (optional)
-
-## Errors
-
-### step_cannot_complete
-
-**Cause:** A step requires data or context that is unavailable
-
-**Recovery:** Record the step as completed with output 'INCOMPLETE — [reason]'. Continue to next step. Flag in the self-verification.
-
-### activity_not_found
-
-**Cause:** next_activity returns an error
-
-**Recovery:** Fall back to the prompt instructions provided by the orchestrator. Note in output that activity was not loaded.
-
-### workflow_server_unavailable
-
-**Cause:** MCP tool calls fail
-
-**Recovery:** Fall back to the prompt instructions. Note in output that workflow-server was not available.

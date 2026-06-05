@@ -27,6 +27,8 @@ Review comments fetched from PR
 
 - Use attached [pr-review-response](../resources/pr-review-response.md) for full response guidance
 - Fetch the `review-comments` from the PR identified by `pr-number` using the gh API
+  - If the gh API returns an error fetching comments, check authentication and PR access, then retry.
+  - If no review comments are found, verify the PR has been reviewed and check comment visibility before proceeding.
 
 ### 2. Categorize
 
@@ -90,17 +92,3 @@ Every review comment must receive a response — acknowledged, implemented, or d
 ### prioritize-required
 
 Address required changes before suggestions and nits
-
-## Errors
-
-### no_comments
-
-**Cause:** No review comments found
-
-**Recovery:** Verify PR has been reviewed and check comment visibility
-
-### api_error
-
-**Cause:** GitHub API error fetching comments
-
-**Recovery:** Check authentication and PR access

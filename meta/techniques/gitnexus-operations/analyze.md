@@ -33,22 +33,10 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 ### 2. Run Analyze
 
 - Otherwise run `npx gitnexus analyze` (or `npx gitnexus analyze --force` when force is true) inside `repo_path`. The CLI exits non-zero on failure; surface its stderr.
+  - If `npx gitnexus` resolves to no binary (the gitnexus package is not installed), install it via `npm install -g gitnexus` (or the project-local equivalent), then retry.
+  - If the analyze CLI returns non-zero — typically a parser error inside the target codebase or an unsupported language — read the stderr; if it identifies a single offending file, exclude or fix it. For corrupted index state, retry with `force=true`.
 
 ### 3. Signal and Verify
 
 - On success, `touch {repo_path}/.git/.workflow-gitnexus-refresh` so subsequent invocations see the freshness signal. Release the lock. On a fresh repo with no prior index, the first analyze can take minutes — do not retry until exit. Subsequent incremental runs are seconds.
 - After exit, optionally apply [verify-index](./verify-index.md) to confirm freshness — useful when chained immediately into a downstream comprehension or impact step.
-
-## Errors
-
-### cli_not_installed
-
-**Cause:** `npx gitnexus` resolves to no binary (gitnexus package not installed).
-
-**Recovery:** Install via `npm install -g gitnexus` (or the project-local equivalent), then retry.
-
-### analyze_failed
-
-**Cause:** Analyze CLI returned non-zero — typically a parser error inside the target codebase or an unsupported language.
-
-**Recovery:** Read the CLI's stderr; if it identifies a single offending file, exclude or fix it. For corrupted index state, retry with `force=true`.

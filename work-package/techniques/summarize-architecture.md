@@ -33,6 +33,7 @@ Path to planning folder for context
 - Map each entry in `changed-files` to its modules and subsystems
 - Identify external interactions and boundaries
 - Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[diagram-source-select](./gitnexus-operations/diagram-source-select.md) to bound diagram scope to the affected processes and source diagram structure from graph resources.
+- If the changes are too minor to warrant a full architectural summary, create a minimal summary noting the low architectural impact rather than the full set of diagrams.
 
 ### 2. Create Context Diagram
 
@@ -100,11 +101,3 @@ Every summary must include at least a system context diagram — other diagrams 
 ### mermaid-format
 
 Use Mermaid diagram syntax for all diagrams — ensures they render in GitHub and Confluence
-
-## Errors
-
-### no_significant_changes
-
-**Cause:** Changes are too minor for architectural summary
-
-**Recovery:** Create minimal summary noting low architectural impact

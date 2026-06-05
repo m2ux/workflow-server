@@ -46,6 +46,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 ### 2. Read Artifacts
 
 - Read each authoritative artifact from the filesystem using the paths in all-artifact-paths
+- If one or more paths in all-artifact-paths do not exist on the filesystem, report which artifacts are missing; the orchestrator may need to re-run the corresponding pass.
 - For full-prism, also read the structural and adversarial artifacts to extract location details and evidence for findings that the synthesis references by ID but does not fully reproduce
 - For multi-unit analyses, read per-unit artifacts from their respective subdirectories
 
@@ -57,6 +58,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 - For behavioral: extract from the behavioral-synthesis convergence analysis.
 - For single: extract from the L12 findings table in structural-analysis.md.
 - Also extract: core insights (deepest finding, conservation laws that survived challenge, convergence points) — these become the Core Finding section
+- If the authoritative artifact contains no extractable findings, write a report noting that the analysis produced no findings — this is a valid outcome for clean code/text.
 
 ### 4. Enrich Blast Radius
 
@@ -80,6 +82,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 - If analysis_focus provides dimension names or categories, use dimension-based prefixes (e.g., CON-xx for consistency, VER-xx for veracity)
 - If no dimensions, use severity-ordered sequential numbering (e.g., F-01, F-02)
 - For multi-unit analyses, prefix with a short unit identifier where needed to avoid collisions
+- If two findings from different units or lenses map to the same report ID, add a unit or lens prefix to disambiguate and report the collision.
 - Record the full mapping: report_id → { source_artifact_path, original_id, original_severity }
 
 ### 7. Compose Report
@@ -141,23 +144,3 @@ The traceability appendix must have an entry for every finding ID in the report.
 ### blast-radius-is-evidence
 
 Graph-backed blast radius is reported alongside the finding as additional evidence for the reader but does not override the severity from the authoritative source. Blast radius data is omitted when GitNexus is unavailable or when a finding does not reference an identifiable symbol.
-
-## Errors
-
-### missing_artifacts
-
-**Cause:** One or more artifact paths in all-artifact-paths do not exist on the filesystem
-
-**Recovery:** Report which artifacts are missing. The orchestrator may need to re-run the corresponding pass.
-
-### empty_findings
-
-**Cause:** Authoritative artifact contains no extractable findings
-
-**Recovery:** Write a report noting that the analysis produced no findings. This is a valid outcome for clean code/text.
-
-### id_collision
-
-**Cause:** Two findings from different units or lenses map to the same report ID
-
-**Recovery:** Add unit or lens prefix to disambiguate. Report the collision.

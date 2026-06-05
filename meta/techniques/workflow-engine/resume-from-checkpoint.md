@@ -26,12 +26,5 @@ Same `session_index` as the input (returned for symmetry; the index is stable)
 ## Protocol
 
 1. Call `resume_checkpoint { session_index }`; the server verifies that `session.json#activeCheckpoint` has been cleared by the orchestrator's `respond_checkpoint`.
+   - If `resume_checkpoint` returns `no active checkpoint` or `checkpoint is still active`, the orchestrator has not yet called `respond_checkpoint` to resolve the checkpoint. Wait for the orchestrator to resume you; do not call `resume_checkpoint` until the resume prompt arrives.
 2. Apply `effects` to local state and continue from the paused step.
-
-## Errors
-
-### checkpoint_still_active
-
-**Cause:** `resume_checkpoint` returned `no active checkpoint` or `checkpoint is still active`.
-
-**Recovery:** The orchestrator has not yet called `respond_checkpoint` to resolve the checkpoint. Wait for the orchestrator to resume you; do not call `resume_checkpoint` until the resume prompt arrives.

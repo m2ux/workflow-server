@@ -23,18 +23,5 @@ Path to the created (or reused) planning folder: `.engineering/artifacts/plannin
 
 1. Compose path: `.engineering/artifacts/planning/YYYY-MM-DD-{initiative_name}/` (relative to the target repo / CWD).
 2. `mkdir -p` the path (idempotent — if it already exists, reuse it and continue; do not error).
-3. Verify with `ls` and return the path as `planning_folder_path`.
-
-## Errors
-
-### permission_error
-
-**Cause:** Cannot create the directory at the composed path.
-
-**Recovery:** Check the path and filesystem permissions; confirm the CWD is the intended `target_path`.
-
-### no_folder_path
-
-**Cause:** A later step attempted to write an artifact without a planning folder.
-
-**Recovery:** Apply [initialize-folder](./initialize-folder.md) first, then bind `planning_folder_path`.
+   - If the directory cannot be created at the composed path, check the path and filesystem permissions and confirm the CWD is the intended `target_path`.
+3. Verify with `ls` and return the path as `planning_folder_path`. This binding must exist before any later step writes an artifact; if a downstream step attempts a write without a planning folder, apply [initialize-folder](./initialize-folder.md) first, then bind `planning_folder_path`.

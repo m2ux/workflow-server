@@ -38,6 +38,7 @@ prism/resources/
 ### 1. Enumerate Upstream
 
 - List all .md files in upstream-path. Filter out exclusions.
+  - If the upstream-path directory does not exist, verify the path; the upstream repository may need cloning.
 - Extract base name as prism identifier (deep_scan.md → deep_scan).
 
 ### 2. Enumerate Resources
@@ -61,6 +62,7 @@ prism/resources/
 
 - Set next_index to max(existing resource indices) + 1.
 - Assemble the categorized new, modified, renamed, and deleted entries together with next_index into the change-set result.
+  - If no differences were found across all categories, report that resources are up to date; the workflow can end early.
 
 ## Outputs
 
@@ -87,17 +89,3 @@ Array of { name, resource_file }
 #### next_index
 
 Next available resource index
-
-## Errors
-
-### upstream_not_found
-
-**Cause:** upstream_path directory does not exist
-
-**Recovery:** Verify the path. The upstream repository may need cloning.
-
-### no_changes
-
-**Cause:** No differences found
-
-**Recovery:** Report resources are up to date. Workflow can end early.

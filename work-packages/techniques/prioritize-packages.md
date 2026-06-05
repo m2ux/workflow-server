@@ -28,6 +28,7 @@ Inter-package dependency map describing which packages block or depend on which 
 - Use attached [prioritization-framework](../resources/prioritization-framework.md) (prioritization-framework) for the evaluation methodology
 - Build a dependency graph from the dependency sections of all package-plans, cross-checking against the dependency-map to confirm which packages block or depend on which others
 - Perform topological sort to identify valid orderings
+- If the dependency graph contains cycles, present the cycle to the user and recommend decomposition or dependency removal
 
 ### 2. Evaluate Criteria
 
@@ -41,6 +42,7 @@ Inter-package dependency map describing which packages block or depend on which 
 - Identify packages that could be parallelized (independent, no shared resources)
 - Generate the priority table with package, value, risk, effort, and rationale
 - High-risk packages should be scheduled early to surface problems before they cascade
+- If all packages evaluate identically on every criterion, ask the user which dimension matters most for their context to break the tie
 
 ### 4. Present Prioritization
 
@@ -76,17 +78,3 @@ Dependencies constrain but do not fully determine the order — within dependenc
 ### user-controls-final
 
 The user controls the final priority order — present recommendations but defer to user judgment
-
-## Errors
-
-### circular_dependencies
-
-**Cause:** Dependency graph contains cycles
-
-**Recovery:** Present the cycle to the user and recommend decomposition or dependency removal
-
-### all_same_priority
-
-**Cause:** All packages evaluate identically on all criteria
-
-**Recovery:** Ask the user which dimension matters most for their context to break the tie

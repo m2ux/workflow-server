@@ -39,6 +39,7 @@ The code to analyze. Can be a file path (agent reads it), a diff, or inline code
 ### 2. Read Target
 
 - If code-content is a file path, read the file to obtain the code
+- If no code content was provided or the file cannot be found, request the file path or code content from the caller before proceeding
 - If an analysis-focus is provided, note it as a framing constraint but do not narrow the analysis — the lens operations are exhaustive
 
 ### 3. Gather Structural Context
@@ -55,10 +56,12 @@ The code to analyze. Can be a file path (agent reads it), a diff, or inline code
 - Start with the falsifiable claim about the code's deepest structural problem
 - Follow the construction-based reasoning chain through improvements, invariants, inversions, and conservation laws
 - Conclude with the concrete bug table — every bug, edge case, and silent failure discovered at any stage
+- If the analysis stays at the surface without reaching the conservation law, re-execute from the structural invariant step — the depth comes from the inversion chain, not the initial claim
 
 ### 5. Write Artifact
 
 - Write the complete analysis to {output-path}/structural-analysis.md
+- If the artifact cannot be written to the output path, verify the output-path directory exists and is writable
 - Include a YAML front-matter header with target file, analysis date, and lens used (L12 structural)
 - The analysis MUST be written to the filesystem as an artifact. In-memory-only output is not acceptable — downstream passes and callers depend on reading the artifact file.
 
@@ -119,23 +122,3 @@ The meta-law must predict a concrete, testable consequence for this specific cod
 ### graph-context-is-supplementary
 
 Structural context from GitNexus is supplementary evidence, not a replacement for the lens operations. The L12 chain executes completely regardless of whether graph data is available. Graph data strengthens blast-radius claims and call-chain evidence but does not alter the analytical method.
-
-## Errors
-
-### empty_code
-
-**Cause:** No code content provided or file not found
-
-**Recovery:** Request the file path or code content from the caller
-
-### shallow_analysis
-
-**Cause:** Analysis stays at surface level without reaching conservation law
-
-**Recovery:** Re-execute from the structural invariant step — the depth comes from the inversion chain, not the initial claim
-
-### write_failed
-
-**Cause:** Could not write artifact to the output path
-
-**Recovery:** Verify the output-path directory exists and is writable

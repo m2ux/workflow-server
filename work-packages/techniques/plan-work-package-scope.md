@@ -40,6 +40,7 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 - Document soft dependencies: helpful but not required
 - Flag circular dependencies as decomposition problems requiring resolution
 - Distinguish hard blockers from soft dependencies
+- If two packages depend on each other, identify the shared component and extract it as a separate package, or merge the two packages
 
 ### 4. Estimate Effort
 
@@ -47,6 +48,7 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 - Estimate agentic time, review time, and calendar time as ranges
 - Document the rationale for the estimate, noting key complexity drivers
 - Use ranges for effort, not point estimates
+- If the package scope exceeds 8 hours of agentic work, split it into two or more packages along natural boundaries
 
 ### 5. Define Success
 
@@ -90,17 +92,3 @@ Measurable success criteria with verification methods
 ### scope-specificity
 
 Scope items must name specific deliverables — vague scope leads to scope creep
-
-## Errors
-
-### circular_dependency
-
-**Cause:** Two packages depend on each other
-
-**Recovery:** Identify the shared component and extract it as a separate package, or merge the two packages
-
-### scope_too_large
-
-**Cause:** Package scope exceeds 8 hours of agentic work
-
-**Recovery:** Split into two or more packages along natural boundaries

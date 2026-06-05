@@ -34,6 +34,7 @@ Summary, description, and context from the linked issue
 - Document impact assessment
 - Define success criteria and constraints
 - Ensure problem is understandable without prior context
+- If the problem statement remains too vague, ask the user for more context to clarify system understanding, impact, or success criteria
 
 ### 3. Classify Problem
 
@@ -103,11 +104,3 @@ Assumptions with categories: Problem Interpretation, Complexity Assessment, Work
 ### path-determines-workflow
 
 Design philosophy determines the path through the workflow — all subsequent activities depend on this classification
-
-## Errors
-
-### unclear_problem
-
-**Cause:** Problem statement too vague
-
-**Recovery:** Ask user for more context — clarify system understanding, impact, or success criteria

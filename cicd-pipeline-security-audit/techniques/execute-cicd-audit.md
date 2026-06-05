@@ -26,6 +26,7 @@ Path to the planning folder for artifacts
 ### 1. Phase 1 Setup
 
 - Confirm each path in target-submodules exists and contains .github/workflows/
+  - If no target submodules were specified or none are found, fail with an error listing the available submodules.
 - Discover all workflow files (.yml and .yaml) across targets
 - Initialize the planning-folder with [START-HERE.md](../resources/start-here.md)
 
@@ -41,7 +42,9 @@ Path to the planning folder for artifacts
 - Collect scanner outputs and verify dispatch completeness
 - Dispatch verification agent (V) — check coverage
 - Dispatch merge agent (M) — deduplicate and reconcile
+  - If the merge agent reports Unaccounted > 0, HARD STOP and investigate the missing findings.
 - Verify all assigned agents were dispatched before proceeding
+  - If not all assigned scanners were dispatched, HARD STOP and re-dispatch the missing agents.
 
 ### 4. Phase 4 Report
 
@@ -76,23 +79,3 @@ Coordinate only — never analyze workflow files directly
 ### phase-gates
 
 Enforce exitAction gates before advancing phases
-
-## Errors
-
-### no_targets
-
-**Cause:** No target submodules specified or found
-
-**Recovery:** Fail with error listing available submodules
-
-### dispatch_incomplete
-
-**Cause:** Not all assigned scanners were dispatched
-
-**Recovery:** HARD STOP — re-dispatch missing agents
-
-### reconciliation_failed
-
-**Cause:** Merge agent reported Unaccounted > 0
-
-**Recovery:** HARD STOP — investigate missing findings

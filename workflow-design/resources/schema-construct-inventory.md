@@ -60,7 +60,7 @@ The MCP resource `workflow-server://schemas` returns all five schemas as a singl
 | "Produces an audit report" | **Output** | `output[].id`, `.description`, `.components` (`####` sub-sections), `.artifact.name` (`#### artifact`) |
 | "Never modify the schema" | **Rules** | `rules.{rule-name}` — flat name-value pairs |
 | "Use get_workflow to load data" | **Tools** | `tools.{name}.when`, `.params`, `.returns`, `.next` |
-| "If not found, list available ones" | **Errors** | `errors.{name}.cause`, `.recovery` |
+| "If X fails, recover by Y" (failure handling) | **Protocol step** | written inline in the protocol step that gives rise to the failure |
 | "How to interpret checkpoints" | **Interpretation** | `interpretation.checkpoints`, `.transitions`, `.decisions` |
 | "How to resume after restart" | **Resumption** | `resumption.description`, `.steps[]` |
 

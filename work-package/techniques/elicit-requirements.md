@@ -32,6 +32,7 @@ Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)
 - Prompt user for the stakeholder-transcript before elicitation
 - Offer skip option with note about limitation if no stakeholder-transcript is provided
 - Stakeholder input first: User should discuss with key stakeholders before agent elicitation
+- If the user skips stakeholder discussion entirely, note the limitation and proceed with agent-led elicitation
 
 ### 2. Iterate Domains
 
@@ -92,11 +93,3 @@ Documented assumptions from elicitation
 ### conversation-not-interrogation
 
 Core principle: Conversation, not interrogation — discover what user actually needs
-
-## Errors
-
-### no_stakeholder_input
-
-**Cause:** User skipped stakeholder discussion
-
-**Recovery:** Note limitation and proceed with agent-led elicitation

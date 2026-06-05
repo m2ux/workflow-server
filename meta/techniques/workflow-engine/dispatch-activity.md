@@ -36,26 +36,9 @@ Trace token captured from `next_activity` response, appended to `trace_tokens`
 1. Call `next_activity { session_index, activity_id, step_manifest }`; capture `_meta.trace_token`.
 2. Apply [compose-prompt](./compose-prompt.md) with `prompt_template` substituting `state` values.
 3. Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await the worker's envelope and return it unchanged as `worker_result`.
-
-## Errors
-
-### worker_timeout
-
-**Cause:** Worker sub-agent did not return within the expected time.
-
-**Recovery:** Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) if still running; otherwise dispatch a fresh worker for the same `activity_id`.
-
-### worker_incomplete
-
-**Cause:** Worker reports fewer steps than the activity defines, or required checkpoints have no response.
-
-**Recovery:** Resume the worker with explicit instructions to complete the missing items. Do NOT accept the partial result.
-
-### state_desync
-
-**Cause:** Worker reports variable changes conflicting with orchestrator state.
-
-**Recovery:** Worker values take precedence (the worker has ground truth from user interaction).
+   - If the worker does not return within the expected time, apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) if it is still running; otherwise dispatch a fresh worker for the same `activity_id`.
+   - If the worker reports fewer steps than the activity defines, or required checkpoints have no response, do NOT accept the partial result — resume the worker with explicit instructions to complete the missing items.
+   - If the worker reports variable changes that conflict with orchestrator state, the worker values take precedence (the worker has ground truth from user interaction).
 
 ## Rules
 

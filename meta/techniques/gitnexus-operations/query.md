@@ -22,18 +22,6 @@ execution flows (processes) grouped, with member symbols and file locations
 ## Protocol
 
 1. Call `gitnexus_query {query}` to produce the `query_report` of grouped execution flows.
+   - If the index is out of date, run `npx gitnexus analyze`, then retry.
+   - If the concept did not match any indexed flows, broaden the query terms; fall back to grep for pure text patterns.
 2. Use the processes in the `query_report` to orient before deep-diving with [context](./context.md) on specific symbols.
-
-## Errors
-
-### stale_index
-
-**Cause:** the index is out of date
-
-**Recovery:** run `npx gitnexus analyze`, then retry
-
-### no_results
-
-**Cause:** the concept did not match indexed flows
-
-**Recovery:** broaden the query terms; fall back to grep for pure text patterns

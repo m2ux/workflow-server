@@ -46,6 +46,8 @@ Which schema applies to this file — one of: workflow (schemas/workflow.schema.
 - Validate the file against its JSON schema (workflow.schema.json, activity.schema.json, or technique.schema.json)
 - Use npx tsx scripts/validate-workflow-toon.ts for full workflow directory validation
 - Fix any validation errors and re-check
+- If the parser cannot handle the file because it uses invalid syntax, compare the failing line against the same construct in an existing valid TOON file and fix the syntax
+- If the file parses but does not conform to the schema, read the schema definition for the failing field and fix the content
 
 ## Outputs
 
@@ -86,17 +88,3 @@ Follow the field ordering from existing files of the same type — typically id,
 ### schema-reference
 
 workflow.toon files should include a $schema field pointing to the schema file path
-
-## Errors
-
-### parse_failure
-
-**Cause:** TOON file uses invalid syntax that the parser cannot handle
-
-**Recovery:** Compare the failing line against the same construct in an existing valid TOON file and fix the syntax
-
-### validation_failure
-
-**Cause:** TOON file parses but does not conform to the schema
-
-**Recovery:** Read the schema definition for the failing field and fix the content

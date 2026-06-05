@@ -35,21 +35,8 @@ Per-test failure detail when any failed
 
 1. If cargo nextest is configured (.config/nextest.toml present in the project): `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo nextest run {scope} {features} --test-threads=${RUST_TEST_THREADS:-4} {test_filter}`
 2. Otherwise: `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo test {scope} {features} {test_filter} -- --test-threads=${RUST_TEST_THREADS:-4}`
-3. Report the run's pass/fail summary as `test_status`; when any test failed, capture the per-test detail as `failures`.
-
-## Errors
-
-### out_of_memory
-
-**Cause:** Test compile or test runtime peaked above available RAM
-
-**Recovery:** Halve CARGO_BUILD_JOBS and RUST_TEST_THREADS and retry; consider nextest for lower per-test peak
-
-### test_failure
-
-**Cause:** One or more tests failed
-
-**Recovery:** Investigate the reported failure; do not mask via --no-fail-fast
+   - If test compilation or runtime peaks above available RAM, halve CARGO_BUILD_JOBS and RUST_TEST_THREADS and retry; consider the nextest branch for lower per-test peak.
+3. Report the run's pass/fail summary as `test_status`; when any test failed, capture the per-test detail as `failures`. If one or more tests failed, investigate the reported failure; do not mask it via --no-fail-fast.
 
 ## Rules
 

@@ -44,14 +44,6 @@ URL to the PR
 
 ### 2. Create and Assign Draft PR
 
-- From `target_path`, open a draft PR for the `branch_name` feature branch: `gh pr create --draft --title "<title>" --body "<body>"`. Capture the returned `pr_number` and `pr_url` from the command output.
+- From `target_path`, open a draft PR for the `branch_name` feature branch: `gh pr create --draft --title "<title>" --body "<body>"`. Capture the returned `pr_number` and `pr_url` from the command output. If a PR already exists for this branch, use the existing PR instead of creating a new one.
 - Assign the PR to the current GitHub user: `gh pr edit <pr_number> --add-assignee @me` in `target_path`.
 - Keep the PR as draft until implementation and review complete.
-
-## Errors
-
-### pr_exists
-
-**Cause:** PR already exists for this branch
-
-**Recovery:** Use the existing PR

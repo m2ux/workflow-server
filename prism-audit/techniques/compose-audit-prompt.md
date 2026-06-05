@@ -37,6 +37,7 @@ Directory to write the audit prompt artifact
 - If GitNexus is available (check via gitnexus_list_repos): use gitnexus_query to discover functional areas, execution flows, and community clusters — these produce better module boundaries and dependency maps than directory layout alone
 - If GitNexus is available: use gitnexus_context on high-risk modules to check fan-in (number of callers) — high fan-in modules have larger blast radius and should be elevated in risk classification
 - Record: language, build_system, modules (array of { name, path, line_count, purpose, fan_in (if GitNexus available) }), total_loc, gitnexus_available (boolean)
+- If target_path contains no analysable source files, verify the path is correct and check whether submodules need initialisation before proceeding.
 
 ### 2. Scan Security Characteristics
 
@@ -50,6 +51,7 @@ Directory to write the audit prompt artifact
 - Search for feature flags that gate security behaviour: test-only features, mock verification, debug modes, feature-gated bypass
 - Search for custom VMs or interpreters: bytecode execution, instruction dispatch, gas/cost metering
 - Record each characteristic: { category, location (file:line), description, severity_relevance }
+- If no security-relevant patterns are found, the codebase may be purely presentational or data-only — report this finding and ask the user whether to proceed with a generic structural analysis instead.
 
 ### 3. Map Trust Boundaries
 
@@ -91,6 +93,7 @@ Directory to write the audit prompt artifact
 - For most audits: create a single scope entry covering the entire codebase
 - Single scope: { target: target_path, output_subdir: 'analysis', pipeline_mode: 'full-prism', analysis_focus: <composed prompt summary> }
 - For very large codebases (>100K LOC) with clearly separable security boundaries: consider multiple scopes, each focused on a distinct trust domain
+- If the codebase exceeds 200K LOC, single-scope analysis becomes impractical — split into multiple scopes by trust domain or module group, giving each scope its own focused prompt.
 - Set analysis_focus for each scope to a focused description derived from the prompt, NOT the literal string 'security audit'
 
 ## Outputs
@@ -126,23 +129,3 @@ Array of scope objects for triggering prism workflows
 #### scopes
 
 Array of { target, output_subdir, pipeline_mode, analysis_focus }
-
-## Errors
-
-### empty_codebase
-
-**Cause:** Target path contains no analysable source files
-
-**Recovery:** Verify the path is correct. Check if submodules need initialisation.
-
-### no_security_characteristics
-
-**Cause:** No security-relevant patterns found in the codebase
-
-**Recovery:** The codebase may be purely presentational or data-only. Report this finding and ask the user whether to proceed with a generic structural analysis instead.
-
-### oversized_codebase
-
-**Cause:** Codebase exceeds 200K LOC, making single-scope analysis impractical
-
-**Recovery:** Split into multiple scopes by trust domain or module group. Each scope gets a focused prompt.

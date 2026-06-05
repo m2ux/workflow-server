@@ -31,12 +31,14 @@ Path to planning folder for implementation summary context
 
 - Push all local commits to the remote `branch-name`
 - Verify push succeeded
+- If the push is rejected because the remote branch has diverged, pull and rebase before pushing again
 - Do not update the `pr-number` PR until push completes
 
 ### 2. Update Description
 
 - Use attached [pr-description](../resources/pr-description.md) for template and structure
 - Update the `pr-number` PR description with the implementation summary drawn from `planning-folder-path`
+- If the PR cannot be found because `pr-number` does not exist, verify the PR number and check gh auth before retrying
 - Include test coverage summary
 - Document key decisions and trade-offs
 - NEVER guess or infer repository URLs for PR description links. ALWAYS resolve them from git remotes. The engineering repo URL is obtained from the PARENT repo (the repo containing .engineering/): run 'git -C <parent-repo-path> remote get-url origin' and strip the .git suffix. The target repo URL is obtained from the TARGET repo (where the PR lives): run 'git -C <target-path> remote get-url origin'. These are different repositories — the engineering repo owner will differ from the target repo owner.
@@ -88,17 +90,3 @@ Create PRs as drafts initially. Convert to ready-for-review only at submit-for-r
 ### tool-usage
 
 use shell to push commits and manage PR via gh CLI
-
-## Errors
-
-### push_failed
-
-**Cause:** Remote branch has diverged
-
-**Recovery:** Pull and rebase before pushing
-
-### pr_not_found
-
-**Cause:** PR number does not exist
-
-**Recovery:** Verify PR number and check gh auth

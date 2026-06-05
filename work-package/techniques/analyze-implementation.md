@@ -43,6 +43,7 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 - Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[context](./gitnexus-operations/context.md) to identify where the feature/component is implemented (files, modules, entry points) — falls back to grep when not indexed
 - Map usage and dependencies via [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[impact](./gitnexus-operations/impact.md) `{target, direction: 'upstream'}` and call-graph traversal; record architecture from cluster resources
 - Document current structure and integration points
+- If no current implementation exists (a new feature), document the baseline as N/A and focus the analysis on the expected metrics for the success criteria
 
 ### 4. Evaluate Effectiveness
 
@@ -94,11 +95,3 @@ Measurable criteria for improvement
 ### measure-before-improve
 
 You can't improve what you don't measure — establish quantitative baselines
-
-## Errors
-
-### no_existing_impl
-
-**Cause:** No current implementation exists (new feature)
-
-**Recovery:** Document baseline as N/A and focus on expected metrics for success criteria

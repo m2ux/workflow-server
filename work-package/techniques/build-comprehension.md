@@ -32,6 +32,7 @@ Path to the target codebase directory
 - List contents of .engineering/artifacts/comprehension/ directory
 - Match existing artifacts by project name, module name, or domain terms from problem_statement
 - Summarize relevant artifacts with coverage scope and last-updated date
+- If no comprehension artifacts exist yet for this codebase, proceed with fresh analysis — this is the first comprehension pass
 
 ### 2. Check Gitnexus
 
@@ -48,7 +49,9 @@ Path to the target codebase directory
 - Identify module boundaries and their responsibilities from directory layout, module declarations, and public APIs
 - Map dependency relationships between modules (imports, trait implementations, cross-module calls)
 - Identify overarching patterns: layered architecture, event-driven, actor model, plugin system, etc.
+  - If the codebase uses patterns or frameworks you are unfamiliar with, use web research to understand the framework conventions, then document the findings
 - Form architecture hypotheses and verify by sampling implementation files
+- If the codebase is too large for exhaustive analysis, focus on areas relevant to the problem statement and note the unexplored areas for future passes
 
 ### 4. Abstractions Analysis
 
@@ -151,23 +154,3 @@ Cross-reference related comprehension artifacts and note dependencies between co
 ### question-driven-exploration
 
 The Open Questions table is the primary input for selecting deep-dive areas. When open questions exist, present them as the default selection for the next iteration rather than generating new candidate areas from scratch.
-
-## Errors
-
-### no_existing_artifacts
-
-**Cause:** No comprehension artifacts exist yet for this codebase
-
-**Recovery:** Proceed with fresh analysis — this is the first comprehension pass
-
-### large_codebase
-
-**Cause:** Codebase is too large for exhaustive analysis
-
-**Recovery:** Focus on areas relevant to the problem statement and note unexplored areas for future passes
-
-### unfamiliar_patterns
-
-**Cause:** Codebase uses patterns or frameworks the agent is unfamiliar with
-
-**Recovery:** Use web research to understand framework conventions, then document findings

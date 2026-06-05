@@ -25,14 +25,6 @@ for `'package'`: functional-area clusters and their members; for `'sequence'`: s
 
 ## Protocol
 
-1. Apply [detect-changes](./detect-changes.md) to bound the diagram to affected processes.
+1. Apply [detect-changes](./detect-changes.md) to bound the diagram to affected processes. If the index is out of date, run `npx gitnexus analyze`, then retry.
 2. Branch on `diagram_type`. For `'package'`: read `gitnexus://repo/{name}/clusters` (functional areas with cohesion scores) and `gitnexus://repo/{name}/cluster/{name}` (members) as the `diagram_source`.
 3. For `'sequence'`: read `gitnexus://repo/{name}/process/{name}` (execution traces) for the affected processes as the `diagram_source`.
-
-## Errors
-
-### stale_index
-
-**Cause:** the index is out of date
-
-**Recovery:** run `npx gitnexus analyze`, then retry

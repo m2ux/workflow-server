@@ -27,10 +27,12 @@ Path to planning folder for artifact output
 
 - Run git pull on the `branch-name` feature branch to ensure it is up to date
 - Resolve merge conflicts before proceeding if any
+- If the git pull reveals conflicts, resolve them before continuing
 
 ### 2. Parse Diff
 
 - Parse git diff to extract list of changed files and hunks
+- If the diff contains no changes, verify the correct branch and commit range before proceeding
 - Assign row index to each change block
 - Estimate review time (30 sec per change)
 
@@ -102,17 +104,3 @@ Per-block issues with interview responses
 #### has_critical_blocker
 
 True if any block marked as critical blocker
-
-## Errors
-
-### no_diff
-
-**Cause:** No changes found in diff
-
-**Recovery:** Verify correct branch and commit range
-
-### merge_conflict
-
-**Cause:** Git pull reveals conflicts
-
-**Recovery:** Resolve conflicts before proceeding

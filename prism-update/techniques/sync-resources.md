@@ -29,7 +29,7 @@ Starting index for new resource files
 
 ### 1. Sync Modified
 
-- For each changes.modified: cp upstream file over resource file.
+- For each changes.modified: cp upstream file over resource file. If a copy fails, verify the upstream file exists and the resource directory is writable, then retry.
 - Stage and commit: 'feat: sync N modified prism resources with upstream'.
 
 ### 2. Apply Renames
@@ -41,7 +41,7 @@ Starting index for new resource files
 ### 3. Import New
 
 - Order new prisms by family for logical index grouping.
-- For each: cp upstream file to {resource-path}/{next-index}-{hyphenated-name}.md. Increment next-index.
+- For each: cp upstream file to {resource-path}/{next-index}-{hyphenated-name}.md. Increment next-index. If the computed index already exists, increment next-index past the collision and retry.
 - Stage and commit: 'feat: add N new prism resources (indices X-Y)'.
 
 ### 4. Remove Deleted
@@ -83,17 +83,3 @@ Final resource count
 #### commits
 
 List of commit SHAs
-
-## Errors
-
-### copy_failed
-
-**Cause:** File copy operation failed
-
-**Recovery:** Check that upstream file exists and resource directory is writable.
-
-### index_collision
-
-**Cause:** Computed index already exists
-
-**Recovery:** Increment next-index past the collision and retry.

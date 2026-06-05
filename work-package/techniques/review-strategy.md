@@ -36,7 +36,7 @@ Pull request number for scope reference
 
 - Review changes for scope and relevance to work package
 - Document any changes unrelated to requirements as scope creep
-- Flag scope creep for user decision if found
+- If the PR contains changes unrelated to the work package, document them and flag for user decision
 
 ### 3. Scope Discipline Check
 
@@ -71,7 +71,7 @@ Pull request number for scope reference
 
 - Document all findings in the strategic-review-doc, written under `{planning_folder_path}`
 - Categorize by type: investigation artifacts, over-engineering, orphaned infrastructure
-- If all changes justified, document clean review result
+- If all changes are justified and no cleanup is needed, document a clean review result
 
 ### 9. Apply Cleanup
 
@@ -124,17 +124,3 @@ UML-style diagrams of implementation
 #### summary
 
 High-level architecture description
-
-## Errors
-
-### scope_creep
-
-**Cause:** PR contains changes unrelated to the work package
-
-**Recovery:** Document and flag for user decision
-
-### no_cleanup_needed
-
-**Cause:** All changes are justified
-
-**Recovery:** Document clean review result

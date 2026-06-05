@@ -35,6 +35,7 @@ Elicited requirements with success criteria and scope
 
 - Verify design_philosophy and requirements are available
 - Confirm prerequisite activities completed before proceeding
+- If design philosophy or analysis is not completed, prompt the user to complete the prerequisite activities before planning.
 
 ### 2. Load Guidance
 
@@ -87,11 +88,3 @@ Plan tasks describe CODE OR ARTIFACT CHANGES — the source edits, schema change
 ### no-raw-commands-in-plan
 
 Plan content MUST NEVER contain raw command invocations/specification
-
-## Errors
-
-### missing_inputs
-
-**Cause:** Design philosophy or analysis not completed
-
-**Recovery:** Prompt user to complete prerequisite activities before planning

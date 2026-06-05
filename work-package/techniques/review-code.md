@@ -26,7 +26,9 @@ List of files changed in the work package (from git diff)
 ### 1. Load Guidance
 
 - Use attached [rust-substrate-code-review](../resources/rust-substrate-code-review.md) for full review criteria
+  - If the code review resource is missing, check the resources folder for 16-rust-substrate-code-review.md.
 - Establish the `changed-files` set by running git diff for all files changed since the work package started
+  - If no implementation changes are found, verify the correct branch and commit range.
 
 ### 2. Bound Review Scope
 
@@ -78,17 +80,3 @@ Every finding must cite specific code with file path and line numbers
 ### severity-consistency
 
 Apply severity levels consistently — critical for security/data loss, high for correctness, medium for maintainability, low for style
-
-## Errors
-
-### no_changes
-
-**Cause:** No implementation changes found
-
-**Recovery:** Verify correct branch and commit range
-
-### resource_not_found
-
-**Cause:** Code review resource missing
-
-**Recovery:** Check resources folder for 16-rust-substrate-code-review.md

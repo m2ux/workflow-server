@@ -34,19 +34,7 @@ The updated provenance log, with the attestation section appended
 ## Protocol
 
 1. Do NOT record the attestation until the human has explicitly selected `certify` or `flag-legal` at the dco-sign-off checkpoint.
+   - If attestation is requested without the dco-sign-off checkpoint having received an explicit user selection, surface the dco-sign-off checkpoint and wait for the user's `certify` or `flag-legal` selection before retrying.
 2. Append an `## Attestation` section to the provenance-log containing: ISO 8601 timestamp, certifier identity (`{certifier_name} <{certifier_email}>`), and the selected option.
+   - If provenance-log.md does not exist at this point — meaning no task rows were appended during the work package — surface this to the user: record-attestation runs at sign-off after task work, so a missing log means something went wrong with the implement loop. Retry only after the missing rows are investigated.
 3. If `option = flag-legal`, include a `Legal Review Note` field with the provided `legal_review_note` text.
-
-## Errors
-
-### log_missing
-
-**Cause:** provenance-log.md does not exist at record-attestation time — no task rows were appended during the work package
-
-**Recovery:** Surface to the user — record-attestation runs at sign-off after task work; if no task rows exist, something went wrong with the implement loop. Retry only after the missing rows are investigated.
-
-### attestation_without_sign_off
-
-**Cause:** Attestation requested without the dco-sign-off checkpoint having received an explicit user selection
-
-**Recovery:** Surface the dco-sign-off checkpoint and wait for the user's `certify` or `flag-legal` selection before retrying

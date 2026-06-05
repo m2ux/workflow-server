@@ -23,6 +23,7 @@ List of files changed in the work package (from git diff)
 
 - Use attached [test-suite-review](../resources/test-suite-review.md) for full review criteria
 - From the `changed-files` set, identify all test files in the project related to the changed code
+- If no test files are found, document the missing tests as a critical finding and proceed
 
 ### 2. Diff Aware Coverage Map
 
@@ -33,6 +34,7 @@ List of files changed in the work package (from git diff)
 ### 3. Run Tests
 
 - Run the test suite to establish a passing baseline
+- If the test suite is not passing, fix the failing tests before continuing with the review
 
 ### 4. Review Tests
 
@@ -82,17 +84,3 @@ Assess coverage relative to the changes made, not absolute project coverage
 ### actionable-recommendations
 
 Every finding must include a concrete improvement suggestion
-
-## Errors
-
-### tests_fail
-
-**Cause:** Test suite not passing
-
-**Recovery:** Fix failing tests before review
-
-### no_tests
-
-**Cause:** No test files found
-
-**Recovery:** Document missing tests as critical finding

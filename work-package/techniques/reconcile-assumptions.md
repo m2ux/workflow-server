@@ -33,6 +33,8 @@ Path to the codebase to analyze
 - For each, determine whether targeted code analysis could validate or invalidate it
 - Code-resolvable: assumptions about code behavior, data flows, type structures, API contracts, test coverage, implementation details, library behavior, ordering guarantees, error handling paths
 - Not code-resolvable: stakeholder decisions, operational questions, strategic judgments, time estimates, deployment status, business priorities, external system behavior
+- If the assumptions-log contains no open assumptions, there is nothing to resolve — skip reconciliation and set has_resolvable_assumptions to false and has_open_assumptions to false.
+- If every open assumption classifies as not code-resolvable, convergence is immediate — set has_resolvable_assumptions to false and proceed to user review.
 
 ### 2. Targeted Analysis
 
@@ -41,6 +43,7 @@ Path to the codebase to analyze
 - Record evidence with file paths and line numbers for every finding
 - Determine resolution: Validated (evidence confirms), Invalidated (evidence refutes), or Partially Validated (evidence supports with caveats)
 - Note any new assumptions that surface during investigation — these are common when tracing code paths reveals unexpected behavior or dependencies
+- If code analysis cannot definitively validate or invalidate an assumption, mark it as Partially Validated with the evidence gathered and the reasoning for the inconclusiveness, and reclassify it as not-code-resolvable when further code analysis would not help.
 
 ### 3. Update Assumptions
 
@@ -93,23 +96,3 @@ The reconciliation loop runs autonomously without user checkpoints. The user is 
 ### classification-transparency
 
 When presenting the converged result, include the classification rationale for each remaining open assumption — explain why it cannot be resolved through code analysis.
-
-## Errors
-
-### no_open_assumptions
-
-**Cause:** No open assumptions exist in the assumptions log
-
-**Recovery:** Skip reconciliation — nothing to resolve. Set has_resolvable_assumptions to false and has_open_assumptions to false.
-
-### all_non_resolvable
-
-**Cause:** All open assumptions are classified as not code-resolvable
-
-**Recovery:** Convergence is immediate — set has_resolvable_assumptions to false and proceed to user review.
-
-### analysis_inconclusive
-
-**Cause:** Code analysis cannot definitively validate or invalidate an assumption
-
-**Recovery:** Mark as Partially Validated with the evidence gathered and reasoning for inconclusiveness. Reclassify as not-code-resolvable if further code analysis would not help.

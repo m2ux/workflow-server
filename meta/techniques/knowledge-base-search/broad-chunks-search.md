@@ -16,11 +16,4 @@ Mapped concept from the index
 ## Protocol
 
 1. Call `broad_chunks_search { concept: concept_term }`.
-
-## Errors
-
-### no_mapping_for_term
-
-**Cause:** The local index does not contain a mapping for the search term.
-
-**Recovery:** Use broad-chunks-search with the natural term; note the gap for future index updates.
+   - If the local index has no mapping for the search term, retry broad-chunks-search with the natural term and note the gap for future index updates.

@@ -39,6 +39,7 @@ PR number for status checking
 ### 3. Update Status
 
 - Once the PR identified by `pr-number` has merged, update the work package plan status
+  - If the PR has not merged yet, wait for merge or check whether review feedback needs addressing first before updating status
 - Record the final outcome in the planning artifacts under `planning-folder-path`
 
 ### 4. Select Next
@@ -77,11 +78,3 @@ Retrospective should be honest about what worked and what didn't — avoid gener
 ### skip-if-trivial
 
 Skip retrospective if: only checkpoint responses occurred (no clarifications, corrections, or process questions), OR work package was trivial (<30 min, single task).
-
-## Errors
-
-### pr_not_merged
-
-**Cause:** PR has not been merged yet
-
-**Recovery:** Wait for merge or check if review feedback needs addressing first

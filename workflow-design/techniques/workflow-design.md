@@ -62,6 +62,8 @@ Free-form description of the workflow the user wants to create or modify
 - Present approach before each file and get confirmation
 - Use formal schema constructs for all structured information
 - Validate each TOON file against its schema immediately after drafting
+- If a file uses invalid syntax (JSON arrays, YAML nesting, Python quotes), read an existing valid TOON file of the same type, compare syntax, and rewrite
+- If a file fails to conform to its schema, read the validation error, identify the non-conforming field, fix the content, and re-validate
 
 ### 7. Audit Principle Compliance
 
@@ -75,7 +77,7 @@ Free-form description of the workflow the user wants to create or modify
 - Resource→caller coupling (AP-44): for every resource (under `resources/`), check it does NOT name or link a technique that produces/consumes/calls it — backlink prose ("produced by", "composed by", "used by", "consumed by" + a technique name), markdown links to `../techniques/...`, or "Used By" / "Referenced By" catalogue columns mapping the resource to its consumers. Forward references (a prompt resource directing its reader to execute a technique, "use technique X" cross-refs, ontology/model descriptions) are NOT violations. Flag reverse caller-references; recommend describing the resource by what it is
 - Artifact-name contract (AP-43): check that every artifact a technique creates or consumes carries its concrete name in the I/O declaration — a literal, a `{token}`-template, or a discriminator-keyed note — and NOT hardcoded in a Protocol step; and that a technique consuming multiple artifacts declares them as individually-named Inputs, not one opaque `*-paths` array. Flag Protocol steps that embed a filename (literal or `{templated}`) the I/O declaration should carry, and opaque multi-artifact path-array inputs
 - Canonical artifact reference (AP-42): for every technique, check that `## Protocol` references artifacts by their canonical Input/Output identifier, not a literal filename or path (`assumptions-log`, not `assumptions-log.md`); that Input/Output ids are canonical names rather than path-flavored proxies (a `-path` suffix is the signal); and that an artifact built from a template hyperlinks its noun to the template's resource section (`[noun](../resources/<id>.md#section)`). Flag literal-filename references in Protocol, `-path` input/output ids, and template-backed artifacts whose noun is not linked to its resource section
-- I/O coupling (AP-41): for every technique, inspect its `## Inputs`, `## Output`/`## Outputs`, and `## Errors` sections — flag any entry that names or links a workflow-internal producer or consumer of the value (another technique, an activity, a step, a checkpoint, a loop, or a workflow/activity file) as its source or destination. Markdown links to another technique `.md` and prose forms ("from X", "produced by X", "consumed by X", "for X") are the signal. Exclude `## Protocol`/`## Capability` utilisation references, genuine "apply technique X" error-recovery actions, resource links, and descriptions of a value's intrinsic/external nature ("git diff output", "the user's request", "provided by the server"). For each finding, recommend rewriting the entry to describe the value generically and removing the source/destination naming
+- I/O coupling (AP-41): for every technique, inspect its `## Inputs` and `## Output`/`## Outputs` sections — flag any entry that names or links a workflow-internal producer or consumer of the value (another technique, an activity, a step, a checkpoint, a loop, or a workflow/activity file) as its source or destination. Markdown links to another technique `.md` and prose forms ("from X", "produced by X", "consumed by X", "for X") are the signal. Exclude `## Protocol`/`## Capability` utilisation references (including an inline "apply technique X" error recovery), resource links, and descriptions of a value's intrinsic/external nature ("git diff output", "the user's request", "provided by the server"). For each finding, recommend rewriting the entry to describe the value generically and removing the source/destination naming
 
 ### 9. Audit Schema Validation
 
@@ -97,11 +99,13 @@ Free-form description of the workflow the user wants to create or modify
 - Walk every prose passage in workflow.toon, activity files, and technique files against the schema construct inventory in [schema-construct-inventory](../resources/schema-construct-inventory.md)
 - Flag every instance where prose substitutes for: steps, checkpoints, decisions, loops, transitions, conditions, triggers, actions, artifacts, variables, modes, inputs, outputs, or protocol phases
 - For each flagged instance, rewrite the prose as the formal construct or move it to a field that fits
+- If prose is used where a formal schema construct exists, check the schema construct inventory ([schema-construct-inventory](../resources/schema-construct-inventory.md)) and replace the prose with the formal construct
 
 ### 12. Audit Conformance
 
 - Compare against reference workflows for file naming (NN-name.toon), field ordering, version format (X.Y.Z), transition patterns, checkpoint structure, and technique structure
 - Flag every divergence; for each, decide whether the divergence is justified or should be brought into conformance
+- If drafted content uses different naming or structural patterns than existing workflows, identify the divergence against the reference workflows and align with the established conventions
 
 ### 13. Audit Rule Hygiene
 
@@ -168,29 +172,3 @@ Use get_resource(session_token, resource_index) for each entry in a technique's 
 ### tool-usage
 
 list_workflows requires no params and no session token
-
-## Errors
-
-### schema_validation_failure
-
-**Cause:** Drafted TOON file does not conform to its schema
-
-**Recovery:** Read the validation error, identify the non-conforming field, fix the content, and re-validate
-
-### format_error
-
-**Cause:** TOON file uses invalid syntax (JSON arrays, YAML nesting, Python quotes)
-
-**Recovery:** Read an existing valid TOON file of the same type, compare syntax, and rewrite
-
-### convention_divergence
-
-**Cause:** Drafted content uses different naming or structural patterns than existing workflows
-
-**Recovery:** Compare against reference workflows, identify the divergence, and align with established conventions
-
-### missing_construct
-
-**Cause:** Prose is used where a formal schema construct exists
-
-**Recovery:** Check the schema construct inventory ([schema-construct-inventory](../resources/schema-construct-inventory.md)) and replace prose with the formal construct

@@ -38,11 +38,4 @@ Created issue key (e.g., `ENG-123`)
 ## Protocol
 
 1. Call `createJiraIssue { cloudId, projectKey, issueTypeName, summary, description?, additional_fields? }` and return the `issueKey` of the created issue.
-
-## Errors
-
-### invalid_issue_type
-
-**Cause:** create-jira-issue called with a non-existent `issueTypeName`.
-
-**Recovery:** Apply [list-jira-issue-types](./list-jira-issue-types.md) to discover valid types, then retry.
+   - If the call fails because `issueTypeName` does not exist for the project, apply [list-jira-issue-types](./list-jira-issue-types.md) to discover valid types, then retry.

@@ -36,6 +36,8 @@ d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY N
 ### 1. Invoke
 
 - Call `gitnexus_impact {target, direction, maxDepth, minConfidence}`.
+- If the call reports the index is out of date, run `npx gitnexus analyze` in terminal, then retry.
+- If `target` does not resolve in the graph, verify the symbol name; if it is new or unindexed, fall back to grep for callers.
 
 ### 2. Interpret Results
 
@@ -45,17 +47,3 @@ d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY N
 ### 3. Act on Risk
 
 - The caller MUST surface HIGH or CRITICAL risk to the user before proceeding with an edit.
-
-## Errors
-
-### stale_index
-
-**Cause:** the index is out of date
-
-**Recovery:** run `npx gitnexus analyze` in terminal, then retry
-
-### symbol_not_found
-
-**Cause:** target does not resolve in the graph
-
-**Recovery:** verify the symbol name; if it is new/unindexed, fall back to grep for callers

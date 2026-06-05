@@ -30,6 +30,7 @@ Atomic task breakdown with dependencies and ordering for the work package
 ### 2. Define Strategy
 
 - Define test strategy for the work package (unit, integration, e2e), using the `plan-tasks` breakdown to scope coverage to each task and its dependencies
+- If requirements are not available, prompt the user to complete elicitation before continuing with test planning
 - Identify which requirements need which types of tests
 - Determine test infrastructure needs (fixtures, mocks, test doubles)
 
@@ -76,11 +77,3 @@ Test plans have two phases: (1) Initial placeholder at PR creation — objective
 ### skip-conditions
 
 Skip formal test plan for: simple bug fixes with obvious test cases, documentation-only changes, single-test changes, refactoring with existing coverage.
-
-## Errors
-
-### no_requirements
-
-**Cause:** Requirements not available
-
-**Recovery:** Prompt user to complete elicitation before test planning

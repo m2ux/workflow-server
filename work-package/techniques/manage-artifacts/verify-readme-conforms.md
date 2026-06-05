@@ -37,14 +37,6 @@ array of header-block fields missing or renamed (e.g. a custom `Issue:` line in 
 
 ## Protocol
 
-1. Read `{planning_folder_path}/README.md` and load [readme](../../resources/readme.md) (the README template) via `get_resource`.
+1. Read `{planning_folder_path}/README.md` and load [readme](../../resources/readme.md) (the README template) via `get_resource`. If no README.md is found in `planning_folder_path`, re-apply [create-readme](./create-readme.md) to seed the README from [readme](../../resources/readme.md) before continuing.
 2. Extract H1/H2/H3 sections from each. Compare H2 sections against the template's required set: Executive Summary, Problem Overview, Solution Overview, Progress, Links. Compare the header block (Created/Status/Type fields) against the template's header fields.
 3. Compose `readme_conformance`: `missing_sections` lists template H2s absent from the README; `extra_top_level_headings` lists H1s beyond the single title H1; `header_block_drift` lists header fields missing or renamed (e.g., a custom `Issue:` line in place of the canonical `Status:`/`Type:` rows). `conforms` is true iff all three arrays are empty.
-
-## Errors
-
-### readme_missing
-
-**Cause:** No README.md found in `planning_folder_path`
-
-**Recovery:** Re-apply [create-readme](./create-readme.md) to seed the README from [readme](../../resources/readme.md) before continuing

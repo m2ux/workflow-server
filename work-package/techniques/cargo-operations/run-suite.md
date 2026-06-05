@@ -45,14 +45,6 @@ aggregate verdict — true iff all four per-op statuses passed.
 
 ## Protocol
 
-1. Fan out four concurrent shells invoking [check](./check.md), [clippy](./clippy.md), [test](./test.md), and [fmt-check](./fmt-check.md) against the same {scope}, passing the same {features} flags to each compiling op. Each carries its own resource budget (nice -n 19 + CARGO_BUILD_JOBS cap), so suite peak memory is bounded by the per-op cap, NOT by 4× a single op (fmt-check uses no compile budget at all).
+1. Fan out four concurrent shells invoking [check](./check.md), [clippy](./clippy.md), [test](./test.md), and [fmt-check](./fmt-check.md) against the same {scope}, passing the same {features} flags to each compiling op. Each carries its own resource budget (nice -n 19 + CARGO_BUILD_JOBS cap), so suite peak memory is bounded by the per-op cap, NOT by 4× a single op (fmt-check uses no compile budget at all). If the combined peak of the concurrent cargo invocations still exceeds available RAM despite the per-op budgets, halve CARGO_BUILD_JOBS for all (export CARGO_BUILD_JOBS=2) and retry; on very tight hosts, fall back to running check/clippy/test sequentially via the per-op operations.
 2. Wait for ALL four to finish before composing results. Do NOT short-circuit on the first failure — collect every per-op status and diagnostics so a single pass surfaces every issue rather than forcing serial discovery.
 3. Compose validation_results = { check_status, clippy_status, test_status, fmt_status, validation_passed: check_status.passed AND clippy_status.passed AND test_status.passed AND fmt_status.passed }.
-
-## Errors
-
-### out_of_memory
-
-**Cause:** Combined peak of concurrent cargo invocations exceeded available RAM despite per-op budgets
-
-**Recovery:** Halve CARGO_BUILD_JOBS for all (export CARGO_BUILD_JOBS=2) and retry. On very tight hosts, fall back to running check/clippy/test sequentially via the per-op operations.

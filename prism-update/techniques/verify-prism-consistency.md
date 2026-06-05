@@ -32,6 +32,7 @@ Path to the prism workflow resources directory
 
 - Parse the Prompt Guide table from prism/README.md.
 - Parse the goal-mapping-matrix from prism/techniques/plan-analysis.md.
+- If either the prompt guide table or the goal-mapping matrix cannot be parsed, read the raw file content and extract the sections manually.
 - For each prompt, verify the matrix routes to the claimed prism. Flag mismatches.
 
 ### 3. Verify Resource Counts
@@ -73,11 +74,3 @@ Array of { index, files }
 #### has_issues
 
 Boolean
-
-## Errors
-
-### parse_failure
-
-**Cause:** Could not parse prompt guide table or goal-mapping matrix
-
-**Recovery:** Read raw file content and extract sections manually.

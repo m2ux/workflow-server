@@ -22,18 +22,6 @@ incoming calls (callers), outgoing calls (callees), process membership with step
 ## Protocol
 
 1. Call `gitnexus_context {name}` to assemble the `context_report` — incoming calls, outgoing calls, and process membership.
+   - If the index is out of date, run `npx gitnexus analyze`, then retry.
+   - If `name` does not resolve, verify the symbol name; fall back to grep when the symbol is unindexed.
 2. Read the `context_report`'s caller fan-out as a blast-radius signal: many callers and broad process participation → the symbol is path-committing; an isolated symbol is low-risk to touch.
-
-## Errors
-
-### stale_index
-
-**Cause:** the index is out of date
-
-**Recovery:** run `npx gitnexus analyze`, then retry
-
-### symbol_not_found
-
-**Cause:** name does not resolve
-
-**Recovery:** verify the symbol name; fall back to grep when unindexed

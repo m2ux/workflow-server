@@ -35,10 +35,11 @@ Directory to write the analysis artifact
 
 - Resources are attached to technique responses (loaded via get_technique). Resource index lens-resource-index is available in the _resources field after loading the lens prompt: 00 structural ([l12](../resources/l12.md)), 01 adversarial ([l12-complement-adversarial](../resources/l12-complement-adversarial.md)), 02 synthesis ([l12-synthesis](../resources/l12-synthesis.md))
 - The lens prompt is the program — it defines the exact sequence of analytical operations to execute
+- If the resource for the given index is not found in the technique response, report the error and note that valid indices are 00-02 (all target types).
 
 ### 2. Read Prior Artifacts
 
-- If prior-artifact-paths is provided, read each artifact file from the filesystem
+- If prior-artifact-paths is provided, read each artifact file from the filesystem. If a provided artifact path does not exist, report the missing artifact; the orchestrator may need to re-dispatch the prior pass.
 - Label the content: first artifact as ANALYSIS 1, second as ANALYSIS 2. These labels match what the adversarial and synthesis lenses expect.
 - Prior pass output MUST be read from the filesystem via the artifact path. The orchestrator provides paths, not inline content, to keep prompts focused and artifacts as the source of truth.
 
@@ -47,6 +48,7 @@ Directory to write the analysis artifact
 - Apply every operation in the lens prompt sequentially against target-content
 - If prior artifacts were read, include them as context as instructed by the lens (adversarial lenses reference 'the structural analysis'; synthesis lenses reference 'ANALYSIS 1' and 'ANALYSIS 2')
 - Execute completely — do not abbreviate or skip operations. The analytical depth comes from the full chain.
+- If the analysis stays at surface level without reaching the conservation law, re-execute from the structural invariant step. The depth comes from the inversion chain, not the initial claim.
 
 ### 4. Verify With Graph
 
@@ -60,7 +62,7 @@ Directory to write the analysis artifact
 ### 5. Write Artifact
 
 - Determine artifact filename from the pass type: structural-analysis.md (index 00), adversarial-analysis.md (index 01), synthesis.md (index 02)
-- Write the complete analysis to {output-path}/{artifact-filename}, producing the pass-artifact
+- Write the complete analysis to {output-path}/{artifact-filename}, producing the pass-artifact. If the write fails, verify the output-path directory exists and is writable.
 - Return the full pass-artifact path in the output
 - The analysis MUST be written to the filesystem. Return the pass-artifact path to the orchestrator so subsequent passes can read it.
 
@@ -106,29 +108,3 @@ This worker runs in isolation. Do not reference conversations, prior interaction
 ### lens-is-program
 
 The lens resource is an imperative program. Execute its operations in order, producing the output each operation requests.
-
-## Errors
-
-### lens_not_loaded
-
-**Cause:** resource not found in technique response for the given index
-
-**Recovery:** Report the error. Valid indices: 00-02 (all target types).
-
-### prior_artifact_not_found
-
-**Cause:** A prior pass artifact path was provided but the file does not exist
-
-**Recovery:** Report the missing artifact. The orchestrator may need to re-dispatch the prior pass.
-
-### shallow_analysis
-
-**Cause:** Analysis stayed at surface level without reaching conservation law
-
-**Recovery:** Re-execute from the structural invariant step. The depth comes from the inversion chain, not the initial claim.
-
-### write_failed
-
-**Cause:** Could not write artifact to the output path
-
-**Recovery:** Verify the output-path directory exists and is writable.

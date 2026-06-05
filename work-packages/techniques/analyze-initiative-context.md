@@ -27,11 +27,13 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 
 - Present the analysis-type-selection checkpoint to determine if this is continuing or new
 - Set analysis_type variable based on user selection
+- If the user is unsure whether this is continuing or new, check for existing planning artifacts — if found, suggest completion analysis; if not, suggest context analysis
 
 ### 2. Perform Completion Analysis
 
 - Use attached [completion-analysis-guide](../resources/completion-analysis-guide.md) (completion-analysis-guide) for the analysis procedure
 - Locate existing planning artifacts in .engineering/artifacts/planning/
+- If completion analysis was selected but no prior artifacts are found, switch to context analysis and note that no prior work was found
 - Assess completion state of each previously identified work package
 - Identify changes since last session from git log and issue trackers
 - For completion analysis, always check for existing planning artifacts before assuming fresh start
@@ -80,17 +82,3 @@ The analysis_type variable determines which analysis method to use — never mix
 ### document-everything
 
 All findings must be captured in the analysis document, not just presented verbally
-
-## Errors
-
-### ambiguous_type
-
-**Cause:** User is unsure whether this is continuing or new
-
-**Recovery:** Check for existing planning artifacts — if found, suggest completion analysis; if not, suggest context analysis
-
-### no_existing_artifacts
-
-**Cause:** Completion analysis selected but no prior artifacts found
-
-**Recovery:** Switch to context analysis and note that no prior work was found

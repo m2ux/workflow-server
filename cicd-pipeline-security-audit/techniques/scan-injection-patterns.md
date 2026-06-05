@@ -30,7 +30,9 @@ Pre-classified trigger, permission, and checkout data for the workflow files
 ### 1. Load Patterns
 
 - Use attached [injection-pattern-catalog](../resources/injection-pattern-catalog.md) (injection-pattern-catalog) for grep patterns, untrusted context lists, and detection heuristics
+  - If the [injection-pattern-catalog](../resources/injection-pattern-catalog.md) cannot be loaded, fall back to the built-in pattern definitions
 - Scope the scan to the `workflow-files` paths, and load the `reconnaissance-data` so each file's pre-classified triggers, permissions, and checkout behavior is available to the pattern checks below
+  - If a workflow file cannot be read, record it as unscanned and flag it in the coverage report
 
 ### 2. P1 Expression Injection
 
@@ -113,17 +115,3 @@ Every finding must include the vulnerable code snippet
 ### chain-tracing
 
 For P2 and P5, trace the complete chain from trigger through checkout to execution
-
-## Errors
-
-### pattern_catalog_unavailable
-
-**Cause:** [injection-pattern-catalog](../resources/injection-pattern-catalog.md) could not be loaded
-
-**Recovery:** Use built-in pattern definitions as fallback
-
-### file_read_failure
-
-**Cause:** Workflow file cannot be read
-
-**Recovery:** Record as unscanned and flag in coverage report

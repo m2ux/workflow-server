@@ -31,6 +31,7 @@ Directory for writing the MITIGATION-PLAN.md artifact
 
 - Read the `evaluation-report` and extract all findings with IDs, severities, titles, descriptions, and referenced target sections
 - Read the target document at `target_path` and identify the specific text, sections, and claims referenced by each finding
+  - If a finding references target text that cannot be located in the current target, report the finding as unlocatable and present it to the user with a note that the referenced text could not be found — the target may have been modified since the evaluation
 - Classify each finding into a mitigation tier: T1 (direct correction — wrong numbers, terminology), T2 (reframing — claims needing qualification), T3 (novel mitigation — new mechanisms or content needed), T4 (structural/immovable — external constraints requiring acknowledgement)
 - Order findings within each tier by severity (Critical first, then High, Medium, Low)
 - Present the tier classification summary before beginning the dialogue
@@ -64,6 +65,7 @@ Directory for writing the MITIGATION-PLAN.md artifact
 
 - Apply accepted mitigations in priority order: T1 first, then T2, T3, T4
 - For each change, verify the target text matches expectations before applying
+  - If an earlier mitigation shifted text locations and a later mitigation no longer matches, search for the expected text elsewhere in the modified target; if found at a different location, apply there, and if not found, report the conflict and skip
 - After all changes, verify each was applied correctly, producing the `modified-target` with all accepted mitigations in place
 
 ## Outputs
@@ -101,17 +103,3 @@ Mitigations should preserve the author's intent and the claim's value. Propose n
 ### tier-ordering
 
 Present findings in tier order (T1 → T2 → T3 → T4) and within each tier by severity (Critical → High → Medium → Low). This ensures the easiest changes are handled first.
-
-## Errors
-
-### finding_not_located
-
-**Cause:** A finding references target text that cannot be located in the current target
-
-**Recovery:** Report the finding as unlocatable. Present the finding to the user with a note that the referenced text could not be found — the target may have been modified since the evaluation.
-
-### apply_conflict
-
-**Cause:** Earlier mitigations shifted text locations, preventing a later mitigation from matching
-
-**Recovery:** Search for the expected text in the modified target. If found at a different location, apply there. If not found, report the conflict and skip.

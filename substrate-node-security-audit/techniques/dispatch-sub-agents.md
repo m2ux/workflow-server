@@ -30,10 +30,12 @@ List of agents to dispatch, each with: agent_id, activity_id, context variables 
 ### 3. Collect All
 
 - Wait for all agents to return. Collect the structured output from each into dispatch-results. If any agent fails or times out, record the failure in dispatch-results and proceed with available results.
+- If a sub-agent does not return within the expected time, record the timeout in dispatch-results and proceed with the available results; the orchestrator decides whether to re-dispatch.
 
 ### 4. Verify Dispatch Completeness
 
 - Compare the agent_roster (input) against the dispatched agent list. Every agent in the roster must have been dispatched and returned a result (success or failure). Produce a dispatch manifest table: agent_id, assigned_crate, dispatched (yes/no), returned (yes/no), status. If any agent was NOT dispatched, flag as INCOMPLETE and return the manifest to the orchestrator for remediation. Set agents_dispatched count. This step enforces the dispatch completeness gate.
+- If one or more agents in the roster were not dispatched (e.g., skipped due to context pressure), return INCOMPLETE status with the dispatch manifest. The orchestrator MUST dispatch the missing agents in a follow-up or flag the audit as incomplete. Do NOT proceed to finding consolidation with missing agents.
 
 ## Outputs
 
@@ -52,17 +54,3 @@ agents dispatched, failures encountered
 #### dispatch_manifest
 
 per-agent table with assigned/dispatched/returned status
-
-## Errors
-
-### agent_timeout
-
-**Cause:** Sub-agent did not return within expected time
-
-**Recovery:** Record timeout; proceed with available results; orchestrator decides whether to re-dispatch
-
-### incomplete_dispatch
-
-**Cause:** One or more agents in the roster were not dispatched (e.g., skipped due to context pressure)
-
-**Recovery:** Return INCOMPLETE status with the dispatch manifest. The orchestrator MUST dispatch the missing agents in a follow-up or flag the audit as incomplete. Do NOT proceed to finding consolidation with missing agents.

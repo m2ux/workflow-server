@@ -44,11 +44,13 @@ Directory to write the evaluation plan artifact
 - If the user supplied dimensions, validate them: each must have a name and description. Proceed to survey-target.
 - If no dimensions supplied, use attached [default-dimensions](../resources/default-dimensions.md) (default-dimensions) and select the dimension set matching the target_type. Each dimension object has: { name, description, focus_areas (array of specific aspects to examine) }.
 - For target types not covered by the resource defaults, infer dimensions from the evaluation_description. Each dimension should represent an independent analytical axis.
+- If no meaningful evaluation dimensions can be derived from the description and target, ask the user to provide explicit dimensions or to refine the evaluation_description.
 - Present derived dimensions for user confirmation during the scope-definition checkpoint
 
 ### 3. Survey Target
 
 - List files and directories at the top level of target_path
+- If target_path contains no analysable files, verify the path is correct and check whether the target lives in a different location before proceeding
 - For document/document-set targets: inventory all documents, identify their topics, structure, and cross-references between documents. Note total word count or section count.
 - For codebase targets: identify the build system, enumerate modules/packages, count lines of code per module. Identify test directories.
 - For mixed targets: apply both document and code surveys
@@ -62,6 +64,7 @@ Directory to write the evaluation plan artifact
 - Use attached [dimension-lens-mapping](../resources/dimension-lens-mapping.md) (dimension-lens-mapping) for the standard and custom mapping tables, output subdirectory conventions, and pipeline mode selection guidance.
 - For each dimension, match against the standard mappings table first. If no standard mapping matches, use the custom dimension mappings table.
 - If lens_overrides contains an entry for a dimension name, use the override values instead of the derived mapping
+- If a user-supplied dimension does not map to any known prism lens pattern, suggest the closest lens match from the goal-mapping matrix and ask the user to confirm it or provide a lens_override for that dimension
 - For each dimension, compose a dimension-specific analysis_focus string: a focused description of what to examine within this dimension, referencing specific target content discovered during survey-target. This MUST NOT be a bare label like 'security audit' or 'audit' — it must be substantive guidance.
 - Assign each dimension an output_subdir per the conventions in [dimension-lens-mapping](../resources/dimension-lens-mapping.md).
 - Record dimension_plan: array of { dimension (name), pipeline_mode, lenses (array of resource indices), analysis_focus, output_subdir }
@@ -110,23 +113,3 @@ Machine-readable dimension-to-lens mapping
 #### plan
 
 Array of { dimension, pipeline_mode, lenses, analysis_focus, output_subdir }
-
-## Errors
-
-### empty_target
-
-**Cause:** Target path contains no analysable files
-
-**Recovery:** Verify the path is correct. Check if the target is in a different location.
-
-### no_relevant_dimensions
-
-**Cause:** Cannot derive meaningful evaluation dimensions from the description and target
-
-**Recovery:** Ask the user to provide explicit dimensions or refine the evaluation description.
-
-### unmappable_dimension
-
-**Cause:** A user-supplied dimension does not map to any known prism lens pattern
-
-**Recovery:** Suggest the closest lens match from the goal-mapping matrix. Ask the user to confirm or provide a lens_override for this dimension.

@@ -22,6 +22,7 @@ Change set with new, renamed, and deleted prisms
 ### 1. Update Plan Analysis
 
 - For each rename in `changes`, find-and-replace the old name with the new name across all rules and protocol sections.
+- If an expected technique file cannot be found, verify that the prism workflow techniques directory exists.
 - Add a goal-mapping-matrix entry for every new prism in `changes`: analytical goal keyword → prism index.
 - Update code-vs-general, model-sensitivity, resource list, query-recommendation, and single-unit-recommendation.
 - Each new prism's goal keyword should match its cognitive operation or domain from the YAML frontmatter description.
@@ -68,11 +69,3 @@ Number of renamed references updated
 ### coverage
 
 Every routing surface must be updated: goal-mapping-matrix, code-vs-general, model-sensitivity, neutral-variant-routing, resource lists, lens catalogs, selection guides.
-
-## Errors
-
-### missing_technique
-
-**Cause:** Expected technique file not found
-
-**Recovery:** Check that the prism workflow techniques directory exists.

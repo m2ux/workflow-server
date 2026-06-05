@@ -30,6 +30,7 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 ### 1. Verify Existing Issue
 
 - Runs when user provides an existing issue key. Detect the platform from key format: '#N' or bare number → GitHub, 'PROJ-N' → Jira. Set issue_platform.
+- If no issue key was given and the platform is ambiguous (user did not select GitHub or Jira), present the platform selection checkpoint and wait for the user's selection before proceeding.
 - For GitHub: run 'gh issue view <number>' to confirm the issue exists. Capture issue_number and issue_url.
 - For Jira: call getAccessibleAtlassianResources FIRST to obtain cloudId, preserve as jira_cloud_id. THEN call getJiraIssue with cloudId and the issue key. Do NOT call getJiraIssue before cloudId is resolved.
 - Capture issue_number and issue_url from the verification result. Set needs_issue_creation to false.
@@ -41,6 +42,7 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 - Map issue_type to GitHub labels per github-label-mapping rule
 - Create the issue, then verify creation succeeded — this verified issue is the created-issue. Capture issue_number and issue_url.
 - GitHub label mapping: feature->enhancement, bug->bug, task->chore, enhancement->enhancement
+- If a gh CLI command fails (auth, permissions, or network — including the 'gh issue view' verification in step 1), verify gh auth status and repository access, then retry or prompt the user to create the issue manually.
 
 ### 3. Create Jira Issue
 
@@ -50,6 +52,7 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 - Gather summary, description, and acceptance criteria, scoping the issue to the target-submodule the work package targets. Resolve assignee account ID if specified.
 - Create the issue with mapped type per jira-type-mapping rule — the resulting issue is the created-issue. Capture issue_number and issue_url.
 - Jira issue type mapping: feature->Story, bug->Bug, task->Task, enhancement->Story, epic->Epic
+- If any Atlassian API call fails (auth, permissions, or invalid request — including the getJiraIssue verification in step 1), verify the cloudId and project access, and check the Jira issue type and required fields before retrying.
 
 ## Outputs
 
@@ -100,23 +103,3 @@ Issues should be clear to someone without prior context
 - getVisibleJiraProjects sequence — call getJiraProjectIssueTypesMetadata next
 - getJiraProjectIssueTypesMetadata sequence — call createJiraIssue next
 - createJiraIssue after call — Capture issue_number and issue_url from response
-
-## Errors
-
-### no_platform_selected
-
-**Cause:** User did not select GitHub or Jira for issue creation
-
-**Recovery:** Present platform selection checkpoint and wait for selection
-
-### gh_cli_error
-
-**Cause:** gh CLI command failed (auth, permissions, or network)
-
-**Recovery:** Verify gh auth status and repository access; retry or prompt user to create issue manually
-
-### jira_api_error
-
-**Cause:** Atlassian API call failed (auth, permissions, or invalid request)
-
-**Recovery:** Verify cloudId and project access; check Jira issue type and required fields
