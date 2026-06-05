@@ -147,6 +147,27 @@ export async function readTechnique(
     return err(new TechniqueNotFoundError(techniqueId));
   }
 
+  // Handle nested :: path (group::op or deeper group::subgroup::op).
+  if (techniqueId.includes('::')) {
+    const segs = techniqueId.split('::');
+    const group = segs[0]!;
+    const opPath = segs.slice(1).join('/');
+    const candidates = workflowId && workflowId !== META_WORKFLOW_ID ? [workflowId, META_WORKFLOW_ID] : [META_WORKFLOW_ID];
+    for (const wf of candidates) {
+      try {
+        const t = await tryLoadNestedTechnique(getWorkflowTechniquesDir(workflowDir, wf), group, opPath);
+        if (t) {
+          logInfo('Technique loaded (nested)', { id: techniqueId, workflowId: wf });
+          return ok(t);
+        }
+      } catch (error) {
+        if (!(error instanceof MarkdownTechniqueParseError)) throw error;
+        logWarn('Malformed nested technique file', { techniqueId, workflowId: wf, error: error instanceof Error ? error.message : String(error) });
+      }
+    }
+    return err(new TechniqueNotFoundError(techniqueId));
+  }
+
   if (workflowId) {
     const local = await tryLoadSkillInWorkflow(workflowDir, workflowId, techniqueId);
     if (local) {
@@ -302,11 +323,9 @@ export async function resolveTechniques(
     if (path.subName === undefined) {
       const tRes = await readTechnique(path.workflow ? `${path.workflow}/${path.technique}` : path.technique, workflowDir, path.workflow ?? currentWorkflow);
       if (tRes.success) {
-        // Wrap with ancestor Initial/Final. A standalone or group technique's only ancestor is
-        // the workflow root (its own Initial/Final/other blocks are delivered in full as its body).
         const wholeDir = getWorkflowTechniquesDir(workflowDir, path.workflow ?? currentWorkflow ?? META_WORKFLOW_ID);
-        const wrapped = await wrapProtocolWithAncestors(wholeDir, [path.technique], tRes.value.protocol);
-        results.push({ source: path.technique, workflow: path.workflow, name: '', type: 'technique', body: projectTechniqueBody({ ...tRes.value, protocol: wrapped }), ref });
+        const body = await composeLoaded(tRes.value, [path.technique], wholeDir);
+        results.push({ source: path.technique, workflow: path.workflow, name: '', type: 'technique', body: projectTechniqueBody(body), ref });
         touchedSkills.set(skillKey(path.workflow, path.technique), { workflow: path.workflow, technique: path.technique, cached: tRes.value });
       } else {
         results.push({ source: path.technique, workflow: path.workflow, name: '', type: 'not-found', body: null, ref });
@@ -339,14 +358,10 @@ export async function resolveTechniques(
       }
     }
     if (nested) {
-      // Wrap with the Initial/Final blocks of every ancestor container (workflow root + each
-      // containing group), recursively. The op's path under techniques/ is group(/sub…)/op.
       const nestedDir = getWorkflowTechniquesDir(workflowDir, opWorkflow ?? META_WORKFLOW_ID);
-      const wrapped = await wrapProtocolWithAncestors(nestedDir, [parsed.technique, ...parsed.name.split('/')], nested.protocol);
-      results.push({ source: parsed.technique, workflow: opWorkflow, name: parsed.name, type: 'technique', body: projectTechniqueBody({ ...nested, protocol: wrapped }), ref });
-      // A nested technique delivers its own rules the same way a standalone one does — via the
-      // auto-include pass below. Cache the nested technique (its own rules) AND its group index
-      // (the group's shared rules).
+      const pathSegments = [parsed.technique, ...parsed.name.split('/')];
+      const body = await composeLoaded(nested, pathSegments, nestedDir);
+      results.push({ source: parsed.technique, workflow: opWorkflow, name: parsed.name, type: 'technique', body: projectTechniqueBody(body), ref });
       touchedSkills.set(skillKey(opWorkflow, `${parsed.technique}::${parsed.name}`), { workflow: opWorkflow, technique: `${parsed.technique}::${parsed.name}`, cached: nested });
       const idxRef = opWorkflow ? `${opWorkflow}/${parsed.technique}` : parsed.technique;
       const idxResult = await readTechnique(idxRef, workflowDir);
@@ -511,38 +526,59 @@ async function loadWorkflowRoot(workflowDir: string, workflowId: string): Promis
 }
 
 /**
- * Compose a technique with its workflow-root base contract (R4).
+ * Apply the full ancestor-chain contract to an already-loaded technique.
  *
- * Inheritance is **executing-workflow-only** — `workflowId`'s root, never meta's. Keyed sections
- * (inputs/outputs/rules/errors) union with the technique-local entry overriding. The protocol is
- * WRAPPED, not prepended: the root contributes only its `Initial` blocks (before) and `Final`
- * blocks (after) the technique's own protocol; any other root protocol block is root-only and
- * surfaces solely when the root is referenced directly. (The bundle path applies the same wrap
- * recursively across the full ancestor chain — see wrapProtocolWithAncestors.)
+ * Loads every ancestor container reachable from `techniquesDir` along `pathSegments` — the
+ * workflow root (`TECHNIQUE.md`) and each containing group — then:
+ *   - Merges inputs/outputs/rules: ancestor provides the base, closer ancestors override,
+ *     the technique itself wins (outermost-first merge, reversed so each mergeById call
+ *     treats the ancestor as "parent" and the accumulated value as "child").
+ *   - Wraps the protocol with every ancestor's `Initial`/`Final` blocks via
+ *     `wrapProtocolWithAncestors` (same full-chain order as the bundle path).
+ *
+ * Used by both `composeTechnique` (get_technique path) and `resolveTechniques` (bundle path)
+ * so the two delivery paths share a single composition implementation.
+ *
+ * Returns the original technique unchanged on validation failure.
  */
-export async function composeTechnique(
-  techniqueId: string,
-  workflowDir: string,
-  workflowId: string,
-): Promise<Result<Technique, TechniqueNotFoundError>> {
-  const base = await readTechnique(techniqueId, workflowDir, workflowId);
-  if (!base.success) return base;
-  const technique = base.value;
+async function composeLoaded(
+  technique: Technique,
+  pathSegments: string[],
+  techniquesDir: string,
+): Promise<Technique> {
+  if (pathSegments.length === 1 && pathSegments[0] === ROOT_INDEX_ID) return technique;
 
-  const root = await loadWorkflowRoot(workflowDir, workflowId);
-  if (!root || root.id === technique.id) return ok(technique); // no root, or the technique IS the root index
+  const ancestors: Technique[] = [];
+  const loadAnc = async (id: string): Promise<void> => {
+    try {
+      const t = await tryLoadMarkdownTechnique(techniquesDir, id);
+      if (t && t.id !== technique.id) ancestors.push(t);
+    } catch (e) {
+      if (!(e instanceof MarkdownTechniqueParseError)) throw e;
+      logWarn('Skipping malformed ancestor while composing', { id, error: (e as Error).message });
+    }
+  };
+  await loadAnc(ROOT_INDEX_ID);
+  for (let i = 0; i < pathSegments.length - 1; i++) {
+    await loadAnc(pathSegments.slice(0, i + 1).join('/'));
+  }
+  if (ancestors.length === 0) return technique;
+
+  // Merge outermost-first: reversing puts innermost first so each mergeById(ancestor, acc)
+  // call treats the ancestor as "parent" (provides base) and acc as "child" (wins).
+  // Final precedence: technique > innermost ancestor > ... > workflow root.
+  let inputs = technique.inputs;
+  let output = technique.output;
+  let rules = technique.rules;
+  for (const anc of [...ancestors].reverse()) {
+    inputs = mergeById(anc.inputs, inputs);
+    output = mergeById(anc.output, output);
+    rules = mergeKeyed(anc.rules, rules);
+  }
+
+  const protocol = await wrapProtocolWithAncestors(techniquesDir, pathSegments, technique.protocol);
 
   const composed: Record<string, unknown> = { ...technique };
-  const inputs = mergeById(root.inputs, technique.inputs);
-  const output = mergeById(root.output, technique.output);
-  const rules = mergeKeyed(root.rules, technique.rules);
-  // The workflow root is the technique's sole ancestor here (readTechnique resolves whole
-  // techniques, never deeper-nested ops). Wrap with the root's Initial/Final only — other root
-  // protocol blocks are root-only and surface when the root is referenced directly.
-  const initial = blocksTitled(root.protocol, 'Initial');
-  const final = blocksTitled(root.protocol, 'Final');
-  const wrappedProtocol = [...initial, ...(technique.protocol ?? []), ...final];
-  const protocol = wrappedProtocol.length > 0 ? wrappedProtocol : undefined;
   if (inputs) composed['inputs'] = inputs; else delete composed['inputs'];
   if (output) composed['output'] = output; else delete composed['output'];
   if (rules) composed['rules'] = rules; else delete composed['rules'];
@@ -551,13 +587,37 @@ export async function composeTechnique(
   const result = safeValidateTechnique(composed);
   if (!result.success) {
     logWarn('Composed technique failed validation; returning uncomposed', {
-      techniqueId,
-      workflowId,
+      id: technique.id,
       errors: result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`),
     });
-    return ok(technique);
+    return technique;
   }
-  return ok(result.data);
+  return result.data;
+}
+
+/**
+ * Load and compose a technique with the full ancestor-chain contract from its executing workflow.
+ *
+ * Accepts plain IDs, `workflow/id` cross-workflow prefixes, and `group::op` nested paths.
+ * Delegates composition to `composeLoaded` — the single implementation shared with the bundle
+ * path (`resolveTechniques`). Both paths therefore produce identical inputs/outputs, rules, and
+ * protocol (full Initial/Final wrap across the ancestor chain).
+ */
+export async function composeTechnique(
+  techniqueId: string,
+  workflowDir: string,
+  workflowId: string,
+): Promise<Result<Technique, TechniqueNotFoundError>> {
+  const base = await readTechnique(techniqueId, workflowDir, workflowId);
+  if (!base.success) return base;
+
+  // Derive path segments within the workflow's techniques directory.
+  // Strip any leading 'workflow/' cross-workflow prefix, then split on '::'.
+  const rawId = techniqueId.includes('/') ? (techniqueId.split('/', 2)[1] ?? techniqueId) : techniqueId;
+  const pathSegments = rawId.split('::').filter(s => s.length > 0);
+  const techniquesDir = getWorkflowTechniquesDir(workflowDir, workflowId);
+
+  return ok(await composeLoaded(base.value, pathSegments, techniquesDir));
 }
 
 /**

@@ -165,17 +165,21 @@ A container `TECHNIQUE.md` — a group's or the workflow root's — defines Inpu
 shared by the techniques it contains. Keyed sections union, with the technique-local entry taking
 precedence by id or name.
 
-How a shared rule reaches the agent depends on the delivery path:
+Both delivery paths (`get_technique` and the `get_activity` / `get_workflow` bundle) use the same
+`composeLoaded` implementation:
 
-- On the bundle path (§7.2), a referenced technique contributes its own rules; a referenced nested
-  technique additionally contributes its group container's rules — the group's `TECHNIQUE.md` is
-  bundled whenever one of its children is referenced.
-- On the `get_technique` path, `composeTechnique` additionally merges the executing workflow-root
-  container's shared rules into the technique.
+- **Inputs / Output**: merged from every ancestor container outward to the executing workflow root;
+  the technique-local entry overrides any ancestor entry of the same id.
+- **Rules**: merged from every ancestor container; the technique-local entry overrides any ancestor
+  entry of the same name. On the bundle path rules are additionally emitted as separate `rule`
+  entries (§7.2) so they can be addressed and selectively included.
+- **Protocol**: wrapped with every ancestor's `Initial` and `Final` blocks via
+  `wrapProtocolWithAncestors` (the full ancestor chain, not the root only — see §6).
 
-A rule shared across a group's members is therefore authored on that group's container, where both
-paths deliver it. Placing it on the workflow root alone shares it only on the `get_technique` path;
-the bundle path does not fold the workflow root into an individual technique.
+Ancestry follows the executing workflow: the containers considered are the executing workflow's root
+`TECHNIQUE.md` and each containing group's `TECHNIQUE.md` along the technique's path. Containers
+from a different (source) workflow — relevant when a meta technique is used in another workflow's
+session — are not included; only the executing workflow's containers apply.
 
 ---
 
