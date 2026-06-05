@@ -194,18 +194,20 @@ above (not a real designator). Re-running the analyzer confirms no other input/o
 
 ### Deferred input/output cases — RESOLVED (2026-06-05)
 
-The 3 deferred cases were reviewed. The principle applied: an input that is neither consumed by a
-step **nor needed by a rule** is not part of the interface contract and is removed; an input that is
-*needed* (e.g. by a gating rule) is kept even though no step references it.
+The 3 deferred cases were reviewed under a sharpened principle: **anything not explicitly consumed
+by a protocol step is an inference gap — there is no rule-based exception.** A declared input/output
+must be referenced by a step that consumes/produces it. If a value gates the technique, the gate
+belongs in the procedure as a step that consumes the input — not relegated to a rule the protocol
+never touches. If a value is referenced by nothing, it is not part of the contract and is removed.
 
 | Technique | Designator | Resolution |
 |-----------|------------|-----------|
-| prism-evaluate/techniques/resolve-findings.md | `evaluation_description` (input) | **Removed** — context-only; referenced nowhere (no step, no rule). Not part of the contract. |
+| prism-evaluate/techniques/resolve-findings.md | `evaluation_description` (input) | **Removed** — context-only; referenced nowhere. Not part of the contract. |
 | prism/techniques/full-prism.md | `target-type` (input) | **Removed** — optional/defaulted; the per-pass technique is keyed entirely on `lens-resource-index`; target-type belongs to the orchestrator that selects the index, not to this technique. |
-| work-package/techniques/create-adr.md | `complexity` (input) | **Kept** — the `complexity-gate` rule ("only create ADRs for moderate or complex implementations") depends on the complexity assessment, so it is *needed* (a gating input), merely not step-consumed. This is the legitimate gating-input exception to "thread every designator". |
+| work-package/techniques/create-adr.md | `complexity` (input) | **Threaded** — the gate was promoted from the `complexity-gate` rule to an explicit `Gate On Complexity` protocol step that consumes `{complexity}` ("proceed only when moderate/complex…"); the redundant rule was removed (avoids protocol-restatement, AP-24). The input is now step-consumed. |
 
-After resolution the only residual analyzer hit is the matcher artifact in `write-report.md`
-(`Issue {number}: {title}` — a template line inside a component body, not a real designator).
+After resolution the analyzer reports **0 unreferenced inputs and 0 unreferenced outputs** across all
+206 techniques. (Only error designators remain — see below.)
 
 ### Errors — still deferred (policy)
 
