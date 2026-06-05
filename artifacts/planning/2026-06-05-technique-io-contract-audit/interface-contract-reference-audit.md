@@ -209,8 +209,32 @@ never touches. If a value is referenced by nothing, it is not part of the contra
 After resolution the analyzer reports **0 unreferenced inputs and 0 unreferenced outputs** across all
 206 techniques. (Only error designators remain — see below.)
 
-### Errors — still deferred (policy)
+### Errors — resolved by folding into the protocol (2026-06-05)
 
-The 191 unreferenced error designators are untouched, pending the convention decision (accept that
-error names are diagnostic labels not anchored in protocol, vs. require a recovery step that names
-the error).
+The policy decision: an error arises from a specific step's action, so its handling belongs **with
+that step**, not in a technique-wide catalogue the procedure never references — the same
+step-anchoring principle as inputs/outputs. The `## Errors` section was therefore folded away:
+
+- **Content** — across the 104 Errors-bearing techniques, each error's cause+recovery was folded into
+  the protocol block that gives rise to it, as conditional prose; the `## Errors` section was deleted.
+  194 errors folded; 0 sections left behind. A small set of cross-cutting/environmental errors
+  (e.g. tool/server unavailable, CLI not installed) were attached to the step that first exercises the
+  resource — recorded as judgement calls in the workflow run for later review.
+- **Code/schema** — error parsing, the in-body errors field, the `::<error>` resolution branch, the
+  errors bundle bucket, the `'error'` result type, the `composeTechnique` errors merge, and the
+  `errors` field of the zod and JSON technique schemas were all removed. One test was repointed to
+  assert techniques carry no errors field.
+- **Verification** — the analyzer reports **0 unreferenced inputs / outputs / errors** across all 206
+  techniques; no `## Errors` sections remain; full suite green (363 pass / 2 skip).
+
+Pre-existing evidence that made this safe: no workflow content addressed errors via `::` (every `::`
+reference resolved to a technique or rule), so errors reached the agent only in-body; deprecation is
+non-breaking for content references.
+
+### Reference-anchoring principle (established by this work)
+
+A declared input/output is referenced by a step that consumes/produces it (a gate is a step that
+consumes its input); a value referenced by no step is not part of the contract and is removed. Error
+handling is written inline in the protocol step that gives rise to the failure. This is captured for
+documentation generally in `.engineering/CLAUDE.md` (describe the system as-is) and in
+`docs/technique-protocol-specification.md`.

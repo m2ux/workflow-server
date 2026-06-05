@@ -27,6 +27,19 @@ Run these from the **repository root**, not from `.engineering/`.
 - Do not add process attribution in code comments (e.g. “Added by agent”).
 - Place new planning artifacts under `artifacts/planning/` (see root README for structure).
 
+### Documentation voice — describe the system as it is
+
+Documentation (specs, READMEs, schema docs, technique/workflow content, code comments) describes the
+system **as it currently is**, in plain declarative present tense. Do **not** narrate evolution in
+documentation: avoid “deprecated”, “no longer”, “formerly”, “previously”, “replaces”, “instead of”,
+“now”, “unified”/“one kind”, contrasts against a prior design, and “there is no X” / “X was removed”.
+State what the system does and how it is structured — not what it stopped doing or used to do. A
+reader who has never seen an earlier version should notice nothing missing.
+
+**Planning artifacts are the exception.** Documents under `artifacts/planning/` are *meant* to record
+evolution — the decision, the before/after, the rationale, the alternatives weighed, and deferred
+items. Capture the journey there; keep it out of the system's own documentation.
+
 ## Task management
 
 - Complete **one** task at a time unless the user asks for multiple.
