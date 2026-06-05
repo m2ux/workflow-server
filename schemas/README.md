@@ -427,7 +427,7 @@ A loop enables iteration over collections or while conditions hold.
 
 #### SkillsReference
 
-LEGACY: References to techniques used by an activity (the `skills` field is retained for backward compatibility; new activities compose behaviour via `operations`).
+References to the techniques an activity uses (primary and supporting), addressed by `::` path. The `skills` field is an alias of `techniques`, retained for backward compatibility.
 
 | Field        | Type     | Purpose                                |
 | ------------ | -------- | -------------------------------------- |
@@ -1508,5 +1508,5 @@ A minimal technique demonstrating key concepts:
 
 - [API Reference](../docs/api-reference.md) — MCP server tools and endpoints
 - [Development Guide](../docs/development.md) — Building and testing the server
-- [Resource Resolution Model](../docs/resource_resolution_model.md) — How techniques, operations, and resources are loaded
+- [Resource Resolution Model](../docs/resource_resolution_model.md) — How techniques and resources are loaded
 - [IDE Setup](../docs/ide-setup.md) — Bootstrap rule and `workflow-server://schemas` MCP resource

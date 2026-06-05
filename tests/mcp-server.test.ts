@@ -98,7 +98,7 @@ async function transitionToActivity(client: Client, sessionIndex: string, activi
 
   const getResult = await client.callTool({ name: 'get_activity', arguments: { session_index: sessionIndex } });
   if (getResult.isError) throw new Error(`get_activity failed: ${(getResult.content[0] as { type: string; text: string }).text}`);
-  // get_activity prepends a resolved-operations bundle separated by '\n\n---\n\n' from the activity body.
+  // get_activity prepends a technique bundle separated by '\n\n---\n\n' from the activity body.
   const actResponse = parseWorkflowResponse(getResult);
 
   // The session_index is stable; keep the alias `nextToken` only to minimise diff churn in callers.
@@ -407,8 +407,8 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBe(true);
     });
 
-    it('errors when the workflow declares no primary technique (migrated to operations[])', async () => {
-      // Workflows declare operations[] and no longer declare techniques.primary;
+    it('errors when the workflow declares no primary technique', async () => {
+      // The workflow declares supporting techniques but no techniques.primary;
       // get_technique without a step_id has no primary to compose and errors.
       const result = await client.callTool({
         name: 'get_technique',
@@ -730,14 +730,14 @@ describe('mcp-server integration', () => {
   // ============== Workflow Summary Mode ==============
 
   describe('tool: get_workflow (summary mode)', () => {
-    it('should include the resolved-operations bundle before the --- separator', async () => {
+    it('should include the technique bundle before the --- separator', async () => {
       const result = await client.callTool({
         name: 'get_workflow',
         arguments: { session_index: sessionToken, summary: true },
       });
       expect(result.isError).toBeFalsy();
       const text = (result.content[0] as { type: 'text'; text: string }).text;
-      // The operations bundle (workflow.operations + core orchestrator ops) appears before the --- separator
+      // The technique bundle (the workflow's techniques + core orchestrator techniques) appears before the --- separator
       const sepIdx = text.indexOf('\n\n---\n\n');
       expect(sepIdx).toBeGreaterThan(0);
       const preamble = text.substring(0, sepIdx);
@@ -1006,10 +1006,6 @@ describe('mcp-server integration', () => {
       await client.callTool({ name: 'discover', arguments: {} });
       await client.callTool({ name: 'list_workflows', arguments: {} });
       await client.callTool({ name: 'health_check', arguments: {} });
-      await client.callTool({
-        name: 'resolve_operations',
-        arguments: { operations: ['workflow-engine::create-session'] },
-      });
 
       // The per-session trace length is unchanged — unauthenticated calls
       // produce no trace event keyed against `sessionToken`.
@@ -1026,7 +1022,7 @@ describe('mcp-server integration', () => {
 
       // Belt and braces: no event in the trace was emitted by any of the
       // unauthenticated tools.
-      const unauthenticatedNames = new Set(['discover', 'list_workflows', 'health_check', 'resolve_operations']);
+      const unauthenticatedNames = new Set(['discover', 'list_workflows', 'health_check']);
       for (const event of after.events) {
         expect(unauthenticatedNames.has(event.name)).toBe(false);
       }

@@ -16,9 +16,9 @@ describe('activity-loader', () => {
         expect(result.value.id).toBe('discover-session');
         expect(result.value.version).toBeDefined();
         expect(result.value.name).toBeDefined();
-        // discover-session has migrated off techniques.primary; operations[] may be omitted entirely
-        // when the activity relies solely on the core worker operations bundled by get_activity.
-        expect((result.value as { techniques?: unknown }).techniques).toBeUndefined();
+        // discover-session declares its techniques via techniques.supporting (no primary).
+        const techniques = (result.value as { techniques?: { primary?: string; supporting?: string[] } }).techniques;
+        expect(techniques?.supporting?.length).toBeGreaterThan(0);
         expect(result.value.workflowId).toBe('meta');
       }
     });

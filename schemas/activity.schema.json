@@ -390,7 +390,6 @@
           "description": "Supporting technique IDs"
         }
       },
-      "required": ["primary"],
       "additionalProperties": false
     },
     "activity": {
@@ -426,12 +425,7 @@
         },
         "techniques": {
           "$ref": "#/definitions/techniques",
-          "description": "LEGACY: Technique references (primary/supporting). Prefer operations."
-        },
-        "operations": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Flat array of technique-id::operation-name (or technique-id::rule-name) references this activity uses. Resolved via resolve_operations and bundled into get_activity."
+          "description": "Technique references (primary + supporting) the activity uses; bundled into get_activity."
         },
         "steps": {
           "type": "array",

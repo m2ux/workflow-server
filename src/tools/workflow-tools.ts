@@ -108,14 +108,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      // Bundle the workflow's declared technique refs + core orchestrator techniques.
-      // Deduplicate by ref so a workflow that explicitly lists a core technique only resolves it once.
+      // Bundle the workflow's technique refs (primary + supporting) and the core orchestrator
+      // techniques. Deduplicate by ref so a workflow that explicitly lists a core technique resolves it once.
       const wfTech = (wf as { techniques?: { primary?: string; supporting?: string[] } }).techniques;
       const wfTechRefs = [...(wfTech?.primary ? [wfTech.primary] : []), ...(wfTech?.supporting ?? [])];
-      const declaredOps = (wf as { operations?: string[] }).operations ?? [];
-      const orchestratorOps = Array.from(new Set([...wfTechRefs, ...declaredOps, ...CORE_ORCHESTRATOR_TECHNIQUES]));
-      const resolvedOps = await resolveTechniques(orchestratorOps, config.workflowDir, workflow_id);
-      const opsBlock = encodeToon(formatTechniqueBundle(resolvedOps));
+      const orchestratorTechniques = Array.from(new Set([...wfTechRefs, ...CORE_ORCHESTRATOR_TECHNIQUES]));
+      const resolvedOrchestrator = await resolveTechniques(orchestratorTechniques, config.workflowDir, workflow_id);
+      const opsBlock = encodeToon(formatTechniqueBundle(resolvedOrchestrator));
 
       // Pre-separator preamble holds the legacy primary-technique body (when present)
       // followed by the resolved-operations bundle. Tests and clients split on
@@ -321,16 +320,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         result.success ? validateWorkflowVersion(view, result.value) : null,
       );
 
-      // Bundle the techniques the activity references (primary + supporting, delivered
-      // as full protocols), the activity's declared operations[] refs, and core worker
-      // techniques, deduped.
+      // Bundle the techniques the activity references (primary + supporting, delivered as full
+      // protocols) and the core worker techniques, deduped.
       const activity = result.success ? getActivity(result.value, activity_id) : undefined;
       const actTech = (activity as { techniques?: { primary?: string; supporting?: string[] } } | undefined)?.techniques;
       const techRefs = [...(actTech?.primary ? [actTech.primary] : []), ...(actTech?.supporting ?? [])];
-      const declaredOps = (activity as { operations?: string[] } | undefined)?.operations ?? [];
-      const workerOps = Array.from(new Set([...techRefs, ...declaredOps, ...CORE_WORKER_TECHNIQUES]));
-      const resolvedOps = await resolveTechniques(workerOps, config.workflowDir, workflow_id);
-      const opsSection = encodeToon(formatTechniqueBundle(resolvedOps)) + '\n\n---\n\n';
+      const workerTechniques = Array.from(new Set([...techRefs, ...CORE_WORKER_TECHNIQUES]));
+      const resolvedWorker = await resolveTechniques(workerTechniques, config.workflowDir, workflow_id);
+      const opsSection = encodeToon(formatTechniqueBundle(resolvedWorker)) + '\n\n---\n\n';
 
       // artifactPrefix is server-computed from the activity filename and is NOT in
       // the raw activity TOON, so surface it in the header (and _meta) — the worker

@@ -142,11 +142,9 @@ export const ActivitySchema = z.object({
   problem: z.string().optional().describe('Description of the user problem this activity addresses'),
   recognition: z.array(z.string()).optional().describe('Patterns to match user intent to this activity'),
   
-  // Techniques (LEGACY — primary/supporting model). Optional. Prefer operations.
+  // Techniques the activity uses: a primary technique and supporting techniques, referenced by
+  // `::` path. The server bundles them into get_activity.
   techniques: TechniquesReferenceSchema.optional(),
-
-  // Operations (NEW — flat array of technique-id::operation-name refs the activity uses)
-  operations: z.array(z.string()).optional().describe('Flat array of technique-id::operation-name (or technique-id::rule-name) references the activity uses. Resolved via resolve_operations and bundled into get_activity.'),
 
   // Execution
   steps: z.array(StepSchema).optional().describe('Ordered execution steps for this activity'),

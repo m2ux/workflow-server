@@ -5,8 +5,7 @@ import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
-import { resolveTechniques, formatTechniqueBundle, composeTechnique, projectTechniqueToToon } from '../loaders/technique-loader.js';
-import { encodeToon } from '../utils/toon.js';
+import { composeTechnique, projectTechniqueToToon } from '../loaders/technique-loader.js';
 import {
   sessionIndexParam,
   assertNoActiveCheckpoint,
@@ -579,22 +578,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         _meta: { session_index, validation },
       };
     }), traceOpts)
-  );
-
-  // ============== Operation Resolution ==============
-
-  server.tool(
-    'resolve_operations',
-    'Resolve a flat list of technique::element references to their bodies. Each ref is in technique-id::element-name form (e.g., "agent-conduct::file-sensitivity", "workflow-orchestrator::evaluate-transition"). Optionally workflow-prefixed: "meta/agent-conduct::file-sensitivity". Returns a bundle grouped by kind: `techniques` is an object keyed by `<technique-id>[::<nested>]` → body; `rules` is a flat array of [rule-name, rule-line] tuples (one tuple per line, with global rules from any touched technique auto-included); `unresolved` lists refs that did not resolve. Empty groups are omitted. No session_index required — this is a structural lookup.',
-    {
-      operations: z.array(z.string()).min(1).describe('List of technique::element references to resolve. Each entry is "technique-id::element-name" or "workflow/technique-id::element-name".'),
-    },
-    withAuditLog('resolve_operations', async ({ operations }) => {
-      const resolved = await resolveTechniques(operations, config.workflowDir);
-      return {
-        content: [{ type: 'text' as const, text: encodeToon(formatTechniqueBundle(resolved)) }],
-      };
-    })
   );
 
 }
