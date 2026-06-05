@@ -39,18 +39,3 @@ Change set — needed to know what's new, renamed, and deleted
 ### 4. Commit
 
 - Stage and commit: 'docs: update prism workflow documentation for upstream sync'.
-- Return `docs-result` summarizing the files updated and the number of prompt guide entries added.
-
-## Outputs
-
-### docs-result
-
-Summary of documentation updates
-
-#### files_updated
-
-List of modified files
-
-#### prompt_guide_entries_added
-
-Number of new prompt guide rows

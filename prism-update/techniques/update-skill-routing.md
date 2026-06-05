@@ -44,25 +44,6 @@ Change set with new, renamed, and deleted prisms
 ### 5. Commit
 
 - Stage all modified technique files. Commit: 'feat: update skill routing for N new prisms and M renames'.
-- Emit the `routing-result` summary recording the modified technique files, the number of goal-mapping entries added, and the number of renamed references fixed.
-
-## Outputs
-
-### routing-result
-
-Summary of technique updates
-
-#### skills_modified
-
-List of modified technique files
-
-#### entries_added
-
-Number of new goal-mapping entries
-
-#### references_fixed
-
-Number of renamed references updated
 
 ## Rules
 

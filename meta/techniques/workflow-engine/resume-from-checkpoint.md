@@ -17,12 +17,6 @@ The `session_index` for the worker's session — unchanged across the yield/resp
 
 Variable updates passed back by the orchestrator
 
-## Output
-
-### session_index
-
-Same `session_index` as the input (returned for symmetry; the index is stable)
-
 ## Protocol
 
 1. Call `resume_checkpoint { session_index }`; the server verifies that `session.json#activeCheckpoint` has been cleared by the orchestrator's `respond_checkpoint`.

@@ -14,7 +14,7 @@ techniques:
   supporting[3]:
     - "workflow-engine::handle-sub-workflow"
     - "workflow-engine::dispatch-activity"
-    - "agent-conduct::orchestrator-discipline"
+    - "agent-conduct::orchestrator"
 initialActivity: discover-session
 rules[3]:
   - "This workflow is the entrypoint for all workflow operations — bootstrap protocol enters here directly via start_session({ workflow_id: 'meta' })"
