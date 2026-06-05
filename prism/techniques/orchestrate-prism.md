@@ -121,10 +121,10 @@ single
 
 ### 10. Present Result
 
-- For single mode: read and present structural-analysis.md
-- For full-prism mode: read and present synthesis.md as the primary result. Note structural-analysis.md and adversarial-analysis.md as appendices.
-- For portfolio mode: present each per-lens artifact followed by a cross-lens convergence/divergence summary
-- For behavioral mode: read and present behavioral-synthesis.md as the primary result. Note behavioral-errors.md, behavioral-costs.md, behavioral-changes.md, behavioral-promises.md as appendices.
+- For single mode: read and present {structural_output_path}
+- For full-prism mode: read and present {synthesis_output_path} as the primary result. Note {structural_output_path} and {adversarial_output_path} as appendices.
+- For portfolio mode: present each per-lens artifact from {portfolio_output_paths} followed by a cross-lens convergence/divergence summary
+- For behavioral mode: read and present {behavioral_synthesis_output_path} as the primary result. Note the per-role paths in {behavioral_output_paths} as appendices.
 - Assemble and return the prism-result to the caller: the primary artifact path as final_artifact_path, every artifact produced during the pipeline as all_artifact_paths, and the pipeline_mode that was used
 
 ## Outputs
@@ -135,7 +135,7 @@ Complete prism analysis result with artifact paths
 
 #### final_artifact_path
 
-Path to the primary analysis artifact (structural-analysis.md for single, synthesis.md for full-prism)
+Path to the primary analysis artifact ({structural_output_path} for single, {synthesis_output_path} for full-prism)
 
 #### all_artifact_paths
 

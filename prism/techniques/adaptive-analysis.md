@@ -29,7 +29,7 @@ Directory for adaptive-stage1.md, adaptive-stage2.md (conditional), and full-pri
 
 ### 1. Stage 1 Sdl
 
-- Dispatch deep_scan ([deep-scan](../resources/deep-scan.md)) to a fresh worker on Haiku, passing {target-content} and {target-type} so the scan adapts to whether the input is code or general text
+- Dispatch [deep-scan](../resources/deep-scan.md) to a fresh worker on Haiku, passing {target-content} and {target-type} so the scan adapts to whether the input is code or general text
 - Worker writes to {output-path}/adaptive-stage1.md
 - Assess signal quality: conservation law + word count > 300 + bug table
 
@@ -42,14 +42,14 @@ Directory for adaptive-stage1.md, adaptive-stage2.md (conditional), and full-pri
 
 ### 3. Stage 2 L12
 
-- Dispatch L12 ([l12](../resources/l12.md)) to a fresh worker on Sonnet
+- Dispatch [L12](../resources/l12.md) to a fresh worker on Sonnet
 - Worker writes to {output-path}/adaptive-stage2.md
 - Re-assess signal quality with same criteria
 
 ### 4. Stage 3 Full
 
 - If still insufficient: run full-prism 3-pass pipeline
-- Produces structural-analysis.md, adversarial-analysis.md ([l12-complement-adversarial](../resources/l12-complement-adversarial.md)), synthesis.md ([l12-synthesis](../resources/l12-synthesis.md))
+- Produces structural, adversarial ([l12-complement-adversarial](../resources/l12-complement-adversarial.md)), and synthesis ([l12-synthesis](../resources/l12-synthesis.md)) artifacts — paths recorded in {adaptive-result}.artifact_paths
 - Return {adaptive-result} recording the deepest stage reached, the artifact paths produced, and the final signal assessment across all stages run
 
 ## Outputs

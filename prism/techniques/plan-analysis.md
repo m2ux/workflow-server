@@ -178,7 +178,7 @@ L12 pipeline (00-02) works for ALL target types. Code → resources 00-02 + 06-4
 
 ### single-lens-default
 
-When no goal or depth is specified, default to L12 ([l12](../resources/l12.md)).
+When no goal or depth is specified, default to [L12](../resources/l12.md).
 
 ### budget-drives-depth
 

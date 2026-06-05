@@ -38,10 +38,10 @@ Description of what was analysed — used in the report's Executive Summary scop
 ### 1. Identify Authoritative Source
 
 - Determine which artifacts contain definitive findings based on pipeline_mode
-- full-prism: synthesis.md is authoritative (reconciles structural + adversarial). Read structural-analysis.md and adversarial-analysis.md only for location details and evidence that the synthesis references.
-- portfolio: all portfolio-*.md artifacts are authoritative. If a portfolio-synthesis.md exists, it takes priority for cross-lens findings.
-- behavioral: behavioral-synthesis.md is authoritative. Individual behavioral-*.md artifacts provide supporting detail.
-- single: structural-analysis.md is authoritative.
+- full-prism: the synthesis artifact in {all-artifact-paths} is authoritative (reconciles structural + adversarial). Read the structural and adversarial artifacts from {all-artifact-paths} only for location details and evidence the synthesis references.
+- portfolio: all portfolio artifacts in {all-artifact-paths} are authoritative. If a portfolio-synthesis artifact exists, it takes priority for cross-lens findings.
+- behavioral: the behavioral-synthesis artifact is authoritative. Individual behavioral artifacts in {all-artifact-paths} provide supporting detail.
+- single: the structural artifact in {all-artifact-paths} is authoritative.
 
 ### 2. Read Artifacts
 
@@ -53,10 +53,10 @@ Description of what was analysed — used in the report's Executive Summary scop
 ### 3. Extract Findings
 
 - From each authoritative artifact, extract every finding with: original ID, title/description, severity, classification (fixable/structural/etc), and location reference
-- For full-prism: use the Definitive Findings Table in synthesis.md. Severities in this table are post-reconciliation and final.
+- For full-prism: use the Definitive Findings Table in the synthesis artifact. Severities in this table are post-reconciliation and final.
 - For portfolio: findings are per-lens. Extract from each lens artifact's findings or problem list.
 - For behavioral: extract from the behavioral-synthesis convergence analysis.
-- For single: extract from the L12 findings table in structural-analysis.md.
+- For single: extract from the L12 findings table in the structural artifact.
 - Also extract: core insights (deepest finding, conservation laws that survived challenge, convergence points) — these become the Core Finding section
 - If the authoritative artifact contains no extractable findings, write a report noting that the analysis produced no findings — this is a valid outcome for clean code/text.
 
@@ -98,8 +98,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 
 ### 8. Write Artifact
 
-- Write the complete report to {output-path}/REPORT.md
-- Report the artifact path, file size, and format validation status
+- Write the complete report as {report}; record {report}.report_path, file size, and format validation status
 
 ## Outputs
 

@@ -61,14 +61,14 @@ Directory to write the analysis artifact
 
 ### 5. Write Artifact
 
-- Determine artifact filename from the pass type: structural-analysis.md (index 00), adversarial-analysis.md (index 01), synthesis.md (index 02)
+- Derive {pass-artifact}.artifact from the pass type: structural (index 00), adversarial (index 01), synthesis (index 02) — following the template `{pass-type}-analysis.md`
 - Write the complete analysis to {output-path}/{artifact-filename}, producing the pass-artifact. If the write fails, verify the output-path directory exists and is writable.
 - Return the full pass-artifact path in the output
 - The analysis MUST be written to the filesystem. Return the pass-artifact path to the orchestrator so subsequent passes can read it.
 
 ### 6. Format Output
 
-- Structure the output with clear section headers matching the lens operations
+- Structure {pass-artifact}.analysis_text with clear section headers matching the lens operations
 - For structural: claim, dialectic, concealment mechanism, improvements, invariant, conservation law, meta-law, findings table
 - For adversarial: wrong predictions, overclaims, underclaims, revised findings table
 - For synthesis: refined conservation law, refined meta-law, definitive classification, deepest finding

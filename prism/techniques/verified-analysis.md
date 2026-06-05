@@ -33,13 +33,13 @@ Directory to write verified-initial.md, verified-gaps.md, and verified-corrected
 
 ### 1. Initial Analysis
 
-- Dispatch L12 ([l12](../resources/l12.md)) to a fresh worker, configured for the {target-type} of input ('code' or 'general')
+- Dispatch [L12](../resources/l12.md) to a fresh worker, configured for the {target-type} of input ('code' or 'general')
 - Worker writes to {output-path}/verified-initial.md
 
 ### 2. Gap Detection
 
 - Dispatch gap detection to a fresh worker
-- Worker loads knowledge_boundary (41) ([knowledge-boundary](../resources/knowledge-boundary.md)) and knowledge_audit (40) ([knowledge-audit](../resources/knowledge-audit.md))
+- Worker loads [knowledge-boundary](../resources/knowledge-boundary.md) (41) and [knowledge-audit](../resources/knowledge-audit.md) (40)
 - Worker applies both to the L12 OUTPUT (not source code), writes to {output-path}/verified-gaps.md
 - Gap detection prisms run on the L12 OUTPUT, not on source code
 
@@ -50,14 +50,14 @@ Directory to write verified-initial.md, verified-gaps.md, and verified-corrected
 
 ### 4. Corrected Analysis
 
-- Dispatch re-analysis to a fresh worker with L12 ([l12](../resources/l12.md))
+- Dispatch re-analysis to a fresh worker with [L12](../resources/l12.md)
 - Worker receives: <verified_knowledge source='GAP-ANALYSIS'>
 {gap_data}
 </verified_knowledge>
 
 {target_content}
 - Worker writes to {output-path}/verified-corrected.md
-- Return the {verified-result}: the paths to verified-initial.md, verified-gaps.md, and verified-corrected.md
+- Return {verified-result} — its initial_path, gaps_path, and corrected_path sub-fields hold the three pipeline artifact paths.
 
 ## Outputs
 
