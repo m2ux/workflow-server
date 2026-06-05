@@ -55,9 +55,9 @@ The MCP resource `workflow-server://schemas` returns all five schemas as a singl
 
 | Informal Pattern | Formal Construct | Schema Fields |
 |---|---|---|
-| "First do A, then do B" (procedure) | **Protocol** | `protocol.{step-id}[]` — arrays of imperative bullets |
-| "Needs a checklist path as input" | **Inputs** | `inputs[].id`, `.description`, `.required`, `.default` |
-| "Produces an audit report" | **Output** | `output[].id`, `.description`, `.components`, `.artifact.name` |
+| "First do A, then do B" (procedure) | **Protocol** | `protocol[]` — ordered blocks `{ title?, steps[] }`; titled blocks `Initial`/`Final` on a container wrap descendants (server renumbers) |
+| "Needs a checklist path as input" | **Inputs** | `inputs[].id`, `.description`, `.required`, `.default`, `.components` (composite members as `####` sub-sections) |
+| "Produces an audit report" | **Output** | `output[].id`, `.description`, `.components` (`####` sub-sections), `.artifact.name` (`#### artifact`) |
 | "Never modify the schema" | **Rules** | `rules.{rule-name}` — flat name-value pairs |
 | "Use get_workflow to load data" | **Tools** | `tools.{name}.when`, `.params`, `.returns`, `.next` |
 | "If not found, list available ones" | **Errors** | `errors.{name}.cause`, `.recovery` |
