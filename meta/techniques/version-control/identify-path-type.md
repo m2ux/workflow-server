@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Determine whether a path is a regular directory or a git submodule before committing.
 
 ## Inputs

@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Source architecture-diagram structure from graph resources rather than hand-rolled module surveys, scope-bounded to the affected processes. (summarize-architecture)
 
 ## Inputs

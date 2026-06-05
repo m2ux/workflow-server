@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 List child pages of a Confluence page.
 
 ## Inputs

@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Add labels to an issue or PR via REST.
 
 ## Inputs

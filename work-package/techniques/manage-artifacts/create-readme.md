@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Create README.md in the planning folder from the [readme](../../resources/readme.md) template.
 
 ## Inputs

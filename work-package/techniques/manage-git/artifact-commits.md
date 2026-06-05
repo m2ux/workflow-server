@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Commit planning artifacts to the parent engineering repo with the activity message pattern, rebasing onto sibling work-package commits to avoid push rejections.
 
 ## Inputs

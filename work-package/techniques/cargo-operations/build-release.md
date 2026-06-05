@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Release build; produces the final binary AND the runtime wasm artifact.
 
 ## Inputs

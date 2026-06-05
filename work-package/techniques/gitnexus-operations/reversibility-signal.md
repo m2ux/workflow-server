@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Gauge how reversible a change to a symbol is, to set the reversibility flag on judgement-augmentation assumptions. (review-assumptions)
 
 ## Inputs

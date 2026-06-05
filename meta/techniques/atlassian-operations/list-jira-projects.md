@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Discover Jira projects with their issue types.
 
 ## Inputs

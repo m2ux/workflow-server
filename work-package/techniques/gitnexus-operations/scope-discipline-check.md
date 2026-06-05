@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Verify the diff stays within the work-package's intended scope; flag scope creep where changes touch processes outside the requirements. (review-strategy, respond-to-pr-review)
 
 ## Inputs

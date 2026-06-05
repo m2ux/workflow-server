@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Transition the session to a target activity and spawn a worker for it.
 
 ## Inputs

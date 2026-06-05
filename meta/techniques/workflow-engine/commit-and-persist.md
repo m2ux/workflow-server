@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Post-activity hook: commit source-side changes and engineering artifacts.
 
 ## Inputs

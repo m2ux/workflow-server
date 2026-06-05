@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Extract ticket, branch, PR, and work-package identifiers from a user request.
 
 ## Inputs

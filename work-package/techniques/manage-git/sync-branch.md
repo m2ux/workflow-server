@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Fetch and rebase/merge from the default branch to keep the feature branch current.
 
 ## Inputs

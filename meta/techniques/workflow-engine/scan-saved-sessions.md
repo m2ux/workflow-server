@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Find saved client sessions matching a target workflow under `.engineering/artifacts/planning/`.
 
 ## Inputs

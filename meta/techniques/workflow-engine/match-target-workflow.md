@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Match a user request against the workflow catalog and surface ambiguity.
 
 ## Inputs

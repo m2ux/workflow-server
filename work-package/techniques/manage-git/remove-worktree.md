@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Tear down a worktree created earlier in the work package.
 
 ## Inputs

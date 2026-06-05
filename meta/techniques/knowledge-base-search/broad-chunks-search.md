@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Search across documents using an indexed concept term.
 
 ## Inputs

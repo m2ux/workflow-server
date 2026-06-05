@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Map the current git diff to the changed-symbol set and the execution flows it affects. The canonical pre-commit and diff-driven-review entry point.
 
 ## Inputs

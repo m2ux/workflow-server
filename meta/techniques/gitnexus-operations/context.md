@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 360-degree view of one symbol — callers, callees, and the execution flows it participates in.
 
 ## Inputs

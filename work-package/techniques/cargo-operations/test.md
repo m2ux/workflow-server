@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Run tests with bounded test parallelism; prefer nextest when configured.
 
 ## Inputs

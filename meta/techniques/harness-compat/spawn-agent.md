@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Dispatch a new isolated sub-agent with no prior context.
 
 ## Inputs

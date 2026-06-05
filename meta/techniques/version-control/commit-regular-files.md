@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Stage, commit, and push files in a regular (non-submodule) directory of the parent repo.
 
 ## Inputs

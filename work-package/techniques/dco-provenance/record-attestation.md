@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Append the attestation section to provenance-log.md at the dco-sign-off checkpoint. Runs once per work package, after task work is complete.
 
 ## Inputs

@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 List spaces accessible to the current user.
 
 ## Inputs

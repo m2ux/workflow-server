@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Dispatch a child workflow under the current session as its parent.
 
 ## Inputs

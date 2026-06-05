@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Add a comment to a Jira issue.
 
 ## Inputs

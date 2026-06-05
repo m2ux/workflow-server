@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Read and parse `.gitmodules` to enumerate submodule paths.
 
 ## Output

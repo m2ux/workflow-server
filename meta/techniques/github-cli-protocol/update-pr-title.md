@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Update the title of an existing PR via REST.
 
 ## Inputs

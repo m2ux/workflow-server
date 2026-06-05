@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Substitute state variables into a prompt template resource.
 
 ## Inputs

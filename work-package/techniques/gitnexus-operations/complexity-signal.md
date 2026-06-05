@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Objective complexity estimate for an issue, from the fan-out of a preliminary target symbol. (classify-problem)
 
 ## Inputs

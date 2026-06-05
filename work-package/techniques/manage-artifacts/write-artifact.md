@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Write (create or update) an artifact in the planning folder. A logical artifact — identified by its bare filename — has exactly ONE numbered instance: the one its creating activity made. Later activities that write the same bare filename UPDATE that instance in place, preserving its original number, rather than minting a new prefix.
 
 ## Inputs

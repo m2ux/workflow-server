@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Resume an existing sub-agent, preserving accumulated context where the harness supports it.
 
 ## Inputs

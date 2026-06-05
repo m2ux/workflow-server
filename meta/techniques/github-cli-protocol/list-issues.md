@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 List issues (read-only — safe via gh CLI).
 
 ## Inputs

@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Canonical formatting check; matches CI exactly. Does not compile, so does not need build-jobs caps.
 
 ## Inputs

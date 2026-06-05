@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Read a process resource for a step-by-step execution trace.
 
 ## Inputs

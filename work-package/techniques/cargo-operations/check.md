@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Type-check without producing binaries; the cheapest validation pass.
 
 ## Inputs

@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Update a Confluence page (full body replace).
 
 ## Inputs

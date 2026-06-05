@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Open a draft PR linked to the issue, assigned to the current GitHub user.
 
 ## Inputs

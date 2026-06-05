@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Verify the planning folder's README.md still matches the [readme](../../resources/readme.md) template structure (header block, executive summary, problem/solution overview, progress table, links). Catches template drift that would otherwise only be flagged late in the workflow by a human reviewer.
 
 ## Inputs

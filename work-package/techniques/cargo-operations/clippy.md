@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Run the linter against all targets, denying warnings.
 
 ## Inputs

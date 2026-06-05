@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Run check, clippy, test, and fmt-check concurrently against the same scope and aggregate their statuses into a single validation_results envelope. Replaces the four serial validate-class operations and is the canonical entry point for the validate activity on rust-substrate projects.
 
 ## Inputs

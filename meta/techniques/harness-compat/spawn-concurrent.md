@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Dispatch multiple independent agents in parallel.
 
 ## Inputs

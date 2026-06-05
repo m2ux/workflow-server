@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 View an existing PR (read-only — safe via gh CLI).
 
 ## Inputs

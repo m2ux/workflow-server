@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Compile the `activity_complete` result after all steps, checkpoints, and artifacts are done.
 
 ## Inputs

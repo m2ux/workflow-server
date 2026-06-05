@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Add a page-level (footer) comment to a Confluence page.
 
 ## Inputs

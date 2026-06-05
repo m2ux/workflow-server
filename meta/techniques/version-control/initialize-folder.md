@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Create the per-work-package planning folder under `.engineering/artifacts/planning/` in the TARGET component repository (your CWD is `target_path`). This is the canonical planning-folder creation operation for all workflows; its `planning_folder_path` output is the single location every artifact for this work package is written to.
 
 ## Inputs

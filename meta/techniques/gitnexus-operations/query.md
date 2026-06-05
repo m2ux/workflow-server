@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Find execution flows related to a concept, symptom, or error string — the structural alternative to grepping for a concept.
 
 ## Inputs

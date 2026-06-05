@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Raw graph query for traces and filters not covered by the higher-level operations.
 
 ## Inputs

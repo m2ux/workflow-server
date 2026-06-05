@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Pick the next activity from the current activity's `transitions[]`.
 
 ## Inputs

@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Probe required toolchain prerequisites before running any workspace cargo command. Surfaces missing system dependencies (protoc, openssl headers, pkg-config, ...) as a structured environment finding so the validate activity fails fast rather than mid-workspace-compile.
 
 ## Output

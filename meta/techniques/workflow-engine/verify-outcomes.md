@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Compare a workflow's declared `outcome[]` against state and identify gaps.
 
 ## Inputs

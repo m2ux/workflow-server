@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Search within a known document by its resolved path.
 
 ## Inputs

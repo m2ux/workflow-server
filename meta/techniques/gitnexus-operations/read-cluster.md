@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Read a functional-area cluster resource — area members and cohesion score.
 
 ## Inputs

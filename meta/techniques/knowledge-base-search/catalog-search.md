@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Resolve a document name to its full source path.
 
 ## Inputs

@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Discover available status transitions for an issue.
 
 ## Inputs

@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Pick the saved-session candidate that best matches an identifying context.
 
 ## Inputs

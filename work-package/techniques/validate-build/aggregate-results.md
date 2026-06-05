@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Combine per-check outcomes into a single `validation_results` envelope.
 
 ## Inputs

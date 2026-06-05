@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Continue execution after the orchestrator resolves a checkpoint.
 
 ## Inputs

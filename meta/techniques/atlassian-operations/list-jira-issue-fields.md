@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Discover the fields for a specific issue type in a project.
 
 ## Inputs

@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Read the matching domain index file from `.engineering/resources/`.
 
 ## Inputs

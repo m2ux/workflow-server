@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Generate API documentation to verify inline doc comments compile.
 
 ## Inputs

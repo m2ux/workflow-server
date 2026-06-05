@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Workspace dev build; skips the runtime wasm artifact.
 
 ## Inputs

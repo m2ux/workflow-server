@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Pause at a checkpoint and surface the yield.
 
 ## Inputs

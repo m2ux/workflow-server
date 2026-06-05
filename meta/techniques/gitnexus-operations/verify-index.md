@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Read the GitNexus index context resource and check freshness for the target repo.
 
 ## Inputs

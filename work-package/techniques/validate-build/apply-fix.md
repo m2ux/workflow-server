@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Apply the chosen fix strategy and prepare for re-validation.
 
 ## Inputs

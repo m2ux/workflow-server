@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Send the user's selection back to the server, clearing the active checkpoint.
 
 ## Inputs

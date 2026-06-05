@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Query GitHub for the repo's allowed merge strategies (specifically, whether squash merging is enabled).
 
 ## Inputs

@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Compose the markdown session summary presented at workflow close.
 
 ## Inputs

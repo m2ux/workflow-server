@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 List pages in a Confluence space.
 
 ## Inputs

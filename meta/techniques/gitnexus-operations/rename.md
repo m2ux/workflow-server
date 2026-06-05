@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Multi-file rename driven by the call graph (preview or apply).
 
 ## Inputs

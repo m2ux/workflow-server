@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Apply rustfmt formatting in place.
 
 ## Inputs

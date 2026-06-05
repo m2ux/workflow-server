@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Materialise a working directory as a git worktree on a new feature branch off the component's default branch. Creates the target_path AND the feature branch in one step.
 
 ## Inputs

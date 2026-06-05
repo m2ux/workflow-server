@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Identify the root cause of a single failed validation check.
 
 ## Inputs

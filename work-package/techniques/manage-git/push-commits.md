@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Push local commits on the feature branch to the remote.
 
 ## Inputs

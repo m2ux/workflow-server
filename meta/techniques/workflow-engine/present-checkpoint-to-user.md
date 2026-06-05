@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Load the active checkpoint's details and present them to the user.
 
 ## Inputs

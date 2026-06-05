@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Update fields on an existing Jira issue.
 
 ## Inputs

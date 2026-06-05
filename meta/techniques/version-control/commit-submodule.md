@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Two-step submodule commit: commit + push inside the submodule, then update the parent's submodule pointer.
 
 ## Inputs

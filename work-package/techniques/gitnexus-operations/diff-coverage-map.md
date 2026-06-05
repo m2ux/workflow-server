@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Drive test-coverage review from the actual changed-symbol set rather than project-wide heuristics. (review-test-suite)
 
 ## Output

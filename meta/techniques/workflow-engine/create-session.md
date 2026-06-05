@@ -1,3 +1,10 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
 Dispatch a fresh client workflow as a child of the meta session.
 
 ## Inputs
