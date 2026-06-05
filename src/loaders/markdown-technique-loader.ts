@@ -239,7 +239,7 @@ interface IndexParse {
   id: string;
   version: string;
   capability: string;
-  inputs: Array<{ id: string; description?: string; required?: boolean }> | undefined;
+  inputs: Array<{ id: string; description?: string; required?: boolean; components?: Record<string, string>; default?: string }> | undefined;
   protocol: ProtocolBlock[] | undefined;
   output: Array<{ id: string; description?: string; artifact?: { name: string }; components?: Record<string, string> }> | undefined;
   rules: Record<string, string | string[]> | undefined;
@@ -275,19 +275,58 @@ function parseTechniqueIndex(raw: string, sourcePath: string, id: string): Index
   };
 }
 
+/**
+ * Split an Inputs/Output entry body into its lead description and `####` sub-sections.
+ * Each sub-section names a component member of the entry; a sub-section whose title equals
+ * `reserved` (case-insensitive) is pulled out as entry metadata instead of a component —
+ * `artifact` for outputs (the persistence filename), `default` for inputs (the default value).
+ * Returns the lead description, the component map (excluding the reserved member), and the
+ * reserved member's value when present.
+ */
+function parseEntrySubsections(
+  body: string,
+  reserved: 'artifact' | 'default',
+): { description?: string; components?: Record<string, string>; reserved?: string } {
+  const subs = splitSections(body, 4);
+  // Lead description is everything before the first `#### ` heading.
+  const firstHeading = body.search(/^####\s/m);
+  const lead = firstHeading === -1 ? body : body.slice(0, firstHeading);
+  const description = bodyParagraphs(lead) || undefined;
+  const out: { description?: string; components?: Record<string, string>; reserved?: string } = {};
+  if (description) out.description = description;
+  const components: Record<string, string> = {};
+  for (const s of subs) {
+    const value = bodyParagraphs(s.body);
+    if (s.title.toLowerCase() === reserved) {
+      // Strip surrounding inline-code backticks from a filename/default literal.
+      out.reserved = value.replace(/^`+|`+$/g, '').trim();
+    } else {
+      components[s.title] = value;
+    }
+  }
+  if (Object.keys(components).length > 0) out.components = components;
+  return out;
+}
+
 function parseInputsSection(section: Section | undefined): IndexParse['inputs'] {
   if (!section) return undefined;
   const items = splitSections(section.body, 3);
   if (items.length === 0) return undefined;
-  const result: Array<{ id: string; description?: string; required?: boolean }> = [];
+  const result: NonNullable<IndexParse['inputs']> = [];
   for (const item of items) {
-    const para = bodyParagraphs(item.body);
-    const optionalMatch = para.match(/^\*?\(?\s*optional\s*\)?\*?\s*/i);
-    const isOptional = Boolean(optionalMatch);
-    const description = (isOptional ? para.slice(optionalMatch![0].length) : para).trim() || undefined;
-    const entry: { id: string; description?: string; required?: boolean } = { id: item.title };
-    if (description !== undefined) entry.description = description;
-    if (isOptional) entry.required = false;
+    const { description, components, reserved } = parseEntrySubsections(item.body, 'default');
+    const entry: { id: string; description?: string; required?: boolean; components?: Record<string, string>; default?: string } = { id: item.title };
+    let desc = description;
+    if (desc) {
+      const optionalMatch = desc.match(/^\*?\(?\s*optional\s*\)?\*?\s*/i);
+      if (optionalMatch) {
+        entry.required = false;
+        desc = desc.slice(optionalMatch[0].length).trim() || undefined;
+      }
+    }
+    if (desc) entry.description = desc;
+    if (components) entry.components = components;
+    if (reserved !== undefined) entry.default = reserved;
     result.push(entry);
   }
   return result;
@@ -339,47 +378,16 @@ function parseOutputsSection(section: Section | undefined): IndexParse['output']
   if (items.length === 0) return undefined;
   const result: NonNullable<IndexParse['output']> = [];
   for (const item of items) {
+    const { description, components, reserved } = parseEntrySubsections(item.body, 'artifact');
     const out: {
       id: string;
       description?: string;
       artifact?: { name: string };
       components?: Record<string, string>;
     } = { id: item.title };
-
-    const components: Record<string, string> = {};
-    let description: string | undefined;
-    const paraLines: string[] = [];
-    let inComponents = false;
-
-    for (const line of item.body.split(/\r?\n/)) {
-      const trimmed = line.trim();
-      if (!trimmed) {
-        if (!inComponents && paraLines.length > 0) {
-          // Paragraph break before any component bullets — preserve as description.
-          description = paraLines.join(' ').trim();
-          paraLines.length = 0;
-        }
-        continue;
-      }
-      const bulletMatch = trimmed.match(/^[-*]\s+\*\*([A-Za-z_][\w-]*)\*\*\s*:\s*`?([^`]+?)`?\s*$/);
-      if (bulletMatch) {
-        inComponents = true;
-        const key = bulletMatch[1]!;
-        const value = bulletMatch[2]!.trim();
-        if (key === 'artifact') {
-          out.artifact = { name: value };
-        } else {
-          components[key] = value;
-        }
-        continue;
-      }
-      if (!inComponents) paraLines.push(trimmed);
-    }
-    if (paraLines.length > 0 && description === undefined) {
-      description = paraLines.join(' ').trim();
-    }
     if (description) out.description = description;
-    if (Object.keys(components).length > 0) out.components = components;
+    if (components) out.components = components;
+    if (reserved !== undefined) out.artifact = { name: reserved };
     result.push(out);
   }
   return result;

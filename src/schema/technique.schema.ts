@@ -89,6 +89,7 @@ export const InputItemDefinitionSchema = z.object({
   description: z.string().optional().describe('Human-readable description of this input'),
   required: z.boolean().default(true).describe('Whether this input must be supplied. Defaults to true — only set to false for optional inputs.'),
   default: z.unknown().optional().describe('Default value when not supplied'),
+  components: z.record(z.string()).optional().describe('Named sub-members of a composite input (authored as `####` sub-sections under the input). Mirrors output components.'),
 });
 export type InputItemDefinition = z.infer<typeof InputItemDefinitionSchema>;
 
