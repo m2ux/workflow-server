@@ -53,19 +53,30 @@ target model and does not mention them. The code still contains them — see the
 `docs/checkpoint_model.md`, `docs/dispatch_model.md`, `docs/artifact_management_model.md`, `SETUP.md`,
 `docs/ide-setup.md`, the condition/state/activity/workflow JSON schemas, and most workflow READMEs.
 
-## Follow-up — code cleanup: remove the `operations[]` / `resolve_operations` machinery
+## Code cleanup — `operations[]` / `resolve_operations` machinery removed (2026-06-05)
 
-A separate code task (out of scope for this docs pass). The technique bundle is already produced by
-`resolveTechniques` + `formatTechniqueBundle`; the activity/workflow `operations[]` lists and the
-`resolve_operations` tool are the remaining vestige. Touch points:
+Done. The technique bundle is produced by `resolveTechniques` + `formatTechniqueBundle` from
+`techniques.primary` + `techniques.supporting[]` plus the core technique refs.
 
-- `src/tools/resource-tools.ts` — the `resolve_operations` tool registration and handler.
-- `src/tools/workflow-tools.ts` — the `declaredOps = (…).operations ?? []` reads at the workflow and
-  activity level (and the `declaredOps`/`orchestratorOps`/`opsBlock` locals); rely on
-  `techniques.primary` + `techniques.supporting[]` plus the core technique refs.
-- `schemas/workflow.schema.json` / `schemas/activity.schema.json` — the `operations` reference-array
-  fields (and the README rows that document them).
-- Tests referencing `resolve_operations` / `operations[]`.
+- **Content** — seven definitions declared their techniques via `operations[]`: `meta/workflow.toon`,
+  the five `meta/activities/*`, and `work-package/activities/10-validate.toon`. Each `operations[]`
+  was migrated into `techniques.supporting[]` (none had a `techniques:` block; `primary` is optional),
+  so the same techniques remain in the bundle.
+- **Code** — removed the `operations[]` reads in `workflow-tools.ts` (workflow and activity level;
+  the bundle is now `techniques` refs + core techniques) and the `resolve_operations` tool in
+  `resource-tools.ts` (with its now-unused imports).
+- **Schema** — added `supporting` to the workflow-level techniques; removed the `operations` field and
+  relaxed the required-`primary` constraint across the zod and JSON workflow and activity schemas.
+- **Tests** — removed the `resolve_operations` invocation and auth-exempt entry; updated the
+  activity-loader assertion for the migrated `discover-session`.
+
+Verification: 363 pass / 2 skip; definition-lint confirms every migrated activity resolves its
+techniques into the bundle.
+
+Pre-existing, separate drift to address when convenient: the zod `TechniqueSchema` carries optional
+legacy fields (`architecture`, `tools`, `flow`, `matching`, `state`, …, `interpretation`,
+`resumption`) absent from `schemas/technique.schema.json`; the activity schema's `techniques`/`skills`
+aliasing. Neither relates to the technique-model change.
 
 Pre-existing, separate drift to address when convenient: the zod `TechniqueSchema` carries optional
 legacy fields (`architecture`, `tools`, `flow`, `matching`, `state`, …, `interpretation`,
