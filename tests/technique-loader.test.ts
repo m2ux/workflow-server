@@ -391,6 +391,137 @@ describe('technique-loader', () => {
       expect(grpSteps).toEqual(['root-init', 'grp-init', 'grp-setup', 'grp-final', 'root-final']);
     });
 
+    it('composeTechnique merges inputs and output from the full ancestor chain', async () => {
+      const dir = join(tempDir, 'wp', 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(dir, 'TECHNIQUE.md'),
+        [
+          ...FM('TECHNIQUE'),
+          '## Capability', '', 'Root.', '',
+          '## Inputs', '',
+          '### root-input', '', 'Provided by the root contract.', '',
+          '### shared-id', '', 'Root version — technique should override.', '',
+          '## Output', '',
+          '### result', '', 'The outcome.', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'work.md'),
+        [
+          ...FM('work'),
+          '## Capability', '', 'Do work.', '',
+          '## Inputs', '',
+          '### own-input', '', 'Technique-local input.', '',
+          '### shared-id', '', 'Technique override wins.', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      const result = await composeTechnique('work', tempDir, 'wp');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const inputIds = result.value.inputs?.map(i => i.id) ?? [];
+        expect(inputIds).toContain('root-input');  // inherited from root
+        expect(inputIds).toContain('own-input');   // technique-local
+        expect(inputIds).toContain('shared-id');   // present exactly once
+        expect(inputIds.filter(id => id === 'shared-id').length).toBe(1);
+        // Technique-local description wins on id conflict.
+        const shared = result.value.inputs?.find(i => i.id === 'shared-id');
+        expect(shared?.description).toMatch(/Technique override wins/);
+        // Output inherited from root (technique declares none).
+        expect(result.value.output?.map(o => o.id)).toContain('result');
+      }
+    });
+
+    it('composeTechnique with :: path resolves and fully composes a nested op', async () => {
+      const dir = join(tempDir, 'wp', 'techniques');
+      await mkdir(join(dir, 'grp'), { recursive: true });
+      await writeFile(
+        join(dir, 'TECHNIQUE.md'),
+        [
+          ...FM('TECHNIQUE'),
+          '## Capability', '', 'Root.', '',
+          '## Rules', '', '### root-rule', '', 'Root constraint.', '',
+          '## Protocol', '',
+          '### Initial', '', '- root-init', '',
+          '### Final', '', '- root-final', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'grp', 'TECHNIQUE.md'),
+        [
+          ...FM('grp'),
+          '## Capability', '', 'Group.', '',
+          '## Rules', '', '### group-rule', '', 'Group constraint.', '',
+          '## Protocol', '',
+          '### Initial', '', '- grp-init', '',
+          '### Final', '', '- grp-final', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'grp', 'op.md'),
+        [
+          ...FM('op'),
+          '## Capability', '', 'The operation.', '',
+          '## Rules', '', '### op-rule', '', 'Op constraint.', '',
+          '## Protocol', '', '1. Do the op', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      const result = await composeTechnique('grp::op', tempDir, 'wp');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // Protocol: full ancestor chain Initial/Final wrap.
+        const steps = result.value.protocol?.flatMap(b => b.steps);
+        expect(steps).toEqual(['root-init', 'grp-init', 'Do the op', 'grp-final', 'root-final']);
+        // Rules: all three levels merged; technique-local wins on name conflict.
+        expect(result.value.rules?.['root-rule']).toBeDefined();
+        expect(result.value.rules?.['group-rule']).toBeDefined();
+        expect(result.value.rules?.['op-rule']).toBeDefined();
+      }
+    });
+
+    it('resolveTechniques emits rule entries from the full ancestor chain (root, group, op)', async () => {
+      const dir = join(tempDir, 'wp', 'techniques');
+      await mkdir(join(dir, 'grp'), { recursive: true });
+      await writeFile(
+        join(dir, 'TECHNIQUE.md'),
+        [
+          ...FM('TECHNIQUE'),
+          '## Capability', '', 'Root.', '',
+          '## Rules', '', '### root-rule', '', 'Root constraint.', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'grp', 'TECHNIQUE.md'),
+        [
+          ...FM('grp'),
+          '## Capability', '', 'Group.', '',
+          '## Rules', '', '### group-rule', '', 'Group constraint.', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'grp', 'op.md'),
+        [
+          ...FM('op'),
+          '## Capability', '', 'The op.', '',
+          '## Rules', '', '### op-rule', '', 'Op constraint.', '',
+          '## Protocol', '', '1. Do it', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      const resolved = await resolveTechniques(['grp::op'], tempDir, 'wp');
+      const ruleNames = resolved.filter(r => r.type === 'rule').map(r => r.name);
+      expect(ruleNames).toContain('op-rule');    // from the op
+      expect(ruleNames).toContain('group-rule'); // from the group container
+      expect(ruleNames).toContain('root-rule');  // from the workflow root
+    });
+
     it('composeTechnique never inherits the meta root into a non-meta workflow', async () => {
       const metaDir = join(tempDir, 'meta', 'techniques');
       await mkdir(metaDir, { recursive: true });
