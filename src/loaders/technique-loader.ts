@@ -310,7 +310,11 @@ export async function resolveTechniques(
     if (path.subName === undefined) {
       const tRes = await readTechnique(path.workflow ? `${path.workflow}/${path.technique}` : path.technique, workflowDir, path.workflow ?? currentWorkflow);
       if (tRes.success) {
-        results.push({ source: path.technique, workflow: path.workflow, name: '', type: 'technique', body: projectTechniqueBody(tRes.value), ref });
+        // Wrap with ancestor Initial/Final. A standalone or group technique's only ancestor is
+        // the workflow root (its own Initial/Final/other blocks are delivered in full as its body).
+        const wholeDir = getWorkflowTechniquesDir(workflowDir, path.workflow ?? currentWorkflow ?? META_WORKFLOW_ID);
+        const wrapped = await wrapProtocolWithAncestors(wholeDir, [path.technique], tRes.value.protocol);
+        results.push({ source: path.technique, workflow: path.workflow, name: '', type: 'technique', body: projectTechniqueBody({ ...tRes.value, protocol: wrapped }), ref });
         touchedSkills.set(skillKey(path.workflow, path.technique), { workflow: path.workflow, technique: path.technique, cached: tRes.value });
       } else {
         results.push({ source: path.technique, workflow: path.workflow, name: '', type: 'not-found', body: null, ref });
@@ -343,7 +347,11 @@ export async function resolveTechniques(
       }
     }
     if (nested) {
-      results.push({ source: parsed.technique, workflow: opWorkflow, name: parsed.name, type: 'technique', body: projectTechniqueBody(nested), ref });
+      // Wrap with the Initial/Final blocks of every ancestor container (workflow root + each
+      // containing group), recursively. The op's path under techniques/ is group(/sub…)/op.
+      const nestedDir = getWorkflowTechniquesDir(workflowDir, opWorkflow ?? META_WORKFLOW_ID);
+      const wrapped = await wrapProtocolWithAncestors(nestedDir, [parsed.technique, ...parsed.name.split('/')], nested.protocol);
+      results.push({ source: parsed.technique, workflow: opWorkflow, name: parsed.name, type: 'technique', body: projectTechniqueBody({ ...nested, protocol: wrapped }), ref });
       // A nested technique delivers its own rules the same way a standalone one does — via the
       // auto-include pass below. Cache the nested technique (its own rules) AND its group index
       // (the group's shared rules).
@@ -458,10 +466,51 @@ function mergeKeyed<T>(parent: Record<string, T> | undefined, child: Record<stri
   return Object.keys(out).length ? out : undefined;
 }
 
-/** Concatenate protocol block lists: ancestor blocks first, then the nested technique's own. */
-function concatProtocol(parent: ProtocolBlock[] | undefined, child: ProtocolBlock[] | undefined): ProtocolBlock[] | undefined {
-  const arr = [...(parent ?? []), ...(child ?? [])];
-  return arr.length ? arr : undefined;
+/** Protocol blocks whose (ordinal-stripped) title names a thematic wrapper, case-insensitive. */
+function blocksTitled(protocol: ProtocolBlock[] | undefined, title: string): ProtocolBlock[] {
+  const want = title.toLowerCase();
+  return (protocol ?? []).filter((b) => (b.title ?? '').trim().toLowerCase() === want);
+}
+
+/**
+ * Wrap a technique's own protocol with the `Initial`/`Final` blocks of each ANCESTOR container,
+ * recursively from the workflow root inward. Every ancestor — the workflow-root `TECHNIQUE.md`
+ * and each containing group's `TECHNIQUE.md` along the path — contributes ONLY its `Initial`
+ * blocks (prepended) and `Final` blocks (appended). Any OTHER ancestor block is parent-only: it
+ * is excluded here and appears solely when that ancestor is referenced directly. Order:
+ * root.Initial … innermostParent.Initial, own protocol, innermostParent.Final … root.Final.
+ *
+ * `pathSegments` is the technique's location under `techniquesDir`; the LAST segment is the
+ * technique itself (never an ancestor). e.g. ['cargo-operations','check'] or ['classify-problem'].
+ */
+async function wrapProtocolWithAncestors(
+  techniquesDir: string,
+  pathSegments: string[],
+  ownProtocol: ProtocolBlock[] | undefined,
+): Promise<ProtocolBlock[] | undefined> {
+  const ancestorProtocols: Array<ProtocolBlock[] | undefined> = [];
+  const loadAncestor = async (id: string): Promise<void> => {
+    try {
+      const t = await tryLoadMarkdownTechnique(techniquesDir, id);
+      if (t) ancestorProtocols.push(t.protocol);
+    } catch (error) {
+      if (!(error instanceof MarkdownTechniqueParseError)) throw error;
+      logWarn('Skipping malformed ancestor technique while composing protocol', { id, error: error.message });
+    }
+  };
+  // Workflow root index — ancestor of every technique except itself.
+  if (!(pathSegments.length === 1 && pathSegments[0] === ROOT_INDEX_ID)) {
+    await loadAncestor(ROOT_INDEX_ID);
+  }
+  // Each containing group along the path (every prefix except the technique itself).
+  for (let i = 0; i < pathSegments.length - 1; i++) {
+    await loadAncestor(pathSegments.slice(0, i + 1).join('/'));
+  }
+
+  const initials = ancestorProtocols.flatMap((p) => blocksTitled(p, 'Initial'));
+  const finals = [...ancestorProtocols].reverse().flatMap((p) => blocksTitled(p, 'Final'));
+  const composed = [...initials, ...(ownProtocol ?? []), ...finals];
+  return composed.length > 0 ? composed : undefined;
 }
 
 /** Load the executing workflow's root index (`techniques/TECHNIQUE.md`) for its contract, or null. */
@@ -473,9 +522,11 @@ async function loadWorkflowRoot(workflowDir: string, workflowId: string): Promis
  * Compose a technique with its workflow-root base contract (R4).
  *
  * Inheritance is **executing-workflow-only** — `workflowId`'s root, never meta's. Keyed sections
- * (inputs/outputs/rules/errors) union with the technique-local entry overriding; protocol blocks are
- * prepended (root → technique) preserving order (the array order IS the renumbering). The technique's
- * operations recursively inherit the composed technique's rules/errors and protocol preamble.
+ * (inputs/outputs/rules/errors) union with the technique-local entry overriding. The protocol is
+ * WRAPPED, not prepended: the root contributes only its `Initial` blocks (before) and `Final`
+ * blocks (after) the technique's own protocol; any other root protocol block is root-only and
+ * surfaces solely when the root is referenced directly. (The bundle path applies the same wrap
+ * recursively across the full ancestor chain — see wrapProtocolWithAncestors.)
  */
 export async function composeTechnique(
   techniqueId: string,
@@ -494,7 +545,13 @@ export async function composeTechnique(
   const output = mergeById(root.output, technique.output);
   const rules = mergeKeyed(root.rules, technique.rules);
   const errors = mergeKeyed(root.errors, technique.errors);
-  const protocol = concatProtocol(root.protocol, technique.protocol);
+  // The workflow root is the technique's sole ancestor here (readTechnique resolves whole
+  // techniques, never deeper-nested ops). Wrap with the root's Initial/Final only — other root
+  // protocol blocks are root-only and surface when the root is referenced directly.
+  const initial = blocksTitled(root.protocol, 'Initial');
+  const final = blocksTitled(root.protocol, 'Final');
+  const wrappedProtocol = [...initial, ...(technique.protocol ?? []), ...final];
+  const protocol = wrappedProtocol.length > 0 ? wrappedProtocol : undefined;
   if (inputs) composed['inputs'] = inputs; else delete composed['inputs'];
   if (output) composed['output'] = output; else delete composed['output'];
   if (rules) composed['rules'] = rules; else delete composed['rules'];

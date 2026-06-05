@@ -334,12 +334,16 @@ describe('technique-loader', () => {
       expect(ids).not.toContain('TECHNIQUE');
     });
 
-    it('composeTechnique inherits the root contract and prepends the root protocol', async () => {
+    it('composeTechnique wraps the technique with the root Initial/Final; other root blocks are root-only', async () => {
       const dir = join(tempDir, 'wp', 'techniques');
       await mkdir(dir, { recursive: true });
       await writeFile(
         join(dir, 'TECHNIQUE.md'),
-        [...FM('TECHNIQUE'), '## Capability', '', 'Root base.', '', '## Rules', '', '### no-skip', '', 'Never skip steps.', '', '## Protocol', '', '### 1. Preamble', '', '- Read AGENTS.md', ''].join('\n'),
+        [...FM('TECHNIQUE'), '## Capability', '', 'Root base.', '', '## Rules', '', '### no-skip', '', 'Never skip steps.', '',
+         '## Protocol', '',
+         '### Initial', '', '- root-init', '',
+         '### Setup', '', '- root-setup', '',
+         '### Final', '', '- root-final', ''].join('\n'),
         'utf-8',
       );
       await writeFile(
@@ -352,9 +356,42 @@ describe('technique-loader', () => {
       if (result.success) {
         expect(result.value.rules?.['no-skip']).toBeDefined(); // inherited from root
         expect(result.value.rules?.['own-rule']).toBeDefined(); // technique-local
-        expect(result.value.protocol?.[0]?.steps).toEqual(['Read AGENTS.md']); // root preamble first
-        expect(result.value.protocol?.[1]?.steps).toEqual(['Do the work']); // then own
+        // root.Initial, then own, then root.Final — the root-only "Setup" block is NOT included.
+        expect(result.value.protocol?.flatMap((b) => b.steps)).toEqual(['root-init', 'Do the work', 'root-final']);
       }
+    });
+
+    it('resolveTechniques recursively wraps an op with the Initial/Final of every ancestor (root + group)', async () => {
+      const dir = join(tempDir, 'wp', 'techniques');
+      await mkdir(join(dir, 'grp'), { recursive: true });
+      await writeFile(
+        join(dir, 'TECHNIQUE.md'),
+        [...FM('TECHNIQUE'), '## Capability', '', 'Root.', '', '## Protocol', '',
+         '### Initial', '', '- root-init', '', '### Final', '', '- root-final', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'grp', 'TECHNIQUE.md'),
+        [...FM('grp'), '## Capability', '', 'Group.', '', '## Protocol', '',
+         '### Initial', '', '- grp-init', '', '### Setup', '', '- grp-setup', '', '### Final', '', '- grp-final', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'grp', 'op.md'),
+        [...FM('op'), '## Capability', '', 'An op.', '', '## Protocol', '', '### 1. Work', '', '- op-work', ''].join('\n'),
+        'utf-8',
+      );
+      const resolved = await resolveTechniques(['grp::op'], tempDir, 'wp');
+      const op = resolved.find((r) => r.type === 'technique' && r.name === 'op');
+      const steps = (op!.body as { protocol?: Array<{ steps: string[] }> }).protocol!.flatMap((b) => b.steps);
+      // root.Initial, grp.Initial, op's own, grp.Final, root.Final. grp's "Setup" is excluded.
+      expect(steps).toEqual(['root-init', 'grp-init', 'op-work', 'grp-final', 'root-final']);
+
+      // The group referenced DIRECTLY delivers its FULL own protocol (incl. Setup), wrapped only by the root.
+      const direct = await resolveTechniques(['grp'], tempDir, 'wp');
+      const grp = direct.find((r) => r.type === 'technique' && r.source === 'grp');
+      const grpSteps = (grp!.body as { protocol?: Array<{ steps: string[] }> }).protocol!.flatMap((b) => b.steps);
+      expect(grpSteps).toEqual(['root-init', 'grp-init', 'grp-setup', 'grp-final', 'root-final']);
     });
 
     it('composeTechnique never inherits the meta root into a non-meta workflow', async () => {
