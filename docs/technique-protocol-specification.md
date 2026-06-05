@@ -71,8 +71,8 @@ metadata:
 
 ## Protocol          (present when the technique does work)
 ### <N>. <Title>
-- <imperative step>
-- <imperative step>
+- <imperative step that binds {$local-var}>
+- <imperative step that reads {$local-var}>
 
 ## Rules             (optional)
 ### <rule-name>
@@ -114,6 +114,20 @@ is not a step: a constraint that governs the technique (or several steps) is a r
 constraint that qualifies one step's action folds into that step as a guard ("append the attestation
 — but only after the user has signed off"). A bullet whose whole substance is "never X" or "always Y"
 with no action of its own is mis-modelled and belongs in one of those two places.
+
+**Protocol variables.** A step may bind an intermediate value for later steps to read, written
+`{$name}` (kebab-case, dollar-prefixed). A protocol variable is scoped to a single protocol run — one
+step creates it, later steps consume it — and is *not* part of the technique's interface: it is
+neither an Input (a value the technique receives from its caller) nor an Output (a value the technique
+returns), is not delivered in the bundle, and is not `::`-addressable. Use it for technique-internal
+data — a captured artifact path, an assembled context block, a parsed intermediate. The braces mark a
+runtime-bound value, as with `{input-id}` / `{output-id}`; the `$` marks it protocol-local rather than
+interface. A step creates one with an explicit verb ("Capture `{$structural-path}` from the worker's
+response"; "Build `{$verified-knowledge}` from `{$gap-data}`") and later steps reference it by name.
+The classification test: a value the technique computes itself is `{$local}`, never an Input; a value
+a caller consumes is an Output, never `{$local}`. Bare unmarked identifiers in protocol prose
+(`structural_output_path`, `gap_data`) are this construct written informally — give them the `{$…}`
+form so they are distinct from prose, interface designators, and literals.
 
 ### 3.4 Rules
 
