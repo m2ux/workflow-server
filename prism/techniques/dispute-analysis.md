@@ -75,10 +75,3 @@ Resource indices and lens identities used for A and B
 
 Each lens runs in a fresh context; neither sees the other's output
 
-### model-selection
-
-Each prism uses its optimal model from YAML frontmatter. Synthesis uses sonnet.
-
-### tool-usage
-
-spawn-agent via harness-compat for description and prompt — do NOT use continue-agent on prior workers

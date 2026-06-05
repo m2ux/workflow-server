@@ -44,7 +44,6 @@ Path to planning folder for artifact output
 - Rationale paragraphs should aid manual review by giving reviewers context before they inspect the diff
 - When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[context](./gitnexus-operations/context.md) `{name: <symbol>}` so the reviewer understands why the diff matters and which execution flows it touches.
 - Write index to the change-block-index under the `planning-folder-path`
-- Always generate index before asking user to review
 - Follow the structured diff-review process in [manual-diff-review](../resources/manual-diff-review.md)
 
 ### 4. Present Index

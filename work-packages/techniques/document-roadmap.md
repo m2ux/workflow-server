@@ -45,13 +45,11 @@ List of completed package [plan documents](../resources/package-plan-template.md
 - Group packages into implementation phases based on dependency chains
 - Calculate phase durations from effort estimates (use formula from resource)
 - Present timeline as a phase table with packages and estimated duration
-- Timeline estimates use ranges, not point estimates, derived from package effort estimates
 
 ### 4. Document Success
 
 - Define initiative-level success criteria (all packages complete, domain-specific criteria)
 - Reference per-package criteria from individual plan documents
-- Initiative-level success criteria must be measurable and verifiable
 
 ### 5. Present Roadmap
 

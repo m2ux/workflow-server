@@ -26,3 +26,7 @@ Check `_meta.validation` in each response. Warnings are advisory but should be a
 ### resource-loading-via-tool
 
 Resource refs returned in operation bodies (e.g., [activity-worker-prompt](../../resources/activity-worker-prompt.md)) are lightweight pointers. Load full content via `get_resource { session_index, resource_id }`.
+
+### variable-mutation-source
+
+Variables mutate from two sources only: checkpoint option effects (`setVariable`) and worker `activity_complete` results (`variables_changed`). Never mutate state through ad-hoc reasoning.

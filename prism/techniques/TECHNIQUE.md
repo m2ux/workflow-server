@@ -5,4 +5,22 @@ metadata:
 
 ## Capability
 
-Base contract inherited by sibling techniques. Any Inputs, Outputs, Rules, or Errors defined here are inherited by every technique in the set, and any Protocol here is prepended (and renumbered) before each technique's own. The technique set is implied by the folder contents — do not list techniques here. Keep this minimal: only genuinely cross-technique contract belongs here.
+Base contract inherited by sibling techniques.
+
+## Rules
+
+### complete-execution
+
+Every step in the lens prompt must be executed. Do not skip or summarize operations — the depth comes from the full chain.
+
+### evidence-required
+
+All findings must cite specific code or text: file paths, function names, line ranges, specific passages. Abstract claims without evidence are not findings.
+
+### tool-usage
+
+Dispatch all workers via harness-compat spawn-agent. Never use continue-agent on a prior worker — each dispatch is a fresh isolated context.
+
+### model-selection
+
+Lens workers use the model defined in the lens YAML frontmatter. Synthesis and coordination steps use sonnet.

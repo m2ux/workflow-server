@@ -71,7 +71,3 @@ Filesystem path to reflect-synthesis.md
 ### model-selection
 
 L12 uses its optimal model. Claim uses its optimal model. Synthesis uses sonnet.
-
-### tool-usage
-
-spawn-agent via harness-compat for description and prompt — do NOT use continue-agent on prior workers

@@ -32,7 +32,6 @@ Free-form description of the initiative from the user
 - Each package should be independently deliverable (its own branch, PR, and review cycle)
 - Name each package descriptively using the domain language from the user's description
 - Capture a one-sentence description for each package
-- Package names should use domain language from the user's description, not implementation language
 
 ### 3. Present Scope
 

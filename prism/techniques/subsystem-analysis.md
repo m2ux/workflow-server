@@ -29,7 +29,6 @@ Directory for subsystem-{name}.md and subsystem-synthesis.md
 
 ### 1. Decompose
 
-- Confirm {target-type} is 'code'; reject other targets per the code-only rule
 - Parse {target-content} via AST (Python) or regex heuristic (other languages)
 - Identify classes, functions, top-level blocks as subsystems
 - Min 10 lines per subsystem; merge smallest pairs to stay under 8 subsystems

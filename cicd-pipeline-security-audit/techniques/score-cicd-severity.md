@@ -32,14 +32,12 @@ Unified list of findings, each with pattern ID, source, sink, and evidence
 ### 3. Score Compound
 
 - Identify compound findings (multiple patterns on same workflow)
-- Apply compound severity elevation rules from the rubric
-- Compound vulnerabilities receive the higher of: individual max severity, or one level above individual max
+- Apply compound severity elevation from the rubric: a compound vulnerability takes the higher of its individual max severity, or one level above that max.
 
 ### 4. Calibrate
 
 - Cross-check severity assignments against campaign calibration anchors
 - Adjust any finding that diverges by >= 2 levels from a matching anchor
-- Severity must be consistent with known campaign outcomes
 - Emit the calibrated `scored-findings`, each carrying its final severity level and scoring rationale
 
 ## Outputs
@@ -61,3 +59,7 @@ Per-finding Impact and Exploitability assessment
 ### evidence-based
 
 Every severity assignment must cite the specific Impact and Exploitability factors
+
+### campaign-consistency
+
+Every severity assignment must be consistent with known campaign outcomes.

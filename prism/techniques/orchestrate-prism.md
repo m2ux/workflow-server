@@ -81,7 +81,6 @@ single
 - Dispatch a NEW FRESH sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent on the structural worker.
 - Worker prompt must include: (1) the resolved_content, (2) structural_output_path — the worker will read this file and label it ANALYSIS 1, (3) the adversarial lens resource index, (4) the output-path, (5) instruction to write to {output-path}/adversarial-analysis.md
 - CRITICAL: Do NOT include the structural analysis text inline. Pass only the file path. The worker reads the artifact from the filesystem.
-- CRITICAL: Do NOT include any information about how the structural analysis was generated
 - If the expected prior-pass artifact (structural_output_path) does not exist on the filesystem, re-dispatch the prior pass worker to produce it — do not proceed to this pass without the artifact.
 - If the adversarial pass comes back agreeing with everything in the structural analysis, dispatch a new adversarial worker with an explicit instruction to find at least one wrong prediction, one overclaim, and one underclaim.
 - Capture adversarial_output_path = {output-path}/adversarial-analysis.md
@@ -172,6 +171,6 @@ The full pipeline runs without user interaction. No checkpoints, no confirmation
 
 After each pass, verify the artifact was written before dispatching the next pass.
 
-### tool-usage
+### no-methodology-leak
 
-spawn-agent via harness-compat for description and prompt — NEVER use continue-agent
+Worker prompts never reveal how a prior artifact was generated. Pass only the artifact path and the target — never the analysis methodology, lens identities, or pass structure.

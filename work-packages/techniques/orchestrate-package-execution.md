@@ -50,7 +50,6 @@ Full priority order for reference
 - After work-package workflow completes, update the START-HERE.md status table — this is the implementation-status roadmap
 - Mark completed package as done, add PR link
 - Update overall_progress counter
-- Record the refreshed implementation-status to START-HERE.md after every completed package
 
 ### 5. Check Remaining
 
@@ -80,10 +79,6 @@ Progress indicator (e.g., '3/7 complete')
 ### one-at-a-time
 
 Execute one work-package workflow at a time — do not parallelize
-
-### context-passing
-
-Pass package context (scope, dependencies, the planning-folder) to each work-package workflow instance
 
 ### handle-failures
 

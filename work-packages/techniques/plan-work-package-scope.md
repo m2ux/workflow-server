@@ -39,7 +39,6 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 - Document hard blockers: packages or external factors that must complete first
 - Document soft dependencies: helpful but not required
 - Flag circular dependencies as decomposition problems requiring resolution
-- Distinguish hard blockers from soft dependencies
 - If two packages depend on each other, identify the shared component and extract it as a separate package, or merge the two packages
 
 ### 4. Estimate Effort
@@ -47,14 +46,12 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 - Assess complexity: Low / Medium / High based on scope and unknowns
 - Estimate agentic time, review time, and calendar time as ranges
 - Document the rationale for the estimate, noting key complexity drivers
-- Use ranges for effort, not point estimates
 - If the package scope exceeds 8 hours of agentic work, split it into two or more packages along natural boundaries
 
 ### 5. Define Success
 
 - Establish measurable success criteria — each must be objectively verifiable
 - Include verification method for each criterion (tests, review, demonstration)
-- Every success criterion must be objectively verifiable
 
 ### 6. Document Plan
 

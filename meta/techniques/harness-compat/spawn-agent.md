@@ -37,14 +37,6 @@ The sub-agent's final output (text, including any `<checkpoint_yield>` block) �
 
 ## Rules
 
-### foreground-always
-
-CRITICAL: spawn-agent MUST be dispatched as foreground (blocking). Never set `run_in_background`. Background dispatch silently breaks checkpoint delivery — the orchestrator never sees the worker's `<checkpoint_yield>`.
-
-### index-in-prompt
-
-When the spawned agent inherits a workflow session, ALWAYS include the `session_index` in the prompt. Server-managed `session.json` holds the state; the index is the lookup key.
-
 ### depth-1-only
 
 spawn-agent operates depth-1 only. The Task primitive is a harness-level session-control gate; spawned sub-agents do not inherit it. Workflows MUST NOT design around nested orchestrator agents — one orchestrator agent drives all orchestrator-level work across all session levels.

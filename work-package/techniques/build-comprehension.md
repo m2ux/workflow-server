@@ -135,10 +135,6 @@ Comprehension artifacts persist across work packages — they are cumulative kno
 
 When existing artifacts cover the same area, augment them with new sections and deeper detail rather than replacing
 
-### hypothesis-framing
-
-Frame design rationale as hypotheses for user validation — the goal is to enable the user to qualify assumptions, not to assert correctness
-
 ### progressive-depth
 
 Start broad (architecture) and deepen progressively — let the user guide where to invest comprehension effort

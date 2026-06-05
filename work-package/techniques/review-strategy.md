@@ -59,7 +59,6 @@ Pull request number for scope reference
 - Look for investigation artifacts: extra logging, debug messages, temporary workarounds
 - Look for over-engineering: generic abstractions for specific problems, unused config options
 - Look for orphaned infrastructure: commented-out code, unused utilities, duplicate functionality
-- Goal is minimal, focused changes — every line justified by requirements
 
 ### 7. Verify Pr Body Conformance
 
@@ -124,3 +123,9 @@ UML-style diagrams of implementation
 #### summary
 
 High-level architecture description
+
+## Rules
+
+### minimal-focused-changes
+
+The goal is minimal, focused changes — every change must be justified by a requirement.

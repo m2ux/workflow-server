@@ -40,14 +40,6 @@ The resumed agent's next yield or final output
 
 ## Rules
 
-### foreground-always
-
-CRITICAL: continue-agent MUST be dispatched as foreground (blocking). Never set `run_in_background`.
-
-### index-in-prompt
-
-ALWAYS include the `session_index` in the prompt. The harness-level resume preserves the context window only — server-side workflow state lives in `session.json`, keyed by the index.
-
 ### resume-is-optimisation
 
 Harness-level resume preserves the context window. Useful, not required for correctness — workflows must be correct without it.

@@ -26,7 +26,6 @@ PR number for status checking
 ### 1. Capture History
 
 - If metadata repository exists, capture session history
-- History is private — never committed to the repository
 
 ### 2. Conduct Retrospective
 
@@ -78,3 +77,7 @@ Retrospective should be honest about what worked and what didn't — avoid gener
 ### skip-if-trivial
 
 Skip retrospective if: only checkpoint responses occurred (no clarifications, corrections, or process questions), OR work package was trivial (<30 min, single task).
+
+### history-private
+
+Session history is private and is never committed to the repository.

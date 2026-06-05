@@ -125,6 +125,3 @@ The following lenses are code-specific — do not apply to non-code input: contr
 
 Behavioral lenses (19-22) produce higher quality on Sonnet (+0.5-1.3 over Haiku). SDL and structural lenses are model-independent.
 
-### complete-execution
-
-Each lens prompt must be executed fully. Abbreviating a lens defeats its purpose — the analytical depth comes from following the full operation chain.

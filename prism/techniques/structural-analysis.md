@@ -103,17 +103,9 @@ The property that persists through every improvement
 
 ## Rules
 
-### execute-completely
-
-Every step in the lens prompt must be executed. Do not skip or summarize operations — the depth comes from the full chain.
-
 ### construction-over-description
 
 Build improvements and observe what they reveal. Do not merely describe problems — construct alternatives and trace what becomes visible.
-
-### evidence-required
-
-All findings must cite specific code: file paths, function names, line ranges. Abstract claims without code evidence are not findings.
 
 ### meta-law-specificity
 

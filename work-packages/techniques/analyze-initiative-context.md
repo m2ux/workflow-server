@@ -36,7 +36,6 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 - If completion analysis was selected but no prior artifacts are found, switch to context analysis and note that no prior work was found
 - Assess completion state of each previously identified work package
 - Identify changes since last session from git log and issue trackers
-- For completion analysis, always check for existing planning artifacts before assuming fresh start
 
 ### 3. Perform Context Analysis
 

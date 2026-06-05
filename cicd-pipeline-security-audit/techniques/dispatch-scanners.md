@@ -70,9 +70,3 @@ Whether V was dispatched
 #### merge_dispatched
 
 Whether M was dispatched
-
-## Rules
-
-### sequential-coordination
-
-V dispatches after scanners; M dispatches after V

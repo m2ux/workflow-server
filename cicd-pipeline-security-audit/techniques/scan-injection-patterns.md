@@ -40,7 +40,7 @@ Pre-classified trigger, permission, and checkout data for the workflow files
 - Cross-reference each expression against the untrusted context variable list
 - Distinguish safe contexts (if: conditions, action version pins) from unsafe contexts (shell interpolation, script content, action inputs that reach shell)
 - For each unsafe expression, document the source context variable and the sink (run block, script, action) using the structured finding format (see [sub-agent-output-schema](../resources/sub-agent-output-schema.md))
-- Expressions in if: conditions, env: key-value (not interpolated into shell), and action version pins are safe and should not be flagged
+- Treat expressions in if: conditions, env: key-value (not interpolated into shell), and action version pins as safe contexts — exclude them from P1 findings.
 
 ### 3. P2 Pwn Request
 

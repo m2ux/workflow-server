@@ -19,10 +19,6 @@ Operations for codebase queries via the GitNexus knowledge graph — index manag
 
 Apply [query](./query.md) / [context](./context.md) for execution flows and relationships. Grep is for text patterns and string literals only — when structure matters, use GitNexus.
 
-### dry-run-before-rename
-
-Always apply [rename](./rename.md) with `dry_run: true` first and review the changes with the user before applying.
-
 ### detect-changes-after-edit
 
 Always apply [detect-changes](./detect-changes.md) after applying a rename or batch edits to verify only expected files were affected.

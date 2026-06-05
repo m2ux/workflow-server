@@ -47,7 +47,6 @@ Expected scanner output schema from [sub-agent-output-schema](../resources/sub-a
 
 - Compile all gaps into the verification-report
 - Set verification_complete=true only if zero gaps found
-- verification_complete is only set when file and pattern coverage are both 100%
 
 ## Outputs
 

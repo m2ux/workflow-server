@@ -38,7 +38,3 @@ Follow Conventional Commits: `type(optional-scope): description`. Common types: 
 ### dco-sign-off
 
 All commits made via this technique use `git commit -s`. The `Signed-off-by` trailer is required by DCO and harmless when not. Adding it by default avoids the failure-then-retry pattern when target repos enforce DCO via a pre-commit hook.
-
-### respect-submodule-agents
-
-[commit-submodule](./commit-submodule.md) MUST honour the SUBMODULE's `AGENTS.md` authorial-trailer policy in addition to the parent's. When the submodule forbids Co-Authored-By or similar LLM-attribution trailers, strip them from `{submodule_message}` before invocation. Discovery, not retrofit — fixing it after commit usually requires a force push.

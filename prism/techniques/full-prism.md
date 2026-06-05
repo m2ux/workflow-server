@@ -93,14 +93,6 @@ The full analysis output following the lens operations
 
 ## Rules
 
-### complete-execution
-
-Every step in the lens prompt must be executed. Do not skip or summarize — the depth comes from the full chain.
-
-### evidence-required
-
-All findings must cite specific code or text: file paths, function names, line ranges, specific passages.
-
 ### no-context-leakage
 
 This worker runs in isolation. Do not reference conversations, prior interactions, or context beyond what was provided in the prompt.

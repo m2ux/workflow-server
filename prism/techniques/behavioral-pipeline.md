@@ -106,10 +106,3 @@ The behavioral pipeline uses fixed role labels mapped to specific lenses: error-
 
 The behavioral pipeline is code-only. optim (20) uses strongly code-oriented vocabulary with no domain-neutral variant. Do not use behavioral mode when target_type is 'general'.
 
-### complete-execution
-
-Every step in each lens prompt must be executed. Do not skip or summarize.
-
-### evidence-required
-
-All findings must cite specific code: file paths, function names, line ranges.

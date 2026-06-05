@@ -46,10 +46,6 @@ Trace token captured from `next_activity` response, appended to `trace_tokens`
 
 When calling `next_activity`, include a `step_manifest` array. Each entry is an object with two string fields: `step_id` (the literal step id from the activity definition's `steps[]`) and `output` (a short summary of what was produced). Omit `step_manifest` entirely if no steps were executed; do not pass an empty array or empty string.
 
-### reject-empty-checkpoints
-
-If an activity defines required checkpoints and the worker returns `checkpoints_responded` as empty, REJECT the result and resume the worker.
-
 ### no-get-activity-from-orchestrator
 
 Workflow orchestrators NEVER call `get_activity`. The activity definition is the worker's domain. Orchestrators need only the `activity_id` (from `initialActivity` or `transitions`) to call `next_activity` and compose the worker prompt.
@@ -57,7 +53,3 @@ Workflow orchestrators NEVER call `get_activity`. The activity definition is the
 ### no-pre-load-techniques
 
 NEVER call `get_technique` to pre-load techniques. The worker self-bootstraps via `get_activity`, which bundles the operations the activity needs.
-
-### variable-mutation-source
-
-Variables mutate from two sources only: checkpoint option effects (`setVariable`) and worker `activity_complete` results (`variables_changed`). Never mutate state through ad-hoc reasoning.

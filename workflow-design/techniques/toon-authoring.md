@@ -69,10 +69,6 @@ TOON uses indentation for nesting but is not YAML — do not use YAML-specific f
 
 Declare arrays with key[N] where N is the item count, then list items with indentation using - prefix
 
-### colon-quoting
-
-Any string value containing a colon must be wrapped in double quotes
-
 ### inline-objects
 
 For simple tabular data, use the inline shorthand: key[N]{field1,field2} followed by indented rows of comma-separated values

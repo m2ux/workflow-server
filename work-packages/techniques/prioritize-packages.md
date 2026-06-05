@@ -41,7 +41,6 @@ Inter-package dependency map describing which packages block or depend on which 
 - Apply priority ordering rules: dependency-first, then high-value/low-effort, then high-risk-early
 - Identify packages that could be parallelized (independent, no shared resources)
 - Generate the priority table with package, value, risk, effort, and rationale
-- High-risk packages should be scheduled early to surface problems before they cascade
 - If all packages evaluate identically on every criterion, ask the user which dimension matters most for their context to break the tie
 
 ### 4. Present Prioritization
@@ -49,7 +48,6 @@ Inter-package dependency map describing which packages block or depend on which 
 - Present the dependency graph (text or mermaid diagram)
 - Present the priority table with rationale for the proposed order, forming the priority-order to be returned
 - Note alternative orderings if multiple valid sequences exist
-- Never assume a priority-order without presenting rationale and getting user confirmation
 
 ## Outputs
 
