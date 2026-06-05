@@ -25,9 +25,9 @@ A single atomic task to implement (description, affected files, dependencies)
 
 ### 1. Understand Context
 
-- Read the task description and requirements from the plan
+- Read the `current-task` description and requirements from the plan
 - Identify affected files, dependencies, and related code
-- Review test plan for acceptance criteria relevant to this task
+- Review the `test-plan` for acceptance criteria relevant to this task
 
 ### 2. Pre Edit Impact Check
 
@@ -49,6 +49,7 @@ A single atomic task to implement (description, affected files, dependencies)
 ### 5. Post Edit Verification
 
 - Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[detect-changes](./gitnexus-operations/detect-changes.md) before commit to confirm the changes affect only the expected symbols and execution flows
+- Record the `task-implementation` for this task, capturing the files changed and a brief summary of the approach taken
 
 ## Outputs
 

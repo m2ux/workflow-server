@@ -34,13 +34,13 @@ Design philosophy [artifact](../resources/design-framework.md#design-philosophy-
 
 ### 2. Gather Context
 
-- Read design philosophy document for decision rationale
-- Review implementation analysis and plan for architectural choices
+- Read the {design-philosophy-doc} for decision rationale, alternatives, and trade-offs
+- Review implementation analysis and plan from {planning-folder-path} for architectural choices
 - Identify alternatives that were considered and rejected
 
 ### 3. Write Adr
 
-- Create NNNN-{decision-title}.md at .engineering/artifacts/adr/
+- Write the {adr-document} as NNNN-{decision-title}.md at .engineering/artifacts/adr/
 - Use standard ADR format (Title, Status, Context, Decision, Consequences)
 - Set status to Proposed (finalize activity updates to Accepted)
 - New ADRs are created with status Proposed — the finalize activity updates to Accepted

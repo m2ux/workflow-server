@@ -29,7 +29,8 @@ Directory for subsystem-{name}.md and subsystem-synthesis.md
 
 ### 1. Decompose
 
-- Parse source code via AST (Python) or regex heuristic (other languages)
+- Confirm {target-type} is 'code'; reject other targets per the code-only rule
+- Parse {target-content} via AST (Python) or regex heuristic (other languages)
 - Identify classes, functions, top-level blocks as subsystems
 - Min 10 lines per subsystem; merge smallest pairs to stay under 8 subsystems
 - If only 1 subsystem found, fall back to single L12 pass
@@ -54,6 +55,7 @@ Directory for subsystem-{name}.md and subsystem-synthesis.md
 - Load subsystem synthesis resource (64)
 - Dispatch synthesis worker with all per-subsystem outputs
 - Worker writes to {output-path}/subsystem-synthesis.md
+- Return {subsystem-result}: the per-subsystem paths, the synthesis path, and the prism assignments from calibration
 
 ## Outputs
 

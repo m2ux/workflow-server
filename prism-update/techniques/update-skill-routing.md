@@ -21,8 +21,8 @@ Change set with new, renamed, and deleted prisms
 
 ### 1. Update Plan Analysis
 
-- Find-and-replace old names with new names across all rules and protocol sections.
-- Add goal-mapping-matrix entry for each new prism: analytical goal keyword → prism index.
+- For each rename in `changes`, find-and-replace the old name with the new name across all rules and protocol sections.
+- Add a goal-mapping-matrix entry for every new prism in `changes`: analytical goal keyword → prism index.
 - Update code-vs-general, model-sensitivity, resource list, query-recommendation, and single-unit-recommendation.
 - Each new prism's goal keyword should match its cognitive operation or domain from the YAML frontmatter description.
 
@@ -43,6 +43,7 @@ Change set with new, renamed, and deleted prisms
 ### 5. Commit
 
 - Stage all modified technique files. Commit: 'feat: update skill routing for N new prisms and M renames'.
+- Emit the `routing-result` summary recording the modified technique files, the number of goal-mapping entries added, and the number of renamed references fixed.
 
 ## Outputs
 

@@ -45,10 +45,10 @@ Full priority order for reference
 
 ### 4. Update Status
 
-- After work-package workflow completes, update START-HERE.md status table
+- After work-package workflow completes, update the START-HERE.md status table — this is the implementation-status roadmap
 - Mark completed package as done, add PR link
 - Update overall_progress counter
-- Update START-HERE.md status after every completed package
+- Record the refreshed implementation-status to START-HERE.md after every completed package
 
 ### 5. Check Remaining
 

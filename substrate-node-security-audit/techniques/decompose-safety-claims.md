@@ -33,7 +33,7 @@ Code files to read for independent verification
 
 ### 2. Extract And Filter
 
-- Collect all PASS verdicts from agent results. Filter to items with severity >= Medium potential — specifically checklist items covering: hook/weight accounting, state lifecycle/cursor, event emission integrity, consensus path symmetry, input validation, pool isolation, and timestamp sources. Merge with any pre-seeded items from verification gaps. Deduplicate by checklist reference.
+- Collect the pass-items (each a PASS verdict with claim text, cited evidence, and checklist reference). Filter to items with severity >= Medium potential — specifically checklist items covering: hook/weight accounting, state lifecycle/cursor, event emission integrity, consensus path symmetry, input validation, pool isolation, and timestamp sources. Merge with any pre-seeded items from verification gaps. Deduplicate by checklist reference.
 
 ### 3. Decompose Claims
 
@@ -46,8 +46,8 @@ Code files to read for independent verification
 
 ### 5. Verify Independently
 
-- For each decomposed property, read the cited code location and search for the specific implementation. Output CONFIRMED (all instances verified with citations), REFUTED (any instance lacks implementation — becomes a new finding), or INSUFFICIENT (cannot determine).
-- CONFIRMED only when ALL decomposed properties are verified with code citations.
+- For each decomposed property, read the cited code location in the source-files and search for the specific implementation. Output CONFIRMED (all instances verified with citations), REFUTED (any instance lacks implementation — becomes a new finding), or INSUFFICIENT (cannot determine).
+- CONFIRMED only when ALL decomposed properties are verified with code citations. Record each verdict in the decomposition-results table, completing the per-instance Verified? and Evidence columns.
 
 ## Outputs
 

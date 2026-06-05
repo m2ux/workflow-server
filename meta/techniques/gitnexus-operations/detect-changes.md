@@ -21,7 +21,7 @@ changed symbols, changed files, affected execution flows, risk level
 
 ## Protocol
 
-1. Call `gitnexus_detect_changes {scope}`.
+1. Call `gitnexus_detect_changes {scope}` to produce the `change_report` (changed symbols, changed files, affected flows, risk level).
 2. Pre-commit: confirm the changes affect only the expected symbols and flows.
 3. Diff-driven review: use the changed-symbol set as the basis for coverage, scope, and severity work (see the composite operations below).
 

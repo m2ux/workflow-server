@@ -25,9 +25,9 @@ Which schema applies to this file — one of: workflow (schemas/workflow.schema.
 
 ### 1. Read Reference
 
-- Read at least one existing valid TOON file of the target type
+- Read the `reference-file` if one was supplied, otherwise read at least one existing valid TOON file matching the `schema-type`
 - Note syntax patterns: key-value pairs, array declarations, nested objects, quoted strings
-- Read schemas/README.md for the field tables, required properties, and valid values for the target schema type
+- Read schemas/README.md for the field tables, required properties, and valid values for the `schema-type`
 
 ### 2. Plan Content
 
@@ -37,7 +37,7 @@ Which schema applies to this file — one of: workflow (schemas/workflow.schema.
 
 ### 3. Draft Content
 
-- Write the file following TOON syntax rules exactly
+- Write the `toon-file` following TOON syntax rules exactly
 - Use the array[N] suffix for arrays with explicit count
 - Quote any string value that contains a colon
 

@@ -30,7 +30,7 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 
 ### 2. Define Scope
 
-- Identify what is in scope for the current package — specific deliverables and changes
+- Identify what is in scope for the current-package — specific deliverables and changes
 - Identify what is explicitly out of scope with reasons for exclusion
 - Apply the independence test: could this package be shipped without any other package?
 

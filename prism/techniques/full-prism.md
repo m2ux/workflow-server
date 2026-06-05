@@ -52,7 +52,7 @@ code
 
 ### 3. Apply Lens
 
-- Apply every operation in the lens prompt sequentially against the target content
+- Apply every operation in the lens prompt sequentially against target-content
 - If prior artifacts were read, include them as context as instructed by the lens (adversarial lenses reference 'the structural analysis'; synthesis lenses reference 'ANALYSIS 1' and 'ANALYSIS 2')
 - Execute completely — do not abbreviate or skip operations. The analytical depth comes from the full chain.
 
@@ -68,9 +68,9 @@ code
 ### 5. Write Artifact
 
 - Determine artifact filename from the pass type: structural-analysis.md (index 00), adversarial-analysis.md (index 01), synthesis.md (index 02)
-- Write the complete analysis to {output-path}/{artifact-filename}
-- Return the full artifact path in the output
-- The analysis MUST be written to the filesystem. Return the artifact path to the orchestrator so subsequent passes can read it.
+- Write the complete analysis to {output-path}/{artifact-filename}, producing the pass-artifact
+- Return the full pass-artifact path in the output
+- The analysis MUST be written to the filesystem. Return the pass-artifact path to the orchestrator so subsequent passes can read it.
 
 ### 6. Format Output
 

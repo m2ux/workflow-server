@@ -23,7 +23,7 @@ Load the active checkpoint's details and present them to the user.
 
 1. Call `present_checkpoint { session_index }`; the server reads the active checkpoint from `session.json#activeCheckpoint` and returns its message + options.
 2. Call `AskQuestion` with the checkpoint's message and `options[]`. This is the user's only opportunity to respond — it is MANDATORY for every checkpoint, including those with `autoAdvanceMs` set. If `autoAdvanceMs` is set, configure `AskQuestion`'s timeout to that value with `defaultOption` as the timeout fallback; if the user does not respond within the timer, capture that as `auto_advance: true`. If the user responds, capture their `option_id`.
-3. Capture the user's `option_id` (or `auto_advance` / `condition_not_met`).
+3. Record the resolved `selection` — the user's `option_id` and its `effects` (or `auto_advance` / `condition_not_met`).
 
 ## Errors
 

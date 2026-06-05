@@ -29,7 +29,7 @@ Scan completeness verification data (file and per-pattern coverage)
 
 ### 2. Write Executive Summary
 
-- Summarize total findings by severity level
+- Summarize the `scored-findings` by severity level
 - Highlight critical and high findings requiring immediate attention
 - Note compound vulnerability chains as priority items
 
@@ -52,8 +52,9 @@ Scan completeness verification data (file and per-pattern coverage)
 
 ### 6. Write Methodology
 
-- Document the audit methodology, pattern catalog version, and scan coverage
+- Document the audit methodology, pattern catalog version, and scan coverage drawn from `coverage-data`
 - Include the reconciliation table as an appendix
+- Assemble the preceding sections into the complete `audit-report`
 
 ## Outputs
 

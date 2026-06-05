@@ -26,6 +26,7 @@ Concise summary of files needing formatting (when not passed)
 ## Protocol
 
 1. `nice -n 19 cargo fmt {scope} -- --check`
+2. Report `fmt_status` from the exit code — passed when the command reports no diffs; when it fails, capture the listed files as `fmt_diff_summary`.
 
 ## Errors
 

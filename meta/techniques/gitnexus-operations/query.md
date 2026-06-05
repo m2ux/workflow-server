@@ -21,8 +21,8 @@ execution flows (processes) grouped, with member symbols and file locations
 
 ## Protocol
 
-1. Call `gitnexus_query {query}`.
-2. Use the returned processes to orient before deep-diving with [context](./context.md) on specific symbols.
+1. Call `gitnexus_query {query}` to produce the `query_report` of grouped execution flows.
+2. Use the processes in the `query_report` to orient before deep-diving with [context](./context.md) on specific symbols.
 
 ## Errors
 

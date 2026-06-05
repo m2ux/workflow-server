@@ -29,7 +29,7 @@ Paths to include in the analysis
 
 ### 1. Enumerate Components
 
-- Read the workspace manifest and enumerate every crate, module, or package. List each component explicitly by name — do not summarize or group.
+- Read the project manifest at `workspace-root` and enumerate every crate, module, or package under the `in-scope` paths, skipping anything listed in `out-of-scope`. List each component explicitly by name — do not summarize or group.
 
 ### 2. Classify Components
 
@@ -49,7 +49,7 @@ Paths to include in the analysis
 
 ### 6. Trace Data Flows
 
-- Apply forward tracing (entry point to sink) and backward tracing (sensitive operation to data source) to map how data moves through the system. Prioritize candidate points: locations with high code complexity, multiple lock acquisitions, nested match on external data, unsafe blocks, error-handling switches, and codec deserialization sites.
+- Apply forward tracing (entry point to sink) and backward tracing (sensitive operation to data source) to map how data moves through the system, recording these traces alongside the component, boundary, and critical-path findings to assemble the `codebase-map`. Prioritize candidate points: locations with high code complexity, multiple lock acquisitions, nested match on external data, unsafe blocks, error-handling switches, and codec deserialization sites.
 
 ### 7. Identify Safety Overrides
 

@@ -38,8 +38,8 @@ PR number for status checking
 
 ### 3. Update Status
 
-- After PR merged, update work package plan status
-- Record final outcome in planning artifacts
+- Once the PR identified by `pr-number` has merged, update the work package plan status
+- Record the final outcome in the planning artifacts under `planning-folder-path`
 
 ### 4. Select Next
 

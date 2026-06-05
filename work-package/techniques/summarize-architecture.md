@@ -30,7 +30,7 @@ Path to planning folder for context
 ### 1. Identify Scope
 
 - Determine which architectural components are affected by the changes
-- Map changed files to modules and subsystems
+- Map each entry in `changed-files` to its modules and subsystems
 - Identify external interactions and boundaries
 - Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[diagram-source-select](./gitnexus-operations/diagram-source-select.md) to bound diagram scope to the affected processes and source diagram structure from graph resources.
 
@@ -56,9 +56,9 @@ Path to planning folder for context
 
 ### 5. Write Summary
 
-- Create the architecture-summary in planning folder
+- Create the architecture-summary under `planning-folder-path`
 - Combine diagrams with narrative explanation
-- Focus on impact, scope, and risk
+- Focus on impact, scope, and risk, drawing scope and rationale from `design-philosophy-doc` when it is provided
 - Follow the architecture-summary template in [architecture-summary](../resources/architecture-summary.md)
 
 ## Outputs

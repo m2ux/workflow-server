@@ -25,7 +25,7 @@ Boolean — true if the fix was applied; false if the fix requires user input or
 
 ## Protocol
 
-1. Execute the fix per `fix_strategy`: source edits go through harness Edit/Write; formatting fixes go through [cargo-operations](../cargo-operations/TECHNIQUE.md)::[fmt-fix](../cargo-operations/fmt-fix.md); dependency or environment fixes are surfaced to the user.
+1. Execute the fix per `fix_strategy` for the check identified by `check_id`: source edits go through harness Edit/Write; formatting fixes go through [cargo-operations](../cargo-operations/TECHNIQUE.md)::[fmt-fix](../cargo-operations/fmt-fix.md); dependency or environment fixes are surfaced to the user.
 2. Set `fix_applied = true` on success. Set `fix_applied = false` when the fix requires user input — the activity loop will surface this via its checkpoint.
 
 ## Errors

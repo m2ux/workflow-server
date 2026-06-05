@@ -33,8 +33,8 @@ Original evaluation description for context
 
 ### 1. Load And Classify
 
-- Read the evaluation report and extract all findings with IDs, severities, titles, descriptions, and referenced target sections
-- Read the target document and identify the specific text, sections, and claims referenced by each finding
+- Read the `evaluation-report` and extract all findings with IDs, severities, titles, descriptions, and referenced target sections
+- Read the target document at `target_path` and identify the specific text, sections, and claims referenced by each finding
 - Classify each finding into a mitigation tier: T1 (direct correction — wrong numbers, terminology), T2 (reframing — claims needing qualification), T3 (novel mitigation — new mechanisms or content needed), T4 (structural/immovable — external constraints requiring acknowledgement)
 - Order findings within each tier by severity (Critical first, then High, Medium, Low)
 - Present the tier classification summary before beginning the dialogue
@@ -59,7 +59,7 @@ Original evaluation description for context
 
 ### 4. Compile Plan
 
-- After all findings are presented, compile the mitigation-plan
+- After all findings are presented, compile the mitigation-plan and write it to `output_path`
 - Structure: Summary table (ID, severity, tier, user decision), detailed changes grouped by tier, implementation priority order
 - Include the full proposed text for each accepted mitigation so the plan is self-contained
 - Verify every finding from the report has a corresponding entry (accepted, modified, or skipped)
@@ -68,7 +68,7 @@ Original evaluation description for context
 
 - Apply accepted mitigations in priority order: T1 first, then T2, T3, T4
 - For each change, verify the target text matches expectations before applying
-- After all changes, verify each was applied correctly
+- After all changes, verify each was applied correctly, producing the `modified-target` with all accepted mitigations in place
 
 ## Outputs
 

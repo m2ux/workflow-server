@@ -29,7 +29,7 @@ Atomic task breakdown with dependencies and ordering for the work package
 
 ### 2. Define Strategy
 
-- Define test strategy for the work package (unit, integration, e2e)
+- Define test strategy for the work package (unit, integration, e2e), using the `plan-tasks` breakdown to scope coverage to each task and its dependencies
 - Identify which requirements need which types of tests
 - Determine test infrastructure needs (fixtures, mocks, test doubles)
 

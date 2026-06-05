@@ -29,8 +29,8 @@ Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)
 
 ### 1. Prompt Transcript
 
-- Prompt user for stakeholder discussion transcript before elicitation
-- Offer skip option with note about limitation
+- Prompt user for the stakeholder-transcript before elicitation
+- Offer skip option with note about limitation if no stakeholder-transcript is provided
 - Stakeholder input first: User should discuss with key stakeholders before agent elicitation
 
 ### 2. Iterate Domains
@@ -49,7 +49,7 @@ Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)
 ### 4. Post Assumptions Jira
 
 - Prepare assumptions as Jira comment for stakeholder review
-- Post to ticket using addCommentToJiraIssue (only when issue_platform is jira)
+- Post to the ticket identified by issue-number using addCommentToJiraIssue (only when issue_platform is jira)
 
 ### 5. Await Feedback
 

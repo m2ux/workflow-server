@@ -29,7 +29,7 @@ Directory for reflect-l12.md, reflect-meta.md, reflect-synthesis.md
 
 ### 1. Structural Analysis
 
-- Dispatch L12 ([l12](../resources/l12.md)) to a fresh worker
+- Dispatch L12 ([l12](../resources/l12.md)) to a fresh worker, passing {target-content} as the analysis target and {target-type} to frame the L12 pass
 - Worker writes to {output-path}/reflect-l12.md
 
 ### 2. Meta Analysis
@@ -46,6 +46,7 @@ Directory for reflect-l12.md, reflect-meta.md, reflect-synthesis.md
 - Worker produces: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN
 - Worker writes to {output-path}/reflect-synthesis.md
 - Synthesis must produce exactly 4 sections: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN
+- Return {reflect-result} with the paths to the three reflect pipeline artifacts (reflect-l12.md, reflect-meta.md, reflect-synthesis.md)
 
 ## Outputs
 

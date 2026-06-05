@@ -22,7 +22,7 @@ fan-out and affected-process count as an objective complexity indicator
 ## Protocol
 
 1. Apply [impact](./impact.md) with `{target, maxDepth: 2}`.
-2. High fan-out or many affected processes indicate higher complexity than the issue text alone might suggest.
+2. Read the fan-out and affected-process count as the `complexity_signal`: high fan-out or many affected processes indicate higher complexity than the issue text alone might suggest.
 
 ## Errors
 

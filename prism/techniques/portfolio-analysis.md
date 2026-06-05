@@ -61,8 +61,8 @@ The code or text to analyze. Can be a file path or inline content.
 
 ### 5. Write Artifacts
 
-- Write each lens output (see [writer](../resources/writer.md)) to {output-path}/portfolio-{lens-name}.md (e.g., portfolio-claim.md, portfolio-degradation.md)
-- Record all artifact paths in portfolio_output_paths
+- Write each lens output (see [writer](../resources/writer.md)) to {output-path}/portfolio-{lens-name}.md (e.g., portfolio-claim.md, portfolio-degradation.md) — these are the per-lens-artifacts, one per applied lens
+- Record the path of every per-lens-artifact in portfolio_output_paths
 - Every lens output and the synthesis MUST be written as separate artifacts. In-memory-only output is not acceptable.
 
 ### 6. Cross Lens Synthesis

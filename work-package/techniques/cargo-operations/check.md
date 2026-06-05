@@ -25,7 +25,7 @@ Pass/fail and the rustc diagnostics emitted
 
 ## Protocol
 
-1. `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo check {scope} {features}`
+1. `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo check {scope} {features}`; the command's exit code and rustc diagnostics are the `check_status`.
 
 ## Errors
 

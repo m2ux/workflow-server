@@ -37,9 +37,9 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 ### 2. Create Github Issue
 
 - Runs when issue_platform is github and needs_issue_creation is true. Use attached [github-issue-creation](../resources/github-issue-creation.md) for guidance.
-- Gather title, description, and acceptance criteria from user context
+- Gather title, description, and acceptance criteria from user context, scoping the issue to the target-submodule the work package targets
 - Map issue_type to GitHub labels per github-label-mapping rule
-- Create the issue, then verify creation succeeded. Capture issue_number and issue_url.
+- Create the issue, then verify creation succeeded — this verified issue is the created-issue. Capture issue_number and issue_url.
 - GitHub label mapping: feature->enhancement, bug->bug, task->chore, enhancement->enhancement
 
 ### 3. Create Jira Issue
@@ -47,8 +47,8 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 - Runs when issue_platform is jira and needs_issue_creation is true. Use attached [jira-issue-creation](../resources/jira-issue-creation.md) for guidance.
 - Obtain Atlassian cloud ID via getAccessibleAtlassianResources and preserve as jira_cloud_id. This MUST be the first Jira tool call.
 - List available projects via getVisibleJiraProjects, then present the jira-project-selection checkpoint (defined on the activity) for user selection. Resolve available issue types for the selected project.
-- Gather summary, description, and acceptance criteria. Resolve assignee account ID if specified.
-- Create the issue with mapped type per jira-type-mapping rule. Capture issue_number and issue_url.
+- Gather summary, description, and acceptance criteria, scoping the issue to the target-submodule the work package targets. Resolve assignee account ID if specified.
+- Create the issue with mapped type per jira-type-mapping rule — the resulting issue is the created-issue. Capture issue_number and issue_url.
 - Jira issue type mapping: feature->Story, bug->Bug, task->Task, enhancement->Story, epic->Epic
 
 ## Outputs

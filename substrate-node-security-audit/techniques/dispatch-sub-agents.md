@@ -29,7 +29,7 @@ List of agents to dispatch, each with: agent_id, activity_id, context variables 
 
 ### 3. Collect All
 
-- Wait for all agents to return. Collect structured output from each. If any agent fails or times out, record the failure and proceed with available results.
+- Wait for all agents to return. Collect the structured output from each into dispatch-results. If any agent fails or times out, record the failure in dispatch-results and proceed with available results.
 
 ### 4. Verify Dispatch Completeness
 

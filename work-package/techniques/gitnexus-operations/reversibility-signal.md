@@ -21,8 +21,8 @@ the symbol the assumption touches
 
 ## Protocol
 
-1. Apply [context](./context.md) for the symbol.
-2. High caller fan-out and broad process participation → path-committing; an isolated symbol → easily-reversible.
+1. Apply [context](./context.md) for the `name` symbol the assumption touches.
+2. Set `reversibility` from its connectivity: high caller fan-out and broad process participation → path-committing; an isolated symbol → easily-reversible.
 
 ## Errors
 

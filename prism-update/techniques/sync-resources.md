@@ -52,6 +52,7 @@ Starting index for new resource files
 ### 5. Verify Count
 
 - Count resource files. Confirm: previous - deleted + new = current.
+- Assemble import-result: tally the modified, renamed, new, and deleted counts, record the final total and the commit SHAs from each step.
 
 ## Outputs
 

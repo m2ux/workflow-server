@@ -23,7 +23,7 @@ affected processes that fall outside requirements_scope (scope-creep candidates)
 
 1. Apply [detect-changes](./detect-changes.md) to obtain the affected execution flows.
 2. Compare the affected flows against requirements_scope.
-3. Flag any affected flow outside requirements_scope as scope creep for user decision.
+3. Collect any affected flow outside requirements_scope into scope_findings as scope-creep candidates for user decision.
 
 ## Errors
 

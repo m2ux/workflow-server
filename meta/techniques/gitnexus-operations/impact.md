@@ -40,7 +40,7 @@ d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY N
 ### 2. Interpret Results
 
 - Read d=1 items first — these WILL break. Weight high-confidence (>0.8) edges.
-- Derive the risk level: <5 symbols/few processes = LOW; 5–15 symbols/2–5 processes = MEDIUM; >15 symbols or many processes = HIGH; critical path (auth, payments, consensus) = CRITICAL.
+- Derive the risk level and assemble the `impact_report`: <5 symbols/few processes = LOW; 5–15 symbols/2–5 processes = MEDIUM; >15 symbols or many processes = HIGH; critical path (auth, payments, consensus) = CRITICAL.
 
 ### 3. Act on Risk
 

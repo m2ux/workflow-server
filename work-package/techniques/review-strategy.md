@@ -30,7 +30,7 @@ Pull request number for scope reference
 ### 1. Load Guidance
 
 - Use attached [strategic-review](../resources/strategic-review.md) and [architecture-review](../resources/architecture-review.md) for guidance
-- Examine all changes in the PR using git diff and git log
+- Examine all changes on the feature branch `{branch_name}` using git diff and git log
 
 ### 2. Examine Scope
 
@@ -69,7 +69,7 @@ Pull request number for scope reference
 
 ### 8. Document Findings
 
-- Document all findings in the strategic-review-doc
+- Document all findings in the strategic-review-doc, written under `{planning_folder_path}`
 - Categorize by type: investigation artifacts, over-engineering, orphaned infrastructure
 - If all changes justified, document clean review result
 

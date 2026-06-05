@@ -26,7 +26,7 @@ Inter-package dependency map describing which packages block or depend on which 
 ### 1. Analyze Dependencies
 
 - Use attached [prioritization-framework](../resources/prioritization-framework.md) (prioritization-framework) for the evaluation methodology
-- Build a dependency graph from the dependency sections of all package plans
+- Build a dependency graph from the dependency sections of all package-plans, cross-checking against the dependency-map to confirm which packages block or depend on which others
 - Perform topological sort to identify valid orderings
 
 ### 2. Evaluate Criteria
@@ -45,9 +45,9 @@ Inter-package dependency map describing which packages block or depend on which 
 ### 4. Present Prioritization
 
 - Present the dependency graph (text or mermaid diagram)
-- Present the priority table with rationale for the proposed order
+- Present the priority table with rationale for the proposed order, forming the priority-order to be returned
 - Note alternative orderings if multiple valid sequences exist
-- Never assume a priority order without presenting rationale and getting user confirmation
+- Never assume a priority-order without presenting rationale and getting user confirmation
 
 ## Outputs
 

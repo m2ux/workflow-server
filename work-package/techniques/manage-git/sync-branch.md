@@ -19,7 +19,7 @@ Feature branch to sync
 
 ## Protocol
 
-1. From `target_path`, fetch the default branch and rebase or merge to bring the feature branch current.
+1. From `target_path`, fetch the default branch and rebase or merge it into `branch_name` to bring the feature branch current.
 2. Resolve any merge conflicts before continuing.
 3. Sync before pushing to avoid push-time conflicts.
 

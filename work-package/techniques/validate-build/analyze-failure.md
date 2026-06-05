@@ -37,8 +37,8 @@ Concrete fix approach (file edit, fmt-fix invocation, dependency install, etc.)
 
 ## Protocol
 
-1. Parse the diagnostics and classify into `failure_class`. Compile and test failures cite a file:line — read that location via the harness Read tool.
-2. Distinguish flaky from real failures by inspecting the diagnostic surface (e.g., timing-related panics, network errors). Mark flaky only when there is a clear signal.
+1. Parse the diagnostics for the failed `check_id` and classify into `failure_class`. Compile and test failures cite a file:line — resolve that location against `target_path` and read it via the harness Read tool.
+2. Distinguish flaky from real failures by inspecting the diagnostic surface (e.g., timing-related panics, network errors); mark flaky only when there is a clear signal. Settle on the `root_cause` — a one-line statement of why the check failed.
 3. Map `failure_class` to `fix_strategy`: compile-error / test-assertion → source edit; formatting-diff → [cargo-operations](../cargo-operations/TECHNIQUE.md)::[fmt-fix](../cargo-operations/fmt-fix.md); lint-violation → either source edit or an explicit allow with justification; environment → surface to the user (do not auto-install).
 
 ## Errors

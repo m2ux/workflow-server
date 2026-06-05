@@ -57,9 +57,10 @@ prism/resources/
 - Extract: name, description, type, optimal_model, quality_baseline, words, domain.
 - Classify into family: structural-sdl, behavioral, knowledge, writer, analysis, meta.
 
-### 5. Compute Next Index
+### 5. Compute Next Index and Assemble change-set
 
 - Set next_index to max(existing resource indices) + 1.
+- Assemble the categorized new, modified, renamed, and deleted entries together with next_index into the change-set result.
 
 ## Outputs
 

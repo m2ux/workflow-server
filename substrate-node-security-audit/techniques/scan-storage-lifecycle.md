@@ -37,7 +37,7 @@ false
 
 ### 3. Verify Pairing
 
-- For each insert site, identify the corresponding remove site on the inverse lifecycle event. Flag unpaired inserts. For each storage map with inserts, check if declared capacity constants are enforced at the insertion point.
+- For each insert site, identify the corresponding remove site on the inverse lifecycle event. Flag unpaired inserts. For each storage map with inserts, check if declared capacity constants are enforced at the insertion point. Record each map's results as a row in the `storage-lifecycle` pairing table.
 
 ### 4. Verify Invariants
 

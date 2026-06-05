@@ -25,7 +25,7 @@ Boolean — true if the index is out of date
 
 ## Protocol
 
-1. Read the MCP resource `gitnexus://repo/{repo_name}/context`.
+1. Read the MCP resource `gitnexus://repo/{repo_name}/context` and record the reported `stats` (symbol / relationship / process counts).
 2. If stale, apply [analyze](./analyze.md) before proceeding.
 
 ## Errors

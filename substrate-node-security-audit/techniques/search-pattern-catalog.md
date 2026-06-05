@@ -33,7 +33,7 @@ Codebase paths to search against
 
 ### 1. Load Catalog
 
-- Fetch the resource by ID and locate the specified catalog section. Parse every pattern entry in the section. Each entry defines a search string and, optionally, triage criteria or verification steps.
+- Fetch the resource named by `resource-id` and locate the `catalog-section` within it. Parse every pattern entry in that section. Each entry defines a search string and, optionally, triage criteria or verification steps.
 
 ### 2. Iterate Patterns
 
@@ -41,7 +41,7 @@ Codebase paths to search against
 
 ### 3. Execute Search
 
-- For each pattern, determine the execution type from the resource entry. Grep-based patterns: run the search string against the scope. Verification-based patterns (mechanical checks): run the search string, then apply the verification procedure defined in the resource (e.g., trace a variable, check field completeness, verify pairing). Record every hit with file path and line number.
+- For each pattern, determine the execution type from the resource entry. Grep-based patterns: run the search string against the scope, omitting any paths or file patterns named in `exclusions` (e.g., test, mock, bench files). Verification-based patterns (mechanical checks): run the search string, then apply the verification procedure defined in the resource (e.g., trace a variable, check field completeness, verify pairing). Record every hit with file path and line number.
 
 ### 4. Triage Hits
 
@@ -53,7 +53,7 @@ Codebase paths to search against
 
 ### 6. Format Results
 
-- Produce a structured results table with one row per pattern hit (or per pattern for zero-hit entries). The table format is defined by the activity step that invoked this technique. Include zero-hit verdicts as a separate section or integrated into the main table.
+- Assemble the `pattern-results`: a structured results table with one row per pattern hit (or per pattern for zero-hit entries). The table format is defined by the activity step that invoked this technique. Include zero-hit verdicts as a separate section or integrated into the main table.
 
 ## Outputs
 

@@ -21,7 +21,7 @@ Change set — needed to know what's new, renamed, and deleted
 
 ### 1. Update Resources Readme
 
-- Rebuild the full catalog table organized by family: index, name, description, optimal model, quality baseline.
+- Using `changes` to know what's new, renamed, and deleted, rebuild the full catalog table organized by family: index, name, description, optimal model, quality baseline.
 - Update total count. Preserve existing cross-workflow and provenance documentation.
 
 ### 2. Update Workflow Readme
@@ -38,6 +38,7 @@ Change set — needed to know what's new, renamed, and deleted
 ### 4. Commit
 
 - Stage and commit: 'docs: update prism workflow documentation for upstream sync'.
+- Return `docs-result` summarizing the files updated and the number of prompt guide entries added.
 
 ## Outputs
 

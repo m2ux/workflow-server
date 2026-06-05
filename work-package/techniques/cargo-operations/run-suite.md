@@ -45,7 +45,7 @@ aggregate verdict — true iff all four per-op statuses passed.
 
 ## Protocol
 
-1. Fan out four concurrent shells invoking [check](./check.md), [clippy](./clippy.md), [test](./test.md), and [fmt-check](./fmt-check.md) against the same {scope}. Each carries its own resource budget (nice -n 19 + CARGO_BUILD_JOBS cap), so suite peak memory is bounded by the per-op cap, NOT by 4× a single op (fmt-check uses no compile budget at all).
+1. Fan out four concurrent shells invoking [check](./check.md), [clippy](./clippy.md), [test](./test.md), and [fmt-check](./fmt-check.md) against the same {scope}, passing the same {features} flags to each compiling op. Each carries its own resource budget (nice -n 19 + CARGO_BUILD_JOBS cap), so suite peak memory is bounded by the per-op cap, NOT by 4× a single op (fmt-check uses no compile budget at all).
 2. Wait for ALL four to finish before composing results. Do NOT short-circuit on the first failure — collect every per-op status and diagnostics so a single pass surfaces every issue rather than forcing serial discovery.
 3. Compose validation_results = { check_status, clippy_status, test_status, fmt_status, validation_passed: check_status.passed AND clippy_status.passed AND test_status.passed AND fmt_status.passed }.
 

@@ -33,7 +33,7 @@ Directory to write verified-initial.md, verified-gaps.md, and verified-corrected
 
 ### 1. Initial Analysis
 
-- Dispatch L12 ([l12](../resources/l12.md)) to a fresh worker
+- Dispatch L12 ([l12](../resources/l12.md)) to a fresh worker, configured for the {target-type} of input ('code' or 'general')
 - Worker writes to {output-path}/verified-initial.md
 
 ### 2. Gap Detection
@@ -57,6 +57,7 @@ Directory to write verified-initial.md, verified-gaps.md, and verified-corrected
 
 {target_content}
 - Worker writes to {output-path}/verified-corrected.md
+- Return the {verified-result}: the paths to verified-initial.md, verified-gaps.md, and verified-corrected.md
 
 ## Outputs
 

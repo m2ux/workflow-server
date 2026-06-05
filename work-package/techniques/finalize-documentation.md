@@ -34,7 +34,7 @@ PR number for cross-referencing
 ### 1. Update Adr
 
 - If the adr exists, update status to Accepted
-- Record implementation outcome and any deviations
+- Record implementation outcome and any deviations, cross-referencing the merged PR via its pr-number
 
 ### 2. Finalize Test Plan
 
@@ -44,7 +44,7 @@ PR number for cross-referencing
 
 ### 3. Create Completion Doc
 
-- Create the completion-document in planning folder
+- Create the completion-document at the planning-folder-path
 - Summarize what was delivered
 - Document what was tested and test coverage
 - List deferred items and known limitations

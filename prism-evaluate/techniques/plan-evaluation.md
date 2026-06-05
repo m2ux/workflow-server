@@ -75,10 +75,11 @@ Directory to write the evaluation plan artifact
 
 ### 6. Write Evaluation Plan
 
-- Compose a human-readable evaluation plan document
+- Compose the human-readable evaluation-plan document and write it into output_path
 - Section 1: Target Overview — target type, structure summary, key topics
 - Section 2: Dimension Plan — table mapping each dimension to pipeline mode, lenses, focus areas, and output location
 - Section 3: Execution Groups — how dimensions are grouped for prism triggering, execution order, estimated sub-agent dispatches
+- Return the written evaluation-plan as the artifact for downstream activities
 
 ## Outputs
 

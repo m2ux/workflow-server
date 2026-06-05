@@ -34,4 +34,4 @@ Pass/fail and output from the linter
 ## Protocol
 
 1. Compute `validation_passed = test_results.passed AND build_status.passed AND format_status.passed AND lint_results.passed`.
-2. Emit the envelope; do not mutate any input.
+2. Emit the `validation_results` envelope carrying each input outcome plus `validation_passed`; do not mutate any input.

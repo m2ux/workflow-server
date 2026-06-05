@@ -29,14 +29,14 @@ Path to planning folder for implementation summary context
 
 ### 1. Push Commits
 
-- Push all local commits to remote branch
+- Push all local commits to the remote `branch-name`
 - Verify push succeeded
-- Do not update PR until push completes
+- Do not update the `pr-number` PR until push completes
 
 ### 2. Update Description
 
 - Use attached [pr-description](../resources/pr-description.md) for template and structure
-- Update PR description with implementation summary
+- Update the `pr-number` PR description with the implementation summary drawn from `planning-folder-path`
 - Include test coverage summary
 - Document key decisions and trade-offs
 - NEVER guess or infer repository URLs for PR description links. ALWAYS resolve them from git remotes. The engineering repo URL is obtained from the PARENT repo (the repo containing .engineering/): run 'git -C <parent-repo-path> remote get-url origin' and strip the .git suffix. The target repo URL is obtained from the TARGET repo (where the PR lives): run 'git -C <target-path> remote get-url origin'. These are different repositories — the engineering repo owner will differ from the target repo owner.
@@ -49,8 +49,8 @@ Path to planning folder for implementation summary context
 
 ### 4. Mark Ready
 
-- Mark PR ready for review using gh pr ready
 - Ensure description is finalized before marking ready
+- Mark the PR ready for review using gh pr ready, yielding `updated-pr` with its URL and status
 
 ## Outputs
 

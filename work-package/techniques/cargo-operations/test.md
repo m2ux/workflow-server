@@ -35,6 +35,7 @@ Per-test failure detail when any failed
 
 1. If cargo nextest is configured (.config/nextest.toml present in the project): `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo nextest run {scope} {features} --test-threads=${RUST_TEST_THREADS:-4} {test_filter}`
 2. Otherwise: `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo test {scope} {features} {test_filter} -- --test-threads=${RUST_TEST_THREADS:-4}`
+3. Report the run's pass/fail summary as `test_status`; when any test failed, capture the per-test detail as `failures`.
 
 ## Errors
 

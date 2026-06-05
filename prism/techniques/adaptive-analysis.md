@@ -29,7 +29,7 @@ Directory for adaptive-stage1.md, adaptive-stage2.md (conditional), and full-pri
 
 ### 1. Stage 1 Sdl
 
-- Dispatch deep_scan ([deep-scan](../resources/deep-scan.md)) to a fresh worker on Haiku
+- Dispatch deep_scan ([deep-scan](../resources/deep-scan.md)) to a fresh worker on Haiku, passing {target-content} and {target-type} so the scan adapts to whether the input is code or general text
 - Worker writes to {output-path}/adaptive-stage1.md
 - Assess signal quality: conservation law + word count > 300 + bug table
 
@@ -50,6 +50,7 @@ Directory for adaptive-stage1.md, adaptive-stage2.md (conditional), and full-pri
 
 - If still insufficient: run full-prism 3-pass pipeline
 - Produces structural-analysis.md, adversarial-analysis.md ([l12-complement-adversarial](../resources/l12-complement-adversarial.md)), synthesis.md ([l12-synthesis](../resources/l12-synthesis.md))
+- Return {adaptive-result} recording the deepest stage reached, the artifact paths produced, and the final signal assessment across all stages run
 
 ## Outputs
 

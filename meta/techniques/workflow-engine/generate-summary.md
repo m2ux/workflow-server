@@ -25,4 +25,4 @@ Completed activities, checkpoint decisions, artifacts produced
 
 ## Protocol
 
-1. Compose sections: workflow id and title, start/completion timestamps, activities completed, key checkpoint decisions, artifacts with paths, outcomes satisfied vs. unmet, follow-up items.
+1. Draw from `trace` to compose the summary sections: workflow id and title, start/completion timestamps, activities completed, key checkpoint decisions, artifacts with paths, outcomes satisfied vs. unmet, follow-up items. Return the assembled markdown as `summary_markdown`.

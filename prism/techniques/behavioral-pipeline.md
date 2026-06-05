@@ -69,8 +69,8 @@ Directory to write the analysis artifact
 
 ### 7. Write Artifact
 
-- Write the complete analysis to the artifact file
-- Return the full artifact path in the output
+- Write the complete analysis to the artifact file, producing the behavioral-artifact for this pass
+- Return the full artifact path of the behavioral-artifact in the output
 - Independent lens artifacts use descriptive role names: behavioral-errors.md (19), behavioral-costs.md (20), behavioral-changes.md (21), behavioral-promises.md (22). Synthesis artifact: behavioral-synthesis.md (23).
 - Every artifact MUST be written to the filesystem. Return artifact paths so subsequent passes can read them.
 

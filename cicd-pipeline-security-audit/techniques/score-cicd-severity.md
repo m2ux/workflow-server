@@ -40,6 +40,7 @@ Unified list of findings, each with pattern ID, source, sink, and evidence
 - Cross-check severity assignments against campaign calibration anchors
 - Adjust any finding that diverges by >= 2 levels from a matching anchor
 - Severity must be consistent with known campaign outcomes
+- Emit the calibrated `scored-findings`, each carrying its final severity level and scoring rationale
 
 ## Outputs
 

@@ -22,7 +22,7 @@ Path to the reference report artifact.
 1. Load reference report from input reference-report-path (first and only time).
 2. Extract reference finding list with severities and affected files.
 3. Map, classify, and analyze per the sections above.
-4. Write the artifact.
+4. Write the gap-analysis report, assembling the summary, finding_mapping, gap_list, severity_calibration, ai_only_findings, and recommendations sections into the artifact.
 
 ## Outputs
 

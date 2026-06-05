@@ -36,7 +36,7 @@ Path to the codebase to analyze
 
 ### 2. Targeted Analysis
 
-- For each code-resolvable assumption, perform focused investigation: trace relevant code paths, examine implementations, diff between versions, compare behavior
+- For each code-resolvable assumption, perform focused investigation within the codebase at target-path: trace relevant code paths, examine implementations, diff between versions, compare behavior
 - Use the [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md) operations as the primary mechanism for tracing data flows, validating contract assumptions, and confirming ordering/error-path claims — [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[query](./gitnexus-operations/query.md) for concept-driven flow discovery, [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[context](./gitnexus-operations/context.md) for symbol-level caller/callee/process inspection, and [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[cypher](./gitnexus-operations/cypher.md) for custom traces (e.g. error-path or ordering assumptions).
 - Record evidence with file paths and line numbers for every finding
 - Determine resolution: Validated (evidence confirms), Invalidated (evidence refutes), or Partially Validated (evidence supports with caveats)
@@ -53,14 +53,14 @@ Path to the codebase to analyze
 
 - Re-classify all open assumptions after the analysis pass
 - If any open assumptions are code-resolvable (including newly surfaced ones), signal that another iteration is needed — set has_resolvable_assumptions to true
-- If no open assumptions are code-resolvable, convergence is reached — set has_resolvable_assumptions to false
+- If no open assumptions are code-resolvable, convergence is reached: the assumptions log is now the reconciled-assumptions output, with all code-resolvable assumptions resolved and only stakeholder-dependent ones remaining — set has_resolvable_assumptions to false
 - After convergence, evaluate whether any non-code-resolvable assumptions remain open. If none remain (all resolved), set has_open_assumptions to false. If stakeholder-dependent assumptions remain, set has_open_assumptions to true.
 
 ### 5. Update Comprehension Artifact
 
-- If a comprehension artifact exists, append findings as a numbered deep-dive section (e.g., 'Deep-Dive N: Assumption Reconciliation')
-- Update the Open Questions table in the comprehension artifact with any questions resolved or surfaced during reconciliation
-- If no comprehension artifact exists, skip this phase — findings are preserved in the assumptions log
+- If a comprehension-artifact was provided, append findings to it as a numbered deep-dive section (e.g., 'Deep-Dive N: Assumption Reconciliation')
+- Update the Open Questions table in the comprehension-artifact with any questions resolved or surfaced during reconciliation
+- If no comprehension-artifact was provided, skip this phase — findings are preserved in the assumptions log
 
 ## Outputs
 

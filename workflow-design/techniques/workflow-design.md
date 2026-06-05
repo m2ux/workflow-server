@@ -25,8 +25,8 @@ Free-form description of the workflow the user wants to create or modify
 
 ### 1. Intake
 
-- Accept the user's free-form description and summarize key design intent
-- Classify as create or update based on whether an existing workflow is referenced (for update mode, see [update-mode-guide](../resources/update-mode-guide.md))
+- Accept the `user-description` and summarize key design intent
+- Classify as create or update based on whether a `target-workflow-id` is supplied (for update mode, see [update-mode-guide](../resources/update-mode-guide.md))
 - Set mode variables and present classification for confirmation
 
 ### 2. Context Loading
@@ -127,7 +127,7 @@ Free-form description of the workflow the user wants to create or modify
 
 - Run schema validator on all TOON files
 - Re-verify scope manifest completeness
-- Commit to workflows worktree with signed commit
+- Commit the completed `workflow-file-set` to the workflows worktree with a signed commit
 
 ## Outputs
 

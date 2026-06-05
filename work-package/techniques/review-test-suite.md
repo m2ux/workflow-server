@@ -22,7 +22,7 @@ List of files changed in the work package (from git diff)
 ### 1. Load Guidance
 
 - Use attached [test-suite-review](../resources/test-suite-review.md) for full review criteria
-- Identify all test files in the project related to changed code
+- From the `changed-files` set, identify all test files in the project related to the changed code
 
 ### 2. Diff Aware Coverage Map
 

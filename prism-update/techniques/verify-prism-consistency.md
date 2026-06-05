@@ -45,7 +45,8 @@ Path to the prism workflow resources directory
 
 ### 5. Compile Findings
 
-- Set has_issues = true if any findings, false otherwise.
+- Assemble the verification-report from the four checks, populating stale_references, routing_mismatches, count_mismatches, and duplicate_indices.
+- Set the report's has_issues = true if any findings, false otherwise.
 
 ## Outputs
 

@@ -25,11 +25,11 @@ Path to the repository root
 
 ### 1. Extract Target
 
-- Extract the target component (submodule, crate, directory) from the user's request or workflow variables. If not specified, fail with a descriptive error listing available targets.
+- Extract the target component (submodule, crate, directory) from the `user-request` or workflow variables. If not specified, fail with a descriptive error listing available targets.
 
 ### 2. Extract Revision
 
-- Extract the git commit hash or branch from the request. If not specified, default to the component's current HEAD. Record the exact revision for reproducibility.
+- Extract the git commit hash or branch from the `user-request`. If not specified, default to the component's current HEAD. Record the exact revision for reproducibility.
 
 ### 3. Extract Reference
 
@@ -37,7 +37,7 @@ Path to the repository root
 
 ### 4. Checkout Revision
 
-- Fetch and checkout the target component at the specified revision. Verify the checkout succeeded by confirming the HEAD matches the expected revision.
+- Within the `workspace-root` repository, fetch and checkout the target component at the specified revision. Verify the checkout succeeded by confirming the HEAD matches the expected revision.
 
 ### 5. Scan Dependencies
 
@@ -45,7 +45,7 @@ Path to the repository root
 
 ### 6. Generate Inventory
 
-- Produce a sorted file inventory listing all source files with line counts, largest first. Save to the planning folder.
+- Produce a sorted file inventory listing all source files with line counts, largest first. Save to the planning folder. Together with the confirmed target, revision, and dependency scan results, this completes the `audit-target` ready for analysis.
 
 ## Outputs
 

@@ -28,10 +28,11 @@ Bootstrap the workflow-server, load an assigned activity, follow its steps seque
 
 ### 3. Verify Output
 
+- Assemble the sub-agent-output and verify it against the checks below before returning it.
 - steps_completed matches the activity's step IDs — no steps omitted.
 - Every FAIL in checklist_coverage has a corresponding finding in the findings list.
 - Every mandatory_tables entry is either populated or null with justification.
-- The output JSON is well-formed and contains all required_fields.
+- The sub-agent-output JSON is well-formed and contains all required_fields.
 
 ## Outputs
 

@@ -33,5 +33,5 @@ Per-file edit list (when `dry_run`) or applied summary
 
 ## Protocol
 
-1. Always run with `dry_run: true` first; review the change list with the user.
+1. Rename `old_name` to `new_name` in `repo_name`, always running with `dry_run: true` first; review the returned `changes` list with the user.
 2. Re-run with `dry_run: false` to apply.

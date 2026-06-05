@@ -21,7 +21,7 @@ The per-submodule scanner [output files](../resources/sub-agent-output-schema.md
 
 ### 1. Load All Outputs
 
-- Load every scanner output JSON and extract the findings array
+- Load each of the `scanner-outputs` JSON files and extract its findings array
 
 ### 2. Deduplicate
 

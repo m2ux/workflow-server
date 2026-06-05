@@ -37,7 +37,7 @@ Created issue key (e.g., `ENG-123`)
 
 ## Protocol
 
-1. Call `createJiraIssue { cloudId, projectKey, issueTypeName, summary, description?, additional_fields? }`.
+1. Call `createJiraIssue { cloudId, projectKey, issueTypeName, summary, description?, additional_fields? }` and return the `issueKey` of the created issue.
 
 ## Errors
 

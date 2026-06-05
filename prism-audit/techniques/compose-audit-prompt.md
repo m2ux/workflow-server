@@ -83,9 +83,11 @@ Directory to write the audit prompt artifact
 - Section 4: Cross-Cutting Concerns — error handling, feature flags, trust boundaries, dependencies
 - Section 5: Output Requirements — 'Produce findings with: ID, severity (using Impact x Feasibility rubric), description, location (file:line), impact, recommendation. Organise by domain and severity.'
 - The prompt must be self-contained: readable and actionable without additional context beyond the codebase path
+- Write the completed audit-prompt document into output_path as `audit-prompt.md`
 
 ### 7. Build Scopes
 
+- Assemble the audit-scopes array that downstream prism workflows will consume
 - For most audits: create a single scope entry covering the entire codebase
 - Single scope: { target: target_path, output_subdir: 'analysis', pipeline_mode: 'full-prism', analysis_focus: <composed prompt summary> }
 - For very large codebases (>100K LOC) with clearly separable security boundaries: consider multiple scopes, each focused on a distinct trust domain

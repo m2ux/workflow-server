@@ -22,7 +22,7 @@ Parsed source registry, concept lookup table, and topic clusters
 ## Protocol
 
 1. Locate `{domain}-knowledge-index.md` under `.engineering/resources/`.
-2. Read the file and parse its source registry, concept table, and topic clusters.
+2. Read the file and parse its source registry, concept table, and topic clusters into the `index`.
 
 ## Errors
 
