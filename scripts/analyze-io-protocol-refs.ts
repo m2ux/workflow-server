@@ -51,13 +51,17 @@ function level2Sections(body: string): Map<string, string> {
   return map;
 }
 
-/** Level-3 `###` entry titles within a section body (the designators); excludes `####`. */
+/**
+ * Level-3 `###` entry titles within a section body (the designators); excludes `####` components.
+ * A designator is an id (hyphen/snake/alnum); `###` lines that are not id-shaped are template/prose
+ * content inside a component body (e.g. a `### Issue {number}: {title}` example), not designators.
+ */
 function level3Designators(sectionBody: string | undefined): string[] {
   if (!sectionBody) return [];
   const ids: string[] = [];
   for (const line of sectionBody.split(/\r?\n/)) {
     const m = line.match(/^###\s+(.+?)\s*$/);
-    if (m && !line.startsWith('####')) ids.push(m[1]!.trim());
+    if (m && !line.startsWith('####') && /^[A-Za-z0-9_-]+$/.test(m[1]!.trim())) ids.push(m[1]!.trim());
   }
   return ids;
 }
