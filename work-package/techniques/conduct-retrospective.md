@@ -52,10 +52,21 @@ PR number for status checking
 
 Workflow [retrospective](../resources/workflow-retrospective.md#output-document-template) with lessons learned
 
-- **artifact**: `workflow-retrospective.md`
-- **what_worked**: What went well
-- **improvements**: What could improve
-- **lessons_learned**: Lessons for future sessions
+#### artifact
+
+`workflow-retrospective.md`
+
+#### what_worked
+
+What went well
+
+#### improvements
+
+What could improve
+
+#### lessons_learned
+
+Lessons for future sessions
 
 ## Rules
 

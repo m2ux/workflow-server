@@ -76,10 +76,21 @@ Original evaluation description for context
 
 Comprehensive [mitigation plan](../resources/mitigation-plan-template.md#mitigation-plan-template) with all finding dispositions
 
-- **artifact**: `MITIGATION-PLAN.md`
-- **summary_table**: Finding ID, severity, tier, decision for every finding
-- **detailed_mitigations**: Full change specifications grouped by tier
-- **implementation_priority**: Ordered list of changes for application
+#### artifact
+
+`MITIGATION-PLAN.md`
+
+#### summary_table
+
+Finding ID, severity, tier, decision for every finding
+
+#### detailed_mitigations
+
+Full change specifications grouped by tier
+
+#### implementation_priority
+
+Ordered list of changes for application
 
 ### modified-target
 

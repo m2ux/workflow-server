@@ -21,19 +21,25 @@ The code or text to analyze — file path or inline content
 
 *(optional)* Whether the input is 'code' or 'general'
 
-- **default**: code
+#### default
+
+code
 
 ### pipeline-mode
 
 *(optional)* Analysis mode: 'single', 'full-prism', 'portfolio', or 'behavioral'
 
-- **default**: single
+#### default
+
+single
 
 ### output-path
 
 *(optional)* Directory to write analysis artifacts. Workers write artifacts here; the orchestrator passes the path to each worker.
 
-- **default**: .
+#### default
+
+.
 
 ### selected-lenses
 
@@ -126,9 +132,17 @@ The code or text to analyze — file path or inline content
 
 Complete prism analysis result with artifact paths
 
-- **final_artifact_path**: Path to the primary analysis artifact (structural-analysis.md for single, synthesis.md for full-prism)
-- **all_artifact_paths**: All artifact paths produced during the pipeline
-- **pipeline_mode**: Which mode was used
+#### final_artifact_path
+
+Path to the primary analysis artifact (structural-analysis.md for single, synthesis.md for full-prism)
+
+#### all_artifact_paths
+
+All artifact paths produced during the pipeline
+
+#### pipeline_mode
+
+Which mode was used
 
 ## Rules
 

@@ -60,10 +60,21 @@ Directory for smart-prereq.md, smart-analysis.md (or subsystem-*.md), and smart-
 
 Paths and pipeline trace for the smart adaptive run
 
-- **prereq_path**: Filesystem path to smart-prereq.md
-- **analysis_paths**: Array of paths to smart-analysis.md and/or subsystem-*.md as produced
-- **dispute_paths**: Array of paths to smart-dispute-*.md (empty if dispute skipped)
-- **pipeline_steps**: Array of step names executed in order
+#### prereq_path
+
+Filesystem path to smart-prereq.md
+
+#### analysis_paths
+
+Array of paths to smart-analysis.md and/or subsystem-*.md as produced
+
+#### dispute_paths
+
+Array of paths to smart-dispute-*.md (empty if dispute skipped)
+
+#### pipeline_steps
+
+Array of step names executed in order
 
 ## Rules
 

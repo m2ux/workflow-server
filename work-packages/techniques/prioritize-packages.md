@@ -55,9 +55,17 @@ Inter-package dependency map describing which packages block or depend on which 
 
 Ordered list of work packages with prioritization rationale
 
-- **priority_order**: Ordered list of packages by execution priority
-- **dependency_graph**: Dependency graph representation
-- **prioritization_rationale**: Per-package rationale for the ordering
+#### priority_order
+
+Ordered list of packages by execution priority
+
+#### dependency_graph
+
+Dependency graph representation
+
+#### prioritization_rationale
+
+Per-package rationale for the ordering
 
 ## Rules
 

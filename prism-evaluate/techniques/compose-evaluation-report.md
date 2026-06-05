@@ -85,12 +85,29 @@ Original evaluation description, used for report context
 
 The consolidated [evaluation report](../resources/evaluation-report-template.md#evaluation-report-template)
 
-- **artifact**: `EVALUATION-REPORT.md`
-- **executive_summary**: Overall assessment with finding counts and core insight
-- **core_finding**: Deepest cross-dimensional insight
-- **dimension_findings**: Per-dimension findings with severity tables
-- **cross_cutting**: Cross-dimensional patterns
-- **recommendations**: Prioritised corrections and recommendations
+#### artifact
+
+`EVALUATION-REPORT.md`
+
+#### executive_summary
+
+Overall assessment with finding counts and core insight
+
+#### core_finding
+
+Deepest cross-dimensional insight
+
+#### dimension_findings
+
+Per-dimension findings with severity tables
+
+#### cross_cutting
+
+Cross-dimensional patterns
+
+#### recommendations
+
+Prioritised corrections and recommendations
 
 ## Rules
 

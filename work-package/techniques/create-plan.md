@@ -66,9 +66,17 @@ Elicited requirements with success criteria and scope
 
 Work package [plan](../resources/wp-plan.md#section-guidelines) with task breakdown and dependencies
 
-- **artifact**: `work-package-plan.md`
-- **tasks**: Atomic tasks with explicit dependencies and ordering
-- **design_decisions**: Approach and rationale with documented assumptions
+#### artifact
+
+`work-package-plan.md`
+
+#### tasks
+
+Atomic tasks with explicit dependencies and ordering
+
+#### design_decisions
+
+Approach and rationale with documented assumptions
 
 ## Rules
 

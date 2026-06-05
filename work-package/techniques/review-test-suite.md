@@ -57,10 +57,21 @@ List of files changed in the work package (from git diff)
 
 Test suite review [report](../resources/test-suite-review.md#test-suite-review-report-template) documenting quality assessment
 
-- **artifact**: `test-suite-review.md`
-- **coverage_assessment**: Coverage analysis relative to changes
-- **anti_patterns**: Anti-patterns found with locations
-- **recommendations**: Prioritized improvement recommendations
+#### artifact
+
+`test-suite-review.md`
+
+#### coverage_assessment
+
+Coverage analysis relative to changes
+
+#### anti_patterns
+
+Anti-patterns found with locations
+
+#### recommendations
+
+Prioritized improvement recommendations
 
 ## Rules
 

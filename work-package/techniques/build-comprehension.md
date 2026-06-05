@@ -97,12 +97,29 @@ Path to the target codebase directory
 
 Persistent comprehension [artifact](../resources/codebase-comprehension.md#artifact-template) covering the relevant codebase area
 
-- **artifact**: `{codebase-area}.md`
-- **architecture_overview**: Module structure, dependencies, and design patterns
-- **key_abstractions**: Core types, traits, data structures with domain context
-- **design_rationale**: Inferred rationale for significant design choices
-- **domain_glossary**: Mapping of domain terms to technical constructs
-- **deep_dives**: Targeted exploration sections added during user-driven loop
+#### artifact
+
+`{codebase-area}.md`
+
+#### architecture_overview
+
+Module structure, dependencies, and design patterns
+
+#### key_abstractions
+
+Core types, traits, data structures with domain context
+
+#### design_rationale
+
+Inferred rationale for significant design choices
+
+#### domain_glossary
+
+Mapping of domain terms to technical constructs
+
+#### deep_dives
+
+Targeted exploration sections added during user-driven loop
 
 ## Rules
 

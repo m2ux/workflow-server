@@ -66,9 +66,17 @@ Which activity is generating assumptions
 
 Assumptions [log](../resources/assumptions-review.md#assumptions-log-template) updated with review outcomes — grows across activities
 
-- **artifact**: `assumptions-log.md`
-- **assumptions**: All assumptions with type, statement, rationale, alternatives
-- **outcomes**: Per-assumption resolution: confirmed, corrected, or needs-discussion
+#### artifact
+
+`assumptions-log.md`
+
+#### assumptions
+
+All assumptions with type, statement, rationale, alternatives
+
+#### outcomes
+
+Per-assumption resolution: confirmed, corrected, or needs-discussion
 
 ## Rules
 

@@ -67,11 +67,25 @@ Path to planning folder for context
 
 Stakeholder-facing architecture [summary](../resources/architecture-summary.md#architecture-summary-artifact-template) with diagrams
 
-- **artifact**: `architecture-summary.md`
-- **system_context_diagram**: Mermaid system context diagram
-- **package_diagram**: Package or container diagram when applicable
-- **sequence_diagrams**: Sequence diagrams for key flows
-- **narrative**: Narrative explanation of impact and scope
+#### artifact
+
+`architecture-summary.md`
+
+#### system_context_diagram
+
+Mermaid system context diagram
+
+#### package_diagram
+
+Package or container diagram when applicable
+
+#### sequence_diagrams
+
+Sequence diagrams for key flows
+
+#### narrative
+
+Narrative explanation of impact and scope
 
 ## Rules
 

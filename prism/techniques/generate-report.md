@@ -104,10 +104,21 @@ Description of what was analysed — used in the report's Executive Summary scop
 
 Clean final [report](../resources/final-output-template.md#reportmd-template) artifact
 
-- **artifact**: `REPORT.md`
-- **report_path**: Full filesystem path to REPORT.md
-- **finding_count**: Total findings by severity
-- **core_finding**: Summary of the core finding (if any)
+#### artifact
+
+`REPORT.md`
+
+#### report_path
+
+Full filesystem path to REPORT.md
+
+#### finding_count
+
+Total findings by severity
+
+#### core_finding
+
+Summary of the core finding (if any)
 
 ## Rules
 

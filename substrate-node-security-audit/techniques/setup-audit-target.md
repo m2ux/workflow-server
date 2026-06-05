@@ -53,10 +53,21 @@ Path to the repository root
 
 Initialized target ready for analysis.
 
-- **confirmed_target**: Confirmed target component and revision
-- **dependency_scan_results**: Dependency scan results or fallback manifest
-- **file_inventory**: File inventory sorted by size
-- **reference_document_paths**: Reference document paths (if any, quarantined for later phases)
+#### confirmed_target
+
+Confirmed target component and revision
+
+#### dependency_scan_results
+
+Dependency scan results or fallback manifest
+
+#### file_inventory
+
+File inventory sorted by size
+
+#### reference_document_paths
+
+Reference document paths (if any, quarantined for later phases)
 
 ## Errors
 

@@ -85,10 +85,21 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 
 Verification report with gap list and re-dispatch recommendations.
 
-- **dispatch_manifest**: crate, assigned_group, dispatched, returned, status
-- **coverage_table**: file, lines, agent, agent_type (group-a/recon/none), COVERED/RECON-ONLY/UNREAD
-- **missing_tables_list**: agent_id, table_id, reason
-- **redispatch_recommendations**: agent_id, scope, specific check to perform
+#### dispatch_manifest
+
+crate, assigned_group, dispatched, returned, status
+
+#### coverage_table
+
+file, lines, agent, agent_type (group-a/recon/none), COVERED/RECON-ONLY/UNREAD
+
+#### missing_tables_list
+
+agent_id, table_id, reason
+
+#### redispatch_recommendations
+
+agent_id, scope, specific check to perform
 
 ## Errors
 

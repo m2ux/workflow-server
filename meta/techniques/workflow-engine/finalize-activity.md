@@ -18,7 +18,31 @@ Array of artifact entries (`id`, `name`, `path`)
 
 ### result
 
-`{ result_type: 'activity_complete', steps_completed, checkpoints_responded, variables_changed, artifacts_produced, transition_override? }`
+The `activity_complete` result envelope, returned as one tagged object (the orchestrator switches on `result_type`):
+
+#### result_type
+
+discriminant literal `activity_complete`; sibling envelope is `checkpoint_pending`.
+
+#### steps_completed
+
+array of completed step entries.
+
+#### checkpoints_responded
+
+array of checkpoint responses (`option_id` + effects).
+
+#### variables_changed
+
+state variables the activity mutated, reported by the worker — one of the two sanctioned state-mutation sources (see [dispatch-activity](./dispatch-activity.md)).
+
+#### artifacts_produced
+
+array of artifact entries (`id`, `name`, `path`).
+
+#### transition_override
+
+optional — the transition target to take instead of the default, set when a checkpoint effect specified `transitionTo` (see Protocol step 2).
 
 ## Protocol
 

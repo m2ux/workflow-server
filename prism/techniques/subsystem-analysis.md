@@ -61,9 +61,17 @@ Directory for subsystem-{name}.md and subsystem-synthesis.md
 
 Paths to per-subsystem artifacts, synthesis artifact, and prism assignments
 
-- **subsystem_paths**: Array of filesystem paths to subsystem-{name}.md files
-- **synthesis_path**: Filesystem path to subsystem-synthesis.md
-- **assignments**: Map of subsystem name (or id) to assigned prism resource index or lens id
+#### subsystem_paths
+
+Array of filesystem paths to subsystem-{name}.md files
+
+#### synthesis_path
+
+Filesystem path to subsystem-synthesis.md
+
+#### assignments
+
+Map of subsystem name (or id) to assigned prism resource index or lens id
 
 ## Rules
 

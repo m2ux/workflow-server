@@ -21,7 +21,9 @@ The code or text to analyze. Can be a file path or inline content.
 
 *(optional)* Directory to write per-lens analysis artifacts
 
-- **default**: .
+#### default
+
+.
 
 ### selected-lenses
 
@@ -76,18 +78,37 @@ The code or text to analyze. Can be a file path or inline content.
 
 Individual analysis artifact per lens
 
-- **artifact**: `portfolio-{lens-name}.md`
-- **per_lens_findings**: Complete findings from each lens, labelled by lens name
-- **artifact_paths**: File paths to each per-lens artifact
+#### artifact
+
+`portfolio-{lens-name}.md`
+
+#### per_lens_findings
+
+Complete findings from each lens, labelled by lens name
+
+#### artifact_paths
+
+File paths to each per-lens artifact
 
 ### portfolio-synthesis
 
 Cross-lens convergence/divergence synthesis
 
-- **artifact**: `portfolio-synthesis.md`
-- **convergent_findings**: Structural properties found by multiple lenses (high confidence)
-- **unique_findings**: Properties found by only one lens (the value-add of portfolio analysis)
-- **summary_table**: All findings with lens attribution and convergent/unique classification
+#### artifact
+
+`portfolio-synthesis.md`
+
+#### convergent_findings
+
+Structural properties found by multiple lenses (high confidence)
+
+#### unique_findings
+
+Properties found by only one lens (the value-add of portfolio analysis)
+
+#### summary_table
+
+All findings with lens attribution and convergent/unique classification
 
 ## Rules
 

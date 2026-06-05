@@ -18,7 +18,7 @@ Current variable state for prompt substitution
 
 ### worker_result
 
-`{ type: 'checkpoint_pending' }` or `{ type: 'activity_complete', ...payload }`
+The envelope the worker returned, passed through unchanged — one of two tagged result types: the `checkpoint_pending` envelope from [yield-checkpoint](./yield-checkpoint.md), or the `activity_complete` envelope from [finalize-activity](./finalize-activity.md).
 
 ### trace_token
 

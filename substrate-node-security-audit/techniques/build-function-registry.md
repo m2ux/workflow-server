@@ -21,7 +21,9 @@ List of .rs files to enumerate (a crate, a set of crates, or a full scope)
 
 *(optional)* Whether to traverse into submodules (versions/, common/, api/, internal/, impl/)
 
-- **default**: true
+#### default
+
+true
 
 ## Protocol
 
@@ -43,5 +45,10 @@ List of .rs files to enumerate (a crate, a set of crates, or a full scope)
 
 Structured function registry table.
 
-- **registry_table**: one row per function with file location, type classification, and priority
-- **file_manifest**: every file read with line count and read status
+#### registry_table
+
+one row per function with file location, type classification, and priority
+
+#### file_manifest
+
+every file read with line count and read status

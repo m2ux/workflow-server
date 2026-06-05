@@ -58,8 +58,13 @@ Path to planning folder for implementation summary context
 
 PR updated and marked ready for review
 
-- **pr_url**: URL to the PR
-- **pr_status**: Status after update (e.g., ready for review)
+#### pr_url
+
+URL to the PR
+
+#### pr_status
+
+Status after update (e.g., ready for review)
 
 ## Rules
 

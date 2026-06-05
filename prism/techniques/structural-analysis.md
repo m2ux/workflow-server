@@ -21,7 +21,9 @@ The code to analyze. Can be a file path (agent reads it), a diff, or inline code
 
 *(optional)* Directory to write the analysis artifact. Defaults to current working directory.
 
-- **default**: .
+#### default
+
+.
 
 ### analysis-focus
 
@@ -72,12 +74,29 @@ The code to analyze. Can be a file path (agent reads it), a diff, or inline code
 
 L12 structural analysis with conservation law, meta-law, and classified bug table
 
-- **artifact**: `structural-analysis.md`
-- **conservation_law**: The named conservation law between original and inverted impossibilities
-- **meta_law**: What the conservation law itself conceals — the deeper finding
-- **bug_table**: Every concrete bug with location, severity, and fixable/structural classification
-- **concealment_mechanism**: How the code hides its real problems
-- **structural_invariant**: The property that persists through every improvement
+#### artifact
+
+`structural-analysis.md`
+
+#### conservation_law
+
+The named conservation law between original and inverted impossibilities
+
+#### meta_law
+
+What the conservation law itself conceals — the deeper finding
+
+#### bug_table
+
+Every concrete bug with location, severity, and fixable/structural classification
+
+#### concealment_mechanism
+
+How the code hides its real problems
+
+#### structural_invariant
+
+The property that persists through every improvement
 
 ## Rules
 

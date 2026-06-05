@@ -49,9 +49,17 @@ One of: structured-merge (concat + dedup), integrate (add to existing), union-me
 
 Canonical finding flat table with elevation mapping and summary.
 
-- **flat_table**: one row per agent finding with report finding number and merge status
-- **elevation_summary**: total agent findings, total report findings, merged count, promoted count
-- **union_merge_classification**: for union-merge: consensus/single-source/escalated classification per finding
+#### flat_table
+
+one row per agent finding with report finding number and merge status
+
+#### elevation_summary
+
+total agent findings, total report findings, merged count, promoted count
+
+#### union_merge_classification
+
+for union-merge: consensus/single-source/escalated classification per finding
 
 ## Errors
 

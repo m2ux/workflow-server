@@ -57,9 +57,17 @@ List of files changed in the work package (from git diff)
 
 Code review [report](../resources/rust-substrate-code-review.md#report-template) documenting findings by severity
 
-- **artifact**: `code-review.md`
-- **findings**: All findings with severity, affected file, line numbers, and description
-- **summary**: Counts by severity level and top issues
+#### artifact
+
+`code-review.md`
+
+#### findings
+
+All findings with severity, affected file, line numbers, and description
+
+#### summary
+
+Counts by severity level and top issues
 
 ## Rules
 

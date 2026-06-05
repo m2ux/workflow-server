@@ -13,45 +13,24 @@ Bootstrap the workflow-server MCP from a dispatched session, load an assigned ac
 
 ## Protocol
 
-### 1. Bootstrap Get Rules
+### 1. Bootstrap
 
 - Call start_session(session_token, agent_id) to inherit the dispatched session and obtain a session token. The workflow is derived from the token.
+- Call next_activity({ activity_id: '<assigned-activity-id>' }) to load the activity definition with its steps.
 
-### 2. Bootstrap Get Activity
+### 2. Execute Steps
 
-- Call next_activity({ activity_id: '<assigned-activity-id>' }) to load the activity definition with its steps
+- Read the activity's steps array in order.
+- For each step, read the description field to understand what is required.
+- If a step references a technique (step.technique), call get_technique({ technique_id, workflow_id: 'cicd-pipeline-security-audit' }) and follow its protocol for that step.
+- Produce the REQUIRED OUTPUT defined in the step's description before proceeding to the next step.
+- If a step cannot be completed (e.g., no workflow files found for a pattern), record an explicit N/A with justification — do not silently skip.
+- Track which steps have been completed in a steps_completed list.
 
-### 3. Exec Read Steps
+### 3. Verify Output
 
-- Read the activity's steps array in order
-
-### 4. Exec Per Step Description
-
-- For each step, read the description field to understand what is required
-
-### 5. Exec Load Step Technique
-
-- If a step references a technique (step.technique), call get_technique({ technique_id, workflow_id: 'cicd-pipeline-security-audit' }) and follow its protocol for that step
-
-### 6. Exec Produce Output
-
-- Produce the REQUIRED OUTPUT defined in the step's description before proceeding to the next step
-
-### 7. Exec Na Justification
-
-- If a step cannot be completed (e.g., no workflow files found for a pattern), record an explicit N/A with justification — do not silently skip
-
-### 8. Exec Track Completed
-
-- Track which steps have been completed in a steps_completed list
-
-### 9. Verify Steps Match
-
-- steps_completed matches the activity's step IDs — no steps omitted
-
-### 10. Verify Json Complete
-
-- The output JSON is well-formed and contains all required fields per the output schema ([sub-agent-output-schema](../resources/sub-agent-output-schema.md))
+- steps_completed matches the activity's step IDs — no steps omitted.
+- The output JSON is well-formed and contains all required fields per the output schema ([sub-agent-output-schema](../resources/sub-agent-output-schema.md)).
 
 ## Outputs
 
@@ -59,12 +38,29 @@ Bootstrap the workflow-server MCP from a dispatched session, load an assigned ac
 
 Structured JSON conforming to [sub-agent-output-schema](../resources/sub-agent-output-schema.md) (sub-agent-output-schema).
 
-- **scanner_id**: identifier for this agent instance (e.g., 'S1', 'S2', 'V', 'M')
-- **activity_followed**: the activity ID executed
-- **steps_completed**: list of step IDs completed (must match activity definition)
-- **steps_skipped**: list of step IDs skipped with reasons (should be empty)
-- **findings**: structured list of findings with required fields per finding
-- **coverage**: per-file, per-pattern scan confirmation
+#### scanner_id
+
+identifier for this agent instance (e.g., 'S1', 'S2', 'V', 'M')
+
+#### activity_followed
+
+the activity ID executed
+
+#### steps_completed
+
+list of step IDs completed (must match activity definition)
+
+#### steps_skipped
+
+list of step IDs skipped with reasons (should be empty)
+
+#### findings
+
+structured list of findings with required fields per finding
+
+#### coverage
+
+per-file, per-pattern scan confirmation
 
 ## Errors
 

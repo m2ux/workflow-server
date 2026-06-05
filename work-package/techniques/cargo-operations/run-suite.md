@@ -14,7 +14,27 @@ Optional --features flags (empty string when none)
 
 ### validation_results
 
-{ check_status, clippy_status, test_status, fmt_status, validation_passed } — validation_passed is true iff all four sub-statuses passed
+The aggregate validation envelope from the four concurrent ops:
+
+#### check_status
+
+status of the [check](./check.md) op (`{ passed }`).
+
+#### clippy_status
+
+status of the [clippy](./clippy.md) op (`{ passed }`).
+
+#### test_status
+
+status of the [test](./test.md) op (`{ passed }`).
+
+#### fmt_status
+
+status of the [fmt-check](./fmt-check.md) op (`{ passed }`).
+
+#### validation_passed
+
+aggregate verdict — true iff all four per-op statuses passed.
 
 ## Protocol
 

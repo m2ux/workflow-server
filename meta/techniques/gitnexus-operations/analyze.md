@@ -18,11 +18,19 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 
 ## Protocol
 
-1. Coordinate concurrent invocations from sibling work packages: serialize via an exclusive flock on `{repo_path}/.git/.workflow-gitnexus-refresh.lock` (blocking). Concrete form: `flock {repo_path}/.git/.workflow-gitnexus-refresh.lock -c <command>`. The lock prevents two parallel analyze invocations from racing on the shared GitNexus index for this repo.
-2. Skip-if-recent (under the lock): check the mtime of `{repo_path}/.git/.workflow-gitnexus-refresh`. If it exists, was modified within the last 300 seconds, AND `force` is not true, skip the analyze entirely — a sibling work package already (re)built the index and another rebuild adds no value. Release the lock and return cached stats.
-3. Otherwise run `npx gitnexus analyze` (or `npx gitnexus analyze --force` when force is true) inside `repo_path`. The CLI exits non-zero on failure; surface its stderr.
-4. On success, `touch {repo_path}/.git/.workflow-gitnexus-refresh` so subsequent invocations see the freshness signal. Release the lock. On a fresh repo with no prior index, the first analyze can take minutes — do not retry until exit. Subsequent incremental runs are seconds.
-5. After exit, optionally apply [verify-index](./verify-index.md) to confirm freshness — useful when chained immediately into a downstream comprehension or impact step.
+### 1. Lock and Check Freshness
+
+- Coordinate concurrent invocations from sibling work packages: serialize via an exclusive flock on `{repo_path}/.git/.workflow-gitnexus-refresh.lock` (blocking). Concrete form: `flock {repo_path}/.git/.workflow-gitnexus-refresh.lock -c <command>`. The lock prevents two parallel analyze invocations from racing on the shared GitNexus index for this repo.
+- Skip-if-recent (under the lock): check the mtime of `{repo_path}/.git/.workflow-gitnexus-refresh`. If it exists, was modified within the last 300 seconds, AND `force` is not true, skip the analyze entirely — a sibling work package already (re)built the index and another rebuild adds no value. Release the lock and return cached stats.
+
+### 2. Run Analyze
+
+- Otherwise run `npx gitnexus analyze` (or `npx gitnexus analyze --force` when force is true) inside `repo_path`. The CLI exits non-zero on failure; surface its stderr.
+
+### 3. Signal and Verify
+
+- On success, `touch {repo_path}/.git/.workflow-gitnexus-refresh` so subsequent invocations see the freshness signal. Release the lock. On a fresh repo with no prior index, the first analyze can take minutes — do not retry until exit. Subsequent incremental runs are seconds.
+- After exit, optionally apply [verify-index](./verify-index.md) to confirm freshness — useful when chained immediately into a downstream comprehension or impact step.
 
 ## Errors
 

@@ -41,9 +41,17 @@ List of agents to dispatch, each with: agent_id, activity_id, context variables 
 
 Collected results from all dispatched sub-agents.
 
-- **per_agent_output**: Per-agent structured output (conforming to the output schema resource)
-- **dispatch_summary**: agents dispatched, failures encountered
-- **dispatch_manifest**: per-agent table with assigned/dispatched/returned status
+#### per_agent_output
+
+Per-agent structured output (conforming to the output schema resource)
+
+#### dispatch_summary
+
+agents dispatched, failures encountered
+
+#### dispatch_manifest
+
+per-agent table with assigned/dispatched/returned status
 
 ## Errors
 

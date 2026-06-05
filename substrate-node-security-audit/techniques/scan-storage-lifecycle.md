@@ -21,7 +21,9 @@ Directory scope to scan (a single crate for per-crate review, or full in-scope p
 
 *(optional)* Whether to perform cross-function invariant comparison (e.g., do paired insert/remove functions maintain the same conditions?)
 
-- **default**: false
+#### default
+
+false
 
 ## Protocol
 
@@ -47,5 +49,10 @@ Directory scope to scan (a single crate for per-crate review, or full in-scope p
 
 Storage lifecycle pairing table with optional invariant comparison.
 
-- **pairing_table**: | StorageMap | Crate | insert() Sites | remove() Sites | Paired? | Cap Enforced? |
-- **invariant_table**: | StorageMap | insert() Callers | remove() Callers | Paired? | Cross-function Consistent? | (optional)
+#### pairing_table
+
+| StorageMap | Crate | insert() Sites | remove() Sites | Paired? | Cap Enforced? |
+
+#### invariant_table
+
+| StorageMap | insert() Callers | remove() Callers | Paired? | Cross-function Consistent? | (optional)

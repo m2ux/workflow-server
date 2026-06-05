@@ -45,9 +45,17 @@ Free-form description of the initiative from the user
 
 Identified work packages with names and descriptions
 
-- **initiative_name**: Name for the overall initiative
-- **work_packages**: List of identified packages with names and one-sentence descriptions
-- **package_count**: Total number of identified packages
+#### initiative_name
+
+Name for the overall initiative
+
+#### work_packages
+
+List of identified packages with names and one-sentence descriptions
+
+#### package_count
+
+Total number of identified packages
 
 ## Rules
 

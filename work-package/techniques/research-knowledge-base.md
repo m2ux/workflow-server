@@ -59,12 +59,29 @@ Clear problem definition with system understanding, used to focus the research
 
 Knowledge base and web research [synthesis](../resources/knowledge-base-research.md#planning-artifact) for the work package
 
-- **artifact**: `kb-research.md`
-- **kb_findings**: Findings from concept-rag knowledge base
-- **web_findings**: Findings from web research
-- **synthesis**: Synthesized connection to requirements
-- **applicable_patterns**: Patterns validated and mapped to needs
-- **risks**: Risks, gaps, or assumptions documented
+#### artifact
+
+`kb-research.md`
+
+#### kb_findings
+
+Findings from concept-rag knowledge base
+
+#### web_findings
+
+Findings from web research
+
+#### synthesis
+
+Synthesized connection to requirements
+
+#### applicable_patterns
+
+Patterns validated and mapped to needs
+
+#### risks
+
+Risks, gaps, or assumptions documented
 
 ## Rules
 

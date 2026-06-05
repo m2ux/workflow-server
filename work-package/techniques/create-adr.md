@@ -51,11 +51,25 @@ Design philosophy [artifact](../resources/design-framework.md#design-philosophy-
 
 [Architecture Decision Record](../resources/architecture-review.md#adr-template)
 
-- **artifact**: `NNNN-{decision-title}.md`
-- **context**: Problem context and forces
-- **decision**: The architectural decision made
-- **rationale**: Why this decision over alternatives
-- **consequences**: Expected positive and negative consequences
+#### artifact
+
+`NNNN-{decision-title}.md`
+
+#### context
+
+Problem context and forces
+
+#### decision
+
+The architectural decision made
+
+#### rationale
+
+Why this decision over alternatives
+
+#### consequences
+
+Expected positive and negative consequences
 
 ## Rules
 

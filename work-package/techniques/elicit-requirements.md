@@ -67,11 +67,25 @@ Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)
 
 Elicited [requirements](../resources/requirements-elicitation.md#document-template) with success criteria and scope
 
-- **artifact**: `requirements-elicitation.md`
-- **requirements**: Captured requirements list
-- **success_criteria**: Defined success criteria with verification methods
-- **scope_boundaries**: In/out scope definitions
-- **assumptions**: Documented assumptions from elicitation
+#### artifact
+
+`requirements-elicitation.md`
+
+#### requirements
+
+Captured requirements list
+
+#### success_criteria
+
+Defined success criteria with verification methods
+
+#### scope_boundaries
+
+In/out scope definitions
+
+#### assumptions
+
+Documented assumptions from elicitation
 
 ## Rules
 

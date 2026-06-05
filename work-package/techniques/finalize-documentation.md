@@ -63,11 +63,25 @@ PR number for cross-referencing
 
 [Summary](../resources/complete-wp.md#section-guidelines) of delivered work, test coverage, and deferred items
 
-- **artifact**: `COMPLETE.md`
-- **deliverables**: What was implemented
-- **test_coverage**: What was tested and where
-- **deferred**: Items deferred to future work
-- **limitations**: Known limitations and caveats
+#### artifact
+
+`COMPLETE.md`
+
+#### deliverables
+
+What was implemented
+
+#### test_coverage
+
+What was tested and where
+
+#### deferred
+
+Items deferred to future work
+
+#### limitations
+
+Known limitations and caveats
 
 ## Rules
 

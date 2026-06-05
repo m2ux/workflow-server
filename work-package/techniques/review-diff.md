@@ -71,18 +71,37 @@ Path to planning folder for artifact output
 
 [Index](../resources/manual-diff-review.md#file-index-generation) of changed blocks for external diff review, with per-block rationale paragraphs hyperlinked from the index table to aid manual review
 
-- **artifact**: `change-block-index.md`
-- **index_table**: Row (hyperlinked to rationale) | Path | File with review time estimate
-- **block_rationale**: Per-block descriptive paragraphs explaining intent, context, and non-obvious design choices
-- **change_count**: Total number of change blocks
+#### artifact
+
+`change-block-index.md`
+
+#### index_table
+
+Row (hyperlinked to rationale) | Path | File with review time estimate
+
+#### block_rationale
+
+Per-block descriptive paragraphs explaining intent, context, and non-obvious design choices
+
+#### change_count
+
+Total number of change blocks
 
 ### manual-diff-review-report
 
 Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-review-report-template) from user-flagged blocks
 
-- **artifact**: `manual-diff-review.md`
-- **findings**: Per-block issues with interview responses
-- **has_critical_blocker**: True if any block marked as critical blocker
+#### artifact
+
+`manual-diff-review.md`
+
+#### findings
+
+Per-block issues with interview responses
+
+#### has_critical_blocker
+
+True if any block marked as critical blocker
 
 ## Errors
 

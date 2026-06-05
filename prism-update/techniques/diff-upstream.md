@@ -21,13 +21,17 @@ Absolute path to the upstream prisms directory
 
 Relative path to the prism workflow resources directory
 
-- **default**: prism/resources/
+#### default
+
+prism/resources/
 
 ### exclusions
 
 *(optional)* Upstream filenames to exclude from the diff
 
-- **default**: []
+#### default
+
+[]
 
 ## Protocol
 
@@ -63,11 +67,25 @@ Relative path to the prism workflow resources directory
 
 Categorized changes ready for review and import
 
-- **new**: Array of { name, upstream_file, family, optimal_model, quality_baseline, words }
-- **modified**: Array of { name, resource_file, upstream_file }
-- **renamed**: Array of { old_name, new_name, old_resource_file, upstream_file }
-- **deleted**: Array of { name, resource_file }
-- **next_index**: Next available resource index
+#### new
+
+Array of { name, upstream_file, family, optimal_model, quality_baseline, words }
+
+#### modified
+
+Array of { name, resource_file, upstream_file }
+
+#### renamed
+
+Array of { old_name, new_name, old_resource_file, upstream_file }
+
+#### deleted
+
+Array of { name, resource_file }
+
+#### next_index
+
+Next available resource index
 
 ## Errors
 

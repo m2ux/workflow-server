@@ -59,12 +59,29 @@ Starting index for new resource files
 
 Summary of file operations
 
-- **modified_count**: Number synced
-- **renamed_count**: Number renamed
-- **new_count**: Number imported
-- **deleted_count**: Number removed
-- **total_count**: Final resource count
-- **commits**: List of commit SHAs
+#### modified_count
+
+Number synced
+
+#### renamed_count
+
+Number renamed
+
+#### new_count
+
+Number imported
+
+#### deleted_count
+
+Number removed
+
+#### total_count
+
+Final resource count
+
+#### commits
+
+List of commit SHAs
 
 ## Errors
 

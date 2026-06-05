@@ -29,7 +29,9 @@ What to analyze. Can be: a file path, a directory path, inline text, a question,
 
 *(optional)* Analysis budget: 'quick' (minimize passes, skip low-risk), 'standard' (balanced depth and coverage), 'thorough' (full coverage, full-prism on high-risk). Default: standard
 
-- **default**: standard
+#### default
+
+standard
 
 ### depth-preference
 
@@ -121,20 +123,45 @@ What to analyze. Can be: a file path, a directory path, inline text, a question,
 
 Human-readable analysis plan artifact
 
-- **artifact**: `analysis-plan.md`
-- **scope**: Detected scope type (query, file, module, codebase, document-set)
-- **strategy**: Overall strategy description
-- **units_summary**: Per-unit plan summary: target, role, risk, pipeline_mode, lenses, rationale
-- **execution_order**: Prioritised and grouped execution sequence (multi-unit scopes only)
-- **parallelism**: Which units can run concurrently (multi-unit scopes only)
-- **estimated_cost**: Total sub-agent dispatches (multi-unit scopes only)
-- **skip_list**: Units below budget threshold with justification (multi-unit scopes only)
+#### artifact
+
+`analysis-plan.md`
+
+#### scope
+
+Detected scope type (query, file, module, codebase, document-set)
+
+#### strategy
+
+Overall strategy description
+
+#### units_summary
+
+Per-unit plan summary: target, role, risk, pipeline_mode, lenses, rationale
+
+#### execution_order
+
+Prioritised and grouped execution sequence (multi-unit scopes only)
+
+#### parallelism
+
+Which units can run concurrently (multi-unit scopes only)
+
+#### estimated_cost
+
+Total sub-agent dispatches (multi-unit scopes only)
+
+#### skip_list
+
+Units below budget threshold with justification (multi-unit scopes only)
 
 ### analysis-units
 
 Machine-readable ordered array of analysis unit objects, each specifying a target, mode, and lens selection to execute
 
-- **units**: Array of { target, target_type, pipeline_mode, lenses, role, risk, rationale, unit_output_subdir }
+#### units
+
+Array of { target, target_type, pipeline_mode, lenses, role, risk, rationale, unit_output_subdir }
 
 ## Rules
 

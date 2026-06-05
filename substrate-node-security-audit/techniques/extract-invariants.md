@@ -37,4 +37,6 @@ Source files containing the functions
 
 Structured invariant table.
 
-- **invariant_table**: one row per function-invariant pair with category, expected enforcement, and evidence
+#### invariant_table
+
+one row per function-invariant pair with category, expected enforcement, and evidence

@@ -69,11 +69,25 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 
 Current implementation [analysis](../resources/implementation-analysis.md#document-template) with baselines and improvement opportunities
 
-- **artifact**: `implementation-analysis.md`
-- **current_state**: Location, usage, dependencies, architecture
-- **baseline_metrics**: Quantitative baselines with measurement methods
-- **gaps**: Identified gaps linked to success criteria
-- **success_criteria**: Measurable criteria for improvement
+#### artifact
+
+`implementation-analysis.md`
+
+#### current_state
+
+Location, usage, dependencies, architecture
+
+#### baseline_metrics
+
+Quantitative baselines with measurement methods
+
+#### gaps
+
+Identified gaps linked to success criteria
+
+#### success_criteria
+
+Measurable criteria for improvement
 
 ## Rules
 

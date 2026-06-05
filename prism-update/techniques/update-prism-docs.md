@@ -45,8 +45,13 @@ Change set — needed to know what's new, renamed, and deleted
 
 Summary of documentation updates
 
-- **files_updated**: List of modified files
-- **prompt_guide_entries_added**: Number of new prompt guide rows
+#### files_updated
+
+List of modified files
+
+#### prompt_guide_entries_added
+
+Number of new prompt guide rows
 
 ## Errors
 

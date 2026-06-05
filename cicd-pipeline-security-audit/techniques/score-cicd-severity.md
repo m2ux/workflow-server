@@ -47,8 +47,13 @@ Unified list of findings, each with pattern ID, source, sink, and evidence
 
 Findings with severity levels and scoring rationale
 
-- **severity_distribution**: Count by severity level
-- **scoring_rationale**: Per-finding Impact and Exploitability assessment
+#### severity_distribution
+
+Count by severity level
+
+#### scoring_rationale
+
+Per-finding Impact and Exploitability assessment
 
 ## Rules
 

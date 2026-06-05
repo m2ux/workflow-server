@@ -52,9 +52,17 @@ The per-submodule scanner [output files](../resources/sub-agent-output-schema.md
 
 Unified [finding set](../resources/intermediate-artifact-schemas.md#merged-findings)
 
-- **findings**: Deduplicated and correlated findings
-- **compounds**: Compound vulnerability chains
-- **observations**: Informational items without clear source-to-sink flow
+#### findings
+
+Deduplicated and correlated findings
+
+#### compounds
+
+Compound vulnerability chains
+
+#### observations
+
+Informational items without clear source-to-sink flow
 
 ### reconciliation
 

@@ -65,11 +65,25 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 
 Work package [plan document](../resources/package-plan-template.md#template)
 
-- **artifact**: `{package-name}-plan.md`
-- **scope**: In-scope and out-of-scope definitions
-- **dependencies**: Blocker and soft dependency list
-- **effort**: Effort estimate with rationale
-- **success_criteria**: Measurable success criteria with verification methods
+#### artifact
+
+`{package-name}-plan.md`
+
+#### scope
+
+In-scope and out-of-scope definitions
+
+#### dependencies
+
+Blocker and soft dependency list
+
+#### effort
+
+Effort estimate with rationale
+
+#### success_criteria
+
+Measurable success criteria with verification methods
 
 ## Rules
 

@@ -66,18 +66,37 @@ Summary, description, and context from the linked issue
 
 Records problem classification, design [rationale](../resources/design-framework.md#design-philosophy-artifact-template), and workflow path decisions
 
-- **artifact**: `design-philosophy.md`
-- **problem_statement**: Clear problem definition with system understanding
-- **problem_type**: Specific problem or inventive goal
-- **complexity**: simple, moderate, or complex
-- **workflow_path**: Determined path and rationale
+#### artifact
+
+`design-philosophy.md`
+
+#### problem_statement
+
+Clear problem definition with system understanding
+
+#### problem_type
+
+Specific problem or inventive goal
+
+#### complexity
+
+simple, moderate, or complex
+
+#### workflow_path
+
+Determined path and rationale
 
 ### assumptions-log
 
 [Log](../resources/assumptions-review.md#assumptions-log-template) of assumptions made during design philosophy
 
-- **artifact**: `assumptions-log.md`
-- **assumptions**: Assumptions with categories: Problem Interpretation, Complexity Assessment, Workflow Path
+#### artifact
+
+`assumptions-log.md`
+
+#### assumptions
+
+Assumptions with categories: Problem Interpretation, Complexity Assessment, Workflow Path
 
 ## Rules
 

@@ -61,8 +61,13 @@ Codebase paths to search against
 
 A structured results table and zero-hit verdicts.
 
-- **results_table**: one row per hit, with fields determined by the invoking activity step (typically: category/check ID, pattern, file:line, hit content, triage/verdict)
-- **zero_hit_verdicts**: one row per zero-hit pattern, with fields: pattern, category, hits (0), verdict (True Negative / Flag for Follow-up), justification
+#### results_table
+
+one row per hit, with fields determined by the invoking activity step (typically: category/check ID, pattern, file:line, hit content, triage/verdict)
+
+#### zero_hit_verdicts
+
+one row per zero-hit pattern, with fields: pattern, category, hits (0), verdict (True Negative / Flag for Follow-up), justification
 
 ## Errors
 

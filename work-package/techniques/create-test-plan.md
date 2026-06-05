@@ -51,10 +51,21 @@ Atomic task breakdown with dependencies and ordering for the work package
 
 Test [strategy](../resources/test-plan.md#test-plan-structure) and acceptance criteria
 
-- **artifact**: `test-plan.md`
-- **test_strategy**: What to test, how, and pass criteria
-- **test_cases**: Specific test cases linked to requirements
-- **acceptance_matrix**: Requirements-to-tests traceability
+#### artifact
+
+`test-plan.md`
+
+#### test_strategy
+
+What to test, how, and pass criteria
+
+#### test_cases
+
+Specific test cases linked to requirements
+
+#### acceptance_matrix
+
+Requirements-to-tests traceability
 
 ## Rules
 

@@ -68,10 +68,21 @@ Path to the codebase to analyze
 
 Assumptions [log](../resources/assumption-reconciliation.md#integration-with-assumptions-log) with all code-resolvable assumptions resolved and only stakeholder-dependent assumptions remaining
 
-- **artifact**: `assumptions-log.md`
-- **resolution_counts**: Total, validated, invalidated, partially validated, open (with reason for each open item)
-- **convergence_iterations**: Number of classify-analyze cycles performed before convergence
-- **newly_surfaced**: Count of assumptions discovered during analysis that were not in the original set
+#### artifact
+
+`assumptions-log.md`
+
+#### resolution_counts
+
+Total, validated, invalidated, partially validated, open (with reason for each open item)
+
+#### convergence_iterations
+
+Number of classify-analyze cycles performed before convergence
+
+#### newly_surfaced
+
+Count of assumptions discovered during analysis that were not in the original set
 
 ## Rules
 

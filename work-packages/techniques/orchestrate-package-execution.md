@@ -61,9 +61,17 @@ Full priority order for reference
 
 Updated roadmap status reflecting completed packages
 
-- **completed_packages**: List of completed package names
-- **remaining_packages**: List of remaining package names
-- **overall_progress**: Progress indicator (e.g., '3/7 complete')
+#### completed_packages
+
+List of completed package names
+
+#### remaining_packages
+
+List of remaining package names
+
+#### overall_progress
+
+Progress indicator (e.g., '3/7 complete')
 
 ## Rules
 

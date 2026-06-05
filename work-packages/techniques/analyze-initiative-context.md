@@ -59,9 +59,17 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 
 Analysis document with findings and recommendations, persisted as [01-COMPLETION-ANALYSIS.md](../resources/completion-analysis-guide.md#4-document-findings) (completion) or [02-CONTEXT-ANALYSIS.md](../resources/context-analysis-guide.md#5-document-findings) (context)
 
-- **analysis_type**: completion or context
-- **key_findings**: Summary of analysis findings
-- **recommendation**: Suggested approach for planning and prioritization
+#### analysis_type
+
+completion or context
+
+#### key_findings
+
+Summary of analysis findings
+
+#### recommendation
+
+Suggested approach for planning and prioritization
 
 ## Rules
 

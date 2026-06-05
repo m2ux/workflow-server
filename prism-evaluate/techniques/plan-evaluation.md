@@ -86,16 +86,29 @@ Directory to write the evaluation plan artifact
 
 The composed [evaluation plan](../resources/evaluation-plan-template.md#evaluation-plan-template) document
 
-- **artifact**: `evaluation-plan.md`
-- **target_overview**: Target classification and structure summary
-- **dimension_plan**: Per-dimension lens mapping and analysis focus
-- **execution_groups**: Grouped execution strategy
+#### artifact
+
+`evaluation-plan.md`
+
+#### target_overview
+
+Target classification and structure summary
+
+#### dimension_plan
+
+Per-dimension lens mapping and analysis focus
+
+#### execution_groups
+
+Grouped execution strategy
 
 ### dimension-plan
 
 Machine-readable dimension-to-lens mapping
 
-- **plan**: Array of { dimension, pipeline_mode, lenses, analysis_focus, output_subdir }
+#### plan
+
+Array of { dimension, pipeline_mode, lenses, analysis_focus, output_subdir }
 
 ## Errors
 

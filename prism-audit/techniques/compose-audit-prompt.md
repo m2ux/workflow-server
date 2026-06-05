@@ -97,17 +97,33 @@ Directory to write the audit prompt artifact
 
 The composed [audit prompt document](../resources/audit-prompt-template.md#audit-prompt-template)
 
-- **artifact**: `audit-prompt.md`
-- **overview**: Codebase architecture and structure
-- **domains**: Audit domains with risk levels and focus areas
-- **cross_cutting**: Cross-cutting security concerns
-- **output_requirements**: Expected deliverable format
+#### artifact
+
+`audit-prompt.md`
+
+#### overview
+
+Codebase architecture and structure
+
+#### domains
+
+Audit domains with risk levels and focus areas
+
+#### cross_cutting
+
+Cross-cutting security concerns
+
+#### output_requirements
+
+Expected deliverable format
 
 ### audit-scopes
 
 Array of scope objects for triggering prism workflows
 
-- **scopes**: Array of { target, output_subdir, pipeline_mode, analysis_focus }
+#### scopes
+
+Array of { target, output_subdir, pipeline_mode, analysis_focus }
 
 ## Errors
 

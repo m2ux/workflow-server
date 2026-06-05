@@ -53,9 +53,17 @@ Directory for reflect-l12.md, reflect-meta.md, reflect-synthesis.md
 
 Paths to the three reflect pipeline artifacts
 
-- **l12_path**: Filesystem path to reflect-l12.md
-- **meta_path**: Filesystem path to reflect-meta.md
-- **synthesis_path**: Filesystem path to reflect-synthesis.md
+#### l12_path
+
+Filesystem path to reflect-l12.md
+
+#### meta_path
+
+Filesystem path to reflect-meta.md
+
+#### synthesis_path
+
+Filesystem path to reflect-synthesis.md
 
 ## Rules
 

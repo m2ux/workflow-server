@@ -50,9 +50,17 @@ Change set with new, renamed, and deleted prisms
 
 Summary of technique updates
 
-- **skills_modified**: List of modified technique files
-- **entries_added**: Number of new goal-mapping entries
-- **references_fixed**: Number of renamed references updated
+#### skills_modified
+
+List of modified technique files
+
+#### entries_added
+
+Number of new goal-mapping entries
+
+#### references_fixed
+
+Number of renamed references updated
 
 ## Rules
 

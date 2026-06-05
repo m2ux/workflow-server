@@ -53,11 +53,25 @@ Path to the prism workflow resources directory
 
 Consistency check results
 
-- **stale_references**: Array of { file, line, old_name }
-- **routing_mismatches**: Array of { prompt, claimed_target, actual_route }
-- **count_mismatches**: Array of { source, stated, actual }
-- **duplicate_indices**: Array of { index, files }
-- **has_issues**: Boolean
+#### stale_references
+
+Array of { file, line, old_name }
+
+#### routing_mismatches
+
+Array of { prompt, claimed_target, actual_route }
+
+#### count_mismatches
+
+Array of { source, stated, actual }
+
+#### duplicate_indices
+
+Array of { index, files }
+
+#### has_issues
+
+Boolean
 
 ## Errors
 

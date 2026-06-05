@@ -13,49 +13,25 @@ Bootstrap the workflow-server, load an assigned activity, follow its steps seque
 
 ## Protocol
 
-### 1. Bootstrap Get Rules
+### 1. Bootstrap
 
 - Call start_session(session_token, agent_id) to inherit the dispatched session and obtain a session token. The workflow is derived from the token.
+- Call next_activity({ activity_id: '<assigned-activity-id>' }) to load the activity definition with its steps.
 
-### 2. Bootstrap Get Activity
+### 2. Execute Steps
 
-- Call next_activity({ activity_id: '<assigned-activity-id>' }) to load the activity definition with its steps
+- Read the activity's steps array in order.
+- For each step, read the description field to understand what is required.
+- Produce the REQUIRED OUTPUT defined in the step's description before proceeding to the next step.
+- If a step cannot be completed (e.g., no StorageMaps in the crate for the lifecycle scan), record an explicit N/A with justification — do not silently skip.
+- Track which steps have been completed in a steps_completed list.
 
-### 3. Exec Read Steps
+### 3. Verify Output
 
-- Read the activity's steps array in order
-
-### 4. Exec Per Step Description
-
-- For each step, read the description field to understand what is required
-
-### 5. Exec Produce Output
-
-- Produce the REQUIRED OUTPUT defined in the step's description before proceeding to the next step
-
-### 6. Exec Na Justification
-
-- If a step cannot be completed (e.g., no StorageMaps in the crate for the lifecycle scan), record an explicit N/A with justification — do not silently skip
-
-### 7. Exec Track Completed
-
-- Track which steps have been completed in a steps_completed list
-
-### 8. Verify Steps Match
-
-- steps_completed matches the activity's step IDs — no steps omitted
-
-### 9. Verify Fail Has Finding
-
-- Every FAIL in checklist_coverage has a corresponding finding in the findings list
-
-### 10. Verify Mandatory Tables
-
-- Every mandatory_tables entry is either populated or null with justification
-
-### 11. Verify Json Complete
-
-- The output JSON is well-formed and contains all required_fields
+- steps_completed matches the activity's step IDs — no steps omitted.
+- Every FAIL in checklist_coverage has a corresponding finding in the findings list.
+- Every mandatory_tables entry is either populated or null with justification.
+- The output JSON is well-formed and contains all required_fields.
 
 ## Outputs
 
@@ -63,14 +39,37 @@ Bootstrap the workflow-server, load an assigned activity, follow its steps seque
 
 Structured JSON conforming to [sub-agent-output-schema](../resources/sub-agent-output-schema.md) (sub-agent-output-schema).
 
-- **agent_id**: identifier for this agent instance (e.g., 'group-a-nto', 'group-b', 'group-d')
-- **activity_followed**: the activity ID executed (e.g., 'sub-crate-review')
-- **steps_completed**: list of step IDs completed (must match activity definition)
-- **steps_skipped**: list of step IDs skipped with reasons (should be empty)
-- **findings**: structured list of findings with required fields per finding
-- **checklist_coverage**: per-§3-item verdicts (for crate review) or per-pattern results (for static analysis)
-- **mandatory_tables**: all tables produced by the activity's steps, or null with justification
-- **reconnaissance_leads**: observations not formal findings but for orchestrator review (optional)
+#### agent_id
+
+identifier for this agent instance (e.g., 'group-a-nto', 'group-b', 'group-d')
+
+#### activity_followed
+
+the activity ID executed (e.g., 'sub-crate-review')
+
+#### steps_completed
+
+list of step IDs completed (must match activity definition)
+
+#### steps_skipped
+
+list of step IDs skipped with reasons (should be empty)
+
+#### findings
+
+structured list of findings with required fields per finding
+
+#### checklist_coverage
+
+per-§3-item verdicts (for crate review) or per-pattern results (for static analysis)
+
+#### mandatory_tables
+
+all tables produced by the activity's steps, or null with justification
+
+#### reconnaissance_leads
+
+observations not formal findings but for orchestrator review (optional)
 
 ## Errors
 

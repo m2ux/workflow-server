@@ -50,10 +50,21 @@ List of submodule paths to inventory
 
 Complete [inventory of workflow files](../resources/intermediate-artifact-schemas.md#workflow-inventory) with classification data
 
-- **file_list**: All workflow file paths with metadata
-- **trigger_classification**: Per-workflow trigger types
-- **permission_map**: Per-workflow permission scopes
-- **checkout_patterns**: Per-workflow checkout configurations
+#### file_list
+
+All workflow file paths with metadata
+
+#### trigger_classification
+
+Per-workflow trigger types
+
+#### permission_map
+
+Per-workflow permission scopes
+
+#### checkout_patterns
+
+Per-workflow checkout configurations
 
 ## Errors
 

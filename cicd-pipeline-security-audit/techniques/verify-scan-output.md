@@ -55,7 +55,18 @@ Expected scanner output schema from [sub-agent-output-schema](../resources/sub-a
 
 Scan completeness [verification](../resources/intermediate-artifact-schemas.md#verification-report) with gaps and re-scan recommendations
 
-- **file_coverage**: Scanned vs total files
-- **pattern_coverage**: Per-scanner pattern application status
-- **gaps**: List of unscanned files or skipped patterns
-- **recommendation**: Re-scan targets if gaps exist
+#### file_coverage
+
+Scanned vs total files
+
+#### pattern_coverage
+
+Per-scanner pattern application status
+
+#### gaps
+
+List of unscanned files or skipped patterns
+
+#### recommendation
+
+Re-scan targets if gaps exist

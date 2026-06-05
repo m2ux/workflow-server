@@ -21,7 +21,9 @@ The code or text to analyze (file path or inline content)
 
 *(optional)* Whether the input is 'code' or 'general'
 
-- **default**: code
+#### default
+
+code
 
 ### output-path
 
@@ -62,9 +64,17 @@ Directory to write verified-initial.md, verified-gaps.md, and verified-corrected
 
 Paths to the three verified pipeline artifacts
 
-- **initial_path**: Filesystem path to verified-initial.md
-- **gaps_path**: Filesystem path to verified-gaps.md
-- **corrected_path**: Filesystem path to verified-corrected.md
+#### initial_path
+
+Filesystem path to verified-initial.md
+
+#### gaps_path
+
+Filesystem path to verified-gaps.md
+
+#### corrected_path
+
+Filesystem path to verified-corrected.md
 
 ## Rules
 

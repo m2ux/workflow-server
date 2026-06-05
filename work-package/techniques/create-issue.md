@@ -57,9 +57,17 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 
 Issue created on the selected platform
 
-- **issue_number**: Issue number (GitHub #N or Jira KEY-N)
-- **issue_url**: URL to the created issue
-- **jira_cloud_id**: Atlassian cloud ID for subsequent Jira operations (Jira only)
+#### issue_number
+
+Issue number (GitHub #N or Jira KEY-N)
+
+#### issue_url
+
+URL to the created issue
+
+#### jira_cloud_id
+
+Atlassian cloud ID for subsequent Jira operations (Jira only)
 
 ## Rules
 

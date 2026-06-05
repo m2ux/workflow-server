@@ -64,10 +64,21 @@ Review comments fetched from PR
 
 PR review [analysis](../resources/pr-review-response.md#step-6-create-review-document) document
 
-- **artifact**: `{YYYY-MM-DD}-pr{pr_number}-review-analysis.md`
-- **comment_summary**: Categorized comment list with dispositions
-- **changes_made**: List of changes implemented in response
-- **requires_replan**: Whether significant changes require returning to planning
+#### artifact
+
+`{YYYY-MM-DD}-pr{pr_number}-review-analysis.md`
+
+#### comment_summary
+
+Categorized comment list with dispositions
+
+#### changes_made
+
+List of changes implemented in response
+
+#### requires_replan
+
+Whether significant changes require returning to planning
 
 ## Rules
 

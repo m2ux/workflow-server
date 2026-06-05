@@ -80,9 +80,17 @@ Directory to write the analysis artifact
 
 Behavioral analysis artifact written to the filesystem
 
-- **artifact**: `{artifact-filename}`
-- **artifact_path**: Full filesystem path to the written artifact
-- **role**: The role label for this pass (ERRORS, COSTS, CHANGES, PROMISES, or SYNTHESIS)
+#### artifact
+
+`{artifact-filename}`
+
+#### artifact_path
+
+Full filesystem path to the written artifact
+
+#### role
+
+The role label for this pass (ERRORS, COSTS, CHANGES, PROMISES, or SYNTHESIS)
 
 ## Rules
 

@@ -52,10 +52,21 @@ Directory for dispute-lens-a.md, dispute-lens-b.md, dispute-synthesis.md
 
 Paths to the three dispute artifacts and the prism pair used
 
-- **lens_a_path**: Filesystem path to dispute-lens-a.md
-- **lens_b_path**: Filesystem path to dispute-lens-b.md
-- **synthesis_path**: Filesystem path to dispute-synthesis.md
-- **prism_pair**: Resource indices and lens identities used for A and B
+#### lens_a_path
+
+Filesystem path to dispute-lens-a.md
+
+#### lens_b_path
+
+Filesystem path to dispute-lens-b.md
+
+#### synthesis_path
+
+Filesystem path to dispute-synthesis.md
+
+#### prism_pair
+
+Resource indices and lens identities used for A and B
 
 ## Rules
 

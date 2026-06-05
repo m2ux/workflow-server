@@ -55,10 +55,21 @@ Per-workflow trigger, permission, and checkout classification data
 
 Dispatch and collection status for all agents
 
-- **scanners_dispatched**: Count of dispatched scanner agents
-- **scanners_returned**: Count of returned scanner agents
-- **verification_dispatched**: Whether V was dispatched
-- **merge_dispatched**: Whether M was dispatched
+#### scanners_dispatched
+
+Count of dispatched scanner agents
+
+#### scanners_returned
+
+Count of returned scanner agents
+
+#### verification_dispatched
+
+Whether V was dispatched
+
+#### merge_dispatched
+
+Whether M was dispatched
 
 ## Rules
 

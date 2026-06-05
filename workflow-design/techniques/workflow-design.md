@@ -135,11 +135,25 @@ Free-form description of the workflow the user wants to create or modify
 
 Complete workflow definition: workflow.toon, activity files, technique files, resource files, README
 
-- **workflow-toon**: Root workflow definition with metadata, modes, variables, rules, artifactLocations
-- **activity-files**: One .toon file per activity with steps, checkpoints, transitions
-- **technique-files**: One .toon file per technique with protocol, inputs, output, rules
-- **resource-files**: Markdown resource files for agent guidance
-- **readme**: Workflow README with description, activity table, and usage
+#### workflow-toon
+
+Root workflow definition with metadata, modes, variables, rules, artifactLocations
+
+#### activity-files
+
+One .toon file per activity with steps, checkpoints, transitions
+
+#### technique-files
+
+One .toon file per technique with protocol, inputs, output, rules
+
+#### resource-files
+
+Markdown resource files for agent guidance
+
+#### readme
+
+Workflow README with description, activity table, and usage
 
 ## Rules
 

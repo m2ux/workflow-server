@@ -61,7 +61,18 @@ Paths to include in the analysis
 
 Structured codebase map.
 
-- **component_inventory**: every crate/module with classification and priority
-- **trust_boundary_map**: every entry point with boundary type
-- **critical_path_map**: consensus-relevant code paths
-- **data_flow_traces**: forward and backward traces for priority-1 paths
+#### component_inventory
+
+every crate/module with classification and priority
+
+#### trust_boundary_map
+
+every entry point with boundary type
+
+#### critical_path_map
+
+consensus-relevant code paths
+
+#### data_flow_traces
+
+forward and backward traces for priority-1 paths

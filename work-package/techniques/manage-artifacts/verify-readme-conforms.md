@@ -10,7 +10,23 @@ Absolute path to the planning folder containing README.md
 
 ### readme_conformance
 
-{ conforms: bool, missing_sections: [], extra_top_level_headings: [], header_block_drift: [] } — `conforms` is true iff `missing_sections`, `extra_top_level_headings`, and `header_block_drift` are all empty
+The conformance envelope — three drift arrays plus the aggregate verdict:
+
+#### conforms
+
+true iff `missing_sections`, `extra_top_level_headings`, and `header_block_drift` are all empty.
+
+#### missing_sections
+
+array of template H2 sections absent from the README.
+
+#### extra_top_level_headings
+
+array of H1 headings beyond the single title H1.
+
+#### header_block_drift
+
+array of header-block fields missing or renamed (e.g. a custom `Issue:` line in place of the canonical `Status:`/`Type:` rows).
 
 ## Protocol
 

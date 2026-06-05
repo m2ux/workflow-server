@@ -57,9 +57,17 @@ Directory for adaptive-stage1.md, adaptive-stage2.md (conditional), and full-pri
 
 Paths and escalation trace for the adaptive run
 
-- **stage_reached**: One of: sdl | l12 | full — deepest stage that ran
-- **artifact_paths**: Array of filesystem paths to all produced artifacts
-- **signal_assessment**: Final value of adaptive_signal_quality (adequate | insufficient)
+#### stage_reached
+
+One of: sdl | l12 | full — deepest stage that ran
+
+#### artifact_paths
+
+Array of filesystem paths to all produced artifacts
+
+#### signal_assessment
+
+Final value of adaptive_signal_quality (adequate | insufficient)
 
 ## Rules
 

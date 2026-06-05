@@ -26,11 +26,16 @@ Boolean — true when the worktree exists at `target_path` on `branch_name`
 
 ## Protocol
 
-1. Determine the component's git directory: when `reference_path` is a monorepo and `{reference_path}/{component_name}` exists, use `{reference_path}/{component_name}`; otherwise use `reference_path` itself (standalone case).
-2. Fetch first: `git -C {component_git_dir} fetch origin` so `origin/{default_branch}` is current before the worktree is materialised. Resolve `{default_branch}` via `git -C {component_git_dir} symbolic-ref refs/remotes/origin/HEAD` (fall back to `main`, then `master`).
-3. Idempotency check: if `{target_path}` already exists, run `git -C {component_git_dir} worktree list --porcelain` and verify the path is registered as a worktree pointing at `branch_name`. If yes, reuse and set `worktree_created = true`. If the path exists but is not a worktree (or points elsewhere), surface a `worktree_path_collision` error — do not delete the user's data.
-4. Create the worktree: `git -C {component_git_dir} worktree add -b {branch_name} {target_path} origin/{default_branch}`.
-5. On success, set `worktree_created = true` and emit a one-line message: `Worktree created at {target_path} on branch {branch_name} (from origin/{default_branch}).`
+### 1. Resolve and Fetch
+
+- Determine the component's git directory: when `reference_path` is a monorepo and `{reference_path}/{component_name}` exists, use `{reference_path}/{component_name}`; otherwise use `reference_path` itself (standalone case).
+- Fetch first: `git -C {component_git_dir} fetch origin` so `origin/{default_branch}` is current before the worktree is materialised. Resolve `{default_branch}` via `git -C {component_git_dir} symbolic-ref refs/remotes/origin/HEAD` (fall back to `main`, then `master`).
+
+### 2. Create Worktree
+
+- Idempotency check: if `{target_path}` already exists, run `git -C {component_git_dir} worktree list --porcelain` and verify the path is registered as a worktree pointing at `branch_name`. If yes, reuse and set `worktree_created = true`. If the path exists but is not a worktree (or points elsewhere), surface a `worktree_path_collision` error — do not delete the user's data.
+- Create the worktree: `git -C {component_git_dir} worktree add -b {branch_name} {target_path} origin/{default_branch}`.
+- On success, set `worktree_created = true` and emit a one-line message: `Worktree created at {target_path} on branch {branch_name} (from origin/{default_branch}).`
 
 ## Errors
 

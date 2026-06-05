@@ -55,8 +55,13 @@ Code files to read for independent verification
 
 Decomposition table with per-instance verification results.
 
-- **decomposition_table**: | PASS Item | Property | Instance | Verified? | Evidence |
-- **verdict_summary**: CONFIRMED count, REFUTED count (each becomes a finding), INSUFFICIENT count
+#### decomposition_table
+
+| PASS Item | Property | Instance | Verified? | Evidence |
+
+#### verdict_summary
+
+CONFIRMED count, REFUTED count (each becomes a finding), INSUFFICIENT count
 
 ## Rules
 

@@ -33,7 +33,9 @@ Directory to write the analysis artifact
 
 *(optional)* Whether the input is 'code' or 'general'
 
-- **default**: code
+#### default
+
+code
 
 ## Protocol
 
@@ -83,9 +85,17 @@ Directory to write the analysis artifact
 
 Analysis artifact written to the filesystem
 
-- **artifact**: `{pass-type}-analysis.md`
-- **artifact_path**: Full filesystem path to the written artifact
-- **analysis_text**: The full analysis output following the lens operations
+#### artifact
+
+`{pass-type}-analysis.md`
+
+#### artifact_path
+
+Full filesystem path to the written artifact
+
+#### analysis_text
+
+The full analysis output following the lens operations
 
 ## Rules
 
