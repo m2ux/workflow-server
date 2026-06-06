@@ -34,7 +34,7 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 
 ### 2. Gitnexus First Locate
 
-- When the {target-submodule} codebase has a GitNexus index, apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) `{query: <concept>}` to find execution flows by concept and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) `{name: <symbol>}` for 360-degree symbol usage (callers, callees, process membership)
+- When the {target-submodule} codebase has a GitNexus index, apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md)(query: {$concept}) to find execution flows by concept and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md)(name: {$symbol}) for 360-degree symbol usage (callers, callees, process membership)
 - Read `gitnexus://repo/{name}/clusters` to identify functional areas and `gitnexus://repo/{name}/processes` for end-to-end flow inventory
 - Fall back to grep/Read/glob only when the codebase is not indexed or the index is stale.
 

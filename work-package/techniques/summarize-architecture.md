@@ -42,14 +42,14 @@ List of files changed in the implementation
 - If module structure is affected, create package diagram
 - Show internal organization and boundaries
 - Use Mermaid syntax
-- Source package-diagram structure via [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[diagram-source-select](./gitnexus-operations/diagram-source-select.md) `{diagram_type: 'package'}` (functional-area clusters and their members) when the codebase is indexed.
+- Source package-diagram structure via [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[diagram-source-select](./gitnexus-operations/diagram-source-select.md)(diagram_type: 'package') (functional-area clusters and their members) when the codebase is indexed.
 
 ### 4. Create Sequence Diagrams
 
 - For key flows affected by changes, create sequence diagrams
 - Show interactions between components
 - Use Mermaid sequence diagram syntax
-- Source sequence-diagram structure via [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[diagram-source-select](./gitnexus-operations/diagram-source-select.md) `{diagram_type: 'sequence'}` (step-by-step execution traces) when the codebase is indexed.
+- Source sequence-diagram structure via [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[diagram-source-select](./gitnexus-operations/diagram-source-select.md)(diagram_type: 'sequence') (step-by-step execution traces) when the codebase is indexed.
 
 ### 5. Write Summary
 

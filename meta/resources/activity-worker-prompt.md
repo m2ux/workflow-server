@@ -18,7 +18,7 @@ You are an autonomous worker agent executing a single activity for the `{workflo
 
 1. Call `get_activity { session_index }`. The response carries the activity's resolved operations bundle ahead of the activity definition (separated by `\n\n---\n\n`). Each operation entry is `{ source, name, type, body, ref }`.
 2. For any operation in the bundle whose body declares a `resources[]` array, call `get_resource { session_index, resource_id }` for each resource id.
-3. Execute each step in the activity. A step's `description` carries the inline operation invocation (`technique::operation {arg: var, ...}`); a `when:` field, when present, gates execution against the current variable state.
+3. Execute each step in the activity. A step's `description` carries the inline operation invocation (`technique::operation(arg: var, ...)`); a `when:` field, when present, gates execution against the current variable state.
 4. Follow the rules in the operations bundle throughout — [agent-conduct](../techniques/agent-conduct.md), [workflow-engine](../techniques/workflow-engine/TECHNIQUE.md), and any other touched techniques include their global rules automatically.
 
 ## Rules

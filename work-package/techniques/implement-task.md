@@ -32,9 +32,9 @@ A single atomic task to implement (description, affected files, dependencies)
 
 ### 2. Pre Edit Impact Check
 
-- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md) `{target: <target-symbol>, direction: 'upstream'}` before any edit
+- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)(target: {$target-symbol}, direction: 'upstream') before any edit
 - Read the resulting impact_report; if HIGH or CRITICAL risk, surface it to the user before proceeding
-- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) `{name: <target-symbol>}` to understand callers/callees of the symbol
+- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md)(name: {$target-symbol}) to understand callers/callees of the symbol
 
 ### 3. Write Code
 
