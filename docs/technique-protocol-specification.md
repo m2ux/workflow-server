@@ -171,6 +171,25 @@ A technique reference is a `::`-delimited path:
 `parseTechniquePath` normalizes and splits a reference; `resolveTechniques` looks it up with the
 current-workflow-first precedence of §2.
 
+### 4.1 Executable references (`::`) vs symbol references (`.`)
+
+A `::` path is an **executable reference** — it names a technique or operation to apply/invoke
+("apply `cargo-operations::fmt-fix`", "go through `gitnexus-operations::context`"). The
+rule-resolution and group-expansion forms above are the bundle layer: how an activity's technique
+list pulls rule entries into delivery.
+
+A `.` path is a **symbol reference** — it names an addressable symbol (a rule) by walking its
+ancestry, without invoking anything: `[<workflow>.]<technique>.<rule-name>` (e.g.
+`meta.gitnexus-operations.index-freshness-first`). A protocol step that cites or relies on a rule
+uses the dotted symbol address — never prose ("per the index-freshness rule") and never the `::`
+executable form. The workflow segment is implicit for a same-workflow reference; when the rule is in
+the citing technique's own ancestry (its own rule, or one it inherits from a containing group or the
+workflow root) the reference shortens to the bare rule name reachable by walking up — the full path
+is needed only to reach a rule outside the current ancestry.
+
+The distinction is invoke vs name: `::` invokes a technique; `.` names a symbol. A rule is named, not
+invoked.
+
 ---
 
 ## 5. Contract inheritance
