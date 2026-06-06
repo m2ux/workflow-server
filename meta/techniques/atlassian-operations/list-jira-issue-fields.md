@@ -9,6 +9,10 @@ Discover the fields for a specific issue type in a project.
 
 ## Inputs
 
+### cloudId
+
+UUID of the target Atlassian cloud site.
+
 ### projectIdOrKey
 
 Project key

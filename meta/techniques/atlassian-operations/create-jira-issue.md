@@ -9,6 +9,10 @@ Create a new Jira issue.
 
 ## Inputs
 
+### cloudId
+
+UUID of the target Atlassian cloud site.
+
 ### projectKey
 
 Project key

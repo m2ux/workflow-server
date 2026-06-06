@@ -9,6 +9,10 @@ Move an issue to a new status.
 
 ## Inputs
 
+### cloudId
+
+UUID of the target Atlassian cloud site.
+
 ### issueIdOrKey
 
 Issue key

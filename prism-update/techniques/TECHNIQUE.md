@@ -9,10 +9,6 @@ Base contract inherited by sibling techniques. Any Inputs, Outputs, Rules, or Er
 
 ## Inputs
 
-### changes
-
-Approved, categorized change set (new, modified, renamed, deleted entries plus next index) to apply against the resources directory
-
 ### resource-path
 
 Relative path to the prism workflow resources directory

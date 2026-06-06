@@ -9,6 +9,10 @@ List child pages of a Confluence page.
 
 ## Inputs
 
+### cloudId
+
+UUID of the target Atlassian cloud site.
+
 ### pageId
 
 Page ID

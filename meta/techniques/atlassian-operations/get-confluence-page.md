@@ -9,6 +9,10 @@ Read a Confluence page as Markdown.
 
 ## Inputs
 
+### cloudId
+
+UUID of the target Atlassian cloud site.
+
 ### pageId
 
 Page ID

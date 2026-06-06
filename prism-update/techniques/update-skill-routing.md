@@ -11,6 +11,12 @@ metadata:
 
 Update prism routing technique files to reflect resource changes: fix renamed references, add goal-mapping entries for new prisms, expand lens catalogs, and update resource lists.
 
+## Inputs
+
+### changes
+
+Change set with new, renamed, and deleted prisms
+
 ## Protocol
 
 ### 1. Update Plan Analysis

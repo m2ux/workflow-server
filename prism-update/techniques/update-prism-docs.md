@@ -11,6 +11,12 @@ metadata:
 
 Rebuild prism documentation to reflect the current resource catalog, adding prompt guide entries for new prisms with concrete example prompts that align with the goal-mapping matrix.
 
+## Inputs
+
+### changes
+
+Change set — needed to know what's new, renamed, and deleted
+
 ## Protocol
 
 ### 1. Update Resources Readme

@@ -9,6 +9,10 @@ List pages in a Confluence space.
 
 ## Inputs
 
+### cloudId
+
+UUID of the target Atlassian cloud site.
+
 ### spaceId
 
 Space ID
