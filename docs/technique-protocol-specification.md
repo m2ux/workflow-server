@@ -116,18 +116,29 @@ then expose) is the canonical case, and it is exactly why a value that one techn
 others consume can still be hoisted to a common ancestor (§5): declare it as a shared input on the
 ancestor, and the producing technique additionally declares it as an output.
 
-**All symbol ids are kebab-case — with no exceptions, including ids that map to an external tool /
-MCP / CLI parameter** (`cloud-id`, `session-index`, `changed-files`). Case carries no meaning — it
-does **not** distinguish input from output (that is structural). A reference `{id}` is therefore
-direction-agnostic; mutation is the normal case for a mutable symbol.
+**Symbol ids are `snake_case`; names are `kebab-case`.** The two namespaces are distinct:
 
-Interop with external tools is handled at the **resolution layer, not in the id's spelling**: the
-executing agent resolves a reference treating **hyphen and underscore as equivalent**, so a workflow
-`{session-index}` satisfies a tool whose parameter is `session_index`, and `{changed-files}` binds to
-`changed_files`. This bridges every snake_case tool parameter with no per-id annotation. For a tool
-that uses another convention — e.g. camelCase like Atlassian's `cloudId` — the agent takes the exact
-parameter name from that tool's own schema when forming the call; the workflow still refers to it in
-kebab (`cloud-id`). See `agent-conduct.symbol-resolution-separator-equivalence`.
+- A **symbol** — an input, output, or protocol variable — becomes a **runtime variable**. The engine
+  stores variables in a name-keyed bag and resolves references by **exact string match**
+  (`getVariableValue`); the agent sets a variable under the name the prose dictates, and activity
+  conditions/transitions read it by that same name. So a symbol id must be the *same string* as the
+  variable it binds to. Activities, conditions, and session state are authored in `snake_case`
+  (`target_path`, `is_review_mode`, `planning_folder_path`), so **symbol ids are `snake_case`** — and
+  protocol variables follow suit (`{$resolved_content}`). Case carries no meaning beyond this; it does
+  **not** distinguish input from output (direction is structural). An id that mirrors an external tool
+  / MCP / CLI parameter takes that **tool's exact spelling** — usually already snake (`session_index`,
+  `repo_path`), occasionally camelCase (Atlassian's `cloudId`) — so it binds natively with no
+  translation.
+- A **name** — a technique, operation, or resource identity, and the file / hyperlink / `::` target
+  that addresses it — is a slug, never an evaluated variable, and is **`kebab-case`**
+  (`create-issue`, `gitnexus-operations`, `resolve-cloud-id.md`). **Rule names are names too**: a rule
+  is never an evaluated variable; it is cited by its dotted symbol address `[workflow.]technique.rule-name`
+  (§4.1), sitting beside the kebab technique name, so a rule name is `kebab-case` and the citation reads
+  uniformly (`gitnexus-operations.index-freshness-first`).
+
+The split is the classical one: evaluated identifiers are snake (a `-` is the subtraction operator),
+surface/slug tokens are kebab. Here it is also a binding requirement — a kebab symbol id would not
+match the snake variable the engine looks up.
 
 ### 3.3 Protocol
 
