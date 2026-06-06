@@ -21,6 +21,6 @@ symbols in changed_files with no callers — over-engineering / dead-code candid
 
 ## Protocol
 
-1. Apply [cypher](./cypher.md) with `MATCH (f:Function) WHERE NOT (()-[:CodeRelation {type: 'CALLS'}]->(f)) RETURN f.name, f.filePath`. If the index is out of date, run `npx gitnexus analyze`, then retry.
+1. Apply [cypher](../../../meta/techniques/gitnexus-operations/cypher.md) with `MATCH (f:Function) WHERE NOT (()-[:CodeRelation {type: 'CALLS'}]->(f)) RETURN f.name, f.filePath`. If the index is out of date, run `npx gitnexus analyze`, then retry.
 2. Intersect the orphan set with {changed_files} so only symbols *introduced or touched by this work* are surfaced.
 3. Report the intersection as `orphan_candidates` — over-engineering / dead-code candidates surfaced for user decision.

@@ -34,14 +34,14 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 
 ### 2. Gitnexus First Locate
 
-- When the {target-submodule} codebase has a GitNexus index, apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[query](./gitnexus-operations/query.md) `{query: <concept>}` to find execution flows by concept and [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[context](./gitnexus-operations/context.md) `{name: <symbol>}` for 360-degree symbol usage (callers, callees, process membership)
+- When the {target-submodule} codebase has a GitNexus index, apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) `{query: <concept>}` to find execution flows by concept and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) `{name: <symbol>}` for 360-degree symbol usage (callers, callees, process membership)
 - Read `gitnexus://repo/{name}/clusters` to identify functional areas and `gitnexus://repo/{name}/processes` for end-to-end flow inventory
 - Fall back to grep/Read/glob only when the codebase is not indexed or the index is stale.
 
 ### 3. Locate Implementation
 
-- Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[context](./gitnexus-operations/context.md) to identify where the feature/component is implemented (files, modules, entry points) — falls back to grep when not indexed
-- Map usage and dependencies via [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[impact](./gitnexus-operations/impact.md) `{target, direction: 'upstream'}` and call-graph traversal; record architecture from cluster resources
+- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) to identify where the feature/component is implemented (files, modules, entry points) — falls back to grep when not indexed
+- Map usage and dependencies via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md) `{target, direction: 'upstream'}` and call-graph traversal; record architecture from cluster resources
 - Document current structure and integration points
 - If no current implementation exists (a new feature), document the baseline as N/A and focus the analysis on the expected metrics for the success criteria
 

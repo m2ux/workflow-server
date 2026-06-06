@@ -44,7 +44,7 @@ Path to the target codebase directory
 
 - Top-down survey: start with the {target-path} project root structure, build system, and entry points
 - Confirm the {project-type} from the build system and language conventions encountered (rust-substrate|other), and use it to shape which abstractions and patterns to look for in later steps
-- When GitNexus is available: apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[query](./gitnexus-operations/query.md) to discover execution flows and functional areas, read cluster resources for module groupings, and [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[context](./gitnexus-operations/context.md) for dependency mapping — faster than grep and the required primary approach
+- When GitNexus is available: apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) to discover execution flows and functional areas, read cluster resources for module groupings, and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) for dependency mapping — faster than grep and the required primary approach
 - Use glob to map directory structure, find module files, and locate test files — glob is the appropriate tool for filesystem-shape discovery during the architecture survey
 - Identify module boundaries and their responsibilities from directory layout, module declarations, and public APIs
 - Map dependency relationships between modules (imports, trait implementations, cross-module calls)
@@ -85,7 +85,7 @@ Path to the target codebase directory
 
 - Present candidate areas based on architecture survey and problem relevance
 - For selected area: trace data flows, examine implementation details, document edge cases
-- When GitNexus is available: apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[context](./gitnexus-operations/context.md) to trace callers/callees, read process resources for full execution traces, and [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[cypher](./gitnexus-operations/cypher.md) for custom call chain queries
+- When GitNexus is available: apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) to trace callers/callees, read process resources for full execution traces, and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) for custom call chain queries
 - Append findings as dedicated subsections in the comprehension artifact
 
 ### 9. Question Management

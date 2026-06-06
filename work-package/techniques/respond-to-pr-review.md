@@ -57,7 +57,7 @@ Review comments fetched from PR
 
 ### 6. Assess Outcome
 
-- After applying reviewer-requested changes, apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[detect-changes](./gitnexus-operations/detect-changes.md) to inform the 'minor fix' vs 'significant change' classification — small symbol/process deltas suggest minor; broad fan-out suggests significant.
+- After applying reviewer-requested changes, apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[detect-changes](../../meta/techniques/gitnexus-operations/detect-changes.md) to inform the 'minor fix' vs 'significant change' classification — small symbol/process deltas suggest minor; broad fan-out suggests significant.
 - Determine if re-review is needed (significant changes) or minor fixes suffice
 - Capture the categorized dispositions, changes made, and re-review decision as the `review-analysis` document
 

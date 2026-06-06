@@ -19,6 +19,6 @@ changed symbols whose test callers are stale
 
 ## Protocol
 
-1. Apply [detect-changes](./detect-changes.md) to enumerate the changed-symbol set. If the index is out of date, run `npx gitnexus analyze`, then retry.
-2. For each changed symbol, apply [context](./context.md) and inspect incoming references from test files.
+1. Apply [detect-changes](../../../meta/techniques/gitnexus-operations/detect-changes.md) to enumerate the changed-symbol set. If the index is out of date, run `npx gitnexus analyze`, then retry.
+2. For each changed symbol, apply [context](../../../meta/techniques/gitnexus-operations/context.md) and inspect incoming references from test files.
 3. Symbols with no test callers → coverage_gaps; symbols with stale test callers → update_candidates.

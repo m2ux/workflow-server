@@ -32,8 +32,8 @@ List of files changed in the work package (from git diff)
 
 ### 2. Bound Review Scope
 
-- Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[detect-changes](./gitnexus-operations/detect-changes.md) to map the diff to affected execution flows and the changed-symbol set
-- For each changed symbol of interest, apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[impact](./gitnexus-operations/impact.md) `{target, direction: 'upstream'}` to surface upstream callers and bound the review's blast radius
+- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[detect-changes](../../meta/techniques/gitnexus-operations/detect-changes.md) to map the diff to affected execution flows and the changed-symbol set
+- For each changed symbol of interest, apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md) `{target, direction: 'upstream'}` to surface upstream callers and bound the review's blast radius
 - Use the resulting blast radius to inform severity judgements — high-fanout callers and process-critical paths raise the severity ceiling for findings in those symbols.
 
 ### 3. Review Files
