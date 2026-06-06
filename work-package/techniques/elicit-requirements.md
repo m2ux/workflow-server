@@ -58,7 +58,7 @@ Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)
 
 ### 6. Create Document
 
-- Create the {requirements-document} artifact in planning folder
+- Create the {requirements-document} artifact in {planning-folder}
 - Include elicited requirements, success criteria, scope boundaries, and assumptions
 
 ## Outputs

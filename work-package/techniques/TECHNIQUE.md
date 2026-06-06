@@ -6,3 +6,9 @@ metadata:
 ## Capability
 
 Base contract inherited by sibling techniques. Any Inputs, Outputs, Rules, or Errors defined here are inherited by every technique in the set, and any Protocol here is prepended (and renumbered) before each technique's own. The technique set is implied by the folder contents — do not list techniques here. Keep this minimal: only genuinely cross-technique contract belongs here.
+
+## Inputs
+
+### planning-folder
+
+Path to this work package's planning folder under `.engineering/artifacts/planning/` — the common location every technique reads prior artifacts from and writes its own artifact into (each activity's `artifactPrefix` is applied to the filename).

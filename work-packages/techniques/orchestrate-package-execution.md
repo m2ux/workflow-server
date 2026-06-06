@@ -17,10 +17,6 @@ Trigger and manage work-package workflow instances for each planned package in p
 
 Ordered list of packages not yet started
 
-### planning-folder
-
-The [planning folder](../resources/planning-folder-template.md#folder-location) for status updates
-
 ### priority-order
 
 Full priority order for reference

@@ -52,7 +52,7 @@ Clear problem definition with system understanding, used to focus the research
 
 ### 5. Create Research Artifact
 
-- Create the {research-document} artifact in planning folder
+- Create the {research-document} artifact in {planning-folder}
 - Include kb_findings, web_findings, synthesis, applicable_patterns, risks
 
 ## Outputs

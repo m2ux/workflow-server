@@ -13,10 +13,6 @@ Conduct workflow retrospective to capture lessons learned and prepare for next w
 
 ## Inputs
 
-### planning-folder-path
-
-Path to planning folder for context
-
 ### pr-number
 
 PR number for status checking
@@ -39,7 +35,7 @@ PR number for status checking
 
 - Once the PR identified by {pr-number} has merged, update the work package plan status
   - If the PR has not merged yet, wait for merge or check whether review feedback needs addressing first before updating status
-- Record the final outcome in the planning artifacts under {planning-folder-path}
+- Record the final outcome in the planning artifacts under {planning-folder}
 
 ### 4. Select Next
 

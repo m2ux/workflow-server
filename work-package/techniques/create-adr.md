@@ -21,10 +21,6 @@ Problem complexity assessment (simple|moderate|complex)
 
 Design philosophy [artifact](../resources/design-framework.md#design-philosophy-artifact-template) with rationale and alternatives
 
-### planning-folder-path
-
-*(optional)* Path to planning folder for context
-
 ## Protocol
 
 ### 1. Gate On Complexity
@@ -39,8 +35,8 @@ Design philosophy [artifact](../resources/design-framework.md#design-philosophy-
 
 ### 3. Gather Context
 
-- Read the {design-philosophy-doc} for decision rationale, alternatives, and trade-offs. If the design philosophy document is not found, check the planning folder path and prompt the user to locate the artifact.
-- Review implementation analysis and plan from {planning-folder-path} for architectural choices
+- Read the {design-philosophy-doc} for decision rationale, alternatives, and trade-offs. If the design philosophy document is not found, check {planning-folder} and prompt the user to locate the artifact.
+- Review implementation analysis and plan from {planning-folder} for architectural choices
 - Identify alternatives that were considered and rejected
 
 ### 4. Write Adr

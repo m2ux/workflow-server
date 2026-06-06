@@ -52,7 +52,7 @@ Elicited requirements with success criteria and scope
 
 ### 4. Write Plan
 
-- Create the {plan-document} artifact in planning folder
+- Create the {plan-document} artifact in {planning-folder}
 - Include task breakdown, dependencies, ordering
 - Document design decisions and assumptions
 

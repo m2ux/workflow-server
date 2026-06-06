@@ -13,10 +13,6 @@ Produce finalized roadmap documentation with timeline, navigation, and success c
 
 ## Inputs
 
-### planning-folder
-
-The [planning folder](../resources/planning-folder-template.md#folder-location) containing all artifacts
-
 ### priority-order
 
 Ordered list of work packages with execution priority

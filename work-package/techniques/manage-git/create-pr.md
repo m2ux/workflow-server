@@ -39,7 +39,7 @@ URL to the PR
 
 ### 1. Prepare PR Inputs
 
-- BEFORE creating the PR: commit and push the planning folder to the parent (engineering) repo so the 📐 Engineering link resolves. Verify the URL will return 200 by confirming the commit is on the remote.
+- BEFORE creating the PR: commit and push {planning-folder} to the parent (engineering) repo so the 📐 Engineering link resolves. Verify the URL will return 200 by confirming the commit is on the remote.
 - Compose the PR body using the Initial template from [pr-description](../../resources/pr-description.md). Reference `issue_number` in the PR title and body, formatting the issue link according to `issue_platform` (GitHub `#N` vs Jira `KEY-N`).
 
 ### 2. Create and Assign Draft PR

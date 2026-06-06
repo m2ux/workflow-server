@@ -17,10 +17,6 @@ Perform completion or context analysis for a multi-package initiative
 
 Type of analysis to perform: 'completion' or 'context'.
 
-### planning-folder
-
-The [planning folder](../resources/planning-folder-template.md#folder-location) for storing the analysis document
-
 ## Protocol
 
 ### 1. Select Analysis Type

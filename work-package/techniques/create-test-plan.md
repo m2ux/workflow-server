@@ -43,7 +43,7 @@ Atomic task breakdown with dependencies and ordering for the work package
 
 ### 4. Write Artifact
 
-- Create the {test-plan-document} artifact in planning folder
+- Create the {test-plan-document} artifact in {planning-folder}
 - Structure with strategy, test cases, and acceptance criteria matrix
 
 ## Outputs

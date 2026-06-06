@@ -17,10 +17,6 @@ Define scope, dependencies, effort, and success criteria for a single package wi
 
 The work package currently being planned
 
-### planning-folder
-
-The [planning folder](../resources/planning-folder-template.md#folder-location) for storing plan documents
-
 ## Protocol
 
 ### 1. Present Overview

@@ -17,10 +17,6 @@ Create high-level architecture summary with Mermaid diagrams for management stak
 
 List of files changed in the implementation
 
-### planning-folder-path
-
-Path to planning folder for context
-
 ### design-philosophy-doc
 
 *(optional)* Design [philosophy](../resources/design-framework.md#design-philosophy-artifact-template) with scope and rationale
@@ -57,7 +53,7 @@ Path to planning folder for context
 
 ### 5. Write Summary
 
-- Create the {architecture-summary} under `planning-folder-path`
+- Create the {architecture-summary} under {planning-folder}
 - Combine diagrams with narrative explanation
 - Focus on impact, scope, and risk, drawing scope and rationale from `design-philosophy-doc` when it is provided
 - Follow the architecture-summary template in [architecture-summary](../resources/architecture-summary.md)

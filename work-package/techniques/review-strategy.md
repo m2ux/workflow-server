@@ -17,10 +17,6 @@ Review implementation to ensure changes are minimal, focused, scope-disciplined,
 
 Feature branch containing implementation changes
 
-### planning-folder-path
-
-Path to planning folder for artifact output
-
 ### pr-number
 
 Pull request number for scope reference
@@ -68,7 +64,7 @@ Pull request number for scope reference
 
 ### 8. Document Findings
 
-- Document all findings in the {strategic-review-doc}, written under `{planning_folder_path}`
+- Document all findings in the {strategic-review-doc}, written under {planning-folder}
 - Categorize by type: investigation artifacts, over-engineering, orphaned infrastructure
 - If all changes are justified and no cleanup is needed, document a clean review result
 

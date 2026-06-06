@@ -52,7 +52,7 @@ Summary, description, and context from the linked issue
 
 ### 5. Document Philosophy
 
-- Create the {design-philosophy-doc} artifact in planning folder
+- Create the {design-philosophy-doc} artifact in {planning-folder}
 - Include problem statement, classification, complexity, workflow path rationale
 
 ### 6. Create Assumptions Log

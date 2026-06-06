@@ -21,10 +21,6 @@ PR number to update
 
 Branch name for push operations
 
-### planning-folder-path
-
-Path to planning folder for implementation summary context
-
 ## Protocol
 
 ### 1. Push Commits
@@ -37,7 +33,7 @@ Path to planning folder for implementation summary context
 ### 2. Update Description
 
 - Use attached [pr-description](../resources/pr-description.md) for template and structure
-- Update the `pr-number` PR description with the implementation summary drawn from `planning-folder-path`
+- Update the `pr-number` PR description with the implementation summary drawn from {planning-folder}
 - If the PR cannot be found because `pr-number` does not exist, verify the PR number and check gh auth before retrying
 - Include test coverage summary
 - Document key decisions and trade-offs

@@ -47,7 +47,7 @@ List of files changed in the work package (from git diff)
 ### 5. Document Findings
 
 - Document findings with severity and recommendations
-- Create the {test-suite-review-report} in planning folder
+- Create the {test-suite-review-report} in {planning-folder}
 
 ### 6. Present Summary
 
