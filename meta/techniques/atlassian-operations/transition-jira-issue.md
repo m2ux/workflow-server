@@ -9,7 +9,7 @@ Move an issue to a new status.
 
 ## Inputs
 
-### issue-id-or-key
+### issueIdOrKey
 
 Issue key.
 
@@ -19,5 +19,5 @@ Transition object with an `id` identifying a status transition available for the
 
 ## Protocol
 
-1. Call `transitionJiraIssue { cloud-id, issue-id-or-key, transition }`.
+1. Call `transitionJiraIssue { cloudId, issueIdOrKey, transition }`.
    - If the {transition} id is not available for the current issue state, apply [list-jira-transitions](./list-jira-transitions.md) to get the available transitions and retry with one of those ids.

@@ -17,7 +17,7 @@ Finalize documentation — update ADRs, complete test plans, create completion d
 
 *(optional)* The [Architecture Decision Record](../resources/architecture-review.md#adr-template) created for this work package, if one exists
 
-### test-plan
+### test_plan
 
 The [test plan](../resources/test-plan.md#test-plan-structure) artifact for this work package
 
@@ -26,18 +26,18 @@ The [test plan](../resources/test-plan.md#test-plan-structure) artifact for this
 ### 1. Update Adr
 
 - If the {adr} exists, update status to Accepted
-- Record implementation outcome and any deviations, cross-referencing the merged PR via its {pr-number}
+- Record implementation outcome and any deviations, cross-referencing the merged PR via its {pr_number}
 - If no ADR was created for this work package, skip ADR finalization and proceed with the other steps
 
 ### 2. Finalize Test Plan
 
-- Load the {test-plan}. If it is not found at the expected path, check {planning-folder} for alternative names
+- Load the {test_plan}. If it is not found at the expected path, check {planning_folder_path} for alternative names
 - Add hyperlinks to actual test source file locations
 - Ensure each test case references its source file and line
 
 ### 3. Create Completion Doc
 
-- Create the {completion-document} at the {planning-folder}
+- Create the {completion_document} at the {planning_folder_path}
 - Summarize what was delivered
 - Document what was tested and test coverage
 - List deferred items and known limitations
@@ -52,7 +52,7 @@ The [test plan](../resources/test-plan.md#test-plan-structure) artifact for this
 
 ## Outputs
 
-### completion-document
+### completion_document
 
 [Summary](../resources/complete-wp.md#section-guidelines) of delivered work, test coverage, and deferred items
 

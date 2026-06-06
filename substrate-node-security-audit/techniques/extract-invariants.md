@@ -13,11 +13,11 @@ For a set of priority functions, perform formal invariant extraction from source
 
 ## Inputs
 
-### function-registry
+### function_registry
 
 Registry of priority functions to analyze, classified by type and priority
 
-### source-files
+### source_files
 
 Source files containing the functions
 
@@ -25,18 +25,18 @@ Source files containing the functions
 
 ### 1. Extract Per Function
 
-- For each priority-1 function in the {function-registry}, read its definition in the {source-files} and enumerate: (a) Preconditions — what must be true about inputs; (b) Postconditions — what must be true after execution; (c) Cross-function invariants — what must hold between this function and its inverse; (d) Data source invariants — what must be true about external data consumed.
+- For each priority-1 function in the {function_registry}, read its definition in the {source_files} and enumerate: (a) Preconditions — what must be true about inputs; (b) Postconditions — what must be true after execution; (c) Cross-function invariants — what must hold between this function and its inverse; (d) Data source invariants — what must be true about external data consumed.
 
 ### 2. Produce Table
 
-- Collect the enumerated invariants into the {invariant-table}, a structured table: | Function | Invariant | Category (pre/post/cross/data) | Expected Enforcement | Found? | Evidence |
+- Collect the enumerated invariants into the {invariant_table}, a structured table: | Function | Invariant | Category (pre/post/cross/data) | Expected Enforcement | Found? | Evidence |
 
 ## Outputs
 
-### invariant-table
+### invariant_table
 
 Structured invariant table.
 
-#### invariant-table
+#### invariant_table
 
 one row per function-invariant pair with category, expected enforcement, and evidence

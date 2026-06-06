@@ -19,7 +19,7 @@ Completed activities, checkpoint decisions, artifacts produced
 
 ## Output
 
-### summary-markdown
+### summary_markdown
 
 [Markdown string](../../resources/session-summary-template.md#session-summary-template) ready to present to the user.
 

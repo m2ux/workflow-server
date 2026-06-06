@@ -9,7 +9,7 @@ Create a Confluence page.
 
 ## Inputs
 
-### space-id
+### spaceId
 
 Target space ID.
 
@@ -21,10 +21,10 @@ Markdown body
 
 Page title (optional)
 
-### parent-id
+### parentId
 
 Optional parent page ID.
 
 ## Protocol
 
-1. Call `createConfluencePage { cloud-id, space-id, body, contentFormat: 'markdown', title?, parent-id? }`.
+1. Call `createConfluencePage { cloudId, spaceId, body, contentFormat: 'markdown', title?, parentId? }`.

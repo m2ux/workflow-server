@@ -17,13 +17,13 @@ Just-completed activity definition (with `transitions[]`)
 
 Current variable state
 
-### transition-override
+### transition_override
 
 Optional `activity-id` from a checkpoint effect `transitionTo`.
 
 ## Output
 
-### next-activity-id
+### next_activity_id
 
 Activity ID to dispatch next, or null if the workflow is complete.
 

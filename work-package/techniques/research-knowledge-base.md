@@ -16,7 +16,7 @@ Research knowledge base and external sources to discover best practices, pattern
 ### 1. Load Resources
 
 - Use attached [knowledge-base-research](../resources/knowledge-base-research.md) and [web-research](../resources/web-research.md) for guidance
-- Review {requirements} and {problem-statement} for research focus
+- Review {requirements} and {problem_statement} for research focus
 
 ### 2. Search Knowledge Base
 
@@ -42,12 +42,12 @@ Research knowledge base and external sources to discover best practices, pattern
 
 ### 5. Create Research Artifact
 
-- Create the {research-document} artifact in {planning-folder}
+- Create the {research_document} artifact in {planning_folder_path}
 - Include kb_findings, web_findings, synthesis, applicable_patterns, risks
 
 ## Outputs
 
-### research-document
+### research_document
 
 Knowledge base and web research [synthesis](../resources/knowledge-base-research.md#planning-artifact) for the work package
 

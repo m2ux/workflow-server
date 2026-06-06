@@ -13,11 +13,11 @@ Collect, classify, and review assumptions made during workflow activities
 
 ## Inputs
 
-### activity-context
+### activity_context
 
 Which activity is generating assumptions
 
-### existing-assumptions-log
+### existing_assumptions_log
 
 *(optional)* The existing assumptions [log](../resources/assumptions-review.md#assumptions-log-template), if one exists
 
@@ -26,12 +26,12 @@ Which activity is generating assumptions
 ### 1. Collect Assumptions
 
 - Identify all implicit decisions and assumptions made
-- Classify by category appropriate to the {activity-context} generating them
+- Classify by category appropriate to the {activity_context} generating them
 - If no significant assumptions are identified, explicitly confirm with the user that no assumptions were made before proceeding
 
 ### 2. Write Assumptions
 
-- Append collected assumptions to the {existing-assumptions-log} (or start a fresh log if none exists), recording type, statement, rationale, and alternatives for each
+- Append collected assumptions to the {existing_assumptions_log} (or start a fresh log if none exists), recording type, statement, rationale, and alternatives for each
 - The file is the record of truth — do not duplicate assumption content in checkpoint messages
 - Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See [assumption-reconciliation](../resources/assumption-reconciliation.md) for correct vs incorrect examples.
 
@@ -58,12 +58,12 @@ Which activity is generating assumptions
 ### 5. Record Outcomes
 
 - Mark each as confirmed, corrected, or needs-discussion
-- Write outcomes and user responses back into the log, producing the {updated-assumptions-log}
+- Write outcomes and user responses back into the log, producing the {updated_assumptions_log}
 - Preserve all assumptions and their resolution status
 
 ## Outputs
 
-### updated-assumptions-log
+### updated_assumptions_log
 
 Assumptions [log](../resources/assumptions-review.md#assumptions-log-template) updated with review outcomes — grows across activities
 

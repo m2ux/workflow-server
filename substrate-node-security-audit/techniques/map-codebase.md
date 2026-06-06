@@ -13,15 +13,15 @@ Enumerate, classify, and trace components of a codebase to build a structured ar
 
 ## Inputs
 
-### workspace-root
+### workspace_root
 
 Path to the workspace Cargo.toml or equivalent project manifest
 
-### in-scope
+### in_scope
 
 Paths to include in the analysis
 
-### out-of-scope
+### out_of_scope
 
 *(optional)* Paths to exclude
 
@@ -29,7 +29,7 @@ Paths to include in the analysis
 
 ### 1. Enumerate Components
 
-- Read the project manifest at {workspace-root} and enumerate every crate, module, or package under the {in-scope} paths, skipping anything listed in {out-of-scope}. List each component explicitly by name — do not summarize or group.
+- Read the project manifest at {workspace_root} and enumerate every crate, module, or package under the {in_scope} paths, skipping anything listed in {out_of_scope}. List each component explicitly by name — do not summarize or group.
 
 ### 2. Classify Components
 
@@ -49,7 +49,7 @@ Paths to include in the analysis
 
 ### 6. Trace Data Flows
 
-- Apply forward tracing (entry point to sink) and backward tracing (sensitive operation to data source) to map how data moves through the system, recording these traces alongside the component, boundary, and critical-path findings to assemble the {codebase-map}. Prioritize candidate points: locations with high code complexity, multiple lock acquisitions, nested match on external data, unsafe blocks, error-handling switches, and codec deserialization sites.
+- Apply forward tracing (entry point to sink) and backward tracing (sensitive operation to data source) to map how data moves through the system, recording these traces alongside the component, boundary, and critical-path findings to assemble the {codebase_map}. Prioritize candidate points: locations with high code complexity, multiple lock acquisitions, nested match on external data, unsafe blocks, error-handling switches, and codec deserialization sites.
 
 ### 7. Identify Safety Overrides
 
@@ -57,22 +57,22 @@ Paths to include in the analysis
 
 ## Outputs
 
-### codebase-map
+### codebase_map
 
 Structured codebase map.
 
-#### component-inventory
+#### component_inventory
 
 every crate/module with classification and priority
 
-#### trust-boundary-map
+#### trust_boundary_map
 
 every entry point with boundary type
 
-#### critical-path-map
+#### critical_path_map
 
 consensus-relevant code paths
 
-#### data-flow-traces
+#### data_flow_traces
 
 forward and backward traces for priority-1 paths

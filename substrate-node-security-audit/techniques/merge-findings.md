@@ -13,15 +13,15 @@ Consolidate finding lists from multiple sources (e.g. multiple agents or audit p
 
 ## Inputs
 
-### finding-sources
+### finding_sources
 
 One or more structured finding lists to merge
 
-### existing-table
+### existing_table
 
 *(optional)* An existing merge table to extend (for integration mode)
 
-### merge-strategy
+### merge_strategy
 
 One of: structured-merge (concat + dedup), integrate (add to existing), union-merge (two-run consensus)
 
@@ -29,7 +29,7 @@ One of: structured-merge (concat + dedup), integrate (add to existing), union-me
 
 ### 1. Concatenate
 
-- Combine every list in {finding-sources} into a single flat table. Every agent finding becomes a row with fields: agent-id, finding-id, file, line, title, severity, checklist-item, evidence. No agent output is discarded.
+- Combine every list in {finding_sources} into a single flat table. Every agent finding becomes a row with fields: agent-id, finding-id, file, line, title, severity, checklist-item, evidence. No agent output is discarded.
 
 ### 2. Deduplicate
 
@@ -37,27 +37,27 @@ One of: structured-merge (concat + dedup), integrate (add to existing), union-me
 
 ### 3. Apply Strategy
 
-- Branch on {merge-strategy}. For structured-merge: assign sequential report finding numbers. For integrate: append the new rows to the {existing-table} and update its elevation mapping. For union-merge: classify each finding as consensus (present in both runs), single-source (one run only), or escalated (PASS in primary, FAIL in secondary).
+- Branch on {merge_strategy}. For structured-merge: assign sequential report finding numbers. For integrate: append the new rows to the {existing_table} and update its elevation mapping. For union-merge: classify each finding as consensus (present in both runs), single-source (one run only), or escalated (PASS in primary, FAIL in secondary).
 
 ### 4. Verify Completeness
 
-- Confirm every row has a report finding number. Count merged rows (with justification), promoted rows, and total findings. Emit the completed {merge-table} with its flat table, elevation summary, and any union-merge classification.
+- Confirm every row has a report finding number. Count merged rows (with justification), promoted rows, and total findings. Emit the completed {merge_table} with its flat table, elevation summary, and any union-merge classification.
 - If a row still lacks a report finding number, auto-promote it to a new finding and note the promotion in the elevation summary.
 
 ## Outputs
 
-### merge-table
+### merge_table
 
 Canonical finding flat table with elevation mapping and summary.
 
-#### flat-table
+#### flat_table
 
 one row per agent finding with report finding number and merge status
 
-#### elevation-summary
+#### elevation_summary
 
 total agent findings, total report findings, merged count, promoted count
 
-#### union-merge-classification
+#### union_merge_classification
 
 for union-merge: consensus/single-source/escalated classification per finding

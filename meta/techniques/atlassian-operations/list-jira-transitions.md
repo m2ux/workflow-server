@@ -9,10 +9,10 @@ Discover available status transitions for an issue.
 
 ## Inputs
 
-### issue-id-or-key
+### issueIdOrKey
 
 Issue key.
 
 ## Protocol
 
-1. Call `getTransitionsForJiraIssue { cloud-id, issue-id-or-key }`.
+1. Call `getTransitionsForJiraIssue { cloudId, issueIdOrKey }`.

@@ -9,10 +9,10 @@ Read a single Jira issue.
 
 ## Inputs
 
-### issue-id-or-key
+### issueIdOrKey
 
 Issue key.
 
 ## Protocol
 
-1. Call `getJiraIssue { cloud-id, issue-id-or-key }`.
+1. Call `getJiraIssue { cloudId, issueIdOrKey }`.

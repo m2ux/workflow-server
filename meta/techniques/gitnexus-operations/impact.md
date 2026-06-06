@@ -17,17 +17,17 @@ the symbol name to analyse
 
 `'upstream'` (dependents — what breaks if target changes; the work-package default) or `'downstream'` (dependencies)
 
-### max-depth
+### max_depth
 
 optional traversal depth (default 3).
 
-### min-confidence
+### min_confidence
 
 optional confidence floor (e.g. `0.8` to keep only high-confidence edges).
 
 ## Output
 
-### impact-report
+### impact_report
 
 d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY NEED TESTING); affected execution flows; risk level (LOW / MEDIUM / HIGH / CRITICAL)
 
@@ -35,7 +35,7 @@ d=1 (WILL BREAK — direct callers/importers), d=2 (LIKELY AFFECTED), d=3 (MAY N
 
 ### 1. Invoke
 
-- Call `gitnexus_impact {target, direction, max-depth, min-confidence}`.
+- Call `gitnexus_impact {target, direction, max_depth, min_confidence}`.
 - If the call reports the index is out of date, run `npx gitnexus analyze` in terminal, then retry.
 - If `target` does not resolve in the graph, verify the symbol name; if it is new or unindexed, fall back to grep for callers.
 

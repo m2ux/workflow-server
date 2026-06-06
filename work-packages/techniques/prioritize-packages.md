@@ -13,11 +13,11 @@ Evaluate and order work packages by dependencies, value, risk, and effort
 
 ## Inputs
 
-### package-plans
+### package_plans
 
 List of completed package [plan documents](../resources/package-plan-template.md#template) with scope, dependencies, and effort
 
-### dependency-map
+### dependency_map
 
 Inter-package dependency map describing which packages block or depend on which others
 
@@ -26,7 +26,7 @@ Inter-package dependency map describing which packages block or depend on which 
 ### 1. Analyze Dependencies
 
 - Use attached [prioritization-framework](../resources/prioritization-framework.md) (prioritization-framework) for the evaluation methodology
-- Build a dependency graph from the dependency sections of all {package-plans}, cross-checking against the {dependency-map} to confirm which packages block or depend on which others
+- Build a dependency graph from the dependency sections of all {package_plans}, cross-checking against the {dependency_map} to confirm which packages block or depend on which others
 - Perform topological sort to identify valid orderings
 - If the dependency graph contains cycles, present the cycle to the user and recommend decomposition or dependency removal
 
@@ -46,24 +46,24 @@ Inter-package dependency map describing which packages block or depend on which 
 ### 4. Present Prioritization
 
 - Present the dependency graph (text or mermaid diagram)
-- Present the priority table with rationale for the proposed order, forming the {priority-order} to be returned
+- Present the priority table with rationale for the proposed order, forming the {priority_order} to be returned
 - Note alternative orderings if multiple valid sequences exist
 
 ## Outputs
 
-### priority-order
+### priority_order
 
 Ordered list of work packages with prioritization rationale
 
-#### priority-order
+#### priority_order
 
 Ordered list of packages by execution priority
 
-#### dependency-graph
+#### dependency_graph
 
 Dependency graph representation
 
-#### prioritization-rationale
+#### prioritization_rationale
 
 Per-package rationale for the ordering
 

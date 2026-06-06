@@ -9,11 +9,11 @@ Canonical formatting check; matches CI exactly. Does not compile, so does not ne
 
 ## Output
 
-### fmt-status
+### fmt_status
 
 { passed: boolean } — true when no formatting diffs
 
-### fmt-diff-summary
+### fmt_diff_summary
 
 Concise summary of files needing formatting (when not passed)
 

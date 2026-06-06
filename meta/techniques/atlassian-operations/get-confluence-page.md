@@ -9,10 +9,10 @@ Read a Confluence page as Markdown.
 
 ## Inputs
 
-### page-id
+### pageId
 
 Page ID.
 
 ## Protocol
 
-1. Call `getConfluencePage { cloud-id, page-id, contentFormat: 'markdown' }`.
+1. Call `getConfluencePage { cloudId, pageId, contentFormat: 'markdown' }`.

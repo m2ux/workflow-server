@@ -9,7 +9,7 @@ Add an inline (in-text) comment to a Confluence page.
 
 ## Inputs
 
-### page-id
+### pageId
 
 Page ID.
 
@@ -17,10 +17,10 @@ Page ID.
 
 Markdown body
 
-### inline-comment-properties
+### inlineCommentProperties
 
 Object describing the inline anchor.
 
 ## Protocol
 
-1. Call `createConfluenceInlineComment { cloud-id, page-id, body, inline-comment-properties }`.
+1. Call `createConfluenceInlineComment { cloudId, pageId, body, inlineCommentProperties }`.

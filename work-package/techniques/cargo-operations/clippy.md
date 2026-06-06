@@ -9,11 +9,11 @@ Run the linter against all targets, denying warnings.
 
 ## Output
 
-### clippy-status
+### clippy_status
 
 { passed: boolean } — true when no denied warnings emitted
 
-### lint-diagnostics
+### lint_diagnostics
 
 Captured stdout/stderr from the linter run
 

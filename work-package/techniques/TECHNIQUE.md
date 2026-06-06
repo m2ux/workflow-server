@@ -9,7 +9,7 @@ Base contract inherited by sibling techniques. Any Inputs, Outputs, Rules, or Er
 
 ## Inputs
 
-### planning-folder
+### planning_folder_path
 
 Path to this work package's planning folder under `.engineering/artifacts/planning/` — the common location every technique reads prior artifacts from and writes its own artifact into (each activity's `artifactPrefix` is applied to the filename).
 
@@ -17,18 +17,18 @@ Path to this work package's planning folder under `.engineering/artifacts/planni
 
 Elicited requirements with success criteria and scope
 
-### problem-statement
+### problem_statement
 
 Clear problem definition with system understanding
 
-### target-path
+### target_path
 
 Filesystem path to the work package's target submodule worktree — the codebase being analysed, built, and operated on
 
-### branch-name
+### branch_name
 
 The work package's feature branch
 
-### pr-number
+### pr_number
 
 The work package's pull request number

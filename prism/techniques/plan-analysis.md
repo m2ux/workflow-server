@@ -17,7 +17,7 @@ Plan an analysis strategy by detecting scope, classifying targets, and producing
 
 What to analyze. Can be: a file path, a directory path, inline text, a question, a concept, or a topic. The technique detects the scope from the form of the input.
 
-### analytical-goal
+### analytical_goal
 
 *(optional)* What the caller wants to understand (e.g., 'find hidden bugs', 'assess maintainability', 'understand design trade-offs', 'security review', 'explore the implications of X', 'evaluate this strategy')
 
@@ -29,7 +29,7 @@ What to analyze. Can be: a file path, a directory path, inline text, a question,
 
 standard
 
-### depth-preference
+### depth_preference
 
 *(optional)* Override for pipeline mode when scope is query or file: 'single', 'pipeline', 'portfolio', or 'behavioral'. Ignored for multi-unit scopes where mode is determined per-unit by risk classification.
 
@@ -40,24 +40,24 @@ standard
 - Determine the scope from the {target} input
 - If {target} is a file path pointing to a single file → scope 'file'
 - If {target} is a directory path, check for project markers (package.json, Cargo.toml, go.mod, pyproject.toml) to distinguish 'codebase' from 'module'. A directory of non-code files → 'document-set'.
-- If {target} is inline text, a question, a concept, a strategy, or any non-path input → scope 'query'. Set {target-type} to 'general' unless the text is clearly source code.
-- If {target-type} was not provided, infer it: code file extensions (.ts, .rs, .py, .go, .java, etc.) → 'code'. Everything else → 'general'.
+- If {target} is inline text, a question, a concept, a strategy, or any non-path input → scope 'query'. Set {target_type} to 'general' unless the text is clearly source code.
+- If {target_type} was not provided, infer it: code file extensions (.ts, .rs, .py, .go, .java, etc.) → 'code'. Everything else → 'general'.
 - Proceed to the appropriate planning path based on scope
-- A query, question, concept, or inline text input is always 'general' {target-type} unless it is clearly source code.
+- A query, question, concept, or inline text input is always 'general' {target_type} unless it is clearly source code.
 - If you cannot tell whether the {target} is a file path, directory, or query text, check whether it exists on the filesystem: if it does, use the file/directory scope; if not, treat it as a query.
 
 ### 2. Query Recommendation
 
 - For scope 'query': the target is text, not files. Select lenses from the general set (resources 00-02 + 06-10 + 15 + 18 + 24-26).
-- Map the {analytical-goal} to lenses: exploring implications → claim (07) + rejected-paths (09). evaluating a strategy → scarcity (08) + claim (07). understanding trade-offs → scarcity (08) + rejected-paths (09). deep structural analysis → L12 pipeline (00-02). general exploration → L12 single (00). abstraction quality → sdl-abstraction (15). error resilience → error-resilience-neutral (24). API quality → api-surface-neutral (25). evolution/coupling/dependencies → evolution-neutral (26). pattern transfer → pedagogy (06). hidden assumptions → claim (07). [scarcity](../resources/scarcity.md) → scarcity (08). rejected alternatives → rejected-paths (09). decay/degradation → degradation (10). code archaeology → archaeology (33). change resilience → cultivation (35). temporal simulation → simulation (38). confabulation detection → knowledge-audit (40). knowledge gaps → knowledge-boundary (41). epistemic typing → knowledge-typed (42). self-correcting analysis → l12g (43). maximum-trust analysis → oracle (44). README rewriting → writer (45) + [writer-critique](../resources/writer-critique.md) + [writer-synthesis](../resources/writer-synthesis.md). analysis strategy → strategist (48). architecture exploration → architect (51). catalog blindspots → blindspot (52). counterfactual analysis → counterfactual (54). conservation law falsification → falsify (56). creative synthesis → genesis (57). knowledge prerequisites → prereq (59). significance evaluation → significance (60).
-- Apply {depth-preference} if provided: 'single' → single best lens, 'pipeline' → full-prism, 'portfolio' → 2-3 complementary lenses, 'behavioral' → behavioral pipeline (19-23, code-only — reject if {target-type} is general)
+- Map the {analytical_goal} to lenses: exploring implications → claim (07) + rejected-paths (09). evaluating a strategy → scarcity (08) + claim (07). understanding trade-offs → scarcity (08) + rejected-paths (09). deep structural analysis → L12 pipeline (00-02). general exploration → L12 single (00). abstraction quality → sdl-abstraction (15). error resilience → error-resilience-neutral (24). API quality → api-surface-neutral (25). evolution/coupling/dependencies → evolution-neutral (26). pattern transfer → pedagogy (06). hidden assumptions → claim (07). [scarcity](../resources/scarcity.md) → scarcity (08). rejected alternatives → rejected-paths (09). decay/degradation → degradation (10). code archaeology → archaeology (33). change resilience → cultivation (35). temporal simulation → simulation (38). confabulation detection → knowledge-audit (40). knowledge gaps → knowledge-boundary (41). epistemic typing → knowledge-typed (42). self-correcting analysis → l12g (43). maximum-trust analysis → oracle (44). README rewriting → writer (45) + [writer-critique](../resources/writer-critique.md) + [writer-synthesis](../resources/writer-synthesis.md). analysis strategy → strategist (48). architecture exploration → architect (51). catalog blindspots → blindspot (52). counterfactual analysis → counterfactual (54). conservation law falsification → falsify (56). creative synthesis → genesis (57). knowledge prerequisites → prereq (59). significance evaluation → significance (60).
+- Apply {depth_preference} if provided: 'single' → single best lens, 'pipeline' → full-prism, 'portfolio' → 2-3 complementary lenses, 'behavioral' → behavioral pipeline (19-23, code-only — reject if {target_type} is general)
 - Format as a single-unit plan with scope 'query' and proceed to format-plan
 
 ### 3. Single Unit Recommendation
 
-- For scope 'file' or 'module': map the {analytical-goal} to lenses using the goal-mapping matrix
+- For scope 'file' or 'module': map the {analytical_goal} to lenses using the goal-mapping matrix
 - Goal-mapping matrix: bug detection → L12 (00) or deep-scan (12). code review → L12 (00) + contract (11). design review → claim (07) + rejected-paths (09). comprehension → pedagogy (06) + rejected-paths (09). pre-commit → L12 pipeline (00-02). planning review → L12 (00). maintainability → degradation (10) + contract (11). assumption validation → claim (07) + scarcity (08). security review → sdl-trust (13) + error-resilience (19). error handling → error-resilience (19). performance → optim (20). API quality → api-surface (22). evolution/coupling → evolution (21) or sdl-coupling (14). trust boundaries → sdl-trust (13). abstraction quality → sdl-abstraction (15). structural defects → deep-scan (12) or rec (16). identity/naming → ident (17). dead code → reachability (30). state machine → state-audit (32). contract fidelity → fidelity (31). error+cost hybrid → evidence-cost (29). comprehensive behavioral → behavioral pipeline (19-23). pattern transfer → pedagogy (06). hidden assumptions → claim (07). [scarcity](../resources/scarcity.md) → scarcity (08). rejected alternatives → rejected-paths (09). decay/degradation → degradation (10). interface contracts → contract (11). quick structural scan → 73w (18, Sonnet-only). quick error resilience → error-resilience-compact (27). ultra-brief error resilience → error-resilience-70w (28). architecture exploration → architect (51). catalog blindspots → blindspot (52). code generation → codegen (53). counterfactual analysis → counterfactual (54). interaction emergence → emergence (55). conservation law falsification → falsify (56). creative synthesis → genesis (57). decision history → history (58). knowledge prerequisites → prereq (59). significance evaluation → significance (60). claim verification → verify-claims (61).
-- Apply {depth-preference} if provided: 'single' → single best lens, 'pipeline' → full-prism, 'portfolio' → 2-3 complementary lenses, 'behavioral' → behavioral pipeline (19-23, synthesized by [behavioral-synthesis](../resources/behavioral-synthesis.md); code-only — reject if {target-type} is general)
+- Apply {depth_preference} if provided: 'single' → single best lens, 'pipeline' → full-prism, 'portfolio' → 2-3 complementary lenses, 'behavioral' → behavioral pipeline (19-23, synthesized by [behavioral-synthesis](../resources/behavioral-synthesis.md); code-only — reject if {target_type} is general)
 - Format as a single-unit plan and proceed to format-plan
 
 ### 4. Survey Structure
@@ -99,7 +99,7 @@ standard
 
 ### 9. Build Analysis Units
 
-- Build the {analysis-units} array — an ordered list of unit objects that the workflow iterates over
+- Build the {analysis_units} array — an ordered list of unit objects that the workflow iterates over
 - Each unit object has: target (file path or content string), target-type (code|general), pipeline-mode (single|full-prism|portfolio|behavioral), lenses (array of resource indices for portfolio, empty for single/full-prism/behavioral), role (module role or 'query'), risk (high|medium|low), rationale (why this mode was selected)
 - For query and file scopes: produce a single-element array
 - For module scope: produce a single-element array with the module path as target
@@ -108,13 +108,13 @@ standard
 ### 10. Format Plan
 
 - Produce the analysis plan as structured output
-- Set the {analysis-units} workflow variable — this drives the iteration loop in the structural-pass activity
-- If {output-path} is provided, write the human-readable plan to {output-path}/analysis-plan.md
-- For single-unit plans, the workflow will execute a single pass through the analysis activities. For multi-unit plans, the workflow iterates over {analysis-units}.
+- Set the {analysis_units} workflow variable — this drives the iteration loop in the structural-pass activity
+- If {output_path} is provided, write the human-readable plan to {output_path}/analysis-plan.md
+- For single-unit plans, the workflow will execute a single pass through the analysis activities. For multi-unit plans, the workflow iterates over {analysis_units}.
 
 ## Outputs
 
-### analysis-plan
+### analysis_plan
 
 Human-readable analysis plan artifact
 
@@ -130,11 +130,11 @@ Detected scope type (query, file, module, codebase, document-set)
 
 Overall strategy description
 
-#### units-summary
+#### units_summary
 
 Per-unit plan summary: target, role, risk, pipeline-mode, lenses, rationale
 
-#### execution-order
+#### execution_order
 
 Prioritised and grouped execution sequence (multi-unit scopes only)
 
@@ -142,15 +142,15 @@ Prioritised and grouped execution sequence (multi-unit scopes only)
 
 Which units can run concurrently (multi-unit scopes only)
 
-#### estimated-cost
+#### estimated_cost
 
 Total sub-agent dispatches (multi-unit scopes only)
 
-#### skip-list
+#### skip_list
 
 Units below budget threshold with justification (multi-unit scopes only)
 
-### analysis-units
+### analysis_units
 
 Machine-readable ordered array of analysis unit objects, each specifying a target, mode, and lens selection to execute
 

@@ -9,6 +9,6 @@ Shared base contract inherited by sibling techniques. Any Inputs, Outputs, Rules
 
 ## Inputs
 
-### output-path
+### output_path
 
 Directory where the evaluation artifacts are read from and written to

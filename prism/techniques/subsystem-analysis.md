@@ -15,7 +15,7 @@ Decompose source code into subsystems, assign different prisms per region via ca
 
 ### 1. Decompose
 
-- Parse {target-content} via AST (Python) or regex heuristic (other languages)
+- Parse {target_content} via AST (Python) or regex heuristic (other languages)
 - Identify classes, functions, top-level blocks as subsystems
 - Min 10 lines per subsystem; merge smallest pairs to stay under 8 subsystems
 - If only 1 subsystem found, fall back to single [L12](../resources/l12.md) pass
@@ -32,27 +32,27 @@ Decompose source code into subsystems, assign different prisms per region via ca
 
 - For each subsystem, dispatch a FRESH worker with its assigned prism
 - Include context header with subsystem name, line range, and list of other subsystem names
-- Workers write to {output-path}/subsystem-{name}.md
+- Workers write to {output_path}/subsystem-{name}.md
 - Each per-subsystem worker receives a context header noting its position in the file and the names of adjacent subsystems
 
 ### 4. Synthesize
 
 - Load [subsystem synthesis](../resources/subsystem-synthesis.md) resource (64)
 - Dispatch synthesis worker with all per-subsystem outputs
-- Worker writes to {output-path}/subsystem-synthesis.md
-- Return {subsystem-result}: the per-subsystem paths, the synthesis path, and the prism assignments from calibration
+- Worker writes to {output_path}/subsystem-synthesis.md
+- Return {subsystem_result}: the per-subsystem paths, the synthesis path, and the prism assignments from calibration
 
 ## Outputs
 
-### subsystem-result
+### subsystem_result
 
 Paths to per-subsystem artifacts, synthesis artifact, and prism assignments
 
-#### subsystem-paths
+#### subsystem_paths
 
 Array of filesystem paths to subsystem-{name}.md files
 
-#### synthesis-path
+#### synthesis_path
 
 Filesystem path to subsystem-synthesis.md
 

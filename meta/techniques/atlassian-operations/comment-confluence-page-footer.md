@@ -9,7 +9,7 @@ Add a page-level (footer) comment to a Confluence page.
 
 ## Inputs
 
-### page-id
+### pageId
 
 Page ID.
 
@@ -19,4 +19,4 @@ Markdown body
 
 ## Protocol
 
-1. Call `createConfluenceFooterComment { cloud-id, page-id, body }`.
+1. Call `createConfluenceFooterComment { cloudId, pageId, body }`.

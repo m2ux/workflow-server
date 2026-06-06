@@ -9,10 +9,10 @@ Resolve a document name to its full source path.
 
 ## Inputs
 
-### document-name
+### document_name
 
 Name from the index.
 
 ## Protocol
 
-1. Call `catalog_search { name: document-name }`.
+1. Call `catalog_search { name: document_name }`.

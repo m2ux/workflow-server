@@ -9,6 +9,6 @@ Base contract inherited by sibling techniques. Any Inputs, Outputs, Rules, or Er
 
 ## Inputs
 
-### planning-folder
+### planning_folder_path
 
 The audit's working folder — where every sub-agent and orchestrator step reads prior artifacts from and writes its own output files into.

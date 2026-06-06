@@ -9,11 +9,11 @@ Transition the session to a target activity and spawn a worker for it.
 
 ## Inputs
 
-### activity-id
+### activity_id
 
 Activity ID to enter.
 
-### prompt-template
+### prompt_template
 
 Resource ref for the worker prompt (e.g., [activity-worker-prompt](../../resources/activity-worker-prompt.md)).
 
@@ -23,17 +23,17 @@ Current variable state for prompt substitution
 
 ## Output
 
-### worker-result
+### worker_result
 
 The envelope the worker returned, passed through unchanged — one of two tagged result types: the `checkpoint_pending` envelope from [yield-checkpoint](./yield-checkpoint.md), or the `activity_complete` envelope from [finalize-activity](./finalize-activity.md).
 
-### trace-token
+### trace_token
 
 Trace token captured from `next_activity` response, appended to `trace_tokens`.
 
 ## Protocol
 
-1. Call `next_activity { session-index, activity-id, step_manifest }`; capture `_meta.trace-token`.
+1. Call `next_activity { session_index, activity_id, step_manifest }`; capture `_meta.trace-token`.
 2. Apply [compose-prompt](./compose-prompt.md) with `prompt-template` substituting `state` values.
 3. Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await the worker's envelope and return it unchanged as `worker-result`.
    - If the worker does not return within the expected time, apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) if it is still running; otherwise dispatch a fresh worker for the same `activity-id`.

@@ -9,7 +9,7 @@ Match a user request against the workflow catalog and surface ambiguity.
 
 ## Inputs
 
-### user-request
+### user_request
 
 User's free-form request.
 
@@ -19,7 +19,7 @@ Array of available workflow entries `{ id, title, description, tags }` to match 
 
 ## Output
 
-### target-workflow-id
+### target_workflow_id
 
 Best-match workflow id, or null when no candidate matches.
 

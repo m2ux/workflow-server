@@ -15,7 +15,7 @@ Automatically compose an analysis pipeline based on input characteristics — th
 
 ### 1. Prereq Scan
 
-- Dispatch [prereq](../resources/prereq.md) over {target-content} to a fresh worker, writing smart-prereq.md into {output-path}
+- Dispatch [prereq](../resources/prereq.md) over {target_content} to a fresh worker, writing smart-prereq.md into {output_path}
 - Extract atomic questions from output for knowledge fill
 
 ### 2. Knowledge Fill
@@ -25,9 +25,9 @@ Automatically compose an analysis pipeline based on input characteristics — th
 
 ### 3. Select Mode
 
-- Branch on {target-type}: when it is 'code', attempt AST decomposition via _split_into_subsystems logic
+- Branch on {target_type}: when it is 'code', attempt AST decomposition via _split_into_subsystems logic
 - If >1 subsystem found: use subsystem mode (different prisms per region)
-- If 1 subsystem, or {target-type} is 'general': use [L12](../resources/l12.md) single pass (or 3-pass for general)
+- If 1 subsystem, or {target_type} is 'general': use [L12](../resources/l12.md) single pass (or 3-pass for general)
 
 ### 4. Execute Analysis
 
@@ -39,27 +39,27 @@ Automatically compose an analysis pipeline based on input characteristics — th
 - Check analysis output quality: look for conservation law presence and output length
 - If adequate output (>200 chars): run [dispute-synthesis](../resources/dispute-synthesis.md) for self-correction
 - If analysis found a conservation law, dispute is supplementary; if not, dispute is critical
-- Assemble {smart-result} from the artifacts written to {output-path} and the ordered pipeline trace
+- Assemble {smart_result} from the artifacts written to {output_path} and the ordered pipeline trace
 
 ## Outputs
 
-### smart-result
+### smart_result
 
 Paths and pipeline trace for the smart adaptive run
 
-#### prereq-path
+#### prereq_path
 
 Filesystem path to smart-prereq.md
 
-#### analysis-paths
+#### analysis_paths
 
 Array of paths to smart-analysis.md and/or subsystem-*.md as produced
 
-#### dispute-paths
+#### dispute_paths
 
 Array of paths to smart-dispute-*.md (empty if dispute skipped)
 
-#### pipeline-steps
+#### pipeline_steps
 
 Array of step names executed in order
 

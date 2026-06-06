@@ -9,7 +9,7 @@ Get the current user's account ID.
 
 ## Output
 
-### account-id
+### accountId
 
 Current user's account ID
 

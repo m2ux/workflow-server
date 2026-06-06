@@ -31,4 +31,4 @@ CRITICAL: every dispatch operation in this technique MUST be foreground (blockin
 
 ### index-in-prompt
 
-When a dispatched agent inherits a workflow session, ALWAYS include the `session-index` in its prompt. Server-managed `session.json` holds the workflow state, keyed by the index; the harness context window (where preserved) never carries that state.
+When a dispatched agent inherits a workflow session, ALWAYS include the `session_index` in its prompt. Server-managed `session.json` holds the workflow state, keyed by the index; the harness context window (where preserved) never carries that state.

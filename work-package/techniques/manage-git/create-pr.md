@@ -9,21 +9,21 @@ Open a draft PR linked to the issue, assigned to the current GitHub user.
 
 ## Inputs
 
-### issue-number
+### issue_number
 
 Issue identifier (GitHub `#N` or Jira `KEY-N`)
 
-### issue-platform
+### issue_platform
 
 Platform where the issue lives (`github` or `jira`)
 
 ## Output
 
-### pr-number
+### pr_number
 
 PR number
 
-### pr-url
+### pr_url
 
 URL to the PR
 
@@ -31,7 +31,7 @@ URL to the PR
 
 ### 1. Prepare PR Inputs
 
-- BEFORE creating the PR: commit and push {planning-folder} to the parent (engineering) repo so the 📐 Engineering link resolves. Verify the URL will return 200 by confirming the commit is on the remote.
+- BEFORE creating the PR: commit and push {planning_folder_path} to the parent (engineering) repo so the 📐 Engineering link resolves. Verify the URL will return 200 by confirming the commit is on the remote.
 - Compose the PR body using the Initial template from [pr-description](../../resources/pr-description.md). Reference `issue-number` in the PR title and body, formatting the issue link according to `issue-platform` (GitHub `#N` vs Jira `KEY-N`).
 
 ### 2. Create and Assign Draft PR

@@ -13,7 +13,7 @@ Review test suite quality and coverage — assessing coverage gaps, assertion qu
 
 ## Inputs
 
-### changed-files
+### changed_files
 
 List of files changed in the work package (from git diff)
 
@@ -47,7 +47,7 @@ List of files changed in the work package (from git diff)
 ### 5. Document Findings
 
 - Document findings with severity and recommendations
-- Create the {test-suite-review-report} in {planning-folder}
+- Create the {test_suite_review_report} in {planning_folder_path}
 
 ### 6. Present Summary
 
@@ -55,7 +55,7 @@ List of files changed in the work package (from git diff)
 
 ## Outputs
 
-### test-suite-review-report
+### test_suite_review_report
 
 Test suite review [report](../resources/test-suite-review.md#test-suite-review-report-template) documenting quality assessment
 

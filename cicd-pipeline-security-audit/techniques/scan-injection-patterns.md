@@ -13,15 +13,15 @@ Apply all seven CI/CD injection detection patterns (P1-P7) — derived from the 
 
 ## Inputs
 
-### workflow-files
+### workflow_files
 
 List of workflow file paths to scan
 
-### reconnaissance-data
+### reconnaissance_data
 
 Pre-classified trigger, permission, and checkout data for the workflow files
 
-### ai-config-inventory
+### ai_config_inventory
 
 *(optional)* AI configuration files found in the submodule
 
@@ -82,7 +82,7 @@ Pre-classified trigger, permission, and checkout data for the workflow files
 
 ## Outputs
 
-### scan-results
+### scan_results
 
 Structured findings for this submodule
 

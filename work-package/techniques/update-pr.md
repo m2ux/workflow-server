@@ -23,7 +23,7 @@ Update PR with final implementation details and mark ready for review, or post c
 ### 2. Update Description
 
 - Use attached [pr-description](../resources/pr-description.md) for template and structure
-- Update the `pr-number` PR description with the implementation summary drawn from {planning-folder}
+- Update the `pr-number` PR description with the implementation summary drawn from {planning_folder_path}
 - If the PR cannot be found because `pr-number` does not exist, verify the PR number and check gh auth before retrying
 - Include test coverage summary
 - Document key decisions and trade-offs
@@ -42,15 +42,15 @@ Update PR with final implementation details and mark ready for review, or post c
 
 ## Outputs
 
-### updated-pr
+### updated_pr
 
 PR updated and marked ready for review
 
-#### pr-url
+#### pr_url
 
 URL to the PR
 
-#### pr-status
+#### pr_status
 
 Status after update (e.g., ready for review)
 

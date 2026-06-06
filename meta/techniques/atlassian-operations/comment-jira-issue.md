@@ -9,14 +9,14 @@ Add a comment to a Jira issue.
 
 ## Inputs
 
-### issue-id-or-key
+### issueIdOrKey
 
 Issue key.
 
-### comment-body
+### commentBody
 
 Markdown comment body.
 
 ## Protocol
 
-1. Call `addCommentToJiraIssue { cloud-id, issue-id-or-key, comment-body }`.
+1. Call `addCommentToJiraIssue { cloudId, issueIdOrKey, commentBody }`.

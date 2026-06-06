@@ -13,11 +13,11 @@ Apply structured design framework to classify problems, assess complexity, and d
 
 ## Inputs
 
-### issue-details
+### issue_details
 
 Summary, description, and context from the linked issue
 
-### problem-context
+### problem_context
 
 *(optional)* Additional context about the problem from user or prior activities
 
@@ -26,7 +26,7 @@ Summary, description, and context from the linked issue
 ### 1. Load Framework
 
 - Use attached [design-framework](../resources/design-framework.md) for full guidance
-- Review {issue-details} and {problem-context}
+- Review {issue_details} and {problem_context}
 
 ### 2. Define Problem
 
@@ -52,18 +52,18 @@ Summary, description, and context from the linked issue
 
 ### 5. Document Philosophy
 
-- Create the {design-philosophy-doc} artifact in {planning-folder}
+- Create the {design_philosophy_doc} artifact in {planning_folder_path}
 - Include problem statement, classification, complexity, workflow path rationale
 
 ### 6. Create Assumptions Log
 
 - Identify assumptions made during problem classification and path selection
-- Create the {assumptions-log} artifact with initial assumptions
+- Create the {assumptions_log} artifact with initial assumptions
 - Create assumptions log here — first activity that makes decisions requiring assumptions
 
 ## Outputs
 
-### design-philosophy-doc
+### design_philosophy_doc
 
 Records problem classification, design [rationale](../resources/design-framework.md#design-philosophy-artifact-template), and workflow path decisions
 
@@ -71,11 +71,11 @@ Records problem classification, design [rationale](../resources/design-framework
 
 `design-philosophy.md`
 
-#### problem-statement
+#### problem_statement
 
 Clear problem definition with system understanding
 
-#### problem-type
+#### problem_type
 
 Specific problem or inventive goal
 
@@ -83,7 +83,7 @@ Specific problem or inventive goal
 
 simple, moderate, or complex
 
-### assumptions-log
+### assumptions_log
 
 [Log](../resources/assumptions-review.md#assumptions-log-template) of assumptions made during design philosophy
 

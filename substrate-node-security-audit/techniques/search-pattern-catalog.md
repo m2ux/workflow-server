@@ -13,11 +13,11 @@ Execute every pattern in a catalog section against a codebase scope, apply per-p
 
 ## Inputs
 
-### resource-id
+### resource_id
 
 Resource containing the pattern catalog (e.g., '05-static-analysis-patterns')
 
-### catalog-section
+### catalog_section
 
 Section within the resource to execute (e.g., 'Grep Patterns', 'Mechanical Checks')
 
@@ -33,9 +33,9 @@ Codebase paths to search against
 
 ### 1. Load Catalog
 
-- Fetch the resource named by {resource-id} and locate the {catalog-section} within it. Parse every pattern entry in that section. Each entry defines a search string and, optionally, triage criteria or verification steps.
-- If no resource matches {resource-id}, list the available resources and report the error to the orchestrator.
-- If the resource exists but does not contain the requested {catalog-section}, list the available sections in the resource and report the mismatch.
+- Fetch the resource named by {resource_id} and locate the {catalog_section} within it. Parse every pattern entry in that section. Each entry defines a search string and, optionally, triage criteria or verification steps.
+- If no resource matches {resource_id}, list the available resources and report the error to the orchestrator.
+- If the resource exists but does not contain the requested {catalog_section}, list the available sections in the resource and report the mismatch.
 
 ### 2. Iterate Patterns
 
@@ -56,18 +56,18 @@ Codebase paths to search against
 
 ### 6. Format Results
 
-- Assemble the {pattern-results}: a structured results table with one row per pattern hit (or per pattern for zero-hit entries). The table format is defined by the activity step that invoked this technique. Include zero-hit verdicts as a separate section or integrated into the main table.
+- Assemble the {pattern_results}: a structured results table with one row per pattern hit (or per pattern for zero-hit entries). The table format is defined by the activity step that invoked this technique. Include zero-hit verdicts as a separate section or integrated into the main table.
 
 ## Outputs
 
-### pattern-results
+### pattern_results
 
 A structured results table and zero-hit verdicts.
 
-#### results-table
+#### results_table
 
 one row per hit, with fields determined by the invoking activity step (typically: category/check ID, pattern, file:line, hit content, triage/verdict)
 
-#### zero-hit-verdicts
+#### zero_hit_verdicts
 
 one row per zero-hit pattern, with fields: pattern, category, hits (0), verdict (True Negative / Flag for Follow-up), justification

@@ -9,7 +9,7 @@ Type-check without producing binaries; the cheapest validation pass.
 
 ## Output
 
-### check-status
+### check_status
 
 Pass/fail and the rustc diagnostics emitted
 

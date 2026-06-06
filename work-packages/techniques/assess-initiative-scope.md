@@ -13,7 +13,7 @@ Identify and categorize work packages from a multi-package initiative descriptio
 
 ## Inputs
 
-### user-initiative-description
+### user_initiative_description
 
 Free-form description of the initiative from the user
 
@@ -21,7 +21,7 @@ Free-form description of the initiative from the user
 
 ### 1. Confirm Multi Package
 
-- Read the {user-initiative-description} and assess whether it involves multiple distinct deliverables or a single work package
+- Read the {user_initiative_description} and assess whether it involves multiple distinct deliverables or a single work package
 - If single package, recommend using the work-package workflow directly instead — when the user's request turns out to be a single work package, point them to the work-package workflow rather than work-packages
 - If multiple packages, proceed with decomposition
 
@@ -35,25 +35,25 @@ Free-form description of the initiative from the user
 
 ### 3. Present Scope
 
-- Present the {scope-summary} as a numbered table of the identified packages with name and description
+- Present the {scope_summary} as a numbered table of the identified packages with name and description
 - Highlight any packages that seem too large (should be split) or too small (should be merged)
-- Set {initiative-name} based on the overall theme of the packages (see [planning-folder-template](../resources/planning-folder-template.md))
+- Set {initiative_name} based on the overall theme of the packages (see [planning-folder-template](../resources/planning-folder-template.md))
 
 ## Outputs
 
-### scope-summary
+### scope_summary
 
 Identified work packages with names and descriptions
 
-#### initiative-name
+#### initiative_name
 
 Name for the overall initiative
 
-#### work-packages
+#### work_packages
 
 List of identified packages with names and one-sentence descriptions
 
-#### package-count
+#### package_count
 
 Total number of identified packages
 

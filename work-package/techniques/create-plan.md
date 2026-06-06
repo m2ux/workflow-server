@@ -13,15 +13,15 @@ Design the implementation approach and create a work package plan with task brea
 
 ## Inputs
 
-### design-philosophy
+### design_philosophy
 
 Design philosophy [artifact](../resources/design-framework.md#design-philosophy-artifact-template) with problem classification and workflow path
 
-### analysis-findings
+### analysis_findings
 
 *(optional)* Implementation analysis findings (baselines, gaps)
 
-### research-findings
+### research_findings
 
 *(optional)* Research findings from knowledge base and web
 
@@ -29,14 +29,14 @@ Design philosophy [artifact](../resources/design-framework.md#design-philosophy-
 
 ### 1. Verify Inputs
 
-- Verify {design-philosophy} and {requirements} are available
+- Verify {design_philosophy} and {requirements} are available
 - Confirm prerequisite activities completed before proceeding
 - If design philosophy or analysis is not completed, prompt the user to complete the prerequisite activities before planning.
 
 ### 2. Load Guidance
 
 - Use attached [wp-plan](../resources/wp-plan.md) for plan template and guidance
-- Review {design-philosophy}, {requirements}, {analysis-findings}, {research-findings}
+- Review {design_philosophy}, {requirements}, {analysis_findings}, {research_findings}
 
 ### 3. Apply Design Framework
 
@@ -48,7 +48,7 @@ Design philosophy [artifact](../resources/design-framework.md#design-philosophy-
 
 ### 4. Write Plan
 
-- Create the {plan-document} artifact in {planning-folder}
+- Create the {plan_document} artifact in {planning_folder_path}
 - Include task breakdown, dependencies, ordering
 - Document design decisions and assumptions
 
@@ -59,7 +59,7 @@ Design philosophy [artifact](../resources/design-framework.md#design-philosophy-
 
 ## Outputs
 
-### plan-document
+### plan_document
 
 Work package [plan](../resources/wp-plan.md#section-guidelines) with task breakdown and dependencies
 

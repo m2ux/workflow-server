@@ -9,7 +9,7 @@ Substitute state variables into a prompt template resource.
 
 ## Inputs
 
-### template-ref
+### template_ref
 
 Resource ref for the prompt template (e.g., [workflow-orchestrator-prompt](../../resources/workflow-orchestrator-prompt.md)).
 

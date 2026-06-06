@@ -13,7 +13,7 @@ Build or augment codebase comprehension through progressive analysis and persist
 
 ## Inputs
 
-### project-type
+### project_type
 
 *(optional)* Detected project type (rust-substrate|other)
 
@@ -22,7 +22,7 @@ Build or augment codebase comprehension through progressive analysis and persist
 ### 1. Discover Existing
 
 - List contents of .engineering/artifacts/comprehension/ directory
-- Match existing artifacts by project name, module name, or domain terms from {problem-statement}
+- Match existing artifacts by project name, module name, or domain terms from {problem_statement}
 - Summarize relevant artifacts with coverage scope and last-updated date
 - If no comprehension artifacts exist yet for this codebase, proceed with fresh analysis — this is the first comprehension pass
 
@@ -34,8 +34,8 @@ Build or augment codebase comprehension through progressive analysis and persist
 
 ### 3. Architecture Survey
 
-- Top-down survey: start with the {target-path} project root structure, build system, and entry points
-- Confirm the {project-type} from the build system and language conventions encountered (rust-substrate|other), and use it to shape which abstractions and patterns to look for in later steps
+- Top-down survey: start with the {target_path} project root structure, build system, and entry points
+- Confirm the {project_type} from the build system and language conventions encountered (rust-substrate|other), and use it to shape which abstractions and patterns to look for in later steps
 - When GitNexus is available: apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) to discover execution flows and functional areas, read cluster resources for module groupings, and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) for dependency mapping — faster than grep and the required primary approach
 - Use glob to map directory structure, find module files, and locate test files — glob is the appropriate tool for filesystem-shape discovery during the architecture survey
 - Identify module boundaries and their responsibilities from directory layout, module declarations, and public APIs
@@ -66,8 +66,8 @@ Build or augment codebase comprehension through progressive analysis and persist
 
 ### 7. Artifact Management
 
-- Write the {comprehension-artifact} following the artifact structure and comprehension techniques in [codebase-comprehension](../resources/codebase-comprehension.md)
-- Artifact naming: {codebase-area-name}.md in .engineering/artifacts/comprehension/
+- Write the {comprehension_artifact} following the artifact structure and comprehension techniques in [codebase-comprehension](../resources/codebase-comprehension.md)
+- Artifact naming: {codebase_area_name}.md in .engineering/artifacts/comprehension/
 - Derive codebase-area-name from the target project or subsystem name (slugified)
 - When augmenting: add new sections, update existing sections with deeper detail, preserve prior content
 - Include metadata header: date, work-package reference, coverage scope, related artifacts
@@ -89,31 +89,31 @@ Build or augment codebase comprehension through progressive analysis and persist
 
 ## Outputs
 
-### comprehension-artifact
+### comprehension_artifact
 
 Persistent comprehension [artifact](../resources/codebase-comprehension.md#artifact-template) covering the relevant codebase area
 
 #### artifact
 
-`{codebase-area}.md`
+`{codebase_area}.md`
 
-#### architecture-overview
+#### architecture_overview
 
 Module structure, dependencies, and design patterns
 
-#### key-abstractions
+#### key_abstractions
 
 Core types, traits, data structures with domain context
 
-#### design-rationale
+#### design_rationale
 
 Inferred rationale for significant design choices
 
-#### domain-glossary
+#### domain_glossary
 
 Mapping of domain terms to technical constructs
 
-#### deep-dives
+#### deep_dives
 
 Targeted exploration sections added during user-driven loop
 

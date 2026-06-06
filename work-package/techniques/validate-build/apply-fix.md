@@ -9,17 +9,17 @@ Apply the chosen fix strategy and prepare for re-validation.
 
 ## Inputs
 
-### check-id
+### check_id
 
 Identifier of the originally failed check
 
-### fix-strategy
+### fix_strategy
 
 Concrete fix approach to execute (file edit, fmt-fix invocation, dependency install, etc.)
 
 ## Output
 
-### fix-applied
+### fix_applied
 
 Boolean — true if the fix was applied; false if the fix requires user input or external action
 

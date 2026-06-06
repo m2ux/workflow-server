@@ -15,7 +15,7 @@ a concept, symptom, or error text (e.g. `'payment validation error'`)
 
 ## Output
 
-### query-report
+### query_report
 
 execution flows (processes) grouped, with member symbols and file locations
 

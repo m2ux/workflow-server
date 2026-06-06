@@ -9,4 +9,4 @@ Discover Jira projects with their issue types.
 
 ## Protocol
 
-1. Call `getVisibleJiraProjects { cloud-id, search-string? }`.
+1. Call `getVisibleJiraProjects { cloudId, searchString? }`.

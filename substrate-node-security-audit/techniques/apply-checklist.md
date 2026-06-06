@@ -13,15 +13,15 @@ Given a checklist (from a resource) and a set of items (functions, crate compone
 
 ## Inputs
 
-### checklist-source
+### checklist_source
 
 Resource containing the checklist entries (e.g., [toolkit-checklist](../resources/toolkit-checklist.md) for toolkit, or the `§3` manual-review checklist for crate review — see [audit-template-reference](../resources/audit-template-reference.md) for the `§X.Y` section index that every reference below resolves to)
 
-### item-set
+### item_set
 
 The enumerated items to evaluate against the checklist (e.g., function list, crate components, code paths)
 
-### scope-files
+### scope_files
 
 Source files to read for evidence gathering
 
@@ -62,18 +62,18 @@ Source files to read for evidence gathering
 
 ## Outputs
 
-### verdict-matrix
+### verdict_matrix
 
 Complete verdict matrix and coverage attestation.
 
-#### verdict-matrix
+#### verdict_matrix
 
 one row per item, one column per checklist entry, each cell is PASS/FAIL/NA with evidence
 
-#### required-analysis-tables
+#### required_analysis_tables
 
 any structured tables mandated by specific checklist entries
 
-#### coverage-attestation
+#### coverage_attestation
 
 total items, total reviewed, coverage percentage, gaps list

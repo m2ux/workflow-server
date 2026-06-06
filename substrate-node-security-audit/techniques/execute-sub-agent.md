@@ -39,23 +39,23 @@ Bootstrap the workflow-server, load an assigned activity, follow its steps seque
 
 ## Outputs
 
-### sub-agent-output
+### sub_agent_output
 
 Structured JSON conforming to [sub-agent-output-schema](../resources/sub-agent-output-schema.md) (sub-agent-output-schema).
 
-#### agent-id
+#### agent_id
 
 identifier for this agent instance (e.g., 'group-a-nto', 'group-b', 'group-d')
 
-#### activity-followed
+#### activity_followed
 
 the activity ID executed (e.g., 'sub-crate-review')
 
-#### steps-completed
+#### steps_completed
 
 list of step IDs completed (must match activity definition)
 
-#### steps-skipped
+#### steps_skipped
 
 list of step IDs skipped with reasons (should be empty)
 
@@ -63,14 +63,14 @@ list of step IDs skipped with reasons (should be empty)
 
 structured list of findings with required fields per finding
 
-#### checklist-coverage
+#### checklist_coverage
 
 per-§3-item verdicts (for crate review) or per-pattern results (for static analysis)
 
-#### mandatory-tables
+#### mandatory_tables
 
 all tables produced by the activity's steps, or null with justification
 
-#### reconnaissance-leads
+#### reconnaissance_leads
 
 observations not formal findings but for orchestrator review (optional)

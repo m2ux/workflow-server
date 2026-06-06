@@ -9,7 +9,7 @@ Probe required toolchain prerequisites before running any workspace cargo comman
 
 ## Output
 
-### missing-prerequisites
+### missing_prerequisites
 
 Array of {name, install_hint} for any unmet prerequisite. Empty array when all prerequisites are present.
 

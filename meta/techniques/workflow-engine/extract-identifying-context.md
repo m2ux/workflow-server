@@ -9,7 +9,7 @@ Extract ticket, branch, PR, and work-package identifiers from a user request.
 
 ## Inputs
 
-### user-request
+### user_request
 
 User's free-form request.
 

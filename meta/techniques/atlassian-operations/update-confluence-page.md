@@ -9,7 +9,7 @@ Update a Confluence page (full body replace).
 
 ## Inputs
 
-### page-id
+### pageId
 
 Page ID.
 
@@ -23,4 +23,4 @@ Optional new title
 
 ## Protocol
 
-1. Call `updateConfluencePage { cloud-id, page-id, body, title? }`.
+1. Call `updateConfluencePage { cloudId, pageId, body, title? }`.

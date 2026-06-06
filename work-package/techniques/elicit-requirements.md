@@ -13,15 +13,15 @@ Discover and clarify requirements through structured sequential conversation
 
 ## Inputs
 
-### stakeholder-transcript
+### stakeholder_transcript
 
 *(optional)* Transcript or summary from user's discussion with key stakeholders
 
-### issue-platform
+### issue_platform
 
 Platform where issue lives (github or jira) — determines if assumptions go to Jira
 
-### issue-number
+### issue_number
 
 Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)
 
@@ -29,8 +29,8 @@ Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)
 
 ### 1. Prompt Transcript
 
-- Prompt user for the {stakeholder-transcript} before elicitation
-- Offer skip option with note about limitation if no {stakeholder-transcript} is provided
+- Prompt user for the {stakeholder_transcript} before elicitation
+- Offer skip option with note about limitation if no {stakeholder_transcript} is provided
 - If the user skips stakeholder discussion entirely, note the limitation and proceed with agent-led elicitation
 
 ### 2. Iterate Domains
@@ -49,7 +49,7 @@ Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)
 ### 4. Post Assumptions Jira
 
 - Prepare assumptions as Jira comment for stakeholder review
-- Post to the ticket identified by {issue-number} using addCommentToJiraIssue (only when {issue-platform} is jira)
+- Post to the ticket identified by {issue_number} using addCommentToJiraIssue (only when {issue_platform} is jira)
 
 ### 5. Await Feedback
 
@@ -58,12 +58,12 @@ Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)
 
 ### 6. Create Document
 
-- Create the {requirements-document} artifact in {planning-folder}
+- Create the {requirements_document} artifact in {planning_folder_path}
 - Include elicited requirements, success criteria, scope boundaries, and assumptions
 
 ## Outputs
 
-### requirements-document
+### requirements_document
 
 Elicited [requirements](../resources/requirements-elicitation.md#document-template) with success criteria and scope
 
@@ -75,11 +75,11 @@ Elicited [requirements](../resources/requirements-elicitation.md#document-templa
 
 Captured requirements list
 
-#### success-criteria
+#### success_criteria
 
 Defined success criteria with verification methods
 
-#### scope-boundaries
+#### scope_boundaries
 
 In/out scope definitions
 

@@ -9,14 +9,14 @@ Log work time on a Jira issue.
 
 ## Inputs
 
-### issue-id-or-key
+### issueIdOrKey
 
 Issue key.
 
-### time-spent
+### timeSpent
 
 e.g., `2h`, `30m`.
 
 ## Protocol
 
-1. Call `addWorklogToJiraIssue { cloud-id, issue-id-or-key, time-spent }`.
+1. Call `addWorklogToJiraIssue { cloudId, issueIdOrKey, timeSpent }`.

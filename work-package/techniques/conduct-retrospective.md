@@ -23,13 +23,13 @@ Conduct workflow retrospective to capture lessons learned and prepare for next w
 - Categorize non-checkpoint messages by signal type and map to specific workflow sections
 - Identify root causes and determine pattern frequency across categories
 - Formulate prioritized recommendations: high (repeated corrections, frustration), medium (single clarifications), low (edge cases)
-- Create the {retrospective-document} using the [workflow-retrospective](../resources/workflow-retrospective.md) template
+- Create the {retrospective_document} using the [workflow-retrospective](../resources/workflow-retrospective.md) template
 
 ### 3. Update Status
 
-- Once the PR identified by {pr-number} has merged, update the work package plan status
+- Once the PR identified by {pr_number} has merged, update the work package plan status
   - If the PR has not merged yet, wait for merge or check whether review feedback needs addressing first before updating status
-- Record the final outcome in the planning artifacts under {planning-folder}
+- Record the final outcome in the planning artifacts under {planning_folder_path}
 
 ### 4. Select Next
 
@@ -38,7 +38,7 @@ Conduct workflow retrospective to capture lessons learned and prepare for next w
 
 ## Outputs
 
-### retrospective-document
+### retrospective_document
 
 Workflow [retrospective](../resources/workflow-retrospective.md#output-document-template) with lessons learned
 

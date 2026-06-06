@@ -13,15 +13,15 @@ Adversarially decompose a safety claim (PASS verdict on a multi-faceted check) w
 
 ## Inputs
 
-### pass-items
+### pass_items
 
 List of PASS verdicts to decompose, each with the claim text, cited evidence, and checklist reference
 
-### source-files
+### source_files
 
 Code files to read for independent verification
 
-### verification-gaps
+### verification_gaps
 
 *(optional)* Gap report listing §3 categories with incomplete coverage, missing tables, or unmet target profile obligations. PASS items in flagged categories are auto-included in the adversarial queue.
 
@@ -29,11 +29,11 @@ Code files to read for independent verification
 
 ### 1. Seed From Gaps
 
-- If {verification-gaps} input is provided, read the gap report. For each §3 category flagged as having incomplete coverage, missing mandatory tables, or unmet [target profile](../resources/target-profile.md#file-coverage-obligations) obligations, identify ALL PASS items from agent results that reference that category. These items are pre-seeded into the `{$adversarial-queue}` regardless of severity estimate — the verification gap indicates higher false-PASS risk.
+- If {verification_gaps} input is provided, read the gap report. For each §3 category flagged as having incomplete coverage, missing mandatory tables, or unmet [target profile](../resources/target-profile.md#file-coverage-obligations) obligations, identify ALL PASS items from agent results that reference that category. These items are pre-seeded into the `{$adversarial_queue}` regardless of severity estimate — the verification gap indicates higher false-PASS risk.
 
 ### 2. Extract And Filter
 
-- Collect the {pass-items} (each a PASS verdict with claim text, cited evidence, and checklist reference). Filter to items with severity >= Medium potential — specifically checklist items covering: hook/weight accounting, state lifecycle/cursor, event emission integrity, consensus path symmetry, input validation, pool isolation, and timestamp sources. Merge with any pre-seeded items from verification gaps. Deduplicate by checklist reference.
+- Collect the {pass_items} (each a PASS verdict with claim text, cited evidence, and checklist reference). Filter to items with severity >= Medium potential — specifically checklist items covering: hook/weight accounting, state lifecycle/cursor, event emission integrity, consensus path symmetry, input validation, pool isolation, and timestamp sources. Merge with any pre-seeded items from verification gaps. Deduplicate by checklist reference.
 
 ### 3. Decompose Claims
 
@@ -46,20 +46,20 @@ Code files to read for independent verification
 
 ### 5. Verify Independently
 
-- For each decomposed property, read the cited code location in the {source-files} and search for the specific implementation. Output CONFIRMED (all instances verified with citations), REFUTED (any instance lacks implementation — becomes a new finding), or INSUFFICIENT (cannot determine).
-- CONFIRMED only when ALL decomposed properties are verified with code citations. Record each verdict in the {decomposition-results} table, completing the per-instance Verified? and Evidence columns.
+- For each decomposed property, read the cited code location in the {source_files} and search for the specific implementation. Output CONFIRMED (all instances verified with citations), REFUTED (any instance lacks implementation — becomes a new finding), or INSUFFICIENT (cannot determine).
+- CONFIRMED only when ALL decomposed properties are verified with code citations. Record each verdict in the {decomposition_results} table, completing the per-instance Verified? and Evidence columns.
 
 ## Outputs
 
-### decomposition-results
+### decomposition_results
 
 Decomposition table with per-instance verification results.
 
-#### decomposition-table
+#### decomposition_table
 
 | PASS Item | Property | Instance | Verified? | Evidence |
 
-#### verdict-summary
+#### verdict_summary
 
 CONFIRMED count, REFUTED count (each becomes a finding), INSUFFICIENT count
 

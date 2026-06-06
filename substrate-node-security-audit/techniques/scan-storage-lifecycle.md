@@ -17,7 +17,7 @@ Audit storage lifecycle completeness for every storage map in a given scope: fin
 
 Directory scope to scan (a single crate for per-crate review, or full in-scope paths for global scan)
 
-### verify-invariants
+### verify_invariants
 
 *(optional)* Whether to perform cross-function invariant comparison (e.g., do paired insert/remove functions maintain the same conditions?)
 
@@ -29,30 +29,30 @@ false
 
 ### 1. Find Storage Declarations
 
-- Enumerate every StorageMap, StorageDoubleMap, and StorageNMap in the {scope} as `{$storage-maps}`.
+- Enumerate every StorageMap, StorageDoubleMap, and StorageNMap in the {scope} as `{$storage_maps}`.
 
 ### 2. Find Mutation Sites
 
-- For each map in `{$storage-maps}`: find every insert()/push()/append() call site and every remove()/take() call site, recording them as `{$mutation-sites}`.
+- For each map in `{$storage_maps}`: find every insert()/push()/append() call site and every remove()/take() call site, recording them as `{$mutation_sites}`.
 
 ### 3. Verify Pairing
 
-- For each insert site in `{$mutation-sites}`, identify the corresponding remove site on the inverse lifecycle event. Flag unpaired inserts. For each map in `{$storage-maps}` with inserts, check if declared capacity constants are enforced at the insertion point. Record each map's results as a row in the {storage-lifecycle} pairing table.
+- For each insert site in `{$mutation_sites}`, identify the corresponding remove site on the inverse lifecycle event. Flag unpaired inserts. For each map in `{$storage_maps}` with inserts, check if declared capacity constants are enforced at the insertion point. Record each map's results as a row in the {storage_lifecycle} pairing table.
 
 ### 4. Verify Invariants
 
-- If {verify-invariants} is true: for pairs of functions that operate on the same storage (e.g., handle_create and handle_redemption_create), verify they maintain the same invariants — if one inserts, the other should too under the same conditions.
+- If {verify_invariants} is true: for pairs of functions that operate on the same storage (e.g., handle_create and handle_redemption_create), verify they maintain the same invariants — if one inserts, the other should too under the same conditions.
 
 ## Outputs
 
-### storage-lifecycle
+### storage_lifecycle
 
 Storage lifecycle pairing table with optional invariant comparison.
 
-#### pairing-table
+#### pairing_table
 
 | StorageMap | Crate | insert() Sites | remove() Sites | Paired? | Cap Enforced? |
 
-#### invariant-table
+#### invariant_table
 
 | StorageMap | insert() Callers | remove() Callers | Paired? | Cross-function Consistent? | (optional)

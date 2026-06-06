@@ -9,11 +9,11 @@ Base contract inherited by sibling techniques.
 
 ## Inputs
 
-### target-content
+### target_content
 
 The code or text to analyze — a file path or inline content.
 
-### target-type
+### target_type
 
 *(optional)* Whether the input is 'code' or 'general'.
 
@@ -21,7 +21,7 @@ The code or text to analyze — a file path or inline content.
 
 code
 
-### output-path
+### output_path
 
 *(optional)* Directory to write analysis artifacts.
 

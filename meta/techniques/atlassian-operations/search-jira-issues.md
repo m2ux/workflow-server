@@ -19,4 +19,4 @@ Optional array of fields to return
 
 ## Protocol
 
-1. Call `searchJiraIssuesUsingJql { cloud-id, jql, fields, maxResults }`.
+1. Call `searchJiraIssuesUsingJql { cloudId, jql, fields, maxResults }`.

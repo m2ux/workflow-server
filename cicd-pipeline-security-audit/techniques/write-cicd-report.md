@@ -13,11 +13,11 @@ Format merged, severity-scored findings into a structured markdown CI/CD securit
 
 ## Inputs
 
-### scored-findings
+### scored_findings
 
 Merged findings annotated with severity levels and scoring rationale
 
-### coverage-data
+### coverage_data
 
 Scan completeness verification data (file and per-pattern coverage)
 
@@ -58,7 +58,7 @@ Scan completeness verification data (file and per-pattern coverage)
 
 ## Outputs
 
-### audit-report
+### audit_report
 
 Complete CI/CD security [audit report](../resources/cicd-audit-report-template.md#cicd-audit-report-template)
 

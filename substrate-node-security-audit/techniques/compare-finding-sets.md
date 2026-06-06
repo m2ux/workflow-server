@@ -13,11 +13,11 @@ Given two finding lists, produce a finding-by-finding mapping, classify matches/
 
 ## Inputs
 
-### primary-findings
+### primary_findings
 
 The finding list to evaluate (e.g., AI audit results)
 
-### reference-findings
+### reference_findings
 
 The benchmark finding list to compare against (e.g., professional audit report)
 
@@ -25,38 +25,38 @@ The benchmark finding list to compare against (e.g., professional audit report)
 
 ### 1. Map Findings
 
-- For each finding in {reference-findings}, identify the closest matching finding in {primary-findings}. Classify as: matched (same root cause and affected code), partial match (related but incomplete coverage or different framing), or gap (missed entirely). Record these as `{$finding-classifications}`.
+- For each finding in {reference_findings}, identify the closest matching finding in {primary_findings}. Classify as: matched (same root cause and affected code), partial match (related but incomplete coverage or different framing), or gap (missed entirely). Record these as `{$finding_classifications}`.
 
 ### 2. Identify Gaps
 
-- From `{$finding-classifications}`, list all reference findings classified as gaps. Group by severity and root cause category (e.g., pattern-absence blindness, insufficient file coverage, wrong-layer check, first-positive-signal bias, toolkit depth limitation, mechanical-check skip) into `{$gap-clusters}`.
+- From `{$finding_classifications}`, list all reference findings classified as gaps. Group by severity and root cause category (e.g., pattern-absence blindness, insufficient file coverage, wrong-layer check, first-positive-signal bias, toolkit depth limitation, mechanical-check skip) into `{$gap_clusters}`.
 
 ### 3. Analyze Severity Calibration
 
-- For matched findings in `{$finding-classifications}`, compare severity ratings between primary and reference. Identify systematic over-rating patterns (primary higher than reference) and under-rating patterns (primary lower). Compute average delta by severity tier.
+- For matched findings in `{$finding_classifications}`, compare severity ratings between primary and reference. Identify systematic over-rating patterns (primary higher than reference) and under-rating patterns (primary lower). Compute average delta by severity tier.
 
 ### 4. Analyze Root Causes
 
-- For each cluster in `{$gap-clusters}`, determine the structural cause: insufficient file coverage, pattern-absence blindness, toolkit deprioritization, wrong-layer check application, first-positive-signal bias, mechanical-check skip, or other. Propose countermeasures for each root cause, then assemble the mapping, gaps, calibration analysis, and countermeasures into the {comparison-report}.
+- For each cluster in `{$gap_clusters}`, determine the structural cause: insufficient file coverage, pattern-absence blindness, toolkit deprioritization, wrong-layer check application, first-positive-signal bias, mechanical-check skip, or other. Propose countermeasures for each root cause, then assemble the mapping, gaps, calibration analysis, and countermeasures into the {comparison_report}.
 
 ## Outputs
 
-### comparison-report
+### comparison_report
 
 Comparison report with mapping, gaps, calibration analysis, and countermeasures.
 
-#### finding-mapping-table
+#### finding_mapping_table
 
 reference finding, primary finding, match type, severity comparison
 
-#### gap-list
+#### gap_list
 
 missed reference findings grouped by severity and root cause
 
-#### severity-calibration-analysis
+#### severity_calibration_analysis
 
 over-rated findings, under-rated findings, average delta
 
-#### root-cause-analysis
+#### root_cause_analysis
 
 root cause analysis with proposed countermeasures

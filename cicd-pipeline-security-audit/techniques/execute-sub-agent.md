@@ -36,23 +36,23 @@ Bootstrap the workflow-server MCP from a dispatched session, load an assigned ac
 
 ## Outputs
 
-### sub-agent-output
+### sub_agent_output
 
 Structured JSON conforming to [sub-agent-output-schema](../resources/sub-agent-output-schema.md) (sub-agent-output-schema).
 
-#### scanner-id
+#### scanner_id
 
 identifier for this agent instance (e.g., 'S1', 'S2', 'V', 'M')
 
-#### activity-followed
+#### activity_followed
 
 the activity ID executed
 
-#### steps-completed
+#### steps_completed
 
 list of step IDs completed (must match activity definition)
 
-#### steps-skipped
+#### steps_skipped
 
 list of step IDs skipped with reasons (should be empty)
 

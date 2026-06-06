@@ -99,7 +99,7 @@ On resume, the orchestrator MUST dispatch every activity through [workflow-engin
 
 ### orchestrator-target-path-scope
 
-Branch creation, PR creation, and code commits MUST be performed inside the `target-path` directory (the submodule), NEVER in the parent monorepo. Planning artifact commits (`.engineering/artifacts/`) MUST be performed in the parent repo where that directory lives, on the current branch — do NOT create a new branch in the parent repo.
+Branch creation, PR creation, and code commits MUST be performed inside the `target_path` directory (the submodule), NEVER in the parent monorepo. Planning artifact commits (`.engineering/artifacts/`) MUST be performed in the parent repo where that directory lives, on the current branch — do NOT create a new branch in the parent repo.
 
 ### orchestrator-automatic-transitions
 
@@ -108,7 +108,3 @@ After an activity completes, the orchestrator MUST evaluate the transition table
 ### orchestrator-no-ad-hoc-interaction
 
 The orchestrator MUST NOT generate questions, solicit confirmation, or produce any output that waits for user input outside of checkpoint yields from the worker. The ONLY mechanism for user interaction is presenting `checkpoint_pending` yields. Summaries, status updates, and progress notes may be emitted as informational messages, but MUST NOT be phrased as questions or imply the user should respond before the workflow continues.
-
-### symbol-resolution-separator-equivalence
-
-When resolving any reference to an input, output, or variable — including when binding a workflow id to an external tool / MCP / CLI parameter — treat hyphen (`-`) and underscore (`_`) as equivalent. Every workflow id is authored in kebab-case (AP-55); a tool whose parameter is spelled `session_index` is satisfied by the workflow's `{session-index}`, and a `{changed-files}` value binds to a tool expecting `changed_files`. This bridges snake_case tool parameters automatically. For a tool that uses another convention — e.g. camelCase like Atlassian's `cloudId` — take the exact parameter name from that tool's own schema when forming the call; the workflow still refers to it in kebab (`cloud-id`).

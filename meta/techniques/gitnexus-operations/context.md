@@ -15,7 +15,7 @@ the symbol to inspect
 
 ## Output
 
-### context-report
+### context_report
 
 incoming calls (callers), outgoing calls (callees), process membership with step positions
 

@@ -13,7 +13,7 @@ Define scope, dependencies, effort, and success criteria for a single package wi
 
 ## Inputs
 
-### current-package
+### current_package
 
 The work package currently being planned
 
@@ -26,7 +26,7 @@ The work package currently being planned
 
 ### 2. Define Scope
 
-- Identify what is in scope for the {current-package} — specific deliverables and changes
+- Identify what is in scope for the {current_package} — specific deliverables and changes
 - Identify what is explicitly out of scope with reasons for exclusion
 - Apply the independence test: could this package be shipped without any other package?
 
@@ -52,17 +52,17 @@ The work package currently being planned
 ### 6. Document Plan
 
 - Use attached [package-plan-template](../resources/package-plan-template.md) (package-plan-template) for the document structure
-- Create the {package-plan} in the {planning-folder} using its template
+- Create the {package_plan} in the {planning_folder_path} using its template
 
 ## Outputs
 
-### package-plan
+### package_plan
 
 Work package [plan document](../resources/package-plan-template.md#template)
 
 #### artifact
 
-`{package-name}-plan.md`
+`{package_name}-plan.md`
 
 #### scope
 
@@ -76,7 +76,7 @@ Blocker and soft dependency list
 
 Effort estimate with rationale
 
-#### success-criteria
+#### success_criteria
 
 Measurable success criteria with verification methods
 

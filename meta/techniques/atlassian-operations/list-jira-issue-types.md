@@ -9,10 +9,10 @@ List issue types available in a project.
 
 ## Inputs
 
-### project-id-or-key
+### projectIdOrKey
 
 Project key (e.g., `ENG`).
 
 ## Protocol
 
-1. Call `getJiraProjectIssueTypesMetadata { cloud-id, project-id-or-key }`.
+1. Call `getJiraProjectIssueTypesMetadata { cloudId, projectIdOrKey }`.

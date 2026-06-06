@@ -9,7 +9,7 @@ List pages in a Confluence space.
 
 ## Inputs
 
-### space-id
+### spaceId
 
 Space ID.
 
@@ -19,4 +19,4 @@ Optional title filter
 
 ## Protocol
 
-1. Call `getPagesInConfluenceSpace { cloud-id, space-id, title? }`.
+1. Call `getPagesInConfluenceSpace { cloudId, spaceId, title? }`.

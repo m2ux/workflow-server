@@ -25,7 +25,7 @@ Check `_meta.validation` in each response. Warnings are advisory but should be a
 
 ### resource-loading-via-tool
 
-Resource refs returned in operation bodies (e.g., [activity-worker-prompt](../../resources/activity-worker-prompt.md)) are lightweight pointers. Load full content via `get_resource { session-index, resource_id }`.
+Resource refs returned in operation bodies (e.g., [activity-worker-prompt](../../resources/activity-worker-prompt.md)) are lightweight pointers. Load full content via `get_resource { session_index, resource_id }`.
 
 ### variable-mutation-source
 

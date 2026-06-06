@@ -15,14 +15,14 @@ Run L12 analysis, detect knowledge gaps via boundary + audit prisms, then re-ana
 
 ### 1. Initial Analysis
 
-- Dispatch [L12](../resources/l12.md) to a fresh worker, configured for the {target-type} of input ('code' or 'general')
-- Worker writes to {output-path}/verified-initial.md
+- Dispatch [L12](../resources/l12.md) to a fresh worker, configured for the {target_type} of input ('code' or 'general')
+- Worker writes to {output_path}/verified-initial.md
 
 ### 2. Gap Detection
 
 - Dispatch gap detection to a fresh worker
 - Worker loads [knowledge-boundary](../resources/knowledge-boundary.md) (41) and [knowledge-audit](../resources/knowledge-audit.md) (40)
-- Worker applies both to the L12 OUTPUT (not source code), writes to {output-path}/verified-gaps.md
+- Worker applies both to the L12 OUTPUT (not source code), writes to {output_path}/verified-gaps.md
 - Gap detection prisms run on the L12 OUTPUT, not on source code
 
 ### 3. Gap Extraction
@@ -34,28 +34,28 @@ Run L12 analysis, detect knowledge gaps via boundary + audit prisms, then re-ana
 
 - Dispatch re-analysis to a fresh worker with [L12](../resources/l12.md)
 - Worker receives: <verified_knowledge source='GAP-ANALYSIS'>
-{\$gap-data}
+{\$gap_data}
 </verified_knowledge>
 
-{target-content}
-- Worker writes to {output-path}/verified-corrected.md
-- Return {verified-result} — its initial-path, gaps-path, and corrected-path sub-fields hold the three pipeline artifact paths.
+{target_content}
+- Worker writes to {output_path}/verified-corrected.md
+- Return {verified_result} — its initial-path, gaps-path, and corrected-path sub-fields hold the three pipeline artifact paths.
 
 ## Outputs
 
-### verified-result
+### verified_result
 
 Paths to the three verified pipeline artifacts
 
-#### initial-path
+#### initial_path
 
 Filesystem path to verified-initial.md
 
-#### gaps-path
+#### gaps_path
 
 Filesystem path to verified-gaps.md
 
-#### corrected-path
+#### corrected_path
 
 Filesystem path to verified-corrected.md
 

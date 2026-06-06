@@ -9,7 +9,7 @@ Find saved client sessions matching a target workflow under `.engineering/artifa
 
 ## Inputs
 
-### target-workflow-id
+### target_workflow_id
 
 Workflow ID to filter candidates by.
 

@@ -9,7 +9,7 @@ List child pages of a Confluence page.
 
 ## Inputs
 
-### page-id
+### pageId
 
 Page ID.
 
@@ -23,4 +23,4 @@ Optional result limit
 
 ## Protocol
 
-1. Call `getConfluencePageDescendants { cloud-id, page-id, depth?, limit? }`.
+1. Call `getConfluencePageDescendants { cloudId, pageId, depth?, limit? }`.

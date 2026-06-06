@@ -13,7 +13,7 @@ Merge findings from multiple scanner agents into a unified set: deduplicate find
 
 ## Inputs
 
-### scanner-outputs
+### scanner_outputs
 
 The per-submodule scanner [output files](../resources/sub-agent-output-schema.md#schema), one per scanner agent
 
@@ -27,7 +27,7 @@ The per-submodule scanner [output files](../resources/sub-agent-output-schema.md
 
 - Group findings by (file_path, line_range, pattern_id)
 - For duplicates, keep the finding with the most complete evidence
-- Record `{$duplicate-mappings}` for reconciliation
+- Record `{$duplicate_mappings}` for reconciliation
 
 ### 3. Cross Pattern Correlation
 
@@ -38,17 +38,17 @@ The per-submodule scanner [output files](../resources/sub-agent-output-schema.md
 
 ### 4. Reconcile
 
-- Build reconciliation table from `{$duplicate-mappings}`, mapping every original scanner finding to its merged finding number
+- Build reconciliation table from `{$duplicate_mappings}`, mapping every original scanner finding to its merged finding number
 - Verify Unaccounted equals zero for every scanner
 - Every scanner finding must map to a merged finding or be marked duplicate
 
 ### 5. Write Output
 
-- Produce the {merged-findings} and the reconciliation table
+- Produce the {merged_findings} and the reconciliation table
 
 ## Outputs
 
-### merged-findings
+### merged_findings
 
 Unified [finding set](../resources/intermediate-artifact-schemas.md#merged-findings)
 

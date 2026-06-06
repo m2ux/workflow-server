@@ -9,25 +9,25 @@ Combine per-check outcomes into a single `validation-results` envelope.
 
 ## Inputs
 
-### test-results
+### test_results
 
 Pass/fail and output from running the test suite
 
-### build-status
+### build_status
 
 Pass/fail from the build or type-check step
 
-### format-status
+### format_status
 
 Pass/fail from the format check
 
-### lint-results
+### lint_results
 
 Pass/fail and output from the linter
 
 ## Output
 
-### validation-results
+### validation_results
 
 { test-results, build-status, format-status, lint-results, validation_passed } — `validation_passed` is true iff ALL inputs passed
 

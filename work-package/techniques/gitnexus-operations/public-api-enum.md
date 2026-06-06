@@ -9,7 +9,7 @@ Enumerate exactly the public/exported APIs in the diff that need doc comments â€
 
 ## Output
 
-### public-api-symbols
+### public_api_symbols
 
 the exported symbols present in the diff that require documentation
 

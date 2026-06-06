@@ -13,7 +13,7 @@ Analyze and respond to PR review comments systematically — categorizing commen
 
 ## Inputs
 
-### review-comments
+### review_comments
 
 Review comments fetched from PR
 
@@ -59,15 +59,15 @@ Review comments fetched from PR
 
 ## Outputs
 
-### review-analysis
+### review_analysis
 
 PR review [analysis](../resources/pr-review-response.md#step-6-create-review-document) document
 
 #### artifact
 
-`{YYYY-MM-DD}-pr{pr-number}-review-analysis.md`
+`{YYYY-MM-DD}-pr{pr_number}-review-analysis.md`
 
-#### requires-replan
+#### requires_replan
 
 Whether significant changes require returning to planning
 

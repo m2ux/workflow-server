@@ -13,7 +13,7 @@ Discover and enumerate all .yml/.yaml files under .github/workflows/ across targ
 
 ## Inputs
 
-### target-submodules
+### target_submodules
 
 List of submodule paths to inventory
 
@@ -49,22 +49,22 @@ List of submodule paths to inventory
 
 ## Outputs
 
-### workflow-inventory
+### workflow_inventory
 
 Complete [inventory of workflow files](../resources/intermediate-artifact-schemas.md#workflow-inventory) with classification data
 
-#### file-list
+#### file_list
 
 All workflow file paths with metadata
 
-#### trigger-classification
+#### trigger_classification
 
 Per-workflow trigger types
 
-#### permission-map
+#### permission_map
 
 Per-workflow permission scopes
 
-#### checkout-patterns
+#### checkout_patterns
 
 Per-workflow checkout configurations

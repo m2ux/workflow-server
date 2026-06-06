@@ -9,11 +9,11 @@ Drive test-coverage review from the actual changed-symbol set rather than projec
 
 ## Output
 
-### coverage-gaps
+### coverage_gaps
 
 changed symbols with zero test callers
 
-### update-candidates
+### update_candidates
 
 changed symbols whose test callers are stale
 

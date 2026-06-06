@@ -13,11 +13,11 @@ Perform comprehensive Rust/Substrate code review following established patterns,
 
 ## Inputs
 
-### changed-files
+### changed_files
 
 List of files changed in the work package (from git diff)
 
-### project-type
+### project_type
 
 *(optional)* Detected project type (rust-substrate or other)
 
@@ -47,7 +47,7 @@ List of files changed in the work package (from git diff)
 ### 4. Document Findings
 
 - Document each finding with severity (critical, high, medium, low, informational)
-- Create the {code-review-report} in {planning-folder}
+- Create the {code_review_report} in {planning_folder_path}
 
 ### 5. Present Summary
 
@@ -55,7 +55,7 @@ List of files changed in the work package (from git diff)
 
 ## Outputs
 
-### code-review-report
+### code_review_report
 
 Code review [report](../resources/rust-substrate-code-review.md#report-template) documenting findings by severity
 

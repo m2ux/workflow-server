@@ -9,11 +9,11 @@ Base contract inherited by sibling techniques. Any Inputs, Outputs, Rules, or Er
 
 ## Inputs
 
-### change-set
+### change_set
 
 Categorized change set — new, modified, renamed, and deleted entries — ready to apply to the resources directory. Produced by diff-upstream and consumed by the import/verify techniques.
 
-### resource-path
+### resource_path
 
 Relative path to the prism workflow resources directory
 

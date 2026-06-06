@@ -9,6 +9,6 @@ Base contract inherited by sibling techniques. Any Inputs, Outputs, Rules, or Er
 
 ## Inputs
 
-### planning-folder
+### planning_folder_path
 
 The initiative [planning folder](../resources/planning-folder-template.md#folder-location) holding the analysis, plan documents, and roadmap for the initiative.

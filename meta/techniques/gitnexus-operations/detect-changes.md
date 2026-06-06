@@ -15,7 +15,7 @@ Map the current git diff to the changed-symbol set and the execution flows it af
 
 ## Output
 
-### change-report
+### change_report
 
 changed symbols, changed files, affected execution flows, risk level
 

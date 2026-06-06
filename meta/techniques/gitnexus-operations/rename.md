@@ -9,19 +9,19 @@ Multi-file rename driven by the call graph (preview or apply).
 
 ## Inputs
 
-### repo-name
+### repo_name
 
 Repository name.
 
-### old-name
+### old_name
 
 Current symbol name.
 
-### new-name
+### new_name
 
 Target symbol name.
 
-### dry-run
+### dry_run
 
 true to preview edits without applying.
 

@@ -13,7 +13,7 @@ Apply L12 structural analysis lens to code for deep structural findings, conserv
 
 ## Inputs
 
-### analysis-focus
+### analysis_focus
 
 *(optional)* Optional focus area to guide the analysis (e.g., 'error handling', 'state management', 'concurrency')
 
@@ -26,14 +26,14 @@ Apply L12 structural analysis lens to code for deep structural findings, conserv
 
 ### 2. Read Target
 
-- If {target-content} is a file path, read the file to obtain the code
+- If {target_content} is a file path, read the file to obtain the code
 - If no code content was provided or the file cannot be found, request the file path or code content from the caller before proceeding
-- If an {analysis-focus} is provided, note it as a framing constraint but do not narrow the analysis — the lens operations are exhaustive
+- If an {analysis_focus} is provided, note it as a framing constraint but do not narrow the analysis — the lens operations are exhaustive
 
 ### 3. Gather Structural Context
 
 - Check GitNexus availability via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md). If the target codebase is not indexed, skip this step entirely and proceed to execute-lens.
-- Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) with queries derived from the target code's primary concerns (e.g., the module name, key function names, or {analysis-focus} if provided) to discover execution flows through the target — this identifies which call chains the code participates in and which are most relevant.
+- Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) with queries derived from the target code's primary concerns (e.g., the module name, key function names, or {analysis_focus} if provided) to discover execution flows through the target — this identifies which call chains the code participates in and which are most relevant.
 - Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on the primary entry points and exported symbols of the target to obtain caller/callee maps — the lens can then make blast-radius claims backed by actual graph data rather than inference.
 - Record the structural context (execution flows, caller counts, callee maps) as a preamble section that the lens operations can reference when making claims about impact, coupling, or dead code.
 - If any GitNexus call fails, log the failure and continue without structural context — the lens operates independently.
@@ -48,7 +48,7 @@ Apply L12 structural analysis lens to code for deep structural findings, conserv
 
 ### 5. Write Artifact
 
-- Write the complete analysis as {structural-analysis} into {output-path}. If the write fails, verify {output-path} exists and is writable.
+- Write the complete analysis as {structural_analysis} into {output_path}. If the write fails, verify {output_path} exists and is writable.
 - Include a YAML front-matter header with target file, analysis date, and lens used (L12 structural)
 
 ### 6. Format Output
@@ -59,7 +59,7 @@ Apply L12 structural analysis lens to code for deep structural findings, conserv
 
 ## Outputs
 
-### structural-analysis
+### structural_analysis
 
 L12 structural analysis with conservation law, meta-law, and classified bug table
 
@@ -67,23 +67,23 @@ L12 structural analysis with conservation law, meta-law, and classified bug tabl
 
 `structural-analysis.md`
 
-#### conservation-law
+#### conservation_law
 
 The named conservation law between original and inverted impossibilities
 
-#### meta-law
+#### meta_law
 
 What the conservation law itself conceals — the deeper finding
 
-#### bug-table
+#### bug_table
 
 Every concrete bug with location, severity, and fixable/structural classification
 
-#### concealment-mechanism
+#### concealment_mechanism
 
 How the code hides its real problems
 
-#### structural-invariant
+#### structural_invariant
 
 The property that persists through every improvement
 

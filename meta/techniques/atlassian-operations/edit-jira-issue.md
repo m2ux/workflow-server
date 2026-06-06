@@ -9,7 +9,7 @@ Update fields on an existing Jira issue.
 
 ## Inputs
 
-### issue-id-or-key
+### issueIdOrKey
 
 Issue key.
 
@@ -19,4 +19,4 @@ Object of field updates
 
 ## Protocol
 
-1. Call `editJiraIssue { cloud-id, issue-id-or-key, fields }`.
+1. Call `editJiraIssue { cloudId, issueIdOrKey, fields }`.

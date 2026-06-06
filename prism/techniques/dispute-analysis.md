@@ -15,43 +15,43 @@ Run 2 maximally orthogonal prisms against the same target and synthesize their d
 
 ### 1. Select Pair
 
-- Branch on {target-type}: for code, [l12](../resources/l12.md) (00) + [identity](../resources/identity.md) (17) — highest pairwise uniqueness
+- Branch on {target_type}: for code, [l12](../resources/l12.md) (00) + [identity](../resources/identity.md) (17) — highest pairwise uniqueness
 - For general: [l12_universal](../resources/l12-universal.md) (18) + [claim](../resources/claim.md) (07)
 - l12+identity for code, l12_universal+claim for general — these pairs maximize analytical divergence
 
 ### 2. Execute Lenses
 
-- Dispatch prism A to a fresh worker with its resource index, passing {target-content} as the material to analyze
-- Dispatch prism B to a fresh worker against the same {target-content} (can be parallel)
-- Each worker writes to {output-path}/dispute-lens-{a|b}.md
+- Dispatch prism A to a fresh worker with its resource index, passing {target_content} as the material to analyze
+- Dispatch prism B to a fresh worker against the same {target_content} (can be parallel)
+- Each worker writes to {output_path}/dispute-lens-{a|b}.md
 
 ### 3. Synthesize Disagreements
 
 - Dispatch synthesis to a fresh worker with [dispute-synthesis](../resources/dispute-synthesis.md) resource (62)
-- Worker constructs input: "# LENS A: {\$prism-a}\n\n{\$output-a}\n\n---\n\n# LENS B: {\$prism-b}\n\n{\$output-b}"
-- Worker writes to {output-path}/dispute-synthesis.md
+- Worker constructs input: "# LENS A: {\$prism_a}\n\n{\$output_a}\n\n---\n\n# LENS B: {\$prism_b}\n\n{\$output_b}"
+- Worker writes to {output_path}/dispute-synthesis.md
 - The synthesis focuses on DISAGREEMENTS, not agreements. Convergence is noted only to test implicit shared assumptions.
-- Return {dispute-result}: the three artifact paths and the prism pair selected in step 1
+- Return {dispute_result}: the three artifact paths and the prism pair selected in step 1
 
 ## Outputs
 
-### dispute-result
+### dispute_result
 
 Paths to the three dispute artifacts and the prism pair used
 
-#### lens-a-path
+#### lens_a_path
 
 Filesystem path to dispute-lens-a.md
 
-#### lens-b-path
+#### lens_b_path
 
 Filesystem path to dispute-lens-b.md
 
-#### synthesis-path
+#### synthesis_path
 
 Filesystem path to dispute-synthesis.md
 
-#### prism-pair
+#### prism_pair
 
 Resource indices and lens identities used for A and B
 
