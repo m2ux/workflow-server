@@ -13,10 +13,6 @@ Build or augment codebase comprehension through progressive analysis and persist
 
 ## Inputs
 
-### problem-statement
-
-Clear problem definition with system understanding — focuses the comprehension on relevant areas
-
 ### target-path
 
 Path to the target codebase directory

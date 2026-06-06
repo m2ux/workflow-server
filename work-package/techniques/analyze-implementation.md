@@ -13,14 +13,6 @@ Analyze current implementation to understand effectiveness, establish quantitati
 
 ## Inputs
 
-### requirements
-
-Elicited requirements with success criteria and scope, used to focus the analysis and link baselines to measurable criteria
-
-### problem-statement
-
-Clear problem definition with system understanding, used to scope the analysis
-
 ### target-submodule
 
 Target submodule for the work package (e.g., midnight-node, midnight-ledger)

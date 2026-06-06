@@ -13,10 +13,6 @@ Create test strategy and test plan with cases and acceptance criteria
 
 ## Inputs
 
-### requirements
-
-Elicited requirements with success criteria
-
 ### plan-tasks
 
 Atomic task breakdown with dependencies and ordering for the work package

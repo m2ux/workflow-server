@@ -7,16 +7,6 @@ metadata:
 
 Run the linter against all targets, denying warnings.
 
-## Inputs
-
-### scope
-
-`'--workspace'` or `'-p <crate>'`
-
-### features
-
-Optional --features flags (empty string when none)
-
 ## Output
 
 ### clippy_status

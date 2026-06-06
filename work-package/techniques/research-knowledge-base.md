@@ -11,16 +11,6 @@ metadata:
 
 Research knowledge base and external sources to discover best practices, patterns, and resources
 
-## Inputs
-
-### requirements
-
-Elicited requirements with success criteria and scope, used to focus the research
-
-### problem-statement
-
-Clear problem definition with system understanding, used to focus the research
-
 ## Protocol
 
 ### 1. Load Resources

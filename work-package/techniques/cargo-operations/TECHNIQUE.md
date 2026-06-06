@@ -13,6 +13,16 @@ metadata:
 
 Resource-constrained operations for cargo subcommands.
 
+## Inputs
+
+### scope
+
+`'--workspace'` for the full workspace, or `'-p <crate>'` to scope to one crate (preferred during inner loops)
+
+### features
+
+Optional --features flags (empty string when none)
+
 ## Rules
 
 ### resource-budget

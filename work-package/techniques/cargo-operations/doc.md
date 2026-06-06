@@ -7,12 +7,6 @@ metadata:
 
 Generate API documentation to verify inline doc comments compile.
 
-## Inputs
-
-### scope
-
-`'--workspace --no-deps'` for the full workspace, or `'-p <crate> --no-deps'` to scope
-
 ## Protocol
 
 1. `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo doc {scope}`

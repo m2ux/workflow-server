@@ -7,16 +7,6 @@ metadata:
 
 Run check, clippy, test, and fmt-check concurrently against the same scope and aggregate their statuses into a single validation_results envelope. Replaces the four serial validate-class operations and is the canonical entry point for the validate activity on rust-substrate projects.
 
-## Inputs
-
-### scope
-
-`'--workspace'` for full validation parity with CI; `'-p <crate>'` to scope to one crate (faster but does not match CI)
-
-### features
-
-Optional --features flags (empty string when none)
-
 ## Output
 
 ### validation_results

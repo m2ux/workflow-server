@@ -7,16 +7,6 @@ metadata:
 
 Release build; produces the final binary AND the runtime wasm artifact.
 
-## Inputs
-
-### scope
-
-`'--workspace'` or `'-p <crate>'`
-
-### features
-
-Optional --features flags (empty string when none)
-
 ## Protocol
 
 1. `nice -n 19 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo build --release {scope} {features}`

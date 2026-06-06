@@ -7,12 +7,6 @@ metadata:
 
 Canonical formatting check; matches CI exactly. Does not compile, so does not need build-jobs caps.
 
-## Inputs
-
-### scope
-
-`'--all'` for the full workspace (default and CI parity), or omit for the local crate
-
 ## Output
 
 ### fmt_status

@@ -17,10 +17,6 @@ Design the implementation approach and create a work package plan with task brea
 
 Design philosophy [artifact](../resources/design-framework.md#design-philosophy-artifact-template) with problem classification and workflow path
 
-### requirements
-
-Elicited requirements with success criteria and scope
-
 ### analysis-findings
 
 *(optional)* Implementation analysis findings (baselines, gaps)
