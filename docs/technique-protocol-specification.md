@@ -116,12 +116,18 @@ then expose) is the canonical case, and it is exactly why a value that one techn
 others consume can still be hoisted to a common ancestor (§5): declare it as a shared input on the
 ancestor, and the producing technique additionally declares it as an output.
 
-**All symbol ids are kebab-case.** Case carries no meaning — it does **not** distinguish input from
-output (that is structural). A reference `{id}` in the protocol is therefore direction-agnostic;
-mutation is the normal case for a mutable symbol. The one exception: an id that mirrors an external
-tool / MCP / CLI parameter keeps that tool's own spelling (`cloudId`, `owner`, `repo`,
-`issueIdOrKey`), because the value is passed through verbatim to that tool — it is the tool's symbol,
-not the workflow's.
+**All symbol ids are kebab-case — with no exceptions, including ids that map to an external tool /
+MCP / CLI parameter** (`cloud-id`, `session-index`, `changed-files`). Case carries no meaning — it
+does **not** distinguish input from output (that is structural). A reference `{id}` is therefore
+direction-agnostic; mutation is the normal case for a mutable symbol.
+
+Interop with external tools is handled at the **resolution layer, not in the id's spelling**: the
+executing agent resolves a reference treating **hyphen and underscore as equivalent**, so a workflow
+`{session-index}` satisfies a tool whose parameter is `session_index`, and `{changed-files}` binds to
+`changed_files`. This bridges every snake_case tool parameter with no per-id annotation. For a tool
+that uses another convention — e.g. camelCase like Atlassian's `cloudId` — the agent takes the exact
+parameter name from that tool's own schema when forming the call; the workflow still refers to it in
+kebab (`cloud-id`). See `agent-conduct.symbol-resolution-separator-equivalence`.
 
 ### 3.3 Protocol
 
