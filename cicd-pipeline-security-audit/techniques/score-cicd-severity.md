@@ -25,9 +25,9 @@ Unified list of findings, each with pattern ID, source, sink, and evidence
 
 ### 2. Score Individual
 
-- For each finding, assess Impact tier (T1-T4) based on worst-case outcome
-- For each finding, assess Exploitability tier (E1-E4) based on attacker prerequisites
-- Map (Impact, Exploitability) to severity level using the rubric matrix
+- For each finding, assess `{$impact-tier}` (T1-T4) based on worst-case outcome
+- For each finding, assess `{$exploitability-tier}` (E1-E4) based on attacker prerequisites
+- Map (`{$impact-tier}`, `{$exploitability-tier}`) to severity level using the rubric matrix
 
 ### 3. Score Compound
 

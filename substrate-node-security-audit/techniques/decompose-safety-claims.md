@@ -29,7 +29,7 @@ Code files to read for independent verification
 
 ### 1. Seed From Gaps
 
-- If verification-gaps input is provided, read the gap report. For each §3 category flagged as having incomplete coverage, missing mandatory tables, or unmet target profile obligations, identify ALL PASS items from agent results that reference that category. These items are pre-seeded into the adversarial queue regardless of severity estimate — the verification gap indicates higher false-PASS risk.
+- If verification-gaps input is provided, read the gap report. For each §3 category flagged as having incomplete coverage, missing mandatory tables, or unmet target profile obligations, identify ALL PASS items from agent results that reference that category. These items are pre-seeded into the `{$adversarial-queue}` regardless of severity estimate — the verification gap indicates higher false-PASS risk.
 
 ### 2. Extract And Filter
 

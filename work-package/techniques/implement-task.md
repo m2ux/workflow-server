@@ -59,14 +59,6 @@ A single atomic task to implement (description, affected files, dependencies)
 
 Code changes for a single task
 
-#### files_changed
-
-List of files modified
-
-#### approach_summary
-
-Brief description of the implementation approach
-
 ## Rules
 
 ### single-task-focus

@@ -33,12 +33,12 @@ Path to planning folder for artifact output
 
 - Parse git diff to extract list of changed files and hunks
 - If the diff contains no changes, verify the correct branch and commit range before proceeding
-- Assign row index to each change block
+- Assign {$row-index} to each change block
 - Estimate review time (30 sec per change)
 
 ### 3. Create Index
 
-- Create file index table with columns: Row | Path | File (each Row number hyperlinks to its rationale section, e.g. [1](#block-1))
+- Create file index table with columns: Row | Path | File (each {$row-index} hyperlinks to its rationale section, e.g. [1](#block-1))
 - Include review time estimate in index
 - Below the index table, generate a '## Block Rationale' section containing one subsection per block (### Block N) with a descriptive paragraph explaining what the change does and why it exists — covering intent, context, and any non-obvious design choices
 - Rationale paragraphs should aid manual review by giving reviewers context before they inspect the diff
@@ -83,10 +83,6 @@ Row (hyperlinked to rationale) | Path | File with review time estimate
 #### block_rationale
 
 Per-block descriptive paragraphs explaining intent, context, and non-obvious design choices
-
-#### change_count
-
-Total number of change blocks
 
 ### manual-diff-review-report
 

@@ -49,7 +49,7 @@ Path to the codebase to analyze
 
 - Update the assumptions-log: mark resolved assumptions with finding, evidence, and resolution status
 - Add any newly surfaced assumptions as Open with their classification (code-resolvable or not)
-- Maintain a running count: total, validated, invalidated, partially validated, open code-resolvable, open non-code-resolvable
+- Maintain {$resolution-counts}: total, validated, invalidated, partially validated, open code-resolvable, open non-code-resolvable
 - Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See the [formatting rule](../resources/assumption-reconciliation.md#markdown-formatting-rule) for correct vs incorrect examples.
 
 ### 4. Check Convergence
@@ -74,18 +74,6 @@ Assumptions [log](../resources/assumption-reconciliation.md#integration-with-ass
 #### artifact
 
 `assumptions-log.md`
-
-#### resolution_counts
-
-Total, validated, invalidated, partially validated, open (with reason for each open item)
-
-#### convergence_iterations
-
-Number of classify-analyze cycles performed before convergence
-
-#### newly_surfaced
-
-Count of assumptions discovered during analysis that were not in the original set
 
 ## Rules
 

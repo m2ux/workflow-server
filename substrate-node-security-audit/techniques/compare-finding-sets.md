@@ -25,19 +25,19 @@ The benchmark finding list to compare against (e.g., professional audit report)
 
 ### 1. Map Findings
 
-- For each finding in `reference-findings`, identify the closest matching finding in `primary-findings`. Classify as: matched (same root cause and affected code), partial match (related but incomplete coverage or different framing), or gap (missed entirely).
+- For each finding in `reference-findings`, identify the closest matching finding in `primary-findings`. Classify as: matched (same root cause and affected code), partial match (related but incomplete coverage or different framing), or gap (missed entirely). Record these as `{$finding-classifications}`.
 
 ### 2. Identify Gaps
 
-- List all reference findings classified as gaps. Group by severity and root cause category (e.g., pattern-absence blindness, insufficient file coverage, wrong-layer check, first-positive-signal bias, toolkit depth limitation, mechanical-check skip).
+- From `{$finding-classifications}`, list all reference findings classified as gaps. Group by severity and root cause category (e.g., pattern-absence blindness, insufficient file coverage, wrong-layer check, first-positive-signal bias, toolkit depth limitation, mechanical-check skip) into `{$gap-clusters}`.
 
 ### 3. Analyze Severity Calibration
 
-- For matched findings, compare severity ratings between primary and reference. Identify systematic over-rating patterns (primary higher than reference) and under-rating patterns (primary lower). Compute average delta by severity tier.
+- For matched findings in `{$finding-classifications}`, compare severity ratings between primary and reference. Identify systematic over-rating patterns (primary higher than reference) and under-rating patterns (primary lower). Compute average delta by severity tier.
 
 ### 4. Analyze Root Causes
 
-- For each gap cluster, determine the structural cause: insufficient file coverage, pattern-absence blindness, toolkit deprioritization, wrong-layer check application, first-positive-signal bias, mechanical-check skip, or other. Propose countermeasures for each root cause, then assemble the mapping, gaps, calibration analysis, and countermeasures into the `comparison-report`.
+- For each cluster in `{$gap-clusters}`, determine the structural cause: insufficient file coverage, pattern-absence blindness, toolkit deprioritization, wrong-layer check application, first-positive-signal bias, mechanical-check skip, or other. Propose countermeasures for each root cause, then assemble the mapping, gaps, calibration analysis, and countermeasures into the `comparison-report`.
 
 ## Outputs
 

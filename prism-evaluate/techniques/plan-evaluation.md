@@ -57,7 +57,7 @@ Directory to write the evaluation plan artifact
 - If GitNexus is available (check via gitnexus_list_repos) and target is a codebase: use gitnexus_query to discover functional areas and community clusters for better module classification
 - Read enough of the target content to understand its scope, key topics, claims, and structure — this informs dimension-specific analysis_focus values
 - For proposal documents: identify the major sections, stated goals, key claims, architectural decisions, resource assumptions, and timeline commitments
-- Record: target_type, target_summary, structure_inventory (sections or modules with sizes), key_topics
+- Record: target_type, {$target-summary}, {$structure-inventory} (sections or modules with sizes), {$key-topics}
 
 ### 4. Map Dimensions To Lenses
 
@@ -79,7 +79,7 @@ Directory to write the evaluation plan artifact
 ### 6. Write Evaluation Plan
 
 - Compose the human-readable evaluation-plan document and write it into output_path
-- Section 1: Target Overview — target type, structure summary, key topics
+- Section 1: Target Overview — target type, {$target-summary}, {$structure-inventory}, {$key-topics}
 - Section 2: Dimension Plan — table mapping each dimension to pipeline mode, lenses, focus areas, and output location
 - Section 3: Execution Groups — how dimensions are grouped for prism triggering, execution order, estimated sub-agent dispatches
 - Return the written evaluation-plan as the artifact for downstream activities
