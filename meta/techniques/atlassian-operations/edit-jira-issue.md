@@ -9,10 +9,6 @@ Update fields on an existing Jira issue.
 
 ## Inputs
 
-### cloudId
-
-UUID of the target Atlassian cloud site.
-
 ### issueIdOrKey
 
 Issue key

@@ -13,6 +13,12 @@ metadata:
 
 Abstract sub-agent dispatch operations — harness-independent vocabulary for spawning, continuing, and concurrently dispatching agents.
 
+## Inputs
+
+### harness
+
+Identifier of the harness in use: `claude-code`, `cursor`, `cline`, or `generic`
+
 ## Rules
 
 ### harness-independence

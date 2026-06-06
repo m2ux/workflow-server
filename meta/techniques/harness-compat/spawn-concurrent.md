@@ -9,10 +9,6 @@ Dispatch multiple independent agents in parallel.
 
 ## Inputs
 
-### harness
-
-Identifier of the harness in use: `claude-code`, `cursor`, or `generic`
-
 ### agents
 
 Array of `{ description, prompt }` objects — each becomes an independent sub-agent

@@ -9,10 +9,6 @@ Dispatch a new isolated sub-agent with no prior context.
 
 ## Inputs
 
-### harness
-
-Identifier of the harness in use: `claude-code`, `cursor`, `cline`, or `generic`
-
 ### prompt
 
 Full task prompt for the new agent

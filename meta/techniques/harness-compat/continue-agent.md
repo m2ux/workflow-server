@@ -9,10 +9,6 @@ Resume an existing sub-agent, preserving accumulated context where the harness s
 
 ## Inputs
 
-### harness
-
-Identifier of the harness in use: `claude-code`, `cursor`, or `generic`
-
 ### agent_id
 
 Harness-assigned identifier for the agent to resume (harness-specific; may be unavailable on some harnesses)
