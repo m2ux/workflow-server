@@ -83,10 +83,6 @@ Specific problem or inventive goal
 
 simple, moderate, or complex
 
-#### workflow_path
-
-Determined path and rationale
-
 ### assumptions-log
 
 [Log](../resources/assumptions-review.md#assumptions-log-template) of assumptions made during design philosophy
@@ -94,10 +90,6 @@ Determined path and rationale
 #### artifact
 
 `assumptions-log.md`
-
-#### assumptions
-
-Assumptions with categories: Problem Interpretation, Complexity Assessment, Workflow Path
 
 ## Rules
 

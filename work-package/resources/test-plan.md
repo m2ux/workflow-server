@@ -181,6 +181,12 @@ Key changes validated:
 
 ---
 
+## Acceptance Criteria Matrix
+
+[Matrix mapping requirements and acceptance criteria to verifying test cases — when requirements exist]
+
+---
+
 ## Running Tests
 
 [Commands to execute tests]
@@ -310,6 +316,25 @@ All test cases—regardless of type—belong in a **single unified table**. Do n
 | Manual | Tests requiring human execution | RPC endpoints, network behavior, UI verification |
 
 **Note:** Manual tests do not have hyperlinked Test IDs (no source code to link to). Use plain text IDs for manual test cases.
+
+### Requirements Traceability Matrix
+
+When the work package has elicited requirements with acceptance criteria, include a matrix that maps each requirement and its acceptance criterion to the test cases that verify it. This provides requirements-to-tests traceability so reviewers can confirm every requirement is covered.
+
+```markdown
+## Acceptance Criteria Matrix
+
+| Requirement | Acceptance Criterion | Verifying Test Cases |
+|-------------|----------------------|----------------------|
+| REQ-01 | [What must hold true] | PR###-TC-01, PR###-TC-02 |
+| REQ-02 | [What must hold true] | PR###-TC-03 |
+```
+
+**Tips:**
+- One row per requirement (or per acceptance criterion when a requirement has several)
+- Reference test cases by their `PR###-TC-##` IDs from the Test Cases table
+- Ensure every requirement maps to at least one test case; flag any gaps
+- Omit this matrix for changes that skip formal requirements (simple bug fixes, doc-only changes)
 
 ### Running Tests
 

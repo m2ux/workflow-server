@@ -71,14 +71,6 @@ Assumptions [log](../resources/assumptions-review.md#assumptions-log-template) u
 
 `assumptions-log.md`
 
-#### assumptions
-
-All assumptions with type, statement, rationale, alternatives
-
-#### outcomes
-
-Per-assumption resolution: confirmed, corrected, or needs-discussion
-
 ## Rules
 
 ### elevate-implicit

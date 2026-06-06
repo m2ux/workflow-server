@@ -92,22 +92,6 @@ Strategic review [findings](../resources/strategic-review.md#strategic-review-ar
 
 `strategic-review-{n}.md`
 
-#### investigation_artifacts
-
-Extra logging, debug, temporary workarounds found
-
-#### over_engineering
-
-Generic abstractions, unused config options
-
-#### orphaned_infrastructure
-
-Commented code, unused utilities, duplicates
-
-#### scope_assessment
-
-Scope creep or minimal-focus assessment
-
 ### architecture-summary-doc
 
 Architecture [summary](../resources/architecture-summary.md#architecture-summary-artifact-template) with diagrams for stakeholders
@@ -115,14 +99,6 @@ Architecture [summary](../resources/architecture-summary.md#architecture-summary
 #### artifact
 
 `architecture-summary.md`
-
-#### uml_diagrams
-
-UML-style diagrams of implementation
-
-#### summary
-
-High-level architecture description
 
 ## Rules
 

@@ -60,22 +60,6 @@ Design philosophy [artifact](../resources/design-framework.md#design-philosophy-
 
 `NNNN-{decision-title}.md`
 
-#### context
-
-Problem context and forces
-
-#### decision
-
-The architectural decision made
-
-#### rationale
-
-Why this decision over alternatives
-
-#### consequences
-
-Expected positive and negative consequences
-
 ## Rules
 
 ### alternatives-required

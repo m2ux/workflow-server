@@ -184,6 +184,27 @@ flowchart LR
 
 **When to use:** Changes that affect deployment topology, infrastructure, or service boundaries.
 
+### Sequence Diagram (Key Flows)
+
+Use a sequence diagram to show the interactions between components for key flows affected by the changes:
+
+```mermaid
+---
+title: Sequence - [Flow Name]
+---
+sequenceDiagram
+    actor User
+    participant Main as Main System
+    participant Ext as External System
+
+    User->>Main: Initiates action
+    Main->>Ext: Calls API
+    Ext-->>Main: Returns result
+    Main-->>User: Responds
+```
+
+**When to use:** Key flows affected by the changes where the ordered interaction between components clarifies behavior.
+
 ### Before/After Comparison
 
 For changes that modify existing architecture, show both states:
@@ -231,6 +252,7 @@ flowchart LR
 ### Optional Sections
 
 - **Package Diagram** - If changes affect module organization or dependencies
+- **Sequence Diagrams** - If key flows between components are affected
 - **Before/After Diagrams** - If the change modifies existing flows
 - **Dependencies** - Upstream/downstream systems affected
 - **Risks & Mitigations** - Key risks and how they're addressed
@@ -331,6 +353,27 @@ flowchart TB
 ```
 
 *[Highlight new or modified packages with distinct colors]*
+
+---
+
+## Key Flows
+
+*[Include this section if key flows between components are affected]*
+
+```mermaid
+---
+title: Sequence - [Flow Name]
+---
+sequenceDiagram
+    actor User
+    participant Main as Main System
+    participant Ext as External System
+
+    User->>Main: Initiates action
+    Main->>Ext: Calls API
+    Ext-->>Main: Returns result
+    Main-->>User: Responds
+```
 
 ---
 

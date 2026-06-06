@@ -68,22 +68,6 @@ PR number for cross-referencing
 
 `COMPLETE.md`
 
-#### deliverables
-
-What was implemented
-
-#### test_coverage
-
-What was tested and where
-
-#### deferred
-
-Items deferred to future work
-
-#### limitations
-
-Known limitations and caveats
-
 ## Rules
 
 ### completion-timing

@@ -56,18 +56,6 @@ Workflow [retrospective](../resources/workflow-retrospective.md#output-document-
 
 `workflow-retrospective.md`
 
-#### what_worked
-
-What went well
-
-#### improvements
-
-What could improve
-
-#### lessons_learned
-
-Lessons for future sessions
-
 ## Rules
 
 ### retrospective-honest

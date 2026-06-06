@@ -56,18 +56,6 @@ Test [strategy](../resources/test-plan.md#test-plan-structure) and acceptance cr
 
 `test-plan.md`
 
-#### test_strategy
-
-What to test, how, and pass criteria
-
-#### test_cases
-
-Specific test cases linked to requirements
-
-#### acceptance_matrix
-
-Requirements-to-tests traceability
-
 ## Rules
 
 ### lifecycle-phases

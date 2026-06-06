@@ -72,22 +72,6 @@ Stakeholder-facing architecture [summary](../resources/architecture-summary.md#a
 
 `architecture-summary.md`
 
-#### system_context_diagram
-
-Mermaid system context diagram
-
-#### package_diagram
-
-Package or container diagram when applicable
-
-#### sequence_diagrams
-
-Sequence diagrams for key flows
-
-#### narrative
-
-Narrative explanation of impact and scope
-
 ## Rules
 
 ### stakeholder-audience

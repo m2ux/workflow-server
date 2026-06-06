@@ -83,10 +83,6 @@ Defined success criteria with verification methods
 
 In/out scope definitions
 
-#### assumptions
-
-Documented assumptions from elicitation
-
 ## Rules
 
 ### conversation-not-interrogation

@@ -63,18 +63,6 @@ Test suite review [report](../resources/test-suite-review.md#test-suite-review-r
 
 `test-suite-review.md`
 
-#### coverage_assessment
-
-Coverage analysis relative to changes
-
-#### anti_patterns
-
-Anti-patterns found with locations
-
-#### recommendations
-
-Prioritized improvement recommendations
-
 ## Rules
 
 ### coverage-relative

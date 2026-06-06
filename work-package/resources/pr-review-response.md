@@ -147,9 +147,10 @@ Create a comprehensive review analysis document.
 1. Document Header with metadata
 2. Executive Summary
 3. Analysis Methodology
-4. Review Comments and Responses (co-located Q&A)
-5. Conclusion
-6. Sources and References
+4. Review Comments and Responses (co-located Q&A) — a categorized comment list with each comment's disposition (required change, suggestion, question, nit; and whether implemented, acknowledged, or discussed)
+5. Changes Made — a list of the changes implemented in response to the review
+6. Conclusion
+7. Sources and References
 
 ---
 

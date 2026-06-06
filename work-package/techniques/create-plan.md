@@ -75,10 +75,6 @@ Work package [plan](../resources/wp-plan.md#section-guidelines) with task breakd
 
 Atomic tasks with explicit dependencies and ordering
 
-#### design_decisions
-
-Approach and rationale with documented assumptions
-
 ## Rules
 
 ### tasks-are-code-changes-only

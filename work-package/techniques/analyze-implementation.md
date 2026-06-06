@@ -74,22 +74,6 @@ Current implementation [analysis](../resources/implementation-analysis.md#docume
 
 `implementation-analysis.md`
 
-#### current_state
-
-Location, usage, dependencies, architecture
-
-#### baseline_metrics
-
-Quantitative baselines with measurement methods
-
-#### gaps
-
-Identified gaps linked to success criteria
-
-#### success_criteria
-
-Measurable criteria for improvement
-
 ## Rules
 
 ### measure-before-improve

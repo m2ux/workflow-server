@@ -90,6 +90,9 @@ The work package plan artifact serves as the detailed implementation specificati
 | Option A | Pro 1 | Con 1 | **Selected** |
 | Option B | Pro 1 | Con 1 | Rejected |
 
+### Assumptions
+- [Assumption underlying the approach, e.g. expected input format, environment, prerequisite state]
+
 ---
 
 ## Implementation Tasks
@@ -261,7 +264,13 @@ Implement hybrid search using Reciprocal Rank Fusion (RRF) to combine vector sim
 | RRF fusion | No calibration needed, robust | Fixed weighting | **Selected** |
 | Linear combination | Tunable weights | Requires calibration | Rejected |
 | Query-time selection | Simple | No fusion benefit | Rejected |
+
+### Assumptions
+- Vector index already stores per-term frequencies needed for BM25
+- Query volume stays within current capacity; no new caching tier required
 ```
+
+Document the assumptions underlying the chosen approach so reviewers and implementers can validate or challenge them. Each design decision should record its rationale (the "why") alongside any assumptions it depends on.
 
 ### Implementation Tasks
 

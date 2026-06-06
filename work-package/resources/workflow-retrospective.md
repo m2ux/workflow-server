@@ -148,6 +148,10 @@ Patterns worth noting for future consideration:
 
 **Overall Session Quality:** [Smooth / Minor friction / Significant issues]
 
+**What Worked:** [What went well this session — be specific, avoid generic positive statements]
+
+**Lessons Learned:** [Lessons to carry into future sessions]
+
 **Key Takeaway:** [One sentence summary of most important finding]
 
 **Action Required:** [Yes - create issue / No - informational only]

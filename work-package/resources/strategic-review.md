@@ -195,6 +195,31 @@ Supporting changes that outlived their purpose:
 
 ---
 
+## Scope Assessment
+
+Assess whether the changes stay within the work package requirements, and flag any scope creep for user decision:
+
+| File / Change | In Scope? | Notes |
+|---------------|-----------|-------|
+| [file.rs] | Yes/No | [Maps to requirement / flagged as scope creep] |
+| [file.rs] | Yes/No | [Maps to requirement / flagged as scope creep] |
+
+**Overall:** [Minimal and focused / Scope creep identified — see flagged items above]
+
+---
+
+## PR Body Conformance
+
+Findings from verifying the live PR body against the required format:
+
+| Finding | Detail |
+|---------|--------|
+| [e.g. Missing section] | [Description] |
+
+*[If the PR body conforms, note "Body conforms — no findings".]*
+
+---
+
 ## Minimality Assessment
 
 | Question | Answer | Notes |

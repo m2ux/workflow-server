@@ -63,14 +63,6 @@ Code review [report](../resources/rust-substrate-code-review.md#report-template)
 
 `code-review.md`
 
-#### findings
-
-All findings with severity, affected file, line numbers, and description
-
-#### summary
-
-Counts by severity level and top issues
-
 ## Rules
 
 ### evidence-required

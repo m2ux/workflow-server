@@ -65,26 +65,6 @@ Knowledge base and web research [synthesis](../resources/knowledge-base-research
 
 `kb-research.md`
 
-#### kb_findings
-
-Findings from concept-rag knowledge base
-
-#### web_findings
-
-Findings from web research
-
-#### synthesis
-
-Synthesized connection to requirements
-
-#### applicable_patterns
-
-Patterns validated and mapped to needs
-
-#### risks
-
-Risks, gaps, or assumptions documented
-
 ## Rules
 
 ### multiple-sources

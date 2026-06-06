@@ -425,6 +425,8 @@ Include a clickable markdown link to `assumptions-log.md` for full details and r
 
 **Risk Levels:** H = High (validate before proceeding), M = Medium (confirm at checkpoint), L = Low (log for reference)
 
+**Resolution Outcomes:** Confirmed, Corrected, or Needs-Discussion (deferred for further conversation) — record the per-assumption resolution and the user's response back into the log
+
 **Ambiguity Sources:** Observational, Recall, Interpretation, Problem Statement, N/A
 
 ### Trade-offs Considered (if applicable)

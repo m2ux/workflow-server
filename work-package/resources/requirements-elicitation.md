@@ -192,6 +192,24 @@ The five domains below cover the complete requirements space. Ask **one question
 
 ---
 
+## Assumptions
+
+Assumptions identified during requirement interpretation, categorized for stakeholder review.
+
+### Requirement Interpretation
+- [Assumption about how a requirement was interpreted]
+
+### Scope Boundaries
+- [Assumption about what is in/out of scope]
+
+### Implicit Requirements
+- [Assumption about an unstated requirement]
+
+### Success Criteria
+- [Assumption about how success is measured]
+
+---
+
 ## Elicitation Log
 
 ### Questions Asked

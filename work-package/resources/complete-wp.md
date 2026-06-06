@@ -114,6 +114,13 @@ The `COMPLETE.md` file serves as the completion record for a work package. It pr
 
 ---
 
+## Known Limitations & Caveats
+
+- ⚠️ **[Limitation 1]** - [Caveat about delivered functionality: edge case not handled, performance boundary, assumption that must hold, etc.]
+- ⚠️ **[Limitation 2]** - [Caveat]
+
+---
+
 ## Design Decisions
 
 ### Decision 1: [Title]
@@ -273,6 +280,17 @@ Be explicit about deferrals and reasons:
 - ❌ **Real-time index updates** - Blocked by database schema migration (tracked in JIRA-456)
 ```
 
+### Known Limitations & Caveats
+
+Document caveats about what *was* delivered (distinct from deferred items above) — edge cases, performance boundaries, and assumptions consumers must respect:
+
+```markdown
+## Known Limitations & Caveats
+
+- ⚠️ **BM25 scoring assumes English tokenization** - Non-Latin scripts fall back to character n-grams with reduced precision
+- ⚠️ **Document frequency cache is build-time only** - Documents added after index build are scored with stale DF values until the next rebuild
+```
+
 ### Design Decisions
 
 Capture decisions made during implementation (these may feed into formal ADRs):
@@ -317,6 +335,7 @@ Capture insights for future work:
 - [ ] Files changed lists both new and modified
 - [ ] Success criteria compared to original targets
 - [ ] Unimplemented items documented with reasons
+- [ ] Known limitations and caveats of delivered work documented
 - [ ] Design decisions captured for reference
 - [ ] Status is marked as COMPLETE AND TESTED
 
