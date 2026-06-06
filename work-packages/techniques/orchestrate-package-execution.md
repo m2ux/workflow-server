@@ -26,7 +26,7 @@ Full priority order for reference
 ### 1. Initialize Iteration
 
 - Derive {remaining_packages} from {priority-order} minus {completed_packages}
-- Set {overall_progress} to '{$completed}/{$total} complete'
+- Set {overall_progress} to '{\$completed}/{\$total} complete'
 
 ### 2. Select Package
 

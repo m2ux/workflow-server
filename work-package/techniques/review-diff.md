@@ -29,16 +29,16 @@ Feature branch name containing changes to review
 
 - Parse git diff to extract list of changed files and hunks
 - If the diff contains no changes, verify the correct branch and commit range before proceeding
-- Assign {$row-index} to each change block
+- Assign {\$row-index} to each change block
 - Estimate review time (30 sec per change)
 
 ### 3. Create Index
 
-- Create file index table with columns: Row | Path | File (each {$row-index} hyperlinks to its rationale section, e.g. [1](#block-1))
+- Create file index table with columns: Row | Path | File (each {\$row-index} hyperlinks to its rationale section, e.g. [1](#block-1))
 - Include review time estimate in index
 - Below the index table, generate a '## Block Rationale' section containing one subsection per block (### Block N) with a descriptive paragraph explaining what the change does and why it exists — covering intent, context, and any non-obvious design choices
 - Rationale paragraphs should aid manual review by giving reviewers context before they inspect the diff
-- When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md)(name: {$symbol}) so the reviewer understands why the diff matters and which execution flows it touches.
+- When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md)(name: {\$symbol}) so the reviewer understands why the diff matters and which execution flows it touches.
 - Write index to the {change-block-index} under {planning-folder}
 - Follow the structured diff-review process in [manual-diff-review](../resources/manual-diff-review.md)
 

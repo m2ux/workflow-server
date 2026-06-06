@@ -10,7 +10,7 @@
 
 **Why use this workflow instead of prompting directly?**
 
-- **Depth.** Each prism encodes a multi-step reasoning chain validated across hundreds of experiments (representing $$$$ in compute). The L12 prism, for example, forces the model through:
+- **Depth.** Each prism encodes a multi-step reasoning chain validated across hundreds of experiments (representing \$\$\$\$ in compute). The L12 prism, for example, forces the model through:
 ```claim → dialectic → concealment → improvement → invariant → inversion → conservation law → meta-law``` — producing findings that a single prompt never reaches.
 - **Independence.** The full-prism pipeline runs three passes in separate context windows. The adversarial pass has never seen the structural analysis being generated — it receives only the final text. This prevents the model from defending its own prior output, producing genuine self-correction.
 - **Breadth.** Portfolio mode runs multiple lenses that each ask a fundamentally different question about the same target. Research across real codebases confirms zero overlap between lenses — each finds properties the others are structurally blind to.

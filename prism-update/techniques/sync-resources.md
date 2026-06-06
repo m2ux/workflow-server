@@ -33,7 +33,7 @@ Starting index for new resource files
 ### 3. Import New
 
 - Order new prisms by family for logical index grouping.
-- For each: cp upstream file to {resource-path}/{next-index}-{$hyphenated-name}.md. Increment {next-index}. If the computed index already exists, increment {next-index} past the collision and retry.
+- For each: cp upstream file to {resource-path}/{next-index}-{\$hyphenated-name}.md. Increment {next-index}. If the computed index already exists, increment {next-index} past the collision and retry.
 - Stage and commit: 'feat: add N new prism resources (indices X-Y)'.
 
 ### 4. Remove Deleted

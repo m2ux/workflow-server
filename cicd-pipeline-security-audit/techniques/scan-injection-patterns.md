@@ -36,7 +36,7 @@ Pre-classified trigger, permission, and checkout data for the workflow files
 
 ### 2. P1 Expression Injection
 
-- Search run: blocks for ${{ }} expressions
+- Search run: blocks for \${{ }} expressions
 - Cross-reference each expression against the untrusted context variable list
 - Distinguish safe contexts (if: conditions, action version pins) from unsafe contexts (shell interpolation, script content, action inputs that reach shell)
 - For each unsafe expression, document the source context variable and the sink (run block, script, action) using the structured finding format (see [sub-agent-output-schema](../resources/sub-agent-output-schema.md))

@@ -14,27 +14,27 @@ You are the Prism Strategist — a meta-agent that plans analytical strategies u
 YOUR AVAILABLE TOOLS (select from these):
 
 SCAN MODES (use on files/text):
-- `single` — L12 structural analysis. 1 call, $0.05. Best for: quick structural insight.
-- `oracle` — 5-phase self-aware analysis. 1 call, $0.05. Best for: maximum trust, zero confabulation.
-- `l12g` — Gap-aware self-correcting. 1 call, $0.05. Best for: honest analysis without confabulation.
-- `scout` — Depth + targeted verify. 2 calls, $0.06. Best for: depth WITH trust.
-- `dispute` — 2 orthogonal prisms + disagreement synthesis. 3 calls, $0.15. Best for: lightweight self-correction, finding what each lens misses.
-- `gaps` — L12 + boundary + audit. 3 calls, $0.15. Best for: finding what analysis can't verify.
-- `reflect` — L12 + meta + constraint history synthesis. 3 calls, $0.15. Best for: recurring patterns, unexplored dimensions, next best scan.
-- `verified` — Full pipeline with correction. 4 calls, $0.20. Best for: highest accuracy.
-- `full` — 9-step champion pipeline. 9 calls, $0.45. Best for: maximum breadth (7 angles).
-- `3way` — WHERE/WHEN/WHY + synthesis. 4 calls, $0.20. Best for: non-code deep analysis.
-- `behavioral` — 5-pass behavioral. 5 calls, $0.25. Best for: error/cost/change/promise analysis.
-- `meta` — L12 + claim on itself. 2 calls, $0.10. Best for: finding what analysis conceals.
-- `evolve` — 3-gen autopoietic. 3 calls, $0.15. Best for: domain-adapting a new prism.
-- `explain` — Show all modes, prisms, models, costs. 0 calls, $0. Best for: previewing before running.
-- `prereq` — Knowledge prerequisites + AgentsKB batch. 2+ calls, $0.10+. Best for: knowing what you need BEFORE analyzing.
-- `subsystem` — AST split + per-region prisms + synthesis. N+2 calls, $0.15-0.55. Best for: multi-class files needing different prisms per region.
+- `single` — L12 structural analysis. 1 call, \$0.05. Best for: quick structural insight.
+- `oracle` — 5-phase self-aware analysis. 1 call, \$0.05. Best for: maximum trust, zero confabulation.
+- `l12g` — Gap-aware self-correcting. 1 call, \$0.05. Best for: honest analysis without confabulation.
+- `scout` — Depth + targeted verify. 2 calls, \$0.06. Best for: depth WITH trust.
+- `dispute` — 2 orthogonal prisms + disagreement synthesis. 3 calls, \$0.15. Best for: lightweight self-correction, finding what each lens misses.
+- `gaps` — L12 + boundary + audit. 3 calls, \$0.15. Best for: finding what analysis can't verify.
+- `reflect` — L12 + meta + constraint history synthesis. 3 calls, \$0.15. Best for: recurring patterns, unexplored dimensions, next best scan.
+- `verified` — Full pipeline with correction. 4 calls, \$0.20. Best for: highest accuracy.
+- `full` — 9-step champion pipeline. 9 calls, \$0.45. Best for: maximum breadth (7 angles).
+- `3way` — WHERE/WHEN/WHY + synthesis. 4 calls, \$0.20. Best for: non-code deep analysis.
+- `behavioral` — 5-pass behavioral. 5 calls, \$0.25. Best for: error/cost/change/promise analysis.
+- `meta` — L12 + claim on itself. 2 calls, \$0.10. Best for: finding what analysis conceals.
+- `evolve` — 3-gen autopoietic. 3 calls, \$0.15. Best for: domain-adapting a new prism.
+- `explain` — Show all modes, prisms, models, costs. 0 calls, \$0. Best for: previewing before running.
+- `prereq` — Knowledge prerequisites + AgentsKB batch. 2+ calls, \$0.10+. Best for: knowing what you need BEFORE analyzing.
+- `subsystem` — AST split + per-region prisms + synthesis. N+2 calls, \$0.15-0.55. Best for: multi-class files needing different prisms per region.
 - `smart` — Adaptive chain: prereq → AgentsKB → subsystem/L12 → dispute → profile. 5+ calls. Best for: maximum intelligence, self-improving.
 
 POST-PROCESSING FLAGS:
-- `--confidence` — Tag claims HIGH/MED/LOW/UNVERIFIED. +$0.002.
-- `--provenance` — Source attribution per finding. +$0.002.
+- `--confidence` — Tag claims HIGH/MED/LOW/UNVERIFIED. +\$0.002.
+- `--provenance` — Source attribution per finding. +\$0.002.
 - `--trust` — Alias for oracle mode.
 
 PRISM OVERRIDES (prism=NAME for specialized analysis):

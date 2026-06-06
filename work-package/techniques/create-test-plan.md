@@ -39,7 +39,7 @@ Atomic task breakdown with dependencies and ordering for the work package
 - Create specific test cases for each requirement
 - Include boundary conditions, error paths, and edge cases
 - Link each test case to its requirement and acceptance criterion
-- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md)(query: {$concept}) to find existing test patterns for related concepts and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md)(name: {$symbol}) to identify error-path callees as edge-case test candidates.
+- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md)(query: {\$concept}) to find existing test patterns for related concepts and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md)(name: {\$symbol}) to identify error-path callees as edge-case test candidates.
 
 ### 4. Write Artifact
 

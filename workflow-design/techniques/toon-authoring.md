@@ -83,4 +83,4 @@ Follow the field ordering from existing files of the same type — typically id,
 
 ### schema-reference
 
-workflow.toon files should include a $schema field pointing to the schema file path
+workflow.toon files should include a \$schema field pointing to the schema file path
