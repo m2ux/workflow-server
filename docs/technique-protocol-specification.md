@@ -129,6 +129,13 @@ a caller consumes is an Output, never `{$local}`. Bare unmarked identifiers in p
 (`structural_output_path`, `gap_data`) are this construct written informally — give them the `{$…}`
 form so they are distinct from prose, interface designators, and literals.
 
+Markdown rendering note: because GitHub-flavored markdown reads `$`-delimited spans as inline math,
+a `$` that appears in **rendered prose** (outside fenced code blocks and inline code spans) must be
+backslash-escaped — a bare-prose protocol variable is written `{\$name}`, and any other prose `$`
+(prices, a `${VAR}` shown in running text) is escaped likewise. `\$` renders as a literal `$`, so the
+notation is unchanged on screen; a `$` already inside a code span or fenced block is math-exempt and
+stays raw.
+
 ### 3.4 Rules
 
 `### <rule-name>` under `## Rules` is a cross-cutting behavioral constraint — an invariant that
