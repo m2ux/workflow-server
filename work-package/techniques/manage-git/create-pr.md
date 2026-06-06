@@ -9,29 +9,21 @@ Open a draft PR linked to the issue, assigned to the current GitHub user.
 
 ## Inputs
 
-### target_path
-
-The working directory (worktree); all `gh` commands run from here
-
-### branch_name
-
-Feature branch to PR
-
-### issue_number
+### issue-number
 
 Issue identifier (GitHub `#N` or Jira `KEY-N`)
 
-### issue_platform
+### issue-platform
 
 Platform where the issue lives (`github` or `jira`)
 
 ## Output
 
-### pr_number
+### pr-number
 
 PR number
 
-### pr_url
+### pr-url
 
 URL to the PR
 
@@ -40,10 +32,10 @@ URL to the PR
 ### 1. Prepare PR Inputs
 
 - BEFORE creating the PR: commit and push {planning-folder} to the parent (engineering) repo so the 📐 Engineering link resolves. Verify the URL will return 200 by confirming the commit is on the remote.
-- Compose the PR body using the Initial template from [pr-description](../../resources/pr-description.md). Reference `issue_number` in the PR title and body, formatting the issue link according to `issue_platform` (GitHub `#N` vs Jira `KEY-N`).
+- Compose the PR body using the Initial template from [pr-description](../../resources/pr-description.md). Reference `issue-number` in the PR title and body, formatting the issue link according to `issue-platform` (GitHub `#N` vs Jira `KEY-N`).
 
 ### 2. Create and Assign Draft PR
 
-- From `target_path`, open a draft PR for the `branch_name` feature branch: `gh pr create --draft --title "<title>" --body "<body>"`. Capture the returned `pr_number` and `pr_url` from the command output. If a PR already exists for this branch, use the existing PR instead of creating a new one.
-- Assign the PR to the current GitHub user: `gh pr edit <pr_number> --add-assignee @me` in `target_path`.
+- From `target-path`, open a draft PR for the `branch-name` feature branch: `gh pr create --draft --title "<title>" --body "<body>"`. Capture the returned `pr-number` and `pr-url` from the command output. If a PR already exists for this branch, use the existing PR instead of creating a new one.
+- Assign the PR to the current GitHub user: `gh pr edit <pr-number> --add-assignee @me` in `target-path`.
 - Keep the PR as draft until implementation and review complete.

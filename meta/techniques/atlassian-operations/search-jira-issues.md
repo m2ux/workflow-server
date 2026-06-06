@@ -9,10 +9,6 @@ Search Jira issues with JQL.
 
 ## Inputs
 
-### cloudId
-
-UUID of the target Atlassian cloud site.
-
 ### jql
 
 JQL query string

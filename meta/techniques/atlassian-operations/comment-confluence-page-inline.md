@@ -9,10 +9,6 @@ Add an inline (in-text) comment to a Confluence page.
 
 ## Inputs
 
-### cloudId
-
-UUID of the target Atlassian cloud site.
-
 ### pageId
 
 Page ID

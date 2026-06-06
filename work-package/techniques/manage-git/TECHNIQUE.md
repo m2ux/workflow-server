@@ -13,11 +13,17 @@ metadata:
 
 Manage git operations — branching, worktree lifecycle, PR lifecycle, branch synchronization, and reference-repo submodule maintenance.
 
+## Inputs
+
+### reference-path
+
+Path to the reference checkout (the engineering / parent repo where planning artifacts and submodule references live)
+
 ## Rules
 
 ### directory-scope
 
-Edit-side git operations (branch, PR, sync, push) run inside `target_path`. Reference-side git operations (submodule update, artifact commits) run inside `reference_path`. Branches and PRs are created against the target's upstream.
+Edit-side git operations (branch, PR, sync, push) run inside `target-path`. Reference-side git operations (submodule update, artifact commits) run inside `reference-path`. Branches and PRs are created against the target's upstream.
 
 ### code-commit-coauthor-trailer
 

@@ -11,12 +11,6 @@ metadata:
 
 Conduct structured manual diff review using external side-by-side diff tool with indexed block references
 
-## Inputs
-
-### branch-name
-
-Feature branch name containing changes to review
-
 ## Protocol
 
 ### 1. Sync Branch

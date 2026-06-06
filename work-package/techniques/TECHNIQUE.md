@@ -20,3 +20,15 @@ Elicited requirements with success criteria and scope
 ### problem-statement
 
 Clear problem definition with system understanding
+
+### target-path
+
+Filesystem path to the work package's target submodule worktree — the codebase being analysed, built, and operated on
+
+### branch-name
+
+The work package's feature branch
+
+### pr-number
+
+The work package's pull request number

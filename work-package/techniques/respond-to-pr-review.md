@@ -13,10 +13,6 @@ Analyze and respond to PR review comments systematically — categorizing commen
 
 ## Inputs
 
-### pr-number
-
-Pull request number
-
 ### review-comments
 
 Review comments fetched from PR
@@ -69,7 +65,7 @@ PR review [analysis](../resources/pr-review-response.md#step-6-create-review-doc
 
 #### artifact
 
-`{YYYY-MM-DD}-pr{pr_number}-review-analysis.md`
+`{YYYY-MM-DD}-pr{pr-number}-review-analysis.md`
 
 #### requires_replan
 

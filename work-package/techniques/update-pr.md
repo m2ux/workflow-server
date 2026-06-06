@@ -11,16 +11,6 @@ metadata:
 
 Update PR with final implementation details and mark ready for review, or post consolidated review comments when operating in review mode
 
-## Inputs
-
-### pr-number
-
-PR number to update
-
-### branch-name
-
-Branch name for push operations
-
 ## Protocol
 
 ### 1. Push Commits
@@ -56,7 +46,7 @@ Branch name for push operations
 
 PR updated and marked ready for review
 
-#### pr_url
+#### pr-url
 
 URL to the PR
 

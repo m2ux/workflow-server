@@ -9,10 +9,6 @@ Search Confluence content with CQL.
 
 ## Inputs
 
-### cloudId
-
-UUID of the target Atlassian cloud site.
-
 ### cql
 
 CQL query string

@@ -9,10 +9,6 @@ Log work time on a Jira issue.
 
 ## Inputs
 
-### cloudId
-
-UUID of the target Atlassian cloud site.
-
 ### issueIdOrKey
 
 Issue key

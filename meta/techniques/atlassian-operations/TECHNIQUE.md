@@ -13,6 +13,12 @@ metadata:
 
 Operations for common Jira and Confluence tasks via the Atlassian MCP server — site/account discovery, Jira issue/transition/comment management, and Confluence page/comment management.
 
+## Inputs
+
+### cloudId
+
+UUID of the target Atlassian cloud site. (Produced by resolve-cloud-id; consumed by every product-specific operation.)
+
 ## Rules
 
 ### resolve-cloud-id-once

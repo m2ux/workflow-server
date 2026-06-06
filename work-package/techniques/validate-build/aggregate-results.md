@@ -5,33 +5,33 @@ metadata:
 
 ## Capability
 
-Combine per-check outcomes into a single `validation_results` envelope.
+Combine per-check outcomes into a single `validation-results` envelope.
 
 ## Inputs
 
-### test_results
+### test-results
 
 Pass/fail and output from running the test suite
 
-### build_status
+### build-status
 
 Pass/fail from the build or type-check step
 
-### format_status
+### format-status
 
 Pass/fail from the format check
 
-### lint_results
+### lint-results
 
 Pass/fail and output from the linter
 
 ## Output
 
-### validation_results
+### validation-results
 
-{ test_results, build_status, format_status, lint_results, validation_passed } — `validation_passed` is true iff ALL inputs passed
+{ test-results, build-status, format-status, lint-results, validation_passed } — `validation_passed` is true iff ALL inputs passed
 
 ## Protocol
 
-1. Compute `validation_passed = test_results.passed AND build_status.passed AND format_status.passed AND lint_results.passed`.
-2. Emit the `validation_results` envelope carrying each input outcome plus `validation_passed`; do not mutate any input.
+1. Compute `validation_passed = test-results.passed AND build-status.passed AND format-status.passed AND lint-results.passed`.
+2. Emit the `validation-results` envelope carrying each input outcome plus `validation_passed`; do not mutate any input.

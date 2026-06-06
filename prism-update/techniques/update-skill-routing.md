@@ -11,19 +11,13 @@ metadata:
 
 Update prism routing technique files to reflect resource changes: fix renamed references, add goal-mapping entries for new prisms, expand lens catalogs, and update resource lists.
 
-## Inputs
-
-### changes
-
-Change set with new, renamed, and deleted prisms
-
 ## Protocol
 
 ### 1. Update Plan Analysis
 
-- For each rename in {changes}, find-and-replace the old name with the new name across all rules and protocol sections.
+- For each rename in {change-set}, find-and-replace the old name with the new name across all rules and protocol sections.
 - If an expected technique file cannot be found, verify that the prism workflow techniques directory exists.
-- Add a goal-mapping-matrix entry for every new prism in {changes}: analytical goal keyword → prism index.
+- Add a goal-mapping-matrix entry for every new prism in {change-set}: analytical goal keyword → prism index.
 - Update code-vs-general, model-sensitivity, resource list, query-recommendation, and single-unit-recommendation.
 - Each new prism's goal keyword should match its cognitive operation or domain from the YAML frontmatter description.
 

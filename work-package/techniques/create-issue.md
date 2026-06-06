@@ -31,26 +31,26 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 
 - Runs when user provides an existing issue key. Detect the platform from key format: '#N' or bare number → GitHub, 'PROJ-N' → Jira. Set {issue-platform}.
 - If no issue key was given and the platform is ambiguous (user did not select GitHub or Jira), present the platform selection checkpoint and wait for the user's selection before proceeding.
-- For GitHub: run 'gh issue view <number>' to confirm the issue exists. Capture {issue_number} and {issue_url}.
-- For Jira: call getAccessibleAtlassianResources FIRST to obtain cloudId, preserve as {jira_cloud_id}. THEN call getJiraIssue with cloudId and the issue key. Do NOT call getJiraIssue before cloudId is resolved.
-- Capture {issue_number} and {issue_url} from the verification result. Set needs_issue_creation to false.
+- For GitHub: run 'gh issue view <number>' to confirm the issue exists. Capture {issue-number} and {issue-url}.
+- For Jira: call getAccessibleAtlassianResources FIRST to obtain cloudId, preserve as {jira-cloud-id}. THEN call getJiraIssue with cloudId and the issue key. Do NOT call getJiraIssue before cloudId is resolved.
+- Capture {issue-number} and {issue-url} from the verification result. Set needs_issue_creation to false.
 
 ### 2. Create Github Issue
 
 - Runs when {issue-platform} is github and needs_issue_creation is true. Use attached [github-issue-creation](../resources/github-issue-creation.md) for guidance.
 - Gather title, description, and acceptance criteria from user context, scoping the issue to the {target-submodule} the work package targets
 - Map {issue-type} to GitHub labels using the label mapping below
-- Create the issue, then verify creation succeeded — this verified issue is the {created-issue}. Capture {issue_number} and {issue_url}.
+- Create the issue, then verify creation succeeded — this verified issue is the {created-issue}. Capture {issue-number} and {issue-url}.
 - GitHub label mapping: feature->enhancement, bug->bug, task->chore, enhancement->enhancement
 - If a gh CLI command fails (auth, permissions, or network — including the 'gh issue view' verification in step 1), verify gh auth status and repository access, then retry or prompt the user to create the issue manually.
 
 ### 3. Create Jira Issue
 
 - Runs when {issue-platform} is jira and needs_issue_creation is true. Use attached [jira-issue-creation](../resources/jira-issue-creation.md) for guidance.
-- Obtain Atlassian cloud ID via getAccessibleAtlassianResources and preserve as {jira_cloud_id}. This MUST be the first Jira tool call.
+- Obtain Atlassian cloud ID via getAccessibleAtlassianResources and preserve as {jira-cloud-id}. This MUST be the first Jira tool call.
 - List available projects via getVisibleJiraProjects, then present the jira-project-selection checkpoint (defined on the activity) for user selection. Resolve available issue types for the selected project.
 - Gather summary, description, and acceptance criteria, scoping the issue to the {target-submodule} the work package targets. Resolve assignee account ID if specified.
-- Create the issue with mapped type using the issue-type mapping below — the resulting issue is the {created-issue}. Capture {issue_number} and {issue_url}.
+- Create the issue with mapped type using the issue-type mapping below — the resulting issue is the {created-issue}. Capture {issue-number} and {issue-url}.
 - Jira issue type mapping: feature->Story, bug->Bug, task->Task, enhancement->Story, epic->Epic
 - If any Atlassian API call fails (auth, permissions, or invalid request — including the getJiraIssue verification in step 1), verify the cloudId and project access, and check the Jira issue type and required fields before retrying.
 
@@ -60,15 +60,15 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 
 Issue created on the selected platform
 
-#### issue_number
+#### issue-number
 
 Issue number (GitHub #N or Jira KEY-N)
 
-#### issue_url
+#### issue-url
 
 URL to the created issue
 
-#### jira_cloud_id
+#### jira-cloud-id
 
 Atlassian cloud ID for subsequent Jira operations (Jira only)
 
@@ -96,10 +96,10 @@ Issues should be clear to someone without prior context
 
 ### tool-usage
 
-- gh_issue_create after call — Capture issue_number and issue_url from output
+- gh_issue_create after call — Capture issue-number and issue-url from output
 - gh_issue_create sequence — call gh_issue_view next
-- getAccessibleAtlassianResources after call — Preserve cloudId as jira_cloud_id
+- getAccessibleAtlassianResources after call — Preserve cloudId as jira-cloud-id
 - getAccessibleAtlassianResources sequence — call getVisibleJiraProjects next
 - getVisibleJiraProjects sequence — call getJiraProjectIssueTypesMetadata next
 - getJiraProjectIssueTypesMetadata sequence — call createJiraIssue next
-- createJiraIssue after call — Capture issue_number and issue_url from response
+- createJiraIssue after call — Capture issue-number and issue-url from response

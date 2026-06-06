@@ -9,10 +9,6 @@ Create a Confluence page.
 
 ## Inputs
 
-### cloudId
-
-UUID of the target Atlassian cloud site.
-
 ### spaceId
 
 Target space ID

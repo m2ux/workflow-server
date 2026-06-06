@@ -21,10 +21,6 @@ Finalize documentation — update ADRs, complete test plans, create completion d
 
 The [test plan](../resources/test-plan.md#test-plan-structure) artifact for this work package
 
-### pr-number
-
-PR number for cross-referencing
-
 ## Protocol
 
 ### 1. Update Adr

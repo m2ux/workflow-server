@@ -17,10 +17,6 @@ Iteratively resolve code-analyzable assumptions through targeted codebase analys
 
 The running [log](../resources/assumption-reconciliation.md#integration-with-assumptions-log) of open and resolved assumptions
 
-### target-path
-
-Path to the codebase to analyze
-
 ### comprehension-artifact
 
 *(optional)* Existing comprehension [artifact](../resources/codebase-comprehension.md#artifact-template) to augment with findings. If absent, findings are recorded only in the assumptions log.

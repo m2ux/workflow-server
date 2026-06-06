@@ -13,19 +13,15 @@ Consolidate prism analysis artifacts from multiple evaluation dimensions into a 
 
 ## Inputs
 
-### output_path
-
-Directory containing all evaluation artifacts and where the report will be written
-
-### dimension_plan
+### dimension-plan
 
 The dimension-to-lens mapping, used to locate and interpret artifacts
 
-### completed_analyses
+### completed-analyses
 
 Array of completed prism run references with output paths and status
 
-### evaluation_description
+### evaluation-description
 
 Original evaluation description, used for report context
 
@@ -33,8 +29,8 @@ Original evaluation description, used for report context
 
 ### 1. Locate Artifacts
 
-- For each dimension in {dimension_plan}, locate the prism output artifacts in the corresponding output_subdir under {output_path}
-- Use {completed_analyses} to confirm which prism runs finished and to resolve each run's artifact output path and status before reading
+- For each dimension in {dimension-plan}, locate the prism output artifacts in the corresponding output_subdir under {output-path}
+- Use {completed-analyses} to confirm which prism runs finished and to resolve each run's artifact output path and status before reading
 - Full-prism dimensions produce: structural-analysis.md, adversarial-analysis.md, synthesis.md
 - Portfolio dimensions produce one artifact per lens: e.g., claim-inversion.md (lens 07), knowledge-audit.md (lens 40), rejected-paths.md (lens 09), scarcity.md (lens 08)
 - Verify all expected artifacts exist. If expected prism output artifacts are missing for one or more dimensions, report which dimensions are missing artifacts, then compose the report from the available dimensions and note the incomplete coverage.
@@ -55,13 +51,13 @@ Original evaluation description, used for report context
 - Compare findings across dimensions to identify patterns that span multiple evaluation axes
 - Look for: the same underlying issue surfacing in different dimensions (e.g., a feasibility constraint that also creates consistency gaps), systemic asymmetries (e.g., deep specification in one area vs shallow in another), reinforcing risks (multiple dimensions pointing to the same failure mode)
 - Identify the core finding — the single deepest insight that explains the most findings across dimensions. In the VOX evaluation, this was the 'Mathematical-Social Bifurcation': one half deeply specified, the other left to assumption.
-- Record: core_finding (title + description), cross_dimensional_patterns (array of { pattern, affected_dimensions, evidence })
+- Record: core-finding (title + description), cross_dimensional_patterns (array of { pattern, affected_dimensions, evidence })
 - If no meaningful pattern spans multiple dimensions, report the per-dimension findings without a cross-dimensional core finding and note that the evaluation dimensions appear to be independent.
 
 ### 4. Compose Report
 
 - Structure the report with clear sections. No methodology metadata — findings are presented as conclusions.
-- Section: Executive Summary — what was evaluated (framed from {evaluation_description}), total findings by dimension and severity, the core finding in 2-3 sentences, and the overall assessment
+- Section: Executive Summary — what was evaluated (framed from {evaluation-description}), total findings by dimension and severity, the core finding in 2-3 sentences, and the overall assessment
 - Section: The Core Finding — expanded description of the deepest cross-dimensional insight with a testable prediction
 - Section: Per-Dimension Findings — one subsection per dimension with: dimension description, severity summary table, key findings (each with ID, severity, title, description), and the dimension's most important insight
 - Section: Cross-Cutting Patterns — patterns spanning multiple dimensions, with evidence from each
@@ -92,19 +88,19 @@ The consolidated [evaluation report](../resources/evaluation-report-template.md#
 
 `EVALUATION-REPORT.md`
 
-#### executive_summary
+#### executive-summary
 
 Overall assessment with finding counts and core insight
 
-#### core_finding
+#### core-finding
 
 Deepest cross-dimensional insight
 
-#### dimension_findings
+#### dimension-findings
 
 Per-dimension findings with severity tables
 
-#### cross_cutting
+#### cross-cutting
 
 Cross-dimensional patterns
 

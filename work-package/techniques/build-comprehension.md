@@ -13,10 +13,6 @@ Build or augment codebase comprehension through progressive analysis and persist
 
 ## Inputs
 
-### target-path
-
-Path to the target codebase directory
-
 ### project-type
 
 *(optional)* Detected project type (rust-substrate|other)

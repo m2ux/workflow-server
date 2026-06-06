@@ -11,12 +11,6 @@ metadata:
 
 Conduct workflow retrospective to capture lessons learned and prepare for next work package
 
-## Inputs
-
-### pr-number
-
-PR number for status checking
-
 ## Protocol
 
 ### 1. Capture History

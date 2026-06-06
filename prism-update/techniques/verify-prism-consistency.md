@@ -11,17 +11,11 @@ metadata:
 
 Verify consistency across prism resources, techniques, and documentation by running four checks: stale name references, prompt guide routing accuracy, resource count alignment, and duplicate index detection.
 
-## Inputs
-
-### changes
-
-Change set — renamed and deleted entries define stale names
-
 ## Protocol
 
 ### 1. Check Stale References
 
-- Build stale name list from {changes}.renamed (old_name) and {changes}.deleted (name).
+- Build stale name list from {change-set}.renamed (old_name) and {change-set}.deleted (name).
 - Grep all files in prism/techniques/ and prism/activities/ for each stale name. Record matches.
 
 ### 2. Verify Prompt Routing
