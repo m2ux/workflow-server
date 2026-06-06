@@ -17,20 +17,16 @@ Propose and apply finding-specific mitigations through structured one-by-one dia
 
 The consolidated [evaluation report](../resources/evaluation-report-template.md#evaluation-report-template) containing findings with IDs, severities, titles, descriptions, and referenced target sections
 
-### target_path
+### target-path
 
 Path to the original document, proposal, or artifact set that was evaluated
-
-### output_path
-
-Directory for writing the MITIGATION-PLAN.md artifact
 
 ## Protocol
 
 ### 1. Load And Classify
 
 - Read the {evaluation-report} and extract all findings with IDs, severities, titles, descriptions, and referenced target sections
-- Read the target document at {target_path} and identify the specific text, sections, and claims referenced by each finding
+- Read the target document at {target-path} and identify the specific text, sections, and claims referenced by each finding
   - If a finding references target text that cannot be located in the current target, report the finding as unlocatable and present it to the user with a note that the referenced text could not be found — the target may have been modified since the evaluation
 - Classify each finding into a mitigation tier: T1 (direct correction — wrong numbers, terminology), T2 (reframing — claims needing qualification), T3 (novel mitigation — new mechanisms or content needed), T4 (structural/immovable — external constraints requiring acknowledgement)
 - Order findings within each tier by severity (Critical first, then High, Medium, Low)
@@ -56,7 +52,7 @@ Directory for writing the MITIGATION-PLAN.md artifact
 
 ### 4. Compile Plan
 
-- After all findings are presented, compile the {mitigation-plan} and write it to {output_path}
+- After all findings are presented, compile the {mitigation-plan} and write it to {output-path}
 - Structure: Summary table (ID, severity, tier, user decision), detailed changes grouped by tier, implementation priority order
 - Include the full proposed text for each accepted mitigation so the plan is self-contained
 - Verify every finding from the report has a corresponding entry (accepted, modified, or skipped)
@@ -78,15 +74,15 @@ Comprehensive [mitigation plan](../resources/mitigation-plan-template.md#mitigat
 
 `MITIGATION-PLAN.md`
 
-#### summary_table
+#### summary-table
 
 Finding ID, severity, tier, decision for every finding
 
-#### detailed_mitigations
+#### detailed-mitigations
 
 Full change specifications grouped by tier
 
-#### implementation_priority
+#### implementation-priority
 
 Ordered list of changes for application
 
