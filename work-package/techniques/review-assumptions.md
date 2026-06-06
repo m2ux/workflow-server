@@ -26,7 +26,8 @@ Which activity is generating assumptions
 ### 1. Collect Assumptions
 
 - Identify all implicit decisions and assumptions made
-- Classify by category appropriate to the {activity_context} generating them
+- Classify by category appropriate to the {activity_context} generating them  
+  > Use categories appropriate to the current activity phase.
 - If no significant assumptions are identified, explicitly confirm with the user that no assumptions were made before proceeding
 
 ### 2. Write Assumptions
@@ -76,7 +77,3 @@ Assumptions [log](../resources/assumptions-review.md#assumptions-log-template) u
 ### elevate-implicit
 
 Make implicit decisions explicit — assumptions should be elevated for validation
-
-### categorize-per-activity
-
-Use categories appropriate to the current activity phase

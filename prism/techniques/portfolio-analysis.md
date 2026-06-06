@@ -44,7 +44,8 @@ Apply two or more complementary portfolio lenses to the same artifact to produce
 
 ### 4. Execute Lenses
 
-- Apply each lens independently to the same artifact content
+- Apply each lens independently to the same artifact content  
+  > Do not let findings from one lens influence the execution of another — independence is what produces non-overlapping findings.
 - Execute each lens completely — do not abbreviate the operations
 - Keep outputs separate and clearly labelled by lens name
 
@@ -98,10 +99,6 @@ Properties found by only one lens (the value-add of portfolio analysis)
 All findings with lens attribution and convergent/unique classification
 
 ## Rules
-
-### independence
-
-Each lens must be applied independently. Do not let findings from one lens influence the execution of another — independence is what produces non-overlapping findings.
 
 ### code-only-lenses
 

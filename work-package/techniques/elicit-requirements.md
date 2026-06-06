@@ -29,7 +29,8 @@ Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)
 
 ### 1. Prompt Transcript
 
-- Prompt user for the {stakeholder_transcript} before elicitation
+- Prompt user for the {stakeholder_transcript} before elicitation  
+  > Stakeholder input comes first: the user should discuss the initiative with key stakeholders before agent elicitation begins.
 - Offer skip option with note about limitation if no {stakeholder_transcript} is provided
 - If the user skips stakeholder discussion entirely, note the limitation and proceed with agent-led elicitation
 
@@ -88,7 +89,3 @@ In/out scope definitions
 ### conversation-not-interrogation
 
 Core principle: Conversation, not interrogation — discover what user actually needs
-
-### stakeholder-input-first
-
-Stakeholder input comes first: the user should discuss the initiative with key stakeholders before agent elicitation begins.

@@ -36,7 +36,8 @@ Free-form description of the initiative from the user
 ### 3. Present Scope
 
 - Present the {scope_summary} as a numbered table of the identified packages with name and description
-- Highlight any packages that seem too large (should be split) or too small (should be merged)
+- Highlight any packages that seem too large (should be split) or too small (should be merged)  
+  > Packages should be 2-8 hours of agentic work. Larger packages should be split; smaller ones merged.
 - Set {initiative_name} based on the overall theme of the packages (see [planning-folder-template](../resources/planning-folder-template.md))
 
 ## Outputs
@@ -62,7 +63,3 @@ Total number of identified packages
 ### independence-test
 
 Each work package must be independently deliverable — if two packages cannot be shipped separately, they are one package
-
-### granularity
-
-Packages should be 2-8 hours of agentic work. Larger packages should be split; smaller ones merged.

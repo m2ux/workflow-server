@@ -61,7 +61,8 @@ Description of what was analysed — used in the report's Executive Summary scop
 - Check GitNexus availability via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md). If the target codebase is not indexed, skip blast radius enrichment.
 - For each finding that references a specific symbol (function, class, module), use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)(target: symbol_name, direction: upstream) to compute the measured blast radius: direct callers (d=1), likely affected (d=2), affected execution flows, and affected modules.
 - Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on the finding's primary symbol to determine which execution flows it participates in — this adds process context to the finding location.
-- Record enrichment data per finding: { direct_callers, affected_processes, affected_modules, process_names }. Findings without identifiable symbols are not enriched.
+- Record enrichment data per finding: { direct_callers, affected_processes, affected_modules, process_names }. Findings without identifiable symbols are not enriched.  
+  > Graph-backed blast radius is reported alongside the finding as additional evidence for the reader but does not override the severity from the authoritative source. Blast radius data is omitted when GitNexus is unavailable or when a finding does not reference an identifiable symbol.
 
 ### 5. Strip Methodology
 
@@ -135,7 +136,3 @@ All findings are written in factual declarative voice. No attribution to analyti
 ### traceability-completeness
 
 The traceability appendix must have an entry for every finding ID in the report. Missing entries are a report integrity violation.
-
-### blast-radius-is-evidence
-
-Graph-backed blast radius is reported alongside the finding as additional evidence for the reader but does not override the severity from the authoritative source. Blast radius data is omitted when GitNexus is unavailable or when a finding does not reference an identifiable symbol.

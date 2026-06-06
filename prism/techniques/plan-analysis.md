@@ -114,9 +114,8 @@ standard
 
 ## Outputs
 
-### analysis_plan
+cccccbrdektvveeleehflurjklkcnhujlkknebbhdvbg
 
-Human-readable analysis plan artifact
 
 #### artifact
 

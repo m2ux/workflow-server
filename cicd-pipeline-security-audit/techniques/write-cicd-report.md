@@ -35,7 +35,8 @@ Scan completeness verification data (file and per-pattern coverage)
 
 ### 3. Write Finding Details
 
-- For each finding, write a structured block with finding number, pattern ID, severity, source, sink, evidence, and remediation
+- For each finding, write a structured block with finding number, pattern ID, severity, source, sink, evidence, and remediation  
+  > Each finding must include: number, pattern ID (P1-P7), severity, source, sink, evidence snippet, and remediation.
 - For compound findings, document the full attack chain
 - Include before/after code examples from the [remediation playbook](../resources/remediation-playbook.md)
 - Group findings by submodule for readability
@@ -67,10 +68,6 @@ Complete CI/CD security [audit report](../resources/cicd-audit-report-template.m
 `01-cicd-audit-report.md`
 
 ## Rules
-
-### finding-format
-
-Each finding must include: number, pattern ID (P1-P7), severity, source, sink, evidence snippet, and remediation
 
 ### no-false-positives
 

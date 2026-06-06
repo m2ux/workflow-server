@@ -32,7 +32,8 @@ Run L12 analysis, detect knowledge gaps via boundary + audit prisms, then re-ana
 
 ### 4. Corrected Analysis
 
-- Dispatch re-analysis to a fresh worker with [L12](../resources/l12.md)
+- Dispatch re-analysis to a fresh worker with [L12](../resources/l12.md)  
+  > Corrected re-analysis worker does not see the initial L12 output — only the target content + gap context.
 - Worker receives: <verified_knowledge source='GAP-ANALYSIS'>
 {\$gap_data}
 </verified_knowledge>
@@ -60,10 +61,6 @@ Filesystem path to verified-gaps.md
 Filesystem path to verified-corrected.md
 
 ## Rules
-
-### isolation
-
-Corrected re-analysis worker does not see the initial L12 output — only the target content + gap context
 
 ### model-selection
 

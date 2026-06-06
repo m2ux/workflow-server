@@ -36,7 +36,8 @@ Apply L12 structural analysis lens to code for deep structural findings, conserv
 - Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) with queries derived from the target code's primary concerns (e.g., the module name, key function names, or {analysis_focus} if provided) to discover execution flows through the target — this identifies which call chains the code participates in and which are most relevant.
 - Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on the primary entry points and exported symbols of the target to obtain caller/callee maps — the lens can then make blast-radius claims backed by actual graph data rather than inference.
 - Record the structural context (execution flows, caller counts, callee maps) as a preamble section that the lens operations can reference when making claims about impact, coupling, or dead code.
-- If any GitNexus call fails, log the failure and continue without structural context — the lens operates independently.
+- If any GitNexus call fails, log the failure and continue without structural context — the lens operates independently.  
+  > Structural context from GitNexus is supplementary evidence, not a replacement for the lens operations. The L12 chain executes completely regardless of whether graph data is available. Graph data strengthens blast-radius claims and call-chain evidence but does not alter the analytical method.
 
 ### 4. Execute Lens
 
@@ -96,7 +97,3 @@ Build improvements and observe what they reveal. Do not merely describe problems
 ### meta-law-specificity
 
 The meta-law must predict a concrete, testable consequence for this specific code. It must not generalize the conservation law to a broader category.
-
-### graph-context-is-supplementary
-
-Structural context from GitNexus is supplementary evidence, not a replacement for the lens operations. The L12 chain executes completely regardless of whether graph data is available. Graph data strengthens blast-radius claims and call-chain evidence but does not alter the analytical method.

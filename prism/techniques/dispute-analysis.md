@@ -21,7 +21,8 @@ Run 2 maximally orthogonal prisms against the same target and synthesize their d
 
 ### 2. Execute Lenses
 
-- Dispatch prism A to a fresh worker with its resource index, passing {target_content} as the material to analyze
+- Dispatch prism A to a fresh worker with its resource index, passing {target_content} as the material to analyze  
+  > Each lens runs in a fresh context; neither sees the other's output.
 - Dispatch prism B to a fresh worker against the same {target_content} (can be parallel)
 - Each worker writes to {output_path}/dispute-lens-{a|b}.md
 
@@ -54,10 +55,4 @@ Filesystem path to dispute-synthesis.md
 #### prism_pair
 
 Resource indices and lens identities used for A and B
-
-## Rules
-
-### isolation
-
-Each lens runs in a fresh context; neither sees the other's output
 

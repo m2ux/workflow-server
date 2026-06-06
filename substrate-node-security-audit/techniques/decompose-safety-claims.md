@@ -46,7 +46,8 @@ Code files to read for independent verification
 
 ### 5. Verify Independently
 
-- For each decomposed property, read the cited code location in the {source_files} and search for the specific implementation. Output CONFIRMED (all instances verified with citations), REFUTED (any instance lacks implementation — becomes a new finding), or INSUFFICIENT (cannot determine).
+- For each decomposed property, read the cited code location in the {source_files} and search for the specific implementation. Output CONFIRMED (all instances verified with citations), REFUTED (any instance lacks implementation — becomes a new finding), or INSUFFICIENT (cannot determine).  
+  > A PASS that says 'cursor is set correctly' must verify: is there an ensure!(new > old) guard? If not, the PASS is invalid regardless of whether the code 'works'.
 - CONFIRMED only when ALL decomposed properties are verified with code citations. Record each verdict in the {decomposition_results} table, completing the per-instance Verified? and Evidence columns.
 
 ## Outputs
@@ -72,7 +73,3 @@ Refute safety claims, not confirm them.
 ### focus-domains
 
 §3.1 (flush), §3.2 (lifecycle/cursor), §3.3 (event fields), §3.4 (inherent symmetry), §3.6 (input validation), §3.10 (timestamps) — these checks are most susceptible to false PASSes.
-
-### cursor-guard
-
-A PASS that says 'cursor is set correctly' must verify: is there an ensure!(new > old) guard? If not, the PASS is invalid regardless of whether the code 'works'.

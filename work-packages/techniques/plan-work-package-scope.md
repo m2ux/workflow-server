@@ -26,7 +26,8 @@ The work package currently being planned
 
 ### 2. Define Scope
 
-- Identify what is in scope for the {current_package} — specific deliverables and changes
+- Identify what is in scope for the {current_package} — specific deliverables and changes  
+  > Scope items must name specific deliverables — vague scope leads to scope creep.
 - Identify what is explicitly out of scope with reasons for exclusion
 - Apply the independence test: could this package be shipped without any other package?
 
@@ -79,9 +80,3 @@ Effort estimate with rationale
 #### success_criteria
 
 Measurable success criteria with verification methods
-
-## Rules
-
-### scope-specificity
-
-Scope items must name specific deliverables — vague scope leads to scope creep
