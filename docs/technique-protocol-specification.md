@@ -153,12 +153,17 @@ and `Final` position an ancestor's content around its descendants (§6).
 
 A step is an imperative action the agent performs. A standing prohibition, invariant, or precondition
 is not a step: a constraint that governs the technique (or several steps) is a rule (§3.4); a
-constraint that qualifies one step's action folds into that step as a guard ("append the attestation
-— but only after the user has signed off"). A bullet whose whole substance is "never X" or "always Y"
-with no action of its own is mis-modelled and belongs in one of those two places.
+constraint that qualifies ONE step's action either folds inline as a guard ("append the attestation —
+but only after the user has signed off") or, when it is a distinct caveat/fallback/conditional ("If
+the PR has not merged, wait"), is written as a markdown blockquote **`>` note immediately beneath that
+step's bullet**. The `>` note folds into the step as a continuation, keeping the constraint attached;
+authoring it instead as an indented sub-bullet is wrong — the parser's step regex treats a `  - …`
+line as a new step and flattens the caveat into a disconnected peer step (AP-56). A bullet whose whole
+substance is "never X" or "always Y" with no action of its own is mis-modelled and belongs in a rule
+or a note. (A genuine enumeration or sequential sub-step legitimately stays a sub-bullet.)
 
 **Protocol variables.** A step may bind an intermediate value for later steps to read, written
-`{$name}` (kebab-case, dollar-prefixed). A protocol variable is scoped to a single protocol run — one
+`{$name}` (snake_case, dollar-prefixed — a protocol variable is a symbol, §3.2). A protocol variable is scoped to a single protocol run — one
 step creates it, later steps consume it — and is *not* part of the technique's interface: it is
 neither an Input (a value the technique receives from its caller) nor an Output (a value the technique
 returns), is not delivered in the bundle, and is not `::`-addressable. Use it for technique-internal
