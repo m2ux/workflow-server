@@ -34,12 +34,12 @@ Run L12 analysis, detect knowledge gaps via boundary + audit prisms, then re-ana
 
 - Dispatch re-analysis to a fresh worker with [L12](../resources/l12.md)
 - Worker receives: <verified_knowledge source='GAP-ANALYSIS'>
-{gap_data}
+{\$gap-data}
 </verified_knowledge>
 
 {target-content}
 - Worker writes to {output-path}/verified-corrected.md
-- Return {verified-result} — its initial_path, gaps_path, and corrected_path sub-fields hold the three pipeline artifact paths.
+- Return {verified-result} — its initial-path, gaps-path, and corrected-path sub-fields hold the three pipeline artifact paths.
 
 ## Outputs
 
@@ -47,15 +47,15 @@ Run L12 analysis, detect knowledge gaps via boundary + audit prisms, then re-ana
 
 Paths to the three verified pipeline artifacts
 
-#### initial_path
+#### initial-path
 
 Filesystem path to verified-initial.md
 
-#### gaps_path
+#### gaps-path
 
 Filesystem path to verified-gaps.md
 
-#### corrected_path
+#### corrected-path
 
 Filesystem path to verified-corrected.md
 

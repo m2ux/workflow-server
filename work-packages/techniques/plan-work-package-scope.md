@@ -76,7 +76,7 @@ Blocker and soft dependency list
 
 Effort estimate with rationale
 
-#### success_criteria
+#### success-criteria
 
 Measurable success criteria with verification methods
 

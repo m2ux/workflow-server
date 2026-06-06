@@ -52,8 +52,8 @@ Absolute path to the upstream prisms directory
 
 ### 5. Compute Next Index and Assemble change-set
 
-- Set {next_index} to max(existing resource indices) + 1.
-- Assemble the categorized new, modified, renamed, and deleted entries together with {next_index} into the {change-set} result.
+- Set {next-index} to max(existing resource indices) + 1.
+- Assemble the categorized new, modified, renamed, and deleted entries together with {next-index} into the {change-set} result.
   - If no differences were found across all categories, report that resources are up to date; the workflow can end early.
 
 ## Outputs
@@ -78,6 +78,6 @@ Array of { old_name, new_name, old_resource_file, upstream_file }
 
 Array of { name, resource_file }
 
-#### next_index
+#### next-index
 
 Next available resource index

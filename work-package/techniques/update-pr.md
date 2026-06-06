@@ -32,8 +32,8 @@ Update PR with final implementation details and mark ready for review, or post c
 ### 3. Verify Body
 
 - Render the Final-template body to /tmp/pr-body.md.
-- Evaluate each rule in rules.pr-body-conformance against the rendered text. For each failure append { rule_id, detail } to body_findings.
-- Set body_conforms=true when body_findings is empty after all rules are evaluated; false otherwise.
+- Evaluate each rule in rules.pr-body-conformance against the rendered text. For each failure append { rule_id, detail } to body-findings.
+- Set body-conforms=true when body-findings is empty after all rules are evaluated; false otherwise.
 
 ### 4. Mark Ready
 
@@ -50,7 +50,7 @@ PR updated and marked ready for review
 
 URL to the PR
 
-#### pr_status
+#### pr-status
 
 Status after update (e.g., ready for review)
 
@@ -65,7 +65,7 @@ Status after update (e.g., ready for review)
 
 - summary-max-two-sentences: Summary section is 1-2 sentences, leads with the outcome, and includes measurable impact when available.
 - engineering-link-mandatory: Engineering link is present, resolved from the parent repo's `git remote get-url origin` and current `git branch --show-current`, and resolves to a committed file on the remote.
-- issue-link-or-explicit-placeholder: Issue line is present. When `issue_skipped == true`, render `🐛 _Issue: skipped_` as an explicit placeholder rather than dropping the line or fabricating a number.
+- issue-link-or-explicit-placeholder: Issue line is present. When `issue-skipped == true`, render `🐛 _Issue: skipped_` as an explicit placeholder rather than dropping the line or fabricating a number.
 - no-commit-headings-in-changes: Changes section groups bullets by component (bold component name), not by Conventional Commits header or commit message.
 - no-files-changed-list: Changes section does not enumerate file paths. File-level detail belongs in the PR's Files-changed tab.
 

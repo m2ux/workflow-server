@@ -55,11 +55,11 @@ Code files to read for independent verification
 
 Decomposition table with per-instance verification results.
 
-#### decomposition_table
+#### decomposition-table
 
 | PASS Item | Property | Instance | Verified? | Evidence |
 
-#### verdict_summary
+#### verdict-summary
 
 CONFIRMED count, REFUTED count (each becomes a finding), INSUFFICIENT count
 

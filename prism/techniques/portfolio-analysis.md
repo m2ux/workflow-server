@@ -31,7 +31,7 @@ Apply two or more complementary portfolio lenses to the same artifact to produce
 - Lens selection guide: trade-offs → scarcity (08) + rejected-paths (09). assumptions → claim (07) + pedagogy (06). maintainability → degradation (10) + contract (11). design rationale → pedagogy (06) + rejected-paths (09). interface quality → contract (11) + claim (07). architecture → deep-scan (12) + sdl-abstraction (15). trust/security → sdl-trust (13) + security-v1 (37). coupling/ordering → sdl-coupling (14) + evolution (21). API naming → api-surface (22) + identity (17). error+cost → error-resilience (19) + evidence-cost (29). dead code → reachability (30) + fidelity (31). state management → state-audit (32) + degradation (10). code archaeology → archaeology (33) + simulation (38). registration gaps → audit-code (34). change resilience → cultivation (35) + evolution (21). temporal fragility → sdl-simulation (36) + degradation (10). testability → testability-v1 (39) + fix-cascade (16). confabulation check → knowledge-audit (40) + knowledge-boundary (41). maximum trust → oracle (44). architecture redesign → architect (51) + genesis (57). analytical blindspots → blindspot (52) + significance (60). counterfactual exploration → counterfactual (54) + history (58). emergent behavior → emergence (55) + evolution (21). conservation law validation → falsify (56) + significance (60). knowledge prerequisites → prereq (59) + verify-claims (61).
 - Always apply at least two lenses. A single portfolio lens should use the structural-analysis technique instead. If only one portfolio lens was requested, switch to the structural-analysis technique for single-lens analysis, or add a complementary lens per the selection guide above.
 - l12-universal (18) is Sonnet-only — Haiku fails below this compression floor. Only recommend when using Sonnet or Opus.
-- When target_type is 'general', prefer neutral variants: error-resilience-neutral (24), api-surface-neutral (25), evolution-neutral (26). Do not use code-specific behavioral lenses on general targets.
+- When target-type is 'general', prefer neutral variants: error-resilience-neutral (24), api-surface-neutral (25), evolution-neutral (26). Do not use code-specific behavioral lenses on general targets.
 
 ### 2. Load Lenses
 
@@ -69,11 +69,11 @@ Individual analysis artifact per lens
 
 `portfolio-{lens-name}.md`
 
-#### per_lens_findings
+#### per-lens-findings
 
 Complete findings from each lens, labelled by lens name
 
-#### artifact_paths
+#### artifact-paths
 
 File paths to each per-lens artifact
 
@@ -85,15 +85,15 @@ Cross-lens convergence/divergence synthesis
 
 `portfolio-synthesis.md`
 
-#### convergent_findings
+#### convergent-findings
 
 Structural properties found by multiple lenses (high confidence)
 
-#### unique_findings
+#### unique-findings
 
 Properties found by only one lens (the value-add of portfolio analysis)
 
-#### summary_table
+#### summary-table
 
 All findings with lens attribution and convergent/unique classification
 

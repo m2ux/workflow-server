@@ -11,7 +11,7 @@ Update fields on an existing Jira issue.
 
 ### issue-id-or-key
 
-Issue key. Passed as the `issueIdOrKey` parameter to the Atlassian MCP tools.
+Issue key.
 
 ### fields
 

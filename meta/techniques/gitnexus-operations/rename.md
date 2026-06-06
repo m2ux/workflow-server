@@ -9,29 +9,29 @@ Multi-file rename driven by the call graph (preview or apply).
 
 ## Inputs
 
-### repo_name
+### repo-name
 
-Repository name
+Repository name.
 
-### old_name
+### old-name
 
-Current symbol name
+Current symbol name.
 
-### new_name
+### new-name
 
-Target symbol name
+Target symbol name.
 
-### dry_run
+### dry-run
 
-true to preview edits without applying
+true to preview edits without applying.
 
 ## Output
 
 ### changes
 
-Per-file edit list (when `dry_run`) or applied summary
+Per-file edit list (when `dry-run`) or applied summary
 
 ## Protocol
 
-1. Rename `old_name` to `new_name` in `repo_name`, always running with `dry_run: true` first; review the returned `changes` list with the user.
-2. Re-run with `dry_run: false` to apply.
+1. Rename `old-name` to `new-name` in `repo-name`, always running with `dry-run: true` first; review the returned `changes` list with the user.
+2. Re-run with `dry-run: false` to apply.

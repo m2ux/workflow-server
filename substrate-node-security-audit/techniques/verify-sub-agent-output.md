@@ -37,11 +37,11 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 
 ### 1. Check Dispatch Completeness
 
-- If a {dispatch-manifest} is provided, verify every agent in the {agent-assignments} was dispatched and returned. Produce a dispatch status table: crate, assigned_group, agent_dispatched (yes/no), structured_output_received (yes/no) — i.e. output conforming to the [sub-agent-output-schema](../resources/sub-agent-output-schema.md). If one or more assigned agents were not dispatched, flag as DISPATCH_INCOMPLETE. This is a HARD STOP — dispatch the missing agents before proceeding to finding consolidation.
+- If a {dispatch-manifest} is provided, verify every agent in the {agent-assignments} was dispatched and returned. Produce a dispatch status table: crate, assigned-group, agent-dispatched (yes/no), structured-output-received (yes/no) — i.e. output conforming to the [sub-agent-output-schema](../resources/sub-agent-output-schema.md). If one or more assigned agents were not dispatched, flag as DISPATCH_INCOMPLETE. This is a HARD STOP — dispatch the missing agents before proceeding to finding consolidation.
 
 ### 2. Check Coverage Gate
 
-- For each .rs file in the {file-inventory} exceeding 200 lines in priority-1/2 crates, check whether at least one §3-APPLYING GROUP A SUB-AGENT's output references it (via file manifest, findings, or checklist coverage). Files read ONLY during reconnaissance (by the orchestrator or reconnaissance sub-agents) do NOT satisfy the coverage gate. Produce a coverage table: file, lines, read-by-agent, agent_type (group-a/recon/none), status (COVERED/RECON-ONLY/UNREAD). Flag any file with status RECON-ONLY or UNREAD. This is a HARD STOP. If one or more files were read only during reconnaissance rather than by a §3-applying agent (status RECON-ONLY), dispatch targeted Group A follow-up agents for those files before proceeding.
+- For each .rs file in the {file-inventory} exceeding 200 lines in priority-1/2 crates, check whether at least one §3-APPLYING GROUP A SUB-AGENT's output references it (via file manifest, findings, or checklist coverage). Files read ONLY during reconnaissance (by the orchestrator or reconnaissance sub-agents) do NOT satisfy the coverage gate. Produce a coverage table: file, lines, read-by-agent, agent-type (group-a/recon/none), status (COVERED/RECON-ONLY/UNREAD). Flag any file with status RECON-ONLY or UNREAD. This is a HARD STOP. If one or more files were read only during reconnaissance rather than by a §3-applying agent (status RECON-ONLY), dispatch targeted Group A follow-up agents for those files before proceeding.
 
 ### 3. Check Mandatory Tables
 
@@ -49,7 +49,7 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 
 ### 4. Check Structural Completeness
 
-- Across the {agent-results}, check that each agent's steps_completed list matches the completeness criteria in {expected-outputs}. Check that every FAIL verdict has a corresponding finding entry. Check that every mandatory_tables field is populated or null with justification.
+- Across the {agent-results}, check that each agent's steps-completed list matches the completeness criteria in {expected-outputs}. Check that every FAIL verdict has a corresponding finding entry. Check that every mandatory-tables field is populated or null with justification.
 
 ### 5. Check Cross Chain Timestamp
 
@@ -57,7 +57,7 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 
 ### 6. Extract Table Findings
 
-- DETERMINISTIC CELL-LEVEL SCAN: Iterate every row in every mandatory table from every agent. For each cell, apply keyword match: FAIL, DIFF, Missing, No, absent, not validated, unconditional, no guard, no check, unpaired. Each matching cell becomes a table-derived finding (source_table, cell_description, agent_id, severity=TBD). The orchestrator MUST NOT apply judgment to skip cells — all matches are extracted. Deduplication occurs later in merge-findings.
+- DETERMINISTIC CELL-LEVEL SCAN: Iterate every row in every mandatory table from every agent. For each cell, apply keyword match: FAIL, DIFF, Missing, No, absent, not validated, unconditional, no guard, no check, unpaired. Each matching cell becomes a table-derived finding (source-table, cell-description, agent-id, severity=TBD). The orchestrator MUST NOT apply judgment to skip cells — all matches are extracted. Deduplication occurs later in merge-findings.
 
 ### 7. Verify Event Construction Site
 
@@ -85,18 +85,18 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 
 Verification report with gap list and re-dispatch recommendations.
 
-#### dispatch_manifest
+#### dispatch-manifest
 
-crate, assigned_group, dispatched, returned, status
+crate, assigned-group, dispatched, returned, status
 
-#### coverage_table
+#### coverage-table
 
-file, lines, agent, agent_type (group-a/recon/none), COVERED/RECON-ONLY/UNREAD
+file, lines, agent, agent-type (group-a/recon/none), COVERED/RECON-ONLY/UNREAD
 
-#### missing_tables_list
+#### missing-tables-list
 
-agent_id, table_id, reason
+agent-id, table-id, reason
 
-#### redispatch_recommendations
+#### redispatch-recommendations
 
-agent_id, scope, specific check to perform
+agent-id, scope, specific check to perform

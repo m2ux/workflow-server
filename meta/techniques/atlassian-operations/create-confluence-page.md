@@ -11,7 +11,7 @@ Create a Confluence page.
 
 ### space-id
 
-Target space ID. Passed as the `spaceId` parameter to the Atlassian MCP tools.
+Target space ID.
 
 ### body
 
@@ -23,7 +23,7 @@ Page title (optional)
 
 ### parent-id
 
-Optional parent page ID. Passed as the `parentId` parameter to the Atlassian MCP tools.
+Optional parent page ID.
 
 ## Protocol
 

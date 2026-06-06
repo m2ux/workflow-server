@@ -49,7 +49,7 @@ Conduct structured manual diff review using external side-by-side diff tool with
 
 - Conduct focused interview for each flagged block
 - Ask what the issue is and record the response
-- If user marks block as critical blocker, set {has_critical_blocker}=true
+- If user marks block as critical blocker, set {has-critical-blocker}=true
 
 ### 7. Create Report
 
@@ -66,11 +66,11 @@ Conduct structured manual diff review using external side-by-side diff tool with
 
 `change-block-index.md`
 
-#### index_table
+#### index-table
 
 Row (hyperlinked to rationale) | Path | File with review time estimate
 
-#### block_rationale
+#### block-rationale
 
 Per-block descriptive paragraphs explaining intent, context, and non-obvious design choices
 
@@ -86,6 +86,6 @@ Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-rev
 
 Per-block issues with interview responses
 
-#### has_critical_blocker
+#### has-critical-blocker
 
 True if any block marked as critical blocker

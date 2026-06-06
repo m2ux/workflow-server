@@ -46,7 +46,7 @@ Expected scanner output schema from [sub-agent-output-schema](../resources/sub-a
 ### 4. Produce Gap Report
 
 - Compile all gaps into the {verification-report}
-- Set verification_complete=true only if zero gaps found
+- Set verification-complete=true only if zero gaps found
 
 ## Outputs
 
@@ -54,11 +54,11 @@ Expected scanner output schema from [sub-agent-output-schema](../resources/sub-a
 
 Scan completeness [verification](../resources/intermediate-artifact-schemas.md#verification-report) with gaps and re-scan recommendations
 
-#### file_coverage
+#### file-coverage
 
 Scanned vs total files
 
-#### pattern_coverage
+#### pattern-coverage
 
 Per-scanner pattern application status
 

@@ -11,7 +11,7 @@ Add a page-level (footer) comment to a Confluence page.
 
 ### page-id
 
-Page ID. Passed as the `pageId` parameter to the Atlassian MCP tools.
+Page ID.
 
 ### body
 

@@ -32,7 +32,7 @@ Apply recursive meta-analysis to L12 output using the claim prism, then synthesi
 - Worker produces: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN
 - Worker writes to {output-path}/reflect-synthesis.md
 - Synthesis must produce exactly 4 sections: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN
-- Return {reflect-result} — its {l12_path}, {meta_path}, and {synthesis_path} sub-fields hold the three pipeline artifact paths.
+- Return {reflect-result} — its {l12-path}, {meta-path}, and {synthesis-path} sub-fields hold the three pipeline artifact paths.
 
 ## Outputs
 
@@ -40,15 +40,15 @@ Apply recursive meta-analysis to L12 output using the claim prism, then synthesi
 
 Paths to the three reflect pipeline artifacts
 
-#### l12_path
+#### l12-path
 
 Filesystem path to reflect-l12.md
 
-#### meta_path
+#### meta-path
 
 Filesystem path to reflect-meta.md
 
-#### synthesis_path
+#### synthesis-path
 
 Filesystem path to reflect-synthesis.md
 

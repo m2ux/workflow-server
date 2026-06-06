@@ -49,10 +49,10 @@ false
 
 Storage lifecycle pairing table with optional invariant comparison.
 
-#### pairing_table
+#### pairing-table
 
 | StorageMap | Crate | insert() Sites | remove() Sites | Paired? | Cap Enforced? |
 
-#### invariant_table
+#### invariant-table
 
 | StorageMap | insert() Callers | remove() Callers | Paired? | Cross-function Consistent? | (optional)

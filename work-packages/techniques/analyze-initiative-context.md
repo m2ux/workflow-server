@@ -22,7 +22,7 @@ Type of analysis to perform: 'completion' or 'context'.
 ### 1. Select Analysis Type
 
 - Present the analysis-type-selection checkpoint to determine if this is continuing or new
-- Set {analysis_type} variable based on user selection
+- Set {analysis-type} variable based on user selection
 - If the user is unsure whether this is continuing or new, check for existing planning artifacts — if found, suggest completion analysis; if not, suggest context analysis
 
 ### 2. Perform Completion Analysis
@@ -56,11 +56,11 @@ Type of analysis to perform: 'completion' or 'context'.
 
 Analysis document with findings and recommendations, persisted as [01-COMPLETION-ANALYSIS.md](../resources/completion-analysis-guide.md#4-document-findings) (completion) or [02-CONTEXT-ANALYSIS.md](../resources/context-analysis-guide.md#5-document-findings) (context)
 
-#### analysis_type
+#### analysis-type
 
 completion or context
 
-#### key_findings
+#### key-findings
 
 Summary of analysis findings
 
@@ -72,7 +72,7 @@ Suggested approach for planning and prioritization
 
 ### type-determines-method
 
-The analysis_type variable determines which analysis method to use — never mix them
+The analysis-type variable determines which analysis method to use — never mix them
 
 ### document-everything
 

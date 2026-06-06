@@ -45,18 +45,18 @@ The benchmark finding list to compare against (e.g., professional audit report)
 
 Comparison report with mapping, gaps, calibration analysis, and countermeasures.
 
-#### finding_mapping_table
+#### finding-mapping-table
 
 reference finding, primary finding, match type, severity comparison
 
-#### gap_list
+#### gap-list
 
 missed reference findings grouped by severity and root cause
 
-#### severity_calibration_analysis
+#### severity-calibration-analysis
 
 over-rated findings, under-rated findings, average delta
 
-#### root_cause_analysis
+#### root-cause-analysis
 
 root cause analysis with proposed countermeasures

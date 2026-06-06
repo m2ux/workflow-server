@@ -11,11 +11,11 @@ Discover the fields for a specific issue type in a project.
 
 ### project-id-or-key
 
-Project key. Passed as the `projectIdOrKey` parameter to the Atlassian MCP tools.
+Project key.
 
 ### issue-type-id
 
-Issue type ID identifying the issue type whose fields to discover. Passed as the `issueTypeId` parameter to the Atlassian MCP tools.
+Issue type ID identifying the issue type whose fields to discover.
 
 ## Protocol
 

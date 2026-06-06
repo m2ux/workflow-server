@@ -11,7 +11,7 @@ Update a Confluence page (full body replace).
 
 ### page-id
 
-Page ID. Passed as the `pageId` parameter to the Atlassian MCP tools.
+Page ID.
 
 ### body
 

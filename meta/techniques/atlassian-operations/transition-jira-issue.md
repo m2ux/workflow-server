@@ -11,7 +11,7 @@ Move an issue to a new status.
 
 ### issue-id-or-key
 
-Issue key. Passed as the `issueIdOrKey` parameter to the Atlassian MCP tools.
+Issue key.
 
 ### transition
 

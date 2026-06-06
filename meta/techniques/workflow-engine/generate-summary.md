@@ -19,10 +19,10 @@ Completed activities, checkpoint decisions, artifacts produced
 
 ## Output
 
-### summary_markdown
+### summary-markdown
 
-[Markdown string](../../resources/session-summary-template.md#session-summary-template) ready to present to the user
+[Markdown string](../../resources/session-summary-template.md#session-summary-template) ready to present to the user.
 
 ## Protocol
 
-1. Draw from `trace` to compose the summary sections: workflow id and title, start/completion timestamps, activities completed, key checkpoint decisions, artifacts with paths, outcomes satisfied vs. unmet, follow-up items. Return the assembled markdown as `summary_markdown`.
+1. Draw from `trace` to compose the summary sections: workflow id and title, start/completion timestamps, activities completed, key checkpoint decisions, artifacts with paths, outcomes satisfied vs. unmet, follow-up items. Return the assembled markdown as `summary-markdown`.

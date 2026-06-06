@@ -47,19 +47,19 @@ Automatically compose an analysis pipeline based on input characteristics — th
 
 Paths and pipeline trace for the smart adaptive run
 
-#### prereq_path
+#### prereq-path
 
 Filesystem path to smart-prereq.md
 
-#### analysis_paths
+#### analysis-paths
 
 Array of paths to smart-analysis.md and/or subsystem-*.md as produced
 
-#### dispute_paths
+#### dispute-paths
 
 Array of paths to smart-dispute-*.md (empty if dispute skipped)
 
-#### pipeline_steps
+#### pipeline-steps
 
 Array of step names executed in order
 

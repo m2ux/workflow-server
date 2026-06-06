@@ -11,7 +11,7 @@ Read a Confluence page as Markdown.
 
 ### page-id
 
-Page ID. Passed as the `pageId` parameter to the Atlassian MCP tools.
+Page ID.
 
 ## Protocol
 

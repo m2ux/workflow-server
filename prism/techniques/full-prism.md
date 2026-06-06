@@ -57,7 +57,7 @@ Resource index to load from the prism workflow (00 for structural, 01 for advers
 
 ### 6. Format Output
 
-- Structure {pass-artifact}.analysis_text with clear section headers matching the lens operations
+- Structure {pass-artifact}.analysis-text with clear section headers matching the lens operations
 - For structural: claim, dialectic, concealment mechanism, improvements, invariant, conservation law, meta-law, findings table
 - For adversarial: wrong predictions, overclaims, underclaims, revised findings table
 - For synthesis: refined conservation law, refined meta-law, definitive classification, deepest finding
@@ -72,11 +72,11 @@ Analysis artifact written to the filesystem
 
 `structural-analysis.md` (index 00) / `adversarial-analysis.md` (index 01) / `synthesis.md` (index 02)
 
-#### artifact_path
+#### artifact-path
 
 Full filesystem path to the written artifact
 
-#### analysis_text
+#### analysis-text
 
 The full analysis output following the lens operations
 

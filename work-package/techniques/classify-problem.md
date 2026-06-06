@@ -47,7 +47,7 @@ Summary, description, and context from the linked issue
 
 - Map complexity to workflow path (full, elicitation-only, research-only, or skip optional activities)
 - Document path rationale
-- Set needs_elicitation, needs_research, skip_optional_activities accordingly
+- Set needs-elicitation, needs-research, skip-optional-activities accordingly
 - For simple changes, lightweight application is acceptable — not every bug fix needs full elicitation
 
 ### 5. Document Philosophy
@@ -71,11 +71,11 @@ Records problem classification, design [rationale](../resources/design-framework
 
 `design-philosophy.md`
 
-#### problem_statement
+#### problem-statement
 
 Clear problem definition with system understanding
 
-#### problem_type
+#### problem-type
 
 Specific problem or inventive goal
 

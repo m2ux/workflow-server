@@ -45,10 +45,10 @@ true
 
 Structured function registry table.
 
-#### registry_table
+#### registry-table
 
 one row per function with file location, type classification, and priority
 
-#### file_manifest
+#### file-manifest
 
 every file read with line count and read status

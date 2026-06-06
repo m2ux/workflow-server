@@ -28,7 +28,7 @@ Run 2 maximally orthogonal prisms against the same target and synthesize their d
 ### 3. Synthesize Disagreements
 
 - Dispatch synthesis to a fresh worker with [dispute-synthesis](../resources/dispute-synthesis.md) resource (62)
-- Worker constructs input: "# LENS A: {prism_a}\n\n{output_a}\n\n---\n\n# LENS B: {prism_b}\n\n{output_b}"
+- Worker constructs input: "# LENS A: {\$prism-a}\n\n{\$output-a}\n\n---\n\n# LENS B: {\$prism-b}\n\n{\$output-b}"
 - Worker writes to {output-path}/dispute-synthesis.md
 - The synthesis focuses on DISAGREEMENTS, not agreements. Convergence is noted only to test implicit shared assumptions.
 - Return {dispute-result}: the three artifact paths and the prism pair selected in step 1
@@ -39,19 +39,19 @@ Run 2 maximally orthogonal prisms against the same target and synthesize their d
 
 Paths to the three dispute artifacts and the prism pair used
 
-#### lens_a_path
+#### lens-a-path
 
 Filesystem path to dispute-lens-a.md
 
-#### lens_b_path
+#### lens-b-path
 
 Filesystem path to dispute-lens-b.md
 
-#### synthesis_path
+#### synthesis-path
 
 Filesystem path to dispute-synthesis.md
 
-#### prism_pair
+#### prism-pair
 
 Resource indices and lens identities used for A and B
 

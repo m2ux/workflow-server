@@ -38,8 +38,8 @@ Per-workflow trigger, permission, and checkout classification data
 
 ### 4. Verify Dispatch Completeness
 
-- Compare the scanner roster from `scanner-assignments` against `{$dispatched-scanners}`. Every scanner in the roster must have been dispatched and returned a result. Record the `dispatch-status`: a dispatch manifest table (scanner_id, assigned_submodule, dispatched (yes/no), returned (yes/no), status) plus the {scanners_dispatched} and {scanners_returned} counts. If any scanner was NOT dispatched, flag as INCOMPLETE and return the manifest for re-dispatch.
-- Verify {scanners_dispatched} equals scanners_assigned before proceeding
+- Compare the scanner roster from `scanner-assignments` against `{$dispatched-scanners}`. Every scanner in the roster must have been dispatched and returned a result. Record the `dispatch-status`: a dispatch manifest table (scanner-id, assigned-submodule, dispatched (yes/no), returned (yes/no), status) plus the {scanners-dispatched} and {scanners-returned} counts. If any scanner was NOT dispatched, flag as INCOMPLETE and return the manifest for re-dispatch.
+- Verify {scanners-dispatched} equals scanners-assigned before proceeding
 
 ### 5. Dispatch Verification
 
@@ -55,18 +55,18 @@ Per-workflow trigger, permission, and checkout classification data
 
 Dispatch and collection status for all agents
 
-#### scanners_dispatched
+#### scanners-dispatched
 
 Count of dispatched scanner agents
 
-#### scanners_returned
+#### scanners-returned
 
 Count of returned scanner agents
 
-#### verification_dispatched
+#### verification-dispatched
 
 Whether V was dispatched
 
-#### merge_dispatched
+#### merge-dispatched
 
 Whether M was dispatched

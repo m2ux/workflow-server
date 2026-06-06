@@ -66,14 +66,14 @@ Source files to read for evidence gathering
 
 Complete verdict matrix and coverage attestation.
 
-#### verdict_matrix
+#### verdict-matrix
 
 one row per item, one column per checklist entry, each cell is PASS/FAIL/NA with evidence
 
-#### required_analysis_tables
+#### required-analysis-tables
 
 any structured tables mandated by specific checklist entries
 
-#### coverage_attestation
+#### coverage-attestation
 
 total items, total reviewed, coverage percentage, gaps list

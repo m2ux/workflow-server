@@ -75,11 +75,11 @@ Elicited [requirements](../resources/requirements-elicitation.md#document-templa
 
 Captured requirements list
 
-#### success_criteria
+#### success-criteria
 
 Defined success criteria with verification methods
 
-#### scope_boundaries
+#### scope-boundaries
 
 In/out scope definitions
 

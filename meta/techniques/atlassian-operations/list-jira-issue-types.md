@@ -11,7 +11,7 @@ List issue types available in a project.
 
 ### project-id-or-key
 
-Project key (e.g., `ENG`). Passed as the `projectIdOrKey` parameter to the Atlassian MCP tools.
+Project key (e.g., `ENG`).
 
 ## Protocol
 

@@ -11,7 +11,7 @@ List pages in a Confluence space.
 
 ### space-id
 
-Space ID. Passed as the `spaceId` parameter to the Atlassian MCP tools.
+Space ID.
 
 ### title
 

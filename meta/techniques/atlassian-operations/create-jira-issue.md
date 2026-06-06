@@ -11,11 +11,11 @@ Create a new Jira issue.
 
 ### project-key
 
-Project key. Passed as the `projectKey` parameter to the Atlassian MCP tools.
+Project key.
 
 ### issue-type-name
 
-Name of an issue type valid for the target project (e.g., `Task`, `Bug`). Passed as the `issueTypeName` parameter to the Atlassian MCP tools.
+Name of an issue type valid for the target project (e.g., `Task`, `Bug`).
 
 ### summary
 
@@ -23,13 +23,13 @@ Issue summary
 
 ### additional-fields
 
-Optional object with description, assignee, labels, etc. Passed as the `additional_fields` parameter to the Atlassian MCP tools.
+Optional object with description, assignee, labels, etc.
 
 ## Output
 
 ### issue-key
 
-Created issue key (e.g., `ENG-123`). Passed as the `issueKey` parameter to the Atlassian MCP tools.
+Created issue key (e.g., `ENG-123`).
 
 ## Protocol
 

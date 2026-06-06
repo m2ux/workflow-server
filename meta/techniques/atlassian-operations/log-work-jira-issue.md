@@ -11,11 +11,11 @@ Log work time on a Jira issue.
 
 ### issue-id-or-key
 
-Issue key. Passed as the `issueIdOrKey` parameter to the Atlassian MCP tools.
+Issue key.
 
 ### time-spent
 
-e.g., `2h`, `30m`. Passed as the `timeSpent` parameter to the Atlassian MCP tools.
+e.g., `2h`, `30m`.
 
 ## Protocol
 

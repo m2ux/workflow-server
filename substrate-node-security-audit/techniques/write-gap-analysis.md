@@ -22,7 +22,7 @@ Path to the reference report artifact.
 1. Load reference report from input {reference-report-path} (first and only time).
 2. Extract reference finding list with severities and affected files.
 3. Map, classify, and analyze per the sections above.
-4. Write the {gap-analysis} report, assembling the {summary}, {finding_mapping}, {gap_list}, {severity_calibration}, {ai_only_findings}, and {recommendations} sections into the artifact.
+4. Write the {gap-analysis} report, assembling the {summary}, {finding-mapping}, {gap-list}, {severity-calibration}, {ai-only-findings}, and {recommendations} sections into the artifact.
 
 ## Outputs
 
@@ -38,19 +38,19 @@ Path to the reference report artifact.
 
 Metrics table: total findings each side, matched, partial, gaps, AI-only, overlap rate
 
-#### finding_mapping
+#### finding-mapping
 
 Table mapping every reference finding to the closest AI finding. Classify as matched, partial, or gap.
 
-#### gap_list
+#### gap-list
 
 Each gap with root cause analysis: why was it missed (missing check, reasoning error, scope limitation)?
 
-#### severity_calibration
+#### severity-calibration
 
 Table of severity deltas for matched findings. Identify over-rating and under-rating patterns.
 
-#### ai_only_findings
+#### ai-only-findings
 
 Findings in the AI report not present in the reference. Assess whether novel or out-of-scope for reference.
 

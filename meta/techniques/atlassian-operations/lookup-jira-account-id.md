@@ -11,7 +11,7 @@ Resolve a name or email to a Jira account ID.
 
 ### search-string
 
-Name or email to resolve. Passed as the `searchString` parameter to the Atlassian MCP tools.
+Name or email to resolve.
 
 ## Protocol
 

@@ -27,15 +27,15 @@ Bootstrap the workflow-server, load an assigned activity, follow its steps seque
 - Produce the REQUIRED OUTPUT defined in the step's description before proceeding to the next step.
 - If a step cannot be completed (e.g., no StorageMaps in the crate for the lifecycle scan), record an explicit N/A with justification — do not silently skip.
 - If a step requires data or context that is unavailable, record the step as completed with output 'INCOMPLETE — [reason]', continue to the next step, and flag it in the self-verification.
-- Track which steps have been completed in a steps_completed list.
+- Track which steps have been completed in a steps-completed list.
 
 ### 3. Verify Output
 
 - Assemble the sub-agent-output and verify it against the checks below before returning it.
-- steps_completed matches the activity's step IDs — no steps omitted.
-- Every FAIL in checklist_coverage has a corresponding finding in the findings list.
-- Every mandatory_tables entry is either populated or null with justification.
-- The sub-agent-output JSON is well-formed and contains all required_fields.
+- steps-completed matches the activity's step IDs — no steps omitted.
+- Every FAIL in checklist-coverage has a corresponding finding in the findings list.
+- Every mandatory-tables entry is either populated or null with justification.
+- The sub-agent-output JSON is well-formed and contains all required-fields.
 
 ## Outputs
 
@@ -43,19 +43,19 @@ Bootstrap the workflow-server, load an assigned activity, follow its steps seque
 
 Structured JSON conforming to [sub-agent-output-schema](../resources/sub-agent-output-schema.md) (sub-agent-output-schema).
 
-#### agent_id
+#### agent-id
 
 identifier for this agent instance (e.g., 'group-a-nto', 'group-b', 'group-d')
 
-#### activity_followed
+#### activity-followed
 
 the activity ID executed (e.g., 'sub-crate-review')
 
-#### steps_completed
+#### steps-completed
 
 list of step IDs completed (must match activity definition)
 
-#### steps_skipped
+#### steps-skipped
 
 list of step IDs skipped with reasons (should be empty)
 
@@ -63,14 +63,14 @@ list of step IDs skipped with reasons (should be empty)
 
 structured list of findings with required fields per finding
 
-#### checklist_coverage
+#### checklist-coverage
 
 per-§3-item verdicts (for crate review) or per-pattern results (for static analysis)
 
-#### mandatory_tables
+#### mandatory-tables
 
 all tables produced by the activity's steps, or null with justification
 
-#### reconnaissance_leads
+#### reconnaissance-leads
 
 observations not formal findings but for orchestrator review (optional)

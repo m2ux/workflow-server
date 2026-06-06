@@ -48,11 +48,11 @@ Decompose source code into subsystems, assign different prisms per region via ca
 
 Paths to per-subsystem artifacts, synthesis artifact, and prism assignments
 
-#### subsystem_paths
+#### subsystem-paths
 
 Array of filesystem paths to subsystem-{name}.md files
 
-#### synthesis_path
+#### synthesis-path
 
 Filesystem path to subsystem-synthesis.md
 

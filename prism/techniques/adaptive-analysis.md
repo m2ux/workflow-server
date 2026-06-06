@@ -35,7 +35,7 @@ Minimize cost by automatically escalating analysis depth from cheap/fast to deep
 ### 4. Stage 3 Full
 
 - If still insufficient: run full-prism 3-pass pipeline
-- Produces structural, adversarial ([l12-complement-adversarial](../resources/l12-complement-adversarial.md)), and synthesis ([l12-synthesis](../resources/l12-synthesis.md)) artifacts — paths recorded in {adaptive-result}.artifact_paths
+- Produces structural, adversarial ([l12-complement-adversarial](../resources/l12-complement-adversarial.md)), and synthesis ([l12-synthesis](../resources/l12-synthesis.md)) artifacts — paths recorded in {adaptive-result}.artifact-paths
 - Return {adaptive-result} recording the deepest stage reached, the artifact paths produced, and the final signal assessment across all stages run
 
 ## Outputs
@@ -44,15 +44,15 @@ Minimize cost by automatically escalating analysis depth from cheap/fast to deep
 
 Paths and escalation trace for the adaptive run
 
-#### stage_reached
+#### stage-reached
 
 One of: sdl | l12 | full — deepest stage that ran
 
-#### artifact_paths
+#### artifact-paths
 
 Array of filesystem paths to all produced artifacts
 
-#### signal_assessment
+#### signal-assessment
 
 Final value of adaptive_signal_quality (adequate | insufficient)
 

@@ -25,13 +25,13 @@ Full priority order for reference
 
 ### 1. Initialize Iteration
 
-- Derive {remaining_packages} from {priority-order} minus {completed_packages}
-- Set {overall_progress} to '{\$completed}/{\$total} complete'
+- Derive {remaining-packages} from {priority-order} minus {completed-packages}
+- Set {overall-progress} to '{\$completed}/{\$total} complete'
 
 ### 2. Select Package
 
-- Take the first package from {remaining_packages}
-- Set current_package to the selected package
+- Take the first package from {remaining-packages}
+- Set current-package to the selected package
 - If the next package depends on an incomplete package, skip to the next independent package and note the blocked package
 
 ### 3. Trigger Workflow
@@ -45,12 +45,12 @@ Full priority order for reference
 
 - After work-package workflow completes, update the START-HERE.md status table — this is the {implementation-status} roadmap
 - Mark completed package as done, add PR link
-- Update {overall_progress} counter
+- Update {overall-progress} counter
 
 ### 5. Check Remaining
 
-- Remove completed package from {remaining_packages}, add to {completed_packages}
-- If {remaining_packages} is not empty, continue the loop with the next package
+- Remove completed package from {remaining-packages}, add to {completed-packages}
+- If {remaining-packages} is not empty, continue the loop with the next package
 
 ## Outputs
 
@@ -58,15 +58,15 @@ Full priority order for reference
 
 Updated roadmap status reflecting completed packages
 
-#### completed_packages
+#### completed-packages
 
 List of completed package names
 
-#### remaining_packages
+#### remaining-packages
 
 List of remaining package names
 
-#### overall_progress
+#### overall-progress
 
 Progress indicator (e.g., '3/7 complete')
 

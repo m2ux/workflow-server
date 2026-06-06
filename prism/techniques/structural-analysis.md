@@ -67,23 +67,23 @@ L12 structural analysis with conservation law, meta-law, and classified bug tabl
 
 `structural-analysis.md`
 
-#### conservation_law
+#### conservation-law
 
 The named conservation law between original and inverted impossibilities
 
-#### meta_law
+#### meta-law
 
 What the conservation law itself conceals — the deeper finding
 
-#### bug_table
+#### bug-table
 
 Every concrete bug with location, severity, and fixable/structural classification
 
-#### concealment_mechanism
+#### concealment-mechanism
 
 How the code hides its real problems
 
-#### structural_invariant
+#### structural-invariant
 
 The property that persists through every improvement
 

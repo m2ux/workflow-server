@@ -11,7 +11,7 @@ Add an inline (in-text) comment to a Confluence page.
 
 ### page-id
 
-Page ID. Passed as the `pageId` parameter to the Atlassian MCP tools.
+Page ID.
 
 ### body
 
@@ -19,7 +19,7 @@ Markdown body
 
 ### inline-comment-properties
 
-Object describing the inline anchor. Passed as the `inlineCommentProperties` parameter to the Atlassian MCP tools.
+Object describing the inline anchor.
 
 ## Protocol
 

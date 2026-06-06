@@ -11,7 +11,7 @@ Discover available status transitions for an issue.
 
 ### issue-id-or-key
 
-Issue key. Passed as the `issueIdOrKey` parameter to the Atlassian MCP tools.
+Issue key.
 
 ## Protocol
 

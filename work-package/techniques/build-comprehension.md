@@ -97,23 +97,23 @@ Persistent comprehension [artifact](../resources/codebase-comprehension.md#artif
 
 `{codebase-area}.md`
 
-#### architecture_overview
+#### architecture-overview
 
 Module structure, dependencies, and design patterns
 
-#### key_abstractions
+#### key-abstractions
 
 Core types, traits, data structures with domain context
 
-#### design_rationale
+#### design-rationale
 
 Inferred rationale for significant design choices
 
-#### domain_glossary
+#### domain-glossary
 
 Mapping of domain terms to technical constructs
 
-#### deep_dives
+#### deep-dives
 
 Targeted exploration sections added during user-driven loop
 

@@ -28,11 +28,11 @@ Final [audit report](../resources/audit-prompt-template.md#4-reporting-format). 
 
 `01-audit-report.md`
 
-#### header_table
+#### header-table
 
 The report MUST begin with a markdown table containing: Target, Commit, Date (YYYY-MM-DD HH:MM UTC), Workflow version, Agents (using single-letter designators: R, S, A1-A7, B, D1, D2, V, M), and Ensemble status. This table is separated from the Executive Summary by a horizontal rule (---). Example: | Field | Value |\n|-------|-------|\n| Date | 2026-02-11 13:19 UTC |
 
-#### executive_summary
+#### executive-summary
 
 Severity distribution table, top findings summary, methodology overview
 
@@ -40,7 +40,7 @@ Severity distribution table, top findings summary, methodology overview
 
 Phases executed, agent count, template version, ensemble status
 
-#### crate_inventory
+#### crate-inventory
 
 Table of all in-scope crates with classification, priority, and reviewing agent
 
@@ -48,23 +48,23 @@ Table of all in-scope crates with classification, priority, and reviewing agent
 
 All numbered findings. Each: title, severity (I and F with one-sentence justifications), category, affected files with line numbers, description, suggested remediation
 
-#### severity_distribution
+#### severity-distribution
 
 Summary table: Critical/High/Medium/Low/Informational counts
 
-#### coverage_gate
+#### coverage-gate
 
 Pass/fail status, list of top files by line count with reviewing agent attribution
 
-#### elevation_summary
+#### elevation-summary
 
 Count of table-derived findings auto-elevated, adversarial refutations integrated
 
-#### dependency_scan
+#### dependency-scan
 
 cargo audit results if available
 
-#### finding_block_format
+#### finding-block-format
 
 ### Issue {number}: {title}
 
@@ -80,6 +80,6 @@ cargo audit results if available
 
 {description}
 
-#### finding_block_note
+#### finding-block-note
 
 Each field MUST be separated by a blank line (double newline) so that markdown renders them as distinct paragraphs. Single newlines between fields will collapse into a single paragraph.

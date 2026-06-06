@@ -52,25 +52,25 @@ single
 - Dispatch a fresh sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent.
 - Worker prompt must include: (1) the {\$resolved-content}, (2) the lens resource index to load, (3) the workflow_id 'prism' for resource loading, (4) the {output-path} to write its artifact, (5) instruction to load the lens for that index, execute every operation, and write to {output-path}/structural-analysis.md
 - Worker prompt must NOT include any prior analysis — this is the first pass
-- Capture the artifact path from the worker's response: structural_output_path = {output-path}/structural-analysis.md
+- Capture the artifact path from the worker's response: {\$structural-output-path} = {output-path}/structural-analysis.md
 - Verify the artifact was written by reading its first line. If the worker returned without writing its artifact, dispatch a new worker for the same pass with an explicit instruction to write the artifact — do not resume the failed worker.
 - If {pipeline-mode} is 'single', go to present-result
 
 ### 5. Dispatch Adversarial Pass
 
 - Dispatch a NEW FRESH sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent on the structural worker.
-- Worker prompt must include: (1) the {\$resolved-content}, (2) structural_output_path — the worker will read this file and label it ANALYSIS 1, (3) the adversarial lens resource index, (4) the {output-path}, (5) instruction to write to {output-path}/adversarial-analysis.md
+- Worker prompt must include: (1) the {\$resolved-content}, (2) {\$structural-output-path} — the worker will read this file and label it ANALYSIS 1, (3) the adversarial lens resource index, (4) the {output-path}, (5) instruction to write to {output-path}/adversarial-analysis.md
 - CRITICAL: Do NOT include the structural analysis text inline. Pass only the file path. The worker reads the artifact from the filesystem.
-- If the expected prior-pass artifact (structural_output_path) does not exist on the filesystem, re-dispatch the prior pass worker to produce it — do not proceed to this pass without the artifact.
+- If the expected prior-pass artifact ({\$structural-output-path}) does not exist on the filesystem, re-dispatch the prior pass worker to produce it — do not proceed to this pass without the artifact.
 - If the adversarial pass comes back agreeing with everything in the structural analysis, dispatch a new adversarial worker with an explicit instruction to find at least one wrong prediction, one overclaim, and one underclaim.
-- Capture adversarial_output_path = {output-path}/adversarial-analysis.md
+- Capture {\$adversarial-output-path} = {output-path}/adversarial-analysis.md
 - Proceed to dispatch-synthesis-pass
 
 ### 6. Dispatch Synthesis Pass
 
 - Dispatch a NEW FRESH sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent on any prior worker.
-- Worker prompt must include: (1) the {\$resolved-content}, (2) structural_output_path and adversarial_output_path — the worker reads both files, (3) the synthesis lens resource index, (4) the {output-path}, (5) instruction to write to {output-path}/synthesis.md
-- Capture synthesis_output_path = {output-path}/synthesis.md
+- Worker prompt must include: (1) the {\$resolved-content}, (2) {\$structural-output-path} and {\$adversarial-output-path} — the worker reads both files, (3) the synthesis lens resource index, (4) the {output-path}, (5) instruction to write to {output-path}/synthesis.md
+- Capture {\$synthesis-output-path} = {output-path}/synthesis.md
 - Verify the artifact was written
 - Proceed to present-result
 
@@ -79,7 +79,7 @@ single
 - For each selected lens, dispatch a fresh sub-agent using harness-compat::spawn-agent with: the {\$resolved-content}, that lens's resource index, and the {output-path}
 - Each worker writes to {output-path}/portfolio-{lens-name}.md
 - Portfolio workers can be dispatched in parallel (up to 4 concurrent) since they are independent
-- Capture all artifact paths in portfolio_output_paths keyed by lens name
+- Capture all artifact paths in {\$portfolio-output-paths} keyed by lens name
 - After all complete, proceed to present-result with a cross-lens synthesis
 
 ### 8. Dispatch Behavioral Passes
@@ -89,7 +89,7 @@ single
 - Pass 2 (COSTS): [optimize](../resources/optimize.md) (optim). Worker writes to {output-path}/behavioral-costs.md
 - Pass 3 (CHANGES): [evolution](../resources/evolution.md) (evolution). Worker writes to {output-path}/behavioral-changes.md
 - Pass 4 (PROMISES): [api-surface](../resources/api-surface.md) (api-surface). Worker writes to {output-path}/behavioral-promises.md
-- All 4 passes are independent — they can be dispatched in parallel (up to 4 concurrent). Capture all 4 artifact paths in behavioral_output_paths.
+- All 4 passes are independent — they can be dispatched in parallel (up to 4 concurrent). Capture all 4 artifact paths in {\$behavioral-output-paths}.
 
 ### 9. Dispatch Behavioral Synthesis
 
@@ -97,15 +97,15 @@ single
 - Worker prompt must include: (1) the {\$resolved-content}, (2) all 4 behavioral artifact paths with role labels (ERRORS, COSTS, CHANGES, PROMISES), (3) resource index 23 ([behavioral-synthesis](../resources/behavioral-synthesis.md)), (4) the {output-path}
 - Worker reads each artifact and constructs labeled sections: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES
 - Worker writes to {output-path}/behavioral-synthesis.md
-- Capture behavioral_synthesis_output_path. Proceed to present-result.
+- Capture {\$behavioral-synthesis-output-path}. Proceed to present-result.
 
 ### 10. Present Result
 
-- For single mode: read and present {structural_output_path}
-- For full-prism mode: read and present {synthesis_output_path} as the primary result. Note {structural_output_path} and {adversarial_output_path} as appendices.
-- For portfolio mode: present each per-lens artifact from {portfolio_output_paths} followed by a cross-lens convergence/divergence summary
-- For behavioral mode: read and present {behavioral_synthesis_output_path} as the primary result. Note the per-role paths in {behavioral_output_paths} as appendices.
-- Assemble and return the {prism-result} to the caller: the primary artifact path as {final_artifact_path}, every artifact produced during the pipeline as {all_artifact_paths}, and the {pipeline-mode} that was used
+- For single mode: read and present {\$structural-output-path}
+- For full-prism mode: read and present {\$synthesis-output-path} as the primary result. Note {\$structural-output-path} and {\$adversarial-output-path} as appendices.
+- For portfolio mode: present each per-lens artifact from {\$portfolio-output-paths} followed by a cross-lens convergence/divergence summary
+- For behavioral mode: read and present {\$behavioral-synthesis-output-path} as the primary result. Note the per-role paths in {\$behavioral-output-paths} as appendices.
+- Assemble and return the {prism-result} to the caller: the primary artifact path as {final-artifact-path}, every artifact produced during the pipeline as {all-artifact-paths}, and the {pipeline-mode} that was used
 
 ## Outputs
 
@@ -113,15 +113,15 @@ single
 
 Complete prism analysis result with artifact paths
 
-#### final_artifact_path
+#### final-artifact-path
 
-Path to the primary analysis artifact ({structural_output_path} for single, {synthesis_output_path} for full-prism)
+Path to the primary analysis artifact ({\$structural-output-path} for single, {\$synthesis-output-path} for full-prism)
 
-#### all_artifact_paths
+#### all-artifact-paths
 
 All artifact paths produced during the pipeline
 
-#### pipeline_mode
+#### pipeline-mode
 
 Which mode was used
 

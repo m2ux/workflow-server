@@ -36,8 +36,8 @@ Verify consistency across prism resources, techniques, and documentation by runn
 
 ### 5. Compile Findings
 
-- Assemble the {verification-report} from the four checks, populating {stale_references}, {routing_mismatches}, {count_mismatches}, and {duplicate_indices}.
-- Set the report's {has_issues} = true if any findings, false otherwise.
+- Assemble the {verification-report} from the four checks, populating {stale-references}, {routing-mismatches}, {count-mismatches}, and {duplicate-indices}.
+- Set the report's {has-issues} = true if any findings, false otherwise.
 
 ## Outputs
 
@@ -45,22 +45,22 @@ Verify consistency across prism resources, techniques, and documentation by runn
 
 Consistency check results
 
-#### stale_references
+#### stale-references
 
 Array of { file, line, old_name }
 
-#### routing_mismatches
+#### routing-mismatches
 
 Array of { prompt, claimed_target, actual_route }
 
-#### count_mismatches
+#### count-mismatches
 
 Array of { source, stated, actual }
 
-#### duplicate_indices
+#### duplicate-indices
 
 Array of { index, files }
 
-#### has_issues
+#### has-issues
 
 Boolean

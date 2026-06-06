@@ -27,11 +27,11 @@ Bootstrap the workflow-server MCP from a dispatched session, load an assigned ac
 - If a step references a technique (step.technique), call get_technique({ technique_id, workflow_id: 'cicd-pipeline-security-audit' }) and follow its protocol for that step.
 - Produce the REQUIRED OUTPUT defined in the step's description before proceeding to the next step.
 - If a step cannot be completed because it requires data or context that is unavailable, record the step as completed with output 'INCOMPLETE — [reason]', continue to the next step, and flag it in the self-verification — do not silently skip.
-- Track which steps have been completed in a steps_completed list.
+- Track which steps have been completed in a steps-completed list.
 
 ### 3. Verify Output
 
-- steps_completed matches the activity's step IDs — no steps omitted.
+- steps-completed matches the activity's step IDs — no steps omitted.
 - Assemble and return the `sub-agent-output`: confirm it is well-formed JSON containing all required fields per the output schema ([sub-agent-output-schema](../resources/sub-agent-output-schema.md)).
 
 ## Outputs
@@ -40,19 +40,19 @@ Bootstrap the workflow-server MCP from a dispatched session, load an assigned ac
 
 Structured JSON conforming to [sub-agent-output-schema](../resources/sub-agent-output-schema.md) (sub-agent-output-schema).
 
-#### scanner_id
+#### scanner-id
 
 identifier for this agent instance (e.g., 'S1', 'S2', 'V', 'M')
 
-#### activity_followed
+#### activity-followed
 
 the activity ID executed
 
-#### steps_completed
+#### steps-completed
 
 list of step IDs completed (must match activity definition)
 
-#### steps_skipped
+#### steps-skipped
 
 list of step IDs skipped with reasons (should be empty)
 

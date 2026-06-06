@@ -11,11 +11,11 @@ Add a comment to a Jira issue.
 
 ### issue-id-or-key
 
-Issue key. Passed as the `issueIdOrKey` parameter to the Atlassian MCP tools.
+Issue key.
 
 ### comment-body
 
-Markdown comment body. Passed as the `commentBody` parameter to the Atlassian MCP tools.
+Markdown comment body.
 
 ## Protocol
 

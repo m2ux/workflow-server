@@ -106,15 +106,15 @@ Clean final [report](../resources/final-output-template.md#reportmd-template) ar
 
 `REPORT.md`
 
-#### report_path
+#### report-path
 
 Full filesystem path to REPORT.md
 
-#### finding_count
+#### finding-count
 
 Total findings by severity
 
-#### core_finding
+#### core-finding
 
 Summary of the core finding (if any)
 

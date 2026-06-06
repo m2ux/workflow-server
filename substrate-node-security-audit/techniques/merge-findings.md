@@ -29,7 +29,7 @@ One of: structured-merge (concat + dedup), integrate (add to existing), union-me
 
 ### 1. Concatenate
 
-- Combine every list in {finding-sources} into a single flat table. Every agent finding becomes a row with fields: agent_id, finding_id, file, line, title, severity, checklist_item, evidence. No agent output is discarded.
+- Combine every list in {finding-sources} into a single flat table. Every agent finding becomes a row with fields: agent-id, finding-id, file, line, title, severity, checklist-item, evidence. No agent output is discarded.
 
 ### 2. Deduplicate
 
@@ -50,14 +50,14 @@ One of: structured-merge (concat + dedup), integrate (add to existing), union-me
 
 Canonical finding flat table with elevation mapping and summary.
 
-#### flat_table
+#### flat-table
 
 one row per agent finding with report finding number and merge status
 
-#### elevation_summary
+#### elevation-summary
 
 total agent findings, total report findings, merged count, promoted count
 
-#### union_merge_classification
+#### union-merge-classification
 
 for union-merge: consensus/single-source/escalated classification per finding

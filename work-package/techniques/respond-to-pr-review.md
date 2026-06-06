@@ -67,7 +67,7 @@ PR review [analysis](../resources/pr-review-response.md#step-6-create-review-doc
 
 `{YYYY-MM-DD}-pr{pr-number}-review-analysis.md`
 
-#### requires_replan
+#### requires-replan
 
 Whether significant changes require returning to planning
 

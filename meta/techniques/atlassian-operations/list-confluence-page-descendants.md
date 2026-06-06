@@ -11,7 +11,7 @@ List child pages of a Confluence page.
 
 ### page-id
 
-Page ID. Passed as the `pageId` parameter to the Atlassian MCP tools.
+Page ID.
 
 ### depth
 

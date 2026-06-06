@@ -26,7 +26,7 @@ Resource index for this pass: 19 (error-resilience), 20 (optimize), 21 (evolutio
 ### 1. Load Lens
 
 - Load the lens prompt for {lens-resource-index}. If the lens for the given index cannot be loaded, report the error; valid behavioral indices are 19-23.
-- The behavioral pipeline is code-only: if invoked with target_type 'general', report that the behavioral pipeline is code-only and recommend portfolio mode with individual neutral variant lenses (24-26) for general targets.
+- The behavioral pipeline is code-only: if invoked with target-type 'general', report that the behavioral pipeline is code-only and recommend portfolio mode with individual neutral variant lenses (24-26) for general targets.
 - The lens prompt is the program — execute its operations in order
 
 ### 2. Read Target
@@ -54,7 +54,7 @@ Resource index for this pass: 19 (error-resilience), 20 (optimize), 21 (evolutio
 - If a provided prior artifact path does not exist, report the missing artifact; the orchestrator may need to re-dispatch the independent lens pass that produces it
 - Construct the synthesis input by concatenating each artifact under its role heading: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES — separated by horizontal rules
 - The synthesis lens expects exactly these 4 labeled sections
-- The synthesis input is constructed as: ## ERRORS\n\n{errors_content}\n\n---\n\n## COSTS\n\n{costs_content}\n\n---\n\n## CHANGES\n\n{changes_content}\n\n---\n\n## PROMISES\n\n{promises_content}
+- The synthesis input is constructed as: ## ERRORS\n\n{errors-content}\n\n---\n\n## COSTS\n\n{costs-content}\n\n---\n\n## CHANGES\n\n{changes-content}\n\n---\n\n## PROMISES\n\n{promises-content}
 
 ### 6. Apply Synthesis Lens
 
@@ -74,7 +74,7 @@ Behavioral analysis artifact written to the filesystem
 
 `behavioral-errors.md` (19) / `behavioral-costs.md` (20) / `behavioral-changes.md` (21) / `behavioral-promises.md` (22) / `behavioral-synthesis.md` (23)
 
-#### artifact_path
+#### artifact-path
 
 Full filesystem path to the written artifact
 
@@ -90,5 +90,5 @@ The behavioral pipeline uses fixed role labels mapped to specific lenses: error-
 
 ### code-only
 
-The behavioral pipeline is code-only. optim (20) uses strongly code-oriented vocabulary with no domain-neutral variant. Do not use behavioral mode when target_type is 'general'.
+The behavioral pipeline is code-only. optim (20) uses strongly code-oriented vocabulary with no domain-neutral variant. Do not use behavioral mode when target-type is 'general'.
 

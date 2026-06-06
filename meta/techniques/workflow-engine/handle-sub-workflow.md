@@ -9,20 +9,20 @@ Dispatch a child workflow under the current session as its parent.
 
 ## Inputs
 
-### parent_session_index
+### parent-session-index
 
-The current session's `session_index` — passed to the server so it can append the child under the parent's `triggeredWorkflows[]` with the child's SessionFile embedded inline
+The current session's `session-index` — passed to the server so it can append the child under the parent's `triggeredWorkflows[]` with the child's SessionFile embedded inline.
 
-### workflow_id
+### workflow-id
 
-Child workflow ID
+Child workflow ID.
 
 ## Output
 
-### child_session_index
+### child-session-index
 
-The 6-character base32 `session_index` of the newly created child session
+The 6-character base32 `session-index` of the newly created child session.
 
 ## Protocol
 
-1. Call `dispatch_child { session_index: <parent_session_index>, workflow_id: <workflow_id>, agent_id: 'workflow-orchestrator' }`; capture `child_session_index` from the response. The child SessionFile is embedded under `parent.triggeredWorkflows[N].state` in the top-level `session.json` — no separate child folder.
+1. Call `dispatch_child { session-index: <parent-session-index>, workflow-id: <workflow-id>, agent_id: 'workflow-orchestrator' }`; capture `child-session-index` from the response. The child SessionFile is embedded under `parent.triggeredWorkflows[N].state` in the top-level `session.json` — no separate child folder.
