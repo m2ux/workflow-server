@@ -41,11 +41,11 @@ Path to the repository root
 
 ### 5. Scan Dependencies
 
-- Attempt to run dependency scanning tools (e.g., cargo audit, cargo deny, npm audit). Save outputs to the planning folder. If the scanning tools cannot be executed, fall back to manual dependency manifest extraction: extract the dependency manifest (e.g., Cargo.lock, package-lock.json) and set a flag indicating manual inspection is needed.
+- Attempt to run dependency scanning tools (e.g., cargo audit, cargo deny, npm audit). Save outputs to the {planning-folder}. If the scanning tools cannot be executed, fall back to manual dependency manifest extraction: extract the dependency manifest (e.g., Cargo.lock, package-lock.json) and set a flag indicating manual inspection is needed.
 
 ### 6. Generate Inventory
 
-- Produce a sorted file inventory listing all source files with line counts, largest first. Save to the planning folder. Together with the confirmed target, revision, and dependency scan results, this completes the {audit-target} ready for analysis.
+- Produce a sorted file inventory listing all source files with line counts, largest first. Save to the {planning-folder}. Together with the confirmed target, revision, and dependency scan results, this completes the {audit-target} ready for analysis.
 
 ## Outputs
 

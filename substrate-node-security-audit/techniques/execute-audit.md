@@ -20,14 +20,14 @@ Execute security audit phases with consistent tool usage, concurrent multi-agent
   - If the target submodule path does not exist, fail with a descriptive error — do not ask interactively
   - If the target commit hash is not found in the submodule history, fail with an error showing recent commits via git log
 - Run cargo audit / cargo deny or fallback to manual dependency inspection
-- Create planning folder and initialize artifacts (see [start-here](../resources/start-here.md) for workflow orientation)
+- Create {planning-folder} and initialize artifacts (see [start-here](../resources/start-here.md) for workflow orientation)
 
 ### 2. Reconnaissance
 
-- Dispatch reconnaissance sub-agent (R) to identify crates, map architecture, build function registry, and write output files to planning folder
+- Dispatch reconnaissance sub-agent (R) to identify crates, map architecture, build function registry, and write output files to {planning-folder}
   - If a dispatched sub-agent does not return within the expected time, check terminal output and resume or re-dispatch the agent
 - Dispatch architectural analysis sub-agent (Arch) with R's output files to produce security decomposition
-- Read R and Arch output files from planning folder (orchestrator does NOT read source code)
+- Read R and Arch output files from {planning-folder} (orchestrator does NOT read source code)
 - Map vulnerability domains by binding architectural analysis to §3 verification procedures, using the [vulnerability-pattern-vocabulary](../resources/vulnerability-pattern-vocabulary.md) as a recognition aid for known cross-project patterns
 - Assign agent groups per target profile and route reconnaissance leads to specific agents
 
@@ -35,7 +35,7 @@ Execute security audit phases with consistent tool usage, concurrent multi-agent
 
 - Dispatch all primary agents (A1-A7, B, D1, D2) concurrently with the [§3 checklist](../resources/audit-template-reference.md), cross-crate supplementary files, toolkit minimum checklist, and relevant calibration benchmarks
   - If the audit prompt template is not at its expected path, fail with an error showing the expected path
-- Collect all results from primary agents and persist each agent's full output as JSON in the planning folder
+- Collect all results from primary agents and persist each agent's full output as JSON in the {planning-folder}
 - Dispatch verification sub-agent (V) to validate output completeness against target profile, act on gap report, extract table-derived findings
 - Re-dispatch targeted follow-up agents for any gaps identified by the verification agent
 - Dispatch merge sub-agent (M) to perform structured merge, dedup, severity scoring with bidirectional calibration, reconciliation, and observation elevation in a fresh context window
