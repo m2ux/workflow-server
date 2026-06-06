@@ -98,6 +98,31 @@ sub-section members.
 `parseEntrySubsections` splits an entry's lead description from its `####` members for both inputs
 and outputs.
 
+#### The symbol model
+
+A technique has one namespace of **mutable symbols**. Direction is **structural — carried by the
+section a symbol is declared under, never by its spelling**:
+
+- An **input** (`## Inputs`) is a symbol *populated on entry* — by the caller, or by an upstream
+  technique's output bound to it. Optional inputs may be absent and fall back to `#### default`.
+- An **output** (`## Output`) is a symbol *exposed at the technique's surface on completion*.
+- A **protocol variable** (`{$name}`, §3.3) is a symbol created and used within one protocol run,
+  neither received nor exposed.
+
+A symbol may be declared in **both** Inputs and Output. This is not a contradiction: it means the
+symbol arrives populated **if** the caller provides it, may be mutated or freshly computed during the
+protocol, and its final value is exposed on completion. An idempotent resolver (receive-or-compute,
+then expose) is the canonical case, and it is exactly why a value that one technique produces and
+others consume can still be hoisted to a common ancestor (§5): declare it as a shared input on the
+ancestor, and the producing technique additionally declares it as an output.
+
+**All symbol ids are kebab-case.** Case carries no meaning — it does **not** distinguish input from
+output (that is structural). A reference `{id}` in the protocol is therefore direction-agnostic;
+mutation is the normal case for a mutable symbol. The one exception: an id that mirrors an external
+tool / MCP / CLI parameter keeps that tool's own spelling (`cloudId`, `owner`, `repo`,
+`issueIdOrKey`), because the value is passed through verbatim to that tool — it is the tool's symbol,
+not the workflow's.
+
 ### 3.3 Protocol
 
 `## Protocol` is an ordered list of blocks `{ title?, steps[] }`:
