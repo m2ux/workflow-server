@@ -34,8 +34,8 @@ Directory to write the audit prompt artifact
 - For workspace/monorepo projects, enumerate all packages/crates/modules from the build configuration
 - Count lines of code per module (excluding tests, docs, generated files)
 - Identify test directories and test file patterns
-- If GitNexus is available (check via gitnexus_list_repos): use gitnexus_query to discover functional areas, execution flows, and community clusters — these produce better module boundaries and dependency maps than directory layout alone
-- If GitNexus is available: use gitnexus_context on high-risk modules to check fan-in (number of callers) — high fan-in modules have larger blast radius and should be elevated in risk classification
+- If GitNexus is available (check via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md)): use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) to discover functional areas, execution flows, and community clusters — these produce better module boundaries and dependency maps than directory layout alone
+- If GitNexus is available: use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on high-risk modules to check fan-in (number of callers) — high fan-in modules have larger blast radius and should be elevated in risk classification
 - Record: language, build_system, modules (array of { name, path, line_count, purpose, fan_in (if GitNexus available) }), {$total-loc}, gitnexus_available (boolean)
 - If target_path contains no analysable source files, verify the path is correct and check whether submodules need initialisation before proceeding.
 
@@ -56,8 +56,8 @@ Directory to write the audit prompt artifact
 ### 3. Map Trust Boundaries
 
 - If GitNexus is unavailable (gitnexus_available is false), skip this step entirely.
-- Use gitnexus_cypher to find cross-community call edges: MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(callee), (caller)-[:CodeRelation {type: 'MEMBER_OF'}]->(c1:Community), (callee)-[:CodeRelation {type: 'MEMBER_OF'}]->(c2:Community) WHERE c1 <> c2 RETURN c1.heuristicLabel, c2.heuristicLabel, caller.name, callee.name. These edges represent trust boundary crossings where validation may be absent.
-- Use gitnexus_impact(direction: upstream) on each security-critical symbol identified in scan-security-characteristics to map its blast radius — every upstream caller is a potential attack vector. Record: {$security-blast-radii} (map of symbol to { direct_callers, affected_processes, affected_modules, risk }).
+- Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) to find cross-community call edges: MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(callee), (caller)-[:CodeRelation {type: 'MEMBER_OF'}]->(c1:Community), (callee)-[:CodeRelation {type: 'MEMBER_OF'}]->(c2:Community) WHERE c1 <> c2 RETURN c1.heuristicLabel, c2.heuristicLabel, caller.name, callee.name. These edges represent trust boundary crossings where validation may be absent.
+- Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)(direction: upstream) on each security-critical symbol identified in scan-security-characteristics to map its blast radius — every upstream caller is a potential attack vector. Record: {$security-blast-radii} (map of symbol to { direct_callers, affected_processes, affected_modules, risk }).
 - Record: {$trust-boundaries} (array of { from_community, to_community, crossing_symbols }). Domains containing trust-boundary-crossing code will receive elevated risk in map-domains.
 
 ### 4. Map Domains

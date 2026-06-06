@@ -54,7 +54,7 @@ Directory to write the evaluation plan artifact
 - For document/document-set targets: inventory all documents, identify their topics, structure, and cross-references between documents. Note total word count or section count.
 - For codebase targets: identify the build system, enumerate modules/packages, count lines of code per module. Identify test directories.
 - For mixed targets: apply both document and code surveys
-- If GitNexus is available (check via gitnexus_list_repos) and target is a codebase: use gitnexus_query to discover functional areas and community clusters for better module classification
+- If GitNexus is available (check via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md)) and target is a codebase: use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) to discover functional areas and community clusters for better module classification
 - Read enough of the target content to understand its scope, key topics, claims, and structure — this informs dimension-specific analysis_focus values
 - For proposal documents: identify the major sections, stated goals, key claims, architectural decisions, resource assumptions, and timeline commitments
 - Record: target_type, {$target-summary}, {$structure-inventory} (sections or modules with sizes), {$key-topics}
