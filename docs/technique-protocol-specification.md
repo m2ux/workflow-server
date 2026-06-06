@@ -91,7 +91,7 @@ sub-section members.
 
 - `#### <member>` is a named component of the entry (`components[member]`).
 - `#### artifact` (Output) is the persistence filename — a literal (`code-review.md`) or a
-  `{token}`-template the worker interpolates at runtime (`{package-name}-plan.md`).
+  `{token}`-template the worker interpolates at runtime (`{package_name}-plan.md`, the token being a snake_case symbol).
 - `#### default` (Inputs) is the input's default value.
 - An entry whose description opens with `optional` (e.g. `*(optional)*`) is `required: false`.
 
