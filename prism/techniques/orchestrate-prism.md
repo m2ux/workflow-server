@@ -70,7 +70,7 @@ single
 ### 4. Dispatch Structural Pass
 
 - Dispatch a fresh sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent.
-- Worker prompt must include: (1) the {$resolved-content}, (2) the lens resource index to load, (3) the workflow_id 'prism' for resource loading, (4) the output-path to write its artifact, (5) instruction to load the lens via get_technique (resources attached), execute every operation, and write to {output-path}/structural-analysis.md
+- Worker prompt must include: (1) the {$resolved-content}, (2) the lens resource index to load, (3) the workflow_id 'prism' for resource loading, (4) the output-path to write its artifact, (5) instruction to load the lens for that index, execute every operation, and write to {output-path}/structural-analysis.md
 - Worker prompt must NOT include any prior analysis — this is the first pass
 - Capture the artifact path from the worker's response: structural_output_path = {output-path}/structural-analysis.md
 - Verify the artifact was written by reading its first line. If the worker returned without writing its artifact, dispatch a new worker for the same pass with an explicit instruction to write the artifact — do not resume the failed worker.

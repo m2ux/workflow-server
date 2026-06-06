@@ -33,9 +33,9 @@ Directory to write the analysis artifact
 
 ### 1. Load Lens
 
-- Resources are attached to technique responses (loaded via get_technique). Resource index lens-resource-index is available in the _resources field after loading the lens prompt: 00 structural ([l12](../resources/l12.md)), 01 adversarial ([l12-complement-adversarial](../resources/l12-complement-adversarial.md)), 02 synthesis ([l12-synthesis](../resources/l12-synthesis.md))
+- Load the lens prompt for {lens-resource-index}: 00 → [l12](../resources/l12.md) (structural), 01 → [l12-complement-adversarial](../resources/l12-complement-adversarial.md) (adversarial), 02 → [l12-synthesis](../resources/l12-synthesis.md) (synthesis)
 - The lens prompt is the program — it defines the exact sequence of analytical operations to execute
-- If the resource for the given index is not found in the technique response, report the error and note that valid indices are 00-02 (all target types).
+- If the lens for the given index cannot be loaded, report the error and note that valid indices are 00-02 (all target types).
 
 ### 2. Read Prior Artifacts
 

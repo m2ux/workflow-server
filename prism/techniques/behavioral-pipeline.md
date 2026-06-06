@@ -33,8 +33,7 @@ Directory to write the analysis artifact
 
 ### 1. Load Lens
 
-- Resources are attached to technique responses (loaded via get_technique). Resource index lens-resource-index is available in the _resources field after loading the lens prompt
-- If the resource for the given index is not found in the technique response, report the error. Valid behavioral indices are 19-23.
+- Load the lens prompt for {lens-resource-index}. If the lens for the given index cannot be loaded, report the error; valid behavioral indices are 19-23.
 - The behavioral pipeline is code-only: if invoked with target_type 'general', report that the behavioral pipeline is code-only and recommend portfolio mode with individual neutral variant lenses (24-26) for general targets.
 - The lens prompt is the program — execute its operations in order
 
