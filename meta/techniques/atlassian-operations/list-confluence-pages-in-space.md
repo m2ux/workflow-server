@@ -9,9 +9,9 @@ List pages in a Confluence space.
 
 ## Inputs
 
-### spaceId
+### space-id
 
-Space ID
+Space ID. Passed as the `spaceId` parameter to the Atlassian MCP tools.
 
 ### title
 
@@ -19,4 +19,4 @@ Optional title filter
 
 ## Protocol
 
-1. Call `getPagesInConfluenceSpace { cloudId, spaceId, title? }`.
+1. Call `getPagesInConfluenceSpace { cloud-id, space-id, title? }`.

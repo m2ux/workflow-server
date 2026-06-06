@@ -9,10 +9,10 @@ Read a single Jira issue.
 
 ## Inputs
 
-### issueIdOrKey
+### issue-id-or-key
 
-Issue key
+Issue key. Passed as the `issueIdOrKey` parameter to the Atlassian MCP tools.
 
 ## Protocol
 
-1. Call `getJiraIssue { cloudId, issueIdOrKey }`.
+1. Call `getJiraIssue { cloud-id, issue-id-or-key }`.

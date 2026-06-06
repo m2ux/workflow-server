@@ -9,9 +9,9 @@ Create a Confluence page.
 
 ## Inputs
 
-### spaceId
+### space-id
 
-Target space ID
+Target space ID. Passed as the `spaceId` parameter to the Atlassian MCP tools.
 
 ### body
 
@@ -21,10 +21,10 @@ Markdown body
 
 Page title (optional)
 
-### parentId
+### parent-id
 
-Optional parent page ID
+Optional parent page ID. Passed as the `parentId` parameter to the Atlassian MCP tools.
 
 ## Protocol
 
-1. Call `createConfluencePage { cloudId, spaceId, body, contentFormat: 'markdown', title?, parentId? }`.
+1. Call `createConfluencePage { cloud-id, space-id, body, contentFormat: 'markdown', title?, parent-id? }`.

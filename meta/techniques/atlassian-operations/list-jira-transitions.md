@@ -9,10 +9,10 @@ Discover available status transitions for an issue.
 
 ## Inputs
 
-### issueIdOrKey
+### issue-id-or-key
 
-Issue key
+Issue key. Passed as the `issueIdOrKey` parameter to the Atlassian MCP tools.
 
 ## Protocol
 
-1. Call `getTransitionsForJiraIssue { cloudId, issueIdOrKey }`.
+1. Call `getTransitionsForJiraIssue { cloud-id, issue-id-or-key }`.

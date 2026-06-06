@@ -19,4 +19,4 @@ Optional result limit
 
 ## Protocol
 
-1. Call `searchConfluenceUsingCql { cloudId, cql, limit?, cursor? }`.
+1. Call `searchConfluenceUsingCql { cloud-id, cql, limit?, cursor? }`.

@@ -9,10 +9,10 @@ List issue types available in a project.
 
 ## Inputs
 
-### projectIdOrKey
+### project-id-or-key
 
-Project key (e.g., `ENG`)
+Project key (e.g., `ENG`). Passed as the `projectIdOrKey` parameter to the Atlassian MCP tools.
 
 ## Protocol
 
-1. Call `getJiraProjectIssueTypesMetadata { cloudId, projectIdOrKey }`.
+1. Call `getJiraProjectIssueTypesMetadata { cloud-id, project-id-or-key }`.

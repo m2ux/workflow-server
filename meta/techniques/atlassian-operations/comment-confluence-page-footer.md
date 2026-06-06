@@ -9,9 +9,9 @@ Add a page-level (footer) comment to a Confluence page.
 
 ## Inputs
 
-### pageId
+### page-id
 
-Page ID
+Page ID. Passed as the `pageId` parameter to the Atlassian MCP tools.
 
 ### body
 
@@ -19,4 +19,4 @@ Markdown body
 
 ## Protocol
 
-1. Call `createConfluenceFooterComment { cloudId, pageId, body }`.
+1. Call `createConfluenceFooterComment { cloud-id, page-id, body }`.

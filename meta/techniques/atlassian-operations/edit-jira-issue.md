@@ -9,9 +9,9 @@ Update fields on an existing Jira issue.
 
 ## Inputs
 
-### issueIdOrKey
+### issue-id-or-key
 
-Issue key
+Issue key. Passed as the `issueIdOrKey` parameter to the Atlassian MCP tools.
 
 ### fields
 
@@ -19,4 +19,4 @@ Object of field updates
 
 ## Protocol
 
-1. Call `editJiraIssue { cloudId, issueIdOrKey, fields }`.
+1. Call `editJiraIssue { cloud-id, issue-id-or-key, fields }`.

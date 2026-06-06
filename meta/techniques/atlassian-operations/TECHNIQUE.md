@@ -15,15 +15,15 @@ Operations for common Jira and Confluence tasks via the Atlassian MCP server —
 
 ## Inputs
 
-### cloudId
+### cloud-id
 
-UUID of the target Atlassian cloud site. (Produced by resolve-cloud-id; consumed by every product-specific operation.)
+UUID of the target Atlassian cloud site. (Produced by resolve-cloud-id; consumed by every product-specific operation.) Passed as the `cloudId` parameter to the Atlassian MCP tools.
 
 ## Rules
 
 ### resolve-cloud-id-once
 
-Apply [resolve-cloud-id](./resolve-cloud-id.md) ONCE per session and cache the `cloudId`. Every product-specific operation requires it.
+Apply [resolve-cloud-id](./resolve-cloud-id.md) ONCE per session and cache the `cloud-id`. Every product-specific operation requires it.
 
 ### content-format-markdown
 

@@ -9,14 +9,14 @@ Add a comment to a Jira issue.
 
 ## Inputs
 
-### issueIdOrKey
+### issue-id-or-key
 
-Issue key
+Issue key. Passed as the `issueIdOrKey` parameter to the Atlassian MCP tools.
 
-### commentBody
+### comment-body
 
-Markdown comment body
+Markdown comment body. Passed as the `commentBody` parameter to the Atlassian MCP tools.
 
 ## Protocol
 
-1. Call `addCommentToJiraIssue { cloudId, issueIdOrKey, commentBody }`.
+1. Call `addCommentToJiraIssue { cloud-id, issue-id-or-key, comment-body }`.

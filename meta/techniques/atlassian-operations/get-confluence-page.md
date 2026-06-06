@@ -9,10 +9,10 @@ Read a Confluence page as Markdown.
 
 ## Inputs
 
-### pageId
+### page-id
 
-Page ID
+Page ID. Passed as the `pageId` parameter to the Atlassian MCP tools.
 
 ## Protocol
 
-1. Call `getConfluencePage { cloudId, pageId, contentFormat: 'markdown' }`.
+1. Call `getConfluencePage { cloud-id, page-id, contentFormat: 'markdown' }`.

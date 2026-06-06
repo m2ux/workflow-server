@@ -9,10 +9,10 @@ Resolve a name or email to a Jira account ID.
 
 ## Inputs
 
-### searchString
+### search-string
 
-Name or email to resolve
+Name or email to resolve. Passed as the `searchString` parameter to the Atlassian MCP tools.
 
 ## Protocol
 
-1. Call `lookupJiraAccountId { cloudId, searchString }`.
+1. Call `lookupJiraAccountId { cloud-id, search-string }`.

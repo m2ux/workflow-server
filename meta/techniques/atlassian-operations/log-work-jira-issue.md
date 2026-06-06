@@ -9,14 +9,14 @@ Log work time on a Jira issue.
 
 ## Inputs
 
-### issueIdOrKey
+### issue-id-or-key
 
-Issue key
+Issue key. Passed as the `issueIdOrKey` parameter to the Atlassian MCP tools.
 
-### timeSpent
+### time-spent
 
-e.g., `2h`, `30m`
+e.g., `2h`, `30m`. Passed as the `timeSpent` parameter to the Atlassian MCP tools.
 
 ## Protocol
 
-1. Call `addWorklogToJiraIssue { cloudId, issueIdOrKey, timeSpent }`.
+1. Call `addWorklogToJiraIssue { cloud-id, issue-id-or-key, time-spent }`.

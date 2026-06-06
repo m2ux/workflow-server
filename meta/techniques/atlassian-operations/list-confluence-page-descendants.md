@@ -9,9 +9,9 @@ List child pages of a Confluence page.
 
 ## Inputs
 
-### pageId
+### page-id
 
-Page ID
+Page ID. Passed as the `pageId` parameter to the Atlassian MCP tools.
 
 ### depth
 
@@ -23,4 +23,4 @@ Optional result limit
 
 ## Protocol
 
-1. Call `getConfluencePageDescendants { cloudId, pageId, depth?, limit? }`.
+1. Call `getConfluencePageDescendants { cloud-id, page-id, depth?, limit? }`.

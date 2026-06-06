@@ -9,4 +9,4 @@ List spaces accessible to the current user.
 
 ## Protocol
 
-1. Call `getConfluenceSpaces { cloudId, ...filters }`.
+1. Call `getConfluenceSpaces { cloud-id, ...filters }`.
