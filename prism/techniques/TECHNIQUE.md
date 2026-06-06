@@ -7,6 +7,28 @@ metadata:
 
 Base contract inherited by sibling techniques.
 
+## Inputs
+
+### target-content
+
+The code or text to analyze — a file path or inline content.
+
+### target-type
+
+*(optional)* Whether the input is 'code' or 'general'.
+
+#### default
+
+code
+
+### output-path
+
+*(optional)* Directory to write analysis artifacts.
+
+#### default
+
+.
+
 ## Rules
 
 ### complete-execution

@@ -25,11 +25,7 @@ The pipeline mode that produced the artifacts: 'single', 'full-prism', 'portfoli
 
 Array of all artifact file paths produced by prior passes. The worker reads these to extract findings.
 
-### output-path
-
-Directory to write REPORT.md
-
-### target
+### target-description
 
 Description of what was analysed — used in the report's Executive Summary scope statement
 
@@ -89,7 +85,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 
 - Write the report in clean markdown with no methodology metadata in the front-matter
 - Front-matter: Subject, Evaluation Date, Scope — no lens names, no pass counts, no model versions
-- Executive Summary: 2-3 sentences on scope + findings count table by severity + statement of core finding
+- Executive Summary: 2-3 sentences on scope (using {target-description}) + findings count table by severity + statement of core finding
 - Core Finding (if applicable): the deepest structural insight, stated as a definitive conclusion with its testable prediction
 - Findings sections: organised by severity (Critical, High, Medium, Low). Each finding has: ID, severity, description (as a factual statement), classification, and blast radius annotation where graph data is available (e.g., '14 direct callers, 3 execution flows, 2 modules')
 - Corrections Required (if applicable): actionable items derived from findings

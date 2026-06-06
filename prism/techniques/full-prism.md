@@ -13,10 +13,6 @@ Execute a single pass of the Full Prism pipeline within an isolation model
 
 ## Inputs
 
-### target-content
-
-The code or text to analyze (provided inline by the orchestrator, or a file path to read)
-
 ### lens-resource-index
 
 Resource index to load from the prism workflow (00 for structural, 01 for adversarial, 02 for synthesis)
@@ -24,10 +20,6 @@ Resource index to load from the prism workflow (00 for structural, 01 for advers
 ### prior-artifact-paths
 
 *(optional)* File paths to prior pass artifacts. Adversarial receives [structural-analysis.md]. Synthesis receives [structural-analysis.md, adversarial-analysis.md]. Empty for the structural pass.
-
-### output-path
-
-Directory to write the analysis artifact
 
 ## Protocol
 

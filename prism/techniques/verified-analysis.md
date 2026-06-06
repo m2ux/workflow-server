@@ -11,24 +11,6 @@ metadata:
 
 Run L12 analysis, detect knowledge gaps via boundary + audit prisms, then re-analyze with gap corrections for highest accuracy
 
-## Inputs
-
-### target-content
-
-The code or text to analyze (file path or inline content)
-
-### target-type
-
-*(optional)* Whether the input is 'code' or 'general'
-
-#### default
-
-code
-
-### output-path
-
-Directory to write verified-initial.md, verified-gaps.md, and verified-corrected.md
-
 ## Protocol
 
 ### 1. Initial Analysis

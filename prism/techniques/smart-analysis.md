@@ -11,25 +11,11 @@ metadata:
 
 Automatically compose an analysis pipeline based on input characteristics — the only mode where the system decides the pipeline topology
 
-## Inputs
-
-### target-content
-
-The code or text to analyze (file path or inline content)
-
-### target-type
-
-Whether the input is 'code' or 'general'
-
-### output-path
-
-Directory for smart-prereq.md, smart-analysis.md (or subsystem-*.md), and smart-dispute-*.md
-
 ## Protocol
 
 ### 1. Prereq Scan
 
-- Dispatch [prereq](../resources/prereq.md) over `target-content` to a fresh worker, writing smart-prereq.md into `output-path`
+- Dispatch [prereq](../resources/prereq.md) over {target-content} to a fresh worker, writing smart-prereq.md into {output-path}
 - Extract atomic questions from output for knowledge fill
 
 ### 2. Knowledge Fill
@@ -39,9 +25,9 @@ Directory for smart-prereq.md, smart-analysis.md (or subsystem-*.md), and smart-
 
 ### 3. Select Mode
 
-- Branch on `target-type`: when it is 'code', attempt AST decomposition via _split_into_subsystems logic
+- Branch on {target-type}: when it is 'code', attempt AST decomposition via _split_into_subsystems logic
 - If >1 subsystem found: use subsystem mode (different prisms per region)
-- If 1 subsystem, or `target-type` is 'general': use [L12](../resources/l12.md) single pass (or 3-pass for general)
+- If 1 subsystem, or {target-type} is 'general': use [L12](../resources/l12.md) single pass (or 3-pass for general)
 
 ### 4. Execute Analysis
 
@@ -53,7 +39,7 @@ Directory for smart-prereq.md, smart-analysis.md (or subsystem-*.md), and smart-
 - Check analysis output quality: look for conservation law presence and output length
 - If adequate output (>200 chars): run [dispute-synthesis](../resources/dispute-synthesis.md) for self-correction
 - If analysis found a conservation law, dispute is supplementary; if not, dispute is critical
-- Assemble `smart-result` from the artifacts written to `output-path` and the ordered pipeline trace
+- Assemble {smart-result} from the artifacts written to {output-path} and the ordered pipeline trace
 
 ## Outputs
 

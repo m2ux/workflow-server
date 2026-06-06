@@ -21,10 +21,6 @@ What to analyze. Can be: a file path, a directory path, inline text, a question,
 
 *(optional)* What the caller wants to understand (e.g., 'find hidden bugs', 'assess maintainability', 'understand design trade-offs', 'security review', 'explore the implications of X', 'evaluate this strategy')
 
-### target-type
-
-*(optional)* Whether the input is 'code' or 'general'. If omitted, inferred from the target: file paths with code extensions → code, everything else → general.
-
 ### budget
 
 *(optional)* Analysis budget: 'quick' (minimize passes, skip low-risk), 'standard' (balanced depth and coverage), 'thorough' (full coverage, full-prism on high-risk). Default: standard
@@ -36,10 +32,6 @@ standard
 ### depth-preference
 
 *(optional)* Override for pipeline mode when scope is query or file: 'single', 'pipeline', 'portfolio', or 'behavioral'. Ignored for multi-unit scopes where mode is determined per-unit by risk classification.
-
-### output-path
-
-*(optional)* Directory to write the analysis plan artifact. If omitted, the plan is returned but not persisted.
 
 ## Protocol
 

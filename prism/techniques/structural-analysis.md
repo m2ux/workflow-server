@@ -13,18 +13,6 @@ Apply L12 structural analysis lens to code for deep structural findings, conserv
 
 ## Inputs
 
-### code-content
-
-The code to analyze. Can be a file path (agent reads it), a diff, or inline code.
-
-### output-path
-
-*(optional)* Directory to write the analysis artifact. Defaults to current working directory.
-
-#### default
-
-.
-
 ### analysis-focus
 
 *(optional)* Optional focus area to guide the analysis (e.g., 'error handling', 'state management', 'concurrency')
@@ -38,7 +26,7 @@ The code to analyze. Can be a file path (agent reads it), a diff, or inline code
 
 ### 2. Read Target
 
-- If {code-content} is a file path, read the file to obtain the code
+- If {target-content} is a file path, read the file to obtain the code
 - If no code content was provided or the file cannot be found, request the file path or code content from the caller before proceeding
 - If an {analysis-focus} is provided, note it as a framing constraint but do not narrow the analysis — the lens operations are exhaustive
 

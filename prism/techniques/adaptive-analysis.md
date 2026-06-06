@@ -11,20 +11,6 @@ metadata:
 
 Minimize cost by automatically escalating analysis depth from cheap/fast to deep/expensive based on signal quality assessment
 
-## Inputs
-
-### target-content
-
-The code or text to analyze (file path or inline content)
-
-### target-type
-
-Whether the input is 'code' or 'general'
-
-### output-path
-
-Directory for adaptive-stage1.md, adaptive-stage2.md (conditional), and full-prism artifacts (conditional)
-
 ## Protocol
 
 ### 1. Stage 1 Sdl

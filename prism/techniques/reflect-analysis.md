@@ -11,20 +11,6 @@ metadata:
 
 Apply recursive meta-analysis to L12 output using the claim prism, then synthesize findings with constraint history
 
-## Inputs
-
-### target-content
-
-The code or text to analyze in the L12 pass
-
-### target-type
-
-code or general — informs L12 and downstream framing
-
-### output-path
-
-Directory for reflect-l12.md, reflect-meta.md, reflect-synthesis.md
-
 ## Protocol
 
 ### 1. Structural Analysis

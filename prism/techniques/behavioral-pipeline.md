@@ -13,17 +13,9 @@ Execute the behavioral pipeline — 4 independent behavioral lenses followed by 
 
 ## Inputs
 
-### target-content
-
-The code to analyze (provided inline by the orchestrator, or a file path to read)
-
 ### lens-resource-index
 
 Resource index for this pass: 19 (error-resilience), 20 (optimize), 21 (evolution), 22 (api-surface), or 23 (behavioral-synthesis)
-
-### output-path
-
-Directory to write the analysis artifact
 
 ### prior-artifact-paths
 

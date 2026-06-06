@@ -11,20 +11,6 @@ metadata:
 
 Run 2 maximally orthogonal prisms against the same target and synthesize their disagreements for lightweight self-correction
 
-## Inputs
-
-### target-content
-
-The code or text to analyze
-
-### target-type
-
-code or general — drives automatic prism pair selection
-
-### output-path
-
-Directory for dispute-lens-a.md, dispute-lens-b.md, dispute-synthesis.md
-
 ## Protocol
 
 ### 1. Select Pair

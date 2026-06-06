@@ -11,20 +11,6 @@ metadata:
 
 Decompose source code into subsystems, assign different prisms per region via calibration, and synthesize cross-boundary findings
 
-## Inputs
-
-### target-content
-
-Code to analyze
-
-### target-type
-
-Must be 'code' — subsystem mode is code-only
-
-### output-path
-
-Directory for subsystem-{name}.md and subsystem-synthesis.md
-
 ## Protocol
 
 ### 1. Decompose

@@ -13,18 +13,6 @@ Orchestrate prism analysis with isolated sub-agent passes for analytical indepen
 
 ## Inputs
 
-### target-content
-
-The code or text to analyze — file path or inline content
-
-### target-type
-
-*(optional)* Whether the input is 'code' or 'general'
-
-#### default
-
-code
-
 ### pipeline-mode
 
 *(optional)* Analysis mode: 'single', 'full-prism', 'portfolio', or 'behavioral'
@@ -32,14 +20,6 @@ code
 #### default
 
 single
-
-### output-path
-
-*(optional)* Directory to write analysis artifacts. Workers write artifacts here; the orchestrator passes the path to each worker.
-
-#### default
-
-.
 
 ### selected-lenses
 
