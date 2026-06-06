@@ -17,14 +17,6 @@ Diff an upstream prisms directory against current resources, producing a categor
 
 Absolute path to the upstream prisms directory
 
-### resource-path
-
-Relative path to the prism workflow resources directory
-
-#### default
-
-prism/resources/
-
 ### exclusions
 
 *(optional)* Upstream filenames to exclude from the diff

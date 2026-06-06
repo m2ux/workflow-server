@@ -11,16 +11,6 @@ metadata:
 
 Verify consistency across prism resources, techniques, and documentation by running four checks: stale name references, prompt guide routing accuracy, resource count alignment, and duplicate index detection.
 
-## Inputs
-
-### changes
-
-Change set — renamed and deleted entries define stale names
-
-### resource-path
-
-Path to the prism workflow resources directory
-
 ## Protocol
 
 ### 1. Check Stale References

@@ -13,14 +13,6 @@ Apply an approved change set to the resources directory — sync modified, renam
 
 ## Inputs
 
-### changes
-
-Approved, categorized change set (new, modified, renamed, deleted entries plus next index) to apply against the resources directory
-
-### resource-path
-
-Path to the prism workflow resources directory
-
 ### next-index
 
 Starting index for new resource files
