@@ -26,7 +26,7 @@ Summary, description, and context from the linked issue
 ### 1. Load Framework
 
 - Use attached [design-framework](../resources/design-framework.md) for full guidance
-- Review issue_details and problem_context
+- Review {issue-details} and {problem-context}
 
 ### 2. Define Problem
 
@@ -52,13 +52,13 @@ Summary, description, and context from the linked issue
 
 ### 5. Document Philosophy
 
-- Create the design-philosophy-doc artifact in planning folder
+- Create the {design-philosophy-doc} artifact in planning folder
 - Include problem statement, classification, complexity, workflow path rationale
 
 ### 6. Create Assumptions Log
 
 - Identify assumptions made during problem classification and path selection
-- Create the assumptions-log artifact with initial assumptions
+- Create the {assumptions-log} artifact with initial assumptions
 - Create assumptions log here — first activity that makes decisions requiring assumptions
 
 ## Outputs

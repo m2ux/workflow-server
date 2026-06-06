@@ -29,28 +29,28 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 
 ### 1. Verify Existing Issue
 
-- Runs when user provides an existing issue key. Detect the platform from key format: '#N' or bare number → GitHub, 'PROJ-N' → Jira. Set issue_platform.
+- Runs when user provides an existing issue key. Detect the platform from key format: '#N' or bare number → GitHub, 'PROJ-N' → Jira. Set {issue-platform}.
 - If no issue key was given and the platform is ambiguous (user did not select GitHub or Jira), present the platform selection checkpoint and wait for the user's selection before proceeding.
-- For GitHub: run 'gh issue view <number>' to confirm the issue exists. Capture issue_number and issue_url.
-- For Jira: call getAccessibleAtlassianResources FIRST to obtain cloudId, preserve as jira_cloud_id. THEN call getJiraIssue with cloudId and the issue key. Do NOT call getJiraIssue before cloudId is resolved.
-- Capture issue_number and issue_url from the verification result. Set needs_issue_creation to false.
+- For GitHub: run 'gh issue view <number>' to confirm the issue exists. Capture {issue_number} and {issue_url}.
+- For Jira: call getAccessibleAtlassianResources FIRST to obtain cloudId, preserve as {jira_cloud_id}. THEN call getJiraIssue with cloudId and the issue key. Do NOT call getJiraIssue before cloudId is resolved.
+- Capture {issue_number} and {issue_url} from the verification result. Set needs_issue_creation to false.
 
 ### 2. Create Github Issue
 
-- Runs when issue_platform is github and needs_issue_creation is true. Use attached [github-issue-creation](../resources/github-issue-creation.md) for guidance.
-- Gather title, description, and acceptance criteria from user context, scoping the issue to the target-submodule the work package targets
-- Map issue_type to GitHub labels per github-label-mapping rule
-- Create the issue, then verify creation succeeded — this verified issue is the created-issue. Capture issue_number and issue_url.
+- Runs when {issue-platform} is github and needs_issue_creation is true. Use attached [github-issue-creation](../resources/github-issue-creation.md) for guidance.
+- Gather title, description, and acceptance criteria from user context, scoping the issue to the {target-submodule} the work package targets
+- Map {issue-type} to GitHub labels per github-label-mapping rule
+- Create the issue, then verify creation succeeded — this verified issue is the {created-issue}. Capture {issue_number} and {issue_url}.
 - GitHub label mapping: feature->enhancement, bug->bug, task->chore, enhancement->enhancement
 - If a gh CLI command fails (auth, permissions, or network — including the 'gh issue view' verification in step 1), verify gh auth status and repository access, then retry or prompt the user to create the issue manually.
 
 ### 3. Create Jira Issue
 
-- Runs when issue_platform is jira and needs_issue_creation is true. Use attached [jira-issue-creation](../resources/jira-issue-creation.md) for guidance.
-- Obtain Atlassian cloud ID via getAccessibleAtlassianResources and preserve as jira_cloud_id. This MUST be the first Jira tool call.
+- Runs when {issue-platform} is jira and needs_issue_creation is true. Use attached [jira-issue-creation](../resources/jira-issue-creation.md) for guidance.
+- Obtain Atlassian cloud ID via getAccessibleAtlassianResources and preserve as {jira_cloud_id}. This MUST be the first Jira tool call.
 - List available projects via getVisibleJiraProjects, then present the jira-project-selection checkpoint (defined on the activity) for user selection. Resolve available issue types for the selected project.
-- Gather summary, description, and acceptance criteria, scoping the issue to the target-submodule the work package targets. Resolve assignee account ID if specified.
-- Create the issue with mapped type per jira-type-mapping rule — the resulting issue is the created-issue. Capture issue_number and issue_url.
+- Gather summary, description, and acceptance criteria, scoping the issue to the {target-submodule} the work package targets. Resolve assignee account ID if specified.
+- Create the issue with mapped type per jira-type-mapping rule — the resulting issue is the {created-issue}. Capture {issue_number} and {issue_url}.
 - Jira issue type mapping: feature->Story, bug->Bug, task->Task, enhancement->Story, epic->Epic
 - If any Atlassian API call fails (auth, permissions, or invalid request — including the getJiraIssue verification in step 1), verify the cloudId and project access, and check the Jira issue type and required fields before retrying.
 

@@ -33,7 +33,7 @@ PR number for status checking
 - Categorize non-checkpoint messages by signal type and map to specific workflow sections
 - Identify root causes and determine pattern frequency across categories
 - Formulate prioritized recommendations: high (repeated corrections, frustration), medium (single clarifications), low (edge cases)
-- Create the retrospective-document using the [workflow-retrospective](../resources/workflow-retrospective.md) template
+- Create the {retrospective-document} using the [workflow-retrospective](../resources/workflow-retrospective.md) template
 
 ### 3. Update Status
 

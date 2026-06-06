@@ -57,7 +57,7 @@ Path to planning folder for context
 
 ### 5. Write Summary
 
-- Create the architecture-summary under `planning-folder-path`
+- Create the {architecture-summary} under `planning-folder-path`
 - Combine diagrams with narrative explanation
 - Focus on impact, scope, and risk, drawing scope and rationale from `design-philosophy-doc` when it is provided
 - Follow the architecture-summary template in [architecture-summary](../resources/architecture-summary.md)

@@ -37,7 +37,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 
 ### 1. Identify Authoritative Source
 
-- Determine which artifacts contain definitive findings based on pipeline_mode
+- Determine which artifacts contain definitive findings based on {pipeline-mode}
 - full-prism: the synthesis artifact in {all-artifact-paths} is authoritative (reconciles structural + adversarial). Read the structural and adversarial artifacts from {all-artifact-paths} only for location details and evidence the synthesis references.
 - portfolio: all portfolio artifacts in {all-artifact-paths} are authoritative. If a portfolio-synthesis artifact exists, it takes priority for cross-lens findings.
 - behavioral: the behavioral-synthesis artifact is authoritative. Individual behavioral artifacts in {all-artifact-paths} provide supporting detail.
@@ -45,8 +45,8 @@ Description of what was analysed — used in the report's Executive Summary scop
 
 ### 2. Read Artifacts
 
-- Read each authoritative artifact from the filesystem using the paths in all-artifact-paths
-- If one or more paths in all-artifact-paths do not exist on the filesystem, report which artifacts are missing; the orchestrator may need to re-run the corresponding pass.
+- Read each authoritative artifact from the filesystem using the paths in {all-artifact-paths}
+- If one or more paths in {all-artifact-paths} do not exist on the filesystem, report which artifacts are missing; the orchestrator may need to re-run the corresponding pass.
 - For full-prism, also read the structural and adversarial artifacts to extract location details and evidence for findings that the synthesis references by ID but does not fully reproduce
 - For multi-unit analyses, read per-unit artifacts from their respective subdirectories
 
@@ -79,7 +79,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 ### 6. Assign Ids
 
 - Create a mapping from source IDs to unified report IDs
-- If analysis_focus provides dimension names or categories, use dimension-based prefixes (e.g., CON-xx for consistency, VER-xx for veracity)
+- If {analysis-focus} provides dimension names or categories, use dimension-based prefixes (e.g., CON-xx for consistency, VER-xx for veracity)
 - If no dimensions, use severity-ordered sequential numbering (e.g., F-01, F-02)
 - For multi-unit analyses, prefix with a short unit identifier where needed to avoid collisions
 - If two findings from different units or lenses map to the same report ID, add a unit or lens prefix to disambiguate and report the collision.

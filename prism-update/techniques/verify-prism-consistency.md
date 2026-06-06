@@ -25,7 +25,7 @@ Path to the prism workflow resources directory
 
 ### 1. Check Stale References
 
-- Build stale name list from changes.renamed (old_name) and changes.deleted (name).
+- Build stale name list from {changes}.renamed (old_name) and {changes}.deleted (name).
 - Grep all files in prism/techniques/ and prism/activities/ for each stale name. Record matches.
 
 ### 2. Verify Prompt Routing
@@ -37,7 +37,7 @@ Path to the prism workflow resources directory
 
 ### 3. Verify Resource Counts
 
-- Count .md files in resource-path (excluding README.md).
+- Count .md files in {resource-path} (excluding README.md).
 - Compare against stated counts in prism/README.md and prism/resources/README.md. Flag mismatches.
 
 ### 4. Check Duplicate Indices
@@ -46,8 +46,8 @@ Path to the prism workflow resources directory
 
 ### 5. Compile Findings
 
-- Assemble the verification-report from the four checks, populating stale_references, routing_mismatches, count_mismatches, and duplicate_indices.
-- Set the report's has_issues = true if any findings, false otherwise.
+- Assemble the {verification-report} from the four checks, populating {stale_references}, {routing_mismatches}, {count_mismatches}, and {duplicate_indices}.
+- Set the report's {has_issues} = true if any findings, false otherwise.
 
 ## Outputs
 

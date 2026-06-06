@@ -30,7 +30,7 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 
 ### 2. Define Scope
 
-- Identify what is in scope for the current-package — specific deliverables and changes
+- Identify what is in scope for the {current-package} — specific deliverables and changes
 - Identify what is explicitly out of scope with reasons for exclusion
 - Apply the independence test: could this package be shipped without any other package?
 
@@ -56,7 +56,7 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 ### 6. Document Plan
 
 - Use attached [package-plan-template](../resources/package-plan-template.md) (package-plan-template) for the document structure
-- Create the package-plan in the planning-folder using its template
+- Create the {package-plan} in the {planning-folder} using its template
 
 ## Outputs
 

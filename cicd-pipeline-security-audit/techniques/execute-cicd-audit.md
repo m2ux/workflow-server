@@ -25,10 +25,10 @@ Path to the planning folder for artifacts
 
 ### 1. Phase 1 Setup
 
-- Confirm each path in target-submodules exists and contains .github/workflows/
+- Confirm each path in {target-submodules} exists and contains .github/workflows/
   - If no target submodules were specified or none are found, fail with an error listing the available submodules.
 - Discover all workflow files (.yml and .yaml) across targets
-- Initialize the planning-folder with [START-HERE.md](../resources/start-here.md)
+- Initialize the {planning-folder} with [START-HERE.md](../resources/start-here.md)
 
 ### 2. Phase 2 Reconnaissance
 
@@ -50,7 +50,7 @@ Path to the planning folder for artifacts
 
 - Apply severity scoring using Impact x Exploitability rubric
 - Verify coverage gate
-- Produce the final audit-report with remediation guidance
+- Produce the final {audit-report} with remediation guidance
 
 ## Outputs
 

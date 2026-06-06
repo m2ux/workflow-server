@@ -30,7 +30,7 @@ Path to the target codebase directory
 ### 1. Discover Existing
 
 - List contents of .engineering/artifacts/comprehension/ directory
-- Match existing artifacts by project name, module name, or domain terms from problem_statement
+- Match existing artifacts by project name, module name, or domain terms from {problem-statement}
 - Summarize relevant artifacts with coverage scope and last-updated date
 - If no comprehension artifacts exist yet for this codebase, proceed with fresh analysis — this is the first comprehension pass
 
@@ -42,8 +42,8 @@ Path to the target codebase directory
 
 ### 3. Architecture Survey
 
-- Top-down survey: start with the target-path project root structure, build system, and entry points
-- Confirm the project-type from the build system and language conventions encountered (rust-substrate|other), and use it to shape which abstractions and patterns to look for in later steps
+- Top-down survey: start with the {target-path} project root structure, build system, and entry points
+- Confirm the {project-type} from the build system and language conventions encountered (rust-substrate|other), and use it to shape which abstractions and patterns to look for in later steps
 - When GitNexus is available: apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[query](./gitnexus-operations/query.md) to discover execution flows and functional areas, read cluster resources for module groupings, and [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[context](./gitnexus-operations/context.md) for dependency mapping — faster than grep and the required primary approach
 - Use glob to map directory structure, find module files, and locate test files — glob is the appropriate tool for filesystem-shape discovery during the architecture survey
 - Identify module boundaries and their responsibilities from directory layout, module declarations, and public APIs
@@ -74,7 +74,7 @@ Path to the target codebase directory
 
 ### 7. Artifact Management
 
-- Write the comprehension-artifact following the artifact structure and comprehension techniques in [codebase-comprehension](../resources/codebase-comprehension.md)
+- Write the {comprehension-artifact} following the artifact structure and comprehension techniques in [codebase-comprehension](../resources/codebase-comprehension.md)
 - Artifact naming: {codebase-area-name}.md in .engineering/artifacts/comprehension/
 - Derive codebase-area-name from the target project or subsystem name (slugified)
 - When augmenting: add new sections, update existing sections with deeper detail, preserve prior content

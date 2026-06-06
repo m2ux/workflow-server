@@ -38,14 +38,14 @@ The code to analyze. Can be a file path (agent reads it), a diff, or inline code
 
 ### 2. Read Target
 
-- If code-content is a file path, read the file to obtain the code
+- If {code-content} is a file path, read the file to obtain the code
 - If no code content was provided or the file cannot be found, request the file path or code content from the caller before proceeding
-- If an analysis-focus is provided, note it as a framing constraint but do not narrow the analysis — the lens operations are exhaustive
+- If an {analysis-focus} is provided, note it as a framing constraint but do not narrow the analysis — the lens operations are exhaustive
 
 ### 3. Gather Structural Context
 
 - Check GitNexus availability via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md). If the target codebase is not indexed, skip this step entirely and proceed to execute-lens.
-- Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) with queries derived from the target code's primary concerns (e.g., the module name, key function names, or analysis-focus if provided) to discover execution flows through the target — this identifies which call chains the code participates in and which are most relevant.
+- Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) with queries derived from the target code's primary concerns (e.g., the module name, key function names, or {analysis-focus} if provided) to discover execution flows through the target — this identifies which call chains the code participates in and which are most relevant.
 - Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on the primary entry points and exported symbols of the target to obtain caller/callee maps — the lens can then make blast-radius claims backed by actual graph data rather than inference.
 - Record the structural context (execution flows, caller counts, callee maps) as a preamble section that the lens operations can reference when making claims about impact, coupling, or dead code.
 - If any GitNexus call fails, log the failure and continue without structural context — the lens operates independently.

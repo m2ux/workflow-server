@@ -26,7 +26,7 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 ### 1. Select Analysis Type
 
 - Present the analysis-type-selection checkpoint to determine if this is continuing or new
-- Set analysis_type variable based on user selection
+- Set {analysis_type} variable based on user selection
 - If the user is unsure whether this is continuing or new, check for existing planning artifacts — if found, suggest completion analysis; if not, suggest context analysis
 
 ### 2. Perform Completion Analysis
@@ -46,8 +46,8 @@ The [planning folder](../resources/planning-folder-template.md#folder-location) 
 
 ### 4. Document Analysis
 
-- Create the analysis-document in the planning-folder using the appropriate template
-- Set analysis_document variable to the document path
+- Create the {analysis-document} in the {planning-folder} using the appropriate template
+- Set {analysis-document} variable to the document path
 
 ### 5. Present Findings
 

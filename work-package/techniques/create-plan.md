@@ -33,14 +33,14 @@ Elicited requirements with success criteria and scope
 
 ### 1. Verify Inputs
 
-- Verify design_philosophy and requirements are available
+- Verify {design-philosophy} and {requirements} are available
 - Confirm prerequisite activities completed before proceeding
 - If design philosophy or analysis is not completed, prompt the user to complete the prerequisite activities before planning.
 
 ### 2. Load Guidance
 
 - Use attached [wp-plan](../resources/wp-plan.md) for plan template and guidance
-- Review design_philosophy, requirements, analysis_findings, research_findings
+- Review {design-philosophy}, {requirements}, {analysis-findings}, {research-findings}
 
 ### 3. Apply Design Framework
 
@@ -52,7 +52,7 @@ Elicited requirements with success criteria and scope
 
 ### 4. Write Plan
 
-- Create the plan-document artifact in planning folder
+- Create the {plan-document} artifact in planning folder
 - Include task breakdown, dependencies, ordering
 - Document design decisions and assumptions
 

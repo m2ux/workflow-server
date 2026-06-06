@@ -27,4 +27,4 @@ Boolean — true if the index is out of date
 
 1. Read the MCP resource `gitnexus://repo/{repo_name}/context` and record the reported `stats` (symbol / relationship / process counts).
    - If no GitNexus index exists for the target repository, apply [analyze](./analyze.md) from the project root, then retry [verify-index](./verify-index.md).
-2. If stale, apply [analyze](./analyze.md) before proceeding. When the index is out of date relative to recent code changes, apply [analyze](./analyze.md) to refresh, or apply [analyze](./analyze.md) with `force=true` for a full rebuild.
+2. If {stale}, apply [analyze](./analyze.md) before proceeding. When the index is out of date relative to recent code changes, apply [analyze](./analyze.md) to refresh, or apply [analyze](./analyze.md) with `force=true` for a full rebuild.

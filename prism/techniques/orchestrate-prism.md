@@ -50,17 +50,17 @@ single
 ### 1. Load Workflow
 
 - Call get_workflow({ workflow_id: 'prism' }) to load the workflow definition
-- Initialize state variables from inputs: target_content, target_type, pipeline_mode, output_path, selected_lenses
+- Initialize state variables from inputs: {target-content}, {target-type}, {pipeline-mode}, {output-path}, {selected-lenses}
 
 ### 2. Resolve Target
 
-- If target_content is a file path, read the file and capture the full text as {$resolved-content}. If the file does not exist, report the error to the user and stop — do not proceed with empty content.
-- If target_content is inline text, use it directly as {$resolved-content}
-- Ensure the output-path directory exists (create if needed)
+- If {target-content} is a file path, read the file and capture the full text as {$resolved-content}. If the file does not exist, report the error to the user and stop — do not proceed with empty content.
+- If {target-content} is inline text, use it directly as {$resolved-content}
+- Ensure the {output-path} directory exists (create if needed)
 
 ### 3. Determine Lens Indices
 
-- Based on target_type and pipeline_mode, determine which resource indices to use
+- Based on {target-type} and {pipeline-mode}, determine which resource indices to use
 - L12 pipeline (all target types): structural=00, adversarial=01, synthesis=02
 - Portfolio: pedagogy=06, claim=07, scarcity=08, rejected-paths=09, degradation=10, contract=11, deep-scan=12, sdl-trust=13, sdl-coupling=14, sdl-abstraction=15, rec=16, ident=17, 73w=18, error-resilience=19, optim=20, evolution=21, api-surface=22, evidence-cost=29, reachability=30, fidelity=31, state-audit=32, archaeology=33, audit-code=34, cultivation=35, sdl-simulation=36, security-v1=37, simulation=38, testability-v1=39, knowledge-audit=40, knowledge-boundary=41, knowledge-typed=42, l12g=43, oracle=44, arc-code=50, architect=51, blindspot=52, codegen=53, counterfactual=54, emergence=55, falsify=56, genesis=57, history=58, prereq=59, significance=60, verify-claims=61
 - Behavioral pipeline (code-only): error-resilience=19, optim=20, evolution=21, api-surface=22, behavioral-synthesis=23
@@ -70,16 +70,16 @@ single
 ### 4. Dispatch Structural Pass
 
 - Dispatch a fresh sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent.
-- Worker prompt must include: (1) the {$resolved-content}, (2) the lens resource index to load, (3) the workflow_id 'prism' for resource loading, (4) the output-path to write its artifact, (5) instruction to load the lens for that index, execute every operation, and write to {output-path}/structural-analysis.md
+- Worker prompt must include: (1) the {$resolved-content}, (2) the lens resource index to load, (3) the workflow_id 'prism' for resource loading, (4) the {output-path} to write its artifact, (5) instruction to load the lens for that index, execute every operation, and write to {output-path}/structural-analysis.md
 - Worker prompt must NOT include any prior analysis — this is the first pass
 - Capture the artifact path from the worker's response: structural_output_path = {output-path}/structural-analysis.md
 - Verify the artifact was written by reading its first line. If the worker returned without writing its artifact, dispatch a new worker for the same pass with an explicit instruction to write the artifact — do not resume the failed worker.
-- If pipeline_mode is 'single', go to present-result
+- If {pipeline-mode} is 'single', go to present-result
 
 ### 5. Dispatch Adversarial Pass
 
 - Dispatch a NEW FRESH sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent on the structural worker.
-- Worker prompt must include: (1) the {$resolved-content}, (2) structural_output_path — the worker will read this file and label it ANALYSIS 1, (3) the adversarial lens resource index, (4) the output-path, (5) instruction to write to {output-path}/adversarial-analysis.md
+- Worker prompt must include: (1) the {$resolved-content}, (2) structural_output_path — the worker will read this file and label it ANALYSIS 1, (3) the adversarial lens resource index, (4) the {output-path}, (5) instruction to write to {output-path}/adversarial-analysis.md
 - CRITICAL: Do NOT include the structural analysis text inline. Pass only the file path. The worker reads the artifact from the filesystem.
 - If the expected prior-pass artifact (structural_output_path) does not exist on the filesystem, re-dispatch the prior pass worker to produce it — do not proceed to this pass without the artifact.
 - If the adversarial pass comes back agreeing with everything in the structural analysis, dispatch a new adversarial worker with an explicit instruction to find at least one wrong prediction, one overclaim, and one underclaim.
@@ -89,14 +89,14 @@ single
 ### 6. Dispatch Synthesis Pass
 
 - Dispatch a NEW FRESH sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent on any prior worker.
-- Worker prompt must include: (1) the {$resolved-content}, (2) structural_output_path and adversarial_output_path — the worker reads both files, (3) the synthesis lens resource index, (4) the output-path, (5) instruction to write to {output-path}/synthesis.md
+- Worker prompt must include: (1) the {$resolved-content}, (2) structural_output_path and adversarial_output_path — the worker reads both files, (3) the synthesis lens resource index, (4) the {output-path}, (5) instruction to write to {output-path}/synthesis.md
 - Capture synthesis_output_path = {output-path}/synthesis.md
 - Verify the artifact was written
 - Proceed to present-result
 
 ### 7. Dispatch Portfolio Passes
 
-- For each selected lens, dispatch a fresh sub-agent using harness-compat::spawn-agent with: the {$resolved-content}, that lens's resource index, and the output-path
+- For each selected lens, dispatch a fresh sub-agent using harness-compat::spawn-agent with: the {$resolved-content}, that lens's resource index, and the {output-path}
 - Each worker writes to {output-path}/portfolio-{lens-name}.md
 - Portfolio workers can be dispatched in parallel (up to 4 concurrent) since they are independent
 - Capture all artifact paths in portfolio_output_paths keyed by lens name
@@ -114,7 +114,7 @@ single
 ### 9. Dispatch Behavioral Synthesis
 
 - After all 4 behavioral passes complete, dispatch the synthesis pass to a fresh sub-agent via harness-compat::spawn-agent.
-- Worker prompt must include: (1) the {$resolved-content}, (2) all 4 behavioral artifact paths with role labels (ERRORS, COSTS, CHANGES, PROMISES), (3) resource index 23 (behavioral-synthesis), (4) the output-path
+- Worker prompt must include: (1) the {$resolved-content}, (2) all 4 behavioral artifact paths with role labels (ERRORS, COSTS, CHANGES, PROMISES), (3) resource index 23 (behavioral-synthesis), (4) the {output-path}
 - Worker reads each artifact and constructs labeled sections: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES
 - Worker writes to {output-path}/behavioral-synthesis.md
 - Capture behavioral_synthesis_output_path. Proceed to present-result.
@@ -125,7 +125,7 @@ single
 - For full-prism mode: read and present {synthesis_output_path} as the primary result. Note {structural_output_path} and {adversarial_output_path} as appendices.
 - For portfolio mode: present each per-lens artifact from {portfolio_output_paths} followed by a cross-lens convergence/divergence summary
 - For behavioral mode: read and present {behavioral_synthesis_output_path} as the primary result. Note the per-role paths in {behavioral_output_paths} as appendices.
-- Assemble and return the prism-result to the caller: the primary artifact path as final_artifact_path, every artifact produced during the pipeline as all_artifact_paths, and the pipeline_mode that was used
+- Assemble and return the {prism-result} to the caller: the primary artifact path as {final_artifact_path}, every artifact produced during the pipeline as {all_artifact_paths}, and the {pipeline-mode} that was used
 
 ## Outputs
 

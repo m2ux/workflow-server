@@ -37,13 +37,13 @@ prism/resources/
 
 ### 1. Enumerate Upstream
 
-- List all .md files in upstream-path. Filter out exclusions.
-  - If the upstream-path directory does not exist, verify the path; the upstream repository may need cloning.
+- List all .md files in {upstream-path}. Filter out {exclusions}.
+  - If the {upstream-path} directory does not exist, verify the path; the upstream repository may need cloning.
 - Extract base name as prism identifier (deep_scan.md → deep_scan).
 
 ### 2. Enumerate Resources
 
-- List all .md files in resource-path except README.md.
+- List all .md files in {resource-path} except README.md.
 - Extract numeric index prefix and prism name (12-deep-scan.md → index 12, name deep-scan).
 
 ### 3. Build Name Mapping
@@ -60,8 +60,8 @@ prism/resources/
 
 ### 5. Compute Next Index and Assemble change-set
 
-- Set next_index to max(existing resource indices) + 1.
-- Assemble the categorized new, modified, renamed, and deleted entries together with next_index into the change-set result.
+- Set {next_index} to max(existing resource indices) + 1.
+- Assemble the categorized new, modified, renamed, and deleted entries together with {next_index} into the {change-set} result.
   - If no differences were found across all categories, report that resources are up to date; the workflow can end early.
 
 ## Outputs

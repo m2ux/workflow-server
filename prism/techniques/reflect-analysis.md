@@ -46,7 +46,7 @@ Directory for reflect-l12.md, reflect-meta.md, reflect-synthesis.md
 - Worker produces: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN
 - Worker writes to {output-path}/reflect-synthesis.md
 - Synthesis must produce exactly 4 sections: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN
-- Return {reflect-result} — its l12_path, meta_path, and synthesis_path sub-fields hold the three pipeline artifact paths.
+- Return {reflect-result} — its {l12_path}, {meta_path}, and {synthesis_path} sub-fields hold the three pipeline artifact paths.
 
 ## Outputs
 

@@ -39,7 +39,7 @@ Directory to write the analysis artifact
 
 ### 2. Read Target
 
-- If target-content is a file path, read the file to obtain the code
+- If {target-content} is a file path, read the file to obtain the code
 
 ### 3. Apply Independent Lens
 
@@ -58,7 +58,7 @@ Directory to write the analysis artifact
 
 ### 5. Construct Synthesis Input
 
-- For synthesis pass (index 23): read all 4 prior artifacts from prior-artifact-paths
+- For synthesis pass (when {lens-resource-index} is 23): read all 4 prior artifacts from {prior-artifact-paths}
 - If a provided prior artifact path does not exist, report the missing artifact; the orchestrator may need to re-dispatch the independent lens pass that produces it
 - Construct the synthesis input by concatenating each artifact under its role heading: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES — separated by horizontal rules
 - The synthesis lens expects exactly these 4 labeled sections
@@ -66,7 +66,7 @@ Directory to write the analysis artifact
 
 ### 6. Apply Synthesis Lens
 
-- Apply the behavioral_synthesis lens (index 23) against the constructed input
+- Apply the behavioral_synthesis lens (when {lens-resource-index} is 23) against the constructed input
 
 ### 7. Write Artifact
 

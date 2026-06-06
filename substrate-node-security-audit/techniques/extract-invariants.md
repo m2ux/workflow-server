@@ -25,11 +25,11 @@ Source files containing the functions
 
 ### 1. Extract Per Function
 
-- For each priority-1 function in the function-registry, read its definition in the source-files and enumerate: (a) Preconditions — what must be true about inputs; (b) Postconditions — what must be true after execution; (c) Cross-function invariants — what must hold between this function and its inverse; (d) Data source invariants — what must be true about external data consumed.
+- For each priority-1 function in the {function-registry}, read its definition in the {source-files} and enumerate: (a) Preconditions — what must be true about inputs; (b) Postconditions — what must be true after execution; (c) Cross-function invariants — what must hold between this function and its inverse; (d) Data source invariants — what must be true about external data consumed.
 
 ### 2. Produce Table
 
-- Collect the enumerated invariants into the invariant-table, a structured table: | Function | Invariant | Category (pre/post/cross/data) | Expected Enforcement | Found? | Evidence |
+- Collect the enumerated invariants into the {invariant-table}, a structured table: | Function | Invariant | Category (pre/post/cross/data) | Expected Enforcement | Found? | Evidence |
 
 ## Outputs
 

@@ -29,7 +29,7 @@ Directory to write the audit prompt artifact
 
 ### 1. Survey Structure
 
-- List files and directories at the top level of target_path
+- List files and directories at the top level of {target_path}
 - Identify the build system: Cargo.toml (Rust), package.json (JS/TS), go.mod (Go), pyproject.toml (Python), etc.
 - For workspace/monorepo projects, enumerate all packages/crates/modules from the build configuration
 - Count lines of code per module (excluding tests, docs, generated files)
@@ -37,7 +37,7 @@ Directory to write the audit prompt artifact
 - If GitNexus is available (check via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md)): use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) to discover functional areas, execution flows, and community clusters — these produce better module boundaries and dependency maps than directory layout alone
 - If GitNexus is available: use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on high-risk modules to check fan-in (number of callers) — high fan-in modules have larger blast radius and should be elevated in risk classification
 - Record: language, build_system, modules (array of { name, path, line_count, purpose, fan_in (if GitNexus available) }), {$total-loc}, gitnexus_available (boolean)
-- If target_path contains no analysable source files, verify the path is correct and check whether submodules need initialisation before proceeding.
+- If {target_path} contains no analysable source files, verify the path is correct and check whether submodules need initialisation before proceeding.
 
 ### 2. Scan Security Characteristics
 
@@ -67,7 +67,7 @@ Directory to write the audit prompt artifact
 - Assign risk levels based on exposure and blast radius: CRITICAL — flaws directly compromise system integrity or user assets. HIGH — flaws degrade security guarantees or enable privilege escalation. MEDIUM — flaws have limited blast radius or require specific conditions. LOW — informational findings or defence-in-depth improvements
 - If {$trust-boundaries} is available: domains containing trust-boundary-crossing code get elevated risk. Include specific cross-community call edges as patterns to examine within those domains.
 - For each domain, list specific patterns and code paths to examine
-- Integrate the user's audit_description: if the user mentions specific concerns, elevate those areas in the relevant domains
+- Integrate the user's {audit_description}: if the user mentions specific concerns, elevate those areas in the relevant domains
 
 ### 5. Identify Cross Cutting
 
@@ -85,13 +85,13 @@ Directory to write the audit prompt artifact
 - Section 4: Cross-Cutting Concerns — error handling, feature flags, trust boundaries, dependencies
 - Section 5: Output Requirements — 'Produce findings with: ID, severity (using Impact x Feasibility rubric), description, location (file:line), impact, recommendation. Organise by domain and severity.'
 - The prompt must be self-contained: readable and actionable without additional context beyond the codebase path
-- Write the completed audit-prompt document into output_path as `audit-prompt.md`
+- Write the completed {audit-prompt} document into {output_path} as `audit-prompt.md`
 
 ### 7. Build Scopes
 
 - Assemble the audit-scopes array that downstream prism workflows will consume
 - For most audits: create a single scope entry covering the entire codebase
-- Single scope: { target: target_path, output_subdir: 'analysis', pipeline_mode: 'full-prism', analysis_focus: <composed prompt summary> }
+- Single scope: { target: {target_path}, output_subdir: 'analysis', pipeline_mode: 'full-prism', analysis_focus: <composed prompt summary> }
 - For very large codebases (>100K LOC) with clearly separable security boundaries: consider multiple scopes, each focused on a distinct trust domain
 - If {$total-loc} exceeds 200K, single-scope analysis becomes impractical — split into multiple scopes by trust domain or module group, giving each scope its own focused prompt.
 - Set analysis_focus for each scope to a focused description derived from the prompt, NOT the literal string 'security audit'

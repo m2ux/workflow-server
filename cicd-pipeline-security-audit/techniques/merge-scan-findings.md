@@ -44,7 +44,7 @@ The per-submodule scanner [output files](../resources/sub-agent-output-schema.md
 
 ### 5. Write Output
 
-- Produce the merged-findings and the reconciliation table
+- Produce the {merged-findings} and the reconciliation table
 
 ## Outputs
 

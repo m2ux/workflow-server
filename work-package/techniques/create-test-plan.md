@@ -30,8 +30,8 @@ Atomic task breakdown with dependencies and ordering for the work package
 ### 2. Define Strategy
 
 - Define test strategy for the work package (unit, integration, e2e), using the `plan-tasks` breakdown to scope coverage to each task and its dependencies
-- If requirements are not available, prompt the user to complete elicitation before continuing with test planning
-- Identify which requirements need which types of tests
+- If {requirements} are not available, prompt the user to complete elicitation before continuing with test planning
+- Identify which {requirements} need which types of tests
 - Determine test infrastructure needs (fixtures, mocks, test doubles)
 
 ### 3. Create Test Cases
@@ -43,7 +43,7 @@ Atomic task breakdown with dependencies and ordering for the work package
 
 ### 4. Write Artifact
 
-- Create the test-plan-document artifact in planning folder
+- Create the {test-plan-document} artifact in planning folder
 - Structure with strategy, test cases, and acceptance criteria matrix
 
 ## Outputs

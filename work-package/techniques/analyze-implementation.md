@@ -30,7 +30,7 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 ### 1. Load Guidance
 
 - Use attached [implementation-analysis](../resources/implementation-analysis.md) for full guidance
-- Review requirements and problem_statement for analysis scope
+- Review {requirements} and {problem-statement} for analysis scope
 
 ### 2. Gitnexus First Locate
 
@@ -56,11 +56,11 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 - Establish quantitative baseline metrics (performance, quality, usage, reliability)
 - Document how each metric was measured for reproducibility
 - Record current values before any changes
-- Link baseline metrics to success criteria from requirements
+- Link baseline metrics to success criteria from {requirements}
 
 ### 6. Identify Gaps
 
-- Link gaps to measurable success criteria from requirements
+- Link gaps to measurable success criteria from {requirements}
 - Document assumptions about current behavior
 - Create the analysis-document artifact
 
