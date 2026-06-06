@@ -37,9 +37,9 @@ PR number for status checking
 
 ### 3. Update Status
 
-- Once the PR identified by `pr-number` has merged, update the work package plan status
+- Once the PR identified by {pr-number} has merged, update the work package plan status
   - If the PR has not merged yet, wait for merge or check whether review feedback needs addressing first before updating status
-- Record the final outcome in the planning artifacts under `planning-folder-path`
+- Record the final outcome in the planning artifacts under {planning-folder-path}
 
 ### 4. Select Next
 

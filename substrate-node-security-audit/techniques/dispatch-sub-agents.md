@@ -21,7 +21,7 @@ List of agents to dispatch, each with: agent_id, activity_id, context variables 
 
 ### 1. Compose Prompts
 
-- For each agent in the roster, build a sub-agent prompt (spawn-agent operation, harness-compat technique) — collected as `{$composed-prompts}` — containing: (1) workflow-server bootstrap instructions — 'call start_session(session_token, agent_id) to inherit the dispatched session, then call next_activity with the assigned activity_id, follow the activity steps sequentially'; (2) context variables — crate path, in_scope/out_of_scope, function registry entries; (3) supplementary cross-scope files — file paths from other crates needed for cross-boundary checks; (4) output format requirement — 'return structured output conforming to the output schema resource.'
+- For each agent in the roster, build a sub-agent prompt (spawn-agent operation, harness-compat technique) — collected as `{$composed-prompts}` — containing: (1) workflow-server bootstrap instructions — 'call start_session(session_token, agent_id) to inherit the dispatched session, then call next_activity with the assigned activity_id, follow the activity steps sequentially'; (2) context variables — crate path, in_scope/out_of_scope, function registry entries; (3) supplementary cross-scope files — file paths from other crates needed for cross-boundary checks; (4) output format requirement — 'return structured output conforming to the [output schema](../resources/sub-agent-output-schema.md#schema).'
 
 ### 2. Dispatch All
 

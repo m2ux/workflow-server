@@ -44,7 +44,7 @@ Elicited requirements with success criteria and scope
 
 ### 3. Apply Design Framework
 
-- Apply design framework to structure implementation approach
+- Apply [design framework](../resources/design-framework.md#design-framework-trizics-approach) to structure implementation approach
 - Document assumptions in planning decisions
 - Break work into atomic tasks with explicit dependencies
 - Define task ordering — never assume ordering is obvious

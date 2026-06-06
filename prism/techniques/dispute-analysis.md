@@ -29,8 +29,8 @@ Directory for dispute-lens-a.md, dispute-lens-b.md, dispute-synthesis.md
 
 ### 1. Select Pair
 
-- Branch on {target-type}: for code, l12 (00) + identity (17) — highest pairwise uniqueness
-- For general: [l12_universal](../resources/l12-universal.md) (18) + claim (07)
+- Branch on {target-type}: for code, [l12](../resources/l12.md) (00) + [identity](../resources/identity.md) (17) — highest pairwise uniqueness
+- For general: [l12_universal](../resources/l12-universal.md) (18) + [claim](../resources/claim.md) (07)
 - l12+identity for code, l12_universal+claim for general — these pairs maximize analytical divergence
 
 ### 2. Execute Lenses
@@ -41,7 +41,7 @@ Directory for dispute-lens-a.md, dispute-lens-b.md, dispute-synthesis.md
 
 ### 3. Synthesize Disagreements
 
-- Dispatch synthesis to a fresh worker with dispute-synthesis resource (62)
+- Dispatch synthesis to a fresh worker with [dispute-synthesis](../resources/dispute-synthesis.md) resource (62)
 - Worker constructs input: "# LENS A: {prism_a}\n\n{output_a}\n\n---\n\n# LENS B: {prism_b}\n\n{output_b}"
 - Worker writes to {output-path}/dispute-synthesis.md
 - The synthesis focuses on DISAGREEMENTS, not agreements. Convergence is noted only to test implicit shared assumptions.

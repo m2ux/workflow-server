@@ -48,7 +48,7 @@ Path to the planning folder for artifacts
 
 ### 4. Phase 4 Report
 
-- Apply severity scoring using Impact x Exploitability rubric
+- Apply severity scoring using the Impact x Exploitability [severity rubric](../resources/cicd-severity-rubric.md#severity-matrix)
 - Verify coverage gate
 - Produce the final {audit-report} with remediation guidance
 

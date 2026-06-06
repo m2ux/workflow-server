@@ -33,7 +33,7 @@ Inter-package dependency map describing which packages block or depend on which 
 ### 2. Evaluate Criteria
 
 - For each package, assess: business value (High/Medium/Low), risk (High/Medium/Low), effort (High/Medium/Low)
-- Use the scoring guidance from the prioritization framework resource
+- Use the [scoring guidance](../resources/prioritization-framework.md#scoring-guidance) from the prioritization framework
 - Document the rationale for each assessment
 
 ### 3. Propose Order

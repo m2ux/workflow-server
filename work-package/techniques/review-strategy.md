@@ -63,7 +63,7 @@ Pull request number for scope reference
 ### 7. Verify Pr Body Conformance
 
 - Read the live PR body via `gh pr view {pr_number} --json body --jq .body`.
-- Run update-pr::protocol.verify-body against the live body.
+- Run [update-pr](./update-pr.md)::protocol.verify-body against the live body.
 - If body_conforms == false, record each body_findings entry in the {strategic-review-doc} under 'PR body conformance'.
 
 ### 8. Document Findings
@@ -79,7 +79,7 @@ Pull request number for scope reference
 
 ### 10. Create Architecture Summary
 
-- Create the {architecture-summary-doc} following the format defined by the summarize-architecture technique (technique 20), which is the authoritative owner of diagram conventions
+- Create the {architecture-summary-doc} following the format defined by the [summarize-architecture](./summarize-architecture.md) technique, which is the authoritative owner of diagram conventions
 - Target stakeholder communication
 
 ## Outputs

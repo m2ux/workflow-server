@@ -114,7 +114,7 @@ single
 ### 9. Dispatch Behavioral Synthesis
 
 - After all 4 behavioral passes complete, dispatch the synthesis pass to a fresh sub-agent via harness-compat::spawn-agent.
-- Worker prompt must include: (1) the {$resolved-content}, (2) all 4 behavioral artifact paths with role labels (ERRORS, COSTS, CHANGES, PROMISES), (3) resource index 23 (behavioral-synthesis), (4) the {output-path}
+- Worker prompt must include: (1) the {$resolved-content}, (2) all 4 behavioral artifact paths with role labels (ERRORS, COSTS, CHANGES, PROMISES), (3) resource index 23 ([behavioral-synthesis](../resources/behavioral-synthesis.md)), (4) the {output-path}
 - Worker reads each artifact and constructs labeled sections: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES
 - Worker writes to {output-path}/behavioral-synthesis.md
 - Capture behavioral_synthesis_output_path. Proceed to present-result.

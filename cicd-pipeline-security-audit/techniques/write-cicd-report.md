@@ -37,7 +37,7 @@ Scan completeness verification data (file and per-pattern coverage)
 
 - For each finding, write a structured block with finding number, pattern ID, severity, source, sink, evidence, and remediation
 - For compound findings, document the full attack chain
-- Include before/after code examples from the remediation playbook
+- Include before/after code examples from the [remediation playbook](../resources/remediation-playbook.md)
 - Group findings by submodule for readability
 - Every finding must have a specific remediation recommendation
 

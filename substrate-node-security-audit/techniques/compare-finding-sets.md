@@ -25,7 +25,7 @@ The benchmark finding list to compare against (e.g., professional audit report)
 
 ### 1. Map Findings
 
-- For each finding in `reference-findings`, identify the closest matching finding in `primary-findings`. Classify as: matched (same root cause and affected code), partial match (related but incomplete coverage or different framing), or gap (missed entirely). Record these as `{$finding-classifications}`.
+- For each finding in {reference-findings}, identify the closest matching finding in {primary-findings}. Classify as: matched (same root cause and affected code), partial match (related but incomplete coverage or different framing), or gap (missed entirely). Record these as `{$finding-classifications}`.
 
 ### 2. Identify Gaps
 
@@ -37,7 +37,7 @@ The benchmark finding list to compare against (e.g., professional audit report)
 
 ### 4. Analyze Root Causes
 
-- For each cluster in `{$gap-clusters}`, determine the structural cause: insufficient file coverage, pattern-absence blindness, toolkit deprioritization, wrong-layer check application, first-positive-signal bias, mechanical-check skip, or other. Propose countermeasures for each root cause, then assemble the mapping, gaps, calibration analysis, and countermeasures into the `comparison-report`.
+- For each cluster in `{$gap-clusters}`, determine the structural cause: insufficient file coverage, pattern-absence blindness, toolkit deprioritization, wrong-layer check application, first-positive-signal bias, mechanical-check skip, or other. Propose countermeasures for each root cause, then assemble the mapping, gaps, calibration analysis, and countermeasures into the {comparison-report}.
 
 ## Outputs
 

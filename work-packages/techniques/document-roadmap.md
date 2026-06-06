@@ -43,7 +43,7 @@ List of completed package [plan documents](../resources/package-plan-template.md
 ### 3. Add Timeline
 
 - Group packages into implementation phases based on dependency chains
-- Calculate phase durations from effort estimates (use formula from resource)
+- Calculate phase durations from effort estimates (use the [duration formula](../resources/roadmap-template.md#duration-formula))
 - Present timeline as a phase table with packages and estimated duration
 
 ### 4. Document Success

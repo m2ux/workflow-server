@@ -36,7 +36,7 @@ The updated provenance log, with the attestation section appended
 1. Append an `## Attestation` section to the {provenance-log} containing: ISO 8601 timestamp, certifier identity (`{certifier_name} <{certifier_email}>`), and the selected option.
    - If attestation is requested before the human has made an explicit `certify` or `flag-legal` selection at the dco-sign-off checkpoint, surface that checkpoint and wait for the selection before appending.
    - If provenance-log.md does not exist at this point — meaning no task rows were appended during the work package — surface this to the user: record-attestation runs at sign-off after task work, so a missing log means something went wrong with the implement loop. Retry only after the missing rows are investigated.
-2. If `option = flag-legal`, include a `Legal Review Note` field with the provided `legal_review_note` text.
+2. If `option = flag-legal`, include a `Legal Review Note` field with the provided {legal_review_note} text.
 
 ## Rules
 
