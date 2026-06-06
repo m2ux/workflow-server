@@ -37,7 +37,7 @@ Run L12 analysis, detect knowledge gaps via boundary + audit prisms, then re-ana
 {gap_data}
 </verified_knowledge>
 
-{target_content}
+{target-content}
 - Worker writes to {output-path}/verified-corrected.md
 - Return {verified-result} — its initial_path, gaps_path, and corrected_path sub-fields hold the three pipeline artifact paths.
 
