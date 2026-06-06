@@ -27,8 +27,8 @@ Conduct workflow retrospective to capture lessons learned and prepare for next w
 
 ### 3. Update Status
 
-- Once the PR identified by {pr_number} has merged, update the work package plan status
-  - If the PR has not merged yet, wait for merge or check whether review feedback needs addressing first before updating status
+- Once the PR identified by {pr_number} has merged, update the work package plan status  
+  > If the PR has not merged yet, wait for merge or check whether review feedback needs addressing first before updating status
 - Record the final outcome in the planning artifacts under {planning_folder_path}
 
 ### 4. Select Next
