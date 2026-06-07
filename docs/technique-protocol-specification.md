@@ -140,6 +140,33 @@ The split is the classical one: evaluated identifiers are snake (a `-` is the su
 surface/slug tokens are kebab. Here it is also a binding requirement — a kebab symbol id would not
 match the snake variable the engine looks up.
 
+#### Naming structure
+
+Beyond case (above), a symbol id's **grammatical shape encodes its kind**, so a reader infers from the
+shape alone whether a value is a flag, a scalar, a collection, or a map:
+
+- A **boolean** is an **affirmative predicate** — the statement that holds when the value is `true`
+  (`squash_merge_supported`, `index_fresh`, `pr_merged`), so a condition reads as an assertion. An
+  `is_`/`has_`/`can_`/`should_` prefix is **value-gated**, added only where it sharpens the predicate,
+  not mandatory: a bare affirmative noun phrase or a past-participle result flag (`worktree_created`,
+  `review_passed`, the `*_confirmed` cluster) already states the condition that holds and is conformant
+  as written. A negated stem (`not_ready`), a generic-noun id that buries the predicate (`…_flag`,
+  `…_status`, `…_check`), or an ambiguous noun is non-conformant.
+- A **collection** iterated as a whole is a **plural item noun** (`tasks`, `failures`,
+  `open_assumptions`) with no `_list`/`_array`/`_collection`/`_set` representation suffix; a value
+  addressed **by key** is **singular** and names the mapping (`domain_to_range`). Shape, not the
+  underlying container type, decides.
+- An **I/O id** is a **qualified noun phrase, head noun last** — adjectival/role qualifiers precede the
+  head, and the rightmost token is the thing the value IS (`reconciled_assumptions`, `lint_diagnostics`).
+  One concept carries one name corpus-wide (hoist to the common ancestor per §5 rather than letting
+  per-technique synonyms drift). The representation is never part of the id (`assumptions-log`, not
+  `assumptions-log-path`) and direction is never encoded in the id (it is structural). A legitimate
+  **kind suffix** that IS the concept — `_mode`, `_type` for an enum/mode discriminator — is a head
+  noun and stays.
+
+This is the structural complement to the case rule: case settles which alphabet an id uses, structure
+settles which words and in what order. See AP-60.
+
 ### 3.3 Protocol
 
 `## Protocol` is an ordered list of blocks `{ title?, steps[] }`:
@@ -204,6 +231,14 @@ that covers everything it governs:
   workflow-root `TECHNIQUE.md` — which delivers it to each by inheritance (§5), not duplicated onto
   each sibling.
 - A constraint that governs only one child belongs on that child, not on the container.
+
+A `<rule-name>` is a **positive declarative assertion of the invariant it guards** — it names the
+state that must hold, not a negation or a process narration (`assumptions-resolved-before-review`, not
+`do-not-review-unresolved`; a grouped-key + qualifier slug stays positive, `commit.signed` not
+`commit.not-unsigned`). The positive form is preferred only where it reads at least as clearly; a
+negation that carries irreplaceable clarity (`no-cargo-here`, `do-not-mask-flaky`, `never-resume`) is
+the right name and stays. Rule names are `kebab-case` (§3.2 — a rule is a name, never an evaluated
+variable). See AP-60.
 
 ### 3.5 Error handling
 
@@ -397,6 +432,10 @@ The protocol-relevant rules:
   smallest container that covers what it governs (§3.4): inline in a step if step-specific, on the
   common container if shared by siblings, on the child if it governs only that child.
 - A resource describes what it is; it does not name the techniques that use it.
+- An identifier's grammatical shape encodes its kind (§3.2): a boolean is an affirmative predicate
+  (prefix value-gated), a collection is a plural item noun and a key-addressed map is singular, an I/O
+  id is a qualified noun phrase with the head noun last, and a rule name is a positive declarative
+  assertion of the invariant it guards (§3.4). See AP-60.
 
 ---
 
