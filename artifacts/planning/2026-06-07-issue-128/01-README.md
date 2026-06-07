@@ -1,7 +1,7 @@
 # Canonical Naming Convention for Technique Inputs/Outputs and Rules - June 2026
 
 **Created:** 2026-06-07  
-**Status:** Ready  
+**Status:** In Progress  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -40,7 +40,8 @@ The fix works by adding the new rule on top of the conventions already in place,
 | 05 | [Implementation analysis](05-implementation-analysis.md) | Corpus conformance baselines, gap analysis, success criteria | 10-20m | ✅ Complete |
 | 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks (T1–T6), estimates, dependencies, sequencing | 20-45m | ✅ Complete |
 | 06 | [Test plan](test-plan.md) | Grep-parity verification cases, acceptance matrix | 15-30m | ✅ Complete |
-| — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
+| — | Implementation | Code changes per plan (T1–T6: AP-60, spec §3.2/§3.4/§8, audit heuristic, `{lens_name}` fix, `squash_merge_supported` rename, 5 rule-slug conversions) | 1-4h | ✅ Complete |
+| 08 | [Provenance log](08-provenance-log.md) | AI assistance provenance — one row per task (T1–T6) | 5m | ✅ Complete |
 | 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
 | 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
@@ -60,4 +61,4 @@ The fix works by adding the new rule on top of the conventions already in place,
 
 ---
 
-**Status:** Ready
+**Status:** In Progress

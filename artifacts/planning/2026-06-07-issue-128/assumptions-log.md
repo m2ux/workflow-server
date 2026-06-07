@@ -439,3 +439,54 @@ None. No assumption was accepted, rejected, or deferred at this gate, because no
 | `needs_comprehension` | `false` (comprehension already complete) |
 
 **Outcome:** All assumptions resolved before implementation; no stakeholder gate triggered. Transition to **implement** (default).
+
+---
+
+# Implementation Assumptions
+
+**Date:** 2026-06-07  
+**Activity:** implement
+
+These are the scope decisions made while implementing T1–T6. All are code-resolvable and were resolved against the corpus during the implementation pass; none is stakeholder-dependent (`has_open_assumptions = false`, `has_resolvable_assumptions = false`).
+
+### IMPL-1 — T5 boolean-I/O rename scope
+
+**Type:** Scope  
+**Status:** ✅ Resolved (code)  
+**Assumption:** Of the two flagged boolean technique-I/O ids, only `squash_merge_available` is a genuine deviation; `worktree_created` is conformant and is left untouched.  
+**Evidence:** Per R-1 / IA-1, a past-participle result flag (`worktree_created`, `review_passed`, `validation_passed`, the `*_confirmed` cluster) already states the affirmative condition that holds and is conformant as written — the AP-60 sub-rule (1) test is *affirmative*, not *prefixed*. `worktree_created` reads as an affirmative result flag, so re-prefixing it would harm readability and contradict the convention. `squash_merge_available` was renamed to `squash_merge_supported` (the AP-60-recommended affirmative-predicate exemplar; mirrors the GitHub `allow_squash_merge` semantic). Renamed across all 11 binding/reference surfaces: `workflow.toon` variable decl, `detect-merge-strategy.md` `### ` decl + protocol read, `01-start-work-package.toon` step description + `set` target + context-preserve note, `12-submit-for-review.toon` step description + checkpoint-message designator + condition variable, and two `activities/README.md` prose references. Grep-parity confirmed: old binding count → 0 (the sole remaining `squash_merge_available` occurrence is the AP-60 catalog deviation *exemplar*, which intentionally describes the before-state pattern); new-name count == prior count.  
+**Reversibility:** easily-reversible (single-concept id, all surfaces enumerated).
+
+### IMPL-2 — T6 rule-slug positive-assertion subset and held-back residual
+
+**Type:** Scope  
+**Status:** ✅ Resolved (code)  
+**Assumption:** The judgement-bounded subset to convert is the five slugs whose positive invariant reads at least as clearly AND whose blast radius is a single `### ` heading; all other negation-shaped slugs are held back.  
+**Evidence:** A corpus sweep confirmed that NONE of the ~25 negation-shaped rule slugs are cited by dotted address or `<group>-*` group-expansion anywhere beyond their own `### ` heading — so each conversion's blast radius is exactly one line (grep-parity is trivially satisfiable and silent-mis-fire risk is near-zero). Converted (old → new): `no-reassignment` → `severities-inherited` (generate-report.md), `no-context-leakage` → `isolated-context` (full-prism.md), `no-narration` → `synthesize-directly` (research-knowledge-base.md), `no-analysis` → `dispatch-only` (orchestrate-prism.md), `no-false-positives` → `confirmed-flow-only` (write-cicd-report.md). Each old slug → 0 occurrences; each new slug present once; non-collision pre-checked.  
+**Held back (intentional residual, with rationale):**  
+- `no-cargo-here`, `do-not-mask-flaky`, `never-resume` — named in AP-60 as irreplaceable-clarity negations.  
+- `query-not-grep`, `lens-not-forwarded`, `augment-not-replace`, `conversation-not-interrogation` — the "X-not-Y" contrast IS the meaning; a positive recast loses the contrast.  
+- `no-destructive-ops`, `no-hook-skipping`, `no-graphql-mutations`, `no-json-syntax`, `no-yaml-nesting` — prohibition of a specific operation/syntax; the prohibited thing is the point.  
+- `no-option-hallucination`, `no-auto-resolution`, `no-user-interaction`, `no-methodology-leak`, `no-implementation-details`, `no-raw-commands-in-plan`, `no-duplicate-review`, `no-get-activity-from-orchestrator`, `no-pre-load-techniques`, `skip-conditions`, `skip-if-trivial`, `skip-is-explicit` — the negation/skip form reads at least as clearly as any positive recast; no clarity gain to justify a rename.  
+- Grouped-key rules (`attribution-prohibition-*`, `orchestrator-no-*`, `file-sensitivity-no-core-config`, `code-commentary-why-not-what`, `communication-no-hyperbole`) — AP-26 grouped keys where the prefix supplies context; converting the qualifier risks the group semantics.  
+**Reversibility:** easily-reversible (single-line headings, zero external citations).
+
+### IMPL-3 — Structure validator not runnable in this worktree (environment/divergence, not a content defect)
+
+**Type:** Compatibility / Environment  
+**Status:** ✅ Resolved (code)  
+**Assumption:** `npx tsx scripts/validate-workflow-toon.ts` cannot run in this checkout for reasons unrelated to the migration edits, so grep-parity (the plan's primary guard) stands as the validation of record.  
+**Evidence:** The validator imports `../src/schema/skill.schema.js` and walks a `skills/*.toon` layout, both introduced by the markdown-skills migration (commit `8008f354`). The local parent branch (`chore/128-canonical-naming-convention` @ `a2eef303`, recording submodule `12e76a9`) carries the *new* validator script but the *pre-migration* `src/schema/` tree, which lacks `skill.schema.ts` — an inconsistent intermediate state from the parent-branch divergence (local 2 commits vs origin 1 commit; origin records submodule `1179013`). `node_modules` is also not installed in this worktree. All migration edits are confined to `.md`/`.toon` definition/doc files — none touches `src/` or any schema — so `npm run typecheck` / `npm test` (which cover `src/` only) are advisory here and unaffected. Validation of record is per-surface grep-parity, which passed for every renamed id (T4 `{lens-name}` → 0; T5 `squash_merge_available` binding → 0; T6 five slugs → 0). The divergence/validator-runnability is a parent-repo git reconciliation concern owned by the orchestrator, not a defect in this activity's content.  
+**Reversibility:** n/a (environmental observation).
+
+### Implementation state
+
+| Variable | Value |
+|----------|-------|
+| `has_uncertain_symbols` | `false` |
+| `has_open_assumptions` | `false` |
+| `has_resolvable_assumptions` | `false` |
+| `has_deferred_assumptions` | `false` |
+| `has_failures` | `false` |
+
+All renamed identifiers have provenance (existing declared symbols or renamed `### ` headings); no symbol could not be confirmed. No open or deferred assumptions; the assumption-reconciliation and interview loops are non-interactive (nothing to resolve or present).
