@@ -15,7 +15,7 @@ Conduct structured manual diff review using external side-by-side diff tool with
 
 ### 1. Sync Branch
 
-- Run git pull on the `branch_name` feature branch to ensure it is up to date
+- Run git pull on the {branch_name} feature branch to ensure it is up to date
 - Resolve merge conflicts before proceeding if any
 - If the git pull reveals conflicts, resolve them before continuing
 

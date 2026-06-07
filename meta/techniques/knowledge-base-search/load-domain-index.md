@@ -23,4 +23,4 @@ Parsed source registry, concept lookup table, and topic clusters
 
 1. Locate `{domain}-knowledge-index.md` under `.engineering/resources/`.
    - If no knowledge-index file is found there for the requested {domain}, fall back to standard concept-rag search: apply [catalog-search](./catalog-search.md) then [chunks-search](./chunks-search.md).
-2. Read the file and parse its source registry, concept table, and topic clusters into the `index`.
+2. Read the file and parse its source registry, concept table, and topic clusters into the {index}.

@@ -25,5 +25,5 @@ Composed prompt string
 
 ## Protocol
 
-1. Load the template named by `template_ref` via `get_resource`.
-2. Replace each `{placeholder}` with its value from `substitutions`, yielding the composed `prompt`.
+1. Load the template named by {template_ref} via `get_resource`.
+2. Replace each `{placeholder}` with its value from {substitutions}, yielding the composed {prompt}.

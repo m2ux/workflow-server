@@ -29,14 +29,14 @@ Expected scanner output schema from [sub-agent-output-schema](../resources/sub-a
 
 ### 1. Validate Structure
 
-- Load each of the `scanner_outputs` JSON files
-- Validate each against the `output_schema` — flag malformed or missing fields
+- Load each of the {scanner_outputs} JSON files
+- Validate each against the {output_schema} — flag malformed or missing fields
 - Malformed outputs count as gaps
 
 ### 2. Verify File Coverage
 
-- Build set of all scanned files across all `scanner_outputs`
-- Diff against the `workflow_inventory` — identify unscanned files
+- Build set of all scanned files across all {scanner_outputs}
+- Diff against the {workflow_inventory} — identify unscanned files
 
 ### 3. Verify Pattern Coverage
 

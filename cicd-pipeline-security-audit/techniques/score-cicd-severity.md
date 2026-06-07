@@ -38,7 +38,7 @@ Unified list of findings, each with pattern ID, source, sink, and evidence
 
 - Cross-check severity assignments against the campaign [calibration anchors](../resources/cicd-severity-rubric.md#calibration-anchors)
 - Adjust any finding that diverges by >= 2 levels from a matching anchor
-- Emit the calibrated `scored_findings`, each carrying its final severity level and scoring rationale
+- Emit the calibrated {scored_findings}, each carrying its final severity level and scoring rationale
 
 ## Outputs
 

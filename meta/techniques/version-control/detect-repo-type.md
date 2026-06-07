@@ -15,4 +15,4 @@ true when `.gitmodules` exists at the repo root
 
 ## Protocol
 
-1. Run `test -f .gitmodules`; `is_monorepo` is true when the file exists, false otherwise.
+1. Run `test -f .gitmodules`; {is_monorepo} is true when the file exists, false otherwise.

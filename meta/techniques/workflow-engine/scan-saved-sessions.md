@@ -23,4 +23,4 @@ Array of `{ planning_slug, sessionIndex, savedAt, variables }` entries whose `wo
 
 1. List directories under `.engineering/artifacts/planning/`.
 2. For each directory, read its `session.json` (the server-managed state file) and capture the directory name as the `planning_slug`.
-3. Return as `candidates` the entries whose `workflowId` equals `target_workflow_id`.
+3. Return as {candidates} the entries whose `workflowId` equals {target_workflow_id}.

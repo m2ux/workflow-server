@@ -29,9 +29,9 @@ true to preview edits without applying.
 
 ### changes
 
-Per-file edit list (when `dry_run`) or applied summary
+Per-file edit list (when {dry_run}) or applied summary
 
 ## Protocol
 
-1. Rename `old_name` to `new_name` in `repo_name`, always running with `dry-run: true` first; review the returned `changes` list with the user.
+1. Rename {old_name} to {new_name} in {repo_name}, always running with `dry-run: true` first; review the returned {changes} list with the user.
 2. Re-run with `dry-run: false` to apply.

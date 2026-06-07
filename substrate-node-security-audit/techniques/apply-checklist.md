@@ -29,11 +29,11 @@ Source files to read for evidence gathering
 
 ### 1. Load Checklist
 
-- Fetch the checklist from the `checklist_source` resource. Parse every numbered entry. Identify which entries apply universally and which apply conditionally (e.g., 'only for wallet constructors', 'only for pallets with events').
+- Fetch the checklist from the {checklist_source} resource. Parse every numbered entry. Identify which entries apply universally and which apply conditionally (e.g., 'only for wallet constructors', 'only for pallets with events').
 
 ### 2. Iterate Items
 
-- For EACH item in the `item_set`, evaluate EVERY checklist entry, reading the relevant `scope_files` to gather the evidence each verdict requires. Produce a verdict for each combination: PASS (with code citation — bare PASSes are invalid), FAIL (becomes a finding), or NA (with explicit justification for why the entry is structurally inapplicable). Every NA must be explicit — silent omission is not permitted.
+- For EACH item in the {item_set}, evaluate EVERY checklist entry, reading the relevant {scope_files} to gather the evidence each verdict requires. Produce a verdict for each combination: PASS (with code citation — bare PASSes are invalid), FAIL (becomes a finding), or NA (with explicit justification for why the entry is structurally inapplicable). Every NA must be explicit — silent omission is not permitted.
 - If a PASS verdict lacks a code citation, treat it as invalid: re-evaluate the combination with supporting evidence, or downgrade it to INSUFFICIENT.
 - For §3.4, every consensus-critical configuration struct (see [target profile](../resources/target-profile.md#consensus-critical-configuration-structs)): verify the constructor validates mathematical invariants. 'No validation but works in practice' is not a valid PASS.
 - For §3.6 input validation, PASS requires evidence at the CONSUMPTION layer (pallet), not just the PRODUCTION layer. Raw bytes/strings without typed wrappers are FAIL with severity reduced by 1 level.
@@ -58,7 +58,7 @@ Source files to read for evidence gathering
 
 ### 5. Produce Verdict Matrix
 
-- Output the `verdict_matrix`: the complete item x checklist matrix with its coverage attestation, in the format specified by the activity step that invoked this technique.
+- Output the {verdict_matrix}: the complete item x checklist matrix with its coverage attestation, in the format specified by the activity step that invoked this technique.
 
 ## Outputs
 

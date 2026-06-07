@@ -21,4 +21,4 @@ Map of any identifiers found: `{ issue_number?, branch_name?, pr_number?, work_p
 
 ## Protocol
 
-1. Scan `user_request` for GitHub issue numbers (#N), Jira keys (PROJ-123), branch references, PR numbers, and work-package descriptions; collect any found into `context`.
+1. Scan {user_request} for GitHub issue numbers (#N), Jira keys (PROJ-123), branch references, PR numbers, and work-package descriptions; collect any found into {context}.

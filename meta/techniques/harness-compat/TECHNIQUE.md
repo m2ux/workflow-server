@@ -23,7 +23,7 @@ Identifier of the harness in use: `claude-code`, `cursor`, `cline`, or `generic`
 
 ### harness-independence
 
-All techniques and activities MUST reference operation names from this technique ([spawn-agent](./spawn-agent.md), [continue-agent](./continue-agent.md), [spawn-concurrent](./spawn-concurrent.md)) rather than harness-specific tool syntax. Each operation takes the current `harness` as an input and branches inline in its procedure — harness-specific invocations are encoded only here, not duplicated into caller protocols.
+All techniques and activities MUST reference operation names from this technique ([spawn-agent](./spawn-agent.md), [continue-agent](./continue-agent.md), [spawn-concurrent](./spawn-concurrent.md)) rather than harness-specific tool syntax. Each operation takes the current {harness} as an input and branches inline in its procedure — harness-specific invocations are encoded only here, not duplicated into caller protocols.
 
 ### foreground-always
 
