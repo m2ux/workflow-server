@@ -18,7 +18,7 @@ Run 2 maximally orthogonal prisms against the same target and synthesize their d
 - Branch on {target_type}: for code, [l12](../resources/l12.md) (00) + [identity](../resources/identity.md) (17) — highest pairwise uniqueness
 - For general: [l12_universal](../resources/l12-universal.md) (18) + [claim](../resources/claim.md) (07)
 - l12+identity for code, l12_universal+claim for general — these pairs maximize analytical divergence
-- Bind the chosen lens identities to {\$prism_a} (the first lens) and {\$prism_b} (the second lens)
+- Identify the chosen lens identities {\$prism_a} (the first lens) and {\$prism_b} (the second lens)
 
 ### 2. Execute Lenses
 

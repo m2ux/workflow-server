@@ -27,7 +27,7 @@ Run L12 analysis, detect knowledge gaps via boundary + audit prisms, then re-ana
 
 ### 3. Gap Extraction
 
-- Parse gap output for structured claims and bind the extracted gap claims to {\$gap_data}
+- Parse the structured claims {\$gap_data} from the gap output
 - Construct verified_knowledge context block with {gap_data}
 
 ### 4. Corrected Analysis

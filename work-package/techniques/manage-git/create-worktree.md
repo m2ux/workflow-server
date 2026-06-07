@@ -23,7 +23,7 @@ Boolean — true when the worktree exists at {target_path} on {branch_name}
 
 ### 1. Resolve and Fetch
 
-- Determine the component's git directory and bind it to `{$component_git_dir}`: when {reference_path} is a monorepo and `{reference_path}/{component_name}` exists, use `{reference_path}/{component_name}`; otherwise use {reference_path} itself (standalone case).
+- Determine the component's git directory `{$component_git_dir}`: when {reference_path} is a monorepo and `{reference_path}/{component_name}` exists, use `{reference_path}/{component_name}`; otherwise use {reference_path} itself (standalone case).
 - Fetch first: `git -C {component_git_dir} fetch origin` so the remote-tracking refs are current before the worktree is materialised. Resolve `{$default_branch}` via `git -C {component_git_dir} symbolic-ref refs/remotes/origin/HEAD` (fall back to `main`, then `master`).
 
 ### 2. Create Worktree
