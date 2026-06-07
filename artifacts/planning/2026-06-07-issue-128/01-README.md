@@ -42,8 +42,12 @@ The fix works by adding the new rule on top of the conventions already in place,
 | 06 | [Test plan](test-plan.md) | Grep-parity verification cases, acceptance matrix | 15-30m | ✅ Complete |
 | — | Implementation | Code changes per plan (T1–T6: AP-60, spec §3.2/§3.4/§8, audit heuristic, `{lens_name}` fix, `squash_merge_supported` rename, 5 rule-slug conversions) | 1-4h | ✅ Complete |
 | 08 | [Provenance log](08-provenance-log.md) | AI assistance provenance — one row per task (T1–T6) | 5m | ✅ Complete |
-| 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
+| 09 | [Change block index](09-change-block-index.md) | Indexed diff hunks for manual review (rationale confirmed — no issues) | 5-10m | ✅ Complete |
+| 09 | [Manual diff review](09-manual-diff-review.md) | Manual diff review — 0 blocks flagged, provenance attested | 5-10m | ✅ Complete |
+| 09 | [Code review](09-code-review.md) | Automated code quality review — 0 findings ≥ Minor (2 informational) | 10-20m | ✅ Complete |
+| 09 | [Structural findings](09-structural-findings.md) | L12 structural analysis — conservation law, meta-law, bug table (no fixable bugs introduced) | 10-20m | ✅ Complete |
+| 09 | [Test suite review](09-test-suite-review.md) | Test quality/coverage review — 0 findings ≥ Minor (1 informational) | 10-20m | ✅ Complete |
+| 09 | [Architecture summary](09-architecture-summary.md) | Minimal architecture summary — low impact (docs/definitions only) | 5-10m | ✅ Complete |
 | 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
 | 14 | [Comprehension artifact](../../comprehension/identifier-naming-convention.md) | Persistent codebase knowledge — identifier naming/binding model | 20-45m | ✅ Complete |
 | — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
