@@ -257,8 +257,8 @@ invoked.
 
 When a protocol step invokes an operation with arguments, the argument list is written in
 **parentheses attached to the operation reference** — `[group](path)::[op](path)(arg: value, …)` —
-never in curly braces. Curly braces are reserved for the designator namespace (`{input-id}`,
-`{output-id}.field`, `{$local}`); a brace-wrapped argument list (`::op {arg: value}`) collides with
+never in curly braces. Curly braces are reserved for the designator namespace (`{input_id}`,
+`{output_id}.field`, `{$local}`); a brace-wrapped argument list (`::op {arg: value}`) collides with
 that namespace and cannot be told apart from a designator. Inside the parens, an argument value that
 is itself a variable or input keeps its designator brace (`::context(name: {$symbol})`); a literal
 value stays bare (`::diagram-source-select(diagram_type: 'package')`); the argument keys are the
