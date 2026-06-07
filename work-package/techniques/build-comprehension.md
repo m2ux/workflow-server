@@ -36,9 +36,9 @@ Directory holding codebase-comprehension artifacts
 
 ### 2. Check Gitnexus
 
-- Confirm the codebase is indexed and fresh per `gitnexus-operations.index-freshness-first` (read `gitnexus://repo/{name}/context`)
-- If indexed: structural analysis throughout this technique goes through the gitnexus-operations operations (`query`, `context`, `impact`, `cypher`) — they are REQUIRED for structural analysis here. If not indexed or stale, fall back to grep/read/glob.
-- If not indexed or stale: fall back to grep/read/glob for all exploration steps.
+- Honor the `{gitnexus_indexed}` flag resolved by start-work-package — it already determined whether the reference codebase is indexed; do not re-probe unless it is unset (if you must, read `gitnexus://repo/{name}/context` per `gitnexus-operations.index-freshness-first`)
+- If `{gitnexus_indexed}` is true: structural analysis throughout this technique goes through the gitnexus-operations operations (`query`, `context`, `impact`, `cypher`) — they are REQUIRED for structural analysis here, the default over grep
+- Only when `{gitnexus_indexed}` is false (the codebase is genuinely not indexed or stale): fall back to grep/read/glob for all exploration steps
 
 ### 3. Architecture Survey
 
