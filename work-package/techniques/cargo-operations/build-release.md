@@ -10,7 +10,7 @@ Release build; produces the final binary AND the runtime wasm artifact.
 ## Protocol
 
 1. `nice -n 19 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo build --release {scope} {features}`
-   - If the build runs out of memory (release link/LTO plus the nested wasm build together exceed available RAM), halve CARGO_BUILD_JOBS; on tight hosts, run `-p <crate>` for the binary first, then a separate workspace pass for the runtime.
+   - If the build runs out of memory (release link/LTO plus the nested wasm build together exceed available RAM), halve `CARGO_BUILD_JOBS`; on tight hosts, run `-p <crate>` for the binary first, then a separate workspace pass for the runtime.
 
 ## Rules
 

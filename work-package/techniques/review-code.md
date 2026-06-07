@@ -15,7 +15,7 @@ Perform comprehensive Rust/Substrate code review following established patterns,
 
 ### changed_files
 
-List of files changed in the work package (from git diff)
+List of files changed in the work package (from `git diff`)
 
 ### project_type
 
@@ -26,8 +26,8 @@ List of files changed in the work package (from git diff)
 ### 1. Load Guidance
 
 - Use attached [rust-substrate-code-review](../resources/rust-substrate-code-review.md) for full review criteria
-  - If the code review resource is missing, check the resources folder for 16-rust-substrate-code-review.md.
-- Establish the `{changed_files}` set by running git diff for all files changed since the work package started
+  - If the code review resource is missing, check the resources folder for `16-rust-substrate-code-review.md`.
+- Establish the `{changed_files}` set by running `git diff` for all files changed since the work package started
   - If no implementation changes are found, verify the correct branch and commit range.
 
 ### 2. Bound Review Scope

@@ -28,7 +28,7 @@ Type of analysis to perform: 'completion' or 'context'.
 ### 2. Perform Completion Analysis
 
 - Use attached [completion-analysis-guide](../resources/completion-analysis-guide.md) (completion-analysis-guide) for the analysis procedure
-- Locate existing planning artifacts in .engineering/artifacts/planning/
+- Locate existing planning artifacts in `.engineering/artifacts/planning/`
 - If completion analysis was selected but no prior artifacts are found, switch to context analysis and note that no prior work was found
 - Assess completion state of each previously identified work package
 - Identify changes since last session from git log and issue trackers

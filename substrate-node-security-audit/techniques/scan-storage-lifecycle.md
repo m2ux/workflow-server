@@ -19,7 +19,7 @@ Directory scope to scan (a single crate for per-crate review, or full in-scope p
 
 ### verify_invariants
 
-*(optional)* Whether to perform cross-function invariant comparison (e.g., do paired insert/remove functions maintain the same conditions?)
+*(optional)* Whether to perform cross-function invariant comparison (e.g., do paired `insert`/`remove` functions maintain the same conditions?)
 
 #### default
 
@@ -29,11 +29,11 @@ false
 
 ### 1. Find Storage Declarations
 
-- Enumerate every StorageMap, StorageDoubleMap, and StorageNMap in the `{scope}` as `{$storage_maps}`.
+- Enumerate every `StorageMap`, `StorageDoubleMap`, and `StorageNMap` in the `{scope}` as `{$storage_maps}`.
 
 ### 2. Find Mutation Sites
 
-- For each map in `{storage_maps}`: find every insert()/push()/append() call site and every remove()/take() call site, recording them as `{$mutation_sites}`.
+- For each map in `{storage_maps}`: find every `insert()`/`push()`/`append()` call site and every `remove()`/`take()` call site, recording them as `{$mutation_sites}`.
 
 ### 3. Verify Pairing
 
@@ -41,7 +41,7 @@ false
 
 ### 4. Verify Invariants
 
-- If `{verify_invariants}` is true: for pairs of functions that operate on the same storage (e.g., handle_create and handle_redemption_create), verify they maintain the same invariants — if one inserts, the other should too under the same conditions.
+- If `{verify_invariants}` is true: for pairs of functions that operate on the same storage (e.g., `handle_create` and `handle_redemption_create`), verify they maintain the same invariants — if one inserts, the other should too under the same conditions.
 
 ## Outputs
 
@@ -51,8 +51,8 @@ Storage lifecycle pairing table with optional invariant comparison.
 
 #### pairing_table
 
-| StorageMap | Crate | insert() Sites | remove() Sites | Paired? | Cap Enforced? |
+| `StorageMap` | Crate | `insert()` Sites | `remove()` Sites | Paired? | Cap Enforced? |
 
 #### invariant_table
 
-| StorageMap | insert() Callers | remove() Callers | Paired? | Cross-function Consistent? | (optional)
+| `StorageMap` | `insert()` Callers | `remove()` Callers | Paired? | Cross-function Consistent? | (optional)

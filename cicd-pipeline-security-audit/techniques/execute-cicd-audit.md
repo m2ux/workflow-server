@@ -25,9 +25,9 @@ Path to the planning folder for artifacts
 
 ### 1. Phase 1 Setup
 
-- Confirm each path in `{target_submodules}` exists and contains .github/workflows/
+- Confirm each path in `{target_submodules}` exists and contains `.github/workflows/`
   - If no target submodules were specified or none are found, fail with an error listing the available submodules.
-- Discover all workflow files (.yml and .yaml) across targets
+- Discover all workflow files (`.yml` and `.yaml`) across targets
 - Initialize the `{planning_folder_path}` with [START-HERE.md](../resources/start-here.md)
 
 ### 2. Phase 2 Reconnaissance
@@ -78,4 +78,4 @@ Coordinate only — never analyze workflow files directly
 
 ### phase-gates
 
-Enforce exitAction gates before advancing phases
+Enforce `exitAction` gates before advancing phases

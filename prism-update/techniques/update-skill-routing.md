@@ -37,7 +37,7 @@ Update prism routing technique files to reflect resource changes: fix renamed re
 
 ### 5. Commit
 
-- Stage all modified technique files. Commit: 'feat: update skill routing for N new prisms and M renames'.
+- Stage all modified technique files. Commit: `feat: update skill routing for N new prisms and M renames`.
 
 ## Rules
 

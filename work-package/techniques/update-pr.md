@@ -24,21 +24,21 @@ Update PR with final implementation details and mark ready for review, or post c
 
 - Use attached [pr-description](../resources/pr-description.md) for template and structure
 - Update the `{pr_number}` PR description with the implementation summary drawn from `{planning_folder_path}`
-- If the PR cannot be found because `{pr_number}` does not exist, verify the PR number and check gh auth before retrying
+- If the PR cannot be found because `{pr_number}` does not exist, verify the PR number and check `gh` auth before retrying
 - Include test coverage summary
 - Document key decisions and trade-offs
-- NEVER guess or infer repository URLs for PR description links. ALWAYS resolve them from git remotes. The engineering repo URL is obtained from the PARENT repo (the repo containing .engineering/): run 'git -C <parent-repo-path> remote get-url origin' and strip the .git suffix. The target repo URL is obtained from the TARGET repo (where the PR lives): run 'git -C `{target_path}` remote get-url origin'. These are different repositories — the engineering repo owner will differ from the target repo owner.
+- NEVER guess or infer repository URLs for PR description links. ALWAYS resolve them from git remotes. The engineering repo URL is obtained from the PARENT repo (the repo containing `.engineering/`): run `git -C {reference_path} remote get-url origin` and strip the `.git` suffix. The target repo URL is obtained from the TARGET repo (where the PR lives): run `git -C {target_path} remote get-url origin`. These are different repositories — the engineering repo owner will differ from the target repo owner.
 
 ### 3. Verify Body
 
-- Render the Final-template body to /tmp/pr-body.md.
-- Evaluate each rule in `rules.pr-body-conformance` against the rendered text. For each failure append { rule_id, detail } to body-findings.
-- Set body-conforms=true when body-findings is empty after all rules are evaluated; false otherwise.
+- Render the Final-template body to `/tmp/pr-body.md`.
+- Evaluate each rule in `rules.pr-body-conformance` against the rendered text. For each failure append `{ rule_id, detail }` to `body-findings`.
+- Set `body-conforms=true` when `body-findings` is empty after all rules are evaluated; false otherwise.
 
 ### 4. Mark Ready
 
 - Ensure description is finalized before marking ready
-- Mark the PR ready for review using gh pr ready, yielding `{updated_pr}` with its URL and status
+- Mark the PR ready for review using `gh pr ready`, yielding `{updated_pr}` with its URL and status
 
 ## Outputs
 
@@ -75,4 +75,4 @@ Create PRs as drafts initially. Convert to ready-for-review only at submit-for-r
 
 ### tool-usage
 
-use shell to push commits and manage PR via gh CLI
+use shell to push commits and manage PR via `gh` CLI

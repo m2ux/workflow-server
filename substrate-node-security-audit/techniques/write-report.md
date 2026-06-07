@@ -30,7 +30,7 @@ Final [audit report](../resources/audit-prompt-template.md#4-reporting-format). 
 
 #### header_table
 
-The report MUST begin with a markdown table containing: Target, Commit, Date (YYYY-MM-DD HH:MM UTC), Workflow version, Agents (using single-letter designators: R, S, A1-A7, B, D1, D2, V, M), and Ensemble status. This table is separated from the Executive Summary by a horizontal rule (---). Example: | Field | Value |\n|-------|-------|\n| Date | 2026-02-11 13:19 UTC |
+The report MUST begin with a markdown table containing: Target, Commit, Date (YYYY-MM-DD HH:MM UTC), Workflow version, Agents (using single-letter designators: R, S, A1-A7, B, D1, D2, V, M), and Ensemble status. This table is separated from the Executive Summary by a horizontal rule (`---`). Example: | Field | Value |\n|-------|-------|\n| Date | 2026-02-11 13:19 UTC |
 
 #### executive_summary
 
@@ -62,7 +62,7 @@ Count of table-derived findings auto-elevated, adversarial refutations integrate
 
 #### dependency_scan
 
-cargo audit results if available
+`cargo audit` results if available
 
 #### finding_block_format
 

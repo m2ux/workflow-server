@@ -15,17 +15,17 @@ Automatically compose an analysis pipeline based on input characteristics — th
 
 ### 1. Prereq Scan
 
-- Dispatch [prereq](../resources/prereq.md) over `{target_content}` to a fresh worker, writing smart-prereq.md into `{output_path}`
+- Dispatch [prereq](../resources/prereq.md) over `{target_content}` to a fresh worker, writing `smart-prereq.md` into `{output_path}`
 - Extract atomic questions from output for knowledge fill
 
 ### 2. Knowledge Fill
 
 - If questions were extracted, attempt to fill via available knowledge sources
-- Construct <verified_knowledge> context block with answered questions
+- Construct `<verified_knowledge>` context block with answered questions
 
 ### 3. Select Mode
 
-- Branch on `{target_type}`: when it is 'code', attempt AST decomposition via _split_into_subsystems logic
+- Branch on `{target_type}`: when it is 'code', attempt AST decomposition via `_split_into_subsystems` logic
 - If >1 subsystem found: use subsystem mode (different prisms per region)
 - If 1 subsystem, or `{target_type}` is 'general': use [L12](../resources/l12.md) single pass (or 3-pass for general)
 
@@ -49,15 +49,15 @@ Paths and pipeline trace for the smart adaptive run
 
 #### prereq_path
 
-Filesystem path to smart-prereq.md
+Filesystem path to `smart-prereq.md`
 
 #### analysis_paths
 
-Array of paths to smart-analysis.md and/or subsystem-*.md as produced
+Array of paths to `smart-analysis.md` and/or `subsystem-*.md` as produced
 
 #### dispute_paths
 
-Array of paths to smart-dispute-*.md (empty if dispute skipped)
+Array of paths to `smart-dispute-*.md` (empty if dispute skipped)
 
 #### pipeline_steps
 
@@ -79,4 +79,4 @@ Each sub-step uses the optimal model for its prism. Prereq uses sonnet. Analysis
 
 ### tool-usage
 
-use harness-compat spawn-agent — smart mode never uses continue-agent and each sub-step uses a new worker; use read_file — orchestrator reads artifacts to decide conditionals and inject verified_knowledge
+use harness-compat spawn-agent — smart mode never uses continue-agent and each sub-step uses a new worker; use read_file — orchestrator reads artifacts to decide conditionals and inject `verified_knowledge`

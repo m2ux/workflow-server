@@ -46,7 +46,7 @@ Expected scanner output schema from [sub-agent-output-schema](../resources/sub-a
 ### 4. Produce Gap Report
 
 - Compile all gaps into the `{verification_report}`
-- Set verification-complete=true only if zero gaps found
+- Set `verification-complete=true` only if zero gaps found
 
 ## Outputs
 

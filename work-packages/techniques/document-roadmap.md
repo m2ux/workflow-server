@@ -25,7 +25,7 @@ List of completed package [plan documents](../resources/package-plan-template.md
 
 ### 1. Update Start Here
 
-- Use attached [roadmap-template](../resources/roadmap-template.md) (roadmap-template) for the final START-HERE.md format
+- Use attached [roadmap-template](../resources/roadmap-template.md) (roadmap-template) for the final `START-HERE.md` format
 - Write executive summary: 2-3 sentences on purpose, scope, and expected impact
 - Complete the work packages table, sequencing rows by `{priority_order}` and drawing effort and dependencies from the `{package_plans}`
   - If not all packages have completed plan documents, complete the missing package plans before finalizing the roadmap

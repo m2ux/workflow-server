@@ -27,7 +27,7 @@ Directory holding the project's ADR files
 
 #### default
 
-.engineering/artifacts/adr/
+`.engineering/artifacts/adr/`
 
 ## Protocol
 
@@ -49,7 +49,7 @@ Directory holding the project's ADR files
 
 ### 4. Write Adr
 
-- Write the `{adr_document}` as NNNN-`{decision_title}`.md in `{adr_dir}`
+- Write the `{adr_document}` as `NNNN-{decision_title}.md` in `{adr_dir}`
 - Use standard ADR format (Title, Status, Context, Decision, Consequences)
 - Set status to Proposed (finalize activity updates to Accepted)
 - New ADRs are created with status Proposed — the finalize activity updates to Accepted

@@ -31,13 +31,13 @@ Original evaluation description, used for report context
 
 - For each dimension in `{dimension_plan}`, locate the prism output artifacts in the corresponding output_subdir under `{output_path}`
 - Use `{completed_analyses}` to confirm which prism runs finished and to resolve each run's artifact output path and status before reading
-- Full-prism dimensions produce: structural-analysis.md, adversarial-analysis.md, synthesis.md
-- Portfolio dimensions produce one artifact per lens: e.g., claim-inversion.md (lens 07), knowledge-audit.md (lens 40), rejected-paths.md (lens 09), scarcity.md (lens 08)
+- Full-prism dimensions produce: `structural-analysis.md`, `adversarial-analysis.md`, `synthesis.md`
+- Portfolio dimensions produce one artifact per lens: e.g., `claim-inversion.md` (lens 07), `knowledge-audit.md` (lens 40), `rejected-paths.md` (lens 09), `scarcity.md` (lens 08)
 - Verify all expected artifacts exist. If expected prism output artifacts are missing for one or more dimensions, report which dimensions are missing artifacts, then compose the report from the available dimensions and note the incomplete coverage.
 
 ### 2. Extract Findings Per Dimension
 
-- For each dimension, read the terminal artifact (synthesis.md for full-prism, individual lens artifacts for portfolio)
+- For each dimension, read the terminal artifact (`synthesis.md` for full-prism, individual lens artifacts for portfolio)
 - Extract definitive findings: each finding has an ID, severity/importance, title, and summary description
 - For full-prism dimensions: use the synthesis document's definitive classification as the source of truth. The synthesis reconciles structural and adversarial analyses — use its final severity assignments.
 - For portfolio dimensions: extract the key findings and conservation laws from each lens artifact. Assign severity using the Impact x Feasibility rubric: CRITICAL — directly undermines the target's core purpose. HIGH — degrades significant guarantees. MEDIUM — limited scope or conditional. LOW — informational.
@@ -75,7 +75,7 @@ Original evaluation description, used for report context
 
 - Read the `{evaluation_report}`. Extract the executive summary: total findings by dimension and severity, the core finding, and top-priority recommendations.
 - Compile evaluation metrics: finding count by dimension, finding count by severity (Critical, High, Medium, Low), dimensions evaluated, number of prism runs triggered, total analysis artifacts produced.
-- Present the evaluation results to the user in a structured format: evaluation summary with finding counts by dimension and severity, core finding highlight, top-priority recommendations, and document index with paths to all deliverables (EVALUATION-REPORT.md, evaluation-plan.md, and all dimension-specific analysis artifacts).
+- Present the evaluation results to the user in a structured format: evaluation summary with finding counts by dimension and severity, core finding highlight, top-priority recommendations, and document index with paths to all deliverables (`EVALUATION-REPORT.md`, `evaluation-plan.md`, and all dimension-specific analysis artifacts).
 - List every artifact produced during the evaluation with its path, organised by dimension.
 
 ## Outputs

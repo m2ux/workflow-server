@@ -15,7 +15,7 @@ Review test suite quality and coverage — assessing coverage gaps, assertion qu
 
 ### changed_files
 
-List of files changed in the work package (from git diff)
+List of files changed in the work package (from `git diff`)
 
 ## Protocol
 

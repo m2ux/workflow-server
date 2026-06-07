@@ -36,4 +36,4 @@ Engineering branch to push to
 
 - BEFORE every push, integrate sibling work-package commits onto the same engineering branch: `git -C {reference_path} pull --rebase origin {branch}`. Without this, two work packages running in parallel on the same monorepo will produce non-fast-forward push rejections and halt mid-flow. The rebase is cheap because each work package writes only to its own planning subfolder, so conflicts are rare.
 - Push: `git -C {reference_path} push origin {branch}`.
-- If the push is still rejected (race with a sibling that pushed between our rebase and our push), retry the pull --rebase + push cycle once.
+- If the push is still rejected (race with a sibling that pushed between our rebase and our push), retry the `pull --rebase` + `push` cycle once.

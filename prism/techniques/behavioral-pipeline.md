@@ -37,14 +37,14 @@ Resource index for this pass: 19 (error-resilience), 20 (optimize), 21 (evolutio
 
 - For independent lens passes (indices 19-22): apply the lens against the target content
 - Execute every operation completely — the analytical depth comes from the full chain
-- Write the artifact to `{output_path}`/`{artifact_filename}` per the artifact naming convention
+- Write the artifact to `{output_path}/{artifact_filename}` per the artifact naming convention
 
 ### 4. Augment With Graph
 
 - After lens execution for independent passes (19-22), check GitNexus availability via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md). If unavailable, skip graph augmentation.
 - Error-resilience (19): Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on error-returning functions identified by the lens to check whether all callers handle the error. Append a 'Graph Evidence: Error Propagation' section with measured error-handling completeness per function.
-- Evolution (21): Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)(direction: upstream) on coupling points identified by the lens to measure blast radius quantitatively. Append a 'Graph Evidence: Coupling Measurement' section with measured affected-symbol and affected-process counts.
-- API-surface (22): Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) to enumerate exported/public symbols with caller counts (MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(fn) RETURN fn.name, fn.filePath, count(caller) ORDER BY count(caller) DESC). Append a 'Graph Evidence: Measured API Surface' section with the actual public surface from the graph.
+- Evolution (21): Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)`(direction: upstream)` on coupling points identified by the lens to measure blast radius quantitatively. Append a 'Graph Evidence: Coupling Measurement' section with measured affected-symbol and affected-process counts.
+- API-surface (22): Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) to enumerate exported/public symbols with caller counts (`MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(fn) RETURN fn.name, fn.filePath, count(caller) ORDER BY count(caller) DESC`). Append a 'Graph Evidence: Measured API Surface' section with the actual public surface from the graph.
 - Optimize (20): No graph augmentation — optimization analysis concerns algorithmic complexity, not graph structure.
 - GitNexus data is appended as a 'Graph Evidence' section at the end of each behavioral artifact. The lens output stands alone; graph data provides supplementary measurement that the synthesis pass can reference.
 

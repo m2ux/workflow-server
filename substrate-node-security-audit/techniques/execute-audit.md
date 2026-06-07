@@ -18,8 +18,8 @@ Execute security audit phases with consistent tool usage, concurrent multi-agent
 - Extract target submodule and commit from initial request — fail if not specified
 - Checkout submodule at target commit
   - If the target submodule path does not exist, fail with a descriptive error — do not ask interactively
-  - If the target commit hash is not found in the submodule history, fail with an error showing recent commits via git log
-- Run cargo audit / cargo deny or fallback to manual dependency inspection
+  - If the target commit hash is not found in the submodule history, fail with an error showing recent commits via `git log`
+- Run `cargo audit` / `cargo deny` or fallback to manual dependency inspection
 - Create `{planning_folder_path}` and initialize artifacts (see [start-here](../resources/start-here.md) for workflow orientation)
 
 ### 2. Reconnaissance
@@ -59,9 +59,9 @@ Execute security audit phases with consistent tool usage, concurrent multi-agent
 
 ### 6. Track
 
-- Track current_phase — which phase is active (setup, reconnaissance, primary, adversarial, report, ensemble, gap)
-- Track agent_status — status of dispatched sub-agents
-- Track findings_count — running count of identified findings
-- Track pass_count — running count of PASS items in scratchpads
-- Track coverage_files — list of files read by agents
-- Track checklist_coverage — §3 coverage matrix showing per-item evaluation status
+- Track `current_phase` — which phase is active (setup, reconnaissance, primary, adversarial, report, ensemble, gap)
+- Track `agent_status` — status of dispatched sub-agents
+- Track `findings_count` — running count of identified findings
+- Track `pass_count` — running count of PASS items in scratchpads
+- Track `coverage_files` — list of files read by agents
+- Track `checklist_coverage` — §3 coverage matrix showing per-item evaluation status

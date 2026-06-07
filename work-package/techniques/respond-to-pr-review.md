@@ -22,8 +22,8 @@ Review comments fetched from PR
 ### 1. Fetch Comments
 
 - Use attached [pr-review-response](../resources/pr-review-response.md) for full response guidance
-- Fetch the `{review_comments}` from the PR identified by `{pr_number}` using the gh API
-  - If the gh API returns an error fetching comments, check authentication and PR access, then retry.
+- Fetch the `{review_comments}` from the PR identified by `{pr_number}` using the `gh` API
+  - If the `gh` API returns an error fetching comments, check authentication and PR access, then retry.
   - If no review comments are found, verify the PR has been reviewed and check comment visibility before proceeding.
 
 ### 2. Categorize

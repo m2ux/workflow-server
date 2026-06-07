@@ -16,7 +16,7 @@ Minimize cost by automatically escalating analysis depth from cheap/fast to deep
 ### 1. Stage 1 Sdl
 
 - Dispatch [deep-scan](../resources/deep-scan.md) to a fresh worker on Haiku, passing `{target_content}` and `{target_type}` so the scan adapts to whether the input is code or general text
-- Worker writes to `{output_path}`/adaptive-stage1.md
+- Worker writes to `{output_path}`/`adaptive-stage1.md`
 - Assess signal quality: conservation law + word count > 300 + bug table
 
 ### 2. Assess Signal
@@ -29,7 +29,7 @@ Minimize cost by automatically escalating analysis depth from cheap/fast to deep
 ### 3. Stage 2 L12
 
 - Dispatch [L12](../resources/l12.md) to a fresh worker on Sonnet
-- Worker writes to `{output_path}`/adaptive-stage2.md
+- Worker writes to `{output_path}`/`adaptive-stage2.md`
 - Re-assess signal quality with same criteria
 
 ### 4. Stage 3 Full

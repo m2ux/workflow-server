@@ -9,7 +9,7 @@ metadata:
 
 ## Capability
 
-Discover and enumerate all .yml/.yaml files under .github/workflows/ across target submodules, classifying each by trigger types, permission scopes, checkout patterns, and referenced scripts to produce structured inventory data.
+Discover and enumerate all `.yml`/`.yaml` files under `.github/workflows/` across target submodules, classifying each by trigger types, permission scopes, checkout patterns, and referenced scripts to produce structured inventory data.
 
 ## Inputs
 
@@ -21,30 +21,30 @@ List of submodule paths to inventory
 
 ### 1. Discover Files
 
-- For each path in `{target_submodules}`, enumerate .github/workflows/*.yml and .github/workflows/*.yaml
+- For each path in `{target_submodules}`, enumerate `.github/workflows/*.yml` and `.github/workflows/*.yaml`
 - Record file path, file size, and last modified date
-- If a submodule has no .github/workflows/ directory, record it as a zero-workflow submodule and skip it for scanner assignment
+- If a submodule has no `.github/workflows/` directory, record it as a zero-workflow submodule and skip it for scanner assignment
 
 ### 2. Classify Triggers
 
-- Parse each workflow YAML for the 'on:' block
+- Parse each workflow YAML for the `on:` block
 - Extract and classify trigger types with their configurations
 - If a workflow file contains invalid YAML and cannot be parsed, record the parse error and flag the file for manual review
 
 ### 3. Map Permissions
 
-- Extract top-level 'permissions:' block (workflow-level defaults)
-- Extract per-job 'permissions:' overrides
+- Extract top-level `permissions:` block (workflow-level defaults)
+- Extract per-job `permissions:` overrides
 
 ### 4. Identify Checkouts
 
-- Find all uses of actions/checkout in each workflow
-- Extract the 'ref:' parameter value (if specified)
+- Find all uses of `actions/checkout` in each workflow
+- Extract the `ref:` parameter value (if specified)
 - Flag any checkout that references PR head SHA, head.ref, or merge commit
 
 ### 5. Identify Scripts
 
-- Find all 'run:' blocks and referenced script files for later P7 scanning
+- Find all `run:` blocks and referenced script files for later P7 scanning
 - Assemble the classified files, triggers, permissions, and checkout patterns into the `{workflow_inventory}` and return it
 
 ## Outputs

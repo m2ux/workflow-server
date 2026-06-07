@@ -29,7 +29,7 @@ single
 
 ### 1. Load Workflow
 
-- Call get_workflow({ workflow_id: 'prism' }) to load the workflow definition
+- Call `get_workflow({ workflow_id: 'prism' })` to load the workflow definition
 - Initialize state variables from inputs: `{target_content}`, `{target_type}`, `{pipeline_mode}`, `{output_path}`, `{selected_lenses}`
 
 ### 2. Resolve Target
@@ -50,34 +50,34 @@ single
 ### 4. Dispatch Structural Pass
 
 - Dispatch a fresh sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent.
-- Worker prompt must include: (1) the `{resolved_content}`, (2) the lens resource index to load, (3) the workflow_id 'prism' for resource loading, (4) the `{output_path}` to write its artifact, (5) instruction to load the lens for that index, execute every operation, and write to `{output_path}`/structural-analysis.md
+- Worker prompt must include: (1) the `{resolved_content}`, (2) the lens resource index to load, (3) the `workflow_id` `prism` for resource loading, (4) the `{output_path}` to write its artifact, (5) instruction to load the lens for that index, execute every operation, and write to `{output_path}/structural-analysis.md`
 - Worker prompt must NOT include any prior analysis — this is the first pass
-- Capture the artifact path from the worker's response: `{$structural_output_path}` = `{output_path}`/structural-analysis.md
+- Capture the artifact path from the worker's response: `{$structural_output_path}` = `{output_path}/structural-analysis.md`
 - Verify the artifact was written by reading its first line. If the worker returned without writing its artifact, dispatch a new worker for the same pass with an explicit instruction to write the artifact — do not resume the failed worker.
 - If `{pipeline_mode}` is 'single', go to present-result
 
 ### 5. Dispatch Adversarial Pass
 
 - Dispatch a NEW FRESH sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent on the structural worker.
-- Worker prompt must include: (1) the `{resolved_content}`, (2) `{structural_output_path}` — the worker will read this file and label it ANALYSIS 1, (3) the adversarial lens resource index, (4) the `{output_path}`, (5) instruction to write to `{output_path}`/adversarial-analysis.md
+- Worker prompt must include: (1) the `{resolved_content}`, (2) `{structural_output_path}` — the worker will read this file and label it ANALYSIS 1, (3) the adversarial lens resource index, (4) the `{output_path}`, (5) instruction to write to `{output_path}/adversarial-analysis.md`
 - CRITICAL: Do NOT include the structural analysis text inline. Pass only the file path. The worker reads the artifact from the filesystem.
 - If the expected prior-pass artifact (`{structural_output_path}`) does not exist on the filesystem, re-dispatch the prior pass worker to produce it — do not proceed to this pass without the artifact.
 - If the adversarial pass comes back agreeing with everything in the structural analysis, dispatch a new adversarial worker with an explicit instruction to find at least one wrong prediction, one overclaim, and one underclaim.
-- Capture `{$adversarial_output_path}` = `{output_path}`/adversarial-analysis.md
+- Capture `{$adversarial_output_path}` = `{output_path}/adversarial-analysis.md`
 - Proceed to dispatch-synthesis-pass
 
 ### 6. Dispatch Synthesis Pass
 
 - Dispatch a NEW FRESH sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent on any prior worker.
-- Worker prompt must include: (1) the `{resolved_content}`, (2) `{structural_output_path}` and `{adversarial_output_path}` — the worker reads both files, (3) the synthesis lens resource index, (4) the `{output_path}`, (5) instruction to write to `{output_path}`/synthesis.md
-- Capture `{$synthesis_output_path}` = `{output_path}`/synthesis.md
+- Worker prompt must include: (1) the `{resolved_content}`, (2) `{structural_output_path}` and `{adversarial_output_path}` — the worker reads both files, (3) the synthesis lens resource index, (4) the `{output_path}`, (5) instruction to write to `{output_path}/synthesis.md`
+- Capture `{$synthesis_output_path}` = `{output_path}/synthesis.md`
 - Verify the artifact was written
 - Proceed to present-result
 
 ### 7. Dispatch Portfolio Passes
 
 - For each selected lens, dispatch a fresh sub-agent using harness-compat::spawn-agent with: the `{resolved_content}`, that lens's resource index, and the `{output_path}`
-- Each worker writes to `{output_path}`/portfolio-`{lens_name}`.md
+- Each worker writes to `{output_path}/portfolio-{lens_name}.md`
 - Portfolio workers can be dispatched in parallel (up to 4 concurrent) since they are independent
 - Capture all artifact paths in `{$portfolio_output_paths}` keyed by lens name
 - After all complete, proceed to present-result with a cross-lens synthesis
@@ -85,10 +85,10 @@ single
 ### 8. Dispatch Behavioral Passes
 
 - For behavioral mode: dispatch 4 independent behavioral lens passes. Each is a fresh sub-agent via harness-compat::spawn-agent.
-- Pass 1 (ERRORS): [error-resilience](../resources/error-resilience.md) (error-resilience). Worker writes to `{output_path}`/behavioral-errors.md
-- Pass 2 (COSTS): [optimize](../resources/optimize.md) (optim). Worker writes to `{output_path}`/behavioral-costs.md
-- Pass 3 (CHANGES): [evolution](../resources/evolution.md) (evolution). Worker writes to `{output_path}`/behavioral-changes.md
-- Pass 4 (PROMISES): [api-surface](../resources/api-surface.md) (api-surface). Worker writes to `{output_path}`/behavioral-promises.md
+- Pass 1 (ERRORS): [error-resilience](../resources/error-resilience.md) (error-resilience). Worker writes to `{output_path}/behavioral-errors.md`
+- Pass 2 (COSTS): [optimize](../resources/optimize.md) (optim). Worker writes to `{output_path}/behavioral-costs.md`
+- Pass 3 (CHANGES): [evolution](../resources/evolution.md) (evolution). Worker writes to `{output_path}/behavioral-changes.md`
+- Pass 4 (PROMISES): [api-surface](../resources/api-surface.md) (api-surface). Worker writes to `{output_path}/behavioral-promises.md`
 - All 4 passes are independent — they can be dispatched in parallel (up to 4 concurrent). Capture all 4 artifact paths in `{$behavioral_output_paths}`.
 
 ### 9. Dispatch Behavioral Synthesis
@@ -96,7 +96,7 @@ single
 - After all 4 behavioral passes complete, dispatch the synthesis pass to a fresh sub-agent via harness-compat::spawn-agent.
 - Worker prompt must include: (1) the `{resolved_content}`, (2) all 4 behavioral artifact paths with role labels (ERRORS, COSTS, CHANGES, PROMISES), (3) resource index 23 ([behavioral-synthesis](../resources/behavioral-synthesis.md)), (4) the `{output_path}`
 - Worker reads each artifact and constructs labeled sections: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES
-- Worker writes to `{output_path}`/behavioral-synthesis.md
+- Worker writes to `{output_path}/behavioral-synthesis.md`
 - Capture `{$behavioral_synthesis_output_path}`. Proceed to present-result.
 
 ### 10. Present Result

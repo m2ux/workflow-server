@@ -15,13 +15,13 @@ Conduct structured manual diff review using external side-by-side diff tool with
 
 ### 1. Sync Branch
 
-- Run git pull on the `{branch_name}` feature branch to ensure it is up to date
+- Run `git pull` on the `{branch_name}` feature branch to ensure it is up to date
 - Resolve merge conflicts before proceeding if any
-- If the git pull reveals conflicts, resolve them before continuing
+- If the `git pull` reveals conflicts, resolve them before continuing
 
 ### 2. Parse Diff
 
-- Parse git diff to extract list of changed files and hunks
+- Parse `git diff` to extract list of changed files and hunks
 - If the diff contains no changes, verify the correct branch and commit range before proceeding
 - Assign `{$row_index}` to each change block
 - Estimate review time (30 sec per change)

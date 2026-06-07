@@ -15,7 +15,7 @@ Execute every pattern in a catalog section against a codebase scope, apply per-p
 
 ### resource_id
 
-Resource containing the pattern catalog (e.g., '05-static-analysis-patterns')
+Resource containing the pattern catalog (e.g., `05-static-analysis-patterns`)
 
 ### catalog_section
 

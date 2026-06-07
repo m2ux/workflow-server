@@ -11,7 +11,7 @@ metadata:
 
 ## Capability
 
-Manage planning artifacts in .engineering/artifacts/planning/ — create folders, enforce activity-based artifact prefixing, and organize documents.
+Manage planning artifacts in `.engineering/artifacts/planning/` — create folders, enforce activity-based artifact prefixing, and organize documents.
 
 ## Rules
 

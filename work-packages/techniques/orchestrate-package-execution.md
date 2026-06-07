@@ -38,13 +38,13 @@ Full priority order for reference
 ### 3. Trigger Workflow
 
 - Use attached [workflow-triggering-protocol](../resources/workflow-triggering-protocol.md) (workflow-triggering-protocol) for the triggering procedure
-- Call get_workflow('work-package') to load the work-package workflow
+- Call `get_workflow('work-package')` to load the work-package workflow
 - Pass context: package name, scope from plan document, dependencies, the `{planning_folder_path}`
-- If the work-package workflow cannot be loaded or started, verify it exists via list_workflows, then retry
+- If the work-package workflow cannot be loaded or started, verify it exists via `list_workflows`, then retry
 
 ### 4. Update Status
 
-- After work-package workflow completes, update the START-HERE.md status table — this is the `{implementation_status}` roadmap
+- After work-package workflow completes, update the `START-HERE.md` status table — this is the `{implementation_status}` roadmap
 - Mark completed package as done, add PR link
 - Update `{overall_progress}` counter
 

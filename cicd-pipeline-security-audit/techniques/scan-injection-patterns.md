@@ -36,45 +36,45 @@ Pre-classified trigger, permission, and checkout data for the workflow files
 
 ### 2. P1 Expression Injection
 
-- Search run: blocks for \${{ }} expressions
+- Search `run:` blocks for `${{ }}` expressions
 - Cross-reference each expression against the untrusted context variable list
-- Distinguish safe contexts (if: conditions, action version pins) from unsafe contexts (shell interpolation, script content, action inputs that reach shell)
+- Distinguish safe contexts (`if:` conditions, action version pins) from unsafe contexts (shell interpolation, script content, action inputs that reach shell)
 - For each unsafe expression, document the source context variable and the sink (run block, script, action) using the structured finding format (see [sub-agent-output-schema](../resources/sub-agent-output-schema.md))
-- Treat expressions in if: conditions, env: key-value (not interpolated into shell), and action version pins as safe contexts — exclude them from P1 findings.
+- Treat expressions in `if:` conditions, `env:` key-value (not interpolated into shell), and action version pins as safe contexts — exclude them from P1 findings.
 
 ### 3. P2 Pwn Request
 
-- Identify workflows with pull_request_target trigger
-- Check for checkout of PR head (ref: github.event.pull_request.head.sha or head.ref)
-- Check for code execution after checkout (run:, uses: with local action, build commands)
+- Identify workflows with `pull_request_target` trigger
+- Check for checkout of PR head (`ref: github.event.pull_request.head.sha` or `head.ref`)
+- Check for code execution after checkout (`run:`, `uses:` with local action, build commands)
 
 ### 4. P3 Comment Trigger
 
-- Identify workflows triggered by issue_comment or pull_request_review_comment
-- Check for author_association filtering (MEMBER, OWNER, COLLABORATOR)
+- Identify workflows triggered by `issue_comment` or `pull_request_review_comment`
+- Check for `author_association` filtering (MEMBER, OWNER, COLLABORATOR)
 - Flag workflows that execute privileged operations on any commenter's trigger
 
 ### 5. P4 Excessive Permissions
 
-- Flag workflows with contents: write, pull-requests: write, or no permissions block
+- Flag workflows with `contents: write`, `pull-requests: write`, or no permissions block
 - Check whether write permissions are justified by the workflow's purpose
 
 ### 6. P5 Fork Execution
 
 - Identify checkout of fork/PR code in any trigger context
-- Check for subsequent execution commands (run:, build, test, go run, npm, cargo, python)
+- Check for subsequent execution commands (`run:`, build, test, `go run`, `npm`, `cargo`, `python`)
 - Trace whether secrets are accessible in the execution context
 
 ### 7. P6 Ai Config
 
-- Using the `{ai_config_inventory}`, check whether AI config files (CLAUDE.md, AGENTS.md, .cursorrules) exist in the submodule
-- Verify they are listed in CODEOWNERS with mandatory review protection
+- Using the `{ai_config_inventory}`, check whether AI config files (`CLAUDE.md`, `AGENTS.md`, `.cursorrules`) exist in the submodule
+- Verify they are listed in `CODEOWNERS` with mandatory review protection
 
 ### 8. P7 Dangerous Execution
 
-- Search run: blocks for curl|bash, wget|sh, eval, and base64 decode + execute patterns
+- Search `run:` blocks for `curl|bash`, `wget|sh`, `eval`, and `base64` decode + execute patterns
 - Search referenced shell scripts for the same patterns
-- Flag dynamic script generation (echo commands building scripts then executing them)
+- Flag dynamic script generation (`echo` commands building scripts then executing them)
 
 ### 9. Assemble Results
 

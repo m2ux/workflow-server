@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Append a per-task row to provenance-log.md. Creates the file with the canonical header on first call (idempotent init).
+Append a per-task row to `provenance-log.md`. Creates the file with the canonical header on first call (idempotent init).
 
 ## Inputs
 

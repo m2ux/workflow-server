@@ -25,11 +25,11 @@ Per-workflow trigger, permission, and checkout classification data
 
 ### 1. Compose Scanner Prompts
 
-- For each agent in the roster from the `{scanner_assignments}` mapping, build a sub-agent prompt (spawn-agent operation, harness-compat technique) — collected as `{$scanner_prompts}` — containing: (1) workflow-server bootstrap instructions — 'call start_session(session_token, agent_id) to inherit the dispatched session, then call next_activity({ activity_id: <assigned-activity-id> }), follow the activity steps sequentially'; (2) context variables — submodule path, workflow file list, scanner designator (S1-Sn), planning_folder_path, and the slice of `{reconnaissance_data}` for the assigned submodule; (3) output format requirement — 'write structured output to s{n}-{submodule}.json conforming to the output schema in [sub-agent-output-schema](../resources/sub-agent-output-schema.md)'
+- For each agent in the roster from the `{scanner_assignments}` mapping, build a sub-agent prompt (spawn-agent operation, harness-compat technique) — collected as `{$scanner_prompts}` — containing: (1) workflow-server bootstrap instructions — 'call `start_session(session_token, agent_id)` to inherit the dispatched session, then call `next_activity({ activity_id: <assigned-activity-id> })`, follow the activity steps sequentially'; (2) context variables — submodule path, workflow file list, scanner designator (S1-Sn), `planning_folder_path`, and the slice of `{reconnaissance_data}` for the assigned submodule; (3) output format requirement — 'write structured output to `s{n}-{submodule}.json` conforming to the output schema in [sub-agent-output-schema](../resources/sub-agent-output-schema.md)'
 
 ### 2. Dispatch Scanners
 
-- Dispatch all scanner agents in the roster using harness-compat::spawn-concurrent with the `{scanner_prompts}` from step 1, forming `{$dispatched_scanners}`.
+- Dispatch all scanner agents in the roster using `harness-compat::spawn-concurrent` with the `{scanner_prompts}` from step 1, forming `{$dispatched_scanners}`.
 - All scanner agents MUST be dispatched in a single batch
 
 ### 3. Collect Results
@@ -43,11 +43,11 @@ Per-workflow trigger, permission, and checkout classification data
 
 ### 5. Dispatch Verification
 
-- After all scanners return and dispatch completeness verified, compose V agent context with: all scanner output file paths, the workflow file inventory from scope-setup, and bootstrap instructions — 'call start_session(session_token, agent_id) to inherit the dispatched session, then call next_activity({ activity_id: sub-verification })'. Dispatch V agent using harness-compat::spawn-agent.
+- After all scanners return and dispatch completeness verified, compose V agent context with: all scanner output file paths, the workflow file inventory from scope-setup, and bootstrap instructions — 'call `start_session(session_token, agent_id)` to inherit the dispatched session, then call `next_activity({ activity_id: sub-verification })`'. Dispatch V agent using `harness-compat::spawn-agent`.
 
 ### 6. Dispatch Merge
 
-- After V returns, compose M agent context with: all scanner output file paths, the verification report, severity rubric ([cicd-severity-rubric](../resources/cicd-severity-rubric.md)), and bootstrap instructions — 'call start_session(session_token, agent_id) to inherit the dispatched session, then call next_activity({ activity_id: sub-merge })'. Dispatch M agent using harness-compat::spawn-agent.
+- After V returns, compose M agent context with: all scanner output file paths, the verification report, severity rubric ([cicd-severity-rubric](../resources/cicd-severity-rubric.md)), and bootstrap instructions — 'call `start_session(session_token, agent_id)` to inherit the dispatched session, then call `next_activity({ activity_id: sub-merge })`'. Dispatch M agent using `harness-compat::spawn-agent`.
 
 ## Outputs
 

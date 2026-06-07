@@ -17,7 +17,7 @@ the processes / functional areas the work package is meant to touch
 
 ### scope_findings
 
-affected processes that fall outside requirements-scope (scope-creep candidates)
+affected processes that fall outside `requirements-scope` (scope-creep candidates)
 
 ## Protocol
 

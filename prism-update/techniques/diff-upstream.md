@@ -31,12 +31,12 @@ Absolute path to the upstream prisms directory
 
 - List all .md files in `{upstream_path}`. Filter out `{exclusions}`.
   - If the `{upstream_path}` directory does not exist, verify the path; the upstream repository may need cloning.
-- Extract base name as prism identifier (deep_scan.md → deep_scan).
+- Extract base name as prism identifier (`deep_scan.md` → `deep_scan`).
 
 ### 2. Enumerate Resources
 
-- List all .md files in `{resource_path}` except README.md.
-- Extract numeric index prefix and prism name (12-deep-scan.md → index 12, name deep-scan).
+- List all .md files in `{resource_path}` except `README.md`.
+- Extract numeric index prefix and prism name (`12-deep-scan.md` → index 12, name `deep-scan`).
 
 ### 3. Build Name Mapping
 

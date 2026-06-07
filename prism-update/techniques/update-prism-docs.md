@@ -32,4 +32,4 @@ Rebuild prism documentation to reflect the current resource catalog, adding prom
 
 ### 4. Commit
 
-- Stage and commit: 'docs: update prism workflow documentation for upstream sync'.
+- Stage and commit: `docs: update prism workflow documentation for upstream sync`.

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-List PRs (read-only — safe via gh CLI).
+List PRs (read-only — safe via `gh` CLI).
 
 ## Inputs
 

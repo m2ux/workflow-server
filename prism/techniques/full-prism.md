@@ -19,7 +19,7 @@ Resource index to load from the prism workflow (00 for structural, 01 for advers
 
 ### prior_artifact_paths
 
-*(optional)* File paths to prior pass artifacts. Adversarial receives [structural-analysis.md]. Synthesis receives [structural-analysis.md, adversarial-analysis.md]. Empty for the structural pass.
+*(optional)* File paths to prior pass artifacts. Adversarial receives [`structural-analysis.md`]. Synthesis receives [`structural-analysis.md`, `adversarial-analysis.md`]. Empty for the structural pass.
 
 ## Protocol
 
@@ -46,9 +46,9 @@ Resource index to load from the prism workflow (00 for structural, 01 for advers
 
 - ADVERSARIAL PASS ONLY (`{lens_resource_index}` 01). Skip this step for structural (00) and synthesis (02) passes.
 - Check GitNexus availability via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md). If the target codebase is not indexed, skip graph verification entirely.
-- For each blast-radius claim in the adversarial analysis (e.g., 'this affects module X only'), use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)(target: claimed_symbol, direction: upstream) to mechanically verify or refute. Record the measured affected-symbol count, affected-process count, and affected-module count alongside the claim.
+- For each blast-radius claim in the adversarial analysis (e.g., 'this affects module X only'), use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)`(target: claimed_symbol, direction: upstream)` to mechanically verify or refute. Record the measured affected-symbol count, affected-process count, and affected-module count alongside the claim.
 - For each call-chain claim in the structural analysis being challenged, use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on the key symbols to verify whether the claimed callers/callees are actually connected in the graph. Note confirmed and refuted edges.
-- For 'dead code' or 'unused path' claims, use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) to query for incoming CALLS edges: MATCH (a)-[:CodeRelation {type: 'CALLS'}]->(b {name: 'claimed_dead_symbol'}) RETURN a.name, a.filePath. If results exist, the claim is refuted. Append a 'Graph Verification' section to the adversarial artifact with all verification results.
+- For 'dead code' or 'unused path' claims, use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) to query for incoming `CALLS` edges: `MATCH (a)-[:CodeRelation {type: 'CALLS'}]->(b {name: 'claimed_dead_symbol'}) RETURN a.name, a.filePath`. If results exist, the claim is refuted. Append a 'Graph Verification' section to the adversarial artifact with all verification results.
 - Graph verification results augment the adversarial analysis, not replace it. The adversarial lens operations execute first and produce the full analysis. Graph queries then provide mechanical evidence that strengthens or refutes specific claims. Graph verification is only performed during the adversarial pass (index 01).
 
 ### 5. Write Artifact

@@ -37,8 +37,8 @@ Code files to read for independent verification
 
 ### 3. Decompose Claims
 
-- For each PASS item, enumerate the specific independent properties the PASS requires to be true. A claim like 'events are filtered for failed segments' decomposes into N properties — one per event field type (e.g., UTXOs, call_addresses, deploy_addresses, maintain_addresses, claim_rewards).
-- A PASS that says 'events are filtered' must be decomposed: are UTXOs filtered? call_addresses? deploy_addresses? maintain_addresses? claim_rewards? Each field independently.
+- For each PASS item, enumerate the specific independent properties the PASS requires to be true. A claim like 'events are filtered for failed segments' decomposes into N properties — one per event field type (e.g., UTXOs, `call_addresses`, `deploy_addresses`, `maintain_addresses`, `claim_rewards`).
+- A PASS that says 'events are filtered' must be decomposed: are UTXOs filtered? `call_addresses`? `deploy_addresses`? `maintain_addresses`? `claim_rewards`? Each field independently.
 
 ### 4. Enumerate Instances
 
@@ -47,7 +47,7 @@ Code files to read for independent verification
 ### 5. Verify Independently
 
 - For each decomposed property, read the cited code location in the `{source_files}` and search for the specific implementation. Output CONFIRMED (all instances verified with citations), REFUTED (any instance lacks implementation — becomes a new finding), or INSUFFICIENT (cannot determine).  
-  > A PASS that says 'cursor is set correctly' must verify: is there an ensure!(new > old) guard? If not, the PASS is invalid regardless of whether the code 'works'.
+  > A PASS that says 'cursor is set correctly' must verify: is there an `ensure!(new > old)` guard? If not, the PASS is invalid regardless of whether the code 'works'.
 - CONFIRMED only when ALL decomposed properties are verified with code citations. Record each verdict in the `{decomposition_results}` table, completing the per-instance Verified? and Evidence columns.
 
 ## Outputs

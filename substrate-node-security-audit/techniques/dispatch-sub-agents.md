@@ -15,17 +15,17 @@ Compose sub-agent prompts with workflow-server bootstrap instructions, context v
 
 ### agent_roster
 
-List of agents to dispatch, each with: agent_id, activity_id, context variables (e.g., crate-path, checklist-sections, function-registry), supplementary files
+List of agents to dispatch, each with: `agent_id`, `activity_id`, context variables (e.g., crate-path, checklist-sections, function-registry), supplementary files
 
 ## Protocol
 
 ### 1. Compose Prompts
 
-- For each agent in the roster, build a sub-agent prompt (spawn-agent operation, harness-compat technique) — collected as `{$composed_prompts}` — containing: (1) workflow-server bootstrap instructions — 'call start_session(session_token, agent_id) to inherit the dispatched session, then call next_activity with the assigned activity_id, follow the activity steps sequentially'; (2) context variables — crate path, in-scope/out-of-scope, function registry entries; (3) supplementary cross-scope files — file paths from other crates needed for cross-boundary checks; (4) output format requirement — 'return structured output conforming to the [output schema](../resources/sub-agent-output-schema.md#schema).'
+- For each agent in the roster, build a sub-agent prompt (spawn-agent operation, harness-compat technique) — collected as `{$composed_prompts}` — containing: (1) workflow-server bootstrap instructions — 'call `start_session(session_token, agent_id)` to inherit the dispatched session, then call `next_activity` with the assigned `activity_id`, follow the activity steps sequentially'; (2) context variables — crate path, in-scope/out-of-scope, function registry entries; (3) supplementary cross-scope files — file paths from other crates needed for cross-boundary checks; (4) output format requirement — 'return structured output conforming to the [output schema](../resources/sub-agent-output-schema.md#schema).'
 
 ### 2. Dispatch All
 
-- Dispatch all agents in the roster using harness-compat::spawn-concurrent, forming `{$dispatched_agents}`. Each agent uses the `{composed_prompts}` from step 1.
+- Dispatch all agents in the roster using `harness-compat::spawn-concurrent`, forming `{$dispatched_agents}`. Each agent uses the `{composed_prompts}` from step 1.
 
 ### 3. Collect All
 

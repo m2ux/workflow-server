@@ -32,7 +32,7 @@ User's description of what to evaluate, evaluation goals, focus areas, and conce
 - Examine `{target_path}` to determine the target type
 - 'document' — `{target_path}` is a single file (markdown, PDF, text)
 - 'document-set' — `{target_path}` is a directory containing documents without build infrastructure
-- 'codebase' — `{target_path}` is a directory containing source code with build files (Cargo.toml, package.json, go.mod, pyproject.toml)
+- 'codebase' — `{target_path}` is a directory containing source code with build files (`Cargo.toml`, `package.json`, `go.mod`, `pyproject.toml`)
 - 'mixed' — `{target_path}` contains both code and substantive documentation
 
 ### 2. Derive Dimensions
@@ -61,7 +61,7 @@ User's description of what to evaluate, evaluation goals, focus areas, and conce
 - For each dimension, match against the standard mappings table first. If no standard mapping matches, use the custom dimension mappings table.
 - If `{lens_overrides}` contains an entry for a dimension name, use the override values instead of the derived mapping
 - If a user-supplied dimension does not map to any known prism lens pattern, suggest the closest lens match from the goal-mapping matrix and ask the user to confirm it or provide a lens_override for that dimension
-- For each dimension, compose a dimension-specific analysis_focus string: a focused description of what to examine within this dimension, referencing specific target content discovered during survey-target. This MUST NOT be a bare label like 'security audit' or 'audit' — it must be substantive guidance.
+- For each dimension, compose a dimension-specific analysis_focus string: a focused description of what to examine within this dimension, referencing specific target content discovered during survey-target. This MUST NOT be a bare label like `security audit` or `audit` — it must be substantive guidance.
 - Assign each dimension an output_subdir per the conventions in [dimension-lens-mapping](../resources/dimension-lens-mapping.md).
 - Record `{dimension_plan}`: array of { dimension (name), pipeline_mode, lenses (array of resource indices), analysis_focus, output_subdir }
 

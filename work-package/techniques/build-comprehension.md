@@ -23,7 +23,7 @@ Directory holding codebase-comprehension artifacts
 
 #### default
 
-.engineering/artifacts/comprehension/
+`.engineering/artifacts/comprehension/`
 
 ## Protocol
 

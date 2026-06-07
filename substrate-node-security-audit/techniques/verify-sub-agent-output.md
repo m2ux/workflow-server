@@ -41,7 +41,7 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 
 ### 2. Check Coverage Gate
 
-- For each .rs file in the `{file_inventory}` exceeding 200 lines in priority-1/2 crates, check whether at least one §3-APPLYING GROUP A SUB-AGENT's output references it (via file manifest, findings, or checklist coverage). Files read ONLY during reconnaissance (by the orchestrator or reconnaissance sub-agents) do NOT satisfy the coverage gate. Produce a coverage table: file, lines, read-by-agent, agent-type (group-a/recon/none), status (COVERED/RECON-ONLY/UNREAD). Flag any file with status RECON-ONLY or UNREAD. This is a HARD STOP. If one or more files were read only during reconnaissance rather than by a §3-applying agent (status RECON-ONLY), dispatch targeted Group A follow-up agents for those files before proceeding.
+- For each `.rs` file in the `{file_inventory}` exceeding 200 lines in priority-1/2 crates, check whether at least one §3-APPLYING GROUP A SUB-AGENT's output references it (via file manifest, findings, or checklist coverage). Files read ONLY during reconnaissance (by the orchestrator or reconnaissance sub-agents) do NOT satisfy the coverage gate. Produce a coverage table: file, lines, read-by-agent, agent-type (group-a/recon/none), status (COVERED/RECON-ONLY/UNREAD). Flag any file with status RECON-ONLY or UNREAD. This is a HARD STOP. If one or more files were read only during reconnaissance rather than by a §3-applying agent (status RECON-ONLY), dispatch targeted Group A follow-up agents for those files before proceeding.
 
 ### 3. Check Mandatory Tables
 
@@ -61,19 +61,19 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 
 ### 7. Verify Event Construction Site
 
-- For every pallet that calls deposit_event() with data derived from transaction results, verify that the Group A agent's §3.3 per-field trace table covers ALL event construction sites identified in the vulnerability domain map. If the trace table covers only one site when multiple exist, dispatch a targeted follow-up agent for the uncovered sites.
+- For every pallet that calls `deposit_event()` with data derived from transaction results, verify that the Group A agent's §3.3 per-field trace table covers ALL event construction sites identified in the vulnerability domain map. If the trace table covers only one site when multiple exist, dispatch a targeted follow-up agent for the uncovered sites.
 
 ### 8. Check Config Variant Triage
 
-- For the node startup agent (A3), verify its output includes a configuration-variant triage table that maps each expect()/unwrap() in service initialization code to all valid configuration modes (InMemory, OnDisk, pruned, archive, development). If the table is absent or covers fewer than 80% of expect()/unwrap() sites in service.rs and command.rs, flag for re-dispatch with explicit Check 25 instructions.
+- For the node startup agent (A3), verify its output includes a configuration-variant triage table that maps each `expect()`/`unwrap()` in service initialization code to all valid configuration modes (`InMemory`, `OnDisk`, `pruned`, `archive`, `development`). If the table is absent or covers fewer than 80% of `expect()`/`unwrap()` sites in `service.rs` and `command.rs`, flag for re-dispatch with explicit Check 25 instructions.
 
 ### 9. Check Genesis Parsing Coverage
 
-- For the node startup agent (A3), verify its output traces ALL four genesis data parsing paths: (1) StorageInit construction sites (existing §3.5 check), (2) genesis extrinsics decoding from chain spec properties, (3) genesis header construction (including feature-gated digest items), (4) chain spec property extraction (JSON parsing of genesis_state, genesis_block, etc.). Each path must have a truncation-safety verdict. If any path is untraced, flag for re-dispatch with explicit Check 26 instructions.
+- For the node startup agent (A3), verify its output traces ALL four genesis data parsing paths: (1) `StorageInit` construction sites (existing §3.5 check), (2) genesis extrinsics decoding from chain spec properties, (3) genesis header construction (including feature-gated digest items), (4) chain spec property extraction (JSON parsing of `genesis_state`, `genesis_block`, etc.). Each path must have a truncation-safety verdict. If any path is untraced, flag for re-dispatch with explicit Check 26 instructions.
 
 ### 10. Check Error Path Persistence
 
-- For each Group A pallet agent, verify that every StorageMap::insert() site identified in the agent's storage lifecycle pairing table has been checked for error-path persistence: does a subsequent fallible operation (host API call, event construction, serialization) exist on the same code path? If so, does the error path revert the insert? If the agent's output does not address error-path persistence for any insert site, flag for follow-up. This specifically targets the pattern where insert() persists but the handler returns None on a downstream failure.
+- For each Group A pallet agent, verify that every `StorageMap::insert()` site identified in the agent's storage lifecycle pairing table has been checked for error-path persistence: does a subsequent fallible operation (host API call, event construction, serialization) exist on the same code path? If so, does the error path revert the insert? If the agent's output does not address error-path persistence for any insert site, flag for follow-up. This specifically targets the pattern where `insert()` persists but the handler returns `None` on a downstream failure.
 
 ### 11. Produce Verification Report
 

@@ -20,7 +20,7 @@ Research knowledge base and external sources to discover best practices, pattern
 
 ### 2. Search Knowledge Base
 
-- Fetch concept-rag://activities resource to load activity index
+- Fetch `concept-rag://activities` resource to load activity index
 - Match research goal to an available activity from the index
 - Follow the matched activity's technique workflow and tool sequence
 - Identify key concepts, patterns, and specific guidance from results
@@ -29,7 +29,7 @@ Research knowledge base and external sources to discover best practices, pattern
 
 ### 3. Perform Web Research
 
-- Use WebSearch for current information and documentation
+- Use `WebSearch` for current information and documentation
 - Cross-reference multiple sources for robustness
 - Note publication dates and source freshness
 - Web results may be outdated; cross-reference multiple sources and note dates in the artifact

@@ -16,19 +16,19 @@ Verify consistency across prism resources, techniques, and documentation by runn
 ### 1. Check Stale References
 
 - Build stale name list from `{change_set}.renamed` (old_name) and `{change_set}.deleted` (name).
-- Grep all files in prism/techniques/ and prism/activities/ for each stale name. Record matches.
+- Grep all files in `prism/techniques/` and `prism/activities/` for each stale name. Record matches.
 
 ### 2. Verify Prompt Routing
 
-- Parse the Prompt Guide table from prism/README.md.
-- Parse the goal-mapping-matrix from prism/techniques/plan-analysis.md.
+- Parse the Prompt Guide table from `prism/README.md`.
+- Parse the goal-mapping-matrix from `prism/techniques/plan-analysis.md`.
 - If either the prompt guide table or the goal-mapping matrix cannot be parsed, read the raw file content and extract the sections manually.
 - For each prompt, verify the matrix routes to the claimed prism. Flag mismatches.
 
 ### 3. Verify Resource Counts
 
-- Count .md files in `{resource_path}` (excluding README.md).
-- Compare against stated counts in prism/README.md and prism/resources/README.md. Flag mismatches.
+- Count .md files in `{resource_path}` (excluding `README.md`).
+- Compare against stated counts in `prism/README.md` and `prism/resources/README.md`. Flag mismatches.
 
 ### 4. Check Duplicate Indices
 

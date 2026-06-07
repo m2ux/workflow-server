@@ -16,7 +16,7 @@ Review implementation to ensure changes are minimal, focused, scope-disciplined,
 ### 1. Load Guidance
 
 - Use attached [strategic-review](../resources/strategic-review.md) and [architecture-review](../resources/architecture-review.md) for guidance
-- Examine all changes on the feature branch `{branch_name}` using git diff and git log
+- Examine all changes on the feature branch `{branch_name}` using `git diff` and `git log`
 
 ### 2. Examine Scope
 
@@ -34,11 +34,11 @@ Review implementation to ensure changes are minimal, focused, scope-disciplined,
 
 ### 5. Changes Folder
 
-- If changes/ exists at the `{target_path}` repository root, read sibling fragments as the format template
+- If `changes/` exists at the `{target_path}` repository root, read sibling fragments as the format template
 - Create one new fragment only when none already ties to this issue/PR/work package
-- Match filename convention (e.g. type.issue.ext) and section structure of existing entries
-- REQUIRED: reference the GitHub issue for this work package using the variables already captured in start-work-package — do NOT re-search. When `{issue_platform}`=github, include 'Closes: #`{issue_number}`' or 'Fixes: #`{issue_number}`' (or the full `{issue_url}` form when sibling fragments use that style). When `{issue_platform}`=jira, search for a paired GitHub tracker issue and reference it the same way; if none exists, warn the user that the project's CI check-changes may fail and suggest creating a tracking GitHub issue or applying a skip-changes-check label.
-- Validate the completed fragment against CI requirements: must contain a GitHub issue reference matching the regex github\.com/.+/issues/[0-9]+ or (Fixes|Closes|Resolves):?\s+#[0-9]+
+- Match filename convention (e.g. `type.issue.ext`) and section structure of existing entries
+- REQUIRED: reference the GitHub issue for this work package using the variables already captured in start-work-package — do NOT re-search. When `{issue_platform}`=github, include `Closes: #{issue_number}` or `Fixes: #{issue_number}` (or the full `{issue_url}` form when sibling fragments use that style). When `{issue_platform}`=jira, search for a paired GitHub tracker issue and reference it the same way; if none exists, warn the user that the project's CI check-changes may fail and suggest creating a tracking GitHub issue or applying a skip-changes-check label.
+- Validate the completed fragment against CI requirements: must contain a GitHub issue reference matching the regex `github\.com/.+/issues/[0-9]+` or `(Fixes|Closes|Resolves):?\s+#[0-9]+`
 
 ### 6. Identify Artifacts
 
@@ -50,7 +50,7 @@ Review implementation to ensure changes are minimal, focused, scope-disciplined,
 
 - Read the live PR body via `gh pr view {pr_number} --json body --jq .body`.
 - Run [update-pr](./update-pr.md)::protocol.verify-body against the live body.
-- If body_conforms == false, record each body_findings entry in the `{strategic_review_doc}` under 'PR body conformance'.
+- If `body_conforms == false`, record each `body_findings` entry in the `{strategic_review_doc}` under 'PR body conformance'.
 
 ### 8. Document Findings
 

@@ -30,7 +30,7 @@ Directory to write the audit prompt artifact
 ### 1. Survey Structure
 
 - List files and directories at the top level of `{target_path}`
-- Identify the build system: Cargo.toml (Rust), package.json (JS/TS), go.mod (Go), pyproject.toml (Python), etc.
+- Identify the build system: `Cargo.toml` (Rust), `package.json` (JS/TS), `go.mod` (Go), `pyproject.toml` (Python), etc.
 - For workspace/monorepo projects, enumerate all packages/crates/modules from the build configuration
 - Count lines of code per module (excluding tests, docs, generated files)
 - Identify test directories and test file patterns
@@ -56,8 +56,8 @@ Directory to write the audit prompt artifact
 ### 3. Map Trust Boundaries
 
 - If GitNexus is unavailable (gitnexus_available is false), skip this step entirely.
-- Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) to find cross-community call edges: MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(callee), (caller)-[:CodeRelation {type: 'MEMBER_OF'}]->(c1:Community), (callee)-[:CodeRelation {type: 'MEMBER_OF'}]->(c2:Community) WHERE c1 <> c2 RETURN c1.heuristicLabel, c2.heuristicLabel, caller.name, callee.name. These edges represent trust boundary crossings where validation may be absent.
-- Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)(direction: upstream) on each security-critical symbol identified in scan-security-characteristics to map its blast radius — every upstream caller is a potential attack vector. Record: `{$security_blast_radii}` (map of symbol to { direct_callers, affected_processes, affected_modules, risk }).
+- Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) to find cross-community call edges: `MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(callee), (caller)-[:CodeRelation {type: 'MEMBER_OF'}]->(c1:Community), (callee)-[:CodeRelation {type: 'MEMBER_OF'}]->(c2:Community) WHERE c1 <> c2 RETURN c1.heuristicLabel, c2.heuristicLabel, caller.name, callee.name`. These edges represent trust boundary crossings where validation may be absent.
+- Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)`(direction: upstream)` on each security-critical symbol identified in scan-security-characteristics to map its blast radius — every upstream caller is a potential attack vector. Record: `{$security_blast_radii}` (map of symbol to { direct_callers, affected_processes, affected_modules, risk }).
 - Record: `{$trust_boundaries}` (array of { from_community, to_community, crossing_symbols }). Domains containing trust-boundary-crossing code will receive elevated risk in map-domains.
 
 ### 4. Map Domains
@@ -94,7 +94,7 @@ Directory to write the audit prompt artifact
 - Single scope: { target: `{target_path}`, output_subdir: 'analysis', pipeline_mode: 'full-prism', analysis_focus: <composed prompt summary> }
 - For very large codebases (>100K LOC) with clearly separable security boundaries: consider multiple scopes, each focused on a distinct trust domain
 - If `{total_loc}` exceeds 200K, single-scope analysis becomes impractical — split into multiple scopes by trust domain or module group, giving each scope its own focused prompt.
-- Set analysis_focus for each scope to a focused description derived from the prompt, NOT the literal string 'security audit'
+- Set analysis_focus for each scope to a focused description derived from the prompt, NOT the literal string `security audit`
 
 ## Outputs
 

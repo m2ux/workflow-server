@@ -11,7 +11,7 @@ Canonical formatting check; matches CI exactly. Does not compile, so does not ne
 
 ### fmt_status
 
-{ passed: boolean } — true when no formatting diffs
+`{ passed: boolean }` — true when no formatting diffs
 
 ### fmt_diff_summary
 

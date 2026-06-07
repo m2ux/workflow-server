@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-View an existing PR (read-only — safe via gh CLI).
+View an existing PR (read-only — safe via `gh` CLI).
 
 ## Inputs
 

@@ -25,7 +25,7 @@ The per-submodule scanner [output files](../resources/sub-agent-output-schema.md
 
 ### 2. Deduplicate
 
-- Group findings by (file_path, line_range, pattern_id)
+- Group findings by (`file_path`, `line_range`, `pattern_id`)
 - For duplicates, keep the finding with the most complete evidence
 - Record `{$duplicate_mappings}` for reconciliation
 

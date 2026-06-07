@@ -59,7 +59,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 ### 4. Enrich Blast Radius
 
 - Check GitNexus availability via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md). If the target codebase is not indexed, skip blast radius enrichment.
-- For each finding that references a specific symbol (function, class, module), use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)(target: symbol_name, direction: upstream) to compute the measured blast radius: direct callers (d=1), likely affected (d=2), affected execution flows, and affected modules.
+- For each finding that references a specific symbol (function, class, module), use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)`(target: symbol_name, direction: upstream)` to compute the measured blast radius: direct callers (d=1), likely affected (d=2), affected execution flows, and affected modules.
 - Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on the finding's primary symbol to determine which execution flows it participates in — this adds process context to the finding location.
 - Record enrichment data per finding: { direct_callers, affected_processes, affected_modules, process_names }. Findings without identifiable symbols are not enriched.  
   > Graph-backed blast radius is reported alongside the finding as additional evidence for the reader but does not override the severity from the authoritative source. Blast radius data is omitted when GitNexus is unavailable or when a finding does not reference an identifiable symbol.
@@ -109,7 +109,7 @@ Clean final [report](../resources/final-output-template.md#reportmd-template) ar
 
 #### report_path
 
-Full filesystem path to REPORT.md
+Full filesystem path to `REPORT.md`
 
 #### finding_count
 

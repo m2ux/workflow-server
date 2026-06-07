@@ -15,7 +15,7 @@ Identifier of the originally failed check
 
 ### fix_strategy
 
-Concrete fix approach to execute (file edit, fmt-fix invocation, dependency install, etc.)
+Concrete fix approach to execute (file edit, `fmt-fix` invocation, dependency install, etc.)
 
 ## Output
 

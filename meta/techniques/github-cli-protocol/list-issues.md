@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-List issues (read-only — safe via gh CLI).
+List issues (read-only — safe via `gh` CLI).
 
 ## Inputs
 

@@ -29,7 +29,7 @@ Pass/fail and output from the linter
 
 ### validation_results
 
-{ test-results, build-status, format-status, lint-results, validation_passed } — `validation_passed` is true iff ALL inputs passed
+`{ test-results, build-status, format-status, lint-results, validation_passed }` — `validation_passed` is true iff ALL inputs passed
 
 ## Protocol
 

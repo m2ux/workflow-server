@@ -11,7 +11,7 @@ Run the linter against all targets, denying warnings.
 
 ### clippy_status
 
-{ passed: boolean } — true when no denied warnings emitted
+`{ passed: boolean }` — true when no denied warnings emitted
 
 ### lint_diagnostics
 

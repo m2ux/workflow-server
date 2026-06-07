@@ -15,7 +15,7 @@ Enumerate, classify, and trace components of a codebase to build a structured ar
 
 ### workspace_root
 
-Path to the workspace Cargo.toml or equivalent project manifest
+Path to the workspace `Cargo.toml` or equivalent project manifest
 
 ### in_scope
 
@@ -45,7 +45,7 @@ Paths to include in the analysis
 
 ### 5. Enumerate Hooks
 
-- For every component that implements framework hooks (e.g., pallet hooks in Substrate: on_initialize, on_finalize, on_idle, offchain_worker), list which hooks exist and which are absent.
+- For every component that implements framework hooks (e.g., pallet hooks in Substrate: `on_initialize`, `on_finalize`, `on_idle`, `offchain_worker`), list which hooks exist and which are absent.
 
 ### 6. Trace Data Flows
 
@@ -53,7 +53,7 @@ Paths to include in the analysis
 
 ### 7. Identify Safety Overrides
 
-- Search for patterns that override language or framework safety analysis (e.g., unsafe impl Send/Sync in Rust, #[allow] attributes on safety lints). Each occurrence requires manual verification of the overridden invariant.
+- Search for patterns that override language or framework safety analysis (e.g., `unsafe impl Send/Sync` in Rust, `#[allow]` attributes on safety lints). Each occurrence requires manual verification of the overridden invariant.
 
 ## Outputs
 
