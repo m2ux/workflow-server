@@ -29,7 +29,7 @@ false
 
 ### 1. Find Storage Declarations
 
-- Enumerate every StorageMap, StorageDoubleMap, and StorageNMap in the {scope} as `{$storage_maps}`.
+- Enumerate every StorageMap, StorageDoubleMap, and StorageNMap in the `{scope}` as `{$storage_maps}`.
 
 ### 2. Find Mutation Sites
 
@@ -37,11 +37,11 @@ false
 
 ### 3. Verify Pairing
 
-- For each insert site in `{mutation_sites}`, identify the corresponding remove site on the inverse lifecycle event. Flag unpaired inserts. For each map in `{storage_maps}` with inserts, check if declared capacity constants are enforced at the insertion point. Record each map's results as a row in the {storage_lifecycle} pairing table.
+- For each insert site in `{mutation_sites}`, identify the corresponding remove site on the inverse lifecycle event. Flag unpaired inserts. For each map in `{storage_maps}` with inserts, check if declared capacity constants are enforced at the insertion point. Record each map's results as a row in the `{storage_lifecycle}` pairing table.
 
 ### 4. Verify Invariants
 
-- If {verify_invariants} is true: for pairs of functions that operate on the same storage (e.g., handle_create and handle_redemption_create), verify they maintain the same invariants — if one inserts, the other should too under the same conditions.
+- If `{verify_invariants}` is true: for pairs of functions that operate on the same storage (e.g., handle_create and handle_redemption_create), verify they maintain the same invariants — if one inserts, the other should too under the same conditions.
 
 ## Outputs
 

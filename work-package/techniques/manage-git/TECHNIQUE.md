@@ -23,7 +23,7 @@ Path to the reference checkout (the engineering / parent repo where planning art
 
 ### directory-scope
 
-Edit-side git operations (branch, PR, sync, push) run inside {target_path}. Reference-side git operations (submodule update, artifact commits) run inside {reference_path}. Branches and PRs are created against the target's upstream.
+Edit-side git operations (branch, PR, sync, push) run inside `{target_path}`. Reference-side git operations (submodule update, artifact commits) run inside `{reference_path}`. Branches and PRs are created against the target's upstream.
 
 ### code-commit-coauthor-trailer
 

@@ -33,16 +33,16 @@ Description of what was analysed — used in the report's Executive Summary scop
 
 ### 1. Identify Authoritative Source
 
-- Determine which artifacts contain definitive findings based on {pipeline_mode}
-- full-prism: the synthesis artifact in {all_artifact_paths} is authoritative (reconciles structural + adversarial). Read the structural and adversarial artifacts from {all_artifact_paths} only for location details and evidence the synthesis references.
-- portfolio: all portfolio artifacts in {all_artifact_paths} are authoritative. If a portfolio-synthesis artifact exists, it takes priority for cross-lens findings.
-- behavioral: the behavioral-synthesis artifact is authoritative. Individual behavioral artifacts in {all_artifact_paths} provide supporting detail.
-- single: the structural artifact in {all_artifact_paths} is authoritative.
+- Determine which artifacts contain definitive findings based on `{pipeline_mode}`
+- full-prism: the synthesis artifact in `{all_artifact_paths}` is authoritative (reconciles structural + adversarial). Read the structural and adversarial artifacts from `{all_artifact_paths}` only for location details and evidence the synthesis references.
+- portfolio: all portfolio artifacts in `{all_artifact_paths}` are authoritative. If a portfolio-synthesis artifact exists, it takes priority for cross-lens findings.
+- behavioral: the behavioral-synthesis artifact is authoritative. Individual behavioral artifacts in `{all_artifact_paths}` provide supporting detail.
+- single: the structural artifact in `{all_artifact_paths}` is authoritative.
 
 ### 2. Read Artifacts
 
-- Read each authoritative artifact from the filesystem using the paths in {all_artifact_paths}
-- If one or more paths in {all_artifact_paths} do not exist on the filesystem, report which artifacts are missing; the orchestrator may need to re-run the corresponding pass.
+- Read each authoritative artifact from the filesystem using the paths in `{all_artifact_paths}`
+- If one or more paths in `{all_artifact_paths}` do not exist on the filesystem, report which artifacts are missing; the orchestrator may need to re-run the corresponding pass.
 - For full-prism, also read the structural and adversarial artifacts to extract location details and evidence for findings that the synthesis references by ID but does not fully reproduce
 - For multi-unit analyses, read per-unit artifacts from their respective subdirectories
 
@@ -76,7 +76,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 ### 6. Assign Ids
 
 - Create a mapping from source IDs to unified report IDs
-- If {analysis_focus} provides dimension names or categories, use dimension-based prefixes (e.g., CON-xx for consistency, VER-xx for veracity)
+- If `{analysis_focus}` provides dimension names or categories, use dimension-based prefixes (e.g., CON-xx for consistency, VER-xx for veracity)
 - If no dimensions, use severity-ordered sequential numbering (e.g., F-01, F-02)
 - For multi-unit analyses, prefix with a short unit identifier where needed to avoid collisions
 - If two findings from different units or lenses map to the same report ID, add a unit or lens prefix to disambiguate and report the collision.
@@ -86,7 +86,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 
 - Write the report in clean markdown with no methodology metadata in the front-matter
 - Front-matter: Subject, Evaluation Date, Scope — no lens names, no pass counts, no model versions
-- Executive Summary: 2-3 sentences on scope (using {target_description}) + findings count table by severity + statement of core finding
+- Executive Summary: 2-3 sentences on scope (using `{target_description}`) + findings count table by severity + statement of core finding
 - Core Finding (if applicable): the deepest structural insight, stated as a definitive conclusion with its testable prediction
 - Findings sections: organised by severity (Critical, High, Medium, Low). Each finding has: ID, severity, description (as a factual statement), classification, and blast radius annotation where graph data is available (e.g., '14 direct callers, 3 execution flows, 2 modules')
 - Corrections Required (if applicable): actionable items derived from findings
@@ -95,7 +95,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 
 ### 8. Write Artifact
 
-- Write the complete report as {report} into {output_path}
+- Write the complete report as `{report}` into `{output_path}`
 
 ## Outputs
 

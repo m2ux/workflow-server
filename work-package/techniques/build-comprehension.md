@@ -29,21 +29,21 @@ Directory holding codebase-comprehension artifacts
 
 ### 1. Discover Existing
 
-- List contents of the {comprehension_dir} directory
-- Match existing artifacts by project name, module name, or domain terms from {problem_statement}
+- List contents of the `{comprehension_dir}` directory
+- Match existing artifacts by project name, module name, or domain terms from `{problem_statement}`
 - Summarize relevant artifacts with coverage scope and last-updated date
 - If no comprehension artifacts exist yet for this codebase, proceed with fresh analysis — this is the first comprehension pass
 
 ### 2. Check Gitnexus
 
-- Confirm the codebase is indexed and fresh per gitnexus-operations.index-freshness-first (read `gitnexus://repo/{name}/context`)
+- Confirm the codebase is indexed and fresh per `gitnexus-operations.index-freshness-first` (read `gitnexus://repo/{name}/context`)
 - If indexed: structural analysis throughout this technique goes through the gitnexus-operations operations (`query`, `context`, `impact`, `cypher`) — they are REQUIRED for structural analysis here. If not indexed or stale, fall back to grep/read/glob.
 - If not indexed or stale: fall back to grep/read/glob for all exploration steps.
 
 ### 3. Architecture Survey
 
-- Top-down survey: start with the {target_path} project root structure, build system, and entry points
-- Confirm the {project_type} from the build system and language conventions encountered (rust-substrate|other), and use it to shape which abstractions and patterns to look for in later steps
+- Top-down survey: start with the `{target_path}` project root structure, build system, and entry points
+- Confirm the `{project_type}` from the build system and language conventions encountered (rust-substrate|other), and use it to shape which abstractions and patterns to look for in later steps
 - When GitNexus is available: apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) to discover execution flows and functional areas, read cluster resources for module groupings, and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) for dependency mapping — faster than grep and the required primary approach
 - Use glob to map directory structure, find module files, and locate test files — glob is the appropriate tool for filesystem-shape discovery during the architecture survey
 - Identify module boundaries and their responsibilities from directory layout, module declarations, and public APIs
@@ -74,8 +74,8 @@ Directory holding codebase-comprehension artifacts
 
 ### 7. Artifact Management
 
-- Write the {comprehension_artifact} following the artifact structure and comprehension techniques in [codebase-comprehension](../resources/codebase-comprehension.md)
-- Artifact naming: {codebase_area}.md in {comprehension_dir}
+- Write the `{comprehension_artifact}` following the artifact structure and comprehension techniques in [codebase-comprehension](../resources/codebase-comprehension.md)
+- Artifact naming: `{codebase_area}.md` in `{comprehension_dir}`
 - Derive codebase-area-name from the target project or subsystem name (slugified)
 - When augmenting: add new sections, update existing sections with deeper detail, preserve prior content
 - Include metadata header: date, work-package reference, coverage scope, related artifacts

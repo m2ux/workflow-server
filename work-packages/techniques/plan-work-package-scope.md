@@ -26,7 +26,7 @@ The work package currently being planned
 
 ### 2. Define Scope
 
-- Identify what is in scope for the {current_package} — specific deliverables and changes  
+- Identify what is in scope for the `{current_package}` — specific deliverables and changes  
   > Scope items must name specific deliverables — vague scope leads to scope creep.
 - Identify what is explicitly out of scope with reasons for exclusion
 - Apply the independence test: could this package be shipped without any other package?
@@ -53,7 +53,7 @@ The work package currently being planned
 ### 6. Document Plan
 
 - Use attached [package-plan-template](../resources/package-plan-template.md) (package-plan-template) for the document structure
-- Create the {package_plan} in the {planning_folder_path} using its template
+- Create the `{package_plan}` in the `{planning_folder_path}` using its template
 
 ## Outputs
 

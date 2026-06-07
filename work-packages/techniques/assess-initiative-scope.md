@@ -21,7 +21,7 @@ Free-form description of the initiative from the user
 
 ### 1. Confirm Multi Package
 
-- Read the {user_initiative_description} and assess whether it involves multiple distinct deliverables or a single work package
+- Read the `{user_initiative_description}` and assess whether it involves multiple distinct deliverables or a single work package
 - If single package, recommend using the work-package workflow directly instead — when the user's request turns out to be a single work package, point them to the work-package workflow rather than work-packages
 - If multiple packages, proceed with decomposition
 
@@ -35,10 +35,10 @@ Free-form description of the initiative from the user
 
 ### 3. Present Scope
 
-- Present the {scope_summary} as a numbered table of the identified packages with name and description
+- Present the `{scope_summary}` as a numbered table of the identified packages with name and description
 - Highlight any packages that seem too large (should be split) or too small (should be merged)  
   > Packages should be 2-8 hours of agentic work. Larger packages should be split; smaller ones merged.
-- Set {initiative_name} based on the overall theme of the packages (see [planning-folder-template](../resources/planning-folder-template.md))
+- Set `{initiative_name}` based on the overall theme of the packages (see [planning-folder-template](../resources/planning-folder-template.md))
 
 ## Outputs
 

@@ -25,19 +25,19 @@ Resource index for this pass: 19 (error-resilience), 20 (optimize), 21 (evolutio
 
 ### 1. Load Lens
 
-- Load the lens prompt for {lens_resource_index}. If the lens for the given index cannot be loaded, report the error; valid behavioral indices are 19-23.
+- Load the lens prompt for `{lens_resource_index}`. If the lens for the given index cannot be loaded, report the error; valid behavioral indices are 19-23.
 - The behavioral pipeline is code-only: if invoked with target_type 'general', report that the behavioral pipeline is code-only and recommend portfolio mode with individual neutral variant lenses (24-26) for general targets.
 - The lens prompt is the program — execute its operations in order
 
 ### 2. Read Target
 
-- If {target_content} is a file path, read the file to obtain the code
+- If `{target_content}` is a file path, read the file to obtain the code
 
 ### 3. Apply Independent Lens
 
 - For independent lens passes (indices 19-22): apply the lens against the target content
 - Execute every operation completely — the analytical depth comes from the full chain
-- Write the artifact to {output_path}/{artifact_filename} per the artifact naming convention
+- Write the artifact to `{output_path}`/`{artifact_filename}` per the artifact naming convention
 
 ### 4. Augment With Graph
 
@@ -50,19 +50,19 @@ Resource index for this pass: 19 (error-resilience), 20 (optimize), 21 (evolutio
 
 ### 5. Construct Synthesis Input
 
-- For synthesis pass (when {lens_resource_index} is 23): read all 4 prior artifacts from {prior_artifact_paths}
+- For synthesis pass (when `{lens_resource_index}` is 23): read all 4 prior artifacts from `{prior_artifact_paths}`
 - If a provided prior artifact path does not exist, report the missing artifact; the orchestrator may need to re-dispatch the independent lens pass that produces it
 - Construct the synthesis input by concatenating each artifact under its role heading: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES — separated by horizontal rules
 - The synthesis lens expects exactly these 4 labeled sections
-- The synthesis input is constructed as: ## ERRORS\n\n{errors_content}\n\n---\n\n## COSTS\n\n{costs_content}\n\n---\n\n## CHANGES\n\n{changes_content}\n\n---\n\n## PROMISES\n\n{promises_content}
+- The synthesis input is constructed as: ## ERRORS\n\n`{errors_content}`\n\n---\n\n## COSTS\n\n`{costs_content}`\n\n---\n\n## CHANGES\n\n`{changes_content}`\n\n---\n\n## PROMISES\n\n`{promises_content}`
 
 ### 6. Apply Synthesis Lens
 
-- Apply the behavioral_synthesis lens (when {lens_resource_index} is 23) against the constructed input
+- Apply the behavioral_synthesis lens (when `{lens_resource_index}` is 23) against the constructed input
 
 ### 7. Write Artifact
 
-- Write the complete analysis as {behavioral_artifact} into {output_path}. If the write fails, verify {output_path} exists and is writable.
+- Write the complete analysis as `{behavioral_artifact}` into `{output_path}`. If the write fails, verify `{output_path}` exists and is writable.
 
 ## Outputs
 

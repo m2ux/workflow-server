@@ -21,7 +21,7 @@ The per-submodule scanner [output files](../resources/sub-agent-output-schema.md
 
 ### 1. Load All Outputs
 
-- Load each of the {scanner_outputs} JSON files and extract its findings array
+- Load each of the `{scanner_outputs}` JSON files and extract its findings array
 
 ### 2. Deduplicate
 
@@ -44,7 +44,7 @@ The per-submodule scanner [output files](../resources/sub-agent-output-schema.md
 
 ### 5. Write Output
 
-- Produce the {merged_findings} and the reconciliation table
+- Produce the `{merged_findings}` and the reconciliation table
 
 ## Outputs
 

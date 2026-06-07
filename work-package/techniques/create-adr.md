@@ -33,23 +33,23 @@ Directory holding the project's ADR files
 
 ### 1. Gate On Complexity
 
-- Proceed only when {complexity} is moderate or complex. For a simple assessment, do not create an ADR — simple changes do not warrant one — and return without an {adr_document}.
+- Proceed only when `{complexity}` is moderate or complex. For a simple assessment, do not create an ADR — simple changes do not warrant one — and return without an `{adr_document}`.
 
 ### 2. Determine Number
 
-- Scan {adr_dir} for existing ADR files
+- Scan `{adr_dir}` for existing ADR files
 - Determine next sequential NNNN number
-- If the next number cannot be determined, re-scan {adr_dir} and use the next available number.
+- If the next number cannot be determined, re-scan `{adr_dir}` and use the next available number.
 
 ### 3. Gather Context
 
-- Read the {design_philosophy_doc} for decision rationale, alternatives, and trade-offs. If the design philosophy document is not found, check {planning_folder_path} and prompt the user to locate the artifact.
-- Review implementation analysis and plan from {planning_folder_path} for architectural choices
+- Read the `{design_philosophy_doc}` for decision rationale, alternatives, and trade-offs. If the design philosophy document is not found, check `{planning_folder_path}` and prompt the user to locate the artifact.
+- Review implementation analysis and plan from `{planning_folder_path}` for architectural choices
 - Identify alternatives that were considered and rejected
 
 ### 4. Write Adr
 
-- Write the {adr_document} as NNNN-{decision_title}.md in {adr_dir}
+- Write the `{adr_document}` as NNNN-`{decision_title}`.md in `{adr_dir}`
 - Use standard ADR format (Title, Status, Context, Decision, Consequences)
 - Set status to Proposed (finalize activity updates to Accepted)
 - New ADRs are created with status Proposed — the finalize activity updates to Accepted

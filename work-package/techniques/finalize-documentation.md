@@ -25,19 +25,19 @@ The [test plan](../resources/test-plan.md#test-plan-structure) artifact for this
 
 ### 1. Update Adr
 
-- If the {adr} exists, update status to Accepted
-- Record implementation outcome and any deviations, cross-referencing the merged PR via its {pr_number}
+- If the `{adr}` exists, update status to Accepted
+- Record implementation outcome and any deviations, cross-referencing the merged PR via its `{pr_number}`
 - If no ADR was created for this work package, skip ADR finalization and proceed with the other steps
 
 ### 2. Finalize Test Plan
 
-- Load the {test_plan}. If it is not found at the expected path, check {planning_folder_path} for alternative names
+- Load the `{test_plan}`. If it is not found at the expected path, check `{planning_folder_path}` for alternative names
 - Add hyperlinks to actual test source file locations
 - Ensure each test case references its source file and line
 
 ### 3. Create Completion Doc
 
-- Create the {completion_document} at the {planning_folder_path}
+- Create the `{completion_document}` at the `{planning_folder_path}`
 - Summarize what was delivered
 - Document what was tested and test coverage
 - List deferred items and known limitations

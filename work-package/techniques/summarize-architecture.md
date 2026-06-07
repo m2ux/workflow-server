@@ -26,7 +26,7 @@ List of files changed in the implementation
 ### 1. Identify Scope
 
 - Determine which architectural components are affected by the changes
-- Map each entry in {changed_files} to its modules and subsystems
+- Map each entry in `{changed_files}` to its modules and subsystems
 - Identify external interactions and boundaries
 - Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[diagram-source-select](./gitnexus-operations/diagram-source-select.md) to bound diagram scope to the affected processes and source diagram structure from graph resources.
 - If the changes are too minor to warrant a full architectural summary, create a minimal summary noting the low architectural impact rather than the full set of diagrams.
@@ -53,9 +53,9 @@ List of files changed in the implementation
 
 ### 5. Write Summary
 
-- Create the {architecture_summary} under {planning_folder_path}
+- Create the `{architecture_summary}` under `{planning_folder_path}`
 - Combine diagrams with narrative explanation
-- Focus on impact, scope, and risk, drawing scope and rationale from {design_philosophy_doc} when it is provided
+- Focus on impact, scope, and risk, drawing scope and rationale from `{design_philosophy_doc}` when it is provided
 - Follow the architecture-summary template in [architecture-summary](../resources/architecture-summary.md)
 
 ## Outputs

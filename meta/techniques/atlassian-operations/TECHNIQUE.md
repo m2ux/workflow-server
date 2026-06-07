@@ -23,7 +23,7 @@ UUID of the target Atlassian cloud site. (Produced by resolve-cloud-id; consumed
 
 ### resolve-cloud-id-once
 
-Apply [resolve-cloud-id](./resolve-cloud-id.md) ONCE per session and cache the {cloudId}. Every product-specific operation requires it.
+Apply [resolve-cloud-id](./resolve-cloud-id.md) ONCE per session and cache the `{cloudId}`. Every product-specific operation requires it.
 
 ### content-format-markdown
 

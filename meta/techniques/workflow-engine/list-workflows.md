@@ -15,4 +15,4 @@ Array of `{ id, title, description, tags }` entries
 
 ## Protocol
 
-1. Call `list_workflows` and return its result as the {catalog}.
+1. Call `list_workflows` and return its result as the `{catalog}`.

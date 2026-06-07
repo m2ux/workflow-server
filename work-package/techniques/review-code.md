@@ -27,7 +27,7 @@ List of files changed in the work package (from git diff)
 
 - Use attached [rust-substrate-code-review](../resources/rust-substrate-code-review.md) for full review criteria
   - If the code review resource is missing, check the resources folder for 16-rust-substrate-code-review.md.
-- Establish the {changed_files} set by running git diff for all files changed since the work package started
+- Establish the `{changed_files}` set by running git diff for all files changed since the work package started
   - If no implementation changes are found, verify the correct branch and commit range.
 
 ### 2. Bound Review Scope
@@ -42,12 +42,12 @@ List of files changed in the work package (from git diff)
 - Check error handling, safety, and unwrap/expect usage
 - Verify Substrate-specific patterns (weights, storage, hooks, extrinsics)
 - Evaluate architecture and design pattern adherence before low-level details
-- When {project_type} is rust-substrate, check weight annotations, storage migrations, hook implementations, and extrinsic validation
+- When `{project_type}` is rust-substrate, check weight annotations, storage migrations, hook implementations, and extrinsic validation
 
 ### 4. Document Findings
 
 - Document each finding with severity (critical, high, medium, low, informational)
-- Create the {code_review_report} in {planning_folder_path}
+- Create the `{code_review_report}` in `{planning_folder_path}`
 
 ### 5. Present Summary
 

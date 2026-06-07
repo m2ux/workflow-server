@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Combine per-check outcomes into a single {validation_results} envelope.
+Combine per-check outcomes into a single `{validation_results}` envelope.
 
 ## Inputs
 
@@ -34,4 +34,4 @@ Pass/fail and output from the linter
 ## Protocol
 
 1. Compute `validation_passed = test-results.passed AND build-status.passed AND format-status.passed AND lint-results.passed`.
-2. Emit the {validation_results} envelope carrying each input outcome plus `validation_passed`; do not mutate any input.
+2. Emit the `{validation_results}` envelope carrying each input outcome plus `validation_passed`; do not mutate any input.

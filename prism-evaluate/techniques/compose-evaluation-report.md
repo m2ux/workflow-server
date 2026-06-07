@@ -29,8 +29,8 @@ Original evaluation description, used for report context
 
 ### 1. Locate Artifacts
 
-- For each dimension in {dimension_plan}, locate the prism output artifacts in the corresponding output_subdir under {output_path}
-- Use {completed_analyses} to confirm which prism runs finished and to resolve each run's artifact output path and status before reading
+- For each dimension in `{dimension_plan}`, locate the prism output artifacts in the corresponding output_subdir under `{output_path}`
+- Use `{completed_analyses}` to confirm which prism runs finished and to resolve each run's artifact output path and status before reading
 - Full-prism dimensions produce: structural-analysis.md, adversarial-analysis.md, synthesis.md
 - Portfolio dimensions produce one artifact per lens: e.g., claim-inversion.md (lens 07), knowledge-audit.md (lens 40), rejected-paths.md (lens 09), scarcity.md (lens 08)
 - Verify all expected artifacts exist. If expected prism output artifacts are missing for one or more dimensions, report which dimensions are missing artifacts, then compose the report from the available dimensions and note the incomplete coverage.
@@ -57,7 +57,7 @@ Original evaluation description, used for report context
 ### 4. Compose Report
 
 - Structure the report with clear sections. No methodology metadata — findings are presented as conclusions.
-- Section: Executive Summary — what was evaluated (framed from {evaluation_description}), total findings by dimension and severity, the core finding in 2-3 sentences, and the overall assessment
+- Section: Executive Summary — what was evaluated (framed from `{evaluation_description}`), total findings by dimension and severity, the core finding in 2-3 sentences, and the overall assessment
 - Section: The Core Finding — expanded description of the deepest cross-dimensional insight with a testable prediction
 - Section: Per-Dimension Findings — one subsection per dimension with: dimension description, severity summary table, key findings (each with ID, severity, title, description), and the dimension's most important insight
 - Section: Cross-Cutting Patterns — patterns spanning multiple dimensions, with evidence from each
@@ -73,7 +73,7 @@ Original evaluation description, used for report context
 
 ### 6. Present Results
 
-- Read the {evaluation_report}. Extract the executive summary: total findings by dimension and severity, the core finding, and top-priority recommendations.
+- Read the `{evaluation_report}`. Extract the executive summary: total findings by dimension and severity, the core finding, and top-priority recommendations.
 - Compile evaluation metrics: finding count by dimension, finding count by severity (Critical, High, Medium, Low), dimensions evaluated, number of prism runs triggered, total analysis artifacts produced.
 - Present the evaluation results to the user in a structured format: evaluation summary with finding counts by dimension and severity, core finding highlight, top-priority recommendations, and document index with paths to all deliverables (EVALUATION-REPORT.md, evaluation-plan.md, and all dimension-specific analysis artifacts).
 - List every artifact produced during the evaluation with its path, organised by dimension.

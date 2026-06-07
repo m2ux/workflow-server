@@ -22,7 +22,7 @@ Type of analysis to perform: 'completion' or 'context'.
 ### 1. Select Analysis Type
 
 - Present the analysis-type-selection checkpoint to determine if this is continuing or new
-- Set {analysis_type} variable based on user selection
+- Set `{analysis_type}` variable based on user selection
 - If the user is unsure whether this is continuing or new, check for existing planning artifacts — if found, suggest completion analysis; if not, suggest context analysis
 
 ### 2. Perform Completion Analysis
@@ -42,8 +42,8 @@ Type of analysis to perform: 'completion' or 'context'.
 
 ### 4. Document Analysis
 
-- Create the {analysis_document} in the {planning_folder_path} using the appropriate template
-- Set {analysis_document} variable to the document path
+- Create the `{analysis_document}` in the `{planning_folder_path}` using the appropriate template
+- Set `{analysis_document}` variable to the document path
 
 ### 5. Present Findings
 

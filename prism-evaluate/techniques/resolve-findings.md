@@ -25,8 +25,8 @@ Path to the original document, proposal, or artifact set that was evaluated
 
 ### 1. Load And Classify
 
-- Read the {evaluation_report} and extract all findings with IDs, severities, titles, descriptions, and referenced target sections
-- Read the target document at {target_path} and identify the specific text, sections, and claims referenced by each finding
+- Read the `{evaluation_report}` and extract all findings with IDs, severities, titles, descriptions, and referenced target sections
+- Read the target document at `{target_path}` and identify the specific text, sections, and claims referenced by each finding
   - If a finding references target text that cannot be located in the current target, report the finding as unlocatable and present it to the user with a note that the referenced text could not be found — the target may have been modified since the evaluation
 - Classify each finding into a mitigation tier: T1 (direct correction — wrong numbers, terminology), T2 (reframing — claims needing qualification), T3 (novel mitigation — new mechanisms or content needed), T4 (structural/immovable — external constraints requiring acknowledgement)
 - Order findings within each tier by severity (Critical first, then High, Medium, Low)
@@ -52,7 +52,7 @@ Path to the original document, proposal, or artifact set that was evaluated
 
 ### 4. Compile Plan
 
-- After all findings are presented, compile the {mitigation_plan} and write it to {output_path}
+- After all findings are presented, compile the `{mitigation_plan}` and write it to `{output_path}`
 - Structure: Summary table (ID, severity, tier, user decision), detailed changes grouped by tier, implementation priority order
 - Include the full proposed text for each accepted mitigation so the plan is self-contained
 - Verify every finding from the report has a corresponding entry (accepted, modified, or skipped)
@@ -62,7 +62,7 @@ Path to the original document, proposal, or artifact set that was evaluated
 - Apply accepted mitigations in priority order: T1 first, then T2, T3, T4
 - For each change, verify the target text matches expectations before applying
   - If an earlier mitigation shifted text locations and a later mitigation no longer matches, search for the expected text elsewhere in the modified target; if found at a different location, apply there, and if not found, report the conflict and skip
-- After all changes, verify each was applied correctly, producing the {modified_target} with all accepted mitigations in place
+- After all changes, verify each was applied correctly, producing the `{modified_target}` with all accepted mitigations in place
 
 ## Outputs
 

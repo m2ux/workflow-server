@@ -23,7 +23,7 @@ One-line description for the merge commit message
 
 ## Protocol
 
-1. From {target_path}, check out and update the default branch: `git checkout {default_branch} && git pull`.
+1. From `{target_path}`, check out and update the default branch: `git checkout {default_branch} && git pull`.
 2. Squash all branch commits onto the default branch: `git merge --squash {branch_name}`.
 3. Commit with Signed-off-by and GPG signature: `git commit -s -S -m "{type}: {description} (#{pr_number})"`.
 4. Push the merge commit: `git push`.

@@ -33,9 +33,9 @@ Codebase paths to search against
 
 ### 1. Load Catalog
 
-- Fetch the resource named by {resource_id} and locate the {catalog_section} within it. Parse every pattern entry in that section. Each entry defines a search string and, optionally, triage criteria or verification steps.
-- If no resource matches {resource_id}, list the available resources and report the error to the orchestrator.
-- If the resource exists but does not contain the requested {catalog_section}, list the available sections in the resource and report the mismatch.
+- Fetch the resource named by `{resource_id}` and locate the `{catalog_section}` within it. Parse every pattern entry in that section. Each entry defines a search string and, optionally, triage criteria or verification steps.
+- If no resource matches `{resource_id}`, list the available resources and report the error to the orchestrator.
+- If the resource exists but does not contain the requested `{catalog_section}`, list the available sections in the resource and report the mismatch.
 
 ### 2. Iterate Patterns
 
@@ -43,8 +43,8 @@ Codebase paths to search against
 
 ### 3. Execute Search
 
-- For each pattern, determine the execution type from the resource entry. Grep-based patterns: run the search string against the {scope}, omitting any paths or file patterns named in {exclusions} (e.g., test, mock, bench files). Verification-based patterns (mechanical checks): run the search string, then apply the verification procedure defined in the resource (e.g., trace a variable, check field completeness, verify pairing). Record every hit with file path and line number.
-- If no files match the {scope} and exclusion criteria, report that the {scope} produced zero files and verify the {scope} paths are correct.
+- For each pattern, determine the execution type from the resource entry. Grep-based patterns: run the search string against the `{scope}`, omitting any paths or file patterns named in `{exclusions}` (e.g., test, mock, bench files). Verification-based patterns (mechanical checks): run the search string, then apply the verification procedure defined in the resource (e.g., trace a variable, check field completeness, verify pairing). Record every hit with file path and line number.
+- If no files match the `{scope}` and exclusion criteria, report that the `{scope}` produced zero files and verify the `{scope}` paths are correct.
 
 ### 4. Triage Hits
 
@@ -56,7 +56,7 @@ Codebase paths to search against
 
 ### 6. Format Results
 
-- Assemble the {pattern_results}: a structured results table with one row per pattern hit (or per pattern for zero-hit entries). The table format is defined by the activity step that invoked this technique. Include zero-hit verdicts as a separate section or integrated into the main table.
+- Assemble the `{pattern_results}`: a structured results table with one row per pattern hit (or per pattern for zero-hit entries). The table format is defined by the activity step that invoked this technique. Include zero-hit verdicts as a separate section or integrated into the main table.
 
 ## Outputs
 

@@ -25,9 +25,9 @@ Atomic task breakdown with dependencies and ordering for the work package
 
 ### 2. Define Strategy
 
-- Define test strategy for the work package (unit, integration, e2e), using the {plan_tasks} breakdown to scope coverage to each task and its dependencies
-- If {requirements} are not available, prompt the user to complete elicitation before continuing with test planning
-- Identify which {requirements} need which types of tests
+- Define test strategy for the work package (unit, integration, e2e), using the `{plan_tasks}` breakdown to scope coverage to each task and its dependencies
+- If `{requirements}` are not available, prompt the user to complete elicitation before continuing with test planning
+- Identify which `{requirements}` need which types of tests
 - Determine test infrastructure needs (fixtures, mocks, test doubles)
 
 ### 3. Create Test Cases
@@ -35,11 +35,11 @@ Atomic task breakdown with dependencies and ordering for the work package
 - Create specific test cases for each requirement
 - Include boundary conditions, error paths, and edge cases
 - Link each test case to its requirement and acceptance criterion
-- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md)(query: {\$concept}) to find existing test patterns for related concepts and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md)(name: {\$symbol}) to identify error-path callees as edge-case test candidates.
+- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md)(query: `{$concept}`) to find existing test patterns for related concepts and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md)(name: `{$symbol}`) to identify error-path callees as edge-case test candidates.
 
 ### 4. Write Artifact
 
-- Create the {test_plan_document} artifact in {planning_folder_path}
+- Create the `{test_plan_document}` artifact in `{planning_folder_path}`
 - Structure with strategy, test cases, and acceptance criteria matrix
 
 ## Outputs

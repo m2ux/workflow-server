@@ -25,8 +25,8 @@ Apply two or more complementary portfolio lenses to the same artifact to produce
 
 ### 1. Select Lenses
 
-- If {selected_lenses} is provided, use those lenses
-- If {analytical_goal} is provided but no lenses selected, choose 2-3 lenses using the lens selection guide below (see [strategist](../resources/strategist.md))
+- If `{selected_lenses}` is provided, use those lenses
+- If `{analytical_goal}` is provided but no lenses selected, choose 2-3 lenses using the lens selection guide below (see [strategist](../resources/strategist.md))
 - If neither is provided, default to claim + degradation (broadest complementary pair for code) or pedagogy + rejected-paths (broadest for non-code)
 - Lens selection guide: trade-offs → scarcity (08) + rejected-paths (09). assumptions → claim (07) + pedagogy (06). maintainability → degradation (10) + contract (11). design rationale → pedagogy (06) + rejected-paths (09). interface quality → contract (11) + claim (07). architecture → deep-scan (12) + sdl-abstraction (15). trust/security → sdl-trust (13) + security-v1 (37). coupling/ordering → sdl-coupling (14) + evolution (21). API naming → api-surface (22) + identity (17). error+cost → error-resilience (19) + evidence-cost (29). dead code → reachability (30) + fidelity (31). state management → state-audit (32) + degradation (10). code archaeology → archaeology (33) + simulation (38). registration gaps → audit-code (34). change resilience → cultivation (35) + evolution (21). temporal fragility → sdl-simulation (36) + degradation (10). testability → testability-v1 (39) + fix-cascade (16). confabulation check → knowledge-audit (40) + knowledge-boundary (41). maximum trust → oracle (44). architecture redesign → architect (51) + genesis (57). analytical blindspots → blindspot (52) + significance (60). counterfactual exploration → counterfactual (54) + history (58). emergent behavior → emergence (55) + evolution (21). conservation law validation → falsify (56) + significance (60). knowledge prerequisites → prereq (59) + verify-claims (61).
 - Always apply at least two lenses. A single portfolio lens should use the structural-analysis technique instead. If only one portfolio lens was requested, switch to the structural-analysis technique for single-lens analysis, or add a complementary lens per the selection guide above.
@@ -40,7 +40,7 @@ Apply two or more complementary portfolio lenses to the same artifact to produce
 
 ### 3. Read Target
 
-- If {target_content} is a file path, read the file to obtain the content
+- If `{target_content}` is a file path, read the file to obtain the content
 
 ### 4. Execute Lenses
 
@@ -51,14 +51,14 @@ Apply two or more complementary portfolio lenses to the same artifact to produce
 
 ### 5. Write Artifacts
 
-- Write each lens output (see [writer](../resources/writer.md)) as {per_lens_artifacts} into {output_path}, one artifact per applied lens. If a write fails, verify {output_path} exists and is writable.
+- Write each lens output (see [writer](../resources/writer.md)) as `{per_lens_artifacts}` into `{output_path}`, one artifact per applied lens. If a write fails, verify `{output_path}` exists and is writable.
 
 ### 6. Cross Lens Synthesis
 
 - After all lenses complete, identify where findings converge (same structural property found via different operations)
 - Identify where findings diverge (each lens found a different property — this is expected and is the value of portfolio analysis)
 - Produce a summary table: finding, which lens(es) found it, convergent or unique
-- Write the synthesis as {portfolio_synthesis} into {output_path}
+- Write the synthesis as `{portfolio_synthesis}` into `{output_path}`
 
 ## Outputs
 

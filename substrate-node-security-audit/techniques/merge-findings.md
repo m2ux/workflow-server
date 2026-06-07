@@ -29,7 +29,7 @@ One of: structured-merge (concat + dedup), integrate (add to existing), union-me
 
 ### 1. Concatenate
 
-- Combine every list in {finding_sources} into a single flat table. Every agent finding becomes a row with fields: agent-id, finding-id, file, line, title, severity, checklist-item, evidence. No agent output is discarded.
+- Combine every list in `{finding_sources}` into a single flat table. Every agent finding becomes a row with fields: agent-id, finding-id, file, line, title, severity, checklist-item, evidence. No agent output is discarded.
 
 ### 2. Deduplicate
 
@@ -37,11 +37,11 @@ One of: structured-merge (concat + dedup), integrate (add to existing), union-me
 
 ### 3. Apply Strategy
 
-- Branch on {merge_strategy}. For structured-merge: assign sequential report finding numbers. For integrate: append the new rows to the {existing_table} and update its elevation mapping. For union-merge: classify each finding as consensus (present in both runs), single-source (one run only), or escalated (PASS in primary, FAIL in secondary).
+- Branch on `{merge_strategy}`. For structured-merge: assign sequential report finding numbers. For integrate: append the new rows to the `{existing_table}` and update its elevation mapping. For union-merge: classify each finding as consensus (present in both runs), single-source (one run only), or escalated (PASS in primary, FAIL in secondary).
 
 ### 4. Verify Completeness
 
-- Confirm every row has a report finding number. Count merged rows (with justification), promoted rows, and total findings. Emit the completed {merge_table} with its flat table, elevation summary, and any union-merge classification.
+- Confirm every row has a report finding number. Count merged rows (with justification), promoted rows, and total findings. Emit the completed `{merge_table}` with its flat table, elevation summary, and any union-merge classification.
 - If a row still lacks a report finding number, auto-promote it to a new finding and note the promotion in the elevation summary.
 
 ## Outputs

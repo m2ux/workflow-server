@@ -26,13 +26,13 @@ Which activity is generating assumptions
 ### 1. Collect Assumptions
 
 - Identify all implicit decisions and assumptions made
-- Classify by category appropriate to the {activity_context} generating them  
+- Classify by category appropriate to the `{activity_context}` generating them  
   > Use categories appropriate to the current activity phase.
 - If no significant assumptions are identified, explicitly confirm with the user that no assumptions were made before proceeding
 
 ### 2. Write Assumptions
 
-- Append collected assumptions to the {existing_assumptions_log} (or start a fresh log if none exists), recording type, statement, rationale, and alternatives for each
+- Append collected assumptions to the `{existing_assumptions_log}` (or start a fresh log if none exists), recording type, statement, rationale, and alternatives for each
 - The file is the record of truth — do not duplicate assumption content in checkpoint messages
 - Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See [assumption-reconciliation](../resources/assumption-reconciliation.md) for correct vs incorrect examples.
 
@@ -45,7 +45,7 @@ Which activity is generating assumptions
 - If no open assumptions remain after reconciliation, skip the judgement augmentation format and present a summary confirming all assumptions were resolved through code analysis
 - Focus trade-offs on measurable differences between alternatives, not uniform property lists. If two options are equivalent on a dimension, omit that dimension — it adds noise without aiding the decision
 - Flag decision reversibility: mark each assumption as easily-reversible (low-cost to change later) or path-committing (high-cost to reverse). This helps the user calibrate how much deliberation to invest
-- Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[reversibility-signal](./gitnexus-operations/reversibility-signal.md)(name: {\$symbol}) to set the flag — high caller fan-out and broad process participation → path-committing; isolated symbols → easily-reversible.
+- Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[reversibility-signal](./gitnexus-operations/reversibility-signal.md)(name: `{$symbol}`) to set the flag — high caller fan-out and broad process participation → path-committing; isolated symbols → easily-reversible.
 
 ### 4. Present For Review
 
@@ -59,7 +59,7 @@ Which activity is generating assumptions
 ### 5. Record Outcomes
 
 - Mark each as confirmed, corrected, or needs-discussion
-- Write outcomes and user responses back into the log, producing the {updated_assumptions_log}
+- Write outcomes and user responses back into the log, producing the `{updated_assumptions_log}`
 - Preserve all assumptions and their resolution status
 
 ## Outputs

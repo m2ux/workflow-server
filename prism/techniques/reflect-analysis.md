@@ -15,14 +15,14 @@ Apply recursive meta-analysis to L12 output using the claim prism, then synthesi
 
 ### 1. Structural Analysis
 
-- Dispatch [L12](../resources/l12.md) to a fresh worker, passing {target_content} as the analysis target and {target_type} to frame the L12 pass
-- Worker writes to {output_path}/reflect-l12.md
+- Dispatch [L12](../resources/l12.md) to a fresh worker, passing `{target_content}` as the analysis target and `{target_type}` to frame the L12 pass
+- Worker writes to `{output_path}`/reflect-l12.md
 
 ### 2. Meta Analysis
 
 - Dispatch [claim](../resources/claim.md) to a fresh worker
 - Worker receives the L12 OUTPUT as its analysis target (not source code)
-- Worker writes to {output_path}/reflect-meta.md
+- Worker writes to `{output_path}`/reflect-meta.md
 - The claim prism runs on L12 OUTPUT, not on source code — this is recursive meta-analysis
 
 ### 3. Constraint Synthesis
@@ -30,9 +30,9 @@ Apply recursive meta-analysis to L12 output using the claim prism, then synthesi
 - Dispatch synthesis to a fresh worker
 - Worker receives: L12 output + meta output + constraint history (if available)
 - Worker produces: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN
-- Worker writes to {output_path}/reflect-synthesis.md
+- Worker writes to `{output_path}`/reflect-synthesis.md
 - Synthesis must produce exactly 4 sections: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN
-- Return {reflect_result} — its {l12_path}, {meta_path}, and {synthesis_path} sub-fields hold the three pipeline artifact paths.
+- Return `{reflect_result}` — its `{l12_path}`, `{meta_path}`, and `{synthesis_path}` sub-fields hold the three pipeline artifact paths.
 
 ## Outputs
 

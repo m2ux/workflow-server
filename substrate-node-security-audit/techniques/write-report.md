@@ -15,8 +15,8 @@ Produce the final audit report artifact from the scored and elevation-verified m
 
 1. Verify all merge table rows have severity scores and finding numbers.
 2. Organize findings by severity (Critical first, then High, Medium, Low).
-3. Write each section per the structure above, assembling them into the {audit_report} artifact.
-4. Verify the finding count in the executive summary matches the findings section of the {audit_report}.
+3. Write each section per the structure above, assembling them into the `{audit_report}` artifact.
+4. Verify the finding count in the executive summary matches the findings section of the `{audit_report}`.
 
 ## Outputs
 
@@ -66,19 +66,19 @@ cargo audit results if available
 
 #### finding_block_format
 
-### Issue {number}: {title}
+### Issue `{number}`: `{title}`
 
-**Impact:** {impact} — {justification}
+**Impact:** `{impact}` — `{justification}`
 
-**Feasibility:** {feasibility} — {justification}
+**Feasibility:** `{feasibility}` — `{justification}`
 
-**Severity:** {level} (I={impact}, F={feasibility}, avg={average})
+**Severity:** `{level}` (I=`{impact}`, F=`{feasibility}`, avg=`{average}`)
 
-**Category:** {category}
+**Category:** `{category}`
 
-**Affected Files:** {file}#{lines}
+**Affected Files:** `{file}`#`{lines}`
 
-{description}
+`{description}`
 
 #### finding_block_note
 

@@ -29,11 +29,11 @@ Code files to read for independent verification
 
 ### 1. Seed From Gaps
 
-- If {verification_gaps} input is provided, read the gap report. For each §3 category flagged as having incomplete coverage, missing mandatory tables, or unmet [target profile](../resources/target-profile.md#file-coverage-obligations) obligations, identify ALL PASS items from agent results that reference that category. These items are pre-seeded into the `{$adversarial_queue}` regardless of severity estimate — the verification gap indicates higher false-PASS risk.
+- If `{verification_gaps}` input is provided, read the gap report. For each §3 category flagged as having incomplete coverage, missing mandatory tables, or unmet [target profile](../resources/target-profile.md#file-coverage-obligations) obligations, identify ALL PASS items from agent results that reference that category. These items are pre-seeded into the `{$adversarial_queue}` regardless of severity estimate — the verification gap indicates higher false-PASS risk.
 
 ### 2. Extract And Filter
 
-- Collect the {pass_items} (each a PASS verdict with claim text, cited evidence, and checklist reference). Filter to items with severity >= Medium potential — specifically checklist items covering: hook/weight accounting, state lifecycle/cursor, event emission integrity, consensus path symmetry, input validation, pool isolation, and timestamp sources. Merge with the pre-seeded items in {adversarial_queue}. Deduplicate by checklist reference.
+- Collect the `{pass_items}` (each a PASS verdict with claim text, cited evidence, and checklist reference). Filter to items with severity >= Medium potential — specifically checklist items covering: hook/weight accounting, state lifecycle/cursor, event emission integrity, consensus path symmetry, input validation, pool isolation, and timestamp sources. Merge with the pre-seeded items in `{adversarial_queue}`. Deduplicate by checklist reference.
 
 ### 3. Decompose Claims
 
@@ -46,9 +46,9 @@ Code files to read for independent verification
 
 ### 5. Verify Independently
 
-- For each decomposed property, read the cited code location in the {source_files} and search for the specific implementation. Output CONFIRMED (all instances verified with citations), REFUTED (any instance lacks implementation — becomes a new finding), or INSUFFICIENT (cannot determine).  
+- For each decomposed property, read the cited code location in the `{source_files}` and search for the specific implementation. Output CONFIRMED (all instances verified with citations), REFUTED (any instance lacks implementation — becomes a new finding), or INSUFFICIENT (cannot determine).  
   > A PASS that says 'cursor is set correctly' must verify: is there an ensure!(new > old) guard? If not, the PASS is invalid regardless of whether the code 'works'.
-- CONFIRMED only when ALL decomposed properties are verified with code citations. Record each verdict in the {decomposition_results} table, completing the per-instance Verified? and Evidence columns.
+- CONFIRMED only when ALL decomposed properties are verified with code citations. Record each verdict in the `{decomposition_results}` table, completing the per-instance Verified? and Evidence columns.
 
 ## Outputs
 

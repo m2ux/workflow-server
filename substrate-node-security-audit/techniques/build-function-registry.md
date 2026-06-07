@@ -29,7 +29,7 @@ true
 
 ### 1. Read And Enumerate
 
-- For every file in {source_files}, enumerate: (1) pallet hooks (on_initialize, on_finalize, on_idle, offchain_worker), (2) ProvideInherent methods (create_inherent, check_inherent, is_inherent_required), (3) dispatchable extrinsics (#[pallet::call]), (4) public functions and trait implementations, (5) storage declarations (StorageMap, StorageValue, StorageDoubleMap), (6) event types (Event enum variants). When {include_subdirectories} is set, also descend into submodules (versions/, common/, api/, internal/, impl/) and enumerate the files found there.
+- For every file in `{source_files}`, enumerate: (1) pallet hooks (on_initialize, on_finalize, on_idle, offchain_worker), (2) ProvideInherent methods (create_inherent, check_inherent, is_inherent_required), (3) dispatchable extrinsics (#[pallet::call]), (4) public functions and trait implementations, (5) storage declarations (StorageMap, StorageValue, StorageDoubleMap), (6) event types (Event enum variants). When `{include_subdirectories}` is set, also descend into submodules (versions/, common/, api/, internal/, impl/) and enumerate the files found there.
 
 ### 2. Assign Priority
 
@@ -37,7 +37,7 @@ true
 
 ### 3. Produce Registry
 
-- Assemble the {function_registry} as a structured table with one row per function. Format: | Function | File:Line | Type (hook/extrinsic/public/storage/event) | Priority |
+- Assemble the `{function_registry}` as a structured table with one row per function. Format: | Function | File:Line | Type (hook/extrinsic/public/storage/event) | Priority |
 
 ## Outputs
 

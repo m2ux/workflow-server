@@ -25,16 +25,16 @@ The running [log](../resources/assumption-reconciliation.md#integration-with-ass
 
 ### 1. Classify Resolvability
 
-- Read all open assumptions from the {assumptions_log}
+- Read all open assumptions from the `{assumptions_log}`
 - For each, determine whether targeted code analysis could validate or invalidate it
 - Code-resolvable: assumptions about code behavior, data flows, type structures, API contracts, test coverage, implementation details, library behavior, ordering guarantees, error handling paths
 - Not code-resolvable: stakeholder decisions, operational questions, strategic judgments, time estimates, deployment status, business priorities, external system behavior
-- If the {assumptions_log} contains no open assumptions, there is nothing to resolve — skip reconciliation and set has_resolvable_assumptions to false and has_open_assumptions to false.
+- If the `{assumptions_log}` contains no open assumptions, there is nothing to resolve — skip reconciliation and set has_resolvable_assumptions to false and has_open_assumptions to false.
 - If every open assumption classifies as not code-resolvable, convergence is immediate — set has_resolvable_assumptions to false and proceed to user review.
 
 ### 2. Targeted Analysis
 
-- For each code-resolvable assumption, perform focused investigation within the codebase at {target_path}: trace relevant code paths, examine implementations, diff between versions, compare behavior
+- For each code-resolvable assumption, perform focused investigation within the codebase at `{target_path}`: trace relevant code paths, examine implementations, diff between versions, compare behavior
 - Use the [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md) operations as the primary mechanism for tracing data flows, validating contract assumptions, and confirming ordering/error-path claims — [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) for concept-driven flow discovery, [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) for symbol-level caller/callee/process inspection, and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) for custom traces (e.g. error-path or ordering assumptions).
 - Record evidence with file paths and line numbers for every finding
 - Determine resolution: Validated (evidence confirms), Invalidated (evidence refutes), or Partially Validated (evidence supports with caveats)
@@ -43,7 +43,7 @@ The running [log](../resources/assumption-reconciliation.md#integration-with-ass
 
 ### 3. Update Assumptions
 
-- Update the {assumptions_log}: mark resolved assumptions with finding, evidence, and resolution status
+- Update the `{assumptions_log}`: mark resolved assumptions with finding, evidence, and resolution status
 - Add any newly surfaced assumptions as Open with their classification (code-resolvable or not)
 - Maintain a running count of resolved assumptions by status: total, validated, invalidated, partially validated, open code-resolvable, open non-code-resolvable
 - Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See the [formatting rule](../resources/assumption-reconciliation.md#markdown-formatting-rule) for correct vs incorrect examples.
@@ -52,14 +52,14 @@ The running [log](../resources/assumption-reconciliation.md#integration-with-ass
 
 - Re-classify all open assumptions after the analysis pass
 - If any open assumptions are code-resolvable (including newly surfaced ones), signal that another iteration is needed — set has_resolvable_assumptions to true
-- If no open assumptions are code-resolvable, convergence is reached: the assumptions log is now the {reconciled_assumptions} output, with all code-resolvable assumptions resolved and only stakeholder-dependent ones remaining — set has_resolvable_assumptions to false
+- If no open assumptions are code-resolvable, convergence is reached: the assumptions log is now the `{reconciled_assumptions}` output, with all code-resolvable assumptions resolved and only stakeholder-dependent ones remaining — set has_resolvable_assumptions to false
 - After convergence, evaluate whether any non-code-resolvable assumptions remain open. If none remain (all resolved), set has_open_assumptions to false. If stakeholder-dependent assumptions remain, set has_open_assumptions to true.
 
 ### 5. Update Comprehension Artifact
 
-- If a {comprehension_artifact} was provided, append findings to it as a numbered deep-dive section (e.g., 'Deep-Dive N: Assumption Reconciliation')
-- Update the Open Questions table in the {comprehension_artifact} with any questions resolved or surfaced during reconciliation
-- If no {comprehension_artifact} was provided, skip this phase — findings are preserved in the assumptions log
+- If a `{comprehension_artifact}` was provided, append findings to it as a numbered deep-dive section (e.g., 'Deep-Dive N: Assumption Reconciliation')
+- Update the Open Questions table in the `{comprehension_artifact}` with any questions resolved or surfaced during reconciliation
+- If no `{comprehension_artifact}` was provided, skip this phase — findings are preserved in the assumptions log
 
 ## Outputs
 

@@ -22,7 +22,7 @@ List of files changed in the work package (from git diff)
 ### 1. Load Guidance
 
 - Use attached [test-suite-review](../resources/test-suite-review.md) for full review criteria
-- From the {changed_files} set, identify all test files in the project related to the changed code
+- From the `{changed_files}` set, identify all test files in the project related to the changed code
 - If no test files are found, document the missing tests as a critical finding and proceed
 
 ### 2. Diff Aware Coverage Map
@@ -47,7 +47,7 @@ List of files changed in the work package (from git diff)
 ### 5. Document Findings
 
 - Document findings with severity and recommendations
-- Create the {test_suite_review_report} in {planning_folder_path}
+- Create the `{test_suite_review_report}` in `{planning_folder_path}`
 
 ### 6. Present Summary
 

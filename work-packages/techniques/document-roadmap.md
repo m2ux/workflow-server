@@ -27,13 +27,13 @@ List of completed package [plan documents](../resources/package-plan-template.md
 
 - Use attached [roadmap-template](../resources/roadmap-template.md) (roadmap-template) for the final START-HERE.md format
 - Write executive summary: 2-3 sentences on purpose, scope, and expected impact
-- Complete the work packages table, sequencing rows by {priority_order} and drawing effort and dependencies from the {package_plans}
+- Complete the work packages table, sequencing rows by `{priority_order}` and drawing effort and dependencies from the `{package_plans}`
   - If not all packages have completed plan documents, complete the missing package plans before finalizing the roadmap
 - Add status legend and initialize all packages as Planned
 
 ### 2. Update Readme
 
-- Add navigation links to every artifact in the {planning_folder_path}, including all analysis and plan documents
+- Add navigation links to every artifact in the `{planning_folder_path}`, including all analysis and plan documents
 - Organize links by document type: analysis, package plans
 
 ### 3. Add Timeline

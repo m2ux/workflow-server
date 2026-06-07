@@ -15,7 +15,7 @@ Verify consistency across prism resources, techniques, and documentation by runn
 
 ### 1. Check Stale References
 
-- Build stale name list from {change_set}.renamed (old_name) and {change_set}.deleted (name).
+- Build stale name list from `{change_set}.renamed` (old_name) and `{change_set}.deleted` (name).
 - Grep all files in prism/techniques/ and prism/activities/ for each stale name. Record matches.
 
 ### 2. Verify Prompt Routing
@@ -27,7 +27,7 @@ Verify consistency across prism resources, techniques, and documentation by runn
 
 ### 3. Verify Resource Counts
 
-- Count .md files in {resource_path} (excluding README.md).
+- Count .md files in `{resource_path}` (excluding README.md).
 - Compare against stated counts in prism/README.md and prism/resources/README.md. Flag mismatches.
 
 ### 4. Check Duplicate Indices
@@ -36,8 +36,8 @@ Verify consistency across prism resources, techniques, and documentation by runn
 
 ### 5. Compile Findings
 
-- Assemble the {verification_report} from the four checks, populating {stale_references}, {routing_mismatches}, {count_mismatches}, and {duplicate_indices}.
-- Set the report's {has_issues} = true if any findings, false otherwise.
+- Assemble the `{verification_report}` from the four checks, populating `{stale_references}`, `{routing_mismatches}`, `{count_mismatches}`, and `{duplicate_indices}`.
+- Set the report's `{has_issues}` = true if any findings, false otherwise.
 
 ## Outputs
 
