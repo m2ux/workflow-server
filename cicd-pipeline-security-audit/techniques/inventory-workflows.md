@@ -21,7 +21,7 @@ List of submodule paths to inventory
 
 ### 1. Discover Files
 
-- For each path in `target-submodules`, enumerate .github/workflows/*.yml and .github/workflows/*.yaml
+- For each path in `target_submodules`, enumerate .github/workflows/*.yml and .github/workflows/*.yaml
 - Record file path, file size, and last modified date
 - If a submodule has no .github/workflows/ directory, record it as a zero-workflow submodule and skip it for scanner assignment
 
@@ -45,7 +45,7 @@ List of submodule paths to inventory
 ### 5. Identify Scripts
 
 - Find all 'run:' blocks and referenced script files for later P7 scanning
-- Assemble the classified files, triggers, permissions, and checkout patterns into the `workflow-inventory` and return it
+- Assemble the classified files, triggers, permissions, and checkout patterns into the `workflow_inventory` and return it
 
 ## Outputs
 

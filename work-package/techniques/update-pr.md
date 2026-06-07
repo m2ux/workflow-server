@@ -15,19 +15,19 @@ Update PR with final implementation details and mark ready for review, or post c
 
 ### 1. Push Commits
 
-- Push all local commits to the remote `branch-name`
+- Push all local commits to the remote `branch_name`
 - Verify push succeeded
 - If the push is rejected because the remote branch has diverged, pull and rebase before pushing again
-- Do not update the `pr-number` PR until push completes
+- Do not update the `pr_number` PR until push completes
 
 ### 2. Update Description
 
 - Use attached [pr-description](../resources/pr-description.md) for template and structure
-- Update the `pr-number` PR description with the implementation summary drawn from {planning_folder_path}
-- If the PR cannot be found because `pr-number` does not exist, verify the PR number and check gh auth before retrying
+- Update the `pr_number` PR description with the implementation summary drawn from {planning_folder_path}
+- If the PR cannot be found because `pr_number` does not exist, verify the PR number and check gh auth before retrying
 - Include test coverage summary
 - Document key decisions and trade-offs
-- NEVER guess or infer repository URLs for PR description links. ALWAYS resolve them from git remotes. The engineering repo URL is obtained from the PARENT repo (the repo containing .engineering/): run 'git -C <parent-repo-path> remote get-url origin' and strip the .git suffix. The target repo URL is obtained from the TARGET repo (where the PR lives): run 'git -C <target-path> remote get-url origin'. These are different repositories — the engineering repo owner will differ from the target repo owner.
+- NEVER guess or infer repository URLs for PR description links. ALWAYS resolve them from git remotes. The engineering repo URL is obtained from the PARENT repo (the repo containing .engineering/): run 'git -C <parent-repo-path> remote get-url origin' and strip the .git suffix. The target repo URL is obtained from the TARGET repo (where the PR lives): run 'git -C <target_path> remote get-url origin'. These are different repositories — the engineering repo owner will differ from the target repo owner.
 
 ### 3. Verify Body
 
@@ -38,7 +38,7 @@ Update PR with final implementation details and mark ready for review, or post c
 ### 4. Mark Ready
 
 - Ensure description is finalized before marking ready
-- Mark the PR ready for review using gh pr ready, yielding `updated-pr` with its URL and status
+- Mark the PR ready for review using gh pr ready, yielding `updated_pr` with its URL and status
 
 ## Outputs
 

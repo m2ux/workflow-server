@@ -30,7 +30,7 @@ Review implementation to ensure changes are minimal, focused, scope-disciplined,
 
 ### 4. Orphan Check
 
-- Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[orphan-scan](./gitnexus-operations/orphan-scan.md)(changed-files: {\$changed_files}) to surface introduced-but-unreferenced symbols as over-engineering candidates — it beats grep heuristics for orphan detection.
+- Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[orphan-scan](./gitnexus-operations/orphan-scan.md)(changed_files: {\$changed_files}) to surface introduced-but-unreferenced symbols as over-engineering candidates — it beats grep heuristics for orphan detection.
 
 ### 5. Changes Folder
 

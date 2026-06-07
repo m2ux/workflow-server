@@ -11,7 +11,7 @@ Continue execution after the orchestrator resolves a checkpoint.
 
 ### session_index
 
-The `session-index` for the worker's session — unchanged across the yield/respond/resume sequence (the server-managed index is stable across all tool calls)
+The `session_index` for the worker's session — unchanged across the yield/respond/resume sequence (the server-managed index is stable across all tool calls)
 
 ### effects
 

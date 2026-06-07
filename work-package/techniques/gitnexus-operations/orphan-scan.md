@@ -17,7 +17,7 @@ the set of files changed by the work package
 
 ### orphan_candidates
 
-symbols in changed-files with no callers — over-engineering / dead-code candidates
+symbols in changed_files with no callers — over-engineering / dead-code candidates
 
 ## Protocol
 

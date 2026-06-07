@@ -32,7 +32,7 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 
 ### 2. Run Analyze
 
-- Otherwise run `npx gitnexus analyze` (or `npx gitnexus analyze --force` when {force} is true) inside `repo-path`. The CLI exits non-zero on failure; surface its stderr.
+- Otherwise run `npx gitnexus analyze` (or `npx gitnexus analyze --force` when {force} is true) inside `repo_path`. The CLI exits non-zero on failure; surface its stderr.
   - If `npx gitnexus` resolves to no binary (the gitnexus package is not installed), install it via `npm install -g gitnexus` (or the project-local equivalent), then retry.
   - If the analyze CLI returns non-zero — typically a parser error inside the target codebase or an unsupported language — read the stderr; if it identifies a single offending file, exclude or fix it. For corrupted index state, retry with `force=true`.
 

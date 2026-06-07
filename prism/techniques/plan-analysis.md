@@ -100,7 +100,7 @@ standard
 ### 9. Build Analysis Units
 
 - Build the {analysis_units} array — an ordered list of unit objects that the workflow iterates over
-- Each unit object has: target (file path or content string), target-type (code|general), pipeline-mode (single|full-prism|portfolio|behavioral), lenses (array of resource indices for portfolio, empty for single/full-prism/behavioral), role (module role or 'query'), risk (high|medium|low), rationale (why this mode was selected)
+- Each unit object has: target (file path or content string), target_type (code|general), pipeline-mode (single|full-prism|portfolio|behavioral), lenses (array of resource indices for portfolio, empty for single/full-prism/behavioral), role (module role or 'query'), risk (high|medium|low), rationale (why this mode was selected)
 - For query and file scopes: produce a single-element array
 - For module scope: produce a single-element array with the module path as target
 - For codebase and document-set scopes: produce one element per module, ordered by execution priority (high-risk first). Include a unit-output-subdir field derived from the module name for artifact namespacing (e.g., 'auth/', 'api/').
@@ -155,7 +155,7 @@ Machine-readable ordered array of analysis unit objects, each specifying a targe
 
 #### units
 
-Array of { target, target-type, pipeline-mode, lenses, role, risk, rationale, unit-output-subdir }
+Array of { target, target_type, pipeline-mode, lenses, role, risk, rationale, unit-output-subdir }
 
 ## Rules
 
@@ -189,4 +189,4 @@ The behavioral pipeline (19-23) is code-only. optimize (20) has no domain-neutra
 
 ### neutral-variant-routing
 
-When target-type is 'general' and an individual behavioral lens is recommended, prefer the neutral variant: error-resilience → 24, api-surface → 25, evolution → 26. optim has no neutral variant — use the code version (20) or omit.
+When target_type is 'general' and an individual behavioral lens is recommended, prefer the neutral variant: error-resilience → 24, api-surface → 25, evolution → 26. optim has no neutral variant — use the code version (20) or omit.

@@ -15,8 +15,8 @@ Produce the final audit report artifact from the scored and elevation-verified m
 
 1. Verify all merge table rows have severity scores and finding numbers.
 2. Organize findings by severity (Critical first, then High, Medium, Low).
-3. Write each section per the structure above, assembling them into the `audit-report` artifact.
-4. Verify the finding count in the executive summary matches the findings section of the `audit-report`.
+3. Write each section per the structure above, assembling them into the `audit_report` artifact.
+4. Verify the finding count in the executive summary matches the findings section of the `audit_report`.
 
 ## Outputs
 

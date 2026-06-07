@@ -31,7 +31,7 @@ Pre-classified trigger, permission, and checkout data for the workflow files
 
 - Use attached [injection-pattern-catalog](../resources/injection-pattern-catalog.md) (injection-pattern-catalog) for grep patterns, untrusted context lists, and detection heuristics
   - If the [injection-pattern-catalog](../resources/injection-pattern-catalog.md) cannot be loaded, fall back to the built-in pattern definitions
-- Scope the scan to the `workflow-files` paths, and load the `reconnaissance-data` so each file's pre-classified triggers, permissions, and checkout behavior is available to the pattern checks below
+- Scope the scan to the `workflow_files` paths, and load the `reconnaissance_data` so each file's pre-classified triggers, permissions, and checkout behavior is available to the pattern checks below
   - If a workflow file cannot be read, record it as unscanned and flag it in the coverage report
 
 ### 2. P1 Expression Injection
@@ -67,7 +67,7 @@ Pre-classified trigger, permission, and checkout data for the workflow files
 
 ### 7. P6 Ai Config
 
-- Using the `ai-config-inventory`, check whether AI config files (CLAUDE.md, AGENTS.md, .cursorrules) exist in the submodule
+- Using the `ai_config_inventory`, check whether AI config files (CLAUDE.md, AGENTS.md, .cursorrules) exist in the submodule
 - Verify they are listed in CODEOWNERS with mandatory review protection
 
 ### 8. P7 Dangerous Execution
@@ -78,7 +78,7 @@ Pre-classified trigger, permission, and checkout data for the workflow files
 
 ### 9. Assemble Results
 
-- Collect every flagged item, observation, and per-file/per-pattern scan confirmation into `scan-results`, emitting the structured artifact for this submodule
+- Collect every flagged item, observation, and per-file/per-pattern scan confirmation into `scan_results`, emitting the structured artifact for this submodule
 
 ## Outputs
 

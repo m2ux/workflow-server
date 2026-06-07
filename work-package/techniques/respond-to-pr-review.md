@@ -22,13 +22,13 @@ Review comments fetched from PR
 ### 1. Fetch Comments
 
 - Use attached [pr-review-response](../resources/pr-review-response.md) for full response guidance
-- Fetch the `review-comments` from the PR identified by `pr-number` using the gh API
+- Fetch the `review_comments` from the PR identified by `pr_number` using the gh API
   - If the gh API returns an error fetching comments, check authentication and PR access, then retry.
   - If no review comments are found, verify the PR has been reviewed and check comment visibility before proceeding.
 
 ### 2. Categorize
 
-- Categorize each of the `review-comments` by type (required change, suggestion, question, nit)
+- Categorize each of the `review_comments` by type (required change, suggestion, question, nit)
 - Identify actionable items vs discussion points
 - Prioritize by reviewer authority and impact
 
@@ -55,7 +55,7 @@ Review comments fetched from PR
 
 - After applying reviewer-requested changes, apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[detect-changes](../../meta/techniques/gitnexus-operations/detect-changes.md) to inform the 'minor fix' vs 'significant change' classification — small symbol/process deltas suggest minor; broad fan-out suggests significant.
 - Determine if re-review is needed (significant changes) or minor fixes suffice
-- Capture the categorized dispositions, changes made, and re-review decision as the `review-analysis` document
+- Capture the categorized dispositions, changes made, and re-review decision as the `review_analysis` document
 
 ## Outputs
 

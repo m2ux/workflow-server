@@ -17,11 +17,19 @@ Build or augment codebase comprehension through progressive analysis and persist
 
 *(optional)* Detected project type (rust-substrate|other)
 
+### comprehension_dir
+
+Directory holding codebase-comprehension artifacts
+
+#### default
+
+.engineering/artifacts/comprehension/
+
 ## Protocol
 
 ### 1. Discover Existing
 
-- List contents of .engineering/artifacts/comprehension/ directory
+- List contents of the {comprehension_dir} directory
 - Match existing artifacts by project name, module name, or domain terms from {problem_statement}
 - Summarize relevant artifacts with coverage scope and last-updated date
 - If no comprehension artifacts exist yet for this codebase, proceed with fresh analysis — this is the first comprehension pass
@@ -67,7 +75,7 @@ Build or augment codebase comprehension through progressive analysis and persist
 ### 7. Artifact Management
 
 - Write the {comprehension_artifact} following the artifact structure and comprehension techniques in [codebase-comprehension](../resources/codebase-comprehension.md)
-- Artifact naming: {codebase_area_name}.md in .engineering/artifacts/comprehension/
+- Artifact naming: {codebase_area}.md in {comprehension_dir}
 - Derive codebase-area-name from the target project or subsystem name (slugified)
 - When augmenting: add new sections, update existing sections with deeper detail, preserve prior content
 - Include metadata header: date, work-package reference, coverage scope, related artifacts

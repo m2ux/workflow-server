@@ -26,7 +26,7 @@ Resource index for this pass: 19 (error-resilience), 20 (optimize), 21 (evolutio
 ### 1. Load Lens
 
 - Load the lens prompt for {lens_resource_index}. If the lens for the given index cannot be loaded, report the error; valid behavioral indices are 19-23.
-- The behavioral pipeline is code-only: if invoked with target-type 'general', report that the behavioral pipeline is code-only and recommend portfolio mode with individual neutral variant lenses (24-26) for general targets.
+- The behavioral pipeline is code-only: if invoked with target_type 'general', report that the behavioral pipeline is code-only and recommend portfolio mode with individual neutral variant lenses (24-26) for general targets.
 - The lens prompt is the program — execute its operations in order
 
 ### 2. Read Target
@@ -90,5 +90,5 @@ The behavioral pipeline uses fixed role labels mapped to specific lenses: error-
 
 ### code-only
 
-The behavioral pipeline is code-only. optim (20) uses strongly code-oriented vocabulary with no domain-neutral variant. Do not use behavioral mode when target-type is 'general'.
+The behavioral pipeline is code-only. optim (20) uses strongly code-oriented vocabulary with no domain-neutral variant. Do not use behavioral mode when target_type is 'general'.
 
