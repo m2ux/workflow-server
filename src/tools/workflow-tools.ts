@@ -75,7 +75,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       content: [{ type: 'text' as const, text: encodeToon(await listWorkflows(config.workflowDir)) }],
     })));
 
-  server.tool('get_workflow', 'Load the workflow definition for the current session. The response begins with the workflow\'s primary technique (raw TOON), followed by the workflow definition. Use summary=true (the default) to get lightweight metadata including rules, variables, orchestration model, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Use summary=false for the raw workflow definition in TOON format. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity.',
+  server.tool('get_workflow', 'Load the workflow definition for the current session. The response begins with the workflow\'s primary technique (raw TOON), followed by the workflow definition. Use summary=true (the default) to get lightweight metadata including rules, variables, orchestration model, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Use summary=false for the raw workflow definition in TOON format. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity. The summary also carries `planning_folder_path`: the canonical absolute planning folder for this session under THIS server\'s workspace `.engineering` root — bind it as the single artifact location and never recompose it relative to your CWD or the target component repo.',
     {
       ...sessionIndexParam,
       summary: z.boolean().optional().default(true).describe('Returns lightweight summary by default. Set to false for the raw workflow definition.'),
@@ -134,6 +134,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           initialActivity: wf.initialActivity,
           activities: wf.activities?.map((a: { id: string; name?: string; required?: boolean; artifactPrefix?: string | undefined }) => ({ id: a.id, name: a.name, required: a.required, artifactPrefix: a.artifactPrefix })) ?? [],
           session_index,
+          // Canonical absolute planning folder for this session, resolved by the
+          // server under its own workspace `.engineering` root. This is the single
+          // authoritative artifact location — the orchestrator binds
+          // `planning_folder_path` from here and never composes it relative to its
+          // CWD or the target component repo (which may be a submodule/worktree).
+          planning_folder_path: loaded.folderAbsPath,
         };
 
         return {

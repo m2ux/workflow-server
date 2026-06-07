@@ -364,7 +364,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       description:
         'Dispatch a child workflow from the current session. Pass `session_index` of the parent (any depth) and `workflow_id` of the child workflow. ' +
         'The server appends a child entry under the parent\'s `triggeredWorkflows[]` with the child\'s full SessionFile embedded inline (the entire work-package tree lives in the top-level session.json). ' +
-        'Returns the child\'s `session_index`, which the agent threads to subsequent authenticated tool calls operating on the child. ' +
+        'Returns the child\'s `session_index`, which the agent threads to subsequent authenticated tool calls operating on the child, plus the canonical `planning_folder_path` — the absolute path of the planning folder under THIS server\'s workspace (the `.engineering` root supplied at init). All work-package artifacts are written under that absolute path; the agent never composes the location relative to its CWD or the target component repo. ' +
         'Special case: when the parent is a transient orchestrator-bootstrap session (e.g. meta), the parent\'s state is promoted onto disk under a stable workspace planning folder before the child is embedded. The slug is taken from (in order): the optional `planning_slug` argument; the slug registered at start_session; a `YYYY-MM-DD-<workflow-id>` fallback. The parent\'s tmp folder is discarded post-promotion, but the parent\'s session_index is retained — the orchestrator can keep using its original index to authenticate subsequent calls (it resolves to the promoted folder for the lifetime of this server process). The on-disk shape matches the persistent-parent case — parent at the top of the file, child under `triggeredWorkflows[0].state`.',
       inputSchema: z.object({
         ...sessionIndexParam,
@@ -443,7 +443,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // index to it and remove the tmp folder.
         await redirectTransientToWorkspace(parentFolder, promotedWorkspaceFolder);
         return {
-          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version }, planning_slug: promotedSlug }, null, 2) }],
+          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version }, planning_slug: promotedSlug, planning_folder_path: promotedWorkspaceFolder }, null, 2) }],
           _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
         };
       }
@@ -479,7 +479,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       });
       await saveSessionForTool(loaded, parentNext);
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version } }, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version }, planning_folder_path: parentFolder }, null, 2) }],
         _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
       };
     }), traceOpts)
