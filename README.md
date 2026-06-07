@@ -32,7 +32,7 @@ User Goal → Workflow → Activities → Techniques → Tools
 
 - **Workflows** define the overall process (e.g., implement a feature from issue to merged PR)
 - **Activities** are phases within a workflow (e.g., plan, implement, review, validate)
-- **Techniques** are markdown definitions of a capability, with optional rules; activities and workflows reference techniques by `::`-delimited path
+- **Techniques** are markdown definitions of a capability, with optional rules
 - **Tools** are the MCP operations the agent invokes, all correlated by the session token
 
 ### MCP Tools at a Glance
