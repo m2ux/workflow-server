@@ -40,7 +40,7 @@ When the underlying naming structure is left to individual judgement, the defini
 | 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
 | 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
-| — | `Comprehension artifact` | Persistent codebase knowledge | 20-45m | ⬚ Pending |
+| 14 | [Comprehension artifact](../../comprehension/identifier-naming-convention.md) | Persistent codebase knowledge — identifier naming/binding model | 20-45m | ✅ Complete |
 | — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | `Completion summary` | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
