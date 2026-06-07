@@ -14,9 +14,10 @@
 | Design Philosophy | 6 | — | 1 | — |
 | Research | 6 | — | — | — |
 | Implementation Analysis | 6 | — | — | — |
-| **Total** | **18** | **—** | **1** | **—** |
+| Planning | 5 | — | — | — |
+| **Total** | **23** | **—** | **1** | **—** |
 
-> "Confirmed/Corrected/Deferred" track the user-review outcome. **Design Philosophy:** after reconciliation, 5 of the 6 are resolved by code analysis (4 Validated, 1 Partially Validated) and 1 (DP-7, path selection) was resolved by the user at the `workflow-path-selected` checkpoint — the user chose **research-only**, correcting the agent's skip-optional recommendation. **Research:** all 6 research-phase assumptions (R-1…R-6) classify as code-analyzable and were resolved through targeted corpus analysis in reconciliation (6 Validated) — no open stakeholder-dependent assumptions remain, so the research-assumption interview is non-interactive. **Implementation Analysis:** all 6 analysis-phase assumptions (IA-1…IA-6) classify as code-analyzable (they assert facts about the corpus census, baseline counts, deviation populations, and the binding model) and were resolved through targeted corpus analysis in a single reconciliation pass (6 Validated) — no open stakeholder-dependent assumptions remain, so the analysis-assumption interview is non-interactive.
+> "Confirmed/Corrected/Deferred" track the user-review outcome. **Design Philosophy:** after reconciliation, 5 of the 6 are resolved by code analysis (4 Validated, 1 Partially Validated) and 1 (DP-7, path selection) was resolved by the user at the `workflow-path-selected` checkpoint — the user chose **research-only**, correcting the agent's skip-optional recommendation. **Research:** all 6 research-phase assumptions (R-1…R-6) classify as code-analyzable and were resolved through targeted corpus analysis in reconciliation (6 Validated) — no open stakeholder-dependent assumptions remain, so the research-assumption interview is non-interactive. **Implementation Analysis:** all 6 analysis-phase assumptions (IA-1…IA-6) classify as code-analyzable (they assert facts about the corpus census, baseline counts, deviation populations, and the binding model) and were resolved through targeted corpus analysis in a single reconciliation pass (6 Validated) — no open stakeholder-dependent assumptions remain, so the analysis-assumption interview is non-interactive. **Planning:** all 5 planning-phase assumptions (PL-1…PL-5) classify as code-analyzable (design-approach, task-breakdown, dependency, test-strategy, and scope decisions that rest on facts about the corpus, the catalog, and the binding model already established in DP/R/IA) and were resolved through targeted analysis in a single reconciliation pass (5 Validated) — no open stakeholder-dependent assumptions remain, so the planning-assumption review is non-interactive. The AP-60-vs-extension placement (PL-1) — flagged at DP/R/IA as a planning decision — is settled here as a code-analyzable catalog-organization judgement, not a stakeholder gate.
 
 **Reconciliation scorecard:**
 
@@ -24,6 +25,7 @@
 Design Philosophy      — Total: 6 | Validated: 4 | Invalidated: 0 | Partially Validated: 1 | Resolved-by-user: 1 | Open: 0
 Research               — Total: 6 | Validated: 6 | Invalidated: 0 | Partially Validated: 0 | Open: 0
 Implementation Analysis — Total: 6 | Validated: 6 | Invalidated: 0 | Partially Validated: 0 | Open: 0
+Planning               — Total: 5 | Validated: 5 | Invalidated: 0 | Partially Validated: 0 | Open: 0
 Convergence iterations: 1 (each phase) | Newly surfaced: 0
 ```
 
@@ -314,3 +316,87 @@ None. All six analysis-phase assumptions classify as code-analyzable and resolve
 | IA-4 | Naming grammar enforced only at audit-time | ✅ Validated (code) | None — no loader/test guard; grep-parity primary |
 | IA-5 | AP-60 single-entry placement (working position) | ✅ Validated (code) | None — final placement deferred to planning |
 | IA-6 | State-var rename = 5–6-file/3-surface; `planning_folder_path` highest | ✅ Validated (code) | None — reference graph confirms blast radius |
+
+---
+
+## Planning
+
+**Date:** 2026-06-07
+
+Assumptions surfaced during plan-prepare (design approach, task breakdown, dependency ordering, test strategy, scope decisions). Findings are recorded in [06-work-package-plan.md](06-work-package-plan.md) and [test-plan.md](test-plan.md). Categories: Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions.
+
+### Assumptions Surfaced
+
+| ID | Category | Risk | Assumption | Rationale |
+|----|----------|------|------------|-----------|
+| PL-1 | Design Approach | M | The convention is best landed as a **single new AP-60 entry** that cross-references the AP-42/52/55/57 family, rather than as in-place extensions of AP-42/55. | IA-5 carried AP-60 as the working position; a single citable "naming-structure convention" unit reads more coherently than four sub-rules scattered across two entries, and AP-59 is the next-free slot. |
+| PL-2 | Task Breakdown | M | The migration decomposes into independently grep-parity-verifiable tasks, each scoped to one identifier or one bounded subset: the `{lens-name}` fix (T4), the 2 boolean I/O renames (T5), and the rule-slug subset (T6). | The success criteria require per-id grep-parity; tasks must be atomic so each rename's old→0 / new==old check is self-contained and independently committable. |
+| PL-3 | Dependency Assumptions | M | Defining artifacts (AP-60 T1 → spec T2 → audit heuristic T3) must land before the migration tasks (T4→T6), and migration is ordered lowest-blast-radius first (`{lens-name}` → boolean I/O → rule slugs). | Migration tasks cite AP-60 and must satisfy the heuristic, so the authority must exist first; low-blast-radius-first minimizes silent-mis-fire exposure (IA-6 blast-radius model). |
+| PL-4 | Test Strategy | H | There are no new automated tests to author; verification is **per-surface grep-parity** plus the structure validator and e2e walker. `npm run typecheck`/`npm test` cover `src/` only and will NOT catch a botched TOON rename. | IA-4: no load/compile/test guard for naming grammar; `getVariableValue` exact-string match with no alias layer. A partial rename is a silent transition mis-fire, so grep-parity is the real guard. |
+| PL-5 | Scope Decisions | M | `planning_folder_path` and other high-fan-out hoisted state-var renames are **out of scope (deferred)**; the rule-slug pass is **judgement-bounded** (convert only where the positive form reads at least as clearly), not a mechanical 22-for-22 rewrite; result flags are excluded (R-1). | IA-6 flags `planning_folder_path` as highest-risk for low convention payoff; IA-2 caps the rule-slug candidate set at 22 (a subset, not all 275) and the analysis Cleanup item marks the pass judgement-bounded; R-1/IA-1 exclude conformant result flags. |
+
+**Categories:** Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions
+
+---
+
+### Deep-Dive 4: Assumption Reconciliation (Planning)
+
+**Date:** 2026-06-07  
+**Iteration:** 1 (converged)
+
+Each planning-phase assumption was classified by resolvability and the code-analyzable ones resolved through targeted analysis of the `workflows/` corpus, the anti-patterns catalog, and the binding model established in DP/R/IA. All five classify as code-analyzable (they rest on facts about the catalog structure, the reference graph, the deviation populations, and the enforcement model — not on stakeholder judgement) and all five resolved to Validated in a single pass. The planning decision the prior phases deferred — AP-60 vs. extension (PL-1) — is itself a code-analyzable catalog-organization judgement (the catalog's structure and the next-free slot are facts), not a stakeholder gate, so it converges here rather than going to user review.
+
+#### PL-1: Single AP-60 entry is the coherent home
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** A single new AP-60 entry (cross-referencing AP-42/52/55/57) is the right home, not in-place AP-42/55 extensions.  
+**Evidence:** `grep -roE 'AP-[0-9]+' anti-patterns.md` confirms AP-59 is the highest entry, so AP-60 is the next free, coherent slot (IA-5 / comprehension Q9). The four sub-rules (affirmative boolean, plural/singular, qualified-noun-phrase, positive-assertion slug) form one cohesive "naming-structure" theme that maps onto — but is broader than — any single existing entry; folding them into AP-42 (representation suffixes) or AP-55 (structural direction) would dilute those entries' focus. Research (R-5) confirmed the rules *compose with* the family, which is satisfied by an explicit cross-reference from a dedicated entry. The placement is a catalog-organization fact-plus-judgement, fully resolvable from the catalog's structure.  
+**Risk if wrong:** A scattered placement would make the convention hard to cite; refuted — the single-entry home is structurally cleanest and the analysis's working position holds.
+
+#### PL-2: Migration decomposes into independently grep-parity-verifiable tasks
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** Each migration task is scoped to one id / one bounded subset so its grep-parity check is self-contained.  
+**Evidence:** The deviation populations are discrete and independently addressable: `{lens-name}` is 2 occurrences in one file (`prism/activities/01-structural-pass.toon:14,118`) binding to `lens_name` (`portfolio-analysis.md:71`); the boolean I/O set is exactly 2 ids (IA-1) with a bounded reference graph (DP-4: `squash_merge_available` across `work-package/workflow.toon`, `01-start-work-package.toon`, `12-submit-for-review.toon`, plus `13-complete.toon`/READMEs surfaced in this activity's grep); the rule-slug candidates are an enumerable 22 (IA-2). None of these overlap, so each is independently committable and grep-parity-checkable.  
+**Risk if wrong:** Coupled tasks would defeat per-id parity; refuted — the populations are disjoint and enumerable.
+
+#### PL-3: Defining-artifacts-first, then lowest-blast-radius-first migration ordering
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** T1→T2→T3 (define) precede T4→T6 (migrate); migration is ordered `{lens-name}` → boolean I/O → rule slugs by ascending blast radius.  
+**Evidence:** The migration tasks cite AP-60 and must satisfy the step-8 heuristic, so the authority (T1) and the audit bullet (T3) must exist first — a dependency fact, not a preference. Blast-radius ordering follows the analysis: `{lens-name}` touches 1 file / 2 occurrences (lowest); the boolean I/O renames touch ~5–6 files across 3 surfaces (IA-6); the rule-slug pass spans `workflows/**` headings + dotted citations + group expansions (broadest, most judgement). Edit-leaves-before-callers / low-risk-first is the standard dependency-depth ordering.  
+**Risk if wrong:** Migrating before the authority exists would leave nothing to cite; refuted — the ordering is dependency-forced and risk-graded.
+
+#### PL-4: No new tests; grep-parity is the guard
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** No automated naming-grammar test exists or is added; per-surface grep-parity + structure validator + e2e walker is the verification, and `typecheck`/`test` cover `src/` only.  
+**Evidence:** IA-4 (Validated): `TechniqueSchema` (zod) validates structure not grammar; `getVariableValue` resolves by exact-string match (`src/schema/condition.schema.ts:49`) with no alias layer, so a partial rename silently takes the wrong branch. There is no naming-grammar assertion anywhere in the test/loader layer to extend. `scripts/validate-workflow-toon.ts` validates structure; the e2e walker is a partial path guard (analysis Q5). This matches the `tasks-are-code-changes-only` rule — verification is not itself a task.  
+**Risk if wrong:** Authoring a "naming test" would imply a guard that the architecture does not support at load time; refuted — grep-parity is the correct and only mechanical guard.
+
+#### PL-5: Deferred high-fan-out renames; judgement-bounded rule-slug pass; result flags excluded
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** `planning_folder_path` (and peers) are out of scope; the rule-slug pass converts only where the positive form reads at least as clearly; result flags are not re-prefixed.  
+**Evidence:** IA-6 (Validated) identifies `planning_folder_path` as the highest-fan-out hoisted id (read across nearly every activity protocol) — high silent-mis-fire risk for low convention payoff, so deferral is the risk-minimizing call. IA-2 caps the rule-slug candidates at 22 (a subset of the 275 superset); the analysis Cleanup item explicitly marks the pass judgement-bounded (`no-cargo-here` → positive form risks losing clarity). R-1/IA-1: the 56 unprefixed booleans are affirmative result flags, conformant and out of rewrite scope. All three boundaries rest on established corpus/binding facts.  
+**Risk if wrong:** Forcing the deferred renames or a mechanical 22-for-22 rewrite would inflate risk and degrade clarity for little gain; refuted — the scope boundaries are evidence-backed.
+
+### Open Questions (carried to user review)
+
+None. All five planning-phase assumptions classify as code-analyzable and resolved to Validated in a single reconciliation pass. The AP-60-vs-extension placement deferred by DP/R/IA is settled here as a code-analyzable catalog-organization judgement (PL-1). No stakeholder-dependent assumptions surfaced, so `has_open_assumptions` is false for this phase and the planning-assumption review is non-interactive.
+
+---
+
+### User Response (Planning)
+
+**Review Status:** ✅ Resolved by code analysis — PL-1 through PL-5 are all Validated against the corpus, the catalog structure, and the binding model; none requires user re-confirmation. No open assumptions remain (`has_open_assumptions = false`).
+
+### Outcome (Planning)
+
+| ID | Original Assumption | Outcome | Changes Made |
+|----|---------------------|---------|--------------|
+| PL-1 | Single AP-60 entry is the home | ✅ Validated (code) | None — placement settled; next-free slot, cohesive theme |
+| PL-2 | Tasks independently grep-parity-verifiable | ✅ Validated (code) | None — deviation populations disjoint and enumerable |
+| PL-3 | Define-first, then lowest-blast-radius-first | ✅ Validated (code) | None — dependency-forced + risk-graded ordering |
+| PL-4 | No new tests; grep-parity is the guard | ✅ Validated (code) | None — no load/test guard to extend (IA-4) |
+| PL-5 | Defer high-fan-out renames; bounded slug pass; exclude result flags | ✅ Validated (code) | None — scope boundaries evidence-backed |

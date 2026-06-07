@@ -1,7 +1,7 @@
 # Canonical Naming Convention for Technique Inputs/Outputs and Rules - June 2026
 
 **Created:** 2026-06-07  
-**Status:** In Progress  
+**Status:** Ready  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -24,7 +24,9 @@ When the underlying naming structure is left to individual judgement, the defini
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+The workflow system is built from many small definition files, each naming the pieces of information a step uses, produces, or must obey. Earlier cleanup made those names tidy on the surface — consistent capitalisation and punctuation — but never agreed on how they should be *shaped*, so a yes/no value might be called `squash_merge_available` in one place and `is_…` in another, and a reader cannot tell from a name alone whether it is a flag, a single value, or a list. This work writes down the missing rule: yes/no values read as plain positive statements, lists are named in the plural, names read left-to-right ending in the thing they actually are, and rule names state what *should* be true rather than what is forbidden. It records the rule in the project's catalogue and specification, adds an automatic check so future names can be caught when they drift, and tidies up the small number of existing names that don't yet follow it.
+
+The fix works by adding the new rule on top of the conventions already in place, without re-opening any of them. Most existing names already match the new rule, so the change is broad but shallow: only a couple of yes/no names, one genuine wiring mistake (a mislabelled value that silently fails to fill in), and a hand-picked set of rule names actually change — and only where the clearer wording does not lose meaning. Because the system has no built-in safety net that would flag a half-finished rename (a missed spot just quietly takes the wrong path), every rename is checked by counting the old name down to zero everywhere and confirming the new name appears exactly as often as the old one did. The new automatic check then becomes the lasting guard that keeps names consistent as the system grows.
 
 ---
 
@@ -33,11 +35,11 @@ When the underlying naming structure is left to individual judgement, the defini
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
-| 02 | [Assumptions log](assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete (DP + Research + Analysis reconciled; DP-7 → research-only; IA-1…IA-6 validated by code) |
+| 02 | [Assumptions log](assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete (DP + Research + Analysis + Planning reconciled; DP-7 → research-only; IA-1…IA-6 & PL-1…PL-5 validated by code) |
 | 04 | [KB & web research](04-kb-research.md) | Naming-convention research synthesis (context scope: web-retrieval) | 20-45m | ✅ Complete |
 | 05 | [Implementation analysis](05-implementation-analysis.md) | Corpus conformance baselines, gap analysis, success criteria | 10-20m | ✅ Complete |
-| 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
+| 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks (T1–T6), estimates, dependencies, sequencing | 20-45m | ✅ Complete |
+| 06 | [Test plan](test-plan.md) | Grep-parity verification cases, acceptance matrix | 15-30m | ✅ Complete |
 | — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
 | 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
@@ -58,4 +60,4 @@ When the underlying naming structure is left to individual judgement, the defini
 
 ---
 
-**Status:** In Progress
+**Status:** Ready
