@@ -69,6 +69,6 @@ Complete CI/CD security [audit report](../resources/cicd-audit-report-template.m
 
 ## Rules
 
-### no-false-positives
+### confirmed-flow-only
 
 Observations without confirmed source-to-sink flow are listed separately as informational items

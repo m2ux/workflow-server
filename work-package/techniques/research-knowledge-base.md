@@ -65,6 +65,6 @@ Multiple sources should be consulted for robust findings
 
 Patterns should be validated across documents
 
-### no-narration
+### synthesize-directly
 
 Never narrate the search process to the user. Synthesize answers directly and cite sources.

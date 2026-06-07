@@ -293,7 +293,7 @@ variables[89]:
   - name: recommended_strategic_option
     type: string
     description: "Agent-recommended action after strategic review analysis (fix-findings|acceptable). Set by analyze-strategic-findings step."
-  - name: squash_merge_available
+  - name: squash_merge_supported
     type: boolean
     description: "True when the target repo allows squash merges (allow_squash_merge=true from GitHub API). Detected during start-work-package. Drives DCO merge strategy: squash-merge path when true, unsigned-commit path when false."
     defaultValue: false

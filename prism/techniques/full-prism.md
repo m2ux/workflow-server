@@ -82,7 +82,7 @@ The full analysis output following the lens operations
 
 ## Rules
 
-### no-context-leakage
+### isolated-context
 
 This worker runs in isolation. Do not reference conversations, prior interactions, or context beyond what was provided in the prompt.
 

@@ -125,7 +125,7 @@ Summary of the core finding (if any)
 
 Every finding in the authoritative artifact must appear in the report. Omitting findings is a report integrity violation.
 
-### no-reassignment
+### severities-inherited
 
 Severities are inherited from the authoritative source. The report worker does not second-guess the analytical pipeline's severity assignments.
 

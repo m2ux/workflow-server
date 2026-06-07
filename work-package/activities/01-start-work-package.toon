@@ -79,11 +79,11 @@ steps[27]:
         message: "Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing in your environment via your preferred scope (system, global, or local) before re-running. The workflow does not modify your git configuration."
   - id: detect-merge-strategy
     name: Detect Merge Strategy
-    description: "Detect whether the reference repo permits squash merges via the GitHub API (allow_squash_merge). Sets squash_merge_available for downstream DCO merge path routing — drives the merge-strategy-reminder in submit-for-review."
+    description: "Detect whether the reference repo permits squash merges via the GitHub API (allow_squash_merge). Sets squash_merge_supported for downstream DCO merge path routing — drives the merge-strategy-reminder in submit-for-review."
     technique: manage-git
     actions[1]:
       - action: set
-        target: squash_merge_available
+        target: squash_merge_supported
         description: "true if allow_squash_merge=true in repo settings, false otherwise"
   - id: detect-project-type
     name: Detect Project Type
@@ -577,4 +577,4 @@ context_to_preserve[20]:
   - jira_cloud_id - Atlassian cloud ID for subsequent Jira operations
   - github_issue_found - Whether a GitHub issue linked to the Jira ticket was found
   - github_issue_number - GitHub issue number linked to the Jira ticket (if found or created)
-  - squash_merge_available - Whether target repo allows squash merges (drives DCO merge path)
+  - squash_merge_supported - Whether target repo allows squash merges (drives DCO merge path)

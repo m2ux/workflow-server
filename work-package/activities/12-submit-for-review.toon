@@ -84,7 +84,7 @@ steps[13]:
       value: true
   - id: instruct-merge-strategy
     name: Instruct Merge Strategy
-    description: "Present merge strategy guidance based on squash_merge_available. Instructs human on the correct merge procedure for a DCO-compliant merge commit."
+    description: "Present merge strategy guidance based on squash_merge_supported. Instructs human on the correct merge procedure for a DCO-compliant merge commit."
     technique: manage-git
     checkpoint: merge-strategy-reminder
     condition:
@@ -139,7 +139,7 @@ loops[1]:
 checkpoints[6]:
   - id: dco-sign-off
     name: DCO Sign-off
-    message: "Before pushing: please certify the Developer Certificate of Origin for this work package.\n\nProvenance context:\n- Model: {model_id}\n- Context scope: {context_scope}\n- Squash merge available: {squash_merge_available}\n- Provenance log: {provenance_log_path}\n\nCertify that you:\n1. Reviewed the entire diff and understand each material change\n2. Have the right to submit this contribution under the project's license\n3. Did not include code with unclear or incompatible provenance\n4. Can explain where the solution came from (your design, repo context, or approved references)\n5. Tests and linters have been run (or will run in CI)\n6. Are willing to take responsibility for defects and licensing issues in this patch"
+    message: "Before pushing: please certify the Developer Certificate of Origin for this work package.\n\nProvenance context:\n- Model: {model_id}\n- Context scope: {context_scope}\n- Squash merge available: {squash_merge_supported}\n- Provenance log: {provenance_log_path}\n\nCertify that you:\n1. Reviewed the entire diff and understand each material change\n2. Have the right to submit this contribution under the project's license\n3. Did not include code with unclear or incompatible provenance\n4. Can explain where the solution came from (your design, repo context, or approved references)\n5. Tests and linters have been run (or will run in CI)\n6. Are willing to take responsibility for defects and licensing issues in this patch"
     blocking: true
     options[2]:
       - id: certify
@@ -153,7 +153,7 @@ checkpoints[6]:
     message: "PR is ready for review. Merge strategy guidance:\n\n**Squash merge available — use squash merge with signed commit.**\nTo get a GPG-signed + DCO-attested merge commit, merge locally:\n```\ngit checkout main && git pull\ngit merge --squash {branch_name}\ngit commit -s -S -m 'feat: description (#{pr_number})'\ngit push\n```\nNote: GitHub web UI squash merge is not GPG-signed. Use the local flow above for a verified commit.\n\nIf squash merge is not available on this repo, branch commits land as-is — no signing required."
     condition:
       type: simple
-      variable: squash_merge_available
+      variable: squash_merge_supported
       operator: "=="
       value: true
     blocking: false

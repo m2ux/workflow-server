@@ -11,7 +11,7 @@ artifacts[6]:
     location: analysis
     description: "L12 structural analysis per unit (single/full-prism modes)"
   - id: portfolio-lens
-    name: "{unit_output_subdir}portfolio-{lens-name}.md"
+    name: "{unit_output_subdir}portfolio-{lens_name}.md"
     location: analysis
     description: "Per-lens portfolio analysis artifact (portfolio mode)"
   - id: portfolio-synthesis
@@ -115,7 +115,7 @@ loops[1]:
           value: portfolio
       - id: write-portfolio-artifacts
         name: Write Portfolio Artifacts
-        description: "Write each lens output to {unit_output_dir}/portfolio-{lens-name}.md. Write cross-lens synthesis to {unit_output_dir}/portfolio-synthesis.md."
+        description: "Write each lens output to {unit_output_dir}/portfolio-{lens_name}.md. Write cross-lens synthesis to {unit_output_dir}/portfolio-synthesis.md."
         required: true
         condition:
           type: simple

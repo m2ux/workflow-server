@@ -791,7 +791,7 @@ graph TD
 1. **dco-sign-off** — Gate submission on the human's DCO attestation via the `dco-sign-off` checkpoint; records timestamp/identity to `provenance-log.md`.
 2. **push-commits** — Push all commits to remote.
 3. **update-description** — Update PR description with final implementation details (including the `## AI Assistance` section).
-4. **instruct-merge-strategy** — Present the `merge-strategy-reminder` checkpoint with the local squash-merge-with-`-s -S` flow when `squash_merge_available` is true.
+4. **instruct-merge-strategy** — Present the `merge-strategy-reminder` checkpoint with the local squash-merge-with-`-s -S` flow when `squash_merge_supported` is true.
 5. **mark-ready** — Mark PR as ready for review (`gh pr ready`).
 6. **await-review** — Wait for the PR to receive manual review.
 7. **process-review-comments** — Analyze and respond to review feedback using `respond-to-pr-review`.
@@ -804,7 +804,7 @@ graph TD
 | Checkpoint | Purpose | Blocking |
 |------------|---------|----------|
 | `dco-sign-off` | Human DCO certification (6-item attestation); records attestation in `provenance-log.md` | yes |
-| `merge-strategy-reminder` | Walk the human through the local squash-merge-with-`-s -S` flow (conditional: `squash_merge_available`) | no (autoAdvance 20s) |
+| `merge-strategy-reminder` | Walk the human through the local squash-merge-with-`-s -S` flow (conditional: `squash_merge_supported`) | no (autoAdvance 20s) |
 | `review-received` | Confirm that review comments have been received | yes |
 | `review-outcome` | Determine outcome: approved, minor changes, or significant changes | no (autoAdvance 30s) |
 | `review-summary-approval` | Confirm consolidated review summary before posting (review mode) | yes |
