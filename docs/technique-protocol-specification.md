@@ -173,7 +173,10 @@ value the technique receives from its caller) nor an Output (a value the techniq
 delivered in the bundle, and is not `::`-addressable. Use it for technique-internal data — a captured
 artifact path, an assembled context block, a parsed intermediate. A step creates one with an explicit
 verb ("Capture `{$structural_path}` from the worker's response"; "Build `{$verified_knowledge}` from
-`{gap_data}`") and later steps reference it bare (`{structural_path}`). The binding must textually
+`{gap_data}`") and later steps reference it bare (`{structural_path}`). The sigil itself marks the
+binding, so the prose need not — and should not — narrate it: name the value in place as an appositive
+("the component git directory `{$component_git_dir}`") or let it fall out of the producing verb, rather
+than restating the mechanism with "bind it to …". The binding must textually
 precede every read; when a value is produced in mutually-exclusive branches, EACH producing branch
 carries the sigil (`{$name}`) — it is bound on exactly one path at runtime — and reads after the
 branches rejoin stay `{name}`. The classification test: a value the technique computes itself is a
