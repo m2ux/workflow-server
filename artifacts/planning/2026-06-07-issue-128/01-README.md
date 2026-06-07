@@ -52,7 +52,7 @@ When the underlying naming structure is left to individual judgement, the defini
 | Resource | Link |
 |----------|------|
 | Issue | [#128](https://github.com/m2ux/workflow-server/issues/128) |
-| PR | _pending_ |
+| PR | [#129](https://github.com/m2ux/workflow-server/pull/129) |
 
 ---
 
