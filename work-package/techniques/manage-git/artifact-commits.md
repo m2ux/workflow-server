@@ -29,7 +29,7 @@ Engineering branch to push to
 
 ### 1. Commit Artifacts
 
-- From `reference_path`, stage the artifact files: `git add <files>`.
+- Stage the artifact files: `git -C {reference_path} add {files}`.
 - Commit with the canonical pattern: `git commit -m "docs(work-package): {activity_name} artifacts for {issue_key}"`. Whether commits are GPG-signed is governed by the user's local git config — do NOT impose `--no-gpg-sign` or `--gpg-sign` overrides.
 
 ### 2. Rebase and Push
