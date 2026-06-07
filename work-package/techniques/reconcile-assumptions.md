@@ -45,7 +45,7 @@ The running [log](../resources/assumption-reconciliation.md#integration-with-ass
 
 - Update the {assumptions_log}: mark resolved assumptions with finding, evidence, and resolution status
 - Add any newly surfaced assumptions as Open with their classification (code-resolvable or not)
-- Maintain {\$resolution_counts}: total, validated, invalidated, partially validated, open code-resolvable, open non-code-resolvable
+- Maintain a running count of resolved assumptions by status: total, validated, invalidated, partially validated, open code-resolvable, open non-code-resolvable
 - Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See the [formatting rule](../resources/assumption-reconciliation.md#markdown-formatting-rule) for correct vs incorrect examples.
 
 ### 4. Check Convergence
