@@ -29,7 +29,7 @@ Per-workflow trigger, permission, and checkout classification data
 
 ### 2. Dispatch Scanners
 
-- Dispatch all scanner agents in the roster using harness-compat::spawn-concurrent with the `{$scanner_prompts}` from step 1, forming `{$dispatched_scanners}`.
+- Dispatch all scanner agents in the roster using harness-compat::spawn-concurrent with the `{scanner_prompts}` from step 1, forming `{$dispatched_scanners}`.
 - All scanner agents MUST be dispatched in a single batch
 
 ### 3. Collect Results
@@ -38,7 +38,7 @@ Per-workflow trigger, permission, and checkout classification data
 
 ### 4. Verify Dispatch Completeness
 
-- Compare the scanner roster from {scanner_assignments} against `{$dispatched_scanners}`. Every scanner in the roster must have been dispatched and returned a result. Record the {dispatch_status}: a dispatch manifest table (scanner-id, assigned-submodule, dispatched (yes/no), returned (yes/no), status) plus the {scanners_dispatched} and {scanners_returned} counts. If any scanner was NOT dispatched, flag as INCOMPLETE and return the manifest for re-dispatch.
+- Compare the scanner roster from {scanner_assignments} against `{dispatched_scanners}`. Every scanner in the roster must have been dispatched and returned a result. Record the {dispatch_status}: a dispatch manifest table (scanner-id, assigned-submodule, dispatched (yes/no), returned (yes/no), status) plus the {scanners_dispatched} and {scanners_returned} counts. If any scanner was NOT dispatched, flag as INCOMPLETE and return the manifest for re-dispatch.
 - Verify {scanners_dispatched} equals scanners-assigned before proceeding
 
 ### 5. Dispatch Verification

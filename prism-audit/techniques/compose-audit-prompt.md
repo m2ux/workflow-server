@@ -65,7 +65,7 @@ Directory to write the audit prompt artifact
 - Group characteristics into audit domains. Common domain patterns: Cryptographic Correctness (hashing, signing, commitments, proofs), Value/Token Conservation (balance equations, minting, burning, transfer integrity), Transaction Safety (ordering, atomicity, replay protection), Execution Safety (VM, interpreter, cost model), Storage Integrity (Merkle trees, state transitions, garbage collection), Serialisation Safety (parsing, type confusion, malformed input), Network/API Security (HTTP, RPC, CORS, DoS), Error Handling (panic safety, silent degradation, error recovery), Feature Flag Discipline (test features, mock gates)
 - Only include domains that have corresponding code in the target codebase
 - Assign risk levels based on exposure and blast radius: CRITICAL — flaws directly compromise system integrity or user assets. HIGH — flaws degrade security guarantees or enable privilege escalation. MEDIUM — flaws have limited blast radius or require specific conditions. LOW — informational findings or defence-in-depth improvements
-- If {\$trust_boundaries} is available: domains containing trust-boundary-crossing code get elevated risk. Include specific cross-community call edges as patterns to examine within those domains.
+- If {trust_boundaries} is available: domains containing trust-boundary-crossing code get elevated risk. Include specific cross-community call edges as patterns to examine within those domains.
 - For each domain, list specific patterns and code paths to examine
 - Integrate the user's {audit_description}: if the user mentions specific concerns, elevate those areas in the relevant domains
 
@@ -81,7 +81,7 @@ Directory to write the audit prompt artifact
 - Structure the prompt document with clear sections
 - Section 1: Codebase Overview — architecture summary, language, total LOC, module layout table (name, path, lines, purpose)
 - Section 2: Audit Domains — one subsection per domain with: Domain Name, Risk Level, Scope (which modules/files), Focus Areas (specific patterns to examine), Key Questions (what the audit should answer)
-- Section 3: Trust Boundary Map (if GitNexus data available; omit section if unavailable) — the cross-community call edges from {\$trust_boundaries} (from/to community labels and crossing symbols) and the blast radii from {\$security_blast_radii} (direct caller counts and affected process counts)
+- Section 3: Trust Boundary Map (if GitNexus data available; omit section if unavailable) — the cross-community call edges from {trust_boundaries} (from/to community labels and crossing symbols) and the blast radii from {security_blast_radii} (direct caller counts and affected process counts)
 - Section 4: Cross-Cutting Concerns — error handling, feature flags, trust boundaries, dependencies
 - Section 5: Output Requirements — 'Produce findings with: ID, severity (using Impact x Feasibility rubric), description, location (file:line), impact, recommendation. Organise by domain and severity.'
 - The prompt must be self-contained: readable and actionable without additional context beyond the codebase path
@@ -93,7 +93,7 @@ Directory to write the audit prompt artifact
 - For most audits: create a single scope entry covering the entire codebase
 - Single scope: { target: {target_path}, output_subdir: 'analysis', pipeline_mode: 'full-prism', analysis_focus: <composed prompt summary> }
 - For very large codebases (>100K LOC) with clearly separable security boundaries: consider multiple scopes, each focused on a distinct trust domain
-- If {\$total_loc} exceeds 200K, single-scope analysis becomes impractical — split into multiple scopes by trust domain or module group, giving each scope its own focused prompt.
+- If {total_loc} exceeds 200K, single-scope analysis becomes impractical — split into multiple scopes by trust domain or module group, giving each scope its own focused prompt.
 - Set analysis_focus for each scope to a focused description derived from the prompt, NOT the literal string 'security audit'
 
 ## Outputs

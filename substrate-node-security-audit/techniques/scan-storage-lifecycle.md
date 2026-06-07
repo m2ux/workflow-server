@@ -33,11 +33,11 @@ false
 
 ### 2. Find Mutation Sites
 
-- For each map in `{$storage_maps}`: find every insert()/push()/append() call site and every remove()/take() call site, recording them as `{$mutation_sites}`.
+- For each map in `{storage_maps}`: find every insert()/push()/append() call site and every remove()/take() call site, recording them as `{$mutation_sites}`.
 
 ### 3. Verify Pairing
 
-- For each insert site in `{$mutation_sites}`, identify the corresponding remove site on the inverse lifecycle event. Flag unpaired inserts. For each map in `{$storage_maps}` with inserts, check if declared capacity constants are enforced at the insertion point. Record each map's results as a row in the {storage_lifecycle} pairing table.
+- For each insert site in `{mutation_sites}`, identify the corresponding remove site on the inverse lifecycle event. Flag unpaired inserts. For each map in `{storage_maps}` with inserts, check if declared capacity constants are enforced at the insertion point. Record each map's results as a row in the {storage_lifecycle} pairing table.
 
 ### 4. Verify Invariants
 

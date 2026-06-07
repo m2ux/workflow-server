@@ -27,15 +27,15 @@ Run L12 analysis, detect knowledge gaps via boundary + audit prisms, then re-ana
 
 ### 3. Gap Extraction
 
-- Parse gap output for structured claims
-- Construct verified_knowledge context block with gap data
+- Parse gap output for structured claims and bind the extracted gap claims to {\$gap_data}
+- Construct verified_knowledge context block with {gap_data}
 
 ### 4. Corrected Analysis
 
 - Dispatch re-analysis to a fresh worker with [L12](../resources/l12.md)  
   > Corrected re-analysis worker does not see the initial L12 output — only the target content + gap context.
 - Worker receives: <verified_knowledge source='GAP-ANALYSIS'>
-{\$gap_data}
+{gap_data}
 </verified_knowledge>
 
 {target_content}

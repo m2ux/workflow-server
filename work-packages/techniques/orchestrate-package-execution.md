@@ -26,7 +26,8 @@ Full priority order for reference
 ### 1. Initialize Iteration
 
 - Derive {remaining_packages} from {priority_order} minus {completed_packages}
-- Set {overall_progress} to '{\$completed}/{\$total} complete'
+- Count the packages in {priority_order} and bind it to `{$total}`; count {completed_packages} and bind it to `{$completed}`
+- Set {overall_progress} to '{completed}/{total} complete'
 
 ### 2. Select Package
 

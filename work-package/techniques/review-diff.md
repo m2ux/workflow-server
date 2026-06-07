@@ -28,7 +28,7 @@ Conduct structured manual diff review using external side-by-side diff tool with
 
 ### 3. Create Index
 
-- Create file index table with columns: Row | Path | File (each {\$row_index} hyperlinks to its rationale section, e.g. [1](#block-1))
+- Create file index table with columns: Row | Path | File (each {row_index} hyperlinks to its rationale section, e.g. [1](#block-1))
 - Include review time estimate in index
 - Below the index table, generate a '## Block Rationale' section containing one subsection per block (### Block N) with a descriptive paragraph explaining what the change does and why it exists — covering intent, context, and any non-obvious design choices
 - Rationale paragraphs should aid manual review by giving reviewers context before they inspect the diff

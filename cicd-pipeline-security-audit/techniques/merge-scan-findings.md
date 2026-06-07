@@ -38,7 +38,7 @@ The per-submodule scanner [output files](../resources/sub-agent-output-schema.md
 
 ### 4. Reconcile
 
-- Build reconciliation table from `{$duplicate_mappings}`, mapping every original scanner finding to its merged finding number
+- Build reconciliation table from `{duplicate_mappings}`, mapping every original scanner finding to its merged finding number
 - Verify Unaccounted equals zero for every scanner
 - Every scanner finding must map to a merged finding or be marked duplicate
 

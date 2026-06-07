@@ -75,7 +75,7 @@ User's description of what to evaluate, evaluation goals, focus areas, and conce
 ### 6. Write Evaluation Plan
 
 - Compose the human-readable {evaluation_plan} document and write it into {output_path}
-- Section 1: Target Overview — target type, {\$target_summary}, {\$structure_inventory}, {\$key_topics}
+- Section 1: Target Overview — target type, {target_summary}, {structure_inventory}, {key_topics}
 - Section 2: Dimension Plan — table mapping each dimension to pipeline mode, lenses, focus areas, and output location
 - Section 3: Execution Groups — how dimensions are grouped for prism triggering, execution order, estimated sub-agent dispatches
 - Return the written {evaluation_plan} as the artifact for downstream activities

@@ -29,15 +29,15 @@ The benchmark finding list to compare against (e.g., professional audit report)
 
 ### 2. Identify Gaps
 
-- From `{$finding_classifications}`, list all reference findings classified as gaps. Group by severity and root cause category (e.g., pattern-absence blindness, insufficient file coverage, wrong-layer check, first-positive-signal bias, toolkit depth limitation, mechanical-check skip) into `{$gap_clusters}`.
+- From `{finding_classifications}`, list all reference findings classified as gaps. Group by severity and root cause category (e.g., pattern-absence blindness, insufficient file coverage, wrong-layer check, first-positive-signal bias, toolkit depth limitation, mechanical-check skip) into `{$gap_clusters}`.
 
 ### 3. Analyze Severity Calibration
 
-- For matched findings in `{$finding_classifications}`, compare severity ratings between primary and reference. Identify systematic over-rating patterns (primary higher than reference) and under-rating patterns (primary lower). Compute average delta by severity tier.
+- For matched findings in `{finding_classifications}`, compare severity ratings between primary and reference. Identify systematic over-rating patterns (primary higher than reference) and under-rating patterns (primary lower). Compute average delta by severity tier.
 
 ### 4. Analyze Root Causes
 
-- For each cluster in `{$gap_clusters}`, determine the structural cause: insufficient file coverage, pattern-absence blindness, toolkit deprioritization, wrong-layer check application, first-positive-signal bias, mechanical-check skip, or other. Propose countermeasures for each root cause, then assemble the mapping, gaps, calibration analysis, and countermeasures into the {comparison_report}.
+- For each cluster in `{gap_clusters}`, determine the structural cause: insufficient file coverage, pattern-absence blindness, toolkit deprioritization, wrong-layer check application, first-positive-signal bias, mechanical-check skip, or other. Propose countermeasures for each root cause, then assemble the mapping, gaps, calibration analysis, and countermeasures into the {comparison_report}.
 
 ## Outputs
 

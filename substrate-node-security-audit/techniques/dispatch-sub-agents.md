@@ -25,7 +25,7 @@ List of agents to dispatch, each with: agent_id, activity_id, context variables 
 
 ### 2. Dispatch All
 
-- Dispatch all agents in the roster using harness-compat::spawn-concurrent, forming `{$dispatched_agents}`. Each agent uses the `{$composed_prompts}` from step 1.
+- Dispatch all agents in the roster using harness-compat::spawn-concurrent, forming `{$dispatched_agents}`. Each agent uses the `{composed_prompts}` from step 1.
 
 ### 3. Collect All
 
@@ -34,7 +34,7 @@ List of agents to dispatch, each with: agent_id, activity_id, context variables 
 
 ### 4. Verify Dispatch Completeness
 
-- Compare the {agent_roster} (input) against `{$dispatched_agents}`. Every agent in the roster must have been dispatched and returned a result (success or failure). Produce a dispatch manifest table: agent_id, assigned-crate, dispatched (yes/no), returned (yes/no), status. If any agent was NOT dispatched, flag as INCOMPLETE and return the manifest to the orchestrator for remediation. Set agents-dispatched count. This step enforces the dispatch completeness gate.
+- Compare the {agent_roster} (input) against `{dispatched_agents}`. Every agent in the roster must have been dispatched and returned a result (success or failure). Produce a dispatch manifest table: agent_id, assigned-crate, dispatched (yes/no), returned (yes/no), status. If any agent was NOT dispatched, flag as INCOMPLETE and return the manifest to the orchestrator for remediation. Set agents-dispatched count. This step enforces the dispatch completeness gate.
 - If one or more agents in the roster were not dispatched (e.g., skipped due to context pressure), return INCOMPLETE status with the dispatch manifest. The orchestrator MUST dispatch the missing agents in a follow-up or flag the audit as incomplete. Do NOT proceed to finding consolidation with missing agents.
 
 ## Outputs
