@@ -185,13 +185,12 @@ Two defects follow from the declare-once form: a `{name}` read that is neither a
 nor bound by any `{$name}` is an **unbound local** (consume with no produce); a `{$name}` binding never
 read as `{name}` is a **dead binding** (produce with no consume) — the resolvability audit flags both.
 
-Markdown rendering note: because GitHub-flavored markdown reads `$`-delimited spans as inline math,
-a `$` that appears in **rendered prose** (outside fenced code blocks and inline code spans) must be
-backslash-escaped — a bare-prose protocol-variable binding is written `{\$name}` (the binding is the
-only place a protocol variable carries `$`; reads are plain `{name}` and need no escaping), and any
-other prose `$` (prices, a `${VAR}` shown in running text) is escaped likewise. `\$` renders as a
-literal `$`, so the notation is unchanged on screen; a `$` already inside a code span or fenced block
-is math-exempt and stays raw.
+Rendering note: every reference is written in backticks (§4) — `` `{id}` ``, `` `{$name}` ``,
+`` `{name}` `` — so a protocol variable's `$` always sits inside a code span and is math-exempt; the
+old `{\$name}` escape is obsolete. Escaping now concerns only a LITERAL `$` left in rendered prose
+outside code (a price `\$0.05`, a `${VAR}` shown in running text), which GitHub-flavored markdown would
+otherwise read as an inline-math delimiter — backslash-escape it (`\$` renders as a literal `$`). A `$`
+already inside a code span or fenced block is math-exempt and stays raw.
 
 ### 3.4 Rules
 
@@ -265,6 +264,24 @@ is itself a variable or input keeps its designator brace (`::context(name: {$sym
 value stays bare (`::diagram-source-select(diagram_type: 'package')`); the argument keys are the
 operation's own parameter names and stay bare. The distinction parallels §4.1: `()` carries the call
 shape, `{}` carries the data reference — parentheses call, braces name.
+
+### 4.3 Backticking
+
+Every LITERAL CODE-LIKE TOKEN in rendered prose is written in backticks, so code reads as code and
+never as a prose word. Five kinds: a **designator** (`` `{id}` `` / `` `{id}.field` ``, `` `{$name}` ``
+/ `` `{name}` ``); a **symbol (rule) address** (`` `technique.rule-name` ``); a **CLI/shell command**
+(`` `git -C {reference_path} remote get-url origin` ``, `` `gh pr ready` ``); an **MCP tool call**
+(`` `get_workflow('work-package')` ``) or **resource URI** (`` `concept-rag://activities` ``); and a
+**literal path or filename** (`` `/tmp/pr-body.md` ``, `` `START-HERE.md` ``). A token already inside a
+larger code span is not wrapped again (no nesting). A token that CONTAINS a designator is ONE span with
+the braces inside it — `` `git -C {reference_path} remote get-url origin` ``, `` `portfolio-{lens_name}.md` ``
+— never split into adjacent spans and never with a designator's backticks butting a literal with no
+separator (CommonMark mis-parses adjacent code spans). Markdown hyperlinks (`[text](path)`) and the
+`::` / `.` link targets of an executable or symbol reference carry their own markup — they are not
+backticked; only an invocation's argument VALUES are. Backticks are formatting, not braces: resolution
+keys off the braces, and because a backticked `$` is math-exempt this retires the bare-prose `{\$name}`
+escape (§3.3). A code token left un-backticked in prose is a defect (AP-59); a token with backticks but
+no braces is still an unanchored reference (AP-49).
 
 ---
 
