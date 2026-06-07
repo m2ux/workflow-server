@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "5.1.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "KYMVR6",
+  "currentActivity": "dispatch-client-workflow",
+  "currentTechnique": "",
+  "condition": "default",
+  "seq": 16,
+  "ts": 1780825784,
+  "startedAt": "2026-06-07T09:44:26.333Z",
+  "completedActivities": [
+    "discover-session",
+    "initialize-session",
+    "resolve-target"
+  ],
+  "skippedActivities": [],
+  "variables": {
+    "is_monorepo": false,
+    "target_path": "."
+  },
+  "checkpointResponses": {
+    "resolve-target-repo-type-confirmed": {
+      "effects": {
+        "variablesSet": {
+          "is_monorepo": false,
+          "target_path": "."
+        }
+      },
+      "optionId": "regular",
+      "respondedAt": "2026-06-07T09:48:38.000Z"
+    }
+  },
+  "history": [
+    {
+      "timestamp": "2026-06-07T09:44:26.333Z",
+      "type": "workflow_started"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-06-07T09:44:47.210Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-06-07T09:46:25.802Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-06-07T09:46:25.802Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "sessionIndex": "VPOXEX",
+        "workflowId": "work-package"
+      },
+      "timestamp": "2026-06-07T09:47:11.373Z",
+      "type": "workflow_triggered"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-06-07T09:47:37.977Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-06-07T09:47:37.977Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "resolve-target",
+      "checkpoint": "repo-type-confirmed",
+      "timestamp": "2026-06-07T09:48:10.239Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "resolve-target",
+      "checkpoint": "repo-type-confirmed",
+      "data": {
+        "optionId": "regular"
+      },
+      "timestamp": "2026-06-07T09:48:38.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "is_monorepo",
+        "value": false
+      },
+      "timestamp": "2026-06-07T09:48:38.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "target_path",
+        "value": "."
+      },
+      "timestamp": "2026-06-07T09:48:38.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-06-07T09:49:19.311Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-06-07T09:49:19.311Z",
+      "type": "activity_entered"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "VPOXEX",
+      "state": {
+        "agentId": "orchestrator",
+        "checkpointResponses": {
+          "start-work-package-pr-creation": {
+            "effects": {
+              "variablesSet": {
+                "pr_skipped": false
+              }
+            },
+            "optionId": "proceed",
+            "respondedAt": "2026-06-07T09:55:11.000Z"
+          }
+        },
+        "completedActivities": [],
+        "condition": "",
+        "currentActivity": "start-work-package",
+        "currentTechnique": "",
+        "history": [
+          {
+            "timestamp": "2026-06-07T09:47:11.376Z",
+            "type": "workflow_started"
+          },
+          {
+            "activity": "start-work-package",
+            "timestamp": "2026-06-07T09:50:40.309Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "pr-creation",
+            "timestamp": "2026-06-07T09:54:37.329Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "pr-creation",
+            "data": {
+              "optionId": "proceed"
+            },
+            "timestamp": "2026-06-07T09:55:11.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "pr_skipped",
+              "value": false
+            },
+            "timestamp": "2026-06-07T09:55:11.000Z",
+            "type": "variable_set"
+          }
+        ],
+        "schemaVersion": 1,
+        "seq": 7,
+        "sessionIndex": "VPOXEX",
+        "skippedActivities": [],
+        "startedAt": "2026-06-07T09:47:11.376Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1780826111,
+        "variables": {
+          "pr_skipped": false
+        },
+        "workflowId": "work-package",
+        "workflowVersion": "3.13.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-06-07T09:47:11.373Z",
+      "triggeredFrom": {
+        "activityId": "initialize-session"
+      },
+      "workflowId": "work-package"
+    }
+  ]
+}
