@@ -1,6 +1,6 @@
 # Workflows
 
-This orphan branch contains workflow definitions, activities, skills, and resources for the MCP Workflow Server.
+This orphan branch contains workflow definitions, activities, techniques, and resources for the MCP Workflow Server.
 
 ## Branch Structure
 
@@ -10,26 +10,43 @@ This orphan branch contains workflow definitions, activities, skills, and resour
 ## Directory Structure
 
 ```
-workflows/                    # Worktree checkout
-├── meta/                     # Skill and resource repository (excluded from list_workflows)
-│   ├── README.md             # Meta documentation with Mermaid diagrams
-│   ├── workflow.toon         # Meta definition (activities for lifecycle management)
-│   ├── activities/           # Lifecycle activities (indexed)
-│   │   └── {NN}-{id}.toon    # 00-discover-session, 01-initialize-session, ...
-│   ├── resources/            # Reference material (indexed)
-│   │   └── {NN}-{name}.md    # 00-bootstrap-protocol, 01-activity-worker-prompt, ...
-│   └── skills/               # Universal skills (indexed, auto-resolved across workflows)
-│       └── {NN}-{id}.toon    # 00-workflow-engine, 01-agent-conduct, ...
-├── {workflow-id}/            # Each workflow folder
-│   ├── README.md             # Workflow documentation with Mermaid diagrams
-│   ├── workflow.toon         # Workflow definition
-│   ├── activities/           # Activity subdirectory (indexed)
-│   │   └── {NN}-{id}.toon    # Activities for this workflow
-│   ├── resources/            # Resource subdirectory (indexed)
-│   │   └── {NN}-{name}.md    # Guidance resources
-│   └── skills/               # Workflow-specific skills (indexed)
-│       └── {NN}-{id}.toon    # Skills for this workflow
+workflows/                        # Worktree checkout
+├── meta/                         # Lifecycle workflow + cross-workflow shared layer
+│   ├── README.md                 # Meta documentation with Mermaid diagrams
+│   ├── workflow.toon             # Meta definition (activities for lifecycle management)
+│   ├── activities/               # Lifecycle activities (indexed)
+│   │   └── {NN}-{id}.toon        # 00-discover-session, 01-initialize-session, ...
+│   ├── techniques/               # Markdown techniques (canonical source of truth)
+│   │   ├── TECHNIQUE.md          #   root base contract — inherited by every technique here
+│   │   ├── {slug}.md             #   standalone technique (agent-conduct, version-control, ...)
+│   │   └── {group}/              #   container technique (workflow-engine, harness-compat, ...)
+│   │       ├── TECHNIQUE.md      #     container technique / base contract
+│   │       └── {sub}.md          #     one file per nested technique, addressed {group}::{sub}
+│   └── resources/                # Markdown resources
+│       └── {slug}.md             #   bootstrap-protocol, activity-worker-prompt, workflow-canonical, ...
+├── {workflow-id}/                # Each workflow folder
+│   ├── README.md                 # Workflow documentation with Mermaid diagrams
+│   ├── workflow.toon             # Workflow definition
+│   ├── activities/               # Activity subdirectory (indexed)
+│   │   └── {NN}-{id}.toon        # Activities for this workflow
+│   ├── techniques/               # Workflow-local markdown techniques
+│   │   ├── TECHNIQUE.md          #   root base contract for this workflow
+│   │   ├── {slug}.md             #   standalone technique (workflow-local takes precedence over a meta technique of the same name)
+│   │   └── {group}/
+│   │       ├── TECHNIQUE.md
+│   │       └── {sub}.md
+│   └── resources/                # Workflow-local markdown resources
+│       └── {slug}.md
 ```
+
+### Precedence: workflow-local → `meta`
+
+Technique resolution is workflow-local first, then `meta`. The
+`meta` workflow's `techniques/` and `resources/` carry double duty — they are
+both the local content for the meta workflow itself AND the cross-workflow
+shared layer for every other workflow. The
+[workflow-canonical](./meta/resources/workflow-canonical.md) resource
+defines the ontology and section conventions that every technique follows.
 
 ## Available Workflows
 
@@ -44,22 +61,22 @@ workflows/                    # Worktree checkout
 | [`prism-evaluate`](prism-evaluate/) | Multi-dimensional evaluation of proposals, documents, or codebases through configurable analytical dimensions mapped to prism lenses |
 | [`workflow-design`](workflow-design/) | Create or update workflow definitions with guided elicitation, schema expressiveness enforcement, and convention conformance |
 
-## Universal Skills ([meta/skills/](meta/skills/))
+## Universal Techniques ([meta/techniques/](meta/techniques/))
 
-Available for any workflow session.
+Available for any workflow session, resolved via the workflow-local → `meta` fallback chain.
 
-Skills are referenced by canonical ID (the filename minus the `NN-` prefix). The numeric prefix orders the files for humans; the loader strips it.
+Techniques are referenced by canonical ID (the file/folder slug). Standalone techniques live at `meta/techniques/<slug>.md`; container techniques live at `meta/techniques/<group>/TECHNIQUE.md` with one `<sub>.md` per nested technique.
 
-| Skill | Description |
-|-------|-------------|
-| [`workflow-engine`](meta/skills/00-workflow-engine.toon) | Operations and rules for workflow execution: session lifecycle (resume or create), activity dispatch, transition evaluation, checkpoint protocol. State persistence is server-managed (atomic `session.json` + `.session-token` seal write on every authenticated call). |
-| [`agent-conduct`](meta/skills/01-agent-conduct.toon) | Cross-cutting behavioural boundaries: file sensitivity, communication tone, attribution prohibition, operational discipline, checkpoint discipline, orchestrator discipline |
-| [`version-control`](meta/skills/02-version-control.toon) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
-| [`github-cli-protocol`](meta/skills/03-github-cli-protocol.toon) | GitHub CLI usage: GraphQL-deprecation workarounds, REST API for mutations |
-| [`knowledge-base-search`](meta/skills/04-knowledge-base-search.toon) | Optimised concept-rag searches via pre-indexed domain maps |
-| [`atlassian-operations`](meta/skills/05-atlassian-operations.toon) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
-| [`gitnexus-operations`](meta/skills/06-gitnexus-operations.toon) | Codebase queries via the GitNexus knowledge graph: explore, impact, debug, refactor |
-| [`harness-compat`](meta/skills/07-harness-compat.toon) | Harness-independent operations (spawn-agent, continue-agent, spawn-concurrent) abstracting cross-tool dispatch |
+| Technique | Description |
+|-----------|-------------|
+| [`workflow-engine`](meta/techniques/workflow-engine/TECHNIQUE.md) | Protocol and rules for workflow execution: session lifecycle (resume or create), activity dispatch, transition evaluation, checkpoint protocol. State persistence is server-managed (atomic `session.json` + `.session-token` seal write on every authenticated call). |
+| [`agent-conduct`](meta/techniques/agent-conduct.md) | Cross-cutting behavioural boundaries: file sensitivity, communication tone, attribution prohibition, operational discipline, checkpoint discipline, orchestrator discipline |
+| [`version-control`](meta/techniques/version-control/TECHNIQUE.md) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
+| [`github-cli-protocol`](meta/techniques/github-cli-protocol/TECHNIQUE.md) | GitHub CLI usage: GraphQL-deprecation workarounds, REST API for mutations |
+| [`knowledge-base-search`](meta/techniques/knowledge-base-search/TECHNIQUE.md) | Optimised concept-rag searches via pre-indexed domain maps |
+| [`atlassian-operations`](meta/techniques/atlassian-operations/TECHNIQUE.md) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
+| [`gitnexus-operations`](meta/techniques/gitnexus-operations/TECHNIQUE.md) | Codebase queries via the GitNexus knowledge graph: explore, impact, debug, refactor |
+| [`harness-compat`](meta/techniques/harness-compat/TECHNIQUE.md) | Harness-independent operations (spawn-agent, continue-agent, spawn-concurrent) abstracting cross-tool dispatch |
 
 ## Worktree Setup
 
@@ -75,7 +92,7 @@ git worktree add ./workflows workflows
 1. Create `{workflow-id}/` directory
 2. Add `workflow.toon` workflow definition
 3. Add `README.md` with Mermaid diagrams documenting the workflow
-4. Add `activities/`, `resources/`, `skills/` subdirectories as needed
+4. Add `activities/`, `resources/`, `techniques/` subdirectories as needed
 5. Commit to this branch
 
 **Activities:**
@@ -89,11 +106,14 @@ git worktree add ./workflows workflows
 2. Prefix with two-digit index (00, 01, 02, etc.)
 3. Commit to this branch
 
-**Skills:**
-1. Create `{NN}-{skill-id}.toon` with two-digit index
-2. Universal: Create in `meta/skills/` (e.g., `00-workflow-engine.toon`)
-3. Workflow-specific: Create in `{workflow-id}/skills/`
-4. Commit to this branch
+**Techniques (markdown source of truth):**
+1. For a standalone technique, create `{workflow-id}/techniques/{slug}.md` (or `meta/techniques/{slug}.md` for the cross-workflow shared layer) with frontmatter (`metadata.version`), a required `## Capability` section, and optional `## Inputs` / `## Protocol` / `## Output(s)` / `## Rules` sections.
+2. For a container technique (such as `gitnexus-operations`), create `{group}/TECHNIQUE.md` as the container technique/base contract plus one `{group}/{sub}.md` per nested technique. Each nested technique file carries `metadata.version` frontmatter and a `## Capability` section. Nested techniques are addressed `{group}::{sub}`.
+3. Optionally add a per-workflow root base contract at `{workflow-id}/techniques/TECHNIQUE.md` — isomorphic to a technique, carrying no technique list. Its Inputs / Outputs / Rules / Protocol are inherited by every technique in the workflow.
+4. Follow the canonical sections defined in [meta/resources/workflow-canonical.md](./meta/resources/workflow-canonical.md)
+5. Commit to this branch
+
+Cross-reference links between techniques and resources are file-relative and end in the target's real filename (`<slug>.md`, `<group>/TECHNIQUE.md`, or `<group>/<sub>.md`).
 
 ## Validation
 

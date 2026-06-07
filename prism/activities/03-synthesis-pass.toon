@@ -2,7 +2,7 @@ id: synthesis-pass
 version: 2.0.0
 name: Synthesis Pass
 description: "Run the synthesis lens against each full-prism unit's structural and adversarial artifacts."
-skills:
+techniques:
   supporting[1]:
     - full-prism
 artifacts[1]:

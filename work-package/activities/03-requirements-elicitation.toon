@@ -9,10 +9,10 @@ recognition[3]:
   - gather requirements
 required: false
 estimatedTime: 15-30m
-skills:
+techniques:
   supporting[4]:
     - elicit-requirements
-    - manage-artifacts
+    - "manage-artifacts::write-artifact"
     - reconcile-assumptions
     - review-assumptions
 steps[6]:
@@ -35,7 +35,7 @@ steps[6]:
     description: "Add requirements-phase assumptions to the assumptions log"
   - id: reconcile-assumptions
     name: Reconcile assumptions
-    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions skill. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
+    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions technique. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
     checkpoint: elicitation-complete
 artifacts[1]:
   - id: requirements-document
@@ -50,7 +50,7 @@ loops[2]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions skill protocol."
+    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
     steps[1]:
       - id: reconcile-iteration
         name: Execute Reconciliation Iteration
@@ -71,7 +71,7 @@ loops[2]:
 decisions[1]:
   - id: user-intent
     name: User Intent Check
-    description: "Evaluate user response during domain-iteration loop to determine next action. Branching is handled by the elicit-requirements skill protocol within the loop — the skill interprets the user's response and controls iteration flow (continue to next question, skip domain, or signal completion)."
+    description: "Evaluate user response during domain-iteration loop to determine next action. Branching is handled by the elicit-requirements technique protocol within the loop — the technique interprets the user's response and controls iteration flow (continue to next question, skip domain, or signal completion)."
     branches[2]:
       - id: continue
         label: Continue elicitation (answered or skipped)
@@ -126,14 +126,32 @@ checkpoints[2]:
         effect:
           setVariable:
             elicitation_complete: false
-transitions[2]:
+transitions[3]:
   - to: research
     condition:
-      type: simple
-      variable: elicitation_complete
-      operator: ==
-      value: true
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: elicitation_complete
+          operator: ==
+          value: true
+        - type: simple
+          variable: needs_research
+          operator: ==
+          value: true
     isDefault: true
+  - to: implementation-analysis
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: elicitation_complete
+          operator: ==
+          value: true
+        - type: simple
+          variable: needs_research
+          operator: ==
+          value: false
   - to: requirements-elicitation
     condition:
       type: simple

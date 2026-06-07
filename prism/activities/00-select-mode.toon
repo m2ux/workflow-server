@@ -15,13 +15,13 @@ recognition[11]:
   - behavioral
   - error resilience
   - behavioral analysis
-skills:
+techniques:
   supporting[1]:
     - plan-analysis
 steps[3]:
   - id: plan
     name: Plan the Analysis
-    description: "Execute the plan-analysis skill protocol: detect scope from the target, classify units if multi-scope, recommend pipeline_mode and lens selection, resolve output_path."
+    description: "Execute the plan-analysis technique protocol: detect scope from the target, classify units if multi-scope, recommend pipeline_mode and lens selection, resolve output_path."
     required: true
   - id: summarize
     name: Summarize Configuration
@@ -37,7 +37,7 @@ steps[3]:
         description: "Set pipeline_mode from checkpoint selection or plan recommendation"
       - action: set
         target: analysis_units
-        description: "Set analysis_units from the plan-analysis skill output"
+        description: "Set analysis_units from the plan-analysis technique output"
 checkpoints[1]:
   - id: confirm-mode
     name: Pipeline Mode Confirmation

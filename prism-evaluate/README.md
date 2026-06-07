@@ -49,14 +49,14 @@ All transitions after confirm-plan are automatic.
 
 ---
 
-## Skills
+## Techniques
 
-| # | Skill | Capability | Used By |
+| # | Technique | Capability | Used By |
 |---|-------|------------|---------|
 | 00 | `plan-evaluation` | Target classification, dimension derivation, dimension-to-lens mapping | scope-definition, dimension-planning, execute-analysis |
 | 01 | `compose-evaluation-report` | Cross-artifact extraction, cross-dimensional synthesis, report composition, result presentation | consolidate-report, deliver-results |
 
-**Detailed documentation:** See [skills/](skills/) for protocol details.
+**Detailed documentation:** See [techniques/](techniques/) for protocol details.
 
 ---
 
@@ -64,8 +64,8 @@ All transitions after confirm-plan are automatic.
 
 | Index | Resource | Description |
 |-------|----------|-------------|
-| 00 | [Default Dimensions](resources/00-default-dimensions.md) | Default dimension sets by target type (proposal, codebase, mixed) |
-| 01 | [Dimension-Lens Mapping](resources/01-dimension-lens-mapping.md) | Standard and custom dimension-to-prism-lens mapping matrix |
+| 00 | [Default Dimensions](./resources/default-dimensions.md) | Default dimension sets by target type (proposal, codebase, mixed) |
+| 01 | [Dimension-Lens Mapping](./resources/dimension-lens-mapping.md) | Standard and custom dimension-to-prism-lens mapping matrix |
 
 **Detailed documentation:** See [resources/](resources/) for full content.
 
@@ -136,9 +136,10 @@ workflows/prism-evaluate/
 │   ├── 02-execute-analysis.toon     # Trigger prism per execution group
 │   ├── 03-consolidate-report.toon   # Extract findings, compose EVALUATION-REPORT.md
 │   └── 04-deliver-results.toon      # Present results and artifact index
-├── skills/
-│   ├── 00-plan-evaluation.toon      # Target classification, dimension-to-lens mapping
-│   └── 01-compose-evaluation-report.toon  # Cross-dimensional synthesis, report composition
+├── techniques/
+│   ├── TECHNIQUE.md                 # Inherited base contract
+│   ├── plan-evaluation.md           # Target classification, dimension-to-lens mapping
+│   └── compose-evaluation-report.md # Cross-dimensional synthesis, report composition
 └── resources/
     ├── 00-default-dimensions.md     # Default dimension sets by target type
     └── 01-dimension-lens-mapping.md # Dimension-to-lens mapping matrix

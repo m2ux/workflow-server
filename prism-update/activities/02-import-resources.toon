@@ -3,7 +3,7 @@ version: 1.0.0
 name: Import Resources
 description: "Apply approved resource file changes."
 problem: Resource files need to be created, updated, renamed, or removed to match upstream
-skills:
+techniques:
   supporting[1]:
     - sync-resources
 

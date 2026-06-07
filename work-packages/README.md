@@ -50,7 +50,7 @@ graph TD
 
 **Purpose:** Confirm multi-work-package initiative and identify work packages to be planned.
 
-**Primary Skill:** `assess-initiative-scope`
+**Primary Technique:** `assess-initiative-scope`
 
 ```mermaid
 graph TD
@@ -80,8 +80,8 @@ graph TD
 
 **Purpose:** Create planning folder structure with initial documentation skeletons.
 
-**Primary Skill:** `workflow-execution`  
-**Supporting Skill:** `artifact-management`
+**Primary Technique:** `workflow-engine`  
+**Supporting Technique:** `manage-artifacts`
 
 ```mermaid
 graph TD
@@ -97,8 +97,8 @@ graph TD
         cp1 -->|adjust| f1
     end
     
-    skill((artifact-management))
-    f1 -.-> skill
+    technique((manage-artifacts))
+    f1 -.-> technique
 ```
 
 | Step | Description |
@@ -118,7 +118,7 @@ graph TD
 
 **Purpose:** Perform completion or context analysis depending on whether continuing previous work or starting new.
 
-**Primary Skill:** `analyze-initiative-context`
+**Primary Technique:** `analyze-initiative-context`
 
 ```mermaid
 graph TD
@@ -157,7 +157,7 @@ graph TD
 
 **Purpose:** Define scope, dependencies, effort, and success criteria for each work package.
 
-**Primary Skill:** `plan-work-package-scope`
+**Primary Technique:** `plan-work-package-scope`
 
 ```mermaid
 graph TD
@@ -199,7 +199,7 @@ graph TD
 
 **Purpose:** Prioritize work packages based on dependencies, value, risk, and effort.
 
-**Primary Skill:** `prioritize-packages`
+**Primary Technique:** `prioritize-packages`
 
 ```mermaid
 graph TD
@@ -234,7 +234,7 @@ graph TD
 
 **Purpose:** Complete roadmap documentation with timeline, navigation, and success criteria.
 
-**Primary Skill:** `document-roadmap`
+**Primary Technique:** `document-roadmap`
 
 ```mermaid
 graph TD
@@ -270,7 +270,7 @@ graph TD
 
 **Purpose:** Execute each planned work package in priority order by triggering the work-package workflow.
 
-**Primary Skill:** `orchestrate-package-execution`
+**Primary Technique:** `orchestrate-package-execution`
 
 ```mermaid
 graph TD
@@ -313,9 +313,9 @@ graph TD
 
 ---
 
-## Skills Summary
+## Techniques Summary
 
-| Skill | Type | Capability | Used By |
+| Technique | Type | Capability | Used By |
 |-------|------|------------|---------|
 | `assess-initiative-scope` | Workflow-specific | Identify and categorize work packages | Scope Assessment |
 | `analyze-initiative-context` | Workflow-specific | Completion or context analysis | Analysis |
@@ -323,8 +323,8 @@ graph TD
 | `prioritize-packages` | Workflow-specific | Evaluate and order packages | Prioritization |
 | `document-roadmap` | Workflow-specific | Produce finalized roadmap documentation | Finalize Roadmap |
 | `orchestrate-package-execution` | Workflow-specific | Trigger and manage work-package workflow instances | Implementation |
-| `workflow-execution` | Universal | Execute workflows following schema patterns | All activities (supporting) |
-| `artifact-management` | Universal | Manage planning artifacts folder structure | Folder Setup |
+| `workflow-engine` | Universal | Execute workflows following schema patterns | All activities (supporting) |
+| `manage-artifacts` | Universal | Manage planning artifacts folder structure | Folder Setup |
 
 ## Resources
 
@@ -341,6 +341,8 @@ graph TD
 ---
 
 ## Context Preserved
+
+The workflow declares its variables in [`workflow.toon`](workflow.toon). Key variables include:
 
 | Variable | Description |
 |----------|-------------|
@@ -369,14 +371,14 @@ work-packages/
 │   ├── 05-prioritization.toon
 │   ├── 06-finalize-roadmap.toon
 │   └── 07-implementation.toon
-├── skills/
-│   ├── README.md
-│   ├── 00-assess-initiative-scope.toon
-│   ├── 01-analyze-initiative-context.toon
-│   ├── 02-plan-work-package-scope.toon
-│   ├── 03-prioritize-packages.toon
-│   ├── 04-document-roadmap.toon
-│   └── 05-orchestrate-package-execution.toon
+├── techniques/
+│   ├── TECHNIQUE.md
+│   ├── assess-initiative-scope.md
+│   ├── analyze-initiative-context.md
+│   ├── plan-work-package-scope.md
+│   ├── prioritize-packages.md
+│   ├── document-roadmap.md
+│   └── orchestrate-package-execution.md
 └── resources/
     ├── README.md
     ├── 00-planning-folder-template.md

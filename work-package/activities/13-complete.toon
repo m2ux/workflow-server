@@ -27,13 +27,13 @@ artifacts[4]:
     name: "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md"
     location: reviews
     description: "PR review analysis document"
-skills:
+techniques:
   supporting[5]:
-    - cargo-operations
+    - "cargo-operations::doc"
     - conduct-retrospective
     - create-adr
     - finalize-documentation
-    - manage-git
+    - "manage-git::remove-worktree"
 steps[10]:
   - id: create-adr
     name: Create Architecture Decision Record
@@ -110,7 +110,7 @@ steps[10]:
     description: "After PR merged, update work package plan status to reflect completion."
   - id: remove-worktree
     name: Remove Component Worktree
-    description: "manage-git::remove-worktree(reference_path: {reference_path}, component_name: {component_name}, target_path: {target_path}). Runs only when worktree_created is true (i.e., this work package created a worktree at the canonical path). The skill checks for uncommitted edits before removing — by completion time the PR has been merged so the worktree should be clean. Sets worktree_created=false after a successful removal. The reference monorepo at reference_path is left untouched."
+    description: "manage-git::remove-worktree(reference_path: {reference_path}, component_name: {component_name}, target_path: {target_path}). Runs only when worktree_created is true (i.e., this work package created a worktree at the canonical path). The technique checks for uncommitted edits before removing — by completion time the PR has been merged so the worktree should be clean. Sets worktree_created=false after a successful removal. The reference monorepo at reference_path is left untouched."
     condition:
       type: simple
       variable: worktree_created

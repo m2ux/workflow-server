@@ -20,14 +20,14 @@ rules[14]:
   - "All TOON files must pass schema validation before commit — run validation on every produced file"
   - "Content-reducing updates require explicit user approval — flag removed material and get confirmation"
   - "Convention over invention — search for existing naming conventions before introducing new patterns"
-  - "Modular over inline — workflow.toon defines metadata and references; activities, skills, and resources live in their own files"
+  - "Modular over inline — workflow.toon defines metadata and references; activities, techniques, and resources live in their own files"
   - "Encode critical constraints as structure, not just text — back rules with checkpoints, conditions, and validate actions"
   - "Format literacy before content — verify TOON syntax understanding by reading existing files before drafting"
   - "Define complete scope before execution — enumerate all files to create, modify, or remove before starting"
   - "Corrections must persist — record corrections and verify compliance at every subsequent checkpoint"
   - "Non-destructive updates — compare new content against existing content and flag any material being removed"
-  - "Every workflow must include a README.md at the root and in each subfolder (activities/, skills/, resources/) following the style established by the prism workflow."
-skills:
+  - "Every workflow must include a README.md at the root and in each subfolder (activities/, techniques/, resources/) following the style established by the prism workflow."
+techniques:
 artifactLocations:
   planning:
     path: "{planning_folder_path}"
@@ -49,7 +49,7 @@ modes[2]:
       - pattern-analysis
     defaults:
       is_update_mode: true
-    resource: resources/03-update-mode-guide.md
+    resource: update-mode-guide
   - id: review
     name: Review Mode
     description: "Audit an existing workflow against the design principles and produce a compliance report."
@@ -70,7 +70,7 @@ modes[2]:
     defaults:
       is_review_mode: true
       review_scope_confirmed: false
-    resource: resources/04-review-mode-guide.md
+    resource: review-mode-guide
 variables[16]:
   - name: planning_folder_path
     type: string

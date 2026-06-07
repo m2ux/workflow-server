@@ -3,7 +3,7 @@ version: 1.1.1
 name: Post-Update Review
 description: "Post-commit compliance audit of the updated workflow against design principles and anti-patterns."
 problem: Updates can introduce new compliance issues that are invisible without a post-commit audit against the full design principles and anti-pattern catalog
-skills:
+techniques:
   supporting[1]:
     - workflow-design
 required: true

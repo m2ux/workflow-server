@@ -3,7 +3,7 @@ version: 1.0.0
 name: Adaptive Depth Pass
 description: "Cost-minimizing depth escalation."
 problem: "Users often don't know how deep an analysis needs to be. Running full-prism on every target is wasteful. Adaptive starts cheap and escalates only when needed."
-skills:
+techniques:
   supporting[1]:
     - adaptive-analysis
 artifacts[5]:

@@ -7,7 +7,7 @@ recognition[3]:
   - generate audit report
   - consolidate findings
   - finalize report
-skills:
+techniques:
   supporting[1]:
     - execute-cicd-audit
 required: true
@@ -23,24 +23,24 @@ entryActions[1]{action,message}:
 steps[5]:
   - id: apply-severity
     name: Apply Severity Scoring
-    skill: score-cicd-severity
+    technique: score-cicd-severity
     description: "Score every finding using the Impact x Exploitability rubric from resource 02. Apply cross-pattern correlation bonuses for compound vulnerabilities."
   - id: severity-crosscheck
     name: Severity Cross-Check Against Campaign Data
-    skill: score-cicd-severity
+    technique: score-cicd-severity
     description: "Validate severity assignments against known campaign outcomes. A pull_request_target + fork checkout + token exfiltration chain (the Trivy pattern) is the calibration anchor for Critical severity."
   - id: coverage-gate
     name: "Verify Coverage Gate (BLOCKING)"
     required: true
-    skill: verify-scan-output
+    technique: verify-scan-output
     description: "Re-verify that every workflow file in scope was scanned. Block report generation if any file is uncovered."
   - id: attach-remediation
     name: Attach Remediation Guidance
-    skill: write-cicd-report
+    technique: write-cicd-report
     description: "For each finding, attach specific remediation steps from resource 03. Include before/after code examples where applicable."
   - id: write-report
     name: Write Final Report
-    skill: write-cicd-report
+    technique: write-cicd-report
     description: "Produce 01-cicd-audit-report.md with executive summary, finding details, severity distribution, remediation roadmap, and methodology notes."
 transitions[0]:
 exitActions[2]{action,message}:

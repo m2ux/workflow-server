@@ -6,8 +6,8 @@
 
 | Index | Name | Description |
 |-------|------|-------------|
-| 00 | [Default Dimensions](00-default-dimensions.md) | Default evaluation dimension sets organised by target type |
-| 01 | [Dimension-Lens Mapping](01-dimension-lens-mapping.md) | Maps evaluation dimensions to prism pipeline modes and lens configurations |
+| 00 | [Default Dimensions](default-dimensions.md) | Default evaluation dimension sets organised by target type |
+| 01 | [Dimension-Lens Mapping](dimension-lens-mapping.md) | Maps evaluation dimensions to prism pipeline modes and lens configurations |
 
 ---
 

@@ -5,7 +5,7 @@ description: "Finalize a high-sensitivity security fix."
 problem: User needs to submit a security fix without public disclosure
 required: true
 estimatedTime: 5-10m
-skills:
+techniques:
 rules[2]:
   - "STRICT ISOLATION: This activity MUST NOT call any GitHub PR tools (gh pr review, gh pr ready)."
   - "PRIVATE REMOTE ONLY: All git push operations must target the 'security' remote."
@@ -16,16 +16,16 @@ steps[4]:
   - id: verify-security-remote
     name: Verify Security Remote
     description: "Ensure the 'security' remote is configured and points to a private repository."
-    skill: manage-git
+    technique: manage-git
   - id: verify-commit-signatures
     name: Verify and sign commits
     description: "BEFORE pushing, check all commits on the feature branch for GPG signatures. If ANY commit shows 'N' (no signature), the agent MUST rebase and sign them."
-    skill: manage-git
+    technique: manage-git
     required: true
   - id: push-sec-vuln-commits
     name: Push security vulnerability commits
     description: "Push all local commits to the 'security' remote. Run 'git push security HEAD'. This ensures the fix is only pushed to the designated private fork."
-    skill: manage-git
+    technique: manage-git
   - id: log-completion
     name: Log Completion
     description: "Log that the security fix has been securely pushed."

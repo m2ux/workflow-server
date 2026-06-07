@@ -3,7 +3,7 @@ version: 1.0.0
 name: Discover Changes
 description: "Diff upstream prisms against current workflow resources."
 problem: Need to understand what changed upstream before importing
-skills:
+techniques:
   supporting[1]:
     - diff-upstream
 steps[5]:

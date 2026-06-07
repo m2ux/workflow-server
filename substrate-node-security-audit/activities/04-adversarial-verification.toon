@@ -7,49 +7,49 @@ recognition[3]:
   - verify audit findings
   - adversarial review
   - check pass items
-skills:
+techniques:
   supporting[1]:
     - execute-audit
 required: true
 estimatedTime: 30-60m
 rules[2]:
-  - "Apply the decompose-safety-claims skill rules for adversarial verification."
+  - "Apply the decompose-safety-claims technique rules for adversarial verification."
   - "VERIFICATION-INFORMED TARGETING: If a verification_report is available from the primary-audit phase, read the gap report before selecting PASS items. Every PASS item in a §3 category flagged by the verification agent as having incomplete coverage, missing tables, or unmet target profile obligations is automatically added to the adversarial queue regardless of severity estimate. This ensures adversarial effort is directed at areas with the highest false-PASS risk."
 entryActions[1]{action,message}:
   log,Starting adversarial verification of PASS items
 steps[6]:
   - id: seed-from-verification-report
     name: Seed PASS Queue from Verification Report
-    skill: decompose-safety-claims
+    technique: decompose-safety-claims
     description: "If a verification_report is available, read the gap report. For each §3 category with incomplete coverage, missing tables, or unmet target profile obligations, identify the corresponding PASS items from agent outputs and add them to the adversarial queue. These items are pre-seeded before the standard severity-based filtering."
   - id: extract-pass-items
     name: Extract PASS Items
-    skill: decompose-safety-claims
-    skill_args:
+    technique: decompose-safety-claims
+    technique_args:
       output_format: "Filtered PASS list with checklist references"
     description: "Collect and filter PASS items for adversarial verification. Merge pre-seeded items from verification report with severity-filtered items. Deduplicate by checklist reference."
   - id: decompose-claims
     name: Decompose PASS Claims
-    skill: decompose-safety-claims
-    skill_args:
+    technique: decompose-safety-claims
+    technique_args:
       output_format: "Decomposition table with one row per property"
     description: "Decompose each PASS into constituent independent properties."
   - id: field-enumeration
     name: Enumerate Multi-Site Properties
-    skill: decompose-safety-claims
-    skill_args:
+    technique: decompose-safety-claims
+    technique_args:
       output_format: "| Property | Instance | Verified? | Evidence |"
     description: "Enumerate ALL instances per property for independent verification."
   - id: verify-properties
     name: Verify Properties Independently
-    skill: decompose-safety-claims
-    skill_args:
+    technique: decompose-safety-claims
+    technique_args:
       output_format: "Per-property verdict with code citations"
     description: "Independently verify each decomposed property against source code."
   - id: compile-results
     name: Compile Verification Results
-    skill: decompose-safety-claims
-    skill_args:
+    technique: decompose-safety-claims
+    technique_args:
       output_format: "Verdict summary with CONFIRMED/REFUTED/INSUFFICIENT counts"
     description: "Produce final verdicts. Every REFUTED item becomes a new finding."
 transitions[1]{to,isDefault}:

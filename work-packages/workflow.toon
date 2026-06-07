@@ -15,7 +15,7 @@ rules[5]:
   - "Ask, don't assume - Clarify scope and priorities before planning"
   - User controls priorities - Never assume priority order without confirmation
   - "Explicit approval - Get clear 'yes' or 'proceed' before creating documents"
-skills:
+techniques:
 artifactLocations:
   planning:
     path: "{planning_folder_path}"

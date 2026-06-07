@@ -7,7 +7,7 @@ recognition[3]:
   - scan workflows
   - run detection
   - primary scan
-skills:
+techniques:
   supporting[1]:
     - execute-cicd-audit
 required: true
@@ -27,12 +27,12 @@ steps[8]:
   - id: dispatch-all-scanners
     name: "Dispatch All Scanner Agents"
     required: true
-    skill: dispatch-scanners
+    technique: dispatch-scanners
     description: "Dispatch all per-submodule scanner agents (S1-Sn) concurrently in a single batch. Each agent receives its submodule path, workflow file list, reconnaissance data, and workflow-server bootstrap instructions to load the sub-workflow-scan activity. Every assigned scanner MUST be dispatched."
   - id: verify-dispatch-completeness
     name: "Verify Dispatch Completeness (HARD STOP)"
     required: true
-    skill: dispatch-scanners
+    technique: dispatch-scanners
     description: "Compare scanners_dispatched against scanners_assigned. Dispatch missing scanners before proceeding. HARD STOP."
   - id: collect-scanner-results
     name: Collect All Scanner Results
@@ -45,7 +45,7 @@ steps[8]:
   - id: dispatch-verification-agent
     name: "Dispatch Verification Sub-Agent (V)"
     required: true
-    skill: dispatch-scanners
+    technique: dispatch-scanners
     description: "Dispatch the verification sub-agent with bootstrap instructions to load the sub-verification activity. V receives all scanner output file paths and the workflow file inventory. V mechanically validates output completeness and produces a gap report. The orchestrator MUST NOT self-certify verification — V sets verification_complete."
   - id: act-on-gap-report
     name: "Act on Verification Gap Report"
@@ -54,7 +54,7 @@ steps[8]:
   - id: dispatch-merge-agent
     name: "Dispatch Merge Sub-Agent (M)"
     required: true
-    skill: dispatch-scanners
+    technique: dispatch-scanners
     description: "Dispatch the merge sub-agent with bootstrap instructions to load the sub-merge activity. M receives all scanner output files and the severity rubric (resource 02). M performs deduplication, cross-pattern correlation, and reconciliation in a fresh context window. The orchestrator MUST NOT perform the merge inline."
   - id: validate-reconciliation
     name: "Validate Finding Count Reconciliation (HARD STOP)"

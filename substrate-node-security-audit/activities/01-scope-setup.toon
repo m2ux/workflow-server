@@ -8,7 +8,7 @@ recognition[4]:
   - audit codebase
   - run security review
   - security audit setup
-skills:
+techniques:
   supporting[1]:
     - execute-audit
 required: true
@@ -24,27 +24,27 @@ entryActions[1]{action,message}:
 steps[8]:
   - id: confirm-target
     name: Confirm Target Submodule
-    skill: setup-audit-target
+    technique: setup-audit-target
     description: "Extract and validate the target submodule."
   - id: confirm-commit
     name: Confirm Target Commit
-    skill: setup-audit-target
+    technique: setup-audit-target
     description: "Extract and validate the target commit."
   - id: record-reference
     name: Record Reference Report Path
-    skill: setup-audit-target
+    technique: setup-audit-target
     description: "Record any reference report path without loading."
   - id: checkout-submodule
     name: Checkout Submodule at Commit
-    skill: setup-audit-target
+    technique: setup-audit-target
     description: "Checkout the submodule at the target revision."
   - id: run-cargo-audit
     name: Run Dependency Scanning
-    skill: setup-audit-target
+    technique: setup-audit-target
     description: "Run dependency scanners with fallback."
   - id: create-file-inventory
     name: Create File Inventory
-    skill: setup-audit-target
+    technique: setup-audit-target
     description: "Generate sorted file inventory by line count."
   - id: create-planning-folder
     name: Create Planning Folder

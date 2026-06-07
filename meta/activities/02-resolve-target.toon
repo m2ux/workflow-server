@@ -5,9 +5,10 @@ description: "Detect the target repository structure (regular directory vs. subm
 problem: Workflows that operate on a target codebase need to know whether the working directory is a regular repo or a submodule monorepo, and which submodule is the target
 required: true
 estimatedTime: 1-2m
-operations[2]:
-  - "version-control::detect-repo-type"
-  - "version-control::list-submodules"
+techniques:
+  supporting[2]:
+    - "version-control::detect-repo-type"
+    - "version-control::list-submodules"
 rules[1]:
   - "target_path MUST resolve to a directory containing a working git tree"
 entryActions[1]:

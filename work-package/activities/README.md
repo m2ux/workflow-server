@@ -2,7 +2,7 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-Each activity section below includes its purpose, skills, steps, checkpoints, transitions, and a mermaid diagram showing its internal flow.
+Each activity section below includes its purpose, techniques, steps, checkpoints, transitions, and a mermaid diagram showing its internal flow.
 
 ---
 
@@ -10,9 +10,9 @@ Each activity section below includes its purpose, skills, steps, checkpoints, tr
 
 **Purpose:** Initialize the work package — detect monorepo vs standalone reference, refresh the reference (submodules + GitNexus), verify or create an issue, materialize a dedicated git worktree of the component at `~/projects/work/{component_name}/{wp-slug}/`, set up the feature branch + draft PR inside that worktree, and create the planning folder. In review mode: captures PR reference, checks out the PR's branch in the worktree, extracts associated Jira ticket.
 
-**Skills:**
+**Techniques:**
 
-| Role | Skill ID |
+| Role | Technique ID |
 |------|----------|
 | primary | `create-issue` |
 | supporting | `manage-git` |
@@ -98,9 +98,9 @@ graph TD
 
 **Purpose:** Apply structured design framework to classify the problem, determine complexity, and decide which optional activities are needed. Sets the `complexity` variable (simple / moderate / complex) which drives ADR creation in the Complete activity. In review mode: assesses ticket completeness using the Jira Issue Creation Guide checklist.
 
-**Skills:**
+**Techniques:**
 
-| Role | Skill ID |
+| Role | Technique ID |
 |------|----------|
 | primary | `classify-problem` |
 | supporting | `review-assumptions` |
@@ -163,9 +163,9 @@ graph TD
 
 **Purpose:** Build or augment a mental model of the codebase sufficient to qualify design assumptions presented in later activities. Produces persistent knowledge artifacts in `.engineering/artifacts/comprehension/` that grow across successive tasks, forming a reusable knowledge base. Always runs after design-philosophy.
 
-**Skills:**
+**Techniques:**
 
-| Role | Skill ID |
+| Role | Technique ID |
 |------|----------|
 | primary | `build-comprehension` |
 | supporting | `manage-artifacts` |
@@ -239,9 +239,9 @@ graph TD
 
 **Purpose:** Discover and clarify what the work package should accomplish through structured sequential conversation. Elicitation discovers what the user needs before planning how to implement it. Includes a stakeholder discussion phase and sequential question-domain iteration.
 
-**Skills:**
+**Techniques:**
 
-| Role | Skill ID |
+| Role | Technique ID |
 |------|----------|
 | primary | `elicit-requirements` |
 | supporting | `manage-artifacts` |
@@ -303,9 +303,9 @@ graph TD
 
 **Purpose:** Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
 
-**Skills:**
+**Techniques:**
 
-| Role | Skill ID |
+| Role | Technique ID |
 |------|----------|
 | primary | `research-knowledge-base` |
 | supporting | `dco-provenance` |
@@ -371,9 +371,9 @@ graph TD
 
 **Purpose:** Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement. In review mode: checks out the base branch to analyze the pre-change state, documents expected changes, then returns to the PR branch.
 
-**Skills:**
+**Techniques:**
 
-| Role | Skill ID |
+| Role | Technique ID |
 |------|----------|
 | primary | `analyze-implementation` |
 | supporting | `manage-artifacts` |
@@ -382,7 +382,7 @@ graph TD
 
 **Steps:**
 
-1. **review-implementation** — Understand where and how the feature/component is used: location, usage, dependencies, architecture. When the codebase has a GitNexus index, use `gitnexus_query` for execution-flow discovery, `gitnexus_context` for usage/dependency mapping, and the `clusters` / `processes` resources for architectural surface. Falls back to grep/Read when not indexed. See work-package resource 27.
+1. **review-implementation** — Understand where and how the feature/component is used: location, usage, dependencies, architecture. When the codebase has a GitNexus index, use `gitnexus_query` for execution-flow discovery, `gitnexus_context` for usage/dependency mapping, and the `clusters` / `processes` resources for architectural surface. Falls back to grep/Read when not indexed. See work-package resource gitnexus-reference.
 2. **evaluate-effectiveness** — Gather evidence of existing performance: logs, metrics, tests, issues, comments.
 3. **establish-baselines** — Establish quantitative measurements: performance, quality, usage, reliability.
 4. **collect-assumptions** — Identify assumptions made during analysis.
@@ -426,9 +426,9 @@ graph TD
 
 **Purpose:** Design the approach, create the work package plan (task breakdown), create the test plan, and prepare for implementation. This is the convergence point for all optional paths.
 
-**Skills:**
+**Techniques:**
 
-| Role | Skill ID |
+| Role | Technique ID |
 |------|----------|
 | primary | `create-plan` |
 | supporting | `classify-problem` |
@@ -437,7 +437,7 @@ graph TD
 
 **Steps:**
 
-1. **apply-design** — Use design framework skill to structure the approach.
+1. **apply-design** — Use design framework technique to structure the approach.
 2. **create-plan** — Create work package plan document with task breakdown.
 3. **create-test-plan** — Create test plan document.
 4. **collect-assumptions** — Identify assumptions made during planning.
@@ -479,9 +479,9 @@ graph TD
 
 **Purpose:** Post accumulated assumptions from all prior phases (design, requirements, research, analysis, planning) to the issue tracker for stakeholder review. Supports both Jira and GitHub platforms. Awaits stakeholder feedback and iterates if further discussion is needed.
 
-**Skills:**
+**Techniques:**
 
-| Role | Skill ID |
+| Role | Technique ID |
 |------|----------|
 | primary | `review-assumptions` |
 | supporting | `manage-artifacts` |
@@ -539,9 +539,9 @@ graph TD
 
 **Purpose:** Execute the implementation plan task by task. Each task follows a cycle of implement, test, commit, review assumptions, checkpoint. Contains two nested loops: the task implementation cycle and the assumption review cycle within each task.
 
-**Skills:**
+**Techniques:**
 
-| Role | Skill ID |
+| Role | Technique ID |
 |------|----------|
 | primary | `implement-task` |
 | supporting | `cargo-operations` |
@@ -563,7 +563,7 @@ graph TD
 
 **Task cycle steps (per task):**
 
-1. **implement-task** — Write code for the current task. The `implement-task` skill encodes the project CLAUDE.md mandate: a `pre-edit-impact-check` protocol phase runs `gitnexus_impact` before any edit (HIGH/CRITICAL risk surfaced to the user) and a `post-edit-verification` phase runs `gitnexus_detect_changes` before commit. Backed by a `gitnexus-discipline` MUST rule.
+1. **implement-task** — Write code for the current task. The `implement-task` technique encodes the project CLAUDE.md mandate: a `pre-edit-impact-check` protocol phase runs `gitnexus_impact` before any edit (HIGH/CRITICAL risk surfaced to the user) and a `post-edit-verification` phase runs `gitnexus_detect_changes` before commit. Backed by a `gitnexus-discipline` MUST rule.
 2. **run-tests** — Execute tests to verify implementation.
 3. **commit** — Commit changes.
 4. **log-provenance** — Append a provenance record for this task to `provenance-log.md` via `dco-provenance`.
@@ -615,9 +615,9 @@ graph TD
 
 **Artifact prefix:** `09`
 
-**Skills:**
+**Techniques:**
 
-| Role | Skill ID |
+| Role | Technique ID |
 |------|----------|
 | primary | `review-diff` |
 | supporting | `review-code` |
@@ -626,7 +626,7 @@ graph TD
 
 **Review stages:**
 
-1. **GitNexus detect-changes preflight** — Run `gitnexus_detect_changes()` on the current diff to capture the affected processes and changed-symbol set. Output feeds the subsequent code-review and test-suite-review stages. Gated by `when: gitnexus_indexed == true` — automatically skipped when the workflow's `gitnexus_indexed` variable is false (i.e., the reference codebase was not indexed in `start-work-package`). See work-package resource 27.
+1. **GitNexus detect-changes preflight** — Run `gitnexus_detect_changes()` on the current diff to capture the affected processes and changed-symbol set. Output feeds the subsequent code-review and test-suite-review stages. Gated by `when: gitnexus_indexed == true` — automatically skipped when the workflow's `gitnexus_indexed` variable is false (i.e., the reference codebase was not indexed in `start-work-package`). See work-package resource gitnexus-reference.
 2. **Manual diff review** — Pull and diff, create change-block index, present file table to user, collect flagged blocks, interview each flagged block, write report.
 3. **Code review** — Comprehensive code review using Rust/Substrate criteria (if applicable).
 4. **Test suite review** — Assess test quality, coverage, and anti-patterns.
@@ -682,9 +682,9 @@ graph TD
 
 **Purpose:** Validate the implementation through testing, build verification, and lint checking. If failures are found, analyze root cause, fix, and re-run until all pass. In review mode: documents failures as review findings and does not attempt fixes.
 
-**Skills:**
+**Techniques:**
 
-| Role | Skill ID |
+| Role | Technique ID |
 |------|----------|
 | primary | `validate-build` |
 
@@ -719,9 +719,9 @@ graph TD
 
 **Artifact prefix:** `11`
 
-**Skills:**
+**Techniques:**
 
-| Role | Skill ID |
+| Role | Technique ID |
 |------|----------|
 | primary | `review-strategy` |
 | supporting | `manage-git` |
@@ -729,7 +729,7 @@ graph TD
 **Steps:**
 
 1. **diff-review** — Examine all changes in the PR for scope and relevance.
-2. **identify-artifacts** — Find investigation artifacts, over-engineering, orphaned infrastructure. Uses `gitnexus_cypher` (zero in-degree CALLS edges) for graph-aware orphan detection and `gitnexus_detect_changes` for scope-discipline checks (flag changes touching processes outside the work package's intended scope). See work-package resource 27.
+2. **identify-artifacts** — Find investigation artifacts, over-engineering, orphaned infrastructure. Uses `gitnexus_cypher` (zero in-degree CALLS edges) for graph-aware orphan detection and `gitnexus_detect_changes` for scope-discipline checks (flag changes touching processes outside the work package's intended scope). See work-package resource gitnexus-reference.
 3. **verify-readme** — `manage-artifacts::verify-readme-conforms`; surface drift as an informational strategic finding.
 4. **ensure-changes-folder-entry** — If `changes/` exists at repo root, add a fragment matching existing conventions when none exists for this work.
 5. **verify-change-fragment** — Confirm the change fragment references `issue_url`; block until fixed.
@@ -775,9 +775,9 @@ graph TD
 
 **Purpose:** Gate PR submission on a human DCO sign-off, push the branch, update the PR description, present the merge-strategy reminder, mark the PR ready, and await reviewer feedback. If significant changes are requested, loop back to plan-prepare. In review mode: consolidates all review findings and posts structured PR review comments, then ends the workflow.
 
-**Skills:**
+**Techniques:**
 
-| Role | Skill ID |
+| Role | Technique ID |
 |------|----------|
 | primary | `update-pr` |
 | supporting | `dco-provenance` |
@@ -848,9 +848,9 @@ graph TD
 
 **Artifact prefix:** `13`
 
-**Skills:**
+**Techniques:**
 
-| Role | Skill ID |
+| Role | Technique ID |
 |------|----------|
 | primary | `finalize-documentation` |
 | supporting | `create-adr` |

@@ -3,7 +3,7 @@ version: 1.1.1
 name: Quality Review
 description: "Quality review of drafted workflow content."
 problem: Drafted content may contain prose that should be formal constructs, diverge from conventions, or have critical rules without structural enforcement
-skills:
+techniques:
   supporting[1]:
     - workflow-design
 required: true
@@ -15,7 +15,7 @@ rules[3]:
 steps[16]:
   - id: load-all-workflow-files
     name: Load All Workflow Files
-    description: "Full file inventory of the target workflow as the audit baseline (workflow.toon, activities, skills, resources, READMEs)."
+    description: "Full file inventory of the target workflow as the audit baseline (workflow.toon, activities, techniques, resources, READMEs)."
     condition:
       type: simple
       variable: is_review_mode
@@ -45,9 +45,9 @@ steps[16]:
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: tool-skill-doc-consistency
-    name: Tool-Skill-Doc Consistency Audit
-    description: "Consistency audit pass over the tool / skill / bootstrap-resource / doc boundary: tool-name accuracy, return-value fidelity, bootstrap completeness, cross-skill consistency, behavioural-guidance duplication, tool-surface overlap, doc parity (AP-30–35)."
+  - id: tool-technique-doc-consistency
+    name: Tool-Technique-Doc Consistency Audit
+    description: "Consistency audit pass over the tool / technique / bootstrap-resource / doc boundary: tool-name accuracy, return-value fidelity, bootstrap completeness, cross-technique consistency, behavioural-guidance duplication, tool-surface overlap, doc parity (AP-30–35)."
     condition:
       type: simple
       variable: is_review_mode
@@ -95,7 +95,7 @@ steps[16]:
       value: true
   - id: conformance-review
     name: Convention Conformance Review
-    description: "Convention-conformance audit pass over drafted content vs reference workflows (file naming, field ordering, version format, transition patterns, checkpoint structure, skill structure)."
+    description: "Convention-conformance audit pass over drafted content vs reference workflows (file naming, field ordering, version format, transition patterns, checkpoint structure, technique structure)."
     condition:
       type: simple
       variable: is_review_mode
@@ -111,7 +111,7 @@ steps[16]:
       value: true
   - id: rule-hygiene-audit
     name: Rule Hygiene Audit
-    description: "Rule-hygiene audit pass over rules[] across the workflow, activities, and skills (AP-24–29 plus the worker-visibility carve-out on AP-27)."
+    description: "Rule-hygiene audit pass over rules[] across the workflow, activities, and techniques (AP-24–29 plus the worker-visibility carve-out on AP-27)."
     condition:
       type: simple
       variable: is_review_mode

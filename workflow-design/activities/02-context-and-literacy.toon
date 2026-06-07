@@ -3,7 +3,7 @@ version: 1.1.0
 name: Context and Literacy
 description: "Schema-system and TOON-format baseline established before drafting begins."
 problem: Agent must internalize the schema system and format conventions before producing any workflow content
-skills:
+techniques:
   supporting[1]:
     - workflow-design
 required: true
@@ -15,7 +15,7 @@ rules[3]:
 steps[7]:
   - id: load-schemas
     name: Load Schema Definitions
-    description: "Authoritative JSON schemas (workflow, activity, skill, condition, state) — the conformance reference for all drafted content."
+    description: "Authoritative JSON schemas (workflow, activity, technique, condition, state) — the conformance reference for all drafted content."
   - id: read-schema-documentation
     name: Read Schema Documentation
     description: "Schema ontology + field tables + examples + validation guidance from schemas/README.md — the construct reference."
@@ -24,7 +24,7 @@ steps[7]:
     description: "Two-or-more reference workflows of similar type loaded as the pattern baseline."
   - id: read-toon-examples
     name: Read TOON File Examples
-    description: "Sample TOON files (workflow / activity / skill) read to ground TOON syntax understanding (key-value pairs, `[N]` array suffixes, nested objects, inline `{}` shorthand)."
+    description: "Sample TOON files (workflow / activity / technique) read to ground TOON syntax understanding (key-value pairs, `[N]` array suffixes, nested objects, inline `{}` shorthand)."
     condition:
       type: and
       conditions[2]:

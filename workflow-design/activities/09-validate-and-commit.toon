@@ -3,7 +3,7 @@ version: 1.0.1
 name: Validate and Commit
 description: "Final validation, scope verification, README generation/update, and commit of the workflow changes to the workflows worktree."
 problem: All workflow content must pass validation and the complete scope must be verified before committing
-skills:
+techniques:
   supporting[1]:
     - workflow-design
 required: true
@@ -31,7 +31,7 @@ steps[8]:
       value: true
   - id: run-schema-validation
     name: Run Schema Validation
-    description: "Schema-validation pass/fail results for every TOON file (workflow.toon, activities, skills), with failures resolved before proceeding."
+    description: "Schema-validation pass/fail results for every TOON file (workflow.toon, activities, techniques), with failures resolved before proceeding."
     condition:
       type: simple
       variable: is_review_mode

@@ -4,12 +4,13 @@ name: Dispatch Client Workflow
 description: "Drive the client workflow's activity loop."
 problem: The orchestrator must drive the client workflow's activity loop inline rather than via a spawned client orchestrator
 required: true
-operations[5]:
-  - "workflow-engine::dispatch-activity"
-  - "workflow-engine::evaluate-transition"
-  - "workflow-engine::commit-and-persist"
-  - "workflow-engine::present-checkpoint-to-user"
-  - "workflow-engine::respond-checkpoint"
+techniques:
+  supporting[5]:
+    - "workflow-engine::dispatch-activity"
+    - "workflow-engine::evaluate-transition"
+    - "workflow-engine::commit-and-persist"
+    - "workflow-engine::present-checkpoint-to-user"
+    - "workflow-engine::respond-checkpoint"
 rules[1]:
   - "Authenticate every tool call inside the loop with client_session_index. The meta session_index is used only at activity boundaries (commit-and-persist's engineering commit) and at end-workflow."
 entryActions[1]:

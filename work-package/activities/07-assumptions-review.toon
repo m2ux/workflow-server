@@ -9,10 +9,10 @@ recognition[3]:
   - validate assumptions
 required: true
 estimatedTime: 10-20m
-skills:
+techniques:
   supporting[3]:
-    - atlassian-operations
-    - manage-artifacts
+    - "atlassian-operations::comment-jira-issue"
+    - "manage-artifacts::write-artifact"
     - review-assumptions
 steps[4]:
   - id: evaluate-open-assumptions

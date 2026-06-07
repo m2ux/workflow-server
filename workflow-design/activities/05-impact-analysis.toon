@@ -2,8 +2,8 @@ id: impact-analysis
 version: 1.0.1
 name: Impact Analysis
 description: "Impact assessment of proposed changes against an existing workflow's files, transitions, and references."
-problem: Modifying an existing workflow can break transition chains, invalidate checkpoint assumptions, or orphan skills and resources
-skills:
+problem: Modifying an existing workflow can break transition chains, invalidate checkpoint assumptions, or orphan techniques and resources
+techniques:
   supporting[1]:
     - workflow-design
 required: false
@@ -18,7 +18,7 @@ rules[2]:
 steps[5]:
   - id: enumerate-existing-files
     name: Enumerate Existing Files
-    description: "Full inventory of the target workflow's files (workflow.toon, activities, skills, resources, README.md) with paths and purposes."
+    description: "Full inventory of the target workflow's files (workflow.toon, activities, techniques, resources, README.md) with paths and purposes."
   - id: classify-impact
     name: Classify File Impact
     description: "Per-file impact classification (unaffected, directly modified, indirectly affected, removed) with justification."
@@ -27,7 +27,7 @@ steps[5]:
     description: "Transition-chain integrity report covering added/removed/reordered activities, including any broken 'to' references."
   - id: check-reference-integrity
     name: Check Reference Integrity
-    description: "Reference-integrity report for skill (primary/supporting) and resource references, including any orphaned references."
+    description: "Reference-integrity report for technique (primary/supporting) and resource references, including any orphaned references."
   - id: flag-content-removal
     name: Flag Content Removal
     description: "Diff-based inventory of material being removed across modified files, surfaced for explicit user confirmation."
@@ -61,5 +61,5 @@ outcome[3]:
   - Content removals explicitly confirmed by user
 context_to_preserve[3]:
   - impact_manifest - Classification of all files (unaffected, modified, affected, removed)
-  - broken_references - Any broken transitions or skill/resource references found
+  - broken_references - Any broken transitions or technique/resource references found
   - confirmed_removals - Content removals confirmed by user

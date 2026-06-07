@@ -1,0 +1,13 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Workspace dev build; skips the runtime wasm artifact.
+
+## Protocol
+
+1. `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo build {scope} {features}`
+   - If the link or codegen step exceeds available RAM, halve `CARGO_BUILD_JOBS` and retry.

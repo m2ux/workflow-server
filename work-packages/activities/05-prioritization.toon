@@ -3,7 +3,7 @@ version: 1.1.0
 name: Prioritization
 description: Prioritize work packages based on dependencies, value, risk, and effort
 problem: Need to determine execution order for work packages
-skills:
+techniques:
   supporting[1]:
     - prioritize-packages
 steps[4]:

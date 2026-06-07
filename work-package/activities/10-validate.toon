@@ -9,14 +9,15 @@ recognition[3]:
   - verify build
 required: true
 estimatedTime: 15-30m
-operations[7]:
-  - "cargo-operations::preflight"
-  - "cargo-operations::run-suite"
-  - "cargo-operations::build-release"
-  - "validate-build::analyze-failure"
-  - "validate-build::apply-fix"
-  - "validate-build::aggregate-results"
-  - "manage-artifacts::verify-readme-conforms"
+techniques:
+  supporting[7]:
+    - "cargo-operations::preflight"
+    - "cargo-operations::run-suite"
+    - "cargo-operations::build-release"
+    - "validate-build::analyze-failure"
+    - "validate-build::apply-fix"
+    - "validate-build::aggregate-results"
+    - "manage-artifacts::verify-readme-conforms"
 steps[6]:
   - id: preflight
     name: Toolchain preflight

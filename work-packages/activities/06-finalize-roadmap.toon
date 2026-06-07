@@ -3,7 +3,7 @@ version: 1.1.0
 name: Finalize Roadmap
 description: Complete roadmap documentation with timeline, navigation, and success criteria
 problem: Need to finalize planning documentation before implementation begins
-skills:
+techniques:
   supporting[1]:
     - document-roadmap
 steps[5]:

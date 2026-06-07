@@ -3,7 +3,7 @@ version: 1.0.0
 name: Update Documentation
 description: "Update prism workflow documentation to reflect the current resource catalog, model sensitivity, and prompt guide."
 problem: Documentation references resource counts, family groupings, and prism names that have changed
-skills:
+techniques:
   supporting[1]:
     - update-prism-docs
 
@@ -22,8 +22,8 @@ steps[4]:
     description: "Update resource table, model sensitivity, prompt guide entries, and file structure."
     required: true
   - id: update-skills-readme
-    name: Update skills README
-    description: "Update resource counts in skill descriptions."
+    name: Update techniques README
+    description: "Update resource counts in technique descriptions."
     required: true
   - id: commit-docs
     name: Commit documentation

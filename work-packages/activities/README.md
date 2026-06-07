@@ -2,7 +2,7 @@
 
 Sequential activity chain for planning and coordinating multiple related work packages.
 
-| # | Activity | Primary Skill | Description |
+| # | Activity | Primary Technique | Description |
 |---|----------|---------------|-------------|
 | 01 | **Scope Assessment** | `assess-initiative-scope` | Confirm multi-package initiative and identify work packages |
 | 02 | **Folder Setup** | `workflow-execution` | Create planning folder structure with documentation skeletons |

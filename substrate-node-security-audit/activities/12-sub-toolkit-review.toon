@@ -7,7 +7,7 @@ recognition[3]:
   - toolkit review
   - group d sub-agent
   - per-function checklist
-skills:
+techniques:
   supporting[1]:
     - execute-sub-agent
 required: false
@@ -23,29 +23,29 @@ steps[4]:
   - id: enumerate-functions
     name: Enumerate All Functions
     required: true
-    skill: apply-checklist
-    skill_args:
+    technique: apply-checklist
+    technique_args:
       output_format: "| File | Function | Line | Visibility | Modifies State? | Returns Result? |"
     description: "Enumerate every function in the toolkit scope as the item set for checklist application."
   - id: apply-checklist-per-function
     name: Apply 8-Item Checklist Per Function
     required: true
-    skill: apply-checklist
-    skill_args:
+    technique: apply-checklist
+    technique_args:
       checklist_source: resource 03 (toolkit-checklist)
       output_format: "| Function | File:Line | Item 1 | ... | Item 8 | Findings |"
     description: "Evaluate every function against all 8 checklist items (resource 03). Mark N/A where inapplicable."
   - id: verify-function-coverage
     name: Verify Function Coverage
     required: true
-    skill: apply-checklist
-    skill_args:
+    technique: apply-checklist
+    technique_args:
       output_format: "Coverage attestation: total, reviewed, percentage, gaps"
     description: "Verify every enumerated function has a row in the checklist matrix."
   - id: format-output
     name: Format Structured Output
     required: true
-    skill: execute-sub-agent
+    technique: execute-sub-agent
     description: "Format all findings and tables as structured output. Every FAIL cell in the matrix becomes a finding."
 outcome[3]:
   - Every function in toolkit crates enumerated and reviewed against all 8 checklist items

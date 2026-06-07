@@ -1,9 +1,9 @@
 id: verify
 version: 1.0.0
 name: Verify Consistency
-description: "Check for consistency issues across resources, skills, and documentation."
+description: "Check for consistency issues across resources, techniques, and documentation."
 problem: Changes across multiple files may leave inconsistencies
-skills:
+techniques:
   supporting[1]:
     - verify-prism-consistency
 
@@ -80,7 +80,7 @@ required: true
 estimatedTime: "3-5m"
 
 outcome[1]:
-  - "All resources, skills, and documentation are consistent"
+  - "All resources, techniques, and documentation are consistent"
 
 context_to_preserve[2]:
   - "has_issues — whether verification found problems"

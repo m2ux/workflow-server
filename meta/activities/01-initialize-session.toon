@@ -5,9 +5,10 @@ description: "Derive the client planning slug, then dispatch the client workflow
 problem: The client workflow needs a session_index before its orchestrator can be dispatched, and the planning folder slug must be derived from the work item BEFORE dispatch_child promotes the meta — otherwise the server falls back to YYYY-MM-DD-<workflow_id> and the folder name has no relation to the work item
 required: true
 estimatedTime: 1-2m
-operations[2]:
-  - "version-control::initialize-folder"
-  - "workflow-engine::create-session"
+techniques:
+  supporting[2]:
+    - "version-control::initialize-folder"
+    - "workflow-engine::create-session"
 steps[2]:
   - id: derive-planning-folder
     description: "version-control::initialize-folder(initiative_name: <kebab-case from issue title or work-package description>)"

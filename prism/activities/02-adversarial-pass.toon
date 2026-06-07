@@ -2,7 +2,7 @@ id: adversarial-pass
 version: 2.0.0
 name: Adversarial Analysis Pass
 description: "Run the adversarial lens against each full-prism unit's structural artifact."
-skills:
+techniques:
   supporting[1]:
     - full-prism
 artifacts[1]:

@@ -18,7 +18,7 @@ rules[6]:
   - "Explicit approval - Get clear 'yes' or 'proceed' before major actions (within activity checkpoints only — NOT between activities)"
   - "Decision points require user choice - When issues are found, user decides whether to proceed or loop back"
   - "Git configuration is user-owned. Validate-action messages describe a misconfiguration but never prescribe config-changing commands; the user fixes their own environment at whatever scope (system, global, local) they prefer."
-skills:
+techniques:
 artifactLocations:
   planning:
     path: "{planning_folder_path}"
@@ -42,7 +42,7 @@ modes[1]:
       - implement
     defaults:
       needs_elicitation: false
-    resource: resources/24-review-mode.md
+    resource: resources/review-mode.md
 variables[89]:
   - name: target_path
     type: string

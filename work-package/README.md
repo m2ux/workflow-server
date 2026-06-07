@@ -6,30 +6,30 @@
 
 ## Overview
 
-This workflow guides the complete lifecycle of a single work package through 14 activities total — 13 main activities plus 1 sub-flow (codebase comprehension, entered from design-philosophy or assumptions-review). Each activity has defined skills, checkpoints, and transitions. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
+This workflow guides the complete lifecycle of a single work package through 14 activities total — 13 main activities plus 1 sub-flow (codebase comprehension, entered from design-philosophy or assumptions-review). Each activity has defined techniques, checkpoints, and transitions. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
 
 | # | Activity | Required | Description |
 |---|----------|----------|-------------|
-| 01 | [**Start Work Package**](activities/README.md#01-start-work-package) | yes | Verify/create issue, set up branch, PR, and planning folder |
-| 02 | [**Design Philosophy**](activities/README.md#02-design-philosophy) | yes | Classify problem, assess complexity, determine workflow path |
-| 14 | [**Codebase Comprehension**](activities/README.md#codebase-comprehension) | no | Build/augment mental model of codebase via persistent knowledge artifacts |
-| 03 | [**Requirements Elicitation**](activities/README.md#03-requirements-elicitation-optional) | optional | Clarify requirements through stakeholder conversation |
-| 04 | [**Research**](activities/README.md#04-research-optional) | optional | Gather best practices from knowledge base and web |
-| 05 | [**Implementation Analysis**](activities/README.md#05-implementation-analysis) | conditional | Understand current state, establish baselines |
-| 06 | [**Plan & Prepare**](activities/README.md#06-plan--prepare) | yes | Create implementation and test plans |
-| 07 | [**Assumptions Review**](activities/README.md#07-assumptions-review) | yes | Post plan summary and assumptions to issue tracker for stakeholder review |
-| 08 | [**Implement**](activities/README.md#08-implement) | yes | Execute tasks with implement-test-commit cycles |
-| 09 | [**Post-Implementation Review**](activities/README.md#09-post-implementation-review) | yes | Manual diff review, code review, test review, architecture summary |
-| 10 | [**Validate**](activities/README.md#10-validate) | yes | Run tests, build, and lint checks |
-| 11 | [**Strategic Review**](activities/README.md#11-strategic-review) | yes | Ensure minimal, focused changes |
-| 12 | [**Submit for Review**](activities/README.md#12-submit-for-review) | yes | Push PR, mark ready, handle reviewer feedback |
-| 13 | [**Complete**](activities/README.md#13-complete) | yes | Finalize documentation, create ADR, conduct retrospective |
+| 01 | [**Start Work Package**](./activities/README.md#01-start-work-package) | yes | Verify/create issue, set up branch, PR, and planning folder |
+| 02 | [**Design Philosophy**](./activities/README.md#02-design-philosophy) | yes | Classify problem, assess complexity, determine workflow path |
+| 14 | [**Codebase Comprehension**](./activities/README.md#codebase-comprehension) | no | Build/augment mental model of codebase via persistent knowledge artifacts |
+| 03 | [**Requirements Elicitation**](./activities/README.md#03-requirements-elicitation-optional) | optional | Clarify requirements through stakeholder conversation |
+| 04 | [**Research**](./activities/README.md#04-research-optional) | optional | Gather best practices from knowledge base and web |
+| 05 | [**Implementation Analysis**](./activities/README.md#05-implementation-analysis) | conditional | Understand current state, establish baselines |
+| 06 | [**Plan & Prepare**](./activities/README.md#06-plan--prepare) | yes | Create implementation and test plans |
+| 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | yes | Post plan summary and assumptions to issue tracker for stakeholder review |
+| 08 | [**Implement**](./activities/README.md#08-implement) | yes | Execute tasks with implement-test-commit cycles |
+| 09 | [**Post-Implementation Review**](./activities/README.md#09-post-implementation-review) | yes | Manual diff review, code review, test review, architecture summary |
+| 10 | [**Validate**](./activities/README.md#10-validate) | yes | Run tests, build, and lint checks |
+| 11 | [**Strategic Review**](./activities/README.md#11-strategic-review) | yes | Ensure minimal, focused changes |
+| 12 | [**Submit for Review**](./activities/README.md#12-submit-for-review) | yes | Push PR, mark ready, handle reviewer feedback |
+| 13 | [**Complete**](./activities/README.md#13-complete) | yes | Finalize documentation, create ADR, conduct retrospective |
 
 **Detailed documentation:**
 
-- **Activities:** See [activities/README.md](activities/README.md) for detailed per-activity documentation including mermaid diagrams, steps, checkpoints, artifacts, and transitions.
-- **Skills:** See [skills/README.md](skills/README.md) for the full skill inventory (26 workflow-specific skills plus 6 cross-workflow references) and protocol flow diagrams.
-- **Resources:** See [resources/README.md](resources/README.md) for the resource index (28 resources).
+- **Activities:** See [activities/README.md](./activities/README.md) for detailed per-activity documentation including mermaid diagrams, steps, checkpoints, artifacts, and transitions.
+- **Techniques:** See [techniques/](./techniques/) for the full technique inventory (26 workflow-specific techniques plus 6 cross-workflow references) and protocol flows.
+- **Resources:** See [resources/README.md](./resources/README.md) for the resource index (28 resources).
 
 ---
 
@@ -81,24 +81,24 @@ graph TD
 
 ## Activities Summary
 
-| # | Activity | Primary Skill | Supporting Skills | Checkpoints | artifactPrefix |
+| # | Activity | Primary Technique | Supporting Techniques | Checkpoints | artifactPrefix |
 |---|----------|--------------|-------------------|-------------|----------------|
-| 01 | [Start Work Package](activities/README.md#01-start-work-package) | `create-issue` | `manage-git`, `manage-artifacts`, `atlassian-operations` | 8 | — |
-| 02 | [Design Philosophy](activities/README.md#02-design-philosophy) | `classify-problem` | `review-assumptions`, `reconcile-assumptions` | 2 | `02` |
-| 14 | [Codebase Comprehension](activities/README.md#codebase-comprehension-optional) | `build-comprehension` | `manage-artifacts`, `portfolio-analysis` | 2 | — |
-| 03 | [Requirements Elicitation](activities/README.md#03-requirements-elicitation-optional) | `elicit-requirements` | `manage-artifacts`, `review-assumptions`, `reconcile-assumptions` | 2 | `03` |
-| 04 | [Research](activities/README.md#04-research-optional) | `research-knowledge-base` | `review-assumptions`, `reconcile-assumptions` | 2 | `04` |
-| 05 | [Implementation Analysis](activities/README.md#05-implementation-analysis) | `analyze-implementation` | `manage-artifacts`, `review-assumptions`, `reconcile-assumptions` | 2 | `05` |
-| 06 | [Plan & Prepare](activities/README.md#06-plan--prepare) | `create-plan` | `classify-problem`, `review-assumptions`, `create-test-plan`, `reconcile-assumptions` | 1 | `06` |
-| 07 | [Assumptions Review](activities/README.md#07-assumptions-review) | `review-assumptions` | `manage-artifacts`, `atlassian-operations` | 3 | `07` |
-| 08 | [Implement](activities/README.md#08-implement) | `implement-task` | `review-assumptions`, `reconcile-assumptions`, `validate-build`, `manage-git` | 4 | `08` |
-| 09 | [Post-Impl Review](activities/README.md#09-post-implementation-review) | `review-diff` | `review-code`, `review-test-suite`, `summarize-architecture`, `structural-analysis` | 3 | `09` |
-| 10 | [Validate](activities/README.md#10-validate) | `validate-build` | — | 0 | — |
-| 11 | [Strategic Review](activities/README.md#11-strategic-review) | `review-strategy` | — | 1 | `11` |
-| 12 | [Submit for Review](activities/README.md#12-submit-for-review) | `update-pr` | `respond-to-pr-review` | 3 | — |
-| 13 | [Complete](activities/README.md#13-complete) | `finalize-documentation` | `create-adr`, `conduct-retrospective` | 0 | `13` |
+| 01 | [Start Work Package](./activities/README.md#01-start-work-package) | `create-issue` | `manage-git`, `manage-artifacts`, `atlassian-operations` | 8 | — |
+| 02 | [Design Philosophy](./activities/README.md#02-design-philosophy) | `classify-problem` | `review-assumptions`, `reconcile-assumptions` | 2 | `02` |
+| 14 | [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) | `build-comprehension` | `manage-artifacts`, `portfolio-analysis` | 2 | — |
+| 03 | [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) | `elicit-requirements` | `manage-artifacts`, `review-assumptions`, `reconcile-assumptions` | 2 | `03` |
+| 04 | [Research](./activities/README.md#04-research-optional) | `research-knowledge-base` | `review-assumptions`, `reconcile-assumptions` | 2 | `04` |
+| 05 | [Implementation Analysis](./activities/README.md#05-implementation-analysis) | `analyze-implementation` | `manage-artifacts`, `review-assumptions`, `reconcile-assumptions` | 2 | `05` |
+| 06 | [Plan & Prepare](./activities/README.md#06-plan--prepare) | `create-plan` | `classify-problem`, `review-assumptions`, `create-test-plan`, `reconcile-assumptions` | 1 | `06` |
+| 07 | [Assumptions Review](./activities/README.md#07-assumptions-review) | `review-assumptions` | `manage-artifacts`, `atlassian-operations` | 3 | `07` |
+| 08 | [Implement](./activities/README.md#08-implement) | `implement-task` | `review-assumptions`, `reconcile-assumptions`, `validate-build`, `manage-git` | 4 | `08` |
+| 09 | [Post-Impl Review](./activities/README.md#09-post-implementation-review) | `review-diff` | `review-code`, `review-test-suite`, `summarize-architecture`, `structural-analysis` | 3 | `09` |
+| 10 | [Validate](./activities/README.md#10-validate) | `validate-build` | — | 0 | — |
+| 11 | [Strategic Review](./activities/README.md#11-strategic-review) | `review-strategy` | — | 1 | `11` |
+| 12 | [Submit for Review](./activities/README.md#12-submit-for-review) | `update-pr` | `respond-to-pr-review` | 3 | — |
+| 13 | [Complete](./activities/README.md#13-complete) | `finalize-documentation` | `create-adr`, `conduct-retrospective` | 0 | `13` |
 
-See [activities/README.md](activities/README.md) for detailed per-activity documentation with mermaid diagrams, step descriptions, checkpoint tables, artifact lists, and transition conditions.
+See [activities/README.md](./activities/README.md) for detailed per-activity documentation with mermaid diagrams, step descriptions, checkpoint tables, artifact lists, and transition conditions.
 
 ---
 ## Orchestration Model
@@ -133,16 +133,16 @@ sequenceDiagram
     Note over Orch: Continue for all activities...
 ```
 
-**Orchestrator** (skill: `workflow-orchestrator`):
+**Orchestrator** (role: `workflow-orchestrator`):
 - Loads the workflow definition via `get_workflow` (receives schema preamble with all five JSON Schemas)
 - Initializes state variables, detects mode
 - Dispatches activities to the worker one at a time
 - Evaluates transition conditions between activities
 - Manages rework loops (transitions back to earlier activities)
 
-**Worker** (skill: `activity-worker`):
-- Self-bootstraps from `next_activity` and `get_skill`
-- Executes activity steps sequentially using the skill protocol
+**Worker** (role: `activity-worker`):
+- Self-bootstraps from `next_activity` and `get_technique`
+- Executes activity steps sequentially using the technique protocol
 - Handles all checkpoints and user interaction directly
 - Produces artifacts with `artifactPrefix` convention
 - Reports structured results (variable changes, checkpoints, artifacts, steps completed)
@@ -164,14 +164,14 @@ This workflow supports **review mode** for reviewing existing PRs rather than im
 
 | Activity | Override |
 |----------|----------|
-| [Start Work Package](activities/README.md#01-start-work-package) (01) | Skip branch/PR creation; capture existing PR reference and Jira ticket |
-| [Design Philosophy](activities/README.md#02-design-philosophy) (02) | Assess ticket completeness; always skip elicitation |
-| [Implementation Analysis](activities/README.md#05-implementation-analysis) (05) | Checkout base branch to analyze pre-change state; document expected changes |
-| [Post-Implementation Review](activities/README.md#09-post-implementation-review) (09) | Compare PR changes against expected changes from analysis |
-| [Validate](activities/README.md#10-validate) (10) | Document failures as findings; do not fix |
-| [Strategic Review](activities/README.md#11-strategic-review) (11) | Document cleanup recommendations; do not apply. Override transition to submit-for-review |
-| [Submit for Review](activities/README.md#12-submit-for-review) (12) | Consolidate all review findings; post PR review comments. Override transition to workflow-end |
-| [Complete](activities/README.md#13-complete) (13) | Skip ADR and documentation steps; retrospective only |
+| [Start Work Package](./activities/README.md#01-start-work-package) (01) | Skip branch/PR creation; capture existing PR reference and Jira ticket |
+| [Design Philosophy](./activities/README.md#02-design-philosophy) (02) | Assess ticket completeness; always skip elicitation |
+| [Implementation Analysis](./activities/README.md#05-implementation-analysis) (05) | Checkout base branch to analyze pre-change state; document expected changes |
+| [Post-Implementation Review](./activities/README.md#09-post-implementation-review) (09) | Compare PR changes against expected changes from analysis |
+| [Validate](./activities/README.md#10-validate) (10) | Document failures as findings; do not fix |
+| [Strategic Review](./activities/README.md#11-strategic-review) (11) | Document cleanup recommendations; do not apply. Override transition to submit-for-review |
+| [Submit for Review](./activities/README.md#12-submit-for-review) (12) | Consolidate all review findings; post PR review comments. Override transition to workflow-end |
+| [Complete](./activities/README.md#13-complete) (13) | Skip ADR and documentation steps; retrospective only |
 
 **Review mode flow:**
 
@@ -179,13 +179,13 @@ This workflow supports **review mode** for reviewing existing PRs rather than im
 start-work-package → design-philosophy → [research →] implementation-analysis → plan-prepare → assumptions-review → post-impl-review → validate → strategic-review → submit-for-review → END
 ```
 
-**See [REVIEW-MODE.md](REVIEW-MODE.md) for complete documentation.**
+**See [REVIEW-MODE.md](./REVIEW-MODE.md) for complete documentation.**
 
 ---
 
 ## Artifact Prefixing
 
-Each review and documentation activity declares an `artifactPrefix` matching its activity number. Skills produce bare artifact names (e.g., `code-review.md`) and the activity's prefix is prepended at write time.
+Each review and documentation activity declares an `artifactPrefix` matching its activity number. Techniques produce bare artifact names (e.g., `code-review.md`) and the activity's prefix is prepended at write time.
 
 **Convention:**
 
@@ -197,11 +197,11 @@ Each review and documentation activity declares an `artifactPrefix` matching its
 
 | Activity | Prefix | Bare Name | Final Name |
 |----------|--------|-----------|------------|
-| [Post-Implementation Review](activities/README.md#09-post-implementation-review) | `09` | `code-review.md` | `09-code-review.md` |
-| [Post-Implementation Review](activities/README.md#09-post-implementation-review) | `09` | `test-suite-review.md` | `09-test-suite-review.md` |
-| [Strategic Review](activities/README.md#11-strategic-review) | `11` | `strategic-review-1.md` | `11-strategic-review-1.md` |
-| [Strategic Review](activities/README.md#11-strategic-review) | `11` | `architecture-summary.md` | `11-architecture-summary.md` |
-| [Complete](activities/README.md#13-complete) | `13` | `COMPLETE.md` | `13-COMPLETE.md` |
+| [Post-Implementation Review](./activities/README.md#09-post-implementation-review) | `09` | `code-review.md` | `09-code-review.md` |
+| [Post-Implementation Review](./activities/README.md#09-post-implementation-review) | `09` | `test-suite-review.md` | `09-test-suite-review.md` |
+| [Strategic Review](./activities/README.md#11-strategic-review) | `11` | `strategic-review-1.md` | `11-strategic-review-1.md` |
+| [Strategic Review](./activities/README.md#11-strategic-review) | `11` | `architecture-summary.md` | `11-architecture-summary.md` |
+| [Complete](./activities/README.md#13-complete) | `13` | `COMPLETE.md` | `13-COMPLETE.md` |
 
 This convention ensures artifacts are naturally sorted by workflow phase when listed in the planning folder.
 
@@ -213,13 +213,13 @@ The workflow contains seven feedback loops that enable iterative quality improve
 
 | From | To | Condition | Purpose |
 |------|----|-----------|---------|
-| [Assumptions Review](activities/README.md#07-assumptions-review) (07) | [Assumptions Review](activities/README.md#07-assumptions-review) (07) | `needs_further_discussion == true` | Minor corrections — re-prepare and re-post plan and assumptions comment |
-| [Assumptions Review](activities/README.md#07-assumptions-review) (07) | [Codebase Comprehension](activities/README.md#codebase-comprehension-optional) (14) | `needs_comprehension == true` | Stakeholder feedback reveals codebase understanding gaps — deepen comprehension before revising plan |
-| [Assumptions Review](activities/README.md#07-assumptions-review) (07) | [Plan & Prepare](activities/README.md#06-plan--prepare) (06) | `needs_plan_revision == true` | Stakeholder feedback requires significant approach revision |
-| [Post-Implementation Review](activities/README.md#09-post-implementation-review) (09) | [Implement](activities/README.md#08-implement) (08) | `has_critical_blocker == true` | Critical blocker found during review requires code fix before proceeding |
-| [Strategic Review](activities/README.md#11-strategic-review) (11) | [Plan & Prepare](activities/README.md#06-plan--prepare) (06) | `review_passed == false` | Significant rework needed — changes are not minimal or focused |
-| [Submit for Review](activities/README.md#12-submit-for-review) (12) | [Plan & Prepare](activities/README.md#06-plan--prepare) (06) | `review_requires_changes == true` | Reviewer requested significant changes requiring re-planning |
-| [Requirements Elicitation](activities/README.md#03-requirements-elicitation-optional) (03) | [Requirements Elicitation](activities/README.md#03-requirements-elicitation-optional) (03) | `elicitation_complete == false` | Elicitation incomplete — self-loop for further stakeholder discussion |
+| [Assumptions Review](./activities/README.md#07-assumptions-review) (07) | [Assumptions Review](./activities/README.md#07-assumptions-review) (07) | `needs_further_discussion == true` | Minor corrections — re-prepare and re-post plan and assumptions comment |
+| [Assumptions Review](./activities/README.md#07-assumptions-review) (07) | [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) (14) | `needs_comprehension == true` | Stakeholder feedback reveals codebase understanding gaps — deepen comprehension before revising plan |
+| [Assumptions Review](./activities/README.md#07-assumptions-review) (07) | [Plan & Prepare](./activities/README.md#06-plan--prepare) (06) | `needs_plan_revision == true` | Stakeholder feedback requires significant approach revision |
+| [Post-Implementation Review](./activities/README.md#09-post-implementation-review) (09) | [Implement](./activities/README.md#08-implement) (08) | `has_critical_blocker == true` | Critical blocker found during review requires code fix before proceeding |
+| [Strategic Review](./activities/README.md#11-strategic-review) (11) | [Plan & Prepare](./activities/README.md#06-plan--prepare) (06) | `review_passed == false` | Significant rework needed — changes are not minimal or focused |
+| [Submit for Review](./activities/README.md#12-submit-for-review) (12) | [Plan & Prepare](./activities/README.md#06-plan--prepare) (06) | `review_requires_changes == true` | Reviewer requested significant changes requiring re-planning |
+| [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) (03) | [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) (03) | `elicitation_complete == false` | Elicitation incomplete — self-loop for further stakeholder discussion |
 
 ```mermaid
 graph LR
@@ -332,7 +332,7 @@ The following 7 rules are declared at the workflow level and apply to all activi
 4. One task at a time — Complete current work before starting new work.
 5. Explicit approval — Get clear "yes" or "proceed" before major actions (within activity checkpoints only — NOT between activities).
 6. Decision points require user choice — When issues are found, user decides whether to proceed or loop back.
-7. **ORCHESTRATION MODEL:** This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (skill: `meta-orchestrator` from `meta/skills`) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (skill: `activity-worker` from `meta/skills`) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a `checkpoint_pending` result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. **CONSTRAINT:** Only ONE level of sub-agent indirection (the worker).
+7. **ORCHESTRATION MODEL:** This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (role: `meta-orchestrator`, techniques from `meta/techniques`) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (role: `activity-worker`, techniques from `meta/techniques`) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a `checkpoint_pending` result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. **CONSTRAINT:** Only ONE level of sub-agent indirection (the worker).
 
 ---
 
@@ -351,45 +351,18 @@ The following 7 rules are declared at the workflow level and apply to all activi
 
 | Activity | Estimated Time |
 |----------|---------------|
-| [01 Start Work Package](activities/README.md#01-start-work-package) | 10-20 min |
-| [02 Design Philosophy](activities/README.md#02-design-philosophy) | 10-20 min |
-| [Codebase Comprehension](activities/README.md#codebase-comprehension-optional) | 20-45 min |
-| [03 Requirements Elicitation](activities/README.md#03-requirements-elicitation-optional) | 15-30 min |
-| [04 Research](activities/README.md#04-research-optional) | 20-45 min |
-| [05 Implementation Analysis](activities/README.md#05-implementation-analysis) | 10-20 min |
-| [06 Plan & Prepare](activities/README.md#06-plan--prepare) | 20-45 min |
-| [07 Assumptions Review](activities/README.md#07-assumptions-review) | 10-20 min |
-| [08 Implement](activities/README.md#08-implement) | 1-4 hours |
-| [09 Post-Implementation Review](activities/README.md#09-post-implementation-review) | 15-30 min |
-| [10 Validate](activities/README.md#10-validate) | 15-30 min |
-| [11 Strategic Review](activities/README.md#11-strategic-review) | 15-30 min |
-| [12 Submit for Review](activities/README.md#12-submit-for-review) | 10-15 min |
-| [13 Complete](activities/README.md#13-complete) | 30-60 min |
+| [01 Start Work Package](./activities/README.md#01-start-work-package) | 10-20 min |
+| [02 Design Philosophy](./activities/README.md#02-design-philosophy) | 10-20 min |
+| [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) | 20-45 min |
+| [03 Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) | 15-30 min |
+| [04 Research](./activities/README.md#04-research-optional) | 20-45 min |
+| [05 Implementation Analysis](./activities/README.md#05-implementation-analysis) | 10-20 min |
+| [06 Plan & Prepare](./activities/README.md#06-plan--prepare) | 20-45 min |
+| [07 Assumptions Review](./activities/README.md#07-assumptions-review) | 10-20 min |
+| [08 Implement](./activities/README.md#08-implement) | 1-4 hours |
+| [09 Post-Implementation Review](./activities/README.md#09-post-implementation-review) | 15-30 min |
+| [10 Validate](./activities/README.md#10-validate) | 15-30 min |
+| [11 Strategic Review](./activities/README.md#11-strategic-review) | 15-30 min |
+| [12 Submit for Review](./activities/README.md#12-submit-for-review) | 10-15 min |
+| [13 Complete](./activities/README.md#13-complete) | 30-60 min |
 | **Total (full workflow)** | **~4-10 hours** |
-
----
-
-## Appendix: Recent Changes
-
-### v3.13.0 (2026-05-21)
-
-- Merge of the gitnexus-utilisation work (v3.12.0) with the DCO-policy-compatibility work that landed on the `workflows` branch in parallel. Combined feature set:
-  - All gitnexus-discipline additions retained (`gitnexus_indexed` variable, preflight step on post-impl-review, gitnexus tool references across 15+ analysis skills, `audit-*` phases on workflow-design's protocol).
-  - All DCO additions retained (`context-scope-declaration` step in research, dco-provenance skill in skills index, Co-authored-by / harness-aware commit trailers, provenance log on PR description).
-- Drop the orphan `commit-signatures` protocol block from review-strategy (already removed on `workflows` via the DCO merge cleanup; no further role).
-
-### v3.12.0 (2026-05-21)
-
-- Add `gitnexus_indexed` workflow variable, set to true by `start-work-package`'s `analyze-reference-with-gitnexus` step. Downstream gitnexus-dependent steps gate on this variable (e.g., post-impl-review's `gitnexus-detect-changes-preflight` step now uses `when: gitnexus_indexed == true` instead of `required: false` + text-gating).
-- Trim AP-36 description rationale tails (gitnexus-discipline rule in implement-task; classify-and-route-findings step in post-impl-review).
-- Drop AP-40 positional fact from post-impl-review rules (canonical in transitions table).
-- Rephrase AP-39-violating validate-action messages in plan-prepare to detection-only (no `gh auth login` / `gpgconf --launch` directives).
-- Correct workflow-level description reference: `work-packages.toon` → `work-packages workflow`.
-
-### v3.11.0 (2026-05-21)
-
-- Strengthen gitnexus utilisation across 15 analysis-heavy skills and the post-impl-review activity. Adds `pre-edit-impact-check` and `post-edit-verification` protocol phases on `implement-task` (with a `gitnexus-discipline` MUST rule), folds graph-aware analysis bullets into the protocols of `review-code`, `review-test-suite`, `review-diff`, `review-strategy`, `analyze-implementation`, `summarize-architecture`, `reconcile-assumptions`, and 7 medium-leverage skills.
-- Add a `gitnexus-detect-changes-preflight` step at the start of `post-impl-review` to bound subsequent reviews by the changed-symbol set.
-- Resource 27 (`gitnexus-reference.md`) gains a "Work-package Integration Patterns" section documenting the eight integration patterns the skills above reference.
-
-Surfaced by a self-review pass against workflow-design's design principles and anti-pattern catalog.

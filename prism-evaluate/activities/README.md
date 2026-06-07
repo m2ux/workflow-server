@@ -6,7 +6,7 @@
 
 Linear activity sequence with two blocking checkpoints.
 
-| # | ID | Name | Skill | Checkpoint | Artifacts |
+| # | ID | Name | Technique | Checkpoint | Artifacts |
 |---|-----|------|-------|------------|-----------|
 | 00 | `scope-definition` | Define Evaluation Scope | plan-evaluation | confirm-scope | — |
 | 01 | `dimension-planning` | Plan Dimension Analysis | plan-evaluation | confirm-plan | evaluation-plan.md |

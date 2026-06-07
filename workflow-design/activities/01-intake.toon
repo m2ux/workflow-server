@@ -10,7 +10,7 @@ recognition[6]:
   - build a workflow
   - update workflow
   - modify workflow
-skills:
+techniques:
   supporting[1]:
     - workflow-design
 required: true
@@ -29,7 +29,7 @@ steps[10]:
       value: true
   - id: enumerate-workflow-contents
     name: Enumerate Workflow Contents
-    description: "Structural inventory of the target: file counts and entity counts (activities, skills, resources, checkpoints, transitions)."
+    description: "Structural inventory of the target: file counts and entity counts (activities, techniques, resources, checkpoints, transitions)."
     condition:
       type: simple
       variable: is_review_mode
@@ -53,7 +53,7 @@ steps[10]:
       value: true
   - id: parse-change-request
     name: Parse Change Request
-    description: "Categorised change request derived from the user's description (add/modify activity, skill, resource, metadata, or structural refactor)."
+    description: "Categorised change request derived from the user's description (add/modify activity, technique, resource, metadata, or structural refactor)."
     condition:
       type: simple
       variable: is_update_mode

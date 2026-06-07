@@ -3,7 +3,7 @@ version: 1.1.0
 name: Define Audit Scope
 description: "Collect the audit target, description, and output path."
 problem: "The audit requires a confirmed target codebase, a clear description of audit goals and focus areas, and an organised output directory before analysis can begin."
-skills:
+techniques:
   supporting[1]:
     - compose-audit-prompt
 steps[5]:

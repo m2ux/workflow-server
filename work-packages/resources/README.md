@@ -2,7 +2,7 @@
 
 > Part of the [Work Packages Workflow](../README.md)
 
-The workflow includes 7 resources that provide templates and guidance for skills and activities.
+The workflow includes 7 resources that provide templates and guidance for techniques and activities.
 
 | # | Resource ID | Title | Purpose |
 |---|-------------|-------|---------|
@@ -13,15 +13,3 @@ The workflow includes 7 resources that provide templates and guidance for skills
 | 04 | `prioritization-framework` | Prioritization Framework | Framework for evaluating and ordering packages |
 | 05 | `roadmap-template` | Roadmap Template | Templates for finalized roadmap documentation |
 | 06 | `workflow-triggering-protocol` | Workflow Triggering Protocol | How to trigger and manage work-package workflow instances |
-
-## Resource → Skill Mapping
-
-| Resource | Referenced By Skill |
-|----------|-------------------|
-| 00 | (folder-setup activity, via artifact-management skill) |
-| 01 | `analyze-initiative-context` |
-| 02 | `analyze-initiative-context` |
-| 03 | `plan-work-package-scope` |
-| 04 | `prioritize-packages` |
-| 05 | `document-roadmap` |
-| 06 | `orchestrate-package-execution` |

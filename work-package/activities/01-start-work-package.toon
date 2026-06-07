@@ -15,14 +15,18 @@ estimatedTime: 10-20m
 entryActions[1]:
   - action: log
     message: Starting issue management
-skills:
-  supporting[6]:
-    - atlassian-operations
+techniques:
+  supporting[10]:
     - create-issue
     - github-cli-protocol
-    - gitnexus-operations
-    - manage-artifacts
-    - manage-git
+    - atlassian-operations
+    - "gitnexus-operations::analyze"
+    - "manage-git::update-reference-submodules"
+    - "manage-git::detect-merge-strategy"
+    - "manage-git::create-worktree"
+    - "version-control::initialize-folder"
+    - "manage-artifacts::create-readme"
+    - "manage-artifacts::write-artifact"
 steps[27]:
   - id: detect-review-mode
     name: Detect Review Mode
@@ -58,7 +62,7 @@ steps[27]:
     condition:
       type: simple
       variable: reference_path
-      operator: notExists
+      operator: exists
   - id: analyze-reference-with-gitnexus
     name: Re-index Reference with GitNexus
     description: "gitnexus-operations::analyze(repo_path: {reference_path}). For a monorepo reference, this MUST be invoked at the monorepo root — gitnexus walks the working tree from there and indexes every source file, including content inside submodule directories, into a single unified index keyed under the monorepo's name. Do not analyze each submodule separately. For a standalone reference, repo_path is simply the repo root. Runs after update-reference-submodules so the index reflects the freshly-pulled reference content. Subsequent activities (codebase-comprehension, implementation-analysis, plan-prepare) read this index for impact and context queries."
@@ -77,7 +81,7 @@ steps[27]:
   - id: detect-merge-strategy
     name: Detect Merge Strategy
     description: "Detect whether the reference repo permits squash merges via the GitHub API (allow_squash_merge). Sets squash_merge_available for downstream DCO merge path routing — drives the merge-strategy-reminder in submit-for-review."
-    skill: manage-git
+    technique: manage-git
     actions[1]:
       - action: set
         target: squash_merge_available
@@ -95,7 +99,7 @@ steps[27]:
         description: "Set to 'github' or 'jira' based on key format detection"
   - id: verify-jira-issue
     name: Verify Jira Issue
-    description: "Load the atlassian-operations supporting skill. Call getAccessibleAtlassianResources to obtain cloudId, then call getJiraIssue to verify the issue exists. Capture issue_number and issue_url."
+    description: "Load the atlassian-operations supporting technique. Call getAccessibleAtlassianResources to obtain cloudId, then call getJiraIssue to verify the issue exists. Capture issue_number and issue_url."
     condition:
       type: simple
       variable: issue_platform
@@ -104,7 +108,7 @@ steps[27]:
     actions[1]:
       - action: validate
         target: jira_cloud_id != null
-        message: "Atlassian cloudId not set. Load the atlassian-operations skill and call getAccessibleAtlassianResources before any Jira tool. The cloudId is a runtime prerequisite for every Jira API call; this guard catches the failure mode where another step invokes a Jira tool without first loading atlassian-operations."
+        message: "Atlassian cloudId not set. Load the atlassian-operations technique and call getAccessibleAtlassianResources before any Jira tool. The cloudId is a runtime prerequisite for every Jira API call; this guard catches the failure mode where another step invokes a Jira tool without first loading atlassian-operations."
   - id: verify-github-issue
     name: Verify GitHub Issue
     description: "Run 'gh issue view <number>' to verify the issue exists. Capture issue_number and issue_url."
@@ -145,7 +149,7 @@ steps[27]:
           value: false
   - id: create-github-issue-for-jira
     name: Create GitHub issue for Jira ticket
-    description: "Create a GitHub issue in the target repo that mirrors the Jira ticket. Set issue_platform to 'github' temporarily so the create-issue skill routes to the GitHub protocol. The issue title should match the Jira ticket summary. The issue body should include a reference to the Jira ticket URL. After creation capture github_issue_number and github_issue_url, then restore issue_platform to 'jira'."
+    description: "Create a GitHub issue in the target repo that mirrors the Jira ticket. Set issue_platform to 'github' temporarily so the create-issue technique routes to the GitHub protocol. The issue title should match the Jira ticket summary. The issue body should include a reference to the Jira ticket URL. After creation capture github_issue_number and github_issue_url, then restore issue_platform to 'jira'."
     condition:
       type: simple
       variable: needs_github_issue_creation
@@ -153,7 +157,7 @@ steps[27]:
       value: true
   - id: create-issue
     name: Create Issue
-    description: "Create issue in selected platform using issue-management skill. Skill routes to GitHub (gh CLI) or Jira (Atlassian MCP) protocol based on issue_platform."
+    description: "Create issue in selected platform using issue-management technique. Technique routes to GitHub (gh CLI) or Jira (Atlassian MCP) protocol based on issue_platform."
     checkpoint: platform-selection
     condition:
       type: simple
@@ -168,6 +172,13 @@ steps[27]:
       variable: issue_skipped
       operator: "!="
       value: true
+  - id: initialize-planning-folder
+    name: Initialize Planning Folder
+    description: "Invoke version-control::initialize-folder(initiative_name: <kebab-case slug from {issue_title}>) from the target component repo (your CWD is target_path) to create this work package's planning subfolder .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/. Set planning_folder_path to its returned planning_folder_path output — every downstream activity writes its artifacts THERE via manage-artifacts::write-artifact (one per-work-package subfolder; never the planning root, never relative to an arbitrary CWD). Then create README.md in that folder from the attached resource readme template via manage-artifacts::create-readme — populate header fields, Executive Summary, Links table, and Progress table from issue context; leave Problem Overview and Solution Overview as placeholder text. Must precede any step that writes into the planning folder."
+    actions[1]:
+      - action: set
+        target: planning_folder_path
+        description: "This work package's planning subfolder, returned by version-control::initialize-folder: target-relative .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/. Canonical write location for ALL of this work package's artifacts (with the per-activity artifactPrefix applied to each filename)."
   - id: present-problem-overview
     name: Present Problem Overview
     description: "Synthesize and present a plain-language problem overview to the user. Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders. The first paragraph should describe what the system currently does and why that is problematic. The second paragraph should describe the consequences — what can go wrong and why it matters. Do not use jargon without explanation. Base the overview on the issue details, ticket description, and any context gathered during this activity. After generating the overview, write it into the planning folder README.md by replacing the placeholder text under the '## Problem Overview' section."
@@ -235,7 +246,7 @@ steps[27]:
         description: "Set to true when an existing PR is found for the current branch"
   - id: create-pr
     name: Create Draft PR
-    description: "INSIDE target_path: Create draft PR linked to issue. PR title should reference issue number (for Jira, include the issue key so the Development panel auto-links the PR). The PR is against the target's default branch. Use attached resource 12 (pr-description) for the PR description template — use the 'Initial' template since implementation has not started yet. CRITICAL: Resolve all repository URLs from git remotes — run 'git remote get-url origin' in the parent repo for the engineering link and in target_path for the target repo link. NEVER infer or guess org/repo names. After creation, self-assign the PR to the current GitHub user: run 'gh pr edit <pr_number> --add-assignee @me' inside target_path. Capture pr_number and pr_url for the link-pr-to-ticket step."
+    description: "INSIDE target_path: Create draft PR linked to issue. PR title should reference issue number (for Jira, include the issue key so the Development panel auto-links the PR). The PR is against the target's default branch. Use attached resource pr-description for the PR description template — use the 'Initial' template since implementation has not started yet. CRITICAL: Resolve all repository URLs from git remotes — run 'git remote get-url origin' in the parent repo for the engineering link and in target_path for the target repo link. NEVER infer or guess org/repo names. After creation, self-assign the PR to the current GitHub user: run 'gh pr edit <pr_number> --add-assignee @me' inside target_path. Capture pr_number and pr_url for the link-pr-to-ticket step."
     checkpoint: pr-creation
     condition:
       type: and
@@ -261,7 +272,7 @@ steps[27]:
         description: "Mark PR as existing once successfully created so downstream activities (validate, strategic-review, submit-for-review) see the correct state"
   - id: link-pr-to-ticket
     name: Link PR to Ticket
-    description: "Record the PR reference on the issue using the ticket platform's native mechanism so the PR appears in the issue's linked-PRs view. (1) For Jira: the PR is auto-linked via the Development panel when the branch name and PR title contain the issue key (already enforced upstream) — verify by calling getJiraIssue and confirming the PR is detectable. As a durable fallback that does not depend on the Atlassian-GitHub integration, also add a comment to the issue via addCommentToJiraIssue with body 'Pull Request: <pr_url>'. If the project exposes a custom 'Pull Request URL' field, prefer editJiraIssue to set that field instead of (or in addition to) the comment. (2) For GitHub: the PR body's 'Closes #<issue_number>' reference (from the Initial PR template in resource 12) already creates the native cross-link — verify the issue's timeline shows the PR reference via 'gh issue view <issue_number>'. (3) If issue_skipped is true, skip this step."
+    description: "Record the PR reference on the issue using the ticket platform's native mechanism so the PR appears in the issue's linked-PRs view. (1) For Jira: the PR is auto-linked via the Development panel when the branch name and PR title contain the issue key (already enforced upstream) — verify by calling getJiraIssue and confirming the PR is detectable. As a durable fallback that does not depend on the Atlassian-GitHub integration, also add a comment to the issue via addCommentToJiraIssue with body 'Pull Request: <pr_url>'. If the project exposes a custom 'Pull Request URL' field, prefer editJiraIssue to set that field instead of (or in addition to) the comment. (2) For GitHub: the PR body's 'Closes #<issue_number>' reference (from the Initial PR template in resource pr-description) already creates the native cross-link — verify the issue's timeline shows the PR reference via 'gh issue view <issue_number>'. (3) If issue_skipped is true, skip this step."
     condition:
       type: and
       conditions[3]:
@@ -276,9 +287,6 @@ steps[27]:
           variable: issue_skipped
           operator: "!="
           value: true
-  - id: initialize-planning-folder
-    name: Initialize Planning Folder
-    description: "Create planning folder at .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/ using artifact-management skill. Derive initiative-name from issue title. Use attached resource 01 (readme) for the README.md template — populate header fields, Executive Summary, Links table, and Progress table from issue context. Leave Problem Overview and Solution Overview as placeholder text."
   - id: determine-next-activity
     name: Determine Next Activity
     description: "Based on issue details, determine if requirements elicitation is needed"

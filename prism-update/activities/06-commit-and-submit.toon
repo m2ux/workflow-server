@@ -3,7 +3,7 @@ version: 1.0.0
 name: Commit and Submit
 description: "Submit changes as a pull request."
 problem: Changes need to be submitted as a PR for review
-skills:
+techniques:
   supporting[1]:
     - sync-resources
 

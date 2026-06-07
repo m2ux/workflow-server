@@ -10,7 +10,7 @@
 
 **Why use this workflow instead of prompting directly?**
 
-- **Depth.** Each prism encodes a multi-step reasoning chain validated across hundreds of experiments (representing $$$$ in compute). The L12 prism, for example, forces the model through:
+- **Depth.** Each prism encodes a multi-step reasoning chain validated across hundreds of experiments (representing \$\$\$\$ in compute). The L12 prism, for example, forces the model through:
 ```claim → dialectic → concealment → improvement → invariant → inversion → conservation law → meta-law``` — producing findings that a single prompt never reaches.
 - **Independence.** The full-prism pipeline runs three passes in separate context windows. The adversarial pass has never seen the structural analysis being generated — it receives only the final text. This prevents the model from defending its own prior output, producing genuine self-correction.
 - **Breadth.** Portfolio mode runs multiple lenses that each ask a fundamentally different question about the same target. Research across real codebases confirms zero overlap between lenses — each finds properties the others are structurally blind to.
@@ -25,7 +25,7 @@
 
 ## Concepts
 
-Definitions of the analytical [concepts](concept-lexicon.md) used within the Prism workflow (49 entries), including: [conservation law](concept-lexicon.md#conservation-law), [meta-law](concept-lexicon.md#meta-law), [structural invariant](concept-lexicon.md#structural-invariant), [concealment mechanism](concept-lexicon.md#concealment-mechanism), [code geology](concept-lexicon.md#code-geology), [calcification](concept-lexicon.md#calcification), [perturbation-response](concept-lexicon.md#perturbation-response), [confabulation](concept-lexicon.md#confabulation), [epistemic typing](concept-lexicon.md#epistemic-typing), [exploit chain](concept-lexicon.md#exploit-chain), and others.
+Definitions of the analytical [concepts](./concept-lexicon.md) used within the Prism workflow (49 entries), including: [conservation law](./concept-lexicon.md#conservation-law), [meta-law](./concept-lexicon.md#meta-law), [structural invariant](./concept-lexicon.md#structural-invariant), [concealment mechanism](./concept-lexicon.md#concealment-mechanism), [code geology](./concept-lexicon.md#code-geology), [calcification](./concept-lexicon.md#calcification), [perturbation-response](./concept-lexicon.md#perturbation-response), [confabulation](./concept-lexicon.md#confabulation), [epistemic typing](./concept-lexicon.md#epistemic-typing), [exploit chain](./concept-lexicon.md#exploit-chain), and others.
 
 ---
 
@@ -156,9 +156,9 @@ graph TD
 
 ---
 
-## Skills
+## Techniques
 
-| # | Skill | Capability | Role |
+| # | Technique | Capability | Role |
 |---|-------|------------|------|
 | 00 | `structural-analysis` | Single-pass L12 structural analysis | Standalone / Worker |
 | 01 | `full-prism` | Execute one isolated pass of the Full Prism pipeline | Worker |
@@ -168,7 +168,7 @@ graph TD
 | 05 | `behavioral-pipeline` | Execute 4+1 behavioral pipeline with labeled synthesis | Worker |
 | 06 | `generate-report` | Produce clean final report from analysis artifacts | Worker |
 
-**Detailed documentation:** See [skills/README.md](skills/README.md) for protocol flows and skill details.
+**Detailed documentation:** See [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md) for the inherited base contract; each technique's `techniques/<slug>.md` file documents its protocol flow.
 
 ---
 
@@ -197,7 +197,7 @@ Resources are indexed markdown files containing lens prompts. Each lens encodes 
 
 Indices 03–05 are deprecated (upstream general L12 variants removed). Index 49 (severity-rubric) has been removed.
 
-**Detailed documentation:** See [resources/README.md](resources/README.md) for the full catalog with model sensitivity, quality scores, and recommended combinations.
+**Detailed documentation:** See [resources/README.md](./resources/README.md) for the full catalog with model sensitivity, quality scores, and recommended combinations.
 
 ---
 
@@ -291,15 +291,15 @@ workflows/prism/
 │   ├── 05-behavioral-synthesis-pass.toon # Behavioral synthesis (behavioral only)
 │   ├── 06-audit-finalize.toon            # Audit report finalization (security audits only)
 │   └── 07-generate-report.toon           # Generate clean REPORT.md from analysis artifacts
-├── skills/
-│   ├── 00-structural-analysis.toon       # Single-pass L12
-│   ├── 01-full-prism.toon               # Full Prism worker pass
-│   ├── 02-portfolio-analysis.toon        # Portfolio lenses (40+ lenses)
-│   ├── 03-plan-analysis.toon             # Analysis planning (58 goal mappings)
-│   ├── 04-orchestrate-prism.toon         # Pipeline orchestration
-│   ├── 05-behavioral-pipeline.toon       # Behavioral pipeline worker pass
-│   ├── 06-generate-report.toon           # Report generation from analysis artifacts
-│   └── README.md
+├── techniques/
+│   ├── TECHNIQUE.md                      # Inherited base contract
+│   ├── structural-analysis.md            # Single-pass L12
+│   ├── full-prism.md                     # Full Prism worker pass
+│   ├── portfolio-analysis.md             # Portfolio lenses (40+ lenses)
+│   ├── plan-analysis.md                  # Analysis planning (58 goal mappings)
+│   ├── orchestrate-prism.md              # Pipeline orchestration
+│   ├── behavioral-pipeline.md            # Behavioral pipeline worker pass
+│   └── generate-report.md                # Report generation from analysis artifacts
 └── resources/
     ├── 00–02: L12 pipeline
     ├── 06–11: Portfolio lenses
