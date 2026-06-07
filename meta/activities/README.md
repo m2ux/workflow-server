@@ -37,8 +37,8 @@ Five sequential activities that run inside the meta session: identify the target
 
 **Steps:**
 
-1. **start-or-resume-session** — `workflow-engine::create-session(parent_session_index, workflow_id)`. Capture `client_session_index` from the response. The server appends the child under `meta.triggeredWorkflows[N].state` (or creates a new top-level workspace folder when meta is transient).
-2. **derive-planning-folder** — Conditional on a fresh session: `version-control::initialize-folder` to create the planning folder on disk.
+1. **derive-planning-slug** — Conditional on a fresh session: `version-control::initialize-folder` derives the planning slug (`YYYY-MM-DD-{initiative_name}`) and binds `client_planning_slug`. It does NOT create a folder — the server owns folder creation under its workspace `.engineering` root.
+2. **start-or-resume-session** — `workflow-engine::create-session(parent_session_index, workflow_id, planning_slug)`. Capture `client_session_index` and the server-resolved absolute `planning_folder_path` from the response. The server appends the child under `meta.triggeredWorkflows[N].state` (or promotes the transient meta into a workspace folder named by the slug), and returns the canonical artifact location.
 
 **Transitions:** Default to [Resolve Target](#02-resolve-target).
 

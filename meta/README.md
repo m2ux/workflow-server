@@ -143,7 +143,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | `has_saved_state` | boolean | A saved client session matched the request |
 | `saved_planning_slug` | string | Planning slug of the matched saved client session — passed to `start_session` to resume |
 | `is_resuming` | boolean | User chose to resume the matched saved session |
-| `planning_folder_path` | string | Absolute path to the client workflow's planning folder |
+| `planning_folder_path` | string | Canonical absolute path to the client workflow's planning folder, resolved by the server under its workspace `.engineering` root — the single artifact location, never anchored to `target_path`/CWD |
 | `client_session_index` | string | 6-character base32 `session_index` returned by `start_session` for the dispatched client workflow |
 | `client_planning_slug` | string | Planning slug of the dispatched client workflow's planning folder — stable identifier the server uses to locate `session.json` |
 | `is_monorepo` | boolean | Target is a submodule monorepo |

@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 4.0.0
+  version: 4.1.0
   order: 1
   legacy_id: 1
 ---
@@ -87,7 +87,7 @@ Do NOT read workflow resource files directly from disk — load them via `get_re
 
 ### operational-discipline-artifact-location
 
-Most workflow artifacts — the per-activity planning documents — live in the TARGET component repository (your CWD is `target_path`) under the work package's planning subfolder (`.engineering/artifacts/planning/<work-package-subfolder>/`, exactly ONE per work package), provided by `planning_folder_path`; write them there, NEVER to the bare `planning/` root, and NEVER resolve the path relative to an arbitrary working directory other than `target_path`. A dedicated artifact class is the exception: when a technique declares its own artifact-directory input (with a default location), that technique is authoritative for where its artifacts live and writes them to that directory instead of the planning subfolder. Do not assume every artifact lands under `planning_folder_path`. Each artifact filename carries the server-provided `artifactPrefix` for its activity (e.g. `09-code-review.md`). This path is relative to the target repo and resolves correctly even when the target component is the workflow-server repository itself. A logical artifact (a given bare filename) has exactly ONE numbered instance — created by its first activity; any later activity that writes the same bare filename UPDATES that instance in place, preserving its original number, never minting a new prefix (only token-templated names like `strategic-review-{n}.md` create a numbered series).
+Most workflow artifacts — the per-activity planning documents — live under the work package's planning folder at the absolute `planning_folder_path` the server returns. That path is rooted at the server's OWN workspace `.engineering` root (the `.engineering` location supplied to the server at init — the monorepo root), NOT the target component repo or your CWD. There is exactly ONE such folder per work package. Write artifacts to that absolute path verbatim; NEVER to the bare `planning/` root, NEVER relative to `target_path` or any working directory, and NEVER compose or reconstruct the path yourself — the server is the single source of truth for it (read it back from `start_session` / `dispatch_child` / `create-session`). A dedicated artifact class is the exception: when a technique declares its own artifact-directory input (with a default location), that technique is authoritative for where its artifacts live and writes them to that directory instead of the planning subfolder. Do not assume every artifact lands under `planning_folder_path`. Each artifact filename carries the server-provided `artifactPrefix` for its activity (e.g. `09-code-review.md`). Because the path is the server-resolved absolute location, it resolves correctly even when the target component is the workflow-server repository itself, and even when `target_path` is a submodule or git worktree nested under the monorepo. A logical artifact (a given bare filename) has exactly ONE numbered instance — created by its first activity; any later activity that writes the same bare filename UPDATES that instance in place, preserving its original number, never minting a new prefix (only token-templated names like `strategic-review-{n}.md` create a numbered series).
 
 ### orchestrator-no-domain-work
 

@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.7.1
+version: 3.8.0
 name: Start Work Package
 description: "Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
@@ -16,7 +16,7 @@ entryActions[1]:
   - action: log
     message: Starting issue management
 techniques:
-  supporting[10]:
+  supporting[9]:
     - create-issue
     - github-cli-protocol
     - atlassian-operations
@@ -24,7 +24,6 @@ techniques:
     - "manage-git::update-reference-submodules"
     - "manage-git::detect-merge-strategy"
     - "manage-git::create-worktree"
-    - "version-control::initialize-folder"
     - "manage-artifacts::create-readme"
     - "manage-artifacts::write-artifact"
 steps[27]:
@@ -174,11 +173,11 @@ steps[27]:
       value: true
   - id: initialize-planning-folder
     name: Initialize Planning Folder
-    description: "Invoke version-control::initialize-folder(initiative_name: <kebab-case slug from {issue_title}>) from the target component repo (your CWD is target_path) to create this work package's planning subfolder .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/. Set planning_folder_path to its returned planning_folder_path output — every downstream activity writes its artifacts THERE via manage-artifacts::write-artifact (one per-work-package subfolder; never the planning root, never relative to an arbitrary CWD). Then create README.md in that folder from the attached resource readme template via manage-artifacts::create-readme — populate header fields, Executive Summary, Links table, and Progress table from issue context; leave Problem Overview and Solution Overview as placeholder text. Must precede any step that writes into the planning folder."
+    description: "Bind planning_folder_path to the canonical absolute path the server returned in the get_workflow summary (resolved under the server's OWN workspace .engineering root — the monorepo root supplied at init). The server has already created this folder and owns its session.json + .session-token; do NOT mkdir it yourself, and NEVER compose a target-relative .engineering/artifacts/planning path under target_path or any worktree/CWD. Every downstream activity writes its artifacts into this absolute path via manage-artifacts::write-artifact (one per-work-package folder; never the planning root). Then create README.md in that folder from the attached resource readme template via manage-artifacts::create-readme — populate header fields, Executive Summary, Links table, and Progress table from issue context; leave Problem Overview and Solution Overview as placeholder text. Must precede any step that writes into the planning folder."
     actions[1]:
       - action: set
         target: planning_folder_path
-        description: "This work package's planning subfolder, returned by version-control::initialize-folder: target-relative .engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/. Canonical write location for ALL of this work package's artifacts (with the per-activity artifactPrefix applied to each filename)."
+        description: "Canonical absolute planning folder for this work package, taken verbatim from the server's get_workflow summary (under the server's workspace .engineering root). Write location for ALL of this work package's artifacts (with the per-activity artifactPrefix applied to each filename). Never anchored to target_path or any CWD."
   - id: present-problem-overview
     name: Present Problem Overview
     description: "Synthesize and present a plain-language problem overview to the user. Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders. The first paragraph should describe what the system currently does and why that is problematic. The second paragraph should describe the consequences — what can go wrong and why it matters. Do not use jargon without explanation. Base the overview on the issue details, ticket description, and any context gathered during this activity. After generating the overview, write it into the planning folder README.md by replacing the placeholder text under the '## Problem Overview' section."
@@ -199,7 +198,7 @@ steps[27]:
         description: "Derived feature branch name: type/{issue-number}-{slugified-issue-title}"
   - id: compute-canonical-target-path
     name: Compute Canonical Target Path
-    description: "Compute target_path = '~/projects/work/{component_name}/{wp-slug}/' where wp-slug is the work-package planning slug 'YYYY-MM-DD-{initiative-name}' (same form as planning_folder_path). Set target_path. From this point on, every step that says 'inside target_path' refers to the worktree (not the component's checkout inside the monorepo). In review mode, derive wp-slug from the PR title or branch name."
+    description: "Compute target_path = '~/projects/work/{component_name}/{wp-slug}/' where wp-slug is the work-package planning slug 'YYYY-MM-DD-{initiative-name}' — the basename of planning_folder_path, keeping the worktree name aligned with the server's planning folder. Set target_path. From this point on, every step that says 'inside target_path' refers to the worktree (not the component's checkout inside the monorepo), and it is distinct from planning_folder_path, which always lives under the server's workspace .engineering root. In review mode, derive wp-slug from the PR title or branch name."
     actions[1]:
       - action: set
         target: target_path

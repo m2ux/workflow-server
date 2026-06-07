@@ -8,7 +8,7 @@ Each activity section below includes its purpose, techniques, steps, checkpoints
 
 ### 01. Start Work Package
 
-**Purpose:** Initialize the work package — detect monorepo vs standalone reference, refresh the reference (submodules + GitNexus), verify or create an issue, materialize a dedicated git worktree of the component at `~/projects/work/{component_name}/{wp-slug}/`, set up the feature branch + draft PR inside that worktree, and create the planning folder. In review mode: captures PR reference, checks out the PR's branch in the worktree, extracts associated Jira ticket.
+**Purpose:** Initialize the work package — detect monorepo vs standalone reference, refresh the reference (submodules + GitNexus), verify or create an issue, materialize a dedicated git worktree of the component at `~/projects/work/{component_name}/{wp-slug}/`, set up the feature branch + draft PR inside that worktree, and bind the server-resolved planning folder (created by the server under its workspace `.engineering` root, never inside the worktree). In review mode: captures PR reference, checks out the PR's branch in the worktree, extracts associated Jira ticket.
 
 **Techniques:**
 
