@@ -33,8 +33,9 @@ When the underlying naming structure is left to individual judgement, the defini
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
-| 02 | [Assumptions log](assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete (DP + Research reconciled; DP-7 resolved → research-only) |
+| 02 | [Assumptions log](assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete (DP + Research + Analysis reconciled; DP-7 → research-only; IA-1…IA-6 validated by code) |
 | 04 | [KB & web research](04-kb-research.md) | Naming-convention research synthesis (context scope: web-retrieval) | 20-45m | ✅ Complete |
+| 05 | [Implementation analysis](05-implementation-analysis.md) | Corpus conformance baselines, gap analysis, success criteria | 10-20m | ✅ Complete |
 | 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
 | 05 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
 | — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |

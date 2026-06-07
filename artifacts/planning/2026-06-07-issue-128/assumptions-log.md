@@ -13,15 +13,17 @@
 |------------|-------------|-----------|-----------|----------|
 | Design Philosophy | 6 | — | 1 | — |
 | Research | 6 | — | — | — |
-| **Total** | **12** | **—** | **1** | **—** |
+| Implementation Analysis | 6 | — | — | — |
+| **Total** | **18** | **—** | **1** | **—** |
 
-> "Confirmed/Corrected/Deferred" track the user-review outcome. **Design Philosophy:** after reconciliation, 5 of the 6 are resolved by code analysis (4 Validated, 1 Partially Validated) and 1 (DP-7, path selection) was resolved by the user at the `workflow-path-selected` checkpoint — the user chose **research-only**, correcting the agent's skip-optional recommendation. **Research:** all 6 research-phase assumptions (R-1…R-6) classify as code-analyzable and were resolved through targeted corpus analysis in reconciliation (6 Validated) — no open stakeholder-dependent assumptions remain, so the research-assumption interview is non-interactive.
+> "Confirmed/Corrected/Deferred" track the user-review outcome. **Design Philosophy:** after reconciliation, 5 of the 6 are resolved by code analysis (4 Validated, 1 Partially Validated) and 1 (DP-7, path selection) was resolved by the user at the `workflow-path-selected` checkpoint — the user chose **research-only**, correcting the agent's skip-optional recommendation. **Research:** all 6 research-phase assumptions (R-1…R-6) classify as code-analyzable and were resolved through targeted corpus analysis in reconciliation (6 Validated) — no open stakeholder-dependent assumptions remain, so the research-assumption interview is non-interactive. **Implementation Analysis:** all 6 analysis-phase assumptions (IA-1…IA-6) classify as code-analyzable (they assert facts about the corpus census, baseline counts, deviation populations, and the binding model) and were resolved through targeted corpus analysis in a single reconciliation pass (6 Validated) — no open stakeholder-dependent assumptions remain, so the analysis-assumption interview is non-interactive.
 
 **Reconciliation scorecard:**
 
 ```
-Design Philosophy — Total: 6 | Validated: 4 | Invalidated: 0 | Partially Validated: 1 | Resolved-by-user: 1 | Open: 0
-Research          — Total: 6 | Validated: 6 | Invalidated: 0 | Partially Validated: 0 | Open: 0
+Design Philosophy      — Total: 6 | Validated: 4 | Invalidated: 0 | Partially Validated: 1 | Resolved-by-user: 1 | Open: 0
+Research               — Total: 6 | Validated: 6 | Invalidated: 0 | Partially Validated: 0 | Open: 0
+Implementation Analysis — Total: 6 | Validated: 6 | Invalidated: 0 | Partially Validated: 0 | Open: 0
 Convergence iterations: 1 (each phase) | Newly surfaced: 0
 ```
 
@@ -219,3 +221,96 @@ None. All six research-phase assumptions classify as code-analyzable and resolve
 | R-4 | KB gap; web authoritative | ✅ Validated (code) | None — gap recorded per protocol |
 | R-5 | Rules compose with AP-42/52/55/57 | ✅ Validated (code) | None — placement deferred to planning |
 | R-6 | Reference-integrity out of research scope | ✅ Validated (code) | None — assigned to comprehension/planning |
+
+---
+
+## Implementation Analysis
+
+**Date:** 2026-06-07
+
+Assumptions surfaced during implementation analysis (corpus conformance census, baseline metrics, gap identification). Categories: Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding. Findings are recorded in [05-implementation-analysis.md](05-implementation-analysis.md).
+
+### Assumptions Surfaced
+
+| ID | Category | Risk | Assumption | Rationale |
+|----|----------|------|------------|-----------|
+| IA-1 | Baseline Interpretation | M | The genuine boolean *technique-I/O* deviation population (surface 1) is exactly the two ids `squash_merge_available` and `worktree_created`; the other 56 unprefixed booleans are affirmative past-participle result flags that are conformant per R-1 and out of rewrite scope. | The analysis distinguishes "unprefixed" (58) from "non-conforming" and leans on R-1 to exclude result flags; the success-criteria grep-parity targets only the two I/O ids. |
+| IA-2 | Baseline Interpretation | M | The 22 negation-shaped rule slugs counted via `grep -rhoE '^### (no-\|not-\|do-not-\|never-)…'` are the deviation candidate set for the rule positive-assertion sub-rule, and the 275 kebab `### ` headings are a superset (includes non-rule headings), not the rule-slug denominator. | The metrics table labels 275 as a "superset" and 22 as "deviation candidates"; the gap table (G4) only commits to migrating an "agreed rule-slug subset," not all 275. |
+| IA-3 | Current Behavior | M | There is exactly one live binding defect — `{lens-name}` (kebab) at `prism/activities/01-structural-pass.toon:14,118` failing to bind to the `lens_name` (snake) symbol — and it is the only concrete interpolation failure in the corpus, the rest being authoring-friction (not failure). | The "Concrete binding defects" metric = 1 and the Workarounds section calls it "the one exception"; all other deviations run correctly. |
+| IA-4 | Current Behavior | H | Naming-grammar conformance is enforced *only* at audit-time (the `workflow-design` step-8 walk) and never at load/compile/test time — the loader (`TechniqueSchema`, zod) validates structure but not naming grammar, so a botched rename is a silent transition mis-fire, not an error. | The Usage Patterns and "No mechanical guard" rows assert the loader checks structure only; this is the premise behind the G3 gap and the grep-parity verification strategy. |
+| IA-5 | Gap Identification | M | The convention's home is most coherently a single new entry AP-60 (next free after AP-59) rather than scattered extensions of AP-42/55; this is the analysis's working position carried from comprehension Q9, with the final placement call deferred to planning. | The "Catalog placement is clean" row and Quick-Win 2 favor AP-60; G1 hedges "(or AP-42/55 extension)" and R-5 defers placement to planning. |
+| IA-6 | Dependency Understanding | M | A non-conforming boolean *state-var* rename is reliably a 5–6-file, 3-surface coordinated edit (activity `set`, checkpoint `setVariable`, condition/transition `variable`, protocol reads), and `planning_folder_path` is the single highest-blast-radius rename. | Key Findings cite the 5–6-file blast radius (comprehension Q2) and flag `planning_folder_path` as most-referenced/hoisted; the structural-improvement sequencing depends on this being accurate. |
+
+**Categories:** Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding
+
+---
+
+### Deep-Dive 3: Assumption Reconciliation (Implementation Analysis)
+
+**Date:** 2026-06-07  
+**Iteration:** 1 (converged)
+
+Each analysis-phase assumption was classified by resolvability and the code-analyzable ones resolved through targeted analysis of the `workflows/` corpus, the loader schemas in `src/`, and the comprehension artifact. All six classify as code-analyzable (they assert facts about census counts, deviation populations, the binding/enforcement model, and the reference graph) and all six resolved to Validated in a single pass. No comprehension artifact was provided as a technique input to this activity, so findings are recorded here.
+
+#### IA-1: Boolean I/O deviation population is exactly two ids
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** The genuine boolean technique-I/O deviations (surface 1) are `squash_merge_available` and `worktree_created`; other unprefixed booleans are conformant result flags.  
+**Evidence:** `### squash_merge_available` (`manage-git/detect-merge-strategy.md:18`) and `### worktree_created` (declared across the manage-git techniques) are the only `### `-declared boolean I/O ids lacking an affirmative-predicate phrase. The remaining unprefixed booleans in the state-var census (`review_passed`, `validation_passed`, the `*_confirmed` cluster) are affirmative past-participle result flags, conformant per R-1. The success-criteria grep-parity (05-implementation-analysis.md §Corpus-Conformance Targets) targets exactly these I/O ids and the `{lens-name}` defect.  
+**Risk if wrong:** Over-counting would inflate the migration and risk mechanically re-prefixing result flags; refuted — the I/O deviation set is the bounded pair, result flags excluded per R-1.
+
+#### IA-2: Rule-slug deviation candidates are the 22 negation-shaped slugs; 275 is a superset
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** The 22 negation-shaped slugs are the positive-assertion deviation set; 275 kebab `### ` headings is a superset, not the denominator.  
+**Evidence:** `grep -rhoE '^### [a-z][a-z0-9-]+$'` over technique files returns 275 unique kebab headings, which includes protocol-phase and section headings, not only `## Rules` slugs. The negation-prefix filter (`no-`/`not-`/`do-not-`/`never-`) narrows to 22 (`no-cargo-here`, `never-resume`, `do-not-mask-flaky`, …). The gap table G4 commits only to "the agreed rule-slug subset," not the full 275.  
+**Risk if wrong:** Treating 275 as the migration target would wildly over-scope; refuted — only the negation/bare-noun subset is a candidate, and that subset is judgement-bounded (Cleanup item).
+
+#### IA-3: Exactly one live binding defect
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** `{lens-name}` vs `lens_name` is the sole concrete interpolation failure; everything else runs correctly.  
+**Evidence:** `{lens-name}` (kebab) appears at `prism/activities/01-structural-pass.toon:14,118` while the symbol is declared `lens_name` (snake) at `portfolio-analysis.md:71` and referenced `orchestrate-prism.md:80` — an exact-string mismatch that fails to interpolate (a live AP-55 case defect, comprehension Q10). No other `{kebab-token}`-vs-`snake_symbol` mismatch surfaced in the census. All other deviations are stylistic and bind correctly (the corpus "runs correctly with the non-conforming names").  
+**Risk if wrong:** A missed second defect would be an un-migrated silent failure; refuted within the surveyed surfaces — the defect count is 1, isolated to a low-traffic prism path.
+
+#### IA-4: Naming grammar is enforced only at audit-time, never at load/test time
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** The loader validates structure but not naming grammar; the only enforcement is the `workflow-design` step-8 audit walk, so a botched rename is a silent transition mis-fire.  
+**Evidence:** `TechniqueSchema` (zod) validates field *structure/shape*, not identifier grammar — no naming-pattern assertion exists in the schema layer. `getVariableValue` resolves state vars by exact-string match (`src/schema/condition.schema.ts:49`) with no normalization/alias layer (comprehension Q1), so a partial rename resolves to `undefined` and silently takes the wrong branch rather than erroring. The step-8 walk in `workflow-design.md` is the sole naming-grammar gate, and it is run manually.  
+**Risk if wrong:** If a load/test guard existed, grep-parity would be redundant; refuted — there is no mechanical guard, which is exactly why G3 (audit heuristic) and per-surface grep-parity are load-bearing.
+
+#### IA-5: AP-60 single-entry placement is the working position; final call deferred to planning
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** A single new AP-60 entry is the coherent home; placement is the analysis's working position, decided in planning.  
+**Evidence:** `grep -roE 'AP-[0-9]+' anti-patterns.md` confirms AP-59 is the highest entry, so AP-60 is the next free, coherent slot (comprehension Q9). The analysis frames this as the favored option (Quick-Win 2) while G1 and R-5 explicitly hedge "(or AP-42/55 extension)" and defer the catalog-organization judgement to planning — consistent, not contradictory.  
+**Risk if wrong:** Committing placement now would pre-empt a planning decision; refuted — the analysis records it as a working position with the decision correctly deferred.
+
+#### IA-6: Boolean state-var rename = 5–6-file, 3-surface edit; `planning_folder_path` highest blast radius
+**Status:** Validated  
+**Resolvability:** Code-analyzable  
+**Assumption:** A boolean state-var rename touches ~5–6 files across 3 binding surfaces; `planning_folder_path` is the highest-reference hoisted rename.  
+**Evidence:** The `squash_merge_available` reference graph (DP-4) spans `work-package/workflow.toon:296` (declaration), `activities/01-start-work-package.toon:87` and `activities/12-submit-for-review.toon:156` (`set`/condition references) — confirming a multi-file, multi-surface (declaration + `set`-action + condition/transition) edit, matching comprehension Q2's 5–6-file blast radius. `planning_folder_path` is referenced pervasively (declared once, hoisted, read across nearly every activity's protocol) making it the highest-fan-out id — flagged for most-care/deferral (comprehension rejected-paths lens).  
+**Risk if wrong:** Under-estimating blast radius would risk partial renames; refuted — the graph confirms the multi-surface coordination cost, and `planning_folder_path` is correctly identified as highest-risk.
+
+### Open Questions (carried to user review)
+
+None. All six analysis-phase assumptions classify as code-analyzable and resolved to Validated in a single reconciliation pass. No stakeholder-dependent assumptions surfaced, so `has_open_assumptions` is false for this phase and the analysis-assumption interview is non-interactive.
+
+---
+
+### User Response (Implementation Analysis)
+
+**Review Status:** ✅ Resolved by code analysis — IA-1 through IA-6 are all Validated against the corpus census, the loader schemas, and the reference graph; none requires user re-confirmation. No open assumptions remain (`has_open_assumptions = false`).
+
+### Outcome (Implementation Analysis)
+
+| ID | Original Assumption | Outcome | Changes Made |
+|----|---------------------|---------|--------------|
+| IA-1 | Boolean I/O deviations = exactly 2 ids | ✅ Validated (code) | None — result flags excluded per R-1 |
+| IA-2 | 22 negation slugs are candidates; 275 is superset | ✅ Validated (code) | None — subset, not full census |
+| IA-3 | Exactly one live binding defect (`{lens-name}`) | ✅ Validated (code) | None — isolated AP-55 case defect |
+| IA-4 | Naming grammar enforced only at audit-time | ✅ Validated (code) | None — no loader/test guard; grep-parity primary |
+| IA-5 | AP-60 single-entry placement (working position) | ✅ Validated (code) | None — final placement deferred to planning |
+| IA-6 | State-var rename = 5–6-file/3-surface; `planning_folder_path` highest | ✅ Validated (code) | None — reference graph confirms blast radius |
