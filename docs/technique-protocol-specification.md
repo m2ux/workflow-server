@@ -71,8 +71,8 @@ metadata:
 
 ## Protocol          (present when the technique does work)
 ### <N>. <Title>
-- <imperative step that binds {$local-var}>
-- <imperative step that reads {$local-var}>
+- <imperative step that binds {$local_var}>
+- <imperative step that reads {local_var}>
 
 ## Rules             (optional)
 ### <rule-name>
@@ -162,26 +162,33 @@ line as a new step and flattens the caveat into a disconnected peer step (AP-56)
 substance is "never X" or "always Y" with no action of its own is mis-modelled and belongs in a rule
 or a note. (A genuine enumeration or sequential sub-step legitimately stays a sub-bullet.)
 
-**Protocol variables.** A step may bind an intermediate value for later steps to read, written
-`{$name}` (snake_case, dollar-prefixed — a protocol variable is a symbol, §3.2). A protocol variable is scoped to a single protocol run — one
-step creates it, later steps consume it — and is *not* part of the technique's interface: it is
-neither an Input (a value the technique receives from its caller) nor an Output (a value the technique
-returns), is not delivered in the bundle, and is not `::`-addressable. Use it for technique-internal
-data — a captured artifact path, an assembled context block, a parsed intermediate. The braces mark a
-runtime-bound value, as with `{input-id}` / `{output-id}`; the `$` marks it protocol-local rather than
-interface. A step creates one with an explicit verb ("Capture `{$structural-path}` from the worker's
-response"; "Build `{$verified-knowledge}` from `{$gap-data}`") and later steps reference it by name.
-The classification test: a value the technique computes itself is `{$local}`, never an Input; a value
-a caller consumes is an Output, never `{$local}`. Bare unmarked identifiers in protocol prose
-(`structural_output_path`, `gap_data`) are this construct written informally — give them the `{$…}`
-form so they are distinct from prose, interface designators, and literals.
+**Protocol variables (declare-once).** A step may bind an intermediate value for later steps to read.
+The binding is written with the dollar sigil — `{$name}` (snake_case — a protocol variable is a symbol,
+§3.2) — and marks the single point where the value is produced; **every later reference drops the `$`
+and reads it as `{name}`**, identical in form to an interface designator. The `$` is therefore the act
+of declaration (as `let` is in a programming language), not a per-occurrence marker: write `{$name}`
+once, `{name}` thereafter. A protocol variable is scoped to a single protocol run — one step creates
+it, later steps consume it — and is *not* part of the technique's interface: it is neither an Input (a
+value the technique receives from its caller) nor an Output (a value the technique returns), is not
+delivered in the bundle, and is not `::`-addressable. Use it for technique-internal data — a captured
+artifact path, an assembled context block, a parsed intermediate. A step creates one with an explicit
+verb ("Capture `{$structural_path}` from the worker's response"; "Build `{$verified_knowledge}` from
+`{gap_data}`") and later steps reference it bare (`{structural_path}`). The binding must textually
+precede every read; when a value is produced in mutually-exclusive branches, EACH producing branch
+carries the sigil (`{$name}`) — it is bound on exactly one path at runtime — and reads after the
+branches rejoin stay `{name}`. The classification test: a value the technique computes itself is a
+protocol variable, never an Input; a value a caller consumes is an Output, never a protocol variable.
+Two defects follow from the declare-once form: a `{name}` read that is neither a declared input/output
+nor bound by any `{$name}` is an **unbound local** (consume with no produce); a `{$name}` binding never
+read as `{name}` is a **dead binding** (produce with no consume) — the resolvability audit flags both.
 
 Markdown rendering note: because GitHub-flavored markdown reads `$`-delimited spans as inline math,
 a `$` that appears in **rendered prose** (outside fenced code blocks and inline code spans) must be
-backslash-escaped — a bare-prose protocol variable is written `{\$name}`, and any other prose `$`
-(prices, a `${VAR}` shown in running text) is escaped likewise. `\$` renders as a literal `$`, so the
-notation is unchanged on screen; a `$` already inside a code span or fenced block is math-exempt and
-stays raw.
+backslash-escaped — a bare-prose protocol-variable binding is written `{\$name}` (the binding is the
+only place a protocol variable carries `$`; reads are plain `{name}` and need no escaping), and any
+other prose `$` (prices, a `${VAR}` shown in running text) is escaped likewise. `\$` renders as a
+literal `$`, so the notation is unchanged on screen; a `$` already inside a code span or fenced block
+is math-exempt and stays raw.
 
 ### 3.4 Rules
 
