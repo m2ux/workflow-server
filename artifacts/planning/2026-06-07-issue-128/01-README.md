@@ -35,7 +35,7 @@ The fix works by adding the new rule on top of the conventions already in place,
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
-| 02 | [Assumptions log](assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete (DP + Research + Analysis + Planning reconciled; DP-7 → research-only; IA-1…IA-6 & PL-1…PL-5 validated by code) |
+| 02 | [Assumptions log](assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete (DP + Research + Analysis + Planning reconciled; DP-7 → research-only; IA-1…IA-6 & PL-1…PL-5 validated by code; stakeholder review ✅ — 0 open, none deferred) |
 | 04 | [KB & web research](04-kb-research.md) | Naming-convention research synthesis (context scope: web-retrieval) | 20-45m | ✅ Complete |
 | 05 | [Implementation analysis](05-implementation-analysis.md) | Corpus conformance baselines, gap analysis, success criteria | 10-20m | ✅ Complete |
 | 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks (T1–T6), estimates, dependencies, sequencing | 20-45m | ✅ Complete |

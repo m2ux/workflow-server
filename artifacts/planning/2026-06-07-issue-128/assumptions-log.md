@@ -3,7 +3,8 @@
 **Work Package:** Canonical Naming Convention for Technique Inputs/Outputs and Rules  
 **Issue:** [#128](https://github.com/m2ux/workflow-server/issues/128) - Adopt a canonical naming convention for technique inputs/outputs and rules  
 **Created:** 2026-06-07  
-**Last Updated:** 2026-06-07
+**Last Updated:** 2026-06-07  
+**Stakeholder review:** ✅ Complete — assumptions-review activity found no open assumptions (see [Assumptions Review](#assumptions-review-stakeholder-gate))
 
 ---
 
@@ -400,3 +401,41 @@ None. All five planning-phase assumptions classify as code-analyzable and resolv
 | PL-3 | Define-first, then lowest-blast-radius-first | ✅ Validated (code) | None — dependency-forced + risk-graded ordering |
 | PL-4 | No new tests; grep-parity is the guard | ✅ Validated (code) | None — no load/test guard to extend (IA-4) |
 | PL-5 | Defer high-fan-out renames; bounded slug pass; exclude result flags | ✅ Validated (code) | None — scope boundaries evidence-backed |
+
+---
+
+# Assumptions Review (Stakeholder Gate)
+
+**Date:** 2026-06-07  
+**Activity:** assumptions-review (pre-implementation gate)
+
+## Open-assumption evaluation
+
+The review activity re-read every reconciled assumption (DP-1…7, R-1…6, IA-1…6, PL-1…5) and collected those with status `open` or `partially-validated` that require user input.
+
+**Result: zero open assumptions.**  
+Of the 23 assumptions, 22 are Validated by code analysis and one (DP-7, workflow-path selection) was resolved by the user at the `workflow-path-selected` checkpoint — the user chose **research-only**, correcting the agent's skip-optional recommendation. DP-5 carries a `Partially Validated` status, but its residual judgement was split out into DP-7 and already resolved by the user; no part of DP-5 remains stakeholder-dependent. The reconciliation scorecard records **Open: 0** in every phase.
+
+Because no open or resolvable assumptions remain, the per-assumption interview loop was **non-interactive (skipped)** — there was nothing to present for stakeholder decision.
+
+## Decisions recorded this activity
+
+None. No assumption was accepted, rejected, or deferred at this gate, because none was open. All accept/correct outcomes were already captured in the per-phase reconciliation sections above (notably the DP-7 user correction to research-only).
+
+## Issue-tracker summary
+
+**Not posted.** The post-summary step fires only when deferred assumptions need external stakeholder attention. No assumption was deferred (`has_deferred_assumptions = false`), so the GitHub issue (#128) needs no assumptions comment — the decision record lives in this log.
+
+## State
+
+| Variable | Value |
+|----------|-------|
+| `has_open_assumptions` | `false` |
+| `has_resolvable_assumptions` | `false` |
+| `has_deferred_assumptions` | `false` |
+| `stakeholder_review_complete` | `true` |
+| `needs_plan_revision` | `false` |
+| `needs_further_discussion` | `false` |
+| `needs_comprehension` | `false` (comprehension already complete) |
+
+**Outcome:** All assumptions resolved before implementation; no stakeholder gate triggered. Transition to **implement** (default).
