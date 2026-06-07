@@ -381,7 +381,7 @@ reader; a consumer references an entry by its id.
 ## 8. Authoring rules
 
 A technique's interface stays workflow-agnostic; the full set lives in
-[`workflows/workflow-design/resources/anti-patterns.md`](../workflows/workflow-design/resources/anti-patterns.md).
+[`workflow-design/resources/anti-patterns.md`](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md) (in the `workflows` branch/submodule).
 The protocol-relevant rules:
 
 - An input or output describes what a value is — its meaning, shape, allowed values. A technique names
