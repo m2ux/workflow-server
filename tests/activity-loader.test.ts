@@ -16,9 +16,9 @@ describe('activity-loader', () => {
         expect(result.value.id).toBe('discover-session');
         expect(result.value.version).toBeDefined();
         expect(result.value.name).toBeDefined();
-        // discover-session has migrated off skills.primary; operations[] may be omitted entirely
-        // when the activity relies solely on the core worker operations bundled by get_activity.
-        expect((result.value as { skills?: unknown }).skills).toBeUndefined();
+        // discover-session declares its techniques via techniques.supporting (no primary).
+        const techniques = (result.value as { techniques?: { primary?: string; supporting?: string[] } }).techniques;
+        expect(techniques?.supporting?.length).toBeGreaterThan(0);
         expect(result.value.workflowId).toBe('meta');
       }
     });
@@ -60,8 +60,8 @@ describe('activity-loader', () => {
         expect(typeof activity.id).toBe('string');
         expect(typeof activity.version).toBe('string');
         expect(typeof activity.name).toBe('string');
-        if (activity.skills && typeof activity.skills === 'object' && 'primary' in activity.skills && activity.skills.primary) {
-          expect(typeof activity.skills.primary).toBe('string');
+        if (activity.techniques && typeof activity.techniques === 'object' && 'primary' in activity.techniques && activity.techniques.primary) {
+          expect(typeof activity.techniques.primary).toBe('string');
         }
       }
     });
@@ -191,7 +191,7 @@ describe('activity-loader', () => {
           expect(activity.workflowId).toBeDefined();
           expect(activity.problem).toBeDefined();
           if (activity.next_action) {
-            expect(activity.next_action.tool).toBe('get_skill');
+            expect(activity.next_action.tool).toBe('get_technique');
             expect(activity.next_action.parameters.step_id).toBeDefined();
           }
         }

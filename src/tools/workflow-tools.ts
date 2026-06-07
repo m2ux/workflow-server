@@ -2,8 +2,8 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, readActivityRaw, readWorkflowRaw } from '../loaders/workflow-loader.js';
-import { readSkillRaw, resolveOperations, formatOperationsBundle } from '../loaders/skill-loader.js';
-import { CORE_ORCHESTRATOR_OPS, CORE_WORKER_OPS } from '../loaders/core-ops.js';
+import { readTechniqueRaw, resolveTechniques, formatTechniqueBundle } from '../loaders/technique-loader.js';
+import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { withAuditLog } from '../logging.js';
 import { encodeToon } from '../utils/toon.js';
@@ -59,7 +59,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
   server.tool('discover', 'Entry point for this server. Call this before any other tool to learn the bootstrap procedure for starting a session. Returns the server name, version, and the bootstrap guide explaining the full tool-calling sequence. Use list_workflows to discover available workflows. No parameters required and no session_index needed.', {},
     withAuditLog('discover', async () => {
-      const bootstrapResult = await readResourceRaw(config.workflowDir, 'meta', '00');
+      const bootstrapResult = await readResourceRaw(config.workflowDir, 'meta', 'bootstrap-protocol');
       const lines = [
         `server: ${config.serverName}`,
         `version: ${config.serverVersion}`,
@@ -75,7 +75,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       content: [{ type: 'text' as const, text: encodeToon(await listWorkflows(config.workflowDir)) }],
     })));
 
-  server.tool('get_workflow', 'Load the workflow definition for the current session. The response begins with the workflow\'s primary skill (raw TOON), followed by the workflow definition. Use summary=true (the default) to get lightweight metadata including rules, variables, orchestration model, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Use summary=false for the raw workflow definition in TOON format. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity.',
+  server.tool('get_workflow', 'Load the workflow definition for the current session. The response begins with the workflow\'s primary technique (raw TOON), followed by the workflow definition. Use summary=true (the default) to get lightweight metadata including rules, variables, orchestration model, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Use summary=false for the raw workflow definition in TOON format. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity.',
     {
       ...sessionIndexParam,
       summary: z.boolean().optional().default(true).describe('Returns lightweight summary by default. Set to false for the raw workflow definition.'),
@@ -99,27 +99,28 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const next = advanceSession(state);
       await saveSessionForTool(loaded, next);
 
-      const primarySkillId = wf.skills?.primary;
-      let primarySkillContent = '';
-      if (primarySkillId) {
-        const skillResult = await readSkillRaw(primarySkillId, config.workflowDir, workflow_id);
-        if (skillResult.success) {
-          primarySkillContent = skillResult.value;
+      const primaryTechniqueId = wf.techniques?.primary;
+      let primaryTechniqueContent = '';
+      if (primaryTechniqueId) {
+        const techniqueResult = await readTechniqueRaw(primaryTechniqueId, config.workflowDir, workflow_id);
+        if (techniqueResult.success) {
+          primaryTechniqueContent = techniqueResult.value;
         }
       }
 
-      // Bundle operations: workflow.operations + core orchestrator ops.
-      // Deduplicate by ref so a workflow that explicitly lists a core op only resolves it once.
-      const declaredOps = (wf as { operations?: string[] }).operations ?? [];
-      const orchestratorOps = Array.from(new Set([...declaredOps, ...CORE_ORCHESTRATOR_OPS]));
-      const resolvedOps = await resolveOperations(orchestratorOps, config.workflowDir);
-      const opsBlock = encodeToon(formatOperationsBundle(resolvedOps));
+      // Bundle the workflow's technique refs (primary + supporting) and the core orchestrator
+      // techniques. Deduplicate by ref so a workflow that explicitly lists a core technique resolves it once.
+      const wfTech = (wf as { techniques?: { primary?: string; supporting?: string[] } }).techniques;
+      const wfTechRefs = [...(wfTech?.primary ? [wfTech.primary] : []), ...(wfTech?.supporting ?? [])];
+      const orchestratorTechniques = Array.from(new Set([...wfTechRefs, ...CORE_ORCHESTRATOR_TECHNIQUES]));
+      const resolvedOrchestrator = await resolveTechniques(orchestratorTechniques, config.workflowDir, workflow_id);
+      const opsBlock = encodeToon(formatTechniqueBundle(resolvedOrchestrator));
 
-      // Pre-separator preamble holds the legacy primary-skill body (when present)
+      // Pre-separator preamble holds the legacy primary-technique body (when present)
       // followed by the resolved-operations bundle. Tests and clients split on
       // the first '\n\n---\n\n' to recover the workflow section, so we keep
-      // that single separator and concatenate skill + ops before it.
-      const preambleParts = [primarySkillContent, opsBlock].filter(s => s.length > 0);
+      // that single separator and concatenate technique + ops before it.
+      const preambleParts = [primaryTechniqueContent, opsBlock].filter(s => s.length > 0);
       const preamble = preambleParts.length > 0 ? preambleParts.join('\n\n') + '\n\n---\n\n' : '';
 
       if (summary) {
@@ -131,7 +132,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           rules: wf.rules,
           variables: wf.variables,
           initialActivity: wf.initialActivity,
-          activities: wf.activities?.map((a: { id: string; name?: string; required?: boolean }) => ({ id: a.id, name: a.name, required: a.required })) ?? [],
+          activities: wf.activities?.map((a: { id: string; name?: string; required?: boolean; artifactPrefix?: string | undefined }) => ({ id: a.id, name: a.name, required: a.required, artifactPrefix: a.artifactPrefix })) ?? [],
           session_index,
         };
 
@@ -150,7 +151,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
     }), traceOpts));
 
-  server.tool('next_activity', 'Transition to the specified activity. This is the orchestrator\'s tool for advancing the workflow — it validates the transition, advances the session state on disk, and records the trace, but does NOT return the activity definition. After calling next_activity, the worker should call get_activity to load the complete activity definition including steps, checkpoints, transitions, and skill references. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field of the current activity\'s response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation.',
+  server.tool('next_activity', 'Transition to the specified activity. This is the orchestrator\'s tool for advancing the workflow — it validates the transition, advances the session state on disk, and records the trace, but does NOT return the activity definition. After calling next_activity, the worker should call get_activity to load the complete activity definition including steps, checkpoints, transitions, and technique references. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field of the current activity\'s response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation.',
     {
       ...sessionIndexParam,
       activity_id: z.string().describe('Activity ID to transition to. For the first call, use initialActivity from get_workflow. For subsequent calls, use an activity ID from the transitions field of the current activity.'),
@@ -292,7 +293,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('get_activity', 'Load the complete activity definition for the current activity in the session. This is the worker\'s tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, mode overrides, rules, and skill references — everything needed to execute the activity. The activity is determined from the session state on disk, so no activity_id parameter is needed.',
+  server.tool('get_activity', 'Load the complete activity definition for the current activity in the session. This is the worker\'s tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, mode overrides, rules, and technique references — everything needed to execute the activity. The activity is determined from the session state on disk, so no activity_id parameter is needed.',
     {
       ...sessionIndexParam,
     },
@@ -319,16 +320,26 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         result.success ? validateWorkflowVersion(view, result.value) : null,
       );
 
-      // Bundle operations: activity.operations + core worker ops.
+      // Bundle the techniques the activity references (primary + supporting, delivered as full
+      // protocols) and the core worker techniques, deduped.
       const activity = result.success ? getActivity(result.value, activity_id) : undefined;
-      const declaredOps = (activity as { operations?: string[] } | undefined)?.operations ?? [];
-      const workerOps = Array.from(new Set([...declaredOps, ...CORE_WORKER_OPS]));
-      const resolvedOps = await resolveOperations(workerOps, config.workflowDir);
-      const opsSection = encodeToon(formatOperationsBundle(resolvedOps)) + '\n\n---\n\n';
+      const actTech = (activity as { techniques?: { primary?: string; supporting?: string[] } } | undefined)?.techniques;
+      const techRefs = [...(actTech?.primary ? [actTech.primary] : []), ...(actTech?.supporting ?? [])];
+      const workerTechniques = Array.from(new Set([...techRefs, ...CORE_WORKER_TECHNIQUES]));
+      const resolvedWorker = await resolveTechniques(workerTechniques, config.workflowDir, workflow_id);
+      const opsSection = encodeToon(formatTechniqueBundle(resolvedWorker)) + '\n\n---\n\n';
+
+      // artifactPrefix is server-computed from the activity filename and is NOT in
+      // the raw activity TOON, so surface it in the header (and _meta) — the worker
+      // needs it to name artifacts as {artifactPrefix}-{bare_filename}.
+      const artifactPrefix = (activity as { artifactPrefix?: string } | undefined)?.artifactPrefix;
+      const header = artifactPrefix
+        ? `session_index: ${session_index}\nartifact_prefix: ${artifactPrefix}`
+        : `session_index: ${session_index}`;
 
       return {
-        content: [{ type: 'text' as const, text: opsSection + `session_index: ${session_index}\n\n${rawResult.value}` }],
-        _meta: { session_index, validation },
+        content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${rawResult.value}` }],
+        _meta: { session_index, validation, artifact_prefix: artifactPrefix },
       };
     }), traceOpts));
 
@@ -737,11 +748,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const traceEvents = config.traceStore ? config.traceStore.getEvents(state.sessionIndex) : [];
-      const completedActivities: string[] = [];
-      const activitySet = new Set<string>();
-      for (const event of traceEvents) {
-        if (event.name === 'next_activity' && event.act && event.s === 'ok') {
-          if (!activitySet.has(event.act)) {
+
+      // Completed activities come from authoritative session state (the trace
+      // store may be disabled). Fall back to trace-derived only if state is empty.
+      let completedActivities: string[] = Array.isArray(state.completedActivities) ? [...state.completedActivities] : [];
+      if (completedActivities.length === 0 && traceEvents.length > 0) {
+        const activitySet = new Set<string>();
+        for (const event of traceEvents) {
+          if (event.name === 'next_activity' && event.act && event.s === 'ok' && !activitySet.has(event.act)) {
             activitySet.add(event.act);
             completedActivities.push(event.act);
           }
@@ -756,6 +770,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         status,
         current_activity: clientAct || 'none',
         completed_activities: completedActivities,
+        // Rolled-up variable bag from session state, so workers/orchestrators can
+        // read decisions and computed values on resume without re-deriving them.
+        variables: state.variables ?? {},
         workflow: workflow ? {
           id: workflow.id,
           version: workflow.version,

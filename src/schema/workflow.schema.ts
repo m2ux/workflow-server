@@ -38,10 +38,11 @@ export const ModeSchema = z.object({
 });
 export type Mode = z.infer<typeof ModeSchema>;
 
-export const WorkflowSkillsSchema = z.object({
-  primary: z.string().optional().describe('LEGACY: Primary skill ID for this workflow. Optional — workflows may declare skill_operations[] instead and let get_workflow bundle the resolved operations.'),
+export const WorkflowTechniquesSchema = z.object({
+  primary: z.string().optional().describe('Primary technique ID for this workflow.'),
+  supporting: z.array(z.string()).optional().describe('Supporting technique references (`::` paths) the workflow uses at the orchestrator level; bundled into get_workflow alongside the core orchestrator techniques.'),
 });
-export type WorkflowSkillsReference = z.infer<typeof WorkflowSkillsSchema>;
+export type WorkflowTechniquesReference = z.infer<typeof WorkflowTechniquesSchema>;
 
 export const WorkflowSchema = z.object({
   $schema: z.string().optional(),
@@ -55,8 +56,7 @@ export const WorkflowSchema = z.object({
   variables: z.array(VariableDefinitionSchema).optional().describe('Workflow-level variables'),
   modes: z.array(ModeSchema).optional().describe('Execution modes that modify standard workflow behavior'),
   artifactLocations: z.record(ArtifactLocationValueSchema).optional().describe('Named artifact storage locations. Keys are location identifiers referenced by activity artifact definitions.'),
-  skills: WorkflowSkillsSchema.optional().describe('LEGACY: Workflow-level primary skill ID. Prefer operations.'),
-  operations: z.array(z.string()).optional().describe('Flat array of skill-id::operation-name (or skill-id::rule-name) references the workflow uses at the orchestrator level. Bundled into get_workflow responses alongside core orchestrator operations.'),
+  techniques: WorkflowTechniquesSchema.optional().describe('Workflow-level techniques (primary + supporting) the orchestrator uses; bundled into get_workflow.'),
   initialActivity: z.string().optional().describe('ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points.'),
   // JSON Schema validates individual TOON files where activities are separate files.
   // Zod validates the full assembled runtime workflow object, so activities are included here.
@@ -81,5 +81,5 @@ export {
   type Loop,
   type Transition,
   type Action,
-  type SkillsReference,
+  type TechniquesReference,
 } from './activity.schema.js';

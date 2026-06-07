@@ -63,7 +63,7 @@ Task({
 ### Dispatching the Activity Worker (L1 → L2)
 The Workflow Orchestrator evaluates the workflow, determines the next activity to run, and passes its own `session_index` to the worker.
 
-Unlike the L0 → L1 transition (which creates a new child session), the L1 → L2 transition **shares the same `session_index`**. The worker uses this index directly to call `get_activity`, `get_skill`, and `next_activity`; the server resolves the index to the same `session.json` the orchestrator is reading, so both agents see a single canonical state.
+Unlike the L0 → L1 transition (which creates a new child session), the L1 → L2 transition **shares the same `session_index`**. The worker uses this index directly to call `get_activity`, `get_technique`, and `next_activity`; the server resolves the index to the same `session.json` the orchestrator is reading, so both agents see a single canonical state.
 
 The Workflow Orchestrator uses the host's sub-agent spawn mechanism to spawn the Activity Worker:
 ```javascript

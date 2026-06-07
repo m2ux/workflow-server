@@ -14,7 +14,7 @@ The workflow server uses six interconnected schemas:
 | `condition.schema.json` | Defines conditional expressions | Controlling transitions and decisions |
 | `state.schema.json` | In-memory runtime execution state schema | Internal workflow-engine progress tracking |
 | `session-file.schema.json` | Persistent server-managed session file (`session.json`) | On-disk session state owned by the workflow server; loaded by `session_index` and sealed by `.session-token` |
-| `skill.schema.json` | Defines agent skill capabilities | Describing tool orchestration patterns and execution guidance |
+| `technique.schema.json` | Defines agent technique capabilities | Describing tool orchestration patterns and execution guidance |
 | `activity.schema.json` | Defines unified activities | Combining intent matching with workflow execution stages |
 
 ## Schema Relationships
@@ -61,18 +61,18 @@ The second diagram shows how the schema files depend on each other:
 
 - **workflow.schema.json** defines the overall structure and references `activity.schema.json` for activities
 - **activity.schema.json** defines unified activities with steps, checkpoints, decisions, loops, transitions, and triggers
-- **skill.schema.json** defines agent capabilities, tool orchestration patterns, and execution protocols
+- **technique.schema.json** defines agent capabilities, tool orchestration patterns, and execution protocols
 - **condition.schema.json** provides reusable condition expressions (simple comparisons, AND/OR/NOT combinators)
 - **state.schema.json** describes the in-memory runtime execution state used internally by the workflow engine
 - **session-file.schema.json** describes the persistent server-managed session file (`session.json`) that lives under each planning folder; it captures workflow ID/version, current activity, variables, history, active checkpoint, and (for child workflows) the parent session snapshot. The companion `.session-token` is an HMAC-signed seal binding `session.json` to the workspace + server signing key.
 
-At design-time, you work with `workflow.schema.json`, `activity.schema.json`, and `skill.schema.json`. At runtime, `state.schema.json` represents the in-memory state used by the engine and `session-file.schema.json` describes the on-disk session file loaded by `session_index`.
+At design-time, you work with `workflow.schema.json`, `activity.schema.json`, and `technique.schema.json`. At runtime, `state.schema.json` represents the in-memory state used by the engine and `session-file.schema.json` describes the on-disk session file loaded by `session_index`.
 
 ```mermaid
 flowchart TB
     subgraph Workflow["workflow.schema.json"]
         W[Workflow] --> A[Activities]
-        W --> SK1["skills[]"]
+        W --> SK1["techniques{}"]
     end
     
     subgraph Activity["activity.schema.json"]
@@ -82,15 +82,17 @@ flowchart TB
         A --> L[Loops]
         A --> T[Transitions]
         A --> TR[Triggers]
-        A --> SK2["skills{}"]
+        A --> SK2["techniques{}"]
     end
     
-    subgraph Skill["skill.schema.json"]
-        SK1 --> SKD[Skill Definition]
+    subgraph Technique["technique.schema.json"]
+        SK1 --> SKD[Technique Definition]
         SK2 --> SKD
-        S -.->|"step.skill"| SKD
+        S -.->|"step.technique"| SKD
+        SKD --> Cap[Capability]
+        SKD --> In[Inputs]
+        SKD --> Out[Output]
         SKD --> Proto[Protocol]
-        SKD --> Tools[Tools]
         SKD --> Rules[Rules]
     end
     
@@ -165,7 +167,7 @@ erDiagram
         string description
         string initialActivity FK
         ExecutionModel executionModel
-        string[] skills
+        TechniquesReference techniques
     }
     
     ExecutionModel {
@@ -302,7 +304,7 @@ A workflow is the top-level container representing a complete process definition
 | `tags`            | string[]   | Categorization labels                                      |
 | `rules`           | string[]   | Execution guidelines                                       |
 | `executionModel`  | ExecutionModel | Agent roles and orchestration model for this workflow (required) |
-| `skills`          | string[]   | Workflow-level skill IDs (returned by `get_skills`) |
+| `techniques`      | TechniquesReference | Workflow-level techniques (primary + supporting); bundled into `get_workflow` |
 | `variables`       | Variable[] | State variables                                            |
 | `modes`           | Mode[]     | Execution modes that modify standard workflow behavior     |
 | `artifactLocations` | object   | Named artifact storage locations (keyed by location ID)    |
@@ -326,7 +328,7 @@ A unified activity combines intent matching (problem, recognition) with workflow
 | `description`     | string            | What this activity accomplishes            |
 | `problem`         | string            | User problem this activity addresses       |
 | `recognition`     | string[]          | Patterns to match user intent              |
-| `skills`          | SkillsReference   | Primary and supporting skill references    |
+| `techniques`      | TechniquesReference | Primary and supporting technique references (`::` paths) |
 | `steps`           | Step[]            | Individual tasks                           |
 | `checkpoints`     | Checkpoint[]      | User decision points                       |
 | `decisions`       | Decision[]        | Automated branching points                 |
@@ -352,7 +354,7 @@ A step represents an individual task within an activity.
 | `id`          | string   | Unique identifier within activity |
 | `name`        | string   | Task name                         |
 | `description` | string   | What this step accomplishes       |
-| `skill`       | string   | Skill ID to apply for this step   |
+| `skill`       | string   | LEGACY: Technique ID to apply for this step (prefer inline operation invocation in `description`) |
 | `condition`   | Condition | Condition that must be true to execute; if false, step is skipped |
 | `required`    | boolean  | Whether step must be completed    |
 | `actions`     | Action[] | Actions to perform                |
@@ -423,14 +425,14 @@ A loop enables iteration over collections or while conditions hold.
 
 ### Supporting Types
 
-#### SkillsReference
+#### TechniquesReference
 
-References to skills used by an activity.
+References to the techniques used at the activity or workflow level, addressed by `::` path. `primary` is optional — an activity may rely solely on the techniques its steps declare, and a workflow on the core orchestrator techniques.
 
-| Field        | Type     | Purpose                              |
-| ------------ | -------- | ------------------------------------ |
-| `primary`    | string   | Primary skill ID for this activity   |
-| `supporting` | string[] | Supporting skill IDs                 |
+| Field        | Type     | Purpose                          |
+| ------------ | -------- | -------------------------------- |
+| `primary`    | string   | Primary technique ID             |
+| `supporting` | string[] | Supporting technique IDs         |
 
 #### Action
 
@@ -533,7 +535,7 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
 | `author` | string | Author name |
 | `tags` | string[] | Categorization tags |
 | `rules` | string[] | Execution rules/guidelines |
-| `skills` | string[] | Workflow-level skill IDs (loaded by `get_skills`) |
+| `techniques` | TechniquesReference | Workflow-level techniques (primary + supporting); bundled into `get_workflow` |
 | `variables` | array | Variable definitions with types and defaults |
 | `modes` | array | Execution modes that modify standard workflow behavior |
 | `artifactLocations` | object | Named artifact storage locations (keys are location IDs, values are path strings or `{path, description, gitignored}` objects) |
@@ -683,7 +685,7 @@ Activities are the execution units of a workflow. Each activity contains steps, 
       "version": "1.0.0",
       "name": "Initial Activity",
       "description": "The first activity of the workflow",
-      "skills": { "primary": "11-activity-worker" },
+      "skills": { "primary": "activity-worker" },
       "steps": [],
       "checkpoints": [],
       "transitions": []
@@ -702,7 +704,7 @@ Activities are the execution units of a workflow. Each activity contains steps, 
 | `description` | string | Activity description |
 | `problem` | string | User problem this activity addresses (for intent matching) |
 | `recognition` | string[] | Patterns to match user intent (for independent activities) |
-| `skills` | object | Primary and supporting skill references |
+| `skills` | object | LEGACY: Primary and supporting technique references |
 | `required` | boolean | Whether activity is required (default: true) |
 | `estimatedTime` | string | Time estimate (e.g., `10-15m`, `1h`, `2-3h`) |
 | `steps` | array | Steps within the activity |
@@ -1193,7 +1195,7 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "version": "1.0.0",
       "name": "Review",
       "description": "Initial review and approval",
-      "skills": { "primary": "11-activity-worker" },
+      "skills": { "primary": "activity-worker" },
       "estimatedTime": "5-10m",
       "steps": [
         {
@@ -1245,7 +1247,7 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "id": "process",
       "version": "1.0.0",
       "name": "Processing",
-      "skills": { "primary": "11-activity-worker" },
+      "skills": { "primary": "activity-worker" },
       "steps": [
         {
           "id": "step-process",
@@ -1257,7 +1259,7 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "id": "rejected",
       "version": "1.0.0",
       "name": "Rejection",
-      "skills": { "primary": "11-activity-worker" },
+      "skills": { "primary": "activity-worker" },
       "steps": [
         {
           "id": "step-notify",
@@ -1342,7 +1344,7 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 | `id` | string | Unique activity identifier |
 | `version` | string | Semantic version (e.g., `3.0.0`) |
 | `name` | string | Human-readable activity name |
-| `skills` | object | Primary and supporting skill references |
+| `skills` | object | LEGACY: Primary and supporting technique references |
 
 ### Optional Properties
 
@@ -1391,7 +1393,7 @@ A complete activity definition with workflow trigger:
   "description": "Execute each planned work package by triggering the work-package workflow",
   "problem": "Planned work packages need to be implemented one at a time",
   "skills": {
-    "primary": "11-activity-worker"
+    "primary": "activity-worker"
   },
   "triggers": [
     {
@@ -1429,20 +1431,18 @@ A complete activity definition with workflow trigger:
 
 ---
 
-## Skill Schema
+## Technique Schema
 
-The skill schema (`skill.schema.json`) defines agent capabilities for workflow execution. Skills describe tool orchestration patterns, execution guidance, and error handling strategies.
+The technique schema (`technique.schema.json`) defines agent capabilities for workflow execution. Techniques are authored as markdown — a standalone `techniques/<slug>.md`, a grouped `techniques/<group>/TECHNIQUE.md` plus one `<sub>.md` per nested technique, or a per-workflow root `techniques/TECHNIQUE.md` — and the server parses them into the JSON shape below (served at `workflow-server://schemas/technique`).
 
 ### Top-Level Structure
 
 ```json
 {
-  "id": "11-activity-worker",
+  "id": "activity-worker",
   "version": "2.0.0",
   "capability": "Bootstrap and execute a single workflow activity with consistent tool usage",
-  "tools": {},
-  "state": {},
-  "errors": {}
+  "rules": {}
 }
 ```
 
@@ -1450,188 +1450,47 @@ The skill schema (`skill.schema.json`) defines agent capabilities for workflow e
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `id` | string | Unique skill identifier |
+| `id` | string | Unique technique identifier (the file/folder slug) |
 | `version` | string | Semantic version (e.g., `2.0.0`) |
-| `capability` | string | What this skill enables agents to do |
+| `capability` | string | What this technique enables agents to do |
 
 ### Optional Properties
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `description` | string | Detailed skill description |
-| `architecture` | object | Architectural principles and layers |
-| `tools` | object | Tool definitions and usage patterns |
-| `flow` | string[] | Ordered execution steps |
-| `matching` | object | Goal-to-activity matching strategies |
-| `state` | object | State structure and update patterns |
-| `interpretation` | object | How to interpret workflow constructs |
 | `rules` | object | Name-value pairs: each key is a rule name (e.g. configuration-invariant); each value is a single rule string or an array of rule strings for grouped rules. |
-| `errors` | object | Error definitions and recovery strategies |
-| `inputs` | array | Inputs the skill expects from context: array of items. Each item has **id** (required; hyphen-delimited), optional **description**, **required**, **default**. When a protocol step uses an existing artifact (e.g. loads from a path), the skill MUST declare one or more associated input entries. Mirrors output structure. |
-| `protocol` | object | Phase-keyed steps only: each key is a step/phase id (e.g. `load-checklist[1]`), value is an array of imperative bullet strings. No `description` in protocol (use skill-level description). |
-| `output` | array | What the skill produces: array of output items. Each item has **id** (required; generic hyphen-delimited identifier, not a filename), optional **description**, optional **components** (named object), and optional **artifact** (when present: **name** = filename to use when persisting, e.g. `01-audit-report.md`). |
-| `resources` | string[] | Resource indices or IDs this skill depends on (e.g. "02", "04", "08") |
-| `initialization` | object | How to initialize state when skill begins (trigger, state values) |
-| `resumption` | object | How to resume after interruption (description, steps, note) |
-| `state_structure` | object | State field definitions (key-value string pairs) |
-| `update_patterns` | object | State update triggers and ordered actions |
-| `numeric_format` | object | Description and examples for numeric formatting |
-| `status_values` | object | Valid status values and their meanings |
-| `checkpoint_response_format` | object | Format for checkpoint responses |
-| `decision_outcome_format` | object | Format for decision outcomes |
-| `history_event_types` | object | Categorized event types for history tracking |
-| `history_entry_format` | object | Format for history entries |
+| `inputs` | array | Inputs the technique expects from context: array of items. Each item has **id** (required; hyphen-delimited), optional **description**, **required**, **default**, and **components** (a name→description map authored as `####` sub-sections). When a protocol step uses an existing artifact (e.g. loads from a path), the technique declares one or more associated input entries. Mirrors output structure. |
+| `protocol` | array | An ordered list of step blocks (no phase construct). Each block has optional **title** and a **steps** array of imperative bullet strings. Failure handling is inline in the steps. |
+| `output` | array | What the technique produces: array of output items. Each item has **id** (required; generic hyphen-delimited identifier, not a filename), optional **description**, optional **components** (named object), and optional **artifact** (when present: **name** = filename to use when persisting, a literal or `{token}`-template, e.g. `01-audit-report.md`). |
+
+A technique has `id`, `capability`, `protocol`, `rules`, and optional `inputs` and `output`. Nested techniques are individual `<sub>.md` files addressed by `::` path and are themselves techniques.
 
 ### Protocol
 
-Optional structured procedure: step/phase keys only (no `description` in protocol; use the skill-level `description`). Each key is a step identifier (TOON array keys use a `[N]` suffix, e.g. `load-checklist[1]`); each value is an array of imperative bullet strings for that step.
+Protocol is a single ordered list of step blocks (rendered from `## Protocol` in the markdown). Each block carries optional `title` and an ordered `steps` array. An ancestor's `Initial` protocol blocks are placed before, and its `Final` blocks after, a descendant's own protocol; the server renumbers for display. Failure handling is inline in the steps.
 
 ```json
 {
-  "protocol": {
-    "load-checklist[1]": ["Read the checklist from the resource.", "Verify version matches workflow."],
-    "execute-step[1]": ["Run the step logic.", "Record outcome."]
-  }
-}
-```
-
-Bullets that contain a colon in the text must be quoted in TOON so the parser treats them as a single string.
-
-### Tool Definitions
-
-Describe how and when to use each tool:
-
-```json
-{
-  "tools": {
-    "get_workflow": {
-      "when": "Loading workflow for execution",
-      "params": "session_index",
-      "returns": "Complete workflow definition",
-      "preserve": ["id", "initialActivity", "variables", "rules", "activities"]
-    },
-    "next_activity": {
-      "when": "Entering a new activity",
-      "params": "session_index, activity_id",
-      "returns": "Activity details with steps, checkpoints, decisions",
-      "preserve": ["steps", "checkpoints", "decisions", "transitions"]
-    }
-  }
-}
-```
-
-| Field | Purpose |
-|-------|---------|
-| `when` | Conditions or triggers for using this tool |
-| `params` | Parameters the tool accepts |
-| `returns` | What the tool returns |
-| `next` | Suggested next tool to call |
-| `action` | Action to take with the result |
-| `usage` | How to use the tool effectively |
-| `preserve` | Fields to preserve from the result |
-
-### Architecture
-
-For skills that define architectural patterns:
-
-```json
-{
-  "architecture": {
-    "principle": "Goals resolve to activities; activities resolve to skills",
-    "layers": [
-      "User Goal (problem domain) → Activity",
-      "Activity → Skill(s) (solution domain)",
-      "Skill → Tools (execution domain)"
-    ],
-    "gap_detection": "If a goal matches a skill but no activity exists, create one"
-  }
-}
-```
-
-### Matching
-
-For skills that involve goal resolution:
-
-```json
-{
-  "matching": {
-    "quick_match": "Use exact or fuzzy match against quick_match keys",
-    "fallback": "If no quick_match, compare user goal to activity.problem",
-    "ambiguous": "If multiple activities match, ask user to clarify",
-    "never": "NEVER skip activity matching to use a skill directly"
-  }
-}
-```
-
-### Error Definitions
-
-Define error conditions and recovery strategies:
-
-```json
-{
-  "errors": {
-    "workflow_not_found": {
-      "cause": "Invalid workflow_id parameter",
-      "recovery": "Call list_workflows to discover valid IDs"
-    },
-    "no_matching_activity": {
-      "cause": "User goal doesn't match any existing activity",
-      "detection": "Goal could be served by existing skill but no activity maps to it",
-      "resolution": [
-        "1. Identify which skill(s) would serve this goal",
-        "2. Create a new activity that maps goal to skill",
-        "3. Add activity to prompts/intents/ with recognition patterns"
-      ],
-      "note": "This is a design gap, not a user error"
-    }
-  }
+  "protocol": [
+    { "title": "Load checklist", "steps": ["Read the checklist from the resource.", "Verify version matches workflow."] },
+    { "title": "Execute step", "steps": ["Run the step logic.", "Record outcome."] }
+  ]
 }
 ```
 
 ### Complete Example
 
-A minimal skill demonstrating key concepts:
+A minimal technique demonstrating key concepts:
 
 ```json
 {
-  "id": "example-skill",
+  "id": "example-technique",
   "version": "1.0.0",
-  "capability": "Demonstrate skill schema structure",
-  "description": "A minimal skill showing required and optional fields",
-  "tools": {
-    "list_workflows": {
-      "when": "Beginning a new task",
-      "params": "none",
-      "returns": "List of available workflows"
-    },
-    "next_activity": {
-      "when": "Ready to transition to an activity",
-      "params": "session_index, activity_id",
-      "returns": "Activity definition",
-      "next": "get_step_skill"
-    },
-    "get_step_skill": {
-      "when": "After loading an activity",
-      "params": "session_index, step_id",
-      "returns": "Skill definition for the step"
-    }
-  },
-  "flow": [
-    "1. Call list_workflows to understand available workflows",
-    "2. Match task to available resources",
-    "3. Call next_activity to load the activity",
-    "4. Call get_step_skill to load execution guidance"
-  ],
-  "protocol": {
-    "discover[1]": ["Call list_workflows to find available workflows.", "Select the appropriate workflow for the task."],
-    "execute[2]": ["Load the activity via next_activity.", "Execute each step following skill guidance."]
-  },
-  "errors": {
-    "resource_not_found": {
-      "cause": "Requested resource does not exist",
-      "recovery": "Call list_workflows to see available options"
-    }
-  }
+  "capability": "Demonstrate technique schema structure",
+  "protocol": [
+    { "title": "Discover", "steps": ["Call list_workflows to find available workflows.", "Select the appropriate workflow for the task."] },
+    { "title": "Execute", "steps": ["Load the activity via next_activity.", "Execute each step following technique guidance."] }
+  ]
 }
 ```
 
@@ -1641,5 +1500,5 @@ A minimal skill demonstrating key concepts:
 
 - [API Reference](../docs/api-reference.md) — MCP server tools and endpoints
 - [Development Guide](../docs/development.md) — Building and testing the server
-- [Resource Resolution Model](../docs/resource_resolution_model.md) — How skills, operations, and resources are loaded
+- [Resource Resolution Model](../docs/resource_resolution_model.md) — How techniques and resources are loaded
 - [IDE Setup](../docs/ide-setup.md) — Bootstrap rule and `workflow-server://schemas` MCP resource

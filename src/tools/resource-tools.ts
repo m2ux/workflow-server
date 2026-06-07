@@ -5,8 +5,7 @@ import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
-import { readSkillRaw, resolveOperations, formatOperationsBundle } from '../loaders/skill-loader.js';
-import { encodeToon } from '../utils/toon.js';
+import { composeTechnique, projectTechniqueToToon } from '../loaders/technique-loader.js';
 import {
   sessionIndexParam,
   assertNoActiveCheckpoint,
@@ -48,16 +47,67 @@ import { randomUUID } from 'node:crypto';
 import { basename, isAbsolute, resolve } from 'node:path';
 /**
  * Parse a resource reference that may include a workflow prefix.
- * Format: "workflow/index" for cross-workflow, or bare "index" for local.
- * Examples: "meta/01" → { workflowId: "meta", index: "01" }
- *           "01"      → { workflowId: undefined, index: "01" }
+ * Format: "workflow/id" for cross-workflow, or bare "id" for local.
+ * Examples: "meta/bootstrap-protocol" → { workflowId: "meta", id: "bootstrap-protocol" }
+ *           "review-mode"             → { workflowId: undefined, id: "review-mode" }
  */
-function parseResourceRef(ref: string): { workflowId: string | undefined; index: string } {
-  const slashIdx = ref.indexOf('/');
-  if (slashIdx > 0) {
-    return { workflowId: ref.substring(0, slashIdx), index: ref.substring(slashIdx + 1) };
+function parseResourceRef(ref: string): { workflowId: string | undefined; id: string; section: string | undefined } {
+  // Split off an optional `#section` anchor (e.g. "assumption-reconciliation#log-format").
+  let section: string | undefined;
+  let base = ref.trim();
+  const hashIdx = base.indexOf('#');
+  if (hashIdx >= 0) {
+    section = base.substring(hashIdx + 1).trim() || undefined;
+    base = base.substring(0, hashIdx);
   }
-  return { workflowId: undefined, index: ref };
+  // Tolerate a trailing `.md` (the projection emits bare ids, but a path-y form may arrive).
+  base = base.replace(/\.md$/, '');
+  const slashIdx = base.indexOf('/');
+  if (slashIdx > 0) {
+    return { workflowId: base.substring(0, slashIdx), id: base.substring(slashIdx + 1), section };
+  }
+  return { workflowId: undefined, id: base, section };
+}
+
+/**
+ * Extract a single markdown section by its GitHub-style heading anchor: returns the heading line
+ * and everything beneath it up to (not including) the next heading of the same or higher level.
+ * Returns null when no heading matches the anchor.
+ */
+export function extractMarkdownSection(content: string, anchor: string): string | null {
+  const slugify = (heading: string): string =>
+    heading.trim().toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+  const lines = content.split(/\r?\n/);
+  const isFence = (l: string): boolean => /^\s*(```|~~~)/.test(l);
+
+  // Headings inside fenced code blocks (e.g. a ```markdown template skeleton) are content, not
+  // section boundaries — track fence state so they neither match the anchor nor terminate the section.
+  let startIdx = -1;
+  let startLevel = 0;
+  let inFence = false;
+  for (let i = 0; i < lines.length; i++) {
+    if (isFence(lines[i]!)) { inFence = !inFence; continue; }
+    if (inFence) continue;
+    const m = lines[i]!.match(/^(#{1,6})\s+(.+?)\s*$/);
+    if (m && slugify(m[2]!) === anchor) {
+      startIdx = i;
+      startLevel = m[1]!.length;
+      break;
+    }
+  }
+  if (startIdx < 0) return null;
+  let endIdx = lines.length;
+  inFence = false;
+  for (let i = startIdx + 1; i < lines.length; i++) {
+    if (isFence(lines[i]!)) { inFence = !inFence; continue; }
+    if (inFence) continue;
+    const m = lines[i]!.match(/^(#{1,6})\s+/);
+    if (m && m[1]!.length <= startLevel) {
+      endIdx = i;
+      break;
+    }
+  }
+  return lines.slice(startIdx, endIdx).join('\n').trim();
 }
 
 /**
@@ -435,66 +485,16 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     }), traceOpts)
   );
 
-  // ============== Skill Tools ==============
+  // ============== Technique Tool ==============
 
   server.tool(
-    'get_skills',
-    'DEPRECATED: prefer get_workflow which now bundles the workflow-level operations (resolved from workflow.skill_operations + core orchestrator ops) directly in its response. Use resolve_operations for ad-hoc operation lookups. Retained for backwards compatibility with workflows still on the legacy primary-skill model. Loads the workflow-level primary skill as raw TOON.',
+    'get_technique',
+    'Load a single composed technique within the current workflow or activity. If called before next_activity (no current activity), it loads the workflow primary technique. During an activity, it resolves the technique reference from the activity definition; with step_id, it loads the technique assigned to that step; without step_id, the activity primary technique. The returned technique is fully COMPOSED: it inherits its workflow-root `techniques/TECHNIQUE.md` base contract recursively (inputs/outputs/rules merged; ancestor Initial/Final protocol blocks wrap the descendant protocol and the server renumbers) — never the meta root for a non-meta workflow. Techniques are loaded one at a time.',
     {
       ...sessionIndexParam,
+      step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the primary technique for the activity, or the workflow primary technique if no activity is active.'),
     },
-    withAuditLog('get_skills', withSessionStoreErrors(async ({ session_index }) => {
-      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
-      const { state } = loaded;
-      assertNoActiveCheckpoint(state);
-      const workflow_id = state.workflowId;
-      const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
-      if (!wfResult.success) throw wfResult.error;
-
-      const workflow = wfResult.value;
-      const skillIds: string[] = workflow.skills?.primary ? [workflow.skills.primary] : [];
-
-      const rawBlocks: string[] = [];
-      const failedSkills: string[] = [];
-
-      for (const sid of skillIds) {
-        const rawResult = await readSkillRaw(sid, config.workflowDir, workflow_id);
-        if (rawResult.success) {
-          rawBlocks.push(rawResult.value);
-        } else {
-          failedSkills.push(sid);
-        }
-      }
-
-      const view = sessionView(state);
-      const validation = buildValidation(
-        validateWorkflowVersion(view, wfResult.value),
-      );
-
-      const next = advanceSession(state);
-      await saveSessionForTool(loaded, next);
-
-      const header = [
-        `scope: workflow`,
-        `session_index: ${session_index}`,
-        ...(failedSkills.length > 0 ? [`failed_skills: ${failedSkills.join(', ')}`] : []),
-      ];
-
-      return {
-        content: [{ type: 'text' as const, text: header.join('\n') + '\n\n---\n\n' + rawBlocks.join('\n\n---\n\n') }],
-        _meta: { session_index, validation },
-      };
-    }), traceOpts)
-  );
-
-  server.tool(
-    'get_skill',
-    'Load a skill within the current workflow or activity. If called before next_activity (no current activity in session), it loads the primary skill for the workflow. If called during an activity, it resolves the skill reference from the activity definition. If step_id is provided, it loads the skill explicitly assigned to that step. If step_id is omitted during an activity, it loads the primary skill for the entire activity. Returns the skill definition with resource references in _resources.',
-    {
-      ...sessionIndexParam,
-      step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the primary skill for the activity, or the workflow primary skill if no activity is active.'),
-    },
-    withAuditLog('get_skill', withSessionStoreErrors(async ({ session_index, step_id }) => {
+    withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, step_id }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
       const { state } = loaded;
       const workflow_id = state.workflowId;
@@ -504,15 +504,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       if (!wfResult.success) throw wfResult.error;
 
-      let skillId: string | undefined;
+      let techniqueId: string | undefined;
 
       if (!state.currentActivity) {
         if (step_id) {
           throw new Error('Cannot provide step_id when no activity is active. Call next_activity first.');
         }
-        skillId = wfResult.value.skills?.primary;
-        if (!skillId) {
-          throw new Error(`Workflow '${workflow_id}' does not define a primary skill.`);
+        techniqueId = wfResult.value.techniques?.primary;
+        if (!techniqueId) {
+          throw new Error(`Workflow '${workflow_id}' does not define a primary technique.`);
         }
       } else {
         const activity = getActivity(wfResult.value, state.currentActivity);
@@ -521,25 +521,25 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         }
 
         if (!step_id) {
-          skillId = activity.skills?.primary;
-          if (!skillId) {
-            throw new Error(`Activity '${state.currentActivity}' does not define a primary skill.`);
+          techniqueId = activity.techniques?.primary;
+          if (!techniqueId) {
+            throw new Error(`Activity '${state.currentActivity}' does not define a primary technique.`);
           }
         } else {
           const step = activity.steps?.find(s => s.id === step_id);
           if (step) {
-            skillId = step.skill;
+            techniqueId = step.technique;
           } else if (activity.loops) {
             for (const loop of activity.loops) {
               const loopStep = loop.steps?.find(s => s.id === step_id);
               if (loopStep) {
-                skillId = loopStep.skill;
+                techniqueId = loopStep.technique;
                 break;
               }
             }
           }
 
-          if (!step && !skillId) {
+          if (!step && !techniqueId) {
             const allStepIds = [
               ...(activity.steps?.map(s => s.id) ?? []),
               ...(activity.loops?.flatMap(l => l.steps?.map(s => s.id) ?? []) ?? []),
@@ -547,14 +547,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             throw new Error(`Step '${step_id}' not found in activity '${state.currentActivity}'. Available steps: [${allStepIds.join(', ')}]`);
           }
 
-          if (!skillId) {
-            throw new Error(`Step '${step_id}' in activity '${state.currentActivity}' has no associated skill.`);
+          if (!techniqueId) {
+            throw new Error(`Step '${step_id}' in activity '${state.currentActivity}' has no associated technique.`);
           }
         }
       }
 
-      const rawResult = await readSkillRaw(skillId, config.workflowDir, workflow_id);
-      if (!rawResult.success) throw rawResult.error;
+      const composed = await composeTechnique(techniqueId, config.workflowDir, workflow_id);
+      if (!composed.success) throw composed.error;
+      const text = projectTechniqueToToon(composed.value);
 
       const view = sessionView(state);
       const validation = buildValidation(
@@ -562,12 +563,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       );
 
       const next = advanceSession(state, (draft) => {
-        draft.currentSkill = skillId as string;
+        draft.currentTechnique = techniqueId as string;
       });
       await saveSessionForTool(loaded, next);
 
       return {
-        content: [{ type: 'text' as const, text: `session_index: ${session_index}\n\n${rawResult.value}` }],
+        content: [{ type: 'text' as const, text: `session_index: ${session_index}\n\n${text}` }],
         _meta: { session_index, validation },
       };
     }), traceOpts)
@@ -575,10 +576,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_resource',
-    'Load a single resource\'s full content by its ID. Use this to fetch resources referenced in skill _resources arrays. The resource_id can be a bare index (e.g., "05") which resolves within the session\'s workflow, or a prefixed cross-workflow reference (e.g., "meta/01") which resolves from the named workflow. Returns the resource content, id, and version.',
+    'Load a resource by its id, optionally narrowed to a single section. Use this to fetch resources referenced in technique content (e.g. a template hyperlinked from an Input/Output). The resource_id is a text-only slug — bare (e.g., "review-mode") resolves within the session\'s workflow, or prefixed cross-workflow (e.g., "meta/bootstrap-protocol") resolves from the named workflow. Append a `#section` anchor (GitHub-style heading slug, e.g. "assumption-reconciliation#integration-with-assumptions-log") to return only that section and its body — used to fetch just the template a technique references without the whole file. Returns the resource content, id, and version.',
     {
       ...sessionIndexParam,
-      resource_id: z.string().describe('Resource ID — bare (e.g., "23") resolves within the session workflow, prefixed (e.g., "meta/01") resolves from the specified workflow'),
+      resource_id: z.string().describe('Resource ref — bare slug ("review-mode"), cross-workflow prefixed ("meta/bootstrap-protocol"), each optionally suffixed with a "#section" heading anchor to return only that section (e.g. "assumption-reconciliation#integration-with-assumptions-log")'),
     },
     withAuditLog('get_resource', withSessionStoreErrors(async ({ session_index, resource_id }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
@@ -588,8 +589,17 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       const parsed = parseResourceRef(resource_id);
       const targetWorkflow = parsed.workflowId ?? workflow_id;
-      const result = await readResourceStructured(config.workflowDir, targetWorkflow, parsed.index);
+      const result = await readResourceStructured(config.workflowDir, targetWorkflow, parsed.id);
       if (!result.success) throw result.error;
+
+      // When a `#section` anchor is supplied, return only that section to minimise context.
+      if (parsed.section) {
+        const sectionText = extractMarkdownSection(result.value.content, parsed.section);
+        if (sectionText === null) {
+          throw new Error(`Section '#${parsed.section}' not found in resource '${parsed.id}'.`);
+        }
+        result.value.content = sectionText;
+      }
 
       const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
       const view = sessionView(state);
@@ -615,22 +625,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         _meta: { session_index, validation },
       };
     }), traceOpts)
-  );
-
-  // ============== Operation Resolution ==============
-
-  server.tool(
-    'resolve_operations',
-    'Resolve a flat list of skill::element references to their bodies. Each ref is in skill-id::element-name form (e.g., "agent-conduct::file-sensitivity", "workflow-orchestrator::evaluate-transition"). Optionally workflow-prefixed: "meta/agent-conduct::file-sensitivity". Returns a bundle grouped by kind: `operations` and `errors` are objects keyed by `<skill-id>::<name>` → body; `rules` is a flat array of [rule-name, rule-line] tuples (one tuple per line, with global rules from any touched skill auto-included); `unresolved` lists refs that did not resolve. Empty groups are omitted. No session_index required — this is a structural lookup.',
-    {
-      operations: z.array(z.string()).min(1).describe('List of skill::element references to resolve. Each entry is "skill-id::element-name" or "workflow/skill-id::element-name".'),
-    },
-    withAuditLog('resolve_operations', async ({ operations }) => {
-      const resolved = await resolveOperations(operations, config.workflowDir);
-      return {
-        content: [{ type: 'text' as const, text: encodeToon(formatOperationsBundle(resolved)) }],
-      };
-    })
   );
 
 }

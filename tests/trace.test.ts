@@ -146,7 +146,7 @@ describe('trace token encode/decode', () => {
     ts: 1711382420,
     events: [
       makeEvent('next_activity', 'test-session-id'),
-      makeEvent('get_skills', 'test-session-id'),
+      makeEvent('get_technique', 'test-session-id'),
     ],
   };
 
@@ -158,7 +158,7 @@ describe('trace token encode/decode', () => {
     expect(decoded.n).toBe(2);
     expect(decoded.events).toHaveLength(2);
     expect(decoded.events[0]!.name).toBe('next_activity');
-    expect(decoded.events[1]!.name).toBe('get_skills');
+    expect(decoded.events[1]!.name).toBe('get_technique');
   });
 
   it('rejects tampered payload (UT-10)', async () => {

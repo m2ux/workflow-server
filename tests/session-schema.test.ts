@@ -22,7 +22,7 @@ function minimalSession(overrides: Partial<SessionFile> = {}): SessionFile {
     ts: 1778700000,
     startedAt: '2026-05-13T12:00:00.000Z',
     currentActivity: '',
-    currentSkill: '',
+    currentTechnique: '',
     condition: '',
     variables: {},
     completedActivities: [],

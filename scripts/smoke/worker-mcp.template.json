@@ -1,0 +1,12 @@
+{
+  "_comment": "MCP config for smoke-run worker agents. Points workflow-server at THIS technique-branch build (not main's). WORKFLOW_WORKSPACE is replaced with the sandbox workspace at runtime so the worker shares the orchestrator's session.json. The seal key is machine-global (~/.workflow-server/secret), so both server instances verify the same sealed session.",
+  "mcpServers": {
+    "workflow-server": {
+      "command": "node",
+      "args": ["__TECHNIQUE_DIST__/index.js"],
+      "env": {
+        "WORKFLOW_WORKSPACE": "__SANDBOX_WORKSPACE__"
+      }
+    }
+  }
+}

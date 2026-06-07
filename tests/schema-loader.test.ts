@@ -11,7 +11,7 @@ describe('schema-loader', () => {
       expect(ids).toContain('workflow');
       expect(ids).toContain('activity');
       expect(ids).toContain('condition');
-      expect(ids).toContain('skill');
+      expect(ids).toContain('technique');
       expect(ids).toContain('state');
       expect(ids.length).toBeGreaterThanOrEqual(5);
     });
@@ -25,7 +25,7 @@ describe('schema-loader', () => {
         expect(result.value.workflow).toBeDefined();
         expect(result.value.activity).toBeDefined();
         expect(result.value.condition).toBeDefined();
-        expect(result.value.skill).toBeDefined();
+        expect(result.value.technique).toBeDefined();
         expect(result.value.state).toBeDefined();
       }
     });

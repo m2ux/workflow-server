@@ -3,7 +3,7 @@ import {
   validateActivityTransition,
   validateWorkflowConsistency,
   validateWorkflowVersion,
-  validateSkillAssociation,
+  validateTechniqueAssociation,
   buildValidation,
   buildErrorValidation,
   type SessionView,

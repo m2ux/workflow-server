@@ -9,11 +9,11 @@ export interface AllSchemas {
   workflow: object;
   activity: object;
   condition: object;
-  skill: object;
+  technique: object;
   state: object;
 }
 
-const SCHEMA_IDS = ['workflow', 'activity', 'condition', 'skill', 'state'] as const;
+const SCHEMA_IDS = ['workflow', 'activity', 'condition', 'technique', 'state'] as const;
 
 /**
  * Read all schema files from the schemas directory.

@@ -4,7 +4,7 @@ import { readAllSchemas, listSchemaIds } from './schema-loader.js';
 import { logInfo, logWarn } from '../logging.js';
 
 /**
- * Build a schema preamble string: header + all JSON Schemas (workflow, activity, skill, condition, state).
+ * Build a schema preamble string: header + all JSON Schemas (workflow, activity, technique, condition, state).
  * Called once at startup and cached on ServerConfig.
  * Returns empty string if all sources are missing (graceful fallback).
  */

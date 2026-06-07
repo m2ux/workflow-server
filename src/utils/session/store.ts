@@ -91,7 +91,7 @@ const TOP_LEVEL_KEY_PRIORITY = [
   'sessionIndex',
   'planningFolderPath',
   'currentActivity',
-  'currentSkill',
+  'currentTechnique',
   'condition',
   'activeCheckpoint',
   'seq',

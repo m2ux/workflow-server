@@ -94,7 +94,7 @@ The server reads these environment variables at startup (see `src/config.ts`):
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `WORKFLOW_DIR` | `./workflows` | Path to workflow directories (each contains `workflow.toon`, `activities/`, `skills/`, `resources/`) |
+| `WORKFLOW_DIR` | `./workflows` | Path to workflow directories (each contains `workflow.toon`, `activities/`, `techniques/`, `resources/`) |
 | `SCHEMAS_DIR` | `./schemas` | Path to JSON Schema definitions served via the `workflow-server://schemas` MCP resource |
 | `SERVER_NAME` | `workflow-server` | Server name reported by `health_check` |
 | `SERVER_VERSION` | `1.0.0` | Server version reported by `health_check` |

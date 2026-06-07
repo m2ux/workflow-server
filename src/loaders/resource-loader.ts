@@ -4,340 +4,235 @@ import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { ResourceNotFoundError } from '../errors.js';
 import { logInfo, logError, logWarn } from '../logging.js';
-import { decodeToon } from '../utils/toon.js';
-import { ResourceSchema, type Resource } from '../schema/resource.schema.js';
+import type { Resource } from '../schema/resource.schema.js';
 
+export { ResourceNotFoundError } from '../errors.js';
 export type { Resource };
 
-export interface ResourceEntry { 
-  index: string;  // e.g., "00", "01"
-  name: string;   // e.g., "start-here"
-  title: string;  // e.g., "Start Here"
-  path: string;   // e.g., "resources/00-start-here.toon"
-  format: 'toon' | 'markdown';
-}
-
-/** Normalize a resource index to a consistent width for comparison. */
-function normalizeResourceIndex(index: string): string {
-  return index.padStart(3, '0');
-}
-
-/** True when a resource ref looks like a numeric index (legacy) rather than an id. */
-function isNumericIndex(ref: string): boolean {
-  return /^\d+$/.test(ref);
-}
-
 /**
- * Resolve a resource ref (id or numeric index) to a concrete numeric index by
- * scanning the resource directory. When the ref is numeric, it is returned
- * unchanged. When it is an id, each resource's frontmatter `id:` field is
- * inspected and matched.
+ * A resource entry. Resources are identified ONLY by id (the frontmatter `name:`
+ * slug, which equals the folder name on disk). The numeric-index layout
+ * (`NN-name.md` flat files) is no longer supported.
  */
-async function resolveResourceRefToIndex(
-  workflowDir: string,
-  workflowId: string,
-  ref: string,
-): Promise<string | null> {
-  if (isNumericIndex(ref)) return ref;
-  const resourceDir = getResourceDir(workflowDir, workflowId);
-  if (!resourceDir) return null;
-
-  try {
-    const files = (await readdir(resourceDir)).sort();
-    for (const file of files) {
-      const parsed = parseResourceFilename(file);
-      if (!parsed) continue;
-      // Quick win: match the filename name as a fallback for refs that match the file's "name" (post-prefix) part.
-      if (parsed.name === ref) return parsed.index;
-      // Otherwise inspect frontmatter for id match.
-      const filePath = join(resourceDir, file);
-      try {
-        const content = await readFile(filePath, 'utf-8');
-        const fmMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
-        if (!fmMatch) continue;
-        const idMatch = fmMatch[1]?.match(/^id:\s*(.+)$/m);
-        const id = idMatch?.[1]?.trim();
-        if (id === ref) return parsed.index;
-      } catch { /* ignore read errors and try next file */ }
-    }
-  } catch (error) {
-    logWarn('Failed to resolve resource ref by id', { workflowId, ref, error: error instanceof Error ? error.message : String(error) });
-  }
-  return null;
+export interface ResourceEntry {
+  /** Canonical id — the folder slug (also the frontmatter `name:`). */
+  id: string;
+  /** Same as id; kept for callers that previously read .name. */
+  name: string;
+  /** Human-readable title derived from the slug. */
+  title: string;
+  /** Repo-relative path to the resource's `SKILL.md`. */
+  path: string;
+  format: 'markdown';
 }
 
 /**
- * Parse a resource filename to extract index and name.
- * Expected format: {NN}-{name}.toon or {NN}-{name}.md (in resources/ subdirectory)
- * 
- * @param filename - Resource filename
- * @returns Parsed index, name, and format, or null if not a valid resource file
+ * Extract a YAML-frontmatter scalar value (e.g. `name`, `version`) by key.
+ * Mirrors the canonical frontmatter shape used by markdown-technique-loader.ts.
  */
-function parseResourceFilename(filename: string): { index: string; name: string; format: 'toon' | 'markdown' } | null {
-  // Match pattern: {digits}-{name}.toon
-  const toonMatch = filename.match(/^(\d+)-(.+)\.toon$/);
-  if (toonMatch && toonMatch[1] && toonMatch[2]) {
-    return { index: toonMatch[1], name: toonMatch[2], format: 'toon' };
-  }
-  
-  // Match pattern: {digits}-{name}.md
-  const mdMatch = filename.match(/^(\d+)-(.+)\.md$/);
-  if (mdMatch && mdMatch[1] && mdMatch[2]) {
-    return { index: mdMatch[1], name: mdMatch[2], format: 'markdown' };
-  }
-  
-  return null;
+function extractFrontmatterScalar(content: string, key: string): string | undefined {
+  const fmMatch = content.match(/^---\s*\r?\n([\s\S]*?)\r?\n---/);
+  if (!fmMatch) return undefined;
+  const re = new RegExp(`^${key}\\s*:\\s*(.+)$`, 'm');
+  const m = fmMatch[1]?.match(re);
+  if (!m || !m[1]) return undefined;
+  let v = m[1].trim();
+  if (v.startsWith('"') && v.endsWith('"')) v = v.slice(1, -1);
+  else if (v.startsWith("'") && v.endsWith("'")) v = v.slice(1, -1);
+  return v;
 }
 
 /**
- * Get the resource directory for a workflow, checking both 'resources/' and 'guides/' (legacy).
+ * Resolve the resource directory for a workflow.
+ * The `guides/` fallback is retained for backward compatibility (orthogonal to this migration).
  */
 function getResourceDir(workflowDir: string, workflowId: string): string | null {
   const resourceDir = join(workflowDir, workflowId, 'resources');
   if (existsSync(resourceDir)) return resourceDir;
-  
-  // Fallback to legacy 'guides/' folder
+
   const guidesDir = join(workflowDir, workflowId, 'guides');
   if (existsSync(guidesDir)) return guidesDir;
-  
+
   return null;
 }
 
 /**
- * Read a resource by index from a workflow directory.
- * Resources are stored in {workflowDir}/{workflowId}/resources/ subdirectory.
- * Falls back to {workflowDir}/{workflowId}/guides/ for backwards compatibility.
- * Supports both TOON (.toon) and Markdown (.md) formats.
- * 
- * @param workflowDir - Base workflow directory (e.g., './workflows')
- * @param workflowId - Workflow ID (e.g., 'work-package')
- * @param resourceIndex - Resource index (e.g., '00', '0', '01')
- * @returns Resource content as decoded object (TOON) or raw string (Markdown)
+ * Locate the markdown file for a resource by id.
+ * Resolution:
+ *   1. Flat file match `<resourceDir>/<id>.md`.
+ *   2. Frontmatter-name match across flat resource files — accommodates the case where the
+ *      caller passed a name that does not equal the file slug.
+ * Returns the absolute path to the resource file, or null.
+ */
+async function findResourceSkillMd(workflowDir: string, workflowId: string, id: string): Promise<string | null> {
+  const resourceDir = getResourceDir(workflowDir, workflowId);
+  if (!resourceDir) return null;
+
+  // 1. Flat file match by slug: `<resourceDir>/<id>.md`.
+  const flat = join(resourceDir, `${id}.md`);
+  if (existsSync(flat)) return flat;
+
+  // 2. Frontmatter-name match across flat resource files.
+  try {
+    const entries = await readdir(resourceDir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (!entry.isFile() || !entry.name.endsWith('.md') || entry.name === 'README.md') continue;
+      const candidate = join(resourceDir, entry.name);
+      try {
+        const content = await readFile(candidate, 'utf-8');
+        const name = extractFrontmatterScalar(content, 'name');
+        const slug = entry.name.replace(/\.md$/, '');
+        if (name === id || slug === id) return candidate;
+      } catch { /* ignore */ }
+    }
+  } catch { /* ignore */ }
+  return null;
+}
+
+/**
+ * Read a resource by id.
+ * Returns the raw markdown content as a string.
  */
 export async function readResource(
   workflowDir: string,
   workflowId: string,
-  resourceIndex: string
+  resourceId: string,
 ): Promise<Result<Resource | string, ResourceNotFoundError>> {
-  const resourceDir = getResourceDir(workflowDir, workflowId);
-
-  if (!resourceDir) {
-    return err(new ResourceNotFoundError(resourceIndex, workflowId));
-  }
-
-  // Resolve id-based refs to numeric indices (numeric refs pass through unchanged).
-  const effectiveIndex = isNumericIndex(resourceIndex)
-    ? resourceIndex
-    : (await resolveResourceRefToIndex(workflowDir, workflowId, resourceIndex)) ?? resourceIndex;
-
-  const normalizedIndex = normalizeResourceIndex(effectiveIndex);
-  
-  try {
-    const files = (await readdir(resourceDir)).sort();
-    
-    // Two-pass: prefer TOON over Markdown for the same index
-    let mdFallback: string | null = null;
-    for (const file of files) {
-      const parsed = parseResourceFilename(file);
-      if (!parsed) continue;
-      const fileIndex = normalizeResourceIndex(parsed.index);
-      if (fileIndex !== normalizedIndex && parsed.index !== resourceIndex) continue;
-      
-      if (parsed.format === 'toon') {
-        const filePath = join(resourceDir, file);
-        const content = await readFile(filePath, 'utf-8');
-        logInfo('Resource loaded', { workflowId, resourceIndex, path: filePath, format: 'toon' });
-        return ok(decodeToon(content, ResourceSchema));
-      }
-      if (!mdFallback) mdFallback = file;
-    }
-    
-    if (mdFallback) {
-      const filePath = join(resourceDir, mdFallback);
-      const content = await readFile(filePath, 'utf-8');
-      logInfo('Resource loaded', { workflowId, resourceIndex, path: filePath, format: 'markdown' });
-      return ok(content);
-    }
-  } catch (error) {
-    logError('Failed to read resource', error instanceof Error ? error : undefined, { workflowId, resourceIndex });
-  }
-  
-  return err(new ResourceNotFoundError(resourceIndex, workflowId));
+  const rawResult = await readResourceRaw(workflowDir, workflowId, resourceId);
+  if (!rawResult.success) return rawResult;
+  return ok(rawResult.value.content);
 }
 
 /**
- * Read a resource by index and return raw content (for resource serving).
- * Resources are stored in {workflowDir}/{workflowId}/resources/ subdirectory.
- * Falls back to {workflowDir}/{workflowId}/guides/ for backwards compatibility.
- * Returns the original file content without parsing.
+ * Read a resource by id and return raw markdown content with format metadata.
+ *
+ * Resources live exclusively under `<workflowDir>/<workflowId>/resources/<id>/SKILL.md`.
+ * The legacy flat `NN-name.md` shape is no longer supported.
  */
 export async function readResourceRaw(
   workflowDir: string,
   workflowId: string,
-  resourceIndex: string
-): Promise<Result<{ content: string; format: 'toon' | 'markdown' }, ResourceNotFoundError>> {
+  resourceId: string,
+): Promise<Result<{ content: string; format: 'markdown' }, ResourceNotFoundError>> {
   const resourceDir = getResourceDir(workflowDir, workflowId);
+  if (!resourceDir) return err(new ResourceNotFoundError(resourceId, workflowId));
 
-  if (!resourceDir) {
-    return err(new ResourceNotFoundError(resourceIndex, workflowId));
+  const folderPath = await findResourceSkillMd(workflowDir, workflowId, resourceId);
+  if (folderPath) {
+    try {
+      const content = await readFile(folderPath, 'utf-8');
+      logInfo('Resource loaded (raw)', { workflowId, resourceId, path: folderPath, format: 'markdown' });
+      return ok({ content, format: 'markdown' });
+    } catch (error) {
+      logError('Failed to read resource SKILL.md', error instanceof Error ? error : undefined, { workflowId, resourceId });
+    }
   }
 
-  // Resolve id-based refs to numeric indices (numeric refs pass through unchanged).
-  const effectiveIndex = isNumericIndex(resourceIndex)
-    ? resourceIndex
-    : (await resolveResourceRefToIndex(workflowDir, workflowId, resourceIndex)) ?? resourceIndex;
-
-  const normalizedIndex = normalizeResourceIndex(effectiveIndex);
-  
-  try {
-    const files = (await readdir(resourceDir)).sort();
-    
-    // Prefer TOON over Markdown for the same index
-    let mdFallback: { file: string; parsed: ReturnType<typeof parseResourceFilename> } | null = null;
-    for (const file of files) {
-      const parsed = parseResourceFilename(file);
-      if (!parsed) continue;
-      const fileIndex = normalizeResourceIndex(parsed.index);
-      if (fileIndex !== normalizedIndex && parsed.index !== resourceIndex) continue;
-      
-      if (parsed.format === 'toon') {
-        const filePath = join(resourceDir, file);
-        const content = await readFile(filePath, 'utf-8');
-        logInfo('Resource loaded (raw)', { workflowId, resourceIndex, path: filePath, format: 'toon' });
-        return ok({ content, format: parsed.format });
-      }
-      if (!mdFallback) mdFallback = { file, parsed };
-    }
-    
-    if (mdFallback && mdFallback.parsed) {
-      const filePath = join(resourceDir, mdFallback.file);
-      const content = await readFile(filePath, 'utf-8');
-      logInfo('Resource loaded (raw)', { workflowId, resourceIndex, path: filePath, format: mdFallback.parsed.format });
-      return ok({ content, format: mdFallback.parsed.format });
-    }
-  } catch (error) {
-    logWarn('Failed to read resource (raw)', { workflowId, resourceIndex, error: error instanceof Error ? error.message : String(error) });
-  }
-  
-  return err(new ResourceNotFoundError(resourceIndex, workflowId));
+  return err(new ResourceNotFoundError(resourceId, workflowId));
 }
 
 /**
- * List all resources available for a workflow.
- * Looks in {workflowDir}/{workflowId}/resources/ for {NN}-{name}.toon and .md files.
- * Falls back to {workflowDir}/{workflowId}/guides/ for backwards compatibility.
+ * List all resources available for a workflow. Folder-shape only.
  */
 export async function listResources(workflowDir: string, workflowId: string): Promise<ResourceEntry[]> {
   const resourceDir = getResourceDir(workflowDir, workflowId);
-  
   if (!resourceDir) return [];
-  
+
+  const resources: ResourceEntry[] = [];
+
   try {
-    const files = await readdir(resourceDir);
-    const resources: ResourceEntry[] = [];
-    
-    for (const file of files) {
-      const parsed = parseResourceFilename(file);
-      if (parsed) {
-        // Generate title from name
-        const title = parsed.name.split('-')
-          .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-          .join(' ');
-        
-        resources.push({
-          index: parsed.index,
-          name: parsed.name,
-          title,
-          path: `resources/${file}`,
-          format: parsed.format,
-        });
+    const entries = await readdir(resourceDir, { withFileTypes: true });
+    for (const entry of entries) {
+      // Flat resource file `<slug>.md`.
+      if (!entry.isFile() || !entry.name.endsWith('.md') || entry.name === 'README.md') continue;
+      const candidate = join(resourceDir, entry.name);
+      const slug = entry.name.replace(/\.md$/, '');
+      const relPath = `resources/${entry.name}`;
+      try {
+        const content = await readFile(candidate, 'utf-8');
+        const id = extractFrontmatterScalar(content, 'name') ?? slug;
+        const title = slug.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        resources.push({ id, name: slug, title, path: relPath, format: 'markdown' });
+      } catch {
+        // ignore unreadable entries
       }
     }
-    
-    // Sort by index
-    resources.sort((a, b) => parseInt(a.index, 10) - parseInt(b.index, 10));
-    
+
+    resources.sort((a, b) => a.name.localeCompare(b.name));
     return resources;
   } catch (error) {
     logWarn('Failed to list resources', { workflowId, error: error instanceof Error ? error.message : String(error) });
-    return []; 
+    return [];
   }
 }
 
-/**
- * Get a resource entry by index without loading content.
- */
+/** Get a resource entry by id without loading content. */
 export async function getResourceEntry(
-  workflowDir: string, 
-  workflowId: string, 
-  resourceIndex: string
+  workflowDir: string,
+  workflowId: string,
+  resourceId: string,
 ): Promise<ResourceEntry | null> {
   const resources = await listResources(workflowDir, workflowId);
-  const normalizedIndex = normalizeResourceIndex(resourceIndex);
-  
-  return resources.find(r => 
-    normalizeResourceIndex(r.index) === normalizedIndex || 
-    r.index === resourceIndex
-  ) ?? null;
+  return resources.find((r) => r.id === resourceId || r.name === resourceId) ?? null;
 }
 
 export interface StructuredResource {
-  index: string;
-  id: string | undefined;
+  /** Canonical id of the resource (the frontmatter `name:` slug). */
+  id: string;
   version: string | undefined;
   content: string;
 }
 
-function parseFrontmatter(raw: string): { id: string | undefined; version: string | undefined; content: string } {
+function parseStructuredFrontmatter(raw: string): { name: string | undefined; version: string | undefined; content: string } {
   const fmMatch = raw.match(/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/);
-  if (!fmMatch) return { id: undefined, version: undefined, content: raw };
+  if (!fmMatch) return { name: undefined, version: undefined, content: raw };
 
   const frontmatter = fmMatch[1] ?? '';
   const body = (fmMatch[2] ?? '').trim();
 
-  const idMatch = frontmatter.match(/^id:\s*(.+)$/m);
-  const versionMatch = frontmatter.match(/^version:\s*(.+)$/m);
+  // Canonical SKILL.md uses `name:` (sibling to markdown-technique-loader).
+  // `version:` lives under either `version:` at top level or `metadata.version:` nested.
+  const nameMatch = frontmatter.match(/^name:\s*(.+)$/m);
+  const topVersionMatch = frontmatter.match(/^version:\s*(.+)$/m);
+  const nestedVersionMatch = frontmatter.match(/^\s{2,}version:\s*(.+)$/m);
 
   return {
-    id: idMatch?.[1]?.trim(),
-    version: versionMatch?.[1]?.trim(),
+    name: nameMatch?.[1]?.trim(),
+    version: (topVersionMatch?.[1] ?? nestedVersionMatch?.[1])?.trim(),
     content: body,
   };
 }
 
 /**
- * Read a resource by index and return structured metadata + content.
- * Parses frontmatter (id, version) and returns body separately.
+ * Read a resource and return structured metadata + content. Parses frontmatter (name, version)
+ * and returns the body separately.
  */
 export async function readResourceStructured(
   workflowDir: string,
   workflowId: string,
-  resourceIndex: string,
+  resourceId: string,
 ): Promise<Result<StructuredResource, ResourceNotFoundError>> {
-  const rawResult = await readResourceRaw(workflowDir, workflowId, resourceIndex);
+  const rawResult = await readResourceRaw(workflowDir, workflowId, resourceId);
   if (!rawResult.success) return rawResult;
 
-  const { id, version, content } = parseFrontmatter(rawResult.value.content);
-  const normalizedIndex = normalizeResourceIndex(resourceIndex);
-
-  return ok({ index: normalizedIndex, id, version, content });
+  const { name, version, content } = parseStructuredFrontmatter(rawResult.value.content);
+  return ok({ id: name ?? resourceId, version, content });
 }
 
 /**
- * List all workflows that contain resources.
- * Scans {workflowDir}/ for subdirectories containing a resources/ subdirectory with resource files.
+ * List all workflows that contain resources. Folder-shape only.
  */
 export async function listWorkflowsWithResources(workflowDir: string): Promise<string[]> {
   if (!existsSync(workflowDir)) return [];
-  
+
   try {
     const entries = await readdir(workflowDir);
     const workflows: string[] = [];
-    
+
     for (const entry of entries) {
       const entryPath = join(workflowDir, entry);
       const stats = await stat(entryPath);
-      
+
       if (stats.isDirectory()) {
         const resources = await listResources(workflowDir, entry);
         if (resources.length > 0) {
@@ -345,7 +240,7 @@ export async function listWorkflowsWithResources(workflowDir: string): Promise<s
         }
       }
     }
-    
+
     return workflows.sort();
   } catch (error) {
     logWarn('Failed to list workflows with resources', { workflowDir, error: error instanceof Error ? error.message : String(error) });

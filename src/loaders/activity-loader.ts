@@ -129,14 +129,14 @@ async function readActivityFromWorkflow(
     
     logInfo('Activity loaded', { id: activityId, workflowId, path: filePath });
     
-    const primaryStep = activity.steps?.find(s => s.skill);
+    const primaryStep = activity.steps?.find(s => s.technique);
 
     const activityWithGuidance: ActivityWithGuidance = {
       ...activity,
       workflowId,
       ...(primaryStep ? {
         next_action: {
-          tool: 'get_skill',
+          tool: 'get_technique',
           parameters: { step_id: primaryStep.id },
         },
       } : {}),
@@ -203,7 +203,7 @@ export interface ActivityIndexEntry {
   id: string;
   workflowId: string;
   problem: string;
-  primary_skill?: string;
+  primary_technique?: string;
   next_action?: {
     tool: string;
     parameters: Record<string, string>;
@@ -247,18 +247,18 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
       const validation = safeValidateActivity(decoded);
       const activity = validation.success ? validation.data : decoded as Activity;
       
-      const primarySkill = activity.skills?.primary
-        ?? activity.steps?.find(s => s.skill)?.skill;
-      const primaryStep = activity.steps?.find(s => s.skill);
+      const primaryTechnique = activity.techniques?.primary
+        ?? activity.steps?.find(s => s.technique)?.technique;
+      const primaryStep = activity.steps?.find(s => s.technique);
 
       const activityEntry: ActivityIndex['activities'][number] = {
         id: activity.id,
         workflowId: entry.workflowId,
         problem: activity.problem ?? activity.description ?? activity.name,
-        ...(primarySkill ? { primary_skill: primarySkill } : {}),
+        ...(primaryTechnique ? { primary_technique: primaryTechnique } : {}),
         ...(primaryStep ? {
           next_action: {
-            tool: 'get_skill',
+            tool: 'get_technique',
             parameters: { step_id: primaryStep.id },
           },
         } : {}),
@@ -277,7 +277,7 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
   }
   
   const index: ActivityIndex = {
-    description: 'Match user goal to an activity. Activities use skills to achieve outcomes.',
+    description: 'Match user goal to an activity. Activities use techniques to achieve outcomes.',
     usage: 'Call the tool in next_action first (start_session), then proceed to the matched activity.',
     next_action: {
       tool: 'start_session',

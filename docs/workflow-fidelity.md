@@ -57,7 +57,7 @@ flowchart TD
         respondCp["respond_checkpoint\nfor each pending checkpoint"]
         cpTiming{{"L2: Timing enforced\noption validated against definition"}}
         bcpClear["bcp cleared — tools unblocked"]
-        getSkill["get_skill(step_id) + get_resource"]
+        getTechnique["get_technique(step_id) + get_resource"]
         executeSteps["Execute activity steps"]
     end
 
@@ -83,8 +83,8 @@ flowchart TD
     respondCp --> cpTiming
     cpTiming -->|"Each checkpoint resolved"| respondCp
     cpTiming -->|"All checkpoints resolved"| bcpClear
-    bcpClear --> getSkill
-    getSkill -->|"L1: HMAC verified"| executeSteps
+    bcpClear --> getTechnique
+    getTechnique -->|"L1: HMAC verified"| executeSteps
 
     executeSteps --> nextB
     nextB --> hardGate
@@ -114,7 +114,7 @@ The token payload carries:
 |-------|---------|
 | `wf` | Workflow ID — locks the session to a single workflow |
 | `act` | Current activity — records the agent's position |
-| `skill` | Last loaded skill — tracks skill usage |
+| `technique` | Last loaded technique — tracks technique usage |
 | `cond` | Last transition condition — records the agent's claimed reason for transitioning |
 | `v` | Workflow version — detects definition drift |
 | `seq` | Sequence counter — increments on every call, ensuring uniqueness |
@@ -177,7 +177,7 @@ When an agent makes a tool call, the server compares the token's recorded state 
 |-------|----------------|
 | Workflow consistency | Agent switched workflows mid-session without starting a new session |
 | Activity transition | Agent jumped to an activity that isn't a valid transition from the previous one |
-| Skill association | Agent loaded a skill not declared by the current activity |
+| Technique association | Agent loaded a technique not declared by the current activity |
 | Version drift | Workflow definition changed on disk since the session started |
 
 **Design principle:** Warnings don't block execution — the tool still returns its result. This allows agents to self-correct rather than being hard-blocked, while making violations visible. All validation warnings are captured in the execution trace (Layer 7).
@@ -267,7 +267,7 @@ The server automatically captures a mechanical trace of every tool call in a ses
 - **Parent-child correlation** — the `psid` field links dispatched child workflows to their parent
 - **Validation warning history** — every warning issued during the session is recorded, not just the most recent
 
-**Two-layer trace architecture:** The server captures the mechanical trace (tool calls, timing, validation) automatically. Agents write a complementary semantic trace (step outputs, checkpoint responses, decision branches, variable changes) to the planning folder per workflow skill instructions. Together they provide complete execution visibility.
+**Two-layer trace architecture:** The server captures the mechanical trace (tool calls, timing, validation) automatically. Agents write a complementary semantic trace (step outputs, checkpoint responses, decision branches, variable changes) to the planning folder per workflow technique instructions. Together they provide complete execution visibility.
 
 **Trace token properties:**
 - Self-contained — full event data is embedded, not just references to in-memory state
@@ -281,7 +281,7 @@ Beyond enforcement, the server reduces the context burden on agents:
 
 ### Summary Mode
 
-`get_workflow(summary=true)` returns lightweight metadata (~2KB) instead of the full workflow definition (~13KB). The orchestrator gets rules, variables, `initialActivity`, and activity stubs without consuming its context window with step-level detail. The response is preceded by the workflow's primary skill (when present) and a TOON-encoded `operations` bundle (workflow-declared ops + the core orchestrator op set), so the orchestrator receives its execution surface in a single round-trip.
+`get_workflow(summary=true)` returns lightweight metadata (~2KB) instead of the full workflow definition (~13KB). The orchestrator gets rules, variables, `initialActivity`, and activity stubs without consuming its context window with step-level detail. The response is preceded by the workflow's primary technique (when present) and the technique bundle (the activity's primary plus supporting techniques), so the orchestrator receives its execution surface in a single round-trip.
 
 ### Transitions in Activity Definitions
 
@@ -298,9 +298,9 @@ Beyond enforcement, the server reduces the context burden on agents:
 
 Transitions are also derived from `decisions` (branch `transitionTo` fields) and `checkpoints` (option `effect.transitionTo` fields), giving the orchestrator a complete view of all possible next activities.
 
-### Operation, Skill, and Resource Loading
+### Technique and Resource Loading
 
-`get_workflow` and `get_activity` pre-resolve `operations:` references and return them as bundled TOON in the response preamble — agents read operation bodies directly from the bundle rather than chasing per-step skill loads. `resolve_operations` is exposed for ad-hoc lookups outside the bundled sets. The legacy path (`get_skills` for the workflow's primary skill, `get_skill(step_id)` for a step's `skill:` reference) remains available for activities still using the per-step skill model. Call `get_resource` with the resource index when an operation references reference material that wasn't bundled.
+`get_workflow` and `get_activity` pre-resolve the activity's `techniques.primary` and `techniques.supporting[]` references and return them as the bundled technique set in the response preamble — agents read technique bodies (capability, flow, inputs, protocol, output) directly from the bundle rather than chasing per-step loads. `get_technique` loads a single fully composed technique on demand — the workflow primary technique before any activity, or the technique for the current activity (optionally a `step_id`'s technique). Call `get_resource` with the resource index when a technique references reference material that wasn't bundled.
 
 ### Self-Describing Bootstrap
 

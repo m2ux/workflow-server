@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "technique.schema.json",
+  "title": "technique",
+  "description": "Technique definition schema for workflow-server",
+  "$ref": "#/definitions/technique",
+  "definitions": {
+    "inputItemDefinition": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining skills." },
+        "description": { "type": "string", "description": "Human-readable description of this input" },
+        "required": { "type": "boolean", "default": true, "description": "Whether this input must be supplied. Defaults to true — only set to false for optional inputs." },
+        "default": { "description": "Default value when not supplied" },
+        "components": { "$ref": "#/definitions/outputComponentsDefinition", "description": "Named sub-members of a composite input (authored as #### sub-sections). Mirrors output components." }
+      },
+      "required": [ "id" ],
+      "additionalProperties": false,
+      "description": "Single input entry: id (required, hyphen-delimited), optional description, required, default, and components"
+    },
+    "inputsDefinition": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/inputItemDefinition" },
+      "description": "Inputs the skill expects from context: array of named items (mirrors output structure for deterministic binding). When a protocol step uses an existing artifact (e.g. loads from a path or file), the skill MUST declare one or more associated input entries that supply that artifact or path."
+    },
+    "protocolBlock": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Optional label for this block (the authored `### Title`, ordinal prefix stripped)." },
+        "steps": { "type": "array", "items": { "type": "string" }, "description": "Ordered imperative step bullets for this block." }
+      },
+      "required": ["steps"],
+      "additionalProperties": false
+    },
+    "protocolDefinition": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/protocolBlock" },
+      "description": "Protocol: a single ordered list of step blocks (no phase construct). An ancestor's Initial blocks are placed before, and its Final blocks after, a nested technique's own blocks; the server renumbers the combined sequence for display."
+    },
+    "rulesDefinition": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string", "description": "Single rule text." },
+          { "type": "array", "items": { "type": "string" }, "description": "Array of related rules grouped under this key." }
+        ]
+      },
+      "description": "Named rules: each key is a rule name or group. Values can be a single rule string or an array of related rules. Note: workflow/activity schemas use a different format (string array of ordered imperative directives)."
+    },
+    "outputComponentsDefinition": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Named output components: each key is a component id, value is the spec or description for that component (mirrors inputs structure)"
+    },
+    "outputArtifact": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Artifact filename when this output is persisted. A literal (e.g. 01-audit-report.md) or a token-template with {variable} placeholders the worker interpolates from in-scope inputs/variables at runtime (e.g. {package-name}-plan.md). Declare the name here, never hardcode it in Protocol prose." },
+        "action": { "type": "string", "enum": ["create", "update"], "default": "create", "description": "Whether this output creates a new artifact or updates an existing one" }
+      },
+      "required": [ "name" ],
+      "additionalProperties": false,
+      "description": "Optional. When present, defines the artifact name to create when persisting this output."
+    },
+    "outputItemDefinition": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Stable generic identifier for this output (hyphen-delimited, matching protocol step id style). Used when referencing as an input or elsewhere. Not a filename." },
+        "description": { "type": "string", "description": "Human-readable description of this output" },
+        "components": { "$ref": "#/definitions/outputComponentsDefinition" },
+        "artifact": { "$ref": "#/definitions/outputArtifact", "description": "Optional. When populated, specifies the artifact name to create when persisting this output." }
+      },
+      "required": [ "id" ],
+      "additionalProperties": false,
+      "description": "Single output entry: id (required, generic hyphen-delimited), optional description, components, and artifact (for persistence)"
+    },
+    "outputDefinition": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/outputItemDefinition" },
+      "description": "What the skill produces: one or more named outputs, each with optional name, description, and components"
+    },
+    "technique": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the technique"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Semantic version of the technique"
+        },
+        "capability": {
+          "type": "string",
+          "description": "What this technique enables agents to do"
+        },
+        "rules": {
+          "$ref": "#/definitions/rulesDefinition"
+        },
+        "inputs": { "$ref": "#/definitions/inputsDefinition" },
+        "protocol": { "$ref": "#/definitions/protocolDefinition" },
+        "output": { "$ref": "#/definitions/outputDefinition" }
+      },
+      "required": ["id", "version", "capability"],
+      "additionalProperties": false
+    }
+  }
+}
