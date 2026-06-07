@@ -9,7 +9,7 @@ metadata:
 
 ## Capability
 
-Create an Architecture Decision Record at .engineering/artifacts/adr/ for moderate or complex implementations
+Create an Architecture Decision Record for moderate or complex implementations
 
 ## Inputs
 
@@ -21,6 +21,14 @@ Problem complexity assessment (simple|moderate|complex)
 
 Design philosophy [artifact](../resources/design-framework.md#design-philosophy-artifact-template) with rationale and alternatives
 
+### adr_dir
+
+Directory holding the project's ADR files
+
+#### default
+
+.engineering/artifacts/adr/
+
 ## Protocol
 
 ### 1. Gate On Complexity
@@ -29,9 +37,9 @@ Design philosophy [artifact](../resources/design-framework.md#design-philosophy-
 
 ### 2. Determine Number
 
-- Scan .engineering/artifacts/adr/ for existing ADR files
+- Scan {adr_dir} for existing ADR files
 - Determine next sequential NNNN number
-- If the next number cannot be determined, scan .engineering/artifacts/adr/ for existing files and use the next available number.
+- If the next number cannot be determined, re-scan {adr_dir} and use the next available number.
 
 ### 3. Gather Context
 
@@ -41,7 +49,7 @@ Design philosophy [artifact](../resources/design-framework.md#design-philosophy-
 
 ### 4. Write Adr
 
-- Write the {adr_document} as NNNN-{decision_title}.md at .engineering/artifacts/adr/
+- Write the {adr_document} as NNNN-{decision_title}.md in {adr_dir}
 - Use standard ADR format (Title, Status, Context, Decision, Consequences)
 - Set status to Proposed (finalize activity updates to Accepted)
 - New ADRs are created with status Proposed — the finalize activity updates to Accepted
