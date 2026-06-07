@@ -33,7 +33,7 @@
       "command": "node",
       "args": ["/home/mike1/projects/main/workflow-server/dist/index.js"],
       "env": {
-        "WORKFLOW_WORKSPACE": "/home/mike1/projects/dev/workflow-server"
+        "WORKFLOW_WORKSPACE": "/home/mike1/projects/main/workflow-server"
       }
     },
     "gitnexus": {

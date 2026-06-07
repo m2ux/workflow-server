@@ -8,7 +8,7 @@ export const HistoryEventTypeSchema = z.enum([
   'workflow_triggered', 'workflow_returned', 'workflow_suspended',
   'activity_entered', 'activity_exited', 'activity_skipped',
   'step_started', 'step_completed',
-  'checkpoint_reached', 'checkpoint_response',
+  'checkpoint_reached', 'checkpoint_response', 'checkpoint_replayed',
   'decision_reached', 'decision_branch_taken',
   'loop_started', 'loop_iteration', 'loop_completed', 'loop_break',
   'variable_set', 'error',
@@ -72,10 +72,12 @@ export type ParentWorkflowRef = z.infer<typeof ParentWorkflowRefSchema>;
 export const TriggeredWorkflowRefSchema = z.object({
   workflowId: z.string(),
   /**
-   * Slug of the child's planning folder. Required for server-managed state
-   * (it's how the parent or any other caller resumes the child by calling
-   * `start_session({ planning_slug })`). Optional in the legacy
-   * `workflow-state.json` migration path where the field didn't exist.
+   * Slug of the child's planning folder. Required for server-managed state —
+   * the parent or any other caller resumes the child by calling
+   * `start_session({ planning_folder: "<workspace>/.engineering/artifacts/planning/<slug>" })`
+   * (long-form path; the server derives the slug from `basename(path)`).
+   * Optional in the legacy `workflow-state.json` migration path where the
+   * field didn't exist.
    */
   planningSlug: z.string().optional(),
   /** 6-char base32 session_index of the child session. */

@@ -260,28 +260,20 @@ describe('session-store primitives', () => {
     it('returns the unique folder when exactly one match exists', async () => {
       const folder = await ensurePlanningFolder(workspace, '2026-05-14-tc10');
       const idx = await computeSessionIndex(folder);
+      await writeSessionFile(folder, { sessionIndex: idx, sentinel: 'tc10' });
       const resolved = await resolveSessionIndex(workspace, idx);
       expect(resolved).toBe(folder);
     });
 
-    it('errors with both candidate paths on collision', async () => {
-      // Inject a collision by mocking computeSessionIndexSync via the file
-      // layer is awkward. Instead, we craft a workspace with two folders and
-      // monkey-patch the module's internal hash to return the same index for
-      // both — equivalent to a real collision. The test exercises the
-      // resolver's branching, which is what the test plan calls for.
+    it('errors with all candidate paths on collision', async () => {
+      // Two distinct folders carrying the same stored sessionIndex value
+      // (a real-world collision happens when a session.json is copied between
+      // folders without updating the index). The resolver must report both.
       const a = await ensurePlanningFolder(workspace, '2026-05-14-collide-a');
       const b = await ensurePlanningFolder(workspace, '2026-05-14-collide-b');
-
-      // Find a real index that collides: compute index for `a` and rename `b`
-      // to a sibling that happens to hash to the same value via a symlink
-      // pointing back to `a`. (Symlink + realpath canonicalisation makes the
-      // two distinct entries hash identically.)
-      const { symlink: makeLink } = await import('node:fs/promises');
-      const linkPath = join(planningRoot(workspace), '2026-05-14-collide-link');
-      await rm(b, { recursive: true });
-      await makeLink(a, linkPath);
       const idx = await computeSessionIndex(a);
+      await writeSessionFile(a, { sessionIndex: idx, sentinel: 'a' });
+      await writeSessionFile(b, { sessionIndex: idx, sentinel: 'b' });
 
       await expect(resolveSessionIndex(workspace, idx)).rejects.toMatchObject({
         name: 'SessionStoreError',
@@ -295,6 +287,21 @@ describe('session-store primitives', () => {
         const cands = (e.details as { candidates: string[] }).candidates;
         expect(cands.length).toBeGreaterThanOrEqual(2);
       }
+    });
+
+    it('resolves after the folder is renamed (path-independent lookup)', async () => {
+      // Folder mobility: once session.json is written, the planning folder
+      // can be renamed without invalidating the stored sessionIndex.
+      const folder = await ensurePlanningFolder(workspace, '2026-05-14-mobile-before');
+      const idx = await computeSessionIndex(folder);
+      await writeSessionFile(folder, { sessionIndex: idx, sentinel: 'mobile' });
+
+      const { rename } = await import('node:fs/promises');
+      const moved = join(planningRoot(workspace), '2026-05-14-mobile-after');
+      await rename(folder, moved);
+
+      const resolved = await resolveSessionIndex(workspace, idx);
+      expect(resolved).toBe(moved);
     });
 
     it('errors with NOT_FOUND when no folder matches', async () => {

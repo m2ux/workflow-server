@@ -3,7 +3,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { createServer } from '../src/server.js';
 import { resolve, join } from 'node:path';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { decode } from '@toon-format/toon';
 
@@ -115,6 +115,8 @@ describe('mcp-server integration', () => {
   let sessionToken: string;
   /** session_index for a fresh meta session (set per-test in beforeEach). */
   let metaToken: string;
+  /** Helper: resolve a slug to its absolute planning-folder path under the test workspace. */
+  const planningFolder = (slug: string) => join(workspaceDir, '.engineering/artifacts/planning', slug);
 
   beforeAll(async () => {
     workspaceDir = mkdtempSync(join(tmpdir(), 'wf-mcp-test-'));
@@ -1436,15 +1438,76 @@ describe('mcp-server integration', () => {
       expect(response.session_index).toMatch(/^[A-Z2-7]{6}$/);
     });
 
+    it('accepts long-form planning_folder (absolute path), derives slug from basename, and records the canonical path in session.json', async () => {
+      const slug = '2026-05-31-path-input';
+      const folderPath = planningFolder(slug);
+      // Non-meta workflow: persistent workspace folder (meta is transient and
+      // doesn't record planningFolderPath until dispatch_child promotion).
+      const result = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: folderPath },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.planning_slug).toBe(slug);
+      expect(response.planning_folder_path).toBe(folderPath);
+
+      const sessionJsonPath = join(folderPath, 'session.json');
+      const stored = JSON.parse(readFileSync(sessionJsonPath, 'utf8'));
+      expect(stored.planningFolderPath).toBe(folderPath);
+    });
+
+    it('rejects a bare-slug planning_folder — only absolute paths are accepted', async () => {
+      const result = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: 'bare-slug-rejection' },
+      });
+      expect(result.isError).toBeTruthy();
+      const text = (result.content as { text: string }[])[0]?.text ?? '';
+      expect(text).toMatch(/must be an absolute path/);
+    });
+
+    it('treats an off-workspace planning_folder as a slug hint — basename is used, server resolves under its own workspace', async () => {
+      // The agent supplies a path that points at a totally different workspace
+      // (or a stale location). The server must NOT reject — it should consume
+      // only the basename and resolve against its own planning root.
+      const slug = '2026-05-31-off-workspace-hint';
+      const offWorkspacePath = `/totally/different/workspace/.engineering/artifacts/planning/${slug}`;
+      const result = await client.callTool({
+        name: 'start_session',
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: offWorkspacePath },
+      });
+      expect(result.isError).toBeFalsy();
+      const response = parseToolResponse(result);
+      expect(response.planning_slug).toBe(slug);
+      // The recorded planning_folder_path is the canonical SERVER-side path,
+      // not what the agent supplied.
+      expect(response.planning_folder_path).toBe(join(workspaceDir, '.engineering/artifacts/planning', slug));
+    });
+
+    it('rejects a relative-path planning_folder (ambiguous)', async () => {
+      const result = await client.callTool({
+        name: 'start_session',
+        arguments: {
+          workflow_id: 'meta',
+          agent_id: 'orchestrator',
+          planning_folder: './2026-05-31/nested-slug',
+        },
+      });
+      expect(result.isError).toBeTruthy();
+      const text = (result.content as { text: string }[])[0]?.text ?? '';
+      expect(text).toMatch(/must be an absolute path/);
+    });
+
     it('is idempotent when planning_slug is provided — returns the same session_index on a second call', async () => {
       const slug = 'idempotent-test';
       const first = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_slug: slug },
+        arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       const second = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_slug: slug },
+        arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       const firstIdx = parseToolResponse(first).session_index;
       const secondIdx = parseToolResponse(second).session_index;
@@ -1455,14 +1518,14 @@ describe('mcp-server integration', () => {
       const slug = 'resume-workflow-stable';
       const first = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: slug },
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       const firstIdx = parseToolResponse(first).session_index;
 
       // Resume with a different workflow_id — the stored workflowId wins.
       const second = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'remediate-vuln', agent_id: 'orchestrator', planning_slug: slug },
+        arguments: { workflow_id: 'remediate-vuln', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       const secondResponse = parseToolResponse(second);
       expect(secondResponse.session_index).toBe(firstIdx);
@@ -1475,7 +1538,7 @@ describe('mcp-server integration', () => {
         arguments: {
           workflow_id: 'work-package',
           agent_id: 'orchestrator',
-          planning_slug: 'parent-slug-1',
+          planning_folder: planningFolder('parent-slug-1'),
         },
       });
       const parentResponse = parseToolResponse(parent);
@@ -1509,7 +1572,7 @@ describe('mcp-server integration', () => {
 
       const meta = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_slug: metaSlug },
+        arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_folder: planningFolder(metaSlug) },
       });
       expect(meta.isError).toBeFalsy();
       const metaResponse = parseToolResponse(meta);
@@ -1659,7 +1722,7 @@ describe('mcp-server integration', () => {
       //   slugA holds the entire chain.
       const aResult = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_slug: slugA },
+        arguments: { workflow_id: 'meta', agent_id: 'orchestrator', planning_folder: planningFolder(slugA) },
       });
       const aIdx = parseToolResponse(aResult).session_index;
       const bResult = await client.callTool({
@@ -1726,7 +1789,7 @@ describe('mcp-server integration', () => {
       const slug = 'fresh-folder';
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: slug },
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       expect(result.isError).toBeFalsy();
       const folderPath = join(workspaceDir, '.engineering/artifacts/planning', slug);
@@ -1744,7 +1807,7 @@ describe('mcp-server integration', () => {
       // 1. Fresh session — should seed workflow_started + status=running.
       const startResp = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: slug },
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       expect(startResp.isError).toBeFalsy();
       const startIdx = parseToolResponse(startResp).session_index;
@@ -1795,7 +1858,7 @@ describe('mcp-server integration', () => {
       // Persistent parent (work-package, not meta) so the backlink is durable.
       const parent = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: parentSlug },
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(parentSlug) },
       });
       const parentIdx = parseToolResponse(parent).session_index;
 
@@ -1805,8 +1868,8 @@ describe('mcp-server integration', () => {
         arguments: {
           workflow_id: 'work-package',
           agent_id: 'worker-1',
-          planning_slug: childSlug,
-          parent_planning_slug: parentSlug,
+          planning_folder: planningFolder(childSlug),
+          parent_planning_slug:  parentSlug,
         },
       });
       const childIdx = parseToolResponse(child).session_index;
@@ -1853,7 +1916,7 @@ describe('mcp-server integration', () => {
       // Persistent parent (work-package, not meta).
       await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: parentSlug },
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(parentSlug) },
       });
       // Child of persistent parent.
       const child = await client.callTool({
@@ -1861,8 +1924,8 @@ describe('mcp-server integration', () => {
         arguments: {
           workflow_id: 'work-package',
           agent_id: 'worker-1',
-          planning_slug: childSlug,
-          parent_planning_slug: parentSlug,
+          planning_folder: planningFolder(childSlug),
+          parent_planning_slug:  parentSlug,
         },
       });
       expect(child.isError).toBeFalsy();
@@ -1877,7 +1940,7 @@ describe('mcp-server integration', () => {
       const childIdx = parseToolResponse(child).session_index;
       const resumed = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'worker-1', planning_slug: childSlug, parent_planning_slug: parentSlug },
+        arguments: { workflow_id: 'work-package', agent_id: 'worker-1', planning_folder: planningFolder(childSlug), parent_planning_slug:  parentSlug },
       });
       expect(parseToolResponse(resumed).session_index).toBe(childIdx);
     });
@@ -1890,7 +1953,7 @@ describe('mcp-server integration', () => {
       // Persistent parent.
       const parent = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: slug },
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       const parentIdx = parseToolResponse(parent).session_index;
 
@@ -1932,7 +1995,7 @@ describe('mcp-server integration', () => {
 
       await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: slug },
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       const raw = await readFile(sessionFilePath, 'utf8');
       // Extract top-level key names from the pretty-printed JSON in order.
@@ -1955,7 +2018,7 @@ describe('mcp-server integration', () => {
       // Create a persistent top-level work-package.
       const parent = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: slug },
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       const parentIdx = parseToolResponse(parent).session_index;
 
@@ -2005,7 +2068,7 @@ describe('mcp-server integration', () => {
       // activity id for the mutation (avoids cross-workflow activity lookup).
       const parent = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_slug: slug },
+        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
       });
       const parentIdx = parseToolResponse(parent).session_index;
 
@@ -2046,7 +2109,7 @@ describe('mcp-server integration', () => {
       // folder above (meta sessions are tmp-rooted and bypass workspace).
       const result = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', planning_slug: slug, agent_id: 'orchestrator' },
+        arguments: { workflow_id: 'work-package', planning_folder: planningFolder(slug), agent_id: 'orchestrator' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
@@ -2072,13 +2135,13 @@ describe('mcp-server integration', () => {
 
       const first = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', planning_slug: slug, agent_id: 'orchestrator' },
+        arguments: { workflow_id: 'work-package', planning_folder: planningFolder(slug), agent_id: 'orchestrator' },
       });
       const firstResponse = parseToolResponse(first);
 
       const second = await client.callTool({
         name: 'start_session',
-        arguments: { workflow_id: 'work-package', planning_slug: slug, agent_id: 'orchestrator' },
+        arguments: { workflow_id: 'work-package', planning_folder: planningFolder(slug), agent_id: 'orchestrator' },
       });
       const secondResponse = parseToolResponse(second);
       expect(secondResponse.session_index).toBe(firstResponse.session_index);
