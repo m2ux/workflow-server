@@ -1,0 +1,53 @@
+id: finalize-specification
+version: 1.0.0
+name: Finalize Specification
+description: "Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts, and confirm the user accepts them for promotion to the canonical location."
+problem: A validated specification must be staged with a change summary for the user to review and promote
+required: true
+estimatedTime: 5-10m
+techniques:
+  primary: finalize-specification
+steps[3]:
+  - id: assemble-final-spec
+    name: Assemble Final Specification
+    description: "Apply finalize-specification to copy the validation-passed working specification into the final specification artifact."
+  - id: write-change-summary
+    name: Write Change Summary
+    description: "Summarize the applied changes (new/updated/deprecated requirements, added sources, validation status) into the change summary artifact."
+    actions[1]:
+      - action: message
+        message: "Created: final-spec.md and change-summary.md"
+  - id: present-for-promotion
+    name: Present for Promotion
+    description: "Present the final specification and change summary for the user to review and promote to {target_doc_path}."
+checkpoints[1]:
+  - id: finalization-confirmed
+    name: Finalization Confirmation
+    message: "The final specification ({spec_basename}) and change summary are staged in the planning folder. Accept them for promotion?"
+    blocking: true
+    options[2]:
+      - id: accepted
+        label: "Accept — staged for promotion"
+        description: "Final specification and change summary are accepted; the user will promote them to the canonical location."
+        effect:
+          setVariable:
+            finalization_confirmed: true
+      - id: revise
+        label: "Revise before finalizing"
+        description: "The final specification or change summary needs revision before acceptance."
+artifacts[2]:
+  - id: final-specification
+    name: final-spec.md
+    location: planning
+    description: "The validation-passed specification, staged for promotion to the canonical location"
+  - id: change-summary
+    name: change-summary.md
+    location: planning
+    description: "Human-readable summary of all applied changes and the validation status"
+outcome[2]:
+  - Final specification and change summary staged in the planning folder
+  - User acceptance for promotion recorded
+context_to_preserve[3]:
+  - finalization_confirmed - Whether the final specification was accepted
+  - final_specification - Path to the final specification artifact
+  - change_summary - Path to the change summary artifact
