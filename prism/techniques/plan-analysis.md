@@ -178,7 +178,7 @@ For multi-unit scopes, the budget determines per-unit depth. The caller should n
 
 ### skip-is-explicit
 
-When budget excludes low-risk modules, list them in skip-list with justification. The caller can override by re-running with budget 'thorough'.
+When budget excludes low-risk modules, list them in skipped_units with justification. The caller can override by re-running with budget 'thorough'.
 
 ### model-sensitivity
 
