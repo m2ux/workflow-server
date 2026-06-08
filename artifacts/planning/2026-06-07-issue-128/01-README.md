@@ -48,7 +48,7 @@ The fix works by adding the new rule on top of the conventions already in place,
 | 09 | [Structural findings](09-structural-findings.md) | L12 structural analysis — conservation law, meta-law, bug table (no fixable bugs introduced) | 10-20m | ✅ Complete |
 | 09 | [Test suite review](09-test-suite-review.md) | Test quality/coverage review — 0 findings ≥ Minor (1 informational) | 10-20m | ✅ Complete |
 | 09 | [Architecture summary](09-architecture-summary.md) | Minimal architecture summary — low impact (docs/definitions only) | 5-10m | ✅ Complete |
-| 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
+| 11 | [Strategic review](11-strategic-review-1.md) | Scope focus and artifact cleanliness — passed (minimal/focused, all success criteria met); 1 Minor PR-body finding deferred to submit-for-review | 15-30m | ✅ Complete |
 | 14 | [Comprehension artifact](../../comprehension/identifier-naming-convention.md) | Persistent codebase knowledge — identifier naming/binding model | 20-45m | ✅ Complete |
 | 10 | [Validation](10-validation.md) | Structure validator + grep-parity (✅) — non-rust repo, cargo steps N/A; typecheck/test advisory (371 pass) | 15-30m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
