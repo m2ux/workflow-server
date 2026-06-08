@@ -1,7 +1,7 @@
 # Canonical Naming Convention for Technique Inputs/Outputs and Rules - June 2026
 
 **Created:** 2026-06-07  
-**Status:** In Progress  
+**Status:** Implemented, reviewed, validated — awaiting merge (PR #129 held as draft)  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -51,8 +51,10 @@ The fix works by adding the new rule on top of the conventions already in place,
 | 11 | [Strategic review](11-strategic-review-1.md) | Scope focus and artifact cleanliness — passed (minimal/focused, all success criteria met); 1 Minor PR-body finding deferred to submit-for-review | 15-30m | ✅ Complete |
 | 14 | [Comprehension artifact](../../comprehension/identifier-naming-convention.md) | Persistent codebase knowledge — identifier naming/binding model | 20-45m | ✅ Complete |
 | 10 | [Validation](10-validation.md) | Structure validator + grep-parity (✅) — non-rust repo, cargo steps N/A; typecheck/test advisory (371 pass) | 15-30m | ✅ Complete |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | `Completion summary` | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
+| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending (PRs #129/#130 open; #129 draft) |
+| 13 | [ADR-0005](../../adr/0005-canonical-identifier-naming-convention.md) | Architecture Decision Record (status Proposed; accepted on merge) | 10-20m | ✅ Complete |
+| 13 | [COMPLETE.md](COMPLETE.md) | Deliverables, decisions, lessons learned (pre-merge; finalize on merge) | 10-20m | ✅ Complete |
+| 13 | [Workflow retrospective](13-workflow-retrospective.md) | Session retrospective — smooth run, 2 medium recommendations | 10-20m | ✅ Complete |
 
 ---
 
@@ -61,8 +63,9 @@ The fix works by adding the new rule on top of the conventions already in place,
 | Resource | Link |
 |----------|------|
 | Issue | [#128](https://github.com/m2ux/workflow-server/issues/128) |
-| PR | [#129](https://github.com/m2ux/workflow-server/pull/129) |
+| PR (spec + submodule, draft) | [#129](https://github.com/m2ux/workflow-server/pull/129) |
+| PR (workflow content) | [#130](https://github.com/m2ux/workflow-server/pull/130) |
 
 ---
 
-**Status:** In Progress
+**Status:** Implemented, reviewed, validated — awaiting merge (PR #129 held as draft). Flip to Complete and accept ADR-0005 on merge.

@@ -206,10 +206,11 @@
           "implement",
           "post-impl-review",
           "validate",
-          "strategic-review"
+          "strategic-review",
+          "submit-for-review"
         ],
-        "condition": "default (review_passed == true)",
-        "currentActivity": "submit-for-review",
+        "condition": "review_requires_changes == false",
+        "currentActivity": "complete",
         "currentTechnique": "",
         "history": [
           {
@@ -567,16 +568,30 @@
             },
             "timestamp": "2026-06-08T06:45:39.000Z",
             "type": "checkpoint_response"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-06-08T08:44:25.980Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "complete",
+            "timestamp": "2026-06-08T08:44:25.980Z",
+            "type": "activity_entered"
+          },
+          {
+            "timestamp": "2026-06-08T08:44:25.980Z",
+            "type": "workflow_completed"
           }
         ],
         "schemaVersion": 1,
-        "seq": 88,
+        "seq": 92,
         "sessionIndex": "VPOXEX",
         "skippedActivities": [],
         "startedAt": "2026-06-07T09:47:11.376Z",
-        "status": "running",
+        "status": "completed",
         "triggeredWorkflows": [],
-        "ts": 1780901162,
+        "ts": 1780908606,
         "variables": {
           "complexity": "moderate",
           "context_scope": "web-retrieval",
