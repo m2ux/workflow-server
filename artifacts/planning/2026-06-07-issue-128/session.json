@@ -186,10 +186,11 @@
           "implementation-analysis",
           "plan-prepare",
           "assumptions-review",
-          "implement"
+          "implement",
+          "post-impl-review"
         ],
-        "condition": "default",
-        "currentActivity": "post-impl-review",
+        "condition": "no-blocker (has_critical_blocker=false)",
+        "currentActivity": "validate",
         "currentTechnique": "",
         "history": [
           {
@@ -463,16 +464,26 @@
             },
             "timestamp": "2026-06-07T20:26:33.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "post-impl-review",
+            "timestamp": "2026-06-07T20:34:34.260Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate",
+            "timestamp": "2026-06-07T20:34:34.260Z",
+            "type": "activity_entered"
           }
         ],
         "schemaVersion": 1,
-        "seq": 68,
+        "seq": 70,
         "sessionIndex": "VPOXEX",
         "skippedActivities": [],
         "startedAt": "2026-06-07T09:47:11.376Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1780864187,
+        "ts": 1780864502,
         "variables": {
           "complexity": "moderate",
           "context_scope": "web-retrieval",
