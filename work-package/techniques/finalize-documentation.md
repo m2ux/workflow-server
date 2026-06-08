@@ -56,7 +56,7 @@ The [test plan](../resources/test-plan.md#test-plan-structure) artifact for this
 
 [Summary](../resources/complete-wp.md#section-guidelines) of delivered work, test coverage, and deferred items
 
-#### artifact
+#### completion_artifact
 
 `COMPLETE.md`
 

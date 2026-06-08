@@ -9,8 +9,8 @@ techniques:
 
 entryActions[1]:
   - action: validate
-    target: changes
-    message: "changes must be populated before updating skill routing"
+    target: change_set
+    message: "change_set must be populated before updating skill routing"
 
 steps[5]:
   - id: update-plan-analysis

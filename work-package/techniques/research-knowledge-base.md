@@ -51,7 +51,7 @@ Research knowledge base and external sources to discover best practices, pattern
 
 Knowledge base and web research [synthesis](../resources/knowledge-base-research.md#planning-artifact) for the work package
 
-#### artifact
+#### research_artifact
 
 `kb-research.md`
 

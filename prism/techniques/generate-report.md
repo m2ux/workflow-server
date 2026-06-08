@@ -103,7 +103,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 
 Clean final [report](../resources/final-output-template.md#reportmd-template) artifact
 
-#### artifact
+#### artifact_filename
 
 `REPORT.md`
 

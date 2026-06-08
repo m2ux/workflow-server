@@ -13,7 +13,7 @@ Append a per-task row to `provenance-log.md`. Creates the file with the canonica
 
 Current task identifier
 
-### assistant
+### assistant_name
 
 Assistant name (e.g., `claude`, `gpt`, `gemini`)
 
@@ -29,7 +29,7 @@ One of: `code-generation` | `refactoring` | `test-writing` | `docs` | `mixed`
 
 One of: `repo-only` (only repository-local sources used) | `web-retrieval` (external web sources informed the work) | `mixed` (both)
 
-### description
+### task_description
 
 One-line description of what was generated
 
@@ -42,4 +42,4 @@ The updated provenance log, with the appended task row
 ## Protocol
 
 1. If the `{provenance_log}` does not exist, create it with the canonical header: `| Task ID | Assistant | Model | Prompt Class | Context Scope | Description |` followed by the divider `|---|---|---|---|---|---|`.
-2. Append one row: `| {task_id} | {assistant} | {model_id} | {prompt_class} | {context_scope} | {description} |`.
+2. Append one row: `| {task_id} | {assistant_name} | {model_id} | {prompt_class} | {context_scope} | {task_description} |`.

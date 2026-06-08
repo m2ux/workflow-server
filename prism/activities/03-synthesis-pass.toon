@@ -6,7 +6,7 @@ techniques:
   supporting[1]:
     - full-prism
 artifacts[1]:
-  - id: synthesis
+  - id: synthesis-artifact
     name: "{unit_output_subdir}synthesis.md"
     location: analysis
     description: "Final reconciliation per unit: refined conservation law, refined meta-law, definitive classification, deepest finding"

@@ -24,7 +24,7 @@ Produce the final audit report artifact from the scored and elevation-verified m
 
 Final [audit report](../resources/audit-prompt-template.md#4-reporting-format). Each finding uses the format below. When persisted, use artifact name.
 
-#### artifact
+#### artifact_filename
 
 `01-audit-report.md`
 
@@ -36,7 +36,7 @@ The report MUST begin with a markdown table containing: Target, Commit, Date (YY
 
 Severity distribution table, top findings summary, methodology overview
 
-#### methodology
+#### methodology_notes
 
 Phases executed, agent count, template version, ensemble status
 

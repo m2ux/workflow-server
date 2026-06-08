@@ -101,7 +101,7 @@ User receives:
 |----------|------|----------|---------|-------------|
 | `upstream_path` | string | yes | — | Path to upstream prisms directory |
 | `resource_path` | string | no | `prism/resources/` | Path to workflow resources directory |
-| `changes` | object | — | — | Categorized diff: new, modified, renamed, deleted |
+| `change_set` | object | — | — | Categorized diff: new, modified, renamed, deleted |
 | `exclusions` | array | no | `[]` | Upstream filenames to exclude |
 | `next_index` | number | — | — | Next available resource index |
 | `branch_name` | string | — | — | Feature branch name |

@@ -49,7 +49,7 @@ Comparison report with mapping, gaps, calibration analysis, and countermeasures.
 
 reference finding, primary finding, match type, severity comparison
 
-#### gap_list
+#### gaps
 
 missed reference findings grouped by severity and root cause
 

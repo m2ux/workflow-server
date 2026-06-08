@@ -86,7 +86,7 @@ User's description of what to evaluate, evaluation goals, focus areas, and conce
 
 The composed [evaluation plan](../resources/evaluation-plan-template.md#evaluation-plan-template) document
 
-#### artifact
+#### artifact_filename
 
 `evaluation-plan.md`
 
@@ -94,7 +94,7 @@ The composed [evaluation plan](../resources/evaluation-plan-template.md#evaluati
 
 Target classification and structure summary
 
-#### dimension_plan
+#### dimension_plan_section
 
 Per-dimension lens mapping and analysis focus
 
@@ -106,6 +106,6 @@ Grouped execution strategy
 
 Machine-readable dimension-to-lens mapping
 
-#### plan
+#### dimension_plan_entries
 
 Array of { dimension, pipeline_mode, lenses, analysis_focus, output_subdir }

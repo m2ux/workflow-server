@@ -61,11 +61,11 @@ The work package currently being planned
 
 Work package [plan document](../resources/package-plan-template.md#template)
 
-#### artifact
+#### plan_artifact
 
 `{package_name}-plan.md`
 
-#### scope
+#### scope_definitions
 
 In-scope and out-of-scope definitions
 

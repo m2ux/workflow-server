@@ -70,7 +70,7 @@ Path to the original document, proposal, or artifact set that was evaluated
 
 Comprehensive [mitigation plan](../resources/mitigation-plan-template.md#mitigation-plan-template) with all finding dispositions
 
-#### artifact
+#### artifact_filename
 
 `MITIGATION-PLAN.md`
 

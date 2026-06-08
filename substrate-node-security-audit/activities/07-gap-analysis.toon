@@ -14,7 +14,7 @@ required: false
 estimatedTime: 30-60m
 rules[5]:
   - "This activity is OPTIONAL — only runs when has_reference_report is true"
-  - "CRITICAL: The reference report must NOT have been loaded, read, or discussed before this phase. Loading it earlier contaminates the audit. The reference_report_path was recorded at scope-setup but quarantined until now."
+  - "CRITICAL: The reference report must NOT have been loaded, read, or discussed before this phase. Loading it earlier contaminates the audit. The reference_report was recorded at scope-setup but quarantined until now."
   - "The reference report must target the same commit for valid comparison"
   - "Map every reference finding to the AI finding or note as a gap"
   - "Analyze severity calibration: which findings are over-rated vs under-rated and why"
@@ -24,7 +24,7 @@ steps[6]:
   - id: load-reference
     name: Load Reference Report
     technique: write-gap-analysis
-    description: "Load reference report from reference_report_path. Extract finding list."
+    description: "Load reference report from reference_report. Extract finding list."
   - id: map-findings
     name: Map Findings
     technique: compare-finding-sets
@@ -63,7 +63,7 @@ outcome[4]:
   - Recommendations for workflow improvement
 context_to_preserve[4]:
   - overlap_rate - Percentage of reference findings matched
-  - gap_list - List of missed findings with root causes
+  - gaps - List of missed findings with root causes
   - severity_calibration - Over-rating and under-rating patterns
   - recommendations - Suggestions for closing gaps
 artifacts[1]:

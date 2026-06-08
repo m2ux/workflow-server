@@ -65,6 +65,6 @@ Dependency scan results or fallback manifest
 
 File inventory sorted by size
 
-#### reference_document_paths
+#### reference_documents
 
 Reference document paths (if any, quarantined for later phases)

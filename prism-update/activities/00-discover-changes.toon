@@ -39,11 +39,11 @@ required: true
 estimatedTime: "3-5m"
 
 outcome[3]:
-  - "changes variable populated with categorized diff"
+  - "change_set variable populated with categorized diff"
   - "New prisms classified by family with metadata"
   - "next_index determined"
 
 context_to_preserve[3]:
-  - "changes — categorized diff result"
+  - "change_set — categorized diff result"
   - "next_index — next available resource index"
   - "exclusions — user-specified exclusions"

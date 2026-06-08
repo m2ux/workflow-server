@@ -86,7 +86,7 @@ Pre-classified trigger, permission, and checkout data for the workflow files
 
 Structured findings for this submodule
 
-#### artifact
+#### artifact_filename
 
 [`s{n}-{submodule}.json`](../resources/sub-agent-output-schema.md#schema)
 

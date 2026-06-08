@@ -55,11 +55,11 @@ variables[19]:
   - name: planning_folder_path
     type: string
     description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-NN-{submodule}-security-audit"
-  - name: template_path
+  - name: audit_prompt_template
     type: string
     description: "Path to the audit prompt template"
     defaultValue: ".engineering/artifacts/planning/2026-02-06-audit-strategy-reverse-engineering/01-audit-prompt-template.md"
-  - name: reference_report_path
+  - name: reference_report
     type: string
     description: "Path to professional audit report for gap analysis (optional)"
   - name: ensemble_enabled

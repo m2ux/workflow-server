@@ -41,6 +41,6 @@ Update prism routing technique files to reflect resource changes: fix renamed re
 
 ## Rules
 
-### coverage
+### routing-coverage
 
 Every routing surface must be updated: goal-mapping-matrix, code-vs-general, model-sensitivity, neutral-variant-routing, resource lists, lens catalogs, selection guides.

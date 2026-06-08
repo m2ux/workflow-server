@@ -48,7 +48,7 @@ Atomic task breakdown with dependencies and ordering for the work package
 
 Test [strategy](../resources/test-plan.md#test-plan-structure) and acceptance criteria
 
-#### artifact
+#### test_plan_artifact
 
 `test-plan.md`
 

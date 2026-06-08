@@ -67,7 +67,7 @@ The running [log](../resources/assumption-reconciliation.md#integration-with-ass
 
 Assumptions [log](../resources/assumption-reconciliation.md#integration-with-assumptions-log) with all code-resolvable assumptions resolved and only stakeholder-dependent assumptions remaining
 
-#### artifact
+#### reconciled_assumptions_artifact
 
 `assumptions-log.md`
 

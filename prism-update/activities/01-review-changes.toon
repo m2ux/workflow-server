@@ -13,7 +13,7 @@ steps[2]:
     required: true
   - id: apply-exclusions
     name: Apply exclusion adjustments
-    description: "Update the changes variable to reflect any user-requested exclusions."
+    description: "Update the change_set variable to reflect any user-requested exclusions."
     required: true
 
 checkpoints[1]:
@@ -49,5 +49,5 @@ outcome[1]:
   - "User-approved change set ready for import"
 
 context_to_preserve[2]:
-  - "changes — approved change set (may differ from discovered if exclusions applied)"
+  - "change_set — approved change set (may differ from discovered if exclusions applied)"
   - "exclusions — final exclusion list"

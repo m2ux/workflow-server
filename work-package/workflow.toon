@@ -316,7 +316,7 @@ variables[89]:
     type: string
     description: "Jira issue key in PROJ-NNN form, captured during issue verification when issue_platform == 'jira'. Used in messages, GitHub-issue search queries, and PR descriptions."
     defaultValue: ""
-  - name: comprehension_artifact_path
+  - name: comprehension_artifact
     type: string
     description: "Absolute path to the comprehension artifact for the current codebase area, set by create-comprehension-artifact and read by downstream activities that reference comprehension findings."
     defaultValue: ""
@@ -328,13 +328,13 @@ variables[89]:
     type: string
     description: "Line range (e.g., 120-145) of the current code block. Pairs with block_path."
     defaultValue: ""
-  - name: change_block_index_path
+  - name: change_block_index
     type: string
     description: "Absolute path to the index file mapping change-block IDs to their per-block artifacts under .engineering/artifacts/change-blocks/."
     defaultValue: ""
   - name: artifact_name
     type: string
-    description: "Filename of the comprehension artifact (basename only, no path) used in user-facing messages — distinct from comprehension_artifact_path which is the full path."
+    description: "Filename of the comprehension artifact (basename only, no path) used in user-facing messages — distinct from comprehension_artifact which is the full path."
     defaultValue: ""
   - name: plan
     type: object
@@ -351,7 +351,7 @@ variables[89]:
     type: boolean
     description: "True when the current implement task's self-review flagged one or more symbols whose provenance could not be confirmed. Drives the symbol-provenance-confirmed checkpoint condition — when false, the loop continues without prompting the user. Set by the implement task-cycle self-review step."
     defaultValue: false
-  - name: uncertain_symbols_list
+  - name: uncertain_symbols
     type: string
     description: "Multi-line list of symbols flagged by the implement task-cycle self-review whose provenance could not be confirmed (one per line: symbol name + file/line context). Empty string when has_uncertain_symbols is false. Interpolated into the symbol-provenance-confirmed checkpoint message."
     defaultValue: ""

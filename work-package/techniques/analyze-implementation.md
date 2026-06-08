@@ -62,7 +62,7 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 
 Current implementation [analysis](../resources/implementation-analysis.md#document-template) with baselines and improvement opportunities
 
-#### artifact
+#### analysis_artifact
 
 `implementation-analysis.md`
 

@@ -70,7 +70,7 @@ Resource index for this pass: 19 (error-resilience), 20 (optimize), 21 (evolutio
 
 Behavioral analysis artifact written to the filesystem
 
-#### artifact
+#### artifact_filename
 
 `behavioral-errors.md` (19) / `behavioral-costs.md` (20) / `behavioral-changes.md` (21) / `behavioral-promises.md` (22) / `behavioral-synthesis.md` (23)
 
@@ -78,7 +78,7 @@ Behavioral analysis artifact written to the filesystem
 
 Full filesystem path to the written artifact
 
-#### role
+#### role_label
 
 The role label for this pass (ERRORS, COSTS, CHANGES, PROMISES, or SYNTHESIS)
 
