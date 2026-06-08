@@ -28,6 +28,11 @@ with the heading — no preamble.
 ### Deprecated Requirements
 [Each requirement to deprecate: REQ-ID, rationale.]
 
+## Source Coverage Matrix
+| Source section | Normative? | Covered by |
+|----------------|-----------|------------|
+| [§n — title] | yes / no | REQ-ID(s), or "out of scope" |
+
 ## Document Updates Required
 [Sections that need updating, including new source references for 2.2 Meeting Transcripts.]
 
@@ -37,6 +42,14 @@ with the heading — no preamble.
 ## Implementation Notes
 [Additional context for applying the changes to the specification.]
 ```
+
+## Source Coverage Matrix
+
+The coverage matrix traces every source section to the requirement(s) it is covered by, so completeness
+is verifiable. Each row records a source section, whether it carries a normative obligation
+(`SHALL`/`MUST`/`SHOULD`/`MAY`, a constraint, or a rule), and the requirement identifier(s) covering it.
+A normative section with no covering requirement is a coverage gap; a section with no obligation is
+marked out of scope.
 
 ## Conventions
 

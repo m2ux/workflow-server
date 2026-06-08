@@ -1,6 +1,6 @@
 "$schema": ../../schemas/workflow.schema.json
 id: requirements-refinement
-version: 1.0.0
+version: 1.1.0
 title: Requirements Refinement Workflow
 description: "Refine a canonical requirements specification from a source document — a meeting transcript or an unstructured document — preserving the specification protocol verbatim and staging the finalized specification and a change summary in the planning folder for human promotion. Operates on local files and performs no version-control operations."
 author: m2ux
@@ -11,7 +11,7 @@ tags[6]:
   - document-automation
   - validation
   - iterative-refinement
-rules[7]:
+rules[8]:
   - "The target specification's protocol — section structure, requirement-entry format, identifier schemes (SRC-MTG###, SRC-DOC###, REQ-F###, REQ-NF###), and status conventions defined in resources/specification-protocol.md — is preserved verbatim across every activity."
   - "The source document is classified as a meeting transcript or an unstructured document; a meeting source takes an SRC-MTG### reference, and a document source takes an SRC-DOC### reference credited to the document's author."
   - "All artifacts — analysis report, working specifications, validation reports, final specification, and failure report — are written to the planning folder; the workflow performs no git operations and never edits the canonical document in place."
@@ -19,11 +19,12 @@ rules[7]:
   - "Validation routing is deterministic: evaluate validate-specification's transitions in order — finalize-specification when validation_passed, update-specification while correctable issues remain and correction_iteration is below max_correction_iterations, otherwise report-failure."
   - "Confirm the requirements analysis with the user before applying any changes to the specification."
   - "When the target document exists, preserve its existing section structure; when it does not, instantiate the full specification protocol structure."
+  - "Validation includes a source-coverage check: every normative statement in the source document maps to at least one requirement; an uncovered statement is a correctable finding routed through the correction loop."
 techniques:
 artifactLocations:
   planning:
     path: "{planning_folder_path}"
-variables[13]:
+variables[14]:
   - name: source_path
     type: string
     description: "Filesystem path to the local source document being processed (a meeting transcript or an unstructured document)"
@@ -75,5 +76,9 @@ variables[13]:
   - name: finalization_confirmed
     type: boolean
     description: "True once the user has accepted the finalized specification for promotion"
+    defaultValue: false
+  - name: source_coverage_complete
+    type: boolean
+    description: "True once every normative statement in the source document maps to at least one requirement"
     defaultValue: false
 initialActivity: intake-sources

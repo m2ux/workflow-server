@@ -1,5 +1,5 @@
 id: validate-specification
-version: 1.0.0
+version: 1.1.0
 name: Validate Specification
 description: "Validate the updated specification against structural, identifier-uniqueness, consistency, and protocol-conformance checks, categorize each issue as critical or correctable, and route to finalization, another correction pass, or failure reporting."
 problem: The updated specification must be checked for quality and conformance before it can be finalized
@@ -7,23 +7,30 @@ required: true
 estimatedTime: 10-20m
 techniques:
   primary: validate-specification
-steps[2]:
+steps[3]:
   - id: validate
     name: Validate Specification
-    description: "Apply validate-specification to check the working specification against the validation rubric and produce a categorized verdict in the validation report."
+    description: "Apply validate-specification to check the working specification against the validation rubric (conformance and source coverage) and produce a categorized verdict in the validation report."
+  - id: check-source-coverage
+    name: Check Source Coverage
+    description: "Confirm every normative source statement maps to a requirement via the source-coverage matrix, and set source_coverage_complete."
+    actions[1]:
+      - action: set
+        target: source_coverage_complete
+        description: "True when every normative source statement maps to at least one requirement."
   - id: evaluate-verdict
     name: Evaluate Verdict
     description: "Read the verdict and set the routing variables that the transitions evaluate."
     actions[3]:
       - action: set
         target: validation_passed
-        description: "True when the verdict is passed with no critical or correctable issues."
+        description: "True when no critical or correctable issues remain and source_coverage_complete is true."
       - action: set
         target: has_critical_issues
         description: "True when any issue is critical or irreconcilable."
       - action: set
         target: has_correctable_issues
-        description: "True when correctable issues remain and no critical issue is present."
+        description: "True when correctable issues remain — including source-coverage gaps — and no critical issue is present."
 artifacts[1]:
   - id: validation-report
     name: validation-report-{correction_iteration}.md
@@ -59,8 +66,9 @@ exitActions[1]{action,message}:
 outcome[2]:
   - Updated specification validated and issues categorized
   - Routing decision made toward finalization, correction, or failure
-context_to_preserve[4]:
+context_to_preserve[5]:
   - validation_passed - Whether validation passed cleanly
   - has_correctable_issues - Whether a correction pass is warranted
   - has_critical_issues - Whether manual intervention is required
+  - source_coverage_complete - Whether every normative source statement maps to a requirement
   - validation_report - Path to the validation report for this pass

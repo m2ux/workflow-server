@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -31,7 +31,7 @@ Structured analysis of the requirement changes to apply on the initial pass.
 
 ### 3. Apply Corrections — Correction Mode
 
-- Address each correctable finding in `{validation_report}` without changing requirement meaning and without introducing new requirements.
+- Address each correctable finding in `{validation_report}`: resolve a source-coverage finding by adding the missing requirement(s); otherwise change no requirement's meaning and introduce no new requirement.
 
 ### 4. Write Working Specification
 
@@ -55,4 +55,4 @@ A newly added requirement takes status `pending`; a status change away from `pen
 
 ### corrections-preserve-meaning
 
-On a correction pass, only the reported findings are addressed — no new requirements are introduced and no requirement's meaning is changed.
+On a correction pass, only the reported findings are addressed: a source-coverage finding is resolved by adding the missing requirement, and otherwise no requirement is added and no requirement's meaning is changed.

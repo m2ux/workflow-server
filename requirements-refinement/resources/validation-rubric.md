@@ -25,6 +25,11 @@ critical issues stop refinement.
 - Source references resolve to entries listed in section 2 (Requirements Sources).
 - No two requirements contradict one another; duplicates are flagged.
 
+### Source Coverage
+- Every normative statement in the source — a `SHALL`/`MUST`/`SHOULD`/`MAY` obligation, constraint, or rule — maps to at least one requirement in the specification.
+- The source-coverage matrix from the analysis is the reference; a matrix row marked normative with no covering requirement is a coverage gap.
+- A coverage gap is a **correctable** issue (type `content`): the verdict is `passed` only when conformance holds **and** source coverage is complete.
+
 ## Issue Categorization
 
 Each issue is tagged with a severity and a type:

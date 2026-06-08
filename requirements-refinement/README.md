@@ -1,6 +1,6 @@
 # Requirements Refinement Workflow
 
-> v1.0.0 — Refine a canonical requirements specification from a source document (a meeting transcript or an unstructured document): classify, analyze, apply, validate, correct within a bounded loop, and stage the result for human promotion. Operates on local files; performs no version-control operations.
+> v1.1.0 — Refine a canonical requirements specification from a source document (a meeting transcript or an unstructured document): classify, analyze, apply, validate, correct within a bounded loop, and stage the result for human promotion. Operates on local files; performs no version-control operations.
 
 ---
 
@@ -42,7 +42,7 @@ never edits the canonical document in place.
 | 01 | [Intake Sources](activities/01-intake-sources.toon) | Capture and validate the source paths; classify source type; detect augment-vs-create; load sources |
 | 02 | [Analyze Source](activities/02-analyze-source.toon) | Produce a structured requirements analysis report; confirm before applying |
 | 03 | [Update Specification](activities/03-update-specification.toon) | Apply the analysis (or corrections) to a versioned working specification |
-| 04 | [Validate Specification](activities/04-validate-specification.toon) | Validate, categorize issues, and route |
+| 04 | [Validate Specification](activities/04-validate-specification.toon) | Validate (conformance + source coverage), categorize issues, and route |
 | 05 | [Finalize Specification](activities/05-finalize-specification.toon) | Stage the final specification and change summary for promotion |
 | 06 | [Report Failure](activities/06-report-failure.toon) | Compile a failure report when critical issues or the correction budget stop refinement |
 
