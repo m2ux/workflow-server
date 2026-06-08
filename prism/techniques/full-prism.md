@@ -68,7 +68,7 @@ Resource index to load from the prism workflow (00 for structural, 01 for advers
 
 Analysis artifact written to the filesystem
 
-#### artifact
+#### artifact_filename
 
 `structural-analysis.md` (index 00) / `adversarial-analysis.md` (index 01) / `synthesis.md` (index 02)
 
@@ -82,7 +82,7 @@ The full analysis output following the lens operations
 
 ## Rules
 
-### no-context-leakage
+### isolated-context
 
 This worker runs in isolation. Do not reference conversations, prior interactions, or context beyond what was provided in the prompt.
 

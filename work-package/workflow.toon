@@ -43,7 +43,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/review-mode.md
-variables[89]:
+variables[91]:
   - name: target_path
     type: string
     description: "Path to the working directory where edits, branch creation, builds, and PR operations occur. As of work-package 3.10, this is a dedicated git worktree of the component repo at the canonical path '~/projects/work/{component_name}/{wp-slug}/' — NOT the component's checkout inside the reference monorepo. Set by start-work-package's compute-canonical-target-path step after the work-package slug is known. All downstream activities (cargo-operations, manage-git, validate, strategic-review, etc.) operate on this path."
@@ -293,7 +293,7 @@ variables[89]:
   - name: recommended_strategic_option
     type: string
     description: "Agent-recommended action after strategic review analysis (fix-findings|acceptable). Set by analyze-strategic-findings step."
-  - name: squash_merge_available
+  - name: squash_merge_supported
     type: boolean
     description: "True when the target repo allows squash merges (allow_squash_merge=true from GitHub API). Detected during start-work-package. Drives DCO merge strategy: squash-merge path when true, unsigned-commit path when false."
     defaultValue: false
@@ -316,7 +316,7 @@ variables[89]:
     type: string
     description: "Jira issue key in PROJ-NNN form, captured during issue verification when issue_platform == 'jira'. Used in messages, GitHub-issue search queries, and PR descriptions."
     defaultValue: ""
-  - name: comprehension_artifact_path
+  - name: comprehension_artifact
     type: string
     description: "Absolute path to the comprehension artifact for the current codebase area, set by create-comprehension-artifact and read by downstream activities that reference comprehension findings."
     defaultValue: ""
@@ -328,13 +328,13 @@ variables[89]:
     type: string
     description: "Line range (e.g., 120-145) of the current code block. Pairs with block_path."
     defaultValue: ""
-  - name: change_block_index_path
+  - name: change_block_index
     type: string
     description: "Absolute path to the index file mapping change-block IDs to their per-block artifacts under .engineering/artifacts/change-blocks/."
     defaultValue: ""
   - name: artifact_name
     type: string
-    description: "Filename of the comprehension artifact (basename only, no path) used in user-facing messages — distinct from comprehension_artifact_path which is the full path."
+    description: "Filename of the comprehension artifact (basename only, no path) used in user-facing messages — distinct from comprehension_artifact which is the full path."
     defaultValue: ""
   - name: plan
     type: object
@@ -351,7 +351,7 @@ variables[89]:
     type: boolean
     description: "True when the current implement task's self-review flagged one or more symbols whose provenance could not be confirmed. Drives the symbol-provenance-confirmed checkpoint condition — when false, the loop continues without prompting the user. Set by the implement task-cycle self-review step."
     defaultValue: false
-  - name: uncertain_symbols_list
+  - name: uncertain_symbols
     type: string
     description: "Multi-line list of symbols flagged by the implement task-cycle self-review whose provenance could not be confirmed (one per line: symbol name + file/line context). Empty string when has_uncertain_symbols is false. Interpolated into the symbol-provenance-confirmed checkpoint message."
     defaultValue: ""
@@ -379,4 +379,11 @@ variables[89]:
     type: boolean
     description: "Whether reference_path has a usable GitNexus index. Set by start-work-package's analyze-reference-with-gitnexus step. Gates GitNexus-dependent steps and protocol phases across the workflow (e.g., post-impl-review's gitnexus-detect-changes-preflight step, implement-task's pre-edit-impact-check / post-edit-verification phases)."
     defaultValue: false
+  - name: problem_type
+    type: string
+    description: "Problem or inventive-goal classification set during design-philosophy (e.g. defect, inventive-improvement). Interpolated into the classification-confirmed checkpoint message."
+  - name: pr_url
+    type: string
+    description: "URL of the pull request created during start-work-package. Captured alongside pr_number and recorded on the linked issue."
+    defaultValue: ""
 initialActivity: start-work-package

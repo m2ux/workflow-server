@@ -62,7 +62,7 @@ Conduct structured manual diff review using external side-by-side diff tool with
 
 [Index](../resources/manual-diff-review.md#file-index-generation) of changed blocks for external diff review, with per-block rationale paragraphs hyperlinked from the index table to aid manual review
 
-#### artifact
+#### change_block_index_artifact
 
 `change-block-index.md`
 
@@ -78,7 +78,7 @@ Per-block descriptive paragraphs explaining intent, context, and non-obvious des
 
 Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-review-report-template) from user-flagged blocks
 
-#### artifact
+#### manual_diff_review_artifact
 
 `manual-diff-review.md`
 

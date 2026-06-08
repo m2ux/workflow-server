@@ -58,7 +58,7 @@ List of completed package [plan documents](../resources/package-plan-template.md
 
 Completed [START-HERE.md](../resources/roadmap-template.md#start-heremd-final-format) with executive summary, status, timeline, and criteria
 
-#### artifact
+#### start_here_filename
 
 `START-HERE.md`
 
@@ -66,7 +66,7 @@ Completed [START-HERE.md](../resources/roadmap-template.md#start-heremd-final-fo
 
 Updated [README.md](../resources/roadmap-template.md#readmemd-final-format) with navigation links
 
-#### artifact
+#### readme_filename
 
 `README.md`
 

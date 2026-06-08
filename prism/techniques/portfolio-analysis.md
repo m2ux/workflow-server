@@ -66,7 +66,7 @@ Apply two or more complementary portfolio lenses to the same artifact to produce
 
 Individual analysis artifact per lens
 
-#### artifact
+#### per_lens_filename
 
 `portfolio-{lens_name}.md`
 
@@ -82,7 +82,7 @@ File paths to each per-lens artifact
 
 Cross-lens convergence/divergence synthesis
 
-#### artifact
+#### synthesis_filename
 
 `portfolio-synthesis.md`
 

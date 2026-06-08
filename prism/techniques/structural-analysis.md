@@ -64,7 +64,7 @@ Apply L12 structural analysis lens to code for deep structural findings, conserv
 
 L12 structural analysis with conservation law, meta-law, and classified bug table
 
-#### artifact
+#### artifact_filename
 
 `structural-analysis.md`
 

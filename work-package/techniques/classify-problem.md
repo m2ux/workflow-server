@@ -67,7 +67,7 @@ Summary, description, and context from the linked issue
 
 Records problem classification, design [rationale](../resources/design-framework.md#design-philosophy-artifact-template), and workflow path decisions
 
-#### artifact
+#### design_philosophy_artifact
 
 `design-philosophy.md`
 
@@ -87,7 +87,7 @@ simple, moderate, or complex
 
 [Log](../resources/assumptions-review.md#assumptions-log-template) of assumptions made during design philosophy
 
-#### artifact
+#### assumptions_log_artifact
 
 `assumptions-log.md`
 

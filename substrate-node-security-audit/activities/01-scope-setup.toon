@@ -51,7 +51,7 @@ steps[8]:
     description: "Create planning folder with START-HERE.md following the naming pattern YYYY-MM-DD-NN-{submodule}-security-audit."
   - id: load-template
     name: Load Audit Template
-    description: "Confirm audit prompt template is accessible at template_path."
+    description: "Confirm audit prompt template is accessible at audit_prompt_template."
 transitions[1]{to,isDefault}:
   reconnaissance,true
 exitActions[1]{action,message}:
@@ -68,7 +68,7 @@ context_to_preserve[6]:
   - target_commit - Git commit hash
   - planning_folder_path - Path to planning artifacts folder
   - cargo_audit_available - Whether cargo audit ran successfully
-  - reference_report_path - Path to reference report (quarantined until Phase 5)
+  - reference_report - Path to reference report (quarantined until Phase 5)
   - has_reference_report - Whether a reference report was provided
 artifacts[1]:
   - id: start-here

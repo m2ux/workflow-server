@@ -20,7 +20,7 @@ rules[6]:
   - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL)."
 
 techniques:
-variables[16]:
+variables[17]:
   - name: audit_description
     type: string
     description: "User's description of what to audit and any specific focus areas or concerns"
@@ -75,6 +75,10 @@ variables[16]:
     type: boolean
     description: "Whether the user confirmed the audit scope at the confirm-scope checkpoint"
     defaultValue: false
+  - name: security_characteristics_count
+    type: number
+    description: "Count of security-relevant patterns found in the target during reconnaissance. Gates the no-security-characteristics checkpoint (fires when 0)."
+    defaultValue: 0
 
 artifactLocations:
   audit:

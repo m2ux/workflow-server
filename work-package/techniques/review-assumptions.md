@@ -68,7 +68,7 @@ Which activity is generating assumptions
 
 Assumptions [log](../resources/assumptions-review.md#assumptions-log-template) updated with review outcomes — grows across activities
 
-#### artifact
+#### assumptions_log_artifact
 
 `assumptions-log.md`
 

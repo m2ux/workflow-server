@@ -37,7 +37,7 @@ variables[10]:
     type: string
     description: "Path to the prism workflow resources directory"
     defaultValue: "prism/resources/"
-  - name: changes
+  - name: change_set
     type: object
     description: "Categorized diff result: { new: [{name, upstream_file, family, optimal_model}], modified: [{name, resource_file, upstream_file}], renamed: [{old_name, new_name, resource_file, upstream_file}], deleted: [{name, resource_file}] }"
   - name: exclusions

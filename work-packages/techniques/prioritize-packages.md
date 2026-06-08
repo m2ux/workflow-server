@@ -55,7 +55,7 @@ Inter-package dependency map describing which packages block or depend on which 
 
 Ordered list of work packages with prioritization rationale
 
-#### priority_order
+#### ordered_packages
 
 Ordered list of packages by execution priority
 

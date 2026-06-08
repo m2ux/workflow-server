@@ -21,7 +21,7 @@ What to analyze. Can be: a file path, a directory path, inline text, a question,
 
 *(optional)* What the caller wants to understand (e.g., 'find hidden bugs', 'assess maintainability', 'understand design trade-offs', 'security review', 'explore the implications of X', 'evaluate this strategy')
 
-### budget
+### analysis_budget
 
 *(optional)* Analysis budget: 'quick' (minimize passes, skip low-risk), 'standard' (balanced depth and coverage), 'thorough' (full coverage, full-prism on high-risk). Default: standard
 
@@ -79,7 +79,7 @@ standard
 
 ### 6. Select Strategy Per Unit
 
-- Map risk to pipeline mode based on `{budget}`
+- Map risk to pipeline mode based on `{analysis_budget}`
 - Budget 'quick': high → single L12, medium → single L12, low → skip
 - Budget 'standard': high → full-prism, medium → single L12, low → portfolio (2 lenses matched to role)
 - Budget 'thorough': high → full-prism, medium → full-prism, low → single L12
@@ -118,15 +118,15 @@ standard
 
 Human-readable analysis plan artifact
 
-#### artifact
+#### artifact_filename
 
 `analysis-plan.md`
 
-#### scope
+#### scope_type
 
 Detected scope type (query, file, module, codebase, document-set)
 
-#### strategy
+#### strategy_summary
 
 Overall strategy description
 
@@ -138,7 +138,7 @@ Per-unit plan summary: target, role, risk, pipeline-mode, lenses, rationale
 
 Prioritised and grouped execution sequence (multi-unit scopes only)
 
-#### parallelism
+#### parallelism_plan
 
 Which units can run concurrently (multi-unit scopes only)
 
@@ -146,7 +146,7 @@ Which units can run concurrently (multi-unit scopes only)
 
 Total sub-agent dispatches (multi-unit scopes only)
 
-#### skip_list
+#### skipped_units
 
 Units below budget threshold with justification (multi-unit scopes only)
 
@@ -154,7 +154,7 @@ Units below budget threshold with justification (multi-unit scopes only)
 
 Machine-readable ordered array of analysis unit objects, each specifying a target, mode, and lens selection to execute
 
-#### units
+#### unit_specs
 
 Array of { target, target_type, pipeline-mode, lenses, role, risk, rationale, unit-output-subdir }
 
@@ -178,7 +178,7 @@ For multi-unit scopes, the budget determines per-unit depth. The caller should n
 
 ### skip-is-explicit
 
-When budget excludes low-risk modules, list them in skip-list with justification. The caller can override by re-running with budget 'thorough'.
+When budget excludes low-risk modules, list them in skipped_units with justification. The caller can override by re-running with budget 'thorough'.
 
 ### model-sensitivity
 

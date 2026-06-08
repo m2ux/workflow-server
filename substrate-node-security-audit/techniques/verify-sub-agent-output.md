@@ -93,7 +93,7 @@ crate, assigned-group, dispatched, returned, status
 
 file, lines, agent, agent-type (group-a/recon/none), COVERED/RECON-ONLY/UNREAD
 
-#### missing_tables_list
+#### missing_tables
 
 agent-id, table-id, reason
 

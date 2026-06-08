@@ -23,7 +23,7 @@ rules[9]:
   - "RESOLUTION DIALOGUE: After evaluation delivery, the user may opt into a resolution dialogue that iterates through findings one-by-one, proposing mitigations and collecting user decisions. Each finding is presented individually — never in batches. For non-trivial findings, the worker proposes a novel solution that preserves the original claim where possible. Absolutely non-feasible claims are flagged explicitly."
 
 techniques:
-variables[21]:
+variables[23]:
   - name: evaluation_description
     type: string
     description: "User's description of what to evaluate, the evaluation goals, and any specific focus areas or concerns"
@@ -95,6 +95,13 @@ variables[21]:
   - name: accepted_mitigations
     type: array
     description: "Array of accepted mitigation decisions: { finding_id, finding_severity, mitigation_type, mitigation_summary, user_decision }"
+  - name: evaluation_findings
+    type: array
+    description: "Findings extracted from the evaluation report, iterated during the resolution dialogue (each: finding ID, severity, claim, critique, mitigation tier)."
+  - name: accepted_count
+    type: number
+    description: "Count of accepted mitigations, interpolated into the confirm-apply checkpoint message."
+    defaultValue: 0
 
 artifactLocations:
   evaluation:

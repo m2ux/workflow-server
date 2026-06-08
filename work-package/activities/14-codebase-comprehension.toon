@@ -151,7 +151,7 @@ outcome[5]:
   - Persistent comprehension artifact created or augmented
   - User confident to evaluate design assumptions in subsequent activities
 context_to_preserve[5]:
-  - comprehension_artifact_path - Path to the created/updated comprehension artifact
+  - comprehension_artifact - Path to the created/updated comprehension artifact
   - architecture_overview - High-level architecture summary
   - key_abstractions - Core types, traits, and interfaces identified
   - design_rationale_hypotheses - Inferred rationale for major design choices

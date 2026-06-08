@@ -101,7 +101,7 @@ Directory holding codebase-comprehension artifacts
 
 Persistent comprehension [artifact](../resources/codebase-comprehension.md#artifact-template) covering the relevant codebase area
 
-#### artifact
+#### comprehension_artifact_file
 
 `{codebase_area}.md`
 

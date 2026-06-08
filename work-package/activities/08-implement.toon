@@ -54,14 +54,14 @@ loops[3]:
         technique: dco-provenance
       - id: self-review
         name: Self-review
-        description: "Perform task completion review: (1) Symbol verification — confirm all new/referenced symbols have provenance in codebase or dependencies, populating uncertain_symbols_list with any symbol the agent cannot confirm and setting has_uncertain_symbols=true when that list is non-empty (otherwise false); (2) Quality checks — code follows patterns, tests pass, no debug prints, no untracked TODOs. Use attached resource task-completion-review for verification checklist. The symbol-provenance-confirmed checkpoint only surfaces when has_uncertain_symbols is true — when every symbol resolves cleanly, the loop continues without prompting the user."
+        description: "Perform task completion review: (1) Symbol verification — confirm all new/referenced symbols have provenance in codebase or dependencies, populating uncertain_symbols with any symbol the agent cannot confirm and setting has_uncertain_symbols=true when that list is non-empty (otherwise false); (2) Quality checks — code follows patterns, tests pass, no debug prints, no untracked TODOs. Use attached resource task-completion-review for verification checklist. The symbol-provenance-confirmed checkpoint only surfaces when has_uncertain_symbols is true — when every symbol resolves cleanly, the loop continues without prompting the user."
         checkpoint: symbol-provenance-confirmed
         actions[2]:
           - action: set
             target: has_uncertain_symbols
             description: "true when one or more symbols cannot be confirmed against codebase, declared dependencies, or new symbols introduced by this task; false when every referenced symbol resolves cleanly"
           - action: set
-            target: uncertain_symbols_list
+            target: uncertain_symbols
             description: "Multi-line list of uncertain symbols (one per line: symbol name + the file/line where the agent saw it). Empty string when has_uncertain_symbols is false. Interpolated into the symbol-provenance-confirmed checkpoint message so the user sees the flagged symbols alongside the options."
       - id: collect-assumptions
         name: Collect assumptions
@@ -119,7 +119,7 @@ checkpoints[4]:
       variable: has_uncertain_symbols
       operator: ==
       value: true
-    message: "One or more symbols in this task could not be confirmed against the codebase or declared dependencies:\n\n{uncertain_symbols_list}\n\nInvestigate before proceeding, or confirm they were introduced intentionally by this task."
+    message: "One or more symbols in this task could not be confirmed against the codebase or declared dependencies:\n\n{uncertain_symbols}\n\nInvestigate before proceeding, or confirm they were introduced intentionally by this task."
     blocking: true
     options[2]:
       - id: confirmed
@@ -191,4 +191,4 @@ context_to_preserve[6]:
   - commits - Commits created
   - provenance_log_path - Path to provenance-log.md
   - has_uncertain_symbols - Whether the current task's self-review flagged symbols without provenance
-  - uncertain_symbols_list - Multi-line list of flagged symbols
+  - uncertain_symbols - Multi-line list of flagged symbols

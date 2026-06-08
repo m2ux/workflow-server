@@ -86,11 +86,11 @@ Acceptance criteria must be observable and testable
 
 No implementation details in issues — those belong in planning docs and PRs
 
-### traceability
+### requirement-traceability
 
 Every work package should be linked to a GitHub or Jira issue for traceability
 
-### clarity
+### issue-clarity
 
 Issues should be clear to someone without prior context
 

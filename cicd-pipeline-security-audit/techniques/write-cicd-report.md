@@ -63,12 +63,12 @@ Scan completeness verification data (file and per-pattern coverage)
 
 Complete CI/CD security [audit report](../resources/cicd-audit-report-template.md#cicd-audit-report-template)
 
-#### artifact
+#### artifact_filename
 
 `01-cicd-audit-report.md`
 
 ## Rules
 
-### no-false-positives
+### confirmed-flow-only
 
 Observations without confirmed source-to-sink flow are listed separately as informational items

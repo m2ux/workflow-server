@@ -23,13 +23,13 @@ steps[7]:
   - id: list-available-workflows
     description: "workflow-engine::list-workflows()"
   - id: match-target
-    description: "workflow-engine::match-target-workflow(user_request: {user_request}, catalog: {workflow_catalog})"
+    description: "workflow-engine::match-target-workflow(user_request: {user_request}, workflow_catalog: {workflow_catalog})"
   - id: extract-context
     description: "workflow-engine::extract-identifying-context(user_request: {user_request})"
   - id: scan-planning-folders
     description: "workflow-engine::scan-saved-sessions(target_workflow_id: {target_workflow_id})"
   - id: match-session
-    description: "workflow-engine::match-saved-session(context: {identifying_context}, candidates: {saved_session_candidates})"
+    description: "workflow-engine::match-saved-session(identifying_context: {identifying_context}, saved_session_candidates: {saved_session_candidates})"
   - id: record-match
     description: "Set has_saved_state = true; copy saved_planning_slug and planning_folder_path from the matched candidate."
     when: "has_saved_state == true"

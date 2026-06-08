@@ -74,7 +74,7 @@ Review implementation to ensure changes are minimal, focused, scope-disciplined,
 
 Strategic review [findings](../resources/strategic-review.md#strategic-review-artifact-template) and recommendations
 
-#### artifact
+#### strategic_review_artifact
 
 `strategic-review-{n}.md`
 
@@ -82,7 +82,7 @@ Strategic review [findings](../resources/strategic-review.md#strategic-review-ar
 
 Architecture [summary](../resources/architecture-summary.md#architecture-summary-artifact-template) with diagrams for stakeholders
 
-#### artifact
+#### architecture_summary_artifact
 
 `architecture-summary.md`
 

@@ -53,5 +53,5 @@ outcome[2]:
   - "Changes committed in logical groups"
 
 context_to_preserve[2]:
-  - "changes — needed by routing and docs activities"
+  - "change_set — needed by routing and docs activities"
   - "next_index — final index after new imports"

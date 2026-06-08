@@ -13,7 +13,7 @@ JSON shapes for the intermediate artifacts that flow between phases of the CI/CD
 
 ## workflow-inventory
 
-Complete inventory of workflow files with classification data, comprising four output components (`file_list`, `trigger_classification`, `permission_map`, `checkout_patterns`) plus an identified-scripts component.
+Complete inventory of workflow files with classification data, comprising four output components (`workflow_files`, `trigger_classification`, `permission_map`, `checkout_patterns`) plus an identified-scripts component.
 
 ```json
 {
@@ -21,7 +21,7 @@ Complete inventory of workflow files with classification data, comprising four o
     {
       "submodule": "midnight-node",
       "workflow_dir": ".github/workflows",
-      "file_list": [
+      "workflow_files": [
         {
           "path": ".github/workflows/ci.yml",
           "size_bytes": 4096,
@@ -75,7 +75,7 @@ Complete inventory of workflow files with classification data, comprising four o
 | `submodules` | object[] | One entry per inventoried submodule |
 | `submodules[].submodule` | string | Submodule directory name |
 | `submodules[].workflow_dir` | string | Path to the `.github/workflows/` directory |
-| `submodules[].file_list` | object[] | All workflow file paths with metadata (`path`, `size_bytes`, `last_modified`) |
+| `submodules[].workflow_files` | object[] | All workflow file paths with metadata (`path`, `size_bytes`, `last_modified`) |
 | `submodules[].trigger_classification` | object[] | Per-workflow trigger types extracted from the `on:` block, with their configurations |
 | `submodules[].permission_map` | object[] | Per-workflow `permissions:` scopes: `workflow_permissions` (top-level defaults) and `job_permissions` (per-job overrides) |
 | `submodules[].checkout_patterns` | object[] | Per-workflow `actions/checkout` uses and `ref:` values; `untrusted_ref` flags PR head SHA, `head.ref`, or merge-commit checkouts |

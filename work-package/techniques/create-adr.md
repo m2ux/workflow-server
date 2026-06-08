@@ -60,7 +60,7 @@ Directory holding the project's ADR files
 
 [Architecture Decision Record](../resources/architecture-review.md#adr-template)
 
-#### artifact
+#### adr_artifact
 
 `NNNN-{decision_title}.md`
 

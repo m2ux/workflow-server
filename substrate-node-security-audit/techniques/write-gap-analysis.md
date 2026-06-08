@@ -13,16 +13,16 @@ Produce the gap analysis report comparing AI audit findings against a profession
 
 ## Inputs
 
-### reference_report_path
+### reference_report
 
 Path to the reference report artifact.
 
 ## Protocol
 
-1. Load reference report from input `{reference_report_path}` (first and only time).
+1. Load reference report from input `{reference_report}` (first and only time).
 2. Extract reference finding list with severities and affected files.
 3. Map, classify, and analyze per the sections above.
-4. Write the `{gap_analysis}` report, assembling the `{summary}`, `{finding_mapping}`, `{gap_list}`, `{severity_calibration}`, `{ai_only_findings}`, and `{recommendations}` sections into the artifact.
+4. Write the `{gap_analysis}` report, assembling the `{summary_metrics}`, `{finding_mapping}`, `{gaps}`, `{severity_calibration}`, `{ai_only_findings}`, and `{recommendations}` sections into the artifact.
 
 ## Outputs
 
@@ -30,11 +30,11 @@ Path to the reference report artifact.
 
 [Gap analysis report](../resources/gap-analysis-template.md#gap-analysis-template). When persisted, use artifact name.
 
-#### artifact
+#### artifact_filename
 
 `02-gap-analysis.md`
 
-#### summary
+#### summary_metrics
 
 Metrics table: total findings each side, matched, partial, gaps, AI-only, overlap rate
 
@@ -42,7 +42,7 @@ Metrics table: total findings each side, matched, partial, gaps, AI-only, overla
 
 Table mapping every reference finding to the closest AI finding. Classify as matched, partial, or gap.
 
-#### gap_list
+#### gaps
 
 Each gap with root cause analysis: why was it missed (missing check, reasoning error, scope limitation)?
 

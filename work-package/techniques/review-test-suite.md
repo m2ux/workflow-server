@@ -59,7 +59,7 @@ List of files changed in the work package (from `git diff`)
 
 Test suite review [report](../resources/test-suite-review.md#test-suite-review-report-template) documenting quality assessment
 
-#### artifact
+#### test_suite_review_artifact
 
 `test-suite-review.md`
 

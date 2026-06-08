@@ -42,7 +42,7 @@ Conduct workflow retrospective to capture lessons learned and prepare for next w
 
 Workflow [retrospective](../resources/workflow-retrospective.md#output-document-template) with lessons learned
 
-#### artifact
+#### retrospective_artifact
 
 `workflow-retrospective.md`
 

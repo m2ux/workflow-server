@@ -135,7 +135,7 @@ NEVER use continue-agent between passes (harness-compat). Each pass MUST be a fr
 
 Pass outputs between workers via filesystem artifacts, not inline text. The orchestrator provides artifact paths; workers read and write files. This keeps prompts focused and artifacts as the source of truth.
 
-### no-analysis
+### dispatch-only
 
 The orchestrator MUST NOT generate analysis, evaluate findings, or produce structural observations. It dispatches, captures paths, and presents results.
 

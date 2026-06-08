@@ -13,7 +13,7 @@ Audit storage lifecycle completeness for every storage map in a given scope: fin
 
 ## Inputs
 
-### scope
+### scan_scope
 
 Directory scope to scan (a single crate for per-crate review, or full in-scope paths for global scan)
 
@@ -29,7 +29,7 @@ false
 
 ### 1. Find Storage Declarations
 
-- Enumerate every `StorageMap`, `StorageDoubleMap`, and `StorageNMap` in the `{scope}` as `{$storage_maps}`.
+- Enumerate every `StorageMap`, `StorageDoubleMap`, and `StorageNMap` in the `{scan_scope}` as `{$storage_maps}`.
 
 ### 2. Find Mutation Sites
 

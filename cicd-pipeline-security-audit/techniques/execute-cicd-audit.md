@@ -62,11 +62,11 @@ Complete CI/CD security [audit report](../resources/cicd-audit-report-template.m
 
 All findings with pattern ID, severity, source, sink, remediation
 
-#### coverage
+#### file_coverage_status
 
 Workflow file coverage verification
 
-#### methodology
+#### methodology_notes
 
 Audit methodology and pattern catalog version
 

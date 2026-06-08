@@ -63,7 +63,7 @@ Review comments fetched from PR
 
 PR review [analysis](../resources/pr-review-response.md#step-6-create-review-document) document
 
-#### artifact
+#### review_analysis_artifact
 
 `{YYYY-MM-DD}-pr{pr_number}-review-analysis.md`
 

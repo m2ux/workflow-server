@@ -21,7 +21,7 @@ Resource containing the pattern catalog (e.g., `05-static-analysis-patterns`)
 
 Section within the resource to execute (e.g., 'Grep Patterns', 'Mechanical Checks')
 
-### scope
+### search_scope
 
 Codebase paths to search against
 
@@ -43,8 +43,8 @@ Codebase paths to search against
 
 ### 3. Execute Search
 
-- For each pattern, determine the execution type from the resource entry. Grep-based patterns: run the search string against the `{scope}`, omitting any paths or file patterns named in `{exclusions}` (e.g., test, mock, bench files). Verification-based patterns (mechanical checks): run the search string, then apply the verification procedure defined in the resource (e.g., trace a variable, check field completeness, verify pairing). Record every hit with file path and line number.
-- If no files match the `{scope}` and exclusion criteria, report that the `{scope}` produced zero files and verify the `{scope}` paths are correct.
+- For each pattern, determine the execution type from the resource entry. Grep-based patterns: run the search string against the `{search_scope}`, omitting any paths or file patterns named in `{exclusions}` (e.g., test, mock, bench files). Verification-based patterns (mechanical checks): run the search string, then apply the verification procedure defined in the resource (e.g., trace a variable, check field completeness, verify pairing). Record every hit with file path and line number.
+- If no files match the `{search_scope}` and exclusion criteria, report that the `{search_scope}` produced zero files and verify the `{search_scope}` paths are correct.
 
 ### 4. Triage Hits
 

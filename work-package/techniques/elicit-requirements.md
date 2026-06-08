@@ -68,7 +68,7 @@ Issue identifier for linking assumptions comment (GitHub #N or Jira KEY-N)
 
 Elicited [requirements](../resources/requirements-elicitation.md#document-template) with success criteria and scope
 
-#### artifact
+#### requirements_artifact
 
 `requirements-elicitation.md`
 

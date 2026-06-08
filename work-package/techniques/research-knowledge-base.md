@@ -51,7 +51,7 @@ Research knowledge base and external sources to discover best practices, pattern
 
 Knowledge base and web research [synthesis](../resources/knowledge-base-research.md#planning-artifact) for the work package
 
-#### artifact
+#### research_artifact
 
 `kb-research.md`
 
@@ -65,6 +65,6 @@ Multiple sources should be consulted for robust findings
 
 Patterns should be validated across documents
 
-### no-narration
+### synthesize-directly
 
 Never narrate the search process to the user. Synthesize answers directly and cite sources.

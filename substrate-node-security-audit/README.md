@@ -349,8 +349,8 @@ Resources contain detailed reference content loaded on demand by techniques.
 | `in_scope` | string | Crate/module paths to audit |
 | `out_of_scope` | string | Exclusions |
 | `planning_folder_path` | string | Path to planning artifacts folder |
-| `template_path` | string | Path to the audit prompt template |
-| `reference_report_path` | string | Path to professional audit report (optional) |
+| `audit_prompt_template` | string | Path to the audit prompt template |
+| `reference_report` | string | Path to professional audit report (optional) |
 | `ensemble_enabled` | boolean | Whether to run ensemble pass |
 | `has_reference_report` | boolean | Whether gap analysis is available |
 | `cargo_audit_available` | boolean | Whether cargo audit ran successfully |

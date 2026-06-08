@@ -84,7 +84,7 @@ Original evaluation description, used for report context
 
 The consolidated [evaluation report](../resources/evaluation-report-template.md#evaluation-report-template)
 
-#### artifact
+#### artifact_filename
 
 `EVALUATION-REPORT.md`
 
@@ -104,7 +104,7 @@ Per-dimension findings with severity tables
 
 Cross-dimensional patterns
 
-#### recommendations
+#### recommendation_list
 
 Prioritised corrections and recommendations
 

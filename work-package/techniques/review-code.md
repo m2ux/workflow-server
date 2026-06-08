@@ -59,7 +59,7 @@ List of files changed in the work package (from `git diff`)
 
 Code review [report](../resources/rust-substrate-code-review.md#report-template) documenting findings by severity
 
-#### artifact
+#### review_artifact
 
 `code-review.md`
 

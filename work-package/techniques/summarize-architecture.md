@@ -64,7 +64,7 @@ List of files changed in the implementation
 
 Stakeholder-facing architecture [summary](../resources/architecture-summary.md#architecture-summary-artifact-template) with diagrams
 
-#### artifact
+#### architecture_summary_artifact
 
 `architecture-summary.md`
 
