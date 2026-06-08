@@ -185,6 +185,14 @@
             },
             "optionId": "acceptable",
             "respondedAt": "2026-06-08T05:38:55.000Z"
+          },
+          "submit-for-review-dco-sign-off": {
+            "optionId": "certify",
+            "respondedAt": "2026-06-08T05:45:25.000Z"
+          },
+          "submit-for-review-merge-strategy-reminder": {
+            "optionId": "acknowledged",
+            "respondedAt": "2026-06-08T06:45:39.000Z"
           }
         },
         "completedActivities": [
@@ -197,10 +205,11 @@
           "assumptions-review",
           "implement",
           "post-impl-review",
-          "validate"
+          "validate",
+          "strategic-review"
         ],
-        "condition": "default",
-        "currentActivity": "strategic-review",
+        "condition": "default (review_passed == true)",
+        "currentActivity": "submit-for-review",
         "currentTechnique": "",
         "history": [
           {
@@ -518,16 +527,56 @@
             },
             "timestamp": "2026-06-08T05:38:55.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "timestamp": "2026-06-08T05:40:54.210Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-06-08T05:40:54.210Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "dco-sign-off",
+            "timestamp": "2026-06-08T05:44:29.273Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "dco-sign-off",
+            "data": {
+              "optionId": "certify"
+            },
+            "timestamp": "2026-06-08T05:45:25.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "merge-strategy-reminder",
+            "timestamp": "2026-06-08T05:49:57.913Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "merge-strategy-reminder",
+            "data": {
+              "optionId": "acknowledged"
+            },
+            "timestamp": "2026-06-08T06:45:39.000Z",
+            "type": "checkpoint_response"
           }
         ],
         "schemaVersion": 1,
-        "seq": 78,
+        "seq": 88,
         "sessionIndex": "VPOXEX",
         "skippedActivities": [],
         "startedAt": "2026-06-07T09:47:11.376Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1780897151,
+        "ts": 1780901162,
         "variables": {
           "complexity": "moderate",
           "context_scope": "web-retrieval",
