@@ -71,7 +71,7 @@ modes[2]:
       is_review_mode: true
       review_scope_confirmed: false
     resource: review-mode-guide
-variables[16]:
+variables[17]:
   - name: planning_folder_path
     type: string
     description: "Path to the unique planning folder for this workflow execution (e.g., .engineering/artifacts/planning/workflow-design-{workflow_id})"
@@ -131,4 +131,8 @@ variables[16]:
   - name: current_file
     type: object
     description: "Current file being drafted during the content drafting loop"
+  - name: has_unflagged_removals
+    type: boolean
+    description: "True when content drafting detects removals not flagged during impact analysis. Gates the preservation-check checkpoint in content-drafting (update mode)."
+    defaultValue: false
 initialActivity: intake

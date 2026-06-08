@@ -29,7 +29,7 @@ artifactLocations:
     path: ".engineering/artifacts/adr"
   comprehension:
     path: ".engineering/artifacts/comprehension"
-variables[27]:
+variables[28]:
   - name: target_path
     type: string
     description: "Path to the target directory. All git operations (branch, push) are performed inside this directory. Resolved by start-workflow discover-target checkpoints."
@@ -131,6 +131,9 @@ variables[27]:
   - name: unsigned_commit_list_summary
     type: string
     description: "Short human-readable summary of unsigned commits."
+  - name: recommended_strategic_option
+    type: string
+    description: "Agent-recommended action after strategic review analysis (fix-findings|acceptable). Set by analyze-strategic-findings step."
 initialActivity: start
 activities[14]:
   - "01-start.toon"
