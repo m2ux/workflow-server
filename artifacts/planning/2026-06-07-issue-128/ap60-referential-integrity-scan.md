@@ -12,20 +12,20 @@
 - **prism / `plan-analysis.md`** — the `skip_list → skipped_units` rename updated the `####` declaration but left a stale prose reference ("list them in skip-list") in the `skip-is-explicit` rule. Prose only (no binding `{designator}`), so no runtime resolution broke. Fixed → `skipped_units` (commit `3b52ee5`; pointer `6ab887c6`).
 
 ### Pre-existing (10) — NOT caused by the sweep
-Each was confirmed present verbatim at base `12e76a9` (same file, same line). They are genuine latent referential-integrity defects unrelated to issue #128's rename work:
+Each was confirmed present verbatim at base `12e76a9` (same file, same line). **7 fixed** (high-confidence — declare the referenced-but-undeclared variable; commit `afefd3b`, pointer `ea024a84`); **3 deferred** (meta output-capture model). Validator green on all five touched workflows after the fix.
 
-| Workflow | Identifier | File | Kind |
-|---|---|---|---|
-| work-package | `problem_type` | 02-design-philosophy.toon | set + `{...}` interpolated, not in `workflow.toon variables[]` |
-| work-package | `pr_url` | 01-start-work-package.toon | `set target`, not declared in `variables[]` |
-| workflow-design | `has_unflagged_removals` | 07-content-drafting.toon | checkpoint condition target, undeclared |
-| meta | `workflow_catalog` | 00-discover-session.toon | activity designator; technique declares bare `catalog` |
-| meta | `identifying_context` | 00-discover-session.toon | activity designator; technique declares bare `context` |
-| meta | `saved_session_candidates` | 00-discover-session.toon | activity designator; technique declares bare `candidates` |
-| prism-audit | `security_characteristics_count` | 01-prompt-generation.toon | condition target, never produced/declared |
-| prism-evaluate | `findings_list` | 05-resolution-dialogue.toon | forEach `over:` iterable, never populated/declared |
-| prism-evaluate | `accepted_count` | 06-apply-mitigations.toon | `{...}` interpolated; only `accepted_mitigations` array exists |
-| remediate-vuln | `recommended_strategic_option` | 02-strategic-review.toon | `set` + read, declared only in work-package (no cross-workflow var inheritance) |
+| Workflow | Identifier | File | Kind | Status |
+|---|---|---|---|---|
+| work-package | `problem_type` | 02-design-philosophy.toon | set + `{...}` interpolated, not in `workflow.toon variables[]` | FIXED — declared (string) |
+| work-package | `pr_url` | 01-start-work-package.toon | `set target`, not declared in `variables[]` | FIXED — declared (string) |
+| workflow-design | `has_unflagged_removals` | 07-content-drafting.toon | checkpoint condition target, undeclared | FIXED — declared (boolean/false) |
+| prism-audit | `security_characteristics_count` | 01-prompt-generation.toon | condition target, never produced/declared | FIXED — declared (number/0) |
+| prism-evaluate | `findings_list` | 05-resolution-dialogue.toon | forEach `over:` iterable, never populated/declared | FIXED — declared `evaluation_findings` (array) + loop repointed |
+| prism-evaluate | `accepted_count` | 06-apply-mitigations.toon | `{...}` interpolated; only `accepted_mitigations` array exists | FIXED — declared (number/0) |
+| remediate-vuln | `recommended_strategic_option` | 02-strategic-review.toon | `set` + read, declared only in work-package (no cross-workflow var inheritance) | FIXED — declared (string) |
+| meta | `workflow_catalog` | 00-discover-session.toon | activity designator; technique declares bare `catalog` | DEFERRED — meta output-capture model |
+| meta | `identifying_context` | 00-discover-session.toon | activity designator; technique declares bare `context` | DEFERRED — meta output-capture model |
+| meta | `saved_session_candidates` | 00-discover-session.toon | activity designator; technique declares bare `candidates` | DEFERRED — meta output-capture model |
 
 Notes: the three meta cases are a pre-existing activity-prose-vs-technique-id naming mismatch (the activities reference compound names while the techniques declare bare `catalog`/`context`/`candidates`); they overlap the deferred high-blast meta renames. The remaining seven are undeclared/unpopulated workflow-state variables.
 
