@@ -12,7 +12,7 @@
 - **prism / `plan-analysis.md`** — the `skip_list → skipped_units` rename updated the `####` declaration but left a stale prose reference ("list them in skip-list") in the `skip-is-explicit` rule. Prose only (no binding `{designator}`), so no runtime resolution broke. Fixed → `skipped_units` (commit `3b52ee5`; pointer `6ab887c6`).
 
 ### Pre-existing (10) — NOT caused by the sweep
-Each was confirmed present verbatim at base `12e76a9` (same file, same line). **7 fixed** (high-confidence — declare the referenced-but-undeclared variable; commit `afefd3b`, pointer `ea024a84`); **3 deferred** (meta output-capture model). Validator green on all five touched workflows after the fix.
+Each was confirmed present verbatim at base `12e76a9` (same file, same line). **All 10 fixed.** First 7 (commit `afefd3b`): declare the referenced-but-undeclared checkpoint-gating/persisted variable. Last 3 meta (commit `fef85db`): name-aligned-passthrough designator renames to qualified ids (source-grounded — see below). Validator green on all touched workflows.
 
 | Workflow | Identifier | File | Kind | Status |
 |---|---|---|---|---|
@@ -23,9 +23,11 @@ Each was confirmed present verbatim at base `12e76a9` (same file, same line). **
 | prism-evaluate | `findings_list` | 05-resolution-dialogue.toon | forEach `over:` iterable, never populated/declared | FIXED — declared `evaluation_findings` (array) + loop repointed |
 | prism-evaluate | `accepted_count` | 06-apply-mitigations.toon | `{...}` interpolated; only `accepted_mitigations` array exists | FIXED — declared (number/0) |
 | remediate-vuln | `recommended_strategic_option` | 02-strategic-review.toon | `set` + read, declared only in work-package (no cross-workflow var inheritance) | FIXED — declared (string) |
-| meta | `workflow_catalog` | 00-discover-session.toon | activity designator; technique declares bare `catalog` | DEFERRED — meta output-capture model |
-| meta | `identifying_context` | 00-discover-session.toon | activity designator; technique declares bare `context` | DEFERRED — meta output-capture model |
-| meta | `saved_session_candidates` | 00-discover-session.toon | activity designator; technique declares bare `candidates` | DEFERRED — meta output-capture model |
+| meta | `workflow_catalog` | 00-discover-session.toon | activity designator; technique declared bare `catalog` | FIXED — renamed `catalog → workflow_catalog` (output+input+designator+arg-key) |
+| meta | `identifying_context` | 00-discover-session.toon | activity designator; technique declared bare `context` | FIXED — renamed `context → identifying_context` |
+| meta | `saved_session_candidates` | 00-discover-session.toon | activity designator; technique declared bare `candidates` | FIXED — renamed `candidates → saved_session_candidates` |
+
+**Meta resolution model (from source analysis, workflow `meta-designator-resolution-proposal`):** the engine does no runtime designator interpolation (`get_activity` returns step text verbatim; the variable bag is seeded empty and read only by `evaluateCondition`). Designators are a worker contract resolved by name against the producing technique's output id. So the fix was name-aligned passthrough — and, honoring the no-bare-single-word rule, aligned UP to qualified names (which also retired the bare `catalog`/`context`/`candidates` I/O ids) rather than down to the bare ids. Producer output = consumer input = designator = arg-key, all qualified. Validator green.
 
 Notes: the three meta cases are a pre-existing activity-prose-vs-technique-id naming mismatch (the activities reference compound names while the techniques declare bare `catalog`/`context`/`candidates`); they overlap the deferred high-blast meta renames. The remaining seven are undeclared/unpopulated workflow-state variables.
 
