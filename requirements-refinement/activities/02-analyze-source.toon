@@ -1,0 +1,55 @@
+id: analyze-source
+version: 1.0.0
+name: Analyze Source
+description: "Parse the source document against the current specification and produce a structured requirements analysis report, then confirm it with the user before any changes are applied."
+problem: Requirement changes expressed in the source document must be identified and mapped before the specification can be updated
+required: true
+estimatedTime: 10-20m
+techniques:
+  primary: analyze-source
+steps[2]:
+  - id: analyze
+    name: Analyze Source
+    description: "Apply analyze-source to parse the source document and current specification into the requirements analysis report (source reference, new/updated/deprecated requirements, document updates required, quality issues, implementation notes)."
+  - id: record-analysis
+    name: Record Analysis
+    description: "Record the completed analysis report in the planning folder."
+    actions[1]:
+      - action: message
+        message: "Created: requirements-analysis.md"
+checkpoints[1]:
+  - id: analysis-confirmed
+    name: Analysis Confirmation
+    message: "Here is the requirements analysis derived from the source. Approve it for application to the specification?"
+    blocking: true
+    options[2]:
+      - id: confirmed
+        label: "Yes, apply this analysis"
+        description: "Analysis is accurate; proceed to update the specification."
+        effect:
+          setVariable:
+            analysis_confirmed: true
+      - id: revise
+        label: "Revise the analysis"
+        description: "Analysis misreads the source or misses changes and must be revised before proceeding."
+artifacts[1]:
+  - id: requirements-analysis-doc
+    name: requirements-analysis.md
+    location: planning
+    description: "Structured requirements analysis report: source reference, new/updated/deprecated requirements, document updates required, quality issues, implementation notes"
+transitions[1]:
+  - to: update-specification
+    condition:
+      type: simple
+      variable: analysis_confirmed
+      operator: ==
+      value: true
+    isDefault: true
+exitActions[1]{action,message}:
+  message,README PROGRESS: Update planning folder README.md — mark source analysis as ✅ Complete.
+outcome[2]:
+  - Requirement changes identified and mapped to identifiers
+  - Analysis report approved for application
+context_to_preserve[2]:
+  - analysis_confirmed - Whether the analysis was approved
+  - requirements_analysis - Path to the analysis artifact

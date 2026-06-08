@@ -1,0 +1,66 @@
+id: validate-specification
+version: 1.0.0
+name: Validate Specification
+description: "Validate the updated specification against structural, identifier-uniqueness, consistency, and protocol-conformance checks, categorize each issue as critical or correctable, and route to finalization, another correction pass, or failure reporting."
+problem: The updated specification must be checked for quality and conformance before it can be finalized
+required: true
+estimatedTime: 10-20m
+techniques:
+  primary: validate-specification
+steps[2]:
+  - id: validate
+    name: Validate Specification
+    description: "Apply validate-specification to check the working specification against the validation rubric and produce a categorized verdict in the validation report."
+  - id: evaluate-verdict
+    name: Evaluate Verdict
+    description: "Read the verdict and set the routing variables that the transitions evaluate."
+    actions[3]:
+      - action: set
+        target: validation_passed
+        description: "True when the verdict is passed with no critical or correctable issues."
+      - action: set
+        target: has_critical_issues
+        description: "True when any issue is critical or irreconcilable."
+      - action: set
+        target: has_correctable_issues
+        description: "True when correctable issues remain and no critical issue is present."
+artifacts[1]:
+  - id: validation-report
+    name: validation-report-{correction_iteration}.md
+    location: planning
+    description: "Validation verdict and categorized issues (critical/irreconcilable versus correctable) for this pass"
+transitions[3]:
+  - to: finalize-specification
+    condition:
+      type: simple
+      variable: validation_passed
+      operator: ==
+      value: true
+  - to: update-specification
+    condition:
+      type: and
+      conditions[3]:
+        - type: simple
+          variable: has_correctable_issues
+          operator: ==
+          value: true
+        - type: simple
+          variable: has_critical_issues
+          operator: ==
+          value: false
+        - type: simple
+          variable: correction_iteration
+          operator: "<"
+          value: 3
+  - to: report-failure
+    isDefault: true
+exitActions[1]{action,message}:
+  message,README PROGRESS: Update planning folder README.md — record the validation verdict for this pass.
+outcome[2]:
+  - Updated specification validated and issues categorized
+  - Routing decision made toward finalization, correction, or failure
+context_to_preserve[4]:
+  - validation_passed - Whether validation passed cleanly
+  - has_correctable_issues - Whether a correction pass is warranted
+  - has_critical_issues - Whether manual intervention is required
+  - validation_report - Path to the validation report for this pass

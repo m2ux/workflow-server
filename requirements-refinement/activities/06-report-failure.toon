@@ -1,0 +1,38 @@
+id: report-failure
+version: 1.0.0
+name: Report Failure
+description: "Compile a failure report describing the unresolved critical issues, the correction history, and the manual resolution required when refinement cannot complete automatically; no specification is promoted."
+problem: When critical issues remain or the correction budget is exhausted, the user needs a clear account of what requires manual intervention
+required: true
+estimatedTime: 5-10m
+techniques:
+  primary: report-failure
+steps[2]:
+  - id: compile-failure-report
+    name: Compile Failure Report
+    description: "Apply report-failure to record the verdict, the correction history (correction_iteration of max_correction_iterations), the critical or irreconcilable issues, and the manual resolution required."
+    actions[1]:
+      - action: message
+        message: "Created: failure-report.md"
+  - id: present-failure
+    name: Present Failure
+    description: "Present the failure report and the required manual intervention to the user."
+checkpoints[1]:
+  - id: failure-acknowledged
+    name: Failure Acknowledgement
+    message: "Refinement could not complete automatically. The failure report lists the critical issues and the manual resolution required. Acknowledge?"
+    blocking: true
+    options[1]:
+      - id: acknowledged
+        label: "Acknowledged"
+        description: "The failure report has been reviewed; manual intervention will follow outside the workflow."
+artifacts[1]:
+  - id: failure-report
+    name: failure-report.md
+    location: planning
+    description: "Critical/irreconcilable issues, correction history, and manual-resolution guidance"
+outcome[2]:
+  - Failure report compiled with critical issues and resolution guidance
+  - No specification promoted
+context_to_preserve[1]:
+  - failure_report - Path to the failure report artifact
