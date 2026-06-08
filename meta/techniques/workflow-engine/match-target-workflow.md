@@ -13,7 +13,7 @@ Match a user request against the workflow catalog and surface ambiguity.
 
 User's free-form request.
 
-### catalog
+### workflow_catalog
 
 Array of available workflow entries `{ id, title, description, tags }` to match against
 

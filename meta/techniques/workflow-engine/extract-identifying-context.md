@@ -15,10 +15,10 @@ User's free-form request.
 
 ## Output
 
-### context
+### identifying_context
 
 Map of any identifiers found: `{ issue_number?, branch_name?, pr_number?, work_package? }`
 
 ## Protocol
 
-1. Scan `{user_request}` for GitHub issue numbers (#N), Jira keys (PROJ-123), branch references, PR numbers, and work-package descriptions; collect any found into `{context}`.
+1. Scan `{user_request}` for GitHub issue numbers (#N), Jira keys (PROJ-123), branch references, PR numbers, and work-package descriptions; collect any found into `{identifying_context}`.
