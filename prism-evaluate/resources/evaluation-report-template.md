@@ -23,21 +23,40 @@ findings are presented as conclusions.
 
 {What was evaluated, in 1-2 sentences.}
 
+### {Context heading — scope, framing, or staged context as the target warrants}
+
+{Brief framing. Present any enumerable context — scope items, rollout stages, target components — as a
+compact table or bullet list, not a dense paragraph.}
+
 | Dimension | Critical | High | Medium | Low | Total |
 |-----------|----------|------|--------|-----|-------|
 | {dimension} | {n} | {n} | {n} | {n} | {n} |
 | **Total** | {n} | {n} | {n} | {n} | {n} |
 
-**Core finding:** {the single deepest cross-dimensional insight, in 2-3 sentences.}
+## Overall Assessment
 
-**Overall assessment:** {the bottom-line judgement on the target.}
+### Verdict
+
+{The bottom-line judgement on the target, in a short paragraph. Render any conditions, caveats, or
+headline risks as a bullet list rather than one long sentence.}
+
+### {Where the risk sits — or the headline emphasis the target warrants}
+
+{The dominant risk or emphasis, as short paragraphs or bullets.}
 
 ## The Core Finding
 
-{Expanded description of the deepest cross-dimensional insight — the one finding that explains the
-most findings across dimensions.}
+{One lead sentence naming the deepest cross-dimensional insight — the finding that explains the most
+findings across dimensions.}
 
-**Testable prediction:** {a concrete, falsifiable consequence implied by the core finding.}
+### {Facet or regime heading}
+
+{Break the insight into labelled `###` sub-sections — one per facet or regime — with short paragraphs or
+bullets, never a single large block. Bold the key takeaway.}
+
+### Testable prediction
+
+{A concrete, falsifiable consequence implied by the core finding.}
 
 ## Per-Dimension Findings
 

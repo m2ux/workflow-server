@@ -57,11 +57,13 @@ Original evaluation description, used for report context
 ### 4. Compose Report
 
 - Structure the report with clear sections. No methodology metadata — findings are presented as conclusions.
-- Section: Executive Summary — what was evaluated (framed from `{evaluation_description}`), total findings by dimension and severity, the core finding in 2-3 sentences, and the overall assessment
-- Section: The Core Finding — expanded description of the deepest cross-dimensional insight with a testable prediction
+- Section: Executive Summary — what was evaluated (framed from `{evaluation_description}`), total findings by dimension and severity, and any framing the target needs. Present enumerable framing (scope, rollout stages, target components) as a compact table or bullet list under a `###` sub-heading, not a dense paragraph.
+- Section: Overall Assessment — the bottom-line judgement, with a `### Verdict` sub-heading (render conditions/caveats as a bullet list) and a further `###` sub-heading for the headline risk or emphasis where it aids readability.
+- Section: The Core Finding — expanded description of the deepest cross-dimensional insight, broken into labelled `###` sub-sections (one per facet or regime) with short paragraphs or bullets, plus a `### Testable prediction` sub-section.
 - Section: Per-Dimension Findings — one subsection per dimension with: dimension description, severity summary table, key findings (each with ID, severity, title, description), and the dimension's most important insight
 - Section: Cross-Cutting Patterns — patterns spanning multiple dimensions, with evidence from each
 - Section: Corrections and Recommendations — actionable items grouped by priority (immediate, short-term, structural)
+- Readability: in every section before Per-Dimension Findings, prefer `###` sub-sections, short paragraphs, and bullet lists or compact tables over large dense paragraphs. Break any multi-part point into labelled sub-sections or bullets rather than a single block of prose.
 - Do NOT include: lens names, pipeline modes, pass descriptions, 'structural analysis found X then adversarial challenged Y then synthesis concluded Z'. These methodological details remain in the raw analysis artifacts for interested readers.
 - The report must stand alone — a reader unfamiliar with prism or evaluation methodology should find it clear, evidence-based, and actionable
 
@@ -117,3 +119,7 @@ The report MUST NOT contain references to analytical methodology: no lens names 
 ### finding-id-convention
 
 Finding IDs use a 3-letter dimension prefix followed by a dash and two-digit number: CON-01, VER-03, PLB-01, FEA-07. For custom dimensions, derive the prefix from the first letters or a natural abbreviation.
+
+### readable-front-matter
+
+The sections before Per-Dimension Findings — Executive Summary, Overall Assessment, and The Core Finding — MUST use sub-sections (`###` headings), short paragraphs, and bullet lists or compact tables for any enumerable or multi-part content (scope, rollout stages, target components, conditions, multi-facet insights). Large dense paragraphs are not acceptable in these sections; a reader should be able to scan the structure. The Per-Dimension Findings sections already use tables plus short labelled entries and need no change.
