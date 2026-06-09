@@ -142,6 +142,28 @@
             "optionId": "research-only",
             "respondedAt": "2026-06-09T15:56:00.000Z"
           },
+          "research-context-scope-declaration": {
+            "effects": {
+              "variablesSet": {
+                "context_scope": "mixed"
+              }
+            },
+            "optionId": "mixed",
+            "respondedAt": "2026-06-09T16:53:08.000Z"
+          },
+          "research-research-assumption-interview": {
+            "effects": {
+              "variablesSet": {
+                "assumption_resolved_inline": true
+              }
+            },
+            "optionId": "resolve-inline",
+            "respondedAt": "2026-06-09T17:20:12.000Z"
+          },
+          "research-research-findings": {
+            "optionId": "sufficient",
+            "respondedAt": "2026-06-09T16:47:11.000Z"
+          },
           "start-work-package-issue-review": {
             "effects": {
               "variablesSet": {
@@ -190,10 +212,11 @@
         },
         "completedActivities": [
           "start-work-package",
-          "design-philosophy"
+          "design-philosophy",
+          "codebase-comprehension"
         ],
-        "condition": "needs_comprehension == true",
-        "currentActivity": "codebase-comprehension",
+        "condition": "needs_research == true",
+        "currentActivity": "research",
         "currentTechnique": "",
         "history": [
           {
@@ -434,18 +457,111 @@
             },
             "timestamp": "2026-06-09T16:11:28.784Z",
             "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "timestamp": "2026-06-09T16:12:52.720Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "research",
+            "timestamp": "2026-06-09T16:12:52.720Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-findings",
+            "timestamp": "2026-06-09T16:39:20.303Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-findings",
+            "data": {
+              "optionId": "sufficient"
+            },
+            "timestamp": "2026-06-09T16:47:11.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "context-scope-declaration",
+            "timestamp": "2026-06-09T16:49:34.602Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "context-scope-declaration",
+            "data": {
+              "optionId": "mixed"
+            },
+            "timestamp": "2026-06-09T16:53:08.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "context_scope",
+              "value": "mixed"
+            },
+            "timestamp": "2026-06-09T16:53:08.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-assumption-interview",
+            "timestamp": "2026-06-09T16:54:17.031Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-assumption-interview",
+            "data": {
+              "optionId": "resolve-inline"
+            },
+            "timestamp": "2026-06-09T17:20:12.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "assumption_resolved_inline",
+              "value": true
+            },
+            "timestamp": "2026-06-09T17:20:12.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-assumption-interview",
+            "data": {
+              "optionId": "resolve-inline"
+            },
+            "timestamp": "2026-06-09T17:22:11.730Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-assumption-interview",
+            "data": {
+              "optionId": "resolve-inline"
+            },
+            "timestamp": "2026-06-09T17:22:16.620Z",
+            "type": "checkpoint_replayed"
           }
         ],
         "schemaVersion": 1,
-        "seq": 43,
+        "seq": 57,
         "sessionIndex": "O335WQ",
         "skippedActivities": [],
         "startedAt": "2026-06-09T14:55:25.139Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1781021494,
+        "ts": 1781025736,
         "variables": {
+          "assumption_resolved_inline": true,
           "complexity": "moderate",
+          "context_scope": "mixed",
           "issue_approved": true,
           "issue_platform": "github",
           "issue_type": "enhancement",

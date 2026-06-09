@@ -35,6 +35,7 @@ When information lives in many unconnected places, people waste time hunting for
 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 14 | [Documentation-system comprehension](../../comprehension/documentation-system.md) | Doc-surface inventory + concept-rag reference pattern + deep-dive, lens, and Deep-Dive 2 findings (ADR/toolchain/nav-sync/inbound-links) | 20-45m | ✅ Complete |
+| 04 | [KB & web research](04-kb-research.md) | MkDocs Material patterns; de-risks nav-sync, link-preservation, ADR-surfacing, toolchain-depth decisions | 20-45m | ✅ Complete |
 | 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
 | 05 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
 | — | Implementation | Documentation changes per plan | 1-4h | ⬚ Pending |
