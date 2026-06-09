@@ -1,0 +1,332 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "5.1.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "5SMTDH",
+  "currentActivity": "dispatch-client-workflow",
+  "currentTechnique": "",
+  "condition": "isDefault",
+  "seq": 13,
+  "ts": 1781017108,
+  "startedAt": "2026-06-09T14:52:38.301Z",
+  "completedActivities": [
+    "discover-session",
+    "initialize-session",
+    "resolve-target"
+  ],
+  "skippedActivities": [],
+  "variables": {
+    "is_monorepo": false,
+    "target_path": "."
+  },
+  "checkpointResponses": {
+    "resolve-target-repo-type-confirmed": {
+      "effects": {
+        "variablesSet": {
+          "is_monorepo": false,
+          "target_path": "."
+        }
+      },
+      "optionId": "regular",
+      "respondedAt": "2026-06-09T14:57:18.000Z"
+    }
+  },
+  "history": [
+    {
+      "timestamp": "2026-06-09T14:52:38.301Z",
+      "type": "workflow_started"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-06-09T14:52:58.352Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-06-09T14:54:54.421Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-06-09T14:54:54.421Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "sessionIndex": "O335WQ",
+        "workflowId": "work-package"
+      },
+      "timestamp": "2026-06-09T14:55:25.134Z",
+      "type": "workflow_triggered"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-06-09T14:55:41.759Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-06-09T14:55:41.759Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "resolve-target",
+      "checkpoint": "repo-type-confirmed",
+      "timestamp": "2026-06-09T14:56:20.527Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "resolve-target",
+      "checkpoint": "repo-type-confirmed",
+      "data": {
+        "optionId": "regular"
+      },
+      "timestamp": "2026-06-09T14:57:18.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "is_monorepo",
+        "value": false
+      },
+      "timestamp": "2026-06-09T14:57:18.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "target_path",
+        "value": "."
+      },
+      "timestamp": "2026-06-09T14:57:18.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-06-09T14:57:59.482Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-06-09T14:57:59.482Z",
+      "type": "activity_entered"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "O335WQ",
+      "state": {
+        "agentId": "orchestrator",
+        "checkpointResponses": {
+          "start-work-package-issue-review": {
+            "effects": {
+              "variablesSet": {
+                "issue_approved": true
+              }
+            },
+            "optionId": "create",
+            "respondedAt": "2026-06-09T15:15:40.000Z"
+          },
+          "start-work-package-issue-type-selection": {
+            "effects": {
+              "variablesSet": {
+                "issue_type": "enhancement"
+              }
+            },
+            "optionId": "enhancement",
+            "respondedAt": "2026-06-09T15:14:11.000Z"
+          },
+          "start-work-package-issue-verification": {
+            "effects": {
+              "variablesSet": {
+                "needs_issue_creation": true
+              }
+            },
+            "optionId": "create-issue",
+            "respondedAt": "2026-06-09T15:05:52.000Z"
+          },
+          "start-work-package-platform-selection": {
+            "effects": {
+              "variablesSet": {
+                "issue_platform": "github"
+              }
+            },
+            "optionId": "github",
+            "respondedAt": "2026-06-09T15:11:52.000Z"
+          },
+          "start-work-package-pr-creation": {
+            "effects": {
+              "variablesSet": {
+                "pr_skipped": false
+              }
+            },
+            "optionId": "proceed",
+            "respondedAt": "2026-06-09T15:40:15.000Z"
+          }
+        },
+        "completedActivities": [],
+        "condition": "",
+        "currentActivity": "start-work-package",
+        "currentTechnique": "",
+        "history": [
+          {
+            "timestamp": "2026-06-09T14:55:25.139Z",
+            "type": "workflow_started"
+          },
+          {
+            "activity": "start-work-package",
+            "timestamp": "2026-06-09T14:59:14.696Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "issue-verification",
+            "timestamp": "2026-06-09T15:03:43.342Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "issue-verification",
+            "data": {
+              "optionId": "create-issue"
+            },
+            "timestamp": "2026-06-09T15:05:52.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "needs_issue_creation",
+              "value": true
+            },
+            "timestamp": "2026-06-09T15:05:52.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "platform-selection",
+            "timestamp": "2026-06-09T15:06:35.551Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "platform-selection",
+            "data": {
+              "optionId": "github"
+            },
+            "timestamp": "2026-06-09T15:11:52.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "issue_platform",
+              "value": "github"
+            },
+            "timestamp": "2026-06-09T15:11:52.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "issue-type-selection",
+            "timestamp": "2026-06-09T15:13:10.674Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "issue-type-selection",
+            "data": {
+              "optionId": "enhancement"
+            },
+            "timestamp": "2026-06-09T15:14:11.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "issue_type",
+              "value": "enhancement"
+            },
+            "timestamp": "2026-06-09T15:14:11.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "issue-review",
+            "timestamp": "2026-06-09T15:14:54.643Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "issue-review",
+            "data": {
+              "optionId": "create"
+            },
+            "timestamp": "2026-06-09T15:15:40.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "issue_approved",
+              "value": true
+            },
+            "timestamp": "2026-06-09T15:15:40.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "pr-creation",
+            "timestamp": "2026-06-09T15:20:25.169Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "pr-creation",
+            "data": {
+              "optionId": "proceed"
+            },
+            "timestamp": "2026-06-09T15:40:15.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "pr_skipped",
+              "value": false
+            },
+            "timestamp": "2026-06-09T15:40:15.000Z",
+            "type": "variable_set"
+          }
+        ],
+        "schemaVersion": 1,
+        "seq": 23,
+        "sessionIndex": "O335WQ",
+        "skippedActivities": [],
+        "startedAt": "2026-06-09T14:55:25.139Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1781019746,
+        "variables": {
+          "issue_approved": true,
+          "issue_platform": "github",
+          "issue_type": "enhancement",
+          "needs_issue_creation": true,
+          "pr_skipped": false
+        },
+        "workflowId": "work-package",
+        "workflowVersion": "3.13.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-06-09T14:55:25.134Z",
+      "triggeredFrom": {
+        "activityId": "initialize-session"
+      },
+      "workflowId": "work-package"
+    }
+  ]
+}
