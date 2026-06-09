@@ -352,6 +352,7 @@ List what changed, organized by component or area:
 - Group by logical component, not by file
 - Use bold for component names
 - Be specific about what changed, not just where
+- No code: summarize in plain language — do not paste code snippets, signatures, or fenced blocks. The diff is the source of truth for the code itself.
 
 ### What NOT to Include
 
@@ -363,6 +364,7 @@ The PR description should focus on **what** and **why**, not mechanical details:
 | Files changed | Redundant with diff | PR "Files changed" tab |
 | Line-by-line explanations | Clutters description | Inline PR comments |
 | Implementation steps | Not useful for review | Work package plan (planning artifacts) |
+| Code snippets / signatures | Redundant with the diff | PR "Files changed" tab / the diff |
 
 ---
 
@@ -453,6 +455,7 @@ gh pr ready
 - ❌ Use vague language ("some improvements", "various fixes")
 - ❌ Include planning artifact content inline (link to them instead)
 - ❌ Add process attribution ("per user request", "AI suggested")
+- ❌ Paste code, signatures, or snippets in the Changes section — the diff shows the code
 
 ---
 

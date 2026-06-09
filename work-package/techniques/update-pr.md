@@ -68,6 +68,7 @@ Status after update (e.g., ready for review)
 - issue-link-or-explicit-placeholder: Issue line is present. When `issue-skipped == true`, render `🐛 _Issue: skipped_` as an explicit placeholder rather than dropping the line or fabricating a number.
 - no-commit-headings-in-changes: Changes section groups bullets by component (bold component name), not by Conventional Commits header or commit message.
 - no-files-changed-list: Changes section does not enumerate file paths. File-level detail belongs in the PR's Files-changed tab.
+- no-code-in-changes: Changes section is plain-language summary bullets describing what changed and why; no fenced code blocks, code snippets, or pasted signatures, and no inline code beyond unavoidable bare identifiers. The diff is the source of truth for code.
 
 ### draft-first
 
