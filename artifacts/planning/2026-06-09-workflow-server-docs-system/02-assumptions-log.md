@@ -11,9 +11,10 @@
 
 | Phase/Task | Assumptions | Confirmed/Resolved | Corrected | Deferred | Open |
 |------------|-------------|--------------------|-----------|----------|------|
-| Design Philosophy | 6 | 6 (DP-1,2,3,5 reconciled; DP-4,DP-6 resolved inline) | 0 | 0 | 0 |
+| Design Philosophy | 6 | 6 (DP-1,2,3,5 reconciled; DP-4 resolved inline; DP-6 resolved by user — ADRs excluded from docs) | 0 | 0 | 0 |
 | Research | 5 | 5 (R-1,2,4,5 reconciled; R-3 resolved inline) | 0 | 0 | 0 |
-| **Total** | **11** | **11** | **0** | **0** | **0** |
+| Implementation Analysis | 4 | 4 (IA-1,2,3,4 reconciled via filesystem inspection) | 0 | 0 | 0 |
+| **Total** | **15** | **15** | **0** | **0** | **0** |
 
 ---
 
@@ -76,9 +77,12 @@ noted below).
 ### Outcome
 
 The research-assumption-interview loop presented the irreducible open set
-(DP-4, DP-6, R-3) one assumption at a time. All three are now resolved inline; resolutions
-are recorded below. DP-6 and R-3 inherited DP-4's response via shared-checkpoint replay
-(see the replay note) and are flagged for explicit confirmation at plan-prepare review.
+(DP-4, DP-6, R-3) one assumption at a time. All three are now resolved; resolutions
+are recorded below. DP-6 and R-3 originally inherited DP-4's response via shared-checkpoint
+replay (see the replay note) and were flagged for explicit confirmation at plan-prepare.
+**DP-6 has since been decided explicitly by the user at the implementation-analysis review —
+ADRs are excluded from the docs system** (no link, no symlink, no nav section); see the DP-6
+block below. R-3 remains carried for explicit confirmation at plan-prepare.
 
 #### DP-4 — Resolved (research-only path confirmed)
 
@@ -91,20 +95,26 @@ research rather than elicitation.
 (2026-06-09).  
 **Server-applied effect:** `assumption_resolved_inline = true`.
 
-#### DP-6 — Resolved (inline)
+#### DP-6 — Resolved (user decision at analysis review) — ADRs EXCLUDED from docs
 
-**Status:** Resolved — inline  
-**Resolution mechanism:** `resolve-inline`  
-**Decision (Option 1):** Do **not** create a new ADR series. Surface the existing
-`.engineering/artifacts/adr/` series in the documentation nav via a **link/symlink** (no
-relocation). This preserves the `.engineering/` voice exemption (ADRs record decision
-history and are not subject to the describe-as-it-is documentation-voice rule), and the
-symlink surfacing mechanism is already proven in concept-rag (`docs/prompts -> ../prompts`).
-This resolves DP-6 ("whether to introduce an ADR series") and is the same mechanism carried
-by the coupled research assumption **R-2** (ADR surfacing via link/symlink vs. relocation).  
-**Note:** Resolution inherited via the assumption-interview loop's shared-checkpoint replay
-(not an independent user decision); to be confirmed explicitly at plan-prepare review.  
-**Server-applied effect:** `assumption_resolved_inline = true` (replayed).
+**Status:** Resolved — excluded by user decision  
+**Resolution mechanism:** explicit user decision at the implementation-analysis review  
+**Decision:** Do **not** surface ADRs from the docs system **at all** — no GitHub link, no
+symlink, no ADR section in the docs nav. The `.engineering/artifacts/adr/` series stays
+solely under engineering artifacts and is **not** referenced from the docs site. This
+supersedes the earlier replayed inline position (which had favored surfacing via
+link/symlink, the position also carried by the coupled research assumption **R-2**). DP-6
+("whether to introduce / surface an ADR series in docs") is therefore answered **no ADR
+section in the docs nav**.  
+**Rationale:** Every surfacing approach couples the describe-as-it-is docs voice (or the
+docs build) to engineering decision-history that lives on a separate branch in an
+uninitialised submodule (see the `05-implementation-analysis.md` submodule finding); the
+user elected to keep the two surfaces fully separate.  
+**Effect on R-2:** R-2's surfacing-mechanism recommendation (link/symlink) is **withdrawn** —
+no surfacing mechanism is adopted. R-2's other premise (do not create a *new* ADR series;
+do not relocate the existing one under the docs voice) still holds.  
+**Resolved by:** User decision at the implementation-analysis `analysis-confirmed` review
+(2026-06-09).
 
 #### R-3 — Resolved (inline)
 
@@ -128,9 +138,12 @@ The `research-assumption-interview` loop iterates over `open_assumptions` = [DP-
 but reuses a single checkpoint id. Only the first iteration (DP-4) recorded an independent
 user `resolve-inline` response; the DP-6 and R-3 iterations were satisfied by
 `checkpoint_replayed` events that inherited DP-4's response (a known loop/replay quirk),
-not by independent user decisions. DP-6 and R-3 are therefore recorded above using the
-**agent's recommended positions** and flagged for explicit confirmation at plan-prepare
-review. No open or deferred assumptions remain after the loop:
+not by independent user decisions. They were therefore originally recorded using the
+**agent's recommended positions** and flagged for explicit confirmation. **DP-6 has now been
+decided independently by the user at the implementation-analysis review (ADRs excluded —
+see the DP-6 block), superseding the replayed position; the coupled R-2 surfacing
+recommendation is withdrawn accordingly.** R-3 remains carried for explicit confirmation at
+plan-prepare. No open or deferred assumptions remain after the loop:
 `has_open_assumptions = false`, `has_deferred_assumptions = false`.
 
 ---
@@ -237,9 +250,11 @@ Evidence: `.engineering/artifacts/adr/` contains a 5-entry ADR series
 (`0001-import-prism-families.md` … `0005-canonical-identifier-naming-convention.md`).
 concept-rag places its ADRs *inside* `docs/architecture/` (under the docs voice).
 concept-rag also demonstrates the symlink pattern (`docs/prompts -> ../prompts`), so a
-link/symlink surfacing route is proven to work. The surfacing-mechanism *decision* is a
-documentation-design judgement (it is the substance of open DP-6). Reclassified
-not-code-resolvable for the decision.
+link/symlink surfacing route is technically proven to work. The surfacing-mechanism
+*decision* is a documentation-design judgement (it is the substance of DP-6). **DP-6 has
+since been resolved by the user as "do not surface ADRs from docs at all" — so R-2's
+surfacing recommendation is withdrawn; no symlink/link route is adopted.** Reclassified
+not-code-resolvable for the (now-moot) decision.
 
 **R-4 — Partially Validated.**
 Evidence: The worktree carries the fixed-path files at their canonical locations
@@ -270,5 +285,47 @@ checkpoint. `has_open_assumptions = true`.
 
 Total: 11 — Validated: 3 (DP-1, DP-2, DP-5) — Partially Validated: 5 (DP-3, R-1, R-2, R-4, R-5) —
 Open non-code-resolvable: 3 (DP-4, DP-6, R-3) — Open code-resolvable: 0.
+
+---
+
+## Implementation Analysis
+
+**Date:** 2026-06-09
+
+### Assumptions Surfaced
+
+| ID | Category | Risk | Assumption | Rationale |
+|----|----------|------|------------|-----------|
+| IA-1 | Dependency Understanding | M | The ADRs at `.engineering/artifacts/adr/` can be surfaced into the docs site via a `docs/adr -> ../.engineering/artifacts/adr` symlink (the concept-rag `docs/prompts -> ../prompts` pattern), as research R-2/DP-6 assumed. | Research established symlink-into-`docs/` as the ADR-surfacing mechanism, modeled on the exemplar's `prompts` symlink. |
+| IA-2 | Current Behavior | L | Every existing `docs/*` filename can be kept and the section structure expressed purely through `mkdocs.yml` `nav` paths, yielding zero link rot (R-4 keep-filenames path). | R-4 selected keep-filenames; this analysis assumes it is mechanically achievable with manual nav. |
+| IA-3 | Baseline Interpretation | L | The worktree carries no `mkdocs.yml`, `requirements.txt`, `package.json docs:*` scripts, or `.github/` — so the docs system is greenfield scaffolding, and the deploy Action is the repo's first CI + first Python dep. | Comprehension Q8 asserted this baseline; the analysis re-confirms it against the worktree. |
+| IA-4 | Dependency Understanding | L | `docs/architecture.md` is already hub-shaped and its body can be reused verbatim as the Architecture section index without rewrite (DR-2). | DR-2 established the hub already exists; the analysis assumes the content transfers as-is. |
+
+**Categories:** Dependency Understanding, Current Behavior, Baseline Interpretation
+
+### Reconciliation — Implementation Analysis Phase
+
+All four assumptions are code-resolvable by filesystem inspection of the worktree at `target_path` and the exemplar at `~/projects/dev/concept-rag`. One pass was performed during this activity.
+
+**IA-1 — Invalidated (CORRECTED).**
+Evidence: `.gitmodules` declares `.engineering` as a git **submodule** on branch `engineering`; in the worktree the `.engineering/` directory is **empty** (`ls` shows no contents), and the ADR files (`0001…0005`) exist only in the *main* checkout, not at `target_path/.engineering/artifacts/adr/`. A `docs/adr -> ../.engineering/artifacts/adr` symlink would point at an uninitialised submodule path, and the ADRs are on a different branch from the `main`-branch tree the docs site/deploy build from. **The symlink mechanism is not viable as-described.** Resolution: the user decided at the analysis review to **not surface ADRs from the docs system at all** — no GitHub link, no symlink, no nav section (Q-IMPL-1 in `05-implementation-analysis.md`). This resolves DP-6 as *excluded by user decision*.
+
+**IA-2 — Validated.**
+Evidence: `docs/` holds 12 files; the ~50 inbound links (comprehension Q11) target those exact filenames; manual `nav` in MkDocs maps section labels to file paths without requiring file moves. Keeping filenames + nav-path-only structure is achievable → zero link rot. Assumption holds.
+
+**IA-3 — Validated.**
+Evidence: worktree has no `mkdocs.yml`, `requirements.txt`, `pyproject.toml`, `package.json docs:*` scripts (read this pass), and no `.github/` directory (`ls` → absent). `package.json` is a pure-TypeScript dependency set. The docs system is greenfield scaffolding and the deploy Action is the first CI + first Python dep. Assumption holds.
+
+**IA-4 — Validated.**
+Evidence: `docs/architecture.md` (read this pass) is a numbered prose hub linking all 6 model/spec docs plus Tool Reference and Development pointers — structurally a section-index/overview. Its body is reusable as-is (optionally adding a repo-structure table to match the exemplar). Assumption holds.
+
+### Convergence
+
+All four implementation-analysis assumptions are resolved by code/filesystem inspection (3 validated, 1 invalidated-and-corrected). No code-resolvable assumptions remain → convergence. `has_resolvable_assumptions = false`. IA-1's correction is folded into Q-IMPL-1, which the user resolved at the analysis review as **ADRs excluded from docs** — this also settles DP-6 (excluded by user decision). No *new* stakeholder-dependent assumptions surfaced → `has_open_assumptions = false` for this phase. Of the Research-phase plan-prepare confirmations, **DP-6 is now resolved**; only R-3 remains carried to plan-prepare.
+
+### Updated Counts
+
+Total: 15 — Validated: 6 (DP-1, DP-2, DP-5, IA-2, IA-3, IA-4) — Partially Validated: 5 (DP-3, R-1, R-2, R-4, R-5) —
+Invalidated/Corrected: 1 (IA-1) — Resolved non-code-resolvable: 3 (DP-4, DP-6, R-3 — all resolved inline; DP-6 decided by user at this review, R-3 carried for explicit confirmation at plan-prepare) — Open: 0 — Open code-resolvable: 0.
 
 ---
