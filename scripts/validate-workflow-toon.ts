@@ -8,7 +8,7 @@
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join, resolve } from 'path';
 import { decodeToonRaw as decodeToon } from '../src/utils/toon.js';
-import { safeValidateSkill } from '../src/schema/skill.schema.js';
+import { safeValidateTechnique } from '../src/schema/technique.schema.js';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { parseActivityFilename } from '../src/loaders/filename-utils.js';
 import { validateActivityFile } from './validate-activities.js';
@@ -111,7 +111,7 @@ async function main() {
           failed++;
           continue;
         }
-        const result = safeValidateSkill(decoded);
+        const result = safeValidateTechnique(decoded);
         if (result.success) {
           console.log(`   [PASS] ${file}`);
         } else {
