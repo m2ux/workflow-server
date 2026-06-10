@@ -21,6 +21,10 @@ List of files changed in the implementation
 
 *(optional)* Design [philosophy](../resources/design-framework.md#design-philosophy-artifact-template) with scope and rationale
 
+### planning_folder_path
+
+Folder where the architecture summary is written
+
 ## Protocol
 
 ### 1. Identify Scope

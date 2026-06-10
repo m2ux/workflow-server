@@ -26,15 +26,13 @@ steps[6]:
     name: Collect assumptions
     technique: review-assumptions
     technique_args:
-      activity_context: requirements-elicitation
+      assumption_categories: "Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation"
   - id: create-document
     name: Create requirements document
     technique: elicit-requirements
   - id: update-assumptions-log
     name: Update assumptions log
     technique: review-assumptions
-    technique_args:
-      activity_context: requirements-elicitation
   - id: reconcile-assumptions
     name: Reconcile assumptions
     technique: reconcile-assumptions

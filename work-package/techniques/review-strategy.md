@@ -9,7 +9,33 @@ metadata:
 
 ## Capability
 
-Review implementation to ensure changes are minimal, focused, scope-disciplined, and free of investigation artifacts, and produce a final architecture summary
+Review implementation to ensure changes are minimal, focused, scope-disciplined, and free of investigation artifacts, produce a final architecture summary, and commit the changes-folder fragment and strategic artifacts
+
+## Inputs
+
+### branch_name
+
+Feature branch under review (examined via `git diff` / `git log`)
+
+### changed_files
+
+List of files changed in the work package. Read for the orphan check; the activity supplies it (no explicit upstream step sets it).
+
+### requirements
+
+The work-package requirements, used as the scope baseline for the scope-discipline check
+
+### planning_folder_path
+
+Folder where the strategic review and architecture summary artifacts are written
+
+### target_path
+
+Target repository root — checked for a `changes/` folder and used as the commit scope
+
+### pr_number
+
+PR identifier, used to read the live PR body for conformance verification
 
 ## Protocol
 
@@ -67,6 +93,10 @@ Review implementation to ensure changes are minimal, focused, scope-disciplined,
 
 - Create the `{architecture_summary_doc}` following the format defined by the [summarize-architecture](./summarize-architecture.md) technique, which is the authoritative owner of diagram conventions
 - Target stakeholder communication
+
+### 11. Commit Changes
+
+- Apply [manage-git](./manage-git/TECHNIQUE.md)::[artifact-commits](./manage-git/artifact-commits.md) to commit the `changes/` fragment and the strategic-review artifacts on `{branch_name}`. This is the protocol's final phase; the calling activity adds no separate commit step.
 
 ## Outputs
 

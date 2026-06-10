@@ -13,6 +13,8 @@ Run tests with bounded test parallelism; prefer nextest when configured.
 
 Optional test name filter (e.g., `test_foo` or `--test integration`); empty string when none
 
+> `scope` and `features` are inherited from the [cargo-operations](./TECHNIQUE.md) group root and are not redeclared here.
+
 ## Output
 
 ### test_status

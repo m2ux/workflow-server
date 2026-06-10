@@ -43,7 +43,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/review-mode.md
-variables[91]:
+variables[93]:
   - name: target_path
     type: string
     description: "Path to the working directory where edits, branch creation, builds, and PR operations occur. As of work-package 3.10, this is a dedicated git worktree of the component repo at the canonical path '~/projects/work/{component_name}/{wp-slug}/' — NOT the component's checkout inside the reference monorepo. Set by start-work-package's compute-canonical-target-path step after the work-package slug is known. All downstream activities (cargo-operations, manage-git, validate, strategic-review, etc.) operate on this path."
@@ -385,4 +385,10 @@ variables[91]:
     type: string
     description: "URL of the pull request created during start-work-package. Captured alongside pr_number and recorded on the linked issue."
     defaultValue: ""
+  - name: discovered_path
+    type: string
+    description: "Path the user originally pointed at; resolved by reference-resolution into reference_path/component_name."
+  - name: issue_title
+    type: string
+    description: "Tracker issue/ticket title; used by naming-conventions to derive the branch name."
 initialActivity: start-work-package

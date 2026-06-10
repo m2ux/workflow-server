@@ -21,6 +21,10 @@ List of files changed in the work package (from `git diff`)
 
 *(optional)* Detected project type (rust-substrate or other)
 
+### planning_folder_path
+
+Folder where the code review report is written
+
 ## Protocol
 
 ### 1. Load Guidance

@@ -29,7 +29,7 @@ steps[5]:
     when: "project_type == 'rust-substrate'"
   - id: document-failures
     name: Document Failures as Findings
-    description: "Document all test/build/lint failures as review findings with severity (critical for test failures, high for build failures). Do NOT attempt to fix."
+    technique: findings-classification
     condition:
       type: simple
       variable: is_review_mode

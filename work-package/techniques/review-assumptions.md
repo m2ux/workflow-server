@@ -9,7 +9,7 @@ metadata:
 
 ## Capability
 
-Collect, classify, and review assumptions made during workflow activities
+Own the human-facing assumption lifecycle — collect and classify assumptions made during an activity, interview the user on the open ones, and record their decisions back into the log
 
 ## Inputs
 
@@ -17,26 +17,29 @@ Collect, classify, and review assumptions made during workflow activities
 
 Which activity is generating assumptions
 
+### assumption_categories
+
+The per-activity list of categories used to classify assumptions during collection (supplied via `technique_args` from the consuming activity). Collection classifies each assumption into one of these categories.
+
 ### existing_assumptions_log
 
 *(optional)* The existing assumptions [log](../resources/assumptions-review.md#assumptions-log-template), if one exists
 
 ## Protocol
 
-### 1. Collect Assumptions
+### 1. Collect
 
 - Identify all implicit decisions and assumptions made
-- Classify by category appropriate to the `{activity_context}` generating them  
-  > Use categories appropriate to the current activity phase.
+- Classify each by a category from `{assumption_categories}`, choosing the category appropriate to the `{activity_context}` generating them  
+  > Use the categories supplied for the current activity phase.
 - If no significant assumptions are identified, explicitly confirm with the user that no assumptions were made before proceeding
-
-### 2. Write Assumptions
-
 - Append collected assumptions to the `{existing_assumptions_log}` (or start a fresh log if none exists), recording type, statement, rationale, and alternatives for each
 - The file is the record of truth — do not duplicate assumption content in checkpoint messages
 - Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See [assumption-reconciliation](../resources/assumption-reconciliation.md) for correct vs incorrect examples.
 
-### 3. Format Judgement Context
+### 2. Interview
+
+#### Format Judgement Context
 
 - For each open (non-code-resolvable) assumption, assemble structured context: (1) the decision space — what alternatives exist, (2) trade-off analysis for each alternative, (3) why the agent could not resolve it through code analysis, (4) relevant technical context discovered during reconciliation — code patterns found, constraints identified, related implementation details, (5) which alternative the agent's current assumption favors and why
 - Present the decision space (alternatives and trade-offs) before stating which option the agent's current assumption favors. This ordering reduces anchoring bias — the user encounters the options before being anchored to the agent's interpretation
@@ -47,7 +50,7 @@ Which activity is generating assumptions
 - Flag decision reversibility: mark each assumption as easily-reversible (low-cost to change later) or path-committing (high-cost to reverse). This helps the user calibrate how much deliberation to invest
 - Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[reversibility-signal](./gitnexus-operations/reversibility-signal.md)(name: `{$symbol}`) to set the flag — high caller fan-out and broad process participation → path-committing; isolated symbols → easily-reversible.
 
-### 4. Present For Review
+#### Present For Review
 
 - This technique supports two presentation modes depending on the consuming activity's structure. Batch mode: present all open assumptions together as a structured list, ordered by decision impact. Interview mode: present assumptions one at a time via the activity's forEach loop and per-assumption checkpoint. The activity's steps, loops, and checkpoints determine which mode applies — follow the activity structure.
 - In both modes, each assumption should contain the decision space, trade-offs, non-resolvability rationale, technical context, the agent's current position, and a reversibility flag as assembled by format-judgement-context. Order by decision impact: assumptions whose resolution most affects the implementation approach come first.
@@ -56,7 +59,7 @@ Which activity is generating assumptions
 - Do not present code-resolved assumptions for re-confirmation — they are already validated with evidence in the assumptions log
 - When presenting 5 or more open assumptions in batch mode, group related assumptions by theme or domain to reduce cognitive load. Present the group heading before its assumptions so the user can orient before diving into details.
 
-### 5. Record Outcomes
+### 3. Record
 
 - Mark each as confirmed, corrected, or needs-discussion
 - Write outcomes and user responses back into the log, producing the `{updated_assumptions_log}`

@@ -60,7 +60,7 @@ steps[5]:
           value: false
   - id: post-summary-github
     name: Post resolution summary to GitHub issue
-    description: "Post a brief summary of assumption resolutions to the GitHub issue using the gh CLI. Post ONLY when deferred assumptions exist that require external stakeholder attention; otherwise skip — the decisions are recorded in the assumptions log and no external review is needed."
+    technique: github-cli-protocol::comment-issue
     condition:
       type: and
       conditions[3]:

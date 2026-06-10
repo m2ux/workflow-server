@@ -11,6 +11,16 @@ metadata:
 
 Conduct structured manual diff review using external side-by-side diff tool with indexed block references
 
+## Inputs
+
+### branch_name
+
+Feature branch whose diff is reviewed (synced via `git pull`, parsed via `git diff`)
+
+### planning_folder_path
+
+Folder where the change block index and manual diff review report are written
+
 ## Protocol
 
 ### 1. Sync Branch

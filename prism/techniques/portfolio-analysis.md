@@ -13,6 +13,14 @@ Apply two or more complementary portfolio lenses to the same artifact to produce
 
 ## Inputs
 
+### target_content
+
+The artifact to analyze — either the content itself or a file path to read it from (resolved in the Read Target phase)
+
+### output_path
+
+Directory the per-lens artifacts and the cross-lens synthesis are written into
+
 ### selected_lenses
 
 *(optional)* Which portfolio lenses to apply. Array of lens names from the full catalog: pedagogy (06), claim (07), scarcity (08), rejected-paths (09), degradation (10), contract (11), deep-scan (12), sdl-trust (13), sdl-coupling (14), sdl-abstraction (15), fix-cascade (16), identity (17), l12-universal (18), error-resilience (19), optimize (20), evolution (21), api-surface (22), error-resilience-neutral (24), api-surface-neutral (25), evolution-neutral (26), error-resilience-compact (27), error-resilience-70w (28), evidence-cost (29), reachability (30), fidelity (31), state-audit (32), archaeology (33), audit-code (34), cultivation (35), sdl-simulation (36), security-v1 (37), simulation (38), testability-v1 (39), knowledge-audit (40), knowledge-boundary (41), knowledge-typed (42), l12g (43), oracle (44), arc-code (50), architect (51), blindspot (52), codegen (53), counterfactual (54), emergence (55), falsify (56), genesis (57), history (58), prereq (59), significance (60), verify-claims (61). If omitted, select-lenses protocol chooses based on the analytical goal.

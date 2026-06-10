@@ -28,8 +28,10 @@ This workflow guides the complete lifecycle of a single work package through 14 
 **Detailed documentation:**
 
 - **Activities:** See [activities/README.md](./activities/README.md) for detailed per-activity documentation including mermaid diagrams, steps, checkpoints, artifacts, and transitions.
-- **Techniques:** See [techniques/](./techniques/) for the full technique inventory (26 workflow-specific techniques plus 6 cross-workflow references) and protocol flows.
+- **Techniques:** See [techniques/](./techniques/) for the technique inventory and protocol flows.
 - **Resources:** See [resources/README.md](./resources/README.md) for the resource index (28 resources).
+
+Each activity binds its step operations through `step.technique`. The activity's `techniques` block names a `primary` technique (the operation that defines the activity) and a `supporting[]` list of strategy techniques. Strategy and binding are supplied by the universal `meta` techniques [`variable-binding`](../meta/techniques/variable-binding.md) (present on every activity, governing how steps read and write workflow variables) and [`scatter-gather`](../meta/techniques/scatter-gather.md) (present on activities with `forEach` iteration loops). Steps reference operation techniques either by bare id (e.g. `classify-problem`) or by namespaced id (e.g. `cargo-operations::run-suite`).
 
 ---
 
@@ -81,22 +83,24 @@ graph TD
 
 ## Activities Summary
 
+The **Primary Technique** is the activity's `techniques.primary` (the operation defining the activity); some activities orchestrate several step-level operations and declare no single primary. The **Supporting Techniques** column lists the activity's `techniques.supporting[]` — the strategy meta techniques that govern variable binding and iteration.
+
 | # | Activity | Primary Technique | Supporting Techniques | Checkpoints | artifactPrefix |
 |---|----------|--------------|-------------------|-------------|----------------|
-| 01 | [Start Work Package](./activities/README.md#01-start-work-package) | `create-issue` | `manage-git`, `manage-artifacts`, `atlassian-operations` | 8 | — |
-| 02 | [Design Philosophy](./activities/README.md#02-design-philosophy) | `classify-problem` | `review-assumptions`, `reconcile-assumptions` | 2 | `02` |
-| 14 | [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) | `build-comprehension` | `manage-artifacts`, `portfolio-analysis` | 2 | — |
-| 03 | [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) | `elicit-requirements` | `manage-artifacts`, `review-assumptions`, `reconcile-assumptions` | 2 | `03` |
-| 04 | [Research](./activities/README.md#04-research-optional) | `research-knowledge-base` | `review-assumptions`, `reconcile-assumptions` | 2 | `04` |
-| 05 | [Implementation Analysis](./activities/README.md#05-implementation-analysis) | `analyze-implementation` | `manage-artifacts`, `review-assumptions`, `reconcile-assumptions` | 2 | `05` |
-| 06 | [Plan & Prepare](./activities/README.md#06-plan--prepare) | `create-plan` | `classify-problem`, `review-assumptions`, `create-test-plan`, `reconcile-assumptions` | 1 | `06` |
-| 07 | [Assumptions Review](./activities/README.md#07-assumptions-review) | `review-assumptions` | `manage-artifacts`, `atlassian-operations` | 3 | `07` |
-| 08 | [Implement](./activities/README.md#08-implement) | `implement-task` | `review-assumptions`, `reconcile-assumptions`, `validate-build`, `manage-git` | 4 | `08` |
-| 09 | [Post-Impl Review](./activities/README.md#09-post-implementation-review) | `review-diff` | `review-code`, `review-test-suite`, `summarize-architecture`, `structural-analysis` | 3 | `09` |
-| 10 | [Validate](./activities/README.md#10-validate) | `validate-build` | — | 0 | — |
-| 11 | [Strategic Review](./activities/README.md#11-strategic-review) | `review-strategy` | — | 1 | `11` |
-| 12 | [Submit for Review](./activities/README.md#12-submit-for-review) | `update-pr` | `respond-to-pr-review` | 3 | — |
-| 13 | [Complete](./activities/README.md#13-complete) | `finalize-documentation` | `create-adr`, `conduct-retrospective` | 0 | `13` |
+| 01 | [Start Work Package](./activities/README.md#01-start-work-package) | — | `variable-binding` | 8 | — |
+| 02 | [Design Philosophy](./activities/README.md#02-design-philosophy) | `classify-problem` | `variable-binding` | 2 | `02` |
+| 14 | [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) | `build-comprehension` | `variable-binding` | 2 | — |
+| 03 | [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) | `elicit-requirements` | `variable-binding` | 2 | `03` |
+| 04 | [Research](./activities/README.md#04-research-optional) | `research-knowledge-base` | `variable-binding` | 2 | `04` |
+| 05 | [Implementation Analysis](./activities/README.md#05-implementation-analysis) | `analyze-implementation` | `variable-binding`, `scatter-gather` | 2 | `05` |
+| 06 | [Plan & Prepare](./activities/README.md#06-plan--prepare) | `create-plan` | `variable-binding` | 1 | `06` |
+| 07 | [Assumptions Review](./activities/README.md#07-assumptions-review) | `review-assumptions` | `variable-binding`, `scatter-gather` | 3 | `07` |
+| 08 | [Implement](./activities/README.md#08-implement) | `implement-task` | `variable-binding`, `scatter-gather` | 4 | `08` |
+| 09 | [Post-Impl Review](./activities/README.md#09-post-implementation-review) | — | `variable-binding` | 3 | `09` |
+| 10 | [Validate](./activities/README.md#10-validate) | — | `variable-binding` | 0 | — |
+| 11 | [Strategic Review](./activities/README.md#11-strategic-review) | `review-strategy` | `variable-binding` | 1 | `11` |
+| 12 | [Submit for Review](./activities/README.md#12-submit-for-review) | `update-pr` | `variable-binding` | 3 | — |
+| 13 | [Complete](./activities/README.md#13-complete) | `finalize-documentation` | `variable-binding` | 0 | `13` |
 
 See [activities/README.md](./activities/README.md) for detailed per-activity documentation with mermaid diagrams, step descriptions, checkpoint tables, artifact lists, and transition conditions.
 
@@ -235,88 +239,157 @@ graph LR
 
 ---
 
-## Variables (89)
+## Variables (93)
 
-The workflow declares 66 variables that drive control flow, store checkpoint state, and track progress. Variables are grouped by function below.
+The workflow declares 93 variables that drive control flow, store checkpoint state, and track progress. Variables are grouped by function below.
 
-### Core Identifiers
+### Paths & Workspace
 
 | Variable | Type | Description |
 |----------|------|-------------|
-| `target_path` | string | Path to the target directory for this work package. All git operations are performed inside this directory. |
-| `planning_folder_path` | string | Path to planning folder: `.engineering/artifacts/planning/YYYY-MM-DD-{name}` |
-| `issue_number` | string | GitHub issue number (#N) or Jira issue key (PROJ-N) |
+| `target_path` | string | Working directory where edits, branch creation, builds, and PR operations occur — a dedicated git worktree of the component repo at the canonical path `~/projects/work/{component_name}/{wp-slug}/`. Set by `start-work-package` once the work-package slug is known; all downstream activities operate on this path. |
+| `reference_path` | string | Reference checkout used for codebase comprehension, GitNexus indexing, and code-resolvable assumption analysis. The monorepo root when the component is a submodule, or the component's primary checkout when it is standalone. Not used for edits. |
+| `component_name` | string | Basename of the component being worked on (e.g. `midnight-node`); used in the canonical worktree path formula. |
+| `discovered_path` | string | Path the user originally pointed at; resolved by reference-resolution into `reference_path` / `component_name`. |
+| `worktree_created` | boolean | True once `start-work-package` has created (or reused) a worktree at `target_path`. Drives the worktree cleanup gate in complete (default: `false`). |
+| `planning_folder_path` | string | Path to planning folder: `.engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}` |
+
+### Issue & PR Identifiers
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `issue_number` | string | GitHub or Jira issue number |
 | `issue_platform` | string | Issue tracking platform: `github` or `jira` |
 | `issue_type` | string | Type of issue: feature, bug, task, enhancement, epic |
+| `issue_title` | string | Tracker issue/ticket title; used by naming-conventions to derive the branch name. |
+| `jira_issue_key` | string | Jira issue key in `PROJ-NNN` form, captured during issue verification when `issue_platform == 'jira'` (default: `""`). |
+| `github_issue_found` | boolean | Whether a GitHub issue linked to the Jira ticket was found in the target repo (default: `false`). |
+| `github_issue_number` | string | GitHub issue number linked to the Jira ticket (found via search or freshly created). |
 | `pr_number` | string | Pull request number |
+| `pr_url` | string | URL of the pull request created during `start-work-package` (default: `""`). |
+| `existing_pr_number` | string | PR number returned by `gh pr list` when an existing draft PR is detected; empty string means none found (default: `""`). |
 | `branch_name` | string | Feature branch name |
-| `project_type` | string | Detected project type: `rust-substrate` or `other` |
+| `current_branch` | string | Active git branch in the target repo at the moment a step is executing (default: `""`). |
+| `squash_merge_supported` | boolean | True when the target repo allows squash merges. Drives the DCO merge strategy (default: `false`). |
 
 ### Mode Variables
 
 | Variable | Type | Description |
 |----------|------|-------------|
-| `is_review_mode` | boolean | Whether review mode is active (default: `false`) |
 | `review_pr_url` | string | URL of the PR being reviewed (review mode only) |
-| `review_pr_captured` | boolean | Whether PR reference has been captured in review mode |
+| `review_pr_captured` | boolean | Whether the PR reference has been captured in review mode (default: `false`). |
+| `ticket_refactor_needed` | boolean | Whether the Jira ticket needs refactoring based on completeness assessment (default: `false`). |
+| `ticket_gaps_documented` | boolean | Whether ticket completeness gaps were documented during review-mode design-philosophy (default: `false`). |
+| `review_posted` | boolean | Whether the review summary was posted to the PR (review mode) (default: `false`). |
 
-### Control Flow
-
-| Variable | Type | Description |
-|----------|------|-------------|
-| `complexity` | string | Problem complexity: simple, moderate, or complex. Drives ADR creation. |
-| `needs_comprehension` | boolean | Whether codebase comprehension step is needed (default: `true`) |
-| `needs_elicitation` | boolean | Whether requirements elicitation is needed (default: `false`) |
-| `needs_research` | boolean | Whether research activity is needed (default: `false`) |
-| `skip_optional_activities` | boolean | Whether to skip optional discovery activities (default: `false`) |
-| `elicitation_complete` | boolean | Whether elicitation is finished (default: `false`) |
-| `validation_passed` | boolean | Whether validation phase passed (default: `false`) |
-| `has_failures` | boolean | Whether validation detected failures (default: `false`) |
-| `review_passed` | boolean | Whether strategic review passed (default: `false`) |
-| `has_critical_blocker` | boolean | Whether a critical blocker was found (default: `false`) |
-| `review_requires_changes` | boolean | Whether PR review requires returning to planning (default: `false`) |
-| `needs_code_fixes` | boolean | Whether code review findings require fixes (default: `false`) |
-| `needs_test_improvements` | boolean | Whether test suite needs improvements (default: `false`) |
-
-### Checkpoint State
+### Path Selection & Complexity
 
 | Variable | Type | Description |
 |----------|------|-------------|
-| `needs_issue_creation` | boolean | Set when user chooses to create a new issue |
-| `issue_skipped` | boolean | Set when user chooses to skip issue creation |
-| `issue_approved` | boolean | Set when drafted issue is approved for creation |
-| `issue_cancelled` | boolean | Set when issue creation is cancelled |
-| `pr_exists` | boolean | Whether a PR already exists for the branch |
-| `use_existing_pr` | boolean | Whether to use the existing PR |
-| `reference_path` | string | Reference checkout (monorepo root or standalone repo) used for comprehension and GitNexus indexing |
-| `component_name` | string | Basename of the component being worked on; used in the canonical worktree path |
-| `worktree_created` | boolean | Whether `start-work-package` materialized (or reused) a worktree at `target_path` |
-| `pr_skipped` | boolean | Set when PR creation is skipped |
-| `has_stakeholder_input` | boolean | Whether stakeholder discussion was provided |
-| `post_jira_comment` | boolean | Whether to post assumptions to Jira |
-| `has_stakeholder_comment` | boolean | Whether stakeholder provided feedback |
-| `stakeholder_review_complete` | boolean | Whether stakeholder review is complete |
-| `needs_further_discussion` | boolean | Whether further stakeholder discussion is needed (default: `false`) |
-| `needs_plan_revision` | boolean | Whether stakeholder feedback requires returning to plan-prepare |
-| `ticket_refactor_needed` | boolean | Whether Jira ticket needs refactoring (review mode) |
-| `skip_assumption_review` | boolean | Whether to skip assumption review for current task |
-| `has_flagged_blocks` | boolean | Whether user flagged change blocks in diff review |
-| `skip_architecture_summary` | boolean | Whether to skip architecture summary creation |
-| `needs_strategic_fixes` | boolean | Whether strategic review findings require fixes |
-| `needs_cleanup` | boolean | Whether minor cleanup is needed from strategic review |
-| `review_posted` | boolean | Whether review summary was posted to PR (review mode) |
+| `complexity` | string | Problem complexity assessed during design-philosophy: simple, moderate, or complex. Drives ADR creation. |
+| `path_gating_complexity` | string | Path-gating mirror of `complexity`, used by design-philosophy's skip-optional effect (default: `""`). |
+| `problem_type` | string | Problem or inventive-goal classification set during design-philosophy (e.g. defect, inventive-improvement). |
+| `needs_comprehension` | boolean | Whether codebase comprehension is needed; always true after design-philosophy, may be re-set by assumptions-review (default: `true`). |
+| `needs_elicitation` | boolean | Whether requirements elicitation is needed (default: `false`). |
+| `needs_research` | boolean | Whether research phase is needed (default: `false`). |
+| `needs_further_research` | boolean | Whether additional research focus areas were identified during research (default: `false`). |
+| `skip_optional_activities` | boolean | Whether to skip optional discovery activities — elicitation and research (default: `false`). |
+| `elicitation_complete` | boolean | Whether requirements elicitation is finished (default: `false`). |
+| `context_scope` | string | Provenance scope of AI-generated code: `repo-only`, `web-retrieval`, or `mixed` (default: `repo-only`). |
+| `gitnexus_indexed` | boolean | Whether `reference_path` has a usable GitNexus index; gates GitNexus-dependent steps and phases (default: `false`). |
 
-### Loop Variables
+### Validation & Review Gates
 
 | Variable | Type | Description |
 |----------|------|-------------|
-| `current_task` | object | Current task during implementation loop (from plan.tasks) |
-| `current_assumption` | object | Current assumption during assumption review loop |
-| `current_domain` | string | Current question domain during elicitation loop |
-| `question_domains` | array | Question domains for requirements elicitation iteration |
-| `task_assumptions` | array | Assumptions collected during current task |
-| `flagged_block_indices` | array | Change block indices flagged by user during diff review |
-| `current_block_index` | integer | Current block index during manual diff review loop |
+| `validation_passed` | boolean | Whether the validation phase passed (default: `false`). |
+| `validation_results` | object | Aggregate validation envelope emitted by `cargo-operations::run-suite`: `{ check_status, clippy_status, test_status, fmt_status, validation_passed }`. The validate activity reads its fields by dotted path (e.g. `validation_results.validation_passed`) to drive the fix-revalidate loop. |
+| `review_passed` | boolean | Whether strategic review passed (default: `false`). |
+| `needs_code_fixes` | boolean | Whether code review findings require fixes before proceeding (default: `false`). |
+| `needs_test_improvements` | boolean | Whether the test suite needs improvements before proceeding (default: `false`). |
+| `needs_strategic_fixes` | boolean | Whether strategic review findings require fixes (default: `false`). |
+| `needs_cleanup` | boolean | Whether minor cleanup is needed from strategic review (default: `false`). |
+| `recommended_strategic_option` | string | Agent-recommended action after strategic review: `fix-findings` or `acceptable`. |
+| `recommended_outcome` | string | Agent-recommended PR review outcome: `approved`, `minor-changes`, or `significant-changes`. |
+| `review_requires_changes` | boolean | Whether PR review feedback requires returning to planning (default: `false`). |
+| `strategic_findings_summary` | string | Concise summary of strategic-review findings interpolated into the review-findings checkpoint (default: `""`). |
+| `review_comments_summary` | string | Concise summary of reviewer comments captured during submit-for-review (default: `""`). |
+
+### Issue / PR Checkpoint State
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `needs_issue_creation` | boolean | Whether a new issue needs to be created (default: `false`). |
+| `needs_github_issue_creation` | boolean | Whether a GitHub issue should be created to mirror the Jira ticket (default: `false`). |
+| `issue_skipped` | boolean | Whether issue creation was skipped by the user (default: `false`). |
+| `issue_approved` | boolean | Whether the drafted issue was approved for creation (default: `false`). |
+| `issue_cancelled` | boolean | Whether issue creation was cancelled by the user (default: `false`). |
+| `pr_exists` | boolean | Whether a PR already exists for the current branch (default: `false`). |
+| `use_existing_pr` | boolean | Whether to use an existing PR instead of creating a new one (default: `false`). |
+| `pr_skipped` | boolean | Whether PR creation was skipped by the user (default: `false`). |
+
+### Stakeholder & Assumption State
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `has_stakeholder_input` | boolean | Whether a stakeholder discussion transcript was provided (default: `false`). |
+| `post_jira_comment` | boolean | Whether to post the assumptions comment to Jira (default: `false`). |
+| `has_stakeholder_comment` | boolean | Whether the stakeholder provided feedback on the Jira comment (default: `false`). |
+| `stakeholder_review_complete` | boolean | Whether stakeholder review of assumptions is complete (default: `false`). |
+| `needs_further_discussion` | boolean | Whether further stakeholder discussion is needed (default: `false`). |
+| `needs_plan_revision` | boolean | Whether stakeholder feedback requires returning to plan-prepare (default: `false`). |
+| `skip_assumption_review` | boolean | Whether to skip assumption review after task completion (default: `false`). |
+| `has_resolvable_assumptions` | boolean | Whether code-resolvable assumptions exist that can be validated through targeted analysis (default: `false`). |
+| `has_open_questions` | boolean | Whether unresolved open questions remain after the comprehension deep-dive (default: `false`). |
+| `has_open_assumptions` | boolean | Whether unresolved assumptions remain after reconciliation that require stakeholder input (default: `false`). |
+| `has_deferred_assumptions` | boolean | Whether any assumptions were deferred during review (triggers issue-tracker posting) (default: `false`). |
+| `assumption_resolved_inline` | boolean | Whether the current assumption was resolved inline during the interview checkpoint (default: `false`). |
+| `assumption_deferred` | boolean | Whether the current assumption was deferred during the interview checkpoint (default: `false`). |
+
+### Review & Diff State
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `has_flagged_blocks` | boolean | Whether the user flagged any change blocks during manual diff review (default: `false`). |
+| `rationale_confirmed` | boolean | Whether the user confirmed rationale on the file-index-table checkpoint; drives the rationale-amendment prompt (default: `false`). |
+| `has_critical_blocker` | boolean | Whether any flagged block is a critical blocker (default: `false`). |
+| `skip_architecture_summary` | boolean | Whether to skip architecture summary creation (default: `false`). |
+| `prism_artifact_paths` | array | Paths to prism structural-analysis artifacts produced during post-impl-review. |
+| `comprehension_artifact` | string | Absolute path to the comprehension artifact for the current codebase area (default: `""`). |
+| `artifact_name` | string | Filename of the comprehension artifact (basename only) used in user-facing messages (default: `""`). |
+| `change_block_index` | string | Absolute path to the index file mapping change-block IDs to their per-block artifacts (default: `""`). |
+
+### PR Body Conformance
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `body_conforms` | boolean | True once the rendered PR body has passed every `update-pr::rules.pr-body-conformance` rule (default: `false`). |
+| `body_findings` | array | List of pr-body-conformance violations; each entry is `{ rule_id, detail }` (default: `[]`). |
+| `body_override_recorded` | boolean | True when proceed-with-override was selected on body-non-conformant (default: `false`). |
+| `submission_aborted` | boolean | True when abort was selected on body-non-conformant (default: `false`). |
+
+### Implementation Self-Review State
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `has_uncertain_symbols` | boolean | True when the current implement task's self-review flagged symbols whose provenance could not be confirmed (default: `false`). |
+| `uncertain_symbols` | string | Multi-line list of symbols flagged with unconfirmed provenance, interpolated into the symbol-provenance-confirmed checkpoint (default: `""`). |
+| `block_path` | string | File path of the code block referenced by the current PR-review comment or implementation block (default: `""`). |
+| `block_line_range` | string | Line range (e.g. `120-145`) of the current code block; pairs with `block_path` (default: `""`). |
+
+### Plan & Loop Variables
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `plan` | object | Implementation plan produced by plan-prepare: `{ task_count, tasks: [{ id, description, status }] }`. |
+| `current_task` | object | Current task during the implementation loop (from `plan.tasks`). |
+| `task_assumptions` | array | Assumptions collected during the current task for review iteration. |
+| `current_assumption` | object | Current assumption during the assumption review loop: `{ id, statement }`. |
+| `open_assumptions` | array | Open assumptions collected for `forEach` iteration during assumption interview loops. |
+| `question_domains` | array | Question domains for requirements elicitation iteration. |
+| `current_domain` | string | Current question domain during the elicitation loop (from `question_domains`). |
+| `flagged_block_indices` | array | Change block indices flagged by the user during manual diff review. |
+| `current_block_index` | number | Current block index during the manual diff review loop (default: `0`). |
 
 See `workflow.toon` for the complete variable declarations with default values.
 

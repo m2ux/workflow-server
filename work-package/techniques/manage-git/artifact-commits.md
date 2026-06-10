@@ -25,6 +25,8 @@ List of files to stage and commit
 
 Engineering branch to push to
 
+> `reference_path` (the engineering / parent repo where artifacts live) is inherited from the [manage-git](./TECHNIQUE.md) group root and is not redeclared here.
+
 ## Protocol
 
 ### 1. Commit Artifacts

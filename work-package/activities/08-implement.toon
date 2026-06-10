@@ -37,6 +37,11 @@ loops[3]:
       - id: implement-task
         name: Implement task
         technique: implement-task
+        technique_args:
+          scatter_mode: sequential
+          iteration_key: current_task
+          gather_implementation_into: completed_tasks
+          gather_commit_into: commits
         checkpoint: switch-model-pre-impl
       - id: run-tests
         name: Run tests
@@ -51,15 +56,8 @@ loops[3]:
         technique: dco-provenance::append-task-row
       - id: self-review
         name: Self-review
-        description: "Perform task completion review: (1) Symbol verification — confirm all new/referenced symbols have provenance in codebase or dependencies, populating uncertain_symbols with any symbol the agent cannot confirm and setting has_uncertain_symbols=true when that list is non-empty (otherwise false); (2) Quality checks — code follows patterns, tests pass, no debug prints, no untracked TODOs. Use attached resource task-completion-review for verification checklist. The symbol-provenance-confirmed checkpoint only surfaces when has_uncertain_symbols is true — when every symbol resolves cleanly, the loop continues without prompting the user."
+        technique: task-completion-review
         checkpoint: symbol-provenance-confirmed
-        actions[2]:
-          - action: set
-            target: has_uncertain_symbols
-            description: "true when one or more symbols cannot be confirmed against codebase, declared dependencies, or new symbols introduced by this task; false when every referenced symbol resolves cleanly"
-          - action: set
-            target: uncertain_symbols
-            description: "Multi-line list of uncertain symbols (one per line: symbol name + the file/line where the agent saw it). Empty string when has_uncertain_symbols is false. Interpolated into the symbol-provenance-confirmed checkpoint message so the user sees the flagged symbols alongside the options."
       - id: collect-assumptions
         name: Collect assumptions
         technique: review-assumptions
@@ -86,6 +84,7 @@ loops[3]:
     steps[2]:
       - id: present-assumption
         name: Present assumption to user
+        technique: review-assumptions
         checkpoint: implementation-assumption-interview
       - id: record-response
         name: Record user response

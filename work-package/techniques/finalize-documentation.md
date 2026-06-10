@@ -21,6 +21,14 @@ Finalize documentation — update ADRs, complete test plans, create completion d
 
 The [test plan](../resources/test-plan.md#test-plan-structure) artifact for this work package
 
+### planning_folder_path
+
+Path to the planning folder holding the test plan and where the completion document is created
+
+### pr_number
+
+The merged PR number, cross-referenced when recording the ADR implementation outcome
+
 ## Protocol
 
 ### 1. Update Adr

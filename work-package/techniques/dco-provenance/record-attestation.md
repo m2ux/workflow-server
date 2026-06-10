@@ -19,7 +19,11 @@ Email from `git config user.email`
 
 ### option
 
-One of: `certify` | `flag-legal`
+One of: `certify` | `flag-legal` — the human's selection at the dco-sign-off checkpoint
+
+#### default
+
+`certify`
 
 ### legal_review_note
 

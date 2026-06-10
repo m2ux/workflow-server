@@ -13,25 +13,41 @@ Append a per-task row to `provenance-log.md`. Creates the file with the canonica
 
 Current task identifier
 
+### task_description
+
+One-line description of what was generated
+
 ### assistant_name
 
-Assistant name (e.g., `claude`, `gpt`, `gemini`)
+Assistant name (e.g., `claude`, `gpt`, `gemini`) — captured at the model-selection checkpoint
+
+#### default
+
+`claude`
 
 ### model_id
 
-Model identifier
+Model identifier — captured at the model-selection checkpoint
+
+#### default
+
+`claude-opus-4-8`
 
 ### prompt_class
 
 One of: `code-generation` | `refactoring` | `test-writing` | `docs` | `mixed`
 
+#### default
+
+`code-generation`
+
 ### context_scope
 
 One of: `repo-only` (only repository-local sources used) | `web-retrieval` (external web sources informed the work) | `mixed` (both)
 
-### task_description
+#### default
 
-One-line description of what was generated
+`repo-only`
 
 ## Output
 

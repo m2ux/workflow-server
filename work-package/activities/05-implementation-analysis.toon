@@ -17,7 +17,7 @@ techniques:
 steps[12]:
   - id: checkout-baseline
     name: Checkout Baseline State
-    description: "Checkout the base branch (PR target) to analyze the pre-change state. Record the base commit SHA for reference."
+    technique: review-baseline-state
     condition:
       type: simple
       variable: is_review_mode
@@ -25,7 +25,7 @@ steps[12]:
       value: true
   - id: document-expected-changes
     name: Document Expected Changes
-    description: "Based on ticket requirements and baseline analysis, document what changes SHOULD be made to fulfill requirements. This becomes the reference for evaluating the actual PR."
+    technique: review-baseline-state
     condition:
       type: simple
       variable: is_review_mode
@@ -33,7 +33,7 @@ steps[12]:
       value: true
   - id: return-to-pr-branch
     name: Return to PR Branch
-    description: "Checkout the PR branch to continue workflow. Note the diff between base and PR branch for later comparison."
+    technique: review-baseline-state
     condition:
       type: simple
       variable: is_review_mode
@@ -50,7 +50,7 @@ steps[12]:
     technique: analyze-implementation
   - id: collect-assumptions
     name: Collect assumptions
-    technique: reconcile-assumptions
+    technique: review-assumptions
     technique_args:
       assumption_categories: "Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding"
   - id: document
@@ -59,7 +59,7 @@ steps[12]:
     checkpoint: analysis-confirmed
   - id: update-assumptions-log
     name: Update assumptions log
-    technique: reconcile-assumptions
+    technique: review-assumptions
   - id: reconcile-assumptions
     name: Reconcile assumptions
     technique: reconcile-assumptions

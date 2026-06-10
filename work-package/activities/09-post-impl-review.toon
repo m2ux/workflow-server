@@ -99,14 +99,7 @@ steps[8]:
       value: true
   - id: classify-and-route-findings
     name: Classify and Route Review Findings
-    description: "Classify every code-review and test-suite-review finding by severity (Critical / Major / Minor / Nit / Informational). Set needs_code_fixes=true when any code-review finding has severity >= Minor; otherwise false. Set needs_test_improvements=true when any test-suite finding has severity >= Minor; otherwise false. Findings at Nit/Informational severity are NOT auto-fixed — they are documented in the review reports for the user to triage if they choose. The review-fix-cycle doWhile loop runs automatically when either flag is true; nit-only and clean runs proceed straight to validate."
-    actions[2]:
-      - action: set
-        target: needs_code_fixes
-        description: "true when any code-review finding has severity >= Minor (Critical, Major, or Minor); false when all code-review findings are Nit/Informational or there are no findings"
-      - action: set
-        target: needs_test_improvements
-        description: "true when any test-suite finding has severity >= Minor (Critical, Major, or Minor); false when all test-suite findings are Nit/Informational or there are no findings"
+    technique: findings-classification
 checkpoints[3]:
   - id: file-index-table
     name: File Index Checkpoint
@@ -191,7 +184,7 @@ loops[1]:
     steps[6]:
       - id: apply-fixes
         name: Apply Fixes
-        description: "Implement the code review findings (needs_code_fixes) and/or test improvements (needs_test_improvements) selected by the user. Commit changes."
+        technique: apply-review-fixes
         required: true
       - id: reset-fix-flags
         name: Reset Fix Flags

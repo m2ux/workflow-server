@@ -11,6 +11,16 @@ metadata:
 
 Conduct workflow retrospective to capture lessons learned and prepare for next work package
 
+## Inputs
+
+### pr_number
+
+The PR number for this work package — its merge gates the status update and the final outcome record
+
+### planning_folder_path
+
+Path to the planning folder where the final outcome and retrospective are recorded
+
 ## Protocol
 
 ### 1. Capture History

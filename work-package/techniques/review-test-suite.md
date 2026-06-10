@@ -17,6 +17,10 @@ Review test suite quality and coverage — assessing coverage gaps, assertion qu
 
 List of files changed in the work package (from `git diff`)
 
+### planning_folder_path
+
+Folder where the test suite review report is written
+
 ## Protocol
 
 ### 1. Load Guidance

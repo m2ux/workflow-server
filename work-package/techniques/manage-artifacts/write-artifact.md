@@ -21,6 +21,10 @@ Technique-declared bare artifact filename (e.g., `code-review.md`)
 
 Artifact content to write
 
+### target_dir
+
+*(optional, default `planning_folder_path`)* The directory the artifact is written into. Defaults to `{planning_folder_path}`; bind it to `{comprehension_dir}` when the calling activity writes into the comprehension directory (e.g. activity 14) rather than the planning folder.
+
 ## Output
 
 ### written_artifact
@@ -31,9 +35,9 @@ Full path to the written artifact
 
 Find-or-create, keyed on the bare filename:
 
-1. Look in `{planning_folder_path}` for an existing instance of this artifact — a file matching `<NN>-{bare_filename}` (any two-digit prefix) or a bare `{bare_filename}`.
+1. Look in `{target_dir}` for an existing instance of this artifact — a file matching `<NN>-{bare_filename}` (any two-digit prefix) or a bare `{bare_filename}`.
 2. **If an instance exists → UPDATE that file in place,** writing `{artifact_content}` to it. Keep its existing numeric prefix; do NOT create a second copy under a different number. (e.g. `assumptions-log.md` created as `02-assumptions-log.md` stays `02-assumptions-log.md` when a later activity updates it.)
-3. **If no instance exists → CREATE** `{artifact_prefix}-{bare_filename}` (e.g. `09-code-review.md`) under `{planning_folder_path}` and write `{artifact_content}` into it. The creating activity's prefix becomes the artifact's permanent number.
+3. **If no instance exists → CREATE** `{artifact_prefix}-{bare_filename}` (e.g. `09-code-review.md`) under `{target_dir}` and write `{artifact_content}` into it. The creating activity's prefix becomes the artifact's permanent number.
 4. Preserve OTHER artifacts (different bare filenames) — never overwrite a sibling that is a different logical artifact.
 5. Return the full path to the file just written as `{written_artifact}`.
 

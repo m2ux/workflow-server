@@ -28,7 +28,7 @@ steps[10]:
     name: Collect assumptions
     technique: review-assumptions
     technique_args:
-      activity_context: research
+      assumption_categories: "Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment"
     checkpoint: research-focus
   - id: document
     name: Create research document
@@ -36,14 +36,12 @@ steps[10]:
   - id: update-assumptions-log
     name: Update assumptions log
     technique: review-assumptions
-    technique_args:
-      activity_context: research
   - id: reconcile-assumptions
     name: Reconcile assumptions
     technique: reconcile-assumptions
   - id: present-resolved-assumptions
     name: Present resolved assumptions
-    description: "Display all code-resolved assumptions as a message to the user (non-interactive). Show each assumption's ID, statement, evidence, and resolution status. This provides context before the interview loop."
+    technique: review-assumptions
     actions[1]:
       - action: message
         message: "**Resolved Assumptions** — the following assumptions were resolved through code analysis during this phase."
