@@ -41,12 +41,12 @@ Each is sourced from one or more steps that currently RETAIN a procedural `descr
 - `cargo-operations::test`: `scope`/`features` inherited from group root — document (no per-op backfill).
 - Review techniques (`review-diff`, `review-code`, `review-test-suite`, `summarize-architecture`, `review-strategy`): confirm `changed_files`, `branch_name`, `planning_folder_path`, `target_path`, `pr_number`, `requirements` are declared / resolvable (esp. `changed_files`, set by no explicit upstream step in 09/11).
 
-## C. Cross-cutting decisions
+## C. Cross-cutting decisions (RESOLVED 2026-06-10)
 
-1. **`update-pr` shape:** split into a group with `render`/`verify-body`/`push-commits`/`mark-ready` operations (design doc §B.2), OR keep whole-technique binding (what the sweep used). If split, re-point 12's `post-pr-review`, `update-description`, `mark-ready`, `rerender-body`, `verify-body`.
-2. **Assumption collect/reconcile/review canonical homes** (see B) — normalize which technique owns Collect / Reconcile / Interview / Record phases.
-3. **Commit re-homing:** 09 dropped `version-control::commit-regular-files`, 11 dropped `manage-git::artifact-commits` from supporting (no step binds them). Re-home into `apply-review-fixes` (09) / `review-strategy` protocol (11), or add explicit commit steps.
-4. **08 sequential gather:** confirm `task_implementation` (per task) accumulates into `completed_tasks`, and commits into `commits`; decide whether an explicit `iteration_key` (e.g. `current_task` id) is needed on the gather.
+1. **`update-pr` shape — RESOLVED: split into a group.** Make `update-pr` a group technique with `render` / `verify-body` / `push-commits` / `mark-ready` operations (matching the `cargo-operations` / `validate-build` group shape, per design doc §B.2). Re-point 12's `post-pr-review`, `update-description`, `mark-ready`, `rerender-body`, `verify-body` to the specific operations. Declare the group's shared inputs/outputs (the §B `update-pr` backfill: `branch_name`, `pr_number`, `planning_folder_path`, `reference_path`, `target_path`, `is_review_mode`, `template`; outputs `body_conforms`, `body_findings`).
+2. **Assumption lifecycle homes — RESOLVED: split by nature.** `review-assumptions` owns the human/review-facing phases — Collect, Interview, Record; `reconcile-assumptions` owns the code-analysis Reconcile loop. Add the `assumption_categories` input where collection happens (`review-assumptions`). Re-point the activities' `collect-assumptions` / `interview` / `record` steps to `review-assumptions`, and the reconcile-iteration steps to `reconcile-assumptions`, consistently.
+3. **Commit re-homing — RESOLVED: into the owning techniques.** Fold the commit into the new `apply-review-fixes` technique (09) and the `review-strategy` protocol (11) as their final phase; no separate commit step.
+4. **08 sequential gather — RESOLVED (orchestrator decision).** `completed_tasks` and `commits` are the gather sinks; each task-cycle iteration appends its `task_implementation` → `completed_tasks` and its commit → `commits`, keyed by `iteration_key = current_task` id for correlation.
 
 ## D. Steps still carrying procedural `description` (un-bound, pending Section A)
 
