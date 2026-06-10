@@ -25,17 +25,16 @@ artifacts[2]:
     location: planning
     description: "Log of assumptions made throughout the work package - created here and updated in subsequent activities"
 techniques:
-  supporting[3]:
-    - classify-problem
-    - reconcile-assumptions
-    - review-assumptions
+  primary: classify-problem
+  supporting[1]:
+    - "variable-binding"
 steps[9]:
   - id: define-problem
     name: Identify and Define Problem
-    description: "Create clear problem statement with system understanding, impact assessment, success criteria, and constraints."
+    technique: classify-problem
   - id: classify-problem
     name: Classify Problem Type
-    description: "Classify the problem type and assess complexity."
+    technique: classify-problem
     checkpoint: classification-confirmed
     actions[2]:
       - action: set
@@ -46,7 +45,7 @@ steps[9]:
         description: "One of: simple, moderate, complex."
   - id: determine-path
     name: Determine Workflow Path
-    description: "Based on problem complexity and clarity, determine which optional activities are needed."
+    technique: classify-problem
     checkpoint: workflow-path-selected
     actions[1]:
       - action: set
@@ -55,19 +54,21 @@ steps[9]:
         description: "Codebase comprehension is mandatory before planning"
   - id: document-philosophy
     name: Document Design Philosophy
-    description: "Create design-philosophy.md with problem statement, classification, complexity assessment, workflow path rationale, and constraints."
+    technique: classify-problem
     actions[1]:
       - action: message
         message: "Created: design-philosophy.md"
   - id: collect-assumptions
     name: Collect assumptions
-    description: "Identify assumptions made during problem classification and path selection. Categories: Problem Interpretation, Complexity Assessment, Workflow Path."
+    technique: review-assumptions
+    technique_args:
+      activity_context: design-philosophy
   - id: create-assumptions-log
     name: Create assumptions log
-    description: "Create the assumptions log with initial assumptions from this activity."
+    technique: classify-problem
   - id: reconcile-assumptions
     name: Reconcile assumptions
-    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions technique. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
+    technique: reconcile-assumptions
   - id: assess-ticket-completeness
     name: Assess Ticket Completeness
     description: "Assess associated ticket using Jira Issue Creation Guide checklist (problem statement, goal, scope, acceptance criteria, user stories). Document gaps and offer to refactor."
@@ -79,12 +80,16 @@ steps[9]:
       value: true
   - id: set-review-mode-path
     name: Set Review Mode Path
-    description: "Force needs_elicitation=false. Research may still be needed based on complexity."
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
+    actions[1]:
+      - action: set
+        target: needs_elicitation
+        value: false
+        description: "Force needs_elicitation=false in review mode. Research may still be needed based on complexity."
 loops[1]:
   - id: assumption-reconciliation
     name: Assumption Reconciliation Loop
@@ -98,7 +103,7 @@ loops[1]:
     steps[1]:
       - id: reconcile-iteration
         name: Execute Reconciliation Iteration
-        description: "Execute one iteration of the reconcile-assumptions protocol: classify resolvability, perform targeted analysis, update logs, and reclassify for convergence."
+        technique: reconcile-assumptions
 checkpoints[3]:
   - id: classification-confirmed
     name: Classification Checkpoint

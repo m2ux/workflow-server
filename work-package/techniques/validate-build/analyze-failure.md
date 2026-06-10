@@ -17,6 +17,10 @@ Identifier of the failed check (one of: `run-tests`, `verify-build`, `check-form
 
 stdout/stderr or structured diagnostics emitted by the underlying tool
 
+### target_path
+
+Working directory the failed check ran against; `file:line` citations in the diagnostics resolve relative to it.
+
 ## Output
 
 ### root_cause

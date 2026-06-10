@@ -10,32 +10,34 @@ recognition[3]:
 required: false
 estimatedTime: 15-30m
 techniques:
-  supporting[4]:
-    - elicit-requirements
-    - "manage-artifacts::write-artifact"
-    - reconcile-assumptions
-    - review-assumptions
+  primary: elicit-requirements
+  supporting[1]:
+    - "variable-binding"
 steps[6]:
   - id: stakeholder-discussion
     name: Stakeholder Discussion
-    description: "Prompt user to initiate discussion with key stakeholders. User provides transcript or summary as input for subsequent elicitation."
+    technique: elicit-requirements
     checkpoint: stakeholder-transcript
   - id: elicit-requirements
     name: Elicit requirements through conversation
-    description: "Iterate through question domains, asking one question at a time. Use stakeholder transcript as context."
+    technique: elicit-requirements
     checkpoint: domain-iteration
   - id: collect-assumptions
     name: Collect assumptions
-    description: "Identify assumptions made when interpreting user responses. Categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation."
+    technique: review-assumptions
+    technique_args:
+      activity_context: requirements-elicitation
   - id: create-document
     name: Create requirements document
-    description: "Create requirements document using elicitation output template"
+    technique: elicit-requirements
   - id: update-assumptions-log
     name: Update assumptions log
-    description: "Add requirements-phase assumptions to the assumptions log"
+    technique: review-assumptions
+    technique_args:
+      activity_context: requirements-elicitation
   - id: reconcile-assumptions
     name: Reconcile assumptions
-    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions technique. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
+    technique: reconcile-assumptions
     checkpoint: elicitation-complete
 artifacts[1]:
   - id: requirements-document
@@ -54,7 +56,7 @@ loops[2]:
     steps[1]:
       - id: reconcile-iteration
         name: Execute Reconciliation Iteration
-        description: "Execute one iteration of the reconcile-assumptions protocol: classify resolvability, perform targeted analysis, update logs, and reclassify for convergence."
+        technique: reconcile-assumptions
   - id: domain-iteration
     name: Question Domain Iteration
     type: forEach
@@ -64,10 +66,10 @@ loops[2]:
     steps[2]:
       - id: ask-question
         name: Ask domain question
-        description: "Present ONE question from current domain. Wait for response before proceeding."
+        technique: elicit-requirements
       - id: record-response
         name: Record response
-        description: "Capture answer or mark as skipped. Adapt follow-up based on response."
+        technique: elicit-requirements
 decisions[1]:
   - id: user-intent
     name: User Intent Check

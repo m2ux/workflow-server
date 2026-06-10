@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.8.0
+version: 3.9.0
 name: Start Work Package
 description: "Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
@@ -16,17 +16,9 @@ entryActions[1]:
   - action: log
     message: Starting issue management
 techniques:
-  supporting[9]:
-    - create-issue
-    - github-cli-protocol
-    - atlassian-operations
-    - "gitnexus-operations::analyze"
-    - "manage-git::update-reference-submodules"
-    - "manage-git::detect-merge-strategy"
-    - "manage-git::create-worktree"
-    - "manage-artifacts::create-readme"
-    - "manage-artifacts::write-artifact"
-steps[27]:
+  supporting[1]:
+    - "variable-binding"
+steps[28]:
   - id: detect-review-mode
     name: Detect Review Mode
     description: "Check if user request indicates review of existing PR. If detected, set is_review_mode=true and prompt for PR reference."
@@ -57,34 +49,30 @@ steps[27]:
         description: "Basename of the discovered path (e.g., 'midnight-node')"
   - id: update-reference-submodules
     name: Update Reference Submodules to HEAD
-    description: "manage-git::update-reference-submodules(reference_path: {reference_path}). Brings every submodule of the reference monorepo to its tracked branch's remote HEAD so downstream comprehension, GitNexus, and code-resolvable assumption analysis operate against a fresh codebase. No-op for standalone references."
+    technique: manage-git::update-reference-submodules
     condition:
       type: simple
       variable: reference_path
       operator: exists
   - id: analyze-reference-with-gitnexus
     name: Re-index Reference with GitNexus
-    description: "gitnexus-operations::analyze(repo_path: {reference_path}). For a monorepo reference, this MUST be invoked at the monorepo root — gitnexus walks the working tree from there and indexes every source file, including content inside submodule directories, into a single unified index keyed under the monorepo's name. Do not analyze each submodule separately. For a standalone reference, repo_path is simply the repo root. Runs after update-reference-submodules so the index reflects the freshly-pulled reference content. Subsequent activities (codebase-comprehension, implementation-analysis, plan-prepare) read this index for impact and context queries."
+    technique: gitnexus-operations::analyze
+    technique_args:
+      repo_path: reference_path
     actions[1]:
       - action: set
         target: gitnexus_indexed
         value: true
-        description: "Set gitnexus_indexed=true on successful index. Downstream steps gated on this variable (e.g., post-impl-review's gitnexus-detect-changes-preflight, implement-task protocol phases) become structurally enabled. The analyze CLI emits stats; capture them in trace logs but do not gate the workflow on them."
+        description: "Set gitnexus_indexed=true on successful index. Downstream steps gated on this variable (e.g., post-impl-review's gitnexus-detect-changes-preflight, implement-task protocol phases) become structurally enabled."
   - id: verify-signing-precondition
     name: Verify Commit-Signing Pre-conditions
-    description: "Verify commit signing is configured."
     actions[1]:
       - action: validate
         target: signing.configured == true
         message: "Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing in your environment via your preferred scope (system, global, or local) before re-running. The workflow does not modify your git configuration."
   - id: detect-merge-strategy
     name: Detect Merge Strategy
-    description: "Detect whether the reference repo permits squash merges via the GitHub API (allow_squash_merge). Sets squash_merge_supported for downstream DCO merge path routing — drives the merge-strategy-reminder in submit-for-review."
-    technique: manage-git
-    actions[1]:
-      - action: set
-        target: squash_merge_supported
-        description: "true if allow_squash_merge=true in repo settings, false otherwise"
+    technique: manage-git::detect-merge-strategy
   - id: detect-project-type
     name: Detect Project Type
     description: "Auto-detect project type inside reference_path/component_name (the component's source as it appears in the reference): Check for Cargo.toml with Substrate dependencies (sp-*, frame-*, pallet-*). Set project_type to 'rust-substrate' if found, otherwise 'other'. Performed against the reference because the worktree does not exist yet — both paths see the same files."
@@ -148,7 +136,9 @@ steps[27]:
           value: false
   - id: create-github-issue-for-jira
     name: Create GitHub issue for Jira ticket
-    description: "Create a GitHub issue in the target repo that mirrors the Jira ticket. Set issue_platform to 'github' temporarily so the create-issue technique routes to the GitHub protocol. The issue title should match the Jira ticket summary. The issue body should include a reference to the Jira ticket URL. After creation capture github_issue_number and github_issue_url, then restore issue_platform to 'jira'."
+    technique: create-issue
+    technique_args:
+      issue_platform: github
     condition:
       type: simple
       variable: needs_github_issue_creation
@@ -156,7 +146,7 @@ steps[27]:
       value: true
   - id: create-issue
     name: Create Issue
-    description: "Create issue in selected platform using issue-management technique. Technique routes to GitHub (gh CLI) or Jira (Atlassian MCP) protocol based on issue_platform."
+    technique: create-issue
     checkpoint: platform-selection
     condition:
       type: simple
@@ -171,13 +161,16 @@ steps[27]:
       variable: issue_skipped
       operator: "!="
       value: true
-  - id: initialize-planning-folder
-    name: Initialize Planning Folder
-    description: "Bind planning_folder_path to the canonical absolute path the server returned in the get_workflow summary (resolved under the server's OWN workspace .engineering root — the monorepo root supplied at init). The server has already created this folder and owns its session.json + .session-token; do NOT mkdir it yourself, and NEVER compose a target-relative .engineering/artifacts/planning path under target_path or any worktree/CWD. Every downstream activity writes its artifacts into this absolute path via manage-artifacts::write-artifact (one per-work-package folder; never the planning root). Then create README.md in that folder from the attached resource readme template via manage-artifacts::create-readme — populate header fields, Executive Summary, Links table, and Progress table from issue context; leave Problem Overview and Solution Overview as placeholder text. Must precede any step that writes into the planning folder."
+  - id: bind-planning-folder-path
+    name: Bind Planning Folder Path
+    description: "Bind planning_folder_path to the canonical absolute path the server returned in the get_workflow summary (resolved under the server's OWN workspace .engineering root — the monorepo root supplied at init). The server has already created this folder and owns its session.json + .session-token; do NOT mkdir it yourself, and NEVER compose a target-relative .engineering/artifacts/planning path under target_path or any worktree/CWD. Every downstream activity writes its artifacts into this absolute path; this binding must precede any step that writes into the planning folder."
     actions[1]:
       - action: set
         target: planning_folder_path
         description: "Canonical absolute planning folder for this work package, taken verbatim from the server's get_workflow summary (under the server's workspace .engineering root). Write location for ALL of this work package's artifacts (with the per-activity artifactPrefix applied to each filename). Never anchored to target_path or any CWD."
+  - id: initialize-planning-folder
+    name: Initialize Planning Folder README
+    technique: manage-artifacts::create-readme
   - id: present-problem-overview
     name: Present Problem Overview
     description: "Synthesize and present a plain-language problem overview to the user. Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders. The first paragraph should describe what the system currently does and why that is problematic. The second paragraph should describe the consequences — what can go wrong and why it matters. Do not use jargon without explanation. Base the overview on the issue details, ticket description, and any context gathered during this activity. After generating the overview, write it into the planning folder README.md by replacing the placeholder text under the '## Problem Overview' section."
@@ -205,28 +198,22 @@ steps[27]:
         description: "Canonical worktree path '~/projects/work/{component_name}/{wp-slug}/'"
   - id: create-component-worktree
     name: Create Component Worktree
-    description: "manage-git::create-worktree(reference_path: {reference_path}, component_name: {component_name}, target_path: {target_path}, branch_name: {branch_name}). Materializes the worktree at target_path and creates the feature branch in one step (git worktree add -b {branch_name} {target_path} origin/{default_branch}). Idempotent: if target_path already exists and is registered as a worktree on the expected branch, reuses it; if it exists but is not such a worktree, surfaces an error rather than destroying the user's data. Sets worktree_created=true on success."
+    technique: manage-git::create-worktree
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
-    actions[1]:
-      - action: set
-        target: worktree_created
-        description: "true once the worktree has been successfully created or verified existing"
   - id: create-review-worktree
     name: Create Worktree for Review
-    description: "manage-git::create-worktree(reference_path: {reference_path}, component_name: {component_name}, target_path: {target_path}, branch_name: {branch_name}). Review-mode counterpart: materializes a worktree of the component at target_path, checked out on the PR's branch (no -b — the branch already exists upstream). Idempotent reuse semantics match create-component-worktree. Sets worktree_created=true on success."
+    technique: manage-git::create-worktree
+    technique_args:
+      create_branch: false
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-    actions[1]:
-      - action: set
-        target: worktree_created
-        description: "true once the worktree has been successfully created or verified existing"
   - id: check-branch
     name: Check Current Branch
     description: "INSIDE target_path (the worktree): Check if on a feature branch (not main/master). Run 'git branch --show-current'. With the worktree-creation flow above, this is always true on a fresh worktree — this step exists to handle resume cases where target_path pre-existed and we reused an established worktree."

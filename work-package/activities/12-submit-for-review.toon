@@ -13,15 +13,9 @@ estimatedTime: 30-60m
 entryActions[1]{action,message}:
   log,Submitting PR for review
 techniques:
-  supporting[8]:
-    - "dco-provenance::record-attestation"
-    - github-cli-protocol
-    - "manage-git::push-commits"
-    - "manage-git::squash-merge"
-    - "manage-git::detect-merge-strategy"
-    - respond-to-pr-review
-    - review-code
-    - update-pr
+  primary: update-pr
+  supporting[1]:
+    - "variable-binding"
 steps[13]:
   - id: consolidate-review-findings
     name: Consolidate Review Findings
@@ -50,7 +44,7 @@ steps[13]:
       value: true
   - id: post-pr-review
     name: Post PR Review
-    description: "Post review to GitHub PR using 'gh pr review'. Include consolidated findings with severity ratings."
+    technique: update-pr
     condition:
       type: simple
       variable: is_review_mode
@@ -58,8 +52,7 @@ steps[13]:
       value: true
   - id: dco-sign-off
     name: DCO Sign-off
-    description: "Gate PR submission on human DCO attestation. Records attestation in provenance-log.md."
-    technique: dco-provenance
+    technique: dco-provenance::record-attestation
     checkpoint: dco-sign-off
     condition:
       type: simple
@@ -68,7 +61,7 @@ steps[13]:
       value: true
   - id: push-commits
     name: Push all commits
-    description: "Push all local commits to remote branch."
+    technique: manage-git::push-commits
     condition:
       type: simple
       variable: is_review_mode
@@ -76,7 +69,7 @@ steps[13]:
       value: true
   - id: update-description
     name: Update PR description
-    description: "Update the PR description with final implementation details."
+    technique: update-pr
     condition:
       type: simple
       variable: is_review_mode
@@ -85,7 +78,6 @@ steps[13]:
   - id: instruct-merge-strategy
     name: Instruct Merge Strategy
     description: "Present merge strategy guidance based on squash_merge_supported. Instructs human on the correct merge procedure for a DCO-compliant merge commit."
-    technique: manage-git
     checkpoint: merge-strategy-reminder
     condition:
       type: simple
@@ -94,7 +86,7 @@ steps[13]:
       value: true
   - id: mark-ready
     name: Mark PR ready for review
-    description: "Mark the draft PR as ready for review using gh pr ready."
+    technique: update-pr
     condition:
       type: simple
       variable: is_review_mode
@@ -106,7 +98,7 @@ steps[13]:
     checkpoint: review-received
   - id: process-review-comments
     name: Process Review Comments
-    description: "Analyze and respond to PR review feedback."
+    technique: respond-to-pr-review
   - id: determine-review-outcome
     name: Determine Review Outcome
     description: "Based on review feedback, determine whether changes are needed."
@@ -132,10 +124,15 @@ loops[1]:
       value: false
     maxIterations: 2
     description: "Re-render the PR body until body_conforms=true."
-    steps[1]:
-      - id: rerender-and-verify
-        name: Re-render and Verify Body
-        description: "update-pr::render(template: final, pr_number: {pr_number}); update-pr::verify-body"
+    steps[2]:
+      - id: rerender-body
+        name: Re-render PR Body
+        technique: update-pr
+        technique_args:
+          template: final
+      - id: verify-body
+        name: Verify PR Body Conformance
+        technique: update-pr
 checkpoints[6]:
   - id: dco-sign-off
     name: DCO Sign-off

@@ -28,16 +28,13 @@ artifacts[4]:
     location: reviews
     description: "PR review analysis document"
 techniques:
-  supporting[5]:
-    - "cargo-operations::doc"
-    - conduct-retrospective
-    - create-adr
-    - finalize-documentation
-    - "manage-git::remove-worktree"
+  primary: finalize-documentation
+  supporting[1]:
+    - "variable-binding"
 steps[10]:
   - id: create-adr
     name: Create Architecture Decision Record
-    description: "Create ADR at .engineering/artifacts/adr/ documenting the architectural decision, rationale, and alternatives."
+    technique: create-adr
     condition:
       type: and
       conditions[2]:
@@ -57,7 +54,7 @@ steps[10]:
               value: complex
   - id: update-adr-status
     name: Update ADR status to Accepted
-    description: "Update ADR status from Proposed to Accepted."
+    technique: finalize-documentation
     condition:
       type: and
       conditions[2]:
@@ -77,7 +74,7 @@ steps[10]:
               value: complex
   - id: finalize-test-plan
     name: Finalize test plan with source links
-    description: "Add hyperlinks to actual test source file locations in the test plan."
+    technique: finalize-documentation
     condition:
       type: simple
       variable: is_review_mode
@@ -85,7 +82,7 @@ steps[10]:
       value: true
   - id: create-complete-doc
     name: Create completion document
-    description: "Create COMPLETE.md summarizing deliverables, test coverage, deferred items, and known limitations."
+    technique: finalize-documentation
     condition:
       type: simple
       variable: is_review_mode
@@ -93,7 +90,7 @@ steps[10]:
       value: true
   - id: ensure-docs
     name: Ensure inline documentation on public APIs
-    description: "Verify public APIs have inline documentation — add missing doc comments."
+    technique: finalize-documentation
     condition:
       type: simple
       variable: is_review_mode
@@ -101,16 +98,16 @@ steps[10]:
       value: true
   - id: capture-history
     name: Capture session history
-    description: "If metadata repository exists, capture session history. Private — never committed."
+    technique: conduct-retrospective
   - id: retrospective
     name: Workflow retrospective
-    description: "Conduct retrospective: what went well, what could improve, lessons learned. Skip if trivial session."
+    technique: conduct-retrospective
   - id: update-status
     name: Update work package plan status
-    description: "After PR merged, update work package plan status to reflect completion."
+    technique: conduct-retrospective
   - id: remove-worktree
     name: Remove Component Worktree
-    description: "manage-git::remove-worktree(reference_path: {reference_path}, component_name: {component_name}, target_path: {target_path}). Runs only when worktree_created is true (i.e., this work package created a worktree at the canonical path). The technique checks for uncommitted edits before removing — by completion time the PR has been merged so the worktree should be clean. Sets worktree_created=false after a successful removal. The reference monorepo at reference_path is left untouched."
+    technique: manage-git::remove-worktree
     condition:
       type: simple
       variable: worktree_created
@@ -118,7 +115,7 @@ steps[10]:
       value: true
   - id: select-next
     name: Select next work package
-    description: "Identify and select next work package if applicable. Prepare context for transition."
+    technique: conduct-retrospective
 exitActions[1]{action,message}:
   log,Work package workflow complete
 outcome[7]:

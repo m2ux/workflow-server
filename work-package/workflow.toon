@@ -104,10 +104,9 @@ variables[91]:
     type: boolean
     description: Whether validation phase passed
     defaultValue: false
-  - name: has_failures
-    type: boolean
-    description: Whether test/build/lint failures were detected during validation
-    defaultValue: false
+  - name: validation_results
+    type: object
+    description: "Aggregate validation envelope emitted by cargo-operations::run-suite — { check_status, clippy_status, test_status, fmt_status, validation_passed }. The validate activity reads its fields by dotted path (e.g. validation_results.validation_passed) to drive the fix-revalidate loop."
   - name: review_passed
     type: boolean
     description: Whether strategic review passed
