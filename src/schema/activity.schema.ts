@@ -2,8 +2,6 @@ import { z } from 'zod';
 import { ConditionSchema } from './condition.schema.js';
 import { SemanticVersionSchema } from './common.js';
 
-const TimeEstimateSchema = z.string().regex(/^\d+(-\d+)?\s*(m|min|h|hr|hours?|d|days?)?$/i).optional();
-
 // Techniques reference (activity-level — optional when steps declare their own techniques)
 export const TechniquesReferenceSchema = z.object({
   primary: z.string().optional().describe('Primary technique ID for this activity. Optional when steps declare individual techniques.'),
@@ -211,8 +209,7 @@ export const ActivitySchema = z.object({
   
   // Intent matching (optional - for entry-point activities)
   problem: z.string().optional().describe('Description of the user problem this activity addresses'),
-  recognition: z.array(z.string()).optional().describe('Patterns to match user intent to this activity'),
-  
+
   // Techniques the activity uses: a primary technique and supporting techniques, referenced by
   // `::` path. The server bundles them into get_activity.
   techniques: TechniquesReferenceSchema.optional(),
@@ -235,7 +232,6 @@ export const ActivitySchema = z.object({
   outcome: z.array(z.string()).optional().describe('Expected outcomes when activity completes successfully'),
   context_to_preserve: z.array(z.string()).optional().describe('Context items to preserve across the activity'),
   required: z.boolean().default(true).describe('Whether this activity is required in the workflow'),
-  estimatedTime: TimeEstimateSchema.describe('Estimated time to complete'),
   rules: z.array(z.string()).optional().describe('Activity-level rules and constraints that agents must follow'),
   artifactPrefix: z.string().optional().describe('Numeric prefix for artifact filenames, inferred from the activity filename (e.g., "02" from 02-design-philosophy.toon). Server-computed — do not set in TOON files.'),
   artifacts: z.array(ArtifactSchema).optional().describe('Output artifacts produced by this activity. Bare filenames are prefixed with artifactPrefix at write time (e.g., design-philosophy.md → 02-design-philosophy.md).'),
