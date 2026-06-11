@@ -33,7 +33,6 @@ techniques:
     - "variable-binding"
 steps[10]:
   - id: create-adr
-    name: Create Architecture Decision Record
     technique: create-adr
     condition:
       type: and
@@ -53,7 +52,6 @@ steps[10]:
               operator: ==
               value: complex
   - id: update-adr-status
-    name: Update ADR status to Accepted
     technique: finalize-documentation
     condition:
       type: and
@@ -73,7 +71,6 @@ steps[10]:
               operator: ==
               value: complex
   - id: finalize-test-plan
-    name: Finalize test plan with source links
     technique: finalize-documentation
     condition:
       type: simple
@@ -81,7 +78,6 @@ steps[10]:
       operator: "!="
       value: true
   - id: create-complete-doc
-    name: Create completion document
     technique: finalize-documentation
     condition:
       type: simple
@@ -89,7 +85,6 @@ steps[10]:
       operator: "!="
       value: true
   - id: ensure-docs
-    name: Ensure inline documentation on public APIs
     technique: finalize-documentation
     condition:
       type: simple
@@ -97,16 +92,12 @@ steps[10]:
       operator: "!="
       value: true
   - id: capture-history
-    name: Capture session history
     technique: conduct-retrospective
   - id: retrospective
-    name: Workflow retrospective
     technique: conduct-retrospective
   - id: update-status
-    name: Update work package plan status
     technique: conduct-retrospective
   - id: remove-worktree
-    name: Remove Component Worktree
     technique: manage-git::remove-worktree
     condition:
       type: simple
@@ -114,7 +105,6 @@ steps[10]:
       operator: ==
       value: true
   - id: select-next
-    name: Select next work package
     technique: conduct-retrospective
 exitActions[1]{action,message}:
   log,Work package workflow complete

@@ -30,10 +30,8 @@ techniques:
     - "variable-binding"
 steps[9]:
   - id: define-problem
-    name: Identify and Define Problem
     technique: classify-problem
   - id: classify-problem
-    name: Classify Problem Type
     technique: classify-problem
     checkpoint: classification-confirmed
     actions[2]:
@@ -44,7 +42,6 @@ steps[9]:
         target: complexity
         description: "One of: simple, moderate, complex."
   - id: determine-path
-    name: Determine Workflow Path
     technique: classify-problem
     checkpoint: workflow-path-selected
     actions[1]:
@@ -53,28 +50,23 @@ steps[9]:
         value: true
         description: "Codebase comprehension is mandatory before planning"
   - id: document-philosophy
-    name: Document Design Philosophy
     technique: classify-problem
     actions[1]:
       - action: message
         message: "Created: design-philosophy.md"
   - id: collect-assumptions
-    name: Collect assumptions
     technique: review-assumptions
     technique_args:
       activity_context: design-philosophy
       assumption_categories: "Problem Interpretation, Complexity Assessment, Workflow Path"
   - id: create-assumptions-log
-    name: Create assumptions log
     technique: review-assumptions
     technique_args:
       activity_context: design-philosophy
       assumption_categories: "Problem Interpretation, Complexity Assessment, Workflow Path"
   - id: reconcile-assumptions
-    name: Reconcile assumptions
     technique: reconcile-assumptions
   - id: assess-ticket-completeness
-    name: Assess Ticket Completeness
     technique: assess-ticket-completeness
     checkpoint: ticket-completeness
     condition:
@@ -83,7 +75,6 @@ steps[9]:
       operator: "=="
       value: true
   - id: set-review-mode-path
-    name: Set Review Mode Path
     condition:
       type: simple
       variable: is_review_mode
@@ -106,7 +97,6 @@ loops[1]:
     description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
     steps[1]:
       - id: reconcile-iteration
-        name: Execute Reconciliation Iteration
         technique: reconcile-assumptions
 checkpoints[3]:
   - id: classification-confirmed

@@ -35,7 +35,6 @@ loops[3]:
     over: plan.tasks
     steps[6]:
       - id: implement-task
-        name: Implement task
         technique: implement-task
         technique_args:
           scatter_mode: sequential
@@ -44,22 +43,17 @@ loops[3]:
           gather_commit_into: commits
         checkpoint: switch-model-pre-impl
       - id: run-tests
-        name: Run tests
         technique: cargo-operations::test
         technique_args:
           scope: "-p {current_task.crate}"
       - id: commit
-        name: Commit changes
         technique: manage-git::artifact-commits
       - id: log-provenance
-        name: Log AI provenance
         technique: dco-provenance::append-task-row
       - id: self-review
-        name: Self-review
         technique: task-completion-review
         checkpoint: symbol-provenance-confirmed
       - id: collect-assumptions
-        name: Collect assumptions
         technique: review-assumptions
   - id: assumption-reconciliation
     name: Assumption Reconciliation Loop
@@ -72,7 +66,6 @@ loops[3]:
     description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
     steps[1]:
       - id: reconcile-iteration
-        name: Execute Reconciliation Iteration
         technique: reconcile-assumptions
   - id: assumption-interview
     name: Assumption Interview Loop
@@ -83,27 +76,21 @@ loops[3]:
     description: "Iterates over each open (stakeholder-dependent) assumption, presenting the implementation-assumption-interview checkpoint for each."
     steps[2]:
       - id: present-assumption
-        name: Present assumption to user
         technique: review-assumptions
         checkpoint: implementation-assumption-interview
       - id: record-response
-        name: Record user response
         technique: review-assumptions
 steps[4]:
   - id: reconcile-assumptions
-    name: Reconcile assumptions
     technique: reconcile-assumptions
   - id: present-resolved-assumptions
-    name: Present resolved assumptions
     technique: review-assumptions
     actions[1]:
       - action: message
         message: "**Resolved Assumptions** — the following implementation assumptions were resolved through code analysis."
   - id: interview-open-assumptions
-    name: Interview open assumptions
     technique: review-assumptions
   - id: update-assumptions-log
-    name: Update assumptions log
     technique: review-assumptions
     checkpoint: switch-model-post-impl
 checkpoints[4]:

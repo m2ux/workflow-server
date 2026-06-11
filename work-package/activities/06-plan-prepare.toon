@@ -15,8 +15,6 @@ techniques:
     - variable-binding
 steps[11]:
   - id: env-prerequisites
-    name: Verify Environment Prerequisites
-    description: "Verify environment prerequisites."
     actions[6]:
       - action: validate
         target: workflows.worktree.present == true
@@ -37,16 +35,12 @@ steps[11]:
         target: gpg.agent.reachable == true
         message: "GPG agent is not reachable. Ensure it is running at your preferred scope before re-running."
   - id: apply-design
-    name: Apply design framework
     technique: create-plan
   - id: create-plan
-    name: Create work package plan
     technique: create-plan
   - id: create-test-plan
-    name: Create test plan
     technique: create-test-plan
   - id: present-solution-overview
-    name: Present Solution Overview
     technique: stakeholder-overview
     technique_args:
       readme_section_heading: "## Solution Overview"
@@ -54,24 +48,18 @@ steps[11]:
       - action: message
         message: "**Solution Overview** (plain-language summary for stakeholder reference)"
   - id: collect-assumptions
-    name: Collect assumptions
     technique: review-assumptions
     technique_args:
       assumption_categories: "Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions"
   - id: update-assumptions-log
-    name: Update assumptions log
     technique: review-assumptions
   - id: reconcile-assumptions
-    name: Reconcile assumptions
     technique: reconcile-assumptions
   - id: create-todos
-    name: Create TODO list from plan
     technique: create-plan
   - id: sync-branch
-    name: Sync feature branch with main
     technique: manage-git::sync-branch
   - id: update-pr
-    name: Update PR description
     technique: update-pr::render
     technique_args:
       template: initial
@@ -88,7 +76,6 @@ loops[1]:
     description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
     steps[1]:
       - id: reconcile-iteration
-        name: Execute Reconciliation Iteration
         technique: reconcile-assumptions
 artifacts[2]:
   - id: plan-document

@@ -15,26 +15,20 @@ techniques:
     - "variable-binding"
 steps[6]:
   - id: stakeholder-discussion
-    name: Stakeholder Discussion
     technique: elicit-requirements
     checkpoint: stakeholder-transcript
   - id: elicit-requirements
-    name: Elicit requirements through conversation
     technique: elicit-requirements
     checkpoint: domain-iteration
   - id: collect-assumptions
-    name: Collect assumptions
     technique: review-assumptions
     technique_args:
       assumption_categories: "Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation"
   - id: create-document
-    name: Create requirements document
     technique: elicit-requirements
   - id: update-assumptions-log
-    name: Update assumptions log
     technique: review-assumptions
   - id: reconcile-assumptions
-    name: Reconcile assumptions
     technique: reconcile-assumptions
     checkpoint: elicitation-complete
 artifacts[1]:
@@ -53,7 +47,6 @@ loops[2]:
     description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
     steps[1]:
       - id: reconcile-iteration
-        name: Execute Reconciliation Iteration
         technique: reconcile-assumptions
   - id: domain-iteration
     name: Question Domain Iteration
@@ -63,10 +56,8 @@ loops[2]:
     maxIterations: 5
     steps[2]:
       - id: ask-question
-        name: Ask domain question
         technique: elicit-requirements
       - id: record-response
-        name: Record response
         technique: elicit-requirements
 decisions[1]:
   - id: user-intent

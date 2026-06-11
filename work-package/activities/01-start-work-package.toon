@@ -18,9 +18,8 @@ entryActions[1]:
 techniques:
   supporting[1]:
     - "variable-binding"
-steps[31]:
+steps[30]:
   - id: detect-review-mode
-    name: Detect Review Mode
     technique: review-mode-detection
     checkpoint: review-mode-detection
     condition:
@@ -29,7 +28,6 @@ steps[31]:
       operator: "=="
       value: true
   - id: capture-pr-reference
-    name: Capture PR Reference
     technique: review-mode-detection
     checkpoint: review-pr-reference
     condition:
@@ -38,17 +36,14 @@ steps[31]:
       operator: "=="
       value: true
   - id: resolve-reference
-    name: Resolve Reference Path and Component Name
     technique: reference-resolution
   - id: update-reference-submodules
-    name: Update Reference Submodules to HEAD
     technique: manage-git::update-reference-submodules
     condition:
       type: simple
       variable: reference_path
       operator: exists
   - id: analyze-reference-with-gitnexus
-    name: Re-index Reference with GitNexus
     technique: gitnexus-operations::analyze
     technique_args:
       repo_path: reference_path
@@ -58,27 +53,18 @@ steps[31]:
         value: true
         description: "Set gitnexus_indexed=true on successful index. Downstream steps gated on this variable (e.g., post-impl-review's gitnexus-detect-changes-preflight, implement-task protocol phases) become structurally enabled."
   - id: verify-signing-precondition
-    name: Verify Commit-Signing Pre-conditions
     actions[1]:
       - action: validate
         target: signing.configured == true
         message: "Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing in your environment via your preferred scope (system, global, or local) before re-running. The workflow does not modify your git configuration."
   - id: detect-merge-strategy
-    name: Detect Merge Strategy
     technique: manage-git::detect-merge-strategy
   - id: detect-project-type
-    name: Detect Project Type
     technique: project-type-detection
   - id: check-issue
-    name: Check for Existing Issue
-    description: "Check whether the user provided an issue key or URL. If no issue reference found, present the issue-verification checkpoint. If a key is provided, detect the platform from the format: '#N' or bare number → GitHub, 'PROJ-N' → Jira."
+    technique: issue-reference-detection
     checkpoint: issue-verification
-    actions[1]:
-      - action: set
-        target: issue_platform
-        description: "Set to 'github' or 'jira' based on key format detection"
   - id: verify-jira-issue
-    name: Verify Jira Issue
     technique: atlassian-operations::get-jira-issue
     technique_args:
       issueIdOrKey: "{issue_number}"
@@ -92,7 +78,6 @@ steps[31]:
         target: jira_cloud_id != null
         message: "Atlassian cloudId not set. Load the atlassian-operations technique and call getAccessibleAtlassianResources before any Jira tool. The cloudId is a runtime prerequisite for every Jira API call; this guard catches the failure mode where another step invokes a Jira tool without first loading atlassian-operations."
   - id: verify-github-issue
-    name: Verify GitHub Issue
     technique: github-cli-protocol::view-issue
     technique_args:
       identifier: "{issue_number}"
@@ -102,7 +87,6 @@ steps[31]:
       operator: "=="
       value: github
   - id: search-github-issue
-    name: Search for linked GitHub issue
     technique: github-cli-protocol::list-issues
     technique_args:
       filters: "--search '{jira_issue_key}' --json number,title,url --limit 5"
@@ -119,22 +103,9 @@ steps[31]:
         target: github_issue_number
         description: "GitHub issue number if found, otherwise empty"
   - id: check-github-issue
-    name: Prompt to create GitHub issue for Jira ticket
-    description: "When no GitHub issue was found for the Jira ticket, present the github-issue-missing checkpoint so the user can choose to create one or skip."
+    when: "issue_platform == 'jira' && github_issue_found == false"
     checkpoint: github-issue-missing
-    condition:
-      type: and
-      conditions[2]:
-        - type: simple
-          variable: issue_platform
-          operator: "=="
-          value: jira
-        - type: simple
-          variable: github_issue_found
-          operator: "=="
-          value: false
   - id: create-github-issue-for-jira
-    name: Create GitHub issue for Jira ticket
     technique: create-issue
     technique_args:
       issue_platform: github
@@ -144,7 +115,6 @@ steps[31]:
       operator: "=="
       value: true
   - id: create-issue
-    name: Create Issue
     technique: create-issue
     checkpoint: platform-selection
     condition:
@@ -153,7 +123,6 @@ steps[31]:
       operator: ==
       value: true
   - id: assign-issue-jira
-    name: Assign Jira Issue to Current User
     technique: atlassian-operations::edit-jira-issue
     technique_args:
       issueIdOrKey: "{issue_number}"
@@ -170,7 +139,6 @@ steps[31]:
           operator: "=="
           value: jira
   - id: transition-issue-jira
-    name: Transition Jira Issue to In Progress
     technique: atlassian-operations::transition-jira-issue
     technique_args:
       issueIdOrKey: "{issue_number}"
@@ -186,7 +154,6 @@ steps[31]:
           operator: "=="
           value: jira
   - id: assign-issue-github
-    name: Self-Assign GitHub Issue
     technique: github-cli-protocol::assign-issue
     technique_args:
       number: "{issue_number}"
@@ -203,17 +170,13 @@ steps[31]:
           operator: "=="
           value: github
   - id: bind-planning-folder-path
-    name: Bind Planning Folder Path
-    description: "Bind planning_folder_path to the canonical absolute path the server returned in the get_workflow summary (resolved under the server's OWN workspace .engineering root — the monorepo root supplied at init). The server has already created this folder and owns its session.json + .session-token; do NOT mkdir it yourself, and NEVER compose a target-relative .engineering/artifacts/planning path under target_path or any worktree/CWD. Every downstream activity writes its artifacts into this absolute path; this binding must precede any step that writes into the planning folder."
     actions[1]:
       - action: set
         target: planning_folder_path
-        description: "Canonical absolute planning folder for this work package, taken verbatim from the server's get_workflow summary (under the server's workspace .engineering root). Write location for ALL of this work package's artifacts (with the per-activity artifactPrefix applied to each filename). Never anchored to target_path or any CWD."
+        message: "Server-resolved canonical absolute planning folder from the get_workflow summary (under the server's workspace .engineering root). Write location for ALL of this work package's artifacts. Never anchored to target_path or any CWD."
   - id: initialize-planning-folder
-    name: Initialize Planning Folder README
     technique: manage-artifacts::create-readme
   - id: present-problem-overview
-    name: Present Problem Overview
     technique: stakeholder-overview
     technique_args:
       readme_section_heading: "## Problem Overview"
@@ -222,7 +185,6 @@ steps[31]:
       - action: message
         message: "**Problem Overview** (plain-language summary for stakeholder reference)"
   - id: derive-branch-name
-    name: Derive Feature Branch Name
     technique: naming-conventions
     technique_args:
       issue_title: "{issue_title}"
@@ -232,10 +194,8 @@ steps[31]:
       operator: "!="
       value: true
   - id: compute-canonical-target-path
-    name: Compute Canonical Target Path
     technique: naming-conventions
   - id: create-component-worktree
-    name: Create Component Worktree
     technique: manage-git::create-worktree
     condition:
       type: simple
@@ -243,7 +203,6 @@ steps[31]:
       operator: "!="
       value: true
   - id: create-review-worktree
-    name: Create Worktree for Review
     technique: manage-git::create-worktree
     technique_args:
       create_branch: false
@@ -253,23 +212,25 @@ steps[31]:
       operator: "=="
       value: true
   - id: check-branch
-    name: Check Current Branch
-    description: "INSIDE target_path (the worktree): Check if on a feature branch (not main/master). Run 'git branch --show-current'. With the worktree-creation flow above, this is always true on a fresh worktree — this step exists to handle resume cases where target_path pre-existed and we reused an established worktree."
+    technique: manage-git::verify-feature-branch
   - id: check-pr
-    name: Check for Existing PR
-    description: "INSIDE target_path: Check if PR already exists for current branch. Run 'gh pr list --head <branch-name>' from target_path. If a PR is found, set pr_exists=true and capture the PR number in existing_pr_number. If no PR is found, pr_exists remains false."
+    technique: github-cli-protocol::list-prs
+    technique_args:
+      filters: "--head {branch_name} --json number,url --limit 1"
     checkpoint: pr-check
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
-    actions[1]:
+    actions[2]:
       - action: set
         target: pr_exists
-        description: "Set to true when an existing PR is found for the current branch"
+        description: "true when list-prs returned a PR for the current branch head, false otherwise"
+      - action: set
+        target: existing_pr_number
+        description: "PR number from the list-prs result when one was found"
   - id: create-pr
-    name: Create Draft PR
     technique: manage-git::create-pr
     technique_args:
       issue_number: "{issue_number}"
@@ -298,7 +259,6 @@ steps[31]:
         value: true
         description: "Mark PR as existing once successfully created so downstream activities (validate, strategic-review, submit-for-review) see the correct state"
   - id: link-pr-to-ticket-jira
-    name: Record PR Reference on Jira Issue
     technique: atlassian-operations::comment-jira-issue
     technique_args:
       issueIdOrKey: "{issue_number}"
@@ -322,7 +282,6 @@ steps[31]:
           operator: "=="
           value: jira
   - id: link-pr-to-ticket-github
-    name: Verify PR Cross-Link on GitHub Issue
     technique: github-cli-protocol::view-issue
     technique_args:
       identifier: "{issue_number}"
@@ -344,9 +303,6 @@ steps[31]:
           variable: issue_platform
           operator: "=="
           value: github
-  - id: determine-next-activity
-    name: Determine Next Activity
-    description: "Based on issue details, determine if requirements elicitation is needed"
 checkpoints[10]:
   - id: issue-verification
     name: Issue Verification Checkpoint

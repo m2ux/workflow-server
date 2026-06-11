@@ -45,20 +45,16 @@ artifacts[6]:
     description: "Prism structural analysis findings — conservation law, meta-law, and classified bug table. For complex work packages, includes adversarial and synthesis pass artifacts."
 steps[8]:
   - id: gitnexus-detect-changes-preflight
-    name: GitNexus Detect Changes Preflight
     technique: gitnexus-operations::detect-changes
     when: "gitnexus_indexed == true"
   - id: manual-diff-review
-    name: Manual Diff Review
     technique: review-diff
     required: true
     checkpoint: file-index-table
   - id: code-review
-    name: Code Review
     technique: review-code
     required: true
   - id: structural-analysis-inline
-    name: Structural Analysis (Single Pass)
     technique: prism/structural-analysis
     required: true
     condition:
@@ -69,12 +65,9 @@ steps[8]:
         operator: "=="
         value: complex
   - id: dispatch-prism
-    name: Structural Analysis (Full Prism)
-    description: "For complex work packages, trigger the prism workflow with full-prism pipeline mode. The prism workflow runs the 3-pass isolated pipeline (structural → adversarial → synthesis) autonomously and returns artifact paths."
     required: true
     triggers[1]:
       - workflow: prism
-        description: "Dispatch full 3-pass prism structural analysis for complex work packages"
         passContext[3]:
           - target
           - output_path
@@ -85,11 +78,9 @@ steps[8]:
       operator: "=="
       value: complex
   - id: test-suite-review
-    name: Test Suite Review
     technique: review-test-suite
     required: true
   - id: architecture-summary
-    name: Architecture Summary
     technique: summarize-architecture
     required: false
     condition:
@@ -98,7 +89,6 @@ steps[8]:
       operator: "!="
       value: true
   - id: classify-and-route-findings
-    name: Classify and Route Review Findings
     technique: findings-classification
 checkpoints[3]:
   - id: file-index-table
@@ -183,27 +173,29 @@ loops[1]:
     maxIterations: 3
     steps[6]:
       - id: apply-fixes
-        name: Apply Fixes
         technique: apply-review-fixes
         required: true
       - id: reset-fix-flags
-        name: Reset Fix Flags
-        description: "Reset needs_code_fixes and needs_test_improvements to false before re-review."
         required: true
+        actions[2]:
+          - action: set
+            target: needs_code_fixes
+            value: false
+            message: "Reset code-fix flag before re-review."
+          - action: set
+            target: needs_test_improvements
+            value: false
+            message: "Reset test-improvement flag before re-review."
       - id: regenerate-index
-        name: Regenerate Change Block Index
         technique: review-diff
         required: true
       - id: re-manual-diff-review
-        name: Re-run Manual Diff Review
         technique: review-diff
         required: true
       - id: re-code-review
-        name: Re-run Code Review
         technique: review-code
         required: true
       - id: re-test-suite-review
-        name: Re-run Test Suite Review
         technique: review-test-suite
         required: true
 decisions[1]:

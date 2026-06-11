@@ -24,19 +24,14 @@ artifacts[2]:
     description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes. See architecture-summary resource for template."
 steps[10]:
   - id: diff-review
-    name: Review diff
     technique: review-strategy
   - id: identify-artifacts
-    name: Identify artifacts
     technique: review-strategy
   - id: verify-readme
-    name: Verify README conforms to template
     technique: manage-artifacts::verify-readme-conforms
   - id: ensure-changes-folder-entry
-    name: Ensure changes/ fragment when required
     technique: review-strategy
   - id: verify-change-fragment
-    name: Verify change fragment references the issue
     technique: review-strategy
     actions[2]:
       - action: set
@@ -46,10 +41,8 @@ steps[10]:
         target: "fragment_references_issue != false"
         message: "Change fragment for this work package does not reference issue_url ({issue_url}). Add a 'Closes: #{issue_number}' line (GitHub) or the full issue_url (when sibling fragments use that style) to the fragment body, commit, and re-run."
   - id: document-findings
-    name: Document findings
     technique: review-strategy
   - id: document-cleanup-recommendations
-    name: Document Cleanup Recommendations
     technique: review-strategy
     condition:
       type: simple
@@ -57,7 +50,6 @@ steps[10]:
       operator: "=="
       value: true
   - id: apply-cleanup
-    name: Apply cleanup
     technique: review-strategy
     condition:
       type: simple
@@ -65,11 +57,9 @@ steps[10]:
       operator: "!="
       value: true
   - id: create-architecture-summary
-    name: Create architecture summary
     technique: summarize-architecture
   - id: analyze-strategic-findings
-    name: Analyze Strategic Findings
-    description: "Analyze the severity of strategic review findings. If significant scope issues, over-engineering, or investigation artifacts are found, recommend fix-findings. If findings are minor, recommend acceptable. Set recommended_strategic_option accordingly. Also produce a concise multi-line strategic_findings_summary so the review-findings checkpoint message shows findings inline with the options — this saves the user a 'what are the findings?' round-trip."
+    technique: strategic-findings-analysis
     checkpoint: review-findings
     actions[2]:
       - action: set

@@ -16,10 +16,8 @@ techniques:
     - scatter-gather
 steps[5]:
   - id: evaluate-open-assumptions
-    name: Evaluate which assumptions are open
     technique: review-assumptions
   - id: interview-assumptions
-    name: Interview user on each assumption
     technique: review-assumptions
     condition:
       type: and
@@ -33,10 +31,8 @@ steps[5]:
           operator: "=="
           value: true
   - id: update-assumptions-log
-    name: Update assumptions log with decisions
     technique: review-assumptions
   - id: post-summary-jira
-    name: Post resolution summary to Jira issue
     technique: atlassian-operations::comment-jira-issue
     checkpoint: post-summary-review
     condition:
@@ -59,7 +55,6 @@ steps[5]:
           operator: "!="
           value: false
   - id: post-summary-github
-    name: Post resolution summary to GitHub issue
     technique: github-cli-protocol::comment-issue
     condition:
       type: and
@@ -84,11 +79,9 @@ loops[1]:
     over: open_assumptions
     steps[2]:
       - id: present-assumption
-        name: Present assumption with rationale
         technique: review-assumptions
         checkpoint: assumption-decision
       - id: record-decision
-        name: Record user decision
         technique: review-assumptions
 artifacts[1]:
   - id: assumptions-log

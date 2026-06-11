@@ -15,45 +15,35 @@ techniques:
     - "variable-binding"
 steps[10]:
   - id: kb-research
-    name: Knowledge base research
     technique: research-knowledge-base
   - id: web-research
-    name: Web research
     technique: research-knowledge-base
   - id: synthesize
-    name: Synthesize findings
     technique: research-knowledge-base
     checkpoint: research-findings
   - id: collect-assumptions
-    name: Collect assumptions
     technique: review-assumptions
     technique_args:
       assumption_categories: "Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment"
     checkpoint: research-focus
   - id: document
-    name: Create research document
     technique: research-knowledge-base
   - id: update-assumptions-log
-    name: Update assumptions log
     technique: review-assumptions
   - id: reconcile-assumptions
-    name: Reconcile assumptions
     technique: reconcile-assumptions
   - id: present-resolved-assumptions
-    name: Present resolved assumptions
     technique: review-assumptions
     actions[1]:
       - action: message
         message: "**Resolved Assumptions** — the following assumptions were resolved through code analysis during this phase."
   - id: declare-context-scope
-    name: Declare Context Scope
     checkpoint: context-scope-declaration
     actions[1]:
       - action: set
         target: context_scope
         description: "repo-only | web-retrieval | mixed based on research sources used"
   - id: interview-open-assumptions
-    name: Interview open assumptions
     technique: review-assumptions
 loops[2]:
   - id: assumption-reconciliation
@@ -67,7 +57,6 @@ loops[2]:
     description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
     steps[1]:
       - id: reconcile-iteration
-        name: Execute Reconciliation Iteration
         technique: reconcile-assumptions
   - id: assumption-interview
     name: Assumption Interview Loop
@@ -78,11 +67,9 @@ loops[2]:
     description: "Iterates over each open (stakeholder-dependent) assumption, presenting the research-assumption-interview checkpoint for each. The user resolves inline or defers to stakeholder review."
     steps[2]:
       - id: present-assumption
-        name: Present assumption to user
         technique: review-assumptions
         checkpoint: research-assumption-interview
       - id: record-response
-        name: Record user response
         technique: review-assumptions
 artifacts[1]:
   - id: research-document

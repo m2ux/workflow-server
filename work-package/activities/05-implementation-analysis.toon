@@ -16,7 +16,6 @@ techniques:
     - scatter-gather
 steps[12]:
   - id: checkout-baseline
-    name: Checkout Baseline State
     technique: review-baseline-state
     condition:
       type: simple
@@ -24,7 +23,6 @@ steps[12]:
       operator: "=="
       value: true
   - id: document-expected-changes
-    name: Document Expected Changes
     technique: review-baseline-state
     condition:
       type: simple
@@ -32,7 +30,6 @@ steps[12]:
       operator: "=="
       value: true
   - id: return-to-pr-branch
-    name: Return to PR Branch
     technique: review-baseline-state
     condition:
       type: simple
@@ -40,37 +37,28 @@ steps[12]:
       operator: "=="
       value: true
   - id: review-implementation
-    name: Review implementation
     technique: analyze-implementation
   - id: evaluate-effectiveness
-    name: Evaluate effectiveness
     technique: analyze-implementation
   - id: establish-baselines
-    name: Establish baseline metrics
     technique: analyze-implementation
   - id: collect-assumptions
-    name: Collect assumptions
     technique: review-assumptions
     technique_args:
       assumption_categories: "Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding"
   - id: document
-    name: Create analysis document
     technique: analyze-implementation
     checkpoint: analysis-confirmed
   - id: update-assumptions-log
-    name: Update assumptions log
     technique: review-assumptions
   - id: reconcile-assumptions
-    name: Reconcile assumptions
     technique: reconcile-assumptions
   - id: present-resolved-assumptions
-    name: Present resolved assumptions
     technique: review-assumptions
     actions[1]:
       - action: message
         message: "**Resolved Assumptions** — the following assumptions were resolved through code analysis during this phase."
   - id: interview-open-assumptions
-    name: Interview open assumptions
     technique: review-assumptions
 loops[2]:
   - id: assumption-reconciliation
@@ -84,7 +72,6 @@ loops[2]:
     description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
     steps[1]:
       - id: reconcile-iteration
-        name: Execute Reconciliation Iteration
         technique: reconcile-assumptions
   - id: assumption-interview
     name: Assumption Interview Loop
@@ -95,11 +82,9 @@ loops[2]:
     description: "Iterates over each open (stakeholder-dependent) assumption, presenting the analysis-assumption-interview checkpoint for each."
     steps[2]:
       - id: present-assumption
-        name: Present assumption to user
         technique: review-assumptions
         checkpoint: analysis-assumption-interview
       - id: record-response
-        name: Record user response
         technique: review-assumptions
 artifacts[1]:
   - id: analysis-document

@@ -14,7 +14,6 @@ techniques:
     - "variable-binding"
 steps[5]:
   - id: preflight
-    name: Toolchain preflight
     technique: cargo-operations::preflight
     when: "project_type == 'rust-substrate'"
     actions[1]:
@@ -22,13 +21,11 @@ steps[5]:
         target: "missing_prerequisites.length == 0"
         message: "Install missing toolchain prerequisites before validation: {missing_prerequisites}"
   - id: run-suite
-    name: Run validation suite
     technique: cargo-operations::run-suite
     technique_args:
       scope: "--workspace"
     when: "project_type == 'rust-substrate'"
   - id: document-failures
-    name: Document Failures as Findings
     technique: findings-classification
     condition:
       type: simple
@@ -36,7 +33,6 @@ steps[5]:
       operator: "=="
       value: true
   - id: assess-test-coverage
-    name: Assess Test Coverage
     technique: review-test-suite
     condition:
       type: simple
@@ -44,7 +40,6 @@ steps[5]:
       operator: "=="
       value: true
   - id: fix-failures
-    name: Fix any failures
     condition:
       type: and
       conditions[2]:
@@ -68,18 +63,15 @@ loops[1]:
     maxIterations: 10
     steps[3]:
       - id: analyze-failure
-        name: Analyze Failure Root Cause
         technique: validate-build::analyze-failure
         technique_args:
           check_id: "{validation_results.first_failure.check_id}"
           diagnostics: "{validation_results.first_failure.diagnostics}"
       - id: apply-fix
-        name: Apply Fix
         technique: validate-build::apply-fix
         technique_args:
           check_id: "{validation_results.first_failure.check_id}"
       - id: revalidate
-        name: Re-run Validation
         technique: cargo-operations::run-suite
         technique_args:
           scope: "--workspace"

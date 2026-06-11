@@ -16,26 +16,22 @@ techniques:
   primary: update-pr
   supporting[1]:
     - "variable-binding"
-steps[13]:
+steps[12]:
   - id: consolidate-review-findings
-    name: Consolidate Review Findings
-    description: "Gather all findings from code review, test review, validation, and strategic review. Categorize by severity and type."
+    technique: findings-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: generate-review-summary
-    name: Generate Review Summary
-    description: "Use attached resource review-mode via get_technique (resources attached). Create structured review summary using the Consolidated Review Format template defined in that resource."
+    technique: review-summary
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: present-summary-to-user
-    name: Present Summary to User
-    description: "Show the review summary for confirmation before posting."
     checkpoint: review-summary-approval
     condition:
       type: simple
@@ -43,7 +39,6 @@ steps[13]:
       operator: "=="
       value: true
   - id: post-pr-review
-    name: Post PR Review
     technique: update-pr::render
     condition:
       type: simple
@@ -51,7 +46,6 @@ steps[13]:
       operator: "=="
       value: true
   - id: dco-sign-off
-    name: DCO Sign-off
     technique: dco-provenance::record-attestation
     checkpoint: dco-sign-off
     condition:
@@ -60,7 +54,6 @@ steps[13]:
       operator: "!="
       value: true
   - id: push-commits
-    name: Push all commits
     technique: manage-git::push-commits
     condition:
       type: simple
@@ -68,7 +61,6 @@ steps[13]:
       operator: "!="
       value: true
   - id: update-description
-    name: Update PR description
     technique: update-pr::render
     condition:
       type: simple
@@ -76,7 +68,6 @@ steps[13]:
       operator: "!="
       value: true
   - id: instruct-merge-strategy
-    name: Instruct Merge Strategy
     technique: manage-git::instruct-merge-strategy
     checkpoint: merge-strategy-reminder
     condition:
@@ -85,7 +76,6 @@ steps[13]:
       operator: "!="
       value: true
   - id: mark-ready
-    name: Mark PR ready for review
     technique: update-pr::mark-ready
     condition:
       type: simple
@@ -93,18 +83,11 @@ steps[13]:
       operator: "!="
       value: true
   - id: await-review
-    name: Await Manual Review
-    description: "Wait for PR to receive manual review from team members."
     checkpoint: review-received
   - id: process-review-comments
-    name: Process Review Comments
     technique: respond-to-pr-review
-  - id: determine-review-outcome
-    name: Determine Review Outcome
-    description: "Based on review feedback, determine whether changes are needed."
   - id: analyze-review-outcome
-    name: Analyze Review Outcome
-    description: "Analyze PR review comments and recommend an outcome."
+    technique: review-outcome-analysis
     checkpoint: review-outcome
     actions[2]:
       - action: set
@@ -126,12 +109,10 @@ loops[1]:
     description: "Re-render the PR body until body_conforms=true."
     steps[2]:
       - id: rerender-body
-        name: Re-render PR Body
         technique: update-pr::render
         technique_args:
           template: final
       - id: verify-body
-        name: Verify PR Body Conformance
         technique: update-pr::verify-body
 checkpoints[6]:
   - id: dco-sign-off
