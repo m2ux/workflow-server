@@ -14,10 +14,6 @@ estimatedTime: 20-45m
 techniques:
   supporting[1]:
     - "variable-binding"
-rules[3]:
-  - "The initial deep-dive is mandatory and always performed — it attempts to resolve every open question from the first pass without user selection"
-  - "Comprehension is sufficient when all open questions have been resolved through code analysis. If unresolved questions remain after the initial deep-dive, present them with the 30s auto-advance pattern — the user can intervene to explore further or let it proceed."
-  - "The 'Open Questions' section in the comprehension artifact is the authoritative list of unresolved questions and must be revised after the initial deep-dive and after each subsequent deep-dive iteration"
 steps[6]:
   - id: build-comprehension
     technique: build-comprehension::survey

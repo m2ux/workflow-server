@@ -35,7 +35,7 @@ The documented rationale for the selected workflow path (full, elicitation-only,
 
 ### 1. Determine Path
 
-- Map complexity to workflow path (full, elicitation-only, research-only, or skip optional discovery work)
+- Map complexity to workflow path (full, elicitation-only, research-only, or skip optional discovery work): simple, clearly-scoped problems take the lighter paths; moderate and complex problems take the full path
 - Document path rationale
 - Set needs-elicitation, needs-research, skip-optional-activities accordingly
 - For simple changes, lightweight application is acceptable — not every bug fix needs full elicitation

@@ -9,10 +9,6 @@ recognition[3]:
   - quality review
 required: true
 estimatedTime: 30-60m
-rules[3]:
-  - "Manual diff review is FIRST - user reviews in external side-by-side diff app"
-  - "All three automated reviews (code, test suite, architecture) must be completed before transitioning to validate"
-  - "Adoption workflows must still complete quality reviews"
 entryActions[1]{action,message}:
   log,Starting post-implementation review
 techniques:
