@@ -64,7 +64,7 @@ steps[9]:
         description: "Set to the recommended strategic review option based on findings analysis"
       - action: set
         target: strategic_findings_summary
-        description: "Concise multi-line summary of strategic-review findings (severity tag + one-line description per finding). Empty string when no findings. Interpolated into the review-findings checkpoint message so the user sees findings alongside the options without an extra question."
+        description: "Concise multi-line summary of strategic-review findings (severity tag + one-line description per finding). Empty string when no findings."
 checkpoints[1]:
   - id: review-findings
     name: Strategic Review Findings Checkpoint

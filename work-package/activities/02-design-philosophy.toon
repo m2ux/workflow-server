@@ -83,7 +83,7 @@ steps[9]:
       - action: set
         target: needs_elicitation
         value: false
-        description: "Force needs_elicitation=false in review mode. Research may still be needed based on complexity."
+        description: "Force needs_elicitation=false in review mode."
 loops[1]:
   - id: assumption-reconciliation
     name: Assumption Reconciliation Loop

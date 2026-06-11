@@ -51,7 +51,7 @@ steps[30]:
       - action: set
         target: gitnexus_indexed
         value: true
-        description: "Set gitnexus_indexed=true on successful index. Downstream steps gated on this variable (e.g., post-impl-review's gitnexus-detect-changes-preflight, implement-task protocol phases) become structurally enabled."
+        description: "Set gitnexus_indexed=true on successful index."
   - id: verify-signing-precondition
     actions[1]:
       - action: validate
@@ -257,7 +257,7 @@ steps[30]:
       - action: set
         target: pr_exists
         value: true
-        description: "Mark PR as existing once successfully created so downstream activities (validate, strategic-review, submit-for-review) see the correct state"
+        description: "Mark PR as existing once successfully created."
   - id: link-pr-to-ticket-jira
     technique: atlassian-operations::comment-jira-issue
     technique_args:
