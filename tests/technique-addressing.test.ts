@@ -25,7 +25,7 @@ describe('technique addressing (:: path)', () => {
   });
 
   it('delivers a whole (standalone) technique protocol from a bare ref', async () => {
-    const [r] = await resolveTechniques(['classify-problem'], WF_DIR, 'work-package');
+    const [r] = await resolveTechniques(['implement-task'], WF_DIR, 'work-package');
     expect(r.type).toBe('technique');
     expect((r.body as { protocol?: unknown }).protocol).toBeDefined();
   });
