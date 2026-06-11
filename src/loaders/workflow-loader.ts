@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { type Workflow, safeValidateWorkflow } from '../schema/workflow.schema.js';
-import { type Activity, safeValidateActivity } from '../schema/activity.schema.js';
+import { type Activity, safeValidateActivity, populateStepIds } from '../schema/activity.schema.js';
 import { type Result, ok, err } from '../result.js';
 import { WorkflowNotFoundError, WorkflowValidationError, ActivityNotFoundError } from '../errors.js';
 import { logInfo, logError, logWarn } from '../logging.js';
@@ -47,6 +47,7 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<Activity[]
         continue;
       }
       const activity = validation.data;
+      populateStepIds(activity);
       activity.artifactPrefix = parsed.index;
       activities.push(activity);
     } catch (error) {
@@ -117,7 +118,8 @@ async function resolveActivityReference(workflowDir: string, workflowId: string,
     }
     
     const activity = validation.data;
-    
+    populateStepIds(activity);
+
     // Attempt to parse prefix from filename
     const actualFilename = filename.split('/').pop() || '';
     const parsed = parseActivityFilename(actualFilename);

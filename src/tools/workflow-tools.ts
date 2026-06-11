@@ -5,6 +5,7 @@ import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, readActivityRa
 import { readTechniqueRaw, resolveTechniques, formatTechniqueBundle } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
+import { injectResolvedStepIds } from '../schema/activity.schema.js';
 import { withAuditLog } from '../logging.js';
 import { encodeToon } from '../utils/toon.js';
 import {
@@ -316,6 +317,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const workflow_id = state.workflowId;
       const rawResult = await readActivityRaw(config.workflowDir, workflow_id, activity_id);
       if (!rawResult.success) throw new Error(`Activity not found: ${activity_id}`);
+      const activityBody = injectResolvedStepIds(rawResult.value);
 
       const next = advanceSession(state);
       await saveSessionForTool(loaded, next);
@@ -344,7 +346,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         : `session_index: ${session_index}`;
 
       return {
-        content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${rawResult.value}` }],
+        content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${activityBody}` }],
         _meta: { session_index, validation, artifact_prefix: artifactPrefix },
       };
     }), traceOpts));

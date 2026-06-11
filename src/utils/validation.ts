@@ -109,7 +109,7 @@ export function validateStepManifest(
   const { steps } = activity;
   if (!steps || steps.length === 0) return [];
 
-  const expectedIds = steps.map(s => s.id);
+  const expectedIds = steps.map(s => s.id).filter((id): id is string => id !== undefined);
   const manifestIds = manifest.map(m => m.step_id);
   const warnings: string[] = [];
 

@@ -88,7 +88,7 @@ describe('schema-validation', () => {
 
   describe('StepSchema', () => {
     it('should validate minimal step', () => {
-      const step = { id: 'step-1', name: 'Step One' };
+      const step = { id: 'step-1' };
       const result = StepSchema.safeParse(step);
       expect(result.success).toBe(true);
     });
@@ -96,7 +96,6 @@ describe('schema-validation', () => {
     it('should validate step with description', () => {
       const step = {
         id: 'step-1',
-        name: 'Step One',
         description: 'Detailed guidance for this step',
         technique: 'some-technique',
       };
@@ -104,8 +103,14 @@ describe('schema-validation', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should reject step without id', () => {
-      const step = { name: 'Step One' };
+    it('should validate a technique-bound step without an explicit id', () => {
+      const step = { technique: 'cargo-operations::run-suite' };
+      const result = StepSchema.safeParse(step);
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject a step with neither id nor technique', () => {
+      const step = { description: 'a control step missing its id' };
       const result = StepSchema.safeParse(step);
       expect(result.success).toBe(false);
     });
@@ -249,7 +254,7 @@ describe('schema-validation', () => {
         estimatedTime: '1-2h',
         entryActions: [{ action: 'log', message: 'Entering' }],
         exitActions: [{ action: 'log', message: 'Exiting' }],
-        steps: [{ id: 'step-1', name: 'Step 1' }],
+        steps: [{ id: 'step-1' }],
         checkpoints: [
           {
             id: 'cp-1',

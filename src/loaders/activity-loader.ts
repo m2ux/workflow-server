@@ -5,7 +5,7 @@ import { type Result, ok, err } from '../result.js';
 import { ActivityNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
 import { decodeToonRaw } from '../utils/toon.js';
-import { type Activity, safeValidateActivity } from '../schema/activity.schema.js';
+import { type Activity, safeValidateActivity, populateStepIds } from '../schema/activity.schema.js';
 import { parseActivityFilename } from './filename-utils.js';
 
 export interface ActivityEntry { 
@@ -120,28 +120,29 @@ async function readActivityFromWorkflow(
     }
     
     const activity = validation.data;
-    
+    populateStepIds(activity);
+
     // Infer artifactPrefix from the activity filename index
     const parsedFilename = parseActivityFilename(matchingFile);
     if (parsedFilename) {
       activity.artifactPrefix = parsedFilename.index;
     }
-    
+
     logInfo('Activity loaded', { id: activityId, workflowId, path: filePath });
-    
+
     const primaryStep = activity.steps?.find(s => s.technique);
 
     const activityWithGuidance: ActivityWithGuidance = {
       ...activity,
       workflowId,
-      ...(primaryStep ? {
+      ...(primaryStep?.id ? {
         next_action: {
           tool: 'get_technique',
           parameters: { step_id: primaryStep.id },
         },
       } : {}),
     };
-    
+
     return ok(activityWithGuidance);
   } catch (error) {
     logWarn('Failed to load activity', { activityId, workflowId, error: error instanceof Error ? error.message : String(error) });
@@ -246,7 +247,8 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
       
       const validation = safeValidateActivity(decoded);
       const activity = validation.success ? validation.data : decoded as Activity;
-      
+      if (validation.success) populateStepIds(activity);
+
       const primaryTechnique = activity.techniques?.primary
         ?? activity.steps?.find(s => s.technique)?.technique;
       const primaryStep = activity.steps?.find(s => s.technique);
@@ -256,7 +258,7 @@ export async function readActivityIndex(workflowDir: string): Promise<Result<Act
         workflowId: entry.workflowId,
         problem: activity.problem ?? activity.description ?? activity.name,
         ...(primaryTechnique ? { primary_technique: primaryTechnique } : {}),
-        ...(primaryStep ? {
+        ...(primaryStep?.id ? {
           next_action: {
             tool: 'get_technique',
             parameters: { step_id: primaryStep.id },
