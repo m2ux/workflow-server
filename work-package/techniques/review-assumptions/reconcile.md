@@ -43,8 +43,8 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 - For each, determine whether targeted code analysis could validate or invalidate it
 - Code-resolvable: assumptions about code behavior, data flows, type structures, API contracts, test coverage, implementation details, library behavior, ordering guarantees, error handling paths
 - Not code-resolvable: stakeholder decisions, operational questions, strategic judgments, time estimates, deployment status, business priorities, external system behavior
-- If the `{existing_assumptions_log}` contains no open assumptions, there is nothing to resolve — skip reconciliation and set has_resolvable_assumptions to false and has_open_assumptions to false.
-- If every open assumption classifies as not code-resolvable, convergence is immediate — set has_resolvable_assumptions to false and proceed to user review.
+- If the `{existing_assumptions_log}` contains no open assumptions, there is nothing to resolve — skip reconciliation and set `{has_resolvable_assumptions}` to false and `{has_open_assumptions}` to false.
+- If every open assumption classifies as not code-resolvable, convergence is immediate — set `{has_resolvable_assumptions}` to false and proceed to user review.
 
 ### 2. Targeted Analysis
 
@@ -65,9 +65,9 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 ### 4. Check Convergence
 
 - Re-classify all open assumptions after the analysis pass
-- If any open assumptions are code-resolvable (including newly surfaced ones), signal that another iteration is needed — set has_resolvable_assumptions to true
-- If no open assumptions are code-resolvable, convergence is reached: the assumptions log is now the `{updated_assumptions_log}` output, with all code-resolvable assumptions resolved and only stakeholder-dependent ones remaining — set has_resolvable_assumptions to false
-- After convergence, evaluate whether any non-code-resolvable assumptions remain open. If none remain (all resolved), set has_open_assumptions to false. If stakeholder-dependent assumptions remain, set has_open_assumptions to true.
+- If any open assumptions are code-resolvable (including newly surfaced ones), signal that another iteration is needed — set `{has_resolvable_assumptions}` to true
+- If no open assumptions are code-resolvable, convergence is reached: the assumptions log is now the `{updated_assumptions_log}` output, with all code-resolvable assumptions resolved and only stakeholder-dependent ones remaining — set `{has_resolvable_assumptions}` to false
+- After convergence, evaluate whether any non-code-resolvable assumptions remain open. If none remain (all resolved), set `{has_open_assumptions}` to false. If stakeholder-dependent assumptions remain, set `{has_open_assumptions}` to true.
 
 ### 5. Update Comprehension Artifact
 

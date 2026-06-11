@@ -33,7 +33,7 @@ Folder where the test suite review report is written
 
 - Coverage assessment must be diff-aware — scope evaluation to the changed-symbol set rather than absolute project coverage
 - Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[diff-coverage-map](./gitnexus-operations/diff-coverage-map.md): it enumerates the changed-symbol set and, for each changed symbol, finds existing test callers (incoming references from test files)
-- Treat its coverage_gaps (symbols with no test callers) as coverage gaps and update_candidates (symbols with stale test callers) as update candidates
+- Treat its `coverage_gaps` (symbols with no test callers) as coverage gaps and `update_candidates` (symbols with stale test callers) as update candidates
 
 ### 3. Run Tests
 
