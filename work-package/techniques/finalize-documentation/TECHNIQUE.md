@@ -49,4 +49,4 @@ The merged PR number, cross-referenced when recording the ADR implementation out
 
 ### tool-usage
 
-Rust/Substrate: apply [cargo-operations](../cargo-operations/TECHNIQUE.md)::[doc](../cargo-operations/doc.md) (scope=`--workspace --no-deps`) to verify documentation builds. Other project types: run the equivalent doc command for the project. This technique does not invoke cargo directly.
+Rust/Substrate: apply [cargo-operations](../../../meta/techniques/cargo-operations/TECHNIQUE.md)::[doc](../../../meta/techniques/cargo-operations/doc.md) (scope=`--workspace --no-deps`) to verify documentation builds. Other project types: run the equivalent doc command for the project. This technique does not invoke cargo directly.

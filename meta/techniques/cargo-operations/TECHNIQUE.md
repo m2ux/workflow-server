@@ -27,7 +27,7 @@ Optional `--features` flags (empty string when none)
 
 ### resource-budget
 
-Every cargo invocation made by work-package techniques MUST use one of these operations. Do NOT call bare `cargo ...` from technique protocols. The inline budget — `nice -n 19`, `CARGO_BUILD_JOBS=\${CARGO_BUILD_JOBS:-4}`, `RUST_TEST_THREADS=\${RUST_TEST_THREADS:-4}`, `SKIP_WASM_BUILD=1` (non-release only) — is what prevents host hang on ≤32 GiB hosts. Override caps via env on larger hosts.
+Every cargo invocation MUST use one of these operations. Do NOT call bare `cargo ...` from technique protocols. The inline budget — `nice -n 19`, `CARGO_BUILD_JOBS=\${CARGO_BUILD_JOBS:-4}`, `RUST_TEST_THREADS=\${RUST_TEST_THREADS:-4}`, `SKIP_WASM_BUILD=1` (non-release only) — is what prevents host hang on ≤32 GiB hosts. Override caps via env on larger hosts.
 
 ### foreground-only
 
