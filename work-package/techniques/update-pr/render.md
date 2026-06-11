@@ -7,6 +7,38 @@ metadata:
 
 Render the PR body from the selected template and apply it to the `{pr_number}` PR description, drawing the implementation summary from the planning artifacts.
 
+## Inputs
+
+### template
+
+Which PR body template to render — `initial` (ADR-only, before implementation) or `final` (after implementation); inherited from the [update-pr](./TECHNIQUE.md) group root.
+
+### is_review_mode
+
+True when the body is the consolidated review-mode comment rather than an implementation update; selects the [review-mode](../../resources/review-mode.md) template (inherited from the [update-pr](./TECHNIQUE.md) group root).
+
+### planning_folder_path
+
+Path to the planning folder holding the implementation summary and artifacts the body draws from (inherited from the [update-pr](./TECHNIQUE.md) group root).
+
+### reference_path
+
+Path to the reference checkout (the engineering / parent repo containing `.engineering/`), from which the engineering link URL is resolved (inherited from the [update-pr](./TECHNIQUE.md) group root).
+
+### target_path
+
+Path to the target checkout (where the PR lives), from which the target repo URL is resolved (inherited from the [update-pr](./TECHNIQUE.md) group root).
+
+### pr_number
+
+The PR number whose description is updated (inherited from the [update-pr](./TECHNIQUE.md) group root).
+
+## Output
+
+### rendered_pr_body
+
+The PR description applied to the `{pr_number}` PR: the body composed from the selected template, with the implementation summary, test-coverage summary, and key decisions/trade-offs filled in, and the engineering and target link URLs resolved from git remotes. The op's effect is that the live `{pr_number}` PR description now holds this rendered body.
+
 ## Protocol
 
 1. Select the template per [template-selection](./TECHNIQUE.md): the Initial template when `{template}` is `initial`, the Final template when `{template}` is `final` (from [pr-description](../../resources/pr-description.md)), or the [review-mode](../../resources/review-mode.md) template when `{is_review_mode}` is true.

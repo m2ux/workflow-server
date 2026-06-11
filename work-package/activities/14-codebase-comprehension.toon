@@ -19,26 +19,16 @@ rules[3]:
   - "The initial deep-dive is mandatory and always performed — it attempts to resolve every open question from the first pass without user selection"
   - "Comprehension is sufficient when all open questions have been resolved through code analysis. If unresolved questions remain after the initial deep-dive, present them with the 30s auto-advance pattern — the user can intervene to explore further or let it proceed."
   - "The 'Open Questions' section in the comprehension artifact is the authoritative list of unresolved questions and must be revised after the initial deep-dive and after each subsequent deep-dive iteration"
-steps[12]:
-  - id: check-existing-artifacts
-    technique: build-comprehension
-  - id: review-existing
-    technique: build-comprehension
-  - id: architecture-survey
-    technique: build-comprehension
-  - id: key-abstractions
-    technique: build-comprehension
-  - id: design-rationale
-    technique: build-comprehension
-  - id: domain-concept-mapping
-    technique: build-comprehension
+steps[6]:
+  - id: build-comprehension
+    technique: build-comprehension::survey
   - id: create-comprehension-artifact
     technique: manage-artifacts::write-artifact
     actions[1]:
       - action: message
         message: "Created/Updated: [comprehension artifact](.engineering/artifacts/comprehension/{artifact_name}). Proceeding to mandatory initial deep-dive — comprehension-sufficient checkpoint surfaces only when unresolved questions remain after investigation."
   - id: initial-deep-dive
-    technique: build-comprehension
+    technique: build-comprehension::deep-dive
   - id: initial-lens-pass
     technique: prism/portfolio-analysis
     technique_args:
@@ -46,9 +36,7 @@ steps[12]:
   - id: update-artifact-initial
     technique: manage-artifacts::write-artifact
   - id: revise-initial-questions
-    technique: build-comprehension
-  - id: deep-dive-loop
-    technique: build-comprehension
+    technique: build-comprehension::revise-questions
 artifacts[1]:
   - id: comprehension-artifact
     name: "{codebase-area}.md"
@@ -89,11 +77,9 @@ loops[1]:
       operator: ==
       value: true
     description: "Loop where each iteration explores a specific area of the codebase in more detail. Continues until user selects 'sufficient' at the comprehension-sufficient checkpoint, which sets needs_comprehension to false."
-    steps[5]:
+    steps[4]:
       - id: select-area
-        technique: build-comprehension
-      - id: targeted-analysis
-        technique: build-comprehension
+        technique: build-comprehension::deep-dive
       - id: portfolio-lens-pass
         technique: prism/portfolio-analysis
         technique_args:
@@ -101,7 +87,7 @@ loops[1]:
       - id: update-artifact
         technique: manage-artifacts::write-artifact
       - id: revise-open-questions
-        technique: build-comprehension
+        technique: build-comprehension::revise-questions
         checkpoint: comprehension-sufficient
 transitions[4]:
   - to: requirements-elicitation

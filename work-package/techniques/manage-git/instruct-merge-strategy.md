@@ -21,6 +21,12 @@ The feature branch to be merged
 
 The PR number being merged
 
+## Output
+
+### presented_merge_guidance
+
+The DCO-compliant merge guidance presented to the human for the `{pr_number}` PR, branched on `{squash_merge_supported}`: the local GPG-signed squash-merge flow when squash merge is supported, or the plain-branch-merge note when it is not. This op is advisory and read-only — it sets no workflow state and performs no merge; the output is solely the guidance shown for the human to act on.
+
 ## Protocol
 
 1. When `{squash_merge_supported}` is true, instruct the human to merge locally so the merge commit is both GPG-signed and DCO-attested — the GitHub web UI squash merge is not GPG-signed:

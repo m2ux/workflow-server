@@ -54,7 +54,7 @@ loops[3]:
         technique: task-completion-review
         checkpoint: symbol-provenance-confirmed
       - id: collect-assumptions
-        technique: review-assumptions
+        technique: review-assumptions::collect
   - id: assumption-reconciliation
     name: Assumption Reconciliation Loop
     type: while
@@ -76,22 +76,22 @@ loops[3]:
     description: "Iterates over each open (stakeholder-dependent) assumption, presenting the implementation-assumption-interview checkpoint for each."
     steps[2]:
       - id: present-assumption
-        technique: review-assumptions
+        technique: review-assumptions::interview
         checkpoint: implementation-assumption-interview
       - id: record-response
-        technique: review-assumptions
+        technique: review-assumptions::record
 steps[4]:
   - id: reconcile-assumptions
     technique: reconcile-assumptions
   - id: present-resolved-assumptions
-    technique: review-assumptions
+    technique: review-assumptions::interview
     actions[1]:
       - action: message
         message: "**Resolved Assumptions** — the following implementation assumptions were resolved through code analysis."
   - id: interview-open-assumptions
-    technique: review-assumptions
+    technique: review-assumptions::interview
   - id: update-assumptions-log
-    technique: review-assumptions
+    technique: review-assumptions::record
     checkpoint: switch-model-post-impl
 checkpoints[4]:
   - id: symbol-provenance-confirmed

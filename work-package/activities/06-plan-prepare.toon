@@ -13,7 +13,7 @@ techniques:
   primary: create-plan
   supporting[1]:
     - variable-binding
-steps[11]:
+steps[10]:
   - id: env-prerequisites
     actions[6]:
       - action: validate
@@ -34,10 +34,8 @@ steps[11]:
       - action: validate
         target: gpg.agent.reachable == true
         message: "GPG agent is not reachable. Ensure it is running at your preferred scope before re-running."
-  - id: apply-design
-    technique: create-plan
   - id: create-plan
-    technique: create-plan
+    technique: create-plan::plan
   - id: create-test-plan
     technique: create-test-plan
   - id: present-solution-overview
@@ -48,15 +46,15 @@ steps[11]:
       - action: message
         message: "**Solution Overview** (plain-language summary for stakeholder reference)"
   - id: collect-assumptions
-    technique: review-assumptions
+    technique: review-assumptions::collect
     technique_args:
       assumption_categories: "Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions"
   - id: update-assumptions-log
-    technique: review-assumptions
+    technique: review-assumptions::record
   - id: reconcile-assumptions
     technique: reconcile-assumptions
   - id: create-todos
-    technique: create-plan
+    technique: create-plan::create-todos
   - id: sync-branch
     technique: manage-git::sync-branch
   - id: update-pr

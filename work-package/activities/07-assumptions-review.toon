@@ -16,9 +16,9 @@ techniques:
     - scatter-gather
 steps[5]:
   - id: evaluate-open-assumptions
-    technique: review-assumptions
+    technique: review-assumptions::collect
   - id: interview-assumptions
-    technique: review-assumptions
+    technique: review-assumptions::interview
     condition:
       type: and
       conditions[2]:
@@ -31,7 +31,7 @@ steps[5]:
           operator: "=="
           value: true
   - id: update-assumptions-log
-    technique: review-assumptions
+    technique: review-assumptions::record
   - id: post-summary-jira
     technique: atlassian-operations::comment-jira-issue
     checkpoint: post-summary-review
@@ -79,10 +79,10 @@ loops[1]:
     over: open_assumptions
     steps[2]:
       - id: present-assumption
-        technique: review-assumptions
+        technique: review-assumptions::interview
         checkpoint: assumption-decision
       - id: record-decision
-        technique: review-assumptions
+        technique: review-assumptions::record
 artifacts[1]:
   - id: assumptions-log
     name: assumptions-log.md

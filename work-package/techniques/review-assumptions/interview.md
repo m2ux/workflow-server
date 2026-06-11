@@ -1,45 +1,31 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
-  version: 3.0.0
-  order: 13
-  legacy_id: 13
+  version: 1.0.0
 ---
 
 ## Capability
 
-Own the human-facing assumption lifecycle — collect and classify assumptions made during an activity, interview the user on the open ones, and record their decisions back into the log
+Present the open (stakeholder-dependent, non-code-resolvable) assumptions to the user as judgement-augmentation, framing the decision space and trade-offs so the user can resolve or defer each one.
 
 ## Inputs
 
-### activity_context
+### open_assumptions
 
-Which activity is generating assumptions
+The open (non-code-resolvable) assumptions to present for review. In interview mode the activity's forEach loop binds the current one as `current_assumption`; in batch mode the whole list is presented together.
 
-### assumption_categories
+### updated_assumptions_log
 
-The per-activity list of categories used to classify assumptions during collection (supplied via `technique_args` from the consuming activity). Collection classifies each assumption into one of these categories.
+The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) carrying each assumption's reconciliation history and technical context, linked into the presentation for full detail (inherited from the [review-assumptions](./TECHNIQUE.md) group root).
 
-### existing_assumptions_log
+## Output
 
-*(optional)* The existing assumptions [log](../resources/assumptions-review.md#assumptions-log-template), if one exists
+### assumption_review_presentation
+
+A side-effect output: the structured judgement-augmentation context presented to the user for the `assumption-decision` checkpoint. For each open assumption it contains the decision space (alternatives + trade-offs), non-resolvability rationale, technical context, the agent's current position, a reversibility flag, and a link to the assumptions log. Produces no new stored variable — the user's decision is captured by the checkpoint and written back by [record](./record.md).
 
 ## Protocol
 
-### 1. Collect
-
-- Identify all implicit decisions and assumptions made
-- Classify each by a category from `{assumption_categories}`, choosing the category appropriate to the `{activity_context}` generating them  
-  > Use the categories supplied for the current activity phase.
-- If no significant assumptions are identified, explicitly confirm with the user that no assumptions were made before proceeding
-- Append collected assumptions to the `{existing_assumptions_log}` (or start a fresh log if none exists), recording type, statement, rationale, and alternatives for each
-- The file is the record of truth — do not duplicate assumption content in checkpoint messages
-- Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See [assumption-reconciliation](../resources/assumption-reconciliation.md) for correct vs incorrect examples.
-
-### 2. Interview
-
-#### Format Judgement Context
+### 1. Format Judgement Context
 
 - For each open (non-code-resolvable) assumption, assemble structured context: (1) the decision space — what alternatives exist, (2) trade-off analysis for each alternative, (3) why the agent could not resolve it through code analysis, (4) relevant technical context discovered during reconciliation — code patterns found, constraints identified, related implementation details, (5) which alternative the agent's current assumption favors and why
 - Present the decision space (alternatives and trade-offs) before stating which option the agent's current assumption favors. This ordering reduces anchoring bias — the user encounters the options before being anchored to the agent's interpretation
@@ -48,9 +34,9 @@ The per-activity list of categories used to classify assumptions during collecti
 - If no open assumptions remain after reconciliation, skip the judgement augmentation format and present a summary confirming all assumptions were resolved through code analysis
 - Focus trade-offs on measurable differences between alternatives, not uniform property lists. If two options are equivalent on a dimension, omit that dimension — it adds noise without aiding the decision
 - Flag decision reversibility: mark each assumption as easily-reversible (low-cost to change later) or path-committing (high-cost to reverse). This helps the user calibrate how much deliberation to invest
-- Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[reversibility-signal](./gitnexus-operations/reversibility-signal.md)(name: `{$symbol}`) to set the flag — high caller fan-out and broad process participation → path-committing; isolated symbols → easily-reversible.
+- Apply [gitnexus-operations](../gitnexus-operations/TECHNIQUE.md)::[reversibility-signal](../gitnexus-operations/reversibility-signal.md)(name: `{$symbol}`) to set the flag — high caller fan-out and broad process participation → path-committing; isolated symbols → easily-reversible.
 
-#### Present For Review
+### 2. Present For Review
 
 - This technique supports two presentation modes depending on the consuming activity's structure. Batch mode: present all open assumptions together as a structured list, ordered by decision impact. Interview mode: present assumptions one at a time via the activity's forEach loop and per-assumption checkpoint. The activity's steps, loops, and checkpoints determine which mode applies — follow the activity structure.
 - In both modes, each assumption should contain the decision space, trade-offs, non-resolvability rationale, technical context, the agent's current position, and a reversibility flag as assembled by format-judgement-context. Order by decision impact: assumptions whose resolution most affects the implementation approach come first.
@@ -58,25 +44,3 @@ The per-activity list of categories used to classify assumptions during collecti
 - Frame the review as judgement augmentation: the user is making informed decisions on genuinely open questions, not performing triage or rubber-stamping. The agent has already resolved everything it can.
 - Do not present code-resolved assumptions for re-confirmation — they are already validated with evidence in the assumptions log
 - When presenting 5 or more open assumptions in batch mode, group related assumptions by theme or domain to reduce cognitive load. Present the group heading before its assumptions so the user can orient before diving into details.
-
-### 3. Record
-
-- Mark each as confirmed, corrected, or needs-discussion
-- Write outcomes and user responses back into the log, producing the `{updated_assumptions_log}`
-- Preserve all assumptions and their resolution status
-
-## Outputs
-
-### updated_assumptions_log
-
-Assumptions [log](../resources/assumptions-review.md#assumptions-log-template) updated with review outcomes — grows across activities
-
-#### assumptions_log_artifact
-
-`assumptions-log.md`
-
-## Rules
-
-### elevate-implicit
-
-Make implicit decisions explicit — assumptions should be elevated for validation

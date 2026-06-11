@@ -31,7 +31,7 @@ techniques:
   primary: finalize-documentation
   supporting[1]:
     - "variable-binding"
-steps[10]:
+steps[8]:
   - id: create-adr
     technique: create-adr
     condition:
@@ -52,7 +52,7 @@ steps[10]:
               operator: ==
               value: complex
   - id: update-adr-status
-    technique: finalize-documentation
+    technique: finalize-documentation::update-adr
     condition:
       type: and
       conditions[2]:
@@ -71,32 +71,28 @@ steps[10]:
               operator: ==
               value: complex
   - id: finalize-test-plan
-    technique: finalize-documentation
+    technique: finalize-documentation::finalize-test-plan
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: create-complete-doc
-    technique: finalize-documentation
+    technique: finalize-documentation::create-complete-doc
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: ensure-docs
-    technique: finalize-documentation
+    technique: finalize-documentation::ensure-docs
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
-  - id: capture-history
-    technique: conduct-retrospective
-  - id: retrospective
-    technique: conduct-retrospective
-  - id: update-status
-    technique: conduct-retrospective
+  - id: conduct-retrospective
+    technique: conduct-retrospective::retrospective
   - id: remove-worktree
     technique: manage-git::remove-worktree
     condition:
@@ -105,7 +101,7 @@ steps[10]:
       operator: ==
       value: true
   - id: select-next
-    technique: conduct-retrospective
+    technique: conduct-retrospective::select-next
 exitActions[1]{action,message}:
   log,Work package workflow complete
 outcome[7]:

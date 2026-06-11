@@ -7,6 +7,12 @@ metadata:
 
 Mark the PR ready for review once its description is finalized.
 
+## Inputs
+
+### pr_number
+
+The PR to mark ready for review via `gh pr ready` (inherited from the [update-pr](./TECHNIQUE.md) group root).
+
 ## Output
 
 ### updated_pr

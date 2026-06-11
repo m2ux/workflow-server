@@ -31,6 +31,12 @@ Path to the target repository where the code changes are applied and committed.
 
 The feature branch the fixes are committed to.
 
+## Output
+
+### applied_fixes
+
+The committed fix changes: the selected `{findings}` implemented in `{target_path}` (code-review findings when `{needs_code_fixes}`, test improvements when `{needs_test_improvements}`), verified to compile with affected tests passing, then staged and committed on `{branch_name}` via [manage-git](./manage-git/TECHNIQUE.md)::[artifact-commits](./manage-git/artifact-commits.md). The commit is the technique's final phase, so the effect is one or more fix commits on the feature branch — the caller adds no separate commit step.
+
 ## Protocol
 
 ### 1. Select Fixes
