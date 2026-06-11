@@ -40,6 +40,47 @@ function checkPrefixAndDuplicates(files: string[]): string[] {
   return issues;
 }
 
+/** Recursively collect technique .md files (group dirs contain per-operation files). */
+function walkTechniqueFiles(dir: string): string[] {
+  const out: string[] = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...walkTechniqueFiles(p));
+    else if (entry.name.endsWith('.md')) out.push(p);
+  }
+  return out;
+}
+
+/**
+ * Flag unanchored value-references in a technique's `## Protocol` section: a
+ * multi-word snake_case token used BARE — neither a `{designator}` (the
+ * technique's input/output/local), nor a `code` token, nor an invocation
+ * arg-key (`name:`). Every value a protocol sets or reads must resolve to a
+ * declared designator (AP-49/59). Single-word tokens are excluded — they
+ * routinely coincide with ordinary prose ("complexity", "plan") and require
+ * human judgement rather than mechanical bracing.
+ */
+function checkTechniqueProtocolRefs(file: string): string[] {
+  const s = readFileSync(file, 'utf-8');
+  const m = s.match(/^##\s+Protocol\b/m);
+  if (m?.index == null) return [];
+  const rest = s.slice(m.index + 1);
+  const next = rest.search(/^##\s+(?!#)/m);
+  const protocol = next === -1 ? s.slice(m.index) : s.slice(m.index, m.index + 1 + next);
+  const stripCode = (t: string) => t.replace(/```[\s\S]*?```/g, '').replace(/`[^`]*`/g, '');
+  const bare = new Set<string>();
+  for (const rawLine of protocol.split('\n')) {
+    if (/^\s*#{1,4}\s/.test(rawLine)) continue; // skip headings
+    const line = stripCode(rawLine);
+    for (const mm of line.matchAll(/(?<![\w{])([a-z][a-z0-9]*(?:_[a-z0-9]+)+)(?![\w}:])/g)) {
+      bare.add(mm[1]);
+    }
+  }
+  return [...bare].map(
+    (t) => `unanchored protocol reference '${t}' — brace as {${t}} (declared designator) or backtick as a code token`,
+  );
+}
+
 const workflowDirPath = resolve(process.argv[2] ?? '');
 if (!workflowDirPath || !existsSync(workflowDirPath)) {
   console.error('Usage: npx tsx scripts/validate-workflow-toon.ts <path-to-workflow-dir>');
@@ -89,6 +130,25 @@ async function main() {
         }
         failed++;
       }
+    }
+  }
+
+  const techniquesDir = join(workflowDirPath, 'techniques');
+  if (existsSync(techniquesDir)) {
+    const techFiles = walkTechniqueFiles(techniquesDir);
+    console.log(`\n[INFO] techniques/ (${techFiles.length} files)`);
+    let techFailed = 0;
+    for (const file of techFiles) {
+      const issues = checkTechniqueProtocolRefs(file);
+      if (issues.length) {
+        console.log(`   [FAIL] ${file.replace(techniquesDir + '/', '')}`);
+        for (const issue of issues) console.log(`      - ${issue}`);
+        failed++;
+        techFailed++;
+      }
+    }
+    if (techFailed === 0) {
+      console.log(`   [PASS] no unanchored protocol references`);
     }
   }
 
