@@ -46,7 +46,7 @@ A single atomic task to implement (description, affected files, dependencies)
 
 - Check for obvious regressions in affected code
 - If the code changes do not compile, review the error messages, fix the issues, and retry
-- Apply the per-task completion review process from the [task-completion-review](../techniques/task-completion-review.md) technique
+- Apply the [task-completion-review](../techniques/task-completion-review.md) technique to self-review the completed changes
 
 ### 5. Post Edit Verification
 

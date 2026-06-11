@@ -55,7 +55,7 @@ Folder where the test suite review report is written
 
 ### 6. Present Summary
 
-- Summarize coverage gaps and critical issues for checkpoint
+- Summarize coverage gaps and critical issues
 
 ## Outputs
 

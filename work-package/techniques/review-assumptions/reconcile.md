@@ -79,7 +79,7 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 
 ### no-user-interaction
 
-The reconciliation loop runs autonomously without user checkpoints. The user is presented only the final converged result after convergence.
+Reconciliation runs autonomously, without user interaction. The user is presented only the final converged result.
 
 ### classification-transparency
 

@@ -48,4 +48,4 @@ True when the user elects to refactor the ticket to address the identified gaps;
 
 ### gaps-are-tracked-findings
 
-Documented gaps are persistent findings, not transient checkpoint text — they live in the assumptions log so review can proceed with them visible regardless of whether the ticket is refactored.
+Documented gaps are persistent findings, not ephemeral status text — they live in the assumptions log so review can proceed with them visible regardless of whether the ticket is refactored.

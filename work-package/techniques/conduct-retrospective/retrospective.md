@@ -35,8 +35,8 @@ Workflow [retrospective](../../resources/workflow-retrospective.md#output-docume
 
 ### 2. Conduct Retrospective
 
-- Count total user messages; separate checkpoint responses from non-checkpoint interactions (clarifications, corrections, process questions, frustration signals, feature requests, skip requests).
-- Categorize non-checkpoint messages by signal type and map to specific workflow sections.
+- Count total user messages; separate prompted responses from substantive interactions (clarifications, corrections, process questions, frustration signals, feature requests, skip requests).
+- Categorize the substantive messages by signal type and map to specific workflow sections.
 - Identify root causes and determine pattern frequency across categories.
 - Formulate prioritized recommendations: high (repeated corrections, frustration), medium (single clarifications), low (edge cases).
 - Create the `{retrospective_document}` using the [workflow-retrospective](../../resources/workflow-retrospective.md) template.

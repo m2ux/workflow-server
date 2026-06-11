@@ -15,7 +15,7 @@ The assumptions [log](../../resources/assumptions-review.md#assumptions-log-temp
 
 ### assumption_decisions
 
-The per-assumption decisions captured at the `assumption-decision` checkpoint (accept/reject/defer) together with any user-supplied correction, written back as each assumption's outcome.
+The per-assumption decisions (accept/reject/defer) together with any user-supplied correction, written back as each assumption's outcome.
 
 ## Outputs
 

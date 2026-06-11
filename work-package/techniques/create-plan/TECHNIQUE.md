@@ -45,7 +45,7 @@ Atomic tasks with explicit dependencies and ordering
 
 ### tasks-are-code-changes-only
 
-Plan tasks describe CODE OR ARTIFACT CHANGES — the source edits, schema changes, doc updates, etc. that must be made to satisfy the goal. Tasks MUST NOT describe verification work (compile, test, lint, format) as separate items: verification runs after every task automatically via the task-cycle (run-tests step → [cargo-operations](../cargo-operations/TECHNIQUE.md)::[test](../cargo-operations/test.md)) and during final validation ([cargo-operations](../cargo-operations/TECHNIQUE.md)::[check](../cargo-operations/check.md) / [fmt-check](../cargo-operations/fmt-check.md) / [clippy](../cargo-operations/clippy.md)). Adding 'Verify compilation', 'Verify tests pass', 'Run cargo X', or similar as a task duplicates that built-in cycle and is forbidden.
+Plan tasks describe CODE OR ARTIFACT CHANGES — the source edits, schema changes, doc updates, etc. that must be made to satisfy the goal. Tasks MUST NOT describe verification work (compile, test, lint, format) as separate items: verification runs automatically via the task-cycle (run-tests step → [cargo-operations](../cargo-operations/TECHNIQUE.md)::[test](../cargo-operations/test.md)) and during final validation ([cargo-operations](../cargo-operations/TECHNIQUE.md)::[check](../cargo-operations/check.md) / [fmt-check](../cargo-operations/fmt-check.md) / [clippy](../cargo-operations/clippy.md)). Adding 'Verify compilation', 'Verify tests pass', 'Run cargo X', or similar as a task duplicates that built-in cycle and is forbidden.
 
 ### no-raw-commands-in-plan
 

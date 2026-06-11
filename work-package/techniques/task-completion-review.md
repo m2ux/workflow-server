@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Per-task self-review performed after completing each implementation task and before requesting user confirmation: verify that every symbol introduced or referenced has provenance (populating `uncertain_symbols` and setting `has_uncertain_symbols`), then run code, test, and documentation quality checks. Catches fabricated symbols and quality regressions early, before they compound across tasks.
+Self-review of a completed implementation task: verify that every symbol introduced or referenced has provenance (populating `{uncertain_symbols}` and setting `{has_uncertain_symbols}`), then run code, test, and documentation quality checks. Catches fabricated symbols and quality regressions early.
 
 ## Inputs
 
@@ -33,7 +33,7 @@ Multi-line list of uncertain symbols (one per line: symbol name + the file/line 
 
 - Every symbol (type, function, constant, field, etc.) introduced or referenced in code or documentation MUST have provenance — it either exists in the codebase (found via grep/search), exists in a declared dependency (verified in `Cargo.toml`, `package.json`, etc.), or is newly created and correctly defined by `{current_task}`.
 - Never fabricate symbols: do not invent type/trait/struct names, reference unimplemented functions or methods, use documentation field names that do not match code, assume symbol names from patterns without verification, or rename symbols in documentation without the corresponding code change.
-- For each task, verify each class of symbol:
+- Verify each class of symbol:
 
   | Check | How to verify |
   |-------|---------------|
@@ -45,7 +45,7 @@ Multi-line list of uncertain symbols (one per line: symbol name + the file/line 
   | Symbols in documentation | Every symbol mentioned in docs/ADRs/change files exists in code |
 
 - Verify symbols in change files, ADRs, and test plans too — change files reference symbols from the actual code changes in the PR; ADRs reference symbols from the implemented architecture; test plans reference symbols from the actual test implementations. Do not describe a trait that was planned but never implemented, mention storage items that never existed, reference extrinsics that do not appear in the pallet, or rename concepts without verifying the new name exists.
-- Populate `{uncertain_symbols}` with any symbol that cannot be confirmed against the codebase, declared dependencies, or the new symbols this task introduced — one per line, with the file/line where it was seen. Set `{has_uncertain_symbols}` to `true` when that list is non-empty, otherwise `false` with an empty `{uncertain_symbols}`.
+- Populate `{uncertain_symbols}` with any symbol that cannot be confirmed against the codebase, declared dependencies, or the new symbols `{current_task}` introduced — one per line, with the file/line where it was seen. Set `{has_uncertain_symbols}` to `true` when that list is non-empty, otherwise `false` with an empty `{uncertain_symbols}`.
 - When a symbol cannot be verified: stop, search more thoroughly (alternative patterns, git history), determine whether it is something the task needs to create, and surface the uncertainty rather than proceeding on the assumption.
 
 ### 2. Run Quality Checks
@@ -62,8 +62,4 @@ Fabricating symbols is unacceptable. Documentation must reflect actual code, not
 
 ### stop-when-unverifiable
 
-When a symbol cannot be verified, do not proceed on the assumption that it exists. Investigate first; the symbol may not exist. The symbol-provenance-confirmed checkpoint surfaces only when `{has_uncertain_symbols}` is true — when every symbol resolves cleanly the loop continues without prompting.
-
-### review-before-confirmation
-
-Run this review after every task and before requesting user confirmation. Skipping it lets hidden errors compound across tasks; early detection is cheaper than late correction.
+When a symbol cannot be verified, do not proceed on the assumption that it exists. Investigate first; the symbol may not exist. Surface the uncertainty by setting `{has_uncertain_symbols}` true rather than guessing.

@@ -21,7 +21,7 @@ The record of questions asked and responses given, with this iteration's questio
 
 ### elicitation_complete
 
-Boolean signal — set true when the user signals completion, driving the loop's `done` branch; otherwise iteration continues (answered or skipped).
+Boolean signal — set true when the user signals completion; otherwise elicitation continues (answered or skipped).
 
 ## Protocol
 

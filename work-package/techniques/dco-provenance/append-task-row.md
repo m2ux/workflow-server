@@ -19,7 +19,7 @@ One-line description of what was generated
 
 ### assistant_name
 
-Assistant name (e.g., `claude`, `gpt`, `gemini`) — captured at the model-selection checkpoint
+Assistant name (e.g., `claude`, `gpt`, `gemini`) — the selected assistant
 
 #### default
 
@@ -27,7 +27,7 @@ Assistant name (e.g., `claude`, `gpt`, `gemini`) — captured at the model-selec
 
 ### model_id
 
-Model identifier — captured at the model-selection checkpoint
+Model identifier — the selected model
 
 #### default
 

@@ -30,7 +30,7 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 ### 1. Verify Existing Issue
 
 - Runs when user provides an existing issue key. Detect the platform from key format: `#N` or bare number → GitHub, `PROJ-N` → Jira. Set `{issue_platform}`.
-- If no issue key was given and the platform is ambiguous (user did not select GitHub or Jira), present the platform selection checkpoint and wait for the user's selection before proceeding.
+- If no issue key was given and the platform is ambiguous (user did not select GitHub or Jira), obtain the user's platform selection before proceeding.
 - For GitHub: run `gh issue view <number>` to confirm the issue exists. Capture `{issue_number}` and `{issue_url}`.
 - For Jira: call `getAccessibleAtlassianResources` FIRST to obtain cloudId, preserve as `{jira_cloud_id}`. THEN call `getJiraIssue` with cloudId and the issue key. Do NOT call `getJiraIssue` before cloudId is resolved.
 - Capture `{issue_number}` and `{issue_url}` from the verification result. Set `{needs_issue_creation}` to false.
@@ -48,7 +48,7 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 
 - Runs when `{issue_platform}` is jira and `{needs_issue_creation}` is true. Use attached [jira-issue-creation](../resources/jira-issue-creation.md) for guidance.
 - Obtain Atlassian cloud ID via `getAccessibleAtlassianResources` and preserve as `{jira_cloud_id}`. This MUST be the first Jira tool call.
-- List available projects via `getVisibleJiraProjects`, then present the jira-project-selection checkpoint for user selection. Resolve available issue types for the selected project.
+- List available projects via `getVisibleJiraProjects`, then obtain the user's project selection. Resolve available issue types for the selected project.
 - Gather summary, description, and acceptance criteria, scoping the issue to the `{target_submodule}` the work package targets. Resolve assignee account ID if specified.
 - Create the issue with mapped type using the issue-type mapping below — the resulting issue is the `{created_issue}`. Capture `{issue_number}` and `{issue_url}`.
 - Jira issue type mapping: `feature->Story`, `bug->Bug`, `task->Task`, `enhancement->Story`, `epic->Epic`

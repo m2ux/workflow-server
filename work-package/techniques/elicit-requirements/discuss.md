@@ -21,7 +21,7 @@ The transcript or summary captured from the user (inherited from the [elicit-req
 
 ### has_stakeholder_input
 
-Boolean gate — true iff a transcript was provided, false when stakeholder discussion was skipped (set at the `stakeholder-transcript` checkpoint).
+Boolean gate — true iff a transcript was provided, false when stakeholder discussion was skipped.
 
 ## Protocol
 

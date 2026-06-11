@@ -55,7 +55,7 @@ Folder where the code review report is written
 
 ### 5. Present Summary
 
-- Summarize critical and high findings for checkpoint presentation
+- Summarize critical and high findings
 
 ## Outputs
 
