@@ -3,15 +3,10 @@ version: 1.2.0
 name: "Sub-Agent: Security Architecture Analysis"
 description: "Produce a security-oriented architectural decomposition."
 problem: "The orchestrator's reconnaissance produces an asset inventory (what exists) but not a security model (what could go wrong and why). Vulnerability domain mapping needs architectural properties — component interactions, trust assumptions, privilege models — that require dedicated reasoning, not mechanical enumeration. Without this step, domain mapping falls back to pattern-matching against a predefined checklist rather than deriving applicable vulnerability classes from the system's structure."
-recognition[3]:
-  - security architecture analysis
-  - threat model construction
-  - architectural decomposition
 techniques:
   supporting[1]:
     - execute-sub-agent
 required: false
-estimatedTime: 10-20m
 
 rules[6]:
   - "This activity is dispatched by the orchestrator during reconnaissance — it does NOT appear in the main workflow transition graph"

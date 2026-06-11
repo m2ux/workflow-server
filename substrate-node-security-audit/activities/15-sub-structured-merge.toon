@@ -3,15 +3,10 @@ version: 1.0.0
 name: "Sub-Agent: Structured Merge"
 description: "Structured merge, deduplication, and severity scoring of agent findings."
 problem: "The orchestrator accumulates 75-115K tokens of context (workflow definitions, reconnaissance data, 8 agent prompts, 8 agent outputs) before reaching the merge step. Performing the merge inline causes findings to be displaced from attention by sheer volume. Cross-run analysis shows 6-8 findings per run are produced by agents but dropped during inline merge. A dedicated merge agent with a clean context (~45K tokens: finding data + scoring rules) eliminates this structural failure mode."
-recognition[3]:
-  - merge findings
-  - structured merge
-  - reconcile finding counts
 techniques:
   supporting[1]:
     - merge-findings
 required: false
-estimatedTime: 10-15m
 
 rules[8]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"

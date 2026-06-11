@@ -4,7 +4,6 @@ name: Report Failure
 description: "Compile a failure report describing the unresolved critical issues, the correction history, and the manual resolution required when refinement cannot complete automatically; no specification is promoted."
 problem: When critical issues remain or the correction budget is exhausted, the user needs a clear account of what requires manual intervention
 required: true
-estimatedTime: 5-10m
 techniques:
   primary: report-failure
 steps[2]:

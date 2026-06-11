@@ -3,14 +3,7 @@ version: 1.1.0
 name: Intake Sources
 description: "Capture and validate the source-document and target-specification paths, classify the source as a meeting transcript or an unstructured document, determine whether the specification is being augmented or created, and load both sources."
 problem: The workflow needs validated input paths, a classified source type, and loaded source content before analysis can begin
-recognition[5]:
-  - refine requirements from transcript
-  - update requirements specification
-  - process meeting transcript
-  - parse document into requirements
-  - augment requirements document
 required: true
-estimatedTime: 5-10m
 rules[1]:
   - "Capture, classify, and load sources only; do not analyze or modify the specification during intake"
 steps[6]:

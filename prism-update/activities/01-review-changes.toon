@@ -43,7 +43,6 @@ transitions[1]:
     isDefault: true
 
 required: true
-estimatedTime: "2-5m"
 
 outcome[1]:
   - "User-approved change set ready for import"

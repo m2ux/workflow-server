@@ -3,15 +3,10 @@ version: 1.8.0
 name: "Sub-Agent: Crate Deep Review"
 description: "Structured crate review for Group A sub-agents."
 problem: "Sub-agents receiving free-form prompts skip per-field trace tables, mark PASS without cross-function comparison, and return prose instead of structured output. This activity enforces step-by-step execution with verifiable intermediate outputs."
-recognition[3]:
-  - crate deep review
-  - group a sub-agent
-  - checklist review
 techniques:
   supporting[1]:
     - execute-sub-agent
 required: false
-estimatedTime: 20-40m
 
 rules[11]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"

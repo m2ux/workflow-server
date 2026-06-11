@@ -7,7 +7,6 @@ techniques:
   supporting[1]:
     - workflow-design
 required: true
-estimatedTime: 10-20m
 rules[3]:
   - "The scope manifest must include every file to be created, modified, or removed — no implicit files"
   - "Verify the workflows worktree is checked out and on the correct branch before defining paths"

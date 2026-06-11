@@ -3,14 +3,7 @@ version: 1.5.0
 name: Codebase Comprehension
 description: "Build or augment a mental model of the codebase."
 problem: User lacks sufficient understanding of an unfamiliar codebase to qualify agent-proposed design choices
-recognition[5]:
-  - build codebase understanding
-  - understand the codebase
-  - code comprehension
-  - learn the codebase
-  - familiarize with code
 required: false
-estimatedTime: 20-45m
 techniques:
   supporting[1]:
     - "variable-binding"

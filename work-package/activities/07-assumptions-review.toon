@@ -3,12 +3,7 @@ version: 2.1.1
 name: Assumptions Review
 description: "Review each open assumption with the user."
 problem: Open assumptions need resolution before implementation begins
-recognition[3]:
-  - review assumptions with stakeholders
-  - resolve assumptions
-  - validate assumptions
 required: true
-estimatedTime: 10-20m
 techniques:
   supporting[2]:
     - variable-binding

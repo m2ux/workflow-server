@@ -4,7 +4,6 @@ name: Start Security Vulnerability Remediation
 description: "Initialize a high-sensitivity security fix."
 problem: User needs to remediate a security vulnerability without public disclosure
 required: true
-estimatedTime: 10-15m
 techniques:
 rules[2]:
   - "STRICT ISOLATION: This activity MUST NOT call any GitHub PR or Issue creation tools (gh pr create, gh issue create)."

@@ -7,7 +7,6 @@ techniques:
   supporting[1]:
     - workflow-design
 required: true
-estimatedTime: 10-15m
 rules[3]:
   - "Do not proceed to content drafting until format_literacy_confirmed and schema_constructs_confirmed are both true"
   - "Read at least two existing workflows of similar type to establish pattern baseline"

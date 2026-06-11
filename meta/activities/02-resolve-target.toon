@@ -4,7 +4,6 @@ name: Resolve Target
 description: "Detect the target repository structure (regular directory vs. submodule monorepo) and resolve target_path."
 problem: Workflows that operate on a target codebase need to know whether the working directory is a regular repo or a submodule monorepo, and which submodule is the target
 required: true
-estimatedTime: 1-2m
 techniques:
   supporting[2]:
     - "version-control::detect-repo-type"

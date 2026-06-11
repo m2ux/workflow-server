@@ -3,13 +3,7 @@ version: 1.5.0
 name: Design Philosophy
 description: "Apply the design framework to classify the problem and decide the workflow path."
 problem: User needs to understand problem nature before deciding on workflow path
-recognition[4]:
-  - classify problem
-  - design philosophy
-  - understand problem
-  - determine approach
 required: true
-estimatedTime: 10-20m
 artifacts[2]:
   - id: design-philosophy-doc
     name: design-philosophy.md

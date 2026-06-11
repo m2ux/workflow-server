@@ -3,12 +3,7 @@ version: 1.0.0
 name: Strategic Review
 description: "Review the implementation to ensure changes are minimal and focused."
 problem: User needs to ensure changes are minimal and focused
-recognition[3]:
-  - strategic review
-  - review changes
-  - review implementation
 required: true
-estimatedTime: 15-30m
 artifacts[2]:
   - id: strategic-review-doc
     name: "strategic-review-{n}.md"

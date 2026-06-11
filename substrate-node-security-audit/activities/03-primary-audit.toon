@@ -3,15 +3,10 @@ version: 4.16.0
 name: Primary Audit
 description: "Multi-agent primary audit via concurrent dispatch with verification and merge."
 problem: "A single agent cannot achieve sufficient depth across all crates, and the orchestrator's context window is saturated by the time it needs to merge and verify agent outputs. Multi-agent orchestration with dedicated verification (V) and merge (M) agents provides: (a) focused context windows per security domain, (b) mechanical output validation in a fresh context window (V), (c) finding-lossless merge in a fresh context window (M), (d) targeted re-dispatch for gaps before findings are merged."
-recognition[3]:
-  - run primary audit
-  - dispatch audit agents
-  - execute audit template
 techniques:
   supporting[1]:
     - execute-audit
 required: true
-estimatedTime: 60-120m
 rules[28]:
   - "Each Group A agent must read EVERY .rs file in its assigned crate, including large submodules"
   - "For cross-crate checks (§3.2, §3.4, §3.8, §3.10), the orchestrator includes supplementary files per the target profile"

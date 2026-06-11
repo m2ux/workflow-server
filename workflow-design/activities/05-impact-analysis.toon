@@ -7,7 +7,6 @@ techniques:
   supporting[1]:
     - workflow-design
 required: false
-estimatedTime: 10-20m
 entryActions[1]:
   - action: validate
     target: is_update_mode

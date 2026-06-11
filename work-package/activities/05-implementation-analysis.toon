@@ -3,12 +3,7 @@ version: 2.5.2
 name: Implementation Analysis
 description: "Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement."
 problem: User needs to understand current state before planning changes
-recognition[3]:
-  - analyze implementation
-  - analyze current state
-  - implementation analysis
 required: false
-estimatedTime: 10-20m
 techniques:
   supporting[2]:
     - variable-binding

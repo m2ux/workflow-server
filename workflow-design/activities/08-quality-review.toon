@@ -7,7 +7,6 @@ techniques:
   supporting[1]:
     - workflow-design
 required: true
-estimatedTime: 15-25m
 rules[3]:
   - "Each review pass is independent — complete one pass fully before starting the next"
   - "Flag every instance of prose that maps to a formal schema construct"

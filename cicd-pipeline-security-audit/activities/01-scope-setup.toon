@@ -3,16 +3,10 @@ version: 1.0.0
 name: Scope Setup
 description: "Set up the audit scope and planning folder."
 problem: The audit requires confirmed targets, a complete workflow file inventory, and an organized artifact folder before scanning begins.
-recognition[4]:
-  - start cicd audit
-  - audit pipelines
-  - scan github actions
-  - cicd security audit
 techniques:
   supporting[1]:
     - execute-cicd-audit
 required: true
-estimatedTime: 5-10m
 rules[4]:
   - "At least one target submodule MUST be specified in the initial request, or 'all' to scan every submodule with .github/workflows/"
   - "The planning folder naming pattern: YYYY-MM-DD-cicd-security-audit"

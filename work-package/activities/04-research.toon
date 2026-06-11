@@ -3,12 +3,7 @@ version: 2.4.0
 name: Research
 description: "Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity."
 problem: User needs to research best practices before planning
-recognition[3]:
-  - research best practices
-  - knowledge base research
-  - research patterns
 required: false
-estimatedTime: 20-45m
 techniques:
   supporting[1]:
     - "variable-binding"

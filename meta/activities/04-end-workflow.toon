@@ -4,7 +4,6 @@ name: End Workflow
 description: "Close out the client workflow."
 problem: Workflow sessions need an explicit close-out so the user knows the work is done and the final state is durably persisted
 required: true
-estimatedTime: 2-3m
 techniques:
   supporting[2]:
     - "workflow-engine::verify-outcomes"

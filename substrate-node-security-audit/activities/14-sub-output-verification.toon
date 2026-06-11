@@ -3,15 +3,10 @@ version: 1.0.0
 name: "Sub-Agent: Output Verification"
 description: "Mechanically validate primary-agent output completeness."
 problem: "The orchestrator executes 10+ verification protocols inline after composing prompts for 8+ agents and collecting their outputs. By this point the orchestrator's context window is saturated and verification becomes shallow — mandatory tables are assumed present, coverage gates are loosely checked, and target profile obligations are not mechanically verified. This produces inconsistent finding counts across runs on the same codebase."
-recognition[3]:
-  - verify agent outputs
-  - output verification
-  - check completeness
 techniques:
   supporting[1]:
     - verify-sub-agent-output
 required: false
-estimatedTime: 10-20m
 
 rules[7]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"

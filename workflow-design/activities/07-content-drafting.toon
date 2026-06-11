@@ -7,7 +7,6 @@ techniques:
   supporting[1]:
     - workflow-design
 required: true
-estimatedTime: 30-60m
 rules[5]:
   - "Present approach for each file before drafting — what constructs will be used, what patterns followed"
   - "Use formal schema constructs for every piece of structured information — no prose where a construct exists"

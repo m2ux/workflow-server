@@ -3,12 +3,7 @@ version: 2.7.1
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation.
 problem: User needs to clarify and capture requirements before implementation
-recognition[3]:
-  - elicit requirements
-  - clarify requirements
-  - gather requirements
 required: false
-estimatedTime: 15-30m
 techniques:
   supporting[1]:
     - "variable-binding"

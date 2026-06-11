@@ -36,7 +36,6 @@ transitions[1]:
     isDefault: true
 
 required: true
-estimatedTime: "3-5m"
 
 outcome[3]:
   - "change_set variable populated with categorized diff"

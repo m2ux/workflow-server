@@ -46,7 +46,6 @@ transitions[1]:
     isDefault: true
 
 required: true
-estimatedTime: "10-20m"
 
 outcome[2]:
   - "All skill routing tables reflect current resource state"

@@ -77,7 +77,6 @@ transitions[2]:
       value: true
 
 required: true
-estimatedTime: "3-5m"
 
 outcome[1]:
   - "All resources, techniques, and documentation are consistent"

@@ -3,12 +3,7 @@ version: 3.1.0
 name: Verify & Validate Design
 description: "Validate the implementation against tests, build, format, and lint checks."
 problem: User needs to validate the implementation passes all tests
-recognition[3]:
-  - validate implementation
-  - run tests
-  - verify build
 required: true
-estimatedTime: 15-30m
 techniques:
   supporting[1]:
     - "variable-binding"

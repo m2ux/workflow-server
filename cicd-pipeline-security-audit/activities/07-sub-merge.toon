@@ -3,14 +3,10 @@ version: 1.0.0
 name: Finding Merge
 description: "Merge scanner outputs into a unified finding set."
 problem: Findings from multiple per-submodule scanners must be deduplicated, correlated across patterns, and reconciled into a single canonical finding set before severity scoring.
-recognition[2]:
-  - merge findings
-  - consolidate scan results
 techniques:
   supporting[1]:
     - execute-sub-agent
 required: false
-estimatedTime: 5-15m
 rules[6]:
   - "This activity is dispatched by the orchestrator during primary-scan — it does NOT appear in the main workflow transition graph"
   - "Every finding from every scanner MUST appear in the merged output or be explicitly marked as a duplicate of another finding"

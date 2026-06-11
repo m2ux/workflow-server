@@ -3,15 +3,7 @@ version: 3.9.0
 name: Start Work Package
 description: "Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
-recognition[6]:
-  - start work package
-  - verify issue
-  - create issue
-  - begin implementation
-  - new issue
-  - create github issue
 required: true
-estimatedTime: 10-20m
 entryActions[1]:
   - action: log
     message: Starting issue management

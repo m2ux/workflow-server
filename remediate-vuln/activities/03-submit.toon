@@ -4,7 +4,6 @@ name: Submit Security Vulnerability Remediation
 description: "Finalize a high-sensitivity security fix."
 problem: User needs to submit a security fix without public disclosure
 required: true
-estimatedTime: 5-10m
 techniques:
 rules[2]:
   - "STRICT ISOLATION: This activity MUST NOT call any GitHub PR tools (gh pr review, gh pr ready)."

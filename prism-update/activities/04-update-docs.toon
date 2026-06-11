@@ -42,7 +42,6 @@ transitions[1]:
     isDefault: true
 
 required: true
-estimatedTime: "5-10m"
 
 outcome[1]:
   - "All documentation reflects current resource catalog"

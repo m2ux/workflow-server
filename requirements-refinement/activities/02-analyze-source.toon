@@ -4,7 +4,6 @@ name: Analyze Source
 description: "Parse the source document against the current specification and produce a structured requirements analysis report, then confirm it with the user before any changes are applied."
 problem: Requirement changes expressed in the source document must be identified and mapped before the specification can be updated
 required: true
-estimatedTime: 10-20m
 techniques:
   primary: analyze-source
 steps[2]:

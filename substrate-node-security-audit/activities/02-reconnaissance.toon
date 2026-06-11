@@ -3,15 +3,10 @@ version: 3.0.0
 name: Reconnaissance
 description: "Run codebase reconnaissance and security decomposition."
 problem: "The orchestrator previously performed 9 inline reconnaissance steps (reading source files, scanning crates, building registries), consuming 10-15K tokens of context before primary agent dispatch. This reduced the orchestrator's effective context budget for its actual role: coordinating 10+ sub-agents across 6 workflow phases. Delegating analysis to sub-agents keeps the orchestrator's context clean for coordination."
-recognition[3]:
-  - map architecture
-  - codebase reconnaissance
-  - identify crates and trust boundaries
 techniques:
   supporting[1]:
     - execute-audit
 required: true
-estimatedTime: 15-30m
 rules[5]:
   - "ORCHESTRATOR ROLE: The orchestrator dispatches sub-agents and reads their file outputs. It does NOT read source code, scan directories, or build registries during reconnaissance."
   - "RECONNAISSANCE SUB-AGENT (R): Dispatched first. Performs crate identification, architecture mapping, trust boundary analysis, consensus path identification, config struct enumeration, pallet hook discovery, data flow tracing, safety override checks, and function registry construction. Writes r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json to the planning folder."

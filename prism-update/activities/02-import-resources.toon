@@ -46,7 +46,6 @@ transitions[1]:
     isDefault: true
 
 required: true
-estimatedTime: "5-10m"
 
 outcome[2]:
   - "All resource files match upstream state"

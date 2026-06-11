@@ -3,18 +3,10 @@ version: 1.1.0
 name: Intake
 description: "Operation-type capture: classify the user's request as create, update, or review and establish the corresponding mode + target."
 problem: User wants to create or update a workflow and needs a guided process
-recognition[6]:
-  - create a workflow
-  - design a workflow
-  - new workflow
-  - build a workflow
-  - update workflow
-  - modify workflow
 techniques:
   supporting[1]:
     - workflow-design
 required: true
-estimatedTime: 5-10m
 rules[2]:
   - "Do not begin drafting content during intake — this activity only captures intent"
   - "For update mode, always load the existing workflow before proceeding"

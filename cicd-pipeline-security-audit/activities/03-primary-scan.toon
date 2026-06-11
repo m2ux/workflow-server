@@ -3,15 +3,10 @@ version: 1.0.0
 name: Primary Scan
 description: "Run per-submodule scanner agents and merge their findings."
 problem: Each submodule's GitHub Actions workflows must be scanned for all seven vulnerability classes, findings verified for completeness, and merged into a unified finding set.
-recognition[3]:
-  - scan workflows
-  - run detection
-  - primary scan
 techniques:
   supporting[1]:
     - execute-cicd-audit
 required: true
-estimatedTime: 20-40m
 rules[8]:
   - "CONCURRENT DISPATCH: All scanner agents (S1-Sn) MUST be dispatched simultaneously in a single batch"
   - "DISPATCH COMPLETENESS GATE: scanners_dispatched MUST equal scanners_assigned. This is a HARD STOP."

@@ -3,12 +3,7 @@ version: 2.7.0
 name: Implement Tasks
 description: "Execute the implementation plan task by task."
 problem: User needs to implement the planned tasks
-recognition[3]:
-  - implement tasks
-  - start implementation
-  - execute plan
 required: true
-estimatedTime: 1-4h
 artifacts[2]:
   - id: assumptions-log
     name: assumptions-log.md

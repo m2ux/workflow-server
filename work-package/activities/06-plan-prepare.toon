@@ -3,12 +3,7 @@ version: 1.5.1
 name: Plan & Prepare
 description: "Design the approach, create the work package plan, and prepare for implementation."
 problem: User needs to plan the implementation approach
-recognition[3]:
-  - plan implementation
-  - create plan
-  - prepare for implementation
 required: true
-estimatedTime: 20-45m
 techniques:
   supporting[1]:
     - variable-binding

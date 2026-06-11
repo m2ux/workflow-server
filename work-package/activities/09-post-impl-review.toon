@@ -3,12 +3,7 @@ version: 1.12.0
 name: Post-Implementation Review
 description: "Review implementation quality before validation."
 problem: User needs to review implementation quality before validation
-recognition[3]:
-  - review implementation
-  - post implementation review
-  - quality review
 required: true
-estimatedTime: 30-60m
 entryActions[1]{action,message}:
   log,Starting post-implementation review
 techniques:

@@ -3,18 +3,6 @@ version: 2.0.0
 name: Plan Analysis
 description: "Select an analysis mode for the user's request."
 problem: User needs the analysis planned and configured before execution begins
-recognition[11]:
-  - analyze
-  - structural analysis
-  - full prism
-  - deep analysis
-  - portfolio
-  - multiple lenses
-  - scan
-  - review code
-  - behavioral
-  - error resilience
-  - behavioral analysis
 techniques:
   supporting[1]:
     - plan-analysis

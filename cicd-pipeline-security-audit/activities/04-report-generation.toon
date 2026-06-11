@@ -3,15 +3,10 @@ version: 1.0.0
 name: Report Generation
 description: "Produce the final CI/CD security audit report."
 problem: Merged findings must be severity-scored using the Impact x Exploitability rubric, coverage verified, and formatted into a structured report with actionable remediation guidance.
-recognition[3]:
-  - generate audit report
-  - consolidate findings
-  - finalize report
 techniques:
   supporting[1]:
     - execute-cicd-audit
 required: true
-estimatedTime: 15-30m
 rules[5]:
   - "BLOCKING ENTRY CONDITION: This activity MUST NOT begin unless verification_complete=true AND merge_complete=true. If either is unmet, return to primary-scan."
   - "The merged findings from M are the canonical finding inventory — every finding must appear in the report"

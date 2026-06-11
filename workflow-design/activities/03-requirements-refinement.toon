@@ -7,7 +7,6 @@ techniques:
   supporting[1]:
     - workflow-design
 required: true
-estimatedTime: 15-30m
 rules[3]:
   - "One question at a time — present each checkpoint independently and wait for the response before proceeding"
   - "Show what was captured so far before asking the next question"

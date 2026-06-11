@@ -3,14 +3,10 @@ version: 1.0.0
 name: Scan Verification
 description: "Verify scan completeness across all scanner outputs."
 problem: Scanner outputs must be verified for completeness before merge to ensure no workflow files were missed and no detection patterns were skipped.
-recognition[2]:
-  - verify scan results
-  - check scan completeness
 techniques:
   supporting[1]:
     - execute-sub-agent
 required: false
-estimatedTime: 5-10m
 rules[5]:
   - "This activity is dispatched by the orchestrator during primary-scan — it does NOT appear in the main workflow transition graph"
   - "Every workflow file discovered during scope-setup MUST appear as scanned in at least one scanner output"

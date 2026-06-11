@@ -3,13 +3,7 @@ version: 7.0.0
 name: Discover Session
 description: "Identify the target workflow and search for an existing client session to resume."
 problem: The meta workflow needs to determine which client workflow to dispatch and whether to resume an existing client session, before initialize-session creates or adopts the client session
-recognition[4]:
-  - start a workflow
-  - resume a workflow
-  - continue a workflow
-  - work on
 required: true
-estimatedTime: 1-2m
 techniques:
   supporting[5]:
     - "workflow-engine::list-workflows"

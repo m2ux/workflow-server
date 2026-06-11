@@ -3,15 +3,10 @@ version: 1.0.0
 name: Reconnaissance
 description: "Classify discovered workflows and assign scanner agents."
 problem: Scanner agents need a structured inventory with trigger classification, permission mapping, and checkout pattern identification to apply detection patterns efficiently.
-recognition[3]:
-  - classify workflows
-  - reconnaissance
-  - map triggers
 techniques:
   supporting[1]:
     - execute-cicd-audit
 required: true
-estimatedTime: 10-20m
 rules[5]:
   - "The orchestrator performs classification and agent assignment ONLY — it MUST NOT apply detection patterns or produce findings"
   - "Every workflow file must be classified by its trigger types (pull_request, pull_request_target, issue_comment, workflow_dispatch, push, schedule, etc.)"

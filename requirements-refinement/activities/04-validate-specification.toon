@@ -4,7 +4,6 @@ name: Validate Specification
 description: "Validate the updated specification against structural, identifier-uniqueness, consistency, and protocol-conformance checks, categorize each issue as critical or correctable, and route to finalization, another correction pass, or failure reporting."
 problem: The updated specification must be checked for quality and conformance before it can be finalized
 required: true
-estimatedTime: 10-20m
 techniques:
   primary: validate-specification
 steps[3]:

@@ -3,15 +3,10 @@ version: 1.3.0
 name: "Sub-Agent: Toolkit Per-Function Review"
 description: "Per-function toolkit review for Group D sub-agents."
 problem: "Toolkit review agents read files but skim functions with benign-looking names. The 8-item checklist exists but is applied to representative functions, not exhaustively. Per-function state management, arithmetic, and I/O bugs are consistently missed when the checklist is applied selectively rather than to every function."
-recognition[3]:
-  - toolkit review
-  - group d sub-agent
-  - per-function checklist
 techniques:
   supporting[1]:
     - execute-sub-agent
 required: false
-estimatedTime: 20-30m
 
 rules[5]:
   - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"

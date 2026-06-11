@@ -3,14 +3,10 @@ version: 1.0.0
 name: Per-Submodule Workflow Scan
 description: "Scan the assigned submodule's workflow files for the seven detection patterns."
 problem: Each submodule's workflow files must be systematically scanned for expression injection, Pwn Request patterns, comment trigger abuse, excessive permissions, fork code execution, AI config poisoning, and dangerous execution patterns.
-recognition[2]:
-  - scan submodule workflows
-  - run detection patterns
 techniques:
   supporting[1]:
     - execute-sub-agent
 required: false
-estimatedTime: 10-20m
 rules[8]:
   - "This activity is dispatched by the orchestrator during primary-scan — it does NOT appear in the main workflow transition graph"
   - "The scanner MUST apply ALL seven patterns (P1-P7) to every workflow file in the assigned submodule"
