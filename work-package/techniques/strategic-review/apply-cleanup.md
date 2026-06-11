@@ -11,7 +11,7 @@ Apply the approved cleanup (removing identified artifacts) to the source, then c
 
 ### branch_name
 
-Feature branch the cleanup and the artifact commit land on; inherited from the [review-strategy](./TECHNIQUE.md) group root.
+Feature branch the cleanup and the artifact commit land on; inherited from the [strategic-review](./TECHNIQUE.md) group root.
 
 ### strategic_review_doc
 

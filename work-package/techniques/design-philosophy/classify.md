@@ -15,7 +15,7 @@ The problem definition, classified into a problem type and assessed for complexi
 
 ### issue_details
 
-Summary, description, and context from the linked issue, used to infer the problem type and any preliminary target symbols (inherited from the [classify-problem](./TECHNIQUE.md) group root).
+Summary, description, and context from the linked issue, used to infer the problem type and any preliminary target symbols (inherited from the [design-philosophy](./TECHNIQUE.md) group root).
 
 ### target
 

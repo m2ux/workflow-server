@@ -9,17 +9,17 @@ techniques:
     - "variable-binding"
 steps[6]:
   - id: stakeholder-discussion
-    technique: elicit-requirements::discuss
+    technique: requirements-elicitation::discuss
     checkpoint: stakeholder-transcript
   - id: elicit-requirements
-    technique: elicit-requirements::elicit
+    technique: requirements-elicitation::elicit
     checkpoint: domain-iteration
   - id: collect-assumptions
     technique: review-assumptions::collect
     technique_args:
       assumption_categories: "Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation"
   - id: create-document
-    technique: elicit-requirements::create-document
+    technique: requirements-elicitation::create-document
   - id: update-assumptions-log
     technique: review-assumptions::record
   - id: reconcile-assumptions
@@ -50,11 +50,11 @@ loops[2]:
     maxIterations: 5
     steps[1]:
       - id: ask-question
-        technique: elicit-requirements::ask-question
+        technique: requirements-elicitation::ask-question
 decisions[1]:
   - id: user-intent
     name: User Intent Check
-    description: "Evaluate user response during domain-iteration loop to determine next action. Branching is handled by the elicit-requirements technique protocol within the loop — the technique interprets the user's response and controls iteration flow (continue to next question, skip domain, or signal completion)."
+    description: "Evaluate user response during domain-iteration loop to determine next action. Branching is handled by the requirements-elicitation technique protocol within the loop — the technique interprets the user's response and controls iteration flow (continue to next question, skip domain, or signal completion)."
     branches[2]:
       - id: continue
         label: Continue elicitation (answered or skipped)

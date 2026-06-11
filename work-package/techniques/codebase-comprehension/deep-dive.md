@@ -15,7 +15,7 @@ The comprehension artifact whose architecture survey and existing Open Questions
 
 ### comprehension_dir
 
-Directory holding codebase-comprehension artifacts (inherited from the [build-comprehension](./TECHNIQUE.md) group root; declared here as the binding contract). Names the location the artifact is written to (`{codebase_area}.md`).
+Directory holding codebase-comprehension artifacts (inherited from the [codebase-comprehension](./TECHNIQUE.md) group root; declared here as the binding contract). Names the location the artifact is written to (`{codebase_area}.md`).
 
 ### gitnexus_indexed
 
@@ -25,7 +25,7 @@ Flag indicating whether the codebase is indexed; selects between gitnexus-operat
 
 ### comprehension_artifact
 
-Updated comprehension artifact (inherited from the [build-comprehension](./TECHNIQUE.md) group root; declared here as the binding contract) — written as `{codebase_area}.md` in `{comprehension_dir}`, augmenting prior content rather than replacing it.
+Updated comprehension artifact (inherited from the [codebase-comprehension](./TECHNIQUE.md) group root; declared here as the binding contract) — written as `{codebase_area}.md` in `{comprehension_dir}`, augmenting prior content rather than replacing it.
 
 #### deep_dives
 

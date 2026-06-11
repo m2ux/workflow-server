@@ -15,25 +15,25 @@ The question domains to iterate one question at a time (per the [requirements-el
 
 ### issue_platform
 
-Platform where the issue lives (github or jira) — gates whether assumptions are posted to Jira (inherited from the [elicit-requirements](./TECHNIQUE.md) group root).
+Platform where the issue lives (github or jira) — gates whether assumptions are posted to Jira (inherited from the [requirements-elicitation](./TECHNIQUE.md) group root).
 
 ### issue_number
 
-Issue identifier for the assumptions comment (GitHub #N or Jira KEY-N) — the ticket posted to via `addCommentToJiraIssue` (inherited from the [elicit-requirements](./TECHNIQUE.md) group root).
+Issue identifier for the assumptions comment (GitHub #N or Jira KEY-N) — the ticket posted to via `addCommentToJiraIssue` (inherited from the [requirements-elicitation](./TECHNIQUE.md) group root).
 
 ## Outputs
 
 ### requirements
 
-The captured requirements list elicited across the domains (inherited from the [elicit-requirements](./TECHNIQUE.md) group root).
+The captured requirements list elicited across the domains (inherited from the [requirements-elicitation](./TECHNIQUE.md) group root).
 
 ### success_criteria
 
-The defined success criteria with verification methods (inherited from the [elicit-requirements](./TECHNIQUE.md) group root).
+The defined success criteria with verification methods (inherited from the [requirements-elicitation](./TECHNIQUE.md) group root).
 
 ### scope_boundaries
 
-In/out scope definitions captured during elicitation (inherited from the [elicit-requirements](./TECHNIQUE.md) group root).
+In/out scope definitions captured during elicitation (inherited from the [requirements-elicitation](./TECHNIQUE.md) group root).
 
 ### elicitation_log
 

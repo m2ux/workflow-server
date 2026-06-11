@@ -33,7 +33,7 @@ Path to the planning artifacts folder where `{research_document}` is written.
 
 ### research_document
 
-Knowledge base and web research synthesis artifact for the work package (inherited from the [research-knowledge-base](./TECHNIQUE.md) group root; declared here as the binding contract). Written to `{planning_folder_path}` as `kb-research.md`, capturing `{kb_findings}`, `{web_findings}`, `{findings_synthesis}`, `{applicable_patterns}`, and risks.
+Knowledge base and web research synthesis artifact for the work package (inherited from the [research](./TECHNIQUE.md) group root; declared here as the binding contract). Written to `{planning_folder_path}` as `kb-research.md`, capturing `{kb_findings}`, `{web_findings}`, `{findings_synthesis}`, `{applicable_patterns}`, and risks.
 
 ## Protocol
 

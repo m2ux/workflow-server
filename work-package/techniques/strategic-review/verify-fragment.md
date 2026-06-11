@@ -11,7 +11,7 @@ Locate the change fragment for this work package under the `{target_path}` repos
 
 ### target_path
 
-Target repository root, checked for a `changes/` folder and the located fragment; inherited from the [review-strategy](./TECHNIQUE.md) group root.
+Target repository root, checked for a `changes/` folder and the located fragment; inherited from the [strategic-review](./TECHNIQUE.md) group root.
 
 ### issue_url
 

@@ -31,7 +31,7 @@ This workflow guides the complete lifecycle of a single work package through 14 
 - **Techniques:** See [techniques/](./techniques/) for the technique inventory and protocol flows.
 - **Resources:** See [resources/README.md](./resources/README.md) for the resource index (28 resources).
 
-Each activity binds its step operations through `step.technique`. The activity's `techniques` block names a `primary` technique (the operation that defines the activity) and a `supporting[]` list of strategy techniques. Strategy and binding are supplied by the universal `meta` techniques [`variable-binding`](../meta/techniques/variable-binding.md) (present on every activity, governing how steps read and write workflow variables) and [`scatter-gather`](../meta/techniques/scatter-gather.md) (present on activities with `forEach` iteration loops). Steps reference operation techniques either by bare id (e.g. `classify-problem`) or by namespaced id (e.g. `cargo-operations::run-suite`).
+Each activity binds its step operations through `step.technique`. The activity's `techniques` block names a `primary` technique (the operation that defines the activity) and a `supporting[]` list of strategy techniques. Strategy and binding are supplied by the universal `meta` techniques [`variable-binding`](../meta/techniques/variable-binding.md) (present on every activity, governing how steps read and write workflow variables) and [`scatter-gather`](../meta/techniques/scatter-gather.md) (present on activities with `forEach` iteration loops). Steps reference operation techniques either by bare id (e.g. `design-philosophy`) or by namespaced id (e.g. `cargo-operations::run-suite`).
 
 ---
 
@@ -88,17 +88,17 @@ The **Primary Technique** is the activity's `techniques.primary` (the operation 
 | # | Activity | Primary Technique | Supporting Techniques | Checkpoints | artifactPrefix |
 |---|----------|--------------|-------------------|-------------|----------------|
 | 01 | [Start Work Package](./activities/README.md#01-start-work-package) | — | `variable-binding` | 8 | — |
-| 02 | [Design Philosophy](./activities/README.md#02-design-philosophy) | `classify-problem` | `variable-binding` | 2 | `02` |
-| 14 | [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) | `build-comprehension` | `variable-binding` | 2 | — |
-| 03 | [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) | `elicit-requirements` | `variable-binding` | 2 | `03` |
-| 04 | [Research](./activities/README.md#04-research-optional) | `research-knowledge-base` | `variable-binding` | 2 | `04` |
-| 05 | [Implementation Analysis](./activities/README.md#05-implementation-analysis) | `analyze-implementation` | `variable-binding`, `scatter-gather` | 2 | `05` |
-| 06 | [Plan & Prepare](./activities/README.md#06-plan--prepare) | `create-plan` | `variable-binding` | 1 | `06` |
+| 02 | [Design Philosophy](./activities/README.md#02-design-philosophy) | `design-philosophy` | `variable-binding` | 2 | `02` |
+| 14 | [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) | `codebase-comprehension` | `variable-binding` | 2 | — |
+| 03 | [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) | `requirements-elicitation` | `variable-binding` | 2 | `03` |
+| 04 | [Research](./activities/README.md#04-research-optional) | `research` | `variable-binding` | 2 | `04` |
+| 05 | [Implementation Analysis](./activities/README.md#05-implementation-analysis) | `implementation-analysis` | `variable-binding`, `scatter-gather` | 2 | `05` |
+| 06 | [Plan & Prepare](./activities/README.md#06-plan--prepare) | `plan-prepare` | `variable-binding` | 1 | `06` |
 | 07 | [Assumptions Review](./activities/README.md#07-assumptions-review) | `review-assumptions` | `variable-binding`, `scatter-gather` | 3 | `07` |
 | 08 | [Implement](./activities/README.md#08-implement) | `implement-task` | `variable-binding`, `scatter-gather` | 4 | `08` |
 | 09 | [Post-Impl Review](./activities/README.md#09-post-implementation-review) | — | `variable-binding` | 3 | `09` |
 | 10 | [Validate](./activities/README.md#10-validate) | — | `variable-binding` | 0 | — |
-| 11 | [Strategic Review](./activities/README.md#11-strategic-review) | `review-strategy` | `variable-binding` | 1 | `11` |
+| 11 | [Strategic Review](./activities/README.md#11-strategic-review) | `strategic-review` | `variable-binding` | 1 | `11` |
 | 12 | [Submit for Review](./activities/README.md#12-submit-for-review) | `update-pr` | `variable-binding` | 3 | — |
 | 13 | [Complete](./activities/README.md#13-complete) | `finalize-documentation` | `variable-binding` | 0 | `13` |
 

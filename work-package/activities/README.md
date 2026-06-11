@@ -120,15 +120,15 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `classify-problem` |
+| primary | `design-philosophy` |
 | supporting | `variable-binding` |
 
 **Steps:**
 
-1. **define-problem** — `classify-problem`.
-2. **classify-problem** — `classify-problem`; presents `classification-confirmed` checkpoint and sets `problem_type` and `complexity`.
-3. **determine-path** — `classify-problem`; presents `workflow-path-selected` checkpoint and sets `needs_comprehension = true`.
-4. **document-philosophy** — `classify-problem`; writes `design-philosophy.md`.
+1. **define-problem** — `design-philosophy`.
+2. **design-philosophy** — `design-philosophy`; presents `classification-confirmed` checkpoint and sets `problem_type` and `complexity`.
+3. **determine-path** — `design-philosophy`; presents `workflow-path-selected` checkpoint and sets `needs_comprehension = true`.
+4. **document-philosophy** — `design-philosophy`; writes `design-philosophy.md`.
 5. **collect-assumptions** — `review-assumptions`.
 6. **create-assumptions-log** — `review-assumptions`.
 7. **reconcile-assumptions** — `review-assumptions::reconcile`.
@@ -184,15 +184,15 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `elicit-requirements` |
+| primary | `requirements-elicitation` |
 | supporting | `variable-binding` |
 
 **Steps:**
 
-1. **stakeholder-discussion** — `elicit-requirements`; presents `stakeholder-transcript` checkpoint.
-2. **elicit-requirements** — `elicit-requirements`; drives the `domain-iteration` loop.
+1. **stakeholder-discussion** — `requirements-elicitation`; presents `stakeholder-transcript` checkpoint.
+2. **requirements-elicitation** — `requirements-elicitation`; drives the `domain-iteration` loop.
 3. **collect-assumptions** — `review-assumptions`.
-4. **create-document** — `elicit-requirements`; writes `requirements-elicitation.md`.
+4. **create-document** — `requirements-elicitation`; writes `requirements-elicitation.md`.
 5. **update-assumptions-log** — `review-assumptions`.
 6. **reconcile-assumptions** — `review-assumptions::reconcile`; presents `elicitation-complete` checkpoint.
 
@@ -250,16 +250,16 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `research-knowledge-base` |
+| primary | `research` |
 | supporting | `variable-binding` |
 
 **Steps:**
 
-1. **kb-research** — `research-knowledge-base`; search the knowledge base for relevant patterns and practices.
-2. **web-research** — `research-knowledge-base`; search the web for current information and best practices.
-3. **synthesize** — `research-knowledge-base`; presents `research-findings` checkpoint.
+1. **kb-research** — `research`; search the knowledge base for relevant patterns and practices.
+2. **web-research** — `research`; search the web for current information and best practices.
+3. **synthesize** — `research`; presents `research-findings` checkpoint.
 4. **collect-assumptions** — `review-assumptions`; presents `research-focus` checkpoint.
-5. **document** — `research-knowledge-base`; writes `kb-research.md`.
+5. **document** — `research`; writes `kb-research.md`.
 6. **update-assumptions-log** — `review-assumptions`.
 7. **reconcile-assumptions** — `review-assumptions::reconcile`.
 8. **present-resolved-assumptions** — `review-assumptions`; displays code-resolved assumptions (non-interactive).
@@ -314,7 +314,7 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `analyze-implementation` |
+| primary | `implementation-analysis` |
 | supporting | `variable-binding` |
 | supporting | `scatter-gather` |
 
@@ -323,11 +323,11 @@ graph TD
 1. **checkout-baseline** — `review-baseline-state` (when `is_review_mode == true`).
 2. **document-expected-changes** — `review-baseline-state` (when `is_review_mode == true`).
 3. **return-to-pr-branch** — `review-baseline-state` (when `is_review_mode == true`).
-4. **review-implementation** — `analyze-implementation`.
-5. **evaluate-effectiveness** — `analyze-implementation`.
-6. **establish-baselines** — `analyze-implementation`.
+4. **review-implementation** — `implementation-analysis`.
+5. **evaluate-effectiveness** — `implementation-analysis`.
+6. **establish-baselines** — `implementation-analysis`.
 7. **collect-assumptions** — `review-assumptions`.
-8. **document** — `analyze-implementation`; presents `analysis-confirmed` checkpoint; writes `implementation-analysis.md`.
+8. **document** — `implementation-analysis`; presents `analysis-confirmed` checkpoint; writes `implementation-analysis.md`.
 9. **update-assumptions-log** — `review-assumptions`.
 10. **reconcile-assumptions** — `review-assumptions::reconcile`.
 11. **present-resolved-assumptions** — `review-assumptions`; displays code-resolved assumptions (non-interactive).
@@ -383,20 +383,20 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `create-plan` |
+| primary | `plan-prepare` |
 | supporting | `variable-binding` |
 
 **Steps:**
 
 1. **env-prerequisites** — control step; validates environment prerequisites (workflows worktree present, `target_path`, `reference_path`, writable planning folder, `gh` auth, GPG agent).
-2. **apply-design** — `create-plan`.
-3. **create-plan** — `create-plan`; writes `work-package-plan.md`.
+2. **apply-design** — `plan-prepare`.
+3. **plan-prepare** — `plan-prepare`; writes `work-package-plan.md`.
 4. **create-test-plan** — `create-test-plan`; writes `test-plan.md`.
 5. **present-solution-overview** — `stakeholder-overview`; writes a plain-language solution overview to the planning README.
 6. **collect-assumptions** — `review-assumptions`.
 7. **update-assumptions-log** — `review-assumptions`.
 8. **reconcile-assumptions** — `review-assumptions::reconcile`.
-9. **create-todos** — `create-plan`; breaks the plan into actionable tasks.
+9. **create-todos** — `plan-prepare`; breaks the plan into actionable tasks.
 10. **sync-branch** — `manage-git::sync-branch`; brings the feature branch up to date with `main`.
 11. **update-pr** — `update-pr::render` with `template: initial`; presents `approach-confirmed` checkpoint.
 
@@ -699,19 +699,19 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `review-strategy` |
+| primary | `strategic-review` |
 | supporting | `variable-binding` |
 
 **Steps:**
 
-1. **diff-review** — `review-strategy`; examine all changes for scope and relevance.
-2. **identify-artifacts** — `review-strategy`; find investigation artifacts, over-engineering, orphaned infrastructure.
+1. **diff-review** — `strategic-review`; examine all changes for scope and relevance.
+2. **identify-artifacts** — `strategic-review`; find investigation artifacts, over-engineering, orphaned infrastructure.
 3. **verify-readme** — `manage-artifacts::verify-readme-conforms`; surface drift as an informational finding.
-4. **ensure-changes-folder-entry** — `review-strategy`; add a `changes/` fragment when the repo uses one and none exists for this work.
-5. **verify-change-fragment** — `review-strategy`; sets `fragment_references_issue` and validates the fragment references `issue_url`.
-6. **document-findings** — `review-strategy`; writes the strategic review document.
-7. **document-cleanup-recommendations** — `review-strategy` (when `is_review_mode == true`).
-8. **apply-cleanup** — `review-strategy` (when not review mode).
+4. **ensure-changes-folder-entry** — `strategic-review`; add a `changes/` fragment when the repo uses one and none exists for this work.
+5. **verify-change-fragment** — `strategic-review`; sets `fragment_references_issue` and validates the fragment references `issue_url`.
+6. **document-findings** — `strategic-review`; writes the strategic review document.
+7. **document-cleanup-recommendations** — `strategic-review` (when `is_review_mode == true`).
+8. **apply-cleanup** — `strategic-review` (when not review mode).
 9. **create-architecture-summary** — `summarize-architecture`.
 10. **analyze-strategic-findings** — control step; presents `review-findings` checkpoint; sets `recommended_strategic_option` and `strategic_findings_summary`.
 
@@ -900,25 +900,25 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `build-comprehension` |
+| primary | `codebase-comprehension` |
 | supporting | `variable-binding` |
 
 **Steps:**
 
-1. **check-existing-artifacts** — `build-comprehension`; search the comprehension folder for related artifacts.
-2. **review-existing** — `build-comprehension`; present relevant existing artifacts.
-3. **architecture-survey** — `build-comprehension`; top-down survey of structure, modules, dependencies, entry points, patterns.
-4. **key-abstractions** — `build-comprehension`; identify core types, traits, interfaces, data structures.
-5. **design-rationale** — `build-comprehension`; infer rationale for significant design choices.
-6. **domain-concept-mapping** — `build-comprehension`; map technical constructs to domain concepts.
+1. **check-existing-artifacts** — `codebase-comprehension`; search the comprehension folder for related artifacts.
+2. **review-existing** — `codebase-comprehension`; present relevant existing artifacts.
+3. **architecture-survey** — `codebase-comprehension`; top-down survey of structure, modules, dependencies, entry points, patterns.
+4. **key-abstractions** — `codebase-comprehension`; identify core types, traits, interfaces, data structures.
+5. **design-rationale** — `codebase-comprehension`; infer rationale for significant design choices.
+6. **domain-concept-mapping** — `codebase-comprehension`; map technical constructs to domain concepts.
 7. **create-comprehension-artifact** — `manage-artifacts::write-artifact`; write or augment the comprehension artifact.
-8. **initial-deep-dive** — `build-comprehension`; mandatory pass that attempts to resolve every open question.
+8. **initial-deep-dive** — `codebase-comprehension`; mandatory pass that attempts to resolve every open question.
 9. **initial-lens-pass** — `prism/portfolio-analysis` with lenses `pedagogy`, `rejected-paths`.
 10. **update-artifact-initial** — `manage-artifacts::write-artifact`; record initial deep-dive findings.
-11. **revise-initial-questions** — `build-comprehension`; revise the Open Questions section.
-12. **deep-dive-loop** — `build-comprehension`; optional further exploration via the `deep-dive-iteration` loop.
+11. **revise-initial-questions** — `codebase-comprehension`; revise the Open Questions section.
+12. **deep-dive-loop** — `codebase-comprehension`; optional further exploration via the `deep-dive-iteration` loop.
 
-**Loops:** `deep-dive-iteration` — while `needs_comprehension == true`. Each iteration selects an area (`build-comprehension`), performs targeted analysis (`build-comprehension`), applies portfolio lenses (`prism/portfolio-analysis`), updates the artifact (`manage-artifacts::write-artifact`), and revises open questions (`build-comprehension`), presenting `comprehension-sufficient`.
+**Loops:** `deep-dive-iteration` — while `needs_comprehension == true`. Each iteration selects an area (`codebase-comprehension`), performs targeted analysis (`codebase-comprehension`), applies portfolio lenses (`prism/portfolio-analysis`), updates the artifact (`manage-artifacts::write-artifact`), and revises open questions (`codebase-comprehension`), presenting `comprehension-sufficient`.
 
 **Checkpoints (1):**
 

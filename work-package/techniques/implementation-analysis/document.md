@@ -33,7 +33,7 @@ Path to the planning artifacts folder where `{analysis_document}` is written.
 
 ### analysis_document
 
-Current implementation analysis artifact with baselines and improvement opportunities (inherited from the [analyze-implementation](./TECHNIQUE.md) group root; declared here as the binding contract). Written to `{planning_folder_path}` as `implementation-analysis.md`, capturing the located implementation, evaluated effectiveness, established baselines, and identified gaps.
+Current implementation analysis artifact with baselines and improvement opportunities (inherited from the [implementation-analysis](./TECHNIQUE.md) group root; declared here as the binding contract). Written to `{planning_folder_path}` as `implementation-analysis.md`, capturing the located implementation, evaluated effectiveness, established baselines, and identified gaps.
 
 ## Protocol
 

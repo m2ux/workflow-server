@@ -11,7 +11,7 @@ Write the strategic review document, categorizing every finding from the review-
 
 ### planning_folder_path
 
-Folder where the strategic review document is written; inherited from the [review-strategy](./TECHNIQUE.md) group root.
+Folder where the strategic review document is written; inherited from the [strategic-review](./TECHNIQUE.md) group root.
 
 ## Outputs
 

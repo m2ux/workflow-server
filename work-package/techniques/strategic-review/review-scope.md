@@ -11,19 +11,19 @@ Examine all changes on the feature branch and assess them for scope discipline, 
 
 ### branch_name
 
-Feature branch under review, examined via `git diff` / `git log`; inherited from the [review-strategy](./TECHNIQUE.md) group root.
+Feature branch under review, examined via `git diff` / `git log`; inherited from the [strategic-review](./TECHNIQUE.md) group root.
 
 ### requirements
 
-The work-package requirements, used as the scope baseline for the scope-discipline check; inherited from the [review-strategy](./TECHNIQUE.md) group root.
+The work-package requirements, used as the scope baseline for the scope-discipline check; inherited from the [strategic-review](./TECHNIQUE.md) group root.
 
 ### changed_files
 
-List of files changed in the work package, passed to the orphan scan; inherited from the [review-strategy](./TECHNIQUE.md) group root.
+List of files changed in the work package, passed to the orphan scan; inherited from the [strategic-review](./TECHNIQUE.md) group root.
 
 ### pr_number
 
-PR identifier, used to read the live PR body for conformance verification; inherited from the [review-strategy](./TECHNIQUE.md) group root.
+PR identifier, used to read the live PR body for conformance verification; inherited from the [strategic-review](./TECHNIQUE.md) group root.
 
 ## Outputs
 

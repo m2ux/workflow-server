@@ -11,11 +11,11 @@ Broad comprehension pass: discover existing artifacts, establish the GitNexus po
 
 ### comprehension_dir
 
-Directory holding codebase-comprehension artifacts (inherited from the [build-comprehension](./TECHNIQUE.md) group root; declared here as the binding contract). Listed to discover and match existing artifacts before fresh analysis.
+Directory holding codebase-comprehension artifacts (inherited from the [codebase-comprehension](./TECHNIQUE.md) group root; declared here as the binding contract). Listed to discover and match existing artifacts before fresh analysis.
 
 ### project_type
 
-*(optional)* Detected project type, rust-substrate|other (inherited from the [build-comprehension](./TECHNIQUE.md) group root). Confirmed from the build system and used to shape which abstractions and patterns to look for.
+*(optional)* Detected project type, rust-substrate|other (inherited from the [codebase-comprehension](./TECHNIQUE.md) group root). Confirmed from the build system and used to shape which abstractions and patterns to look for.
 
 ### problem_statement
 

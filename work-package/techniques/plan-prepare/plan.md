@@ -11,7 +11,7 @@ Apply the design framework to the inputs and write the work package plan artifac
 
 ### design_philosophy
 
-Design philosophy artifact with problem classification and workflow path (inherited from the [create-plan](./TECHNIQUE.md) group root; declared here as the binding contract). Verified present and applied to structure the implementation approach.
+Design philosophy artifact with problem classification and workflow path (inherited from the [plan-prepare](./TECHNIQUE.md) group root; declared here as the binding contract). Verified present and applied to structure the implementation approach.
 
 ### requirements
 
@@ -19,11 +19,11 @@ Work package requirements; verified present and reviewed to drive the task break
 
 ### analysis_findings
 
-*(optional)* Implementation analysis findings — baselines and gaps (inherited from the [create-plan](./TECHNIQUE.md) group root). Reviewed to inform the approach when analysis was performed.
+*(optional)* Implementation analysis findings — baselines and gaps (inherited from the [plan-prepare](./TECHNIQUE.md) group root). Reviewed to inform the approach when analysis was performed.
 
 ### research_findings
 
-*(optional)* Research findings from knowledge base and web (inherited from the [create-plan](./TECHNIQUE.md) group root). Reviewed to inform the approach when research was performed.
+*(optional)* Research findings from knowledge base and web (inherited from the [plan-prepare](./TECHNIQUE.md) group root). Reviewed to inform the approach when research was performed.
 
 ### planning_folder_path
 
@@ -33,7 +33,7 @@ Path to the planning artifacts folder where `{plan_document}` is written.
 
 ### plan_document
 
-Work package plan artifact with task breakdown and dependencies (inherited from the [create-plan](./TECHNIQUE.md) group root; declared here as the binding contract). Written to `{planning_folder_path}` as `work-package-plan.md`, documenting design decisions and assumptions.
+Work package plan artifact with task breakdown and dependencies (inherited from the [plan-prepare](./TECHNIQUE.md) group root; declared here as the binding contract). Written to `{planning_folder_path}` as `work-package-plan.md`, documenting design decisions and assumptions.
 
 #### tasks
 

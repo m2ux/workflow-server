@@ -11,7 +11,7 @@ Locate the current implementation, evaluate its effectiveness, establish quantit
 
 ### target_submodule
 
-Target submodule for the work package, e.g. midnight-node, midnight-ledger (inherited from the [analyze-implementation](./TECHNIQUE.md) group root; declared here as the binding contract). Used to resolve the codebase to locate and to key the GitNexus index (`gitnexus://repo/{name}/...`).
+Target submodule for the work package, e.g. midnight-node, midnight-ledger (inherited from the [implementation-analysis](./TECHNIQUE.md) group root; declared here as the binding contract). Used to resolve the codebase to locate and to key the GitNexus index (`gitnexus://repo/{name}/...`).
 
 ### requirements
 

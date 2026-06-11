@@ -9,9 +9,9 @@ techniques:
     - "variable-binding"
 steps[9]:
   - id: research-knowledge-base
-    technique: research-knowledge-base::research
+    technique: research::research
   - id: synthesize
-    technique: research-knowledge-base::synthesize
+    technique: research::synthesize
     checkpoint: research-findings
   - id: collect-assumptions
     technique: review-assumptions::collect
@@ -19,7 +19,7 @@ steps[9]:
       assumption_categories: "Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment"
     checkpoint: research-focus
   - id: document
-    technique: research-knowledge-base::document
+    technique: research::document
   - id: update-assumptions-log
     technique: review-assumptions::record
   - id: reconcile-assumptions

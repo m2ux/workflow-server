@@ -11,7 +11,7 @@ Maintain the target repository's `changes/` changelog fragment for this work pac
 
 ### target_path
 
-Target repository root, checked for a `changes/` folder; inherited from the [review-strategy](./TECHNIQUE.md) group root.
+Target repository root, checked for a `changes/` folder; inherited from the [strategic-review](./TECHNIQUE.md) group root.
 
 ### issue_platform
 

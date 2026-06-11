@@ -17,13 +17,13 @@ steps[8]:
       operator: "=="
       value: true
   - id: analyze-implementation
-    technique: analyze-implementation::analyze
+    technique: implementation-analysis::analyze
   - id: collect-assumptions
     technique: review-assumptions::collect
     technique_args:
       assumption_categories: "Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding"
   - id: document
-    technique: analyze-implementation::document
+    technique: implementation-analysis::document
     checkpoint: analysis-confirmed
   - id: update-assumptions-log
     technique: review-assumptions::record
