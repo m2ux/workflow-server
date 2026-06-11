@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Run check, clippy, test, and fmt-check concurrently against the same scope and aggregate their statuses into a single validation-results envelope. The canonical entry point for the validate activity on rust-substrate projects.
+Run check, clippy, test, and fmt-check concurrently against the same scope and aggregate their statuses into a single validation-results envelope. The canonical entry point for full validation on rust-substrate projects.
 
 ## Inputs
 

@@ -11,11 +11,11 @@ Synthesize the knowledge base and web findings against the work package requirem
 
 ### kb_findings
 
-Knowledge base findings produced by [research](./research.md); connected to requirements during synthesis.
+Knowledge base findings connected to requirements during synthesis.
 
 ### web_findings
 
-Web research findings produced by [research](./research.md); connected to requirements during synthesis.
+Web research findings connected to requirements during synthesis.
 
 ### requirements
 
@@ -23,7 +23,7 @@ Work package requirements that the findings are synthesized against to map appli
 
 ## Outputs
 
-### synthesis
+### findings_synthesis
 
 The findings connected to work package requirements: which kb/web findings apply, how, and to which requirement.
 
@@ -39,6 +39,6 @@ Documented assumptions about pattern applicability — where a pattern's fit to 
 
 ### 1. Synthesize Findings
 
-- Connect kb and web findings to work package requirements
+- Connect `{kb_findings}` and `{web_findings}` to work package requirements
 - Map applicable patterns to specific needs
 - Document assumptions about pattern applicability

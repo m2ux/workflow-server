@@ -11,7 +11,7 @@ Present the open (stakeholder-dependent, non-code-resolvable) assumptions to the
 
 ### open_assumptions
 
-The open (non-code-resolvable) assumptions to present for review. In interview mode the activity's forEach loop binds the current one as `current_assumption`; in batch mode the whole list is presented together.
+The open (non-code-resolvable) assumptions to present for review. In interview mode the current one is bound as `current_assumption`; in batch mode the whole list is presented together.
 
 ### updated_assumptions_log
 
@@ -21,7 +21,7 @@ The assumptions [log](../../resources/assumptions-review.md#assumptions-log-temp
 
 ### assumption_review_presentation
 
-A side-effect output: the structured judgement-augmentation context presented to the user for the `assumption-decision` checkpoint. For each open assumption it contains the decision space (alternatives + trade-offs), non-resolvability rationale, technical context, the agent's current position, a reversibility flag, and a link to the assumptions log. Produces no new stored variable — the user's decision is captured by the checkpoint and written back by [record](./record.md).
+A side-effect output: the structured judgement-augmentation context presented to the user for decision. For each open assumption it contains the decision space (alternatives + trade-offs), non-resolvability rationale, technical context, the agent's current position, a reversibility flag, and a link to the assumptions log. Produces no new stored variable — the user's decision is captured and written back by [record](./record.md).
 
 ## Protocol
 
@@ -38,7 +38,7 @@ A side-effect output: the structured judgement-augmentation context presented to
 
 ### 2. Present For Review
 
-- This technique supports two presentation modes depending on the consuming activity's structure. Batch mode: present all open assumptions together as a structured list, ordered by decision impact. Interview mode: present assumptions one at a time via the activity's forEach loop and per-assumption checkpoint. The activity's steps, loops, and checkpoints determine which mode applies — follow the activity structure.
+- This technique supports two presentation modes. Batch mode: present all open assumptions together as a structured list, ordered by decision impact. Interview mode: present assumptions one at a time. Use whichever mode the supplied inputs indicate.
 - In both modes, each assumption should contain the decision space, trade-offs, non-resolvability rationale, technical context, the agent's current position, and a reversibility flag as assembled by format-judgement-context. Order by decision impact: assumptions whose resolution most affects the implementation approach come first.
 - Include a clickable markdown link to the assumptions-log for full details and reconciliation history
 - Frame the review as judgement augmentation: the user is making informed decisions on genuinely open questions, not performing triage or rubber-stamping. The agent has already resolved everything it can.

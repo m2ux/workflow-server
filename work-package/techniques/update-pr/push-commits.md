@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Push all local commits to the remote feature branch before the PR is updated.
+Push all local commits to the remote feature branch.
 
 ## Inputs
 
@@ -15,13 +15,13 @@ The feature branch whose local commits are pushed to the remote (inherited from 
 
 ### pr_number
 
-The PR being updated; the op holds off on updating this PR until the push completes (inherited from the [update-pr](./TECHNIQUE.md) group root).
+The PR being updated (inherited from the [update-pr](./TECHNIQUE.md) group root).
 
 ## Output
 
 ### pushed_branch
 
-The remote `{branch_name}` after a verified push: all local commits present on the remote, with any rejected push resolved by pull-and-rebase before retrying. The op's effect is that the remote feature branch now matches local before the `{pr_number}` PR is updated.
+The remote `{branch_name}` after a verified push: all local commits present on the remote, with any rejected push resolved by pull-and-rebase before retrying.
 
 ## Protocol
 

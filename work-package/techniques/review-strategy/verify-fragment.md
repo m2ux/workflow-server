@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Locate the change fragment for this work package under the `{target_path}` repository's `changes/` folder and determine whether its body references the work-package issue, so the caller can gate on a CI-conformant changelog entry before proceeding.
+Locate the change fragment for this work package under the `{target_path}` repository's `changes/` folder and determine whether its body references the work-package issue.
 
 ## Inputs
 
@@ -25,7 +25,7 @@ The work-package issue number, surfaced in the remediation guidance (`Closes: #{
 
 ### fragment_references_issue
 
-`true` when the located fragment body contains `issue_url` verbatim; `false` when it does not; `null` when no `changes/` directory exists at the `{target_path}` root (skip).
+`true` when the located fragment body contains `{issue_url}` verbatim; `false` when it does not; `null` when no `changes/` directory exists at the `{target_path}` root (skip).
 
 ## Protocol
 
@@ -38,4 +38,4 @@ The work-package issue number, surfaced in the remediation guidance (`Closes: #{
 
 - Read the located fragment body and check whether it contains `{issue_url}` verbatim, or an equivalent GitHub issue reference matching `github\.com/.+/issues/[0-9]+` or `(Fixes|Closes|Resolves):?\s+#[0-9]+`.
 - Set `{fragment_references_issue}` = true when the reference is present, false when it is absent.
-- When false, the calling activity surfaces the remediation guidance (add a `Closes: #{issue_number}` line or the full `issue_url`, commit, and re-run).
+- When false, surface the remediation guidance: add a `Closes: #{issue_number}` line or the full `{issue_url}`, commit, and re-run.

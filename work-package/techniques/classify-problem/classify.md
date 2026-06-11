@@ -11,7 +11,7 @@ Classify the problem as specific (cause known/unknown) or inventive (improvement
 
 ### problem_statement
 
-The problem definition from [define](./define.md), classified into a problem type and assessed for complexity.
+The problem definition, classified into a problem type and assessed for complexity.
 
 ### issue_details
 
@@ -25,11 +25,11 @@ Summary, description, and context from the linked issue, used to infer the probl
 
 ### problem_type
 
-The classification result — one of: specific-cause-known, specific-cause-unknown, inventive-improvement, inventive-prevention (set as an activity variable; a field of the [design_philosophy_doc](./TECHNIQUE.md)).
+The classification result — one of: specific-cause-known, specific-cause-unknown, inventive-improvement, inventive-prevention.
 
 ### complexity
 
-The assessed complexity — one of: simple, moderate, or complex (set as an activity variable; a field of the [design_philosophy_doc](./TECHNIQUE.md)).
+The assessed complexity — one of: simple, moderate, or complex.
 
 ### classification_rationale
 

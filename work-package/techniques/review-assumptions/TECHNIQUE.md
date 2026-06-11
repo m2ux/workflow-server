@@ -11,17 +11,17 @@ metadata:
 
 ## Capability
 
-Own the human-facing assumption lifecycle — collect and classify the assumptions made during an activity, interview the user on the open ones, and record their decisions back into the assumptions log. Operations inherit the shared inputs, outputs, and rules below.
+Own the human-facing assumption lifecycle — collect and classify the assumptions made during the work, interview the user on the open ones, and record their decisions back into the assumptions log. Operations inherit the shared inputs, outputs, and rules below.
 
 ## Inputs
 
 ### activity_context
 
-Which activity is generating assumptions
+The context in which assumptions are generated
 
 ### assumption_categories
 
-The per-activity list of categories used to classify assumptions during collection (supplied via `technique_args` from the consuming activity). Collection classifies each assumption into one of these categories.
+The list of categories used to classify assumptions during collection (supplied via `technique_args`). Collection classifies each assumption into one of these categories.
 
 ### existing_assumptions_log
 
@@ -31,7 +31,7 @@ The per-activity list of categories used to classify assumptions during collecti
 
 ### updated_assumptions_log
 
-Assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) updated with review outcomes — grows across activities
+Assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) updated with review outcomes — grows as the work progresses
 
 #### assumptions_log_artifact
 

@@ -11,7 +11,7 @@ Maintain the 'Open Questions' section of the comprehension artifact after a deep
 
 ### comprehension_artifact
 
-The comprehension artifact whose 'Open Questions' section is revised; its existing table and the findings from the preceding [deep-dive](./deep-dive.md) drive which questions are resolved and which are added.
+The comprehension artifact whose 'Open Questions' section is revised; its existing table and the findings from the latest targeted investigation drive which questions are resolved and which are added.
 
 ## Outputs
 

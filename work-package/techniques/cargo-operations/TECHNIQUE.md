@@ -31,11 +31,11 @@ Every cargo invocation made by work-package techniques MUST use one of these ope
 
 ### foreground-only
 
-Cargo operations MUST run synchronously in the foreground of the caller. Never invoke them with `run_in_background` inside an activity worker — when the worker exits, the OS process group is killed and the build is lost (this is what forced the worker re-spawn pattern observed in past runs). If the activity's wall-clock budget cannot accommodate a foreground run, the orchestrator (not the worker) owns the invocation; spawn a new worker only AFTER the cargo result is in hand.
+Cargo operations MUST run synchronously in the foreground of the caller. Never invoke them with `run_in_background` inside a worker — when the worker exits, the OS process group is killed and the build is lost (this is what forced the worker re-spawn pattern observed in past runs). If the wall-clock budget cannot accommodate a foreground run, the orchestrator (not the worker) owns the invocation; spawn a new worker only AFTER the cargo result is in hand.
 
 ### scope-narrow-then-wide
 
-During inner loops (TDD red/green in implement-task) prefer scope=`-p <crate>`. Run `--workspace` once at the validate activity to match CI.
+During inner loops (TDD red/green in implement-task) prefer scope=`-p <crate>`. Run `--workspace` once during final validation to match CI.
 
 ### fmt-uses-only-nice
 

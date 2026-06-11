@@ -21,7 +21,7 @@ Summary, description, and context from the linked issue
 
 ### problem_context
 
-*(optional)* Additional context about the problem from user or prior activities
+*(optional)* Additional context about the problem from the user or prior work
 
 ## Outputs
 
@@ -49,4 +49,4 @@ simple, moderate, or complex
 
 ### path-determines-workflow
 
-Design philosophy determines the path through the workflow — all subsequent activities depend on this classification
+Design philosophy determines the path through the workflow — all subsequent work depends on this classification

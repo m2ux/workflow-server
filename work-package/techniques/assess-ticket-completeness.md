@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Assess a tracker ticket against an issue-quality checklist (problem statement, goal, scope, acceptance criteria, user stories), document the gaps found, and offer to refactor the ticket to close them.
+Assess a tracker ticket across five issue-quality dimensions — problem statement, goal, scope, acceptance criteria, and user stories — document the gaps found, and offer to refactor the ticket to close them.
 
 ## Inputs
 
@@ -29,9 +29,9 @@ True when the user elects to refactor the ticket to address the identified gaps;
 
 ## Protocol
 
-### 1. Apply the Checklist
+### 1. Assess the Dimensions
 
-- Evaluate the `{ticket_details}` against the issue-quality checklist: problem statement, goal, scope, acceptance criteria, and user stories.
+- Evaluate the `{ticket_details}` across five issue-quality dimensions: problem statement, goal, scope, acceptance criteria, and user stories.
 - Judge each dimension as present and sufficient, present but weak, or missing.
 
 ### 2. Document Gaps

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Commit planning artifacts to the parent engineering repo with the activity message pattern, rebasing onto sibling work-package commits to avoid push rejections.
+Commit planning artifacts to the parent engineering repo with the canonical message pattern, rebasing onto sibling work-package commits to avoid push rejections.
 
 ## Inputs
 

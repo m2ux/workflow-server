@@ -48,7 +48,7 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 
 - Runs when `{issue_platform}` is jira and needs_issue_creation is true. Use attached [jira-issue-creation](../resources/jira-issue-creation.md) for guidance.
 - Obtain Atlassian cloud ID via `getAccessibleAtlassianResources` and preserve as `{jira_cloud_id}`. This MUST be the first Jira tool call.
-- List available projects via `getVisibleJiraProjects`, then present the jira-project-selection checkpoint (defined on the activity) for user selection. Resolve available issue types for the selected project.
+- List available projects via `getVisibleJiraProjects`, then present the jira-project-selection checkpoint for user selection. Resolve available issue types for the selected project.
 - Gather summary, description, and acceptance criteria, scoping the issue to the `{target_submodule}` the work package targets. Resolve assignee account ID if specified.
 - Create the issue with mapped type using the issue-type mapping below — the resulting issue is the `{created_issue}`. Capture `{issue_number}` and `{issue_url}`.
 - Jira issue type mapping: `feature->Story`, `bug->Bug`, `task->Task`, `enhancement->Story`, `epic->Epic`

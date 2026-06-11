@@ -29,7 +29,7 @@ steps[6]:
   - id: update-assumptions-log
     technique: review-assumptions::record
   - id: reconcile-assumptions
-    technique: reconcile-assumptions
+    technique: review-assumptions::reconcile
     checkpoint: elicitation-complete
 artifacts[1]:
   - id: requirements-document
@@ -44,10 +44,10 @@ loops[2]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
+    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the review-assumptions::reconcile technique protocol."
     steps[1]:
       - id: reconcile-iteration
-        technique: reconcile-assumptions
+        technique: review-assumptions::reconcile
   - id: domain-iteration
     name: Question Domain Iteration
     type: forEach

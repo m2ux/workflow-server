@@ -11,7 +11,7 @@ Ask a single question within the current domain, record the response, and adapt 
 
 ### current_domain
 
-The question domain for this iteration, bound by the activity's domain-iteration forEach loop; one question is posed from it per [requirements-elicitation](../../resources/requirements-elicitation.md).
+The question domain for this iteration; one question is posed from it per [requirements-elicitation](../../resources/requirements-elicitation.md).
 
 ## Outputs
 

@@ -131,11 +131,11 @@ graph TD
 4. **document-philosophy** — `classify-problem`; writes `design-philosophy.md`.
 5. **collect-assumptions** — `review-assumptions`.
 6. **create-assumptions-log** — `review-assumptions`.
-7. **reconcile-assumptions** — `reconcile-assumptions`.
+7. **reconcile-assumptions** — `review-assumptions::reconcile`.
 8. **assess-ticket-completeness** — `assess-ticket-completeness`; presents `ticket-completeness` checkpoint (when `is_review_mode == true`).
 9. **set-review-mode-path** — control step; sets `needs_elicitation = false` (when `is_review_mode == true`).
 
-**Loops:** `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each iteration runs `reconcile-assumptions` to resolve code-analyzable assumptions.
+**Loops:** `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each iteration runs `review-assumptions::reconcile` to resolve code-analyzable assumptions.
 
 **Checkpoints (3):**
 
@@ -194,10 +194,10 @@ graph TD
 3. **collect-assumptions** — `review-assumptions`.
 4. **create-document** — `elicit-requirements`; writes `requirements-elicitation.md`.
 5. **update-assumptions-log** — `review-assumptions`.
-6. **reconcile-assumptions** — `reconcile-assumptions`; presents `elicitation-complete` checkpoint.
+6. **reconcile-assumptions** — `review-assumptions::reconcile`; presents `elicitation-complete` checkpoint.
 
 **Loops:**
-- `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each iteration runs `reconcile-assumptions`.
+- `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each iteration runs `review-assumptions::reconcile`.
 - `domain-iteration` — forEach over `question_domains` (max 5). Each iteration asks one question and records the response.
 
 **Decision:** `user-intent` — evaluates the user response within `domain-iteration`; default branch continues elicitation, the `done` branch fires when `elicitation_complete == true`.
@@ -261,13 +261,13 @@ graph TD
 4. **collect-assumptions** — `review-assumptions`; presents `research-focus` checkpoint.
 5. **document** — `research-knowledge-base`; writes `kb-research.md`.
 6. **update-assumptions-log** — `review-assumptions`.
-7. **reconcile-assumptions** — `reconcile-assumptions`.
+7. **reconcile-assumptions** — `review-assumptions::reconcile`.
 8. **present-resolved-assumptions** — `review-assumptions`; displays code-resolved assumptions (non-interactive).
 9. **declare-context-scope** — control step; presents `context-scope-declaration` checkpoint and sets `context_scope` (`repo-only` | `web-retrieval` | `mixed`).
 10. **interview-open-assumptions** — `review-assumptions`; drives the `assumption-interview` loop.
 
 **Loops:**
-- `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each iteration runs `reconcile-assumptions`.
+- `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each iteration runs `review-assumptions::reconcile`.
 - `assumption-interview` — forEach over `open_assumptions` (max 20). Presents `research-assumption-interview` for each open assumption; the user resolves inline or defers.
 
 **Checkpoints (4):**
@@ -329,12 +329,12 @@ graph TD
 7. **collect-assumptions** — `review-assumptions`.
 8. **document** — `analyze-implementation`; presents `analysis-confirmed` checkpoint; writes `implementation-analysis.md`.
 9. **update-assumptions-log** — `review-assumptions`.
-10. **reconcile-assumptions** — `reconcile-assumptions`.
+10. **reconcile-assumptions** — `review-assumptions::reconcile`.
 11. **present-resolved-assumptions** — `review-assumptions`; displays code-resolved assumptions (non-interactive).
 12. **interview-open-assumptions** — `review-assumptions`; drives the `assumption-interview` loop.
 
 **Loops:**
-- `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each iteration runs `reconcile-assumptions`.
+- `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each iteration runs `review-assumptions::reconcile`.
 - `assumption-interview` — forEach over `open_assumptions` (max 20). Presents `analysis-assumption-interview` for each open assumption.
 
 **Checkpoints (2):**
@@ -395,12 +395,12 @@ graph TD
 5. **present-solution-overview** — `stakeholder-overview`; writes a plain-language solution overview to the planning README.
 6. **collect-assumptions** — `review-assumptions`.
 7. **update-assumptions-log** — `review-assumptions`.
-8. **reconcile-assumptions** — `reconcile-assumptions`.
+8. **reconcile-assumptions** — `review-assumptions::reconcile`.
 9. **create-todos** — `create-plan`; breaks the plan into actionable tasks.
 10. **sync-branch** — `manage-git::sync-branch`; brings the feature branch up to date with `main`.
 11. **update-pr** — `update-pr::render` with `template: initial`; presents `approach-confirmed` checkpoint.
 
-**Loops:** `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each iteration runs `reconcile-assumptions`.
+**Loops:** `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each iteration runs `review-assumptions::reconcile`.
 
 **Checkpoints (1):**
 
@@ -530,7 +530,7 @@ graph TD
 
 **Post-loop steps:**
 
-1. **reconcile-assumptions** — `reconcile-assumptions` (drives `assumption-reconciliation`).
+1. **reconcile-assumptions** — `review-assumptions::reconcile` (drives `assumption-reconciliation`).
 2. **present-resolved-assumptions** — `review-assumptions`; displays code-resolved assumptions (non-interactive).
 3. **interview-open-assumptions** — `review-assumptions` (drives `assumption-interview`).
 4. **update-assumptions-log** — `review-assumptions`; presents `switch-model-post-impl` checkpoint.

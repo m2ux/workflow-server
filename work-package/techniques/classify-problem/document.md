@@ -11,19 +11,19 @@ Create the design philosophy artifact, recording the problem statement, classifi
 
 ### problem_statement
 
-The problem definition from [define](./define.md), recorded into the artifact.
+The problem definition recorded into the artifact.
 
 ### problem_type
 
-The classification from [classify](./classify.md), recorded into the artifact.
+The classification recorded into the artifact.
 
 ### complexity
 
-The complexity assessment from [classify](./classify.md), recorded into the artifact.
+The complexity assessment recorded into the artifact.
 
 ### path_rationale
 
-The workflow path rationale from [determine-path](./determine-path.md), recorded into the artifact.
+The workflow path rationale recorded into the artifact.
 
 ### planning_folder_path
 

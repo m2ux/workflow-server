@@ -92,7 +92,7 @@ Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-rev
 
 `manual-diff-review.md`
 
-#### findings
+#### block_findings
 
 Per-block issues with interview responses
 

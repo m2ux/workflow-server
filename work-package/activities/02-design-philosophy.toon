@@ -65,7 +65,7 @@ steps[9]:
       activity_context: design-philosophy
       assumption_categories: "Problem Interpretation, Complexity Assessment, Workflow Path"
   - id: reconcile-assumptions
-    technique: reconcile-assumptions
+    technique: review-assumptions::reconcile
   - id: assess-ticket-completeness
     technique: assess-ticket-completeness
     checkpoint: ticket-completeness
@@ -94,10 +94,10 @@ loops[1]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
+    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the review-assumptions::reconcile technique protocol."
     steps[1]:
       - id: reconcile-iteration
-        technique: reconcile-assumptions
+        technique: review-assumptions::reconcile
 checkpoints[3]:
   - id: classification-confirmed
     name: Classification Checkpoint

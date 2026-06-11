@@ -19,11 +19,11 @@ Work package requirements; verified present and reviewed to drive the task break
 
 ### analysis_findings
 
-*(optional)* Implementation analysis findings — baselines and gaps (inherited from the [create-plan](./TECHNIQUE.md) group root). Reviewed to inform the approach when an analysis activity ran.
+*(optional)* Implementation analysis findings — baselines and gaps (inherited from the [create-plan](./TECHNIQUE.md) group root). Reviewed to inform the approach when analysis was performed.
 
 ### research_findings
 
-*(optional)* Research findings from knowledge base and web (inherited from the [create-plan](./TECHNIQUE.md) group root). Reviewed to inform the approach when a research activity ran.
+*(optional)* Research findings from knowledge base and web (inherited from the [create-plan](./TECHNIQUE.md) group root). Reviewed to inform the approach when research was performed.
 
 ### planning_folder_path
 
@@ -44,8 +44,8 @@ Atomic tasks with explicit dependencies and ordering — each implementable, tes
 ### 1. Verify Inputs
 
 - Verify `{design_philosophy}` and `{requirements}` are available
-- Confirm prerequisite activities completed before proceeding
-- If design philosophy or analysis is not completed, prompt the user to complete the prerequisite activities before planning.
+- Confirm prerequisite inputs are present before proceeding
+- If design philosophy or analysis is not present, prompt the user to provide the prerequisite inputs before planning.
 
 ### 2. Load Guidance
 

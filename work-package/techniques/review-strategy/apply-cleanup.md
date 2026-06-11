@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Apply the approved cleanup (removing identified artifacts) to the source, then commit the changes-folder fragment and the strategic-review artifacts on the feature branch. This is the group's terminal operation; the calling activity adds no separate commit step.
+Apply the approved cleanup (removing identified artifacts) to the source, then commit the changes-folder fragment and the strategic-review artifacts on the feature branch. This is the group's terminal operation; no separate commit step follows.
 
 ## Inputs
 
@@ -21,7 +21,7 @@ The strategic review document listing the identified artifacts to remove (when t
 
 ### cleanup_commit
 
-A commit on `{branch_name}` carrying the applied cleanup (identified artifacts removed when approved), the `changes/` changelog fragment, and the strategic-review artifacts, produced via [manage-git](../manage-git/TECHNIQUE.md)::[artifact-commits](../manage-git/artifact-commits.md). The group's terminal output; the calling activity adds no separate commit step.
+A commit on `{branch_name}` carrying the applied cleanup (identified artifacts removed when approved), the `changes/` changelog fragment, and the strategic-review artifacts, produced via [manage-git](../manage-git/TECHNIQUE.md)::[artifact-commits](../manage-git/artifact-commits.md). The group's terminal output; no separate commit step follows.
 
 ## Protocol
 
@@ -32,4 +32,4 @@ A commit on `{branch_name}` carrying the applied cleanup (identified artifacts r
 
 ### 2. Commit Changes
 
-- Apply [manage-git](../manage-git/TECHNIQUE.md)::[artifact-commits](../manage-git/artifact-commits.md) to commit the `changes/` fragment and the strategic-review artifacts on `{branch_name}`. This is the protocol's final phase; the calling activity adds no separate commit step.
+- Apply [manage-git](../manage-git/TECHNIQUE.md)::[artifact-commits](../manage-git/artifact-commits.md) to commit the `changes/` fragment and the strategic-review artifacts on `{branch_name}`. This is the protocol's final phase; no separate commit step follows.

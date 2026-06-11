@@ -11,7 +11,7 @@ Targeted investigation of a selected codebase area: trace data flows, examine im
 
 ### comprehension_artifact
 
-The comprehension artifact produced by [survey](./survey.md) and written by manage-artifacts; its architecture survey and existing Open Questions seed the candidate-area selection, and findings are appended to it.
+The comprehension artifact whose architecture survey and existing Open Questions seed the candidate-area selection, and to which findings are appended.
 
 ### comprehension_dir
 

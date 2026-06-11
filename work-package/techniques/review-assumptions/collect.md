@@ -5,17 +5,17 @@ metadata:
 
 ## Capability
 
-Collect and classify the assumptions made during an activity against `{assumption_categories}`, appending them to the assumptions log.
+Collect and classify the assumptions made during the work against `{assumption_categories}`, appending them to the assumptions log.
 
 ## Inputs
 
 ### activity_context
 
-Which activity is generating assumptions, used to choose the category appropriate to the current phase (supplied via `technique_args` from the consuming activity; inherited from the [review-assumptions](./TECHNIQUE.md) group root, declared here as the binding contract).
+The context in which assumptions are generated, used to choose the category appropriate to the current phase (supplied via `technique_args`; inherited from the [review-assumptions](./TECHNIQUE.md) group root, declared here as the binding contract).
 
 ### assumption_categories
 
-The per-activity list of categories used to classify each assumption (supplied via `technique_args` from the consuming activity; inherited from the [review-assumptions](./TECHNIQUE.md) group root, declared here as the binding contract).
+The list of categories used to classify each assumption (supplied via `technique_args`; inherited from the [review-assumptions](./TECHNIQUE.md) group root, declared here as the binding contract).
 
 ### existing_assumptions_log
 
@@ -25,7 +25,7 @@ The per-activity list of categories used to classify each assumption (supplied v
 
 ### updated_assumptions_log
 
-The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) with the newly collected, classified assumptions appended — each carrying type, statement, rationale, and alternatives (inherited from the [review-assumptions](./TECHNIQUE.md) group root). This file is the record of truth for the assumptions surfaced by this activity.
+The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) with the newly collected, classified assumptions appended — each carrying type, statement, rationale, and alternatives (inherited from the [review-assumptions](./TECHNIQUE.md) group root). This file is the record of truth for the surfaced assumptions.
 
 ### open_assumptions
 
@@ -33,13 +33,13 @@ The collected assumptions classified as open (stakeholder-dependent, non-code-re
 
 ### has_open_assumptions
 
-Boolean gate — true iff `{open_assumptions}` is non-empty; consumed by the activity to decide whether to enter the interview step.
+Boolean gate — true iff `{open_assumptions}` is non-empty; gates whether the interview step is entered.
 
 ## Protocol
 
 1. Identify all implicit decisions and assumptions made
 2. Classify each by a category from `{assumption_categories}`, choosing the category appropriate to the `{activity_context}` generating them
-   > Use the categories supplied for the current activity phase.
+   > Use the categories supplied for the current phase.
 3. If no significant assumptions are identified, explicitly confirm with the user that no assumptions were made before proceeding
 4. Append collected assumptions to the `{existing_assumptions_log}` (or start a fresh log if none exists), recording type, statement, rationale, and alternatives for each
 5. The file is the record of truth — do not duplicate assumption content in checkpoint messages

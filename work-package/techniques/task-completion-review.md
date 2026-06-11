@@ -25,7 +25,7 @@ The code changes produced for `{current_task}` — the files changed and the app
 
 ### uncertain_symbols
 
-Multi-line list of uncertain symbols (one per line: symbol name + the file/line where it was seen). Empty string when `{has_uncertain_symbols}` is false. Interpolated into the symbol-provenance-confirmed checkpoint message so the user sees the flagged symbols alongside the options.
+Multi-line list of uncertain symbols (one per line: symbol name + the file/line where it was seen). Empty string when `{has_uncertain_symbols}` is false.
 
 ## Protocol
 

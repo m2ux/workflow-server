@@ -15,13 +15,13 @@ Summary, description, and context from the linked issue, reviewed to ground the 
 
 ### problem_context
 
-*(optional)* Additional context about the problem from the user or prior activities (inherited from the [classify-problem](./TECHNIQUE.md) group root).
+*(optional)* Additional context about the problem from the user or prior context (inherited from the [classify-problem](./TECHNIQUE.md) group root).
 
 ## Output
 
 ### problem_statement
 
-A clear problem definition with system understanding, impact assessment, success criteria, and constraints — understandable without prior context (a field of the [design_philosophy_doc](./TECHNIQUE.md) recorded later by [document](./document.md)).
+A clear problem definition with system understanding, impact assessment, success criteria, and constraints — understandable without prior context.
 
 ## Protocol
 

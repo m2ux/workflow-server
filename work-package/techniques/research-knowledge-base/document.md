@@ -11,19 +11,19 @@ Create the research artifact capturing the synthesized findings, applicable patt
 
 ### kb_findings
 
-Knowledge base findings from [research](./research.md); recorded in the artifact.
+Knowledge base findings; recorded in the artifact.
 
 ### web_findings
 
-Web research findings from [research](./research.md); recorded in the artifact.
+Web research findings; recorded in the artifact.
 
-### synthesis
+### findings_synthesis
 
-Findings-to-requirements synthesis from [synthesize](./synthesize.md); recorded in the artifact.
+Findings-to-requirements synthesis; recorded in the artifact.
 
 ### applicable_patterns
 
-Patterns mapped to needs from [synthesize](./synthesize.md); recorded in the artifact.
+Patterns mapped to needs; recorded in the artifact.
 
 ### planning_folder_path
 
@@ -33,11 +33,11 @@ Path to the planning artifacts folder where `{research_document}` is written.
 
 ### research_document
 
-Knowledge base and web research synthesis artifact for the work package (inherited from the [research-knowledge-base](./TECHNIQUE.md) group root; declared here as the binding contract). Written to `{planning_folder_path}` as `kb-research.md`, capturing kb_findings, web_findings, synthesis, applicable_patterns, and risks.
+Knowledge base and web research synthesis artifact for the work package (inherited from the [research-knowledge-base](./TECHNIQUE.md) group root; declared here as the binding contract). Written to `{planning_folder_path}` as `kb-research.md`, capturing `{kb_findings}`, `{web_findings}`, `{findings_synthesis}`, `{applicable_patterns}`, and risks.
 
 ## Protocol
 
 ### 1. Create Research Artifact
 
 - Create the `{research_document}` artifact in `{planning_folder_path}`
-- Include kb_findings, web_findings, synthesis, applicable_patterns, risks
+- Include `{kb_findings}`, `{web_findings}`, `{findings_synthesis}`, `{applicable_patterns}`, and risks

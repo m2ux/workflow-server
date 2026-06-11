@@ -21,7 +21,7 @@ The work package problem statement; read alongside `{requirements}` to set the r
 
 ### kb_findings
 
-Best practices, patterns, concepts, and specific guidance discovered from the knowledge base (concept-rag activity index), each tied to the source it came from. Empty with a noted gap when the knowledge base has no relevant content.
+Best practices, patterns, concepts, and specific guidance discovered from the knowledge base (concept-rag index), each tied to the source it came from. Empty with a noted gap when the knowledge base has no relevant content.
 
 ### web_findings
 
@@ -36,9 +36,9 @@ Best practices, documentation, and resources gathered from web research, each ca
 
 ### 2. Search Knowledge Base
 
-- Fetch `concept-rag://activities` resource to load activity index
-- Match research goal to an available activity from the index
-- Follow the matched activity's technique workflow and tool sequence
+- Fetch `concept-rag://activities` resource to load its index
+- Match research goal to an available entry from the index
+- Follow the matched entry's technique workflow and tool sequence
 - Identify key concepts, patterns, and specific guidance from results
 - Map findings to work package requirements
 - If the knowledge base has no relevant content, rely on web research and note the gap in findings

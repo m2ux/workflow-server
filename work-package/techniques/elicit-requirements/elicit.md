@@ -11,7 +11,7 @@ Drive structured elicitation across the question domains, then surface the resul
 
 ### question_domains
 
-The question domains to iterate one question at a time (per the [requirements-elicitation](../../resources/requirements-elicitation.md) resource); bound by the activity's domain-iteration loop.
+The question domains to iterate one question at a time (per the [requirements-elicitation](../../resources/requirements-elicitation.md) resource).
 
 ### issue_platform
 
@@ -25,15 +25,15 @@ Issue identifier for the assumptions comment (GitHub #N or Jira KEY-N) — the t
 
 ### requirements
 
-The captured requirements list elicited across the domains (a field of the [requirements_document](./TECHNIQUE.md); inherited from the group root).
+The captured requirements list elicited across the domains (inherited from the [elicit-requirements](./TECHNIQUE.md) group root).
 
 ### success_criteria
 
-The defined success criteria with verification methods (a field of the [requirements_document](./TECHNIQUE.md); inherited from the group root).
+The defined success criteria with verification methods (inherited from the [elicit-requirements](./TECHNIQUE.md) group root).
 
 ### scope_boundaries
 
-In/out scope definitions captured during elicitation (a field of the [requirements_document](./TECHNIQUE.md); inherited from the group root).
+In/out scope definitions captured during elicitation (inherited from the [elicit-requirements](./TECHNIQUE.md) group root).
 
 ### elicitation_log
 

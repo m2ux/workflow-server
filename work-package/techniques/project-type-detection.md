@@ -7,7 +7,7 @@ metadata:
 
 ## Capability
 
-Auto-detect the project type of the target component from its build manifest, so downstream activities can shape comprehension, validation, and review to the technology stack.
+Auto-detect the project type of the target component from its build manifest, so downstream work can shape comprehension, validation, and review to the technology stack.
 
 ## Inputs
 

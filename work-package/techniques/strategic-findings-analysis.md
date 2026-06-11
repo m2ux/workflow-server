@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Assess the severity of strategic-review findings — scope issues, over-engineering, and investigation artifacts — and recommend a strategic-review outcome (fix the findings now versus accept and proceed), producing a recommended option and a concise findings summary for the review-findings checkpoint.
+Assess the severity of strategic-review findings — scope issues, over-engineering, and investigation artifacts — and recommend an outcome (fix the findings now versus accept and proceed), producing a recommended option and a concise findings summary.
 
 ## Inputs
 
@@ -21,11 +21,11 @@ The strategic-review findings and recommendations, categorized by type (investig
 
 ### recommended_strategic_option
 
-The recommended review-findings checkpoint option based on the severity assessment: `fix-findings` when significant findings are present, otherwise `acceptable`.
+The recommended outcome based on the severity assessment: `fix-findings` when significant findings are present, otherwise `acceptable`.
 
 ### strategic_findings_summary
 
-A concise multi-line summary of the strategic-review findings — one line per finding, each a severity tag plus a one-line description. Empty string when there are no findings. Interpolated into the review-findings checkpoint message so the user sees findings alongside the options without an extra round-trip.
+A concise multi-line summary of the strategic-review findings — one line per finding, each a severity tag plus a one-line description. Empty string when there are no findings.
 
 ## Protocol
 
@@ -50,6 +50,6 @@ A concise multi-line summary of the strategic-review findings — one line per f
 
 Only significant scope, over-engineering, or investigation-artifact findings recommend `fix-findings`. Minor observations recommend `acceptable` and are left for the user to defer at their discretion.
 
-### summary-feeds-the-checkpoint
+### summary-stays-concise
 
-The summary exists to render findings inline in the review-findings checkpoint message. Keep it concise — one severity-tagged line per finding — so the user decides without a follow-up question.
+Keep `{strategic_findings_summary}` concise — one severity-tagged line per finding.

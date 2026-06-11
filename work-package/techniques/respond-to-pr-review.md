@@ -37,7 +37,7 @@ Review comments fetched from PR
 - For each review item with follow-up actions, present the item and its actions to the user. Ask which to implement (e.g., '1,3' or 'all' or 'none').
 - Only implement actions explicitly selected by the user
 - Commit fix changes per concern
-- Document which comments require re-planning vs inline fixes
+- Document which comments require substantial rework vs inline fixes
 - Group related fixes into logical commits, not one giant commit
 
 ### 4. Post Responses
@@ -69,7 +69,7 @@ PR review [analysis](../resources/pr-review-response.md#step-6-create-review-doc
 
 #### requires_replan
 
-Whether significant changes require returning to planning
+Whether the changes are significant enough to require substantial rework
 
 ## Rules
 

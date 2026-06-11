@@ -21,7 +21,7 @@ Feature branch under review (examined via `git diff` / `git log`)
 
 ### changed_files
 
-List of files changed in the work package. Read for the orphan check; the activity supplies it (no explicit upstream step sets it).
+List of files changed in the work package. Read for the orphan check; supplied directly rather than produced by an upstream step.
 
 ### requirements
 

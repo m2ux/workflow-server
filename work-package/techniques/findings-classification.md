@@ -11,7 +11,7 @@ Severity-classify a set of review or validation findings on a single scale (Crit
 
 ## Inputs
 
-### findings
+### findings_to_classify
 
 The findings or diagnostics to classify. Each entry carries enough context to judge severity — a description, the affected file/symbol, and (for validation diagnostics) the failing check id and its output.
 
@@ -37,7 +37,7 @@ True when any test-suite finding has severity >= Minor (Critical, Major, or Mino
 
 ### 1. Classify Findings
 
-- Assign every finding in `{findings}` a severity on the single scale: Critical, Major, Minor, Nit, or Informational.
+- Assign every finding in `{findings_to_classify}` a severity on the single scale: Critical, Major, Minor, Nit, or Informational.
 - Judge severity by impact, not surface: Critical for security or data-loss risks and failing tests; Major for correctness defects and build failures; Minor for maintainability and lint issues; Nit for style; Informational for observations carrying no required action.
 - When the findings are validation diagnostics (test/build/lint failures), map them onto the same scale — test failures are Critical, build failures are Major — and do NOT attempt to fix them here; classification only.
 

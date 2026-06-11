@@ -13,7 +13,7 @@ Author a two-paragraph, plain-language overview suitable for non-technical stake
 
 ### source_material
 
-The basis for the overview — issue details, ticket description, work-package plan, test plan, design decisions, and any context gathered in the calling activity.
+The basis for the overview — issue details, ticket description, work-package plan, test plan, design decisions, and any context gathered upstream.
 
 ### readme_section_heading
 

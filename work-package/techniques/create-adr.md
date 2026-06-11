@@ -33,7 +33,7 @@ Directory holding the project's ADR files
 
 ### 1. Gate On Complexity
 
-- Proceed only when `{complexity}` is moderate or complex. For a simple assessment, do not create an ADR — simple changes do not warrant one — and return without an `{adr_document}`.
+- Proceed only when `{complexity}` is moderate or complex. For a simple assessment, do not create an `{adr_document}` — simple changes do not warrant one — and return without one.
 
 ### 2. Determine Number
 
@@ -51,8 +51,7 @@ Directory holding the project's ADR files
 
 - Write the `{adr_document}` as `NNNN-{decision_title}.md` in `{adr_dir}`
 - Use standard ADR format (Title, Status, Context, Decision, Consequences)
-- Set status to Proposed (finalize activity updates to Accepted)
-- New ADRs are created with status Proposed — the finalize activity updates to Accepted
+- Set the `{adr_document}` status to Proposed; acceptance is recorded later in a separate finalization step
 
 ## Outputs
 
@@ -68,4 +67,4 @@ Directory holding the project's ADR files
 
 ### alternatives-required
 
-Every ADR must document at least one alternative that was considered
+Every `{adr_document}` must document at least one alternative that was considered

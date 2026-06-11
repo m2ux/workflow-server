@@ -11,19 +11,19 @@ Create the analysis-document artifact capturing the current state, baseline metr
 
 ### located_implementation
 
-Where the implementation lives and its structure, from [analyze](./analyze.md); recorded in the artifact.
+Where the implementation lives and its structure; recorded in the artifact.
 
 ### effectiveness_assessment
 
-Effectiveness and pain-point findings from [analyze](./analyze.md); recorded in the artifact.
+Effectiveness and pain-point findings; recorded in the artifact.
 
 ### baseline_metrics
 
-Quantitative baselines with measurement methods from [analyze](./analyze.md); recorded in the artifact.
+Quantitative baselines with measurement methods; recorded in the artifact.
 
 ### gaps_identified
 
-Gaps linked to success criteria from [analyze](./analyze.md); recorded in the artifact.
+Gaps linked to success criteria; recorded in the artifact.
 
 ### planning_folder_path
 

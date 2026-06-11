@@ -71,7 +71,7 @@ List of `{ rule_id, detail }` entries, one per failed conformance rule; empty wh
 
 ### draft-first
 
-Create PRs as drafts initially. Convert to ready-for-review only at the submit-for-review activity.
+Create PRs as drafts initially. Convert to ready-for-review only when a later step directs it.
 
 ### tool-usage
 

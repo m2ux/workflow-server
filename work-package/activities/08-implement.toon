@@ -63,10 +63,10 @@ loops[3]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
+    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the review-assumptions::reconcile technique protocol."
     steps[1]:
       - id: reconcile-iteration
-        technique: reconcile-assumptions
+        technique: review-assumptions::reconcile
   - id: assumption-interview
     name: Assumption Interview Loop
     type: forEach
@@ -82,7 +82,7 @@ loops[3]:
         technique: review-assumptions::record
 steps[4]:
   - id: reconcile-assumptions
-    technique: reconcile-assumptions
+    technique: review-assumptions::reconcile
   - id: present-resolved-assumptions
     technique: review-assumptions::interview
     actions[1]:
