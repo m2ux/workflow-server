@@ -10,7 +10,6 @@ recognition[3]:
 required: true
 estimatedTime: 15-30m
 techniques:
-  primary: review-strategy
   supporting[1]:
     - "variable-binding"
 artifacts[2]:

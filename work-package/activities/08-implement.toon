@@ -23,7 +23,6 @@ artifacts[2]:
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
 techniques:
-  primary: implement-task
   supporting[2]:
     - "variable-binding"
     - "scatter-gather"
