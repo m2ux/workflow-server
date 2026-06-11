@@ -7,6 +7,16 @@ metadata:
 
 Drive test-coverage review from the actual changed-symbol set rather than project-wide heuristics. (review-test-suite)
 
+## Inputs
+
+### repo_name
+
+Name of the indexed repository whose graph the operations query (the `{name}` in `gitnexus://repo/{name}/context`). Index freshness is confirmed via this name before the first operation.
+
+### diff
+
+The working-tree / branch diff under review, consumed by [detect-changes](../../../meta/techniques/gitnexus-operations/detect-changes.md) to enumerate the changed-symbol set.
+
 ## Output
 
 ### coverage_gaps

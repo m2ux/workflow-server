@@ -7,6 +7,12 @@ metadata:
 
 Probe required toolchain prerequisites before running any workspace cargo command. Surfaces missing system dependencies (`protoc`, openssl headers, `pkg-config`, ...) as a structured environment finding so the validate activity fails fast rather than mid-workspace-compile.
 
+## Inputs
+
+### target_path
+
+Path to the workspace under inspection; its `Cargo.toml` and `build.rs` files are walked for build-script signals indicating system-dependency requirements.
+
 ## Output
 
 ### missing_prerequisites

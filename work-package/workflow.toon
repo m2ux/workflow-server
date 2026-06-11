@@ -43,7 +43,7 @@ modes[1]:
     defaults:
       needs_elicitation: false
     resource: resources/review-mode.md
-variables[93]:
+variables[94]:
   - name: target_path
     type: string
     description: "Path to the working directory where edits, branch creation, builds, and PR operations occur. As of work-package 3.10, this is a dedicated git worktree of the component repo at the canonical path '~/projects/work/{component_name}/{wp-slug}/' — NOT the component's checkout inside the reference monorepo. Set by start-work-package's compute-canonical-target-path step after the work-package slug is known. All downstream activities (cargo-operations, manage-git, validate, strategic-review, etc.) operate on this path."
@@ -96,6 +96,9 @@ variables[93]:
   - name: complexity
     type: string
     description: "Problem complexity assessed during design-philosophy (simple|moderate|complex). Drives ADR creation."
+  - name: project_type
+    type: string
+    description: "Detected project type (e.g. rust-substrate); produced by project-type-detection and gates rust-substrate-specific validation steps."
   - name: elicitation_complete
     type: boolean
     description: Whether requirements elicitation is finished

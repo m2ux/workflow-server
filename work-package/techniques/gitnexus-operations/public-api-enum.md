@@ -7,6 +7,16 @@ metadata:
 
 Enumerate exactly the public/exported APIs in the diff that need doc comments — avoids guessing which changed symbols are exported. (finalize-documentation)
 
+## Inputs
+
+### repo_name
+
+Name of the indexed repository whose graph the operations query (the `{name}` in `gitnexus://repo/{name}/context`). Index freshness is confirmed via this name before the first operation.
+
+### diff
+
+The working-tree / branch diff under review, consumed by [detect-changes](../../../meta/techniques/gitnexus-operations/detect-changes.md) to obtain the changed-symbol set.
+
 ## Output
 
 ### public_api_symbols

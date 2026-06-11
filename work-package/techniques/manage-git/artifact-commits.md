@@ -25,7 +25,15 @@ List of files to stage and commit
 
 Engineering branch to push to
 
-> `reference_path` (the engineering / parent repo where artifacts live) is inherited from the [manage-git](./TECHNIQUE.md) group root and is not redeclared here.
+### reference_path
+
+Path to the reference checkout (the engineering / parent repo where planning artifacts live), in which all staging, commit, rebase, and push operations run (inherited from the [manage-git](./TECHNIQUE.md) group root; declared here as the binding contract).
+
+## Output
+
+### artifact_commit
+
+The artifact commit pushed to `{branch}` on `origin` in `{reference_path}`, carrying the canonical `docs(work-package): {activity_name} artifacts for {issue_key}` message and rebased onto sibling work-package commits. A side-effect op; the pushed commit is its product.
 
 ## Protocol
 
