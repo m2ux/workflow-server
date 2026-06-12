@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "5.1.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "6X66NT",
+  "currentActivity": "",
+  "currentTechnique": "",
+  "condition": "",
+  "seq": 2,
+  "ts": 1780912334,
+  "startedAt": "2026-06-08T09:51:19.125Z",
+  "completedActivities": [],
+  "skippedActivities": [],
+  "variables": {},
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-06-08T09:51:19.125Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "sessionIndex": "36TSLC",
+        "workflowId": "workflow-design"
+      },
+      "timestamp": "2026-06-08T09:52:14.944Z",
+      "type": "workflow_triggered"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "36TSLC",
+      "state": {
+        "agentId": "worker",
+        "checkpointResponses": {},
+        "completedActivities": [
+          "intake",
+          "context-and-literacy",
+          "requirements-refinement",
+          "pattern-analysis",
+          "scope-and-structure",
+          "content-drafting",
+          "quality-review"
+        ],
+        "condition": "isDefault",
+        "currentActivity": "validate-and-commit",
+        "currentTechnique": "",
+        "history": [
+          {
+            "timestamp": "2026-06-08T09:52:14.945Z",
+            "type": "workflow_started"
+          },
+          {
+            "activity": "intake",
+            "timestamp": "2026-06-08T09:52:32.319Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "intake",
+            "timestamp": "2026-06-08T09:55:55.994Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "context-and-literacy",
+            "timestamp": "2026-06-08T09:55:55.994Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "context-and-literacy",
+            "timestamp": "2026-06-08T10:06:36.323Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "requirements-refinement",
+            "timestamp": "2026-06-08T10:06:36.323Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "requirements-refinement",
+            "timestamp": "2026-06-08T10:11:13.399Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "pattern-analysis",
+            "timestamp": "2026-06-08T10:11:13.399Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "pattern-analysis",
+            "timestamp": "2026-06-08T10:12:20.316Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-structure",
+            "timestamp": "2026-06-08T10:12:20.316Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-structure",
+            "timestamp": "2026-06-08T10:13:56.790Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "content-drafting",
+            "timestamp": "2026-06-08T10:13:56.790Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "content-drafting",
+            "timestamp": "2026-06-08T10:29:50.145Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-06-08T10:29:50.145Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-06-08T10:34:57.602Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-06-08T10:34:57.602Z",
+            "type": "activity_entered"
+          }
+        ],
+        "schemaVersion": 1,
+        "seq": 18,
+        "sessionIndex": "36TSLC",
+        "skippedActivities": [],
+        "startedAt": "2026-06-08T09:52:14.945Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1780914907,
+        "variables": {},
+        "workflowId": "workflow-design",
+        "workflowVersion": "1.2.1"
+      },
+      "status": "running",
+      "triggeredAt": "2026-06-08T09:52:14.944Z",
+      "triggeredFrom": {
+        "activityId": ""
+      },
+      "workflowId": "workflow-design"
+    }
+  ]
+}

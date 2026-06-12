@@ -1,27 +1,39 @@
 {
   "schemaVersion": 1,
-  "status": "running",
+  "status": "completed",
   "workflowId": "meta",
   "workflowVersion": "5.1.0",
   "agentId": "orchestrator",
   "sessionIndex": "KYMVR6",
-  "currentActivity": "dispatch-client-workflow",
+  "currentActivity": "end-workflow",
   "currentTechnique": "",
-  "condition": "default",
-  "seq": 16,
-  "ts": 1780825784,
+  "condition": "client_workflow_completed == true",
+  "seq": 23,
+  "ts": 1780909156,
   "startedAt": "2026-06-07T09:44:26.333Z",
   "completedActivities": [
     "discover-session",
     "initialize-session",
-    "resolve-target"
+    "resolve-target",
+    "dispatch-client-workflow",
+    "end-workflow"
   ],
   "skippedActivities": [],
   "variables": {
+    "abort_completion": false,
     "is_monorepo": false,
     "target_path": "."
   },
   "checkpointResponses": {
+    "end-workflow-completion-confirmed": {
+      "effects": {
+        "variablesSet": {
+          "abort_completion": false
+        }
+      },
+      "optionId": "confirm",
+      "respondedAt": "2026-06-08T08:58:59.000Z"
+    },
     "resolve-target-repo-type-confirmed": {
       "effects": {
         "variablesSet": {
@@ -114,6 +126,57 @@
       "activity": "dispatch-client-workflow",
       "timestamp": "2026-06-07T09:49:19.311Z",
       "type": "activity_entered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-06-08T08:53:15.886Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-06-08T08:53:15.886Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "timestamp": "2026-06-08T08:53:49.529Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "data": {
+        "optionId": "confirm"
+      },
+      "timestamp": "2026-06-08T08:58:59.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "name": "abort_completion",
+        "value": false
+      },
+      "timestamp": "2026-06-08T08:58:59.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "message": "Workflow session closed"
+      },
+      "timestamp": "2026-06-08T09:59:00.000Z",
+      "type": "log"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-06-08T09:59:00.000Z",
+      "type": "activity_exited"
+    },
+    {
+      "timestamp": "2026-06-08T09:59:00.000Z",
+      "type": "workflow_completed"
     }
   ],
   "triggeredWorkflows": [

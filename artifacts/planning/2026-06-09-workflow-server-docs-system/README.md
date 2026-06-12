@@ -24,7 +24,9 @@ When information lives in many unconnected places, people waste time hunting for
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+This work gives the workflow-server's documentation a single front door and a clear map. Today the project's guides are scattered across the README, a setup file, a folder of a dozen technical documents, and a schema guide, with nothing tying them together. We add a documentation "site frame" — built with the same tooling and visual style as the existing concept-rag documentation site — that opens with a welcoming landing page of clickable cards (How It Works, Getting Started, API Reference, Architecture, Agent Guidance, Schemas) and groups every existing document into named sections so any reader can quickly find the document that answers their question. None of the current documents are moved or renamed, so every existing link keeps working.
+
+The change is purely additive and built to stay honest. We introduce a configuration file that lists exactly where each document belongs in the menu, a fresh landing page, a couple of short section "overview" pages, and a small amount of local build tooling so anyone can preview the site on their own machine. A built-in checker runs whenever the site is built and fails the build if any document is left off the menu, any internal link is broken, or any cross-reference points to a heading that no longer exists — which keeps the documentation from quietly drifting out of sync as the project grows. New pages only describe the system as it actually is, and the automated publishing step (putting the site on the web) is deliberately held back until it is explicitly approved, since it would be the project's first such automation.
 
 ---
 

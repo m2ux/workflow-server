@@ -6,11 +6,16 @@
   "agentId": "orchestrator",
   "sessionIndex": "F4346H",
   "planningFolderPath": "/home/mike1/projects/main/workflow-server/.engineering/artifacts/planning/2026-05-28-markdown-skills-impl",
-  "currentActivity": "dispatch-client-workflow",
+  "currentActivity": "end-workflow",
   "currentSkill": "",
-  "condition": "",
-  "seq": 19,
-  "ts": 1780238185,
+  "condition": "client_workflow_completed == true",
+  "activeCheckpoint": {
+    "activityId": "end-workflow",
+    "checkpointId": "completion-confirmed",
+    "yieldedAt": "2026-05-31T16:55:15.510Z"
+  },
+  "seq": 23,
+  "ts": 1780246515,
   "startedAt": "2026-05-28T16:32:38.299Z",
   "completedActivities": [
     "discover-session",
@@ -126,6 +131,22 @@
       "activity": "dispatch-client-workflow",
       "timestamp": "2026-05-29T10:43:44.615Z",
       "type": "activity_entered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-05-31T16:54:08.726Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-05-31T16:54:08.726Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "timestamp": "2026-05-31T16:55:15.510Z",
+      "type": "checkpoint_reached"
     }
   ],
   "triggeredWorkflows": [

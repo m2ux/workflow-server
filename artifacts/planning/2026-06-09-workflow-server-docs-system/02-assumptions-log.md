@@ -3,7 +3,7 @@
 **Work Package:** Workflow-Server Documentation System
 **Issue:** #132 - Coherent documentation system for workflow-server
 **Created:** 2026-06-09
-**Last Updated:** 2026-06-09
+**Last Updated:** 2026-06-09 (plan-prepare)
 
 ---
 
@@ -14,7 +14,8 @@
 | Design Philosophy | 6 | 6 (DP-1,2,3,5 reconciled; DP-4 resolved inline; DP-6 resolved by user — ADRs excluded from docs) | 0 | 0 | 0 |
 | Research | 5 | 5 (R-1,2,4,5 reconciled; R-3 resolved inline) | 0 | 0 | 0 |
 | Implementation Analysis | 4 | 4 (IA-1,2,3,4 reconciled via filesystem inspection) | 0 | 0 | 0 |
-| **Total** | **15** | **15** | **0** | **0** | **0** |
+| Plan-Prepare | 5 | 4 (PP-1..PP-4 reconciled via filesystem inspection) | 0 | 1 (PP-5 → Layer-C approval checkpoint) | 0 |
+| **Total** | **20** | **19** | **0** | **1** | **0** |
 
 ---
 
@@ -327,5 +328,50 @@ All four implementation-analysis assumptions are resolved by code/filesystem ins
 
 Total: 15 — Validated: 6 (DP-1, DP-2, DP-5, IA-2, IA-3, IA-4) — Partially Validated: 5 (DP-3, R-1, R-2, R-4, R-5) —
 Invalidated/Corrected: 1 (IA-1) — Resolved non-code-resolvable: 3 (DP-4, DP-6, R-3 — all resolved inline; DP-6 decided by user at this review, R-3 carried for explicit confirmation at plan-prepare) — Open: 0 — Open code-resolvable: 0.
+
+---
+
+## Plan-Prepare
+
+**Date:** 2026-06-09
+
+### Assumptions Surfaced
+
+| ID | Category | Risk | Assumption | Rationale |
+|----|----------|------|------------|-----------|
+| PP-1 | Task Breakdown | L | Authoring nav-target pages and symlinks **before** writing `mkdocs.yml` (leaf-first ordering) makes the first `mkdocs build --strict` pass clean, because all nav targets exist when the config that references them is added. | `--strict` fails on missing nav targets; ordering creation before the referencing config avoids a known-failing intermediate build. |
+| PP-2 | Dependency Assumptions | L | `schemas/README.md` and `SETUP.md` are present in the worktree on the build branch, so symlinks into `docs/` resolve. | IA-2 selected the symlink mechanism; the plan depends on the targets being present at build time. |
+| PP-3 | Scope Decisions | L | Adding `docs:serve`/`docs:build` scripts to `package.json` and adding `site/` to `.gitignore` are add-only edits that do not touch server source, schemas, or workflow TOON files. | The plan must respect the documentation-only boundary (DP-5); these are core-config files edited add-only. |
+| PP-4 | Test Strategy | L | A documentation/tooling work package with no runtime code is validated by `mkdocs build --strict` + reviewer passes (style parity, voice, link-rot, boundary), not by unit/integration test code. | No runtime symbols change; the mechanical gate is the strict build, and the rest is human review. |
+| PP-5 | Scope Decisions | M | Layer C (deploy Action) stays deferred and R-3 (`mike` out of scope) holds — both pending explicit user confirmation at the Layer-C decision checkpoint. | Layer C is the repo's first CI + first Python-in-CI dep (`file-sensitivity-cicd-approval`); R-3's plan-prepare confirmation was carried from the research interview replay. |
+
+**Categories:** Task Breakdown, Dependency Assumptions, Scope Decisions, Test Strategy
+
+### Reconciliation — Plan-Prepare Phase
+
+PP-1 through PP-4 are code/filesystem-resolvable and were resolved by direct worktree inspection during this activity. PP-5 is stakeholder-dependent (a scope/CI-approval judgement) and is carried to the Layer-C decision checkpoint, not resolvable by code analysis.
+
+**PP-1 — Validated.**
+Evidence: `mkdocs --strict` promotes `validation` warnings (including `nav.not_found`) to fatal; the plan's Task ordering (Tasks 1–4 create pages/symlinks, Task 5 writes `mkdocs.yml`) ensures every `nav` target exists before the referencing config. Holds.
+
+**PP-2 — Validated.**
+Evidence: worktree inspection at `target_path` (this activity) confirms `schemas/README.md` and root `SETUP.md` both present on the build branch; symlinks `docs/README.md → ../schemas/README.md` and `docs/SETUP.md → ../SETUP.md` resolve. Holds.
+
+**PP-3 — Validated.**
+Evidence: `package.json` `scripts` edit is add-only (`docs:serve`, `docs:build`); `.gitignore` gains a `site/` line under the existing build-output section (current `.gitignore` read this activity — no `site/` entry, `dist/`/`coverage/`/`node_modules/` present). Neither touches `src/`, `schemas/*.schema.json`, or workflow TOON files. Holds.
+
+**PP-4 — Validated.**
+Evidence: no runtime code or symbols are added/changed (docs + docs-tooling only). The mechanical gate is `mkdocs build --strict`; style-parity, describe-as-it-is voice, link-rot, and the `git diff --stat` boundary are reviewer checks. The test plan (`06-test-plan.md`) encodes these as Integration/Manual cases. Holds.
+
+**PP-5 — Open (non-code-resolvable).**
+Classification: stakeholder/CI-approval judgement. Layer C is the repo's first `.github/workflows/` file and first Python-in-CI dependency (`file-sensitivity-cicd-approval`), and R-3's plan-prepare confirmation was carried from the research-interview shared-checkpoint replay rather than an independent decision. Code analysis cannot decide either. Carried to the **Layer-C decision checkpoint** in `06-work-package-plan.md`. Agent's current position: keep Layer C deferred; keep `mike` out of scope.
+
+### Convergence
+
+PP-1..PP-4 resolved by filesystem inspection (4 validated). PP-5 is non-code-resolvable and remains open at the Layer-C checkpoint. No code-resolvable plan-prepare assumptions remain → convergence. `has_resolvable_assumptions = false`. One stakeholder-dependent assumption (PP-5) remains for user confirmation → `has_open_assumptions = true`.
+
+### Updated Counts
+
+Plan-Prepare: Total 5 — Validated 4 (PP-1, PP-2, PP-3, PP-4) — Open non-code-resolvable 1 (PP-5) — Open code-resolvable 0.
 
 ---
