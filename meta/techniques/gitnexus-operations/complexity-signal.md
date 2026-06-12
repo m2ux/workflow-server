@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Objective complexity estimate for an issue, from the fan-out of a preliminary target symbol. (classify-problem)
+Objective complexity estimate for an issue, from the fan-out of a preliminary target symbol.
 
 ## Inputs
 
@@ -21,7 +21,7 @@ fan-out and affected-process count as an objective complexity indicator
 
 ## Protocol
 
-1. Apply [impact](../../../meta/techniques/gitnexus-operations/impact.md) with `{target, maxDepth: 2}`.
+1. Apply [impact](./impact.md) with `{target, maxDepth: 2}`.
    - If no `{target}` symbol can be inferred from the issue, the signal is unavailable — fall back to an issue-text complexity estimate.
    - If the index is out of date, run `npx gitnexus analyze`, then retry.
 2. Read the fan-out and affected-process count as the `{complexity_signal}`: high fan-out or many affected processes indicate higher complexity than the issue text alone might suggest.

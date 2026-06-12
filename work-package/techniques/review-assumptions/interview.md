@@ -34,7 +34,7 @@ A side-effect output: the structured judgement-augmentation context presented to
 - If no open assumptions remain after reconciliation, skip the judgement augmentation format and present a summary confirming all assumptions were resolved through code analysis
 - Focus trade-offs on measurable differences between alternatives, not uniform property lists. If two options are equivalent on a dimension, omit that dimension — it adds noise without aiding the decision
 - Flag decision reversibility: mark each assumption as easily-reversible (low-cost to change later) or path-committing (high-cost to reverse). This helps the user calibrate how much deliberation to invest
-- Apply [gitnexus-operations](../gitnexus-operations/TECHNIQUE.md)::[reversibility-signal](../gitnexus-operations/reversibility-signal.md)(name: `{$symbol}`) to set the flag — high caller fan-out and broad process participation → path-committing; isolated symbols → easily-reversible.
+- Apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[reversibility-signal](../../../meta/techniques/gitnexus-operations/reversibility-signal.md)(name: `{$symbol}`) to set the flag — high caller fan-out and broad process participation → path-committing; isolated symbols → easily-reversible.
 
 ### 2. Present For Review
 

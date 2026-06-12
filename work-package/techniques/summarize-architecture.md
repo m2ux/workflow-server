@@ -32,7 +32,7 @@ Folder where the architecture summary is written
 - Determine which architectural components are affected by the changes
 - Map each entry in `{changed_files}` to its modules and subsystems
 - Identify external interactions and boundaries
-- Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[diagram-source-select](./gitnexus-operations/diagram-source-select.md) to bound diagram scope to the affected processes and source diagram structure from graph resources.
+- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[diagram-source-select](../../meta/techniques/gitnexus-operations/diagram-source-select.md) to bound diagram scope to the affected processes and source diagram structure from graph resources.
 - If the changes are too minor to warrant a full architectural summary, create a minimal summary noting the low architectural impact rather than the full set of diagrams.
 
 ### 2. Create Context Diagram
@@ -46,14 +46,14 @@ Folder where the architecture summary is written
 - If module structure is affected, create package diagram
 - Show internal organization and boundaries
 - Use Mermaid syntax
-- Source package-diagram structure via [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[diagram-source-select](./gitnexus-operations/diagram-source-select.md)(diagram-type: `package`) (functional-area clusters and their members) when the codebase is indexed.
+- Source package-diagram structure via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[diagram-source-select](../../meta/techniques/gitnexus-operations/diagram-source-select.md)(diagram-type: `package`) (functional-area clusters and their members) when the codebase is indexed.
 
 ### 4. Create Sequence Diagrams
 
 - For key flows affected by changes, create sequence diagrams
 - Show interactions between components
 - Use Mermaid sequence diagram syntax
-- Source sequence-diagram structure via [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[diagram-source-select](./gitnexus-operations/diagram-source-select.md)(diagram-type: `sequence`) (step-by-step execution traces) when the codebase is indexed.
+- Source sequence-diagram structure via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[diagram-source-select](../../meta/techniques/gitnexus-operations/diagram-source-select.md)(diagram-type: `sequence`) (step-by-step execution traces) when the codebase is indexed.
 
 ### 5. Write Summary
 

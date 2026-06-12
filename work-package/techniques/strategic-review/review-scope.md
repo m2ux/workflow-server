@@ -46,11 +46,11 @@ The strategic review document this pass populates with categorized findings — 
 
 ### 3. Scope Discipline Check
 
-- Apply [gitnexus-operations](../gitnexus-operations/TECHNIQUE.md)::[scope-discipline-check](../gitnexus-operations/scope-discipline-check.md)(requirements-scope: `{requirements}`); flag any affected process outside the requirements as scope creep for user decision.
+- Apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[scope-discipline-check](../../../meta/techniques/gitnexus-operations/scope-discipline-check.md)(requirements-scope: `{requirements}`); flag any affected process outside the requirements as scope creep for user decision.
 
 ### 4. Orphan Check
 
-- Apply [gitnexus-operations](../gitnexus-operations/TECHNIQUE.md)::[orphan-scan](../gitnexus-operations/orphan-scan.md)(changed_files: `{changed_files}`) to surface introduced-but-unreferenced symbols as over-engineering candidates — it beats grep heuristics for orphan detection.
+- Apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[orphan-scan](../../../meta/techniques/gitnexus-operations/orphan-scan.md)(changed_files: `{changed_files}`) to surface introduced-but-unreferenced symbols as over-engineering candidates — it beats grep heuristics for orphan detection.
 
 ### 5. Identify Artifacts
 

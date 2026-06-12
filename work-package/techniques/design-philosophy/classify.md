@@ -19,7 +19,7 @@ Summary, description, and context from the linked issue, used to infer the probl
 
 ### target
 
-*(optional)* Preliminary target symbol(s) inferred from the issue, passed to the [gitnexus-operations](../gitnexus-operations/TECHNIQUE.md)::[complexity-signal](../gitnexus-operations/complexity-signal.md) op for an objective complexity signal.
+*(optional)* Preliminary target symbol(s) inferred from the issue, passed to the [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[complexity-signal](../../../meta/techniques/gitnexus-operations/complexity-signal.md) op for an objective complexity signal.
 
 ## Outputs
 
@@ -41,5 +41,5 @@ The documented rationale for the chosen problem type and complexity, including a
 
 - Determine if specific problem (cause known/unknown) or inventive goal (improvement/prevention)
 - Assess complexity as simple, moderate, or complex
-- If preliminary target symbols can be inferred from the issue, apply [gitnexus-operations](../gitnexus-operations/TECHNIQUE.md)::[complexity-signal](../gitnexus-operations/complexity-signal.md) `{target}` for an objective complexity signal — high fan-out or many affected processes indicate higher complexity than the issue text suggests.
+- If preliminary target symbols can be inferred from the issue, apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[complexity-signal](../../../meta/techniques/gitnexus-operations/complexity-signal.md) `{target}` for an objective complexity signal — high fan-out or many affected processes indicate higher complexity than the issue text suggests.
 - Document classification rationale
