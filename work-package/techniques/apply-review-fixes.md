@@ -35,7 +35,7 @@ The feature branch the fixes are committed to.
 
 ### applied_fixes
 
-The committed fix changes: the selected `{review_findings}` implemented in `{target_path}` (code-review findings when `{needs_code_fixes}`, test improvements when `{needs_test_improvements}`), verified to compile with affected tests passing, then staged and committed on `{branch_name}` via [manage-git](./manage-git/TECHNIQUE.md)::[artifact-commits](./manage-git/artifact-commits.md). The commit is the technique's final phase, so the effect is one or more fix commits on the feature branch — no separate commit step follows.
+The committed fix changes: the selected `{review_findings}` implemented in `{target_path}` (code-review findings when `{needs_code_fixes}`, test improvements when `{needs_test_improvements}`), verified to compile with affected tests passing, then staged and committed on `{branch_name}` via [manage-git](../../meta/techniques/manage-git/TECHNIQUE.md)::[artifact-commits](../../meta/techniques/manage-git/artifact-commits.md). The commit is the technique's final phase, so the effect is one or more fix commits on the feature branch — no separate commit step follows.
 
 ## Protocol
 
@@ -53,7 +53,7 @@ The committed fix changes: the selected `{review_findings}` implemented in `{tar
 
 ### 3. Commit Changes
 
-- Apply [manage-git](./manage-git/TECHNIQUE.md)::[artifact-commits](./manage-git/artifact-commits.md) to stage and commit the fix changes on `{branch_name}`. This is the technique's final phase; no separate commit step follows.
+- Apply [manage-git](../../meta/techniques/manage-git/TECHNIQUE.md)::[artifact-commits](../../meta/techniques/manage-git/artifact-commits.md) to stage and commit the fix changes on `{branch_name}`. This is the technique's final phase; no separate commit step follows.
 
 ## Rules
 

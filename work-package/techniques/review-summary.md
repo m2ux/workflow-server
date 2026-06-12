@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Author a structured consolidated review summary from the consolidated review findings, following the [Consolidated Review Format](../resources/review-mode.md#consolidated-review-format) template defined in the review-mode resource, ready for confirmation and posting to the PR.
+Author a structured consolidated review summary from the consolidated review findings, following the [Consolidated Review Format](../../meta/resources/review-mode.md#consolidated-review-format) template defined in the review-mode resource, ready for confirmation and posting to the PR.
 
 ## Inputs
 
@@ -15,7 +15,7 @@ The findings gathered and classified across code review, test review, validation
 
 ### review_mode_resource
 
-The attached [review-mode](../resources/review-mode.md) resource, whose [Consolidated Review Format](../resources/review-mode.md#consolidated-review-format) defines the summary structure.
+The attached [review-mode](../../meta/resources/review-mode.md) resource, whose [Consolidated Review Format](../../meta/resources/review-mode.md#consolidated-review-format) defines the summary structure.
 
 ## Output(s)
 
@@ -27,7 +27,7 @@ The structured consolidated review summary text, organized per the Consolidated 
 
 ### 1. Load the Format
 
-- Read the [Consolidated Review Format](../resources/review-mode.md#consolidated-review-format) from the attached `{review_mode_resource}`.
+- Read the [Consolidated Review Format](../../meta/resources/review-mode.md#consolidated-review-format) from the attached `{review_mode_resource}`.
 
 ### 2. Render the Summary
 
