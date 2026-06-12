@@ -18,10 +18,10 @@ describe('technique addressing (:: path)', () => {
   });
 
   it('resolves the full canonical path workflow::technique::sub', async () => {
-    const [r] = await resolveTechniques(['work-package::cargo-operations::run-suite'], WF_DIR, 'meta');
+    const [r] = await resolveTechniques(['work-package::review-assumptions::collect'], WF_DIR, 'meta');
     expect(r.type).toBe('technique');
     expect(r.workflow).toBe('work-package');
-    expect(r.name).toBe('run-suite');
+    expect(r.name).toBe('collect');
   });
 
   it('delivers a whole (standalone) technique protocol from a bare ref', async () => {
