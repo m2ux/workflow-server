@@ -39,13 +39,10 @@ A concise multi-line summary of the reviewer comments — one line per comment, 
 ### 3. Summarize the Comments
 
 - Build `{review_comments_summary}` as a multi-line block — a severity tag and a one-line description per comment.
+- Keep `{review_comments_summary}` concise — one severity-tagged line per comment.
 
 ## Rules
 
 ### significant-feedback-needs-rework
 
 Only feedback that cannot be addressed inline recommends `significant-changes`. Inline-addressable fixes recommend `minor-changes`; feedback requiring no action recommends `approved`.
-
-### summary-stays-concise
-
-Keep `{review_comments_summary}` concise — one severity-tagged line per comment.

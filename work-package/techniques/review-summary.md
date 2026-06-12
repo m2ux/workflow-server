@@ -33,9 +33,4 @@ The structured consolidated review summary text, organized per the Consolidated 
 
 - Populate the template from `{consolidated_findings}`: executive summary, per-category findings (code, test, documentation, validation, branch hygiene), action items, and severity definitions.
 - Produce `{review_summary}` as the rendered text.
-
-## Rules
-
-### conform-to-the-template
-
-The summary follows the review-mode resource's Consolidated Review Format. Do not invent a parallel structure — the resource is the authoritative owner of the format.
+- Follow the loaded format exactly — do not invent a parallel structure; the review-mode resource is the authoritative owner of the format.

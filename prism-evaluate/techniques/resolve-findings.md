@@ -39,6 +39,7 @@ Path to the original document, proposal, or artifact set that was evaluated
 - T3 (Novel Mitigation): Read the finding's critique deeply. Propose a novel mechanism, architectural addition, or content section that addresses the critique without requiring the claim to be struck. Explain how the proposed solution works, what it adds to the target, and why it resolves the finding. Show the proposed new text in full.
 - T4 (Structural/Immovable): Explain why no mitigation can resolve this finding within the target itself. Propose acknowledgement language that honestly states the constraint and how the target relates to it.
 - Findings where no mitigation can address the critique without removing the claim entirely are flagged as non-feasible with an explicit explanation.
+- Across all tiers, preserve the author's intent and the claim's value — propose novel solutions that address the critique while keeping the claim, rather than striking it.
 
 ### 3. Dialogue Protocol
 
@@ -91,10 +92,6 @@ Ordered list of changes for application
 The target document with accepted mitigations applied
 
 ## Rules
-
-### preserve-intent
-
-Mitigations should preserve the author's intent and the claim's value. Propose novel solutions that address critiques while keeping claims, rather than striking claims.
 
 ### tier-ordering
 

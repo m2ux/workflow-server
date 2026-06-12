@@ -38,14 +38,9 @@ True when the user elects to refactor the ticket to address the identified gaps;
 
 - For each dimension that is weak or missing, record the gap concisely as a tracked finding in `{assumptions_log}`.
 - Set `{ticket_gaps_documented}` once the gaps are recorded.
+- Documented gaps are persistent findings, not ephemeral status text — they live in the assumptions log so review can proceed with them visible regardless of whether the ticket is refactored.
 
 ### 3. Offer to Refactor
 
 - Present the gaps to the user and offer to refactor the ticket to address them.
 - Set `{ticket_refactor_needed}` from the user's decision: true to refactor, false to proceed with gaps noted or when no significant gaps were found.
-
-## Rules
-
-### gaps-are-tracked-findings
-
-Documented gaps are persistent findings, not ephemeral status text — they live in the assumptions log so review can proceed with them visible regardless of whether the ticket is refactored.

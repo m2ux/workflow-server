@@ -26,7 +26,7 @@ Structured analysis of the requirement changes to apply on the initial pass.
 ### 2. Apply Changes — Initial Mode
 
 - Apply each change in `{requirements_analysis}`: add `SRC-MTG###` source references, create new requirements with sequential identifiers, update existing requirements, and deprecate as directed.
-- Set every newly added requirement's status to `pending`.
+- Set every newly added requirement's status to `pending`; a later status change away from `pending` follows explicit user confirmation.
 - Preserve the existing section structure when `{target_doc_exists}`; instantiate the full [specification-protocol](../resources/specification-protocol.md#section-structure) structure when creating from scratch.
 
 ### 3. Apply Corrections — Correction Mode
@@ -48,10 +48,6 @@ The complete updated specification document for this pass.
 `working-spec-{correction_iteration}.md`
 
 ## Rules
-
-### new-requirements-are-pending
-
-A newly added requirement takes status `pending`; a status change away from `pending` follows explicit user confirmation.
 
 ### corrections-preserve-meaning
 

@@ -119,7 +119,3 @@ The report MUST NOT contain references to analytical methodology: no lens names 
 ### finding-id-convention
 
 Finding IDs use a 3-letter dimension prefix followed by a dash and two-digit number: CON-01, VER-03, PLB-01, FEA-07. For custom dimensions, derive the prefix from the first letters or a natural abbreviation.
-
-### readable-front-matter
-
-The sections before Per-Dimension Findings — Executive Summary, Overall Assessment, and The Core Finding — MUST use sub-sections (`###` headings), short paragraphs, and bullet lists or compact tables for any enumerable or multi-part content (scope, rollout stages, target components, conditions, multi-facet insights). Large dense paragraphs are not acceptable in these sections; a reader should be able to scan the structure. The Per-Dimension Findings sections already use tables plus short labelled entries and need no change.

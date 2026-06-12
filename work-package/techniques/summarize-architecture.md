@@ -61,6 +61,7 @@ Folder where the architecture summary is written
 - Combine diagrams with narrative explanation
 - Focus on impact, scope, and risk, drawing scope and rationale from `{design_philosophy_doc}` when it is provided
 - Follow the architecture-summary template in [architecture-summary](../resources/architecture-summary.md)
+- Write for management stakeholders — not implementation details
 
 ## Outputs
 
@@ -73,10 +74,6 @@ Stakeholder-facing architecture [summary](../resources/architecture-summary.md#a
 `architecture-summary.md`
 
 ## Rules
-
-### stakeholder-audience
-
-Write for management stakeholders — focus on impact, scope, and risk, not implementation details
 
 ### diagrams-required
 
