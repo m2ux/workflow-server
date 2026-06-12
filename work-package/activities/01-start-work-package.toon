@@ -223,7 +223,7 @@ steps[30]:
         target: existing_pr_number
         description: "PR number from the list-prs result when one was found"
   - id: create-pr
-    technique: manage-git::create-pr
+    technique: update-pr::create-pr
     technique_args:
       issue_number: "{issue_number}"
       issue_platform: "{issue_platform}"

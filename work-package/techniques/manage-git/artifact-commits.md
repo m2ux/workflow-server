@@ -27,7 +27,7 @@ Engineering branch to push to
 
 ### reference_path
 
-Path to the reference checkout (the engineering / parent repo where planning artifacts live), in which all staging, commit, rebase, and push operations run (inherited from the [manage-git](./TECHNIQUE.md) group root; declared here as the binding contract).
+Path to the reference checkout (the engineering / parent repo where planning artifacts live), in which all staging, commit, rebase, and push operations run.
 
 ## Output
 

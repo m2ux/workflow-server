@@ -11,21 +11,21 @@ Collect and classify the assumptions made during the work against `{assumption_c
 
 ### activity_context
 
-The context in which assumptions are generated, used to choose the category appropriate to the current phase (supplied via `technique_args`; inherited from the [review-assumptions](./TECHNIQUE.md) group root, declared here as the binding contract).
+The context in which assumptions are generated, used to choose the category appropriate to the current phase (supplied via `technique_args`).
 
 ### assumption_categories
 
-The list of categories used to classify each assumption (supplied via `technique_args`; inherited from the [review-assumptions](./TECHNIQUE.md) group root, declared here as the binding contract).
+The list of categories used to classify each assumption (supplied via `technique_args`).
 
 ### existing_assumptions_log
 
-*(optional)* The existing assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) to append to; a fresh log is started when none exists (inherited from the [review-assumptions](./TECHNIQUE.md) group root).
+*(optional)* The existing assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) to append to; a fresh log is started when none exists.
 
 ## Outputs
 
 ### updated_assumptions_log
 
-The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) with the newly collected, classified assumptions appended — each carrying type, statement, rationale, and alternatives (inherited from the [review-assumptions](./TECHNIQUE.md) group root). This file is the record of truth for the surfaced assumptions.
+The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) with the newly collected, classified assumptions appended — each carrying type, statement, rationale, and alternatives. This file is the record of truth for the surfaced assumptions.
 
 ### open_assumptions
 

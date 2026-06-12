@@ -11,7 +11,7 @@ Create the completion document summarizing delivered work, test coverage, and de
 
 ### planning_folder_path
 
-Path to the planning folder where the completion document is created; inherited from the [finalize-documentation](./TECHNIQUE.md) group root.
+Path to the planning folder where the completion document is created.
 
 ## Output
 

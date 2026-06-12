@@ -11,27 +11,27 @@ Render the PR body from the selected template and apply it to the `{pr_number}` 
 
 ### template
 
-Which PR body template to render — `initial` (ADR-only, before implementation) or `final` (after implementation); inherited from the [update-pr](./TECHNIQUE.md) group root.
+Which PR body template to render — `initial` (ADR-only, before implementation) or `final` (after implementation).
 
 ### is_review_mode
 
-True when the body is the consolidated review-mode comment rather than an implementation update; selects the [review-mode](../../resources/review-mode.md) template (inherited from the [update-pr](./TECHNIQUE.md) group root).
+True when the body is the consolidated review-mode comment rather than an implementation update; selects the [review-mode](../../resources/review-mode.md) template.
 
 ### planning_folder_path
 
-Path to the planning folder holding the implementation summary and artifacts the body draws from (inherited from the [update-pr](./TECHNIQUE.md) group root).
+Path to the planning folder holding the implementation summary and artifacts the body draws from.
 
 ### reference_path
 
-Path to the reference checkout (the engineering / parent repo containing `.engineering/`), from which the engineering link URL is resolved (inherited from the [update-pr](./TECHNIQUE.md) group root).
+Path to the reference checkout (the engineering / parent repo containing `.engineering/`), from which the engineering link URL is resolved.
 
 ### target_path
 
-Path to the target checkout (where the PR lives), from which the target repo URL is resolved (inherited from the [update-pr](./TECHNIQUE.md) group root).
+Path to the target checkout (where the PR lives), from which the target repo URL is resolved.
 
 ### pr_number
 
-The PR number whose description is updated (inherited from the [update-pr](./TECHNIQUE.md) group root).
+The PR number whose description is updated.
 
 ## Output
 

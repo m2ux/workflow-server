@@ -15,7 +15,7 @@ The open (non-code-resolvable) assumptions to present for review. In interview m
 
 ### updated_assumptions_log
 
-The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) carrying each assumption's reconciliation history and technical context, linked into the presentation for full detail (inherited from the [review-assumptions](./TECHNIQUE.md) group root).
+The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) carrying each assumption's reconciliation history and technical context, linked into the presentation for full detail.
 
 ## Output
 

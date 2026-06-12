@@ -11,11 +11,11 @@ Capture session history, produce the retrospective document, and update the work
 
 ### pr_number
 
-The PR number for this work package — its merge gates the status update and the final outcome record; inherited from the [conduct-retrospective](./TECHNIQUE.md) group root.
+The PR number for this work package — its merge gates the status update and the final outcome record.
 
 ### planning_folder_path
 
-Path to the planning folder where the final outcome and retrospective are recorded; inherited from the [conduct-retrospective](./TECHNIQUE.md) group root.
+Path to the planning folder where the final outcome and retrospective are recorded.
 
 ## Output
 

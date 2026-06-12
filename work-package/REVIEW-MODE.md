@@ -145,6 +145,6 @@ graph TD
 
 ## Related Resources
 
-- [24-review-mode.md](../meta/resources/review-mode.md) - Detailed review mode guide with output formats
+- [24-review-mode.md](./resources/review-mode.md) - Detailed review mode guide with output formats
 - [16-rust-substrate-code-review.md](./resources/rust-substrate-code-review.md) - Code review criteria
 - [17-test-suite-review.md](./resources/test-suite-review.md) - Test quality assessment

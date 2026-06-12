@@ -11,7 +11,7 @@ Write assumption outcomes (resolved/deferred) and the user's responses back into
 
 ### updated_assumptions_log
 
-The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) to write outcomes into; its existing assumptions and resolution status are preserved (inherited from the [review-assumptions](./TECHNIQUE.md) group root).
+The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) to write outcomes into; its existing assumptions and resolution status are preserved.
 
 ### assumption_decisions
 
@@ -21,7 +21,7 @@ The per-assumption decisions (accept/reject/defer) together with any user-suppli
 
 ### updated_assumptions_log
 
-The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) updated with each assumption marked confirmed, corrected, or needs-discussion and the user's responses recorded inline; all assumptions and their resolution status are preserved (inherited from the [review-assumptions](./TECHNIQUE.md) group root). This file is the record of truth for assumption outcomes.
+The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) updated with each assumption marked confirmed, corrected, or needs-discussion and the user's responses recorded inline; all assumptions and their resolution status are preserved. This file is the record of truth for assumption outcomes.
 
 ### has_deferred_assumptions
 

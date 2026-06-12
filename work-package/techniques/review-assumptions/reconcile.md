@@ -11,7 +11,7 @@ Iteratively resolve code-analyzable assumptions through targeted codebase analys
 
 ### existing_assumptions_log
 
-The running [log](../../resources/assumption-reconciliation.md#integration-with-assumptions-log) of open and resolved assumptions to reconcile (inherited from the [review-assumptions](./TECHNIQUE.md) group root, declared here as the binding contract).
+The running [log](../../resources/assumption-reconciliation.md#integration-with-assumptions-log) of open and resolved assumptions to reconcile.
 
 ### target_path
 
@@ -25,7 +25,7 @@ Path to the reference codebase root within which code-resolvable assumptions are
 
 ### updated_assumptions_log
 
-Assumptions [log](../../resources/assumption-reconciliation.md#integration-with-assumptions-log) with all code-resolvable assumptions resolved and only stakeholder-dependent assumptions remaining (inherited from the [review-assumptions](./TECHNIQUE.md) group root; same `assumptions-log.md` artifact, written back in place).
+Assumptions [log](../../resources/assumption-reconciliation.md#integration-with-assumptions-log) with all code-resolvable assumptions resolved and only stakeholder-dependent assumptions remaining (same `assumptions-log.md` artifact, written back in place).
 
 ### has_resolvable_assumptions
 

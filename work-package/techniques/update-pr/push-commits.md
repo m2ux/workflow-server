@@ -11,11 +11,11 @@ Push all local commits to the remote feature branch.
 
 ### branch_name
 
-The feature branch whose local commits are pushed to the remote (inherited from the [update-pr](./TECHNIQUE.md) group root).
+The feature branch whose local commits are pushed to the remote.
 
 ### pr_number
 
-The PR being updated (inherited from the [update-pr](./TECHNIQUE.md) group root).
+The PR being updated.
 
 ## Output
 

@@ -11,7 +11,7 @@ Canonical formatting check; matches CI exactly. Does not compile, so does not ne
 
 ### scope
 
-`--workspace` for the full workspace, or `-p <crate>` to scope to one crate (inherited from the [cargo-operations](./TECHNIQUE.md) group root; declared here as the binding contract). `{features}` does not apply — fmt does not compile.
+`--workspace` for the full workspace, or `-p <crate>` to scope to one crate. `{features}` does not apply — fmt does not compile.
 
 ## Output
 

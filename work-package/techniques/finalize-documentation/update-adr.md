@@ -11,11 +11,11 @@ Update the work package's ADR to Accepted, recording the implementation outcome.
 
 ### adr_document
 
-*(optional)* The [Architecture Decision Record](../../resources/architecture-review.md#adr-template) created for this work package, if one exists; inherited from the [finalize-documentation](./TECHNIQUE.md) group root.
+*(optional)* The [Architecture Decision Record](../../resources/architecture-review.md#adr-template) created for this work package, if one exists.
 
 ### pr_number
 
-The merged PR number, cross-referenced when recording the ADR implementation outcome; inherited from the [finalize-documentation](./TECHNIQUE.md) group root.
+The merged PR number, cross-referenced when recording the ADR implementation outcome.
 
 ## Output
 

@@ -45,7 +45,7 @@ Each activity section below includes its purpose, techniques, steps, checkpoints
 25. **create-review-worktree** — `manage-git::create-worktree` with `create_branch: false` (when review mode).
 26. **check-branch** — control step; inside the worktree, checks that the current branch is a feature branch (not main/master).
 27. **check-pr** — control step; inside the worktree, presents `pr-check` checkpoint and sets `pr_exists` when a PR is found for the branch (when not review mode).
-28. **create-pr** — `manage-git::create-pr`; presents `pr-creation` checkpoint and sets `pr_number`, `pr_url`, `pr_exists = true` (when not review mode and `use_existing_pr == false`).
+28. **create-pr** — `update-pr::create-pr`; presents `pr-creation` checkpoint and sets `pr_number`, `pr_url`, `pr_exists = true` (when not review mode and `use_existing_pr == false`).
 29. **link-pr-to-ticket-jira** — `atlassian-operations::comment-jira-issue` records the PR reference (when not review mode, `pr_number` exists, not skipped, `issue_platform == jira`).
 30. **link-pr-to-ticket-github** — `github-cli-protocol::view-issue` verifies the PR cross-link (when not review mode, `pr_number` exists, not skipped, `issue_platform == github`).
 31. **determine-next-activity** — control step; decides whether requirements elicitation is needed from issue details.

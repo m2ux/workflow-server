@@ -11,11 +11,11 @@ Load the design framework and define a clear problem statement with system under
 
 ### issue_details
 
-Summary, description, and context from the linked issue, reviewed to ground the problem statement (inherited from the [design-philosophy](./TECHNIQUE.md) group root, declared here as the binding contract).
+Summary, description, and context from the linked issue, reviewed to ground the problem statement.
 
 ### problem_context
 
-*(optional)* Additional context about the problem from the user or prior context (inherited from the [design-philosophy](./TECHNIQUE.md) group root).
+*(optional)* Additional context about the problem from the user or prior context.
 
 ## Output
 

@@ -11,11 +11,11 @@ Finalize the test plan by linking each test case to its actual source location.
 
 ### test_plan
 
-The [test plan](../../resources/test-plan.md#test-plan-structure) artifact for this work package; inherited from the [finalize-documentation](./TECHNIQUE.md) group root.
+The [test plan](../../resources/test-plan.md#test-plan-structure) artifact for this work package.
 
 ### planning_folder_path
 
-Path to the planning folder holding the test plan; inherited from the [finalize-documentation](./TECHNIQUE.md) group root.
+Path to the planning folder holding the test plan.
 
 ## Output
 

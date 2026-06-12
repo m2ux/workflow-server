@@ -11,7 +11,7 @@ Mark the PR ready for review once its description is finalized.
 
 ### pr_number
 
-The PR to mark ready for review via `gh pr ready` (inherited from the [update-pr](./TECHNIQUE.md) group root).
+The PR to mark ready for review via `gh pr ready`.
 
 ## Output
 

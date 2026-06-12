@@ -11,7 +11,7 @@ Generate API documentation to verify inline doc comments compile.
 
 ### scope
 
-`--workspace` for the full workspace, or `-p <crate>` to scope to one crate (inherited from the [cargo-operations](./TECHNIQUE.md) group root; declared here as the binding contract).
+`--workspace` for the full workspace, or `-p <crate>` to scope to one crate.
 
 ## Output
 

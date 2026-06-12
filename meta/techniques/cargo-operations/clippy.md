@@ -11,11 +11,11 @@ Run the linter against all targets, denying warnings.
 
 ### scope
 
-`--workspace` for the full workspace, or `-p <crate>` to scope to one crate (inherited from the [cargo-operations](./TECHNIQUE.md) group root; declared here as the binding contract).
+`--workspace` for the full workspace, or `-p <crate>` to scope to one crate.
 
 ### features
 
-Optional `--features` flags (empty string when none); inherited from the [cargo-operations](./TECHNIQUE.md) group root.
+Optional `--features` flags (empty string when none).
 
 ## Output
 
