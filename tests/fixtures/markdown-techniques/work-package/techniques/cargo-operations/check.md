@@ -13,7 +13,7 @@ Type-check without producing binaries.
 
 `'--workspace'` or `'-p <crate>'`
 
-## Output
+## Outputs
 
 ### check_status
 

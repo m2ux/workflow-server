@@ -12,6 +12,7 @@
     "dev": "tsx src/index.ts",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
+    "check:binding": "tsx scripts/check-binding-fidelity.ts",
     "migrate-skills": "tsx scripts/migrate-skills/migrate.ts"
   },
   "license": "MIT",

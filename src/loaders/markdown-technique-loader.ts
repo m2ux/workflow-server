@@ -262,13 +262,25 @@ function parseTechniqueIndex(raw: string, sourcePath: string, id: string): Index
   const capability = bodyParagraphs(capabilitySection.body);
   if (!capability) throw new MarkdownTechniqueParseError(`Empty '## Capability' section at ${sourcePath}`);
 
+  // The interface sections have exactly one canonical spelling: plural `## Inputs` / `## Outputs`.
+  // Reject the singular (or parenthesised-plural) variants so a mis-titled section fails loudly
+  // instead of having its declarations silently dropped by the section lookup below.
+  const banned = new Set(['input', 'output', 'output(s)']);
+  for (const section of sections) {
+    if (banned.has(section.title.trim().toLowerCase())) {
+      throw new MarkdownTechniqueParseError(
+        `Non-canonical interface header '## ${section.title.trim()}' at ${sourcePath} — use the plural '## Inputs' / '## Outputs'`,
+      );
+    }
+  }
+
   return {
     id,
     version,
     capability,
     inputs: parseInputsSection(findSection(sections, 'Inputs')),
     protocol: parseProtocolSection(findSection(sections, 'Protocol')),
-    output: parseOutputsSection(findSection(sections, 'Outputs') ?? findSection(sections, 'Output')),
+    output: parseOutputsSection(findSection(sections, 'Outputs')),
     rules: parseRulesSection(findSection(sections, 'Rules')),
   };
 }
