@@ -17,7 +17,7 @@ Update the work package's ADR to Accepted, recording the implementation outcome.
 
 The merged PR number, cross-referenced when recording the ADR implementation outcome.
 
-## Output
+## Outputs
 
 ### finalized_adr
 

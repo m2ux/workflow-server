@@ -21,7 +21,7 @@ Current variable state
 
 Optional `activity-id` from a checkpoint effect `transitionTo`.
 
-## Output
+## Outputs
 
 ### next_activity_id
 

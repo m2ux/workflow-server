@@ -17,7 +17,7 @@ Name of the indexed repository whose graph the operations query (the `{name}` in
 
 The working-tree / branch diff under review, consumed by [detect-changes](./detect-changes.md) to enumerate the changed-symbol set.
 
-## Output
+## Outputs
 
 ### coverage_gaps
 

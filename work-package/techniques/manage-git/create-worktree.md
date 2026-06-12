@@ -25,7 +25,7 @@ Optional. Boolean, default `true`. When true, create `{branch_name}` fresh off t
 
 *(optional)* Basename of the component (submodule directory name, or basename of a standalone repo). Used to locate the component's git directory inside a monorepo reference. Omit for standalone repos.
 
-## Output
+## Outputs
 
 ### worktree_created
 

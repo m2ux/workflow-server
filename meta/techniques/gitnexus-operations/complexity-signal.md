@@ -13,7 +13,7 @@ Objective complexity estimate for an issue, from the fan-out of a preliminary ta
 
 a preliminary symbol inferred from the issue (when one can be inferred)
 
-## Output
+## Outputs
 
 ### complexity_signal
 

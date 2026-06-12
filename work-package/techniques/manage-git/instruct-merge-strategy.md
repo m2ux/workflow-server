@@ -21,7 +21,7 @@ The feature branch to be merged
 
 The PR number being merged
 
-## Output
+## Outputs
 
 ### presented_merge_guidance
 

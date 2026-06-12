@@ -35,7 +35,7 @@ The structured analysis whose source-coverage matrix is the completeness referen
 
 - Write `{validation_report}` to `{planning_folder_path}`, recording the overall verdict (passed, correctable, or critical), the categorized issues, the source-coverage result, and the correction-pass number.
 
-## Output
+## Outputs
 
 ### validation_report
 

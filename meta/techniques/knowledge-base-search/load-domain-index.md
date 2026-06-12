@@ -13,7 +13,7 @@ Read the matching domain index file from `.engineering/resources/`.
 
 Domain hint (e.g., `substrate`, `blockchain`)
 
-## Output
+## Outputs
 
 ### domain_index
 

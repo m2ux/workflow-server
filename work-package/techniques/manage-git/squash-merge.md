@@ -33,7 +33,7 @@ The feature branch whose commits are squashed onto `{default_branch}`.
 
 The pull-request number, interpolated into the merge commit subject (`(#{pr_number})`).
 
-## Output
+## Outputs
 
 ### squash_merge_commit
 

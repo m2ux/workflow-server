@@ -10,7 +10,7 @@ entryActions[1]:
 techniques:
   supporting[1]:
     - "variable-binding"
-steps[30]:
+steps[31]:
   - id: detect-review-mode
     technique: review-mode-detection
     checkpoint: review-mode-detection
@@ -114,11 +114,14 @@ steps[30]:
       variable: needs_issue_creation
       operator: ==
       value: true
+  - id: lookup-current-user
+    technique: atlassian-operations::user-info
+    when: "issue_platform == 'jira' && issue_skipped != true"
   - id: assign-issue-jira
     technique: atlassian-operations::edit-jira-issue
     technique_args:
       issueIdOrKey: "{issue_number}"
-      fields: "{ assignee: { accountId: {current_user_account_id} } }"
+      fields: "{ assignee: { accountId: {accountId} } }"
     condition:
       type: and
       conditions[2]:

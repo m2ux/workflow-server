@@ -23,7 +23,7 @@ The findings or diagnostics to classify. Each entry carries enough context to ju
 
 *(optional)* The test-suite-review findings subset, when present, that drives `needs_test_improvements`.
 
-## Output(s)
+## Outputs
 
 ### needs_code_fixes
 

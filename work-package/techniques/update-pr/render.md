@@ -33,7 +33,7 @@ Path to the target checkout (where the PR lives), from which the target repo URL
 
 The PR number whose description is updated.
 
-## Output
+## Outputs
 
 ### rendered_pr_body
 

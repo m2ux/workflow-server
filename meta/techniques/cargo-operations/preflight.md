@@ -13,7 +13,7 @@ Probe required toolchain prerequisites before running any workspace cargo comman
 
 Path to the workspace under inspection; its `Cargo.toml` and `build.rs` files are walked for build-script signals indicating system-dependency requirements.
 
-## Output
+## Outputs
 
 ### missing_prerequisites
 

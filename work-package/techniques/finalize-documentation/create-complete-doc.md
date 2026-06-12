@@ -13,7 +13,7 @@ Create the completion document summarizing delivered work, test coverage, and de
 
 Path to the planning folder where the completion document is created.
 
-## Output
+## Outputs
 
 ### completion_document
 

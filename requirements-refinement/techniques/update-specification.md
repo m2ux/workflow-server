@@ -37,7 +37,7 @@ Structured analysis of the requirement changes to apply on the initial pass.
 
 - Write the complete `{working_specification}` to `{planning_folder_path}`.
 
-## Output
+## Outputs
 
 ### working_specification
 

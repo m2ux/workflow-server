@@ -13,11 +13,11 @@ Present the open (stakeholder-dependent, non-code-resolvable) assumptions to the
 
 The open (non-code-resolvable) assumptions to present for review. In interview mode the current one is bound as `current_assumption`; in batch mode the whole list is presented together.
 
-### updated_assumptions_log
+### assumptions_log
 
 The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) carrying each assumption's reconciliation history and technical context, linked into the presentation for full detail.
 
-## Output
+## Outputs
 
 ### assumption_review_presentation
 

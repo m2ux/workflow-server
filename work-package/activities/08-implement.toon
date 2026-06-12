@@ -30,11 +30,6 @@ loops[3]:
     steps[6]:
       - id: implement-task
         technique: implement-task
-        technique_args:
-          scatter_mode: sequential
-          iteration_key: current_task
-          gather_implementation_into: completed_tasks
-          gather_commit_into: commits
         checkpoint: switch-model-pre-impl
       - id: run-tests
         technique: cargo-operations::test

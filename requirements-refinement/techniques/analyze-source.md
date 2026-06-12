@@ -35,7 +35,7 @@ Parse a source document — a meeting transcript or an unstructured document —
 
 - Write `{requirements_analysis}` to `{planning_folder_path}` using the [requirements-analysis-report](../resources/requirements-analysis-report.md) structure: source reference, new / updated / deprecated requirements, the [source coverage matrix](../resources/requirements-analysis-report.md#source-coverage-matrix), document updates required, quality issues, and implementation notes.
 
-## Output
+## Outputs
 
 ### requirements_analysis
 

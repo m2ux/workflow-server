@@ -21,7 +21,7 @@ The feature branch brought current with the default branch.
 
 The default branch (typically `main`) fetched and rebased/merged into `{branch_name}`.
 
-## Output
+## Outputs
 
 ### synced_branch
 

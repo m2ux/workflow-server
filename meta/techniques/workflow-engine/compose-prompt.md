@@ -17,7 +17,7 @@ Resource ref for the prompt template (e.g., [workflow-orchestrator-prompt](../..
 
 Map of placeholder name → value
 
-## Output
+## Outputs
 
 ### prompt
 

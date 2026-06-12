@@ -17,7 +17,7 @@ The [test plan](../../resources/test-plan.md#test-plan-structure) artifact for t
 
 Path to the planning folder holding the test plan.
 
-## Output
+## Outputs
 
 ### finalized_test_plan
 

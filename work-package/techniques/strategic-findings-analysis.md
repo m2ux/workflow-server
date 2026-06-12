@@ -17,7 +17,7 @@ The strategic-review findings and recommendations, categorized by type (investig
 
 *(optional)* The accumulated strategic-review findings, when carried in the bag separately from the artifact document.
 
-## Output(s)
+## Outputs
 
 ### recommended_strategic_option
 

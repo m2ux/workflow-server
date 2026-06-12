@@ -29,7 +29,7 @@ Engineering branch to push to
 
 Path to the reference checkout (the engineering / parent repo where planning artifacts live), in which all staging, commit, rebase, and push operations run.
 
-## Output
+## Outputs
 
 ### artifact_commit
 

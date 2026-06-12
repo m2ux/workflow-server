@@ -13,7 +13,7 @@ Read the GitNexus index context resource and check freshness for the target repo
 
 Repository name as known to GitNexus.
 
-## Output
+## Outputs
 
 ### stats
 

@@ -29,7 +29,7 @@ Optional. The per-unit key under which gathered outputs are addressed (e.g. `sub
 
 The delegated operation that aggregates the gathered collection. A `group::operation` reference the caller supplies; this technique defines the contract of the combine call (it receives the gathered ordered collection), not the merge logic.
 
-## Output
+## Outputs
 
 ### gathered_results
 

@@ -17,7 +17,7 @@ a Cypher query string
 
 repo name (usually the current repo)
 
-## Output
+## Outputs
 
 ### result_rows
 

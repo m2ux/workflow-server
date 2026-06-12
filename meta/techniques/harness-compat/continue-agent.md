@@ -21,7 +21,7 @@ Workflow-server `session_index` — included in the prompt so the resumed agent 
 
 Updated instructions or continuation context
 
-## Output
+## Outputs
 
 ### result
 

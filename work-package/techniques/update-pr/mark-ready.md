@@ -13,7 +13,7 @@ Mark the PR ready for review once its description is finalized.
 
 The PR to mark ready for review via `gh pr ready`.
 
-## Output
+## Outputs
 
 ### updated_pr
 

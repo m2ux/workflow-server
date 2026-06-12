@@ -43,7 +43,7 @@ Path to the target checkout (where the PR lives), from which the target repo URL
 
 *(optional, enum: `initial` | `final`, default `final`)* Which PR body template to render — `initial` before implementation (ADR-only), `final` after implementation
 
-## Output
+## Outputs
 
 ### body_conforms
 

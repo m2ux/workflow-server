@@ -13,7 +13,7 @@ Assess a tracker ticket across five issue-quality dimensions — problem stateme
 
 Summary, description, and context of the tracker ticket being assessed (the linked issue's fields).
 
-### existing_assumptions_log
+### assumptions_log
 
 *(optional)* The existing assumptions [log](../resources/assumptions-review.md#assumptions-log-template), where documented gaps are recorded.
 
@@ -36,7 +36,7 @@ True when the user elects to refactor the ticket to address the identified gaps;
 
 ### 2. Document Gaps
 
-- For each dimension that is weak or missing, record the gap concisely as a tracked finding in `{existing_assumptions_log}`.
+- For each dimension that is weak or missing, record the gap concisely as a tracked finding in `{assumptions_log}`.
 - Set `{ticket_gaps_documented}` once the gaps are recorded.
 
 ### 3. Offer to Refactor

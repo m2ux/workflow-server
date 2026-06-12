@@ -13,7 +13,7 @@ Create `README.md` in the planning folder from the [readme](../../resources/read
 
 `{ issue_title, issue_url, issue_type, current_date, status }` — context used to populate header fields
 
-## Output
+## Outputs
 
 ### created_readme
 

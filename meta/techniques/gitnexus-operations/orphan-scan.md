@@ -13,7 +13,7 @@ Find functions with zero in-degree CALLS edges (orphan/unused symbols) and inter
 
 the set of files changed by the work package
 
-## Output
+## Outputs
 
 ### orphan_candidates
 

@@ -13,7 +13,7 @@ Determine whether a path is a regular directory or a git submodule before commit
 
 Path to inspect
 
-## Output
+## Outputs
 
 ### kind
 

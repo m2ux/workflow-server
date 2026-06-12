@@ -31,7 +31,7 @@ Path to the target repository where the code changes are applied and committed.
 
 The feature branch the fixes are committed to.
 
-## Output
+## Outputs
 
 ### applied_fixes
 

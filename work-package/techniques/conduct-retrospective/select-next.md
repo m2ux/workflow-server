@@ -13,7 +13,7 @@ Identify the next work package and prepare context for the transition.
 
 Path to the current work package's planning folder, read for follow-up items and carried context that inform what the next work package should be.
 
-## Output
+## Outputs
 
 ### next_work_package_context
 

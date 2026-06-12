@@ -17,7 +17,7 @@ The PR number for this work package — its merge gates the status update and th
 
 Path to the planning folder where the final outcome and retrospective are recorded.
 
-## Output
+## Outputs
 
 ### retrospective_document
 

@@ -13,7 +13,7 @@ Generate API documentation to verify inline doc comments compile.
 
 `--workspace` for the full workspace, or `-p <crate>` to scope to one crate.
 
-## Output
+## Outputs
 
 ### doc_artifacts
 

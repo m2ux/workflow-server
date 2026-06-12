@@ -17,7 +17,7 @@ Run check, clippy, test, and fmt-check concurrently against the same scope and a
 
 Optional `--features` flags (empty string when none).
 
-## Output
+## Outputs
 
 ### validation_results
 

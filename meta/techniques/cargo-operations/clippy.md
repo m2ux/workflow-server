@@ -17,7 +17,7 @@ Run the linter against all targets, denying warnings.
 
 Optional `--features` flags (empty string when none).
 
-## Output
+## Outputs
 
 ### clippy_status
 

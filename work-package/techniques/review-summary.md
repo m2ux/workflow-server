@@ -17,7 +17,7 @@ The findings gathered and classified across code review, test review, validation
 
 The attached [review-mode](../resources/review-mode.md) resource, whose [Consolidated Review Format](../resources/review-mode.md#consolidated-review-format) defines the summary structure.
 
-## Output(s)
+## Outputs
 
 ### review_summary
 

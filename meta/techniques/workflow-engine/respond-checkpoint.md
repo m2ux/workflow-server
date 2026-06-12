@@ -17,7 +17,7 @@ Send the user's selection back to the server, clearing the active checkpoint.
 
 `{ option_id }` | `{ auto_advance: true }` | `{ condition_not_met: true }`
 
-## Output
+## Outputs
 
 ### effects
 

@@ -29,7 +29,7 @@ One of: `certify` | `flag-legal` — the human's DCO certification selection
 
 *(required only when option = flag-legal)* The concern text provided by the user
 
-## Output
+## Outputs
 
 ### provenance_log
 

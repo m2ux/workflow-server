@@ -27,7 +27,7 @@ Categorized validation findings whose critical or unresolved issues stopped refi
 
 - Write `{failure_report}` to `{planning_folder_path}`.
 
-## Output
+## Outputs
 
 ### failure_report
 

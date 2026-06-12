@@ -29,7 +29,7 @@ The workflow path rationale recorded into the artifact.
 
 Path to the planning artifacts folder where the artifact is created.
 
-## Output
+## Outputs
 
 ### design_philosophy_doc
 

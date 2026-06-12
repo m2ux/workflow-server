@@ -17,7 +17,7 @@ Release build; produces the final binary AND the runtime wasm artifact.
 
 Optional `--features` flags (empty string when none).
 
-## Output
+## Outputs
 
 ### release_artifacts
 

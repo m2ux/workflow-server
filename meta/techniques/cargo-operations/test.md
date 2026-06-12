@@ -14,7 +14,7 @@ Run tests with bounded test parallelism; prefer nextest when configured.
 Optional test name filter (e.g., `test_foo` or `--test integration`); empty string when none
 
 
-## Output
+## Outputs
 
 ### test_status
 

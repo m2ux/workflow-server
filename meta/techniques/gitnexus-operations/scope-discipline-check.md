@@ -13,7 +13,7 @@ Verify the diff stays within the work-package's intended scope; flag scope creep
 
 the processes / functional areas the work package is meant to touch
 
-## Output
+## Outputs
 
 ### scope_findings
 

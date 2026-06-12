@@ -23,13 +23,13 @@ The context in which assumptions are generated
 
 The list of categories used to classify assumptions during collection (supplied via `technique_args`). Collection classifies each assumption into one of these categories.
 
-### existing_assumptions_log
+### assumptions_log
 
 *(optional)* The existing assumptions [log](../../resources/assumptions-review.md#assumptions-log-template), if one exists
 
 ## Outputs
 
-### updated_assumptions_log
+### assumptions_log
 
 Assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) updated with review outcomes — grows as the work progresses
 

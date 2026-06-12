@@ -21,7 +21,7 @@ Target client workflow id (e.g., `work-package`).
 
 The work-package planning slug — `YYYY-MM-DD-{initiative_name}`. Names the planning folder the server materialises under its workspace `.engineering` root. Omit when no slug has been derived; the server then falls back to `YYYY-MM-DD-<workflow_id>`.
 
-## Output
+## Outputs
 
 ### session_index
 

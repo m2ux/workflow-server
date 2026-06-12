@@ -13,7 +13,7 @@ Ensure public/exported APIs in the diff carry inline documentation.
 
 The diff's changed files, scoping which public/exported APIs are enumerated for doc-comment coverage. The applied [public-api-enum](../../../meta/techniques/gitnexus-operations/public-api-enum.md) op derives the changed-symbol set from this diff.
 
-## Output
+## Outputs
 
 ### documented_apis
 

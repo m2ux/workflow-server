@@ -17,7 +17,7 @@ Path to the edit-side checkout the push runs in (per the [manage-git](./TECHNIQU
 
 The feature branch whose local commits are pushed to `origin`.
 
-## Output
+## Outputs
 
 ### pushed_branch
 

@@ -13,7 +13,7 @@ Apply rustfmt formatting in place.
 
 `--workspace` for the full workspace, or `-p <crate>` to scope to one crate. `{features}` does not apply — fmt does not compile.
 
-## Output
+## Outputs
 
 ### formatted_sources
 

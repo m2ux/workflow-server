@@ -17,7 +17,7 @@ Map of identifiers to match against: `{ issue_number?, branch_name?, pr_number?,
 
 Array of saved-session candidates `{ planning_slug, sessionIndex, savedAt, variables }` to choose among
 
-## Output
+## Outputs
 
 ### match
 

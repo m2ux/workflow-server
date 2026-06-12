@@ -13,7 +13,7 @@ Load the active checkpoint's details and present them to the user.
 
 `session_index` of the worker whose active checkpoint is being presented
 
-## Output
+## Outputs
 
 ### selection
 

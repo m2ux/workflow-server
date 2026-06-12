@@ -17,7 +17,7 @@ Identifier of the originally failed check
 
 Concrete fix approach to execute (file edit, `fmt-fix` invocation, dependency install, etc.)
 
-## Output
+## Outputs
 
 ### fix_applied
 

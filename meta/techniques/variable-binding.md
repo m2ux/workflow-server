@@ -21,7 +21,7 @@ The step's `step.technique_args` map (may be empty). Each entry is `input-id →
 
 The workflow-scoped variable bag — the ambient state available at this step.
 
-## Output
+## Outputs
 
 ### bound_inputs
 

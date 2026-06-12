@@ -17,7 +17,7 @@ Type-check without producing binaries; the cheapest validation pass.
 
 Optional `--features` flags (empty string when none).
 
-## Output
+## Outputs
 
 ### check_status
 

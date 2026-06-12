@@ -13,7 +13,7 @@ Canonical formatting check; matches CI exactly. Does not compile, so does not ne
 
 `--workspace` for the full workspace, or `-p <crate>` to scope to one crate. `{features}` does not apply — fmt does not compile.
 
-## Output
+## Outputs
 
 ### fmt_status
 

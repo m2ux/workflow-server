@@ -13,7 +13,7 @@ Analyze the reviewer comments received on a pull request and recommend a review 
 
 The reviewer comments and feedback received on the PR — the signal source for the outcome recommendation.
 
-## Output(s)
+## Outputs
 
 ### recommended_outcome
 

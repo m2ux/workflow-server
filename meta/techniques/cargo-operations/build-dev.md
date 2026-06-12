@@ -17,7 +17,7 @@ Workspace dev build; skips the runtime wasm artifact.
 
 Optional `--features` flags (empty string when none).
 
-## Output
+## Outputs
 
 ### build_artifacts
 

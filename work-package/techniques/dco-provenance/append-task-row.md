@@ -49,7 +49,7 @@ One of: `repo-only` (only repository-local sources used) | `web-retrieval` (exte
 
 `repo-only`
 
-## Output
+## Outputs
 
 ### provenance_log
 

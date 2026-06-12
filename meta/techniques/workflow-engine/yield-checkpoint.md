@@ -13,7 +13,7 @@ Pause at a checkpoint and surface the yield.
 
 ID of the checkpoint being yielded.
 
-## Output
+## Outputs
 
 ### emitted
 

@@ -13,7 +13,7 @@ Map the current git diff to the changed-symbol set and the execution flows it af
 
 `'staged'`, `'unstaged'`, or `'all'` (default `'all'`)
 
-## Output
+## Outputs
 
 ### change_report
 

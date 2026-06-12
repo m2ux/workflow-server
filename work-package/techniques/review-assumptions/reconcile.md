@@ -9,7 +9,7 @@ Iteratively resolve code-analyzable assumptions through targeted codebase analys
 
 ## Inputs
 
-### existing_assumptions_log
+### assumptions_log
 
 The running [log](../../resources/assumption-reconciliation.md#integration-with-assumptions-log) of open and resolved assumptions to reconcile.
 
@@ -23,7 +23,7 @@ Path to the reference codebase root within which code-resolvable assumptions are
 
 ## Outputs
 
-### updated_assumptions_log
+### assumptions_log
 
 Assumptions [log](../../resources/assumption-reconciliation.md#integration-with-assumptions-log) with all code-resolvable assumptions resolved and only stakeholder-dependent assumptions remaining (same `assumptions-log.md` artifact, written back in place).
 
@@ -39,11 +39,11 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 
 ### 1. Classify Resolvability
 
-- Read all open assumptions from the `{existing_assumptions_log}`
+- Read all open assumptions from the `{assumptions_log}`
 - For each, determine whether targeted code analysis could validate or invalidate it
 - Code-resolvable: assumptions about code behavior, data flows, type structures, API contracts, test coverage, implementation details, library behavior, ordering guarantees, error handling paths
 - Not code-resolvable: stakeholder decisions, operational questions, strategic judgments, time estimates, deployment status, business priorities, external system behavior
-- If the `{existing_assumptions_log}` contains no open assumptions, there is nothing to resolve — skip reconciliation and set `{has_resolvable_assumptions}` to false and `{has_open_assumptions}` to false.
+- If the `{assumptions_log}` contains no open assumptions, there is nothing to resolve — skip reconciliation and set `{has_resolvable_assumptions}` to false and `{has_open_assumptions}` to false.
 - If every open assumption classifies as not code-resolvable, convergence is immediate — set `{has_resolvable_assumptions}` to false and proceed to user review.
 
 ### 2. Targeted Analysis
@@ -57,7 +57,7 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 
 ### 3. Update Assumptions
 
-- Update the `{existing_assumptions_log}`: mark resolved assumptions with finding, evidence, and resolution status
+- Update the `{assumptions_log}`: mark resolved assumptions with finding, evidence, and resolution status
 - Add any newly surfaced assumptions as Open with their classification (code-resolvable or not)
 - Maintain a running count of resolved assumptions by status: total, validated, invalidated, partially validated, open code-resolvable, open non-code-resolvable
 - Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See the [formatting rule](../../resources/assumption-reconciliation.md#markdown-formatting-rule) for correct vs incorrect examples.
@@ -66,7 +66,7 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 
 - Re-classify all open assumptions after the analysis pass
 - If any open assumptions are code-resolvable (including newly surfaced ones), signal that another iteration is needed — set `{has_resolvable_assumptions}` to true
-- If no open assumptions are code-resolvable, convergence is reached: the assumptions log is now the `{updated_assumptions_log}` output, with all code-resolvable assumptions resolved and only stakeholder-dependent ones remaining — set `{has_resolvable_assumptions}` to false
+- If no open assumptions are code-resolvable, convergence is reached: the assumptions log is now the `{assumptions_log}` output, with all code-resolvable assumptions resolved and only stakeholder-dependent ones remaining — set `{has_resolvable_assumptions}` to false
 - After convergence, evaluate whether any non-code-resolvable assumptions remain open. If none remain (all resolved), set `{has_open_assumptions}` to false. If stakeholder-dependent assumptions remain, set `{has_open_assumptions}` to true.
 
 ### 5. Update Comprehension Artifact

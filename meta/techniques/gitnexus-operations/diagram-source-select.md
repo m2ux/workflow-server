@@ -17,7 +17,7 @@ Source architecture-diagram structure from graph resources rather than hand-roll
 
 repo name
 
-## Output
+## Outputs
 
 ### diagram_source
 

@@ -35,7 +35,7 @@ Persistent comprehension [artifact](../../resources/codebase-comprehension.md#ar
 
 #### comprehension_artifact_file
 
-`{codebase_area}.md`
+`{$codebase_area}.md`
 
 #### architecture_overview
 

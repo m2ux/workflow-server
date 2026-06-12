@@ -17,7 +17,7 @@ Summary, description, and context from the linked issue, reviewed to ground the 
 
 *(optional)* Additional context about the problem from the user or prior context.
 
-## Output
+## Outputs
 
 ### problem_statement
 

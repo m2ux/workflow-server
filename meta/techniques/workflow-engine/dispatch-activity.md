@@ -21,7 +21,7 @@ Resource ref for the worker prompt (e.g., [activity-worker-prompt](../../resourc
 
 Current variable state for prompt substitution
 
-## Output
+## Outputs
 
 ### worker_result
 

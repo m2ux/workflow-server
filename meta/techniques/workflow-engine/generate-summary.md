@@ -17,7 +17,7 @@ Workflow definition (id, title, outcomes)
 
 Completed activities, checkpoint decisions, artifacts produced
 
-## Output
+## Outputs
 
 ### completion_summary
 

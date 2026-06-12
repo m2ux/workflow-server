@@ -21,7 +21,7 @@ stdout/stderr or structured diagnostics emitted by the underlying tool
 
 Working directory the failed check ran against; `file:line` citations in the diagnostics resolve relative to it.
 
-## Output
+## Outputs
 
 ### root_cause
 

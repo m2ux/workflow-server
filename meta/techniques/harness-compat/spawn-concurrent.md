@@ -13,7 +13,7 @@ Dispatch multiple independent agents in parallel.
 
 Array of `{ description, prompt }` objects — each becomes an independent sub-agent
 
-## Output
+## Outputs
 
 ### results
 

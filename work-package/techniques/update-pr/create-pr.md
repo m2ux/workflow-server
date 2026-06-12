@@ -17,7 +17,7 @@ Issue identifier (GitHub `#N` or Jira `KEY-N`)
 
 Platform where the issue lives (`github` or `jira`)
 
-## Output
+## Outputs
 
 ### pr_number
 

@@ -44,8 +44,8 @@ Targeted exploration subsections appended for the selected area: traced data flo
 ### 2. Artifact Management
 
 - Write the `{comprehension_artifact}` following the artifact structure and comprehension techniques in [codebase-comprehension](../../resources/codebase-comprehension.md)
+- Derive `{$codebase_area}` from the target project or subsystem name (slugified)
 - Artifact naming: `{codebase_area}.md` in `{comprehension_dir}`
-- Derive codebase-area-name from the target project or subsystem name (slugified)
 - When augmenting: add new sections, update existing sections with deeper detail, preserve prior content
 - Include metadata header: date, work-package reference, coverage scope, related artifacts
 - Include an 'Open Questions' section (markdown table) between Domain Concept Mapping and Deep-Dive Sections — this section is maintained by the [revise-questions](./revise-questions.md) question-management protocol

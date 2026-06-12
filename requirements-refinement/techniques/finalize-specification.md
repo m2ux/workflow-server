@@ -31,7 +31,7 @@ The structured analysis of requirement changes, used to compose the change summa
 
 - Present `{final_specification}` and `{change_summary}` for the user to review and promote to `{target_doc_path}`.
 
-## Output
+## Outputs
 
 ### final_specification
 

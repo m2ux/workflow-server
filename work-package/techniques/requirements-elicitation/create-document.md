@@ -25,7 +25,7 @@ The in/out scope definitions from [elicit](./elicit.md), recorded into the artif
 
 Path to the planning artifacts folder where the artifact is created.
 
-## Output
+## Outputs
 
 ### requirements_document
 

@@ -17,7 +17,7 @@ Array of expected outcome strings from the workflow definition
 
 Current variable state and completed-activities trace
 
-## Output
+## Outputs
 
 ### gaps
 

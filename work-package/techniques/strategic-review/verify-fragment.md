@@ -21,7 +21,7 @@ The full issue URL whose verbatim (or equivalent GitHub-reference) presence in t
 
 The work-package issue number, surfaced in the remediation guidance (`Closes: #{issue_number}`) when the reference is absent.
 
-## Output
+## Outputs
 
 ### fragment_references_issue
 

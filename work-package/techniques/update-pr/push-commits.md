@@ -17,7 +17,7 @@ The feature branch whose local commits are pushed to the remote.
 
 The PR being updated.
 
-## Output
+## Outputs
 
 ### pushed_branch
 

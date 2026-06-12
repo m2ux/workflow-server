@@ -59,7 +59,7 @@ Directory the per-lens artifacts and the cross-lens synthesis are written into
 
 ### 5. Write Artifacts
 
-- Write each lens output (see [writer](../resources/writer.md)) as `{per_lens_artifacts}` into `{output_path}`, one artifact per applied lens. If a write fails, verify `{output_path}` exists and is writable.
+- Write each lens output (see [writer](../resources/writer.md)) as `{per_lens_artifacts}` into `{output_path}` — one `portfolio-{$lens_name}.md` per applied lens, where `{$lens_name}` is the applied lens's name. If a write fails, verify `{output_path}` exists and is writable.
 
 ### 6. Cross Lens Synthesis
 

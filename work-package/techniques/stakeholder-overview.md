@@ -31,7 +31,7 @@ Path to the planning folder whose `README.md` holds the section.
 4. Present the overview to the user.
 5. Write it into `{planning_folder_path}`/`README.md` by replacing the placeholder text under the `{readme_section_heading}` section.
 
-## Output
+## Outputs
 
 ### stakeholder_overview
 

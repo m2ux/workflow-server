@@ -13,7 +13,7 @@ Gauge how reversible a change to a symbol is, to set the reversibility flag on j
 
 the symbol the assumption touches
 
-## Output
+## Outputs
 
 ### reversibility_class
 

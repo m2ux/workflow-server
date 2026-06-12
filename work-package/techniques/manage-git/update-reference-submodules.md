@@ -13,7 +13,7 @@ Refresh the monorepo reference's submodules to their tracked remote HEADs, with 
 
 Path to the reference checkout (the engineering / parent monorepo whose submodules are refreshed); the gate, lock, freshness sentinel, and `git submodule update` all operate inside it. The op is a no-op when this is empty or the reference is a standalone repo with no `.gitmodules`.
 
-## Output
+## Outputs
 
 ### refreshed_submodules
 
