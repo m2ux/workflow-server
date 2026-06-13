@@ -90,7 +90,7 @@ for (const file of files) {
   const sections = level2Sections(raw);
   const protocol = sections.get('protocol') ?? '';
   const inputs = level3Designators(sections.get('inputs'));
-  const outputs = level3Designators(sections.get('output') ?? sections.get('outputs'));
+  const outputs = level3Designators(sections.get('outputs'));
   const errors = level3Designators(sections.get('errors'));
 
   if (inputs.length === 0 && outputs.length === 0 && errors.length === 0) continue; // no contract to check

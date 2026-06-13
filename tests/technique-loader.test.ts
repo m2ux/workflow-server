@@ -243,7 +243,7 @@ describe('technique-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.inputs?.map((i) => i.id)).toContain('in_a');
-        expect(result.value.output?.map((o) => o.id)).toContain('out_a');
+        expect(result.value.outputs?.map((o) => o.id)).toContain('out_a');
       }
     });
 
@@ -464,8 +464,8 @@ describe('technique-loader', () => {
         // Technique-local description wins on id conflict.
         const shared = result.value.inputs?.find(i => i.id === 'shared-id');
         expect(shared?.description).toMatch(/Technique override wins/);
-        // Output inherited from root (technique declares none).
-        expect(result.value.output?.map(o => o.id)).toContain('result');
+        // Outputs inherited from root (technique declares none).
+        expect(result.value.outputs?.map(o => o.id)).toContain('result');
       }
     });
 

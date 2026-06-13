@@ -57,8 +57,8 @@ export const OutputItemDefinitionSchema = z.object({
 });
 export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;
 
-export const OutputDefinitionSchema = z.array(OutputItemDefinitionSchema).describe('What the technique produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
-export type OutputDefinition = z.infer<typeof OutputDefinitionSchema>;
+export const OutputsDefinitionSchema = z.array(OutputItemDefinitionSchema).describe('What the technique produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
+export type OutputsDefinition = z.infer<typeof OutputsDefinitionSchema>;
 
 // A nested technique (`<sub>.md`) validates against the same TechniqueSchema below: the markdown
 // loader parses it into the technique shape and the server delivers it like any technique.
@@ -70,7 +70,7 @@ export const TechniqueSchema = z.object({
   rules: RulesDefinitionSchema.optional(),
   inputs: InputsDefinitionSchema.optional(),
   protocol: ProtocolDefinitionSchema.optional(),
-  output: OutputDefinitionSchema.optional(),
+  outputs: OutputsDefinitionSchema.optional(),
 }).strict();
 export type Technique = z.infer<typeof TechniqueSchema>;
 

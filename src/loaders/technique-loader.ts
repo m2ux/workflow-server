@@ -37,7 +37,7 @@ export function projectTechniqueToToon(technique: Technique): string {
   ordered['capability'] = technique.capability;
   if (technique.inputs !== undefined) ordered['inputs'] = technique.inputs;
   if (technique.protocol !== undefined) ordered['protocol'] = technique.protocol;
-  if (technique.output !== undefined) ordered['output'] = technique.output;
+  if (technique.outputs !== undefined) ordered['outputs'] = technique.outputs;
   if (technique.rules !== undefined) ordered['rules'] = technique.rules;
   // Trail with the catch-all extension surface — anything an authoring path adds that the canonical
   // ordering above does not cover is still emitted, just at the end.
@@ -256,7 +256,7 @@ function projectTechniqueBody(t: Technique): Record<string, unknown> {
   if (t.capability) body['capability'] = t.capability;
   if (t.inputs) body['inputs'] = t.inputs;
   if (t.protocol) body['protocol'] = t.protocol;
-  if (t.output) body['output'] = t.output;
+  if (t.outputs) body['outputs'] = t.outputs;
   return body;
 }
 
@@ -568,11 +568,11 @@ async function composeLoaded(
   // call treats the ancestor as "parent" (provides base) and acc as "child" (wins).
   // Final precedence: technique > innermost ancestor > ... > workflow root.
   let inputs = technique.inputs;
-  let output = technique.output;
+  let outputs = technique.outputs;
   let rules = technique.rules;
   for (const anc of [...ancestors].reverse()) {
     inputs = mergeById(anc.inputs, inputs);
-    output = mergeById(anc.output, output);
+    outputs = mergeById(anc.outputs, outputs);
     rules = mergeKeyed(anc.rules, rules);
   }
 
@@ -580,7 +580,7 @@ async function composeLoaded(
 
   const composed: Record<string, unknown> = { ...technique };
   if (inputs) composed['inputs'] = inputs; else delete composed['inputs'];
-  if (output) composed['output'] = output; else delete composed['output'];
+  if (outputs) composed['outputs'] = outputs; else delete composed['outputs'];
   if (rules) composed['rules'] = rules; else delete composed['rules'];
   if (protocol) composed['protocol'] = protocol; else delete composed['protocol'];
 

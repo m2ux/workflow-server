@@ -300,7 +300,7 @@ Transitions are also derived from `decisions` (branch `transitionTo` fields) and
 
 ### Technique and Resource Loading
 
-`get_workflow` and `get_activity` pre-resolve the activity's `techniques.primary` and `techniques.supporting[]` references and return them as the bundled technique set in the response preamble — agents read technique bodies (capability, flow, inputs, protocol, output) directly from the bundle rather than chasing per-step loads. `get_technique` loads a single fully composed technique on demand — the workflow primary technique before any activity, or the technique for the current activity (optionally a `step_id`'s technique). Call `get_resource` with the resource index when a technique references reference material that wasn't bundled.
+`get_workflow` and `get_activity` pre-resolve the activity's `techniques.primary` and `techniques.supporting[]` references and return them as the bundled technique set in the response preamble — agents read technique bodies (capability, flow, inputs, protocol, outputs) directly from the bundle rather than chasing per-step loads. `get_technique` loads a single fully composed technique on demand — the workflow primary technique before any activity, or the technique for the current activity (optionally a `step_id`'s technique). Call `get_resource` with the resource index when a technique references reference material that wasn't bundled.
 
 ### Self-Describing Bootstrap
 
