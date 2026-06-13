@@ -1,148 +1,8 @@
 [
   {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/04-adversarial-verification.toon[compile-results]",
-    "detail": "decompose-safety-claims: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/04-adversarial-verification.toon[decompose-claims]",
-    "detail": "decompose-safety-claims: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/04-adversarial-verification.toon[extract-pass-items]",
-    "detail": "decompose-safety-claims: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/04-adversarial-verification.toon[field-enumeration]",
-    "detail": "decompose-safety-claims: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/04-adversarial-verification.toon[verify-properties]",
-    "detail": "decompose-safety-claims: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/07-gap-analysis.toon[analyze-severity]",
-    "detail": "compare-finding-sets: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/07-gap-analysis.toon[identify-gaps]",
-    "detail": "compare-finding-sets: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/07-gap-analysis.toon[map-findings]",
-    "detail": "compare-finding-sets: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/07-gap-analysis.toon[root-cause-analysis]",
-    "detail": "compare-finding-sets: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/10-sub-crate-review.toon[apply-checklist]",
-    "detail": "apply-checklist: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/10-sub-crate-review.toon[produce-required-tables]",
-    "detail": "apply-checklist: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/11-sub-static-analysis.toon[produce-zero-hit-audit]",
-    "detail": "search-pattern-catalog: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/11-sub-static-analysis.toon[run-grep-patterns]",
-    "detail": "search-pattern-catalog: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/11-sub-static-analysis.toon[run-mechanical-checks]",
-    "detail": "search-pattern-catalog: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/11-sub-static-analysis.toon[run-storage-lifecycle-scan]",
-    "detail": "scan-storage-lifecycle: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/12-sub-toolkit-review.toon[apply-checklist-per-function]",
-    "detail": "apply-checklist: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/12-sub-toolkit-review.toon[enumerate-functions]",
-    "detail": "apply-checklist: arg 'output_format' is not a declared input"
-  },
-  {
-    "check": "arg-conformance",
-    "site": "substrate-node-security-audit/activities/12-sub-toolkit-review.toon[verify-function-coverage]",
-    "detail": "apply-checklist: arg 'output_format' is not a declared input"
-  },
-  {
     "check": "read-resolution",
-    "site": "cicd-pipeline-security-audit/activities/03-primary-scan.toon:14",
-    "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "cicd-pipeline-security-audit/activities/03-primary-scan.toon:35",
-    "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "cicd-pipeline-security-audit/activities/03-primary-scan.toon:39",
-    "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "cicd-pipeline-security-audit/activities/05-sub-workflow-scan.toon:18",
-    "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "cicd-pipeline-security-audit/activities/05-sub-workflow-scan.toon:57",
-    "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "cicd-pipeline-security-audit/activities/06-sub-verification.toon:22",
-    "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "cicd-pipeline-security-audit/activities/07-sub-merge.toon:23",
-    "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "cicd-pipeline-security-audit/techniques/dispatch-scanners.md:28",
-    "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "cicd-pipeline-security-audit/techniques/dispatch-scanners.md:41",
-    "detail": "{scanners_returned} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "cicd-pipeline-security-audit/techniques/scan-injection-patterns.md:91",
-    "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "meta/activities/03-dispatch-client-workflow.toon:35",
-    "detail": "{variables} has no producer (declared id / $-local / workflow var / set-target)"
+    "site": "meta/activities/03-dispatch-client-workflow.toon:47",
+    "detail": "{completed_activity} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
@@ -151,8 +11,8 @@
   },
   {
     "check": "read-resolution",
-    "site": "meta/activities/03-dispatch-client-workflow.toon:47",
-    "detail": "{completed_activity} has no producer (declared id / $-local / workflow var / set-target)"
+    "site": "meta/activities/03-dispatch-client-workflow.toon:35",
+    "detail": "{variables} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
@@ -176,272 +36,72 @@
   },
   {
     "check": "read-resolution",
+    "site": "meta/techniques/cargo-operations/run-suite.md:60",
+    "detail": "{failed_checks} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
     "site": "meta/techniques/cargo-operations/run-suite.md:59",
     "detail": "{first_failure} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
     "site": "meta/techniques/cargo-operations/run-suite.md:60",
-    "detail": "{failed_checks} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "meta/techniques/cargo-operations/run-suite.md:60",
     "detail": "{first_failure} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "prism-update/techniques/verify-prism-consistency.md:39",
-    "detail": "{count_mismatches} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism-update/techniques/verify-prism-consistency.md:39",
-    "detail": "{duplicate_indices} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism-update/techniques/verify-prism-consistency.md:39",
-    "detail": "{routing_mismatches} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/activities/01-structural-pass.toon:10",
-    "detail": "{unit_output_subdir} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/activities/01-structural-pass.toon:118",
-    "detail": "{lens_name} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/activities/01-structural-pass.toon:14",
-    "detail": "{lens_name} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/activities/01-structural-pass.toon:14",
-    "detail": "{unit_output_subdir} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/activities/01-structural-pass.toon:18",
-    "detail": "{unit_output_subdir} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/activities/01-structural-pass.toon:22",
-    "detail": "{unit_output_subdir} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/activities/01-structural-pass.toon:26",
-    "detail": "{unit_output_subdir} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/activities/01-structural-pass.toon:30",
-    "detail": "{unit_output_subdir} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/activities/02-adversarial-pass.toon:10",
-    "detail": "{unit_output_subdir} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/activities/03-synthesis-pass.toon:10",
-    "detail": "{unit_output_subdir} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/activities/05-behavioral-synthesis-pass.toon:10",
-    "detail": "{unit_output_subdir} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/activities/08-subsystem-pass.toon:20",
-    "detail": "{end} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/activities/08-subsystem-pass.toon:20",
-    "detail": "{filename} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/activities/08-subsystem-pass.toon:20",
-    "detail": "{other_names} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/activities/08-subsystem-pass.toon:20",
-    "detail": "{start} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/techniques/behavioral-pipeline.md:40",
-    "detail": "{artifact_filename} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/techniques/behavioral-pipeline.md:57",
-    "detail": "{changes_content} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/techniques/behavioral-pipeline.md:57",
-    "detail": "{costs_content} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/techniques/behavioral-pipeline.md:57",
-    "detail": "{errors_content} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/techniques/behavioral-pipeline.md:57",
-    "detail": "{promises_content} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/techniques/orchestrate-prism.md:108",
-    "detail": "{final_artifact_path} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/techniques/orchestrate-prism.md:80",
-    "detail": "{lens_name} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/techniques/reflect-analysis.md:35",
-    "detail": "{l12_path} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/techniques/reflect-analysis.md:35",
-    "detail": "{meta_path} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "prism/techniques/reflect-analysis.md:35",
-    "detail": "{synthesis_path} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "remediate-vuln/activities/01-start.toon:37",
-    "detail": "{short_id} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/activities/01-scope-setup.toon:45",
-    "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/activities/03-primary-audit.toon:33",
-    "detail": "{designator} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/activities/03-primary-audit.toon:64",
-    "detail": "{designator} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/activities/04-adversarial-verification.toon:53",
-    "detail": "{refuted_count} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/activities/10-sub-crate-review.toon:17",
-    "detail": "{agent_designator} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/activities/12-sub-toolkit-review.toon:16",
-    "detail": "{agent_designator} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-gap-analysis.md:25",
-    "detail": "{ai_only_findings} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-gap-analysis.md:25",
-    "detail": "{finding_mapping} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-gap-analysis.md:25",
-    "detail": "{recommendations} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-gap-analysis.md:25",
-    "detail": "{severity_calibration} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-gap-analysis.md:25",
-    "detail": "{summary_metrics} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:71",
-    "detail": "{impact} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:71",
-    "detail": "{justification} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:73",
-    "detail": "{feasibility} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:73",
-    "detail": "{justification} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:75",
+    "site": "substrate-node-security-audit/techniques/write-report.md:81",
     "detail": "{average} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:75",
-    "detail": "{feasibility} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:75",
-    "detail": "{impact} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:75",
-    "detail": "{level} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:77",
+    "site": "substrate-node-security-audit/techniques/write-report.md:83",
     "detail": "{category} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
     "site": "substrate-node-security-audit/techniques/write-report.md:79",
+    "detail": "{feasibility} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:81",
+    "detail": "{feasibility} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:85",
     "detail": "{file} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:77",
+    "detail": "{impact} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:81",
+    "detail": "{impact} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:77",
+    "detail": "{justification} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
     "site": "substrate-node-security-audit/techniques/write-report.md:79",
+    "detail": "{justification} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:81",
+    "detail": "{level} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:85",
     "detail": "{lines} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
@@ -456,33 +116,33 @@
   },
   {
     "check": "read-resolution",
+    "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:38",
+    "detail": "{conforms} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
     "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:20",
     "detail": "{extra_top_level_headings} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
+    "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:38",
+    "detail": "{extra_top_level_headings} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
     "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:20",
+    "detail": "{header_block_drift} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:38",
     "detail": "{header_block_drift} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
     "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:20",
     "detail": "{missing_sections} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:38",
-    "detail": "{conforms} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:38",
-    "detail": "{extra_top_level_headings} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:38",
-    "detail": "{header_block_drift} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
@@ -516,18 +176,8 @@
   },
   {
     "check": "read-resolution",
-    "site": "work-packages/techniques/plan-work-package-scope.md:66",
-    "detail": "{package_name} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
     "site": "workflow-design/activities/07-content-drafting.toon:117",
     "detail": "{file_count} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "workflow-design/activities/08-quality-review.toon:151",
-    "detail": "{expressiveness_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
@@ -536,23 +186,23 @@
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/08-quality-review.toon:190",
-    "detail": "{rule_hygiene_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
     "site": "workflow-design/activities/08-quality-review.toon:208",
     "detail": "{enforcement_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/09-validate-and-commit.toon:110",
-    "detail": "{addressed_count} has no producer (declared id / $-local / workflow var / set-target)"
+    "site": "workflow-design/activities/08-quality-review.toon:151",
+    "detail": "{expressiveness_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "workflow-design/activities/08-quality-review.toon:190",
+    "detail": "{rule_hygiene_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
     "site": "workflow-design/activities/09-validate-and-commit.toon:110",
-    "detail": "{total_count} has no producer (declared id / $-local / workflow var / set-target)"
+    "detail": "{addressed_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
@@ -563,5 +213,10 @@
     "check": "read-resolution",
     "site": "workflow-design/activities/09-validate-and-commit.toon:89",
     "detail": "{pass_count} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "workflow-design/activities/09-validate-and-commit.toon:110",
+    "detail": "{total_count} has no producer (declared id / $-local / workflow var / set-target)"
   }
 ]

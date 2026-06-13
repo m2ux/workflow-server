@@ -67,21 +67,28 @@ function buildRegistry(wf: string): void {
   if (!existsSync(tdir)) return;
   const reg: Reg = { ops: new Map(), groups: new Map() };
   const note = (s: Sig) => { s.inputs.forEach((x) => DECLARED.add(x)); s.outputs.forEach((x) => DECLARED.add(x)); };
+  // The workflow-root techniques/TECHNIQUE.md declares Inputs/Outputs inherited by every op
+  // (composeLoaded merges the root into each descendant). Include it in DECLARED and in every op
+  // signature, else root-hoisted inputs (AP-52) read as unresolved / mis-flag arg-conformance.
+  const rootIdx = join(tdir, 'TECHNIQUE.md');
+  const rootSig: Sig = existsSync(rootIdx) ? fileSig(rootIdx) : { inputs: new Set(), outputs: new Set() };
+  note(rootSig);
+  const withRoot = (s: Sig): Sig => ({ inputs: new Set([...s.inputs, ...rootSig.inputs]), outputs: new Set([...s.outputs, ...rootSig.outputs]) });
   for (const entry of readdirSync(tdir)) {
     const p = join(tdir, entry); const st = statSync(p);
     if (st.isFile() && entry.endsWith('.md') && entry !== 'TECHNIQUE.md') {
-      const s = fileSig(p); reg.ops.set(entry.slice(0, -3), s); note(s);
+      const s = fileSig(p); reg.ops.set(entry.slice(0, -3), withRoot(s)); note(s);
     } else if (st.isDirectory()) {
       const idx = join(p, 'TECHNIQUE.md');
       const g = existsSync(idx) ? fileSig(idx) : { inputs: new Set<string>(), outputs: new Set<string>() };
-      reg.groups.set(entry, g); note(g);
+      reg.groups.set(entry, withRoot(g)); note(g);
       for (const f of readdirSync(p)) {
         if (f.endsWith('.md') && f !== 'TECHNIQUE.md') {
           const own = fileSig(join(p, f)); note(own);
-          reg.ops.set(`${entry}::${f.slice(0, -3)}`, {
+          reg.ops.set(`${entry}::${f.slice(0, -3)}`, withRoot({
             inputs: new Set([...own.inputs, ...g.inputs]),
             outputs: new Set([...own.outputs, ...g.outputs]),
-          });
+          }));
         }
       }
     }
@@ -182,15 +189,21 @@ for (const wf of allWf) {
 }
 
 /* --------------------------------- checks --------------------------------- */
-export interface Violation { check: 'arg-conformance' | 'read-resolution'; site: string; detail: string }
+export interface Violation { check: 'arg-conformance' | 'read-resolution' | 'binding-resolution'; site: string; detail: string }
 
 export function collectViolations(): Violation[] {
   const v: Violation[] = [];
-  // (1) arg-conformance
+  // (1) binding-resolution + arg-conformance
   for (const s of steps) {
     const wf = s.rel.split('/')[0];
     const sig = resolve(s.technique, wf);
-    if (!sig) continue; // unresolved refs are check-all-refs's job
+    if (!sig) {
+      // A step's `technique:` ref must resolve to a real operation (workflow-local, meta, or
+      // cross-workflow). check-all-refs only validates techniques.primary/supporting, so after the
+      // step-binding migration this is the only guard covering step.technique bindings.
+      v.push({ check: 'binding-resolution', site: `${s.rel}[${s.stepId}]`, detail: `step technique '${s.technique}' does not resolve` });
+      continue;
+    }
     for (const key of s.args) if (!sig.inputs.has(key)) {
       v.push({ check: 'arg-conformance', site: `${s.rel}[${s.stepId}]`, detail: `${s.technique}: arg '${key}' is not a declared input` });
     }
@@ -205,7 +218,7 @@ export function collectViolations(): Violation[] {
   return v;
 }
 
-function sig(x: Violation): string { return `${x.check}${x.site}${x.detail}`; }
+function sig(x: Violation): string { return `${x.check}${x.site.replace(/:\d+$/, '')}${x.detail}`; }
 
 /** Compare current violations to the committed baseline. Returns added (new drift) + fixed. */
 export function diffBaseline(): { added: Violation[]; fixed: Violation[]; total: number; baselined: number } {
