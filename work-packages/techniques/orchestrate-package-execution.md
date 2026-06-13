@@ -21,6 +21,10 @@ Ordered list of packages not yet started
 
 Full priority order for reference
 
+### completed_packages
+
+Completed package names; arrives populated if provided and is exposed on completion
+
 ## Protocol
 
 ### 1. Initialize Iteration
@@ -31,45 +35,43 @@ Full priority order for reference
 
 ### 2. Select Package
 
-- Take the first package from `{remaining_packages}`
-- Set current-package to the selected package
-- If the next package depends on an incomplete package, skip to the next independent package and note the blocked package
+- Take the first package from `{remaining_packages}` as `{current_package}`  
+  > If the selected package depends on an incomplete package, skip to the next independent package and note the blocked package.
 
 ### 3. Trigger Workflow
 
-- Use attached [workflow-triggering-protocol](../resources/workflow-triggering-protocol.md) (workflow-triggering-protocol) for the triggering procedure
-- Call `get_workflow('work-package')` to load the work-package workflow
-- Pass context: package name, scope from plan document, dependencies, the `{planning_folder_path}`
-- If the work-package workflow cannot be loaded or started, verify it exists via `list_workflows`, then retry
+- Apply the [workflow-triggering-protocol](../resources/workflow-triggering-protocol.md#triggering-a-work-package) triggering procedure
+- Call `get_workflow('work-package')` to load the `work-package` workflow
+- Pass context: package name, scope from plan document, dependencies, and `{planning_folder_path}`  
+  > If the `work-package` workflow cannot be loaded or started, verify it exists via `list_workflows`, then retry.
 
 ### 4. Update Status
 
-- After work-package workflow completes, update the `START-HERE.md` status table — this is the `{implementation_status}` roadmap
-- Mark completed package as done, add PR link
-- Update `{overall_progress}` counter
+- Capture the completed package's `{planning_folder_path}` from the child workflow's `returnedContext` and store it in `{package_planning_paths}` keyed by package name
+- Update the `START-HERE.md` status table: mark the completed package as done, add its PR link, and add a link to the package's planning-folder `README.md`
+- Recompute `{overall_progress}` to reflect the completed count
 
 ### 5. Check Remaining
 
-- Remove completed package from `{remaining_packages}`, add to `{completed_packages}`
-- If `{remaining_packages}` is not empty, continue the loop with the next package
+- Remove the completed package from `{remaining_packages}`, add it to `{completed_packages}`
 
 ## Outputs
 
-### implementation_status
-
-Updated roadmap status reflecting completed packages
-
-#### completed_packages
+### completed_packages
 
 List of completed package names
 
-#### remaining_packages
+### remaining_packages
 
 List of remaining package names
 
-#### overall_progress
+### overall_progress
 
 Progress indicator (e.g., '3/7 complete')
+
+### package_planning_paths
+
+Map of package name to the child work-package's planning-folder path, captured as each child workflow completes
 
 ## Rules
 

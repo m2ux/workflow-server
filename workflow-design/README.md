@@ -154,7 +154,7 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 
 ---
 
-## Output
+## Outputs
 
 **Create mode:** A complete workflow file set in the `workflows/` worktree.
 

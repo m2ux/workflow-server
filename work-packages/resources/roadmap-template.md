@@ -64,7 +64,7 @@ Each package defines its own success criteria in its plan document.
 |----------|---------|
 | `START-HERE.md` | Executive summary and status tracking |
 | [README.md](README.md) | Navigation and document index |
-| `NN-package-plan.md` | Individual package plans |
+| `{package_name}-plan.md` | Individual package plans |
 ```
 
 ---
@@ -86,14 +86,14 @@ See `START-HERE.md` for current status and progress.
 
 | Document | Description |
 |----------|-------------|
-| `0N-analysis.md` | Completion or context analysis |
+| `01-COMPLETION-ANALYSIS.md` / `02-CONTEXT-ANALYSIS.md` | Completion or context analysis |
 
 ## Work Package Plans
 
 | # | Package | Plan |
 |---|---------|------|
-| 1 | [Name] | `01-package-plan.md` |
-| 2 | [Name] | `02-package-plan.md` |
+| 1 | [Name] | `auth-service-plan.md` |
+| 2 | [Name] | `payment-gateway-plan.md` |
 ```
 
 ---

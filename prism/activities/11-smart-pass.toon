@@ -5,7 +5,7 @@ description: "Adaptively compose the analysis pipeline based on input characteri
 problem: "Users must manually select the right pipeline mode. Smart mode removes this burden by composing the pipeline automatically based on what the input needs."
 techniques:
   supporting[1]:
-    - smart-analysis
+    - "variable-binding"
 artifacts[3]:
   - id: smart-prereq
     name: "smart-prereq.md"
@@ -19,35 +19,54 @@ artifacts[3]:
     name: "smart-dispute-*.md"
     location: analysis
     description: "Dispute self-correction output(s); filename pattern smart-dispute-*.md"
-rules[3]:
-  - "Smart mode is the ONLY mode that automatically composes its pipeline. The system decides each step based on input characteristics."
-  - "Knowledge gap fill is best-effort — if no knowledge source is available, analysis proceeds without verified facts."
-  - "The dispute step is adaptive: if the analysis found a conservation law, dispute is supplementary; if not, dispute is critical."
 steps[6]:
   - id: run-prereq
     name: Run Prerequisite Scan
-    description: "Create a FRESH worker with prereq resource (59). Worker identifies knowledge gaps and atomic questions. Writes to {output_path}/smart-prereq.md. Extract questions for knowledge fill."
+    description: "Run the prerequisite scan and extract atomic questions."
     required: true
+    technique: smart-analysis
+    technique_args:
+      target_content: "{target}"
   - id: fill-knowledge
     name: Fill Knowledge Gaps
-    description: "If questions were extracted, attempt to fill via available knowledge sources. Construct verified_knowledge context block. Skip if no questions extracted."
+    description: "Fill the extracted knowledge gaps from available sources."
     required: false
+    technique: smart-analysis
+    technique_args:
+      target_content: "{target}"
   - id: select-analysis-mode
     name: Select Analysis Mode
-    description: "Determine analysis approach: if target is code, attempt AST decomposition — if multi-subsystem, use subsystem mode; otherwise use L12. If target is general, use 3-pass full-prism. Record decision in smart_pipeline_steps."
+    description: "Select the analysis approach from the target characteristics."
     required: true
+    technique: smart-analysis
+    technique_args:
+      target_content: "{target}"
+    actions[1]:
+      - action: set
+        target: smart_pipeline_steps
+        description: "The composed pipeline steps."
   - id: run-analysis
     name: Run Selected Analysis
-    description: "Execute the selected analysis approach (subsystem-pass logic or L12 single pass) with enriched content (verified facts injected). Writes to {output_path}/smart-analysis.md (or subsystem-*.md)."
+    description: "Run the selected analysis with the enriched content."
     required: true
+    technique: smart-analysis
+    technique_args:
+      target_content: "{target}"
   - id: run-dispute
     name: Run Dispute Self-correction
-    description: "If analysis produced sufficient output (>200 chars), run dispute mode on the enriched content for self-correction. Writes to {output_path}/smart-dispute-*.md. Skip if analysis output is insufficient."
+    description: "Run dispute self-correction when analysis output is sufficient."
     required: false
+    technique: smart-analysis
+    technique_args:
+      target_content: "{target}"
   - id: collect-paths
     name: Collect Artifact Paths
-    description: "Add all produced artifacts to all_artifact_paths. Record smart_pipeline_steps for reporting."
+    description: "Accumulate the produced artifact paths."
     required: true
+    actions[1]:
+      - action: set
+        target: all_artifact_paths
+        description: "Accumulated artifact paths across the run."
 transitions[1]:
   - to: generate-report
     isDefault: true

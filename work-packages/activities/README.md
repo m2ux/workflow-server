@@ -2,10 +2,10 @@
 
 Sequential activity chain for planning and coordinating multiple related work packages.
 
-| # | Activity | Primary Technique | Description |
-|---|----------|---------------|-------------|
+| # | Activity | Techniques | Description |
+|---|----------|------------|-------------|
 | 01 | **Scope Assessment** | `assess-initiative-scope` | Confirm multi-package initiative and identify work packages |
-| 02 | **Folder Setup** | `workflow-execution` | Create planning folder structure with documentation skeletons |
+| 02 | **Folder Setup** | `version-control::initialize-folder`, `setup-planning-folder` | Create planning folder structure with documentation skeletons |
 | 03 | **Analysis** | `analyze-initiative-context` | Completion or context analysis depending on initiative type |
 | 04 | **Package Planning** | `plan-work-package-scope` | Define scope, dependencies, effort, and success criteria per package |
 | 05 | **Prioritization** | `prioritize-packages` | Prioritize packages by dependencies, value, risk, and effort |

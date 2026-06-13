@@ -7,7 +7,6 @@ techniques:
   supporting[1]:
     - workflow-design
 required: true
-estimatedTime: 10-15m
 rules[3]:
   - "All TOON files must pass schema validation before commit — no exceptions"
   - "The scope manifest must be fully addressed — every item checked off"

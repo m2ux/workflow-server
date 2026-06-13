@@ -11,7 +11,7 @@ tags[6]:
   - proposals
   - documents
 
-rules[9]:
+rules[8]:
   - "ORCHESTRATION MODEL: This workflow uses an orchestrator with disposable workers. The orchestrator manages transitions and triggers. Workers execute activities in fresh contexts. Prism workflows are triggered via the trigger-workflow mechanism, not called inline."
   - "Agents MUST NOT proceed past blocking checkpoints without user confirmation — auto-resolving a checkpoint is a protocol violation"
   - "TRIGGER ISOLATION: When triggering prism, the orchestrator sets analysis_focus to the dimension-specific evaluation guidance produced by the dimension-planning activity. It MUST NOT set analysis_focus to bare labels such as 'security audit', 'audit', 'security review', or any string that would activate prism's built-in audit-finalize activity. All evaluation-specific post-processing is handled by this workflow's own consolidate-report activity."
@@ -20,7 +20,6 @@ rules[9]:
   - "WORKER PERMISSIONS: Sub-agents dispatched in this workflow have FULL READ/WRITE permissions. Workers MUST write all artifacts directly to target paths WITHOUT asking for permission."
   - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL)."
   - "TARGET GENERALITY: This workflow evaluates any target — proposals, strategy documents, technical specifications, codebases, design documents, research papers, or mixed artifact sets. The evaluation dimensions and lens mappings adapt to the target type and evaluation description."
-  - "RESOLUTION DIALOGUE: After evaluation delivery, the user may opt into a resolution dialogue that iterates through findings one-by-one, proposing mitigations and collecting user decisions. Each finding is presented individually — never in batches. For non-trivial findings, the worker proposes a novel solution that preserves the original claim where possible. Absolutely non-feasible claims are flagged explicitly."
 
 techniques:
 variables[23]:

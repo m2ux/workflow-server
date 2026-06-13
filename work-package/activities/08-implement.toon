@@ -3,12 +3,7 @@ version: 2.7.0
 name: Implement Tasks
 description: "Execute the implementation plan task by task."
 problem: User needs to implement the planned tasks
-recognition[3]:
-  - implement tasks
-  - start implementation
-  - execute plan
 required: true
-estimatedTime: 1-4h
 artifacts[2]:
   - id: assumptions-log
     name: assumptions-log.md
@@ -23,16 +18,9 @@ artifacts[2]:
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
 techniques:
-  supporting[9]:
-    - "cargo-operations::test"
-    - "cargo-operations::check"
-    - "cargo-operations::clippy"
-    - "dco-provenance::append-task-row"
-    - implement-task
-    - "manage-git::artifact-commits"
-    - reconcile-assumptions
-    - review-assumptions
-    - validate-build
+  supporting[2]:
+    - "variable-binding"
+    - "scatter-gather"
 loops[3]:
   - id: task-cycle
     name: Task Implementation Cycle
@@ -41,31 +29,21 @@ loops[3]:
     over: plan.tasks
     steps[6]:
       - id: implement-task
-        name: Implement task
+        technique: implement-task
         checkpoint: switch-model-pre-impl
       - id: run-tests
-        name: Run tests
-        description: "cargo-operations::test(scope: '-p {current_task.crate}')"
+        technique: cargo-operations::test
+        technique_args:
+          scope: "-p {current_task.crate}"
       - id: commit
-        name: Commit changes
+        technique: manage-git::artifact-commits
       - id: log-provenance
-        name: Log AI provenance
-        description: "Append a provenance record for this task to provenance-log.md."
-        technique: dco-provenance
+        technique: dco-provenance::append-task-row
       - id: self-review
-        name: Self-review
-        description: "Perform task completion review: (1) Symbol verification — confirm all new/referenced symbols have provenance in codebase or dependencies, populating uncertain_symbols with any symbol the agent cannot confirm and setting has_uncertain_symbols=true when that list is non-empty (otherwise false); (2) Quality checks — code follows patterns, tests pass, no debug prints, no untracked TODOs. Use attached resource task-completion-review for verification checklist. The symbol-provenance-confirmed checkpoint only surfaces when has_uncertain_symbols is true — when every symbol resolves cleanly, the loop continues without prompting the user."
+        technique: task-completion-review
         checkpoint: symbol-provenance-confirmed
-        actions[2]:
-          - action: set
-            target: has_uncertain_symbols
-            description: "true when one or more symbols cannot be confirmed against codebase, declared dependencies, or new symbols introduced by this task; false when every referenced symbol resolves cleanly"
-          - action: set
-            target: uncertain_symbols
-            description: "Multi-line list of uncertain symbols (one per line: symbol name + the file/line where the agent saw it). Empty string when has_uncertain_symbols is false. Interpolated into the symbol-provenance-confirmed checkpoint message so the user sees the flagged symbols alongside the options."
       - id: collect-assumptions
-        name: Collect assumptions
-        description: "Identify all assumptions made during this task. Accumulate — do not review yet."
+        technique: review-assumptions::collect
   - id: assumption-reconciliation
     name: Assumption Reconciliation Loop
     type: while
@@ -74,11 +52,10 @@ loops[3]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
+    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the review-assumptions::reconcile technique protocol."
     steps[1]:
       - id: reconcile-iteration
-        name: Execute Reconciliation Iteration
-        description: "Execute one iteration of the reconcile-assumptions protocol: classify resolvability, perform targeted analysis, update logs, and reclassify for convergence."
+        technique: review-assumptions::reconcile
   - id: assumption-interview
     name: Assumption Interview Loop
     type: forEach
@@ -88,28 +65,22 @@ loops[3]:
     description: "Iterates over each open (stakeholder-dependent) assumption, presenting the implementation-assumption-interview checkpoint for each."
     steps[2]:
       - id: present-assumption
-        name: Present assumption to user
-        description: "Present the current open assumption via the implementation-assumption-interview checkpoint."
+        technique: review-assumptions::interview
         checkpoint: implementation-assumption-interview
       - id: record-response
-        name: Record user response
-        description: "Update assumptions-log.md: if resolved inline, mark Resolved. If deferred, mark Deferred-to-Stakeholder."
+        technique: review-assumptions::record
 steps[4]:
   - id: reconcile-assumptions
-    name: Reconcile assumptions
-    description: "Classify all accumulated implementation assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions technique. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
+    technique: review-assumptions::reconcile
   - id: present-resolved-assumptions
-    name: Present resolved assumptions
-    description: "Display all code-resolved assumptions as a message to the user (non-interactive). Show each assumption's ID, statement, evidence, and resolution status."
+    technique: review-assumptions::interview
     actions[1]:
       - action: message
         message: "**Resolved Assumptions** — the following implementation assumptions were resolved through code analysis."
   - id: interview-open-assumptions
-    name: Interview open assumptions
-    description: "For each open (stakeholder-dependent) assumption, present it individually to the user via the implementation-assumption-interview checkpoint. The user can resolve it inline or defer it to stakeholder review. Update the assumptions log after each response."
+    technique: review-assumptions::interview
   - id: update-assumptions-log
-    name: Update assumptions log
-    description: "Record all implementation assumptions, reconciliation outcomes, and user interview responses in the assumptions log."
+    technique: review-assumptions::record
     checkpoint: switch-model-post-impl
 checkpoints[4]:
   - id: symbol-provenance-confirmed

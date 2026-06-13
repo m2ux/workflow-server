@@ -29,12 +29,16 @@ Codebase paths to search against
 
 *(optional)* Paths or file patterns to exclude (e.g., test, mock, bench files)
 
+### output_format
+
+*(optional)* The table shape the results are rendered in.
+
 ## Protocol
 
 ### 1. Load Catalog
 
 - Fetch the resource named by `{resource_id}` and locate the `{catalog_section}` within it. Parse every pattern entry in that section. Each entry defines a search string and, optionally, triage criteria or verification steps.
-- If no resource matches `{resource_id}`, list the available resources and report the error to the orchestrator.
+- If no resource matches `{resource_id}`, list the available resources and report the error.
 - If the resource exists but does not contain the requested `{catalog_section}`, list the available sections in the resource and report the mismatch.
 
 ### 2. Iterate Patterns
@@ -56,7 +60,7 @@ Codebase paths to search against
 
 ### 6. Format Results
 
-- Assemble the `{pattern_results}`: a structured results table with one row per pattern hit (or per pattern for zero-hit entries). The table format is defined by the activity step that invoked this technique. Include zero-hit verdicts as a separate section or integrated into the main table.
+- Assemble the `{pattern_results}`: a structured results table with one row per pattern hit (or per pattern for zero-hit entries), rendered in `{output_format}`. Include zero-hit verdicts as a separate section or integrated into the main table.
 
 ## Outputs
 
@@ -66,8 +70,14 @@ A structured results table and zero-hit verdicts.
 
 #### results_table
 
-one row per hit, with fields determined by the invoking activity step (typically: category/check ID, pattern, file:line, hit content, triage/verdict)
+one row per hit, with fields determined by `{output_format}` (typically: category/check ID, pattern, file:line, hit content, triage/verdict)
 
 #### zero_hit_verdicts
 
 one row per zero-hit pattern, with fields: pattern, category, hits (0), verdict (True Negative / Flag for Follow-up), justification
+
+## Rules
+
+### consensus-file-elevation-floor
+
+Any pattern hit in a file classified as priority-1 is elevated to at minimum a Low-severity finding during aggregation; hits in these files are never suppressed during zero-hit triage or aggregation.

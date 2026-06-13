@@ -4,7 +4,8 @@
 
 The procedures the activities apply. [`TECHNIQUE.md`](TECHNIQUE.md) is the workflow-root base contract:
 it declares the inputs shared across techniques (`planning_folder_path`, `source_path`,
-`target_doc_path`) and the specification-fidelity rules every technique inherits.
+`target_doc_path`, `correction_iteration`, `max_correction_iterations`) and the
+specification-fidelity rules every technique inherits.
 
 | Technique | Capability |
 |-----------|-----------|

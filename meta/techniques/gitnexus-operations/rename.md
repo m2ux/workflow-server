@@ -25,7 +25,7 @@ Target symbol name.
 
 true to preview edits without applying.
 
-## Output
+## Outputs
 
 ### changes
 

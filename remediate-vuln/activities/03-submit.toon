@@ -1,34 +1,35 @@
 id: submit
-version: 1.0.0
+version: 1.1.0
 name: Submit Security Vulnerability Remediation
 description: "Finalize a high-sensitivity security fix."
 problem: User needs to submit a security fix without public disclosure
 required: true
-estimatedTime: 5-10m
 techniques:
-rules[2]:
-  - "STRICT ISOLATION: This activity MUST NOT call any GitHub PR tools (gh pr review, gh pr ready)."
-  - "PRIVATE REMOTE ONLY: All git push operations must target the 'security' remote."
+  supporting[1]:
+    - "variable-binding"
 entryActions[1]:
   - action: log
     message: "ENTERING SECURITY SUBMISSION MODE - ISOLATION ACTIVE"
 steps[4]:
   - id: verify-security-remote
     name: Verify Security Remote
-    description: "Ensure the 'security' remote is configured and points to a private repository."
-    technique: manage-git
+    description: "Confirm the security remote points at the private fork."
+    technique: secure-submit::verify-security-remote
   - id: verify-commit-signatures
     name: Verify and sign commits
-    description: "BEFORE pushing, check all commits on the feature branch for GPG signatures. If ANY commit shows 'N' (no signature), the agent MUST rebase and sign them."
-    technique: manage-git
+    description: "Confirm every commit on the branch is GPG-signed."
+    technique: secure-submit::verify-commit-signatures
     required: true
   - id: push-sec-vuln-commits
     name: Push security vulnerability commits
-    description: "Push all local commits to the 'security' remote. Run 'git push security HEAD'. This ensures the fix is only pushed to the designated private fork."
-    technique: manage-git
+    description: "Push all local commits to the security remote only."
+    technique: secure-submit::push-secure-commits
   - id: log-completion
     name: Log Completion
-    description: "Log that the security fix has been securely pushed."
+    description: "Record that the security fix was pushed."
+    actions[1]:
+      - action: log
+        message: "Security fix securely pushed to the private remote."
 checkpoints[2]:
   - id: verify-private-remote
     name: Verify Private Remote

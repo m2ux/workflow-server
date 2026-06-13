@@ -25,7 +25,7 @@ optional traversal depth (default 3).
 
 optional confidence floor (e.g. `0.8` to keep only high-confidence edges).
 
-## Output
+## Outputs
 
 ### impact_report
 

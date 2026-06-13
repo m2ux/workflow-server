@@ -13,7 +13,7 @@ Query GitHub for the repo's allowed merge strategies (specifically, whether squa
 
 *(optional)* Basename of the component (for monorepo references)
 
-## Output
+## Outputs
 
 ### squash_merge_supported
 

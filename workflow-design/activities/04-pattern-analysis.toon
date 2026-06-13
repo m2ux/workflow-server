@@ -7,7 +7,6 @@ techniques:
   supporting[1]:
     - workflow-design
 required: false
-estimatedTime: 10-15m
 rules[2]:
   - "Examine at least two existing workflows of the same model type (sequential or independent)"
   - "Present patterns alongside the proposed structure so the user can see how conventions are being applied"

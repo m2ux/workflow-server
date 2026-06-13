@@ -9,7 +9,7 @@ Verify the planning folder's `README.md` still matches the [readme](../../resour
 
 ## Inputs
 
-## Output
+## Outputs
 
 ### readme_conformance
 

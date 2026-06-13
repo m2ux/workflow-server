@@ -21,6 +21,22 @@ Filesystem path to the source document being processed — a meeting transcript 
 
 Filesystem path to the canonical requirements specification being augmented or created.
 
+### correction_iteration
+
+Count of correction passes performed so far; `0` on the initial update.
+
+#### default
+
+`0`
+
+### max_correction_iterations
+
+Maximum number of correction passes before refinement cannot complete automatically.
+
+#### default
+
+`3`
+
 ## Rules
 
 ### specification-protocol-preserved

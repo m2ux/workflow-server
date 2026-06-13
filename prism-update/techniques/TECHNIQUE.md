@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -9,14 +9,46 @@ Base contract inherited by sibling techniques. Any Inputs, Outputs, Rules, or Er
 
 ## Inputs
 
-### change_set
+### upstream_path
 
-Categorized change set — new, modified, renamed, and deleted entries — ready to apply to the resources directory. Produced by diff-upstream and consumed by the import/verify techniques.
+Absolute path to the upstream prisms directory.
 
 ### resource_path
 
-Relative path to the prism workflow resources directory
+Relative path to the prism workflow resources directory.
 
 #### default
 
-prism/resources/
+`prism/resources/`
+
+### prism_readme
+
+Relative path to the prism workflow's top-level README.
+
+#### default
+
+`prism/README.md`
+
+### prism_resources_readme
+
+Relative path to the prism workflow's resources catalog README.
+
+#### default
+
+`prism/resources/README.md`
+
+### plan_analysis_technique
+
+Relative path to the prism workflow's plan-analysis routing technique, which carries the goal-mapping matrix.
+
+#### default
+
+`prism/techniques/plan-analysis.md`
+
+### change_set
+
+Categorized change set — new, modified, renamed, and deleted entries — ready to apply to the resources directory.
+
+### next_index
+
+Next available resource index, derived from the highest existing resource index plus one.

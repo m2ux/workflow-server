@@ -11,13 +11,13 @@ metadata:
 
 ## Capability
 
-Manage planning artifacts in `.engineering/artifacts/planning/` — create folders, enforce activity-based artifact prefixing, and organize documents.
+Manage planning artifacts in `.engineering/artifacts/planning/` — create folders, enforce artifact prefixing, and organize documents.
 
 ## Rules
 
-### activity-prefix
+### artifact-prefix
 
-Artifact filenames are prefixed with the producing activity's `artifactPrefix` (server-computed from the activity filename). Techniques declare bare names (e.g., `code-review.md`); the prefix is applied at write time (e.g., `09-code-review.md`). This groups artifacts by activity and sorts them in workflow order.
+Artifact filenames are prefixed with the server-provided `artifactPrefix`. Techniques declare bare names (e.g., `code-review.md`); the prefix is applied at write time (e.g., `09-code-review.md`). This groups related artifacts and sorts them in workflow order.
 
 ### committed-to-parent
 

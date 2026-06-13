@@ -21,7 +21,7 @@ Do NOT use `gh` CLI commands that mutate PRs/issues via GraphQL (e.g., `gh pr ed
 
 ### read-ops-safe
 
-Read operations via `gh` CLI ([view-pr](./view-pr.md), [list-prs](./list-prs.md), [list-issues](./list-issues.md)) are safe and preferred.
+Read operations via `gh` CLI ([view-pr](./view-pr.md), [view-issue](./view-issue.md), [list-prs](./list-prs.md), [list-issues](./list-issues.md)) are safe and preferred.
 
 ### ask-before-replying
 

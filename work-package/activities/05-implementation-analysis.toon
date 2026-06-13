@@ -3,74 +3,39 @@ version: 2.5.2
 name: Implementation Analysis
 description: "Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement."
 problem: User needs to understand current state before planning changes
-recognition[3]:
-  - analyze implementation
-  - analyze current state
-  - implementation analysis
 required: false
-estimatedTime: 10-20m
 techniques:
-  supporting[4]:
-    - analyze-implementation
-    - "manage-artifacts::write-artifact"
-    - reconcile-assumptions
-    - review-assumptions
-steps[12]:
-  - id: checkout-baseline
-    name: Checkout Baseline State
-    description: "Checkout the base branch (PR target) to analyze the pre-change state. Record the base commit SHA for reference."
+  supporting[2]:
+    - variable-binding
+    - scatter-gather
+steps[8]:
+  - id: review-baseline-state
+    technique: review-baseline-state
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: document-expected-changes
-    name: Document Expected Changes
-    description: "Based on ticket requirements and baseline analysis, document what changes SHOULD be made to fulfill requirements. This becomes the reference for evaluating the actual PR."
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "=="
-      value: true
-  - id: return-to-pr-branch
-    name: Return to PR Branch
-    description: "Checkout the PR branch to continue workflow. Note the diff between base and PR branch for later comparison."
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "=="
-      value: true
-  - id: review-implementation
-    name: Review implementation
-    description: "Understand where and how the feature/component is used: location, usage, dependencies, architecture."
-  - id: evaluate-effectiveness
-    name: Evaluate effectiveness
-    description: "Gather evidence of existing performance: logs, metrics, tests, issues, comments"
-  - id: establish-baselines
-    name: Establish baseline metrics
-    description: "Establish quantitative measurements: performance, quality, usage, reliability"
+  - id: analyze-implementation
+    technique: implementation-analysis::analyze
   - id: collect-assumptions
-    name: Collect assumptions
-    description: "Identify assumptions made during analysis. Categories: Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding."
+    technique: review-assumptions::collect
+    technique_args:
+      assumption_categories: "Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding"
   - id: document
-    name: Create analysis document
-    description: "Create implementation analysis document"
+    technique: implementation-analysis::document
     checkpoint: analysis-confirmed
   - id: update-assumptions-log
-    name: Update assumptions log
-    description: "Add analysis-phase assumptions to the assumptions log"
+    technique: review-assumptions::record
   - id: reconcile-assumptions
-    name: Reconcile assumptions
-    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions technique. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
+    technique: review-assumptions::reconcile
   - id: present-resolved-assumptions
-    name: Present resolved assumptions
-    description: "Display all code-resolved assumptions as a message to the user (non-interactive). Show each assumption's ID, statement, evidence, and resolution status."
+    technique: review-assumptions::interview
     actions[1]:
       - action: message
         message: "**Resolved Assumptions** — the following assumptions were resolved through code analysis during this phase."
   - id: interview-open-assumptions
-    name: Interview open assumptions
-    description: "For each open (stakeholder-dependent) assumption, present it individually to the user via the analysis-assumption-interview checkpoint. The user can resolve it inline or defer it to stakeholder review. Update the assumptions log after each response."
+    technique: review-assumptions::interview
 loops[2]:
   - id: assumption-reconciliation
     name: Assumption Reconciliation Loop
@@ -80,11 +45,10 @@ loops[2]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
+    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the review-assumptions::reconcile technique protocol."
     steps[1]:
       - id: reconcile-iteration
-        name: Execute Reconciliation Iteration
-        description: "Execute one iteration of the reconcile-assumptions protocol: classify resolvability, perform targeted analysis, update logs, and reclassify for convergence."
+        technique: review-assumptions::reconcile
   - id: assumption-interview
     name: Assumption Interview Loop
     type: forEach
@@ -94,12 +58,10 @@ loops[2]:
     description: "Iterates over each open (stakeholder-dependent) assumption, presenting the analysis-assumption-interview checkpoint for each."
     steps[2]:
       - id: present-assumption
-        name: Present assumption to user
-        description: "Present the current open assumption via the analysis-assumption-interview checkpoint."
+        technique: review-assumptions::interview
         checkpoint: analysis-assumption-interview
       - id: record-response
-        name: Record user response
-        description: "Update assumptions-log.md: if resolved inline, mark Resolved. If deferred, mark Deferred-to-Stakeholder."
+        technique: review-assumptions::record
 artifacts[1]:
   - id: analysis-document
     name: implementation-analysis.md

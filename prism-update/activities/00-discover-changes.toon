@@ -1,31 +1,37 @@
 id: discover-changes
-version: 1.0.0
+version: 1.1.0
 name: Discover Changes
 description: "Diff upstream prisms against current workflow resources."
 problem: Need to understand what changed upstream before importing
+required: true
 techniques:
   supporting[1]:
-    - diff-upstream
+    - "variable-binding"
 steps[5]:
   - id: list-upstream
     name: List upstream prisms
-    description: "Enumerate all .md files in upstream_path, filtering out exclusions."
+    description: "Enumerate the upstream prisms, filtering exclusions."
+    technique: diff-upstream
     required: true
   - id: list-current
     name: List current resources
-    description: "Enumerate all resource files, extracting index prefix and prism name from each."
+    description: "Enumerate the current resource files with their indices and names."
+    technique: diff-upstream
     required: true
   - id: diff-and-categorize
     name: Diff and categorize
-    description: "Compare the two file lists. Categorize each upstream file as new, modified, renamed, or deleted."
+    description: "Categorize each prism as new, modified, renamed, or deleted."
+    technique: diff-upstream
     required: true
   - id: classify-new
     name: Classify new prisms
-    description: "Read each new prism's YAML frontmatter. Extract metadata and classify into family."
+    description: "Classify each new prism into a family from its metadata."
+    technique: diff-upstream
     required: true
   - id: determine-next-index
     name: Determine next index
-    description: "Set next_index to highest existing resource index + 1."
+    description: "Determine the next available resource index."
+    technique: diff-upstream
     required: true
     actions[1]:
       - action: set
@@ -35,11 +41,8 @@ transitions[1]:
   - to: review-changes
     isDefault: true
 
-required: true
-estimatedTime: "3-5m"
-
 outcome[3]:
-  - "change_set variable populated with categorized diff"
+  - "change_set populated with the categorized diff"
   - "New prisms classified by family with metadata"
   - "next_index determined"
 

@@ -17,7 +17,7 @@ User's free-form request.
 
 Array of available workflow entries `{ id, title, description, tags }` to match against
 
-## Output
+## Outputs
 
 ### target_workflow_id
 

@@ -3,65 +3,38 @@ version: 3.1.0
 name: Verify & Validate Design
 description: "Validate the implementation against tests, build, format, and lint checks."
 problem: User needs to validate the implementation passes all tests
-recognition[3]:
-  - validate implementation
-  - run tests
-  - verify build
 required: true
-estimatedTime: 15-30m
 techniques:
-  supporting[7]:
-    - "cargo-operations::preflight"
-    - "cargo-operations::run-suite"
-    - "cargo-operations::build-release"
-    - "validate-build::analyze-failure"
-    - "validate-build::apply-fix"
-    - "validate-build::aggregate-results"
-    - "manage-artifacts::verify-readme-conforms"
-steps[6]:
+  supporting[1]:
+    - "variable-binding"
+steps[5]:
   - id: preflight
-    name: Toolchain preflight
-    description: "cargo-operations::preflight() — fail fast when toolchain prerequisites (protoc, openssl headers, pkg-config, etc.) are missing, BEFORE attempting any workspace cargo command. Surfaces missing dependencies as an environment finding rather than a partial workspace compile."
+    technique: cargo-operations::preflight
     when: "project_type == 'rust-substrate'"
     actions[1]:
       - action: validate
         target: "missing_prerequisites.length == 0"
         message: "Install missing toolchain prerequisites before validation: {missing_prerequisites}"
   - id: run-suite
-    name: Run validation suite
-    description: "cargo-operations::run-suite(scope: '--workspace') — runs check, clippy, test, and fmt-check concurrently and emits a single validation_results envelope. Replaces the four previous serial steps."
+    technique: cargo-operations::run-suite
+    technique_args:
+      scope: "--workspace"
     when: "project_type == 'rust-substrate'"
-  - id: evaluate-results
-    name: Evaluate validation results
-    description: "Read validation_results from cargo-operations::run-suite. Set has_failures and validation_passed from it."
-    actions[2]:
-      - action: set
-        target: has_failures
-        value: true
-        message: "true when validation_results.validation_passed is false; false otherwise"
-      - action: set
-        target: validation_passed
-        value: true
-        message: "Mirrors validation_results.validation_passed"
   - id: document-failures
-    name: Document Failures as Findings
-    description: "Document all test/build/lint failures as review findings with severity (critical for test failures, high for build failures). Do NOT attempt to fix."
+    technique: findings-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: assess-test-coverage
-    name: Assess Test Coverage
-    description: "Evaluate whether the tests added are sufficient for the changes made. Check coverage of edge cases and error paths."
+    technique: review-test-suite
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: fix-failures
-    name: Fix any failures
-    description: "Enter the fix-revalidate-cycle loop. Each iteration calls validate-build::analyze-failure for a failed check, validate-build::apply-fix for the chosen strategy, and re-runs the affected cargo-operations op."
     condition:
       type: and
       conditions[2]:
@@ -70,29 +43,33 @@ steps[6]:
           operator: "!="
           value: true
         - type: simple
-          variable: has_failures
+          variable: "validation_results.validation_passed"
           operator: ==
-          value: true
+          value: false
 loops[1]:
   - id: fix-revalidate-cycle
     name: Fix and Revalidate Cycle
     type: doWhile
     condition:
       type: simple
-      variable: has_failures
+      variable: "validation_results.validation_passed"
       operator: "=="
-      value: true
+      value: false
     maxIterations: 10
     steps[3]:
       - id: analyze-failure
-        name: Analyze Failure Root Cause
-        description: "validate-build::analyze-failure(check_id: {failed_check_id}, diagnostics: {failed_check_diagnostics}, target_path: {target_path})"
+        technique: validate-build::analyze-failure
+        technique_args:
+          check_id: "{validation_results.first_failure.check_id}"
+          diagnostics: "{validation_results.first_failure.diagnostics}"
       - id: apply-fix
-        name: Apply Fix
-        description: "validate-build::apply-fix(check_id: {failed_check_id}, fix_strategy: {fix_strategy})"
+        technique: validate-build::apply-fix
+        technique_args:
+          check_id: "{validation_results.first_failure.check_id}"
       - id: revalidate
-        name: Re-run Validation
-        description: "Re-run cargo-operations::run-suite(scope: '--workspace') to re-validate after fix application. validation_results is updated atomically; has_failures = !validation_results.validation_passed. (run-suite already covers all four sub-checks concurrently, so a single re-run captures the full post-fix state.)"
+        technique: cargo-operations::run-suite
+        technique_args:
+          scope: "--workspace"
 transitions[1]:
   - to: strategic-review
     isDefault: true
@@ -101,7 +78,5 @@ exitActions[1]{action,message}:
 outcome[2]:
   - All tests passing
   - Build successful
-context_to_preserve[3]:
-  - test_results - Test execution results
-  - build_status - Build success/failure status
-  - validation_passed - Whether all validation checks passed
+context_to_preserve[1]:
+  - validation_results - Aggregate validation envelope (per-check statuses + validation_passed)

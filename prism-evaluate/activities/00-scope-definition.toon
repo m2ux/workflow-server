@@ -5,35 +5,53 @@ description: "Collect the evaluation target, description, and output path."
 problem: "The evaluation requires a confirmed target, a clear description of evaluation goals, validated dimensions, and an organised output directory before analysis planning can begin."
 techniques:
   supporting[1]:
-    - plan-evaluation
+    - variable-binding
 steps[5]:
   - id: collect-inputs
     name: Collect Evaluation Inputs
-    description: "Extract from the user's request: (1) target_path, (2) evaluation_description, (3) output_path, (4) dimensions (if explicitly provided), (5) lens_overrides (if provided). If output_path is not specified, derive it from the target name and current date."
+    description: "Capture the evaluation inputs from the user's request."
     required: true
+    actions[5]:
+      - action: set
+        target: target_path
+        description: "Path to the target to evaluate."
+      - action: set
+        target: evaluation_description
+        description: "The user's description of evaluation goals, focus areas, and concerns."
+      - action: set
+        target: output_path
+        description: "Directory for the evaluation artifacts; derived from the target name and current date when not supplied."
+      - action: set
+        target: dimensions
+        description: "Evaluation dimensions, when explicitly provided by the user."
+      - action: set
+        target: lens_overrides
+        description: "Per-dimension lens overrides, when provided by the user."
   - id: classify-target
     name: Classify Target
-    description: "Examine target_path to determine target_type: 'document' (single file), 'document-set' (directory of documents without build infrastructure), 'codebase' (directory with build files), or 'mixed'. Verify the target exists and contains analysable content. Report the top-level structure and estimated size."
+    description: "Classify the target type and confirm it holds analysable content."
+    technique: plan-evaluation
     required: true
     actions[1]:
       - action: set
         target: target_type
-        message: "Set to the classified target type"
+        description: "The classified target type."
   - id: derive-dimensions
     name: Derive Evaluation Dimensions
-    description: "If dimensions were not provided by the user, use attached resource 00 (default-dimensions) and select the set matching the target_type. For other targets: infer from the evaluation description. Present the dimensions with names, descriptions, and focus areas."
+    description: "Validate the user-supplied dimensions or derive them from the target and description."
+    technique: plan-evaluation
     required: true
     actions[1]:
       - action: set
         target: dimensions
-        message: "Set to the derived or user-supplied dimensions array"
+        description: "The derived or user-supplied dimensions array."
   - id: create-output-directory
     name: Create Output Directory
-    description: "Create the output_path directory if it does not exist."
+    description: "Create the output_path directory when it does not exist."
     required: true
   - id: summarize-scope
     name: Summarize Evaluation Scope
-    description: "Present a summary of the evaluation scope: target path and type, detected structure and size, evaluation description and goals, dimensions with descriptions, output directory, and any lens_overrides."
+    description: "Present a summary of the evaluation scope for confirmation."
     required: true
 checkpoints[1]:
   - id: confirm-scope

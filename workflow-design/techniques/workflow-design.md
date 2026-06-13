@@ -99,6 +99,8 @@ Free-form description of the workflow the user wants to create or modify
 
 - Run `npx tsx scripts/validate-workflow-toon.ts <workflow-path>` on every TOON file (workflow.toon, activity files, technique files)
 - Record pass/fail per file with the validator's error message
+- Run `npx tsx scripts/check-all-refs.ts` to confirm every `step.technique` reference resolves through the loader
+- Run `npx tsx scripts/check-binding-fidelity.ts` to confirm the change introduces no new binding drift — every `technique_args` key is a declared input, and every interpolation/condition read resolves to a producer (a declared id, a dollar-prefixed step-local, a `workflow.toon` variable, or a set-target). It fails only on violations beyond the committed baseline; if a flagged change is intentional, re-snapshot with `--update-baseline`
 
 ### 10. Audit Tool Technique Doc Consistency
 

@@ -3,39 +3,27 @@ version: 2.7.1
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation.
 problem: User needs to clarify and capture requirements before implementation
-recognition[3]:
-  - elicit requirements
-  - clarify requirements
-  - gather requirements
 required: false
-estimatedTime: 15-30m
 techniques:
-  supporting[4]:
-    - elicit-requirements
-    - "manage-artifacts::write-artifact"
-    - reconcile-assumptions
-    - review-assumptions
+  supporting[1]:
+    - "variable-binding"
 steps[6]:
   - id: stakeholder-discussion
-    name: Stakeholder Discussion
-    description: "Prompt user to initiate discussion with key stakeholders. User provides transcript or summary as input for subsequent elicitation."
+    technique: requirements-elicitation::discuss
     checkpoint: stakeholder-transcript
   - id: elicit-requirements
-    name: Elicit requirements through conversation
-    description: "Iterate through question domains, asking one question at a time. Use stakeholder transcript as context."
+    technique: requirements-elicitation::elicit
     checkpoint: domain-iteration
   - id: collect-assumptions
-    name: Collect assumptions
-    description: "Identify assumptions made when interpreting user responses. Categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation."
+    technique: review-assumptions::collect
+    technique_args:
+      assumption_categories: "Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation"
   - id: create-document
-    name: Create requirements document
-    description: "Create requirements document using elicitation output template"
+    technique: requirements-elicitation::create-document
   - id: update-assumptions-log
-    name: Update assumptions log
-    description: "Add requirements-phase assumptions to the assumptions log"
+    technique: review-assumptions::record
   - id: reconcile-assumptions
-    name: Reconcile assumptions
-    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions technique. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
+    technique: review-assumptions::reconcile
     checkpoint: elicitation-complete
 artifacts[1]:
   - id: requirements-document
@@ -50,28 +38,23 @@ loops[2]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
+    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the review-assumptions::reconcile technique protocol."
     steps[1]:
       - id: reconcile-iteration
-        name: Execute Reconciliation Iteration
-        description: "Execute one iteration of the reconcile-assumptions protocol: classify resolvability, perform targeted analysis, update logs, and reclassify for convergence."
+        technique: review-assumptions::reconcile
   - id: domain-iteration
     name: Question Domain Iteration
     type: forEach
     variable: current_domain
     over: question_domains
     maxIterations: 5
-    steps[2]:
+    steps[1]:
       - id: ask-question
-        name: Ask domain question
-        description: "Present ONE question from current domain. Wait for response before proceeding."
-      - id: record-response
-        name: Record response
-        description: "Capture answer or mark as skipped. Adapt follow-up based on response."
+        technique: requirements-elicitation::ask-question
 decisions[1]:
   - id: user-intent
     name: User Intent Check
-    description: "Evaluate user response during domain-iteration loop to determine next action. Branching is handled by the elicit-requirements technique protocol within the loop — the technique interprets the user's response and controls iteration flow (continue to next question, skip domain, or signal completion)."
+    description: "Evaluate user response during domain-iteration loop to determine next action. Branching is handled by the requirements-elicitation technique protocol within the loop — the technique interprets the user's response and controls iteration flow (continue to next question, skip domain, or signal completion)."
     branches[2]:
       - id: continue
         label: Continue elicitation (answered or skipped)

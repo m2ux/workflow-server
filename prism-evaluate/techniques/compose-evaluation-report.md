@@ -2,124 +2,127 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 1.0.0
+  version: 1.1.0
   order: 1
   legacy_id: 1
 ---
 
 ## Capability
 
-Consolidate prism analysis artifacts from multiple evaluation dimensions into a unified evaluation report with cross-dimensional synthesis
+Consolidate prism analysis artifacts from multiple evaluation dimensions into a unified evaluation report with cross-dimensional synthesis, then compile and present the report's metrics and deliverable index.
 
 ## Inputs
 
 ### dimension_plan
 
-The dimension-to-lens mapping, used to locate and interpret artifacts
+The dimension-to-lens mapping, used to locate and interpret artifacts.
 
 ### completed_analyses
 
-Array of completed prism run references with output paths and status
+Array of completed prism run references with output paths and status.
 
-### evaluation_description
+### all_artifact_paths
 
-Original evaluation description, used for report context
+Accumulated paths to every analysis artifact produced across the triggered prism runs.
 
-## Protocol
+### evaluation_plan_path
 
-### 1. Locate Artifacts
-
-- For each dimension in `{dimension_plan}`, locate the prism output artifacts in the corresponding output_subdir under `{output_path}`
-- Use `{completed_analyses}` to confirm which prism runs finished and to resolve each run's artifact output path and status before reading
-- Full-prism dimensions produce: `structural-analysis.md`, `adversarial-analysis.md`, `synthesis.md`
-- Portfolio dimensions produce one artifact per lens: e.g., `claim-inversion.md` (lens 07), `knowledge-audit.md` (lens 40), `rejected-paths.md` (lens 09), `scarcity.md` (lens 08)
-- Verify all expected artifacts exist. If expected prism output artifacts are missing for one or more dimensions, report which dimensions are missing artifacts, then compose the report from the available dimensions and note the incomplete coverage.
-
-### 2. Extract Findings Per Dimension
-
-- For each dimension, read the terminal artifact (`synthesis.md` for full-prism, individual lens artifacts for portfolio)
-- Extract definitive findings: each finding has an ID, severity/importance, title, and summary description
-- For full-prism dimensions: use the synthesis document's definitive classification as the source of truth. The synthesis reconciles structural and adversarial analyses — use its final severity assignments.
-- For portfolio dimensions: extract the key findings and conservation laws from each lens artifact. Assign severity using the Impact x Feasibility rubric: CRITICAL — directly undermines the target's core purpose. HIGH — degrades significant guarantees. MEDIUM — limited scope or conditional. LOW — informational.
-- Assign unified finding IDs by dimension prefix: e.g., CON-01 for Consistency, VER-01 for Veracity, PLB-01 for Plausibility, FEA-01 for Feasibility. For custom dimensions, derive a 3-letter prefix from the dimension name.
-- Record per-dimension: dimension name, finding count, finding count by severity, list of findings with IDs
-- All severity labels must be computed from Impact x Feasibility: CRITICAL — flaws directly undermine the target's core purpose or stated goals. HIGH — flaws degrade significant guarantees or create major gaps. MEDIUM — flaws have limited scope or require specific conditions. LOW — informational findings or improvement opportunities.
-- If a dimension's artifacts contain no extractable findings, still include the dimension in the report with a note that no significant findings were identified in it.
-
-### 3. Identify Cross Dimensional Patterns
-
-- Compare findings across dimensions to identify patterns that span multiple evaluation axes
-- Look for: the same underlying issue surfacing in different dimensions (e.g., a feasibility constraint that also creates consistency gaps), systemic asymmetries (e.g., deep specification in one area vs shallow in another), reinforcing risks (multiple dimensions pointing to the same failure mode)
-- Identify the core finding — the single deepest insight that explains the most findings across dimensions. In the VOX evaluation, this was the 'Mathematical-Social Bifurcation': one half deeply specified, the other left to assumption.
-- Record: core_finding (title + description), cross_dimensional_patterns (array of { pattern, affected_dimensions, evidence })
-- If no meaningful pattern spans multiple dimensions, report the per-dimension findings without a cross-dimensional core finding and note that the evaluation dimensions appear to be independent.
-
-### 4. Compose Report
-
-- Structure the report with clear sections. No methodology metadata — findings are presented as conclusions.
-- Section: Executive Summary — what was evaluated (framed from `{evaluation_description}`), total findings by dimension and severity, and any framing the target needs. Present enumerable framing (scope, rollout stages, target components) as a compact table or bullet list under a `###` sub-heading, not a dense paragraph.
-- Section: Overall Assessment — the bottom-line judgement, with a `### Verdict` sub-heading (render conditions/caveats as a bullet list) and a further `###` sub-heading for the headline risk or emphasis where it aids readability.
-- Section: The Core Finding — expanded description of the deepest cross-dimensional insight, broken into labelled `###` sub-sections (one per facet or regime) with short paragraphs or bullets, plus a `### Testable prediction` sub-section.
-- Section: Per-Dimension Findings — one subsection per dimension with: dimension description, severity summary table, key findings (each with ID, severity, title, description), and the dimension's most important insight
-- Section: Cross-Cutting Patterns — patterns spanning multiple dimensions, with evidence from each
-- Section: Corrections and Recommendations — actionable items grouped by priority (immediate, short-term, structural)
-- Readability: in every section before Per-Dimension Findings, prefer `###` sub-sections, short paragraphs, and bullet lists or compact tables over large dense paragraphs. Break any multi-part point into labelled sub-sections or bullets rather than a single block of prose.
-- Do NOT include: lens names, pipeline modes, pass descriptions, 'structural analysis found X then adversarial challenged Y then synthesis concluded Z'. These methodological details remain in the raw analysis artifacts for interested readers.
-- The report must stand alone — a reader unfamiliar with prism or evaluation methodology should find it clear, evidence-based, and actionable
-
-### 5. Verify Report
-
-- Verify all finding IDs are unique and follow the dimension-prefix convention
-- Verify severity counts in the executive summary match the per-dimension detail sections
-- Verify the report contains no methodology metadata — no references to lenses, passes, pipeline modes, or analytical process steps
-
-### 6. Present Results
-
-- Read the `{evaluation_report}`. Extract the executive summary: total findings by dimension and severity, the core finding, and top-priority recommendations.
-- Compile evaluation metrics: finding count by dimension, finding count by severity (Critical, High, Medium, Low), dimensions evaluated, number of prism runs triggered, total analysis artifacts produced.
-- Present the evaluation results to the user in a structured format: evaluation summary with finding counts by dimension and severity, core finding highlight, top-priority recommendations, and document index with paths to all deliverables (`EVALUATION-REPORT.md`, `evaluation-plan.md`, and all dimension-specific analysis artifacts).
-- List every artifact produced during the evaluation with its path, organised by dimension.
+Path to the evaluation plan document.
 
 ## Outputs
 
 ### evaluation_report
 
-The consolidated [evaluation report](../resources/evaluation-report-template.md#evaluation-report-template)
+The consolidated [evaluation report](../resources/evaluation-report-template.md#evaluation-report-template).
 
-#### artifact_filename
+#### artifact
 
 `EVALUATION-REPORT.md`
 
 #### executive_summary
 
-Overall assessment with finding counts and core insight
+Overall assessment with finding counts and core insight.
 
 #### core_finding
 
-Deepest cross-dimensional insight
+Deepest cross-dimensional insight.
 
 #### dimension_findings
 
-Per-dimension findings with severity tables
+Per-dimension findings with severity tables.
 
-#### cross_cutting
+#### cross_cutting_patterns
 
-Cross-dimensional patterns
+Cross-dimensional patterns.
 
-#### recommendation_list
+#### recommendations
 
-Prioritised corrections and recommendations
+Prioritised corrections and recommendations.
+
+### evaluation_findings
+
+The flat list of findings extracted from the report, each carrying ID, severity, claim, critique, and mitigation tier.
+
+### evaluation_metrics
+
+Finding count by dimension, finding count by severity, dimensions evaluated, number of prism runs triggered, and total analysis artifacts produced.
+
+## Protocol
+
+### 1. Locate Artifacts
+
+- For each dimension in `{dimension_plan}`, locate the prism output artifacts in the dimension's `output_subdir` under `{output_path}`, resolving each run's path and status from `{completed_analyses}` and `{all_artifact_paths}` before reading.
+- Determine the expected artifacts for each dimension's `pipeline_mode` from the [terminal artifact convention](../resources/dimension-lens-mapping.md#terminal-artifact-convention).
+- Verify the expected artifacts exist.  
+  > When expected artifacts are missing for one or more dimensions, report which dimensions lack artifacts, then compose `{evaluation_report}` from the available dimensions and note the incomplete coverage.
+
+### 2. Extract Findings Per Dimension
+
+- For each dimension, read its `pipeline_mode`'s [terminal artifact](../resources/dimension-lens-mapping.md#terminal-artifact-convention).
+- For full-prism dimensions, take the synthesis document's definitive classification and final severity assignments as the source of truth.
+- For portfolio dimensions, extract the key findings and conservation laws from each lens artifact.
+- Assign each finding an ID by dimension prefix (`finding-id-convention`), a severity (`severity-rubric`), a title, and a description.
+- Record per dimension: dimension name, finding count, finding count by severity, and the list of findings with IDs into `{evaluation_report.dimension_findings}`.  
+  > When a dimension's artifacts contain no extractable findings, still include the dimension with a note that no significant findings were identified.
+
+### 3. Identify Cross-Dimensional Patterns
+
+- Compare findings across dimensions for the same underlying issue surfacing in different dimensions, systemic asymmetries (deep specification in one area versus shallow in another), and reinforcing risks (multiple dimensions pointing to one failure mode).
+- Identify `{evaluation_report.core_finding}` — the single deepest insight that explains the most findings across dimensions — with its title and description.
+- Record `{evaluation_report.cross_cutting_patterns}` as an array of `{ pattern, affected_dimensions, evidence }`.  
+  > When no meaningful pattern spans multiple dimensions, report the per-dimension findings without a core finding and note that the dimensions appear independent.
+
+### 4. Compose Report
+
+- Write `{evaluation_report}` to `{output_path}` using the [evaluation report template](../resources/evaluation-report-template.md#evaluation-report-template), with sections: Executive Summary (what was evaluated, framed from `{evaluation_description}`, with total findings by dimension and severity), Overall Assessment (a `### Verdict` sub-heading plus a headline-risk sub-heading), The Core Finding (labelled `###` facet sub-sections plus a `### Testable prediction`), Per-Dimension Findings (one sub-section per dimension with description, severity table, key findings, and the dimension's most important insight), Cross-Cutting Patterns, and Corrections and Recommendations grouped into immediate / short-term / structural into `{evaluation_report.recommendations}`.
+- In every section before Per-Dimension Findings, prefer `###` sub-sections, short paragraphs, and bullet lists or compact tables over dense paragraphs; present enumerable framing (scope, rollout stages, target components) as a compact table or bullet list under a `###` sub-heading.
+
+### 5. Verify Report
+
+- Verify every finding ID is unique and follows the dimension-prefix convention.
+- Verify the severity counts in `{evaluation_report.executive_summary}` match the per-dimension detail.
+- Verify `{evaluation_report}` contains no methodology metadata — no lens names, passes, pipeline modes, or analytical-process descriptions.
+
+### 6. Compile And Present
+
+- Read `{evaluation_report}` and extract `{evaluation_findings}` — each finding's ID, severity, claim, critique, and mitigation tier.
+- Compile `{evaluation_metrics}`: finding count by dimension, finding count by severity (Critical, High, Medium, Low), dimensions evaluated, number of prism runs triggered, and total analysis artifacts produced.
+- Present the results to the user: `{evaluation_metrics}`, the `{evaluation_report.core_finding}` highlight, the top-priority entries of `{evaluation_report.recommendations}`, and a document index with the path to `{evaluation_report}`, `{evaluation_plan_path}`, and each dimension-specific analysis artifact, organised by dimension.
 
 ## Rules
 
 ### methodology-stripping
 
-The report MUST NOT contain references to analytical methodology: no lens names (L12, claim-inversion, knowledge-audit, etc.), no pipeline mode names (full-prism, portfolio), no pass descriptions (structural pass, adversarial pass, synthesis), no process narratives ('the analysis first examined X then challenged Y'). Methodology details are available in the raw analysis artifacts for readers who want them.
+The report contains no references to analytical methodology: no lens names (`L12`, `claim-inversion`, `knowledge-audit`), no pipeline-mode names (`full-prism`, `portfolio`), no pass descriptions (structural pass, adversarial pass, synthesis), and no process narratives (`the analysis first examined X then challenged Y`). Methodology details remain in the raw analysis artifacts.
+
+### standalone-report
+
+The report is readable and actionable by someone who knows nothing about prism, lenses, or evaluation methodology, reading as a professional, evidence-based evaluation document.
 
 ### finding-id-convention
 
-Finding IDs use a 3-letter dimension prefix followed by a dash and two-digit number: CON-01, VER-03, PLB-01, FEA-07. For custom dimensions, derive the prefix from the first letters or a natural abbreviation.
+Finding IDs use a 3-letter dimension prefix, a dash, and a two-digit number (`CON-01`, `VER-03`, `PLB-01`, `FEA-07`); for custom dimensions, the prefix is derived from the dimension name's first letters or a natural abbreviation.
 
-### readable-front-matter
+### severity-rubric
 
-The sections before Per-Dimension Findings — Executive Summary, Overall Assessment, and The Core Finding — MUST use sub-sections (`###` headings), short paragraphs, and bullet lists or compact tables for any enumerable or multi-part content (scope, rollout stages, target components, conditions, multi-facet insights). Large dense paragraphs are not acceptable in these sections; a reader should be able to scan the structure. The Per-Dimension Findings sections already use tables plus short labelled entries and need no change.
+Every severity label is computed from Impact x Feasibility: `CRITICAL` directly undermines the target's core purpose or stated goals; `HIGH` degrades significant guarantees or creates major gaps; `MEDIUM` has limited scope or requires specific conditions; `LOW` is informational or an improvement opportunity.

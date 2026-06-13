@@ -31,14 +31,14 @@ Bootstrap the workflow-server MCP from a dispatched session, load an assigned ac
 
 ### 3. Verify Output
 
-- steps-completed matches the activity's step IDs — no steps omitted.
-- Assemble and return the `{sub_agent_output}`: confirm it is well-formed JSON containing all required fields per the output schema ([sub-agent-output-schema](../resources/sub-agent-output-schema.md)).
+- Confirm `{sub_agent_output.steps_completed}` matches the activity's step ids — no steps omitted.
+- Assemble and return `{sub_agent_output}`: confirm it is well-formed JSON carrying all fields required by the [sub-agent output schema](../resources/sub-agent-output-schema.md#schema).
 
 ## Outputs
 
 ### sub_agent_output
 
-Structured JSON conforming to [sub-agent-output-schema](../resources/sub-agent-output-schema.md) (sub-agent-output-schema).
+Structured JSON conforming to the [sub-agent output schema](../resources/sub-agent-output-schema.md#schema).
 
 #### scanner_id
 

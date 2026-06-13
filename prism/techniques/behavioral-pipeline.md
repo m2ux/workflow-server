@@ -26,7 +26,7 @@ Resource index for this pass: 19 (error-resilience), 20 (optimize), 21 (evolutio
 ### 1. Load Lens
 
 - Load the lens prompt for `{lens_resource_index}`. If the lens for the given index cannot be loaded, report the error; valid behavioral indices are 19-23.
-- The behavioral pipeline is code-only: if invoked with target_type 'general', report that the behavioral pipeline is code-only and recommend portfolio mode with individual neutral variant lenses (24-26) for general targets.
+- The behavioral pipeline is code-only: if `{target_type}` is `general`, report that the behavioral pipeline is code-only and recommend portfolio mode with individual neutral variant lenses (24-26) for general targets.
 - The lens prompt is the program — execute its operations in order
 
 ### 2. Read Target
@@ -37,28 +37,26 @@ Resource index for this pass: 19 (error-resilience), 20 (optimize), 21 (evolutio
 
 - For independent lens passes (indices 19-22): apply the lens against the target content
 - Execute every operation completely — the analytical depth comes from the full chain
-- Write the artifact to `{output_path}/{artifact_filename}` per the artifact naming convention
+- Write `{behavioral_artifact}` into `{output_path}` under its declared `#### artifact` name for `{lens_resource_index}`
 
 ### 4. Augment With Graph
 
 - After lens execution for independent passes (19-22), check GitNexus availability via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md). If unavailable, skip graph augmentation.
 - Error-resilience (19): Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on error-returning functions identified by the lens to check whether all callers handle the error. Append a 'Graph Evidence: Error Propagation' section with measured error-handling completeness per function.
-- Evolution (21): Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)`(direction: upstream)` on coupling points identified by the lens to measure blast radius quantitatively. Append a 'Graph Evidence: Coupling Measurement' section with measured affected-symbol and affected-process counts.
+- Evolution (21): Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)`(direction: 'upstream')` on coupling points identified by the lens to measure blast radius quantitatively. Append a 'Graph Evidence: Coupling Measurement' section with measured affected-symbol and affected-process counts.
 - API-surface (22): Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) to enumerate exported/public symbols with caller counts (`MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(fn) RETURN fn.name, fn.filePath, count(caller) ORDER BY count(caller) DESC`). Append a 'Graph Evidence: Measured API Surface' section with the actual public surface from the graph.
 - Optimize (20): No graph augmentation — optimization analysis concerns algorithmic complexity, not graph structure.
 - GitNexus data is appended as a 'Graph Evidence' section at the end of each behavioral artifact. The lens output stands alone; graph data provides supplementary measurement that the synthesis pass can reference.
 
 ### 5. Construct Synthesis Input
 
-- For synthesis pass (when `{lens_resource_index}` is 23): read all 4 prior artifacts from `{prior_artifact_paths}`
-- If a provided prior artifact path does not exist, report the missing artifact; the orchestrator may need to re-dispatch the independent lens pass that produces it
-- Construct the synthesis input by concatenating each artifact under its role heading: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES — separated by horizontal rules
-- The synthesis lens expects exactly these 4 labeled sections
-- The synthesis input is constructed as: ## ERRORS\n\n`{errors_content}`\n\n---\n\n## COSTS\n\n`{costs_content}`\n\n---\n\n## CHANGES\n\n`{changes_content}`\n\n---\n\n## PROMISES\n\n`{promises_content}`
+- When `{lens_resource_index}` is 23, read all 4 prior artifacts from `{prior_artifact_paths}`, capturing their contents as `{$errors_content}`, `{$costs_content}`, `{$changes_content}`, and `{$promises_content}`.  
+  > If a provided prior artifact path does not exist, report the missing artifact.
+- Construct `{$synthesis_input}` by concatenating each artifact under its role heading separated by horizontal rules: ``## ERRORS\n\n`{errors_content}`\n\n---\n\n## COSTS\n\n`{costs_content}`\n\n---\n\n## CHANGES\n\n`{changes_content}`\n\n---\n\n## PROMISES\n\n`{promises_content}` ``
 
 ### 6. Apply Synthesis Lens
 
-- Apply the behavioral_synthesis lens (when `{lens_resource_index}` is 23) against the constructed input
+- When `{lens_resource_index}` is 23, apply the [behavioral-synthesis](../resources/behavioral-synthesis.md) lens against `{synthesis_input}`
 
 ### 7. Write Artifact
 
@@ -70,7 +68,7 @@ Resource index for this pass: 19 (error-resilience), 20 (optimize), 21 (evolutio
 
 Behavioral analysis artifact written to the filesystem
 
-#### artifact_filename
+#### artifact
 
 `behavioral-errors.md` (19) / `behavioral-costs.md` (20) / `behavioral-changes.md` (21) / `behavioral-promises.md` (22) / `behavioral-synthesis.md` (23)
 
@@ -90,5 +88,9 @@ The behavioral pipeline uses fixed role labels mapped to specific lenses: error-
 
 ### code-only
 
-The behavioral pipeline is code-only. optim (20) uses strongly code-oriented vocabulary with no domain-neutral variant. Do not use behavioral mode when target_type is 'general'.
+The behavioral pipeline is code-only. `optimize` (20) uses strongly code-oriented vocabulary with no domain-neutral variant. Do not use the behavioral pipeline when `{target_type}` is `general`.
+
+### independent-lenses-parallel
+
+The four independent behavioral lenses (19-22) share no context and may be dispatched concurrently, up to four at once. Only the synthesis lens (23) depends on their outputs.
 

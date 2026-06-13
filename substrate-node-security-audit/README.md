@@ -18,7 +18,7 @@ This workflow guides the complete lifecycle of a security audit:
 - Fully automated sequential flow with phase gates
 - **Goal → Activity → Technique → Tools** ontology with progressive disclosure
 - Workflow-directed sub-agents that bootstrap the workflow-server, load assigned activities, and follow steps sequentially with verifiable outputs
-- Composable technique architecture — 18 single-responsibility techniques across orchestrator, analysis, and sub-agent tiers
+- Composable technique architecture — 19 single-responsibility techniques across orchestrator, analysis, and sub-agent tiers
 - Single-batch concurrent dispatch of all primary agents (A1-A7, B, D1, D2)
 - Dedicated verification sub-agent (V) validates output completeness in a fresh context window before finding merge
 - Dedicated merge sub-agent (M) performs structured merge, deduplication, severity scoring, and reconciliation in a fresh context window to prevent finding regression from orchestrator context saturation
@@ -191,7 +191,7 @@ Produces three structured tables: function enumeration, function × checklist ma
 
 Confirm target submodule and commit, checkout codebase, run dependency scanning, create planning folder.
 
-**Techniques:** `execute-audit`, `setup-audit-target`
+**Technique:** `setup-audit-target`
 
 **Steps:** confirm-target → confirm-commit → record-reference → checkout-submodule → run-cargo-audit → create-file-inventory → create-planning-folder → load-template
 
@@ -203,11 +203,11 @@ Confirm target submodule and commit, checkout codebase, run dependency scanning,
 
 Map the codebase architecture, identify all crates, trust boundaries, consensus paths, and build the function registry. Assign crates to sub-agent groups with cross-crate supplement mappings.
 
-**Technique:** `execute-audit`
+**Techniques:** `dispatch-sub-agents`, `map-vulnerability-domains`
 
-**Steps:** identify-crates -> map-architecture -> identify-trust-boundaries -> identify-consensus-paths -> identify-config-structs -> identify-pallet-hooks -> map-data-flows -> check-send-sync -> build-function-registry -> dispatch-architectural-analysis -> map-vulnerability-domains -> assign-agent-groups -> route-reconnaissance-leads
+**Steps:** dispatch-reconnaissance-agent -> verify-reconnaissance-files -> dispatch-security-architecture-agent -> verify-security-architecture-file -> map-vulnerability-domains -> assign-agent-groups -> route-reconnaissance-leads
 
-**Artifacts:** `README.md` (scope and architecture summary)
+**Artifacts:** `r-crate-map.json`, `r-function-registry.json`, `r-reconnaissance-data.json`, `s-architectural-analysis.json`, `README.md` (scope and architecture summary)
 
 ---
 
@@ -215,7 +215,7 @@ Map the codebase architecture, identify all crates, trust boundaries, consensus 
 
 Dispatch all primary agents concurrently. After collecting results, dispatch a dedicated verification sub-agent (V) to mechanically validate output completeness. Act on the gap report before consolidating findings.
 
-**Technique:** `execute-audit`
+**Techniques:** `dispatch-sub-agents`, `verify-sub-agent-output`, `merge-findings`
 
 **Steps:** dispatch-all-agents -> verify-checklist-prompt-coverage -> verify-dispatch-completeness -> collect-all -> verify-agent-output-files -> **dispatch-verification-agent** -> **act-on-gap-report** -> extract-table-derived-findings -> **dispatch-merge-agent** -> **validate-reconciliation** -> verify-checklist-completeness -> preserve-verification-report -> preserve-merge-output
 
@@ -225,7 +225,7 @@ Dispatch all primary agents concurrently. After collecting results, dispatch a d
 
 Verify every High/Medium PASS item from audit scratchpads by decomposing each claim into constituent properties and independently verifying each one. PASS item selection is informed by the verification agent's gap report — areas flagged as potentially incomplete are automatically elevated to the adversarial queue. The agent's role is to refute, not confirm.
 
-**Technique:** `execute-audit`
+**Technique:** `decompose-safety-claims`
 
 **Steps:** **seed-from-verification-report** -> extract-pass-items -> decompose-claims -> field-enumeration -> verify-properties -> compile-results
 
@@ -235,7 +235,7 @@ Verify every High/Medium PASS item from audit scratchpads by decomposing each cl
 
 Consolidate all findings from primary audit and adversarial verification. Apply severity scoring with calibration cross-check. Produce the deliverable report.
 
-**Techniques:** `execute-audit`, `score-severity`
+**Techniques:** `merge-findings`, `score-severity`, `verify-sub-agent-output`, `write-report`
 
 **Steps:** integrate-adversarial-results → apply-severity → severity-crosscheck → coverage-gate → verify-elevation-completeness → write-report
 
@@ -291,26 +291,27 @@ Techniques define tool orchestration, protocols, and composable capabilities.
 
 | Technique | Capability | Used By |
 |-------|------------|---------|
-| `execute-audit` | Orchestrator-level audit execution, agent dispatch coordination, consolidation | All orchestrator activities |
 | `score-severity` | Impact × Feasibility severity scoring with calibration examples | report-generation, ensemble-pass |
-| `dispatch-sub-agents` | Compose sub-agent prompts, dispatch concurrently, verify dispatch completeness | primary-audit |
-| `verify-sub-agent-output` | Validate structural completeness, file coverage, output tables | primary-audit |
-| `merge-findings` | Concatenate finding lists, deduplicate by root cause, assign finding numbers | primary-audit, ensemble-pass |
+| `dispatch-sub-agents` | Compose sub-agent prompts, dispatch concurrently, verify dispatch completeness | reconnaissance, primary-audit |
+| `verify-sub-agent-output` | Validate structural completeness, file coverage, output tables | primary-audit, report-generation |
+| `merge-findings` | Concatenate finding lists, deduplicate by root cause, assign finding numbers | primary-audit, report-generation, ensemble-pass |
 | `compare-finding-sets` | Finding-by-finding mapping, classify matches/gaps, severity calibration analysis | gap-analysis |
-| `write-report` | Structure and format the final audit report | report-generation |
+| `write-report` | Structure and format the final audit report | report-generation, ensemble-pass |
 | `write-gap-analysis` | Structure and format the gap analysis report | gap-analysis |
 | `map-vulnerability-domains` | Bind architectural analysis to §3 verification procedures, partitioned by crate | reconnaissance |
+| `execute-ensemble-pass` | Scope and run a second-model audit pass with blind-spot verification | ensemble-pass |
 
 ### Analysis Techniques
 
 | Technique | Capability | Used By |
 |-------|------------|---------|
-| `apply-checklist` | Iterate items against checklist entries, produce verdict matrix | primary-audit, sub-crate-review, sub-toolkit-review |
-| `build-function-registry` | Enumerate functions by type and priority | reconnaissance, sub-crate-review |
+| `apply-checklist` | Iterate items against checklist entries, produce verdict matrix | sub-crate-review, sub-toolkit-review |
+| `build-function-registry` | Enumerate functions by type and priority | sub-crate-review, sub-reconnaissance |
 | `extract-invariants` | Enumerate pre/post conditions and cross-function invariants | sub-crate-review |
-| `scan-storage-lifecycle` | Find storage map insert/remove sites, verify pairing | sub-static-analysis |
+| `scan-storage-lifecycle` | Find storage map insert/remove sites, verify pairing | sub-crate-review, sub-static-analysis |
 | `decompose-safety-claims` | Decompose PASS verdicts into independently verifiable properties | adversarial-verification |
-| `map-codebase` | Build structured architectural map from component inventory | reconnaissance |
+| `map-codebase` | Build structured architectural map from component inventory | sub-reconnaissance |
+| `analyze-architecture` | Security-oriented architectural decomposition: interaction model, privilege map, candidate points, emergent domains | sub-architectural-analysis |
 | `setup-audit-target` | Validate target codebase, run dependency scanning, file inventory | scope-setup |
 | `search-pattern-catalog` | Execute catalog patterns against codebase scope, triage results | sub-static-analysis |
 

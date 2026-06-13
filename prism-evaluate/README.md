@@ -1,6 +1,6 @@
 # Evaluation Workflow
 
-> v1.0.0 — Orchestrate multi-dimensional evaluations of any target by mapping evaluation dimensions to prism analytical lenses.
+> v1.1.0 — Orchestrate multi-dimensional evaluations of any target by mapping evaluation dimensions to prism analytical lenses, then optionally resolve and apply mitigations for the findings.
 
 ---
 
@@ -24,14 +24,22 @@
 
 ```
 scope-definition → dimension-planning → execute-analysis → consolidate-report → deliver-results
+                                                                                      │
+                                                            (resolution requested)    ▼
+                                                            resolution-dialogue → apply-mitigations
 ```
 
-Two user checkpoints gate the analytical work:
+`deliver-results` ends the workflow unless the user opts into the resolution dialogue, which then iterates through findings and applies accepted mitigations.
+
+User checkpoints gate the work:
 
 1. **confirm-scope** (scope-definition) — confirm target, dimensions, and output path
 2. **confirm-plan** (dimension-planning) — confirm the dimension-to-lens mapping and execution groups
+3. **resolution-offer** (deliver-results) — choose whether to proceed with the resolution dialogue
+4. **finding-decision** (resolution-dialogue) — accept, modify, skip, or discuss each finding's mitigation
+5. **confirm-apply** (apply-mitigations) — confirm applying the accepted mitigations to the target
 
-All transitions after confirm-plan are automatic.
+Transitions between confirm-plan and deliver-results are automatic.
 
 ---
 
@@ -43,7 +51,9 @@ All transitions after confirm-plan are automatic.
 | 01 | **Plan Dimension Analysis** | Survey target, map dimensions to lenses, group for execution | confirm-plan |
 | 02 | **Execute Prism Analyses** | Trigger prism per execution group, collect results | — |
 | 03 | **Consolidate Evaluation Report** | Extract findings, identify cross-dimensional patterns, compose report | — |
-| 04 | **Deliver Evaluation Results** | Present metrics, core finding, and artifact index | — |
+| 04 | **Deliver Evaluation Results** | Present metrics, core finding, and artifact index; offer resolution | resolution-offer |
+| 05 | **Resolution Dialogue** | Tier-classify findings, propose mitigations one-by-one, compile mitigation plan | finding-decision |
+| 06 | **Apply Accepted Mitigations** | Apply the accepted mitigations to the target and commit | confirm-apply |
 
 **Detailed documentation:** See [activities/](activities/) for per-activity TOON definitions.
 
@@ -53,8 +63,9 @@ All transitions after confirm-plan are automatic.
 
 | # | Technique | Capability | Used By |
 |---|-------|------------|---------|
-| 00 | `plan-evaluation` | Target classification, dimension derivation, dimension-to-lens mapping | scope-definition, dimension-planning, execute-analysis |
+| 00 | `plan-evaluation` | Target classification, dimension derivation, dimension-to-lens mapping | scope-definition, dimension-planning |
 | 01 | `compose-evaluation-report` | Cross-artifact extraction, cross-dimensional synthesis, report composition, result presentation | consolidate-report, deliver-results |
+| 02 | `resolve-findings` | Finding tier-classification, one-by-one mitigation proposal, mitigation plan composition, change application | resolution-dialogue, apply-mitigations |
 
 **Detailed documentation:** See [techniques/](techniques/) for protocol details.
 
@@ -62,10 +73,13 @@ All transitions after confirm-plan are automatic.
 
 ## Resources
 
-| Index | Resource | Description |
-|-------|----------|-------------|
-| 00 | [Default Dimensions](./resources/default-dimensions.md) | Default dimension sets by target type (proposal, codebase, mixed) |
-| 01 | [Dimension-Lens Mapping](./resources/dimension-lens-mapping.md) | Standard and custom dimension-to-prism-lens mapping matrix |
+| Resource | Description |
+|----------|-------------|
+| [Default Dimensions](./resources/default-dimensions.md) | Default dimension sets by target type (proposal, codebase, mixed) |
+| [Dimension-Lens Mapping](./resources/dimension-lens-mapping.md) | Standard and custom dimension-to-prism-lens mapping matrix |
+| [Evaluation Plan Template](./resources/evaluation-plan-template.md) | Structure for the evaluation-plan.md artifact |
+| [Evaluation Report Template](./resources/evaluation-report-template.md) | Structure for the EVALUATION-REPORT.md artifact |
+| [Mitigation Plan Template](./resources/mitigation-plan-template.md) | Structure for the MITIGATION-PLAN.md artifact |
 
 **Detailed documentation:** See [resources/](resources/) for full content.
 
@@ -92,6 +106,12 @@ All transitions after confirm-plan are automatic.
 | `dimensions_confirmed` | boolean | — | Checkpoint gate (default: false) |
 | `pipeline_mode` | string | — | Per-group pipeline mode (default: full-prism) |
 | `gitnexus_available` | boolean | — | GitNexus indexing status (default: false) |
+| `resolution_requested` | boolean | — | Whether the user opted into the resolution dialogue (default: false) |
+| `mitigation_plan_path` | string | — | Path to MITIGATION-PLAN.md |
+| `current_finding` | object | — | Current finding during the resolution iteration |
+| `accepted_mitigations` | array | — | Accepted mitigation decisions per finding |
+| `evaluation_findings` | array | — | Findings extracted from the report for resolution |
+| `accepted_count` | number | — | Count of accepted mitigations (default: 0) |
 
 ---
 
@@ -128,19 +148,25 @@ For a standard 4-dimension evaluation (Consistency, Veracity, Plausibility, Feas
 
 ```
 workflows/prism-evaluate/
-├── workflow.toon                    # Workflow definition (9 rules, 17 variables)
-├── README.md                        # This file
+├── workflow.toon                     # Workflow definition (8 rules, 23 variables)
+├── README.md                         # This file
 ├── activities/
-│   ├── 00-scope-definition.toon     # Collect inputs, classify target, derive dimensions
-│   ├── 01-dimension-planning.toon   # Survey target, map to lenses, group for execution
-│   ├── 02-execute-analysis.toon     # Trigger prism per execution group
-│   ├── 03-consolidate-report.toon   # Extract findings, compose EVALUATION-REPORT.md
-│   └── 04-deliver-results.toon      # Present results and artifact index
+│   ├── 00-scope-definition.toon      # Collect inputs, classify target, derive dimensions
+│   ├── 01-dimension-planning.toon    # Survey target, map to lenses, group for execution
+│   ├── 02-execute-analysis.toon      # Trigger prism per execution group
+│   ├── 03-consolidate-report.toon    # Extract findings, compose EVALUATION-REPORT.md
+│   ├── 04-deliver-results.toon       # Present results and artifact index; offer resolution
+│   ├── 05-resolution-dialogue.toon   # Tier-classify findings, propose mitigations, compile plan
+│   └── 06-apply-mitigations.toon     # Apply accepted mitigations to the target and commit
 ├── techniques/
-│   ├── TECHNIQUE.md                 # Inherited base contract
-│   ├── plan-evaluation.md           # Target classification, dimension-to-lens mapping
-│   └── compose-evaluation-report.md # Cross-dimensional synthesis, report composition
+│   ├── TECHNIQUE.md                  # Inherited base contract
+│   ├── plan-evaluation.md            # Target classification, dimension-to-lens mapping
+│   ├── compose-evaluation-report.md  # Cross-dimensional synthesis, report composition
+│   └── resolve-findings.md           # Finding tier-classification, mitigation, change application
 └── resources/
-    ├── 00-default-dimensions.md     # Default dimension sets by target type
-    └── 01-dimension-lens-mapping.md # Dimension-to-lens mapping matrix
+    ├── default-dimensions.md         # Default dimension sets by target type
+    ├── dimension-lens-mapping.md     # Dimension-to-lens mapping matrix
+    ├── evaluation-plan-template.md   # evaluation-plan.md structure
+    ├── evaluation-report-template.md # EVALUATION-REPORT.md structure
+    └── mitigation-plan-template.md   # MITIGATION-PLAN.md structure
 ```

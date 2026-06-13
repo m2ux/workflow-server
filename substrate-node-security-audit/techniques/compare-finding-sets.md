@@ -21,6 +21,10 @@ The finding list to evaluate (e.g., AI audit results)
 
 The benchmark finding list to compare against (e.g., professional audit report)
 
+### output_format
+
+*(optional)* The table or analysis shape the result is rendered in.
+
 ## Protocol
 
 ### 1. Map Findings

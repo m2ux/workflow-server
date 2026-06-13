@@ -5,20 +5,24 @@ description: Prioritize work packages based on dependencies, value, risk, and ef
 problem: Need to determine execution order for work packages
 techniques:
   supporting[1]:
-    - prioritize-packages
+    - "variable-binding"
 steps[4]:
   - id: analyze-dependencies
     name: Analyze dependencies
-    description: Create dependency graph showing what blocks what
+    description: Build the dependency graph showing what blocks what
+    technique: prioritize-packages
   - id: evaluate-criteria
     name: Evaluate prioritization criteria
-    description: "Assess each package on: business value, risk, effort"
+    description: "Assess each package on business value, risk, and effort"
+    technique: prioritize-packages
   - id: propose-order
     name: Propose priority order
-    description: Generate recommended execution order based on analysis
+    description: Propose the recommended execution order
+    technique: prioritize-packages
   - id: present-prioritization
     name: Present prioritization
-    description: Show dependency graph and proposed priority order to user
+    description: Present the dependency graph and proposed priority order to the user
+    technique: prioritize-packages
 artifacts[1]:
   - id: priority-ranking
     name: priority-ranking.md

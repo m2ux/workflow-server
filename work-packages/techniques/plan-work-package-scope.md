@@ -21,8 +21,7 @@ The work package currently being planned
 
 ### 1. Present Overview
 
-- Before entering the loop, summarize all packages to be planned and the planning approach
-- Explain that each package will get: scope definition, dependency analysis, effort estimate, and success criteria
+- Summarize all packages to be planned and the planning approach: each package receives scope definition, dependency analysis, effort estimate, and success criteria
 
 ### 2. Define Scope
 
@@ -52,8 +51,8 @@ The work package currently being planned
 
 ### 6. Document Plan
 
-- Use attached [package-plan-template](../resources/package-plan-template.md) (package-plan-template) for the document structure
-- Create the `{package_plan}` in the `{planning_folder_path}` using its template
+- Derive the kebab-case package name `{package_name}` from `{current_package}`
+- Create `{package_plan}` in `{planning_folder_path}` using the [package-plan-template](../resources/package-plan-template.md#template)
 
 ## Outputs
 
@@ -61,7 +60,7 @@ The work package currently being planned
 
 Work package [plan document](../resources/package-plan-template.md#template)
 
-#### plan_artifact
+#### artifact
 
 `{package_name}-plan.md`
 
@@ -80,3 +79,7 @@ Effort estimate with rationale
 #### success_criteria
 
 Measurable success criteria with verification methods
+
+### package_name
+
+Kebab-case identifier for the work package, derived from `{current_package}`.

@@ -25,7 +25,7 @@ Issue summary
 
 Optional object with description, assignee, labels, etc.
 
-## Output
+## Outputs
 
 ### issueKey
 

@@ -21,16 +21,12 @@ The per-submodule scanner [output files](../resources/sub-agent-output-schema.md
 
 Complete [inventory of workflow files](../resources/intermediate-artifact-schemas.md#workflow-inventory) with classification data
 
-### output_schema
-
-Expected scanner output schema from [sub-agent-output-schema](../resources/sub-agent-output-schema.md)
-
 ## Protocol
 
 ### 1. Validate Structure
 
 - Load each of the `{scanner_outputs}` JSON files
-- Validate each against the `{output_schema}` — flag malformed or missing fields
+- Validate each against the [sub-agent output schema](../resources/sub-agent-output-schema.md#schema) — flag malformed or missing fields
 - Malformed outputs count as gaps
 
 ### 2. Verify File Coverage
@@ -45,8 +41,8 @@ Expected scanner output schema from [sub-agent-output-schema](../resources/sub-a
 
 ### 4. Produce Gap Report
 
-- Compile all gaps into the `{verification_report}`
-- Set `verification-complete=true` only if zero gaps found
+- Compile all gaps into `{verification_report.gaps}` and the per-file/per-pattern status into `{verification_report.file_coverage}` and `{verification_report.pattern_coverage}`.
+- Record `{verification_report}` as complete only when zero gaps are found.
 
 ## Outputs
 

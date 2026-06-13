@@ -16,23 +16,22 @@ Apply recursive meta-analysis to L12 output using the claim prism, then synthesi
 ### 1. Structural Analysis
 
 - Dispatch [L12](../resources/l12.md) to a fresh worker, passing `{target_content}` as the analysis target and `{target_type}` to frame the L12 pass
-- Worker writes to `{output_path}`/`reflect-l12.md`
+- Worker writes `{reflect_result.l12_path}` into `{output_path}`
 
 ### 2. Meta Analysis
 
 - Dispatch [claim](../resources/claim.md) to a fresh worker
 - Worker receives the L12 OUTPUT as its analysis target (not source code)
-- Worker writes to `{output_path}`/`reflect-meta.md`
-- The claim prism runs on L12 OUTPUT, not on source code — this is recursive meta-analysis
+- Worker writes `{reflect_result.meta_path}` into `{output_path}`
 
 ### 3. Constraint Synthesis
 
 - Dispatch synthesis to a fresh worker
 - Worker receives: L12 output + meta output + constraint history (if available)
 - Worker produces: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN
-- Worker writes to `{output_path}`/`reflect-synthesis.md`
+- Worker writes `{reflect_result.synthesis_path}` into `{output_path}`
 - Synthesis must produce exactly 4 sections: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN
-- Return `{reflect_result}` — its `{l12_path}`, `{meta_path}`, and `{synthesis_path}` sub-fields hold the three pipeline artifact paths.
+- Return `{reflect_result}` — its `{reflect_result.l12_path}`, `{reflect_result.meta_path}`, and `{reflect_result.synthesis_path}` sub-fields hold the three pipeline artifact paths.
 
 ## Outputs
 
@@ -40,20 +39,24 @@ Apply recursive meta-analysis to L12 output using the claim prism, then synthesi
 
 Paths to the three reflect pipeline artifacts
 
+#### artifact
+
+`reflect-l12.md` (L12 structural) / `reflect-meta.md` (claim meta-analysis) / `reflect-synthesis.md` (constraint synthesis)
+
 #### l12_path
 
-Filesystem path to `reflect-l12.md`
+Filesystem path to the L12 structural artifact
 
 #### meta_path
 
-Filesystem path to `reflect-meta.md`
+Filesystem path to the claim meta-analysis artifact
 
 #### synthesis_path
 
-Filesystem path to `reflect-synthesis.md`
+Filesystem path to the constraint-synthesis artifact
 
 ## Rules
 
-### model-selection
+### meta-analysis-on-output
 
-L12 uses its optimal model. Claim uses its optimal model. Synthesis uses sonnet.
+The meta-analysis worker receives the L12 OUTPUT as its target, not the original code — the claim prism treats the analysis text as an artifact to interrogate for hidden assumptions, making this recursive meta-analysis.

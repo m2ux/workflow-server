@@ -36,6 +36,15 @@ For dimensions not matching the standard patterns, use the prism plan-analysis t
 - Full-prism dimensions: use the dimension name lowercased as the subdirectory (e.g., `consistency/`)
 - Portfolio dimensions: group under `dimensions/`
 
+## Terminal Artifact Convention
+
+Each pipeline mode produces a known set of artifacts within the dimension's output subdirectory; the terminal artifact carries the mode's authoritative findings.
+
+| Pipeline Mode | Artifacts in subdirectory | Terminal artifact |
+|---------------|---------------------------|-------------------|
+| full-prism | `structural-analysis.md`, `adversarial-analysis.md`, `synthesis.md` | `synthesis.md` (definitive classification and final severities) |
+| portfolio | one artifact per lens (e.g. `claim-inversion.md`, `knowledge-audit.md`, `rejected-paths.md`, `scarcity.md`) | each lens artifact (key findings and conservation laws) |
+
 ## Pipeline Mode Selection Guidance
 
 - **full-prism**: Deep 3-pass analysis (structural → adversarial → synthesis). Use for dimensions requiring rigorous internal consistency checking. Each full-prism dimension gets its own execution group.

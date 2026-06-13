@@ -3,45 +3,34 @@ version: 2.3.0
 name: Ensemble Pass
 description: "Optional second-model audit run with merged findings."
 problem: Different models and configurations find different subsets of findings. Running the template a second time and merging results captures findings that are non-deterministically detected in any single run, improving overall coverage.
-recognition[3]:
-  - run ensemble pass
-  - second model audit
-  - multi-model merge
 techniques:
   supporting[1]:
-    - execute-audit
+    - "variable-binding"
 required: false
-estimatedTime: 60-90m
-rules[9]:
-  - "This activity is OPTIONAL — only runs when ensemble_enabled is true"
-  - "Scope the second pass to priority-1/2 components only to control cost"
-  - "Use a different model or temperature if available; same model with different system prompt is acceptable"
-  - "The merge strategy is union: include all findings from both runs, flag consensus vs single-source"
-  - "EXECUTION VERIFICATION: The ensemble pass MUST dispatch at least one sub-agent that independently applies the §3 checklist to priority-1/2 crates. Declaring the ensemble complete without dispatching any sub-agents violates this activity. The execute-second-pass step is the core of this activity — it is not optional."
-  - "ARTIFACT REQUIREMENT: The execute-second-pass step MUST produce a second-pass-findings artifact (MD or JSON) in the planning folder. This artifact is the verification mechanism — if it does not exist when the activity exits, the ensemble was not executed. The orchestrator checks for this artifact during the update-report step."
-  - "CONTEXT CONSTRAINT HANDLING: If context window pressure prevents executing a full second pass, the orchestrator MUST: (a) explicitly acknowledge the constraint, (b) scope the second pass to the top 3-5 files by priority rather than skipping entirely, and (c) produce the artifact even if the scope is reduced. A reduced-scope ensemble is always preferable to a skipped ensemble."
-  - "TARGETED BLIND-SPOT VERIFICATION: The ensemble agent checks universal items (1-4) plus target-specific items from resource 06 (target-profile) FIRST before general review: (1) §3.1 weight accounting — verify non-zero on_finalize weight; (2) §3.3 event filtering — trace EVERY event field independently on partial success; (3) §3.2 pagination counter — trace first-iteration behavior; (4) §2.10 serialization pairing — produce the mandatory size/serialize pairing table. Target-specific items (see target profile) cover additional checks validated as high false-PASS rate. Each item produces CONFIRMED/REFUTED/INSUFFICIENT verdict."
-  - "ENSEMBLE SUPPLEMENTARY FILES: The ensemble agent receives supplementary files per the target profile's ensemble file assignment table. These files ensure blind-spot items can be mechanically verified."
 steps[5]:
   - id: configure-ensemble
     name: Configure Ensemble Run
-    description: "Scope the second pass to priority-1/2 components. Include blind-spot checklist and supplementary files per target profile."
+    technique: execute-ensemble-pass
+    description: "Scope the second pass and assemble its blind-spot checklist and supplementary files."
   - id: verify-blind-spots
     name: "Verify Known Blind Spots"
     required: true
-    description: "Apply universal blind-spot items (1-4) plus target-specific items from the target profile. Each produces CONFIRMED/REFUTED/INSUFFICIENT verdict."
+    technique: execute-ensemble-pass
+    description: "Verify the known blind-spot items."
   - id: execute-second-pass
     name: Execute Second Pass
-    description: "Run the audit template against priority-1/2 components. The second pass follows the same §3 checklist and §5 execution requirements."
+    technique: execute-ensemble-pass
+    description: "Run the second independent audit pass."
   - id: union-merge
     name: Union-Merge Findings
     technique: merge-findings
     technique_args:
       merge_strategy: union-merge
-    description: "Merge second-pass findings with the primary report using union strategy."
+    description: "Union-merge the second-pass findings with the primary report."
   - id: update-report
     name: Update Report
-    description: "Update 01-audit-report.md with ensemble results. Classify findings as consensus vs single-source."
+    technique: write-report
+    description: "Update the audit report with the ensemble results."
 decisions[1]:
   - id: next-phase
     name: Post-Ensemble Decision

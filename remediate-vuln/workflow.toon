@@ -29,7 +29,7 @@ artifactLocations:
     path: ".engineering/artifacts/adr"
   comprehension:
     path: ".engineering/artifacts/comprehension"
-variables[28]:
+variables[30]:
   - name: target_path
     type: string
     description: "Path to the target directory. All git operations (branch, push) are performed inside this directory. Resolved by start-workflow discover-target checkpoints."
@@ -49,6 +49,12 @@ variables[28]:
   - name: sec_vuln_url
     type: string
     description: "URL of the vulnerability advisory to remediate"
+  - name: private_fork_url
+    type: string
+    description: "URL of the private fork that backs the 'security' git remote"
+  - name: short_id
+    type: string
+    description: "Short slug identifying the advisory, used to form the security branch name"
   - name: is_review_mode
     type: boolean
     description: "Always false for this workflow."

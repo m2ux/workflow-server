@@ -3,26 +3,12 @@ version: 1.12.0
 name: Post-Implementation Review
 description: "Review implementation quality before validation."
 problem: User needs to review implementation quality before validation
-recognition[3]:
-  - review implementation
-  - post implementation review
-  - quality review
 required: true
-estimatedTime: 30-60m
-rules[3]:
-  - "Manual diff review is FIRST - user reviews in external side-by-side diff app"
-  - "All three automated reviews (code, test suite, architecture) must be completed before transitioning to validate"
-  - "Adoption workflows must still complete quality reviews"
 entryActions[1]{action,message}:
   log,Starting post-implementation review
 techniques:
-  supporting[6]:
-    - prism/structural-analysis
-    - review-code
-    - review-diff
-    - review-test-suite
-    - summarize-architecture
-    - "version-control::commit-regular-files"
+  supporting[1]:
+    - "variable-binding"
 artifacts[6]:
   - id: change-block-index
     name: "change-block-index.md"
@@ -50,21 +36,17 @@ artifacts[6]:
     description: "Prism structural analysis findings — conservation law, meta-law, and classified bug table. For complex work packages, includes adversarial and synthesis pass artifacts."
 steps[8]:
   - id: gitnexus-detect-changes-preflight
-    name: GitNexus Detect Changes Preflight
-    description: "Run `gitnexus_detect_changes()` on the current diff. Capture the affected processes and changed-symbol set as input to the subsequent code-review and test-suite-review steps. See work-package resource gitnexus-reference for the full reference."
+    technique: gitnexus-operations::detect-changes
     when: "gitnexus_indexed == true"
   - id: manual-diff-review
-    name: Manual Diff Review
-    description: "Structured manual review using external diff tool. Generate file index, collect flagged rows from user, interview for each finding. See manual-diff-review resource for detailed procedure."
+    technique: review-diff
     required: true
     checkpoint: file-index-table
   - id: code-review
-    name: Code Review
-    description: "Perform comprehensive code review of all implementation changes. Create code-review.md report."
+    technique: review-code
     required: true
   - id: structural-analysis-inline
-    name: Structural Analysis (Single Pass)
-    description: "Load the L12 structural lens from the prism workflow (prism resource l12 — attached to technique response via get_technique) and apply it to the changed files. Produces conservation law, meta-law, and classified bug table. Write findings to structural-findings.md. This inline pass runs for simple and moderate complexity work packages."
+    technique: prism/structural-analysis
     required: true
     condition:
       type: not
@@ -74,12 +56,9 @@ steps[8]:
         operator: "=="
         value: complex
   - id: dispatch-prism
-    name: Structural Analysis (Full Prism)
-    description: "For complex work packages, trigger the prism workflow with full-prism pipeline mode. The prism workflow runs the 3-pass isolated pipeline (structural → adversarial → synthesis) autonomously and returns artifact paths."
     required: true
     triggers[1]:
       - workflow: prism
-        description: "Dispatch full 3-pass prism structural analysis for complex work packages"
         passContext[3]:
           - target
           - output_path
@@ -90,12 +69,10 @@ steps[8]:
       operator: "=="
       value: complex
   - id: test-suite-review
-    name: Test Suite Review
-    description: "Review test quality and create test-suite-review.md report. Covers coverage gaps, anti-patterns, missing edge cases."
+    technique: review-test-suite
     required: true
   - id: architecture-summary
-    name: Architecture Summary
-    description: "Create architecture-summary.md if the diff introduces new modules, changes dependency structure, or modifies public interfaces. Skipped for minor changes, documentation, or configuration."
+    technique: summarize-architecture
     required: false
     condition:
       type: simple
@@ -103,15 +80,7 @@ steps[8]:
       operator: "!="
       value: true
   - id: classify-and-route-findings
-    name: Classify and Route Review Findings
-    description: "Classify every code-review and test-suite-review finding by severity (Critical / Major / Minor / Nit / Informational). Set needs_code_fixes=true when any code-review finding has severity >= Minor; otherwise false. Set needs_test_improvements=true when any test-suite finding has severity >= Minor; otherwise false. Findings at Nit/Informational severity are NOT auto-fixed — they are documented in the review reports for the user to triage if they choose. The review-fix-cycle doWhile loop runs automatically when either flag is true; nit-only and clean runs proceed straight to validate."
-    actions[2]:
-      - action: set
-        target: needs_code_fixes
-        description: "true when any code-review finding has severity >= Minor (Critical, Major, or Minor); false when all code-review findings are Nit/Informational or there are no findings"
-      - action: set
-        target: needs_test_improvements
-        description: "true when any test-suite finding has severity >= Minor (Critical, Major, or Minor); false when all test-suite findings are Nit/Informational or there are no findings"
+    technique: findings-classification
 checkpoints[3]:
   - id: file-index-table
     name: File Index Checkpoint
@@ -195,28 +164,30 @@ loops[1]:
     maxIterations: 3
     steps[6]:
       - id: apply-fixes
-        name: Apply Fixes
-        description: "Implement the code review findings (needs_code_fixes) and/or test improvements (needs_test_improvements) selected by the user. Commit changes."
+        technique: apply-review-fixes
         required: true
       - id: reset-fix-flags
-        name: Reset Fix Flags
-        description: "Reset needs_code_fixes and needs_test_improvements to false before re-review."
         required: true
+        actions[2]:
+          - action: set
+            target: needs_code_fixes
+            value: false
+            message: "Reset code-fix flag before re-review."
+          - action: set
+            target: needs_test_improvements
+            value: false
+            message: "Reset test-improvement flag before re-review."
       - id: regenerate-index
-        name: Regenerate Change Block Index
-        description: "Re-parse git diff and regenerate change-block-index.md reflecting the new changes."
+        technique: review-diff
         required: true
       - id: re-manual-diff-review
-        name: Re-run Manual Diff Review
-        description: "Present updated file index to user for manual diff review of the fix changes."
+        technique: review-diff
         required: true
       - id: re-code-review
-        name: Re-run Code Review
-        description: "Re-run code review on the updated diff to verify fixes resolved prior findings. May set needs_code_fixes if new issues are found."
+        technique: review-code
         required: true
       - id: re-test-suite-review
-        name: Re-run Test Suite Review
-        description: "Re-run test suite review to verify fix quality. May set needs_test_improvements if new issues are found."
+        technique: review-test-suite
         required: true
 decisions[1]:
   - id: blocker-gate

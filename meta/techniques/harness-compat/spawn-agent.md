@@ -17,7 +17,7 @@ Full task prompt for the new agent
 
 Short label for the agent's role (optional; useful for tracing)
 
-## Output
+## Outputs
 
 ### result
 

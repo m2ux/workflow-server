@@ -4,22 +4,25 @@ name: Finalize Specification
 description: "Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts, and confirm the user accepts them for promotion to the canonical location."
 problem: A validated specification must be staged with a change summary for the user to review and promote
 required: true
-estimatedTime: 5-10m
 techniques:
-  primary: finalize-specification
+  supporting[1]:
+    - "variable-binding"
 steps[3]:
   - id: assemble-final-spec
     name: Assemble Final Specification
-    description: "Apply finalize-specification to copy the validation-passed working specification into the final specification artifact."
+    description: "Copy the validation-passed working specification into the final specification artifact."
+    technique: finalize-specification
   - id: write-change-summary
     name: Write Change Summary
-    description: "Summarize the applied changes (new/updated/deprecated requirements, added sources, validation status) into the change summary artifact."
+    description: "Summarize the applied changes into the change summary artifact."
+    technique: finalize-specification
     actions[1]:
       - action: message
         message: "Created: final-spec.md and change-summary.md"
   - id: present-for-promotion
     name: Present for Promotion
-    description: "Present the final specification and change summary for the user to review and promote to {target_doc_path}."
+    description: "Present the final specification and change summary for the user to review and promote."
+    technique: finalize-specification
 checkpoints[1]:
   - id: finalization-confirmed
     name: Finalization Confirmation

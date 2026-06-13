@@ -17,13 +17,17 @@ Given a checklist (from a resource) and a set of items (functions, crate compone
 
 Resource containing the checklist entries (e.g., [toolkit-checklist](../resources/toolkit-checklist.md) for toolkit, or the `§3` manual-review checklist for crate review — see [audit-template-reference](../resources/audit-template-reference.md) for the `§X.Y` section index that every reference below resolves to)
 
-### item_set
+### items
 
 The enumerated items to evaluate against the checklist (e.g., function list, crate components, code paths)
 
 ### scope_files
 
 Source files to read for evidence gathering
+
+### output_format
+
+*(optional)* The table shape the verdict matrix is rendered in.
 
 ## Protocol
 
@@ -33,11 +37,14 @@ Source files to read for evidence gathering
 
 ### 2. Iterate Items
 
-- For EACH item in the `{item_set}`, evaluate EVERY checklist entry, reading the relevant `{scope_files}` to gather the evidence each verdict requires. Produce a verdict for each combination: PASS (with code citation — bare PASSes are invalid), FAIL (becomes a finding), or NA (with explicit justification for why the entry is structurally inapplicable). Every NA must be explicit — silent omission is not permitted.
+- For EACH item in `{items}`, evaluate EVERY checklist entry, reading the relevant `{scope_files}` to gather the evidence each verdict requires. Produce a verdict for each combination: PASS (with code citation — bare PASSes are invalid), FAIL (becomes a finding), or NA (with explicit justification for why the entry is structurally inapplicable). Every NA must be explicit — silent omission is not permitted.
 - If a PASS verdict lacks a code citation, treat it as invalid: re-evaluate the combination with supporting evidence, or downgrade it to INSUFFICIENT.
 - For §3.4, every consensus-critical configuration struct (see [target profile](../resources/target-profile.md#consensus-critical-configuration-structs)): verify the constructor validates mathematical invariants. 'No validation but works in practice' is not a valid PASS.
 - For §3.6 input validation, PASS requires evidence at the CONSUMPTION layer (pallet), not just the PRODUCTION layer. Raw bytes/strings without typed wrappers are FAIL with severity reduced by 1 level.
 - For every pallet with hooks, the sub-agent MUST read the `WeightInfo` implementation file (`weights.rs`). The 5 sub-actions (read return value, read body, trace chain, estimate work, check amplification) are REQUIRED outputs. §3.1 is INCOMPLETE without reading `weights.rs`.
+- For every `expect()`/`unwrap()` on an `Option` derived from configuration, runtime state, or database queries, enumerate ALL valid configuration variants (`InMemory`/`OnDisk`, pruned/archive, development/production presets); an unwrap that panics on any valid variant is a finding. Produce a configuration-variant triage table: | Site | Option Source | Variant that produces None | Severity |. This is MANDATORY for the node binary agent.
+- For every §3.1 flush/commit target, enumerate ALL state-modifying operations in execution order (including conditional paths). The flush/commit call must occur AFTER the last state-modifying operation; a flush followed by additional writes is FAIL. Finding one flush call alone is NOT sufficient — verify nothing writes after it.
+- For every `into_rpc()` registration site (§3.8), verify explicit per-connection or global subscriber limits. 'Framework handles it' is not a valid PASS.
 - For pallets processing external-chain inherent data (see [target profile](../resources/target-profile.md#cross-chain-pallets) cross-chain pallets list), `pallet_timestamp` usage in cross-chain event/payload construction is DEFAULT FAIL. Agent must prove usage is local-only to override. 'Design choice' is NOT a valid PASS when event content derives from external chain observations.
 - For §3.4, every type in the proposer tuple but absent from the verifier tuple is FAIL UNLESS the agent cites a specific code path where the verifier independently recomputes the value from its own data source. Invalid PASS justifications: 'value in digest', 'by design', 'framework handles it', 'extracted from header'. Valid PASS requires: 'verifier recomputes X at [file:line] from its own [source]'.
 - When reviewing the ledger crate, check for wildcard `_ =>` match arms in `apply_system_transaction`. Wildcard arms allowing unknown types to be applied to state = FAIL.
@@ -54,11 +61,11 @@ Source files to read for evidence gathering
 
 ### 4. Verify Matrix Completeness
 
-- Count items in the item set vs rows in the verdict matrix. Every item must have a row. Count checklist entries vs columns. Every entry must have a verdict per item. List any gaps and resolve them. If an item appears in the enumeration but not in the matrix, add the missing row and evaluate all checklist entries for it.
+- Count entries in `{items}` vs rows in the verdict matrix. Every item must have a row. Count checklist entries vs columns. Every entry must have a verdict per item. List any gaps and resolve them. If an item appears in the enumeration but not in the matrix, add the missing row and evaluate all checklist entries for it.
 
 ### 5. Produce Verdict Matrix
 
-- Output the `{verdict_matrix}`: the complete item x checklist matrix with its coverage attestation, in the format specified by the activity step that invoked this technique.
+- Output the `{verdict_matrix}`: the complete item x checklist matrix with its coverage attestation, rendered in `{output_format}`.
 
 ## Outputs
 

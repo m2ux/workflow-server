@@ -7,7 +7,6 @@ techniques:
   supporting[1]:
     - workflow-design
 required: true
-estimatedTime: 10-15m
 rules[2]:
   - "Load the updated workflow from the workflow-server, not from cached data — the audit must verify the committed state"
   - "Produce a severity-rated findings summary; do not repeat the full compliance report structure unless findings exist"

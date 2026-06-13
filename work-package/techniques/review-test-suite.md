@@ -17,6 +17,10 @@ Review test suite quality and coverage — assessing coverage gaps, assertion qu
 
 List of files changed in the work package (from `git diff`)
 
+### planning_folder_path
+
+Folder where the test suite review report is written
+
 ## Protocol
 
 ### 1. Load Guidance
@@ -28,8 +32,8 @@ List of files changed in the work package (from `git diff`)
 ### 2. Diff Aware Coverage Map
 
 - Coverage assessment must be diff-aware — scope evaluation to the changed-symbol set rather than absolute project coverage
-- Apply [gitnexus-operations](./gitnexus-operations/TECHNIQUE.md)::[diff-coverage-map](./gitnexus-operations/diff-coverage-map.md): it enumerates the changed-symbol set and, for each changed symbol, finds existing test callers (incoming references from test files)
-- Treat its coverage_gaps (symbols with no test callers) as coverage gaps and update_candidates (symbols with stale test callers) as update candidates
+- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[diff-coverage-map](../../meta/techniques/gitnexus-operations/diff-coverage-map.md): it enumerates the changed-symbol set and, for each changed symbol, finds existing test callers (incoming references from test files)
+- Treat its `coverage_gaps` (symbols with no test callers) as coverage gaps and `update_candidates` (symbols with stale test callers) as update candidates
 
 ### 3. Run Tests
 
@@ -51,7 +55,7 @@ List of files changed in the work package (from `git diff`)
 
 ### 6. Present Summary
 
-- Summarize coverage gaps and critical issues for checkpoint
+- Summarize coverage gaps and critical issues
 
 ## Outputs
 

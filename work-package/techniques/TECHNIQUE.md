@@ -11,7 +11,7 @@ Base contract inherited by sibling techniques. Any Inputs, Outputs, Rules, or Er
 
 ### planning_folder_path
 
-Path to this work package's planning folder under `.engineering/artifacts/planning/` — the common location every technique reads prior artifacts from and writes its own artifact into (each activity's `artifactPrefix` is applied to the filename).
+Path to this work package's planning folder under `.engineering/artifacts/planning/` — the common location every technique reads prior artifacts from and writes its own artifact into (the server-provided `artifactPrefix` is applied to the filename).
 
 ### requirements
 

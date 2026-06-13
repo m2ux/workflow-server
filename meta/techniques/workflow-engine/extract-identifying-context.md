@@ -13,7 +13,7 @@ Extract ticket, branch, PR, and work-package identifiers from a user request.
 
 User's free-form request.
 
-## Output
+## Outputs
 
 ### identifying_context
 

@@ -7,7 +7,7 @@ metadata:
 
 Retrieve the catalog of available workflows.
 
-## Output
+## Outputs
 
 ### workflow_catalog
 

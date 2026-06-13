@@ -13,7 +13,7 @@ metadata:
 
 the symbol to inspect
 
-## Output
+## Outputs
 
 ### context_report
 

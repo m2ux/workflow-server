@@ -24,7 +24,7 @@ rules[10]:
   - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL). This confirms successful completion and prevents silent write failures."
 
 techniques:
-variables[26]:
+variables[27]:
   - name: target
     type: string
     description: "What to analyze -- a file path, directory path, inline text, question, or concept"
@@ -44,6 +44,9 @@ variables[26]:
   - name: selected_lenses
     type: array
     description: "For portfolio mode: array of lens names"
+  - name: lens_name
+    type: string
+    description: "Name of the portfolio lens whose artifact is currently being written"
   - name: analysis_focus
     type: string
     description: "Optional focus area to guide the analysis"
@@ -74,7 +77,7 @@ variables[26]:
   - name: all_artifact_paths
     type: array
     description: "Accumulated list of all artifact paths across all units"
-  - name: report_output_path
+  - name: report_path
     type: string
     description: "File path to the generated REPORT.md artifact"
   - name: gitnexus_available

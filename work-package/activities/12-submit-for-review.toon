@@ -3,45 +3,28 @@ version: 1.4.0
 name: Submit for Review
 description: "Submit the PR for review and handle reviewer feedback."
 problem: User needs to submit the PR for review and handle reviewer feedback
-recognition[4]:
-  - submit for review
-  - update pr
-  - mark pr ready
-  - handle review feedback
 required: true
-estimatedTime: 30-60m
 entryActions[1]{action,message}:
   log,Submitting PR for review
 techniques:
-  supporting[8]:
-    - "dco-provenance::record-attestation"
-    - github-cli-protocol
-    - "manage-git::push-commits"
-    - "manage-git::squash-merge"
-    - "manage-git::detect-merge-strategy"
-    - respond-to-pr-review
-    - review-code
-    - update-pr
-steps[13]:
+  supporting[1]:
+    - "variable-binding"
+steps[12]:
   - id: consolidate-review-findings
-    name: Consolidate Review Findings
-    description: "Gather all findings from code review, test review, validation, and strategic review. Categorize by severity and type."
+    technique: findings-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: generate-review-summary
-    name: Generate Review Summary
-    description: "Use attached resource review-mode via get_technique (resources attached). Create structured review summary using the Consolidated Review Format template defined in that resource."
+    technique: review-summary
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: present-summary-to-user
-    name: Present Summary to User
-    description: "Show the review summary for confirmation before posting."
     checkpoint: review-summary-approval
     condition:
       type: simple
@@ -49,17 +32,14 @@ steps[13]:
       operator: "=="
       value: true
   - id: post-pr-review
-    name: Post PR Review
-    description: "Post review to GitHub PR using 'gh pr review'. Include consolidated findings with severity ratings."
+    technique: update-pr::render
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: dco-sign-off
-    name: DCO Sign-off
-    description: "Gate PR submission on human DCO attestation. Records attestation in provenance-log.md."
-    technique: dco-provenance
+    technique: dco-provenance::record-attestation
     checkpoint: dco-sign-off
     condition:
       type: simple
@@ -67,25 +47,21 @@ steps[13]:
       operator: "!="
       value: true
   - id: push-commits
-    name: Push all commits
-    description: "Push all local commits to remote branch."
+    technique: manage-git::push-commits
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: update-description
-    name: Update PR description
-    description: "Update the PR description with final implementation details."
+    technique: update-pr::render
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: instruct-merge-strategy
-    name: Instruct Merge Strategy
-    description: "Present merge strategy guidance based on squash_merge_supported. Instructs human on the correct merge procedure for a DCO-compliant merge commit."
-    technique: manage-git
+    technique: manage-git::instruct-merge-strategy
     checkpoint: merge-strategy-reminder
     condition:
       type: simple
@@ -93,26 +69,18 @@ steps[13]:
       operator: "!="
       value: true
   - id: mark-ready
-    name: Mark PR ready for review
-    description: "Mark the draft PR as ready for review using gh pr ready."
+    technique: update-pr::mark-ready
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: await-review
-    name: Await Manual Review
-    description: "Wait for PR to receive manual review from team members."
     checkpoint: review-received
   - id: process-review-comments
-    name: Process Review Comments
-    description: "Analyze and respond to PR review feedback."
-  - id: determine-review-outcome
-    name: Determine Review Outcome
-    description: "Based on review feedback, determine whether changes are needed."
+    technique: respond-to-pr-review
   - id: analyze-review-outcome
-    name: Analyze Review Outcome
-    description: "Analyze PR review comments and recommend an outcome."
+    technique: review-outcome-analysis
     checkpoint: review-outcome
     actions[2]:
       - action: set
@@ -132,10 +100,13 @@ loops[1]:
       value: false
     maxIterations: 2
     description: "Re-render the PR body until body_conforms=true."
-    steps[1]:
-      - id: rerender-and-verify
-        name: Re-render and Verify Body
-        description: "update-pr::render(template: final, pr_number: {pr_number}); update-pr::verify-body"
+    steps[2]:
+      - id: rerender-body
+        technique: update-pr::render
+        technique_args:
+          template: final
+      - id: verify-body
+        technique: update-pr::verify-body
 checkpoints[6]:
   - id: dco-sign-off
     name: DCO Sign-off

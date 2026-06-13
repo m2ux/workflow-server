@@ -7,7 +7,7 @@ metadata:
 
 Read and parse `.gitmodules` to enumerate submodule paths.
 
-## Output
+## Outputs
 
 ### submodules
 

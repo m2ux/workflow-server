@@ -21,7 +21,7 @@ Array of checkpoint responses (`option_id` + effects).
 
 Array of artifact entries (`id`, `name`, `path`).
 
-## Output
+## Outputs
 
 ### result
 

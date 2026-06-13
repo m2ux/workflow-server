@@ -17,7 +17,7 @@ Filesystem path to the repository to index. For monorepos, pass the monorepo ROO
 
 Optional. Boolean. When true, rebuilds the index from scratch instead of incrementally updating. Defaults to false.
 
-## Output
+## Outputs
 
 ### stats
 

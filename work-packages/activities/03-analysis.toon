@@ -5,20 +5,23 @@ description: Perform completion or context analysis depending on whether continu
 problem: Need to understand context before detailed work package planning
 techniques:
   supporting[1]:
-    - analyze-initiative-context
+    - "variable-binding"
 steps[3]:
   - id: perform-analysis
     name: Perform analysis
-    description: Execute the analysis type selected by the user at the analysis-type-selection checkpoint
+    description: Perform completion or context analysis per the selected analysis type
+    technique: analyze-initiative-context
   - id: document-analysis
     name: Document analysis
-    description: Create the analysis document in the planning folder using the appropriate resource template
+    description: Write the analysis document in the planning folder
+    technique: analyze-initiative-context
   - id: present-findings
     name: Present findings
-    description: Summarize analysis findings for user review
+    description: Present the analysis findings for user review
+    technique: analyze-initiative-context
 artifacts[1]:
   - id: analysis-document
-    name: analysis.md
+    name: "01-COMPLETION-ANALYSIS.md / 02-CONTEXT-ANALYSIS.md"
     location: planning
     description: "Completion analysis or context analysis document"
     action: create

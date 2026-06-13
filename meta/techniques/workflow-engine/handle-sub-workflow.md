@@ -17,7 +17,7 @@ The current session's `session_index` — passed to the server so it can append 
 
 Child workflow ID.
 
-## Output
+## Outputs
 
 ### child_session_index
 

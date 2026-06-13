@@ -20,10 +20,22 @@ rules[3]:
   - "This workflow is the entrypoint for all workflow operations — bootstrap protocol enters here directly via start_session({ workflow_id: 'meta' })"
   - "Techniques in this workflow are universal and resolve for any client workflow via the loader's universal-technique fallback"
   - "Meta does not perform domain work — every activity exists to identify, create, resume, dispatch, or close out a client session"
-variables[12]:
+variables[16]:
   - name: target_workflow_id
     type: string
     description: "ID of the client workflow to dispatch (set by discover-session)"
+  - name: meta_session_index
+    type: string
+    description: "6-character base32 session_index of the meta session itself — read by initialize-session and passed as parent_session_index when create-session creates the client session"
+  - name: target_workflow_outcomes
+    type: string
+    description: "The client workflow's declared outcomes, read by verify-outcomes during end-workflow close-out"
+  - name: client_state
+    type: string
+    description: "The dispatched client workflow's final variable state, read by verify-outcomes during end-workflow"
+  - name: client_trace
+    type: string
+    description: "The dispatched client workflow's execution trace, read by generate-summary during end-workflow"
   - name: workflow_match_ambiguous
     type: boolean
     description: "Whether the user request matched multiple workflows — gates the workflow-selection checkpoint in discover-session"

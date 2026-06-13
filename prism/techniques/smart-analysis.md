@@ -15,7 +15,7 @@ Automatically compose an analysis pipeline based on input characteristics — th
 
 ### 1. Prereq Scan
 
-- Dispatch [prereq](../resources/prereq.md) over `{target_content}` to a fresh worker, writing `smart-prereq.md` into `{output_path}`
+- Dispatch [prereq](../resources/prereq.md) over `{target_content}` to a fresh worker, writing `{smart_result.prereq_path}` into `{output_path}`
 - Extract atomic questions from output for knowledge fill
 
 ### 2. Knowledge Fill
@@ -25,7 +25,7 @@ Automatically compose an analysis pipeline based on input characteristics — th
 
 ### 3. Select Mode
 
-- Branch on `{target_type}`: when it is 'code', attempt AST decomposition via `_split_into_subsystems` logic
+- Branch on `{target_type}`: when it is 'code', attempt AST-based subsystem decomposition (per the subsystem-analysis Decompose protocol)
 - If >1 subsystem found: use subsystem mode (different prisms per region)
 - If 1 subsystem, or `{target_type}` is 'general': use [L12](../resources/l12.md) single pass (or 3-pass for general)
 
@@ -47,17 +47,21 @@ Automatically compose an analysis pipeline based on input characteristics — th
 
 Paths and pipeline trace for the smart adaptive run
 
+#### artifact
+
+`smart-prereq.md` (prereq scan) / the selected analysis mode's artifact — `smart-analysis.md` for structural, or the subsystem mode's per-subsystem artifact / the dispute-correction artifact (when run)
+
 #### prereq_path
 
-Filesystem path to `smart-prereq.md`
+Filesystem path to the prereq-scan artifact
 
 #### analysis_paths
 
-Array of paths to `smart-analysis.md` and/or `subsystem-*.md` as produced
+Filesystem paths to the selected analysis mode's artifacts
 
 #### dispute_paths
 
-Array of paths to `smart-dispute-*.md` (empty if dispute skipped)
+Filesystem paths to the dispute-correction artifacts (empty if dispute skipped)
 
 #### pipeline_steps
 
@@ -71,12 +75,8 @@ Smart is the only mode that composes its pipeline automatically. Do not ask the 
 
 ### conditional-steps
 
-Each step after prereq is conditional. Knowledge fill requires extracted questions. Subsystem requires multi-class code. Dispute requires sufficient analysis output.
+Each step after the prerequisite scan is conditional. Knowledge fill requires extracted questions. Subsystem decomposition requires multi-class code. Dispute requires sufficient analysis output.
 
-### model-selection
+### knowledge-fill-best-effort
 
-Each sub-step uses the optimal model for its prism. Prereq uses sonnet. Analysis uses the selected prism's optimal model. Dispute synthesis uses sonnet.
-
-### tool-usage
-
-use harness-compat spawn-agent — smart mode never uses continue-agent and each sub-step uses a new worker; use read_file — orchestrator reads artifacts to decide conditionals and inject `verified_knowledge`
+Knowledge gap fill is best-effort: when no knowledge source can answer the extracted questions, analysis proceeds without verified facts rather than blocking.

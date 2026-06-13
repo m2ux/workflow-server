@@ -3,40 +3,29 @@ version: 2.1.0
 name: Gap Analysis
 description: "Compare the AI audit report against a professional reference."
 problem: Without comparison against a professional benchmark, the AI audit's coverage and calibration cannot be assessed. Gap analysis identifies structural blind spots and informs template improvements.
-recognition[3]:
-  - compare with reference audit
-  - gap analysis
-  - benchmark against professional report
 techniques:
   supporting[1]:
-    - execute-audit
+    - "variable-binding"
 required: false
-estimatedTime: 30-60m
-rules[5]:
-  - "This activity is OPTIONAL — only runs when has_reference_report is true"
-  - "CRITICAL: The reference report must NOT have been loaded, read, or discussed before this phase. Loading it earlier contaminates the audit. The reference_report was recorded at scope-setup but quarantined until now."
-  - "The reference report must target the same commit for valid comparison"
-  - "Map every reference finding to the AI finding or note as a gap"
-  - "Analyze severity calibration: which findings are over-rated vs under-rated and why"
 entryActions[1]{action,message}:
   log,Starting gap analysis — reference report will be loaded NOW (not before)
 steps[6]:
   - id: load-reference
     name: Load Reference Report
     technique: write-gap-analysis
-    description: "Load reference report from reference_report. Extract finding list."
+    description: "Load the reference report and extract its finding list."
   - id: map-findings
     name: Map Findings
     technique: compare-finding-sets
     technique_args:
       output_format: "Finding-by-finding mapping table"
-    description: "Map each reference finding to the closest AI finding. Classify as matched, partial, or gap."
+    description: "Map each reference finding to the closest AI finding."
   - id: identify-gaps
     name: Identify Gaps
     technique: compare-finding-sets
     technique_args:
       output_format: "Gap list grouped by severity and root cause category"
-    description: "List all reference findings missed by the AI audit."
+    description: "List the reference findings the AI audit missed."
   - id: analyze-severity
     name: Analyze Severity Calibration
     technique: compare-finding-sets
@@ -48,11 +37,11 @@ steps[6]:
     technique: compare-finding-sets
     technique_args:
       output_format: "Root cause analysis with countermeasures per gap cluster"
-    description: "Determine structural causes for each gap cluster."
+    description: "Determine the structural cause of each gap cluster."
   - id: write-gap-analysis
     name: Write Gap Analysis Report
     technique: write-gap-analysis
-    description: "Produce 02-gap-analysis.md per the write-gap-analysis technique structure."
+    description: "Produce the gap analysis report."
 transitions[0]:
 exitActions[1]{action,message}:
   log,Gap analysis complete — audit workflow finished

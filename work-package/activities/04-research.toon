@@ -3,62 +3,40 @@ version: 2.4.0
 name: Research
 description: "Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity."
 problem: User needs to research best practices before planning
-recognition[3]:
-  - research best practices
-  - knowledge base research
-  - research patterns
 required: false
-estimatedTime: 20-45m
 techniques:
-  supporting[6]:
-    - "dco-provenance::append-task-row"
-    - knowledge-base-search
-    - "manage-artifacts::write-artifact"
-    - reconcile-assumptions
-    - research-knowledge-base
-    - review-assumptions
-steps[10]:
-  - id: kb-research
-    name: Knowledge base research
-    description: "Call get_guidance before making concept-rag MCP tool calls. Search for relevant patterns and practices."
-  - id: web-research
-    name: Web research
-    description: "Search web for current information, documentation, and best practices"
+  supporting[1]:
+    - "variable-binding"
+steps[9]:
+  - id: research-knowledge-base
+    technique: research::research
   - id: synthesize
-    name: Synthesize findings
-    description: "Connect findings to requirements: which patterns apply, what modifications needed, risks, success metrics"
+    technique: research::synthesize
     checkpoint: research-findings
   - id: collect-assumptions
-    name: Collect assumptions
-    description: "Identify assumptions made during research synthesis. Categories: Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment."
+    technique: review-assumptions::collect
+    technique_args:
+      assumption_categories: "Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment"
     checkpoint: research-focus
   - id: document
-    name: Create research document
-    description: "Create knowledge base research document"
+    technique: research::document
   - id: update-assumptions-log
-    name: Update assumptions log
-    description: "Add research-phase assumptions to the assumptions log"
+    technique: review-assumptions::record
   - id: reconcile-assumptions
-    name: Reconcile assumptions
-    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions technique. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
+    technique: review-assumptions::reconcile
   - id: present-resolved-assumptions
-    name: Present resolved assumptions
-    description: "Display all code-resolved assumptions as a message to the user (non-interactive). Show each assumption's ID, statement, evidence, and resolution status. This provides context before the interview loop."
+    technique: review-assumptions::interview
     actions[1]:
       - action: message
         message: "**Resolved Assumptions** — the following assumptions were resolved through code analysis during this phase."
   - id: declare-context-scope
-    name: Declare Context Scope
-    description: "Classify the provenance scope of this work package's research sources. Sets context_scope for the provenance log and PR description."
-    technique: dco-provenance
     checkpoint: context-scope-declaration
     actions[1]:
       - action: set
         target: context_scope
         description: "repo-only | web-retrieval | mixed based on research sources used"
   - id: interview-open-assumptions
-    name: Interview open assumptions
-    description: "For each open (stakeholder-dependent) assumption, present it individually to the user via the research-assumption-interview checkpoint. The user can resolve it inline or defer it to stakeholder review. Update the assumptions log after each response."
+    technique: review-assumptions::interview
 loops[2]:
   - id: assumption-reconciliation
     name: Assumption Reconciliation Loop
@@ -68,11 +46,10 @@ loops[2]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
+    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the review-assumptions::reconcile technique protocol."
     steps[1]:
       - id: reconcile-iteration
-        name: Execute Reconciliation Iteration
-        description: "Execute one iteration of the reconcile-assumptions protocol: classify resolvability, perform targeted analysis, update logs, and reclassify for convergence."
+        technique: review-assumptions::reconcile
   - id: assumption-interview
     name: Assumption Interview Loop
     type: forEach
@@ -82,12 +59,10 @@ loops[2]:
     description: "Iterates over each open (stakeholder-dependent) assumption, presenting the research-assumption-interview checkpoint for each. The user resolves inline or defers to stakeholder review."
     steps[2]:
       - id: present-assumption
-        name: Present assumption to user
-        description: "Present the current open assumption via the research-assumption-interview checkpoint. Include the assumption statement, category, and any partial evidence."
+        technique: review-assumptions::interview
         checkpoint: research-assumption-interview
       - id: record-response
-        name: Record user response
-        description: "Update assumptions-log.md with the user's response: if resolved inline, mark as Resolved with the user's explanation. If deferred, mark as Deferred-to-Stakeholder."
+        technique: review-assumptions::record
 artifacts[1]:
   - id: research-document
     name: kb-research.md
