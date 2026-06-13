@@ -191,9 +191,9 @@ Produces three structured tables: function enumeration, function × checklist ma
 
 Confirm target submodule and commit, checkout codebase, run dependency scanning, create planning folder.
 
-**Technique:** `setup-audit-target`
+**Supporting technique:** `variable-binding`
 
-**Steps:** confirm-target → confirm-commit → record-reference → checkout-submodule → run-cargo-audit → create-file-inventory → create-planning-folder → load-template
+**Steps (technique each binds):** confirm-target → confirm-commit → record-reference → checkout-submodule → run-cargo-audit → create-file-inventory → create-planning-folder → load-template — every step binds `setup-audit-target`
 
 **Artifacts:** `START-HERE.md`
 
@@ -203,9 +203,9 @@ Confirm target submodule and commit, checkout codebase, run dependency scanning,
 
 Map the codebase architecture, identify all crates, trust boundaries, consensus paths, and build the function registry. Assign crates to sub-agent groups with cross-crate supplement mappings.
 
-**Techniques:** `dispatch-sub-agents`, `map-vulnerability-domains`
+**Supporting technique:** `variable-binding`
 
-**Steps:** dispatch-reconnaissance-agent -> verify-reconnaissance-files -> dispatch-security-architecture-agent -> verify-security-architecture-file -> map-vulnerability-domains -> assign-agent-groups -> route-reconnaissance-leads
+**Steps (technique each binds):** dispatch-reconnaissance-agent `dispatch-sub-agents` -> verify-reconnaissance-files `dispatch-sub-agents` -> dispatch-security-architecture-agent `dispatch-sub-agents` -> verify-security-architecture-file `dispatch-sub-agents` -> map-vulnerability-domains `map-vulnerability-domains` -> assign-agent-groups `dispatch-sub-agents` -> route-reconnaissance-leads `dispatch-sub-agents`
 
 **Artifacts:** `r-crate-map.json`, `r-function-registry.json`, `r-reconnaissance-data.json`, `s-architectural-analysis.json`, `README.md` (scope and architecture summary)
 
@@ -215,9 +215,9 @@ Map the codebase architecture, identify all crates, trust boundaries, consensus 
 
 Dispatch all primary agents concurrently. After collecting results, dispatch a dedicated verification sub-agent (V) to mechanically validate output completeness. Act on the gap report before consolidating findings.
 
-**Techniques:** `dispatch-sub-agents`, `verify-sub-agent-output`, `merge-findings`
+**Supporting technique:** `variable-binding`
 
-**Steps:** dispatch-all-agents -> verify-checklist-prompt-coverage -> verify-dispatch-completeness -> collect-all -> verify-agent-output-files -> **dispatch-verification-agent** -> **act-on-gap-report** -> extract-table-derived-findings -> **dispatch-merge-agent** -> **validate-reconciliation** -> verify-checklist-completeness -> preserve-verification-report -> preserve-merge-output
+**Steps (technique each binds):** dispatch-all-agents `dispatch-sub-agents` -> verify-checklist-prompt-coverage `verify-sub-agent-output` -> verify-dispatch-completeness `verify-sub-agent-output` -> collect-all `dispatch-sub-agents` -> verify-agent-output-files `dispatch-sub-agents` -> **dispatch-verification-agent** `dispatch-sub-agents` -> **act-on-gap-report** `dispatch-sub-agents` -> extract-table-derived-findings `merge-findings` -> **dispatch-merge-agent** `dispatch-sub-agents` -> **validate-reconciliation** `verify-sub-agent-output` -> verify-checklist-completeness `verify-sub-agent-output` -> preserve-verification-report `dispatch-sub-agents` -> preserve-merge-output `merge-findings`
 
 ---
 
@@ -225,9 +225,9 @@ Dispatch all primary agents concurrently. After collecting results, dispatch a d
 
 Verify every High/Medium PASS item from audit scratchpads by decomposing each claim into constituent properties and independently verifying each one. PASS item selection is informed by the verification agent's gap report — areas flagged as potentially incomplete are automatically elevated to the adversarial queue. The agent's role is to refute, not confirm.
 
-**Technique:** `decompose-safety-claims`
+**Supporting technique:** `variable-binding`
 
-**Steps:** **seed-from-verification-report** -> extract-pass-items -> decompose-claims -> field-enumeration -> verify-properties -> compile-results
+**Steps (technique each binds):** **seed-from-verification-report** -> extract-pass-items -> decompose-claims -> field-enumeration -> verify-properties -> compile-results — every step binds `decompose-safety-claims`
 
 ---
 
@@ -235,9 +235,9 @@ Verify every High/Medium PASS item from audit scratchpads by decomposing each cl
 
 Consolidate all findings from primary audit and adversarial verification. Apply severity scoring with calibration cross-check. Produce the deliverable report.
 
-**Techniques:** `merge-findings`, `score-severity`, `verify-sub-agent-output`, `write-report`
+**Supporting technique:** `variable-binding`
 
-**Steps:** integrate-adversarial-results → apply-severity → severity-crosscheck → coverage-gate → verify-elevation-completeness → write-report
+**Steps (technique each binds):** integrate-adversarial-results `merge-findings` → apply-severity `score-severity` → severity-crosscheck `score-severity` → coverage-gate `verify-sub-agent-output` → verify-elevation-completeness `merge-findings` → write-report `write-report`
 
 **Artifacts:** `01-audit-report.md`
 
@@ -248,6 +248,10 @@ Consolidate all findings from primary audit and adversarial verification. Apply 
 Run the audit template a second time with a different model configuration on priority-1/2 components. Union-merge with primary results. If context constraints prevent a full second pass, a reduced-scope pass is preferable to skipping.
 
 **Condition:** `ensemble_enabled == true`
+
+**Supporting technique:** `variable-binding`
+
+**Steps (technique each binds):** configure-ensemble `execute-ensemble-pass` → verify-blind-spots `execute-ensemble-pass` → execute-second-pass `execute-ensemble-pass` → union-merge `merge-findings` → update-report `write-report`
 
 **Merge strategy:**
 - Finding in both runs → high confidence, median severity
@@ -264,6 +268,10 @@ Compare the AI audit report against a professional reference report. Produce fin
 
 **Condition:** `has_reference_report == true`
 
+**Supporting technique:** `variable-binding`
+
+**Steps (technique each binds):** load-reference `write-gap-analysis` → map-findings `compare-finding-sets` → identify-gaps `compare-finding-sets` → analyze-severity `compare-finding-sets` → root-cause-analysis `compare-finding-sets` → write-gap-analysis `write-gap-analysis`
+
 **Artifacts:** `02-gap-analysis.md`
 
 ---
@@ -274,7 +282,8 @@ These activities are dispatched by the orchestrator during reconnaissance or pri
 
 | Activity | Used By | Phase | Description |
 |----------|---------|-------|-------------|
-| `sub-architectural-analysis` | Orchestrator | Reconnaissance | Security-oriented architectural decomposition: interaction model, privilege map, candidate points, emergent vulnerability domains |
+| `sub-reconnaissance` | R | Reconnaissance | 9-step codebase reconnaissance: identify crates -> trust boundaries -> consensus paths -> config structs -> pallet hooks -> data flows -> safety-boundary overrides -> build function registry -> write output files (r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json) |
+| `sub-architectural-analysis` | S | Reconnaissance | 4-step security-oriented architectural decomposition: interaction model -> privilege map -> candidate points -> emergent vulnerability domains |
 | `sub-crate-review` | Group A | Primary Audit | 8-step structured crate review: file reading -> function registry -> invariant extraction -> §3 checklist -> analysis tables -> cross-function comparison -> completeness verification -> structured output |
 | `sub-static-analysis` | Group B | Primary Audit | 6-step structured static analysis with catalog-based pattern execution, zero-hit auditing, storage lifecycle pairing, and mechanical checks |
 | `sub-toolkit-review` | Group D | Primary Audit | Per-function 8-item checklist application across all toolkit files with function x checklist matrix |
@@ -291,10 +300,10 @@ Techniques define tool orchestration, protocols, and composable capabilities.
 
 | Technique | Capability | Used By |
 |-------|------------|---------|
-| `score-severity` | Impact × Feasibility severity scoring with calibration examples | report-generation, ensemble-pass |
+| `score-severity` | Impact × Feasibility severity scoring with calibration examples | report-generation |
 | `dispatch-sub-agents` | Compose sub-agent prompts, dispatch concurrently, verify dispatch completeness | reconnaissance, primary-audit |
-| `verify-sub-agent-output` | Validate structural completeness, file coverage, output tables | primary-audit, report-generation |
-| `merge-findings` | Concatenate finding lists, deduplicate by root cause, assign finding numbers | primary-audit, report-generation, ensemble-pass |
+| `verify-sub-agent-output` | Validate structural completeness, file coverage, output tables | primary-audit, report-generation, sub-crate-review, sub-output-verification |
+| `merge-findings` | Concatenate finding lists, deduplicate by root cause, assign finding numbers | primary-audit, report-generation, ensemble-pass, sub-structured-merge |
 | `compare-finding-sets` | Finding-by-finding mapping, classify matches/gaps, severity calibration analysis | gap-analysis |
 | `write-report` | Structure and format the final audit report | report-generation, ensemble-pass |
 | `write-gap-analysis` | Structure and format the gap analysis report | gap-analysis |
@@ -319,7 +328,7 @@ Techniques define tool orchestration, protocols, and composable capabilities.
 
 | Technique | Capability | Used By |
 |-------|------------|---------|
-| `execute-sub-agent` | Bootstrap workflow-server, load assigned activity, follow steps, return structured output | All sub-agent activities |
+| `execute-sub-agent` | Bootstrap workflow-server, load assigned activity, follow steps, return structured output | sub-crate-review, sub-static-analysis, sub-toolkit-review (format-output steps) |
 
 ---
 
@@ -332,12 +341,14 @@ Resources contain detailed reference content loaded on demand by techniques.
 | `00` | `start-here.md` | Quick start guide and workflow overview | Orchestrator bootstrap |
 | `01` | `audit-template-reference.md` | Audit prompt template summary | Orchestrator setup |
 | `02` | `severity-rubric.md` | Impact/Feasibility scales and severity mapping | `score-severity` technique |
-| `03` | `toolkit-checklist.md` | 8-item toolkit minimum checklist | `execute-sub-agent` (toolkit review) |
-| `04` | `sub-agent-output-schema.md` | Structured output schema with per-group requirements | `execute-sub-agent` (all) |
+| `03` | `toolkit-checklist.md` | 8-item toolkit minimum checklist | `apply-checklist` (toolkit review) |
+| `04` | `sub-agent-output-schema.md` | Structured output schema with per-group requirements | `execute-sub-agent`, `verify-sub-agent-output`, `dispatch-sub-agents` |
 | `05` | `static-analysis-patterns.md` | Grep patterns, mechanical checks, storage lifecycle patterns | `search-pattern-catalog` |
-| `06` | `target-profile.md` | Target-specific crate assignments, file paths, node agent scope split, verification agent spec, calibration data, ensemble blind-spots | Orchestrator setup, `score-severity`, ensemble, `sub-output-verification` |
-| `07` | `vulnerability-pattern-vocabulary.md` | Known cross-project vulnerability patterns for architectural analysis | `sub-architectural-analysis` |
-| `08` | `severity-calibration.md` | Calibration examples for severity scoring | `score-severity` |
+| `06` | `target-profile.md` | Target-specific crate assignments, file paths, node agent scope split, verification agent spec, calibration data, ensemble blind-spots | `dispatch-sub-agents`, `score-severity`, `execute-ensemble-pass`, `verify-sub-agent-output`, `decompose-safety-claims` |
+| `07` | `vulnerability-pattern-vocabulary.md` | Known cross-project vulnerability patterns for architectural analysis | `analyze-architecture` |
+| `08` | `severity-calibration.md` | Calibration examples for severity scoring | `score-severity`, `merge-findings` |
+| `09` | `audit-prompt-template.md` | Full audit prompt template — authoritative §1–§5 checklist taxonomy referenced throughout the workflow | `write-report`, all §3-applying sub-agents |
+| `10` | `gap-analysis-template.md` | Document skeleton for the gap-analysis report | `write-gap-analysis` |
 
 ---
 
@@ -374,13 +385,17 @@ Resources contain detailed reference content loaded on demand by techniques.
 | Setup | `START-HERE.md` | Session overview and navigation |
 | Setup | `cargo-audit-output.txt` | Dependency scan results (if tools available) |
 | Setup | `file-inventory.txt` | Source files sorted by line count |
+| Reconnaissance | `r-crate-map.json` | Crate classification by type, priority, architectural category (produced by R) |
+| Reconnaissance | `r-function-registry.json` | Registry of critical functions per priority-1/2 crate (produced by R) |
+| Reconnaissance | `r-reconnaissance-data.json` | Trust boundaries, consensus paths, hooks, config structs, data flows, large files, leads (produced by R) |
+| Reconnaissance | `s-architectural-analysis.json` | Interaction model, privilege map, candidate points, emergent domains (produced by S) |
 | Reconnaissance | `README.md` | Scope, methodology, crate inventory |
-| Primary Audit | `group-a-*.json` | Group A agent structured outputs (one per crate scope) |
-| Primary Audit | `group-b-static-analysis.json` | Group B static analysis output |
-| Primary Audit | `group-d-*.json` | Group D toolkit review outputs |
-| Primary Audit | `verification-report.json` | V agent gap report and table-derived findings |
-| Primary Audit | `merge-output.json` | M agent merge table, reconciliation, calibration cross-check |
-| Adversarial | `adversarial-verification.json` | PASS item decomposition and verdicts |
+| Primary Audit | `a1-nto.json` … `a7-governance.json` | Group A agent structured outputs (a1-nto, a2-midnight-ledger, a3-node-startup, a4-node-consensus, a5-runtime, a6-primitives, a7-governance) |
+| Primary Audit | `b-static-analysis.json` | Group B static analysis output |
+| Primary Audit | `d1-ledger-helpers.json`, `d2-toolkit.json` | Group D toolkit review outputs |
+| Primary Audit | V agent gap report | Gap report and table-derived findings (produced by V) |
+| Primary Audit | M agent merge output | Merge table, reconciliation, calibration cross-check, observation dispositions (produced by M) |
+| Adversarial | Adversarial verdicts | PASS item decomposition and CONFIRMED/REFUTED/INSUFFICIENT verdicts |
 | Report | `01-audit-report.md` | Full audit report with numbered findings |
 | Ensemble | `second-pass-findings.md` | Raw findings from second-pass run |
 | Gap Analysis | `02-gap-analysis.md` | Comparison against reference report |

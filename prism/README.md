@@ -1,6 +1,6 @@
 # Prism Analysis Workflow
 
-> v1.5.0 — Structured analytical prompts that find what asking a model directly misses. Four modes, 58 lenses, isolated multi-pass pipelines, automated report generation.
+> v2.0.0 — Structured analytical prompts that find what asking a model directly misses. Ten modes, 58 lenses, isolated multi-pass pipelines, automated report generation.
 
 ---
 
@@ -110,6 +110,12 @@ Scope: **file** = single source file, **module** = directory or module (multiple
 | **Full Prism** | 3 | Structural → adversarial → synthesis (self-correcting) |
 | **Portfolio** | 2+ | Multiple independent lenses for breadth (52+ available) |
 | **Behavioral** | 4+1 | Error resilience + optimization + evolution + API surface → synthesis. Code-only. |
+| **Dispute** | 3 | 2 orthogonal prisms + disagreement synthesis. Lightweight self-correction at 1/3 full-prism cost. |
+| **Subsystem** | 2+ | AST split + per-region prism assignment + cross-subsystem synthesis. Code-only. |
+| **Verified** | 3 | L12 + gap detection (boundary + audit) + re-analysis with corrections. Highest accuracy. |
+| **Reflect** | 3 | L12 + meta-analysis (claim prism on L12 output) + constraint synthesis. |
+| **Smart** | up to 6 | Adaptive chain: prereq + knowledge fill + analysis + dispute + profile. System decides the pipeline. |
+| **Adaptive** | 1–3 | Depth escalation: SDL → L12 → full-prism. Stops at first adequate signal. |
 
 ---
 
@@ -118,23 +124,34 @@ Scope: **file** = single source file, **module** = directory or module (multiple
 ```mermaid
 graph TD
     Start([Start]) --> SM["select-mode"]
-    SM --> SP["structural-pass"]
+    SM --> MODE{"pipeline mode?"}
 
-    SP --> MODE{"pipeline mode?"}
-    MODE -->|"single"| GR["generate-report"]
-    MODE -->|"portfolio"| GR
-    MODE -->|"full-prism"| AP["adversarial-pass"]
-    MODE -->|"behavioral"| BSP["behavioral-synthesis-pass"]
+    MODE -->|"dispute"| DP["dispute-pass"]
+    MODE -->|"subsystem"| SUB["subsystem-pass"]
+    MODE -->|"verified"| VP["verified-pass"]
+    MODE -->|"reflect"| RP["reflect-pass"]
+    MODE -->|"smart"| SMP["smart-pass"]
+    MODE -->|"adaptive"| ADP["adaptive-pass"]
+    MODE -->|"default (single / full-prism / portfolio / behavioral)"| SP["structural-pass"]
+
+    SP --> SMODE{"pipeline mode?"}
+    SMODE -->|"single / portfolio"| GR["generate-report"]
+    SMODE -->|"full-prism"| AP["adversarial-pass"]
+    SMODE -->|"behavioral"| BSP["behavioral-synthesis-pass"]
 
     AP --> SYN["synthesis-pass"]
     SYN --> GR
-
     BSP --> GR
+
+    DP --> GR
+    SUB --> GR
+    VP --> GR
+    RP --> GR
+    SMP --> GR
+    ADP --> GR
+
     GR --> DR["deliver-result"]
-    DR --> AF{"security audit?"}
-    AF -->|yes| AUD["audit-finalize"]
-    AF -->|no| Done([End])
-    AUD --> Done
+    DR --> Done([End])
 ```
 
 ---
@@ -143,14 +160,19 @@ graph TD
 
 | # | Activity | Description |
 |---|----------|-------------|
-| 00 | **Select Mode** | Detect scope, classify targets, recommend pipeline mode |
-| 01 | **Structural Pass** | Execute L12 structural lens, portfolio lenses, or behavioral lenses per unit |
-| 02 | **Adversarial Pass** | Challenge structural analysis (full-prism only) |
-| 03 | **Synthesis Pass** | Reconcile structural + adversarial (full-prism only) |
-| 04 | **Deliver Result** | Present final report with artifact paths |
-| 05 | **Behavioral Synthesis Pass** | Synthesize 4 behavioral lens outputs (behavioral only) |
-| 06 | **Audit Finalize** | Split report, create detailed findings + trade-off analysis (security audits only) |
-| 07 | **Generate Report** | Produce clean REPORT.md from analysis artifacts — definitive findings only, no methodology language |
+| 00 | **Plan Analysis** (`select-mode`) | Select an analysis mode for the user's request |
+| 01 | **Structural Analysis Pass** | Run the assigned structural analysis for each analysis unit (single / full-prism / portfolio / behavioral) |
+| 02 | **Adversarial Analysis Pass** | Run the adversarial lens against each full-prism unit's structural artifact (full-prism only) |
+| 03 | **Synthesis Pass** | Run the synthesis lens against each full-prism unit's structural + adversarial artifacts (full-prism only) |
+| 04 | **Deliver Result** | Present the final report to the user with artifact paths |
+| 05 | **Behavioral Synthesis Pass** | Run the behavioral synthesis lens against each behavioral unit's artifacts (behavioral only) |
+| 06 | **Generate Final Report** | Produce clean REPORT.md from analysis artifacts — definitive findings only, no methodology language |
+| 07 | **Dispute Analysis Pass** | Run two orthogonal prisms and synthesize their disagreements (dispute only) |
+| 08 | **Subsystem Analysis Pass** | Per-region prism analysis with cross-subsystem synthesis (subsystem only) |
+| 09 | **Verified Analysis Pass** | L12 structural analysis with gap detection and re-analysis (verified only) |
+| 10 | **Reflect Analysis Pass** | L12 structural analysis with recursive meta-analysis and constraint synthesis (reflect only) |
+| 11 | **Smart Analysis Pass** | Adaptively compose the analysis pipeline based on input characteristics (smart only) |
+| 12 | **Adaptive Depth Pass** | Cost-minimizing depth escalation (adaptive only) |
 
 **Detailed documentation:** See [activities/](activities/) for per-activity TOON definitions.
 
@@ -158,14 +180,23 @@ graph TD
 
 ## Techniques
 
-| # | Technique | Capability | Role |
-|---|-------|------------|------|
-| 00 | `structural-analysis` | Single-pass L12 structural analysis | Standalone / Worker |
-| 01 | `full-prism` | Execute one isolated pass of the Full Prism pipeline | Worker |
-| 02 | `portfolio-analysis` | Run 2+ complementary portfolio lenses | Standalone |
-| 03 | `plan-analysis` | Detect scope, classify targets, plan analysis strategy | Planning |
-| 04 | `behavioral-pipeline` | Execute 4+1 behavioral pipeline with labeled synthesis | Worker |
-| 05 | `generate-report` | Produce clean final report from analysis artifacts | Worker |
+Steps bind to a technique via `step.technique`; each activity also lists strategy techniques under `techniques.supporting` (`variable-binding`, plus `scatter-gather` for the forEach passes).
+
+| Technique | Capability | Bound by |
+|-----------|------------|----------|
+| `plan-analysis` | Detect scope, classify targets, plan analysis strategy | select-mode (plan step) |
+| `structural-analysis` | Single-pass L12 structural analysis | structural-pass (load/execute/write steps) |
+| `portfolio-analysis` | Run 2+ complementary portfolio lenses | structural-pass (portfolio steps) |
+| `behavioral-pipeline` | Execute 4+1 behavioral pipeline with labeled synthesis | structural-pass (dispatch step), behavioral-synthesis-pass |
+| `full-prism` | Execute one isolated pass of the Full Prism pipeline | adversarial-pass, synthesis-pass |
+| `dispute-analysis` | Run two orthogonal prisms and synthesize disagreements | dispute-pass |
+| `subsystem-analysis` | Per-region prism assignment + cross-subsystem synthesis | subsystem-pass |
+| `verified-analysis` | L12 + gap detection + corrected re-analysis | verified-pass |
+| `reflect-analysis` | L12 + claim-prism meta-analysis + constraint synthesis | reflect-pass |
+| `smart-analysis` | Adaptively compose the analysis pipeline | smart-pass |
+| `adaptive-analysis` | Cost-minimizing depth escalation (SDL → L12 → full-prism) | adaptive-pass |
+| `generate-report` | Produce clean final report from analysis artifacts | generate-report |
+| `present-result` | Read, cross-reference-format, and present the final report | deliver-result |
 
 **Detailed documentation:** See [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md) for the inherited base contract; each technique's `techniques/<slug>.md` file documents its protocol flow.
 
@@ -255,22 +286,33 @@ Unlike the work-package workflow (which resumes a persistent worker), the prism 
 
 | Variable | Type | Description |
 |----------|------|-------------|
-| `target` | string | What to analyze — file path, directory, inline text, question, or concept |
+| `target` | string | What to analyze — a file path, directory path, inline text, question, or concept |
 | `target_type` | string | `code` or `general` (default: `code`) |
-| `pipeline_mode` | string | `single`, `full-prism`, `portfolio`, or `behavioral` (default: `single`) |
+| `pipeline_mode` | string | `single`, `full-prism`, `portfolio`, `behavioral`, `dispute`, `subsystem`, `verified`, `reflect`, `smart`, or `adaptive` (default: `single`) |
 | `output_path` | string | Directory to write analysis artifacts (default: `.`) |
 | `selected_lenses` | array | For portfolio mode: array of lens names |
+| `lens_name` | string | Name of the portfolio lens whose artifact is currently being written |
 | `analysis_focus` | string | Optional focus area to guide the analysis |
 | `analysis_units` | array | Ordered list of analysis units (for multi-unit scopes) |
 | `current_unit` | object | Current analysis unit during iteration loop |
-| `structural_output_path` | string | File path to structural pass artifact |
-| `adversarial_output_path` | string | File path to adversarial pass artifact |
-| `synthesis_output_path` | string | File path to synthesis pass artifact |
-| `portfolio_output_paths` | object | Map of lens name to file path for portfolio mode |
-| `all_artifact_paths` | array | Accumulated list of all artifact paths across units |
-| `behavioral_output_paths` | object | Map of behavioral lens name to artifact path |
-| `behavioral_synthesis_output_path` | string | File path to behavioral synthesis artifact |
-| `report_path` | string | File path to the generated REPORT.md |
+| `structural_output_path` | string | File path to structural pass artifact for current unit |
+| `adversarial_output_path` | string | File path to adversarial pass artifact for current unit |
+| `synthesis_output_path` | string | File path to synthesis pass artifact for current unit |
+| `portfolio_output_paths` | object | Map of lens name to file path for portfolio mode artifacts |
+| `behavioral_output_paths` | object | Map of role label (ERRORS, COSTS, CHANGES, PROMISES) to file path for behavioral mode artifacts |
+| `behavioral_synthesis_output_path` | string | File path to behavioral synthesis artifact for current unit |
+| `all_artifact_paths` | array | Accumulated list of all artifact paths across all units |
+| `report_path` | string | File path to the generated REPORT.md artifact |
+| `gitnexus_available` | boolean | Whether GitNexus has indexed the target codebase — set during structural-pass check-gitnexus step (default: `false`) |
+| `unit_output_dir` | string | Resolved output directory for the current analysis unit — computed in structural-pass resolve-unit-output step |
+| `dispute_outputs` | object | For dispute mode: map of `{prism_a, prism_b, synthesis}` outputs |
+| `subsystem_assignments` | object | For subsystem mode: map of `{subsystem_name: prism_name}` from calibration |
+| `subsystem_outputs` | array | For subsystem mode: per-subsystem analysis output objects |
+| `verified_gap_data` | string | For verified mode: extracted gap JSON from boundary + audit analysis |
+| `reflect_history_context` | string | For reflect mode: loaded constraint history for synthesis step |
+| `smart_pipeline_steps` | array | For smart mode: steps the adaptive engine decided to execute |
+| `adaptive_stage` | string | For adaptive mode: current escalation stage (`sdl`, `l12`, or `full`) |
+| `adaptive_signal_quality` | string | For adaptive mode: signal-quality assessment at current stage (`adequate` or `insufficient`) |
 
 ---
 
@@ -278,26 +320,38 @@ Unlike the work-package workflow (which resumes a persistent worker), the prism 
 
 ```
 workflows/prism/
-├── workflow.toon                         # Workflow definition (4 modes, 16 variables, 12 rules)
-├── README.md                             # This file
-├── concept-lexicon.md                    # Analytical concept definitions (49 concepts)
+├── workflow.toon                            # Workflow definition (10 modes, 27 variables, 10 rules)
+├── README.md                                # This file
+├── concept-lexicon.md                       # Analytical concept definitions (49 concepts)
 ├── activities/
-│   ├── 00-select-mode.toon               # Plan analysis configuration
-│   ├── 01-structural-pass.toon           # L12, portfolio, or behavioral lens dispatch
-│   ├── 02-adversarial-pass.toon          # Adversarial lens (full-prism only)
-│   ├── 03-synthesis-pass.toon            # L12 synthesis (full-prism only)
-│   ├── 04-deliver-result.toon            # Present final report
-│   ├── 05-behavioral-synthesis-pass.toon # Behavioral synthesis (behavioral only)
-│   ├── 06-audit-finalize.toon            # Audit report finalization (security audits only)
-│   └── 07-generate-report.toon           # Generate clean REPORT.md from analysis artifacts
+│   ├── 00-select-mode.toon                  # Plan analysis configuration
+│   ├── 01-structural-pass.toon              # L12, portfolio, or behavioral lens dispatch
+│   ├── 02-adversarial-pass.toon             # Adversarial lens (full-prism only)
+│   ├── 03-synthesis-pass.toon               # Synthesis lens (full-prism only)
+│   ├── 04-deliver-result.toon               # Present final report
+│   ├── 05-behavioral-synthesis-pass.toon    # Behavioral synthesis (behavioral only)
+│   ├── 06-generate-report.toon              # Generate clean REPORT.md from analysis artifacts
+│   ├── 07-dispute-pass.toon                 # Two orthogonal prisms + disagreement synthesis (dispute only)
+│   ├── 08-subsystem-pass.toon               # Per-region prism analysis + cross-subsystem synthesis (subsystem only)
+│   ├── 09-verified-pass.toon                # L12 + gap detection + corrected re-analysis (verified only)
+│   ├── 10-reflect-pass.toon                 # L12 + meta-analysis + constraint synthesis (reflect only)
+│   ├── 11-smart-pass.toon                   # Adaptive pipeline composition (smart only)
+│   └── 12-adaptive-pass.toon                # Depth escalation SDL → L12 → full-prism (adaptive only)
 ├── techniques/
-│   ├── TECHNIQUE.md                      # Inherited base contract
-│   ├── structural-analysis.md            # Single-pass L12
-│   ├── full-prism.md                     # Full Prism worker pass
-│   ├── portfolio-analysis.md             # Portfolio lenses (40+ lenses)
-│   ├── plan-analysis.md                  # Analysis planning (58 goal mappings)
-│   ├── behavioral-pipeline.md            # Behavioral pipeline worker pass
-│   └── generate-report.md                # Report generation from analysis artifacts
+│   ├── TECHNIQUE.md                         # Inherited base contract
+│   ├── plan-analysis.md                     # Analysis planning (58 goal mappings)
+│   ├── structural-analysis.md               # Single-pass L12
+│   ├── portfolio-analysis.md                # Portfolio lenses
+│   ├── behavioral-pipeline.md               # Behavioral pipeline worker pass
+│   ├── full-prism.md                        # Full Prism worker pass
+│   ├── dispute-analysis.md                  # Dispute pipeline
+│   ├── subsystem-analysis.md                # Subsystem pipeline
+│   ├── verified-analysis.md                 # Verified pipeline
+│   ├── reflect-analysis.md                  # Reflect pipeline
+│   ├── smart-analysis.md                    # Smart pipeline
+│   ├── adaptive-analysis.md                 # Adaptive depth pipeline
+│   ├── generate-report.md                   # Report generation from analysis artifacts
+│   └── present-result.md                    # Read, format, and present the final report
 └── resources/
     ├── 00–02: L12 pipeline
     ├── 06–11: Portfolio lenses

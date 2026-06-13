@@ -49,7 +49,6 @@ Each activity section below includes its purpose, techniques, steps, checkpoints
 29. **create-pr** — `update-pr::create-pr`; presents `pr-creation` checkpoint and sets `pr_number`, `pr_url`, `pr_exists = true` (when not review mode and `use_existing_pr == false`).
 30. **link-pr-to-ticket-jira** — `atlassian-operations::comment-jira-issue` records the PR reference (when not review mode, `pr_number` exists, not skipped, `issue_platform == jira`).
 31. **link-pr-to-ticket-github** — `github-cli-protocol::view-issue` verifies the PR cross-link (when not review mode, `pr_number` exists, not skipped, `issue_platform == github`).
-32. **determine-next-activity** — control step; decides whether requirements elicitation is needed from issue details.
 
 **Checkpoints (10):**
 
@@ -107,8 +106,7 @@ graph TD
     createPR --> cpPRCreation{"pr-creation checkpoint"}
     cpPRCreation --> linkPR["Link PR to issue"]
 
-    linkPR --> determineNext["Determine next activity"]
-    determineNext --> exitNode(["design-philosophy"])
+    linkPR --> exitNode(["design-philosophy"])
 ```
 
 ---
@@ -121,17 +119,16 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `design-philosophy` |
 | supporting | `variable-binding` |
 
 **Steps:**
 
-1. **define-problem** — `design-philosophy`.
-2. **design-philosophy** — `design-philosophy`; presents `classification-confirmed` checkpoint and sets `problem_type` and `complexity`.
-3. **determine-path** — `design-philosophy`; presents `workflow-path-selected` checkpoint and sets `needs_comprehension = true`.
-4. **document-philosophy** — `design-philosophy`; writes `design-philosophy.md`.
-5. **collect-assumptions** — `review-assumptions`.
-6. **create-assumptions-log** — `review-assumptions`.
+1. **define-problem** — `design-philosophy::define`.
+2. **classify-problem** — `design-philosophy::classify`; presents `classification-confirmed` checkpoint and sets `problem_type` and `complexity`.
+3. **determine-path** — `design-philosophy::determine-path`; presents `workflow-path-selected` checkpoint and sets `needs_comprehension = true`.
+4. **document-philosophy** — `design-philosophy::document`; writes `design-philosophy.md`.
+5. **collect-assumptions** — `review-assumptions::collect`.
+6. **create-assumptions-log** — `review-assumptions::record`.
 7. **reconcile-assumptions** — `review-assumptions::reconcile`.
 8. **assess-ticket-completeness** — `assess-ticket-completeness`; presents `ticket-completeness` checkpoint (when `is_review_mode == true`).
 9. **set-review-mode-path** — control step; sets `needs_elicitation = false` (when `is_review_mode == true`).
@@ -185,16 +182,15 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `requirements-elicitation` |
 | supporting | `variable-binding` |
 
 **Steps:**
 
-1. **stakeholder-discussion** — `requirements-elicitation`; presents `stakeholder-transcript` checkpoint.
-2. **requirements-elicitation** — `requirements-elicitation`; drives the `domain-iteration` loop.
-3. **collect-assumptions** — `review-assumptions`.
-4. **create-document** — `requirements-elicitation`; writes `requirements-elicitation.md`.
-5. **update-assumptions-log** — `review-assumptions`.
+1. **stakeholder-discussion** — `requirements-elicitation::discuss`; presents `stakeholder-transcript` checkpoint.
+2. **elicit-requirements** — `requirements-elicitation::elicit`; drives the `domain-iteration` loop.
+3. **collect-assumptions** — `review-assumptions::collect`.
+4. **create-document** — `requirements-elicitation::create-document`; writes `requirements-elicitation.md`.
+5. **update-assumptions-log** — `review-assumptions::record`.
 6. **reconcile-assumptions** — `review-assumptions::reconcile`; presents `elicitation-complete` checkpoint.
 
 **Loops:**
@@ -251,21 +247,19 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `research` |
 | supporting | `variable-binding` |
 
 **Steps:**
 
-1. **kb-research** — `research`; search the knowledge base for relevant patterns and practices.
-2. **web-research** — `research`; search the web for current information and best practices.
-3. **synthesize** — `research`; presents `research-findings` checkpoint.
-4. **collect-assumptions** — `review-assumptions`; presents `research-focus` checkpoint.
-5. **document** — `research`; writes `kb-research.md`.
-6. **update-assumptions-log** — `review-assumptions`.
-7. **reconcile-assumptions** — `review-assumptions::reconcile`.
-8. **present-resolved-assumptions** — `review-assumptions`; displays code-resolved assumptions (non-interactive).
-9. **declare-context-scope** — control step; presents `context-scope-declaration` checkpoint and sets `context_scope` (`repo-only` | `web-retrieval` | `mixed`).
-10. **interview-open-assumptions** — `review-assumptions`; drives the `assumption-interview` loop.
+1. **research-knowledge-base** — `research::research`; search the knowledge base and external sources for relevant patterns and practices.
+2. **synthesize** — `research::synthesize`; presents `research-findings` checkpoint.
+3. **collect-assumptions** — `review-assumptions::collect`; presents `research-focus` checkpoint.
+4. **document** — `research::document`; writes `kb-research.md`.
+5. **update-assumptions-log** — `review-assumptions::record`.
+6. **reconcile-assumptions** — `review-assumptions::reconcile`.
+7. **present-resolved-assumptions** — `review-assumptions::interview`; displays code-resolved assumptions (non-interactive).
+8. **declare-context-scope** — control step; presents `context-scope-declaration` checkpoint and sets `context_scope` (`repo-only` | `web-retrieval` | `mixed`).
+9. **interview-open-assumptions** — `review-assumptions::interview`; drives the `assumption-interview` loop.
 
 **Loops:**
 - `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each iteration runs `review-assumptions::reconcile`.
@@ -286,9 +280,8 @@ graph TD
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> kbResearch["Knowledge base research"]
-    kbResearch --> webResearch["Web research"]
-    webResearch --> synthesize["Synthesize findings"]
+    entryNode(["Entry"]) --> kbResearch["Knowledge base and web research"]
+    kbResearch --> synthesize["Synthesize findings"]
     synthesize --> cpFindings{"research-findings checkpoint"}
     cpFindings -->|"sufficient"| collectAssumptions["Collect assumptions"]
     cpFindings -->|"further research"| cpFocus{"research-focus checkpoint"}
@@ -315,24 +308,19 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `implementation-analysis` |
 | supporting | `variable-binding` |
 | supporting | `scatter-gather` |
 
 **Steps:**
 
-1. **checkout-baseline** — `review-baseline-state` (when `is_review_mode == true`).
-2. **document-expected-changes** — `review-baseline-state` (when `is_review_mode == true`).
-3. **return-to-pr-branch** — `review-baseline-state` (when `is_review_mode == true`).
-4. **review-implementation** — `implementation-analysis`.
-5. **evaluate-effectiveness** — `implementation-analysis`.
-6. **establish-baselines** — `implementation-analysis`.
-7. **collect-assumptions** — `review-assumptions`.
-8. **document** — `implementation-analysis`; presents `analysis-confirmed` checkpoint; writes `implementation-analysis.md`.
-9. **update-assumptions-log** — `review-assumptions`.
-10. **reconcile-assumptions** — `review-assumptions::reconcile`.
-11. **present-resolved-assumptions** — `review-assumptions`; displays code-resolved assumptions (non-interactive).
-12. **interview-open-assumptions** — `review-assumptions`; drives the `assumption-interview` loop.
+1. **review-baseline-state** — `review-baseline-state` (when `is_review_mode == true`); checks out the base branch, documents expected changes, and returns to the PR branch.
+2. **analyze-implementation** — `implementation-analysis::analyze`; review the current implementation, evaluate effectiveness, and establish baseline metrics.
+3. **collect-assumptions** — `review-assumptions::collect`.
+4. **document** — `implementation-analysis::document`; presents `analysis-confirmed` checkpoint; writes `implementation-analysis.md`.
+5. **update-assumptions-log** — `review-assumptions::record`.
+6. **reconcile-assumptions** — `review-assumptions::reconcile`.
+7. **present-resolved-assumptions** — `review-assumptions::interview`; displays code-resolved assumptions (non-interactive).
+8. **interview-open-assumptions** — `review-assumptions::interview`; drives the `assumption-interview` loop.
 
 **Loops:**
 - `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each iteration runs `review-assumptions::reconcile`.
@@ -352,15 +340,11 @@ graph TD
 ```mermaid
 graph TD
     entryNode(["Entry"]) --> reviewMode{"Review mode?"}
-    reviewMode -->|"yes"| checkoutBaseline["Checkout baseline state"]
-    checkoutBaseline --> documentExpected["Document expected changes"]
-    documentExpected --> returnBranch["Return to PR branch"]
-    returnBranch --> reviewImpl
-    reviewMode -->|"no"| reviewImpl["Review implementation"]
+    reviewMode -->|"yes"| reviewBaseline["Review baseline state (checkout base, document expected changes, return to PR branch)"]
+    reviewBaseline --> reviewImpl
+    reviewMode -->|"no"| reviewImpl["Analyze implementation (review, evaluate effectiveness, establish baselines)"]
 
-    reviewImpl --> evalEffectiveness["Evaluate effectiveness"]
-    evalEffectiveness --> establishBaselines["Establish baseline metrics"]
-    establishBaselines --> collectAssumptions["Collect assumptions"]
+    reviewImpl --> collectAssumptions["Collect assumptions"]
     collectAssumptions --> createDoc["Create analysis document"]
     createDoc --> cpAnalysis{"analysis-confirmed checkpoint"}
     cpAnalysis -->|"confirmed"| updateLog["Update assumptions log"]
@@ -384,22 +368,20 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `plan-prepare` |
 | supporting | `variable-binding` |
 
 **Steps:**
 
 1. **env-prerequisites** — control step; validates environment prerequisites (workflows worktree present, `target_path`, `reference_path`, writable planning folder, `gh` auth, GPG agent).
-2. **apply-design** — `plan-prepare`.
-3. **plan-prepare** — `plan-prepare`; writes `work-package-plan.md`.
-4. **create-test-plan** — `create-test-plan`; writes `test-plan.md`.
-5. **present-solution-overview** — `stakeholder-overview`; writes a plain-language solution overview to the planning README.
-6. **collect-assumptions** — `review-assumptions`.
-7. **update-assumptions-log** — `review-assumptions`.
-8. **reconcile-assumptions** — `review-assumptions::reconcile`.
-9. **create-todos** — `plan-prepare`; breaks the plan into actionable tasks.
-10. **sync-branch** — `manage-git::sync-branch`; brings the feature branch up to date with `main`.
-11. **update-pr** — `update-pr::render` with `template: initial`; presents `approach-confirmed` checkpoint.
+2. **create-plan** — `plan-prepare::plan`; writes `work-package-plan.md`.
+3. **create-test-plan** — `create-test-plan`; writes `test-plan.md`.
+4. **present-solution-overview** — `stakeholder-overview`; writes a plain-language solution overview to the planning README.
+5. **collect-assumptions** — `review-assumptions::collect`.
+6. **update-assumptions-log** — `review-assumptions::record`.
+7. **reconcile-assumptions** — `review-assumptions::reconcile`.
+8. **create-todos** — `plan-prepare::create-todos`; breaks the plan into actionable tasks.
+9. **sync-branch** — `manage-git::sync-branch`; brings the feature branch up to date with `main`.
+10. **update-pr** — `update-pr::render` with `template: initial`; presents `approach-confirmed` checkpoint.
 
 **Loops:** `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each iteration runs `review-assumptions::reconcile`.
 
@@ -416,8 +398,7 @@ graph TD
 ```mermaid
 graph TD
     entryNode(["Entry"]) --> envPrereqs["Verify environment prerequisites"]
-    envPrereqs --> applyDesign["Apply design framework"]
-    applyDesign --> createPlan["Create work package plan"]
+    envPrereqs --> createPlan["Create work package plan"]
     createPlan --> createTestPlan["Create test plan"]
     createTestPlan --> solutionOverview["Present solution overview"]
     solutionOverview --> collectAssumptions["Collect assumptions"]
@@ -428,7 +409,7 @@ graph TD
     syncBranch --> updatePR["Update PR description (render initial)"]
     updatePR --> cpApproach{"approach-confirmed checkpoint"}
     cpApproach -->|"confirmed"| exitNode(["assumptions-review"])
-    cpApproach -->|"revise"| applyDesign
+    cpApproach -->|"revise"| createPlan
 ```
 
 ---
@@ -441,15 +422,14 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `review-assumptions` |
 | supporting | `variable-binding` |
 | supporting | `scatter-gather` |
 
 **Steps:**
 
-1. **evaluate-open-assumptions** — `review-assumptions`; determine which assumptions are open.
-2. **interview-assumptions** — `review-assumptions`; drives the `assumption-interview-loop` (when not review mode and `has_open_assumptions == true`).
-3. **update-assumptions-log** — `review-assumptions`; record accept/reject/defer decisions.
+1. **evaluate-open-assumptions** — `review-assumptions::collect`; determine which assumptions are open.
+2. **interview-assumptions** — `review-assumptions::interview`; drives the `assumption-interview-loop` (when not review mode and `has_open_assumptions == true`).
+3. **update-assumptions-log** — `review-assumptions::record`; record accept/reject/defer decisions.
 4. **post-summary-jira** — `atlassian-operations::comment-jira-issue`; presents `post-summary-review` checkpoint (when not review mode, `issue_platform == jira`, `has_deferred_assumptions == true`, `post_jira_comment != false`).
 5. **post-summary-github** — `github-cli-protocol::comment-issue` (when not review mode, `issue_platform == github`, `has_deferred_assumptions == true`).
 
@@ -506,7 +486,6 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `implement-task` |
 | supporting | `variable-binding` |
 | supporting | `scatter-gather` |
 
@@ -702,21 +681,19 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `strategic-review` |
 | supporting | `variable-binding` |
 
 **Steps:**
 
-1. **diff-review** — `strategic-review`; examine all changes for scope and relevance.
-2. **identify-artifacts** — `strategic-review`; find investigation artifacts, over-engineering, orphaned infrastructure.
-3. **verify-readme** — `manage-artifacts::verify-readme-conforms`; surface drift as an informational finding.
-4. **ensure-changes-folder-entry** — `strategic-review`; add a `changes/` fragment when the repo uses one and none exists for this work.
-5. **verify-change-fragment** — `strategic-review`; sets `fragment_references_issue` and validates the fragment references `issue_url`.
-6. **document-findings** — `strategic-review`; writes the strategic review document.
-7. **document-cleanup-recommendations** — `strategic-review` (when `is_review_mode == true`).
-8. **apply-cleanup** — `strategic-review` (when not review mode).
-9. **create-architecture-summary** — `summarize-architecture`.
-10. **analyze-strategic-findings** — control step; presents `review-findings` checkpoint; sets `recommended_strategic_option` and `strategic_findings_summary`.
+1. **review-strategy** — `strategic-review::review-scope`; examine all changes for scope and relevance.
+2. **verify-readme** — `manage-artifacts::verify-readme-conforms`; surface drift as an informational finding.
+3. **ensure-changes-folder-entry** — `strategic-review::changes-folder`; add a `changes/` fragment when the repo uses one and none exists for this work.
+4. **verify-change-fragment** — `strategic-review::verify-fragment`; sets `fragment_references_issue` and validates the fragment references `issue_url`.
+5. **document-findings** — `strategic-review::document-findings`; writes the strategic review document.
+6. **document-cleanup-recommendations** — `strategic-review::recommend-cleanup` (when `is_review_mode == true`).
+7. **apply-cleanup** — `strategic-review::apply-cleanup` (when not review mode).
+8. **create-architecture-summary** — `summarize-architecture`.
+9. **analyze-strategic-findings** — `strategic-findings-analysis`; presents `review-findings` checkpoint; sets `recommended_strategic_option` and `strategic_findings_summary`.
 
 **Checkpoints (1):**
 
@@ -741,9 +718,8 @@ graph TD
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> diffReview["Review diff"]
-    diffReview --> identifyArtifacts["Identify artifacts"]
-    identifyArtifacts --> verifyReadme["Verify README conformance"]
+    entryNode(["Entry"]) --> reviewScope["Review scope (changes and artifacts)"]
+    reviewScope --> verifyReadme["Verify README conformance"]
     verifyReadme --> changesFrag["Ensure changes/ fragment if repo uses it"]
     changesFrag --> verifyFragment["Verify fragment references issue"]
     verifyFragment --> documentFindings["Document findings"]
@@ -768,13 +744,12 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `update-pr` |
 | supporting | `variable-binding` |
 
 **Steps:**
 
-1. **consolidate-review-findings** — control step (review mode); gather findings from code, test, validation, and strategic review.
-2. **generate-review-summary** — control step (review mode); build a structured review summary.
+1. **consolidate-review-findings** — `findings-classification` (review mode); gather findings from code, test, validation, and strategic review.
+2. **generate-review-summary** — `review-summary` (review mode); build a structured review summary.
 3. **present-summary-to-user** — control step (review mode); presents `review-summary-approval` checkpoint.
 4. **post-pr-review** — `update-pr::render` (review mode); post the review.
 5. **dco-sign-off** — `dco-provenance::record-attestation` (when not review mode); presents `dco-sign-off` checkpoint; records the attestation to `provenance-log.md`.
@@ -784,8 +759,7 @@ graph TD
 9. **mark-ready** — `update-pr::mark-ready` (when not review mode).
 10. **await-review** — control step; presents `review-received` checkpoint.
 11. **process-review-comments** — `respond-to-pr-review`.
-12. **determine-review-outcome** — control step; decide whether changes are needed from review feedback.
-13. **analyze-review-outcome** — control step; presents `review-outcome` checkpoint; sets `recommended_outcome` and `review_comments_summary`.
+12. **analyze-review-outcome** — `review-outcome-analysis`; presents `review-outcome` checkpoint; sets `recommended_outcome` and `review_comments_summary`.
 
 **Loops:** `verify-pr-body-rerender` — while `body_conforms == false` (max 2). Re-renders the PR body (`update-pr::render`, `template: final`) and verifies it (`update-pr::verify-body`).
 
@@ -846,21 +820,18 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `finalize-documentation` |
 | supporting | `variable-binding` |
 
 **Steps:**
 
 1. **create-adr** — `create-adr` (when not review mode and `complexity` is moderate or complex).
-2. **update-adr-status** — `finalize-documentation`; set ADR status to Accepted (when not review mode and `complexity` is moderate or complex).
-3. **finalize-test-plan** — `finalize-documentation`; add hyperlinks to test source locations (when not review mode).
-4. **create-complete-doc** — `finalize-documentation`; writes `COMPLETE.md` (when not review mode).
-5. **ensure-docs** — `finalize-documentation`; verify public APIs have inline documentation (when not review mode).
-6. **capture-history** — `conduct-retrospective`; capture session history.
-7. **retrospective** — `conduct-retrospective`; workflow retrospective.
-8. **update-status** — `conduct-retrospective`; update work package plan status.
-9. **remove-worktree** — `manage-git::remove-worktree` (when `worktree_created == true`).
-10. **select-next** — `conduct-retrospective`; select the next work package.
+2. **update-adr-status** — `finalize-documentation::update-adr`; set ADR status to Accepted (when not review mode and `complexity` is moderate or complex).
+3. **finalize-test-plan** — `finalize-documentation::finalize-test-plan`; add hyperlinks to test source locations (when not review mode).
+4. **create-complete-doc** — `finalize-documentation::create-complete-doc`; writes `COMPLETE.md` (when not review mode).
+5. **ensure-docs** — `finalize-documentation::ensure-docs`; verify public APIs have inline documentation (when not review mode).
+6. **conduct-retrospective** — `conduct-retrospective::retrospective`; capture session history, run the workflow retrospective, and update work package plan status.
+7. **remove-worktree** — `manage-git::remove-worktree` (when `worktree_created == true`).
+8. **select-next** — `conduct-retrospective::select-next`; select the next work package.
 
 **Checkpoints (0):** This activity has no checkpoints.
 
@@ -881,14 +852,12 @@ graph TD
     checkADR -->|"yes"| createADR["Create ADR"]
     createADR --> updateADR["Update ADR status to Accepted"]
     updateADR --> finalizeTestPlan
-    checkADR -->|"no"| captureHistory
+    checkADR -->|"no"| retrospective
 
     finalizeTestPlan["Finalize test plan with source links"] --> createComplete["Create COMPLETE.md"]
     createComplete --> ensureDocs["Ensure inline docs on public APIs"]
-    ensureDocs --> captureHistory["Capture session history"]
-    captureHistory --> retrospective["Conduct retrospective"]
-    retrospective --> updateStatus["Update work package plan status"]
-    updateStatus --> removeWorktree["Remove component worktree"]
+    ensureDocs --> retrospective["Conduct retrospective (capture history, retrospective, update status)"]
+    retrospective --> removeWorktree["Remove component worktree"]
     removeWorktree --> selectNext["Select next work package"]
     selectNext --> doneNode(["End"])
 ```
@@ -903,25 +872,18 @@ graph TD
 
 | Role | Technique ID |
 |------|----------|
-| primary | `codebase-comprehension` |
 | supporting | `variable-binding` |
 
 **Steps:**
 
-1. **check-existing-artifacts** — `codebase-comprehension`; search the comprehension folder for related artifacts.
-2. **review-existing** — `codebase-comprehension`; present relevant existing artifacts.
-3. **architecture-survey** — `codebase-comprehension`; top-down survey of structure, modules, dependencies, entry points, patterns.
-4. **key-abstractions** — `codebase-comprehension`; identify core types, traits, interfaces, data structures.
-5. **design-rationale** — `codebase-comprehension`; infer rationale for significant design choices.
-6. **domain-concept-mapping** — `codebase-comprehension`; map technical constructs to domain concepts.
-7. **create-comprehension-artifact** — `manage-artifacts::write-artifact`; write or augment the comprehension artifact.
-8. **initial-deep-dive** — `codebase-comprehension`; mandatory pass that attempts to resolve every open question.
-9. **initial-lens-pass** — `prism/portfolio-analysis` with lenses `pedagogy`, `rejected-paths`.
-10. **update-artifact-initial** — `manage-artifacts::write-artifact`; record initial deep-dive findings.
-11. **revise-initial-questions** — `codebase-comprehension`; revise the Open Questions section.
-12. **deep-dive-loop** — `codebase-comprehension`; optional further exploration via the `deep-dive-iteration` loop.
+1. **build-comprehension** — `codebase-comprehension::survey`; top-down survey covering existing artifacts, structure, key abstractions, design rationale, and domain-concept mapping.
+2. **create-comprehension-artifact** — `manage-artifacts::write-artifact`; write or augment the comprehension artifact.
+3. **initial-deep-dive** — `codebase-comprehension::deep-dive`; mandatory pass that attempts to resolve every open question.
+4. **initial-lens-pass** — `prism/portfolio-analysis` with lenses `pedagogy`, `rejected-paths`.
+5. **update-artifact-initial** — `manage-artifacts::write-artifact`; record initial deep-dive findings.
+6. **revise-initial-questions** — `codebase-comprehension::revise-questions`; revise the Open Questions section.
 
-**Loops:** `deep-dive-iteration` — while `needs_comprehension == true`. Each iteration selects an area (`codebase-comprehension`), performs targeted analysis (`codebase-comprehension`), applies portfolio lenses (`prism/portfolio-analysis`), updates the artifact (`manage-artifacts::write-artifact`), and revises open questions (`codebase-comprehension`), presenting `comprehension-sufficient`.
+**Loops:** `deep-dive-iteration` — while `needs_comprehension == true`. Each iteration selects an area and performs targeted analysis (`codebase-comprehension::deep-dive`), applies portfolio lenses (`prism/portfolio-analysis`), updates the artifact (`manage-artifacts::write-artifact`), and revises open questions (`codebase-comprehension::revise-questions`), presenting `comprehension-sufficient`.
 
 **Checkpoints (1):**
 
@@ -942,13 +904,8 @@ graph TD
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> checkExisting["Check existing comprehension artifacts"]
-    checkExisting --> reviewExisting["Review existing artifacts"]
-    reviewExisting --> archSurvey["Architecture survey"]
-    archSurvey --> keyAbstractions["Key abstractions and data model"]
-    keyAbstractions --> designRationale["Design rationale mapping"]
-    designRationale --> domainMapping["Domain concept mapping"]
-    domainMapping --> createArtifact["Create/augment comprehension artifact"]
+    entryNode(["Entry"]) --> buildComprehension["Build comprehension (existing artifacts, architecture survey, key abstractions, design rationale, domain mapping)"]
+    buildComprehension --> createArtifact["Create/augment comprehension artifact"]
 
     createArtifact --> initialDeepDive["Initial deep-dive (mandatory)"]
     initialDeepDive --> initialLens["Apply portfolio lenses"]

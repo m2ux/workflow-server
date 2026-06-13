@@ -91,22 +91,26 @@ cicd-pipeline-security-audit/
 
 The sequential phases of the audit — each activity represents a distinct stage that must complete before the next begins.
 
-| # | Activity | Purpose | Techniques |
-|---|----------|---------|--------|
-| [01](activities/01-scope-setup.toon) | Scope Setup | Discover targets, inventory workflows, create planning folder | execute-cicd-audit, inventory-workflows |
-| [02](activities/02-reconnaissance.toon) | Reconnaissance | Classify triggers, map permissions, assign scanner agents | execute-cicd-audit, inventory-workflows |
-| [03](activities/03-primary-scan.toon) | Primary Scan | Dispatch S1-Sn scanners, V verification, M merge | execute-cicd-audit, dispatch-scanners, scan-injection-patterns |
-| [04](activities/04-report-generation.toon) | Report Generation | Severity scoring + final report | execute-cicd-audit, score-cicd-severity, write-cicd-report |
+Each activity binds techniques at the step level (`step.technique`). The Supporting column lists the activity's strategy techniques (`techniques.supporting`); the Step-Bound column lists the techniques its steps bind.
+
+| # | Activity | Purpose | Steps | Supporting | Step-Bound Techniques |
+|---|----------|---------|-------|------------|-----------------------|
+| [01](activities/01-scope-setup.toon) | Scope Setup | Discover targets, inventory workflows, create planning folder | 5 | variable-binding, execute-cicd-audit | inventory-workflows |
+| [02](activities/02-reconnaissance.toon) | Reconnaissance | Classify triggers, map permissions, assign scanner agents | 5 | variable-binding, execute-cicd-audit | inventory-workflows |
+| [03](activities/03-primary-scan.toon) | Primary Scan | Dispatch S1-Sn scanners, V verification, M merge | 8 | variable-binding, execute-cicd-audit | dispatch-scanners |
+| [04](activities/04-report-generation.toon) | Report Generation | Severity scoring + final report | 5 | variable-binding, execute-cicd-audit | score-cicd-severity, verify-scan-output, write-cicd-report |
 
 ### Sub-Agent Activities
 
 Delegated work units that run inside Phase 3 — each is executed by a dedicated sub-agent spawned by the orchestrator.
 
-| # | Activity | Agent | Purpose |
-|---|----------|-------|---------|
-| [05](activities/05-sub-workflow-scan.toon) | Per-Submodule Scan | S1-Sn | Apply P1-P7 to all workflow files in assigned submodule |
-| [06](activities/06-sub-verification.toon) | Verification | V | Verify file + pattern coverage across all scanners |
-| [07](activities/07-sub-merge.toon) | Finding Merge | M | Deduplicate, correlate, reconcile findings |
+Sub-agent activities carry `variable-binding` and `execute-sub-agent` as supporting techniques; each binds a detection or analysis technique at the step level.
+
+| # | Activity | Agent | Steps | Purpose | Step-Bound Techniques |
+|---|----------|-------|-------|---------|-----------------------|
+| [05](activities/05-sub-workflow-scan.toon) | Per-Submodule Workflow Scan | S1-Sn | 9 | Apply P1-P7 to all workflow files in assigned submodule | scan-injection-patterns, execute-sub-agent |
+| [06](activities/06-sub-verification.toon) | Scan Verification | V | 4 | Verify file + pattern coverage across all scanners | verify-scan-output |
+| [07](activities/07-sub-merge.toon) | Finding Merge | M | 5 | Deduplicate, correlate, reconcile findings | merge-scan-findings, execute-sub-agent |
 
 ## Techniques
 
@@ -122,7 +126,7 @@ Reusable capabilities that activities invoke — each technique encapsulates a s
 | 05 | [verify-scan-output](./techniques/verify-scan-output.md) | Coverage verification | Sub-agent V (step-level), Report Generation |
 | 06 | [merge-scan-findings](./techniques/merge-scan-findings.md) | Dedup + reconciliation | Sub-agent M (step-level) |
 | 07 | [write-cicd-report](./techniques/write-cicd-report.md) | Report generation | Report Generation |
-| 08 | [execute-sub-agent](./techniques/execute-sub-agent.md) | Sub-agent bootstrap + structured output | Sub-agents S1-Sn, V, M (primary) |
+| 08 | [execute-sub-agent](./techniques/execute-sub-agent.md) | Sub-agent bootstrap + structured output | Sub-agents S1-Sn, V, M (supporting + step-level) |
 
 ## Resources
 

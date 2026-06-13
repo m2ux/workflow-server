@@ -9,6 +9,7 @@ specification-fidelity rules every technique inherits.
 
 | Technique | Capability |
 |-----------|-----------|
+| [intake-sources](intake-sources.md) | Capture and validate the source paths, classify the source type, detect augment-vs-create, load both sources, and record the intake |
 | [analyze-source](analyze-source.md) | Parse the source document against the current specification into a structured analysis report |
 | [update-specification](update-specification.md) | Apply the analysis or correction findings to a complete updated specification |
 | [validate-specification](validate-specification.md) | Validate the updated specification and categorize each issue |

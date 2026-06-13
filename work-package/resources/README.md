@@ -2,7 +2,7 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-The workflow includes 28 resources that provide templates, guidance, and reference material for techniques and activities. Each resource lives as `resources/<id>.md` and is loaded by id (e.g. `get_resource({ resource_id: "pr-description" })`). The numbering system is deprecated — resources are obtained by id only.
+The workflow includes 27 resources that provide templates, guidance, and reference material for techniques and activities. Each resource lives as `resources/<id>.md` and is loaded by id (e.g. `get_resource({ resource_id: "pr-description" })`). The numbering system is deprecated — resources are obtained by id only.
 
 | Resource ID | Title | Purpose |
 |-------------|-------|---------|
@@ -32,5 +32,4 @@ The workflow includes 28 resources that provide templates, guidance, and referen
 | `review-mode` | Review Mode | Complete guide for review mode behavior and PR review formats |
 | `codebase-comprehension` | Codebase Comprehension | Comprehension techniques, artifact template, and deep-dive guidance from reverse engineering and code forensics literature |
 | `assumption-reconciliation` | Assumption Reconciliation | Methodology for iterative assumption resolution through targeted code analysis |
-| `gitnexus-reference` | GitNexus Reference | GitNexus knowledge graph tool workflows and query examples; includes a "Work-package Integration Patterns" section covering pre-edit impact analysis, post-edit detect_changes, diff-aware coverage mapping, orphan-symbol cypher, scope-discipline checks, cluster/process-driven diagrams, complexity/reversibility signals, and public-API doc enumeration |
 | `pr-review-response` | PR Review Response | Guide for analyzing and responding to PR review comments |

@@ -50,7 +50,7 @@ graph TD
 
 **Purpose:** Confirm multi-work-package initiative and identify work packages to be planned.
 
-**Primary Technique:** `assess-initiative-scope`
+**Step Technique:** `assess-initiative-scope` (all steps) · **Supporting:** `variable-binding`
 
 ```mermaid
 graph TD
@@ -80,7 +80,7 @@ graph TD
 
 **Purpose:** Create planning folder structure with initial documentation skeletons.
 
-**Techniques:** `version-control::initialize-folder`, `setup-planning-folder`
+**Step Techniques:** `version-control::initialize-folder` (bind planning folder), `setup-planning-folder` (skeletons) · **Supporting:** `variable-binding`
 
 ```mermaid
 graph TD
@@ -114,7 +114,7 @@ graph TD
 
 **Purpose:** Perform completion or context analysis depending on whether continuing previous work or starting new.
 
-**Primary Technique:** `analyze-initiative-context`
+**Step Technique:** `analyze-initiative-context` (all steps) · **Supporting:** `variable-binding`
 
 ```mermaid
 graph TD
@@ -132,7 +132,7 @@ graph TD
         d1 -->|context| a2b --> a3
         a3 --> a4 --> cp1
         cp1 -->|proceed| Next([→ package-planning])
-        cp1 -->|revise| a2a
+        cp1 -->|revise| a1
     end
 ```
 
@@ -154,7 +154,7 @@ The analysis type is chosen at the **Analysis Type Selection** checkpoint, which
 
 **Purpose:** Define scope, dependencies, effort, and success criteria for each work package.
 
-**Primary Technique:** `plan-work-package-scope`
+**Step Technique:** `plan-work-package-scope` (all steps) · **Supporting:** `variable-binding`, `scatter-gather`
 
 ```mermaid
 graph TD
@@ -198,7 +198,7 @@ The define-scope through document-plan steps run inside a `forEach` loop over `w
 
 **Purpose:** Prioritize work packages based on dependencies, value, risk, and effort.
 
-**Primary Technique:** `prioritize-packages`
+**Step Technique:** `prioritize-packages` (all steps) · **Supporting:** `variable-binding`
 
 ```mermaid
 graph TD
@@ -211,7 +211,7 @@ graph TD
         
         r1 --> r2 --> r3 --> r4 --> cp1
         cp1 -->|accept| Next([→ finalize-roadmap])
-        cp1 -->|adjust| r3
+        cp1 -->|adjust| r1
         cp1 -->|revisit plans| Back([→ package-planning])
     end
 ```
@@ -233,7 +233,7 @@ graph TD
 
 **Purpose:** Complete roadmap documentation with timeline, navigation, and success criteria.
 
-**Primary Technique:** `document-roadmap`
+**Step Technique:** `document-roadmap` (all steps) · **Supporting:** `variable-binding`
 
 ```mermaid
 graph TD
@@ -269,7 +269,7 @@ graph TD
 
 **Purpose:** Execute each planned work package in priority order by triggering the work-package workflow.
 
-**Primary Technique:** `orchestrate-package-execution`
+**Step Technique:** `orchestrate-package-execution` (all steps) · **Supporting:** `variable-binding`, `scatter-gather`
 
 ```mermaid
 graph TD

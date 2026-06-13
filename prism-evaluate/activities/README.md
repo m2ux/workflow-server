@@ -6,15 +6,17 @@
 
 Pipeline sequence with five blocking checkpoints; the final two activities run only when the user opts into resolution.
 
-| # | ID | Name | Technique | Checkpoint | Artifacts |
-|---|-----|------|-------|------------|-----------|
-| 00 | `scope-definition` | Define Evaluation Scope | plan-evaluation | confirm-scope | — |
-| 01 | `dimension-planning` | Plan Dimension Analysis | plan-evaluation | confirm-plan | evaluation-plan.md |
-| 02 | `execute-analysis` | Execute Prism Analyses | — | — | (prism artifacts via trigger) |
-| 03 | `consolidate-report` | Consolidate Evaluation Report | compose-evaluation-report | — | EVALUATION-REPORT.md |
-| 04 | `deliver-results` | Deliver Evaluation Results | compose-evaluation-report | resolution-offer | — |
-| 05 | `resolution-dialogue` | Resolution Dialogue | resolve-findings | finding-decision | MITIGATION-PLAN.md |
-| 06 | `apply-mitigations` | Apply Accepted Mitigations | resolve-findings | confirm-apply | (modified target) |
+Steps bind their domain technique via `step.technique`; activities declare only `techniques.supporting` (strategy techniques). The bound domain technique per activity is listed in the [workflow Techniques table](../README.md#techniques).
+
+| # | ID | Name | Primary | Supporting | Checkpoint | Artifacts |
+|---|-----|------|---------|------------|------------|-----------|
+| 00 | `scope-definition` | Define Evaluation Scope | — | variable-binding | confirm-scope | — |
+| 01 | `dimension-planning` | Plan Dimension Analysis | — | variable-binding | confirm-plan | evaluation-plan.md |
+| 02 | `execute-analysis` | Execute Prism Analyses | — | variable-binding, scatter-gather | — | (prism artifacts via trigger) |
+| 03 | `consolidate-report` | Consolidate Evaluation Report | — | variable-binding | — | EVALUATION-REPORT.md |
+| 04 | `deliver-results` | Deliver Evaluation Results | — | variable-binding | resolution-offer | — |
+| 05 | `resolution-dialogue` | Resolution Dialogue | — | variable-binding, scatter-gather | finding-decision | MITIGATION-PLAN.md |
+| 06 | `apply-mitigations` | Apply Accepted Mitigations | — | variable-binding | confirm-apply | (modified target) |
 
 ## Transition Chain
 

@@ -29,9 +29,9 @@ This workflow guides the complete lifecycle of a single work package through 14 
 
 - **Activities:** See [activities/README.md](./activities/README.md) for detailed per-activity documentation including mermaid diagrams, steps, checkpoints, artifacts, and transitions.
 - **Techniques:** See [techniques/](./techniques/) for the technique inventory and protocol flows.
-- **Resources:** See [resources/README.md](./resources/README.md) for the resource index (28 resources).
+- **Resources:** See [resources/README.md](./resources/README.md) for the resource index (27 resources).
 
-Each activity binds its step operations through `step.technique`. The activity's `techniques` block names a `primary` technique (the operation that defines the activity) and a `supporting[]` list of strategy techniques. Strategy and binding are supplied by the universal `meta` techniques [`variable-binding`](../meta/techniques/variable-binding.md) (present on every activity, governing how steps read and write workflow variables) and [`scatter-gather`](../meta/techniques/scatter-gather.md) (present on activities with `forEach` iteration loops). Steps reference operation techniques either by bare id (e.g. `design-philosophy`) or by namespaced id (e.g. `cargo-operations::run-suite`).
+Each activity binds its step operations through `step.technique`. The activity's `techniques` block no longer names a single `primary` — every step carries its own operation binding. The block lists only a `supporting[]` set of strategy techniques, supplied by the universal `meta` techniques [`variable-binding`](../meta/techniques/variable-binding.md) (present on every activity, governing how steps read and write workflow variables) and [`scatter-gather`](../meta/techniques/scatter-gather.md) (present on activities that aggregate per-item outputs across `forEach` iteration loops). Steps reference operation techniques either by bare id (e.g. `create-test-plan`) or by namespaced id (e.g. `cargo-operations::run-suite`, `design-philosophy::classify`).
 
 ---
 
@@ -83,24 +83,24 @@ graph TD
 
 ## Activities Summary
 
-The **Primary Technique** is the activity's `techniques.primary` (the operation defining the activity); some activities orchestrate several step-level operations and declare no single primary. The **Supporting Techniques** column lists the activity's `techniques.supporting[]` — the strategy meta techniques that govern variable binding and iteration.
+Under the bound-step model no activity declares a primary technique — each step carries its own `step.technique` binding, so the only technique an activity declares at the block level is its `techniques.supporting[]`. The **Supporting Techniques** column lists those strategy meta techniques: `variable-binding` is present on every activity, and `scatter-gather` is added on activities that aggregate per-item outputs across `forEach` loops. The **Prefix** column shows the server-assigned `artifactPrefix` (matching the activity number) prepended to bare artifact names at write time; activities that produce no prefixed artifacts show `—`.
 
-| # | Activity | Primary Technique | Supporting Techniques | Checkpoints | artifactPrefix |
-|---|----------|--------------|-------------------|-------------|----------------|
-| 01 | [Start Work Package](./activities/README.md#01-start-work-package) | — | `variable-binding` | 8 | — |
-| 02 | [Design Philosophy](./activities/README.md#02-design-philosophy) | `design-philosophy` | `variable-binding` | 2 | `02` |
-| 14 | [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) | `codebase-comprehension` | `variable-binding` | 2 | — |
-| 03 | [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) | `requirements-elicitation` | `variable-binding` | 2 | `03` |
-| 04 | [Research](./activities/README.md#04-research-optional) | `research` | `variable-binding` | 2 | `04` |
-| 05 | [Implementation Analysis](./activities/README.md#05-implementation-analysis) | `implementation-analysis` | `variable-binding`, `scatter-gather` | 2 | `05` |
-| 06 | [Plan & Prepare](./activities/README.md#06-plan--prepare) | `plan-prepare` | `variable-binding` | 1 | `06` |
-| 07 | [Assumptions Review](./activities/README.md#07-assumptions-review) | `review-assumptions` | `variable-binding`, `scatter-gather` | 3 | `07` |
-| 08 | [Implement](./activities/README.md#08-implement) | `implement-task` | `variable-binding`, `scatter-gather` | 4 | `08` |
-| 09 | [Post-Impl Review](./activities/README.md#09-post-implementation-review) | — | `variable-binding` | 3 | `09` |
-| 10 | [Validate](./activities/README.md#10-validate) | — | `variable-binding` | 0 | — |
-| 11 | [Strategic Review](./activities/README.md#11-strategic-review) | `strategic-review` | `variable-binding` | 1 | `11` |
-| 12 | [Submit for Review](./activities/README.md#12-submit-for-review) | `update-pr` | `variable-binding` | 3 | — |
-| 13 | [Complete](./activities/README.md#13-complete) | `finalize-documentation` | `variable-binding` | 0 | `13` |
+| # | Activity | Supporting Techniques | Checkpoints | Prefix |
+|---|----------|-------------------|-------------|--------|
+| 01 | [Start Work Package](./activities/README.md#01-start-work-package) | `variable-binding` | 10 | — |
+| 02 | [Design Philosophy](./activities/README.md#02-design-philosophy) | `variable-binding` | 3 | `02` |
+| 14 | [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) | `variable-binding` | 1 | — |
+| 03 | [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) | `variable-binding` | 2 | `03` |
+| 04 | [Research](./activities/README.md#04-research-optional) | `variable-binding` | 4 | `04` |
+| 05 | [Implementation Analysis](./activities/README.md#05-implementation-analysis) | `variable-binding`, `scatter-gather` | 2 | `05` |
+| 06 | [Plan & Prepare](./activities/README.md#06-plan--prepare) | `variable-binding` | 1 | `06` |
+| 07 | [Assumptions Review](./activities/README.md#07-assumptions-review) | `variable-binding`, `scatter-gather` | 2 | `07` |
+| 08 | [Implement](./activities/README.md#08-implement) | `variable-binding`, `scatter-gather` | 4 | `08` |
+| 09 | [Post-Impl Review](./activities/README.md#09-post-implementation-review) | `variable-binding` | 3 | `09` |
+| 10 | [Validate](./activities/README.md#10-validate) | `variable-binding` | 0 | — |
+| 11 | [Strategic Review](./activities/README.md#11-strategic-review) | `variable-binding` | 1 | `11` |
+| 12 | [Submit for Review](./activities/README.md#12-submit-for-review) | `variable-binding` | 6 | — |
+| 13 | [Complete](./activities/README.md#13-complete) | `variable-binding` | 0 | `13` |
 
 See [activities/README.md](./activities/README.md) for detailed per-activity documentation with mermaid diagrams, step descriptions, checkpoint tables, artifact lists, and transition conditions.
 
@@ -189,7 +189,7 @@ start-work-package → design-philosophy → [research →] implementation-analy
 
 ## Artifact Prefixing
 
-Each review and documentation activity declares an `artifactPrefix` matching its activity number. Techniques produce bare artifact names (e.g., `code-review.md`) and the activity's prefix is prepended at write time.
+Each review and documentation activity is assigned a server-computed `artifactPrefix` matching its activity number. Techniques produce bare artifact names (e.g., `code-review.md`) and the prefix is prepended at write time.
 
 **Convention:**
 
@@ -399,15 +399,18 @@ See `workflow.toon` for the complete variable declarations with default values.
 
 ## Appendix: Workflow Rules
 
-The following 7 rules are declared at the workflow level and apply to all activities:
+The following 6 rules are declared at the workflow level (`workflow.toon` `rules[]`) and apply to all activities:
 
-1. Agents MUST NOT skip or auto-resolve blocking checkpoints (`blocking: true`) — these require explicit user selection. Advisory checkpoints (`blocking: false` with `autoAdvanceMs` and `defaultOption`) present a recommendation with a timed default; the user may override before the timer elapses. Both types are legitimate; the violation is bypassing a blocking checkpoint without user input.
-2. Ask, don't assume — Clarify requirements before acting.
-3. Summarize, then proceed — Provide brief status before asking to continue.
-4. One task at a time — Complete current work before starting new work.
-5. Explicit approval — Get clear "yes" or "proceed" before major actions (within activity checkpoints only — NOT between activities).
-6. Decision points require user choice — When issues are found, user decides whether to proceed or loop back.
-7. **ORCHESTRATION MODEL:** This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (role: `meta-orchestrator`, techniques from `meta/techniques`) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (role: `activity-worker`, techniques from `meta/techniques`) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a `checkpoint_pending` result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. **CONSTRAINT:** Only ONE level of sub-agent indirection (the worker).
+1. Ask, don't assume — Clarify requirements before acting.
+2. Summarize, then proceed — Provide brief status before asking to continue.
+3. One task at a time — Complete current work before starting new work.
+4. Explicit approval — Get clear "yes" or "proceed" before major actions (within activity checkpoints only — NOT between activities).
+5. Decision points require user choice — When issues are found, user decides whether to proceed or loop back.
+6. Git configuration is user-owned. Validate-action messages describe a misconfiguration but never prescribe config-changing commands; the user fixes their own environment at whatever scope (system, global, local) they prefer.
+
+**Checkpoint discipline (applies workflow-wide):** Agents MUST NOT skip or auto-resolve blocking checkpoints (`blocking: true`) — these require explicit user selection. Advisory checkpoints (`blocking: false` with `autoAdvanceMs` and `defaultOption`) present a recommendation with a timed default; the user may override before the timer elapses. Both types are legitimate; the violation is bypassing a blocking checkpoint without user input.
+
+**Orchestration model:** This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (role: `meta-orchestrator`, techniques from `meta/techniques`) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A persistent worker sub-agent (role: `activity-worker`, techniques from `meta/techniques`) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a `checkpoint_pending` result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. The worker is resumed across activities to preserve context. **CONSTRAINT:** Only ONE level of sub-agent indirection (the worker).
 
 ---
 

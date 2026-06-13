@@ -46,29 +46,33 @@ graph TD
 
 ## Activities
 
-| # | Activity | Technique | Description |
-|---|----------|-------|-------------|
-| 00 | **Discover Changes** | `diff-upstream` | Diff upstream prisms/ against current resources, categorize changes |
-| 01 | **Review Changes** | `review-change-set` | Present change summary, user confirms scope and exclusions |
-| 02 | **Import Resources** | `sync-resources` | Copy/rename/delete resource files, commit per change type |
-| 03 | **Update Routing** | `update-skill-routing` | Fix renamed refs, add goal-mapping entries, expand catalogs |
-| 04 | **Update Docs** | `update-prism-docs` | Rebuild resource README, prompt guide, model sensitivity |
-| 05 | **Verify** | `verify-prism-consistency` | Check for stale refs, routing mismatches, count/index errors |
-| 06 | **Commit and Submit** | `submit-update` | Create branch, push, create PR |
+Each step binds its technique via `step.technique`. The Step Technique column names the technique an activity's steps run; every activity declares `variable-binding` as its supporting strategy technique.
+
+| # | Activity | Steps | Step Technique | Supporting | Description |
+|---|----------|-------|----------------|------------|-------------|
+| 00 | **Discover Changes** | 5 | `diff-upstream` | `variable-binding` | Diff upstream prisms/ against current resources, categorize changes |
+| 01 | **Review Changes** | 2 | `review-change-set` | `variable-binding` | Present change summary, user confirms scope and exclusions |
+| 02 | **Import Resources** | 5 | `sync-resources` | `variable-binding` | Copy/rename/delete resource files, commit per change type |
+| 03 | **Update Routing** | 5 | `update-skill-routing` | `variable-binding` | Fix renamed refs, add goal-mapping entries, expand catalogs |
+| 04 | **Update Documentation** | 4 | `update-prism-docs` | `variable-binding` | Rebuild resource README, prompt guide, model sensitivity |
+| 05 | **Verify Consistency** | 6 | `verify-prism-consistency` | `variable-binding` | Check for stale refs, routing mismatches, count/index errors |
+| 06 | **Commit and Submit** | 4 | `submit-update` | `variable-binding` | Create branch, push, create PR |
 
 ---
 
 ## Techniques
 
-| # | Technique | Capability |
-|---|-------|------------|
-| 00 | `diff-upstream` | Diff upstream prisms against current resources, classify changes by type and family |
-| 01 | `sync-resources` | Apply file changes: copy modified, git mv renames, import new with indexed names, remove deleted |
-| 02 | `update-skill-routing` | Update goal-mapping matrix, portfolio catalog, model sensitivity, resource lists in all prism techniques |
-| 03 | `update-prism-docs` | Rebuild resource catalog, prompt guide entries, model sensitivity table, file structure |
-| 04 | `verify-prism-consistency` | Verify content integrity, stale references, prompt routing, counts, and duplicate indices |
-| 05 | `review-change-set` | Present the categorized change set for review and apply user exclusion adjustments |
-| 06 | `submit-update` | Ensure a feature branch, push commits, open a pull request, and report the result |
+| Technique | Bound by | Capability |
+|-----------|----------|------------|
+| `diff-upstream` | Discover Changes | Diff upstream prisms against current resources, classify changes by type and family |
+| `review-change-set` | Review Changes | Present the categorized change set for review and apply user exclusion adjustments |
+| `sync-resources` | Import Resources | Apply file changes: copy modified, git mv renames, import new with indexed names, remove deleted |
+| `update-skill-routing` | Update Routing | Update goal-mapping matrix, portfolio catalog, model sensitivity, resource lists in all prism techniques |
+| `update-prism-docs` | Update Documentation | Rebuild resource catalog, prompt guide entries, model sensitivity table, file structure |
+| `verify-prism-consistency` | Verify Consistency | Verify content integrity, stale references, prompt routing, counts, and duplicate indices |
+| `submit-update` | Commit and Submit | Ensure a feature branch, push commits, open a pull request, and report the result |
+
+In addition, every activity declares the `variable-binding` strategy technique under `techniques.supporting`.
 
 ---
 
@@ -84,7 +88,7 @@ User provides:
 Workflow executes:
 1. Discovers 16 new, 28 modified, 4 renamed, 0 deleted prisms
 2. Presents summary for user review
-3. Imports resources (4 commits: sync, rename, import, deprecate)
+3. Imports resources (up to 4 commits: sync modified, apply renames, import new, remove deleted)
 4. Updates plan-analysis, portfolio-analysis, behavioral-pipeline, orchestrate-prism
 5. Updates READMEs with expanded catalog and prompt guide
 6. Verifies no stale references or routing mismatches
@@ -129,6 +133,7 @@ workflows/prism-update/
 ├── workflow.toon
 ├── README.md
 ├── activities/
+│   ├── README.md
 │   ├── 00-discover-changes.toon
 │   ├── 01-review-changes.toon
 │   ├── 02-import-resources.toon
