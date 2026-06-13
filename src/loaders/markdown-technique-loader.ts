@@ -241,7 +241,7 @@ interface IndexParse {
   capability: string;
   inputs: Array<{ id: string; description?: string; required?: boolean; components?: Record<string, string>; default?: string }> | undefined;
   protocol: ProtocolBlock[] | undefined;
-  output: Array<{ id: string; description?: string; artifact?: { name: string }; components?: Record<string, string> }> | undefined;
+  outputs: Array<{ id: string; description?: string; artifact?: { name: string }; components?: Record<string, string> }> | undefined;
   rules: Record<string, string | string[]> | undefined;
 }
 
@@ -262,13 +262,25 @@ function parseTechniqueIndex(raw: string, sourcePath: string, id: string): Index
   const capability = bodyParagraphs(capabilitySection.body);
   if (!capability) throw new MarkdownTechniqueParseError(`Empty '## Capability' section at ${sourcePath}`);
 
+  // The interface sections have exactly one canonical spelling: plural `## Inputs` / `## Outputs`.
+  // Reject the singular (or parenthesised-plural) variants so a mis-titled section fails loudly
+  // instead of having its declarations silently dropped by the section lookup below.
+  const banned = new Set(['input', 'output', 'output(s)']);
+  for (const section of sections) {
+    if (banned.has(section.title.trim().toLowerCase())) {
+      throw new MarkdownTechniqueParseError(
+        `Non-canonical interface header '## ${section.title.trim()}' at ${sourcePath} — use the plural '## Inputs' / '## Outputs'`,
+      );
+    }
+  }
+
   return {
     id,
     version,
     capability,
     inputs: parseInputsSection(findSection(sections, 'Inputs')),
     protocol: parseProtocolSection(findSection(sections, 'Protocol')),
-    output: parseOutputsSection(findSection(sections, 'Outputs') ?? findSection(sections, 'Output')),
+    outputs: parseOutputsSection(findSection(sections, 'Outputs')),
     rules: parseRulesSection(findSection(sections, 'Rules')),
   };
 }
@@ -370,11 +382,11 @@ function stripStepOrdinal(title: string): string {
   return title.replace(/^\d+\.\s*/, '').trim();
 }
 
-function parseOutputsSection(section: Section | undefined): IndexParse['output'] {
+function parseOutputsSection(section: Section | undefined): IndexParse['outputs'] {
   if (!section) return undefined;
   const items = splitSections(section.body, 3);
   if (items.length === 0) return undefined;
-  const result: NonNullable<IndexParse['output']> = [];
+  const result: NonNullable<IndexParse['outputs']> = [];
   for (const item of items) {
     const { description, components, reserved } = parseEntrySubsections(item.body, 'artifact');
     const out: {
@@ -453,7 +465,7 @@ function buildTechnique(parsed: IndexParse, sourcePath: string, techniqueId: str
   };
   if (parsed.inputs && parsed.inputs.length > 0) technique['inputs'] = parsed.inputs;
   if (parsed.protocol && parsed.protocol.length > 0) technique['protocol'] = parsed.protocol;
-  if (parsed.output && parsed.output.length > 0) technique['output'] = parsed.output;
+  if (parsed.outputs && parsed.outputs.length > 0) technique['outputs'] = parsed.outputs;
   if (parsed.rules && Object.keys(parsed.rules).length > 0) technique['rules'] = parsed.rules;
 
   const result = safeValidateTechnique(technique);

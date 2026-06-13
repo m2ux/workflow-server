@@ -74,10 +74,10 @@
       "additionalProperties": false,
       "description": "Single output entry: id (required, generic hyphen-delimited), optional description, components, and artifact (for persistence)"
     },
-    "outputDefinition": {
+    "outputsDefinition": {
       "type": "array",
       "items": { "$ref": "#/definitions/outputItemDefinition" },
-      "description": "What the skill produces: one or more named outputs, each with optional name, description, and components"
+      "description": "What the technique produces: one or more named outputs, each with optional name, description, and components"
     },
     "technique": {
       "type": "object",
@@ -100,7 +100,7 @@
         },
         "inputs": { "$ref": "#/definitions/inputsDefinition" },
         "protocol": { "$ref": "#/definitions/protocolDefinition" },
-        "output": { "$ref": "#/definitions/outputDefinition" }
+        "outputs": { "$ref": "#/definitions/outputsDefinition" }
       },
       "required": ["id", "version", "capability"],
       "additionalProperties": false

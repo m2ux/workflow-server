@@ -163,7 +163,7 @@ Each `next_activity` call returns an HMAC-signed trace token in `_meta.trace_tok
 
 ## Techniques
 
-A technique is a markdown definition of a capability. Its file carries frontmatter with `metadata.version`, a `## Capability` section, `## Inputs` / `## Output(s)` sections whose `####` sub-sections name the components (with reserved `#### artifact` and `#### default` components), a `## Protocol` section (`### N. Title` blocks or a flat list), and a `## Rules` section. Failure handling lives inline in the protocol step that triggers it. A technique can contain nested techniques. A technique body carries capability, flow, inputs, protocol, and output.
+A technique is a markdown definition of a capability. Its file carries frontmatter with `metadata.version`, a `## Capability` section, `## Inputs` / `## Outputs` sections whose `####` sub-sections name the components (with reserved `#### artifact` and `#### default` components), a `## Protocol` section (`### N. Title` blocks or a flat list), and a `## Rules` section. Failure handling lives inline in the protocol step that triggers it. A technique can contain nested techniques. A technique body carries capability, flow, inputs, protocol, and outputs.
 
 ### Technique Addressing
 

@@ -212,6 +212,41 @@ describe('technique-loader', () => {
       expect(result.success).toBe(false);
     });
 
+    it('rejects a non-canonical singular interface header (## Output / ## Input / ## Output(s))', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(dir, { recursive: true });
+      for (const banned of ['## Output', '## Input', '## Output(s)']) {
+        await writeFile(
+          join(dir, 'singular.md'),
+          ['---', 'metadata:', '  version: 1.0.0', '---', '',
+           '## Capability', '', 'Cap.', '',
+           banned, '', '### result', '', 'The outcome.', ''].join('\n'),
+          'utf-8',
+        );
+        const result = await readTechnique('singular', tempDir);
+        expect(result.success).toBe(false);
+      }
+    });
+
+    it('loads the canonical plural interface headers (## Inputs / ## Outputs)', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(dir, 'plural.md'),
+        ['---', 'metadata:', '  version: 1.0.0', '---', '',
+         '## Capability', '', 'Cap.', '',
+         '## Inputs', '', '### in_a', '', 'An input.', '',
+         '## Outputs', '', '### out_a', '', 'An output.', ''].join('\n'),
+        'utf-8',
+      );
+      const result = await readTechnique('plural', tempDir);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.inputs?.map((i) => i.id)).toContain('in_a');
+        expect(result.value.outputs?.map((o) => o.id)).toContain('out_a');
+      }
+    });
+
     it('loads a minimal flat technique with frontmatter + Capability', async () => {
       const dir = join(tempDir, 'meta', 'techniques');
       await mkdir(dir, { recursive: true });
@@ -402,7 +437,7 @@ describe('technique-loader', () => {
           '## Inputs', '',
           '### root-input', '', 'Provided by the root contract.', '',
           '### shared-id', '', 'Root version — technique should override.', '',
-          '## Output', '',
+          '## Outputs', '',
           '### result', '', 'The outcome.', '',
         ].join('\n'),
         'utf-8',
@@ -429,8 +464,8 @@ describe('technique-loader', () => {
         // Technique-local description wins on id conflict.
         const shared = result.value.inputs?.find(i => i.id === 'shared-id');
         expect(shared?.description).toMatch(/Technique override wins/);
-        // Output inherited from root (technique declares none).
-        expect(result.value.output?.map(o => o.id)).toContain('result');
+        // Outputs inherited from root (technique declares none).
+        expect(result.value.outputs?.map(o => o.id)).toContain('result');
       }
     });
 

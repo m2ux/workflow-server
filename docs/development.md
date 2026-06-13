@@ -156,11 +156,25 @@ Run `npm test -- --run` for the live count and pass/fail summary.
 
 ## Validating Workflows
 
-Use the validation script to check workflow TOON files:
+Several layered checks validate workflow data:
 
 ```bash
+# Structural / schema validation of TOON files
 npx tsx scripts/validate-workflow.ts workflows/work-package/workflow.toon
+npx tsx scripts/validate-workflow-toon.ts <workflow-path>   # whole-directory sweep
+
+# Every step.technique reference resolves through the loader
+npx tsx scripts/check-all-refs.ts
+
+# Binding fidelity: every technique_args key is a declared input, and every
+# interpolation/condition read resolves to a producer (declared id, $-local,
+# workflow.toon variable, or set-target). Fails only on NEW drift beyond
+# scripts/binding-fidelity-baseline.json (re-snapshot intentional changes with
+# --update-baseline).
+npm run check:binding
 ```
+
+The binding-fidelity guard also runs as a Vitest test (`tests/binding-fidelity.test.ts`), so `npm test` fails on new binding drift.
 
 ## Branch Structure
 
@@ -192,7 +206,7 @@ git push origin workflows
 
 1. Create a new directory in `workflows/{workflow-id}/`
 2. Create `workflow.toon` workflow definition in that directory
-3. Validate with: `npx tsx scripts/validate-workflow.ts <path>`
+3. Validate with: `npx tsx scripts/validate-workflow.ts <path>`, then run `npx tsx scripts/check-all-refs.ts` and `npm run check:binding` to confirm references resolve and no binding drift
 4. Commit to the `workflows` branch
 
 ## Adding New Resources
@@ -217,7 +231,7 @@ A technique file has:
 
 - **YAML frontmatter** carrying `metadata.version`.
 - **`## Capability`** — what the technique does.
-- **`## Inputs`** / **`## Output(s)`** (optional) — each `### entry` may carry `####` sub-section components, plus the reserved `#### artifact` (output persistence filename) and `#### default` (input default).
+- **`## Inputs`** / **`## Outputs`** (optional) — each `### entry` may carry `####` sub-section components, plus the reserved `#### artifact` (output persistence filename) and `#### default` (input default).
 - **`## Protocol`** — ordered blocks `### N. Title` with step bullets, or a flat list. Failure handling is written inline in the protocol step that gives rise to it.
 - **`## Rules`** — constraints the technique enforces.
 

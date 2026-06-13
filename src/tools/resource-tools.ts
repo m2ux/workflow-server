@@ -543,7 +543,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             const allStepIds = [
               ...(activity.steps?.map(s => s.id) ?? []),
               ...(activity.loops?.flatMap(l => l.steps?.map(s => s.id) ?? []) ?? []),
-            ];
+            ].filter((id): id is string => id !== undefined);
             throw new Error(`Step '${step_id}' not found in activity '${state.currentActivity}'. Available steps: [${allStepIds.join(', ')}]`);
           }
 

@@ -15,7 +15,7 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'fs';
 import { join, resolve, basename } from 'path';
 import { pathToFileURL } from 'url';
 import { decodeToonRaw as decodeToon } from '../src/utils/toon.js';
-import { safeValidateActivity } from '../src/schema/activity.schema.js';
+import { safeValidateActivity, populateStepIds } from '../src/schema/activity.schema.js';
 
 export interface ValidationResult {
   workflow: string;
@@ -33,6 +33,12 @@ export function validateActivityFile(filePath: string): { passed: boolean; error
     }
     const result = safeValidateActivity(decoded);
     if (result.success) {
+      // Surface resolved step-id collisions and unresolvable (no id, no technique) steps.
+      try {
+        populateStepIds(result.data);
+      } catch (e: unknown) {
+        return { passed: false, errors: [(e as Error).message] };
+      }
       return { passed: true };
     } else {
       return {
