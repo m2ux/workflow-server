@@ -4,24 +4,24 @@ name: Planning Folder Setup
 description: Create planning folder structure with initial documentation skeletons
 problem: Need organized folder structure for multi-package planning artifacts
 techniques:
-  supporting[3]:
-    - "version-control::initialize-folder"
-    - "work-package/manage-artifacts::create-readme"
-    - "work-package/manage-artifacts::write-artifact"
+  supporting[1]:
+    - "variable-binding"
 steps[4]:
   - id: create-folder
     name: Bind planning folder
-    description: "Bind planning_folder_path to the canonical absolute path the server returned in the get_workflow summary — the planning folder under the server's OWN workspace .engineering root, which the server has already created. Use version-control::initialize-folder only to derive the slug (initiative_name: <kebab-case slug>) when you need it; do NOT mkdir a folder relative to the CWD or the target repo. All multi-package planning artifacts are written under that absolute path."
+    description: "Derive the planning slug for the initiative folder."
     technique: "version-control::initialize-folder"
   - id: create-start-here
     name: Create START-HERE.md
-    description: "Create {planning_folder_path}/START-HERE.md skeleton with header and placeholders"
+    description: "Create the START-HERE.md skeleton in the planning folder."
+    technique: setup-planning-folder
   - id: create-readme
     name: Create README.md
-    description: "Create {planning_folder_path}/README.md skeleton for navigation"
+    description: "Create the README.md skeleton in the planning folder."
+    technique: setup-planning-folder
   - id: present-structure
     name: Present folder structure
-    description: Show user the created folder structure
+    description: Present the created folder structure for user confirmation
 artifacts[2]:
   - id: start-here-skeleton
     name: START-HERE.md

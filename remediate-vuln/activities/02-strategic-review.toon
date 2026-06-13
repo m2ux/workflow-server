@@ -1,28 +1,30 @@
 id: strategic-review
-version: 1.0.0
+version: 1.1.0
 name: Strategic Review
 description: "Review the implementation to ensure changes are minimal and focused."
 problem: User needs to ensure changes are minimal and focused
 required: true
+techniques:
+  supporting[1]:
+    - "variable-binding"
 artifacts[2]:
   - id: strategic-review-doc
     name: "strategic-review-{n}.md"
     location: planning
-    description: "Documents review findings, identified artifacts, and cleanup actions. NN follows artifact numbering sequence, n increments on successive reviews."
+    description: "Documents review findings, identified artifacts, and cleanup actions. n increments on successive reviews."
   - id: architecture-summary-doc
     name: "architecture-summary.md"
     location: planning
-    description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes. See architecture-summary resource for template."
-techniques:
+    description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes."
 steps[9]:
   - id: diff-review
     name: Review diff
-    description: "Examine all changes on the branch for scope and relevance"
-    technique: review-strategy
+    description: "Examine all changes on the branch for scope and relevance."
+    technique: strategic-review::review-scope
   - id: resign-unsigned-commits
     name: Re-sign unsigned commits
-    description: "Only when resign_unsigned_commits_requested is true. In target_path, rebase onto MERGE_BASE (same resolution as validate scan) and re-sign each commit: e.g. git rebase --exec 'git commit --amend --no-edit -S' MERGE_BASE (or equivalent interactive rebase) so every commit in MERGE_BASE..HEAD ends with a good GPG signature. Then git log --format='%h %G?' MERGE_BASE..HEAD to confirm no N/B remains. If push is required, use git push --force-with-lease. Set unsigned_commits_in_pr to false and resign_unsigned_commits_requested to false on success; document any failure in strategic-review-{n}.md."
-    technique: manage-git
+    description: "Rebase and re-sign every commit so each carries a valid GPG signature."
+    technique: strategic-review::resign-commits
     condition:
       type: simple
       variable: resign_unsigned_commits_requested
@@ -30,20 +32,20 @@ steps[9]:
       value: true
   - id: identify-artifacts
     name: Identify artifacts
-    description: "Find investigation artifacts, over-engineering, orphaned infrastructure"
-    technique: review-strategy
+    description: "Find investigation artifacts, over-engineering, and orphaned infrastructure."
+    technique: strategic-review::review-scope
   - id: ensure-changes-folder-entry
     name: Ensure changes/ fragment when required
-    description: "If a directory named changes exists at the repository root of target_path (Towncrier, release notes fragments, or similar), inspect existing fragment filenames and bodies. Determine whether this work package already has a matching fragment (same issue/ticket id in the name or clearly linked content). If not, add one new fragment under changes/ that matches the naming pattern and structure (sections, bullets, RST/Markdown style) of the existing files. Commit it on the feature branch if appropriate. If there is no changes/ directory, skip this step."
-    technique: review-strategy
+    description: "Maintain the changes/ changelog fragment when the target repo uses one."
+    technique: strategic-review::verify-fragment
   - id: document-findings
     name: Document findings
-    description: "Create strategic-review-{n}.md with items that should be removed or simplified"
-    technique: review-strategy
+    description: "Write strategic-review-{n}.md categorizing the findings."
+    technique: strategic-review::document-findings
   - id: document-cleanup-recommendations
     name: Document Cleanup Recommendations
-    description: "Document recommended cleanup actions as review feedback. Do NOT apply changes."
-    technique: review-strategy
+    description: "Record cleanup actions as review recommendations without applying them."
+    technique: strategic-review::recommend-cleanup
     condition:
       type: simple
       variable: is_review_mode
@@ -51,8 +53,8 @@ steps[9]:
       value: true
   - id: apply-cleanup
     name: Apply cleanup
-    description: "If cleanup needed, remove identified artifacts and update review document with actions taken"
-    technique: review-strategy
+    description: "Apply the approved cleanup and commit the artifacts on the branch."
+    technique: strategic-review::apply-cleanup
     condition:
       type: simple
       variable: is_review_mode
@@ -60,15 +62,16 @@ steps[9]:
       value: true
   - id: create-architecture-summary
     name: Create architecture summary
-    description: "Create architecture-summary.md using the architecture-summary resource template. Include system context diagram, package diagram (if module structure affected), and sequence diagrams for key flows."
-    technique: review-strategy
+    description: "Create architecture-summary.md with stakeholder diagrams."
+    technique: strategic-review::summarize-architecture
   - id: analyze-strategic-findings
     name: Analyze Strategic Findings
-    description: "Analyze the severity of strategic review findings. If significant scope issues, over-engineering, or investigation artifacts are found, recommend fix-findings. If findings are minor, recommend acceptable. Set recommended_strategic_option accordingly."
+    description: "Assess finding severity and recommend a disposition."
+    technique: analyze-findings
     actions[1]:
       - action: set
         target: recommended_strategic_option
-        description: "Set to the recommended strategic review option based on findings analysis"
+        description: "Recommended strategic review option from the findings assessment."
 checkpoints[2]:
   - id: unsigned-commits-prompt
     name: Unsigned or unverified commits

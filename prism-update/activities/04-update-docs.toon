@@ -1,11 +1,12 @@
 id: update-docs
-version: 1.0.0
+version: 1.1.0
 name: Update Documentation
 description: "Update prism workflow documentation to reflect the current resource catalog, model sensitivity, and prompt guide."
 problem: Documentation references resource counts, family groupings, and prism names that have changed
+required: true
 techniques:
   supporting[1]:
-    - update-prism-docs
+    - "variable-binding"
 
 entryActions[1]:
   - action: validate
@@ -16,18 +17,22 @@ steps[4]:
   - id: update-resources-readme
     name: Update resources README
     description: "Rebuild the full catalog table organized by family."
+    technique: update-prism-docs
     required: true
   - id: update-workflow-readme
     name: Update workflow README
-    description: "Update resource table, model sensitivity, prompt guide entries, and file structure."
+    description: "Update the resource table, model sensitivity, prompt guide, and file structure."
+    technique: update-prism-docs
     required: true
-  - id: update-skills-readme
+  - id: update-techniques-readme
     name: Update techniques README
-    description: "Update resource counts in technique descriptions."
+    description: "Update resource counts in the technique descriptions."
+    technique: update-prism-docs
     required: true
   - id: commit-docs
     name: Commit documentation
-    description: "Stage and commit all modified documentation files."
+    description: "Commit the modified documentation files."
+    technique: update-prism-docs
     required: true
 
 artifacts[1]:
@@ -40,8 +45,6 @@ artifacts[1]:
 transitions[1]:
   - to: verify
     isDefault: true
-
-required: true
 
 outcome[1]:
   - "All documentation reflects current resource catalog"

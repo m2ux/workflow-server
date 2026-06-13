@@ -5,11 +5,13 @@ description: "Validate the updated specification against structural, identifier-
 problem: The updated specification must be checked for quality and conformance before it can be finalized
 required: true
 techniques:
-  primary: validate-specification
+  supporting[1]:
+    - "variable-binding"
 steps[3]:
   - id: validate
     name: Validate Specification
-    description: "Apply validate-specification to check the working specification against the validation rubric (conformance and source coverage) and produce a categorized verdict in the validation report."
+    description: "Check the working specification for conformance and source coverage, producing a categorized verdict."
+    technique: validate-specification
   - id: check-source-coverage
     name: Check Source Coverage
     description: "Confirm every normative source statement maps to a requirement via the source-coverage matrix, and set source_coverage_complete."

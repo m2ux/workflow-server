@@ -25,10 +25,10 @@ List of completed package [plan documents](../resources/package-plan-template.md
 
 ### 1. Update Start Here
 
-- Use attached [roadmap-template](../resources/roadmap-template.md) (roadmap-template) for the final `START-HERE.md` format
+- Build `{start_here}` in the [final START-HERE.md format](../resources/roadmap-template.md#start-heremd-final-format)
 - Write executive summary: 2-3 sentences on purpose, scope, and expected impact
-- Complete the work packages table, sequencing rows by `{priority_order}` and drawing effort and dependencies from the `{package_plans}`
-  - If not all packages have completed plan documents, complete the missing package plans before finalizing the roadmap
+- Complete the work packages table, sequencing rows by `{priority_order}` and drawing effort and dependencies from `{package_plans}`  
+  > If not all packages have completed plan documents, complete the missing package plans before finalizing the roadmap.
 - Add status legend and initialize all packages as Planned
 
 ### 2. Update Readme
@@ -40,7 +40,7 @@ List of completed package [plan documents](../resources/package-plan-template.md
 
 - Group packages into implementation phases based on dependency chains
 - Calculate phase durations from effort estimates (use the [duration formula](../resources/roadmap-template.md#duration-formula))
-- Present timeline as a phase table with packages and estimated duration
+- Present timeline as a phase table with packages and estimated duration, capturing the overall span as `{timeline_estimate}`
 
 ### 4. Document Success
 
@@ -49,8 +49,7 @@ List of completed package [plan documents](../resources/package-plan-template.md
 
 ### 5. Present Roadmap
 
-- Present the completed roadmap to the user for final review
-- Set roadmap_complete to true after user confirms
+- Present the completed `{start_here}` roadmap to the user for final review
 
 ## Outputs
 
@@ -58,7 +57,7 @@ List of completed package [plan documents](../resources/package-plan-template.md
 
 Completed [START-HERE.md](../resources/roadmap-template.md#start-heremd-final-format) with executive summary, status, timeline, and criteria
 
-#### start_here_filename
+#### artifact
 
 `START-HERE.md`
 
@@ -66,12 +65,10 @@ Completed [START-HERE.md](../resources/roadmap-template.md#start-heremd-final-fo
 
 Updated [README.md](../resources/roadmap-template.md#readmemd-final-format) with navigation links
 
-#### readme_filename
+#### artifact
 
 `README.md`
 
-## Rules
+### timeline_estimate
 
-### complete-before-implementation
-
-Roadmap must be fully documented and approved before implementation begins
+Overall timeline span for the initiative, derived from phase durations

@@ -5,11 +5,13 @@ description: "Parse the source document against the current specification and pr
 problem: Requirement changes expressed in the source document must be identified and mapped before the specification can be updated
 required: true
 techniques:
-  primary: analyze-source
+  supporting[1]:
+    - "variable-binding"
 steps[2]:
   - id: analyze
     name: Analyze Source
-    description: "Apply analyze-source to parse the source document and current specification into the requirements analysis report, including a completeness sweep that traces every normative source statement into the source-coverage matrix (source reference, new/updated/deprecated requirements, coverage matrix, document updates required, quality issues, implementation notes)."
+    description: "Parse the source document and current specification into the requirements analysis report."
+    technique: analyze-source
   - id: record-analysis
     name: Record Analysis
     description: "Record the completed analysis report in the planning folder."

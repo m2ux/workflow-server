@@ -3,15 +3,14 @@ version: 2.0.0
 name: Synthesis Pass
 description: "Run the synthesis lens against each full-prism unit's structural and adversarial artifacts."
 techniques:
-  supporting[1]:
-    - full-prism
+  supporting[2]:
+    - "variable-binding"
+    - "scatter-gather"
 artifacts[1]:
   - id: synthesis-artifact
-    name: "{unit_output_subdir}synthesis.md"
+    name: "{current_unit.unit_output_subdir}synthesis.md"
     location: analysis
     description: "Final reconciliation per unit: refined conservation law, refined meta-law, definitive classification, deepest finding"
-rules[1]:
-  - "The worker MUST load the synthesis lens (resource 02 or 05) not the structural or adversarial lens."
 loops[1]:
   - id: synthesis-unit-cycle
     name: Synthesis Unit Cycle
@@ -19,29 +18,16 @@ loops[1]:
     variable: current_unit
     over: analysis_units
     maxIterations: 100
-    steps[4]:
-      - id: check-mode
-        name: Check Unit Mode
-        description: "Skip this unit if current_unit.pipeline_mode is not 'full-prism'."
-        required: true
-        condition:
-          type: simple
-          variable: current_unit.pipeline_mode
-          operator: "=="
-          value: full-prism
-      - id: load-lens
-        name: Load Synthesis Lens
-        description: "Load the synthesis lens resource 02 (works for all target types)"
-        required: true
-        condition:
-          type: simple
-          variable: current_unit.pipeline_mode
-          operator: "=="
-          value: full-prism
+    steps[2]:
       - id: execute-lens
         name: Execute Synthesis Operations
-        description: "Apply the synthesis lens against current_unit.target + structural-analysis.md (ANALYSIS 1) + adversarial-analysis.md (ANALYSIS 2). Produce the final corrected result."
+        description: "Apply the synthesis lens against the unit target and its structural and adversarial artifacts."
         required: true
+        technique: full-prism
+        technique_args:
+          lens_resource_index: "02"
+          target_content: "{current_unit.target}"
+          prior_artifact_paths: all_artifact_paths
         condition:
           type: simple
           variable: current_unit.pipeline_mode
@@ -49,8 +35,17 @@ loops[1]:
           value: full-prism
       - id: write-artifact
         name: Write Synthesis Artifact
-        description: "Write the synthesis output to {unit_output_dir}/synthesis.md. Append path to all_artifact_paths."
+        description: "Write the synthesis artifact and accumulate its path."
         required: true
+        technique: full-prism
+        technique_args:
+          lens_resource_index: "02"
+          target_content: "{current_unit.target}"
+          prior_artifact_paths: all_artifact_paths
+        actions[1]:
+          - action: set
+            target: all_artifact_paths
+            description: "Accumulated artifact paths across units."
         condition:
           type: simple
           variable: current_unit.pipeline_mode

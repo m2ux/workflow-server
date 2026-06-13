@@ -21,6 +21,14 @@ Target specification (component, revision, scope).
 
 Path to the repository root
 
+### audit_prompt_template
+
+Path to the audit prompt template whose accessibility is confirmed during setup.
+
+### target_submodule
+
+The target component name used to build the planning-folder name.
+
 ## Protocol
 
 ### 1. Extract Target
@@ -47,6 +55,15 @@ Path to the repository root
 
 - Produce a sorted file inventory listing all source files with line counts, largest first. Save to the `{planning_folder_path}`. Together with the confirmed target, revision, and dependency scan results, this completes the `{audit_target}` ready for analysis.
 
+### 7. Create Planning Folder
+
+- Create `{planning_folder_path}` following the naming pattern `YYYY-MM-DD-NN-{target_submodule}-security-audit`, where `NN` continues the numbering of existing audit folders at the same root.
+- Initialize the `{start_here}` overview inside `{planning_folder_path}` from the [start-here](../resources/start-here.md) orientation, recording audit target, commit, methodology, and artifact index.
+
+### 8. Load Template
+
+- Confirm the audit prompt template is accessible at `{audit_prompt_template}`. If it is not at its expected path, fail with an error showing the expected path.
+
 ## Outputs
 
 ### audit_target
@@ -68,3 +85,12 @@ File inventory sorted by size
 #### reference_documents
 
 Reference document paths (if any, quarantined for later phases)
+
+### start_here
+
+Session overview with audit target, commit, methodology, and artifact index.
+
+#### artifact
+
+`START-HERE.md`
+

@@ -1,11 +1,12 @@
 id: update-routing
-version: 1.0.0
+version: 1.1.0
 name: Update Routing
 description: "Update prism workflow techniques to reflect resource changes."
 problem: Skill routing tables reference prism names and indices that may have changed
+required: true
 techniques:
   supporting[1]:
-    - update-skill-routing
+    - "variable-binding"
 
 entryActions[1]:
   - action: validate
@@ -15,23 +16,28 @@ entryActions[1]:
 steps[5]:
   - id: update-plan-analysis
     name: Update plan-analysis technique
-    description: "Add goal-mapping entries for new prisms. Fix renamed references. Update resource list and rules."
+    description: "Update goal-mapping, routing sections, and renamed references in plan-analysis."
+    technique: update-skill-routing
     required: true
   - id: update-portfolio-analysis
     name: Update portfolio-analysis technique
-    description: "Expand lens catalog and selection guide. Fix renamed references. Update resource list."
+    description: "Update the lens catalog, selection guide, and resource list in portfolio-analysis."
+    technique: update-skill-routing
     required: true
   - id: update-behavioral-pipeline
     name: Update behavioral-pipeline technique
-    description: "Fix any renamed references to behavioral lens names."
+    description: "Fix renamed behavioral lens references in behavioral-pipeline."
+    technique: update-skill-routing
     required: true
   - id: update-orchestrate-prism
     name: Update orchestrate-prism technique
-    description: "Update index mappings and fix renamed references."
+    description: "Update index mappings and renamed references in orchestrate-prism."
+    technique: update-skill-routing
     required: true
   - id: commit-routing
     name: Commit routing updates
-    description: "Stage and commit all modified technique files."
+    description: "Commit the modified technique files."
+    technique: update-skill-routing
     required: true
 
 artifacts[1]:
@@ -44,8 +50,6 @@ artifacts[1]:
 transitions[1]:
   - to: update-docs
     isDefault: true
-
-required: true
 
 outcome[2]:
   - "All skill routing tables reflect current resource state"

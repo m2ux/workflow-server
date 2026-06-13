@@ -1,21 +1,13 @@
 id: primary-scan
-version: 1.0.0
+version: 1.1.0
 name: Primary Scan
 description: "Run per-submodule scanner agents and merge their findings."
 problem: Each submodule's GitHub Actions workflows must be scanned for all seven vulnerability classes, findings verified for completeness, and merged into a unified finding set.
 techniques:
-  supporting[1]:
+  supporting[2]:
+    - variable-binding
     - execute-cicd-audit
 required: true
-rules[8]:
-  - "CONCURRENT DISPATCH: All scanner agents (S1-Sn) MUST be dispatched simultaneously in a single batch"
-  - "DISPATCH COMPLETENESS GATE: scanners_dispatched MUST equal scanners_assigned. This is a HARD STOP."
-  - "Each scanner agent follows the sub-workflow-scan activity and applies all seven patterns (P1-P7)"
-  - "Scanner output: each agent writes s{n}-{submodule}.json to the planning folder"
-  - "After all scanners return, dispatch verification agent (V) following sub-verification activity"
-  - "After verification, dispatch merge agent (M) following sub-merge activity"
-  - "The orchestrator MUST NOT analyze workflow files directly — all detection is delegated to scanner sub-agents"
-  - "FINDING COUNT RECONCILIATION: M produces a reconciliation table. Unaccounted MUST equal zero. This is a HARD STOP."
 entryActions[1]{action,message}:
   log,Starting primary scan — dispatching per-submodule scanner agents
 steps[8]:
@@ -23,40 +15,54 @@ steps[8]:
     name: "Dispatch All Scanner Agents"
     required: true
     technique: dispatch-scanners
-    description: "Dispatch all per-submodule scanner agents (S1-Sn) concurrently in a single batch. Each agent receives its submodule path, workflow file list, reconnaissance data, and workflow-server bootstrap instructions to load the sub-workflow-scan activity. Every assigned scanner MUST be dispatched."
+    description: "Dispatch all per-submodule scanner agents concurrently in a single batch."
   - id: verify-dispatch-completeness
-    name: "Verify Dispatch Completeness (HARD STOP)"
+    name: "Verify Dispatch Completeness"
     required: true
     technique: dispatch-scanners
-    description: "Compare scanners_dispatched against scanners_assigned. Dispatch missing scanners before proceeding. HARD STOP."
+    description: "Confirm every assigned scanner was dispatched, re-dispatching any shortfall."
   - id: collect-scanner-results
     name: Collect All Scanner Results
     required: true
-    description: "Wait for all scanner agents to return. Verify each scanner produced a valid output file (s{n}-{submodule}.json) in the planning folder."
+    technique: dispatch-scanners
+    description: "Collect each scanner's returned output."
   - id: verify-scanner-output-files
-    name: "Verify Scanner Output Files Exist in Planning Folder"
+    name: "Verify Scanner Output Files Exist"
     required: true
-    description: "Each sub-agent writes its own output file per its activity's rules. The orchestrator verifies all expected JSON files exist in the planning folder: one per dispatched scanner (s{n}-{submodule}.json). If any file is missing, re-dispatch the scanner. This step MUST complete before V or M are dispatched."
+    description: "Confirm every dispatched scanner's output file exists in the planning folder, re-dispatching any whose file is missing."
   - id: dispatch-verification-agent
     name: "Dispatch Verification Sub-Agent (V)"
     required: true
     technique: dispatch-scanners
-    description: "Dispatch the verification sub-agent with bootstrap instructions to load the sub-verification activity. V receives all scanner output file paths and the workflow file inventory. V mechanically validates output completeness and produces a gap report. The orchestrator MUST NOT self-certify verification — V sets verification_complete."
+    description: "Dispatch the verification sub-agent to produce the coverage gap report."
   - id: act-on-gap-report
     name: "Act on Verification Gap Report"
     required: true
-    description: "Read V's gap report. For each gap, re-dispatch a targeted scanner for uncovered files or patterns. Collect follow-up results. If no gaps found, proceed to merge agent dispatch."
+    technique: dispatch-scanners
+    description: "Re-dispatch targeted scanners for each gap in the verification report."
   - id: dispatch-merge-agent
     name: "Dispatch Merge Sub-Agent (M)"
     required: true
     technique: dispatch-scanners
-    description: "Dispatch the merge sub-agent with bootstrap instructions to load the sub-merge activity. M receives all scanner output files and the severity rubric (resource 02). M performs deduplication, cross-pattern correlation, and reconciliation in a fresh context window. The orchestrator MUST NOT perform the merge inline."
+    description: "Dispatch the merge sub-agent to deduplicate, correlate, and reconcile findings."
   - id: validate-reconciliation
-    name: "Validate Finding Count Reconciliation (HARD STOP)"
+    name: "Validate Finding Count Reconciliation"
     required: true
-    description: "Read M's reconciliation table. Verify Unaccounted == 0 for every scanner. If Unaccounted > 0, re-dispatch M. This is a HARD STOP — report generation MUST NOT begin with Unaccounted > 0."
-transitions[1]{to,isDefault}:
-  report-generation,true
+    description: "Confirm the reconciliation table shows zero unaccounted findings for every scanner, re-dispatching the merge sub-agent otherwise."
+transitions[1]:
+  - to: report-generation
+    isDefault: true
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: verification_complete
+          operator: ==
+          value: true
+        - type: simple
+          variable: merge_complete
+          operator: ==
+          value: true
 exitActions[2]{action,message}:
   log,Primary scan complete — all findings merged and reconciled
   set,primary_scan_complete=true

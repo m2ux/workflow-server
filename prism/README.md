@@ -164,9 +164,8 @@ graph TD
 | 01 | `full-prism` | Execute one isolated pass of the Full Prism pipeline | Worker |
 | 02 | `portfolio-analysis` | Run 2+ complementary portfolio lenses | Standalone |
 | 03 | `plan-analysis` | Detect scope, classify targets, plan analysis strategy | Planning |
-| 04 | `orchestrate-prism` | Dispatch isolated workers, manage the analysis pipeline | Orchestrator |
-| 05 | `behavioral-pipeline` | Execute 4+1 behavioral pipeline with labeled synthesis | Worker |
-| 06 | `generate-report` | Produce clean final report from analysis artifacts | Worker |
+| 04 | `behavioral-pipeline` | Execute 4+1 behavioral pipeline with labeled synthesis | Worker |
+| 05 | `generate-report` | Produce clean final report from analysis artifacts | Worker |
 
 **Detailed documentation:** See [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md) for the inherited base contract; each technique's `techniques/<slug>.md` file documents its protocol flow.
 
@@ -271,7 +270,7 @@ Unlike the work-package workflow (which resumes a persistent worker), the prism 
 | `all_artifact_paths` | array | Accumulated list of all artifact paths across units |
 | `behavioral_output_paths` | object | Map of behavioral lens name to artifact path |
 | `behavioral_synthesis_output_path` | string | File path to behavioral synthesis artifact |
-| `report_output_path` | string | File path to the generated REPORT.md |
+| `report_path` | string | File path to the generated REPORT.md |
 
 ---
 
@@ -297,7 +296,6 @@ workflows/prism/
 │   ├── full-prism.md                     # Full Prism worker pass
 │   ├── portfolio-analysis.md             # Portfolio lenses (40+ lenses)
 │   ├── plan-analysis.md                  # Analysis planning (58 goal mappings)
-│   ├── orchestrate-prism.md              # Pipeline orchestration
 │   ├── behavioral-pipeline.md            # Behavioral pipeline worker pass
 │   └── generate-report.md                # Report generation from analysis artifacts
 └── resources/

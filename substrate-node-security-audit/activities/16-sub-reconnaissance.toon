@@ -5,64 +5,54 @@ description: "Perform codebase reconnaissance and build the function registry."
 problem: "The orchestrator previously performed 9 heavy reconnaissance steps inline — reading Cargo.toml, scanning hundreds of source files, building crate maps and function registries. This consumed 10-15K tokens of context before primary agent dispatch, reducing the orchestrator's effective budget for coordination tasks. Since the orchestrator's role is coordination (dispatch, verify, route), the analysis work should be delegated to a sub-agent with a dedicated context window."
 techniques:
   supporting[1]:
-    - map-codebase
+    - "variable-binding"
 required: false
-
-rules[8]:
-  - "This activity is dispatched by the orchestrator during reconnaissance — it does NOT appear in the main workflow transition graph"
-  - "The sub-agent receives context variables: target_submodule, target_commit, in_scope, out_of_scope, planning_folder_path, and the target profile (resource 06) for config struct enumeration and file coverage obligations"
-  - "Explicitly list EVERY pallet and primitive crate — do not summarize or group"
-  - "Map which crates are runtime (Wasm), native (node binary), shared primitives, or off-chain tooling"
-  - "Build the function registry for ALL priority-1 and priority-2 crates (§1.2 step 8)"
-  - "Sort .rs files by line count — the top 10 files MUST be in the registry"
-  - "Enumerate consensus-critical configuration structs per the target profile. Record missing constructor invariant validation as reconnaissance leads."
-  - "FILE OUTPUT: The sub-agent MUST write all outputs as JSON files to the planning folder. The 'r' designator identifies this as the Reconnaissance agent. Required files: {planning_folder_path}/r-crate-map.json (crate classification), {planning_folder_path}/r-function-registry.json (function registry), {planning_folder_path}/r-reconnaissance-data.json (trust boundaries, consensus paths, pallet hooks, config structs, data flows, safety overrides, large files list, reconnaissance leads). These files are consumed by S, the orchestrator's domain mapping step, and V."
-
 steps[9]:
   - id: identify-crates
     name: Identify All Crates
     required: true
     technique: map-codebase
-    description: "Read workspace Cargo.toml and enumerate every crate. Classify each by architectural category (runtime, native, shared primitives, off-chain tooling) and priority (1=consensus-critical, 2=trust-boundary, 3=tooling)."
+    description: "Enumerate and classify every crate by category and priority."
   - id: identify-trust-boundaries
     name: Identify Trust Boundaries
     required: true
     technique: map-codebase
-    description: "Enumerate all trust boundary entry points: RPC, inherent data, chain specs, config files, databases, file system, native/Wasm boundary."
+    description: "Enumerate every trust-boundary entry point."
   - id: identify-consensus-paths
     name: Identify Consensus Paths
     required: true
     technique: map-codebase
-    description: "Map all consensus-critical code paths: block production, block verification, inherent data creation/validation, genesis initialization, authority selection."
+    description: "Map every consensus-critical code path."
   - id: identify-config-structs
     name: Identify Consensus Configuration Structs
     required: true
     technique: map-codebase
-    description: "Per target profile: enumerate consensus-critical config structs, check constructor invariants, record gaps as reconnaissance leads."
+    description: "Enumerate the consensus-critical config structs and record invariant gaps as leads."
   - id: identify-pallet-hooks
     name: Identify Pallet Hooks
     required: true
     technique: map-codebase
-    description: "Enumerate framework hooks (on_initialize, on_finalize, on_idle, offchain_worker) for every pallet."
+    description: "Enumerate every pallet's framework hooks."
   - id: map-data-flows
     name: Map Data Flows
     required: true
     technique: map-codebase
-    description: "Trace data flows through priority-1 paths using forward tracing (entry to sink) and backward tracing (sensitive op to source)."
+    description: "Trace data flows through the priority-1 paths."
   - id: check-send-sync
     name: Check Safety Boundary Overrides
     required: true
     technique: map-codebase
-    description: "Identify all unsafe impl Send/Sync and other safety analysis overrides for priority review."
+    description: "Identify the safety-analysis overrides for priority review."
   - id: build-function-registry
     name: Build Function Registry
     required: true
     technique: build-function-registry
-    description: "Enumerate critical functions for all priority-1/2 crates. For each pallet: hooks, ProvideInherent methods, extrinsics, internal handlers. For service modules: initialization functions, subcommand handlers. For data source crates: primary data-fetching functions, pagination logic."
+    description: "Build the function registry for the priority-1/2 crates."
   - id: write-output-files
     name: Write Output Files to Planning Folder
     required: true
-    description: "Write r-crate-map.json, r-function-registry.json, and r-reconnaissance-data.json to the planning folder. These files are the canonical inputs for the S agent and the orchestrator's domain mapping step."
+    technique: build-function-registry
+    description: "Write the reconnaissance output files to the planning folder."
 
 outcome[5]:
   - All crates explicitly identified and classified in crate-map.json

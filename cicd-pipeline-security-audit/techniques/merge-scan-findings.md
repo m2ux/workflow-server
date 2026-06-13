@@ -44,13 +44,17 @@ The per-submodule scanner [output files](../resources/sub-agent-output-schema.md
 
 ### 5. Write Output
 
-- Produce the `{merged_findings}` and the reconciliation table
+- Produce `{merged_findings}` and `{reconciliation}`.
 
 ## Outputs
 
 ### merged_findings
 
 Unified [finding set](../resources/intermediate-artifact-schemas.md#merged-findings)
+
+#### artifact
+
+`merged-findings.json`
 
 #### findings
 
@@ -67,6 +71,10 @@ Informational items without clear source-to-sink flow
 ### reconciliation
 
 Per-scanner finding mapping to merged findings — the [reconciliation table](../resources/intermediate-artifact-schemas.md#reconciliation)
+
+#### artifact
+
+`reconciliation-table.json`
 
 ## Rules
 

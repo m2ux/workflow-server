@@ -5,37 +5,8 @@ description: "Multi-agent primary audit via concurrent dispatch with verificatio
 problem: "A single agent cannot achieve sufficient depth across all crates, and the orchestrator's context window is saturated by the time it needs to merge and verify agent outputs. Multi-agent orchestration with dedicated verification (V) and merge (M) agents provides: (a) focused context windows per security domain, (b) mechanical output validation in a fresh context window (V), (c) finding-lossless merge in a fresh context window (M), (d) targeted re-dispatch for gaps before findings are merged."
 techniques:
   supporting[1]:
-    - execute-audit
+    - "variable-binding"
 required: true
-rules[28]:
-  - "Each Group A agent must read EVERY .rs file in its assigned crate, including large submodules"
-  - "For cross-crate checks (§3.2, §3.4, §3.8, §3.10), the orchestrator includes supplementary files per the target profile"
-  - "Group B runs ALL §2 grep patterns and mechanical checks against the full in-scope directory set"
-  - "Group D applies resource 03 (toolkit checklist) — MANDATORY — and MUST produce the per-function enumeration table, checklist matrix, and coverage attestation"
-  - "Every agent must return findings as a structured list with fields: id, file, line, title, severity, checklist_item, evidence"
-  - "Invariant extraction (§5.15) is mandatory for every priority-1 function before applying the §3 checklist"
-  - "CONTAMINATION GUARD: Sub-agent prompts MUST NOT include content from reference reports. All findings independently derived."
-  - "CONCURRENT DISPATCH: All primary agents (A1-A7, B, D1, D2) dispatch simultaneously in a single batch per the target profile. Every assigned agent MUST be dispatched — skipping any agent is a HARD STOP."
-  - "COVERAGE GATE: Every .rs file >200 lines in priority-1/2 crates must be read by a §3-applying sub-agent. Files read only during reconnaissance do not count. The target profile's File Coverage Obligations table is the authoritative assignment list."
-  - "§3.3 TRACE TABLE VERIFICATION: Pallet agents with deposit_event() partial-success paths must produce BOTH the per-field event trace table AND the event-vs-storage struct diff table."
-  - "§3.5 STORAGEINIT VERIFICATION: The node startup agent (A3) must produce a StorageInit construction site enumeration covering online and offline subcommand paths, plus genesis HEADER construction."
-  - "GROUP D OUTPUT VALIDATION: Verify function enumeration table, per-function checklist matrix, and coverage attestation. Re-dispatch if absent."
-  - "MANDATORY TABLE AUTO-ELEVATION: The orchestrator scans mandatory tables for FAIL/DIFF/Missing/No cells and auto-promotes to findings before structured-merge."
-  - "EVENT CONSTRUCTION SITE VERIFICATION: Verify §3.3 trace tables cover ALL event construction sites identified in the vulnerability domain map. Dispatch follow-up for uncovered sites."
-  - "CONFIGURATION INVARIANT SCOPE: §3.4 applies to both inherent provider tuples AND off-chain configuration structs identified in the vulnerability domain map."
-  - "SUPPLEMENTARY FILES: Include cross-crate supplementary files per the target profile for each agent."
-  - "RECONNAISSANCE LEAD INCLUSION: Every lead in the leads_routing table from reconnaissance MUST appear in the corresponding agent's prompt. An unrouted lead that matches an agent's scope is a dispatch defect."
-  - "CONFIGURATION-VARIANT PANIC TRIAGE: The node startup agent's (A3) prompt MUST include the instruction to enumerate ALL valid DatabaseConfig/StorageConfig variants for each expect()/unwrap() on config-derived Option values. The verification agent (V) checks for the configuration-variant triage table; if absent, the orchestrator re-dispatches."
-  - "GENESIS PARSING PATH ENUMERATION: The node startup agent (A3) MUST enumerate ALL genesis data parsing paths (StorageInit, genesis extrinsics, genesis header, chain spec properties) and verify each for silent truncation patterns. The StorageInit construction site table from §3.5 is necessary but NOT sufficient — extrinsics parsing and header construction are separate paths that must be traced independently."
-  - "NODE BINARY SCOPE SPLIT: The node binary is split into A3 (startup/config: service.rs, command.rs, cfg/, chain_spec/) and A4 (consensus/network: inherent_data.rs, main_chain_follower.rs, rpc.rs, remaining node/src/). See target profile for detailed scope and check assignments."
-  - "VERIFICATION AGENT DISPATCH: After collecting all primary agent results, the orchestrator MUST dispatch a verification sub-agent (V) following the sub-output-verification activity. The verification agent mechanically validates output completeness against the target profile. The orchestrator acts on the gap report before proceeding to structured merge. The orchestrator MUST NOT self-certify verification — the verification_complete variable MUST be set by V's output, not by the orchestrator."
-  - "ERROR-PATH STORAGE PERSISTENCE: For every StorageMap::insert() followed by a fallible operation (host API call, serialization, event construction), the Group A agent MUST verify that a failed fallible operation either (a) reverts the insert or (b) the insert is intentionally unconditional with documented justification. An insert that persists when the subsequent operation fails and the handler returns None/Err is a finding — the storage entry becomes orphaned."
-  - "AGENT OUTPUT PERSISTENCE: Every sub-agent MUST write its own structured output as a JSON file to the planning folder (per its activity's FILE OUTPUT rule). The orchestrator verifies all expected files exist BEFORE dispatching V or M. If any file is missing, the orchestrator re-dispatches the agent. File naming convention: {designator}-{scope}.json (e.g., a1-nto.json, b-static-analysis.json, d1-ledger-helpers.json). Agent designators are single letters or letter+number: a1-a7, b, d1, d2, r, s, v, m."
-  - "MERGE AGENT DISPATCH: The structured merge and dedup-and-map steps MUST be performed by a dedicated merge sub-agent (M) following the sub-structured-merge activity — NOT inline by the orchestrator. M operates in a fresh context window receiving only the persisted agent output files and scoring resources. The orchestrator's context is saturated at this point; inline merge is the primary cause of finding regression across runs."
-  - "FINDING COUNT RECONCILIATION GATE: After structured merge, the merge agent (M) MUST produce a reconciliation table: | Agent | Findings Submitted | In Merge Table | Explicitly Deduplicated | Unaccounted |. Unaccounted MUST equal zero. This is a HARD STOP — report generation MUST NOT begin with Unaccounted > 0."
-  - "OBSERVATION ELEVATION GATE: The merge agent (M) reviews every reconnaissance_leads and additional_observations entry from all agent outputs, PLUS every emergent_domains entry from s-architectural-analysis.json and every leads entry from r-reconnaissance-data.json. Emergent domains are architectural vulnerability hypotheses produced by the S agent during reconnaissance — they represent cross-crate security risks that may not have been verified by any single primary agent. Each MUST be dispositioned as 'captured by F-X', 'elevated to F-Y', or 'not applicable with justification'. Observations describing divergent code paths, missing validation, error-path state persistence, or trust boundary amplification are ALWAYS security-relevant and must be elevated."
-  - "§3.10 DEFAULT-FAIL FOR CROSS-CHAIN PALLETS: For any agent reviewing a pallet listed in the target profile's Cross-Chain Pallets section, the orchestrator MUST include in the agent's prompt: '§3.10 applies as DEFAULT-FAIL. The pallet MUST validate cross-chain timestamps against the local chain clock within a configurable tolerance window. If no such freshness validation exists, §3.10 is FAIL regardless of whether the correct timestamp source is used. §3.10 has two dimensions: source correctness AND freshness validation. Both must PASS for §3.10 to PASS.'"
-  - "CALIBRATION BENCHMARKS IN AGENT PROMPTS: The orchestrator MUST include relevant calibration benchmark entries from resource 06 (target-profile) in each agent's prompt. Agents use these as severity anchors when scoring findings. This reduces the orchestrator's post-hoc calibration burden and produces more consistent severity ratings across agents."
 entryActions[1]{action,message}:
   log,Starting primary audit — concurrent multi-agent dispatch
 steps[13]:
@@ -43,60 +14,68 @@ steps[13]:
     name: "Dispatch All Primary Agents"
     required: true
     technique: dispatch-sub-agents
-    description: "Dispatch all primary agents concurrently in a single batch per the target profile: A1, A2, A3, A4, A5, A6, A7, B, D1, D2. Every assigned agent MUST be dispatched."
+    description: "Dispatch all primary agents concurrently in a single batch."
   - id: verify-checklist-prompt-coverage
     name: "Verify Checklist-to-Prompt Coverage"
     required: true
     technique: verify-sub-agent-output
-    description: "Verify every §3 checklist item (§3.1–§3.14) appears in at least one agent's prompt. Dispatch follow-up for uncovered items."
+    description: "Verify every §3 checklist item appears in at least one agent prompt."
   - id: verify-dispatch-completeness
     name: "Verify Dispatch Completeness (HARD STOP)"
     required: true
     technique: verify-sub-agent-output
-    description: "Compare agents_dispatched against agents_assigned. Dispatch missing agents before proceeding. HARD STOP."
+    description: "Verify every assigned agent was dispatched."
   - id: collect-all
     name: Collect All Results
-    description: "Wait for all primary sub-agents to return. Collect structured finding lists from each agent."
+    technique: dispatch-sub-agents
+    description: "Collect the structured findings from every primary agent."
     required: true
   - id: verify-agent-output-files
     name: "Verify Agent Output Files Exist in Planning Folder"
     required: true
-    description: "Each sub-agent writes its own output file per its activity's FILE OUTPUT rule. The orchestrator verifies all expected JSON files exist in the planning folder: one per dispatched agent ({designator}-{scope}.json). Expected files: a1-nto.json, a2-midnight-ledger.json, a3-node-startup.json, a4-node-consensus.json, a5-runtime.json, a6-primitives.json, a7-governance.json, b-static-analysis.json, d1-ledger-helpers.json, d2-toolkit.json. If any file is missing, re-dispatch the agent. This step MUST complete before V or M are dispatched."
+    technique: dispatch-sub-agents
+    technique_args:
+      expected_output_files: "a1-nto.json, a2-midnight-ledger.json, a3-node-startup.json, a4-node-consensus.json, a5-runtime.json, a6-primitives.json, a7-governance.json, b-static-analysis.json, d1-ledger-helpers.json, d2-toolkit.json"
+    description: "Verify every primary agent output file exists before dispatching the verification or merge agents."
   - id: dispatch-verification-agent
     name: "Dispatch Verification Sub-Agent (V)"
     required: true
     technique: dispatch-sub-agents
-    description: "Dispatch the verification sub-agent following the sub-output-verification activity. The agent receives all persisted agent output files, the target profile, file inventory, vulnerability domain map, and dispatch manifest. It mechanically validates output completeness and produces a gap report with re-dispatch recommendations and table-derived findings. The orchestrator MUST NOT self-certify verification — V sets verification_complete=true."
+    description: "Dispatch the verification sub-agent."
   - id: act-on-gap-report
     name: "Act on Verification Gap Report"
     required: true
-    description: "Read the verification agent's gap report. For each re-dispatch recommendation, dispatch a targeted follow-up agent with the specific scope and check identified. Collect follow-up results and persist them as additional JSON files. If no gaps were found, proceed directly to merge agent dispatch."
+    technique: dispatch-sub-agents
+    description: "Re-dispatch targeted follow-up agents for each gap in the verification report."
   - id: extract-table-derived-findings
     name: "Extract Table-Derived Findings"
     required: true
-    description: "Incorporate the table-derived findings produced by the verification agent into the finding sources for structured merge. These are mechanically extracted from mandatory table cells and supplement the primary agent findings."
+    technique: merge-findings
+    description: "Add the verification agent's table-derived findings to the finding sources for merge."
   - id: dispatch-merge-agent
     name: "Dispatch Merge Sub-Agent (M)"
     required: true
     technique: dispatch-sub-agents
-    description: "Dispatch the merge sub-agent following the sub-structured-merge activity. M receives: all persisted agent output JSON files, the severity rubric (resource 02), the calibration benchmark table (from resource 06), the §3.10 DEFAULT-FAIL rule, and the observation elevation rules. M performs the structured merge, deduplication, severity scoring, reconciliation, and observation elevation in a fresh context window. The orchestrator MUST NOT perform the merge inline — this is the primary cause of finding regression across runs."
+    description: "Dispatch the merge sub-agent."
   - id: validate-reconciliation
     name: "Validate Finding Count Reconciliation (HARD STOP)"
     required: true
     technique: verify-sub-agent-output
-    description: "Read M's reconciliation table. Verify Unaccounted == 0 for every agent. If Unaccounted > 0, re-dispatch M with the specific agent output files that have unaccounted findings. This is a HARD STOP — report generation MUST NOT begin with Unaccounted > 0."
+    description: "Verify the merge reconciliation table has zero Unaccounted findings for every agent."
   - id: verify-checklist-completeness
     name: "Verify §3 Checklist Completeness"
     technique: verify-sub-agent-output
-    description: "Produce a checklist coverage matrix from M's output. Dispatch follow-up for any unevaluated items."
+    description: "Produce the §3 checklist coverage matrix and dispatch follow-up for any unevaluated items."
   - id: preserve-verification-report
     name: "Preserve Verification Report for Adversarial Phase"
     required: true
-    description: "Store the verification agent's gap report in context for consumption by the adversarial verification phase. Areas flagged as potentially incomplete inform PASS item selection."
+    technique: dispatch-sub-agents
+    description: "Retain the verification gap report for the adversarial phase."
   - id: preserve-merge-output
     name: "Preserve Merge Output for Report Generation"
     required: true
-    description: "Store M's merge table, reconciliation table, and severity-scored finding list in context. This is the canonical input for report-generation. The orchestrator writes the report narrative from M's output."
+    technique: merge-findings
+    description: "Retain the merge table, reconciliation table, and scored findings for report generation."
 transitions[1]{to,isDefault}:
   adversarial-verification,true
 exitActions[2]{action,message}:

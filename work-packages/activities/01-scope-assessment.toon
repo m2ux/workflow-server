@@ -5,7 +5,7 @@ description: Confirm multi-work-package initiative and identify work packages to
 problem: User has multiple related work items that need coordination and planning
 techniques:
   supporting[1]:
-    - assess-initiative-scope
+    - "variable-binding"
 entryActions[1]:
   - action: validate
     target: agents_md_read
@@ -14,12 +14,15 @@ steps[3]:
   - id: confirm-multi-package
     name: Confirm initiative scope
     description: Verify this is a multi-work-package initiative rather than a single work package
+    technique: assess-initiative-scope
   - id: identify-packages
     name: Identify work packages
-    description: List all work packages to be planned in this initiative
+    description: Identify the distinct work packages to be planned in this initiative
+    technique: assess-initiative-scope
   - id: present-scope
     name: Present scope summary
-    description: Summarize the identified work packages for user confirmation
+    description: Present the identified work packages for user confirmation
+    technique: assess-initiative-scope
 checkpoints[1]:
   - id: scope-confirmed
     name: Scope Confirmation

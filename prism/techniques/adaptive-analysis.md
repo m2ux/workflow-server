@@ -16,20 +16,17 @@ Minimize cost by automatically escalating analysis depth from cheap/fast to deep
 ### 1. Stage 1 Sdl
 
 - Dispatch [deep-scan](../resources/deep-scan.md) to a fresh worker on Haiku, passing `{target_content}` and `{target_type}` so the scan adapts to whether the input is code or general text
-- Worker writes to `{output_path}`/`adaptive-stage1.md`
+- Worker writes `{adaptive_result.artifact_paths}` stage-1 entry into `{output_path}`
 - Assess signal quality: conservation law + word count > 300 + bug table
 
 ### 2. Assess Signal
 
-- Check for conservation law: regex for 'conservation law' or '= constant'
-- Check output length: > 300 words is adequate
-- If conservation law, word count, and bug table are all present: set adaptive_signal_quality = adequate, stop escalation. Otherwise set insufficient and continue.
-- Signal quality = conservation law presence (regex: 'conservation law' or '= constant') AND word count > 300 AND bug table presence. All three must be true for 'adequate'.
+- If all three signals are present — conservation law (regex: 'conservation law' or '= constant'), word count > 300, and a bug table — set `{adaptive_signal_quality}` to `adequate` and stop escalation. Otherwise set it to `insufficient` and continue.
 
 ### 3. Stage 2 L12
 
 - Dispatch [L12](../resources/l12.md) to a fresh worker on Sonnet
-- Worker writes to `{output_path}`/`adaptive-stage2.md`
+- Worker writes `{adaptive_result.artifact_paths}` stage-2 entry into `{output_path}`
 - Re-assess signal quality with same criteria
 
 ### 4. Stage 3 Full
@@ -43,6 +40,10 @@ Minimize cost by automatically escalating analysis depth from cheap/fast to deep
 ### adaptive_result
 
 Paths and escalation trace for the adaptive run
+
+#### artifact
+
+`adaptive-stage1.md` (sdl stage) / `adaptive-stage2.md` (l12 stage); the full stage produces the full-prism `structural-analysis.md`, `adversarial-analysis.md`, and `synthesis.md`
 
 #### stage_reached
 
@@ -68,8 +69,4 @@ Stop escalating as soon as signal quality is adequate. Do not run deeper stages 
 
 ### model-escalation
 
-Stage 1: Haiku. Stage 2: Sonnet. Stage 3: per-prism optimal models.
-
-### tool-usage
-
-use harness-compat spawn-agent — adaptive mode uses a new worker for each stage via spawn-agent and never skips stage ordering
+Stage 1 runs on Haiku, stage 2 on Sonnet, stage 3 on per-prism optimal models.

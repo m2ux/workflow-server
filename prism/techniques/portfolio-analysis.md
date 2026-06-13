@@ -13,21 +13,13 @@ Apply two or more complementary portfolio lenses to the same artifact to produce
 
 ## Inputs
 
-### target_content
-
-The artifact to analyze — either the content itself or a file path to read it from (resolved in the Read Target phase)
-
-### output_path
-
-Directory the per-lens artifacts and the cross-lens synthesis are written into
-
 ### selected_lenses
 
-*(optional)* Which portfolio lenses to apply. Array of lens names from the full catalog: pedagogy (06), claim (07), scarcity (08), rejected-paths (09), degradation (10), contract (11), deep-scan (12), sdl-trust (13), sdl-coupling (14), sdl-abstraction (15), fix-cascade (16), identity (17), l12-universal (18), error-resilience (19), optimize (20), evolution (21), api-surface (22), error-resilience-neutral (24), api-surface-neutral (25), evolution-neutral (26), error-resilience-compact (27), error-resilience-70w (28), evidence-cost (29), reachability (30), fidelity (31), state-audit (32), archaeology (33), audit-code (34), cultivation (35), sdl-simulation (36), security-v1 (37), simulation (38), testability-v1 (39), knowledge-audit (40), knowledge-boundary (41), knowledge-typed (42), l12g (43), oracle (44), arc-code (50), architect (51), blindspot (52), codegen (53), counterfactual (54), emergence (55), falsify (56), genesis (57), history (58), prereq (59), significance (60), verify-claims (61). If omitted, select-lenses protocol chooses based on the analytical goal.
+*(optional)* Which portfolio lenses to apply. Array of lens names from the full catalog: pedagogy (06), claim (07), scarcity (08), rejected-paths (09), degradation (10), contract (11), deep-scan (12), sdl-trust (13), sdl-coupling (14), sdl-abstraction (15), fix-cascade (16), identity (17), l12-universal (18), error-resilience (19), optimize (20), evolution (21), api-surface (22), error-resilience-neutral (24), api-surface-neutral (25), evolution-neutral (26), error-resilience-compact (27), error-resilience-70w (28), evidence-cost (29), reachability (30), fidelity (31), state-audit (32), archaeology (33), audit-code (34), cultivation (35), sdl-simulation (36), security-v1 (37), simulation (38), testability-v1 (39), knowledge-audit (40), knowledge-boundary (41), knowledge-typed (42), l12g (43), oracle (44), arc-code (50), architect (51), blindspot (52), codegen (53), counterfactual (54), emergence (55), falsify (56), genesis (57), history (58), prereq (59), significance (60), verify-claims (61). If omitted, the Select Lenses step chooses based on the analytical goal.
 
 ### analytical_goal
 
-*(optional)* What the caller wants to understand (e.g., 'trade-off analysis', 'maintainability risks', 'hidden assumptions'). Used for lens selection when selected-lenses is not provided.
+*(optional)* What the caller wants to understand (e.g., 'trade-off analysis', 'maintainability risks', 'hidden assumptions'). Used for lens selection when `{selected_lenses}` is not provided.
 
 ## Protocol
 
@@ -39,7 +31,7 @@ Directory the per-lens artifacts and the cross-lens synthesis are written into
 - Lens selection guide: trade-offs → scarcity (08) + rejected-paths (09). assumptions → claim (07) + pedagogy (06). maintainability → degradation (10) + contract (11). design rationale → pedagogy (06) + rejected-paths (09). interface quality → contract (11) + claim (07). architecture → deep-scan (12) + sdl-abstraction (15). trust/security → sdl-trust (13) + security-v1 (37). coupling/ordering → sdl-coupling (14) + evolution (21). API naming → api-surface (22) + identity (17). error+cost → error-resilience (19) + evidence-cost (29). dead code → reachability (30) + fidelity (31). state management → state-audit (32) + degradation (10). code archaeology → archaeology (33) + simulation (38). registration gaps → audit-code (34). change resilience → cultivation (35) + evolution (21). temporal fragility → sdl-simulation (36) + degradation (10). testability → testability-v1 (39) + fix-cascade (16). confabulation check → knowledge-audit (40) + knowledge-boundary (41). maximum trust → oracle (44). architecture redesign → architect (51) + genesis (57). analytical blindspots → blindspot (52) + significance (60). counterfactual exploration → counterfactual (54) + history (58). emergent behavior → emergence (55) + evolution (21). conservation law validation → falsify (56) + significance (60). knowledge prerequisites → prereq (59) + verify-claims (61).
 - Always apply at least two lenses. A single portfolio lens should use the structural-analysis technique instead. If only one portfolio lens was requested, switch to the structural-analysis technique for single-lens analysis, or add a complementary lens per the selection guide above.
 - l12-universal (18) is Sonnet-only — Haiku fails below this compression floor. Only recommend when using Sonnet or Opus.
-- When target_type is 'general', prefer neutral variants: error-resilience-neutral (24), api-surface-neutral (25), evolution-neutral (26). Do not use code-specific behavioral lenses on general targets.
+- When `{target_type}` is `general`, prefer neutral variants: error-resilience-neutral (24), api-surface-neutral (25), evolution-neutral (26). Do not use code-specific behavioral lenses on general targets.
 
 ### 2. Load Lenses
 
@@ -59,7 +51,7 @@ Directory the per-lens artifacts and the cross-lens synthesis are written into
 
 ### 5. Write Artifacts
 
-- Write each lens output (see [writer](../resources/writer.md)) as `{per_lens_artifacts}` into `{output_path}` — one `portfolio-{$lens_name}.md` per applied lens, where `{$lens_name}` is the applied lens's name. If a write fails, verify `{output_path}` exists and is writable.
+- Capture the applied lens's name as `{$lens_name}`, then write each lens output (see [writer](../resources/writer.md)) as `{per_lens_artifacts}` into `{output_path}` — one `portfolio-{lens_name}.md` per applied lens. If a write fails, verify `{output_path}` exists and is writable.
 
 ### 6. Cross Lens Synthesis
 
@@ -74,7 +66,7 @@ Directory the per-lens artifacts and the cross-lens synthesis are written into
 
 Individual analysis artifact per lens
 
-#### per_lens_filename
+#### artifact
 
 `portfolio-{lens_name}.md`
 
@@ -90,7 +82,7 @@ File paths to each per-lens artifact
 
 Cross-lens convergence/divergence synthesis
 
-#### synthesis_filename
+#### artifact
 
 `portfolio-synthesis.md`
 

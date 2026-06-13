@@ -1,6 +1,6 @@
 ---
 name: package-plan-template
-description: NN-{package-name}-plan.md
+description: "{package_name}-plan.md"
 metadata:
   version: 1.0.0
   order: 3
@@ -16,10 +16,10 @@ metadata:
 ## File Naming
 
 ```
-NN-{package-name}-plan.md
+{package_name}-plan.md
 ```
 
-Where `NN` is a zero-padded sequence number matching the work package's position in the identified list (e.g., `03-auth-service-plan.md`).
+Where `{package_name}` is the kebab-case package name (e.g., `auth-service-plan.md`).
 
 ---
 

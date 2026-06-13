@@ -13,13 +13,21 @@ Apply all seven CI/CD injection detection patterns (P1-P7) — derived from the 
 
 ## Inputs
 
+### submodule
+
+Directory name of the submodule being scanned.
+
+### scanner_number
+
+The 1-based scanner agent ordinal (the numeric part of the `S1`-`Sn` designator).
+
 ### workflow_files
 
 List of workflow file paths to scan
 
-### reconnaissance_data
+### workflow_inventory
 
-Pre-classified trigger, permission, and checkout data for the workflow files
+Complete [inventory of workflow files](../resources/intermediate-artifact-schemas.md#workflow-inventory) with pre-classified trigger, permission, and checkout data.
 
 ### ai_config_inventory
 
@@ -29,24 +37,25 @@ Pre-classified trigger, permission, and checkout data for the workflow files
 
 ### 1. Load Patterns
 
-- Use attached [injection-pattern-catalog](../resources/injection-pattern-catalog.md) (injection-pattern-catalog) for grep patterns, untrusted context lists, and detection heuristics
-  - If the [injection-pattern-catalog](../resources/injection-pattern-catalog.md) cannot be loaded, fall back to the built-in pattern definitions
-- Scope the scan to the `{workflow_files}` paths, and load the `{reconnaissance_data}` so each file's pre-classified triggers, permissions, and checkout behavior is available to the pattern checks below
-  - If a workflow file cannot be read, record it as unscanned and flag it in the coverage report
+- Load the [injection-pattern-catalog](../resources/injection-pattern-catalog.md) for grep patterns, untrusted context lists, and detection heuristics.  
+  > If the [injection-pattern-catalog](../resources/injection-pattern-catalog.md) cannot be loaded, fall back to the built-in pattern definitions.
+- Scope the scan to the `{workflow_files}` paths and load `{workflow_inventory}` so each file's pre-classified triggers, permissions, and checkout behavior is available to the pattern checks below.  
+  > If a workflow file cannot be read, record it as unscanned and flag it in `{scan_results.coverage}`.
 
 ### 2. P1 Expression Injection
 
 - Search `run:` blocks for `${{ }}` expressions
 - Cross-reference each expression against the untrusted context variable list
 - Distinguish safe contexts (`if:` conditions, action version pins) from unsafe contexts (shell interpolation, script content, action inputs that reach shell)
-- For each unsafe expression, document the source context variable and the sink (run block, script, action) using the structured finding format (see [sub-agent-output-schema](../resources/sub-agent-output-schema.md))
+- For each unsafe expression, document the source context variable and the sink (`run:` block, script, action) into `{scan_results.findings}`
 - Treat expressions in `if:` conditions, `env:` key-value (not interpolated into shell), and action version pins as safe contexts — exclude them from P1 findings.
 
 ### 3. P2 Pwn Request
 
 - Identify workflows with `pull_request_target` trigger
 - Check for checkout of PR head (`ref: github.event.pull_request.head.sha` or `head.ref`)
-- Check for code execution after checkout (`run:`, `uses:` with local action, build commands)
+- Check for code execution after checkout (`run:`, `uses:` with local action, build commands)  
+  > A `pull_request_target` trigger alone is not a finding; it becomes one only when combined with fork code checkout and execution.
 
 ### 4. P3 Comment Trigger
 
@@ -67,8 +76,9 @@ Pre-classified trigger, permission, and checkout data for the workflow files
 
 ### 7. P6 Ai Config
 
-- Using the `{ai_config_inventory}`, check whether AI config files (`CLAUDE.md`, `AGENTS.md`, `.cursorrules`) exist in the submodule
-- Verify they are listed in `CODEOWNERS` with mandatory review protection
+- Using `{ai_config_inventory}`, check whether AI config files (`CLAUDE.md`, `AGENTS.md`, `.cursorrules`) exist in the submodule
+- Verify they are listed in `CODEOWNERS` with mandatory review protection, and check whether any workflow loads them as trusted context.  
+  > When no `CODEOWNERS` file exists, flag every AI config file.
 
 ### 8. P7 Dangerous Execution
 
@@ -84,11 +94,11 @@ Pre-classified trigger, permission, and checkout data for the workflow files
 
 ### scan_results
 
-Structured findings for this submodule
+Structured findings for this submodule, conforming to the [scanner output schema](../resources/sub-agent-output-schema.md#schema).
 
-#### artifact_filename
+#### artifact
 
-[`s{n}-{submodule}.json`](../resources/sub-agent-output-schema.md#schema)
+`s{scanner_number}-{submodule}.json`
 
 #### findings
 
@@ -104,14 +114,18 @@ Per-file, per-pattern scan confirmation
 
 ## Rules
 
+### all-seven-patterns-applied
+
+All seven detection patterns (P1-P7) are applied to every workflow file in scope; no pattern is skipped for any file.
+
 ### source-sink-required
 
-Every finding MUST identify both the source and the sink
+Every finding identifies both the source (attacker-controlled input) and the sink (privileged execution point), with the affected file path and line range.
 
 ### evidence-required
 
-Every finding must include the vulnerable code snippet
+Every finding includes the vulnerable code snippet as evidence.
 
 ### chain-tracing
 
-For P2 and P5, trace the complete chain from trigger through checkout to execution
+For P2 and P5, trace the complete chain from trigger through checkout to execution.

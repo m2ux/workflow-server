@@ -5,27 +5,28 @@ description: "Select an analysis mode for the user's request."
 problem: User needs the analysis planned and configured before execution begins
 techniques:
   supporting[1]:
-    - plan-analysis
+    - "variable-binding"
 steps[3]:
   - id: plan
     name: Plan the Analysis
-    description: "Execute the plan-analysis technique protocol: detect scope from the target, classify units if multi-scope, recommend pipeline_mode and lens selection, resolve output_path."
+    description: "Detect scope, classify units, and produce the analysis plan and execution units."
     required: true
+    technique: plan-analysis
   - id: summarize
     name: Summarize Configuration
-    description: "Present the recommended configuration: scope, target, target_type, pipeline_mode, selected_lenses (if portfolio), output_path, and rationale. This is the checkpoint context."
+    description: "Present the recommended analysis configuration as the checkpoint context."
     required: true
   - id: apply-plan
     name: Apply Plan
-    description: "Apply the selected pipeline_mode and any lens selections to workflow state variables."
+    description: "Apply the selected mode and lens selections to workflow state."
     required: true
     actions[2]:
       - action: set
         target: pipeline_mode
-        description: "Set pipeline_mode from checkpoint selection or plan recommendation"
+        description: "Selected analysis mode."
       - action: set
         target: analysis_units
-        description: "Set analysis_units from the plan-analysis technique output"
+        description: "Ordered execution units."
 checkpoints[1]:
   - id: confirm-mode
     name: Pipeline Mode Confirmation

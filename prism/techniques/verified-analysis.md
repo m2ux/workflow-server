@@ -16,14 +16,13 @@ Run L12 analysis, detect knowledge gaps via boundary + audit prisms, then re-ana
 ### 1. Initial Analysis
 
 - Dispatch [L12](../resources/l12.md) to a fresh worker, configured for the `{target_type}` of input ('code' or 'general')
-- Worker writes to `{output_path}`/`verified-initial.md`
+- Worker writes `{verified_result.initial_path}` into `{output_path}`
 
 ### 2. Gap Detection
 
 - Dispatch gap detection to a fresh worker
 - Worker loads [knowledge-boundary](../resources/knowledge-boundary.md) (41) and [knowledge-audit](../resources/knowledge-audit.md) (40)
-- Worker applies both to the L12 OUTPUT (not source code), writes to `{output_path}`/`verified-gaps.md`
-- Gap detection prisms run on the L12 OUTPUT, not on source code
+- Worker applies both to the L12 OUTPUT (not source code), writing `{verified_result.gaps_path}` into `{output_path}`
 
 ### 3. Gap Extraction
 
@@ -39,7 +38,7 @@ Run L12 analysis, detect knowledge gaps via boundary + audit prisms, then re-ana
 `</verified_knowledge>`
 
 `{target_content}`
-- Worker writes to `{output_path}`/`verified-corrected.md`
+- Worker writes `{verified_result.corrected_path}` into `{output_path}`
 - Return `{verified_result}` — its initial-path, gaps-path, and corrected-path sub-fields hold the three pipeline artifact paths.
 
 ## Outputs
@@ -48,24 +47,24 @@ Run L12 analysis, detect knowledge gaps via boundary + audit prisms, then re-ana
 
 Paths to the three verified pipeline artifacts
 
+#### artifact
+
+`verified-initial.md` (initial L12) / `verified-gaps.md` (gap detection) / `verified-corrected.md` (corrected re-analysis)
+
 #### initial_path
 
-Filesystem path to `verified-initial.md`
+Filesystem path to the initial L12 artifact
 
 #### gaps_path
 
-Filesystem path to `verified-gaps.md`
+Filesystem path to the gap-detection artifact
 
 #### corrected_path
 
-Filesystem path to `verified-corrected.md`
+Filesystem path to the corrected re-analysis artifact
 
 ## Rules
 
-### model-selection
+### gap-detection-on-output
 
-L12 passes use optimal model from YAML frontmatter. Gap detection uses sonnet.
-
-### tool-usage
-
-use harness-compat spawn-agent for three worker dispatches in verified mode; gap-detection worker runs both boundary and audit prisms in one context; orchestrator never uses continue-agent on prior workers; spawn-agent via harness-compat for description and prompt — do NOT use continue-agent
+Gap detection runs the boundary and audit prisms on the L12 OUTPUT, not on the source code — both prisms run in one worker context, detecting epistemic weaknesses in the analysis rather than structural properties of the code.

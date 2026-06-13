@@ -1,11 +1,12 @@
 id: import-resources
-version: 1.0.0
+version: 1.1.0
 name: Import Resources
 description: "Apply approved resource file changes."
 problem: Resource files need to be created, updated, renamed, or removed to match upstream
+required: true
 techniques:
   supporting[1]:
-    - sync-resources
+    - "variable-binding"
 
 entryActions[1]:
   - action: validate
@@ -15,23 +16,28 @@ entryActions[1]:
 steps[5]:
   - id: sync-modified
     name: Sync modified resources
-    description: "Overwrite each modified resource with upstream content. Commit."
+    description: "Overwrite each modified resource with upstream content and commit."
+    technique: sync-resources
     required: true
   - id: apply-renames
     name: Apply renames
-    description: "Git mv each renamed resource, then overwrite with upstream content. Commit."
+    description: "Rename each renamed resource, overwrite with upstream content, and commit."
+    technique: sync-resources
     required: true
   - id: import-new
     name: Import new resources
-    description: "Copy each new upstream prism to resource_path with indexed filename. Commit."
+    description: "Copy each new prism in with an indexed filename and commit."
+    technique: sync-resources
     required: true
   - id: remove-deleted
     name: Remove deleted resources
-    description: "Remove each deleted resource file. Commit if any were removed."
+    description: "Remove each deleted resource file and commit if any were removed."
+    technique: sync-resources
     required: true
   - id: verify-file-count
     name: Verify file count
-    description: "Confirm resource count matches: previous - deleted + new = current."
+    description: "Confirm the resource count reconciles after the changes."
+    technique: sync-resources
     required: true
 
 artifacts[1]:
@@ -44,8 +50,6 @@ artifacts[1]:
 transitions[1]:
   - to: update-routing
     isDefault: true
-
-required: true
 
 outcome[2]:
   - "All resource files match upstream state"

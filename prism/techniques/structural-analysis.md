@@ -54,7 +54,7 @@ Apply L12 structural analysis lens to code for deep structural findings, conserv
 
 ### 6. Format Output
 
-- Structure the output with clear section headers: Claim, Dialectic, Concealment Mechanism, Improvements, Structural Invariant, Conservation Law, Meta-Law, Bug Table
+- Structure `{structural_analysis}` with clear section headers: Claim, Dialectic, Concealment Mechanism, Improvements, Structural Invariant, Conservation Law, Meta-Law, Bug Table
 - In the Bug Table, classify each finding as fixable or structural based on whether the conservation law predicts it can be resolved
 - Include file paths, line numbers, and specific function names for every finding
 
@@ -64,7 +64,7 @@ Apply L12 structural analysis lens to code for deep structural findings, conserv
 
 L12 structural analysis with conservation law, meta-law, and classified bug table
 
-#### artifact_filename
+#### artifact
 
 `structural-analysis.md`
 

@@ -4,8 +4,9 @@ name: Implementation
 description: Execute each planned work package in priority order by triggering the work-package workflow
 problem: Planned work packages need to be implemented one at a time according to the roadmap
 techniques:
-  supporting[1]:
-    - orchestrate-package-execution
+  supporting[2]:
+    - "variable-binding"
+    - "scatter-gather"
 triggers[1]:
   - workflow: work-package
     description: "Each iteration starts the work-package workflow for one planned package"
@@ -16,7 +17,8 @@ triggers[1]:
 steps[1]:
   - id: initialize-iteration
     name: Initialize implementation iteration
-    description: "Prepare the ordered list of remaining packages from the priority order. The forEach loop below handles per-package execution."
+    description: "Prepare the ordered list of remaining packages from the priority order."
+    technique: orchestrate-package-execution
 artifacts[1]:
   - id: start-here-progress
     name: START-HERE.md
@@ -32,16 +34,20 @@ loops[1]:
     steps[4]:
       - id: select-package
         name: Select next work package
-        description: Choose the highest priority unstarted work package from the roadmap
+        description: Select the highest-priority unstarted work package from the roadmap
+        technique: orchestrate-package-execution
       - id: trigger-workflow
         name: Trigger work-package workflow
-        description: "Load the work-package workflow via get_workflow and start it for the selected package"
+        description: "Start the work-package workflow for the selected package"
+        technique: orchestrate-package-execution
       - id: update-status
         name: Update roadmap status
-        description: "After the child work-package workflow completes, capture its planning_folder_path from returnedContext and store it in package_planning_paths. Update START-HERE.md: mark completed package as done, update progress, and add a link to the child's planning folder README."
+        description: "Update the roadmap status for the completed package"
+        technique: orchestrate-package-execution
       - id: check-remaining
         name: Check remaining packages
-        description: Determine if more work packages remain in priority order
+        description: Determine whether more work packages remain in priority order
+        technique: orchestrate-package-execution
 outcome[4]:
   - All planned work packages implemented via work-package workflow
   - Each package has merged PR

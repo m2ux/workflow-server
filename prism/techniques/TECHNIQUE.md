@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Base contract inherited by sibling techniques.
+Base contract inherited by every prism analysis technique: the inputs each technique reads, and the isolation, evidence, and write-discipline invariants every analytical pass upholds.
 
 ## Inputs
 
@@ -15,11 +15,11 @@ The code or text to analyze — a file path or inline content.
 
 ### target_type
 
-*(optional)* Whether the input is 'code' or 'general'.
+*(optional)* Whether the input is `code` or `general`.
 
 #### default
 
-code
+`code`
 
 ### output_path
 
@@ -27,22 +27,30 @@ code
 
 #### default
 
-.
+`.`
 
 ## Rules
 
 ### complete-execution
 
-Every step in the lens prompt must be executed. Do not skip or summarize operations — the depth comes from the full chain.
+Every operation in the lens prompt is executed. Do not skip or summarize operations — the analytical depth comes from the full chain.
 
 ### evidence-required
 
-All findings must cite specific code or text: file paths, function names, line ranges, specific passages. Abstract claims without evidence are not findings.
+All findings cite specific code or text: file paths, function names, line ranges, specific passages. Abstract claims without evidence are not findings.
 
-### tool-usage
+### isolated-context
 
-Dispatch all workers via harness-compat spawn-agent. Never use continue-agent on a prior worker — each dispatch is a fresh isolated context.
+Each analytical pass is dispatched to a fresh sub-agent via [harness-compat](../../meta/techniques/harness-compat/TECHNIQUE.md)::[spawn-agent](../../meta/techniques/harness-compat/spawn-agent.md); never [continue-agent](../../meta/techniques/harness-compat/continue-agent.md) on a prior worker. A worker receives only the textual content provided in its prompt — never the generation history of a prior pass.
+
+### artifact-mediated
+
+Pass outputs travel between workers as filesystem artifacts addressed by path, never as inline analysis text. A worker reads prior-pass content from the artifact path and writes its own output to its target path.
+
+### write-immediately
+
+A worker with write access writes its artifact directly to the target path without asking permission or deferring. After writing, it reports the written path, the file size, and the format-validation status (`OK` or `FAIL`). A genuine operational barrier (missing directory, filesystem permission error, network unavailable) is surfaced as `[BLOCKER]: <issue>. Requires: <resolution>. Blocking: <progress>.`; uncertainty about whether to write is not a blocker.
 
 ### model-selection
 
-Lens workers use the model defined in the lens YAML frontmatter. Synthesis and coordination steps use sonnet.
+Lens workers use the model declared in the lens resource's YAML frontmatter. Synthesis and coordination steps use Sonnet.

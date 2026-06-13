@@ -751,7 +751,7 @@ For each finding rated Critical or High, verify:
 
 If I + F < 6, the finding should not be Critical. If I + F < 5, the finding should not be High.
 
-**Severity calibration:** Compare each finding against the calibration examples in the severity-scoring technique before finalizing. The technique contains 14 calibrated examples derived from professional audit benchmarking. Use these as lookup references — if a finding resembles a calibration example, use the example's severity as a baseline.
+**Severity calibration:** Compare each finding against the severity calibration examples before finalizing. The 14 calibrated examples are derived from professional audit benchmarking. Use these as lookup references — if a finding resembles a calibration example, use the example's severity as a baseline.
 
 ---
 
@@ -809,7 +809,7 @@ After all sub-agents return, the orchestrator consolidates using a mechanical pr
 1. **Structured merge:** Concatenate all agent finding lists into a single flat table. Every agent finding becomes a row. No agent output is discarded.
 2. **Dedup and map:** For each row, assign a report finding number. Rows with the same root cause get the same number with a "merged" justification. Every row MUST have a mapping. Any row without a mapping is automatically promoted to a new finding. The completed mapping table IS the elevation verification.
 3. **§3 completeness verification:** Produce a §3 coverage matrix. For every numbered §3 item, at least one agent must have a verdict. Gaps trigger targeted follow-up.
-4. Calibrate severity by comparing each finding against the calibration examples in the severity-scoring technique (§5.11)
+4. Calibrate severity by comparing each finding against the severity calibration examples (§5.11)
 5. Verify coverage: every >200-line file in priority-1/2 crates must have been read by at least one sub-agent (§5.14)
 
 **Phase 3.5 — Exhaustive Panic Sweep**

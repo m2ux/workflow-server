@@ -80,13 +80,12 @@ graph TD
 
 **Purpose:** Create planning folder structure with initial documentation skeletons.
 
-**Primary Technique:** `workflow-engine`  
-**Supporting Technique:** `manage-artifacts`
+**Techniques:** `version-control::initialize-folder`, `setup-planning-folder`
 
 ```mermaid
 graph TD
     subgraph folder-setup[Planning Folder Setup]
-        f1([Create planning folder])
+        f1([Bind planning folder])
         f2([Create START-HERE.md])
         f3([Create README.md])
         f4([Present folder structure])
@@ -96,14 +95,11 @@ graph TD
         cp1 -->|proceed| Next([→ analysis])
         cp1 -->|adjust| f1
     end
-    
-    technique((manage-artifacts))
-    f1 -.-> technique
 ```
 
 | Step | Description |
 |------|-------------|
-| Create planning folder | Create folder at `.engineering/artifacts/planning/YYYY-MM-DD-initiative-name/` |
+| Bind planning folder | Derive the planning slug for the initiative folder |
 | Create START-HERE.md | Create initial skeleton with header and placeholders |
 | Create README.md | Create skeleton for navigation |
 | Present folder structure | Show user the created structure |
@@ -142,12 +138,13 @@ graph TD
 
 | Step | Description |
 |------|-------------|
-| Determine analysis type | Ask: Is this continuing previous work or new initiative? |
-| Perform analysis | Execute completion or context analysis based on decision |
-| Document analysis | Create analysis document using resource template |
+| Perform analysis | Execute completion or context analysis per the selected analysis type |
+| Document analysis | Write the analysis document in the planning folder |
 | Present findings | Summarize analysis findings for review |
 
-**Artifacts:** analysis.md (create)
+The analysis type is chosen at the **Analysis Type Selection** checkpoint, which routes the **Analysis Method Selection** decision to completion or context analysis.
+
+**Artifacts:** `01-COMPLETION-ANALYSIS.md` / `02-CONTEXT-ANALYSIS.md` (create)
 
 **Checkpoint:** "Analysis complete. Does this context look correct?"
 
@@ -163,7 +160,7 @@ graph TD
 graph TD
     subgraph package-planning[Work Package Planning]
         loop[[forEach: work_packages]]
-        p1([Iterate through packages])
+        p1([Present planning overview])
         p2([Define scope])
         p3([Identify dependencies])
         p4([Estimate effort])
@@ -182,14 +179,16 @@ graph TD
 
 | Step | Description |
 |------|-------------|
-| Iterate through packages | For each identified work package |
+| Present planning overview | Present the work packages to be planned and the planning approach |
 | Define scope | Identify in scope and out of scope |
 | Identify dependencies | Document dependencies on other packages or external factors |
 | Estimate effort | Provide rough effort estimate |
 | Define success criteria | Establish measurable success criteria |
-| Document plan | Create NN-package-name-plan.md |
+| Document plan | Create `{package_name}-plan.md` |
 
-**Artifacts:** {package-name}-plan.md (create, per package)
+The define-scope through document-plan steps run inside a `forEach` loop over `work_packages`.
+
+**Artifacts:** `{package_name}-plan.md` (create, per package)
 
 **Checkpoint:** "Work package plans created. Ready for prioritization?"
 
@@ -275,34 +274,33 @@ graph TD
 ```mermaid
 graph TD
     subgraph implementation[Implementation]
+        i0([Initialize implementation iteration])
         loop[[forEach: remaining_packages]]
         i1([Select next work package])
         i2([Trigger work-package workflow])
-        i3([Execute workflow])
-        i4([Return to roadmap])
         i5([Update roadmap status])
         i6([Check remaining packages])
         
-        i1 --> loop
-        loop --> i2 --> i3
-        i3 -->|complete| i4 --> i5 --> i6
+        i0 --> loop
+        loop --> i1 --> i2 --> i5 --> i6
         i6 -->|more| loop
         i6 -->|done| Done([All Complete])
     end
     
     trigger([work-package workflow])
     i2 -.-> trigger
-    trigger -.-> i3
+    trigger -.-> i5
 ```
 
 | Step | Description |
 |------|-------------|
+| Initialize implementation iteration | Prepare the ordered list of remaining packages from the priority order |
 | Select next work package | Choose highest priority unstarted package |
 | Trigger work-package workflow | Load `work-package` workflow and start |
-| Execute workflow | Follow work-package workflow through all activities |
-| Return to roadmap | After workflow completes, return context |
 | Update roadmap status | Mark completed package, update progress |
 | Check remaining packages | Determine if more packages remain |
+
+The select-package through check-remaining steps run inside a `forEach` loop over `remaining_packages`.
 
 **Artifacts:** START-HERE.md (update, progress tracking)
 
@@ -318,13 +316,15 @@ graph TD
 | Technique | Type | Capability | Used By |
 |-------|------|------------|---------|
 | `assess-initiative-scope` | Workflow-specific | Identify and categorize work packages | Scope Assessment |
+| `setup-planning-folder` | Workflow-specific | Create START-HERE.md and README.md skeletons | Folder Setup |
 | `analyze-initiative-context` | Workflow-specific | Completion or context analysis | Analysis |
 | `plan-work-package-scope` | Workflow-specific | Scope, dependencies, effort, success criteria per package | Package Planning |
 | `prioritize-packages` | Workflow-specific | Evaluate and order packages | Prioritization |
 | `document-roadmap` | Workflow-specific | Produce finalized roadmap documentation | Finalize Roadmap |
 | `orchestrate-package-execution` | Workflow-specific | Trigger and manage work-package workflow instances | Implementation |
-| `workflow-engine` | Universal | Execute workflows following schema patterns | All activities (supporting) |
-| `manage-artifacts` | Universal | Manage planning artifacts folder structure | Folder Setup |
+| `version-control::initialize-folder` | Meta | Derive the canonical planning-folder slug | Folder Setup |
+| `variable-binding` | Meta | Bind step operations to the workflow variable bag | All activities (supporting) |
+| `scatter-gather` | Meta | Fan out and aggregate forEach iterations | Package Planning, Implementation (supporting) |
 
 ## Resources
 
@@ -374,6 +374,7 @@ work-packages/
 ├── techniques/
 │   ├── TECHNIQUE.md
 │   ├── assess-initiative-scope.md
+│   ├── setup-planning-folder.md
 │   ├── analyze-initiative-context.md
 │   ├── plan-work-package-scope.md
 │   ├── prioritize-packages.md
@@ -381,11 +382,11 @@ work-packages/
 │   └── orchestrate-package-execution.md
 └── resources/
     ├── README.md
-    ├── 00-planning-folder-template.md
-    ├── 01-completion-analysis-guide.md
-    ├── 02-context-analysis-guide.md
-    ├── 03-package-plan-template.md
-    ├── 04-prioritization-framework.md
-    ├── 05-roadmap-template.md
-    └── 06-workflow-triggering-protocol.md
+    ├── planning-folder-template.md
+    ├── completion-analysis-guide.md
+    ├── context-analysis-guide.md
+    ├── package-plan-template.md
+    ├── prioritization-framework.md
+    ├── roadmap-template.md
+    └── workflow-triggering-protocol.md
 ```

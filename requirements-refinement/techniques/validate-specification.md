@@ -25,7 +25,7 @@ The structured analysis whose source-coverage matrix is the completeness referen
 
 ### 2. Check Source Coverage
 
-- Using the source-coverage matrix in `{requirements_analysis}`, confirm every normative source statement maps to a requirement present in `{working_specification}`, and record any uncovered statement per [validation-rubric](../resources/validation-rubric.md#source-coverage).
+- Using `{requirements_analysis.source_coverage_matrix}`, confirm every normative source statement maps to a requirement present in `{working_specification}`, and record any uncovered statement per [validation-rubric](../resources/validation-rubric.md#source-coverage).
 
 ### 3. Categorize Issues
 

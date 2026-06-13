@@ -1,40 +1,48 @@
 id: verify
-version: 1.0.0
+version: 1.1.0
 name: Verify Consistency
 description: "Check for consistency issues across resources, techniques, and documentation."
 problem: Changes across multiple files may leave inconsistencies
+required: true
 techniques:
   supporting[1]:
-    - verify-prism-consistency
+    - "variable-binding"
 
 steps[6]:
   - id: verify-content-integrity
     name: Verify content integrity
-    description: "For each modified and newly imported resource, diff against the upstream original. Flag any content differences beyond the expected filename change."
+    description: "Diff each modified and new resource against its upstream original."
+    technique: verify-prism-consistency
     required: true
   - id: check-stale-references
     name: Check for stale references
-    description: "Grep .toon files for old prism names from renames and deletions."
+    description: "Find stale references to renamed and deleted prism names."
+    technique: verify-prism-consistency
     required: true
   - id: verify-prompt-routing
     name: Verify prompt guide routing
-    description: "Trace each prompt guide entry through the goal-mapping matrix. Flag mismatches."
+    description: "Verify each prompt guide entry routes correctly through the goal-mapping matrix."
+    technique: verify-prism-consistency
     required: true
   - id: verify-resource-counts
     name: Verify resource counts
-    description: "Compare actual resource file count against documented counts."
+    description: "Compare the actual resource count against the documented counts."
+    technique: verify-prism-consistency
     required: true
   - id: check-duplicate-indices
     name: Check for duplicate indices
-    description: "Extract numeric prefixes from resource filenames. Flag duplicates."
+    description: "Detect duplicate resource indices."
+    technique: verify-prism-consistency
     required: true
   - id: set-result
     name: Set verification result
-    description: "Set has_issues based on findings."
+    description: "Set the verification result from the findings."
+    technique: verify-prism-consistency
     required: true
     actions[1]:
       - action: set
         target: has_issues
+        description: "Set from verification_report.has_issues — true when any check produced a finding."
 
 checkpoints[1]:
   - id: verification-result
@@ -76,11 +84,9 @@ transitions[2]:
       operator: "=="
       value: true
 
-required: true
-
 outcome[1]:
   - "All resources, techniques, and documentation are consistent"
 
 context_to_preserve[2]:
   - "has_issues — whether verification found problems"
-  - "stale_references — list of stale references found"
+  - "verification_report.stale_references — list of stale references found"

@@ -76,3 +76,13 @@ consensus-relevant code paths
 #### data_flow_traces
 
 forward and backward traces for priority-1 paths
+
+## Rules
+
+### enumerate-explicitly-never-summarize
+
+Every pallet and primitive crate is listed explicitly by name and classified by architectural category; components are never summarized or grouped.
+
+### consensus-config-gaps-recorded-as-leads
+
+Consensus-critical configuration structs are enumerated; a struct missing constructor invariant validation is recorded as a reconnaissance lead.

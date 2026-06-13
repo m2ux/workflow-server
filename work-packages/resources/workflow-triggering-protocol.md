@@ -22,7 +22,7 @@ Before triggering the work-package workflow, gather context from the roadmap:
 | Variable | Source | Description |
 |----------|--------|-------------|
 | `current_package` | START-HERE.md status table | Package name and metadata |
-| Package plan | `NN-package-plan.md` | Scope, dependencies, effort, success criteria |
+| Package plan | `{package_name}-plan.md` | Scope, dependencies, effort, success criteria |
 | Issue reference | Plan document or issue tracker | GitHub/Jira issue if one exists |
 
 ### 2. Start the Workflow

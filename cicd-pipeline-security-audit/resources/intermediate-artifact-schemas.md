@@ -94,7 +94,7 @@ The agent-to-submodule mapping for the scanner roster. One scanner agent is assi
     {
       "scanner_id": "S1",
       "submodule": "midnight-node",
-      "assigned_activity_id": "sub-scan",
+      "assigned_activity_id": "sub-workflow-scan",
       "workflow_files": [
         ".github/workflows/ci.yml",
         ".github/workflows/release.yml"
@@ -104,7 +104,7 @@ The agent-to-submodule mapping for the scanner roster. One scanner agent is assi
     {
       "scanner_id": "S2",
       "submodule": "midnight-indexer",
-      "assigned_activity_id": "sub-scan",
+      "assigned_activity_id": "sub-workflow-scan",
       "workflow_files": [
         ".github/workflows/build.yml"
       ],
@@ -124,7 +124,7 @@ The agent-to-submodule mapping for the scanner roster. One scanner agent is assi
 | `roster[].submodule` | string | Assigned submodule path |
 | `roster[].assigned_activity_id` | string | Activity the scanner sub-agent enters via `next_activity` |
 | `roster[].workflow_files` | string[] | Workflow file list passed to the scanner as context |
-| `roster[].output_file` | string | Target output filename, `s{n}-{submodule}.json` (see [sub-agent-output-schema](sub-agent-output-schema.md#file-naming-convention)) |
+| `roster[].output_file` | string | Target output filename, `s{scanner_number}-{submodule}.json` (see [sub-agent-output-schema](sub-agent-output-schema.md#file-naming-convention)) |
 
 ## verification-report
 

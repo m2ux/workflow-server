@@ -1,36 +1,36 @@
 id: scope-setup
-version: 1.0.0
+version: 1.1.0
 name: Scope Setup
 description: "Set up the audit scope and planning folder."
 problem: The audit requires confirmed targets, a complete workflow file inventory, and an organized artifact folder before scanning begins.
 techniques:
-  supporting[1]:
+  supporting[2]:
+    - variable-binding
     - execute-cicd-audit
 required: true
-rules[4]:
-  - "At least one target submodule MUST be specified in the initial request, or 'all' to scan every submodule with .github/workflows/"
-  - "The planning folder naming pattern: YYYY-MM-DD-cicd-security-audit"
-  - "Workflow file discovery must include both .yml and .yaml extensions"
-  - "Record each submodule's workflow file count for dispatch planning"
 entryActions[1]{action,message}:
   log,Starting CI/CD pipeline security audit scope setup
 steps[5]:
   - id: confirm-targets
     name: Confirm Target Submodules
-    description: "Extract target submodules from request. If 'all' specified, enumerate every submodule containing .github/workflows/. Validate each path exists."
+    technique: inventory-workflows
+    description: "Resolve and validate the target submodules in scope."
   - id: discover-workflows
     name: Discover Workflow Files
     technique: inventory-workflows
-    description: "For each target submodule, enumerate all .github/workflows/*.yml and .github/workflows/*.yaml files. Record total count."
+    description: "Enumerate and count the workflow files across targets."
   - id: discover-ai-configs
     name: Discover AI Configuration Files
-    description: "For each target submodule, check for CLAUDE.md, AGENTS.md, .cursorrules, .cursor/rules/, and similar AI agent config files. Record paths for P6 detection."
-  - id: create-planning-folder
-    name: Create Planning Folder
-    description: "Create planning folder with START-HERE.md containing audit scope, methodology, target inventory, and artifact index."
+    technique: inventory-workflows
+    description: "Inventory AI configuration files per target for P6 detection."
   - id: record-codeowners
     name: Record CODEOWNERS Presence
-    description: "For each target submodule, check whether a CODEOWNERS file exists and record its path. This informs P6 (AI config protection) detection."
+    technique: inventory-workflows
+    description: "Record CODEOWNERS presence per target for P6 detection."
+  - id: create-planning-folder
+    name: Create Planning Folder
+    technique: inventory-workflows
+    description: "Initialize the planning folder with its session overview."
 transitions[1]{to,isDefault}:
   reconnaissance,true
 exitActions[1]{action,message}:

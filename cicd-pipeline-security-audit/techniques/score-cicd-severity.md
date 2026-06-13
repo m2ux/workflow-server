@@ -13,15 +13,15 @@ Score CI/CD pipeline vulnerabilities using a two-dimensional rubric — Impact (
 
 ## Inputs
 
-### findings
+### merged_findings
 
-Unified list of findings, each with pattern ID, source, sink, and evidence
+Unified [finding set](../resources/intermediate-artifact-schemas.md#merged-findings), each finding carrying pattern ID, source, sink, and evidence.
 
 ## Protocol
 
 ### 1. Load Rubric
 
-- Use attached [cicd-severity-rubric](../resources/cicd-severity-rubric.md) (cicd-severity-rubric) for the Impact x Exploitability matrix
+- Load the [Impact x Exploitability matrix](../resources/cicd-severity-rubric.md#severity-matrix)
 
 ### 2. Score Individual
 

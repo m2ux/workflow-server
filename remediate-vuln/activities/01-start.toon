@@ -1,56 +1,75 @@
 id: start
-version: 1.0.0
+version: 1.1.0
 name: Start Security Vulnerability Remediation
 description: "Initialize a high-sensitivity security fix."
 problem: User needs to remediate a security vulnerability without public disclosure
 required: true
 techniques:
-rules[2]:
-  - "STRICT ISOLATION: This activity MUST NOT call any GitHub PR or Issue creation tools (gh pr create, gh issue create)."
-  - "PRIVATE REMOTE ONLY: All git operations must target the 'security' remote, never 'origin'."
+  supporting[1]:
+    - "variable-binding"
 entryActions[1]:
   - action: log
     message: "ENTERING SECURITY VULNERABILITY MODE - ISOLATION ACTIVE"
-steps[9]:
+steps[10]:
   - id: set-security-mode
     name: Confirm Security Mode
-    description: "Ensure is_sec_vuln_mode is set to true and logged."
+    description: "Set security mode active."
     actions[1]:
       - action: set
         target: is_sec_vuln_mode
         value: true
   - id: capture-sec-vuln-url
     name: Capture Security Advisory URL
-    description: "Get the security advisory URL (private/restricted access)."
+    description: "Capture the private security advisory URL."
+    actions[1]:
+      - action: set
+        target: sec_vuln_url
+        description: "Private security advisory URL provided by the user."
   - id: capture-private-fork-url
     name: Capture Private Fork URL
-    description: "Ask the user for the private fork URL for the security vulnerability fix."
+    description: "Capture the private fork URL backing the security remote."
+    actions[1]:
+      - action: set
+        target: private_fork_url
+        description: "Private fork URL provided by the user."
+  - id: capture-short-id
+    name: Capture Advisory Short ID
+    description: "Capture the short advisory slug used to form the security branch name."
+    actions[1]:
+      - action: set
+        target: short_id
+        description: "Short advisory slug provided by the user."
   - id: resolve-target
     name: Resolve Target Directory
-    description: "Read target_path from state variables and verify directory exists."
+    description: "Confirm the target directory exists."
+    actions[1]:
+      - action: validate
+        target: "target_path exists"
+        message: "Target directory not found at the supplied target_path"
   - id: configure-sec-vuln-remote
     name: Configure Security Remote
-    description: "INSIDE target_path: Add the private fork URL as a git remote named 'security'. If it exists, update it. For monorepos, ensure the submodule remote is updated as well."
-    technique: manage-git
+    description: "Register the private fork as the security remote."
+    technique: security-setup::configure-security-remote
   - id: initialize-security-branch
     name: Initialize Security Branch
-    description: "Fetch from 'security' remote and checkout a new local branch from the private fork: vuln/remediate-{short_id}."
-    technique: manage-git
+    description: "Create the local security feature branch off the private fork."
+    technique: security-setup::initialize-security-branch
   - id: initialize-planning-folder
     name: Initialize Private Planning Folder
-    description: "Create planning folder. Use a modified README template that excludes the Links table (no public PR/Issue)."
-    technique: manage-artifacts
+    description: "Create the private planning folder with a Links-free README."
+    technique: security-setup::initialize-planning-folder
   - id: present-security-overview
     name: Present Security Overview
-    description: "Generate a plain-language overview of the vulnerability risk. Write to the private planning README."
+    description: "Write a plain-language vulnerability-risk overview to the planning README."
+    technique: security-setup::present-security-overview
   - id: finalize-setup
     name: Finalize Security Setup
-    description: "Verify that 'origin' remote is not being tracked by the current branch."
-    technique: manage-git
-checkpoints[4]:
+    description: "Confirm the public origin remote is not tracked by the branch."
+    technique: security-setup::verify-origin-untracked
+checkpoints[5]:
   - id: confirm-security-remote
     name: Confirm Security Remote
-    message: "CRITICAL: Isolation check. You MUST confirm that the 'security' remote is configured and points to a PRIVATE repository. Is 'git remote -v' output correct for 'security'?"
+    message: "CRITICAL: Isolation check. Confirm that the 'security' remote is configured and points to a PRIVATE repository. Is 'git remote -v' output correct for 'security'?"
     blocking: true
     options[2]:
       - id: confirmed
@@ -61,7 +80,7 @@ checkpoints[4]:
         description: "Remote is incorrect; must be fixed before proceeding"
   - id: verify-isolation
     name: Verify Isolation Checkpoint
-    message: "I have configured the 'security' remote and local branch. I will NOT create a public PR or Issue. Is the private remote URL {sec_vuln_url} correct and authorized?"
+    message: "The 'security' remote and local branch are configured, and no public PR or Issue will be created. Is the private remote URL {sec_vuln_url} correct and authorized?"
     blocking: true
     options[2]:
       - id: authorized
@@ -94,6 +113,18 @@ checkpoints[4]:
       - id: provided
         label: "URL Provided"
         description: "Proceed with this URL"
+  - id: short-id-input
+    name: Advisory Short ID Input
+    condition:
+      type: simple
+      variable: short_id
+      operator: notExists
+    message: "Please provide a short advisory slug for the security branch name (e.g. cve-2026-1234):"
+    blocking: true
+    options[1]:
+      - id: provided
+        label: "Short ID Provided"
+        description: "Proceed with this slug"
 transitions[1]:
   - to: design-philosophy
     isDefault: true
@@ -105,8 +136,9 @@ outcome[4]:
   - "Private 'security' remote configured"
   - "Local vuln/ branch created"
   - "Private planning folder initialized"
-context_to_preserve[4]:
+context_to_preserve[5]:
   - is_sec_vuln_mode
   - sec_vuln_url
   - private_fork_url
+  - short_id
   - branch_name

@@ -1,6 +1,6 @@
 ---
 name: cicd-severity-rubric
-description: "Two-dimensional severity scoring: Impact: x **Exploitability**, calibrated against the hackerbot-claw campaign (Feb 2026)."
+description: "Two-dimensional severity scoring (Impact x Exploitability), calibrated against the hackerbot-claw campaign (Feb 2026)."
 metadata:
   version: 1.0.0
   order: 2

@@ -40,10 +40,10 @@ standard
 - Determine the scope from the `{target}` input
 - If `{target}` is a file path pointing to a single file → scope 'file'
 - If `{target}` is a directory path, check for project markers (`package.json`, `Cargo.toml`, `go.mod`, `pyproject.toml`) to distinguish 'codebase' from 'module'. A directory of non-code files → 'document-set'.
-- If `{target}` is inline text, a question, a concept, a strategy, or any non-path input → scope 'query'. Set `{target_type}` to 'general' unless the text is clearly source code.
-- If `{target_type}` was not provided, infer it: code file extensions (`.ts`, `.rs`, `.py`, `.go`, `.java`, etc.) → 'code'. Everything else → 'general'.
+- If `{target}` is inline text, a question, a concept, a strategy, or any non-path input → scope 'query'. Set `{target_type}` to `general` unless the text is clearly source code.
+- If `{target_type}` was not provided, infer it: code file extensions (`.ts`, `.rs`, `.py`, `.go`, `.java`, etc.) → `code`. Everything else → `general`.
 - Proceed to the appropriate planning path based on scope
-- A query, question, concept, or inline text input is always 'general' `{target_type}` unless it is clearly source code.
+- A query, question, concept, or inline text input is always `general` `{target_type}` unless it is clearly source code.
 - If you cannot tell whether the `{target}` is a file path, directory, or query text, check whether it exists on the filesystem: if it does, use the file/directory scope; if not, treat it as a query.
 
 ### 2. Query Recommendation
@@ -65,7 +65,7 @@ standard
 - For scope 'codebase' or 'document-set': list files and directories at the top level
 - If the target directory contains no analyzable files, report the empty directory and check that the path is correct and contains source files or documents.
 - Identify module boundaries from directory layout, build system (workspaces, packages), and naming conventions
-- If GitNexus is available (check via `list_repos`): use `query()` to discover functional areas and community clusters — these are better module boundaries than directory layout alone. If GitNexus is not indexed for this codebase, fall back to directory-based module detection and role-based risk classification, and note in the plan that fan-in analysis was not available.
+- When the target codebase is indexed (check via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md)): use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../meta/techniques/gitnexus-operations/query.md) to discover functional areas and community clusters — these are better module boundaries than directory layout alone. If the codebase is not indexed, fall back to directory-based module detection and role-based risk classification, and note in the plan that fan-in analysis was not available.
 - Record per-module: path, file count, estimated lines, primary language or content type
 
 ### 5. Classify Units
@@ -73,7 +73,7 @@ standard
 - Categorise each module by role: api-surface, auth-security, state-persistence, business-logic, integration-external, utilities, configuration, types-definitions
 - Assess risk based on role and content signals: auth/crypto/permissions/session → high. state/database/persistence → high. API surface/public interfaces → medium. business logic/domain rules → medium. utilities/helpers → low. config/constants/types → low.
 - If the scope is codebase but no analytical goal was provided, risk cannot be classified meaningfully — ask the caller for an analytical goal. Without one, default to 'bug detection', which maps all modules to L12.
-- If GitNexus is available: use `context()` to check how many callers each module has — high fan-in modules are higher risk regardless of role
+- When the target codebase is indexed: use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) to check how many callers each module has — high fan-in modules are higher risk regardless of role
 - If the analytical goal targets a specific concern (e.g., 'security'), elevate all modules touching that concern to high risk
 - Record per-module: role, risk (high/medium/low), classification rationale
 
@@ -100,17 +100,16 @@ standard
 ### 9. Build Analysis Units
 
 - Build the `{analysis_units}` array — an ordered list of unit objects that the workflow iterates over
-- Each unit object has: target (file path or content string), target_type (code|general), pipeline-mode (single|full-prism|portfolio|behavioral), lenses (array of resource indices for portfolio, empty for single/full-prism/behavioral), role (module role or 'query'), risk (high|medium|low), rationale (why this mode was selected)
+- Each unit object has: `target` (file path or content string), `target_type` (`code`|`general`), `pipeline_mode` (`single`|`full-prism`|`portfolio`|`behavioral`), `lenses` (array of resource indices for portfolio, empty for single/full-prism/behavioral), `role` (module role or `query`), `risk` (`high`|`medium`|`low`), `rationale` (why this mode was selected)
 - For query and file scopes: produce a single-element array
 - For module scope: produce a single-element array with the module path as target
-- For codebase and document-set scopes: produce one element per module, ordered by execution priority (high-risk first). Include a unit-output-subdir field derived from the module name for artifact namespacing (e.g., `auth/`, `api/`).
+- For codebase and document-set scopes: produce one element per module, ordered by execution priority (high-risk first). Include a `unit_output_subdir` field derived from the module name for artifact namespacing (e.g., `auth/`, `api/`).
 
 ### 10. Format Plan
 
-- Produce the analysis plan as structured output
-- Set the `{analysis_units}` workflow variable — this drives the iteration loop in the structural-pass activity
-- If `{output_path}` is provided, write the human-readable plan to `{output_path}`/`analysis-plan.md`
-- For single-unit plans, the workflow will execute a single pass through the analysis activities. For multi-unit plans, the workflow iterates over `{analysis_units}`.
+- Produce `{analysis_plan}` as structured output and expose `{analysis_units}` as the ordered execution collection
+- If `{output_path}` is provided, write the human-readable plan as `{analysis_plan}` into `{output_path}`
+- A single-unit `{analysis_units}` array runs one analysis pass; a multi-unit array runs one pass per unit in order
 
 ## Outputs
 
@@ -118,7 +117,7 @@ standard
 
 Human-readable analysis plan artifact
 
-#### artifact_filename
+#### artifact
 
 `analysis-plan.md`
 
@@ -156,7 +155,7 @@ Machine-readable ordered array of analysis unit objects, each specifying a targe
 
 #### unit_specs
 
-Array of { target, target_type, pipeline-mode, lenses, role, risk, rationale, unit-output-subdir }
+Array of `{ target, target_type, pipeline_mode, lenses, role, risk, rationale, unit_output_subdir }`
 
 ## Rules
 
@@ -190,4 +189,4 @@ The behavioral pipeline (19-23) is code-only. optimize (20) has no domain-neutra
 
 ### neutral-variant-routing
 
-When target_type is 'general' and an individual behavioral lens is recommended, prefer the neutral variant: error-resilience → 24, api-surface → 25, evolution → 26. optim has no neutral variant — use the code version (20) or omit.
+When `{target_type}` is `general` and an individual behavioral lens is recommended, prefer the neutral variant: error-resilience → 24, api-surface → 25, evolution → 26. `optimize` has no neutral variant — use the code version (20) or omit.

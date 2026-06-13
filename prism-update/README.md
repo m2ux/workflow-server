@@ -1,6 +1,6 @@
 # Prism Update Workflow
 
-> v1.0.0 — Sync the prism workflow's resources, techniques, and documentation with upstream changes from the agi-in-md project.
+> v1.1.0 — Sync the prism workflow's resources, techniques, and documentation with upstream changes from the agi-in-md project.
 
 ---
 
@@ -49,12 +49,12 @@ graph TD
 | # | Activity | Technique | Description |
 |---|----------|-------|-------------|
 | 00 | **Discover Changes** | `diff-upstream` | Diff upstream prisms/ against current resources, categorize changes |
-| 01 | **Review Changes** | — | Present change summary, user confirms scope and exclusions |
+| 01 | **Review Changes** | `review-change-set` | Present change summary, user confirms scope and exclusions |
 | 02 | **Import Resources** | `sync-resources` | Copy/rename/delete resource files, commit per change type |
 | 03 | **Update Routing** | `update-skill-routing` | Fix renamed refs, add goal-mapping entries, expand catalogs |
 | 04 | **Update Docs** | `update-prism-docs` | Rebuild resource README, prompt guide, model sensitivity |
 | 05 | **Verify** | `verify-prism-consistency` | Check for stale refs, routing mismatches, count/index errors |
-| 06 | **Commit and Submit** | — | Create branch, push, create PR |
+| 06 | **Commit and Submit** | `submit-update` | Create branch, push, create PR |
 
 ---
 
@@ -66,7 +66,9 @@ graph TD
 | 01 | `sync-resources` | Apply file changes: copy modified, git mv renames, import new with indexed names, remove deleted |
 | 02 | `update-skill-routing` | Update goal-mapping matrix, portfolio catalog, model sensitivity, resource lists in all prism techniques |
 | 03 | `update-prism-docs` | Rebuild resource catalog, prompt guide entries, model sensitivity table, file structure |
-| 04 | `verify-prism-consistency` | Grep for stale references, verify prompt routing, check counts and duplicate indices |
+| 04 | `verify-prism-consistency` | Verify content integrity, stale references, prompt routing, counts, and duplicate indices |
+| 05 | `review-change-set` | Present the categorized change set for review and apply user exclusion adjustments |
+| 06 | `submit-update` | Ensure a feature branch, push commits, open a pull request, and report the result |
 
 ---
 
@@ -99,14 +101,15 @@ User receives:
 
 | Variable | Type | Required | Default | Description |
 |----------|------|----------|---------|-------------|
+| `planning_folder_path` | string | — | — | Path to the planning folder for this workflow execution |
 | `upstream_path` | string | yes | — | Path to upstream prisms directory |
 | `resource_path` | string | no | `prism/resources/` | Path to workflow resources directory |
 | `change_set` | object | — | — | Categorized diff: new, modified, renamed, deleted |
 | `exclusions` | array | no | `[]` | Upstream filenames to exclude |
 | `next_index` | number | — | — | Next available resource index |
 | `branch_name` | string | — | — | Feature branch name |
+| `exclusions_adjusted` | boolean | — | `false` | Whether the user adjusted exclusions at the review checkpoint |
 | `has_issues` | boolean | — | `false` | Whether verification found issues |
-| `stale_references` | array | — | `[]` | Stale name references found |
 
 ---
 
@@ -139,5 +142,7 @@ workflows/prism-update/
     ├── sync-resources.md
     ├── update-skill-routing.md
     ├── update-prism-docs.md
-    └── verify-prism-consistency.md
+    ├── verify-prism-consistency.md
+    ├── review-change-set.md
+    └── submit-update.md
 ```

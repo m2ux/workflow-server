@@ -21,15 +21,19 @@ List of PASS verdicts to decompose, each with the claim text, cited evidence, an
 
 Code files to read for independent verification
 
-### verification_gaps
+### verification_report
 
 *(optional)* Gap report listing §3 categories with incomplete coverage, missing tables, or unmet target profile obligations. PASS items in flagged categories are auto-included in the adversarial queue.
+
+### output_format
+
+*(optional)* The table or summary shape the result is rendered in.
 
 ## Protocol
 
 ### 1. Seed From Gaps
 
-- If `{verification_gaps}` input is provided, read the gap report. For each §3 category flagged as having incomplete coverage, missing mandatory tables, or unmet [target profile](../resources/target-profile.md#file-coverage-obligations) obligations, identify ALL PASS items from agent results that reference that category. These items are pre-seeded into the `{$adversarial_queue}` regardless of severity estimate — the verification gap indicates higher false-PASS risk.
+- If `{verification_report}` input is provided, read the gap report. For each §3 category flagged as having incomplete coverage, missing mandatory tables, or unmet [target profile](../resources/target-profile.md#file-coverage-obligations) obligations, identify ALL PASS items from agent results that reference that category. These items are pre-seeded into the `{$adversarial_queue}` regardless of severity estimate — the verification gap indicates higher false-PASS risk.
 
 ### 2. Extract And Filter
 

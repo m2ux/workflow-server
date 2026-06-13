@@ -164,7 +164,7 @@ Reference material loaded by the agent at runtime — pattern catalogs, scoring 
 | START-HERE.md | Scope Setup | Audit scope, methodology, artifact index |
 | reconnaissance-summary.json | Reconnaissance | Workflow classification data |
 | scanner-assignments.json | Reconnaissance | Agent-to-submodule mapping |
-| s{n}-{submodule}.json | Scanner S{n} | Per-submodule scan findings |
+| s{scanner_number}-{submodule}.json | Scanner S{scanner_number} | Per-submodule scan findings |
 | verification-report.json | V agent | Coverage verification |
 | merged-findings.json | M agent | Unified finding set |
 | reconciliation-table.json | M agent | Scanner-to-merged finding map |
