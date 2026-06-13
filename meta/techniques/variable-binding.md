@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Bind a step's operation to the workflow-scoped variable bag: resolve the operation's declared inputs by name, apply any call-site deviations, invoke the operation, and land its declared outputs back into the bag under their declared names. The single source of truth for what a step consumes and produces is the bound operation's declared `inputs[]`/`output[]` signature; downstream steps and conditions read those outputs by name or dotted path.
+Bind a step's operation to the workflow-scoped variable bag: resolve the operation's declared inputs by name, apply any call-site deviations, invoke the operation, and land its declared outputs back into the bag under their declared names. The single source of truth for what a step consumes and produces is the bound operation's declared `inputs[]`/`outputs[]` signature; downstream steps and conditions read those outputs by name or dotted path.
 
 ## Inputs
 
 ### bound_operation
 
-The step's `step.technique` (`group::operation` or a bare single-file id). Its composed `inputs[]`/`output[]` signature is the binding contract.
+The step's `step.technique` (`group::operation` or a bare single-file id). Its composed `inputs[]`/`outputs[]` signature is the binding contract.
 
 ### step_deviations
 
@@ -33,7 +33,7 @@ The `bag-name → value` map committed back to `{variable_bag}` through the sanc
 
 ## Protocol
 
-1. Resolve the contract. Load the composed `inputs[]`/`output[]` of `{bound_operation}` (the `::`-path signature merged with ancestor `TECHNIQUE.md` declarations — `get_technique` returns it fully composed).
+1. Resolve the contract. Load the composed `inputs[]`/`outputs[]` of `{bound_operation}` (the `::`-path signature merged with ancestor `TECHNIQUE.md` declarations — `get_technique` returns it fully composed).
 2. Bind each declared input id `I` into `{bound_inputs}`, in this precedence:
    1. If `I` appears in `{step_deviations}`, resolve its source-expression (literal / rename / template, per the deviation forms below) and bind that value.
    2. Else if `{variable_bag}` holds a variable named `I`, bind its value — the implicit same-name bind, which carries zero per-step data.
@@ -48,7 +48,7 @@ The `bag-name → value` map committed back to `{variable_bag}` through the sanc
 
 ### signature-is-the-contract
 
-A step's consumed and produced data is exactly the bound operation's composed `inputs[]`/`output[]`. Keep signatures complete: every `{name}` an operation's protocol reads is a declared input (or carries a `default`), and every value it emits is a declared output. An incomplete signature is a binding gap, not an implicit convention.
+A step's consumed and produced data is exactly the bound operation's composed `inputs[]`/`outputs[]`. Keep signatures complete: every `{name}` an operation's protocol reads is a declared input (or carries a `default`), and every value it emits is a declared output. An incomplete signature is a binding gap, not an implicit convention.
 
 ### deviations-only-in-technique-args
 
