@@ -107,7 +107,7 @@ git worktree add ./workflows workflows
 3. Commit to this branch
 
 **Techniques (markdown source of truth):**
-1. For a standalone technique, create `{workflow-id}/techniques/{slug}.md` (or `meta/techniques/{slug}.md` for the cross-workflow shared layer) with frontmatter (`metadata.version`), a required `## Capability` section, and optional `## Inputs` / `## Protocol` / `## Output(s)` / `## Rules` sections.
+1. For a standalone technique, create `{workflow-id}/techniques/{slug}.md` (or `meta/techniques/{slug}.md` for the cross-workflow shared layer) with frontmatter (`metadata.version`), a required `## Capability` section, and optional `## Inputs` / `## Outputs` / `## Protocol` / `## Rules` sections.
 2. For a container technique (such as `gitnexus-operations`), create `{group}/TECHNIQUE.md` as the container technique/base contract plus one `{group}/{sub}.md` per nested technique. Each nested technique file carries `metadata.version` frontmatter and a `## Capability` section. Nested techniques are addressed `{group}::{sub}`.
 3. Optionally add a per-workflow root base contract at `{workflow-id}/techniques/TECHNIQUE.md` — isomorphic to a technique, carrying no technique list. Its Inputs / Outputs / Rules / Protocol are inherited by every technique in the workflow.
 4. Follow the canonical sections defined in [meta/resources/workflow-canonical.md](./meta/resources/workflow-canonical.md)

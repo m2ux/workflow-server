@@ -239,9 +239,9 @@ graph LR
 
 ---
 
-## Variables (93)
+## Variables (95)
 
-The workflow declares 93 variables that drive control flow, store checkpoint state, and track progress. Variables are grouped by function below.
+The workflow declares 95 variables that drive control flow, store checkpoint state, and track progress. Variables are grouped by function below.
 
 ### Paths & Workspace
 
@@ -253,6 +253,7 @@ The workflow declares 93 variables that drive control flow, store checkpoint sta
 | `discovered_path` | string | Path the user originally pointed at; resolved by reference-resolution into `reference_path` / `component_name`. |
 | `worktree_created` | boolean | True once `start-work-package` has created (or reused) a worktree at `target_path`. Drives the worktree cleanup gate in complete (default: `false`). |
 | `planning_folder_path` | string | Path to planning folder: `.engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}` |
+| `provenance_log_path` | string | Absolute path to the AI-assistance provenance log (`provenance-log.md`), created under the planning folder during implementation. Read by the submit-for-review DCO checkpoint to show the log location (default: `""`). |
 
 ### Issue & PR Identifiers
 
@@ -287,6 +288,7 @@ The workflow declares 93 variables that drive control flow, store checkpoint sta
 | Variable | Type | Description |
 |----------|------|-------------|
 | `complexity` | string | Problem complexity assessed during design-philosophy: simple, moderate, or complex. Drives ADR creation. |
+| `project_type` | string | Detected project type (e.g. `rust-substrate`); produced by project-type-detection and gates rust-substrate-specific validation steps. |
 | `path_gating_complexity` | string | Path-gating mirror of `complexity`, used by design-philosophy's skip-optional effect (default: `""`). |
 | `problem_type` | string | Problem or inventive-goal classification set during design-philosophy (e.g. defect, inventive-improvement). |
 | `needs_comprehension` | boolean | Whether codebase comprehension is needed; always true after design-philosophy, may be re-set by assumptions-review (default: `true`). |

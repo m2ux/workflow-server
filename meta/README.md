@@ -139,6 +139,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | Variable | Type | Description |
 |----------|------|-------------|
 | `target_workflow_id` | string | Client workflow to dispatch (set by `discover-session`) |
+| `meta_session_index` | string | 6-character base32 `session_index` of the meta session itself — passed as `parent_session_index` when `create-session` creates the client session |
 | `workflow_match_ambiguous` | boolean | Multiple workflows could match the request — gates the workflow-selection checkpoint |
 | `has_saved_state` | boolean | A saved client session matched the request |
 | `saved_planning_slug` | string | Planning slug of the matched saved client session — passed to `start_session` to resume |
@@ -149,11 +150,14 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | `is_monorepo` | boolean | Target is a submodule monorepo |
 | `target_path` | string | Resolved target directory — `.` for regular repos, a submodule path for monorepos |
 | `client_workflow_completed` | boolean | Dispatched client workflow reached `workflow_complete` |
+| `target_workflow_outcomes` | string | The client workflow's declared outcomes, read by `verify-outcomes` during end-workflow close-out |
+| `client_state` | string | The dispatched client workflow's final variable state, read by `verify-outcomes` during end-workflow |
+| `client_trace` | string | The dispatched client workflow's execution trace, read by `generate-summary` during end-workflow |
 | `abort_completion` | boolean | User chose to return to dispatch from end-workflow instead of closing |
 
 ---
 
-## Output
+## Outputs
 
 Meta itself produces no domain artefacts. Its outputs are session-state side-effects:
 
@@ -168,7 +172,7 @@ Meta itself produces no domain artefacts. Its outputs are session-state side-eff
 
 ```
 workflows/meta/
-├── workflow.toon                            # Meta workflow definition (12 variables, 3 rules)
+├── workflow.toon                            # Meta workflow definition (16 variables, 3 rules)
 ├── README.md                                # This file
 ├── activities/
 │   ├── 00-discover-session.toon             # Match user request, scan saved sessions

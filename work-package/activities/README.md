@@ -33,22 +33,23 @@ Each activity section below includes its purpose, techniques, steps, checkpoints
 13. **check-github-issue** — control step; presents `github-issue-missing` checkpoint when a Jira ticket has no paired GitHub issue.
 14. **create-github-issue-for-jira** — `create-issue` with `issue_platform: github` (when `needs_github_issue_creation == true`).
 15. **create-issue** — `create-issue`; presents `platform-selection` checkpoint (when `needs_issue_creation == true`).
-16. **assign-issue-jira** — `atlassian-operations::edit-jira-issue` assigns the issue to the current user (when not skipped and `issue_platform == jira`).
-17. **transition-issue-jira** — `atlassian-operations::transition-jira-issue` to In Progress (when not skipped and `issue_platform == jira`).
-18. **assign-issue-github** — `github-cli-protocol::assign-issue` to `@me` (when not skipped and `issue_platform == github`).
-19. **bind-planning-folder-path** — control step; sets `planning_folder_path` to the canonical absolute path returned by the server (under the server's workspace `.engineering` root).
-20. **initialize-planning-folder** — `manage-artifacts::create-readme`.
-21. **present-problem-overview** — `stakeholder-overview`; writes a plain-language problem overview to the planning README.
-22. **derive-branch-name** — `naming-conventions` (when not review mode).
-23. **compute-canonical-target-path** — `naming-conventions`; computes `target_path = ~/projects/work/{component_name}/{wp-slug}/`.
-24. **create-component-worktree** — `manage-git::create-worktree` (when not review mode); materializes the worktree and feature branch in one step.
-25. **create-review-worktree** — `manage-git::create-worktree` with `create_branch: false` (when review mode).
-26. **check-branch** — control step; inside the worktree, checks that the current branch is a feature branch (not main/master).
-27. **check-pr** — control step; inside the worktree, presents `pr-check` checkpoint and sets `pr_exists` when a PR is found for the branch (when not review mode).
-28. **create-pr** — `update-pr::create-pr`; presents `pr-creation` checkpoint and sets `pr_number`, `pr_url`, `pr_exists = true` (when not review mode and `use_existing_pr == false`).
-29. **link-pr-to-ticket-jira** — `atlassian-operations::comment-jira-issue` records the PR reference (when not review mode, `pr_number` exists, not skipped, `issue_platform == jira`).
-30. **link-pr-to-ticket-github** — `github-cli-protocol::view-issue` verifies the PR cross-link (when not review mode, `pr_number` exists, not skipped, `issue_platform == github`).
-31. **determine-next-activity** — control step; decides whether requirements elicitation is needed from issue details.
+16. **lookup-current-user** — `atlassian-operations::user-info` resolves the current user's `accountId` (when not skipped and `issue_platform == jira`); consumed by the assign step.
+17. **assign-issue-jira** — `atlassian-operations::edit-jira-issue` assigns the issue to the current user via the resolved `accountId` (when not skipped and `issue_platform == jira`).
+18. **transition-issue-jira** — `atlassian-operations::transition-jira-issue` to In Progress (when not skipped and `issue_platform == jira`).
+19. **assign-issue-github** — `github-cli-protocol::assign-issue` to `@me` (when not skipped and `issue_platform == github`).
+20. **bind-planning-folder-path** — control step; sets `planning_folder_path` to the canonical absolute path returned by the server (under the server's workspace `.engineering` root).
+21. **initialize-planning-folder** — `manage-artifacts::create-readme`.
+22. **present-problem-overview** — `stakeholder-overview`; writes a plain-language problem overview to the planning README.
+23. **derive-branch-name** — `naming-conventions` (when not review mode).
+24. **compute-canonical-target-path** — `naming-conventions`; computes `target_path = ~/projects/work/{component_name}/{wp-slug}/`.
+25. **create-component-worktree** — `manage-git::create-worktree` (when not review mode); materializes the worktree and feature branch in one step.
+26. **create-review-worktree** — `manage-git::create-worktree` with `create_branch: false` (when review mode).
+27. **check-branch** — control step; inside the worktree, checks that the current branch is a feature branch (not main/master).
+28. **check-pr** — control step; inside the worktree, presents `pr-check` checkpoint and sets `pr_exists` when a PR is found for the branch (when not review mode).
+29. **create-pr** — `update-pr::create-pr`; presents `pr-creation` checkpoint and sets `pr_number`, `pr_url`, `pr_exists = true` (when not review mode and `use_existing_pr == false`).
+30. **link-pr-to-ticket-jira** — `atlassian-operations::comment-jira-issue` records the PR reference (when not review mode, `pr_number` exists, not skipped, `issue_platform == jira`).
+31. **link-pr-to-ticket-github** — `github-cli-protocol::view-issue` verifies the PR cross-link (when not review mode, `pr_number` exists, not skipped, `issue_platform == github`).
+32. **determine-next-activity** — control step; decides whether requirements elicitation is needed from issue details.
 
 **Checkpoints (10):**
 
@@ -521,12 +522,14 @@ graph TD
 
 **Task cycle steps (per task):**
 
-1. **implement-task** — `implement-task` (scatter mode sequential, gathers into `completed_tasks` / `commits`); presents `switch-model-pre-impl` checkpoint.
+1. **implement-task** — `implement-task`; presents `switch-model-pre-impl` checkpoint.
 2. **run-tests** — `cargo-operations::test` scoped to `-p {current_task.crate}`.
 3. **commit** — `manage-git::artifact-commits`.
 4. **log-provenance** — `dco-provenance::append-task-row`; appends a task row to `provenance-log.md`.
 5. **self-review** — `task-completion-review`; presents `symbol-provenance-confirmed` checkpoint when symbols are uncertain.
 6. **collect-assumptions** — `review-assumptions`.
+
+Each task's per-unit outputs accumulate across the `forEach` loop into the activity-level `completed_tasks` / `commits` collections via the activity's `scatter-gather` supporting strategy — governed activity-wide, not through per-step `technique_args`.
 
 **Post-loop steps:**
 
