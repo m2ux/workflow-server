@@ -1,5 +1,5 @@
 id: smart-pass
-version: 1.0.0
+version: 1.1.0
 name: Smart Analysis Pass
 description: "Adaptively compose the analysis pipeline based on input characteristics."
 problem: "Users must manually select the right pipeline mode. Smart mode removes this burden by composing the pipeline automatically based on what the input needs."
@@ -21,24 +21,18 @@ artifacts[3]:
     description: "Dispute self-correction output(s); filename pattern smart-dispute-*.md"
 steps[6]:
   - id: run-prereq
-    name: Run Prerequisite Scan
-    description: "Run the prerequisite scan and extract atomic questions."
     required: true
-    technique: smart-analysis
+    technique: smart-analysis::prereq-scan
     technique_args:
       target_content: "{target}"
   - id: fill-knowledge
-    name: Fill Knowledge Gaps
-    description: "Fill the extracted knowledge gaps from available sources."
     required: false
-    technique: smart-analysis
+    technique: smart-analysis::knowledge-fill
     technique_args:
       target_content: "{target}"
   - id: select-analysis-mode
-    name: Select Analysis Mode
-    description: "Select the analysis approach from the target characteristics."
     required: true
-    technique: smart-analysis
+    technique: smart-analysis::select-mode
     technique_args:
       target_content: "{target}"
     actions[1]:
@@ -46,22 +40,16 @@ steps[6]:
         target: smart_pipeline_steps
         description: "The composed pipeline steps."
   - id: run-analysis
-    name: Run Selected Analysis
-    description: "Run the selected analysis with the enriched content."
     required: true
-    technique: smart-analysis
+    technique: smart-analysis::run-analysis
     technique_args:
       target_content: "{target}"
   - id: run-dispute
-    name: Run Dispute Self-correction
-    description: "Run dispute self-correction when analysis output is sufficient."
     required: false
-    technique: smart-analysis
+    technique: smart-analysis::dispute-correction
     technique_args:
       target_content: "{target}"
   - id: collect-paths
-    name: Collect Artifact Paths
-    description: "Accumulate the produced artifact paths."
     required: true
     actions[1]:
       - action: set

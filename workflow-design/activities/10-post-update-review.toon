@@ -1,5 +1,5 @@
 id: post-update-review
-version: 1.1.1
+version: 1.2.0
 name: Post-Update Review
 description: "Post-commit compliance audit of the updated workflow against design principles and anti-patterns."
 problem: Updates can introduce new compliance issues that are invisible without a post-commit audit against the full design principles and anti-pattern catalog
@@ -12,20 +12,15 @@ rules[2]:
   - "Produce a severity-rated findings summary; do not repeat the full compliance report structure unless findings exist"
 steps[5]:
   - id: reload-updated-workflow
-    name: Reload Updated Workflow
-    description: "Fresh load of the committed workflow definition as the audit baseline (avoids cached pre-update state)."
+    technique: workflow-design::reload-workflow
   - id: run-audit-passes
-    name: Run Audit Passes
-    description: "Post-update audit across the five workflow-design audit phases (expressiveness, conformance, rule-to-structure, anti-pattern, schema validation)."
+    technique: workflow-design::run-audit-passes
   - id: compile-summary
-    name: Compile Findings Summary
-    description: "Severity-rated summary of post-update findings (clean pass when empty; per-finding file/location/severity/fix when not)."
+    technique: workflow-design::summarize-findings
   - id: present-results
-    name: Present Results
-    description: "User-facing report surface: pass/fail counts by severity and any new findings introduced by the update."
+    technique: workflow-design::summarize-findings
   - id: save-review-snapshot
-    name: Save Review Snapshot
-    description: "Persistent snapshot of the post-update audit, written to .engineering/artifacts/reviews/."
+    technique: workflow-design::persist-report
 artifacts[1]:
   - id: post-update-review-report
     name: "{target_workflow_id}-post-update-review.md"

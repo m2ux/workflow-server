@@ -1,5 +1,5 @@
 id: structural-pass
-version: 2.1.0
+version: 2.2.0
 name: Structural Analysis Pass
 description: "Run the assigned structural analysis for each analysis unit."
 techniques:
@@ -42,27 +42,21 @@ loops[1]:
     variable: current_unit
     over: analysis_units
     maxIterations: 100
-    steps[11]:
+    steps[7]:
       - id: resolve-unit-output
-        name: Resolve Unit Output Directory
-        description: "Resolve the unit's output directory and create it."
         required: true
         actions[1]:
           - action: set
             target: unit_output_dir
             description: "{output_path}/{current_unit.unit_output_subdir} when a subdir is present, else {output_path}."
       - id: check-gitnexus
-        name: Check GitNexus Availability
-        description: "Detect whether the target codebase is indexed."
         required: true
         technique: "gitnexus-operations::verify-index"
         actions[1]:
           - action: set
             target: gitnexus_available
             description: "Whether the target codebase is indexed."
-      - id: load-lens
-        name: Load Structural Lens
-        description: "Load the structural lens."
+      - id: run-structural
         required: true
         technique: structural-analysis
         technique_args:
@@ -78,69 +72,7 @@ loops[1]:
               variable: current_unit.pipeline_mode
               operator: "=="
               value: full-prism
-      - id: execute-lens
-        name: Execute Lens Operations
-        description: "Apply the structural lens against the unit target."
-        required: true
-        technique: structural-analysis
-        technique_args:
-          target_content: "{current_unit.target}"
-        condition:
-          type: or
-          conditions[2]:
-            - type: simple
-              variable: current_unit.pipeline_mode
-              operator: "=="
-              value: single
-            - type: simple
-              variable: current_unit.pipeline_mode
-              operator: "=="
-              value: full-prism
-      - id: write-structural-artifact
-        name: Write Structural Artifact
-        description: "Write the structural analysis artifact."
-        required: true
-        technique: structural-analysis
-        technique_args:
-          target_content: "{current_unit.target}"
-        condition:
-          type: or
-          conditions[2]:
-            - type: simple
-              variable: current_unit.pipeline_mode
-              operator: "=="
-              value: single
-            - type: simple
-              variable: current_unit.pipeline_mode
-              operator: "=="
-              value: full-prism
-      - id: select-portfolio-lenses
-        name: Select Portfolio Lenses
-        description: "Select the portfolio lenses for the unit."
-        required: true
-        technique: portfolio-analysis
-        technique_args:
-          target_content: "{current_unit.target}"
-        condition:
-          type: simple
-          variable: current_unit.pipeline_mode
-          operator: "=="
-          value: portfolio
-      - id: execute-portfolio
-        name: Execute Portfolio Lenses
-        description: "Apply each selected lens independently to the unit target."
-        required: true
-        technique: portfolio-analysis
-        technique_args:
-          target_content: "{current_unit.target}"
-        condition:
-          type: simple
-          variable: current_unit.pipeline_mode
-          operator: "=="
-          value: portfolio
-      - id: write-portfolio-artifacts
-        name: Write Portfolio Artifacts
-        description: "Write the per-lens and cross-lens synthesis artifacts."
+      - id: run-portfolio
         required: true
         technique: portfolio-analysis
         technique_args:
@@ -151,8 +83,6 @@ loops[1]:
           operator: "=="
           value: portfolio
       - id: dispatch-behavioral-lenses
-        name: Dispatch Behavioral Lenses
-        description: "Dispatch the four independent behavioral lenses against the unit target."
         required: true
         technique: behavioral-pipeline
         technique_args:
@@ -163,16 +93,12 @@ loops[1]:
           operator: "=="
           value: behavioral
       - id: collect-behavioral-paths
-        name: Collect Behavioral Artifact Paths
-        description: "Capture the four behavioral artifact paths."
         required: true
         actions[1]:
           - action: set
             target: behavioral_output_paths
             description: "Map of role label to behavioral artifact path."
       - id: report-unit-paths
-        name: Report Unit Artifact Paths
-        description: "Accumulate this unit's artifact paths into the run-wide collection."
         required: true
         actions[1]:
           - action: set

@@ -1,5 +1,5 @@
 id: start
-version: 1.1.0
+version: 1.3.0
 name: Start Security Vulnerability Remediation
 description: "Initialize a high-sensitivity security fix."
 problem: User needs to remediate a security vulnerability without public disclosure
@@ -12,59 +12,39 @@ entryActions[1]:
     message: "ENTERING SECURITY VULNERABILITY MODE - ISOLATION ACTIVE"
 steps[10]:
   - id: set-security-mode
-    name: Confirm Security Mode
-    description: "Set security mode active."
     actions[1]:
       - action: set
         target: is_sec_vuln_mode
         value: true
   - id: capture-sec-vuln-url
-    name: Capture Security Advisory URL
-    description: "Capture the private security advisory URL."
     actions[1]:
       - action: set
         target: sec_vuln_url
         description: "Private security advisory URL provided by the user."
   - id: capture-private-fork-url
-    name: Capture Private Fork URL
-    description: "Capture the private fork URL backing the security remote."
     actions[1]:
       - action: set
         target: private_fork_url
         description: "Private fork URL provided by the user."
   - id: capture-short-id
-    name: Capture Advisory Short ID
-    description: "Capture the short advisory slug used to form the security branch name."
     actions[1]:
       - action: set
         target: short_id
         description: "Short advisory slug provided by the user."
   - id: resolve-target
-    name: Resolve Target Directory
-    description: "Confirm the target directory exists."
     actions[1]:
       - action: validate
         target: "target_path exists"
         message: "Target directory not found at the supplied target_path"
   - id: configure-sec-vuln-remote
-    name: Configure Security Remote
-    description: "Register the private fork as the security remote."
     technique: security-setup::configure-security-remote
   - id: initialize-security-branch
-    name: Initialize Security Branch
-    description: "Create the local security feature branch off the private fork."
     technique: security-setup::initialize-security-branch
   - id: initialize-planning-folder
-    name: Initialize Private Planning Folder
-    description: "Create the private planning folder with a Links-free README."
     technique: security-setup::initialize-planning-folder
   - id: present-security-overview
-    name: Present Security Overview
-    description: "Write a plain-language vulnerability-risk overview to the planning README."
     technique: security-setup::present-security-overview
   - id: finalize-setup
-    name: Finalize Security Setup
-    description: "Confirm the public origin remote is not tracked by the branch."
     technique: security-setup::verify-origin-untracked
 checkpoints[5]:
   - id: confirm-security-remote

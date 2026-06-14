@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.1.1
+version: 1.2.0
 name: Quality Review
 description: "Quality review of drafted workflow content."
 problem: Drafted content may contain prose that should be formal constructs, diverge from conventions, or have critical rules without structural enforcement
@@ -13,128 +13,112 @@ rules[3]:
   - "Flag every rule that can be violated by ignoring it and lacks structural enforcement"
 steps[16]:
   - id: load-all-workflow-files
-    name: Load All Workflow Files
-    description: "Full file inventory of the target workflow as the audit baseline (workflow.toon, activities, techniques, resources, READMEs)."
+    technique: workflow-design::reload-workflow
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: principle-compliance-audit
-    name: Principle Compliance Audit
-    description: "Principle-compliance audit pass: target adherence to the 14 design principles in resource 00, classified per principle as Pass / Partial / Violation with file/field/line citations."
+    technique: workflow-design::audit-principles
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: anti-pattern-scan
-    name: Anti-Pattern Scan
-    description: "Anti-pattern scan pass: target content matched against the AP catalog in resource 02 (40 entries across 7 categories)."
+    technique: workflow-design::audit-anti-patterns
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: schema-validation-check
-    name: Schema Validation Check
-    description: "Schema validation pass: every TOON file checked against its JSON schema, with per-file pass/fail."
+    technique: workflow-design::audit-schema-validation
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: tool-technique-doc-consistency
-    name: Tool-Technique-Doc Consistency Audit
-    description: "Consistency audit pass over the tool / technique / bootstrap-resource / doc boundary: tool-name accuracy, return-value fidelity, bootstrap completeness, cross-technique consistency, behavioural-guidance duplication, tool-surface overlap, doc parity (AP-30–35)."
+    technique: workflow-design::audit-consistency
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: compile-compliance-report
-    name: Compile Compliance Report
-    description: "Structured findings report assembled from every audit pass, following the report template in resource 04."
+    technique: workflow-design::compile-report
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: present-compliance-report
-    name: Present Compliance Report
-    description: "User-facing surface of the compliance report with severity-rated findings and recommended fixes."
+    technique: workflow-design::compile-report
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: offer-fixes
-    name: Offer to Fix Issues
-    description: "Disposition gate for remediation — review-disposition checkpoint that transitions to update mode when fixes are wanted."
+    checkpoint: review-disposition
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: expressiveness-review
-    name: Schema Expressiveness Review
-    description: "Schema-expressiveness audit pass over drafted content: prose passages cross-checked against the construct inventory in resource 01; substitutions for formal constructs flagged for rewriting."
+    technique: workflow-design::audit-expressiveness
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: present-expressiveness-findings
-    name: Present Expressiveness Findings
-    description: "User-facing surface of the expressiveness-pass results: counts, affected files, replacement constructs, before/after per flagged instance."
+    technique: workflow-design::audit-expressiveness
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: conformance-review
-    name: Convention Conformance Review
-    description: "Convention-conformance audit pass over drafted content vs reference workflows (file naming, field ordering, version format, transition patterns, checkpoint structure, technique structure)."
+    technique: workflow-design::audit-conformance
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: present-conformance-findings
-    name: Present Conformance Findings
-    description: "User-facing surface of the conformance-pass results: conventions followed, conventions diverged, and the justification status for each divergence."
+    technique: workflow-design::audit-conformance
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: rule-hygiene-audit
-    name: Rule Hygiene Audit
-    description: "Rule-hygiene audit pass over rules[] across the workflow, activities, and techniques (AP-24–29 plus the worker-visibility carve-out on AP-27)."
+    technique: workflow-design::audit-rule-hygiene
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: present-rule-hygiene-findings
-    name: Present Rule Hygiene Findings
-    description: "User-facing surface of the rule-hygiene-pass results: restatements, contradictions, cross-level duplications, prefix patterns, and ambiguities with file + rule-key citations and recommended actions."
+    technique: workflow-design::audit-rule-hygiene
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: rule-to-structure-audit
-    name: Rule-to-Structure Audit
-    description: "Rule-to-structure audit pass over rules[] entries: text-only enforcement vs structural backing (checkpoint, condition, validate action, decision)."
+    technique: workflow-design::audit-rule-enforcement
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: present-enforcement-findings
-    name: Present Enforcement Findings
-    description: "User-facing surface of the rule-to-structure-pass results: text-only rules, structurally-enforced rules, and recommendations for adding enforcement where needed."
+    technique: workflow-design::audit-rule-enforcement
     condition:
       type: simple
       variable: is_review_mode

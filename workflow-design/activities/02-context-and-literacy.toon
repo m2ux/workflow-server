@@ -1,5 +1,5 @@
 id: context-and-literacy
-version: 1.1.0
+version: 1.2.0
 name: Context and Literacy
 description: "Schema-system and TOON-format baseline established before drafting begins."
 problem: Agent must internalize the schema system and format conventions before producing any workflow content
@@ -13,17 +13,13 @@ rules[3]:
   - "Present the schema construct summary to the user for confirmation"
 steps[7]:
   - id: load-schemas
-    name: Load Schema Definitions
-    description: "Authoritative JSON schemas (workflow, activity, technique, condition, state) — the conformance reference for all drafted content."
+    technique: workflow-design::context-loading
   - id: read-schema-documentation
-    name: Read Schema Documentation
-    description: "Schema ontology + field tables + examples + validation guidance from schemas/README.md — the construct reference."
+    technique: workflow-design::context-loading
   - id: survey-existing-workflows
-    name: Survey Existing Workflows
-    description: "Two-or-more reference workflows of similar type loaded as the pattern baseline."
+    technique: workflow-design::context-loading
   - id: read-toon-examples
-    name: Read TOON File Examples
-    description: "Sample TOON files (workflow / activity / technique) read to ground TOON syntax understanding (key-value pairs, `[N]` array suffixes, nested objects, inline `{}` shorthand)."
+    technique: workflow-design::context-loading
     condition:
       type: and
       conditions[2]:
@@ -36,11 +32,8 @@ steps[7]:
           operator: "!="
           value: true
   - id: identify-applicable-constructs
-    name: Identify Applicable Constructs
-    description: "Construct inventory applicable to the design intent (with field name / type / required-property cross-checks and reference-workflow examples)."
+    technique: workflow-design::context-loading
   - id: auto-confirm-literacy
-    name: Auto-confirm format literacy
-    description: "Update-mode shortcut: literacy already demonstrated by loading and analysing the target workflow during intake, so the literacy checkpoints are skipped."
     condition:
       type: simple
       variable: is_update_mode
@@ -54,8 +47,7 @@ steps[7]:
         target: schema_constructs_confirmed
         value: true
   - id: present-convention-summary
-    name: Present Convention Summary
-    description: "User-facing summary of observed conventions (naming, folder structure, field ordering, versions, transition and checkpoint shapes) as the literacy confirmation surface."
+    technique: workflow-design::context-loading
     condition:
       type: and
       conditions[2]:

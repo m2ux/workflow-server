@@ -1,38 +1,26 @@
 id: apply-mitigations
-version: 1.0.0
+version: 1.2.0
 name: Apply Accepted Mitigations
 description: "Apply accepted mitigations to the target document."
 problem: "The mitigation plan contains accepted changes ranging from single-word corrections to multi-paragraph additions. These must be applied precisely to the target without introducing errors, in the correct priority order, with verification after each change."
 techniques:
   supporting[1]:
     - variable-binding
-steps[5]:
-  - id: read-mitigation-plan
-    name: Read Mitigation Plan
-    description: "Read the mitigation plan and extract the accepted changes in priority order."
-    technique: resolve-findings
-    required: true
+steps[2]:
   - id: apply-changes
-    name: Apply Changes in Priority Order
-    description: "Apply the accepted mitigations to the target in priority order."
-    technique: resolve-findings
-    required: true
-  - id: verify-changes
-    name: Verify Applied Changes
-    description: "Verify each accepted mitigation was applied at its expected location."
-    technique: resolve-findings
-    required: true
-  - id: present-summary
-    name: Present Application Summary
-    description: "Present the applied-change summary and the modified-target and plan paths."
+    technique: resolve-findings::apply-changes
     required: true
   - id: commit-changes
-    name: Commit Changes
-    description: "Determine `{$target_name}` from `{target_path}`, then stage and commit the modified target and the mitigation plan artifact."
+    technique: version-control::commit-regular-files
     required: true
     actions[1]:
-      - action: message
-        message: "Commit message: `docs({target_name}): apply evaluation mitigations`"
+      - action: set
+        target: target_name
+        description: "The target's base name, derived from target_path."
+    technique_args:
+      paths: "target_path, mitigation_plan_path"
+      message: "docs({target_name}): apply evaluation mitigations"
+      branch: current
 checkpoints[1]:
   - id: confirm-apply
     name: Apply Mitigations Confirmation

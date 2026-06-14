@@ -1,5 +1,5 @@
 id: intake-sources
-version: 1.1.0
+version: 1.2.0
 name: Intake Sources
 description: "Capture and validate the source-document and target-specification paths, classify the source as a meeting transcript or an unstructured document, determine whether the specification is being augmented or created, and load both sources."
 problem: The workflow needs validated input paths, a classified source type, and loaded source content before analysis can begin
@@ -9,44 +9,32 @@ techniques:
     - "variable-binding"
 steps[6]:
   - id: capture-paths
-    name: Capture Source Paths
-    description: "Capture the source and target paths and record the specification basename."
     technique: intake-sources
     actions[1]:
       - action: set
         target: spec_basename
         description: "Basename of target_doc_path (filename without directory)."
   - id: validate-source
-    name: Validate Source Readable
-    description: "Confirm the source document exists and is non-empty before proceeding."
     technique: intake-sources
     actions[1]:
       - action: validate
         target: "source_path readable and non-empty"
         message: "Source document not found or empty at the supplied source_path"
   - id: classify-source-type
-    name: Classify Source Type
-    description: "Classify the source as a meeting transcript or an unstructured document."
     technique: intake-sources
     actions[1]:
       - action: set
         target: source_type
         description: "meeting when the document is a meeting transcript; document when it is an unstructured document."
   - id: detect-target-existence
-    name: Detect Target Existence
-    description: "Determine whether the specification is being augmented or created."
     technique: intake-sources
     actions[1]:
       - action: set
         target: target_doc_exists
         description: "True when a file exists at target_doc_path; false otherwise."
   - id: load-sources
-    name: Load Sources
-    description: "Load the source document and, when augmenting, the current specification."
     technique: intake-sources
   - id: record-intake
-    name: Record Intake
-    description: "Record the captured sources, classified type, detected mode, and basename in the intake artifact."
     technique: intake-sources
     actions[1]:
       - action: message

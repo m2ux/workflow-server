@@ -1,31 +1,13 @@
 id: finalize-roadmap
-version: 1.1.0
+version: 1.2.0
 name: Finalize Roadmap
 description: Complete roadmap documentation with timeline, navigation, and success criteria
 problem: Need to finalize planning documentation before implementation begins
 techniques:
   supporting[1]:
     - "variable-binding"
-steps[5]:
-  - id: update-start-here
-    name: Update START-HERE.md
-    description: Complete START-HERE.md with executive summary, status table, and success criteria
-    technique: document-roadmap
-  - id: update-readme
-    name: Update README.md
-    description: Add navigation links to all planning documents
-    technique: document-roadmap
-  - id: add-timeline
-    name: Add timeline estimates
-    description: Add timeline estimates based on effort and dependencies
-    technique: document-roadmap
-  - id: document-success
-    name: Document overall success criteria
-    description: Define how initiative completion will be measured
-    technique: document-roadmap
-  - id: present-roadmap
-    name: Present final roadmap
-    description: Present the completed roadmap for final approval
+steps[1]:
+  - id: finalize-roadmap-docs
     technique: document-roadmap
 artifacts[2]:
   - id: start-here-final

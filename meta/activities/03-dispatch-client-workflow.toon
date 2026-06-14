@@ -1,5 +1,5 @@
 id: dispatch-client-workflow
-version: 5.0.0
+version: 5.1.0
 name: Dispatch Client Workflow
 description: "Drive the client workflow's activity loop."
 problem: The orchestrator must drive the client workflow's activity loop inline rather than via a spawned client orchestrator
@@ -19,7 +19,10 @@ entryActions[1]:
     message: "Cannot dispatch without a client session_index; initialize-session must run first"
 steps[1]:
   - id: prime-initial-activity
-    description: "Determine the first activity to dispatch."
+    actions[1]:
+      - action: set
+        target: current_activity
+        value: initialActivity
 loops[1]:
   - id: client-activity-loop
     name: Client Activity Loop
@@ -32,19 +35,35 @@ loops[1]:
     maxIterations: 200
     steps[5]:
       - id: dispatch-activity
-        description: "workflow-engine::dispatch-activity(activity_id: {current_activity}, session_index: {client_session_index}, prompt_template: meta/activity-worker-prompt, state: {variables})"
+        technique: workflow-engine::dispatch-activity
+        technique_args:
+          activity_id: current_activity
+          session_index: client_session_index
+          prompt_template: "meta/activity-worker-prompt"
+          state: variables
       - id: present-yielded-checkpoint
         when: "worker_yielded_checkpoint == true"
-        description: "workflow-engine::present-checkpoint-to-user(session_index: {client_session_index})"
+        technique: workflow-engine::present-checkpoint-to-user
+        technique_args:
+          session_index: client_session_index
       - id: respond-yielded-checkpoint
         when: "worker_yielded_checkpoint == true"
-        description: "workflow-engine::respond-checkpoint(session_index: {client_session_index}, resolution: {user_selection})"
+        technique: workflow-engine::respond-checkpoint
+        technique_args:
+          session_index: client_session_index
+          resolution: user_selection
       - id: commit-activity-artifacts
         when: "worker_yielded_checkpoint == false"
-        description: "workflow-engine::commit-and-persist(activity_id: {current_activity}, planning_folder_path: {planning_folder_path}, target_path: {target_path})"
+        technique: workflow-engine::commit-and-persist
+        technique_args:
+          activity_id: current_activity
       - id: advance-activity
         when: "worker_yielded_checkpoint == false"
-        description: "workflow-engine::evaluate-transition(activity: {completed_activity}, state: {variables}, transition_override: {transition_override})"
+        technique: workflow-engine::evaluate-transition
+        technique_args:
+          activity: completed_activity
+          state: variables
+          next_activity_id: current_activity
 transitions[1]:
   - to: end-workflow
     condition:

@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
 
-Validate the updated specification against structural, identifier-uniqueness, consistency, source-coverage, and protocol-conformance checks, and categorize each issue as critical or correctable.
+Validate the updated specification against structural, identifier-uniqueness, consistency, source-coverage, and protocol-conformance checks, categorize each issue as critical or correctable, and derive the routing verdict — whether validation passed, whether source coverage is complete, and whether critical or correctable issues remain.
 
 ## Inputs
 
@@ -35,6 +35,13 @@ The structured analysis whose source-coverage matrix is the completeness referen
 
 - Write `{validation_report}` to `{planning_folder_path}`, recording the overall verdict (passed, correctable, or critical), the categorized issues, the source-coverage result, and the correction-pass number.
 
+### 5. Derive Routing Verdict
+
+- Set `{source_coverage_complete}` to `true` when every normative source statement maps to at least one requirement.
+- Set `{has_critical_issues}` to `true` when any issue is critical or irreconcilable.
+- Set `{has_correctable_issues}` to `true` when correctable issues remain — including source-coverage gaps — and no critical issue is present.
+- Set `{validation_passed}` to `true` when no critical or correctable issues remain and `{source_coverage_complete}` is `true`.
+
 ## Outputs
 
 ### validation_report
@@ -44,6 +51,22 @@ Categorized validation findings with an overall verdict and the source-coverage 
 #### artifact
 
 `validation-report-{correction_iteration}.md`
+
+### source_coverage_complete
+
+`true` when every normative source statement maps to at least one requirement.
+
+### has_critical_issues
+
+`true` when any issue is critical or irreconcilable.
+
+### has_correctable_issues
+
+`true` when correctable issues remain — including source-coverage gaps — and no critical issue is present.
+
+### validation_passed
+
+`true` when no critical or correctable issues remain and `{source_coverage_complete}` is `true`.
 
 ## Rules
 

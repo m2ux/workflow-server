@@ -1,5 +1,5 @@
 id: subsystem-pass
-version: 1.0.0
+version: 1.1.0
 name: Subsystem Analysis Pass
 description: "Per-region prism analysis with cross-subsystem synthesis."
 problem: "Whole-file analysis with a single prism misses bugs that exist BETWEEN subsystems and structural properties that span class boundaries. Different code regions benefit from different analytical lenses."
@@ -17,17 +17,13 @@ artifacts[2]:
     description: "Cross-subsystem findings, cross-subsystem bugs, file-level conservation law, coverage map"
 steps[5]:
   - id: split-subsystems
-    name: Split Into Subsystems
-    description: "Decompose the source into structural subsystems."
     required: true
-    technique: subsystem-analysis
+    technique: subsystem-analysis::decompose
     technique_args:
       target_content: "{target}"
   - id: calibrate-assignments
-    name: Calibrate Prism Assignments
-    description: "Assign an optimal prism per subsystem via calibration."
     required: true
-    technique: subsystem-analysis
+    technique: subsystem-analysis::calibrate
     technique_args:
       target_content: "{target}"
     actions[1]:
@@ -35,10 +31,8 @@ steps[5]:
         target: subsystem_assignments
         description: "Map of subsystem to assigned prism."
   - id: execute-per-subsystem
-    name: Execute Per-subsystem Analysis
-    description: "Analyze each subsystem with its assigned prism."
     required: true
-    technique: subsystem-analysis
+    technique: subsystem-analysis::execute
     technique_args:
       target_content: "{target}"
     actions[1]:
@@ -46,15 +40,11 @@ steps[5]:
         target: subsystem_outputs
         description: "Per-subsystem analysis outputs."
   - id: synthesize-cross-subsystem
-    name: Synthesize Cross-subsystem Findings
-    description: "Synthesize cross-subsystem findings from the per-subsystem outputs."
     required: true
-    technique: subsystem-analysis
+    technique: subsystem-analysis::synthesize
     technique_args:
       target_content: "{target}"
   - id: collect-paths
-    name: Collect Artifact Paths
-    description: "Accumulate the subsystem artifact paths."
     required: true
     actions[1]:
       - action: set

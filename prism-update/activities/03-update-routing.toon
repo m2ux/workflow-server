@@ -1,5 +1,5 @@
 id: update-routing
-version: 1.1.0
+version: 1.2.0
 name: Update Routing
 description: "Update prism workflow techniques to reflect resource changes."
 problem: Skill routing tables reference prism names and indices that may have changed
@@ -13,30 +13,8 @@ entryActions[1]:
     target: change_set
     message: "change_set must be populated before updating skill routing"
 
-steps[5]:
-  - id: update-plan-analysis
-    name: Update plan-analysis technique
-    description: "Update goal-mapping, routing sections, and renamed references in plan-analysis."
-    technique: update-skill-routing
-    required: true
-  - id: update-portfolio-analysis
-    name: Update portfolio-analysis technique
-    description: "Update the lens catalog, selection guide, and resource list in portfolio-analysis."
-    technique: update-skill-routing
-    required: true
-  - id: update-behavioral-pipeline
-    name: Update behavioral-pipeline technique
-    description: "Fix renamed behavioral lens references in behavioral-pipeline."
-    technique: update-skill-routing
-    required: true
-  - id: update-orchestrate-prism
-    name: Update orchestrate-prism technique
-    description: "Update index mappings and renamed references in orchestrate-prism."
-    technique: update-skill-routing
-    required: true
-  - id: commit-routing
-    name: Commit routing updates
-    description: "Commit the modified technique files."
+steps[1]:
+  - id: update-skill-routing
     technique: update-skill-routing
     required: true
 

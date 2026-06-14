@@ -1,5 +1,5 @@
 id: sub-crate-review
-version: 1.8.0
+version: 1.9.0
 name: "Sub-Agent: Crate Deep Review"
 description: "Structured crate review for Group A sub-agents."
 problem: "Sub-agents receiving free-form prompts skip per-field trace tables, mark PASS without cross-function comparison, and return prose instead of structured output. This activity enforces step-by-step execution with verifiable intermediate outputs."
@@ -9,53 +9,37 @@ techniques:
 required: false
 steps[8]:
   - id: read-all-files
-    name: Read All Crate Files
     required: true
     technique: build-function-registry
     technique_args:
       output_format: "| File | Lines | Read? |"
-    description: "Read every crate file and supplementary file."
   - id: build-function-registry
-    name: Build Function Registry
     required: true
     technique: build-function-registry
-    description: "Enumerate every function in this crate by type and priority."
   - id: extract-invariants
-    name: Extract Invariants for Priority-1 Functions
     required: true
     technique: extract-invariants
-    description: "Extract invariants for each priority-1 function."
   - id: apply-checklist
-    name: Apply §3 Checklist Items
     required: true
     technique: apply-checklist
     technique_args:
       output_format: "| Item | Verdict | Evidence | Finding ID |"
-    description: "Evaluate every checklist item against this crate."
   - id: produce-required-tables
-    name: Produce Mandatory Analysis Tables
     required: true
     technique: apply-checklist
     technique_args:
       output_format: "| Table | Produced? | Justification |"
-    description: "Produce the mandatory evidence tables."
   - id: cross-function-comparison
-    name: Cross-Function Invariant Comparison
     required: true
     technique: scan-storage-lifecycle
     technique_args:
       verify_invariants: true
-    description: "Scan every storage map with cross-function invariant verification."
   - id: verify-completeness
-    name: Verify Completeness
     required: true
     technique: verify-sub-agent-output
-    description: "Verify every prior step's required outputs are complete."
   - id: format-output
-    name: Format Structured Output
     required: true
     technique: execute-sub-agent
-    description: "Format all findings and tables as structured output."
 outcome[4]:
   - Every .rs file in the crate read and registered
   - Every §3 checklist item evaluated with evidence

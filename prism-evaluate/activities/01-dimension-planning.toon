@@ -1,48 +1,36 @@
 id: dimension-planning
-version: 1.0.0
+version: 1.2.0
 name: Plan Dimension Analysis
 description: "Map each evaluation dimension to prism pipeline modes and lenses."
 problem: "Generic evaluation prompts miss target-specific content. A blockchain proposal needs different analytical focus than a product strategy document or a codebase architecture review. The dimension-to-lens mapping must be informed by the target's actual structure, claims, and content to produce meaningful findings."
 techniques:
   supporting[1]:
     - variable-binding
-steps[5]:
+steps[4]:
   - id: survey-target
-    name: Survey Target Structure
-    description: "Survey the target's structure, claims, and key topics to inform dimension focus."
-    technique: plan-evaluation
+    technique: plan-evaluation::survey-target
     required: true
   - id: map-dimensions
-    name: Map Dimensions to Lenses
-    description: "Map each dimension to its pipeline mode, lenses, analysis focus, and output subdirectory."
-    technique: plan-evaluation
+    technique: plan-evaluation::map-dimensions-to-lenses
     required: true
     actions[1]:
       - action: set
         target: dimension_plan
         description: "The array of dimension-to-lens mappings."
   - id: group-dimensions
-    name: Group Dimensions for Execution
-    description: "Group the dimensions by pipeline mode into execution groups."
-    technique: plan-evaluation
+    technique: plan-evaluation::group-for-execution
     required: true
     actions[1]:
       - action: set
         target: execution_groups
         description: "The array of execution groups."
   - id: write-plan
-    name: Write Evaluation Plan Artifact
-    description: "Write the evaluation plan artifact to the output directory."
-    technique: plan-evaluation
+    technique: plan-evaluation::write-evaluation-plan
     required: true
     actions[1]:
       - action: set
         target: evaluation_plan_path
         description: "The written evaluation-plan.md path."
-  - id: present-plan
-    name: Present Dimension Plan
-    description: "Present the dimension plan summary for confirmation."
-    required: true
 checkpoints[1]:
   - id: confirm-plan
     name: Dimension Plan Confirmation

@@ -1,5 +1,5 @@
 id: verify
-version: 1.1.0
+version: 1.2.0
 name: Verify Consistency
 description: "Check for consistency issues across resources, techniques, and documentation."
 problem: Changes across multiple files may leave inconsistencies
@@ -8,41 +8,13 @@ techniques:
   supporting[1]:
     - "variable-binding"
 
-steps[6]:
-  - id: verify-content-integrity
-    name: Verify content integrity
-    description: "Diff each modified and new resource against its upstream original."
-    technique: verify-prism-consistency
-    required: true
-  - id: check-stale-references
-    name: Check for stale references
-    description: "Find stale references to renamed and deleted prism names."
-    technique: verify-prism-consistency
-    required: true
-  - id: verify-prompt-routing
-    name: Verify prompt guide routing
-    description: "Verify each prompt guide entry routes correctly through the goal-mapping matrix."
-    technique: verify-prism-consistency
-    required: true
-  - id: verify-resource-counts
-    name: Verify resource counts
-    description: "Compare the actual resource count against the documented counts."
-    technique: verify-prism-consistency
-    required: true
-  - id: check-duplicate-indices
-    name: Check for duplicate indices
-    description: "Detect duplicate resource indices."
-    technique: verify-prism-consistency
-    required: true
-  - id: set-result
-    name: Set verification result
-    description: "Set the verification result from the findings."
+steps[1]:
+  - id: verify-prism-consistency
     technique: verify-prism-consistency
     required: true
     actions[1]:
       - action: set
         target: has_issues
-        description: "Set from verification_report.has_issues — true when any check produced a finding."
 
 checkpoints[1]:
   - id: verification-result

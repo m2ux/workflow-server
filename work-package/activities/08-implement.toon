@@ -1,5 +1,5 @@
 id: implement
-version: 2.7.0
+version: 2.8.0
 name: Implement Tasks
 description: "Execute the implementation plan task by task."
 problem: User needs to implement the planned tasks
@@ -52,7 +52,6 @@ loops[3]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the review-assumptions::reconcile technique protocol."
     steps[1]:
       - id: reconcile-iteration
         technique: review-assumptions::reconcile
@@ -62,7 +61,6 @@ loops[3]:
     variable: current_assumption
     over: open_assumptions
     maxIterations: 20
-    description: "Iterates over each open (stakeholder-dependent) assumption, presenting the implementation-assumption-interview checkpoint for each."
     steps[2]:
       - id: present-assumption
         technique: review-assumptions::interview

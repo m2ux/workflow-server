@@ -1,5 +1,5 @@
 id: strategic-review
-version: 1.1.0
+version: 1.2.0
 name: Strategic Review
 description: "Review the implementation to ensure changes are minimal and focused."
 problem: User needs to ensure changes are minimal and focused
@@ -16,35 +16,21 @@ artifacts[2]:
     name: "architecture-summary.md"
     location: planning
     description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes."
-steps[9]:
-  - id: diff-review
-    name: Review diff
-    description: "Examine all changes on the branch for scope and relevance."
+steps[8]:
+  - id: review-scope
     technique: strategic-review::review-scope
   - id: resign-unsigned-commits
-    name: Re-sign unsigned commits
-    description: "Rebase and re-sign every commit so each carries a valid GPG signature."
     technique: strategic-review::resign-commits
     condition:
       type: simple
       variable: resign_unsigned_commits_requested
       operator: ==
       value: true
-  - id: identify-artifacts
-    name: Identify artifacts
-    description: "Find investigation artifacts, over-engineering, and orphaned infrastructure."
-    technique: strategic-review::review-scope
   - id: ensure-changes-folder-entry
-    name: Ensure changes/ fragment when required
-    description: "Maintain the changes/ changelog fragment when the target repo uses one."
     technique: strategic-review::verify-fragment
   - id: document-findings
-    name: Document findings
-    description: "Write strategic-review-{n}.md categorizing the findings."
     technique: strategic-review::document-findings
   - id: document-cleanup-recommendations
-    name: Document Cleanup Recommendations
-    description: "Record cleanup actions as review recommendations without applying them."
     technique: strategic-review::recommend-cleanup
     condition:
       type: simple
@@ -52,8 +38,6 @@ steps[9]:
       operator: "=="
       value: true
   - id: apply-cleanup
-    name: Apply cleanup
-    description: "Apply the approved cleanup and commit the artifacts on the branch."
     technique: strategic-review::apply-cleanup
     condition:
       type: simple
@@ -61,17 +45,9 @@ steps[9]:
       operator: "!="
       value: true
   - id: create-architecture-summary
-    name: Create architecture summary
-    description: "Create architecture-summary.md with stakeholder diagrams."
     technique: strategic-review::summarize-architecture
   - id: analyze-strategic-findings
-    name: Analyze Strategic Findings
-    description: "Assess finding severity and recommend a disposition."
     technique: analyze-findings
-    actions[1]:
-      - action: set
-        target: recommended_strategic_option
-        description: "Recommended strategic review option from the findings assessment."
 checkpoints[2]:
   - id: unsigned-commits-prompt
     name: Unsigned or unverified commits

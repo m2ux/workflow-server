@@ -1,5 +1,5 @@
 id: discover-session
-version: 7.0.0
+version: 7.1.0
 name: Discover Session
 description: "Identify the target workflow and search for an existing client session to resume."
 problem: The meta workflow needs to determine which client workflow to dispatch and whether to resume an existing client session, before initialize-session creates or adopts the client session
@@ -15,21 +15,30 @@ rules[1]:
   - "Match identifying context against saved sessions even when the user said 'start' — surface saved state via the resume-session checkpoint"
 steps[7]:
   - id: list-available-workflows
-    description: "workflow-engine::list-workflows()"
+    technique: workflow-engine::list-workflows
   - id: match-target
-    description: "workflow-engine::match-target-workflow(user_request: {user_request}, workflow_catalog: {workflow_catalog})"
+    technique: workflow-engine::match-target-workflow
   - id: extract-context
-    description: "workflow-engine::extract-identifying-context(user_request: {user_request})"
+    technique: workflow-engine::extract-identifying-context
   - id: scan-planning-folders
-    description: "workflow-engine::scan-saved-sessions(target_workflow_id: {target_workflow_id})"
+    technique: workflow-engine::scan-saved-sessions
   - id: match-session
-    description: "workflow-engine::match-saved-session(identifying_context: {identifying_context}, saved_session_candidates: {saved_session_candidates})"
+    technique: workflow-engine::match-saved-session
   - id: record-match
-    description: "Set has_saved_state = true; copy saved_planning_slug and planning_folder_path from the matched candidate."
     when: "has_saved_state == true"
+    actions[2]:
+      - action: set
+        target: has_saved_state
+        value: true
+      - action: set
+        target: saved_planning_slug
+        value: "{match.planning_slug}"
   - id: record-no-match
-    description: "Set has_saved_state = false; the resume-session checkpoint will not fire."
     when: "has_saved_state == false"
+    actions[1]:
+      - action: set
+        target: has_saved_state
+        value: false
 checkpoints[2]:
   - id: workflow-selection
     name: Workflow Selection

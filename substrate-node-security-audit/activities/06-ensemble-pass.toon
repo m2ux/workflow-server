@@ -1,5 +1,5 @@
 id: ensemble-pass
-version: 2.3.0
+version: 2.4.0
 name: Ensemble Pass
 description: "Optional second-model audit run with merged findings."
 problem: Different models and configurations find different subsets of findings. Running the template a second time and merging results captures findings that are non-deterministically detected in any single run, improving overall coverage.
@@ -7,30 +7,16 @@ techniques:
   supporting[1]:
     - "variable-binding"
 required: false
-steps[5]:
-  - id: configure-ensemble
-    name: Configure Ensemble Run
-    technique: execute-ensemble-pass
-    description: "Scope the second pass and assemble its blind-spot checklist and supplementary files."
-  - id: verify-blind-spots
-    name: "Verify Known Blind Spots"
+steps[3]:
+  - id: execute-ensemble-pass
     required: true
     technique: execute-ensemble-pass
-    description: "Verify the known blind-spot items."
-  - id: execute-second-pass
-    name: Execute Second Pass
-    technique: execute-ensemble-pass
-    description: "Run the second independent audit pass."
   - id: union-merge
-    name: Union-Merge Findings
     technique: merge-findings
     technique_args:
       merge_strategy: union-merge
-    description: "Union-merge the second-pass findings with the primary report."
   - id: update-report
-    name: Update Report
     technique: write-report
-    description: "Update the audit report with the ensemble results."
 decisions[1]:
   - id: next-phase
     name: Post-Ensemble Decision

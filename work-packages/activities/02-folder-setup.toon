@@ -1,27 +1,16 @@
 id: folder-setup
-version: 1.2.0
+version: 1.3.0
 name: Planning Folder Setup
 description: Create planning folder structure with initial documentation skeletons
 problem: Need organized folder structure for multi-package planning artifacts
 techniques:
   supporting[1]:
     - "variable-binding"
-steps[4]:
+steps[2]:
   - id: create-folder
-    name: Bind planning folder
-    description: "Derive the planning slug for the initiative folder."
     technique: "version-control::initialize-folder"
-  - id: create-start-here
-    name: Create START-HERE.md
-    description: "Create the START-HERE.md skeleton in the planning folder."
+  - id: setup-planning-folder
     technique: setup-planning-folder
-  - id: create-readme
-    name: Create README.md
-    description: "Create the README.md skeleton in the planning folder."
-    technique: setup-planning-folder
-  - id: present-structure
-    name: Present folder structure
-    description: Present the created folder structure for user confirmation
 artifacts[2]:
   - id: start-here-skeleton
     name: START-HERE.md

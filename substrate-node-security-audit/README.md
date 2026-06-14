@@ -193,8 +193,6 @@ Confirm target submodule and commit, checkout codebase, run dependency scanning,
 
 **Supporting technique:** `variable-binding`
 
-**Steps (technique each binds):** confirm-target → confirm-commit → record-reference → checkout-submodule → run-cargo-audit → create-file-inventory → create-planning-folder → load-template — every step binds `setup-audit-target`
-
 **Artifacts:** `START-HERE.md`
 
 ---
@@ -204,8 +202,6 @@ Confirm target submodule and commit, checkout codebase, run dependency scanning,
 Map the codebase architecture, identify all crates, trust boundaries, consensus paths, and build the function registry. Assign crates to sub-agent groups with cross-crate supplement mappings.
 
 **Supporting technique:** `variable-binding`
-
-**Steps (technique each binds):** dispatch-reconnaissance-agent `dispatch-sub-agents` -> verify-reconnaissance-files `dispatch-sub-agents` -> dispatch-security-architecture-agent `dispatch-sub-agents` -> verify-security-architecture-file `dispatch-sub-agents` -> map-vulnerability-domains `map-vulnerability-domains` -> assign-agent-groups `dispatch-sub-agents` -> route-reconnaissance-leads `dispatch-sub-agents`
 
 **Artifacts:** `r-crate-map.json`, `r-function-registry.json`, `r-reconnaissance-data.json`, `s-architectural-analysis.json`, `README.md` (scope and architecture summary)
 
@@ -217,8 +213,6 @@ Dispatch all primary agents concurrently. After collecting results, dispatch a d
 
 **Supporting technique:** `variable-binding`
 
-**Steps (technique each binds):** dispatch-all-agents `dispatch-sub-agents` -> verify-checklist-prompt-coverage `verify-sub-agent-output` -> verify-dispatch-completeness `verify-sub-agent-output` -> collect-all `dispatch-sub-agents` -> verify-agent-output-files `dispatch-sub-agents` -> **dispatch-verification-agent** `dispatch-sub-agents` -> **act-on-gap-report** `dispatch-sub-agents` -> extract-table-derived-findings `merge-findings` -> **dispatch-merge-agent** `dispatch-sub-agents` -> **validate-reconciliation** `verify-sub-agent-output` -> verify-checklist-completeness `verify-sub-agent-output` -> preserve-verification-report `dispatch-sub-agents` -> preserve-merge-output `merge-findings`
-
 ---
 
 ### 4. Adversarial Verification
@@ -227,8 +221,6 @@ Verify every High/Medium PASS item from audit scratchpads by decomposing each cl
 
 **Supporting technique:** `variable-binding`
 
-**Steps (technique each binds):** **seed-from-verification-report** -> extract-pass-items -> decompose-claims -> field-enumeration -> verify-properties -> compile-results — every step binds `decompose-safety-claims`
-
 ---
 
 ### 5. Report Generation
@@ -236,8 +228,6 @@ Verify every High/Medium PASS item from audit scratchpads by decomposing each cl
 Consolidate all findings from primary audit and adversarial verification. Apply severity scoring with calibration cross-check. Produce the deliverable report.
 
 **Supporting technique:** `variable-binding`
-
-**Steps (technique each binds):** integrate-adversarial-results `merge-findings` → apply-severity `score-severity` → severity-crosscheck `score-severity` → coverage-gate `verify-sub-agent-output` → verify-elevation-completeness `merge-findings` → write-report `write-report`
 
 **Artifacts:** `01-audit-report.md`
 
@@ -250,8 +240,6 @@ Run the audit template a second time with a different model configuration on pri
 **Condition:** `ensemble_enabled == true`
 
 **Supporting technique:** `variable-binding`
-
-**Steps (technique each binds):** configure-ensemble `execute-ensemble-pass` → verify-blind-spots `execute-ensemble-pass` → execute-second-pass `execute-ensemble-pass` → union-merge `merge-findings` → update-report `write-report`
 
 **Merge strategy:**
 - Finding in both runs → high confidence, median severity
@@ -269,8 +257,6 @@ Compare the AI audit report against a professional reference report. Produce fin
 **Condition:** `has_reference_report == true`
 
 **Supporting technique:** `variable-binding`
-
-**Steps (technique each binds):** load-reference `write-gap-analysis` → map-findings `compare-finding-sets` → identify-gaps `compare-finding-sets` → analyze-severity `compare-finding-sets` → root-cause-analysis `compare-finding-sets` → write-gap-analysis `write-gap-analysis`
 
 **Artifacts:** `02-gap-analysis.md`
 

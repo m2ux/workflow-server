@@ -1,5 +1,5 @@
 id: scope-setup
-version: 1.1.0
+version: 1.2.0
 name: Scope Setup
 description: "Set up the audit scope and planning folder."
 problem: The audit requires confirmed targets, a complete workflow file inventory, and an organized artifact folder before scanning begins.
@@ -12,25 +12,15 @@ entryActions[1]{action,message}:
   log,Starting CI/CD pipeline security audit scope setup
 steps[5]:
   - id: confirm-targets
-    name: Confirm Target Submodules
-    technique: inventory-workflows
-    description: "Resolve and validate the target submodules in scope."
+    technique: inventory-workflows::confirm-targets
   - id: discover-workflows
-    name: Discover Workflow Files
-    technique: inventory-workflows
-    description: "Enumerate and count the workflow files across targets."
+    technique: inventory-workflows::discover-files
   - id: discover-ai-configs
-    name: Discover AI Configuration Files
-    technique: inventory-workflows
-    description: "Inventory AI configuration files per target for P6 detection."
+    technique: inventory-workflows::inventory-ai-configs
   - id: record-codeowners
-    name: Record CODEOWNERS Presence
-    technique: inventory-workflows
-    description: "Record CODEOWNERS presence per target for P6 detection."
+    technique: inventory-workflows::record-codeowners
   - id: create-planning-folder
-    name: Create Planning Folder
-    technique: inventory-workflows
-    description: "Initialize the planning folder with its session overview."
+    technique: inventory-workflows::initialize-planning-folder
 transitions[1]{to,isDefault}:
   reconnaissance,true
 exitActions[1]{action,message}:

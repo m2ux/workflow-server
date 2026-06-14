@@ -1,5 +1,5 @@
 id: adversarial-verification
-version: 2.2.0
+version: 2.3.0
 name: Adversarial Verification
 description: "Adversarially verify PASS items from the primary audit."
 problem: "AI agents exhibit first-positive-signal bias — they find one correct behavior and mark the entire check as PASS without verifying all related fields or paths. This consistently causes Medium/High findings to be missed as false PASSes. Additionally, adversarial PASS selection based solely on severity potential misses areas where primary agents produced structurally incomplete outputs."
@@ -11,39 +11,27 @@ entryActions[1]{action,message}:
   log,Starting adversarial verification of PASS items
 steps[6]:
   - id: seed-from-verification-report
-    name: Seed PASS Queue from Verification Report
     technique: decompose-safety-claims
-    description: "Seed the adversarial queue from the verification gap report."
   - id: extract-pass-items
-    name: Extract PASS Items
     technique: decompose-safety-claims
     technique_args:
       output_format: "Filtered PASS list with checklist references"
-    description: "Collect and filter the PASS items for adversarial verification."
   - id: decompose-claims
-    name: Decompose PASS Claims
     technique: decompose-safety-claims
     technique_args:
       output_format: "Decomposition table with one row per property"
-    description: "Decompose each PASS into its independent properties."
   - id: field-enumeration
-    name: Enumerate Multi-Site Properties
     technique: decompose-safety-claims
     technique_args:
       output_format: "| Property | Instance | Verified? | Evidence |"
-    description: "Enumerate every instance per property."
   - id: verify-properties
-    name: Verify Properties Independently
     technique: decompose-safety-claims
     technique_args:
       output_format: "Per-property verdict with code citations"
-    description: "Independently verify each property against source."
   - id: compile-results
-    name: Compile Verification Results
     technique: decompose-safety-claims
     technique_args:
       output_format: "Verdict summary with CONFIRMED/REFUTED/INSUFFICIENT counts"
-    description: "Produce the final per-property verdicts."
 transitions[1]{to,isDefault}:
   report-generation,true
 exitActions[2]{action,message}:

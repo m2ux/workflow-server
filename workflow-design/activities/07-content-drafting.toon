@@ -1,5 +1,5 @@
 id: content-drafting
-version: 1.0.1
+version: 1.1.0
 name: Content Drafting
 description: "Per-file drafting and review pass over every entry in the confirmed scope manifest, with schema validation on each TOON file."
 problem: Content must be drafted using formal schema constructs, validated per-file, and reviewed before proceeding
@@ -19,20 +19,14 @@ entryActions[1]:
     message: "Cannot begin content drafting without a confirmed scope manifest"
 steps[5]:
   - id: present-file-approach
-    name: Present File Approach
-    description: "Per-file drafting plan covering the schema constructs to be used, the reference patterns to be followed, and the intended content structure."
+    technique: workflow-design::content-drafting
   - id: draft-file-content
-    name: Draft File Content
-    description: "Drafted file content matching the confirmed approach, with formal schema constructs for structured information and exact TOON syntax for TOON files."
+    technique: toon-authoring
   - id: validate-against-schema
-    name: Validate Against Schema
-    description: "Schema-validation result for each TOON file against its applicable schema (workflow.schema.json, activity.schema.json, or technique.schema.json), with errors resolved before proceeding."
+    technique: toon-authoring
   - id: present-for-review
-    name: Present for Review
-    description: "User-facing review of the drafted content, highlighting the schema constructs used and notable design decisions."
+    technique: workflow-design::content-drafting
   - id: advance-to-next-file
-    name: Advance to Next File
-    description: "Loop progression to the next manifest entry, or completion when every file has been drafted."
 loops[1]:
   - id: file-drafting-loop
     name: File Drafting Loop
@@ -42,13 +36,13 @@ loops[1]:
     maxIterations: 50
     steps[4]:
       - id: present-file-approach
-        name: Present approach for current file
+        technique: workflow-design::content-drafting
       - id: draft-file-content
-        name: Draft content for current file
+        technique: toon-authoring
       - id: validate-against-schema
-        name: Validate content against schema
+        technique: toon-authoring
       - id: present-for-review
-        name: Present content for user review
+        technique: workflow-design::content-drafting
 checkpoints[4]:
   - id: file-approach-confirmed
     name: File Approach Checkpoint

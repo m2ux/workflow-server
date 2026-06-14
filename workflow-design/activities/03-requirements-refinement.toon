@@ -1,5 +1,5 @@
 id: requirements-refinement
-version: 1.1.1
+version: 1.2.0
 name: Requirements Refinement
 description: "Guided elicitation of the workflow specification across purpose, activities, checkpoints, artifacts, variables, techniques, and rules."
 problem: The user's free-form description needs to be refined into a complete workflow specification
@@ -13,44 +13,36 @@ rules[3]:
   - "Do not assume answers — if the user's description is ambiguous, ask for clarification"
 steps[8]:
   - id: elicit-purpose
-    name: Elicit Workflow Purpose
-    description: "Workflow purpose, target domain, value proposition (what problem it solves, who uses it)."
+    technique: workflow-design::elicitation
   - id: elicit-activities
-    name: Elicit Activity List
-    description: "Activity list with per-activity name, one-sentence purpose, user-interaction flag, and expected artifacts."
+    technique: workflow-design::elicitation
   - id: elicit-activity-model
-    name: Elicit Activity Model
-    description: "Activity model: sequential (transitions + `initialActivity`) vs independent (recognition-pattern matched)."
+    technique: workflow-design::elicitation
     condition:
       type: simple
       variable: is_update_mode
       operator: "!="
       value: true
   - id: elicit-checkpoints
-    name: Elicit Checkpoints
-    description: "Per-activity decision points: checkpoint question, available options, and per-option effects (setVariable, transitionTo, skipActivities)."
+    technique: workflow-design::elicitation
   - id: elicit-artifacts
-    name: Elicit Artifacts
-    description: "Per-activity artifacts: name, `artifactLocations` key, description, and create/update action."
+    technique: workflow-design::elicitation
   - id: elicit-variables
-    name: Elicit Variables
-    description: "Workflow-level state-tracking variables: name, type, description, default, required flag."
+    technique: workflow-design::elicitation
     condition:
       type: simple
       variable: is_update_mode
       operator: "!="
       value: true
   - id: elicit-techniques
-    name: Elicit Techniques
-    description: "Technique inventory: capability description, primary/supporting activity assignments, required tools / protocol phases / rules per technique."
+    technique: workflow-design::elicitation
     condition:
       type: simple
       variable: is_update_mode
       operator: "!="
       value: true
   - id: elicit-rules
-    name: Elicit Rules
-    description: "Workflow-level cross-activity rules with their enforcement classification (structural via checkpoint/condition/validate, or guidance-only)."
+    technique: workflow-design::elicitation
 checkpoints[8]:
   - id: purpose-confirmed
     name: Purpose Confirmation

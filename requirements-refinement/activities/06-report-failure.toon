@@ -1,5 +1,5 @@
 id: report-failure
-version: 1.0.0
+version: 1.1.0
 name: Report Failure
 description: "Compile a failure report describing the unresolved critical issues, the correction history, and the manual resolution required when refinement cannot complete automatically; no specification is promoted."
 problem: When critical issues remain or the correction budget is exhausted, the user needs a clear account of what requires manual intervention
@@ -9,15 +9,11 @@ techniques:
     - "variable-binding"
 steps[2]:
   - id: compile-failure-report
-    name: Compile Failure Report
-    description: "Record the verdict, correction history, critical issues, and required manual resolution into the failure report."
     technique: report-failure
     actions[1]:
       - action: message
         message: "Created: failure-report.md"
   - id: present-failure
-    name: Present Failure
-    description: "Present the failure report and the required manual intervention to the user."
     technique: report-failure
 checkpoints[1]:
   - id: failure-acknowledged

@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.4.0
+version: 1.5.0
 name: Submit for Review
 description: "Submit the PR for review and handle reviewer feedback."
 problem: User needs to submit the PR for review and handle reviewer feedback
@@ -99,7 +99,6 @@ loops[1]:
       operator: ==
       value: false
     maxIterations: 2
-    description: "Re-render the PR body until body_conforms=true."
     steps[2]:
       - id: rerender-body
         technique: update-pr::render

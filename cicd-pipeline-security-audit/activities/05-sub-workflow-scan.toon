@@ -1,5 +1,5 @@
 id: sub-workflow-scan
-version: 1.1.0
+version: 1.2.0
 name: Per-Submodule Workflow Scan
 description: "Scan the assigned submodule's workflow files for the seven detection patterns."
 problem: Each submodule's workflow files must be systematically scanned for expression injection, Pwn Request patterns, comment trigger abuse, excessive permissions, fork code execution, AI config poisoning, and dangerous execution patterns.
@@ -12,41 +12,23 @@ entryActions[1]{action,message}:
   log,Starting per-submodule workflow scan
 steps[9]:
   - id: load-patterns
-    name: Load Detection Pattern Catalog
-    technique: scan-injection-patterns
-    description: "Load the injection pattern catalog and detection heuristics."
+    technique: scan-injection-patterns::load-patterns
   - id: scan-expression-injection
-    name: "P1: Scan for Expression Injection"
-    technique: scan-injection-patterns
-    description: "Apply P1 expression injection detection."
+    technique: scan-injection-patterns::scan-p1
   - id: scan-pwn-request
-    name: "P2: Scan for Pwn Request Pattern"
-    technique: scan-injection-patterns
-    description: "Apply P2 Pwn Request detection."
+    technique: scan-injection-patterns::scan-p2
   - id: scan-comment-triggers
-    name: "P3: Scan for Comment Trigger Abuse"
-    technique: scan-injection-patterns
-    description: "Apply P3 comment trigger abuse detection."
+    technique: scan-injection-patterns::scan-p3
   - id: scan-permissions
-    name: "P4: Scan for Excessive Permissions"
-    technique: scan-injection-patterns
-    description: "Apply P4 excessive permissions detection."
+    technique: scan-injection-patterns::scan-p4
   - id: scan-fork-execution
-    name: "P5: Scan for Fork Code Execution"
-    technique: scan-injection-patterns
-    description: "Apply P5 fork code execution detection."
+    technique: scan-injection-patterns::scan-p5
   - id: scan-ai-config
-    name: "P6: Scan for AI Config Poisoning Surface"
-    technique: scan-injection-patterns
-    description: "Apply P6 AI config poisoning detection."
+    technique: scan-injection-patterns::scan-p6
   - id: scan-dangerous-patterns
-    name: "P7: Scan for Dangerous Execution Patterns"
-    technique: scan-injection-patterns
-    description: "Apply P7 dangerous execution pattern detection."
+    technique: scan-injection-patterns::scan-p7
   - id: write-output
-    name: Write Scanner Output
-    technique: execute-sub-agent
-    description: "Write the structured scanner output file for this submodule."
+    technique: scan-injection-patterns::assemble-results
 transitions[0]:
 exitActions[1]{action,message}:
   log,Per-submodule scan complete — findings written to output file

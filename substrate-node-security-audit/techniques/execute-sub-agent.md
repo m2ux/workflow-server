@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 1.0.0
+  version: 1.1.0
   order: 2
   legacy_id: 2
 ---
@@ -23,8 +23,8 @@ Bootstrap the workflow-server, load an assigned activity, follow its steps seque
 ### 2. Execute Steps
 
 - Read the activity's steps array in order.
-- For each step, read the description field to understand what is required.
-- Produce the REQUIRED OUTPUT defined in the step's description before proceeding to the next step.
+- For each step, load its bound technique via `get_technique` and read that technique's `## Capability` (what the step does) and `## Protocol` (how to do it).
+- Produce the output the bound technique defines in its `## Output(s)` before proceeding to the next step.
 - If a step cannot be completed (e.g., no `StorageMap`s in the crate for the lifecycle scan), record an explicit N/A with justification — do not silently skip.
 - If a step requires data or context that is unavailable, record the step as completed with output 'INCOMPLETE — [reason]', continue to the next step, and flag it in the self-verification.
 - Track which steps have been completed in `{sub_agent_output.steps_completed}`.

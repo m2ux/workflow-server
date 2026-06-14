@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.5.0
+version: 1.6.0
 name: Codebase Comprehension
 description: "Build or augment a mental model of the codebase."
 problem: User lacks sufficient understanding of an unfamiliar codebase to qualify agent-proposed design choices
@@ -64,7 +64,6 @@ loops[1]:
       variable: needs_comprehension
       operator: ==
       value: true
-    description: "Loop where each iteration explores a specific area of the codebase in more detail. Continues until user selects 'sufficient' at the comprehension-sufficient checkpoint, which sets needs_comprehension to false."
     steps[4]:
       - id: select-area
         technique: codebase-comprehension::deep-dive

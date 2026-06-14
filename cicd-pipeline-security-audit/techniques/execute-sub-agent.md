@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 1.0.0
+  version: 1.1.0
   order: 8
   legacy_id: 8
 ---
@@ -23,9 +23,8 @@ Bootstrap the workflow-server MCP from a dispatched session, load an assigned ac
 ### 2. Execute Steps
 
 - Read the activity's steps array in order.
-- For each step, read the description field to understand what is required.
-- If a step references a technique (`step.technique`), call `get_technique({ technique_id, workflow_id: 'cicd-pipeline-security-audit' })` and follow its protocol for that step.
-- Produce the REQUIRED OUTPUT defined in the step's description before proceeding to the next step.
+- For each step, call `get_technique({ technique_id: step.technique, workflow_id: 'cicd-pipeline-security-audit' })` and read the technique's `## Capability` to understand what the step produces and its `## Protocol` for how to produce it.
+- Follow that protocol for the step, producing the technique's declared `## Outputs` before proceeding to the next step.
 - If a step cannot be completed because it requires data or context that is unavailable, record the step as completed with output 'INCOMPLETE — [reason]', continue to the next step, and flag it in the self-verification — do not silently skip.
 - Track which steps have been completed in a steps-completed list.
 

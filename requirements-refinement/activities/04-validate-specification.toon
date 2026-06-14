@@ -1,5 +1,5 @@
 id: validate-specification
-version: 1.1.0
+version: 1.2.0
 name: Validate Specification
 description: "Validate the updated specification against structural, identifier-uniqueness, consistency, and protocol-conformance checks, categorize each issue as critical or correctable, and route to finalization, another correction pass, or failure reporting."
 problem: The updated specification must be checked for quality and conformance before it can be finalized
@@ -9,19 +9,15 @@ techniques:
     - "variable-binding"
 steps[3]:
   - id: validate
-    name: Validate Specification
-    description: "Check the working specification for conformance and source coverage, producing a categorized verdict."
     technique: validate-specification
   - id: check-source-coverage
-    name: Check Source Coverage
-    description: "Confirm every normative source statement maps to a requirement via the source-coverage matrix, and set source_coverage_complete."
+    technique: validate-specification
     actions[1]:
       - action: set
         target: source_coverage_complete
         description: "True when every normative source statement maps to at least one requirement."
   - id: evaluate-verdict
-    name: Evaluate Verdict
-    description: "Read the verdict and set the routing variables that the transitions evaluate."
+    technique: validate-specification
     actions[3]:
       - action: set
         target: validation_passed

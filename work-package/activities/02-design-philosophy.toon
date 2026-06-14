@@ -1,5 +1,5 @@
 id: design-philosophy
-version: 1.5.0
+version: 1.6.0
 name: Design Philosophy
 description: "Apply the design framework to classify the problem and decide the workflow path."
 problem: User needs to understand problem nature before deciding on workflow path
@@ -82,7 +82,6 @@ loops[1]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the review-assumptions::reconcile technique protocol."
     steps[1]:
       - id: reconcile-iteration
         technique: review-assumptions::reconcile

@@ -1,5 +1,5 @@
 id: discover-changes
-version: 1.1.0
+version: 1.2.0
 name: Discover Changes
 description: "Diff upstream prisms against current workflow resources."
 problem: Need to understand what changed upstream before importing
@@ -7,30 +7,8 @@ required: true
 techniques:
   supporting[1]:
     - "variable-binding"
-steps[5]:
-  - id: list-upstream
-    name: List upstream prisms
-    description: "Enumerate the upstream prisms, filtering exclusions."
-    technique: diff-upstream
-    required: true
-  - id: list-current
-    name: List current resources
-    description: "Enumerate the current resource files with their indices and names."
-    technique: diff-upstream
-    required: true
-  - id: diff-and-categorize
-    name: Diff and categorize
-    description: "Categorize each prism as new, modified, renamed, or deleted."
-    technique: diff-upstream
-    required: true
-  - id: classify-new
-    name: Classify new prisms
-    description: "Classify each new prism into a family from its metadata."
-    technique: diff-upstream
-    required: true
-  - id: determine-next-index
-    name: Determine next index
-    description: "Determine the next available resource index."
+steps[1]:
+  - id: diff-upstream
     technique: diff-upstream
     required: true
     actions[1]:

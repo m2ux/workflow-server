@@ -1,5 +1,5 @@
 id: research
-version: 2.4.0
+version: 2.5.0
 name: Research
 description: "Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity."
 problem: User needs to research best practices before planning
@@ -46,7 +46,6 @@ loops[2]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the review-assumptions::reconcile technique protocol."
     steps[1]:
       - id: reconcile-iteration
         technique: review-assumptions::reconcile
@@ -56,7 +55,6 @@ loops[2]:
     variable: current_assumption
     over: open_assumptions
     maxIterations: 20
-    description: "Iterates over each open (stakeholder-dependent) assumption, presenting the research-assumption-interview checkpoint for each. The user resolves inline or defers to stakeholder review."
     steps[2]:
       - id: present-assumption
         technique: review-assumptions::interview

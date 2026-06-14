@@ -1,5 +1,5 @@
 id: sub-toolkit-review
-version: 1.3.0
+version: 1.4.0
 name: "Sub-Agent: Toolkit Per-Function Review"
 description: "Per-function toolkit review for Group D sub-agents."
 problem: "Toolkit review agents read files but skim functions with benign-looking names. The 8-item checklist exists but is applied to representative functions, not exhaustively. Per-function state management, arithmetic, and I/O bugs are consistently missed when the checklist is applied selectively rather than to every function."
@@ -9,32 +9,24 @@ techniques:
 required: false
 steps[4]:
   - id: enumerate-functions
-    name: Enumerate All Functions
     required: true
     technique: apply-checklist
     technique_args:
       output_format: "| File | Function | Line | Visibility | Modifies State? | Returns Result? |"
-    description: "Enumerate every function in the toolkit scope as the checklist item set."
   - id: apply-checklist-per-function
-    name: Apply 8-Item Checklist Per Function
     required: true
     technique: apply-checklist
     technique_args:
       checklist_source: toolkit-checklist
       output_format: "| Function | File:Line | Item 1 | ... | Item 8 | Findings |"
-    description: "Evaluate every function against the 8-item toolkit checklist."
   - id: verify-function-coverage
-    name: Verify Function Coverage
     required: true
     technique: apply-checklist
     technique_args:
       output_format: "Coverage attestation: total, reviewed, percentage, gaps"
-    description: "Verify every enumerated function has a checklist-matrix row."
   - id: format-output
-    name: Format Structured Output
     required: true
     technique: execute-sub-agent
-    description: "Format all findings and tables as structured output."
 outcome[3]:
   - Every function in toolkit crates enumerated and reviewed against all 8 checklist items
   - Per-function x checklist matrix produced with no gaps

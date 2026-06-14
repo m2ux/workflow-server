@@ -1,5 +1,5 @@
 id: initialize-session
-version: 6.0.0
+version: 6.1.0
 name: Initialize Session
 description: "Derive the client planning slug, then dispatch the client workflow as a child of the meta session."
 problem: The client workflow needs a session_index before its orchestrator can be dispatched, and the planning folder slug must be derived from the work item BEFORE dispatch_child promotes the meta — otherwise the server falls back to YYYY-MM-DD-<workflow_id> and the folder name has no relation to the work item. The folder itself is created by the server under its own workspace .engineering root; the canonical absolute planning_folder_path is read back from the dispatch response, never composed by the agent relative to its CWD or target_path
@@ -10,10 +10,17 @@ techniques:
     - "workflow-engine::create-session"
 steps[2]:
   - id: derive-planning-slug
-    description: "version-control::initialize-folder(initiative_name: <kebab-case from issue title or work-package description>) -> bind client_planning_slug"
+    technique: version-control::initialize-folder
+    technique_args:
+      planning_slug: client_planning_slug
     when: "is_resuming == false"
   - id: start-or-resume-session
-    description: "workflow-engine::create-session(parent_session_index: {meta_session_index}, workflow_id: {target_workflow_id}, planning_slug: {client_planning_slug}) -> bind client_session_index and the server-resolved planning_folder_path"
+    technique: workflow-engine::create-session
+    technique_args:
+      parent_session_index: meta_session_index
+      workflow_id: target_workflow_id
+      planning_slug: client_planning_slug
+      session_index: client_session_index
 transitions[1]:
   - to: resolve-target
     isDefault: true

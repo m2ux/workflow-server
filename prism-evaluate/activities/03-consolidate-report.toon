@@ -1,44 +1,30 @@
 id: consolidate-report
-version: 1.0.0
+version: 1.2.0
 name: Consolidate Evaluation Report
 description: "Consolidate prism analysis artifacts into a unified EVALUATION-REPORT.md."
 problem: "Prism produces per-dimension analysis artifacts with varying structures (synthesis documents for full-prism, individual lens artifacts for portfolio). The evaluation consumer needs a single consolidated report with unified finding IDs, severity-calibrated findings, cross-dimensional insights, and actionable recommendations — stripped of analytical process details."
 techniques:
   supporting[1]:
     - variable-binding
-steps[6]:
+steps[5]:
   - id: locate-artifacts
-    name: Locate Analysis Artifacts
-    description: "Locate the prism output artifacts for each dimension."
-    technique: compose-evaluation-report
+    technique: compose-evaluation-report::locate-artifacts
     required: true
   - id: extract-findings
-    name: Extract Per-Dimension Findings
-    description: "Extract the per-dimension findings with IDs, severities, titles, and descriptions."
-    technique: compose-evaluation-report
+    technique: compose-evaluation-report::extract-findings
     required: true
   - id: identify-patterns
-    name: Identify Cross-Dimensional Patterns
-    description: "Identify the core finding and the cross-cutting patterns across dimensions."
-    technique: compose-evaluation-report
+    technique: compose-evaluation-report::identify-patterns
     required: true
   - id: compose-report
-    name: Compose Evaluation Report
-    description: "Compose and write the consolidated evaluation report."
-    technique: compose-evaluation-report
+    technique: compose-evaluation-report::compose-report
     required: true
     actions[1]:
       - action: set
         target: evaluation_report_path
         description: "The written EVALUATION-REPORT.md path."
   - id: verify-report
-    name: Verify Report
-    description: "Verify finding-ID uniqueness, severity-count consistency, and the absence of methodology metadata."
-    technique: compose-evaluation-report
-    required: true
-  - id: report-artifact
-    name: Report Artifact Verification
-    description: "Report the written artifact's path, size, and format-validation status."
+    technique: compose-evaluation-report::verify-report
     required: true
 artifacts[1]:
   - id: evaluation-report

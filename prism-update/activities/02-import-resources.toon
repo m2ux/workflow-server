@@ -1,5 +1,5 @@
 id: import-resources
-version: 1.1.0
+version: 1.2.0
 name: Import Resources
 description: "Apply approved resource file changes."
 problem: Resource files need to be created, updated, renamed, or removed to match upstream
@@ -13,30 +13,8 @@ entryActions[1]:
     target: resource_path
     message: "resource_path must be set — file operations require a valid workflows worktree path"
 
-steps[5]:
-  - id: sync-modified
-    name: Sync modified resources
-    description: "Overwrite each modified resource with upstream content and commit."
-    technique: sync-resources
-    required: true
-  - id: apply-renames
-    name: Apply renames
-    description: "Rename each renamed resource, overwrite with upstream content, and commit."
-    technique: sync-resources
-    required: true
-  - id: import-new
-    name: Import new resources
-    description: "Copy each new prism in with an indexed filename and commit."
-    technique: sync-resources
-    required: true
-  - id: remove-deleted
-    name: Remove deleted resources
-    description: "Remove each deleted resource file and commit if any were removed."
-    technique: sync-resources
-    required: true
-  - id: verify-file-count
-    name: Verify file count
-    description: "Confirm the resource count reconciles after the changes."
+steps[1]:
+  - id: sync-resources
     technique: sync-resources
     required: true
 

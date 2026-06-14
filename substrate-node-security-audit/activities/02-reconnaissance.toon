@@ -1,5 +1,5 @@
 id: reconnaissance
-version: 3.0.0
+version: 3.1.0
 name: Reconnaissance
 description: "Run codebase reconnaissance and security decomposition."
 problem: "The orchestrator previously performed 9 inline reconnaissance steps (reading source files, scanning crates, building registries), consuming 10-15K tokens of context before primary agent dispatch. This reduced the orchestrator's effective context budget for its actual role: coordinating 10+ sub-agents across 6 workflow phases. Delegating analysis to sub-agents keeps the orchestrator's context clean for coordination."
@@ -11,41 +11,27 @@ entryActions[1]{action,message}:
   log,Starting codebase reconnaissance (§1.2) — dispatching reconnaissance sub-agent
 steps[7]:
   - id: dispatch-reconnaissance-agent
-    name: "Dispatch Reconnaissance Sub-Agent (R)"
     required: true
     technique: dispatch-sub-agents
-    description: "Dispatch the reconnaissance sub-agent."
   - id: verify-reconnaissance-files
-    name: "Verify Reconnaissance Output Files"
     required: true
     technique: dispatch-sub-agents
     technique_args:
       expected_output_files: "r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json"
-    description: "Verify the reconnaissance agent's output files exist."
   - id: dispatch-security-architecture-agent
-    name: "Dispatch Security Architecture Sub-Agent (S)"
     required: true
     technique: dispatch-sub-agents
-    description: "Dispatch the security architecture sub-agent."
   - id: verify-security-architecture-file
-    name: "Verify Security Architecture Output File"
     required: true
     technique: dispatch-sub-agents
     technique_args:
       expected_output_files: "s-architectural-analysis.json"
-    description: "Verify the security architecture agent's output file exists."
   - id: map-vulnerability-domains
-    name: Map Vulnerability Domains
     technique: map-vulnerability-domains
-    description: "Bind architectural analysis to the §3 verification procedures, partitioned by crate."
   - id: assign-agent-groups
-    name: Assign Agent Groups
     technique: dispatch-sub-agents
-    description: "Assign crates to sub-agent groups and identify cross-crate supplementary files."
   - id: route-reconnaissance-leads
-    name: Route Reconnaissance Leads to Agents
     technique: dispatch-sub-agents
-    description: "Route every reconnaissance lead to a specific sub-agent."
 transitions[1]{to,isDefault}:
   primary-audit,true
 exitActions[2]{action,message}:

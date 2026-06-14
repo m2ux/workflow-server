@@ -1,5 +1,5 @@
 id: commit-and-submit
-version: 1.1.0
+version: 1.2.0
 name: Commit and Submit
 description: "Submit changes as a pull request."
 problem: Changes need to be submitted as a PR for review
@@ -8,25 +8,8 @@ techniques:
   supporting[1]:
     - "variable-binding"
 
-steps[4]:
-  - id: check-branch
-    name: Check current branch
-    description: "Ensure a feature branch exists for the update."
-    technique: submit-update
-    required: true
-  - id: push-commits
-    name: Push commits
-    description: "Push the commits to the remote branch."
-    technique: submit-update
-    required: true
-  - id: create-pr
-    name: Create pull request
-    description: "Open a pull request against the workflows branch."
-    technique: submit-update
-    required: true
-  - id: report-completion
-    name: Report completion
-    description: "Present the PR URL and the applied changes."
+steps[1]:
+  - id: submit-update
     technique: submit-update
     required: true
 

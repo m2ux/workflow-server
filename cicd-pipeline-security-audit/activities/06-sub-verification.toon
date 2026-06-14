@@ -1,5 +1,5 @@
 id: sub-verification
-version: 1.1.0
+version: 1.2.0
 name: Scan Verification
 description: "Verify scan completeness across all scanner outputs."
 problem: Scanner outputs must be verified for completeness before merge to ensure no workflow files were missed and no detection patterns were skipped.
@@ -12,21 +12,13 @@ entryActions[1]{action,message}:
   log,Starting scan verification
 steps[4]:
   - id: load-scanner-outputs
-    name: Load All Scanner Outputs
-    technique: verify-scan-output
-    description: "Load and structurally validate every scanner output."
+    technique: verify-scan-output::validate-structure
   - id: verify-file-coverage
-    name: Verify File Coverage
-    technique: verify-scan-output
-    description: "Identify any workflow files left unscanned."
+    technique: verify-scan-output::verify-file-coverage
   - id: verify-pattern-coverage
-    name: Verify Pattern Coverage
-    technique: verify-scan-output
-    description: "Identify any scanner that skipped a detection pattern."
+    technique: verify-scan-output::verify-pattern-coverage
   - id: produce-gap-report
-    name: Produce Gap Report
-    technique: verify-scan-output
-    description: "Produce the gap report with coverage status and re-scan recommendations."
+    technique: verify-scan-output::produce-gap-report
     actions[1]:
       - action: set
         target: verification_complete

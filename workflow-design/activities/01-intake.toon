@@ -1,5 +1,5 @@
 id: intake
-version: 1.1.0
+version: 1.2.0
 name: Intake
 description: "Operation-type capture: classify the user's request as create, update, or review and establish the corresponding mode + target."
 problem: User wants to create or update a workflow and needs a guided process
@@ -12,80 +12,70 @@ rules[2]:
   - "For update mode, always load the existing workflow before proceeding"
 steps[10]:
   - id: load-target-workflow
-    name: Load Target Workflow
-    description: "Full workflow definition for `target_workflow_id` (workflow.toon + per-activity detail) loaded as the review baseline."
+    technique: workflow-design::intake-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: enumerate-workflow-contents
-    name: Enumerate Workflow Contents
-    description: "Structural inventory of the target: file counts and entity counts (activities, techniques, resources, checkpoints, transitions)."
+    technique: workflow-design::intake-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: present-review-scope
-    name: Present Review Scope
-    description: "User-facing summary of the target workflow's structure as the scope confirmation surface."
+    technique: workflow-design::intake-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: load-existing-workflow
-    name: Load Existing Workflow
-    description: "Full workflow definition for `target_workflow_id` loaded as the update baseline."
+    technique: workflow-design::intake-classification
     condition:
       type: simple
       variable: is_update_mode
       operator: "=="
       value: true
   - id: parse-change-request
-    name: Parse Change Request
-    description: "Categorised change request derived from the user's description (add/modify activity, technique, resource, metadata, or structural refactor)."
+    technique: workflow-design::intake-classification
     condition:
       type: simple
       variable: is_update_mode
       operator: "=="
       value: true
   - id: present-current-structure
-    name: Present Current Structure
-    description: "Baseline view of the existing workflow's structure that feeds impact analysis."
+    technique: workflow-design::intake-classification
     condition:
       type: simple
       variable: is_update_mode
       operator: "=="
       value: true
   - id: accept-description
-    name: Accept User Description
-    description: "Capture surface for the user's free-form workflow description, with a key-points summary back to the user."
+    technique: workflow-design::intake-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: classify-operation
-    name: Classify Operation
-    description: "Create vs update classification from user intent — existing-workflow reference signals update; otherwise create."
+    technique: workflow-design::intake-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: extract-design-intent
-    name: Extract Design Intent
-    description: "Distilled design intent (purpose, domain, rough activity count, sequential vs independent model, constraints) presented back to the user."
+    technique: workflow-design::intake-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: set-mode
-    name: Set Mode Variable
-    description: "Mode wiring: `is_update_mode`, `workflow_id`, and (update mode only) `target_workflow_id` populated from the classification."
+    technique: workflow-design::intake-classification
     condition:
       type: simple
       variable: is_review_mode

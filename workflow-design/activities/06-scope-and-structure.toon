@@ -1,5 +1,5 @@
 id: scope-and-structure
-version: 1.0.1
+version: 1.1.0
 name: Scope and Structure
 description: "Complete file manifest and structural design for the target workflow, including folder layout and implementation order."
 problem: Incomplete scope coverage is the most frequent misalignment pattern — every affected file must be enumerated before execution begins
@@ -13,25 +13,20 @@ rules[3]:
   - "Present the structural design compared against adopted patterns from pattern analysis"
 steps[5]:
   - id: verify-worktree
-    name: Verify Workflows Worktree
-    description: "Worktree readiness check: the workflows branch must be present and checked out at the expected path before any path definitions proceed."
+    technique: workflow-design::scope-definition
   - id: design-folder-structure
-    name: Design Folder Structure
-    description: "Folder layout (workflow-{id}/ with activities/, techniques/, resources/) and file naming scheme (NN-name.toon for activities and techniques, NN-name.md for resources)."
+    technique: workflow-design::scope-definition
     condition:
       type: simple
       variable: is_update_mode
       operator: "!="
       value: true
   - id: enumerate-files
-    name: Enumerate File Manifest
-    description: "Exhaustive file manifest with per-file path, action (create/modify/remove), type (workflow/activity/technique/resource/readme), and one-line description."
+    technique: workflow-design::scope-definition
   - id: present-structural-design
-    name: Present Structural Design
-    description: "Directory tree of the proposed structure with adjacent file manifest, transition diagram (for sequential workflows), and comparison against reference patterns."
+    technique: workflow-design::scope-definition
   - id: present-approach
-    name: Present Approach
-    description: "Drafting order (workflow.toon, activities, techniques, resources, README) with rationale grounded in the reference-dependency chain."
+    technique: workflow-design::scope-definition
 checkpoints[1]:
   - id: scope-and-structure-confirmed
     name: Scope and Structure Confirmation

@@ -1,5 +1,5 @@
 id: verified-pass
-version: 1.0.0
+version: 1.1.0
 name: Verified Analysis Pass
 description: "L12 structural analysis with gap detection and re-analysis."
 problem: "Single-pass analysis may confabulate claims that depend on facts the model cannot verify. Verified mode detects these gaps and re-runs with corrections."
@@ -21,24 +21,18 @@ artifacts[3]:
     description: "Corrected L12 re-analysis with unverifiable claims marked, using injected gap context"
 steps[5]:
   - id: run-initial-l12
-    name: Run Initial L12 Analysis
-    description: "Run the initial L12 analysis on the target."
     required: true
-    technique: verified-analysis
+    technique: verified-analysis::initial-analysis
     technique_args:
       target_content: "{target}"
   - id: run-gap-detection
-    name: Run Gap Detection
-    description: "Detect knowledge gaps in the initial analysis output."
     required: true
-    technique: verified-analysis
+    technique: verified-analysis::gap-detection
     technique_args:
       target_content: "{target}"
   - id: extract-gaps
-    name: Extract Structured Gaps
-    description: "Extract structured gap data from the gap analysis."
     required: true
-    technique: verified-analysis
+    technique: verified-analysis::gap-extraction
     technique_args:
       target_content: "{target}"
     actions[1]:
@@ -46,15 +40,11 @@ steps[5]:
         target: verified_gap_data
         description: "Structured gap data extracted from the gap analysis."
   - id: run-corrected-analysis
-    name: Run Corrected Re-analysis
-    description: "Re-run the analysis with the gap context injected."
     required: true
-    technique: verified-analysis
+    technique: verified-analysis::corrected-analysis
     technique_args:
       target_content: "{target}"
   - id: collect-paths
-    name: Collect Artifact Paths
-    description: "Accumulate the verified-pipeline artifact paths."
     required: true
     actions[1]:
       - action: set

@@ -1,5 +1,5 @@
 id: requirements-elicitation
-version: 2.7.1
+version: 2.8.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation.
 problem: User needs to clarify and capture requirements before implementation
@@ -38,7 +38,6 @@ loops[2]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the review-assumptions::reconcile technique protocol."
     steps[1]:
       - id: reconcile-iteration
         technique: review-assumptions::reconcile
@@ -54,7 +53,6 @@ loops[2]:
 decisions[1]:
   - id: user-intent
     name: User Intent Check
-    description: "Evaluate user response during domain-iteration loop to determine next action. Branching is handled by the requirements-elicitation technique protocol within the loop — the technique interprets the user's response and controls iteration flow (continue to next question, skip domain, or signal completion)."
     branches[2]:
       - id: continue
         label: Continue elicitation (answered or skipped)

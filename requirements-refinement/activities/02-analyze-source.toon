@@ -1,5 +1,5 @@
 id: analyze-source
-version: 1.1.0
+version: 1.2.0
 name: Analyze Source
 description: "Parse the source document against the current specification and produce a structured requirements analysis report, then confirm it with the user before any changes are applied."
 problem: Requirement changes expressed in the source document must be identified and mapped before the specification can be updated
@@ -9,12 +9,9 @@ techniques:
     - "variable-binding"
 steps[2]:
   - id: analyze
-    name: Analyze Source
-    description: "Parse the source document and current specification into the requirements analysis report."
     technique: analyze-source
   - id: record-analysis
-    name: Record Analysis
-    description: "Record the completed analysis report in the planning folder."
+    technique: analyze-source
     actions[1]:
       - action: message
         message: "Created: requirements-analysis.md"

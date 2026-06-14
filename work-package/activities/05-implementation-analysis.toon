@@ -1,5 +1,5 @@
 id: implementation-analysis
-version: 2.5.2
+version: 2.6.0
 name: Implementation Analysis
 description: "Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement."
 problem: User needs to understand current state before planning changes
@@ -45,7 +45,6 @@ loops[2]:
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the review-assumptions::reconcile technique protocol."
     steps[1]:
       - id: reconcile-iteration
         technique: review-assumptions::reconcile
@@ -55,7 +54,6 @@ loops[2]:
     variable: current_assumption
     over: open_assumptions
     maxIterations: 20
-    description: "Iterates over each open (stakeholder-dependent) assumption, presenting the analysis-assumption-interview checkpoint for each."
     steps[2]:
       - id: present-assumption
         technique: review-assumptions::interview

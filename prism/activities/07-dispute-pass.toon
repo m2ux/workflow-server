@@ -1,5 +1,5 @@
 id: dispute-pass
-version: 1.0.0
+version: 1.1.0
 name: Dispute Analysis Pass
 description: "Run two orthogonal prisms and synthesize their disagreements."
 problem: "Full-prism self-correction costs 3x more than needed for many targets. Dispute provides genuine self-correction at 1/3 the cost by focusing on divergence between orthogonal analytical perspectives."
@@ -19,38 +19,13 @@ artifacts[3]:
     name: "dispute-synthesis.md"
     location: analysis
     description: "Disagreement synthesis: blind spots, implicit convergence, deepest cross-lens finding"
-steps[5]:
-  - id: select-prism-pair
-    name: Select Orthogonal Prism Pair
-    description: "Select the orthogonal prism pair for the target type."
-    required: true
-    technique: dispute-analysis
-    technique_args:
-      target_content: "{target}"
-  - id: dispatch-prism-a
-    name: Dispatch Prism A
-    description: "Run the first prism in isolation against the target."
-    required: true
-    technique: dispute-analysis
-    technique_args:
-      target_content: "{target}"
-  - id: dispatch-prism-b
-    name: Dispatch Prism B
-    description: "Run the second prism in isolation against the target."
-    required: true
-    technique: dispute-analysis
-    technique_args:
-      target_content: "{target}"
-  - id: dispatch-synthesis
-    name: Dispatch Disagreement Synthesis
-    description: "Synthesize the two analyses' disagreements."
+steps[2]:
+  - id: run-dispute
     required: true
     technique: dispute-analysis
     technique_args:
       target_content: "{target}"
   - id: collect-paths
-    name: Collect Artifact Paths
-    description: "Accumulate the dispute artifact paths."
     required: true
     actions[1]:
       - action: set

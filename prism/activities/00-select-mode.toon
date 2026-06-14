@@ -1,5 +1,5 @@
 id: select-mode
-version: 2.0.0
+version: 2.1.0
 name: Plan Analysis
 description: "Select an analysis mode for the user's request."
 problem: User needs the analysis planned and configured before execution begins
@@ -8,17 +8,11 @@ techniques:
     - "variable-binding"
 steps[3]:
   - id: plan
-    name: Plan the Analysis
-    description: "Detect scope, classify units, and produce the analysis plan and execution units."
     required: true
     technique: plan-analysis
   - id: summarize
-    name: Summarize Configuration
-    description: "Present the recommended analysis configuration as the checkpoint context."
     required: true
   - id: apply-plan
-    name: Apply Plan
-    description: "Apply the selected mode and lens selections to workflow state."
     required: true
     actions[2]:
       - action: set

@@ -1,5 +1,5 @@
 id: submit
-version: 1.1.0
+version: 1.3.0
 name: Submit Security Vulnerability Remediation
 description: "Finalize a high-sensitivity security fix."
 problem: User needs to submit a security fix without public disclosure
@@ -12,21 +12,13 @@ entryActions[1]:
     message: "ENTERING SECURITY SUBMISSION MODE - ISOLATION ACTIVE"
 steps[4]:
   - id: verify-security-remote
-    name: Verify Security Remote
-    description: "Confirm the security remote points at the private fork."
     technique: secure-submit::verify-security-remote
   - id: verify-commit-signatures
-    name: Verify and sign commits
-    description: "Confirm every commit on the branch is GPG-signed."
     technique: secure-submit::verify-commit-signatures
     required: true
   - id: push-sec-vuln-commits
-    name: Push security vulnerability commits
-    description: "Push all local commits to the security remote only."
     technique: secure-submit::push-secure-commits
   - id: log-completion
-    name: Log Completion
-    description: "Record that the security fix was pushed."
     actions[1]:
       - action: log
         message: "Security fix securely pushed to the private remote."

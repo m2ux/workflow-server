@@ -1,5 +1,5 @@
 id: update-specification
-version: 1.0.0
+version: 1.1.0
 name: Update Specification
 description: "Apply the requirements analysis (initial pass) or the validation findings (correction pass) to produce the complete updated specification, preserving the specification protocol verbatim, and write it as a versioned working specification."
 problem: The confirmed requirement changes — or outstanding correction findings — must be applied to produce an updated specification
@@ -9,8 +9,7 @@ techniques:
     - "variable-binding"
 steps[3]:
   - id: register-correction-pass
-    name: Register Correction Pass
-    description: "Increment correction_iteration for this correction pass."
+    technique: update-specification
     condition:
       type: simple
       variable: has_correctable_issues
@@ -21,12 +20,9 @@ steps[3]:
         target: correction_iteration
         description: "Previous correction_iteration value plus one."
   - id: apply-changes
-    name: Apply Changes
-    description: "Produce the complete updated specification from the confirmed analysis or the validation findings."
     technique: update-specification
   - id: record-working-spec
-    name: Record Working Specification
-    description: "Record the updated specification as the versioned working specification for this pass."
+    technique: update-specification
     actions[1]:
       - action: message
         message: "Created: working-spec-{correction_iteration}.md"

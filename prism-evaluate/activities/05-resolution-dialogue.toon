@@ -1,5 +1,5 @@
 id: resolution-dialogue
-version: 1.0.0
+version: 1.2.0
 name: Resolution Dialogue
 description: "Propose mitigations for each evaluation finding one-by-one."
 problem: "Evaluation findings require targeted mitigations that range from simple text corrections to novel architectural proposals. Each finding needs individual consideration — the appropriate mitigation depends on the finding's nature, the target's content, and the user's intent. Batch presentation loses nuance; one-by-one dialogue preserves it."
@@ -7,35 +7,17 @@ techniques:
   supporting[2]:
     - variable-binding
     - scatter-gather
-steps[5]:
-  - id: load-sources
-    name: Load Evaluation Report and Target
-    description: "Load and tier-classify the findings against the target."
-    technique: resolve-findings
+steps[2]:
+  - id: load-and-classify
+    technique: resolve-findings::load-and-classify
     required: true
-  - id: classify-findings
-    name: Classify Findings by Mitigation Difficulty
-    description: "Classify each finding into its mitigation tier."
-    technique: resolve-findings
-    required: true
-  - id: present-classification
-    name: Present Finding Classification
-    description: "Present the tier-classification summary to set dialogue expectations."
-    required: true
-  - id: compile-mitigation-plan
-    name: Compile Mitigation Plan
-    description: "Compile and write the mitigation plan once all decisions are collected."
-    technique: resolve-findings
+  - id: compile-plan
+    technique: resolve-findings::compile-plan
     required: true
     actions[1]:
       - action: set
         target: mitigation_plan_path
         description: "The written MITIGATION-PLAN.md path."
-  - id: verify-plan
-    name: Verify Mitigation Plan
-    description: "Verify every finding has a plan entry with matching IDs and that the artifact was written."
-    technique: resolve-findings
-    required: true
 loops[1]:
   - id: finding-iteration
     name: Finding Iteration
@@ -45,28 +27,20 @@ loops[1]:
     maxIterations: 100
     steps[4]:
       - id: present-finding
-        name: Present Finding
-        description: "Present the current finding's claim, location, critique, and tier."
-        technique: resolve-findings
+        technique: resolve-findings::present-and-collect-per-finding
         required: true
       - id: propose-mitigation
-        name: Propose Mitigation
-        description: "Propose the tier-appropriate mitigation, shown in context."
-        technique: resolve-findings
+        technique: resolve-findings::propose-mitigation-by-tier
         required: true
       - id: collect-decision
-        name: Collect User Decision
-        description: "Collect the user's decision on the proposed mitigation."
-        technique: resolve-findings
+        technique: resolve-findings::present-and-collect-per-finding
         required: true
         actions[1]:
           - action: set
             target: accepted_mitigations
             description: "Append the finding's recorded decision."
       - id: handle-discussion
-        name: Handle Discussion
-        description: "On a discuss decision, revise the proposal from the user's context and re-collect."
-        technique: resolve-findings
+        technique: resolve-findings::present-and-collect-per-finding
         required: true
 checkpoints[1]:
   - id: finding-decision

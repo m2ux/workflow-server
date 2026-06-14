@@ -1,5 +1,5 @@
 id: primary-audit
-version: 4.16.0
+version: 4.17.0
 name: Primary Audit
 description: "Multi-agent primary audit via concurrent dispatch with verification and merge."
 problem: "A single agent cannot achieve sufficient depth across all crates, and the orchestrator's context window is saturated by the time it needs to merge and verify agent outputs. Multi-agent orchestration with dedicated verification (V) and merge (M) agents provides: (a) focused context windows per security domain, (b) mechanical output validation in a fresh context window (V), (c) finding-lossless merge in a fresh context window (M), (d) targeted re-dispatch for gaps before findings are merged."
@@ -11,71 +11,45 @@ entryActions[1]{action,message}:
   log,Starting primary audit — concurrent multi-agent dispatch
 steps[13]:
   - id: dispatch-all-agents
-    name: "Dispatch All Primary Agents"
     required: true
     technique: dispatch-sub-agents
-    description: "Dispatch all primary agents concurrently in a single batch."
   - id: verify-checklist-prompt-coverage
-    name: "Verify Checklist-to-Prompt Coverage"
     required: true
     technique: verify-sub-agent-output
-    description: "Verify every §3 checklist item appears in at least one agent prompt."
   - id: verify-dispatch-completeness
-    name: "Verify Dispatch Completeness (HARD STOP)"
     required: true
     technique: verify-sub-agent-output
-    description: "Verify every assigned agent was dispatched."
   - id: collect-all
-    name: Collect All Results
     technique: dispatch-sub-agents
-    description: "Collect the structured findings from every primary agent."
     required: true
   - id: verify-agent-output-files
-    name: "Verify Agent Output Files Exist in Planning Folder"
     required: true
     technique: dispatch-sub-agents
     technique_args:
       expected_output_files: "a1-nto.json, a2-midnight-ledger.json, a3-node-startup.json, a4-node-consensus.json, a5-runtime.json, a6-primitives.json, a7-governance.json, b-static-analysis.json, d1-ledger-helpers.json, d2-toolkit.json"
-    description: "Verify every primary agent output file exists before dispatching the verification or merge agents."
   - id: dispatch-verification-agent
-    name: "Dispatch Verification Sub-Agent (V)"
     required: true
     technique: dispatch-sub-agents
-    description: "Dispatch the verification sub-agent."
   - id: act-on-gap-report
-    name: "Act on Verification Gap Report"
     required: true
     technique: dispatch-sub-agents
-    description: "Re-dispatch targeted follow-up agents for each gap in the verification report."
   - id: extract-table-derived-findings
-    name: "Extract Table-Derived Findings"
     required: true
     technique: merge-findings
-    description: "Add the verification agent's table-derived findings to the finding sources for merge."
   - id: dispatch-merge-agent
-    name: "Dispatch Merge Sub-Agent (M)"
     required: true
     technique: dispatch-sub-agents
-    description: "Dispatch the merge sub-agent."
   - id: validate-reconciliation
-    name: "Validate Finding Count Reconciliation (HARD STOP)"
     required: true
     technique: verify-sub-agent-output
-    description: "Verify the merge reconciliation table has zero Unaccounted findings for every agent."
   - id: verify-checklist-completeness
-    name: "Verify §3 Checklist Completeness"
     technique: verify-sub-agent-output
-    description: "Produce the §3 checklist coverage matrix and dispatch follow-up for any unevaluated items."
   - id: preserve-verification-report
-    name: "Preserve Verification Report for Adversarial Phase"
     required: true
     technique: dispatch-sub-agents
-    description: "Retain the verification gap report for the adversarial phase."
   - id: preserve-merge-output
-    name: "Preserve Merge Output for Report Generation"
     required: true
     technique: merge-findings
-    description: "Retain the merge table, reconciliation table, and scored findings for report generation."
 transitions[1]{to,isDefault}:
   adversarial-verification,true
 exitActions[2]{action,message}:

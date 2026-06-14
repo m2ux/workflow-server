@@ -1,5 +1,5 @@
 id: validate-and-commit
-version: 1.0.1
+version: 1.1.0
 name: Validate and Commit
 description: "Final validation, scope verification, README generation/update, and commit of the workflow changes to the workflows worktree."
 problem: All workflow content must pass validation and the complete scope must be verified before committing
@@ -13,40 +13,35 @@ rules[3]:
   - "Commit to the workflows worktree, not the main repository"
 steps[8]:
   - id: save-compliance-report
-    name: Save Compliance Report
-    description: "Compliance report markdown file in the planning folder, named YYYY-MM-DD-{workflow-id}-compliance-review.md."
+    technique: workflow-design::persist-report
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: commit-report
-    name: Commit Report
-    description: "Compliance report committed to the parent repository (planning folder is a regular directory, not a submodule)."
+    technique: version-control::commit-regular-files
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: run-schema-validation
-    name: Run Schema Validation
-    description: "Schema-validation pass/fail results for every TOON file (workflow.toon, activities, techniques), with failures resolved before proceeding."
+    technique: workflow-design::audit-schema-validation
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: verify-scope-manifest
-    name: Verify Scope Manifest
-    description: "Scope-manifest verification report: every item checked for file presence, performed action, and content match against the reviewed draft, with any unaddressed items flagged."
+    technique: workflow-design::scope-verification
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: generate-readme
-    name: Generate README
-    description: "Newly generated README.md (create mode) with workflow title, description, activity sequence table, mode descriptions, usage instructions, and resource links."
+    technique: workflow-design::readme-authoring
     condition:
       type: and
       conditions[2]:
@@ -59,8 +54,7 @@ steps[8]:
           operator: ==
           value: false
   - id: update-readme
-    name: Update README
-    description: "Updated README.md (update mode) reflecting any structural changes such as new activities, modified activity descriptions, or changed modes."
+    technique: workflow-design::readme-authoring
     condition:
       type: and
       conditions[2]:
@@ -73,11 +67,9 @@ steps[8]:
           operator: ==
           value: true
   - id: stage-and-commit
-    name: Stage and Commit
-    description: "Signed commit on the workflows worktree containing all created/modified files, with a conventional message ('feat(workflow-design): ...' for create mode, 'fix(workflow-design): ...' for update mode)."
+    technique: version-control::commit-regular-files
   - id: verify-commit
-    name: Verify Commit
-    description: "Post-commit verification on the workflows worktree confirming the commit landed and no files were missed."
+    technique: workflow-design::commit-verification
 checkpoints[2]:
   - id: validation-passed
     name: Validation Results Checkpoint

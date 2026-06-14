@@ -1,5 +1,5 @@
 id: primary-scan
-version: 1.1.0
+version: 1.2.0
 name: Primary Scan
 description: "Run per-submodule scanner agents and merge their findings."
 problem: Each submodule's GitHub Actions workflows must be scanned for all seven vulnerability classes, findings verified for completeness, and merged into a unified finding set.
@@ -12,43 +12,29 @@ entryActions[1]{action,message}:
   log,Starting primary scan — dispatching per-submodule scanner agents
 steps[8]:
   - id: dispatch-all-scanners
-    name: "Dispatch All Scanner Agents"
     required: true
-    technique: dispatch-scanners
-    description: "Dispatch all per-submodule scanner agents concurrently in a single batch."
+    technique: dispatch-scanners::dispatch-all
   - id: verify-dispatch-completeness
-    name: "Verify Dispatch Completeness"
     required: true
-    technique: dispatch-scanners
-    description: "Confirm every assigned scanner was dispatched, re-dispatching any shortfall."
+    technique: dispatch-scanners::verify-dispatch-completeness
   - id: collect-scanner-results
-    name: Collect All Scanner Results
     required: true
-    technique: dispatch-scanners
-    description: "Collect each scanner's returned output."
+    technique: dispatch-scanners::collect-results
   - id: verify-scanner-output-files
-    name: "Verify Scanner Output Files Exist"
     required: true
-    description: "Confirm every dispatched scanner's output file exists in the planning folder, re-dispatching any whose file is missing."
+    technique: dispatch-scanners::verify-output-files
   - id: dispatch-verification-agent
-    name: "Dispatch Verification Sub-Agent (V)"
     required: true
-    technique: dispatch-scanners
-    description: "Dispatch the verification sub-agent to produce the coverage gap report."
+    technique: dispatch-scanners::dispatch-verification
   - id: act-on-gap-report
-    name: "Act on Verification Gap Report"
     required: true
-    technique: dispatch-scanners
-    description: "Re-dispatch targeted scanners for each gap in the verification report."
+    technique: dispatch-scanners::act-on-gap-report
   - id: dispatch-merge-agent
-    name: "Dispatch Merge Sub-Agent (M)"
     required: true
-    technique: dispatch-scanners
-    description: "Dispatch the merge sub-agent to deduplicate, correlate, and reconcile findings."
+    technique: dispatch-scanners::dispatch-merge
   - id: validate-reconciliation
-    name: "Validate Finding Count Reconciliation"
     required: true
-    description: "Confirm the reconciliation table shows zero unaccounted findings for every scanner, re-dispatching the merge sub-agent otherwise."
+    technique: dispatch-scanners::verify-reconciliation
 transitions[1]:
   - to: report-generation
     isDefault: true

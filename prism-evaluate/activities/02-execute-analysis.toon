@@ -1,5 +1,5 @@
 id: execute-analysis
-version: 1.0.0
+version: 1.2.0
 name: Execute Prism Analyses
 description: "Trigger the prism workflow for each execution group."
 problem: "The evaluation analysis must be executed through the prism workflow's analytical pipeline rather than inline. Using trigger-workflow keeps prism generic and reusable while prism-evaluate controls the evaluation-specific context passed to each run."
@@ -26,9 +26,10 @@ triggers[1]:
       - analysis_focus
 steps[1]:
   - id: log-execution-plan
-    name: Log Execution Plan
-    description: "Log the execution group count, their pipeline modes, and total dimensions covered."
     required: true
+    actions[1]:
+      - action: log
+        message: "Log the execution group count, their pipeline modes, and total dimensions covered."
 loops[1]:
   - id: group-iteration
     name: Execution Group Iteration
@@ -38,8 +39,6 @@ loops[1]:
     maxIterations: 10
     steps[4]:
       - id: set-trigger-context
-        name: Set Trigger Context for Current Group
-        description: "Map current_group fields to the prism trigger context."
         required: true
         actions[6]:
           - action: set
@@ -61,12 +60,12 @@ loops[1]:
             target: analysis_focus
             description: "{current_group.analysis_focus}."
       - id: trigger-prism
-        name: Trigger Prism Workflow
-        description: "Trigger and run the prism workflow for the current group."
+        technique: workflow-engine::handle-sub-workflow
+        technique_args:
+          workflow_id: prism
         required: true
       - id: collect-results
-        name: Collect Prism Results
-        description: "Collect the current group's artifact paths and status into the accumulators."
+        technique: execute-analysis::collect-prism-results
         required: true
         actions[2]:
           - action: set
@@ -76,8 +75,7 @@ loops[1]:
             target: all_artifact_paths
             description: "Append the analysis artifact paths produced by the run."
       - id: verify-completion
-        name: Verify Prism Completion
-        description: "Verify the run produced its expected, substantive analysis artifacts."
+        technique: execute-analysis::verify-prism-completion
         required: true
         actions[1]:
           - action: set

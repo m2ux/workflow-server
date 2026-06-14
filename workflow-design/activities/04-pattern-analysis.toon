@@ -1,5 +1,5 @@
 id: pattern-analysis
-version: 1.0.1
+version: 1.1.0
 name: Pattern Analysis
 description: "Structural and content patterns extracted from comparable existing workflows for reuse in the target workflow."
 problem: New workflows must follow established conventions and reuse proven structural patterns
@@ -12,17 +12,13 @@ rules[2]:
   - "Present patterns alongside the proposed structure so the user can see how conventions are being applied"
 steps[4]:
   - id: select-reference-workflows
-    name: Select Reference Workflows
-    description: "Reference workflow shortlist (2+) sharing the target's activity model, preferring same-domain workflows."
+    technique: workflow-design::pattern-analysis
   - id: extract-structural-patterns
-    name: Extract Structural Patterns
-    description: "Structural conventions across references: activity naming, step/checkpoint ratios, transitions, technique assignment, artifact naming, resource organization."
+    technique: workflow-design::pattern-analysis
   - id: extract-content-patterns
-    name: Extract Content Patterns
-    description: "Content conventions across references: rule structuring, checkpoint effects, transition conditions, artifact location references, technique protocol/inputs/output usage."
+    technique: workflow-design::pattern-analysis
   - id: present-patterns
-    name: Present Patterns
-    description: "Comparison table of extracted patterns alongside the proposed structure, noting alignments and divergences."
+    technique: workflow-design::pattern-analysis
 checkpoints[1]:
   - id: patterns-confirmed
     name: Patterns Confirmation

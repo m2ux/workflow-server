@@ -1,5 +1,5 @@
 id: reconnaissance
-version: 1.1.0
+version: 1.2.0
 name: Reconnaissance
 description: "Classify discovered workflows and assign scanner agents."
 problem: Scanner agents need a structured inventory with trigger classification, permission mapping, and checkout pattern identification to apply detection patterns efficiently.
@@ -12,25 +12,15 @@ entryActions[1]{action,message}:
   log,Starting reconnaissance — classifying workflows and assigning scanner agents
 steps[5]:
   - id: classify-triggers
-    name: Classify Workflow Triggers
-    technique: inventory-workflows
-    description: "Classify every workflow by its trigger events."
+    technique: inventory-workflows::classify-triggers
   - id: map-permissions
-    name: Map Permission Scopes
-    technique: inventory-workflows
-    description: "Map permission scopes per workflow at workflow, job, and step levels."
+    technique: inventory-workflows::map-permissions
   - id: identify-checkout-patterns
-    name: Identify Checkout Patterns
-    technique: inventory-workflows
-    description: "Identify checkout patterns and their ref parameters per workflow."
+    technique: inventory-workflows::identify-checkouts
   - id: build-reconnaissance-summary
-    name: Build Reconnaissance Summary
-    technique: inventory-workflows
-    description: "Produce the per-workflow classification summary."
+    technique: inventory-workflows::build-summary
   - id: assign-scanner-agents
-    name: Assign Scanner Agents
-    technique: inventory-workflows
-    description: "Assign one scanner agent per submodule and record the assignment."
+    technique: inventory-workflows::assign-scanner-agents
     actions[1]:
       - action: set
         target: scanners_assigned

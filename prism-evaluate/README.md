@@ -160,9 +160,9 @@ workflows/prism-evaluate/
 │   └── 06-apply-mitigations.toon     # Apply accepted mitigations to the target and commit
 ├── techniques/
 │   ├── TECHNIQUE.md                  # Inherited base contract
-│   ├── plan-evaluation.md            # Target classification, dimension-to-lens mapping
-│   ├── compose-evaluation-report.md  # Cross-dimensional synthesis, report composition
-│   └── resolve-findings.md           # Finding tier-classification, mitigation, change application
+│   ├── plan-evaluation/              # Target classification, dimension-to-lens mapping (one op per phase)
+│   ├── compose-evaluation-report/    # Cross-dimensional synthesis, report composition (one op per phase)
+│   └── resolve-findings/             # Finding tier-classification, mitigation, change application (one op per phase)
 └── resources/
     ├── default-dimensions.md         # Default dimension sets by target type
     ├── dimension-lens-mapping.md     # Dimension-to-lens mapping matrix

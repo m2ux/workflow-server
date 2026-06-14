@@ -1,35 +1,13 @@
 id: generate-report
-version: 1.0.0
+version: 1.1.0
 name: Generate Final Report
 description: "Generate the final REPORT.md from prior-pass analysis artifacts."
 problem: Analysis artifacts carry methodology-specific language that obscures the definitive results for readers who need actionable findings
 techniques:
   supporting[1]:
     - "variable-binding"
-steps[5]:
-  - id: collect-artifacts
-    name: Collect All Analysis Artifacts
-    description: "Identify the produced artifacts and the authoritative source for the pipeline mode."
-    required: true
-    technique: generate-report
-  - id: extract-findings
-    name: Extract Definitive Findings
-    description: "Extract definitive findings, surviving constraints, and core insights from each authoritative artifact."
-    required: true
-    technique: generate-report
-  - id: assign-identifiers
-    name: Assign Unified Finding Identifiers
-    description: "Map source finding IDs to unified report identifiers with a traceability mapping."
-    required: true
-    technique: generate-report
-  - id: compose-report
-    name: Compose Report
-    description: "Compose the clean final report."
-    required: true
-    technique: generate-report
-  - id: verify-artifact
-    name: Verify Report Artifact
-    description: "Verify the report's integrity: unique IDs, matching severity counts, complete traceability."
+steps[1]:
+  - id: generate-report
     required: true
     technique: generate-report
 artifacts[1]:
