@@ -1,26 +1,6 @@
 [
   {
     "check": "read-resolution",
-    "site": "meta/activities/03-dispatch-client-workflow.toon:47",
-    "detail": "{completed_activity} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "meta/activities/03-dispatch-client-workflow.toon:41",
-    "detail": "{user_selection} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "meta/activities/03-dispatch-client-workflow.toon:35",
-    "detail": "{variables} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "meta/activities/03-dispatch-client-workflow.toon:47",
-    "detail": "{variables} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
     "site": "meta/techniques/cargo-operations/run-suite.md:59",
     "detail": "{failed_checks} has no producer (declared id / $-local / workflow var / set-target)"
   },
@@ -176,47 +156,47 @@
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/07-content-drafting.toon:117",
+    "site": "workflow-design/activities/06-scope-and-draft.toon:130",
     "detail": "{file_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/08-quality-review.toon:169",
+    "site": "workflow-design/activities/08-quality-review.toon:118",
     "detail": "{conformance_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/08-quality-review.toon:208",
+    "site": "workflow-design/activities/08-quality-review.toon:157",
     "detail": "{enforcement_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/08-quality-review.toon:151",
+    "site": "workflow-design/activities/08-quality-review.toon:100",
     "detail": "{expressiveness_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/08-quality-review.toon:190",
+    "site": "workflow-design/activities/08-quality-review.toon:139",
     "detail": "{rule_hygiene_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/09-validate-and-commit.toon:110",
+    "site": "workflow-design/activities/09-validate-and-commit.toon:83",
     "detail": "{addressed_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/09-validate-and-commit.toon:89",
+    "site": "workflow-design/activities/09-validate-and-commit.toon:62",
     "detail": "{fail_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/09-validate-and-commit.toon:89",
+    "site": "workflow-design/activities/09-validate-and-commit.toon:62",
     "detail": "{pass_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/09-validate-and-commit.toon:110",
+    "site": "workflow-design/activities/09-validate-and-commit.toon:83",
     "detail": "{total_count} has no producer (declared id / $-local / workflow var / set-target)"
   }
 ]
