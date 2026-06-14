@@ -5,7 +5,7 @@ description: "Impact assessment of proposed changes against an existing workflow
 problem: Modifying an existing workflow can break transition chains, invalidate checkpoint assumptions, or orphan techniques and resources
 techniques:
   supporting[1]:
-    - workflow-design
+    - variable-binding
 required: false
 entryActions[1]:
   - action: validate
@@ -16,15 +16,15 @@ rules[2]:
   - "Content being removed must be explicitly flagged and confirmed"
 steps[5]:
   - id: enumerate-existing-files
-    technique: workflow-design::impact-analysis
+    technique: impact-analysis
   - id: classify-impact
-    technique: workflow-design::impact-analysis
+    technique: impact-analysis
   - id: check-transition-integrity
-    technique: workflow-design::impact-analysis
+    technique: impact-analysis
   - id: check-reference-integrity
-    technique: workflow-design::impact-analysis
+    technique: impact-analysis
   - id: flag-content-removal
-    technique: workflow-design::impact-analysis
+    technique: impact-analysis
 checkpoints[2]:
   - id: impact-confirmed
     name: Impact Scope Confirmation

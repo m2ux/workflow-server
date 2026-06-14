@@ -5,7 +5,7 @@ description: "Guided elicitation of the workflow specification across purpose, a
 problem: The user's free-form description needs to be refined into a complete workflow specification
 techniques:
   supporting[1]:
-    - workflow-design
+    - variable-binding
 required: true
 rules[3]:
   - "One question at a time — present each checkpoint independently and wait for the response before proceeding"
@@ -13,36 +13,36 @@ rules[3]:
   - "Do not assume answers — if the user's description is ambiguous, ask for clarification"
 steps[8]:
   - id: elicit-purpose
-    technique: workflow-design::elicitation
+    technique: elicitation
   - id: elicit-activities
-    technique: workflow-design::elicitation
+    technique: elicitation
   - id: elicit-activity-model
-    technique: workflow-design::elicitation
+    technique: elicitation
     condition:
       type: simple
       variable: is_update_mode
       operator: "!="
       value: true
   - id: elicit-checkpoints
-    technique: workflow-design::elicitation
+    technique: elicitation
   - id: elicit-artifacts
-    technique: workflow-design::elicitation
+    technique: elicitation
   - id: elicit-variables
-    technique: workflow-design::elicitation
+    technique: elicitation
     condition:
       type: simple
       variable: is_update_mode
       operator: "!="
       value: true
   - id: elicit-techniques
-    technique: workflow-design::elicitation
+    technique: elicitation
     condition:
       type: simple
       variable: is_update_mode
       operator: "!="
       value: true
   - id: elicit-rules
-    technique: workflow-design::elicitation
+    technique: elicitation
 checkpoints[8]:
   - id: purpose-confirmed
     name: Purpose Confirmation

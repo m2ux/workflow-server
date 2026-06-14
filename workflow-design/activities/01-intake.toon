@@ -5,77 +5,77 @@ description: "Operation-type capture: classify the user's request as create, upd
 problem: User wants to create or update a workflow and needs a guided process
 techniques:
   supporting[1]:
-    - workflow-design
+    - variable-binding
 required: true
 rules[2]:
   - "Do not begin drafting content during intake — this activity only captures intent"
   - "For update mode, always load the existing workflow before proceeding"
 steps[10]:
   - id: load-target-workflow
-    technique: workflow-design::intake-classification
+    technique: intake-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: enumerate-workflow-contents
-    technique: workflow-design::intake-classification
+    technique: intake-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: present-review-scope
-    technique: workflow-design::intake-classification
+    technique: intake-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: load-existing-workflow
-    technique: workflow-design::intake-classification
+    technique: intake-classification
     condition:
       type: simple
       variable: is_update_mode
       operator: "=="
       value: true
   - id: parse-change-request
-    technique: workflow-design::intake-classification
+    technique: intake-classification
     condition:
       type: simple
       variable: is_update_mode
       operator: "=="
       value: true
   - id: present-current-structure
-    technique: workflow-design::intake-classification
+    technique: intake-classification
     condition:
       type: simple
       variable: is_update_mode
       operator: "=="
       value: true
   - id: accept-description
-    technique: workflow-design::intake-classification
+    technique: intake-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: classify-operation
-    technique: workflow-design::intake-classification
+    technique: intake-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: extract-design-intent
-    technique: workflow-design::intake-classification
+    technique: intake-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: set-mode
-    technique: workflow-design::intake-classification
+    technique: intake-classification
     condition:
       type: simple
       variable: is_review_mode

@@ -5,20 +5,20 @@ description: "Structural and content patterns extracted from comparable existing
 problem: New workflows must follow established conventions and reuse proven structural patterns
 techniques:
   supporting[1]:
-    - workflow-design
+    - variable-binding
 required: false
 rules[2]:
   - "Examine at least two existing workflows of the same model type (sequential or independent)"
   - "Present patterns alongside the proposed structure so the user can see how conventions are being applied"
 steps[4]:
   - id: select-reference-workflows
-    technique: workflow-design::pattern-analysis
+    technique: pattern-analysis
   - id: extract-structural-patterns
-    technique: workflow-design::pattern-analysis
+    technique: pattern-analysis
   - id: extract-content-patterns
-    technique: workflow-design::pattern-analysis
+    technique: pattern-analysis
   - id: present-patterns
-    technique: workflow-design::pattern-analysis
+    technique: pattern-analysis
 checkpoints[1]:
   - id: patterns-confirmed
     name: Patterns Confirmation

@@ -5,7 +5,7 @@ description: "Per-file drafting and review pass over every entry in the confirme
 problem: Content must be drafted using formal schema constructs, validated per-file, and reviewed before proceeding
 techniques:
   supporting[1]:
-    - workflow-design
+    - variable-binding
 required: true
 rules[5]:
   - "Present approach for each file before drafting — what constructs will be used, what patterns followed"
@@ -19,13 +19,13 @@ entryActions[1]:
     message: "Cannot begin content drafting without a confirmed scope manifest"
 steps[5]:
   - id: present-file-approach
-    technique: workflow-design::content-drafting
+    technique: content-drafting
   - id: draft-file-content
     technique: toon-authoring
   - id: validate-against-schema
     technique: toon-authoring
   - id: present-for-review
-    technique: workflow-design::content-drafting
+    technique: content-drafting
   - id: advance-to-next-file
 loops[1]:
   - id: file-drafting-loop
@@ -36,13 +36,13 @@ loops[1]:
     maxIterations: 50
     steps[4]:
       - id: present-file-approach
-        technique: workflow-design::content-drafting
+        technique: content-drafting
       - id: draft-file-content
         technique: toon-authoring
       - id: validate-against-schema
         technique: toon-authoring
       - id: present-for-review
-        technique: workflow-design::content-drafting
+        technique: content-drafting
 checkpoints[4]:
   - id: file-approach-confirmed
     name: File Approach Checkpoint

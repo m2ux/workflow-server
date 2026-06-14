@@ -5,7 +5,7 @@ description: "Final validation, scope verification, README generation/update, an
 problem: All workflow content must pass validation and the complete scope must be verified before committing
 techniques:
   supporting[1]:
-    - workflow-design
+    - variable-binding
 required: true
 rules[3]:
   - "All TOON files must pass schema validation before commit — no exceptions"
@@ -13,7 +13,7 @@ rules[3]:
   - "Commit to the workflows worktree, not the main repository"
 steps[8]:
   - id: save-compliance-report
-    technique: workflow-design::persist-report
+    technique: persist-report
     condition:
       type: simple
       variable: is_review_mode
@@ -27,21 +27,21 @@ steps[8]:
       operator: "=="
       value: true
   - id: run-schema-validation
-    technique: workflow-design::audit-schema-validation
+    technique: audit-schema-validation
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: verify-scope-manifest
-    technique: workflow-design::scope-verification
+    technique: scope-verification
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: generate-readme
-    technique: workflow-design::readme-authoring
+    technique: readme-authoring
     condition:
       type: and
       conditions[2]:
@@ -54,7 +54,7 @@ steps[8]:
           operator: ==
           value: false
   - id: update-readme
-    technique: workflow-design::readme-authoring
+    technique: readme-authoring
     condition:
       type: and
       conditions[2]:
@@ -69,7 +69,7 @@ steps[8]:
   - id: stage-and-commit
     technique: version-control::commit-regular-files
   - id: verify-commit
-    technique: workflow-design::commit-verification
+    technique: commit-verification
 checkpoints[2]:
   - id: validation-passed
     name: Validation Results Checkpoint

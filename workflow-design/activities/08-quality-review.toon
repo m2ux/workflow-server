@@ -5,7 +5,7 @@ description: "Quality review of drafted workflow content."
 problem: Drafted content may contain prose that should be formal constructs, diverge from conventions, or have critical rules without structural enforcement
 techniques:
   supporting[1]:
-    - workflow-design
+    - variable-binding
 required: true
 rules[3]:
   - "Each review pass is independent — complete one pass fully before starting the next"
@@ -13,49 +13,49 @@ rules[3]:
   - "Flag every rule that can be violated by ignoring it and lacks structural enforcement"
 steps[16]:
   - id: load-all-workflow-files
-    technique: workflow-design::reload-workflow
+    technique: reload-workflow
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: principle-compliance-audit
-    technique: workflow-design::audit-principles
+    technique: audit-principles
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: anti-pattern-scan
-    technique: workflow-design::audit-anti-patterns
+    technique: audit-anti-patterns
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: schema-validation-check
-    technique: workflow-design::audit-schema-validation
+    technique: audit-schema-validation
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: tool-technique-doc-consistency
-    technique: workflow-design::audit-consistency
+    technique: audit-consistency
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: compile-compliance-report
-    technique: workflow-design::compile-report
+    technique: compile-report
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: present-compliance-report
-    technique: workflow-design::compile-report
+    technique: compile-report
     condition:
       type: simple
       variable: is_review_mode
@@ -69,56 +69,56 @@ steps[16]:
       operator: "=="
       value: true
   - id: expressiveness-review
-    technique: workflow-design::audit-expressiveness
+    technique: audit-expressiveness
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: present-expressiveness-findings
-    technique: workflow-design::audit-expressiveness
+    technique: audit-expressiveness
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: conformance-review
-    technique: workflow-design::audit-conformance
+    technique: audit-conformance
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: present-conformance-findings
-    technique: workflow-design::audit-conformance
+    technique: audit-conformance
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: rule-hygiene-audit
-    technique: workflow-design::audit-rule-hygiene
+    technique: audit-rule-hygiene
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: present-rule-hygiene-findings
-    technique: workflow-design::audit-rule-hygiene
+    technique: audit-rule-hygiene
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: rule-to-structure-audit
-    technique: workflow-design::audit-rule-enforcement
+    technique: audit-rule-enforcement
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: present-enforcement-findings
-    technique: workflow-design::audit-rule-enforcement
+    technique: audit-rule-enforcement
     condition:
       type: simple
       variable: is_review_mode

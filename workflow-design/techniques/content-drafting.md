@@ -7,7 +7,7 @@ metadata:
 
 ## Capability
 
-Plan and review each file in a per-file drafting pass: present the drafting approach before each file and present the drafted content for review afterward. The drafting and per-file schema validation themselves are performed via [toon-authoring](../toon-authoring.md).
+Plan and review each file in a per-file drafting pass: present the drafting approach before each file and present the drafted content for review afterward. The drafting and per-file schema validation themselves are performed via [toon-authoring](toon-authoring.md).
 
 ## Protocol
 

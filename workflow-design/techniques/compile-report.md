@@ -13,7 +13,7 @@ Assemble the findings from every audit pass into a structured compliance report 
 
 ### 1. Compile Report
 
-- Compile findings into a structured report following the [report template](../../resources/review-mode-guide.md#compliance-report-structure): Executive Summary (pass/fail counts by severity), Schema Expressiveness Findings, Convention Conformance Findings, Rule Enforcement Findings, Anti-Pattern Findings, Schema Validation Results, Tool-Technique-Doc Consistency Findings, Recommended Fixes
+- Compile findings into a structured report following the [report template](../resources/review-mode-guide.md#compliance-report-structure): Executive Summary (pass/fail counts by severity), Schema Expressiveness Findings, Convention Conformance Findings, Rule Enforcement Findings, Anti-Pattern Findings, Schema Validation Results, Tool-Technique-Doc Consistency Findings, Recommended Fixes
 
 ### 2. Present Report
 

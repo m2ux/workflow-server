@@ -5,7 +5,7 @@ description: "Schema-system and TOON-format baseline established before drafting
 problem: Agent must internalize the schema system and format conventions before producing any workflow content
 techniques:
   supporting[1]:
-    - workflow-design
+    - variable-binding
 required: true
 rules[3]:
   - "Do not proceed to content drafting until format_literacy_confirmed and schema_constructs_confirmed are both true"
@@ -13,13 +13,13 @@ rules[3]:
   - "Present the schema construct summary to the user for confirmation"
 steps[7]:
   - id: load-schemas
-    technique: workflow-design::context-loading
+    technique: context-loading
   - id: read-schema-documentation
-    technique: workflow-design::context-loading
+    technique: context-loading
   - id: survey-existing-workflows
-    technique: workflow-design::context-loading
+    technique: context-loading
   - id: read-toon-examples
-    technique: workflow-design::context-loading
+    technique: context-loading
     condition:
       type: and
       conditions[2]:
@@ -32,7 +32,7 @@ steps[7]:
           operator: "!="
           value: true
   - id: identify-applicable-constructs
-    technique: workflow-design::context-loading
+    technique: context-loading
   - id: auto-confirm-literacy
     condition:
       type: simple
@@ -47,7 +47,7 @@ steps[7]:
         target: schema_constructs_confirmed
         value: true
   - id: present-convention-summary
-    technique: workflow-design::context-loading
+    technique: context-loading
     condition:
       type: and
       conditions[2]:

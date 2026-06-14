@@ -5,7 +5,7 @@ description: "Complete file manifest and structural design for the target workfl
 problem: Incomplete scope coverage is the most frequent misalignment pattern — every affected file must be enumerated before execution begins
 techniques:
   supporting[1]:
-    - workflow-design
+    - variable-binding
 required: true
 rules[3]:
   - "The scope manifest must include every file to be created, modified, or removed — no implicit files"
@@ -13,20 +13,20 @@ rules[3]:
   - "Present the structural design compared against adopted patterns from pattern analysis"
 steps[5]:
   - id: verify-worktree
-    technique: workflow-design::scope-definition
+    technique: scope-definition
   - id: design-folder-structure
-    technique: workflow-design::scope-definition
+    technique: scope-definition
     condition:
       type: simple
       variable: is_update_mode
       operator: "!="
       value: true
   - id: enumerate-files
-    technique: workflow-design::scope-definition
+    technique: scope-definition
   - id: present-structural-design
-    technique: workflow-design::scope-definition
+    technique: scope-definition
   - id: present-approach
-    technique: workflow-design::scope-definition
+    technique: scope-definition
 checkpoints[1]:
   - id: scope-and-structure-confirmed
     name: Scope and Structure Confirmation

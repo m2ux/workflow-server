@@ -19,7 +19,7 @@ Capture the operation type — create, update, or review — and establish the c
 
 ### 2. Parse Change Request
 
-- In update mode, categorize the change request derived from the `{user_description}`: add/modify activity, technique, resource, metadata, or structural refactor (see [update-mode-guide](../../resources/update-mode-guide.md))
+- In update mode, categorize the change request derived from the `{user_description}`: add/modify activity, technique, resource, metadata, or structural refactor (see [update-mode-guide](../resources/update-mode-guide.md))
 
 ### 3. Classify Operation
 

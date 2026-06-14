@@ -5,22 +5,22 @@ description: "Post-commit compliance audit of the updated workflow against desig
 problem: Updates can introduce new compliance issues that are invisible without a post-commit audit against the full design principles and anti-pattern catalog
 techniques:
   supporting[1]:
-    - workflow-design
+    - variable-binding
 required: true
 rules[2]:
   - "Load the updated workflow from the workflow-server, not from cached data — the audit must verify the committed state"
   - "Produce a severity-rated findings summary; do not repeat the full compliance report structure unless findings exist"
 steps[5]:
   - id: reload-updated-workflow
-    technique: workflow-design::reload-workflow
+    technique: reload-workflow
   - id: run-audit-passes
-    technique: workflow-design::run-audit-passes
+    technique: run-audit-passes
   - id: compile-summary
-    technique: workflow-design::summarize-findings
+    technique: summarize-findings
   - id: present-results
-    technique: workflow-design::summarize-findings
+    technique: summarize-findings
   - id: save-review-snapshot
-    technique: workflow-design::persist-report
+    technique: persist-report
 artifacts[1]:
   - id: post-update-review-report
     name: "{target_workflow_id}-post-update-review.md"
