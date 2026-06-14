@@ -506,16 +506,16 @@ graph TD
 3. **commit** — `manage-git::artifact-commits`.
 4. **log-provenance** — `dco-provenance::append-task-row`; appends a task row to `provenance-log.md`.
 5. **self-review** — `task-completion-review`; presents `symbol-provenance-confirmed` checkpoint when symbols are uncertain.
-6. **collect-assumptions** — `review-assumptions`.
+6. **collect-assumptions** — `review-assumptions::collect`.
 
 Each task's per-unit outputs accumulate across the `forEach` loop into the activity-level `completed_tasks` / `commits` collections via the activity's `scatter-gather` supporting strategy — governed activity-wide, not through per-step `technique_args`.
 
 **Post-loop steps:**
 
 1. **reconcile-assumptions** — `review-assumptions::reconcile` (drives `assumption-reconciliation`).
-2. **present-resolved-assumptions** — `review-assumptions`; displays code-resolved assumptions (non-interactive).
-3. **interview-open-assumptions** — `review-assumptions` (drives `assumption-interview`).
-4. **update-assumptions-log** — `review-assumptions`; presents `switch-model-post-impl` checkpoint.
+2. **present-resolved-assumptions** — `review-assumptions::interview`; displays code-resolved assumptions (non-interactive).
+3. **interview-open-assumptions** — `review-assumptions::interview` (drives `assumption-interview`).
+4. **update-assumptions-log** — `review-assumptions::record`; presents `switch-model-post-impl` checkpoint.
 
 **Checkpoints (4):**
 

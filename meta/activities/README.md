@@ -19,7 +19,7 @@ Five sequential activities that run inside the meta session: identify the target
 | 3 | `extract-context` | `workflow-engine::extract-identifying-context` | — |
 | 4 | `scan-planning-folders` | `workflow-engine::scan-saved-sessions` | — |
 | 5 | `match-session` | `workflow-engine::match-saved-session` | — |
-| 6 | `record-match` | prose — set `has_saved_state = true`, copy `saved_planning_slug` and `planning_folder_path` from the matched candidate | `has_saved_state == true` |
+| 6 | `record-match` | prose — set `has_saved_state = true` and `saved_planning_slug` from the matched candidate's `planning_slug` | `has_saved_state == true` |
 | 7 | `record-no-match` | prose — set `has_saved_state = false`; the resume-session checkpoint will not fire | `has_saved_state == false` |
 
 **Supporting techniques:** `workflow-engine::list-workflows`, `match-target-workflow`, `extract-identifying-context`, `scan-saved-sessions`, `match-saved-session`.

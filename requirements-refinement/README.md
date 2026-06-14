@@ -39,8 +39,7 @@ never edits the canonical document in place.
 
 | # | Activity | Purpose |
 |---|----------|---------|
-| 01 | [Intake Sources](activities/01-intake-sources.toon) | Capture and validate the source paths; classify source type; detect augment-vs-create; load sources |
-| 02 | [Analyze Source](activities/02-analyze-source.toon) | Produce a structured requirements analysis report; confirm before applying |
+| 01 | [Intake and Analyze](activities/01-intake-and-analyze.toon) | Capture and validate the source paths, classify source type, detect augment-vs-create, load sources, then produce a structured requirements analysis report and confirm before applying |
 | 03 | [Update Specification](activities/03-update-specification.toon) | Apply the analysis (or corrections) to a versioned working specification |
 | 04 | [Validate Specification](activities/04-validate-specification.toon) | Validate (conformance + source coverage), categorize issues, and route |
 | 05 | [Finalize Specification](activities/05-finalize-specification.toon) | Stage the final specification and change summary for promotion |
@@ -49,11 +48,11 @@ never edits the canonical document in place.
 ## Flow
 
 ```
-intake-sources → analyze-source → update-specification → validate-specification
-                                              ▲                      │
-              (correctable & under the cap)   └──────────────────────┤
-                                                                     ├─ validation passed → finalize-specification
-                                                                     └─ critical / cap reached → report-failure
+intake-and-analyze → update-specification → validate-specification
+                                ▲                      │
+            (correctable & under the cap)  └───────────┤
+                                                        ├─ validation passed → finalize-specification
+                                                        └─ critical / cap reached → report-failure
 ```
 
 The correction loop is bounded by `max_correction_iterations` (default 3). When validation passes the
@@ -63,6 +62,6 @@ specification is promoted automatically.
 ## Structure
 
 - [`workflow.toon`](workflow.toon) — metadata, variables, rules, and artifact location.
-- [`activities/`](activities/) — the six pipeline activities.
+- [`activities/`](activities/) — the five pipeline activities.
 - [`techniques/`](techniques/) — the procedures the activities apply.
 - [`resources/`](resources/) — the specification protocol and the report/rubric/summary templates.

@@ -9,10 +9,10 @@ Each activity binds its steps to a workflow-specific technique via `step.techniq
 | 01 | **Scope Assessment** | `assess-initiative-scope` | `variable-binding` | Confirm multi-package initiative and identify work packages |
 | 02 | **Folder Setup** | `version-control::initialize-folder`, `setup-planning-folder` | `variable-binding` | Create planning folder structure with documentation skeletons |
 | 03 | **Analysis** | `analyze-initiative-context` | `variable-binding` | Completion or context analysis depending on initiative type |
-| 04 | **Package Planning** | `plan-work-package-scope` | `variable-binding`, `scatter-gather` | Define scope, dependencies, effort, and success criteria per package |
+| 04 | **Package Planning** | `plan-work-package-scope::present-overview`, `plan-work-package-scope::plan-package` | `variable-binding`, `scatter-gather` | Define scope, dependencies, effort, and success criteria per package |
 | 05 | **Prioritization** | `prioritize-packages` | `variable-binding` | Prioritize packages by dependencies, value, risk, and effort |
 | 06 | **Finalize Roadmap** | `document-roadmap` | `variable-binding` | Complete roadmap documentation with timeline and success criteria |
-| 07 | **Implementation** | `orchestrate-package-execution` | `variable-binding`, `scatter-gather` | Execute each package in priority order via the work-package workflow |
+| 07 | **Implementation** | `orchestrate-package-execution::initialize-iteration`, `orchestrate-package-execution::execute-package` | `variable-binding`, `scatter-gather` | Execute each package in priority order via the work-package workflow |
 
 ## Flow
 

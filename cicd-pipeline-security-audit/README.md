@@ -68,15 +68,15 @@ cicd-pipeline-security-audit/
 │   └── 07-sub-merge.toon                  # Finding merge (sub-agent)
 ├── techniques/
 │   ├── TECHNIQUE.md                        # Inherited base contract
-│   ├── execute-cicd-audit.md              # Orchestrator coordination
-│   ├── score-cicd-severity.md             # Impact x Exploitability scoring
-│   ├── inventory-workflows.md             # File discovery + classification
-│   ├── scan-injection-patterns.md         # 7-pattern detection engine
-│   ├── dispatch-scanners.md               # Agent dispatch + collection
-│   ├── verify-scan-output.md              # Coverage verification
-│   ├── merge-scan-findings.md             # Dedup + reconciliation
-│   ├── write-cicd-report.md               # Report generation
-│   └── execute-sub-agent.md               # Sub-agent bootstrap + structured output
+│   ├── execute-cicd-audit.md              # Orchestrator coordination (standalone)
+│   ├── execute-sub-agent.md               # Sub-agent bootstrap + structured output (standalone)
+│   ├── inventory-workflows/               # File discovery + classification (group: 10 ops)
+│   ├── scan-injection-patterns/           # 7-pattern detection engine (group: load + P1-P7 + assemble)
+│   ├── dispatch-scanners/                 # Agent dispatch + collection (group: 8 ops)
+│   ├── score-cicd-severity/               # Impact x Exploitability scoring (group: apply + calibrate)
+│   ├── verify-scan-output/                # Coverage verification (group: 4 ops)
+│   ├── merge-scan-findings/               # Dedup + reconciliation (group: 5 ops)
+│   └── write-cicd-report/                 # Report generation (group: attach-remediation + write)
 └── resources/
     ├── start-here.md                      # Quick reference
     ├── injection-pattern-catalog.md       # Pattern signatures + examples
@@ -108,25 +108,27 @@ Sub-agent activities carry `variable-binding` and `execute-sub-agent` as support
 
 | # | Activity | Agent | Steps | Purpose | Step-Bound Techniques |
 |---|----------|-------|-------|---------|-----------------------|
-| [05](activities/05-sub-workflow-scan.toon) | Per-Submodule Workflow Scan | S1-Sn | 9 | Apply P1-P7 to all workflow files in assigned submodule | scan-injection-patterns, execute-sub-agent |
+| [05](activities/05-sub-workflow-scan.toon) | Per-Submodule Workflow Scan | S1-Sn | 9 | Apply P1-P7 to all workflow files in assigned submodule | scan-injection-patterns |
 | [06](activities/06-sub-verification.toon) | Scan Verification | V | 4 | Verify file + pattern coverage across all scanners | verify-scan-output |
-| [07](activities/07-sub-merge.toon) | Finding Merge | M | 5 | Deduplicate, correlate, reconcile findings | merge-scan-findings, execute-sub-agent |
+| [07](activities/07-sub-merge.toon) | Finding Merge | M | 5 | Deduplicate, correlate, reconcile findings | merge-scan-findings |
 
 ## Techniques
 
 Reusable capabilities that activities invoke — each technique encapsulates a specific analytical or orchestration capability.
 
-| Order | Technique | Capability | Used By |
-|---|-------|------------|---------|
-| 00 | [execute-cicd-audit](./techniques/execute-cicd-audit.md) | Orchestrate audit phases | All main activities (01-04) |
-| 01 | [score-cicd-severity](./techniques/score-cicd-severity.md) | Impact x Exploitability severity scoring | Report Generation |
-| 02 | [inventory-workflows](./techniques/inventory-workflows.md) | Workflow file discovery + classification | Scope Setup, Reconnaissance |
-| 03 | [scan-injection-patterns](./techniques/scan-injection-patterns.md) | 7-pattern detection (P1-P7) | Sub-agents S1-Sn (step-level) |
-| 04 | [dispatch-scanners](./techniques/dispatch-scanners.md) | Sub-agent dispatch + collection | Primary Scan |
-| 05 | [verify-scan-output](./techniques/verify-scan-output.md) | Coverage verification | Sub-agent V (step-level), Report Generation |
-| 06 | [merge-scan-findings](./techniques/merge-scan-findings.md) | Dedup + reconciliation | Sub-agent M (step-level) |
-| 07 | [write-cicd-report](./techniques/write-cicd-report.md) | Report generation | Report Generation |
-| 08 | [execute-sub-agent](./techniques/execute-sub-agent.md) | Sub-agent bootstrap + structured output | Sub-agents S1-Sn, V, M (supporting + step-level) |
+Most capabilities are operation-groups: a `<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `<op>.md` per operation, bound from steps as `<group>::<op>`. Two are standalone files. The shared base contract for the set lives in [`techniques/TECHNIQUE.md`](./techniques/TECHNIQUE.md).
+
+| Order | Technique | Kind | Capability | Used By |
+|---|-------|------|------------|---------|
+| 00 | [execute-cicd-audit](./techniques/execute-cicd-audit.md) | standalone | Orchestrate audit phases + gates | Supporting, all main activities (01-04) |
+| 01 | [score-cicd-severity](./techniques/score-cicd-severity/) | group | Impact x Exploitability severity scoring | Report Generation (step-level) |
+| 02 | [inventory-workflows](./techniques/inventory-workflows/) | group | Workflow file discovery + classification | Scope Setup, Reconnaissance (step-level) |
+| 03 | [scan-injection-patterns](./techniques/scan-injection-patterns/) | group | 7-pattern detection (P1-P7) | Sub-agents S1-Sn (step-level) |
+| 04 | [dispatch-scanners](./techniques/dispatch-scanners/) | group | Sub-agent dispatch + collection | Primary Scan (step-level) |
+| 05 | [verify-scan-output](./techniques/verify-scan-output/) | group | Coverage verification | Sub-agent V (step-level), Report Generation (step-level) |
+| 06 | [merge-scan-findings](./techniques/merge-scan-findings/) | group | Dedup + reconciliation | Sub-agent M (step-level) |
+| 07 | [write-cicd-report](./techniques/write-cicd-report/) | group | Report generation | Report Generation (step-level) |
+| 08 | [execute-sub-agent](./techniques/execute-sub-agent.md) | standalone | Sub-agent bootstrap + structured output | Supporting, sub-agents S1-Sn, V, M |
 
 ## Resources
 

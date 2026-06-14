@@ -180,25 +180,27 @@ graph TD
 
 ## Techniques
 
-Steps bind to a technique via `step.technique`; each activity also lists strategy techniques under `techniques.supporting` (`variable-binding`, plus `scatter-gather` for the forEach passes).
+Steps bind to a technique via `step.technique`; each activity also lists strategy techniques under `techniques.supporting` (`variable-binding`, plus `scatter-gather` for the forEach passes). The structural-pass `check-gitnexus` step additionally binds the shared `gitnexus-operations::verify-index` operation. Operation-group techniques expose their steps as `<group>::<op>` references; standalone techniques bind a whole step.
 
 | Technique | Capability | Bound by |
 |-----------|------------|----------|
-| `plan-analysis` | Detect scope, classify targets, plan analysis strategy | select-mode (plan step) |
-| `structural-analysis` | Single-pass L12 structural analysis | structural-pass (load/execute/write steps) |
-| `portfolio-analysis` | Run 2+ complementary portfolio lenses | structural-pass (portfolio steps) |
-| `behavioral-pipeline` | Execute 4+1 behavioral pipeline with labeled synthesis | structural-pass (dispatch step), behavioral-synthesis-pass |
-| `full-prism` | Execute one isolated pass of the Full Prism pipeline | adversarial-pass, synthesis-pass |
-| `dispute-analysis` | Run two orthogonal prisms and synthesize disagreements | dispute-pass |
-| `subsystem-analysis` | Per-region prism assignment + cross-subsystem synthesis | subsystem-pass |
-| `verified-analysis` | L12 + gap detection + corrected re-analysis | verified-pass |
-| `reflect-analysis` | L12 + claim-prism meta-analysis + constraint synthesis | reflect-pass |
-| `smart-analysis` | Adaptively compose the analysis pipeline | smart-pass |
-| `adaptive-analysis` | Cost-minimizing depth escalation (SDL → L12 → full-prism) | adaptive-pass |
-| `generate-report` | Produce clean final report from analysis artifacts | generate-report |
-| `present-result` | Read, cross-reference-format, and present the final report | deliver-result |
+| `plan-analysis` | Detect scope, classify targets, plan analysis strategy | select-mode (`plan` step) |
+| `structural-analysis` | Single-pass L12 structural analysis | structural-pass (`run-structural` step) |
+| `portfolio-analysis` | Run 2+ complementary portfolio lenses | structural-pass (`run-portfolio` step) |
+| `behavioral-pipeline` | Execute 4+1 behavioral pipeline with labeled synthesis | structural-pass (`dispatch-behavioral-lenses` step), behavioral-synthesis-pass (`run-behavioral-synthesis` step) |
+| `full-prism` | Execute one isolated pass of the Full Prism pipeline | adversarial-pass (`run-adversarial`), synthesis-pass (`run-synthesis`) |
+| `dispute-analysis` | Run two orthogonal prisms and synthesize disagreements | dispute-pass (`run-dispute` step) |
+| `subsystem-analysis::*` | Per-region prism assignment + cross-subsystem synthesis | subsystem-pass (`decompose`, `calibrate`, `execute`, `synthesize`) |
+| `verified-analysis::*` | L12 + gap detection + corrected re-analysis | verified-pass (`initial-analysis`, `gap-detection`, `gap-extraction`, `corrected-analysis`) |
+| `reflect-analysis` | L12 + claim-prism meta-analysis + constraint synthesis | reflect-pass (`run-reflect` step) |
+| `smart-analysis::*` | Adaptively compose the analysis pipeline | smart-pass (`prereq-scan`, `knowledge-fill`, `select-mode`, `run-analysis`, `dispute-correction`) |
+| `adaptive-analysis::*` | Cost-minimizing depth escalation (SDL → L12 → full-prism) | adaptive-pass (`stage-1-sdl`, `stage-2-l12`, `stage-3-full`) |
+| `generate-report` | Produce clean final report from analysis artifacts | generate-report (`generate-report` step) |
+| `present-result` | Read, cross-reference-format, and present the final report | deliver-result (`present-result` step) |
 
-**Detailed documentation:** See [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md) for the inherited base contract; each technique's `techniques/<slug>.md` file documents its protocol flow.
+The four `::*` techniques are **operation-groups** — a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `<op>.md` file per operation. The rest are standalone `techniques/<slug>.md` files.
+
+**Detailed documentation:** See [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md) for the inherited base contract; each standalone technique's `techniques/<slug>.md` file and each operation-group's `techniques/<group>/<op>.md` file documents its protocol flow.
 
 ---
 
@@ -320,7 +322,7 @@ Unlike the work-package workflow (which resumes a persistent worker), the prism 
 
 ```
 workflows/prism/
-├── workflow.toon                            # Workflow definition (10 modes, 27 variables, 10 rules)
+├── workflow.toon                            # Workflow definition (10 modes, 27 variables, 10 rules, 13 activities)
 ├── README.md                                # This file
 ├── concept-lexicon.md                       # Analytical concept definitions (49 concepts)
 ├── activities/
@@ -338,20 +340,40 @@ workflows/prism/
 │   ├── 11-smart-pass.toon                   # Adaptive pipeline composition (smart only)
 │   └── 12-adaptive-pass.toon                # Depth escalation SDL → L12 → full-prism (adaptive only)
 ├── techniques/
-│   ├── TECHNIQUE.md                         # Inherited base contract
+│   ├── TECHNIQUE.md                         # Inherited base contract (shared by all prism techniques)
 │   ├── plan-analysis.md                     # Analysis planning (58 goal mappings)
 │   ├── structural-analysis.md               # Single-pass L12
 │   ├── portfolio-analysis.md                # Portfolio lenses
 │   ├── behavioral-pipeline.md               # Behavioral pipeline worker pass
 │   ├── full-prism.md                        # Full Prism worker pass
 │   ├── dispute-analysis.md                  # Dispute pipeline
-│   ├── subsystem-analysis.md                # Subsystem pipeline
-│   ├── verified-analysis.md                 # Verified pipeline
 │   ├── reflect-analysis.md                  # Reflect pipeline
-│   ├── smart-analysis.md                    # Smart pipeline
-│   ├── adaptive-analysis.md                 # Adaptive depth pipeline
 │   ├── generate-report.md                   # Report generation from analysis artifacts
-│   └── present-result.md                    # Read, format, and present the final report
+│   ├── present-result.md                    # Read, format, and present the final report
+│   ├── subsystem-analysis/                  # Subsystem operation-group
+│   │   ├── TECHNIQUE.md                      # Group contract
+│   │   ├── decompose.md                      # AST split into subsystems
+│   │   ├── calibrate.md                      # Per-region prism assignment
+│   │   ├── execute.md                        # Per-subsystem analysis
+│   │   └── synthesize.md                     # Cross-subsystem synthesis
+│   ├── verified-analysis/                   # Verified operation-group
+│   │   ├── TECHNIQUE.md                      # Group contract
+│   │   ├── initial-analysis.md               # Initial L12 pass
+│   │   ├── gap-detection.md                  # Boundary + audit gap analysis
+│   │   ├── gap-extraction.md                 # Extract structured gap data
+│   │   └── corrected-analysis.md             # Corrected re-analysis
+│   ├── smart-analysis/                      # Smart operation-group
+│   │   ├── TECHNIQUE.md                      # Group contract
+│   │   ├── prereq-scan.md                    # Prerequisite/knowledge-gap scan
+│   │   ├── knowledge-fill.md                 # Optional knowledge fill
+│   │   ├── select-mode.md                    # Compose the pipeline
+│   │   ├── run-analysis.md                   # Run composed analysis
+│   │   └── dispute-correction.md             # Optional dispute self-correction
+│   └── adaptive-analysis/                   # Adaptive operation-group
+│       ├── TECHNIQUE.md                      # Group contract
+│       ├── stage-1-sdl.md                    # SDL deep_scan (Haiku)
+│       ├── stage-2-l12.md                    # L12 escalation (Sonnet)
+│       └── stage-3-full.md                   # Full-prism escalation
 └── resources/
     ├── 00–02: L12 pipeline
     ├── 06–11: Portfolio lenses

@@ -268,13 +268,13 @@ These activities are dispatched by the orchestrator during reconnaissance or pri
 
 | Activity | Used By | Phase | Description |
 |----------|---------|-------|-------------|
-| `sub-reconnaissance` | R | Reconnaissance | 9-step codebase reconnaissance: identify crates -> trust boundaries -> consensus paths -> config structs -> pallet hooks -> data flows -> safety-boundary overrides -> build function registry -> write output files (r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json) |
-| `sub-architectural-analysis` | S | Reconnaissance | 4-step security-oriented architectural decomposition: interaction model -> privilege map -> candidate points -> emergent vulnerability domains |
+| `sub-reconnaissance` | R | Reconnaissance | 2-step codebase reconnaissance: map codebase -> build function registry (writes r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json) |
+| `sub-architectural-analysis` | S | Reconnaissance | Single-step security-oriented architectural decomposition producing the interaction model, privilege map, candidate points, and emergent vulnerability domains |
 | `sub-crate-review` | Group A | Primary Audit | 8-step structured crate review: file reading -> function registry -> invariant extraction -> §3 checklist -> analysis tables -> cross-function comparison -> completeness verification -> structured output |
 | `sub-static-analysis` | Group B | Primary Audit | 6-step structured static analysis with catalog-based pattern execution, zero-hit auditing, storage lifecycle pairing, and mechanical checks |
-| `sub-toolkit-review` | Group D | Primary Audit | Per-function 8-item checklist application across all toolkit files with function x checklist matrix |
-| `sub-output-verification` | V | Primary Audit | 8-step mechanical output validation: dispatch completeness -> coverage gate -> mandatory tables -> target profile obligations -> table-derived findings -> error-path persistence -> gap report -> format output |
-| `sub-structured-merge` | M | Primary Audit | 7-step finding-lossless merge: load agent outputs -> concatenate flat table -> elevate observations -> deduplicate by root cause -> apply severity with bidirectional calibration -> produce reconciliation table -> format merge output |
+| `sub-toolkit-review` | Group D | Primary Audit | 4-step per-function review applying the 8-item checklist across all toolkit files with a function x checklist matrix and coverage attestation |
+| `sub-output-verification` | V | Primary Audit | Single-step mechanical output validation producing the gap report, table-derived findings, coverage attestation, and obligation coverage |
+| `sub-structured-merge` | M | Primary Audit | Single-step finding-lossless merge producing the canonical merge table, reconciliation, calibration cross-check, and observation dispositions |
 
 ---
 

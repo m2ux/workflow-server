@@ -61,11 +61,14 @@ Transitions between confirm-plan and deliver-results are automatic.
 
 ## Techniques
 
-| # | Technique | Capability | Used By |
-|---|-------|------------|---------|
-| 00 | `plan-evaluation` | Target classification, dimension derivation, dimension-to-lens mapping | scope-definition, dimension-planning |
-| 01 | `compose-evaluation-report` | Cross-artifact extraction, cross-dimensional synthesis, report composition, result presentation | consolidate-report, deliver-results |
-| 02 | `resolve-findings` | Finding tier-classification, one-by-one mitigation proposal, mitigation plan composition, change application | resolution-dialogue, apply-mitigations |
+Each technique is an operation-group: a `TECHNIQUE.md` shared contract plus one operation file per phase, referenced as `<group>::<op>`. Steps bind a single operation; `execute-analysis`'s trigger step binds the shared `workflow-engine::handle-sub-workflow`.
+
+| Technique group | Capability | Used By |
+|-------|------------|---------|
+| `plan-evaluation` | Target classification, dimension derivation, target survey, dimension-to-lens mapping, execution grouping, plan authoring | scope-definition, dimension-planning |
+| `execute-analysis` | Prism run result collection and completion verification | execute-analysis |
+| `compose-evaluation-report` | Cross-artifact extraction, cross-dimensional synthesis, report composition and verification, result presentation | consolidate-report, deliver-results |
+| `resolve-findings` | Finding tier-classification, one-by-one mitigation proposal, mitigation plan composition, change application | resolution-dialogue, apply-mitigations |
 
 **Detailed documentation:** See [techniques/](techniques/) for protocol details.
 
@@ -161,6 +164,7 @@ workflows/prism-evaluate/
 ├── techniques/
 │   ├── TECHNIQUE.md                  # Inherited base contract
 │   ├── plan-evaluation/              # Target classification, dimension-to-lens mapping (one op per phase)
+│   ├── execute-analysis/             # Prism run result collection and completion verification (one op per phase)
 │   ├── compose-evaluation-report/    # Cross-dimensional synthesis, report composition (one op per phase)
 │   └── resolve-findings/             # Finding tier-classification, mitigation, change application (one op per phase)
 └── resources/

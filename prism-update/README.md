@@ -50,13 +50,13 @@ Each step binds its technique via `step.technique`. The Step Technique column na
 
 | # | Activity | Steps | Step Technique | Supporting | Description |
 |---|----------|-------|----------------|------------|-------------|
-| 00 | **Discover Changes** | 5 | `diff-upstream` | `variable-binding` | Diff upstream prisms/ against current resources, categorize changes |
-| 01 | **Review Changes** | 2 | `review-change-set` | `variable-binding` | Present change summary, user confirms scope and exclusions |
-| 02 | **Import Resources** | 5 | `sync-resources` | `variable-binding` | Copy/rename/delete resource files, commit per change type |
-| 03 | **Update Routing** | 5 | `update-skill-routing` | `variable-binding` | Fix renamed refs, add goal-mapping entries, expand catalogs |
-| 04 | **Update Documentation** | 4 | `update-prism-docs` | `variable-binding` | Rebuild resource README, prompt guide, model sensitivity |
-| 05 | **Verify Consistency** | 6 | `verify-prism-consistency` | `variable-binding` | Check for stale refs, routing mismatches, count/index errors |
-| 06 | **Commit and Submit** | 4 | `submit-update` | `variable-binding` | Create branch, push, create PR |
+| 00 | **Discover Changes** | 1 | `diff-upstream` | `variable-binding` | Diff upstream prisms/ against current resources, categorize changes |
+| 01 | **Review Changes** | 2 | `review-change-set::present-summary`, `review-change-set::apply-exclusions` | `variable-binding` | Present change summary, user confirms scope and exclusions |
+| 02 | **Import Resources** | 1 | `sync-resources` | `variable-binding` | Copy/rename/delete resource files, commit per change type |
+| 03 | **Update Routing** | 1 | `update-skill-routing` | `variable-binding` | Fix renamed refs, add goal-mapping entries, expand catalogs |
+| 04 | **Update Documentation** | 1 | `update-prism-docs` | `variable-binding` | Rebuild resource README, prompt guide, model sensitivity |
+| 05 | **Verify Consistency** | 1 | `verify-prism-consistency` | `variable-binding` | Check for stale refs, routing mismatches, count/index errors |
+| 06 | **Commit and Submit** | 1 | `submit-update` | `variable-binding` | Create branch, push, create PR |
 
 ---
 
@@ -65,12 +65,15 @@ Each step binds its technique via `step.technique`. The Step Technique column na
 | Technique | Bound by | Capability |
 |-----------|----------|------------|
 | `diff-upstream` | Discover Changes | Diff upstream prisms against current resources, classify changes by type and family |
-| `review-change-set` | Review Changes | Present the categorized change set for review and apply user exclusion adjustments |
+| `review-change-set::present-summary` | Review Changes | Present the categorized change set to the user as a reviewable summary |
+| `review-change-set::apply-exclusions` | Review Changes | Apply user-requested exclusion adjustments, yielding the approved change set |
 | `sync-resources` | Import Resources | Apply file changes: copy modified, git mv renames, import new with indexed names, remove deleted |
 | `update-skill-routing` | Update Routing | Update goal-mapping matrix, portfolio catalog, model sensitivity, resource lists in all prism techniques |
 | `update-prism-docs` | Update Documentation | Rebuild resource catalog, prompt guide entries, model sensitivity table, file structure |
 | `verify-prism-consistency` | Verify Consistency | Verify content integrity, stale references, prompt routing, counts, and duplicate indices |
 | `submit-update` | Commit and Submit | Ensure a feature branch, push commits, open a pull request, and report the result |
+
+The `review-change-set` technique is an operation-group: a `review-change-set/` directory (`TECHNIQUE.md` shared contract plus one file per operation) whose ops are referenced as `review-change-set::present-summary` and `review-change-set::apply-exclusions`. All other techniques are flat standalones.
 
 In addition, every activity declares the `variable-binding` strategy technique under `techniques.supporting`.
 
@@ -148,6 +151,9 @@ workflows/prism-update/
     ├── update-skill-routing.md
     ├── update-prism-docs.md
     ├── verify-prism-consistency.md
-    ├── review-change-set.md
-    └── submit-update.md
+    ├── submit-update.md
+    └── review-change-set/
+        ├── TECHNIQUE.md
+        ├── present-summary.md
+        └── apply-exclusions.md
 ```

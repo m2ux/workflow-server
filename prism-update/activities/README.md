@@ -8,13 +8,13 @@ Technique binding is per-step: each step declares the technique it runs via `ste
 
 | # | Activity | Steps | Step Technique | Supporting | Checkpoints | Transitions |
 |---|----------|-------|----------------|------------|-------------|-------------|
-| 00 | **Discover Changes** | 5 | `diff-upstream` | `variable-binding` | — | → review-changes |
-| 01 | **Review Changes** | 2 | `review-change-set` | `variable-binding` | `change-review` (blocking) | → import-resources |
-| 02 | **Import Resources** | 5 | `sync-resources` | `variable-binding` | — | → update-routing |
-| 03 | **Update Routing** | 5 | `update-skill-routing` | `variable-binding` | — | → update-docs |
-| 04 | **Update Documentation** | 4 | `update-prism-docs` | `variable-binding` | — | → verify |
-| 05 | **Verify Consistency** | 6 | `verify-prism-consistency` | `variable-binding` | `verification-result` (non-blocking) | → commit-and-submit (no issues) / → import-resources (issues) |
-| 06 | **Commit and Submit** | 4 | `submit-update` | `variable-binding` | — | — (terminal) |
+| 00 | **Discover Changes** | 1 | `diff-upstream` | `variable-binding` | — | → review-changes |
+| 01 | **Review Changes** | 2 | `review-change-set::present-summary`, `review-change-set::apply-exclusions` | `variable-binding` | `change-review` (blocking) | → import-resources |
+| 02 | **Import Resources** | 1 | `sync-resources` | `variable-binding` | — | → update-routing |
+| 03 | **Update Routing** | 1 | `update-skill-routing` | `variable-binding` | — | → update-docs |
+| 04 | **Update Documentation** | 1 | `update-prism-docs` | `variable-binding` | — | → verify |
+| 05 | **Verify Consistency** | 1 | `verify-prism-consistency` | `variable-binding` | `verification-result` (non-blocking) | → commit-and-submit (no issues) / → import-resources (issues) |
+| 06 | **Commit and Submit** | 1 | `submit-update` | `variable-binding` | — | — (terminal) |
 
 ## Flow
 
@@ -28,66 +28,43 @@ discover-changes → review-changes → import-resources → update-routing → 
 
 ### 00 — Discover Changes
 
-Diffs the upstream prisms directory against current workflow resources. Categorizes each prism as new, modified, renamed, or deleted. Classifies new prisms by family and determines the next available resource index. Five steps, each binding `diff-upstream`:
+Diffs the upstream prisms directory against current workflow resources. Categorizes each prism as new, modified, renamed, or deleted, classifies new prisms by family, and determines the next available resource index. One step:
 
-1. `list-upstream` → `diff-upstream`
-2. `list-current` → `diff-upstream`
-3. `diff-and-categorize` → `diff-upstream`
-4. `classify-new` → `diff-upstream`
-5. `determine-next-index` → `diff-upstream` (sets `next_index`)
+1. `diff-upstream` → `diff-upstream` (sets `next_index`)
 
 ### 01 — Review Changes
 
-Presents discovered changes to the user for approval. The `change-review` checkpoint allows the user to confirm all changes, adjust exclusions, or abort the workflow. Two steps, each binding `review-change-set`:
+Presents discovered changes to the user for approval. The `change-review` checkpoint allows the user to confirm all changes, adjust exclusions, or abort the workflow. Two steps, binding the operations of the `review-change-set` group:
 
-1. `present-summary` → `review-change-set` (checkpoint `change-review`)
-2. `apply-exclusions` → `review-change-set`
+1. `present-summary` → `review-change-set::present-summary` (checkpoint `change-review`)
+2. `apply-exclusions` → `review-change-set::apply-exclusions`
 
 ### 02 — Import Resources
 
-Applies all approved resource file changes in five steps (sync modified, apply renames, import new, remove deleted, verify file count), each binding `sync-resources` and committed in logical groups for clean git history. Produces the `import-commits` artifact:
+Applies all approved resource file changes — sync modified, apply renames, import new, remove deleted — committed in logical groups for clean git history. Produces the `import-commits` artifact. One step:
 
-1. `sync-modified` → `sync-resources`
-2. `apply-renames` → `sync-resources`
-3. `import-new` → `sync-resources`
-4. `remove-deleted` → `sync-resources`
-5. `verify-file-count` → `sync-resources`
+1. `sync-resources` → `sync-resources`
 
 ### 03 — Update Routing
 
-Updates all prism workflow techniques (plan-analysis, portfolio-analysis, behavioral-pipeline, orchestrate-prism) to reflect resource changes: fixes renamed references, adds goal-mapping entries, expands catalogs. Produces the `routing-commit` artifact. Five steps, each binding `update-skill-routing`:
+Updates all prism workflow techniques (plan-analysis, portfolio-analysis, behavioral-pipeline, orchestrate-prism) to reflect resource changes: fixes renamed references, adds goal-mapping entries, expands catalogs. Produces the `routing-commit` artifact. One step:
 
-1. `update-plan-analysis` → `update-skill-routing`
-2. `update-portfolio-analysis` → `update-skill-routing`
-3. `update-behavioral-pipeline` → `update-skill-routing`
-4. `update-orchestrate-prism` → `update-skill-routing`
-5. `commit-routing` → `update-skill-routing`
+1. `update-skill-routing` → `update-skill-routing`
 
 ### 04 — Update Documentation
 
-Rebuilds documentation across the resources README, the workflow README, and techniques/TECHNIQUE.md with updated catalog tables, prompt guide entries, and model sensitivity data. Produces the `docs-commit` artifact. Four steps, each binding `update-prism-docs`:
+Rebuilds documentation across the resource catalog, prompt guide entries, model sensitivity data, and file structure to reflect the current resource state. Produces the `docs-commit` artifact. One step:
 
-1. `update-resources-readme` → `update-prism-docs`
-2. `update-workflow-readme` → `update-prism-docs`
-3. `update-techniques-readme` → `update-prism-docs`
-4. `commit-docs` → `update-prism-docs`
+1. `update-prism-docs` → `update-prism-docs`
 
 ### 05 — Verify Consistency
 
-Runs five consistency checks then records the result: content integrity against upstream, stale name references, prompt guide routing accuracy, resource count alignment, and duplicate index detection. The `verification-result` checkpoint presents findings and auto-proceeds after 30 seconds unless the user intervenes; choosing "Fix issues" loops back to import-resources. Six steps, each binding `verify-prism-consistency`:
+Verifies content integrity against upstream, stale name references, prompt guide routing accuracy, resource count alignment, and duplicate index detection, then records the result. The `verification-result` checkpoint presents findings and auto-proceeds after 30 seconds unless the user intervenes; choosing "Fix issues" loops back to import-resources. One step:
 
-1. `verify-content-integrity` → `verify-prism-consistency`
-2. `check-stale-references` → `verify-prism-consistency`
-3. `verify-prompt-routing` → `verify-prism-consistency`
-4. `verify-resource-counts` → `verify-prism-consistency`
-5. `check-duplicate-indices` → `verify-prism-consistency`
-6. `set-result` → `verify-prism-consistency` (sets `has_issues`)
+1. `verify-prism-consistency` → `verify-prism-consistency` (sets `has_issues`)
 
 ### 06 — Commit and Submit
 
-Creates a feature branch if needed, pushes all commits, and creates a pull request against the workflows branch. Produces the `pull-request` artifact. Four steps, each binding `submit-update`:
+Ensures a feature branch, pushes all commits, and creates a pull request against the workflows branch. Produces the `pull-request` artifact. One step:
 
-1. `check-branch` → `submit-update`
-2. `push-commits` → `submit-update`
-3. `create-pr` → `submit-update`
-4. `report-completion` → `submit-update`
+1. `submit-update` → `submit-update`
