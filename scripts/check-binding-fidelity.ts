@@ -204,8 +204,12 @@ export function collectViolations(): Violation[] {
       v.push({ check: 'binding-resolution', site: `${s.rel}[${s.stepId}]`, detail: `step technique '${s.technique}' does not resolve` });
       continue;
     }
-    for (const key of s.args) if (!sig.inputs.has(key)) {
-      v.push({ check: 'arg-conformance', site: `${s.rel}[${s.stepId}]`, detail: `${s.technique}: arg '${key}' is not a declared input` });
+    // A technique_args key is valid when it names a declared INPUT (a deviation: literal/rename/template)
+    // OR a declared OUTPUT (a reserved output-remap entry — variable-binding.md §"Land outputs": an output
+    // O lands under the remapped bag name when an entry for O is present). A key that is neither is a
+    // stale/overfit deviation left behind by a rename or refactor.
+    for (const key of s.args) if (!sig.inputs.has(key) && !sig.outputs.has(key)) {
+      v.push({ check: 'arg-conformance', site: `${s.rel}[${s.stepId}]`, detail: `${s.technique}: arg '${key}' is neither a declared input (deviation) nor a declared output (remap)` });
     }
   }
   // (2) read-resolution
