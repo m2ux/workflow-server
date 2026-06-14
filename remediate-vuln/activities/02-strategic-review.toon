@@ -18,34 +18,34 @@ artifacts[2]:
     description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes."
 steps[8]:
   - id: review-scope
-    technique: strategic-review::review-scope
+    technique: review-scope
   - id: resign-unsigned-commits
-    technique: strategic-review::resign-commits
+    technique: resign-commits
     condition:
       type: simple
       variable: resign_unsigned_commits_requested
       operator: ==
       value: true
   - id: ensure-changes-folder-entry
-    technique: strategic-review::verify-fragment
+    technique: verify-fragment
   - id: document-findings
-    technique: strategic-review::document-findings
+    technique: document-findings
   - id: document-cleanup-recommendations
-    technique: strategic-review::recommend-cleanup
+    technique: recommend-cleanup
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: apply-cleanup
-    technique: strategic-review::apply-cleanup
+    technique: apply-cleanup
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
   - id: create-architecture-summary
-    technique: strategic-review::summarize-architecture
+    technique: summarize-architecture
   - id: analyze-strategic-findings
     technique: analyze-findings
 checkpoints[2]:

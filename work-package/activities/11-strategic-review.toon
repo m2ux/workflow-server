@@ -18,13 +18,13 @@ artifacts[2]:
     description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes. See architecture-summary resource for template."
 steps[9]:
   - id: review-strategy
-    technique: strategic-review::review-scope
+    technique: review-scope
   - id: verify-readme
     technique: manage-artifacts::verify-readme-conforms
   - id: ensure-changes-folder-entry
-    technique: strategic-review::changes-folder
+    technique: changes-folder
   - id: verify-change-fragment
-    technique: strategic-review::verify-fragment
+    technique: verify-fragment
     actions[2]:
       - action: set
         target: fragment_references_issue
@@ -33,16 +33,16 @@ steps[9]:
         target: "fragment_references_issue != false"
         message: "Change fragment for this work package does not reference issue_url ({issue_url}). Add a 'Closes: #{issue_number}' line (GitHub) or the full issue_url (when sibling fragments use that style) to the fragment body, commit, and re-run."
   - id: document-findings
-    technique: strategic-review::document-findings
+    technique: document-findings
   - id: document-cleanup-recommendations
-    technique: strategic-review::recommend-cleanup
+    technique: recommend-cleanup
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
   - id: apply-cleanup
-    technique: strategic-review::apply-cleanup
+    technique: apply-cleanup
     condition:
       type: simple
       variable: is_review_mode

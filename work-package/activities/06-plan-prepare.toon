@@ -29,7 +29,7 @@ steps[10]:
         target: gpg.agent.reachable == true
         message: "GPG agent is not reachable. Ensure it is running at your preferred scope before re-running."
   - id: create-plan
-    technique: plan-prepare::plan
+    technique: plan
   - id: create-test-plan
     technique: create-test-plan
   - id: present-solution-overview
@@ -48,7 +48,7 @@ steps[10]:
   - id: reconcile-assumptions
     technique: review-assumptions::reconcile
   - id: create-todos
-    technique: plan-prepare::create-todos
+    technique: create-todos
   - id: sync-branch
     technique: manage-git::sync-branch
   - id: update-pr

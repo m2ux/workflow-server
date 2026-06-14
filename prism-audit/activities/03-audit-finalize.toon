@@ -8,10 +8,10 @@ techniques:
     - "variable-binding"
 steps[7]:
   - id: locate-artifacts
-    technique: audit-finalize::locate-artifacts
+    technique: locate-artifacts
     required: true
   - id: enrich-findings-with-graph
-    technique: audit-finalize::enrich-findings-with-graph
+    technique: enrich-findings-with-graph
     required: true
     condition:
       type: simple
@@ -19,19 +19,19 @@ steps[7]:
       operator: "=="
       value: true
   - id: split-report
-    technique: audit-finalize::split-report
+    technique: split-report
     required: true
   - id: create-detailed-findings
-    technique: audit-finalize::create-detailed-findings
+    technique: create-detailed-findings
     required: true
   - id: create-trade-off-analysis
-    technique: audit-finalize::create-trade-off-analysis
+    technique: create-trade-off-analysis
     required: true
   - id: apply-formatting-rules
-    technique: audit-finalize::apply-formatting-rules
+    technique: apply-formatting-rules
     required: true
   - id: verify-artifacts
-    technique: audit-finalize::verify-audit-consistency
+    technique: verify-audit-consistency
     required: true
     actions[3]:
       - action: set

@@ -18,9 +18,9 @@ techniques:
     - "variable-binding"
 steps[9]:
   - id: define-problem
-    technique: design-philosophy::define
+    technique: define
   - id: classify-problem
-    technique: design-philosophy::classify
+    technique: classify
     checkpoint: classification-confirmed
     actions[2]:
       - action: set
@@ -30,7 +30,7 @@ steps[9]:
         target: complexity
         description: "One of: simple, moderate, complex."
   - id: determine-path
-    technique: design-philosophy::determine-path
+    technique: determine-path
     checkpoint: workflow-path-selected
     actions[1]:
       - action: set
@@ -38,7 +38,7 @@ steps[9]:
         value: true
         description: "Codebase comprehension is mandatory before planning"
   - id: document-philosophy
-    technique: design-philosophy::document
+    technique: document
     actions[1]:
       - action: message
         message: "Created: design-philosophy.md"

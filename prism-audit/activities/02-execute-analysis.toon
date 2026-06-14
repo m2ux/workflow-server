@@ -49,10 +49,10 @@ loops[1]:
           workflow_id: prism
         required: true
       - id: collect-results
-        technique: execute-analysis::collect-prism-results
+        technique: collect-prism-results
         required: true
       - id: verify-completion
-        technique: execute-analysis::verify-prism-completion
+        technique: verify-prism-completion
         required: true
 rules[3]:
   - "TRIGGER ISOLATION: When setting analysis_focus for the triggered prism workflow, use the audit prompt content which describes the security focus areas in detail. Do NOT set analysis_focus to the literal string 'security audit' — this would activate prism's built-in audit-finalize activity, duplicating the post-processing that this workflow handles in its own audit-finalize activity."

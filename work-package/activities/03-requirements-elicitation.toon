@@ -9,17 +9,17 @@ techniques:
     - "variable-binding"
 steps[6]:
   - id: stakeholder-discussion
-    technique: requirements-elicitation::discuss
+    technique: discuss
     checkpoint: stakeholder-transcript
   - id: elicit-requirements
-    technique: requirements-elicitation::elicit
+    technique: elicit
     checkpoint: domain-iteration
   - id: collect-assumptions
     technique: review-assumptions::collect
     technique_args:
       assumption_categories: "Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation"
   - id: create-document
-    technique: requirements-elicitation::create-document
+    technique: create-document
   - id: update-assumptions-log
     technique: review-assumptions::record
   - id: reconcile-assumptions
@@ -49,7 +49,7 @@ loops[2]:
     maxIterations: 5
     steps[1]:
       - id: ask-question
-        technique: requirements-elicitation::ask-question
+        technique: ask-question
 decisions[1]:
   - id: user-intent
     name: User Intent Check

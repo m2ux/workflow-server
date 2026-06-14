@@ -65,7 +65,7 @@ loops[1]:
           workflow_id: prism
         required: true
       - id: collect-results
-        technique: execute-analysis::collect-prism-results
+        technique: collect-prism-results
         required: true
         actions[2]:
           - action: set
@@ -75,7 +75,7 @@ loops[1]:
             target: all_artifact_paths
             description: "Append the analysis artifact paths produced by the run."
       - id: verify-completion
-        technique: execute-analysis::verify-prism-completion
+        technique: verify-prism-completion
         required: true
         actions[1]:
           - action: set

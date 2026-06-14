@@ -11,7 +11,7 @@ Bind a step's operation to the workflow-scoped variable bag: resolve the operati
 
 ### bound_operation
 
-The step's `step.technique` (`group::operation` or a bare single-file id). Its composed `inputs[]`/`outputs[]` signature is the binding contract.
+The step's `step.technique` (`group::operation`, a bare single-file id, or — per the `activity-group-shorthand` rule — a bare op id resolved against the activity's same-named group). Its composed `inputs[]`/`outputs[]` signature is the binding contract.
 
 ### step_deviations
 
@@ -65,3 +65,7 @@ Outputs land in the bag through the `variables-changed` channel of the worker's 
 ### generic-not-overfit
 
 Bind against the operation's intrinsic, reusable signature; resolve a name mismatch by aligning the caller's bag variable to the operation's canonical input id (or, failing that, a single `technique_args` rename), not by bending the operation to the call-site. This is the generic-not-overfit principle governing which side of a mismatch moves, so that implicit same-name binding is maximised rather than eroded by per-caller overfitting.
+
+### activity-group-shorthand
+
+When an activity's operations are collected into a group named after the activity, a step names its operation by the bare op id alone: `technique: classify` inside the `intake` activity resolves to `intake::classify`. Resolution tries the activity-named group FIRST, so a bare op takes precedence over a same-named standalone or group base, and an op that shares its group's name resolves to the op (`technique: research` → `research::research`, not the `research` group base). If no group named after the activity holds the op, the bare id falls back to standalone / group-base resolution, then fails. Operations from any OTHER group — including the shared `meta` layer — are always written qualified (`gitnexus-operations::analyze`, `review-assumptions::reconcile`). The shorthand keeps an activity's own operations terse while every foreign reference stays explicit.

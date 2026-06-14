@@ -9,14 +9,14 @@ techniques:
     - "variable-binding"
 steps[6]:
   - id: build-comprehension
-    technique: codebase-comprehension::survey
+    technique: survey
   - id: create-comprehension-artifact
     technique: manage-artifacts::write-artifact
     actions[1]:
       - action: message
         message: "Created/Updated: [comprehension artifact](.engineering/artifacts/comprehension/{artifact_name}). Proceeding to mandatory initial deep-dive — comprehension-sufficient checkpoint surfaces only when unresolved questions remain after investigation."
   - id: initial-deep-dive
-    technique: codebase-comprehension::deep-dive
+    technique: deep-dive
   - id: initial-lens-pass
     technique: prism/portfolio-analysis
     technique_args:
@@ -24,7 +24,7 @@ steps[6]:
   - id: update-artifact-initial
     technique: manage-artifacts::write-artifact
   - id: revise-initial-questions
-    technique: codebase-comprehension::revise-questions
+    technique: revise-questions
 artifacts[1]:
   - id: comprehension-artifact
     name: "{codebase-area}.md"
@@ -66,7 +66,7 @@ loops[1]:
       value: true
     steps[4]:
       - id: select-area
-        technique: codebase-comprehension::deep-dive
+        technique: deep-dive
       - id: portfolio-lens-pass
         technique: prism/portfolio-analysis
         technique_args:
@@ -74,7 +74,7 @@ loops[1]:
       - id: update-artifact
         technique: manage-artifacts::write-artifact
       - id: revise-open-questions
-        technique: codebase-comprehension::revise-questions
+        technique: revise-questions
         checkpoint: comprehension-sufficient
 transitions[4]:
   - to: requirements-elicitation
