@@ -19,15 +19,6 @@ const WORKFLOWS = [
   'cicd-pipeline-security-audit', 'substrate-node-security-audit', 'remediate-vuln',
 ];
 
-/**
- * Known pre-existing server limitation: a workflow that BORROWS cross-workflow activities
- * (remediate-vuln lists `work-package/02-design-philosophy.toon` …) has them in its summary and
- * accepts the transition, but `get_activity` cannot load a borrowed activity's full definition.
- * The walk records this as a `loadError` rather than crashing. Tracked for a follow-up server fix;
- * once fixed, remove the entry and the empty-loadErrors assertion applies to every workflow.
- */
-const BORROWED_ACTIVITY_LOAD_GAP = new Set(['remediate-vuln']);
-
 describe('all-workflows E2E walk (workflow-agnostic drift guard)', () => {
   let h: Harness;
   beforeAll(async () => { h = await createHarness(); });
@@ -44,8 +35,8 @@ describe('all-workflows E2E walk (workflow-agnostic drift guard)', () => {
       // No orchestrator-side or activity-side unresolved technique references — the core drift signal.
       expect(r.orchestratorUnresolved).toEqual([]);
       expect(r.steps.flatMap((s) => s.unresolved)).toEqual([]);
-      // Every reached activity loaded — except the documented borrowed-activity server gap.
-      if (!BORROWED_ACTIVITY_LOAD_GAP.has(wf)) expect(r.loadErrors).toEqual([]);
+      // Every reached activity loaded — including borrowed cross-workflow activities.
+      expect(r.loadErrors).toEqual([]);
     });
   }
 });

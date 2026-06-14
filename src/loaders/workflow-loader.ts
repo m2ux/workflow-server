@@ -370,6 +370,36 @@ export async function readActivityRaw(
     logWarn('Failed to read activity raw', { activityId, workflowId, error: error instanceof Error ? error.message : String(error) });
   }
 
+  // Fallback: a borrowed cross-workflow activity declared as a string ref in this workflow's
+  // activities[] list (e.g. "work-package/02-design-philosophy.toon"). The local-dir scan above
+  // covers only the workflow's own activities; resolve the borrowed file so a raw read returns the
+  // same definition loadWorkflow already merges into the activity set — keeping get_activity in
+  // step with the workflow summary and next_activity for workflows that compose another's activities.
+  try {
+    const wfRaw = decodeToonRaw(await readFile(filePath, 'utf-8')) as RawWorkflow;
+    const refs = (wfRaw['activities'] as unknown[] | undefined) ?? [];
+    for (const ref of refs) {
+      if (typeof ref !== 'string' || !ref.includes('/')) continue;
+      const targetWorkflowId = ref.split('/')[0]!;
+      const filename = ref.split('/').slice(1).join('/');
+      const parsed = parseActivityFilename(filename.split('/').pop() ?? '');
+      if (!parsed || parsed.id !== activityId) continue;
+      const borrowedPath = filename.startsWith('activities/')
+        ? join(workflowDir, targetWorkflowId, filename)
+        : join(workflowDir, targetWorkflowId, 'activities', filename);
+      if (!existsSync(borrowedPath)) continue;
+      const content = await readFile(borrowedPath, 'utf-8');
+      const validation = safeValidateActivity(decodeToonRaw(content));
+      if (!validation.success) {
+        logWarn('Borrowed activity validation failed (raw read)', { activityId, ref, errors: validation.error.issues });
+        return err(new ActivityNotFoundError(activityId, workflowId));
+      }
+      return ok(content);
+    }
+  } catch (error) {
+    logWarn('Failed to resolve borrowed activity (raw read)', { activityId, workflowId, error: error instanceof Error ? error.message : String(error) });
+  }
+
   return err(new ActivityNotFoundError(activityId, workflowId));
 }
 
