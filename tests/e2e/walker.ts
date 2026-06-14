@@ -137,6 +137,9 @@ export interface WalkResult {
   steps: WalkStep[];
   variables: Record<string, unknown>;
   finalStatus: string;
+  /** Activities the walk reached but the server could not load (e.g. borrowed cross-workflow
+   *  activities whose full definition does not resolve). Empty on a clean walk. */
+  loadErrors: string[];
 }
 
 export interface WalkOptions {
@@ -152,6 +155,14 @@ export interface WalkOptions {
   mode?: 'graph' | 'robot';
   /** Absolute planning folder; required for 'robot' mode to write artifact stubs. */
   planningFolder?: string;
+  /**
+   * Workflow-agnostic drive: when the graph would stall or loop back, optimistically advance
+   * to an as-yet-unvisited activity, satisfying its (simple) gate condition — standing in for the
+   * convergence variables a real agent sets in step prose. Lets the walker exercise ANY workflow
+   * to coverage without workflow-specific simulation, and records (rather than throws on) an
+   * activity whose definition the server cannot load. Leave off for the hand-tuned policy walks.
+   */
+  autoAdvance?: boolean;
 }
 
 /** Build the initial variable bag from the workflow's declared defaults. */
@@ -183,6 +194,34 @@ export function pickNext(act: ActivityDef, variables: Record<string, unknown>, o
     if (t.isDefault) fallback = t.to;
   }
   return fallback;
+}
+
+/**
+ * Workflow-agnostic forward advance: pick a transition to an as-yet-unvisited activity,
+ * optimistically satisfying its (simple) gate condition by mutating `variables`. This stands in
+ * for the agent-set convergence variables a no-LLM walker cannot infer, so any workflow drives
+ * forward to coverage without per-workflow simulation. Returns the chosen activity id, or null
+ * when no unvisited target can be reached (compound gates that cannot be satisfied are skipped).
+ */
+function advanceToUnvisited(act: ActivityDef, variables: Record<string, unknown>, visits: Map<string, number>): string | null {
+  for (const t of act.transitions ?? []) {
+    if ((visits.get(t.to) ?? 0) > 0) continue;
+    if (!t.condition) return t.to;
+    const snapshot = { ...variables };
+    satisfyCondition(t.condition, variables);
+    if (evaluateCondition(t.condition, variables)) return t.to;
+    for (const k of Object.keys(variables)) delete variables[k];
+    Object.assign(variables, snapshot);
+  }
+  return null;
+}
+
+/** Best-effort: set the bag so a SIMPLE condition evaluates true (compound conditions are left alone). */
+function satisfyCondition(cond: unknown, variables: Record<string, unknown>): void {
+  const c = cond as { type?: string; variable?: string; operator?: string; value?: unknown };
+  if (!c || c.type !== 'simple' || typeof c.variable !== 'string') return;
+  if (c.operator === '!=') variables[c.variable] = typeof c.value === 'boolean' ? !c.value : `__ne_${String(c.value)}`;
+  else variables[c.variable] = c.value; // ==, >=, <=, etc.: set to the compared value
 }
 
 /** Render an activity's declared artifact filenames (best-effort token interpolation). */
@@ -408,6 +447,7 @@ export async function walk(
 
   const path: string[] = [];
   const steps: WalkStep[] = [];
+  const loadErrors: string[] = [];
   const visits = new Map<string, number>();
 
   let current: string | null = initialActivity;
@@ -424,7 +464,14 @@ export async function walk(
     pendingManifest = undefined;
     path.push(current);
 
-    const { def: act, unresolved } = await getActivity(client, sessionIndex);
+    let act: ActivityDef;
+    let unresolved: string[];
+    try {
+      ({ def: act, unresolved } = await getActivity(client, sessionIndex));
+    } catch (e) {
+      if (opts.autoAdvance) { loadErrors.push(`${current}: ${(e as Error).message}`); break; }
+      throw e;
+    }
 
     let cpRecords: CheckpointRecord[];
     let transitionOverride: string | undefined;
@@ -458,7 +505,11 @@ export async function walk(
     const simulated = policy.simulate?.({ activityId: current, variables });
     if (simulated) Object.assign(variables, simulated);
 
-    const next = pickNext(act, variables, transitionOverride);
+    let next = pickNext(act, variables, transitionOverride);
+    if (opts.autoAdvance && !transitionOverride && (next === null || (visits.get(next) ?? 0) > 0)) {
+      const fwd = advanceToUnvisited(act, variables, visits);
+      if (fwd) next = fwd;
+    }
     steps.push({
       activityId: current,
       checkpoints: cpRecords,
@@ -488,6 +539,6 @@ export async function walk(
   return {
     workflowId, policy: policy.name, sessionIndex, planningSlug, initialActivity,
     declaredActivities, orchestratorUnresolved,
-    path, steps, variables, finalStatus,
+    path, steps, variables, finalStatus, loadErrors,
   };
 }
