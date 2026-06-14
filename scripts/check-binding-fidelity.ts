@@ -99,7 +99,17 @@ function buildRegistry(wf: string): void {
 const workflows = readdirSync(ROOT).filter((d) => statSync(join(ROOT, d)).isDirectory() && existsSync(join(ROOT, d, 'techniques')));
 for (const wf of workflows) buildRegistry(wf);
 
-function resolve(ref: string, wf: string): Sig | null {
+function resolve(ref: string, wf: string, activityId?: string): Sig | null {
+  // Activity-group convention (mirrors the server's get_technique): a bare op resolves FIRST against
+  // the group named after the current activity — `<activity-id>::<op>` — taking precedence over a
+  // same-named standalone/group-base, so an op that shares its group's name (`research` ->
+  // `research::research`) selects the op, not the group base.
+  if (activityId && !ref.includes('::')) {
+    for (const c of wf !== META ? [wf, META] : [META]) {
+      const r = registry.get(c);
+      if (r?.ops.has(`${activityId}::${ref}`)) return r.ops.get(`${activityId}::${ref}`)!;
+    }
+  }
   const slash = ref.indexOf('/');
   if (slash > 0 && !ref.includes('::')) {
     const r = registry.get(ref.slice(0, slash)); const rest = ref.slice(slash + 1);
@@ -129,21 +139,21 @@ function collectWorkflowVars(wf: string): void {
   } catch { /* structural errors are validate-workflow-toon's job */ }
 }
 
-type Step = { rel: string; stepId: string; technique: string; args: string[] };
+type Step = { rel: string; stepId: string; technique: string; args: string[]; activityId: string };
 const steps: Step[] = [];
-function walkSteps(rel: string, node: unknown): void {
+function walkSteps(rel: string, node: unknown, activityId: string): void {
   if (!node || typeof node !== 'object') return;
-  if (Array.isArray(node)) { node.forEach((n) => walkSteps(rel, n)); return; }
+  if (Array.isArray(node)) { node.forEach((n) => walkSteps(rel, n, activityId)); return; }
   const o = node as Record<string, unknown>;
   if (typeof o.technique === 'string') {
-    steps.push({ rel, stepId: typeof o.id === 'string' ? o.id : '?', technique: o.technique, args: Object.keys((o.technique_args as object) ?? {}) });
+    steps.push({ rel, stepId: typeof o.id === 'string' ? o.id : '?', technique: o.technique, args: Object.keys((o.technique_args as object) ?? {}), activityId });
   }
   if (o.action === 'set' && typeof o.target === 'string') PRODUCED.add(o.target);
   if (o.setVariable && typeof o.setVariable === 'object') Object.keys(o.setVariable).forEach((k) => PRODUCED.add(k));
   const eff = o.effect as { setVariable?: object } | undefined;
   if (eff?.setVariable) Object.keys(eff.setVariable).forEach((k) => PRODUCED.add(k));
   if (typeof o.variable === 'string') PRODUCED.add(o.variable);
-  for (const v of Object.values(o)) walkSteps(rel, v);
+  for (const v of Object.values(o)) walkSteps(rel, v, activityId);
 }
 
 type Read = { rel: string; line: number; full: string; head: string; kind: 'technique' | 'activity' };
@@ -184,7 +194,11 @@ for (const wf of allWf) {
     if (!f.endsWith('.toon')) continue;
     const rel = relative(ROOT, join(adir, f)); const raw = readFileSync(join(adir, f), 'utf-8');
     collectReads(rel, raw, 'activity');
-    try { walkSteps(rel, decodeToonRaw(raw)); } catch { /* validate-workflow-toon's job */ }
+    try {
+      const dec = decodeToonRaw(raw);
+      const activityId = dec && typeof dec === 'object' && typeof (dec as { id?: unknown }).id === 'string' ? (dec as { id: string }).id : '';
+      walkSteps(rel, dec, activityId);
+    } catch { /* validate-workflow-toon's job */ }
   }
 }
 
@@ -196,7 +210,7 @@ export function collectViolations(): Violation[] {
   // (1) binding-resolution + arg-conformance
   for (const s of steps) {
     const wf = s.rel.split('/')[0];
-    const sig = resolve(s.technique, wf);
+    const sig = resolve(s.technique, wf, s.activityId);
     if (!sig) {
       // A step's `technique:` ref must resolve to a real operation (workflow-local, meta, or
       // cross-workflow). check-all-refs only validates techniques.primary/supporting, so after the

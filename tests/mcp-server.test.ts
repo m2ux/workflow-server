@@ -440,6 +440,30 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBe(true);
     });
+
+    it('resolves a bare step technique via the activity-group convention', async () => {
+      // codebase-comprehension binds its steps to bare op ids (e.g. `technique: survey`) that resolve
+      // against the same-named `codebase-comprehension` group. A bare op has no standalone <op>.md and
+      // no <op>/ group, so without the activity-group convention get_technique would error — a
+      // non-error proves the bare ref resolved to <activity-id>::<op>.
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'codebase-comprehension');
+      const actToken = await resolveCheckpoints(client, nextToken, actResponse);
+
+      const bareStep = (actResponse.steps as Array<{ id?: string; technique?: string }>).find(
+        (s) => typeof s.technique === 'string' && !s.technique.includes('::') && !s.technique.includes('/'),
+      );
+      expect(bareStep, 'expected a bare-op step in codebase-comprehension').toBeTruthy();
+
+      const result = await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: actToken, step_id: bareStep!.id },
+      });
+      expect(result.isError).toBeFalsy();
+      const text = (result.content[0] as { type: string; text: string }).text;
+      expect(text).toContain('capability:');
+      // The bare op resolved to the same-named group's op, whose projected id is the bare name.
+      expect(text).toContain(`id: ${bareStep!.technique}`);
+    });
   });
 
   describe('tool: get_resource', () => {

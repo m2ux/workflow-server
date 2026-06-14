@@ -553,7 +553,21 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      const composed = await composeTechnique(techniqueId, config.workflowDir, workflow_id);
+      // Activity-group convention: a bare op id (no `::`) on a step resolves FIRST against the group
+      // named after the current activity — `<activity-id>::<op>` — so a step can name its op directly
+      // (`technique: classify-source` inside the `intake` activity). Trying the activity-group op
+      // first (over a same-named standalone or group base) is what lets an op that shares its group's
+      // name resolve correctly (`technique: research` -> `research::research`, not the `research`
+      // group base). Foreign/cross-group ops are written qualified and resolve as-authored. If no
+      // group named after the activity holds the op, the bare ref falls back to as-authored.
+      let composed = (techniqueId && !techniqueId.includes('::') && state.currentActivity)
+        ? await composeTechnique(`${state.currentActivity}::${techniqueId}`, config.workflowDir, workflow_id)
+        : undefined;
+      if (composed?.success) {
+        techniqueId = `${state.currentActivity}::${techniqueId}`;
+      } else {
+        composed = await composeTechnique(techniqueId, config.workflowDir, workflow_id);
+      }
       if (!composed.success) throw composed.error;
       const text = projectTechniqueToToon(composed.value);
 
