@@ -1,5 +1,5 @@
 id: impact-analysis
-version: 1.1.0
+version: 1.2.0
 name: Impact Analysis
 description: "Impact assessment of proposed changes against an existing workflow's files, transitions, and references."
 problem: Modifying an existing workflow can break transition chains, invalidate checkpoint assumptions, or orphan techniques and resources
@@ -14,16 +14,8 @@ entryActions[1]:
 rules[2]:
   - "Every file in the existing workflow must be examined for potential impact"
   - "Content being removed must be explicitly flagged and confirmed"
-steps[5]:
-  - id: enumerate-existing-files
-    technique: impact-analysis
-  - id: classify-impact
-    technique: impact-analysis
-  - id: check-transition-integrity
-    technique: impact-analysis
-  - id: check-reference-integrity
-    technique: impact-analysis
-  - id: flag-content-removal
+steps[1]:
+  - id: impact-analysis
     technique: impact-analysis
 checkpoints[2]:
   - id: impact-confirmed
@@ -47,7 +39,7 @@ checkpoints[2]:
         label: "Preserve some content"
         description: "Some flagged content must be preserved rather than removed."
 transitions[1]:
-  - to: scope-and-structure
+  - to: scope-and-draft
     isDefault: true
 outcome[3]:
   - All affected files identified and classified

@@ -1,0 +1,193 @@
+id: intake-and-context
+version: 1.0.0
+name: Intake and Context
+description: "Operation-type capture followed by the schema-system and TOON-format baseline: classify the request as create, update, or review, establish the corresponding mode + target, then internalize the schema system and format conventions before drafting begins."
+problem: User wants to create or update a workflow and the agent must capture intent and internalize the schema system and format conventions before producing any workflow content
+techniques:
+  supporting[1]:
+    - variable-binding
+required: true
+rules[5]:
+  - "Do not begin drafting content during intake — this activity only captures intent"
+  - "For update mode, always load the existing workflow before proceeding"
+  - "Do not proceed to content drafting until format_literacy_confirmed and schema_constructs_confirmed are both true"
+  - "Read at least two existing workflows of similar type to establish pattern baseline"
+  - "Present the schema construct summary to the user for confirmation"
+steps[3]:
+  - id: intake-classification
+    technique: intake-classification
+    checkpoint: mode-confirmation
+  - id: context-loading
+    technique: context-loading
+  - id: auto-confirm-literacy
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "=="
+      value: true
+    actions[2]:
+      - action: set
+        target: format_literacy_confirmed
+        value: true
+      - action: set
+        target: schema_constructs_confirmed
+        value: true
+checkpoints[5]:
+  - id: review-scope-confirmed
+    name: Review Target Confirmation
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+    message: "Compliance review is scoped to workflow '{target_workflow_id}'. Is this the correct target?"
+    required: true
+    blocking: true
+    options[2]:
+      - id: confirm-review-target
+        label: "Yes — audit this workflow"
+        description: "Target confirmed; flow continues with the current `target_workflow_id`."
+        effect:
+          setVariable:
+            review_scope_confirmed: true
+      - id: wrong-review-target
+        label: "No — wrong target"
+        description: "Target rejected; checkpoint remains blocking until a correct `target_workflow_id` is supplied."
+        effect:
+          setVariable:
+            review_scope_confirmed: false
+  - id: mode-confirmation
+    name: Mode Confirmation
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+    message: "I've classified this as a {create/update} operation for workflow '{workflow_id}'. Is this correct?"
+    blocking: true
+    options[2]:
+      - id: confirm-create
+        label: "Yes, create a new workflow"
+        description: "Create-mode classification confirmed."
+        effect:
+          setVariable:
+            is_update_mode: false
+      - id: confirm-update
+        label: "Yes, update an existing workflow"
+        description: "Update-mode classification confirmed."
+        effect:
+          setVariable:
+            is_update_mode: true
+  - id: change-request-confirmed
+    name: Change Request Confirmation
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "=="
+      value: true
+    message: "Here is the existing workflow structure and my understanding of your requested changes. Is this correct?"
+    blocking: true
+    options[3]:
+      - id: confirmed
+        label: "Yes, that's correct"
+        description: "Change request and current structure both confirmed."
+      - id: refine
+        label: "Needs refinement"
+        description: "Change request requires further clarification before continuing."
+      - id: cancel
+        label: "Cancel — create new instead"
+        description: "Update path abandoned; mode flips back to create."
+        effect:
+          setVariable:
+            is_update_mode: false
+  - id: format-literacy
+    name: Format Literacy Checkpoint
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: is_update_mode
+          operator: "!="
+          value: true
+    message: "I've reviewed existing TOON files and understand the format conventions. Here is my summary of TOON syntax rules and project conventions. Does this look correct?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, proceed"
+        description: "Format understanding confirmed."
+        effect:
+          setVariable:
+            format_literacy_confirmed: true
+      - id: incorrect
+        label: "Needs correction"
+        description: "Format understanding has errors that must be corrected before proceeding."
+  - id: constructs-confirmed
+    name: Schema Constructs Checkpoint
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: is_update_mode
+          operator: "!="
+          value: true
+    message: "Here are the schema constructs I've identified as applicable to this workflow. Does this coverage look right?"
+    options[2]:
+      - id: confirmed
+        label: "Yes, these are the right constructs"
+        description: "Construct coverage confirmed."
+        effect:
+          setVariable:
+            schema_constructs_confirmed: true
+      - id: adjust
+        label: "Needs adjustment"
+        description: "Construct list requires additions or removals before proceeding."
+transitions[2]:
+  - to: quality-review
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: is_review_mode
+          operator: "=="
+          value: true
+        - type: simple
+          variable: review_scope_confirmed
+          operator: "=="
+          value: true
+  - to: requirements-refinement
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: format_literacy_confirmed
+          operator: ==
+          value: true
+        - type: simple
+          variable: schema_constructs_confirmed
+          operator: ==
+          value: true
+    isDefault: true
+outcome[6]:
+  - Operation classified as create or update
+  - Initial design intent extracted and confirmed
+  - Mode variables set correctly
+  - Schema system fully internalized
+  - TOON format conventions confirmed
+  - Applicable schema constructs identified and confirmed
+context_to_preserve[9]:
+  - workflow_id - The ID of the workflow being created or updated
+  - is_update_mode - Whether this is an update operation
+  - target_workflow_id - Existing workflow ID (update or review mode)
+  - review_scope_confirmed - Review target confirmed in intake (review mode)
+  - design_intent - Summary of the user's design intent
+  - format_literacy_confirmed - Agent has demonstrated TOON format understanding
+  - schema_constructs_confirmed - Applicable constructs identified
+  - surveyed_workflows - IDs of workflows examined for patterns
+  - observed_conventions - Summary of naming and structural conventions

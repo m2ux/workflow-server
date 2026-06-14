@@ -80,4 +80,4 @@ variables[14]:
     type: boolean
     description: "True once every normative statement in the source document maps to at least one requirement"
     defaultValue: false
-initialActivity: intake-sources
+initialActivity: intake-and-analyze

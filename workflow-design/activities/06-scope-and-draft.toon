@@ -1,13 +1,16 @@
-id: content-drafting
-version: 1.1.0
-name: Content Drafting
-description: "Per-file drafting and review pass over every entry in the confirmed scope manifest, with schema validation on each TOON file."
-problem: Content must be drafted using formal schema constructs, validated per-file, and reviewed before proceeding
+id: scope-and-draft
+version: 1.0.0
+name: Scope and Draft
+description: "Complete file manifest and structural design for the target workflow, followed by a per-file drafting and review pass over every entry in the confirmed scope manifest, with schema validation on each TOON file."
+problem: Incomplete scope coverage is the most frequent misalignment pattern — every affected file must be enumerated before execution, then content must be drafted using formal schema constructs, validated per-file, and reviewed before proceeding
 techniques:
   supporting[1]:
     - variable-binding
 required: true
-rules[5]:
+rules[8]:
+  - "The scope manifest must include every file to be created, modified, or removed — no implicit files"
+  - "Verify the workflows worktree is checked out and on the correct branch before defining paths"
+  - "Present the structural design compared against adopted patterns from pattern analysis"
   - "Present approach for each file before drafting — what constructs will be used, what patterns followed"
   - "Use formal schema constructs for every piece of structured information — no prose where a construct exists"
   - "Validate each TOON file against its schema immediately after drafting"
@@ -18,11 +21,12 @@ entryActions[1]:
     target: scope_manifest_confirmed
     message: "Cannot begin content drafting without a confirmed scope manifest"
 steps[5]:
+  - id: scope-definition
+    technique: scope-definition
+    checkpoint: scope-and-structure-confirmed
   - id: present-file-approach
     technique: content-drafting
-  - id: draft-file-content
-    technique: toon-authoring
-  - id: validate-against-schema
+  - id: toon-authoring
     technique: toon-authoring
   - id: present-for-review
     technique: content-drafting
@@ -34,16 +38,31 @@ loops[1]:
     variable: current_file
     over: scope_manifest
     maxIterations: 50
-    steps[4]:
+    steps[3]:
       - id: present-file-approach
         technique: content-drafting
-      - id: draft-file-content
-        technique: toon-authoring
-      - id: validate-against-schema
+      - id: toon-authoring
         technique: toon-authoring
       - id: present-for-review
         technique: content-drafting
-checkpoints[4]:
+checkpoints[5]:
+  - id: scope-and-structure-confirmed
+    name: Scope and Structure Confirmation
+    message: "Here is the complete file manifest and implementation order. Proceeding in 30s unless you want to revise."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
+    options[2]:
+      - id: confirmed
+        label: "Yes, scope and structure are correct"
+        description: "File manifest and implementation order are accurate."
+        effect:
+          setVariable:
+            scope_manifest_confirmed: true
+            approach_confirmed: true
+      - id: revise
+        label: "Needs revision"
+        description: "File manifest or implementation order requires adjustment."
   - id: file-approach-confirmed
     name: File Approach Checkpoint
     condition:
@@ -125,9 +144,15 @@ checkpoints[4]:
 transitions[1]:
   - to: quality-review
     isDefault: true
-outcome[2]:
+outcome[5]:
+  - Complete file manifest with all files enumerated
+  - Structural design confirmed against existing patterns
+  - Implementation approach and order confirmed
   - All files in the scope manifest drafted and individually reviewed
   - All TOON files validated against their schemas
-context_to_preserve[2]:
+context_to_preserve[5]:
+  - scope_manifest - Complete list of files with paths, actions, and descriptions
+  - structural_design - Folder structure and activity transition diagram
+  - implementation_order - Order in which files will be drafted
   - drafted_files - List of files drafted with their validation status
   - schema_validation_results - Per-file validation results

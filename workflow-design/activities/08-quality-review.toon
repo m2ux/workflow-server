@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.2.0
+version: 1.3.0
 name: Quality Review
 description: "Quality review of drafted workflow content."
 problem: Drafted content may contain prose that should be formal constructs, diverge from conventions, or have critical rules without structural enforcement
@@ -11,7 +11,7 @@ rules[3]:
   - "Each review pass is independent — complete one pass fully before starting the next"
   - "Flag every instance of prose that maps to a formal schema construct"
   - "Flag every rule that can be violated by ignoring it and lacks structural enforcement"
-steps[16]:
+steps[11]:
   - id: load-all-workflow-files
     technique: reload-workflow
     condition:
@@ -47,14 +47,7 @@ steps[16]:
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: compile-compliance-report
-    technique: compile-report
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "=="
-      value: true
-  - id: present-compliance-report
+  - id: compile-report
     technique: compile-report
     condition:
       type: simple
@@ -68,56 +61,28 @@ steps[16]:
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: expressiveness-review
+  - id: audit-expressiveness
     technique: audit-expressiveness
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
-  - id: present-expressiveness-findings
-    technique: audit-expressiveness
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: conformance-review
+  - id: audit-conformance
     technique: audit-conformance
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
-  - id: present-conformance-findings
-    technique: audit-conformance
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: rule-hygiene-audit
+  - id: audit-rule-hygiene
     technique: audit-rule-hygiene
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
-  - id: present-rule-hygiene-findings
-    technique: audit-rule-hygiene
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: rule-to-structure-audit
-    technique: audit-rule-enforcement
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: present-enforcement-findings
+  - id: audit-rule-enforcement
     technique: audit-rule-enforcement
     condition:
       type: simple
@@ -217,7 +182,7 @@ checkpoints[5]:
             user_wants_fixes: true
             is_update_mode: true
             is_review_mode: false
-          transitionTo: intake
+          transitionTo: intake-and-context
       - id: report-only
         label: "Report only — no changes"
         description: Save the compliance report without making changes
@@ -232,7 +197,7 @@ checkpoints[5]:
             user_wants_fixes: true
             is_update_mode: true
             is_review_mode: false
-          transitionTo: intake
+          transitionTo: intake-and-context
 transitions[1]:
   - to: validate-and-commit
     isDefault: true

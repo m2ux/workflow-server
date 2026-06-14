@@ -66,12 +66,11 @@ modes[2]:
       - workflow review
       - assess workflow quality
       - evaluate workflow
-    skipActivities[5]:
+    skipActivities[4]:
       - requirements-refinement
       - pattern-analysis
       - impact-analysis
-      - scope-and-structure
-      - content-drafting
+      - scope-and-draft
     defaults:
       is_review_mode: true
       review_scope_confirmed: false
@@ -140,4 +139,4 @@ variables[17]:
     type: boolean
     description: "True when content drafting detects removals not flagged during impact analysis. Gates the preservation-check checkpoint in content-drafting (update mode)."
     defaultValue: false
-initialActivity: intake
+initialActivity: intake-and-context

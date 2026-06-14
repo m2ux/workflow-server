@@ -1,5 +1,5 @@
 id: validate-and-commit
-version: 1.1.0
+version: 1.2.0
 name: Validate and Commit
 description: "Final validation, scope verification, README generation/update, and commit of the workflow changes to the workflows worktree."
 problem: All workflow content must pass validation and the complete scope must be verified before committing
@@ -11,7 +11,7 @@ rules[3]:
   - "All TOON files must pass schema validation before commit — no exceptions"
   - "The scope manifest must be fully addressed — every item checked off"
   - "Commit to the workflows worktree, not the main repository"
-steps[8]:
+steps[7]:
   - id: save-compliance-report
     technique: persist-report
     condition:
@@ -40,32 +40,13 @@ steps[8]:
       variable: is_review_mode
       operator: "!="
       value: true
-  - id: generate-readme
+  - id: readme-authoring
     technique: readme-authoring
     condition:
-      type: and
-      conditions[2]:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_update_mode
-          operator: ==
-          value: false
-  - id: update-readme
-    technique: readme-authoring
-    condition:
-      type: and
-      conditions[2]:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_update_mode
-          operator: ==
-          value: true
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - id: stage-and-commit
     technique: version-control::commit-regular-files
   - id: verify-commit
