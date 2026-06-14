@@ -54,6 +54,10 @@ const FULL = args.includes('--full');
 // 'policy' (3a): deterministic orchestrator. 'agent' (3b): a real orchestrator
 // agent makes checkpoint decisions (present_checkpoint -> judge -> respond_checkpoint).
 const ORCHESTRATOR = getArg('orchestrator', 'policy');
+// Workflow to smoke (default work-package). The orchestrator is workflow-agnostic: it reads the
+// initial activity from get_workflow and drives transitions with pickNext + a forward-advance
+// fallback, so any workflow can be exercised by a real worker without per-workflow wiring.
+const WORKFLOW = getArg('workflow', 'work-package');
 const policy = defaultPolicy;
 
 function log(msg: string) { process.stdout.write(`[orchestrator] ${msg}\n`); }
@@ -116,7 +120,7 @@ const WORKER_BRIEF = readFileSync(join(HERE, 'worker-brief.md'), 'utf8');
 const ORCHESTRATOR_BRIEF = readFileSync(join(HERE, 'orchestrator-brief.md'), 'utf8');
 
 function initialPrompt(sessionIndex: string): string {
-  return `${WORKER_BRIEF}\n\n---\nsession_index: ${sessionIndex}\nThis run's work-package / initiative name is "smoke-${RUN_ID}" — use it when creating the planning folder so this run's planning subfolder is uniquely named (every run shares one planning root). This is your first turn for the current activity. Begin executing it now.`;
+  return `${WORKER_BRIEF}\n\n---\nsession_index: ${sessionIndex}\nThis run's name is "smoke-${RUN_ID}" — use it when creating the planning folder so this run's planning subfolder is uniquely named (every run shares one planning root). This is your first turn for the current activity. Begin executing it now.`;
 }
 function orchestratorPrompt(sessionIndex: string): string {
   return `${ORCHESTRATOR_BRIEF}\n\n---\nsession_index: ${sessionIndex}\nResolve the active checkpoint now.`;
@@ -138,19 +142,24 @@ async function main() {
   const transcript: Array<Record<string, unknown>> = [];
   try {
     const start = parseToolResponse(await h.client.callTool({
-      name: 'start_session', arguments: { workflow_id: 'work-package', agent_id: 'smoke-orchestrator' },
+      name: 'start_session', arguments: { workflow_id: WORKFLOW, agent_id: 'smoke-orchestrator' },
     }));
     const sessionIndex = start.session_index as string;
     const slug = start.planning_slug as string;
     const sessionPath = join(sb.workspace, '.engineering/artifacts/planning', slug, 'session.json');
     log(`session ${sessionIndex} (slug ${slug})`);
 
+    // Initial activity comes from the workflow definition, not a hardcoded id.
+    const wfSummary = parseWorkflowResponse(await h.client.callTool({ name: 'get_workflow', arguments: { session_index: sessionIndex, summary: true } }));
     const variables: Record<string, unknown> = {};
-    let current: string | null = 'start-work-package';
+    const visited = new Set<string>();
+    let current: string | null = (wfSummary.initialActivity as string)
+      ?? (wfSummary.activities as Array<{ id: string }> | undefined)?.[0]?.id ?? null;
     let count = 0;
 
     while (current && count < MAX_ACTIVITIES) {
       count++;
+      visited.add(current);
       log(`=== activity ${count}: ${current} ===`);
       await h.client.callTool({ name: 'next_activity', arguments: { session_index: sessionIndex, activity_id: current } });
 
@@ -223,7 +232,20 @@ async function main() {
       }
 
       transcript.push({ activity: current, checkpoints: cpRecords, workerTurns: turn, workerReports });
-      const next = pickNext(act, variables);
+      let next = pickNext(act, variables);
+      // Forward-advance fallback (workflow-agnostic): if the graph stalls or loops back, advance to
+      // an unvisited activity, satisfying its simple gate — stands in for agent-set convergence vars.
+      if (next === null || visited.has(next)) {
+        for (const t of act.transitions ?? []) {
+          if (visited.has(t.to)) continue;
+          const c = t.condition as { type?: string; variable?: string; operator?: string; value?: unknown } | undefined;
+          if (!c) { next = t.to; break; }
+          if (c.type === 'simple' && typeof c.variable === 'string') {
+            variables[c.variable] = c.operator === '!=' ? (typeof c.value === 'boolean' ? !c.value : `__ne_${String(c.value)}`) : c.value;
+            next = t.to; break;
+          }
+        }
+      }
       log(`next: ${next ?? '(terminal)'}`);
       current = next;
     }
