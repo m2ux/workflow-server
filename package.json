@@ -14,6 +14,7 @@
     "typecheck": "tsc --noEmit",
     "check:binding": "tsx scripts/check-binding-fidelity.ts",
     "check:steps": "tsx scripts/check-bound-step-purity.ts",
+    "check:identifiers": "tsx scripts/check-identifier-qualification.ts",
     "migrate-skills": "tsx scripts/migrate-skills/migrate.ts"
   },
   "license": "MIT",
