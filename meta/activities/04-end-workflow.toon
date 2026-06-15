@@ -13,14 +13,14 @@ steps[2]:
     technique:
       name: workflow-engine::verify-outcomes
       inputs:
-        outcome: target_workflow_outcomes
+        outcomes: target_workflow_outcomes
         state: client_state
   - id: generate-summary
     technique:
       name: workflow-engine::generate-summary
       inputs:
-        workflow: target_workflow_id
-        trace: client_trace
+        workflow_definition: target_workflow_id
+        execution_trace: client_trace
 checkpoints[1]:
   - id: completion-confirmed
     name: Completion Confirmation

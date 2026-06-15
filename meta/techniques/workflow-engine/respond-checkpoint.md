@@ -13,7 +13,7 @@ Send the user's selection back to the server, clearing the active checkpoint.
 
 `session_index` of the worker whose active checkpoint is being resolved
 
-### resolution
+### checkpoint_resolution
 
 `{ option_id }` | `{ auto_advance: true }` | `{ condition_not_met: true }`
 
@@ -25,7 +25,7 @@ Variable updates returned by the server, to pass back down to the worker on resu
 
 ## Protocol
 
-1. Call `respond_checkpoint { session_index, ...resolution }`; the server clears `session.json#activeCheckpoint` and returns `{effects}`. Capture `{effects}` and propagate them to the worker on resume.
+1. Call `respond_checkpoint { session_index, ...checkpoint_resolution }`; the server clears `session.json#activeCheckpoint` and returns `{effects}`. Capture `{effects}` and propagate them to the worker on resume.
    - If the call returns `no active checkpoint on session`, there is no active checkpoint to resolve: verify `{session_index}` references the correct worker session and that an active checkpoint was reported before this call.
 
 ## Rules

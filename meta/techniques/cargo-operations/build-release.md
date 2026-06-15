@@ -9,7 +9,7 @@ Release build; produces the final binary AND the runtime wasm artifact.
 
 ## Inputs
 
-### scope
+### build_scope
 
 `--workspace` for the full workspace, or `-p <crate>` to scope to one crate.
 
@@ -21,11 +21,11 @@ Optional `--features` flags (empty string when none).
 
 ### release_artifacts
 
-The optimized release binary for `{scope}` AND the runtime wasm artifact, under the cargo target directory. A failed compile surfaces the rustc errors instead.
+The optimized release binary for `{build_scope}` AND the runtime wasm artifact, under the cargo target directory. A failed compile surfaces the rustc errors instead.
 
 ## Protocol
 
-1. `nice -n 19 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo build --release {scope} {features}`
+1. `nice -n 19 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo build --release {build_scope} {features}`
    - If the build runs out of memory (release link/LTO plus the nested wasm build together exceed available RAM), halve `CARGO_BUILD_JOBS`; on tight hosts, run `-p <crate>` for the binary first, then a separate workspace pass for the runtime.
 
 ## Rules

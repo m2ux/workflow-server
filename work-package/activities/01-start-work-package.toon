@@ -75,7 +75,7 @@ steps[31]:
     technique:
       name: github-cli-protocol::view-issue
       inputs:
-        identifier: "{issue_number}"
+        issue_identifier: "{issue_number}"
     condition:
       type: simple
       variable: issue_platform
@@ -294,7 +294,7 @@ steps[31]:
     technique:
       name: github-cli-protocol::view-issue
       inputs:
-        identifier: "{issue_number}"
+        issue_identifier: "{issue_number}"
     condition:
       type: and
       conditions[4]:

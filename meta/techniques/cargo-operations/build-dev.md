@@ -9,7 +9,7 @@ Workspace dev build; skips the runtime wasm artifact.
 
 ## Inputs
 
-### scope
+### build_scope
 
 `--workspace` for the full workspace, or `-p <crate>` to scope to one crate.
 
@@ -21,9 +21,9 @@ Optional `--features` flags (empty string when none).
 
 ### build_artifacts
 
-The compiled dev binaries/libraries for `{scope}` under the cargo target directory (no runtime wasm artifact). A failed compile surfaces the rustc errors instead.
+The compiled dev binaries/libraries for `{build_scope}` under the cargo target directory (no runtime wasm artifact). A failed compile surfaces the rustc errors instead.
 
 ## Protocol
 
-1. `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo build {scope} {features}`
+1. `nice -n 19 SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo build {build_scope} {features}`
    - If the link or codegen step exceeds available RAM, halve `CARGO_BUILD_JOBS` and retry.

@@ -46,7 +46,7 @@ Detect source-to-sink injection vulnerabilities in GitHub Actions workflows acro
 | `START-HERE.md` | This file — scope and methodology |
 | `reconnaissance-summary.json` | Workflow classification data |
 | `scanner-assignments.json` | Agent-to-submodule mapping |
-| `s{scanner_number}-{submodule}.json` | Per-submodule scanner output |
+| `s{scanner_number}-{submodule_path}.json` | Per-submodule scanner output |
 | `verification-report.json` | Coverage verification |
 | `merged-findings.json` | Unified finding set |
 | `reconciliation-table.json` | Scanner-to-merged finding mapping |

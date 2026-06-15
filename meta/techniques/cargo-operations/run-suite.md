@@ -9,7 +9,7 @@ Run check, clippy, test, and fmt-check concurrently against the same scope and a
 
 ## Inputs
 
-### scope
+### build_scope
 
 `--workspace` for the full workspace, or `-p <crate>` to scope to one crate.
 
@@ -53,7 +53,7 @@ aggregate verdict — true iff all four per-op statuses passed (equivalently, `f
 
 ## Protocol
 
-1. Fan out four concurrent shells invoking [check](./check.md), [clippy](./clippy.md), [test](./test.md), and [fmt-check](./fmt-check.md) against the same `{scope}`, passing the same `{features}` flags to each compiling op. Each carries its own resource budget (`nice -n 19` + `CARGO_BUILD_JOBS` cap), so suite peak memory is bounded by the per-op cap, NOT by 4× a single op (fmt-check uses no compile budget at all). If the combined peak of the concurrent cargo invocations still exceeds available RAM despite the per-op budgets, halve `CARGO_BUILD_JOBS` for all (`export CARGO_BUILD_JOBS=2`) and retry; on very tight hosts, fall back to running check/clippy/test sequentially via the per-op operations.
+1. Fan out four concurrent shells invoking [check](./check.md), [clippy](./clippy.md), [test](./test.md), and [fmt-check](./fmt-check.md) against the same `{build_scope}`, passing the same `{features}` flags to each compiling op. Each carries its own resource budget (`nice -n 19` + `CARGO_BUILD_JOBS` cap), so suite peak memory is bounded by the per-op cap, NOT by 4× a single op (fmt-check uses no compile budget at all). If the combined peak of the concurrent cargo invocations still exceeds available RAM despite the per-op budgets, halve `CARGO_BUILD_JOBS` for all (`export CARGO_BUILD_JOBS=2`) and retry; on very tight hosts, fall back to running check/clippy/test sequentially via the per-op operations.
 2. Wait for ALL four to finish before composing results. Do NOT short-circuit on the first failure — collect every per-op status and diagnostics so a single pass surfaces every issue rather than forcing serial discovery.
 3. Compose each per-check status as `{ check_id, passed, diagnostics }`, folding the op's diagnostic field into `diagnostics`: `{check_status}` from [check](./check.md)'s rustc output, `{clippy_status}.diagnostics` from `{lint_diagnostics}`, `{test_status}.diagnostics` from `{failures}`, `{fmt_status}.diagnostics` from `{fmt_diff_summary}`.
 4. Derive `{failed_checks}` = the per-check statuses with `passed == false` in suite order (check, clippy, test, fmt-check); set `{first_failure}` = the first entry of `{failed_checks}` projected to `{ check_id, diagnostics }`, or null when `{failed_checks}` is empty.

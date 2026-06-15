@@ -35,7 +35,7 @@ loops[3]:
         technique:
           name: cargo-operations::test
           inputs:
-            scope: "-p {current_task.crate}"
+            build_scope: "-p {current_task.crate}"
       - id: commit
         technique: manage-git::artifact-commits
       - id: log-provenance

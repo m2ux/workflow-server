@@ -9,11 +9,11 @@ Compose the markdown session summary presented at workflow close.
 
 ## Inputs
 
-### workflow
+### workflow_definition
 
 Workflow definition (id, title, outcomes)
 
-### trace
+### execution_trace
 
 Completed activities, checkpoint decisions, artifacts produced
 
@@ -25,4 +25,4 @@ Completed activities, checkpoint decisions, artifacts produced
 
 ## Protocol
 
-1. Draw from `{trace}` to compose the summary sections: workflow id and title, start/completion timestamps, activities completed, key checkpoint decisions, artifacts with paths, outcomes satisfied vs. unmet, follow-up items. Return the assembled markdown as `{completion_summary}`.
+1. Draw from `{execution_trace}` to compose the summary sections: workflow id and title, start/completion timestamps, activities completed, key checkpoint decisions, artifacts with paths, outcomes satisfied vs. unmet, follow-up items. Return the assembled markdown as `{completion_summary}`.

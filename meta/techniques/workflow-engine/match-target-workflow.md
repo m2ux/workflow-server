@@ -23,10 +23,10 @@ Array of available workflow entries `{ id, title, description, tags }` to match 
 
 Best-match workflow id, or null when no candidate matches.
 
-### ambiguous
+### match_ambiguous
 
 true when more than one workflow matches with similar confidence
 
 ## Protocol
 
-1. Score each catalog entry against `{user_request}` by title, description keywords, and recognition tags; return the top match as `{target_workflow_id}` and set `{ambiguous}` when the top scores are close.
+1. Score each catalog entry against `{user_request}` by title, description keywords, and recognition tags; return the top match as `{target_workflow_id}` and set `{match_ambiguous}` when the top scores are close.

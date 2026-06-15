@@ -9,10 +9,10 @@ View an existing issue (read-only — safe via `gh` CLI).
 
 ## Inputs
 
-### identifier
+### issue_identifier
 
 Issue number or URL
 
 ## Protocol
 
-1. `gh issue view {identifier}`.
+1. `gh issue view {issue_identifier}`.

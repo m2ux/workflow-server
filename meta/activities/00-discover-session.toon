@@ -32,7 +32,7 @@ steps[7]:
         value: true
       - action: set
         target: saved_planning_slug
-        value: "{match.planning_slug}"
+        value: "{matched_session.planning_slug}"
   - id: record-no-match
     when: "has_saved_state == false"
     actions[1]:

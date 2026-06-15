@@ -15,7 +15,7 @@ Resource-constrained operations for cargo subcommands.
 
 ## Inputs
 
-### scope
+### build_scope
 
 `--workspace` for the full workspace, or `-p <crate>` to scope to one crate (preferred during inner loops)
 
@@ -35,7 +35,7 @@ Cargo operations MUST run synchronously in the foreground of the caller. Never i
 
 ### scope-narrow-then-wide
 
-During inner loops (TDD red/green in implement-task) prefer scope=`-p <crate>`. Run `--workspace` once during final validation to match CI.
+During inner loops (TDD red/green in implement-task) prefer build_scope=`-p <crate>`. Run `--workspace` once during final validation to match CI.
 
 ### fmt-uses-only-nice
 

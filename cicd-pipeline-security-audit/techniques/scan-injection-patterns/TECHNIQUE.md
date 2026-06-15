@@ -13,7 +13,7 @@ Apply all seven CI/CD injection detection patterns (P1-P7) — derived from the 
 
 ## Inputs
 
-### submodule
+### submodule_path
 
 Directory name of the submodule being scanned.
 
@@ -41,7 +41,7 @@ Structured findings for this submodule, conforming to the [scanner output schema
 
 #### artifact
 
-`s{scanner_number}-{submodule}.json`
+`s{scanner_number}-{submodule_path}.json`
 
 #### findings
 

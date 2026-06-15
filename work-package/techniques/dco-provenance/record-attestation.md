@@ -17,7 +17,7 @@ Display name from `git config user.name`
 
 Email from `git config user.email`
 
-### option
+### attestation_option
 
 One of: `certify` | `flag-legal` — the human's DCO certification selection
 
@@ -27,7 +27,7 @@ One of: `certify` | `flag-legal` — the human's DCO certification selection
 
 ### legal_review_note
 
-*(required only when option = flag-legal)* The concern text provided by the user
+*(required only when attestation_option = flag-legal)* The concern text provided by the user
 
 ## Outputs
 
@@ -41,4 +41,4 @@ The updated provenance log, with the attestation section appended
    > Record the attestation only after the human has explicitly selected `certify` or `flag-legal`. The attestation is a record of a human decision; it must never be synthesised ahead of that decision.
    - If attestation is requested before the human has made an explicit `certify` or `flag-legal` selection, do not append — wait for the selection first.
    - If `provenance-log.md` does not exist at this point — meaning no task rows were appended during the work package — surface this to the user: a missing log means something went wrong during task work, so investigate the missing rows before retrying.
-2. If `option = flag-legal`, include a `Legal Review Note` field with the provided `{legal_review_note}` text.
+2. If `attestation_option = flag-legal`, include a `Legal Review Note` field with the provided `{legal_review_note}` text.

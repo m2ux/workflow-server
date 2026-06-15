@@ -19,7 +19,7 @@ steps[5]:
     technique:
       name: cargo-operations::run-suite
       inputs:
-        scope: "--workspace"
+        build_scope: "--workspace"
     when: "project_type == 'rust-substrate'"
   - id: document-failures
     technique: findings-classification
@@ -73,7 +73,7 @@ loops[1]:
         technique:
           name: cargo-operations::run-suite
           inputs:
-            scope: "--workspace"
+            build_scope: "--workspace"
 transitions[1]:
   - to: strategic-review
     isDefault: true

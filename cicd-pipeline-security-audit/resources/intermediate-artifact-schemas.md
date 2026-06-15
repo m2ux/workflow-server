@@ -124,7 +124,7 @@ The agent-to-submodule mapping for the scanner roster. One scanner agent is assi
 | `roster[].submodule` | string | Assigned submodule path |
 | `roster[].assigned_activity_id` | string | Activity the scanner sub-agent enters via `next_activity` |
 | `roster[].workflow_files` | string[] | Workflow file list passed to the scanner as context |
-| `roster[].output_file` | string | Target output filename, `s{scanner_number}-{submodule}.json` (see [sub-agent-output-schema](sub-agent-output-schema.md#file-naming-convention)) |
+| `roster[].output_file` | string | Target output filename, `s{scanner_number}-{submodule_path}.json` (see [sub-agent-output-schema](sub-agent-output-schema.md#file-naming-convention)) |
 
 ## verification-report
 
