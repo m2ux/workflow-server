@@ -2,20 +2,20 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 2.2.0
+  version: 2.3.0
   order: 1
   legacy_id: 1
 ---
 
 ## Capability
 
-Execute a single pass of the Full Prism pipeline within an isolation model
+Execute the adversarial or synthesis pass of the Full Prism pipeline within an isolation model
 
 ## Inputs
 
 ### lens_name
 
-Which lens to apply: `structural`, `adversarial`, or `synthesis`. Each names the lens resource the pass loads and the analytical role it performs.
+Which lens to apply: `adversarial` or `synthesis`. Each names the lens resource the pass loads and the analytical role it performs. (The structural pass that these consume as prior context is produced separately by [structural-analysis](./structural-analysis.md).)
 
 ### prior_artifact_paths
 
@@ -25,9 +25,9 @@ Which lens to apply: `structural`, `adversarial`, or `synthesis`. Each names the
 
 ### 1. Load Lens
 
-- Load the lens prompt for `{lens_name}`: `structural` → [l12](../resources/l12.md), `adversarial` → [l12-complement-adversarial](../resources/l12-complement-adversarial.md), `synthesis` → [l12-synthesis](../resources/l12-synthesis.md)
+- Load the lens prompt for `{lens_name}`: `adversarial` → [l12-complement-adversarial](../resources/l12-complement-adversarial.md), `synthesis` → [l12-synthesis](../resources/l12-synthesis.md)
 - The lens prompt is the program — it defines the exact sequence of analytical operations to execute
-- If the lens cannot be loaded, report the error and note that the valid lenses are `structural`, `adversarial`, and `synthesis` (all target types).
+- If the lens cannot be loaded, report the error and note that the valid lenses are `adversarial` and `synthesis` (all target types).
 
 ### 2. Read Prior Artifacts
 
@@ -43,7 +43,7 @@ Which lens to apply: `structural`, `adversarial`, or `synthesis`. Each names the
 
 ### 4. Verify With Graph
 
-- ADVERSARIAL PASS ONLY (`{lens_name}` is `adversarial`). Skip this step for the `structural` and `synthesis` passes.
+- ADVERSARIAL PASS ONLY (`{lens_name}` is `adversarial`). Skip this step for the `synthesis` pass.
 - Check GitNexus availability via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md). If the target codebase is not indexed, skip graph verification entirely.
 - For each blast-radius claim in the adversarial analysis (e.g., 'this affects module X only'), take the symbol the claim names as `{$claimed_symbol}` and use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)`(target: {claimed_symbol}, direction: 'upstream')` to mechanically verify or refute. Record the measured affected-symbol count, affected-process count, and affected-module count alongside the claim.
 - For each call-chain claim in the structural analysis being challenged, use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on the key symbols to verify whether the claimed callers/callees are actually connected in the graph. Note confirmed and refuted edges.
@@ -57,7 +57,6 @@ Which lens to apply: `structural`, `adversarial`, or `synthesis`. Each names the
 ### 6. Format Output
 
 - Structure `{pass_artifact}.analysis_text` with clear section headers matching the lens operations
-- For structural: claim, dialectic, concealment mechanism, improvements, invariant, conservation law, meta-law, findings table
 - For adversarial: wrong predictions, overclaims, underclaims, revised findings table
 - For synthesis: refined conservation law, refined meta-law, definitive classification, deepest finding
 
@@ -69,7 +68,7 @@ Analysis artifact written to the filesystem
 
 #### artifact
 
-`structural-analysis.md` (`{lens_name}` `structural`) / `adversarial-analysis.md` (`adversarial`) / `synthesis.md` (`synthesis`)
+`adversarial-analysis.md` (`{lens_name}` `adversarial`) / `synthesis.md` (`synthesis`)
 
 #### artifact_path
 
