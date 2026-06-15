@@ -163,6 +163,23 @@ export interface WalkOptions {
    * activity whose definition the server cannot load. Leave off for the hand-tuned policy walks.
    */
   autoAdvance?: boolean;
+  /**
+   * Enumeration hook (used by enumeratePaths): choose a checkpoint option or a transition target at
+   * each decision point. `options` lists the candidate ids (checkpoint option ids, or transition
+   * target activity ids). Return the chosen id, or undefined to fall back to the policy / pickNext.
+   * For a chosen transition the walk satisfies that transition's (simple) gate condition so the
+   * branch is actually taken — letting the enumerator drive every conditional branch, not just the
+   * happy path.
+   */
+  decide?: (d: { kind: 'checkpoint' | 'transition'; activityId: string; id: string; options: string[]; suggested: string }) => string | undefined;
+  /**
+   * Resolve checkpoints LOCALLY — apply the chosen option's declared `effect` from the activity
+   * definition instead of the server yield→respond→resume cycle. Used by path enumeration / branch
+   * coverage: it makes each walk far cheaper (no per-checkpoint round-trips) and side-steps options
+   * that a no-agent walk cannot drive through the server (e.g. an input-required checkpoint), so
+   * branches behind them are still traversable. The happy-path walks keep server resolution.
+   */
+  localCheckpoints?: boolean;
 }
 
 /** Build the initial variable bag from the workflow's declared defaults. */
@@ -489,8 +506,12 @@ export async function walk(
       cpRecords = [];
       for (const cp of act.checkpoints ?? []) {
         if (cp.condition && !evaluateCondition(cp.condition, variables)) continue;
-        const optionId = policy.choose({ activityId: current, checkpoint: cp, variables });
-        const effect = await resolveCheckpoint(client, sessionIndex, cp.id, optionId);
+        const suggested = policy.choose({ activityId: current, checkpoint: cp, variables });
+        const optionId = opts.decide?.({ kind: 'checkpoint', activityId: current, id: cp.id, options: cp.options.map((o) => o.id), suggested })
+          ?? suggested;
+        const effect = opts.localCheckpoints
+          ? (cp.options.find((o) => o.id === optionId)?.effect ?? {})
+          : await resolveCheckpoint(client, sessionIndex, cp.id, optionId);
         if (effect.setVariable) Object.assign(variables, effect.setVariable);
         if (effect.transitionTo) transitionOverride = effect.transitionTo;
         cpRecords.push({
@@ -506,9 +527,21 @@ export async function walk(
     if (simulated) Object.assign(variables, simulated);
 
     let next = pickNext(act, variables, transitionOverride);
-    if (opts.autoAdvance && !transitionOverride && (next === null || (visits.get(next) ?? 0) > 0)) {
-      const fwd = advanceToUnvisited(act, variables, visits);
-      if (fwd) next = fwd;
+    if (!transitionOverride) {
+      const targets = [...new Set((act.transitions ?? []).map((t) => t.to))];
+      if (targets.length && opts.decide) {
+        // The natural (happy) target — pickNext's choice, or the forward-advance target, or the
+        // first declared transition — is the base-path suggestion; the enumerator forks the rest.
+        let suggested = next;
+        if (suggested === null || (visits.get(suggested) ?? 0) > 0) suggested = advanceToUnvisited(act, { ...variables }, visits) ?? next;
+        const chosen = opts.decide({ kind: 'transition', activityId: current, id: 'next', options: targets, suggested: suggested ?? targets[0]! }) ?? suggested ?? targets[0]!;
+        const t = (act.transitions ?? []).find((tr) => tr.to === chosen);
+        if (t?.condition) satisfyCondition(t.condition, variables);
+        next = chosen;
+      } else if (opts.autoAdvance && (next === null || (visits.get(next) ?? 0) > 0)) {
+        const fwd = advanceToUnvisited(act, variables, visits);
+        if (fwd) next = fwd;
+      }
     }
     steps.push({
       activityId: current,
@@ -541,4 +574,110 @@ export async function walk(
     declaredActivities, orchestratorUnresolved,
     path, steps, variables, finalStatus, loadErrors,
   };
+}
+
+export interface PathSet {
+  workflowId: string;
+  /** One WalkResult per distinct path discovered (deduped by activity sequence). */
+  paths: WalkResult[];
+  /** `path.join(' > ')` for each distinct path. */
+  distinctPaths: string[];
+  /** Branches whose walk threw (e.g. an unresolvable checkpoint/transition on that path). */
+  errors: Array<{ prefix: string[]; message: string }>;
+  /** Number of full walks run (≈ choice-prefixes explored). */
+  walks: number;
+  /** True if the maxPaths/maxWalks cap was hit before exhausting the decision tree. */
+  capped: boolean;
+  /** Distinct decision-option branches discovered (`<kind>:<activity>:<id>=<option>`). */
+  branchesKnown: number;
+  /** Of those, how many were actually exercised by some walk. */
+  branchesCovered: number;
+}
+
+/**
+ * Enumerate every distinct path through a workflow's decision graph — not just the happy path.
+ *
+ * Each path is one full walk under a scripted policy that fixes the checkpoint-option choices; the
+ * enumerator systematically varies those choices (the workflow's real branch points) breadth-first,
+ * forking at every un-taken option, and dedupes by the resulting activity sequence. `autoAdvance`
+ * drives any non-checkpoint forward gate, and `maxVisits` bounds loops, so the tree is finite. Every
+ * discovered path is a WalkResult validated like any other (zero unresolved refs, no loadErrors).
+ */
+export async function enumeratePaths(
+  harness: Harness,
+  workflowId: string,
+  opts: { maxVisits?: number; maxPaths?: number; maxWalks?: number; coverageMode?: boolean } = {},
+): Promise<PathSet> {
+  const maxVisits = opts.maxVisits ?? 6;
+  const maxPaths = opts.maxPaths ?? 256;
+  const maxWalks = opts.maxWalks ?? 2000;
+  // coverageMode: fork a branch only while it is still UN-exercised — turning the combinatorial
+  // per-path enumeration into linear edge/option coverage (every decision-option hit at least once).
+  const coverageMode = opts.coverageMode ?? false;
+  const seenPaths = new Set<string>();
+  const triedPrefixes = new Set<string>();
+  const covered = new Set<string>();
+  const known = new Set<string>();
+  const paths: WalkResult[] = [];
+  const errors: Array<{ prefix: string[]; message: string }> = [];
+  const queue: string[][] = [[]];
+  let walks = 0;
+  let capped = false;
+
+  while (queue.length) {
+    if (paths.length >= maxPaths || walks >= maxWalks) { capped = queue.length > 0; break; }
+    const prefix = queue.shift()!;
+    const pk = prefix.join(',');
+    if (triedPrefixes.has(pk)) continue;
+    triedPrefixes.add(pk);
+
+    // Scripted decisions: serve the prefix in decision-encounter order (each decision is a
+    // checkpoint option-set OR a transition target-set), then default to the first candidate.
+    // Record each decision's candidates + the choice taken so we can fork on every un-taken branch.
+    const recorder: Array<{ key: string; options: string[]; chosen: string }> = [];
+    let idx = 0;
+    const decide = (d: { kind: string; activityId: string; id: string; options: string[]; suggested: string }): string => {
+      const key = `${d.kind}:${d.activityId}:${d.id}`;
+      for (const o of d.options) known.add(`${key}=${o}`);
+      // Within the prefix, take the scripted choice; past it, take the natural (happy) suggestion
+      // so the base path is the happy path and every fork is an explicit alternative branch.
+      const chosen = idx < prefix.length && d.options.includes(prefix[idx]!) ? prefix[idx]! : d.suggested;
+      recorder.push({ key, options: d.options, chosen });
+      idx++;
+      return chosen;
+    };
+    walks++;
+    let r: WalkResult;
+    try {
+      const enumPolicy: Policy = {
+        name: 'enum',
+        choose: (ctx: PolicyContext) => (ctx.checkpoint.defaultOption && ctx.checkpoint.options.some((o) => o.id === ctx.checkpoint.defaultOption)
+          ? ctx.checkpoint.defaultOption : ctx.checkpoint.options[0]!.id),
+      };
+      r = await walk(harness, workflowId, enumPolicy, { mode: 'graph', maxVisits, decide, localCheckpoints: true });
+    } catch (e) {
+      const message = (e as Error).message;
+      // A loop-guard trip means the prefix drove a loop past maxVisits — expected during
+      // enumeration (the loop edge is already covered at its bounded count), not a finding.
+      // Record only genuine failures (e.g. an unresolvable checkpoint/transition on the branch).
+      if (!/Loop guard tripped/.test(message)) errors.push({ prefix, message });
+      continue;
+    }
+    const key = r.path.join(' > ');
+    if (!seenPaths.has(key)) { seenPaths.add(key); paths.push(r); }
+    for (const rec of recorder) covered.add(`${rec.key}=${rec.chosen}`);
+
+    // Fork: enqueue the prefix that takes each un-chosen option at each decision. In coverageMode,
+    // skip a fork whose branch is already exercised — so each branch is walked ~once (linear), not
+    // every combination (combinatorial).
+    for (let i = 0; i < recorder.length; i++) {
+      for (const opt of recorder[i]!.options) {
+        if (opt === recorder[i]!.chosen) continue;
+        if (coverageMode && covered.has(`${recorder[i]!.key}=${opt}`)) continue;
+        queue.push([...recorder.slice(0, i).map((x) => x.chosen), opt]);
+      }
+    }
+  }
+
+  return { workflowId, paths, distinctPaths: [...seenPaths], errors, walks, capped, branchesKnown: known.size, branchesCovered: covered.size };
 }
