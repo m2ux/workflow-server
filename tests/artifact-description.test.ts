@@ -1,15 +1,15 @@
 import { describe, it, expect } from 'vitest';
-import { collectArtifactDescriptions } from '../scripts/check-artifact-description.js';
+import { collectAuthoredArtifacts } from '../scripts/check-artifact-description.js';
 
 /**
- * AP-65 guard: an activity `artifacts[]` entry is `id` + `name` + `location` only. WHAT the artifact
- * contains is owned by the `## Outputs` of the technique its producing step binds (reached by
- * provenance), so a `description` on the artifact duplicates that and drifts. Hard-zero: no artifact
- * may carry a `description`. If this fails, delete the artifact `description` (enrich the producing
- * technique's output instead if that output is thin).
+ * AP-65 guard: activities do not declare `artifacts[]`. The artifact contract is synthesized by the
+ * server from the `## Outputs` of the techniques an activity's steps bind (the technique outputs own
+ * artifact identity, AP-43). Hard-zero: no activity `.toon` may carry an `artifacts` block. If this
+ * fails, delete the authored `artifacts[]` (and, if the producing technique doesn't declare the
+ * artifact, add a `#### artifact` to that technique's output instead).
  */
-describe('artifact-description guard (AP-65)', () => {
-  it('no artifacts[] entry carries a description', () => {
-    expect(collectArtifactDescriptions().map((h) => `${h.where} [${h.id}]`)).toEqual([]);
+describe('authored-artifacts guard (AP-65)', () => {
+  it('no activity declares an artifacts[] block', () => {
+    expect(collectAuthoredArtifacts().map((h) => `${h.where} (${h.count})`)).toEqual([]);
   });
 });

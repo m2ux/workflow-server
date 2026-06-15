@@ -192,6 +192,7 @@
                   "step_completed",
                   "checkpoint_reached",
                   "checkpoint_response",
+                  "checkpoint_replayed",
                   "decision_reached",
                   "decision_branch_taken",
                   "loop_started",

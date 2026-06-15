@@ -1,15 +1,12 @@
 /**
- * Artifact-description guard — AP-65.
+ * Authored-artifact guard — AP-65 (superseded/extended).
  *
- * An activity `artifacts[]` entry is the WHERE of an output: `id`, `name`, `location` — nothing
- * more. WHAT the artifact contains is owned by the `## Outputs` of the technique the producing step
- * binds, reached by provenance (artifact → producing step → its technique → that technique's
- * `## Outputs`). A `description` on the artifact duplicates that output declaration and drifts from
- * it (the artifact-block instance of AP-36 / AP-43). This guard flags any `artifacts[]` entry that
- * carries a `description`.
+ * Activities do NOT declare `artifacts[]`. An activity's artifact contract is SYNTHESIZED by the
+ * server (`get_activity`) from the `## Outputs` of the techniques its steps bind — the technique
+ * `## Outputs` is the single source of truth for artifact identity (AP-43). A hand-authored
+ * `artifacts[]` block on an activity duplicates that, drifts from it, and is forbidden.
  *
- * Hard-zero (no baseline): every artifact description is removed; the producing technique's output
- * is the single source of truth for artifact content.
+ * Hard-zero: no activity `.toon` may contain an `artifacts` block.
  *
  * Run: npx tsx scripts/check-artifact-description.ts
  */
@@ -21,20 +18,20 @@ import { decodeToonRaw } from '../src/utils/toon.js';
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = join(DIR, '..', 'workflows');
 
-export interface ArtifactHit { where: string; id: string }
+export interface ArtifactHit { where: string; count: number }
 
-export function collectArtifactDescriptions(): ArtifactHit[] {
+export function collectAuthoredArtifacts(): ArtifactHit[] {
   const hits: ArtifactHit[] = [];
   for (const wf of readdirSync(ROOT).filter((d) => statSync(join(ROOT, d)).isDirectory())) {
     const adir = join(ROOT, wf, 'activities');
     if (!existsSync(adir)) continue;
     for (const f of readdirSync(adir).filter((x) => x.endsWith('.toon'))) {
-      let parsed: { artifacts?: Array<{ id?: string; description?: string }> };
+      let parsed: { artifacts?: unknown[] };
       try {
         parsed = decodeToonRaw(readFileSync(join(adir, f), 'utf-8')) as typeof parsed;
       } catch { continue; /* structural errors are validate-workflow-toon's job */ }
-      for (const a of parsed.artifacts ?? []) {
-        if (a && typeof a.description === 'string') hits.push({ where: `${wf}/activities/${f}`, id: a.id ?? '?' });
+      if (Array.isArray(parsed.artifacts) && parsed.artifacts.length > 0) {
+        hits.push({ where: `${wf}/activities/${f}`, count: parsed.artifacts.length });
       }
     }
   }
@@ -43,12 +40,12 @@ export function collectArtifactDescriptions(): ArtifactHit[] {
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const hits = collectArtifactDescriptions();
+  const hits = collectAuthoredArtifacts();
   if (hits.length === 0) {
-    process.stdout.write('artifact-description: OK — no artifact carries a description (AP-65)\n');
+    process.stdout.write('authored-artifacts: OK — no activity declares artifacts[] (synthesized from technique outputs; AP-65)\n');
     process.exit(0);
   }
-  process.stdout.write(`artifact-description: ${hits.length} artifact(s) carry a description — remove it (AP-65); the producing technique's ## Outputs owns the content:\n`);
-  for (const h of hits) process.stdout.write(`  ${h.where}  [${h.id}]\n`);
+  process.stdout.write(`authored-artifacts: ${hits.length} activity(ies) declare artifacts[] — remove it (AP-65); the contract is synthesized from the bound techniques' ## Outputs:\n`);
+  for (const h of hits) process.stdout.write(`  ${h.where}  (${h.count})\n`);
   process.exit(1);
 }

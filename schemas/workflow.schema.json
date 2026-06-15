@@ -132,40 +132,6 @@
           },
           "description": "Execution modes that modify standard workflow behavior"
         },
-        "artifactLocations": {
-          "type": "object",
-          "additionalProperties": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "path": {
-                    "type": "string",
-                    "description": "Path pattern for this location. Supports workflow variable interpolation (e.g., '{planning_folder_path}')"
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "Description of what artifacts this location stores"
-                  },
-                  "gitignored": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Whether artifacts in this location are gitignored from the host project"
-                  }
-                },
-                "required": [
-                  "path"
-                ],
-                "additionalProperties": false
-              }
-            ],
-            "description": "Artifact location: path string or { path, description?, gitignored? } object"
-          },
-          "description": "Named artifact storage locations. Keys are location identifiers referenced by activity artifact definitions."
-        },
         "techniques": {
           "type": "object",
           "properties": {
@@ -175,8 +141,10 @@
             },
             "supporting": {
               "type": "array",
-              "items": { "type": "string" },
-              "description": "Supporting technique references (:: paths) the workflow uses at the orchestrator level; bundled into get_workflow alongside the core orchestrator techniques."
+              "items": {
+                "type": "string"
+              },
+              "description": "Supporting technique references (`::` paths) the workflow uses at the orchestrator level; bundled into get_workflow alongside the core orchestrator techniques."
             }
           },
           "additionalProperties": false,
@@ -212,13 +180,6 @@
                 "type": "string",
                 "description": "Description of the user problem this activity addresses"
               },
-              "recognition": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Patterns to match user intent to this activity"
-              },
               "techniques": {
                 "type": "object",
                 "properties": {
@@ -243,39 +204,50 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "Unique identifier for this step"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "LEGACY: Human-readable step name. Optional — id + description are usually sufficient."
+                      "description": "Identifier for this step within the activity. Optional when `technique` is present — the loader derives it from the last `::` segment of the technique name. A step with no technique must declare an explicit id."
                     },
                     "description": {
                       "type": "string",
-                      "description": "Detailed guidance for executing this step. Carries inline operation invocations of the form `technique-id::operation-name(arg: {var}, ...)` when a step wraps a known operation."
+                      "description": "Detailed guidance for executing this step. May carry a deprecated inline operation invocation of the form `technique-id::operation-name(arg: {var}, ...)`; the canonical binding is the `technique` field."
                     },
                     "technique": {
-                      "description": "Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or an object `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps.",
-                      "oneOf": [
-                        { "type": "string" },
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
                         {
                           "type": "object",
-                          "required": ["name"],
-                          "additionalProperties": false,
                           "properties": {
-                            "name": { "type": "string", "description": "The `group::operation` (or bare op / `workflow::group::op`) technique reference this step invokes." },
+                            "name": {
+                              "type": "string",
+                              "description": "The `group::operation` (or bare op / `workflow::group::op`) technique reference this step invokes."
+                            },
                             "inputs": {
                               "type": "object",
-                              "additionalProperties": { "type": ["string", "number", "boolean"] },
+                              "additionalProperties": {
+                                "type": [
+                                  "string",
+                                  "number",
+                                  "boolean"
+                                ]
+                              },
                               "description": "Input deviations: op input id → source expression (rename of a bag variable, literal, or `{template}`). Only what differs from same-name binding or a declared default."
                             },
                             "outputs": {
                               "type": "object",
-                              "additionalProperties": { "type": "string" },
+                              "additionalProperties": {
+                                "type": "string"
+                              },
                               "description": "Output remaps: op output id → the workflow variable name its produced value lands under, when it differs from the output id."
                             }
-                          }
+                          },
+                          "required": [
+                            "name"
+                          ],
+                          "additionalProperties": false
                         }
-                      ]
+                      ],
+                      "description": "Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps."
                     },
                     "checkpoint": {
                       "type": "string",
@@ -545,9 +517,6 @@
                       "description": "Workflows to trigger from this step"
                     }
                   },
-                  "required": [
-                    "id"
-                  ],
                   "additionalProperties": false
                 },
                 "description": "Ordered execution steps for this activity"
@@ -1109,39 +1078,50 @@
                         "properties": {
                           "id": {
                             "type": "string",
-                            "description": "Unique identifier for this step"
-                          },
-                          "name": {
-                            "type": "string",
-                            "description": "LEGACY: Human-readable step name. Optional — id + description are usually sufficient."
+                            "description": "Identifier for this step within the activity. Optional when `technique` is present — the loader derives it from the last `::` segment of the technique name. A step with no technique must declare an explicit id."
                           },
                           "description": {
                             "type": "string",
-                            "description": "Detailed guidance for executing this step. Carries inline operation invocations of the form `technique-id::operation-name(arg: {var}, ...)` when a step wraps a known operation."
+                            "description": "Detailed guidance for executing this step. May carry a deprecated inline operation invocation of the form `technique-id::operation-name(arg: {var}, ...)`; the canonical binding is the `technique` field."
                           },
                           "technique": {
-                            "description": "Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or an object `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps.",
-                            "oneOf": [
-                              { "type": "string" },
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
                               {
                                 "type": "object",
-                                "required": ["name"],
-                                "additionalProperties": false,
                                 "properties": {
-                                  "name": { "type": "string", "description": "The `group::operation` (or bare op / `workflow::group::op`) technique reference this step invokes." },
+                                  "name": {
+                                    "type": "string",
+                                    "description": "The `group::operation` (or bare op / `workflow::group::op`) technique reference this step invokes."
+                                  },
                                   "inputs": {
                                     "type": "object",
-                                    "additionalProperties": { "type": ["string", "number", "boolean"] },
+                                    "additionalProperties": {
+                                      "type": [
+                                        "string",
+                                        "number",
+                                        "boolean"
+                                      ]
+                                    },
                                     "description": "Input deviations: op input id → source expression (rename of a bag variable, literal, or `{template}`). Only what differs from same-name binding or a declared default."
                                   },
                                   "outputs": {
                                     "type": "object",
-                                    "additionalProperties": { "type": "string" },
+                                    "additionalProperties": {
+                                      "type": "string"
+                                    },
                                     "description": "Output remaps: op output id → the workflow variable name its produced value lands under, when it differs from the output id."
                                   }
-                                }
+                                },
+                                "required": [
+                                  "name"
+                                ],
+                                "additionalProperties": false
                               }
-                            ]
+                            ],
+                            "description": "Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps."
                           },
                           "checkpoint": {
                             "type": "string",
@@ -1411,9 +1391,6 @@
                             "description": "Workflows to trigger from this step"
                           }
                         },
-                        "required": [
-                          "id"
-                        ],
                         "additionalProperties": false
                       }
                     },
@@ -1860,11 +1837,6 @@
                 "default": true,
                 "description": "Whether this activity is required in the workflow"
               },
-              "estimatedTime": {
-                "type": "string",
-                "pattern": "^\\d+(-\\d+)?\\s*(m|min|h|hr|hours?|d|days?)?$",
-                "description": "Estimated time to complete"
-              },
               "rules": {
                 "type": "array",
                 "items": {
@@ -1883,28 +1855,11 @@
                   "properties": {
                     "id": {
                       "type": "string",
-                      "description": "Unique identifier for the artifact"
+                      "description": "Identifier of the artifact (the producing technique output id)."
                     },
                     "name": {
                       "type": "string",
-                      "description": "Filename or template (supports {variable} substitution)"
-                    },
-                    "location": {
-                      "type": "string",
-                      "description": "Location category (e.g., planning, docs)"
-                    },
-                    "description": {
-                      "type": "string",
-                      "description": "Purpose of the artifact"
-                    },
-                    "action": {
-                      "type": "string",
-                      "enum": [
-                        "create",
-                        "update"
-                      ],
-                      "default": "create",
-                      "description": "Whether this activity creates a new artifact or updates an existing one"
+                      "description": "Filename or template (supports {variable} substitution), from the technique output."
                     }
                   },
                   "required": [
@@ -1913,7 +1868,7 @@
                   ],
                   "additionalProperties": false
                 },
-                "description": "Output artifacts produced by this activity. Bare filenames are prefixed with artifactPrefix at write time (e.g., design-philosophy.md → 02-design-philosophy.md)."
+                "description": "SERVER-COMPUTED — do NOT author. The activity's artifact contract, synthesized by get_activity from the `## Outputs` of the techniques its steps bind (the technique outputs own artifact identity, AP-43). Bare filenames are prefixed with artifactPrefix at write time."
               }
             },
             "required": [

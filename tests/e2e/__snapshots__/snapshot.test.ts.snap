@@ -111,9 +111,15 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
     {
       "activity": "codebase-comprehension",
       "artifacts": [
-        "{codebase-area}.md",
+        "{codebase_area}.md",
+        "portfolio-{lens_name}.md",
+        "portfolio-synthesis.md",
       ],
-      "artifactsWritten": [],
+      "artifactsWritten": [
+        "14-codebase_area.md",
+        "14-portfolio-lens_name.md",
+        "14-portfolio-synthesis.md",
+      ],
       "checkpoints": [],
       "manifestStatus": "warning",
       "next": "plan-prepare",
@@ -133,10 +139,12 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "artifacts": [
         "work-package-plan.md",
         "test-plan.md",
+        "assumptions-log.md",
       ],
       "artifactsWritten": [
         "06-work-package-plan.md",
         "06-test-plan.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -214,17 +222,17 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "change-block-index.md",
         "manual-diff-review.md",
         "code-review.md",
+        "structural-analysis.md",
         "test-suite-review.md",
         "architecture-summary.md",
-        "structural-findings.md",
       ],
       "artifactsWritten": [
         "09-change-block-index.md",
         "09-manual-diff-review.md",
         "09-code-review.md",
+        "09-structural-analysis.md",
         "09-test-suite-review.md",
         "09-architecture-summary.md",
-        "09-structural-findings.md",
       ],
       "checkpoints": [
         {
@@ -254,8 +262,12 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
     },
     {
       "activity": "validate",
-      "artifacts": [],
-      "artifactsWritten": [],
+      "artifacts": [
+        "test-suite-review.md",
+      ],
+      "artifactsWritten": [
+        "09-test-suite-review.md",
+      ],
       "checkpoints": [],
       "manifestStatus": "warning",
       "next": "strategic-review",
@@ -299,8 +311,12 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
     },
     {
       "activity": "submit-for-review",
-      "artifacts": [],
-      "artifactsWritten": [],
+      "artifacts": [
+        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
+      ],
+      "artifactsWritten": [
+        "12-YYYY-MM-DD-prpr_number-review-analysis.md",
+      ],
       "checkpoints": [
         {
           "id": "dco-sign-off",
@@ -340,12 +356,12 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
     {
       "activity": "complete",
       "artifacts": [
-        "NNNN-{decision-title}.md",
+        "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "workflow-retrospective.md",
-        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
+        "13-NNNN-decision_title.md",
         "13-COMPLETE.md",
         "13-workflow-retrospective.md",
       ],
@@ -480,9 +496,15 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
     {
       "activity": "codebase-comprehension",
       "artifacts": [
-        "{codebase-area}.md",
+        "{codebase_area}.md",
+        "portfolio-{lens_name}.md",
+        "portfolio-synthesis.md",
       ],
-      "artifactsWritten": [],
+      "artifactsWritten": [
+        "14-codebase_area.md",
+        "14-portfolio-lens_name.md",
+        "14-portfolio-synthesis.md",
+      ],
       "checkpoints": [],
       "manifestStatus": "warning",
       "next": "requirements-elicitation",
@@ -501,9 +523,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "activity": "requirements-elicitation",
       "artifacts": [
         "requirements-elicitation.md",
+        "assumptions-log.md",
       ],
       "artifactsWritten": [
         "03-requirements-elicitation.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -538,9 +562,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "activity": "implementation-analysis",
       "artifacts": [
         "implementation-analysis.md",
+        "assumptions-log.md",
       ],
       "artifactsWritten": [
         "05-implementation-analysis.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -568,10 +594,12 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "artifacts": [
         "work-package-plan.md",
         "test-plan.md",
+        "assumptions-log.md",
       ],
       "artifactsWritten": [
         "06-work-package-plan.md",
         "06-test-plan.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -649,17 +677,17 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "change-block-index.md",
         "manual-diff-review.md",
         "code-review.md",
+        "structural-analysis.md",
         "test-suite-review.md",
         "architecture-summary.md",
-        "structural-findings.md",
       ],
       "artifactsWritten": [
         "09-change-block-index.md",
         "09-manual-diff-review.md",
         "09-code-review.md",
+        "09-structural-analysis.md",
         "09-test-suite-review.md",
         "09-architecture-summary.md",
-        "09-structural-findings.md",
       ],
       "checkpoints": [
         {
@@ -689,8 +717,12 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
     },
     {
       "activity": "validate",
-      "artifacts": [],
-      "artifactsWritten": [],
+      "artifacts": [
+        "test-suite-review.md",
+      ],
+      "artifactsWritten": [
+        "09-test-suite-review.md",
+      ],
       "checkpoints": [],
       "manifestStatus": "warning",
       "next": "strategic-review",
@@ -734,8 +766,12 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
     },
     {
       "activity": "submit-for-review",
-      "artifacts": [],
-      "artifactsWritten": [],
+      "artifacts": [
+        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
+      ],
+      "artifactsWritten": [
+        "12-YYYY-MM-DD-prpr_number-review-analysis.md",
+      ],
       "checkpoints": [
         {
           "id": "dco-sign-off",
@@ -775,12 +811,12 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
     {
       "activity": "complete",
       "artifacts": [
-        "NNNN-{decision-title}.md",
+        "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "workflow-retrospective.md",
-        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
+        "13-NNNN-decision_title.md",
         "13-COMPLETE.md",
         "13-workflow-retrospective.md",
       ],
@@ -918,9 +954,15 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
     {
       "activity": "codebase-comprehension",
       "artifacts": [
-        "{codebase-area}.md",
+        "{codebase_area}.md",
+        "portfolio-{lens_name}.md",
+        "portfolio-synthesis.md",
       ],
-      "artifactsWritten": [],
+      "artifactsWritten": [
+        "14-codebase_area.md",
+        "14-portfolio-lens_name.md",
+        "14-portfolio-synthesis.md",
+      ],
       "checkpoints": [],
       "manifestStatus": "warning",
       "next": "requirements-elicitation",
@@ -939,9 +981,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "requirements-elicitation",
       "artifacts": [
         "requirements-elicitation.md",
+        "assumptions-log.md",
       ],
       "artifactsWritten": [
         "03-requirements-elicitation.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -976,9 +1020,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "research",
       "artifacts": [
         "kb-research.md",
+        "assumptions-log.md",
       ],
       "artifactsWritten": [
         "04-kb-research.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -1014,9 +1060,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "implementation-analysis",
       "artifacts": [
         "implementation-analysis.md",
+        "assumptions-log.md",
       ],
       "artifactsWritten": [
         "05-implementation-analysis.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -1044,10 +1092,12 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "artifacts": [
         "work-package-plan.md",
         "test-plan.md",
+        "assumptions-log.md",
       ],
       "artifactsWritten": [
         "06-work-package-plan.md",
         "06-test-plan.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -1125,17 +1175,17 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "change-block-index.md",
         "manual-diff-review.md",
         "code-review.md",
+        "structural-analysis.md",
         "test-suite-review.md",
         "architecture-summary.md",
-        "structural-findings.md",
       ],
       "artifactsWritten": [
         "09-change-block-index.md",
         "09-manual-diff-review.md",
         "09-code-review.md",
+        "09-structural-analysis.md",
         "09-test-suite-review.md",
         "09-architecture-summary.md",
-        "09-structural-findings.md",
       ],
       "checkpoints": [
         {
@@ -1165,8 +1215,12 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
     },
     {
       "activity": "validate",
-      "artifacts": [],
-      "artifactsWritten": [],
+      "artifacts": [
+        "test-suite-review.md",
+      ],
+      "artifactsWritten": [
+        "09-test-suite-review.md",
+      ],
       "checkpoints": [],
       "manifestStatus": "warning",
       "next": "strategic-review",
@@ -1210,8 +1264,12 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
     },
     {
       "activity": "submit-for-review",
-      "artifacts": [],
-      "artifactsWritten": [],
+      "artifacts": [
+        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
+      ],
+      "artifactsWritten": [
+        "12-YYYY-MM-DD-prpr_number-review-analysis.md",
+      ],
       "checkpoints": [
         {
           "id": "dco-sign-off",
@@ -1251,12 +1309,12 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
     {
       "activity": "complete",
       "artifacts": [
-        "NNNN-{decision-title}.md",
+        "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "workflow-retrospective.md",
-        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
+        "13-NNNN-decision_title.md",
         "13-COMPLETE.md",
         "13-workflow-retrospective.md",
       ],
@@ -1393,9 +1451,15 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
     {
       "activity": "codebase-comprehension",
       "artifacts": [
-        "{codebase-area}.md",
+        "{codebase_area}.md",
+        "portfolio-{lens_name}.md",
+        "portfolio-synthesis.md",
       ],
-      "artifactsWritten": [],
+      "artifactsWritten": [
+        "14-codebase_area.md",
+        "14-portfolio-lens_name.md",
+        "14-portfolio-synthesis.md",
+      ],
       "checkpoints": [],
       "manifestStatus": "warning",
       "next": "research",
@@ -1414,9 +1478,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "activity": "research",
       "artifacts": [
         "kb-research.md",
+        "assumptions-log.md",
       ],
       "artifactsWritten": [
         "04-kb-research.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -1452,9 +1518,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "activity": "implementation-analysis",
       "artifacts": [
         "implementation-analysis.md",
+        "assumptions-log.md",
       ],
       "artifactsWritten": [
         "05-implementation-analysis.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -1482,10 +1550,12 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "artifacts": [
         "work-package-plan.md",
         "test-plan.md",
+        "assumptions-log.md",
       ],
       "artifactsWritten": [
         "06-work-package-plan.md",
         "06-test-plan.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -1563,17 +1633,17 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "change-block-index.md",
         "manual-diff-review.md",
         "code-review.md",
+        "structural-analysis.md",
         "test-suite-review.md",
         "architecture-summary.md",
-        "structural-findings.md",
       ],
       "artifactsWritten": [
         "09-change-block-index.md",
         "09-manual-diff-review.md",
         "09-code-review.md",
+        "09-structural-analysis.md",
         "09-test-suite-review.md",
         "09-architecture-summary.md",
-        "09-structural-findings.md",
       ],
       "checkpoints": [
         {
@@ -1603,8 +1673,12 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
     },
     {
       "activity": "validate",
-      "artifacts": [],
-      "artifactsWritten": [],
+      "artifacts": [
+        "test-suite-review.md",
+      ],
+      "artifactsWritten": [
+        "09-test-suite-review.md",
+      ],
       "checkpoints": [],
       "manifestStatus": "warning",
       "next": "strategic-review",
@@ -1648,8 +1722,12 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
     },
     {
       "activity": "submit-for-review",
-      "artifacts": [],
-      "artifactsWritten": [],
+      "artifacts": [
+        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
+      ],
+      "artifactsWritten": [
+        "12-YYYY-MM-DD-prpr_number-review-analysis.md",
+      ],
       "checkpoints": [
         {
           "id": "dco-sign-off",
@@ -1689,12 +1767,12 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
     {
       "activity": "complete",
       "artifacts": [
-        "NNNN-{decision-title}.md",
+        "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "workflow-retrospective.md",
-        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
+        "13-NNNN-decision_title.md",
         "13-COMPLETE.md",
         "13-workflow-retrospective.md",
       ],
@@ -1844,9 +1922,15 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
     {
       "activity": "codebase-comprehension",
       "artifacts": [
-        "{codebase-area}.md",
+        "{codebase_area}.md",
+        "portfolio-{lens_name}.md",
+        "portfolio-synthesis.md",
       ],
-      "artifactsWritten": [],
+      "artifactsWritten": [
+        "14-codebase_area.md",
+        "14-portfolio-lens_name.md",
+        "14-portfolio-synthesis.md",
+      ],
       "checkpoints": [],
       "manifestStatus": "valid",
       "next": "plan-prepare",
@@ -1866,10 +1950,12 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "artifacts": [
         "work-package-plan.md",
         "test-plan.md",
+        "assumptions-log.md",
       ],
       "artifactsWritten": [
         "06-work-package-plan.md",
         "06-test-plan.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -1947,17 +2033,17 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "change-block-index.md",
         "manual-diff-review.md",
         "code-review.md",
+        "structural-analysis.md",
         "test-suite-review.md",
         "architecture-summary.md",
-        "structural-findings.md",
       ],
       "artifactsWritten": [
         "09-change-block-index.md",
         "09-manual-diff-review.md",
         "09-code-review.md",
+        "09-structural-analysis.md",
         "09-test-suite-review.md",
         "09-architecture-summary.md",
-        "09-structural-findings.md",
       ],
       "checkpoints": [
         {
@@ -1987,8 +2073,12 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
     },
     {
       "activity": "validate",
-      "artifacts": [],
-      "artifactsWritten": [],
+      "artifacts": [
+        "test-suite-review.md",
+      ],
+      "artifactsWritten": [
+        "09-test-suite-review.md",
+      ],
       "checkpoints": [],
       "manifestStatus": "warning",
       "next": "strategic-review",
@@ -2035,8 +2125,12 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
     },
     {
       "activity": "submit-for-review",
-      "artifacts": [],
-      "artifactsWritten": [],
+      "artifacts": [
+        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
+      ],
+      "artifactsWritten": [
+        "12-YYYY-MM-DD-prpr_number-review-analysis.md",
+      ],
       "checkpoints": [
         {
           "id": "review-summary-approval",
@@ -2077,12 +2171,12 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
     {
       "activity": "complete",
       "artifacts": [
-        "NNNN-{decision-title}.md",
+        "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "workflow-retrospective.md",
-        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
+        "13-NNNN-decision_title.md",
         "13-COMPLETE.md",
         "13-workflow-retrospective.md",
       ],
@@ -2212,9 +2306,15 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
     {
       "activity": "codebase-comprehension",
       "artifacts": [
-        "{codebase-area}.md",
+        "{codebase_area}.md",
+        "portfolio-{lens_name}.md",
+        "portfolio-synthesis.md",
       ],
-      "artifactsWritten": [],
+      "artifactsWritten": [
+        "14-codebase_area.md",
+        "14-portfolio-lens_name.md",
+        "14-portfolio-synthesis.md",
+      ],
       "checkpoints": [],
       "manifestStatus": "warning",
       "next": "plan-prepare",
@@ -2234,10 +2334,12 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "artifacts": [
         "work-package-plan.md",
         "test-plan.md",
+        "assumptions-log.md",
       ],
       "artifactsWritten": [
         "06-work-package-plan.md",
         "06-test-plan.md",
+        "02-assumptions-log.md",
       ],
       "checkpoints": [
         {
@@ -2315,17 +2417,17 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "change-block-index.md",
         "manual-diff-review.md",
         "code-review.md",
+        "structural-analysis.md",
         "test-suite-review.md",
         "architecture-summary.md",
-        "structural-findings.md",
       ],
       "artifactsWritten": [
         "09-change-block-index.md",
         "09-manual-diff-review.md",
         "09-code-review.md",
+        "09-structural-analysis.md",
         "09-test-suite-review.md",
         "09-architecture-summary.md",
-        "09-structural-findings.md",
       ],
       "checkpoints": [
         {
@@ -2355,8 +2457,12 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
     },
     {
       "activity": "validate",
-      "artifacts": [],
-      "artifactsWritten": [],
+      "artifacts": [
+        "test-suite-review.md",
+      ],
+      "artifactsWritten": [
+        "09-test-suite-review.md",
+      ],
       "checkpoints": [],
       "manifestStatus": "warning",
       "next": "strategic-review",
@@ -2400,8 +2506,12 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
     },
     {
       "activity": "submit-for-review",
-      "artifacts": [],
-      "artifactsWritten": [],
+      "artifacts": [
+        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
+      ],
+      "artifactsWritten": [
+        "12-YYYY-MM-DD-prpr_number-review-analysis.md",
+      ],
       "checkpoints": [
         {
           "id": "dco-sign-off",
@@ -2441,12 +2551,12 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
     {
       "activity": "complete",
       "artifacts": [
-        "NNNN-{decision-title}.md",
+        "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "workflow-retrospective.md",
-        "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
+        "13-NNNN-decision_title.md",
         "13-COMPLETE.md",
         "13-workflow-retrospective.md",
       ],

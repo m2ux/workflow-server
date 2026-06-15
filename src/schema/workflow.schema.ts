@@ -12,19 +12,6 @@ export const VariableDefinitionSchema = z.object({
 export type VariableDefinition = z.infer<typeof VariableDefinitionSchema>;
 
 // Artifact location - accepts string shorthand (path only) or full object
-const ArtifactLocationObjectSchema = z.object({
-  path: z.string().describe('Path pattern for this location. Supports workflow variable interpolation (e.g., \'{planning_folder_path}\')'),
-  description: z.string().optional().describe('Description of what artifacts this location stores'),
-  gitignored: z.boolean().default(false).describe('Whether artifacts in this location are gitignored from the host project'),
-});
-
-const ArtifactLocationValueSchema = z.union([
-  z.string().transform((path) => ({ path, gitignored: false as boolean, description: undefined as string | undefined })),
-  ArtifactLocationObjectSchema,
-]).describe('Artifact location: path string or { path, description?, gitignored? } object');
-
-export type ArtifactLocation = z.infer<typeof ArtifactLocationObjectSchema>;
-
 // Mode schema - defines workflow execution modes that modify standard behavior
 export const ModeSchema = z.object({
   id: z.string().describe('Unique identifier for this mode'),
@@ -55,7 +42,6 @@ export const WorkflowSchema = z.object({
   rules: z.array(z.string()).optional().describe('Rules that govern workflow execution'),
   variables: z.array(VariableDefinitionSchema).optional().describe('Workflow-level variables'),
   modes: z.array(ModeSchema).optional().describe('Execution modes that modify standard workflow behavior'),
-  artifactLocations: z.record(ArtifactLocationValueSchema).optional().describe('Named artifact storage locations. Keys are location identifiers referenced by activity artifact definitions.'),
   techniques: WorkflowTechniquesSchema.optional().describe('Workflow-level techniques (primary + supporting) the orchestrator uses; bundled into get_workflow.'),
   initialActivity: z.string().optional().describe('ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points.'),
   // JSON Schema validates individual TOON files where activities are separate files.

@@ -203,13 +203,13 @@ export const TransitionSchema = z.object({
 });
 export type Transition = z.infer<typeof TransitionSchema>;
 
-// Artifact schema - defines outputs produced by an activity
+// Artifact schema — a SERVER-COMPUTED entry in the activity's synthesized artifact contract.
+// Activities do NOT author artifacts[]; `get_activity` composes this list from the `## Outputs` of
+// the techniques the activity's steps bind (each output's `#### artifact` filename). Hence just the
+// id (the producing output's id) and name (the filename).
 export const ArtifactSchema = z.object({
-  id: z.string().describe('Unique identifier for the artifact'),
-  name: z.string().describe('Filename or template (supports {variable} substitution)'),
-  location: z.string().optional().describe('Location category (e.g., planning, docs)'),
-  description: z.string().optional().describe('Purpose of the artifact'),
-  action: z.enum(['create', 'update']).default('create').optional().describe('Whether this activity creates a new artifact or updates an existing one'),
+  id: z.string().describe('Identifier of the artifact (the producing technique output id).'),
+  name: z.string().describe('Filename or template (supports {variable} substitution), from the technique output.'),
 });
 export type Artifact = z.infer<typeof ArtifactSchema>;
 
@@ -250,7 +250,7 @@ export const ActivitySchema = z.object({
   required: z.boolean().default(true).describe('Whether this activity is required in the workflow'),
   rules: z.array(z.string()).optional().describe('Activity-level rules and constraints that agents must follow'),
   artifactPrefix: z.string().optional().describe('Numeric prefix for artifact filenames, inferred from the activity filename (e.g., "02" from 02-design-philosophy.toon). Server-computed — do not set in TOON files.'),
-  artifacts: z.array(ArtifactSchema).optional().describe('Output artifacts produced by this activity. Bare filenames are prefixed with artifactPrefix at write time (e.g., design-philosophy.md → 02-design-philosophy.md).'),
+  artifacts: z.array(ArtifactSchema).optional().describe('SERVER-COMPUTED — do NOT author. The activity\'s artifact contract, synthesized by get_activity from the `## Outputs` of the techniques its steps bind (the technique outputs own artifact identity, AP-43). Bare filenames are prefixed with artifactPrefix at write time.'),
 });
 
 export type Activity = z.infer<typeof ActivitySchema>;

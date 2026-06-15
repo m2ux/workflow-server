@@ -356,29 +356,15 @@
     },
     "artifact": {
       "type": "object",
-      "description": "An artifact produced or updated by this activity",
+      "description": "SERVER-COMPUTED entry in the activity's synthesized artifact contract. Activities do NOT author artifacts; get_activity composes this list from the '## Outputs' of the techniques the activity's steps bind (each output's '#### artifact' filename owns artifact identity). The activity's artifactPrefix is prepended to the filename at write time.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for this artifact within the activity"
+          "description": "Identifier of the artifact (the producing technique output id)."
         },
         "name": {
           "type": "string",
-          "description": "Artifact filename without activity prefix. The activity's artifactPrefix is prepended at write time (e.g., name 'code-review.md' with artifactPrefix '08' produces '08-code-review.md'). May contain other template variables (e.g., '{n}' for iteration count, '{decision-title}' for ADR naming)."
-        },
-        "location": {
-          "type": "string",
-          "description": "Key into workflow.artifactLocations (e.g., 'planning', 'reviews', 'adr') or an explicit path"
-        },
-        "description": {
-          "type": "string",
-          "description": "What this artifact contains and its purpose"
-        },
-        "action": {
-          "type": "string",
-          "enum": ["create", "update"],
-          "default": "create",
-          "description": "Whether this activity creates a new artifact or updates an existing one"
+          "description": "Filename or template (may contain {variable} substitutions), from the technique output."
         }
       },
       "required": ["id", "name"],
@@ -474,7 +460,7 @@
           "items": {
             "$ref": "#/definitions/artifact"
           },
-          "description": "Artifacts produced or updated by this activity. Bare filenames in artifact.name are prefixed with the server-computed artifactPrefix at write time. Location keys reference workflow.artifactLocations."
+          "description": "SERVER-COMPUTED — do NOT author. The activity's artifact contract, synthesized by get_activity from the '## Outputs' of the techniques its steps bind (the technique outputs own artifact identity). Bare filenames are prefixed with the server-computed artifactPrefix at write time."
         },
         "transitions": {
           "type": "array",

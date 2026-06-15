@@ -5,7 +5,7 @@ import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, readActivityRa
 import { readTechniqueRaw, resolveTechniques, formatTechniqueBundle } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
-import { injectResolvedStepIds } from '../schema/activity.schema.js';
+import { injectResolvedStepIds, techniqueName } from '../schema/activity.schema.js';
 import { withAuditLog } from '../logging.js';
 import { encodeToon } from '../utils/toon.js';
 import {
@@ -52,6 +52,52 @@ function withSessionStoreErrors<T extends Record<string, unknown>, R>(
       throw err;
     }
   };
+}
+
+/**
+ * Compose an activity's artifact contract from the `## Outputs` of the techniques its steps bind.
+ * Activities no longer declare `artifacts[]`; the contract IS the union of the per-step techniques'
+ * declared output artifacts — each output's `#### artifact` filename — deduped by filename in step
+ * order. The technique `## Outputs` is the single source of truth for artifact identity (AP-43/65);
+ * this synthesizes the activity-level view the worker reads, so it can never drift from the steps.
+ */
+export async function composeActivityArtifacts(
+  activity: { steps?: Array<{ technique?: unknown }>; loops?: Array<{ steps?: Array<{ technique?: unknown }> }> } | undefined,
+  workflowDir: string,
+  workflowId: string,
+  activityId?: string,
+): Promise<Array<{ id: string; name: string }>> {
+  if (!activity) return [];
+  const refs = new Set<string>();
+  const collect = (steps?: Array<{ technique?: unknown }>): void => {
+    for (const s of steps ?? []) {
+      const n = techniqueName(s.technique as Parameters<typeof techniqueName>[0]);
+      if (n) refs.add(n);
+    }
+  };
+  collect(activity.steps);
+  for (const loop of activity.loops ?? []) collect(loop.steps);
+  if (refs.size === 0) return [];
+  // Resolve like get_technique: a bare op may be activity-group shorthand (`<activityId>::<op>`), so
+  // try the activity-named-group form too. resolveTechniques returns type 'not-found' for a candidate
+  // that doesn't exist, so passing both forms is safe.
+  const candidates = new Set<string>();
+  for (const r of refs) {
+    candidates.add(r);
+    if (activityId && !r.includes('::')) candidates.add(`${activityId}::${r}`);
+  }
+  const resolved = await resolveTechniques([...candidates], workflowDir, workflowId);
+  const artifacts: Array<{ id: string; name: string }> = [];
+  const seen = new Set<string>();
+  for (const t of resolved) {
+    if (t.type !== 'technique') continue;
+    const outputs = (t.body as { outputs?: Array<{ id?: string; artifact?: { name?: string } }> } | undefined)?.outputs ?? [];
+    for (const o of outputs) {
+      const name = o.artifact?.name;
+      if (name && !seen.has(name)) { seen.add(name); artifacts.push({ id: o.id ?? name, name }); }
+    }
+  }
+  return artifacts;
 }
 
 
@@ -347,9 +393,20 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ? `session_index: ${session_index}\nartifact_prefix: ${artifactPrefix}`
         : `session_index: ${session_index}`;
 
+      // The activity's artifact contract is SYNTHESIZED from the `## Outputs` of the techniques its
+      // steps bind (activities no longer declare `artifacts[]` — the technique outputs own artifact
+      // identity, AP-43/65). Append the composed block to the activity body so the worker reads an
+      // explicit contract that can never drift from the steps.
+      const composedArtifacts = await composeActivityArtifacts(
+        activity as Parameters<typeof composeActivityArtifacts>[0], config.workflowDir, workflow_id, activity_id,
+      );
+      const activityBodyWithArtifacts = composedArtifacts.length
+        ? `${activityBody}\n${encodeToon({ artifacts: composedArtifacts })}`
+        : activityBody;
+
       return {
-        content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${activityBody}` }],
-        _meta: { session_index, validation, artifact_prefix: artifactPrefix },
+        content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${activityBodyWithArtifacts}` }],
+        _meta: { session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts },
       };
     }), traceOpts));
 

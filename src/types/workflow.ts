@@ -30,7 +30,7 @@ export {
 } from '../schema/activity.schema.js';
 
 // Workflow types
-export type { VariableDefinition, ArtifactLocation, Mode, Workflow } from '../schema/workflow.schema.js';
+export type { VariableDefinition, Mode, Workflow } from '../schema/workflow.schema.js';
 export { VariableDefinitionSchema, ModeSchema, WorkflowSchema, validateWorkflow, safeValidateWorkflow } from '../schema/workflow.schema.js';
 
 // Condition types
