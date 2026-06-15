@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
-import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, readActivityRaw, readWorkflowRaw } from '../loaders/workflow-loader.js';
+import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, readActivityRaw, readWorkflowRaw, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 import { readTechniqueRaw, resolveTechniques, formatTechniqueBundle } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
@@ -180,8 +180,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           `on activity '${state.activeCheckpoint.activityId}'. The orchestrator must resolve it by calling respond_checkpoint.`
         );
       }
+      const isTerminal = activity_id === TERMINAL_SENTINEL;
       const activity = getActivity(result.value, activity_id);
-      if (!activity) throw new Error(`Activity not found: ${activity_id}`);
+      if (!activity && !isTerminal) throw new Error(`Activity not found: ${activity_id}`);
 
       const view = sessionView(state);
       const manifestWarnings: (string | null)[] = [];
@@ -228,10 +229,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         draft.condition = transition_condition ?? '';
         delete draft.activeCheckpoint;
         draft.history.push({ timestamp: now, type: 'activity_entered', activity: activity_id });
-        // Terminal-state transition emits a workflow_completed event and
-        // flips status. The activity id 'complete' is the canonical terminal
-        // marker across the work-package, prism, and meta workflows.
-        if (activity_id === 'complete') {
+        // Terminal-state transition emits a workflow_completed event and flips
+        // status. The activity id 'complete' is the canonical terminal marker
+        // across the work-package, prism, and meta workflows; the TERMINAL_SENTINEL
+        // is the contentless terminal reached via an explicit terminal transition.
+        if (activity_id === 'complete' || isTerminal) {
           draft.history.push({ timestamp: now, type: 'workflow_completed' });
           draft.status = 'completed';
         }
@@ -242,7 +244,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // (if any) so the parent's `triggeredWorkflows[i].status` flips from
       // `running` to `completed`. Persistent-parent only — transient parents
       // were already discarded when the child captured them. Best-effort.
-      if (activity_id === 'complete' && state.parentSession?.sessionIndex) {
+      if ((activity_id === 'complete' || isTerminal) && state.parentSession?.sessionIndex) {
         const parentIdx = state.parentSession.sessionIndex;
         try {
           const parentLoaded = await loadSessionForTool(config.workspaceDir, parentIdx);
@@ -290,7 +292,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const responseData: Record<string, unknown> = {
         activity_id,
-        name: activity.name,
+        name: activity ? activity.name : 'Workflow Complete',
         session_index,
       };
 

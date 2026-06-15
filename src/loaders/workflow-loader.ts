@@ -325,12 +325,24 @@ function conditionToString(condition: { type: string; variable?: string; operato
   }
 }
 
+/**
+ * Canonical terminal sentinel. A transition whose target is this id ends the
+ * workflow without resolving to a real activity: `next_activity` accepts it,
+ * flips the session status to `completed`, and the workflow stops. Use it for
+ * a terminal reached via an explicit transition (a default end-of-flow link or
+ * an `abort` checkpoint option) where there is no terminal activity to land on.
+ * A workflow that ends simply by having no outgoing transition (terminal-by-
+ * omission) needs no sentinel. The `complete` and `end-workflow` real terminal
+ * activities remain valid and unchanged.
+ */
+export const TERMINAL_SENTINEL = '__terminal__';
+
 /** Validate a transition between activities */
 export function validateTransition(workflow: Workflow, fromActivityId: string, toActivityId: string): { valid: boolean; reason?: string } {
   if (!getActivity(workflow, fromActivityId)) return { valid: false, reason: `Source activity not found: ${fromActivityId}` };
-  
-  // end-workflow is a special terminal state, not an actual activity
-  if (toActivityId !== 'end-workflow' && !getActivity(workflow, toActivityId)) {
+
+  // end-workflow and the terminal sentinel are special terminal states, not actual activities
+  if (toActivityId !== 'end-workflow' && toActivityId !== TERMINAL_SENTINEL && !getActivity(workflow, toActivityId)) {
     return { valid: false, reason: `Target activity not found: ${toActivityId}` };
   }
   

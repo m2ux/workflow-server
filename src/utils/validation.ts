@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { Workflow } from '../schema/workflow.schema.js';
-import { getValidTransitions, getActivity, getTransitionList } from '../loaders/workflow-loader.js';
+import { getValidTransitions, getActivity, getTransitionList, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 import { techniqueName } from '../schema/activity.schema.js';
 
 /**
@@ -43,6 +43,9 @@ export function validateActivityTransition(view: SessionView, workflow: Workflow
     return null;
   }
   if (view.act === activityId) return null;
+  // The terminal sentinel is a valid terminal target from any activity (it may
+  // be reached via an abort/checkpoint effect rather than a declared transition).
+  if (activityId === TERMINAL_SENTINEL) return null;
 
   const valid = getValidTransitions(workflow, view.act);
   if (valid.length === 0) return null;
