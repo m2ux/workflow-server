@@ -1,5 +1,5 @@
 id: primary-audit
-version: 4.17.0
+version: 4.18.0
 name: Primary Audit
 description: "Multi-agent primary audit via concurrent dispatch with verification and merge."
 problem: "A single agent cannot achieve sufficient depth across all crates, and the orchestrator's context window is saturated by the time it needs to merge and verify agent outputs. Multi-agent orchestration with dedicated verification (V) and merge (M) agents provides: (a) focused context windows per security domain, (b) mechanical output validation in a fresh context window (V), (c) finding-lossless merge in a fresh context window (M), (d) targeted re-dispatch for gaps before findings are merged."
@@ -24,9 +24,10 @@ steps[13]:
     required: true
   - id: verify-agent-output-files
     required: true
-    technique: dispatch-sub-agents
-    technique_args:
-      expected_output_files: "a1-nto.json, a2-midnight-ledger.json, a3-node-startup.json, a4-node-consensus.json, a5-runtime.json, a6-primitives.json, a7-governance.json, b-static-analysis.json, d1-ledger-helpers.json, d2-toolkit.json"
+    technique:
+      name: dispatch-sub-agents
+      inputs:
+        expected_output_files: "a1-nto.json, a2-midnight-ledger.json, a3-node-startup.json, a4-node-consensus.json, a5-runtime.json, a6-primitives.json, a7-governance.json, b-static-analysis.json, d1-ledger-helpers.json, d2-toolkit.json"
   - id: dispatch-verification-agent
     required: true
     technique: dispatch-sub-agents

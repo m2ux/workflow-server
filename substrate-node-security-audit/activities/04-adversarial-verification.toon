@@ -1,5 +1,5 @@
 id: adversarial-verification
-version: 2.3.0
+version: 2.4.0
 name: Adversarial Verification
 description: "Adversarially verify PASS items from the primary audit."
 problem: "AI agents exhibit first-positive-signal bias — they find one correct behavior and mark the entire check as PASS without verifying all related fields or paths. This consistently causes Medium/High findings to be missed as false PASSes. Additionally, adversarial PASS selection based solely on severity potential misses areas where primary agents produced structurally incomplete outputs."
@@ -13,25 +13,30 @@ steps[6]:
   - id: seed-from-verification-report
     technique: decompose-safety-claims
   - id: extract-pass-items
-    technique: decompose-safety-claims
-    technique_args:
-      output_format: "Filtered PASS list with checklist references"
+    technique:
+      name: decompose-safety-claims
+      inputs:
+        output_format: "Filtered PASS list with checklist references"
   - id: decompose-claims
-    technique: decompose-safety-claims
-    technique_args:
-      output_format: "Decomposition table with one row per property"
+    technique:
+      name: decompose-safety-claims
+      inputs:
+        output_format: "Decomposition table with one row per property"
   - id: field-enumeration
-    technique: decompose-safety-claims
-    technique_args:
-      output_format: "| Property | Instance | Verified? | Evidence |"
+    technique:
+      name: decompose-safety-claims
+      inputs:
+        output_format: "| Property | Instance | Verified? | Evidence |"
   - id: verify-properties
-    technique: decompose-safety-claims
-    technique_args:
-      output_format: "Per-property verdict with code citations"
+    technique:
+      name: decompose-safety-claims
+      inputs:
+        output_format: "Per-property verdict with code citations"
   - id: compile-results
-    technique: decompose-safety-claims
-    technique_args:
-      output_format: "Verdict summary with CONFIRMED/REFUTED/INSUFFICIENT counts"
+    technique:
+      name: decompose-safety-claims
+      inputs:
+        output_format: "Verdict summary with CONFIRMED/REFUTED/INSUFFICIENT counts"
 transitions[1]{to,isDefault}:
   report-generation,true
 exitActions[2]{action,message}:

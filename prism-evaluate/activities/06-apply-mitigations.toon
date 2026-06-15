@@ -1,5 +1,5 @@
 id: apply-mitigations
-version: 1.2.0
+version: 1.3.0
 name: Apply Accepted Mitigations
 description: "Apply accepted mitigations to the target document."
 problem: "The mitigation plan contains accepted changes ranging from single-word corrections to multi-paragraph additions. These must be applied precisely to the target without introducing errors, in the correct priority order, with verification after each change."
@@ -11,16 +11,17 @@ steps[2]:
     technique: resolve-findings::apply-changes
     required: true
   - id: commit-changes
-    technique: version-control::commit-regular-files
+    technique:
+      name: version-control::commit-regular-files
+      inputs:
+        paths: "target_path, mitigation_plan_path"
+        message: "docs({target_name}): apply evaluation mitigations"
+        branch: current
     required: true
     actions[1]:
       - action: set
         target: target_name
         description: "The target's base name, derived from target_path."
-    technique_args:
-      paths: "target_path, mitigation_plan_path"
-      message: "docs({target_name}): apply evaluation mitigations"
-      branch: current
 checkpoints[1]:
   - id: confirm-apply
     name: Apply Mitigations Confirmation

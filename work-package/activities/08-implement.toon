@@ -1,5 +1,5 @@
 id: implement
-version: 2.8.0
+version: 2.9.0
 name: Implement Tasks
 description: "Execute the implementation plan task by task."
 problem: User needs to implement the planned tasks
@@ -32,9 +32,10 @@ loops[3]:
         technique: implement-task
         checkpoint: switch-model-pre-impl
       - id: run-tests
-        technique: cargo-operations::test
-        technique_args:
-          scope: "-p {current_task.crate}"
+        technique:
+          name: cargo-operations::test
+          inputs:
+            scope: "-p {current_task.crate}"
       - id: commit
         technique: manage-git::artifact-commits
       - id: log-provenance

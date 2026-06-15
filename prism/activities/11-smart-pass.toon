@@ -1,5 +1,5 @@
 id: smart-pass
-version: 1.1.0
+version: 1.2.0
 name: Smart Analysis Pass
 description: "Adaptively compose the analysis pipeline based on input characteristics."
 problem: "Users must manually select the right pipeline mode. Smart mode removes this burden by composing the pipeline automatically based on what the input needs."
@@ -22,33 +22,38 @@ artifacts[3]:
 steps[6]:
   - id: run-prereq
     required: true
-    technique: smart-analysis::prereq-scan
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: smart-analysis::prereq-scan
+      inputs:
+        target_content: "{target}"
   - id: fill-knowledge
     required: false
-    technique: smart-analysis::knowledge-fill
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: smart-analysis::knowledge-fill
+      inputs:
+        target_content: "{target}"
   - id: select-analysis-mode
     required: true
-    technique: smart-analysis::select-mode
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: smart-analysis::select-mode
+      inputs:
+        target_content: "{target}"
     actions[1]:
       - action: set
         target: smart_pipeline_steps
         description: "The composed pipeline steps."
   - id: run-analysis
     required: true
-    technique: smart-analysis::run-analysis
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: smart-analysis::run-analysis
+      inputs:
+        target_content: "{target}"
   - id: run-dispute
     required: false
-    technique: smart-analysis::dispute-correction
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: smart-analysis::dispute-correction
+      inputs:
+        target_content: "{target}"
   - id: collect-paths
     required: true
     actions[1]:

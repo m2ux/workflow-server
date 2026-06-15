@@ -1,5 +1,5 @@
 id: adversarial-pass
-version: 2.1.0
+version: 2.2.0
 name: Adversarial Analysis Pass
 description: "Run the adversarial lens against each full-prism unit's structural artifact."
 techniques:
@@ -21,11 +21,12 @@ loops[1]:
     steps[1]:
       - id: run-adversarial
         required: true
-        technique: full-prism
-        technique_args:
-          lens_resource_index: "01"
-          target_content: "{current_unit.target}"
-          prior_artifact_paths: all_artifact_paths
+        technique:
+          name: full-prism
+          inputs:
+            lens_resource_index: "01"
+            target_content: "{current_unit.target}"
+            prior_artifact_paths: all_artifact_paths
         actions[1]:
           - action: set
             target: all_artifact_paths

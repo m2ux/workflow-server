@@ -1,5 +1,5 @@
 id: behavioral-synthesis-pass
-version: 1.1.0
+version: 1.2.0
 name: Behavioral Synthesis Pass
 description: "Run the behavioral synthesis lens against each behavioral unit's artifacts."
 techniques:
@@ -21,10 +21,11 @@ loops[1]:
     steps[1]:
       - id: run-behavioral-synthesis
         required: true
-        technique: behavioral-pipeline
-        technique_args:
-          lens_resource_index: "23"
-          target_content: "{current_unit.target}"
+        technique:
+          name: behavioral-pipeline
+          inputs:
+            lens_resource_index: "23"
+            target_content: "{current_unit.target}"
         actions[1]:
           - action: set
             target: all_artifact_paths

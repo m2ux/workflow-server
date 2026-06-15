@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.9.0
+version: 3.10.0
 name: Start Work Package
 description: "Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
@@ -36,9 +36,10 @@ steps[31]:
       variable: reference_path
       operator: exists
   - id: analyze-reference-with-gitnexus
-    technique: gitnexus-operations::analyze
-    technique_args:
-      repo_path: reference_path
+    technique:
+      name: gitnexus-operations::analyze
+      inputs:
+        repo_path: reference_path
     actions[1]:
       - action: set
         target: gitnexus_indexed
@@ -57,9 +58,10 @@ steps[31]:
     technique: issue-reference-detection
     checkpoint: issue-verification
   - id: verify-jira-issue
-    technique: atlassian-operations::get-jira-issue
-    technique_args:
-      issueIdOrKey: "{issue_number}"
+    technique:
+      name: atlassian-operations::get-jira-issue
+      inputs:
+        issueIdOrKey: "{issue_number}"
     condition:
       type: simple
       variable: issue_platform
@@ -70,18 +72,20 @@ steps[31]:
         target: jira_cloud_id != null
         message: "Atlassian cloudId not set. Load the atlassian-operations technique and call getAccessibleAtlassianResources before any Jira tool. The cloudId is a runtime prerequisite for every Jira API call; this guard catches the failure mode where another step invokes a Jira tool without first loading atlassian-operations."
   - id: verify-github-issue
-    technique: github-cli-protocol::view-issue
-    technique_args:
-      identifier: "{issue_number}"
+    technique:
+      name: github-cli-protocol::view-issue
+      inputs:
+        identifier: "{issue_number}"
     condition:
       type: simple
       variable: issue_platform
       operator: "=="
       value: github
   - id: search-github-issue
-    technique: github-cli-protocol::list-issues
-    technique_args:
-      filters: "--search '{jira_issue_key}' --json number,title,url --limit 5"
+    technique:
+      name: github-cli-protocol::list-issues
+      inputs:
+        filters: "--search '{jira_issue_key}' --json number,title,url --limit 5"
     condition:
       type: simple
       variable: issue_platform
@@ -98,9 +102,10 @@ steps[31]:
     when: "issue_platform == 'jira' && github_issue_found == false"
     checkpoint: github-issue-missing
   - id: create-github-issue-for-jira
-    technique: create-issue
-    technique_args:
-      issue_platform: github
+    technique:
+      name: create-issue
+      inputs:
+        issue_platform: github
     condition:
       type: simple
       variable: needs_github_issue_creation
@@ -118,10 +123,11 @@ steps[31]:
     technique: atlassian-operations::user-info
     when: "issue_platform == 'jira' && issue_skipped != true"
   - id: assign-issue-jira
-    technique: atlassian-operations::edit-jira-issue
-    technique_args:
-      issueIdOrKey: "{issue_number}"
-      fields: "{ assignee: { accountId: {accountId} } }"
+    technique:
+      name: atlassian-operations::edit-jira-issue
+      inputs:
+        issueIdOrKey: "{issue_number}"
+        fields: "{ assignee: { accountId: {accountId} } }"
     condition:
       type: and
       conditions[2]:
@@ -134,9 +140,10 @@ steps[31]:
           operator: "=="
           value: jira
   - id: transition-issue-jira
-    technique: atlassian-operations::transition-jira-issue
-    technique_args:
-      issueIdOrKey: "{issue_number}"
+    technique:
+      name: atlassian-operations::transition-jira-issue
+      inputs:
+        issueIdOrKey: "{issue_number}"
     condition:
       type: and
       conditions[2]:
@@ -149,10 +156,11 @@ steps[31]:
           operator: "=="
           value: jira
   - id: assign-issue-github
-    technique: github-cli-protocol::assign-issue
-    technique_args:
-      number: "{issue_number}"
-      assignee: "@me"
+    technique:
+      name: github-cli-protocol::assign-issue
+      inputs:
+        number: "{issue_number}"
+        assignee: "@me"
     condition:
       type: and
       conditions[2]:
@@ -172,17 +180,19 @@ steps[31]:
   - id: initialize-planning-folder
     technique: manage-artifacts::create-readme
   - id: present-problem-overview
-    technique: stakeholder-overview
-    technique_args:
-      readme_section_heading: "## Problem Overview"
-      source_material: "issue details, ticket description, and any context gathered during this activity"
+    technique:
+      name: stakeholder-overview
+      inputs:
+        readme_section_heading: "## Problem Overview"
+        source_material: "issue details, ticket description, and any context gathered during this activity"
     actions[1]:
       - action: message
         message: "**Problem Overview** (plain-language summary for stakeholder reference)"
   - id: derive-branch-name
-    technique: naming-conventions
-    technique_args:
-      issue_title: "{issue_title}"
+    technique:
+      name: naming-conventions
+      inputs:
+        issue_title: "{issue_title}"
     condition:
       type: simple
       variable: is_review_mode
@@ -198,9 +208,10 @@ steps[31]:
       operator: "!="
       value: true
   - id: create-review-worktree
-    technique: manage-git::create-worktree
-    technique_args:
-      create_branch: false
+    technique:
+      name: manage-git::create-worktree
+      inputs:
+        create_branch: false
     condition:
       type: simple
       variable: is_review_mode
@@ -209,9 +220,10 @@ steps[31]:
   - id: check-branch
     technique: manage-git::verify-feature-branch
   - id: check-pr
-    technique: github-cli-protocol::list-prs
-    technique_args:
-      filters: "--head {branch_name} --json number,url --limit 1"
+    technique:
+      name: github-cli-protocol::list-prs
+      inputs:
+        filters: "--head {branch_name} --json number,url --limit 1"
     checkpoint: pr-check
     condition:
       type: simple
@@ -226,10 +238,11 @@ steps[31]:
         target: existing_pr_number
         description: "PR number from the list-prs result when one was found"
   - id: create-pr
-    technique: update-pr::create-pr
-    technique_args:
-      issue_number: "{issue_number}"
-      issue_platform: "{issue_platform}"
+    technique:
+      name: update-pr::create-pr
+      inputs:
+        issue_number: "{issue_number}"
+        issue_platform: "{issue_platform}"
     checkpoint: pr-creation
     condition:
       type: and
@@ -254,10 +267,11 @@ steps[31]:
         value: true
         description: "Mark PR as existing once successfully created."
   - id: link-pr-to-ticket-jira
-    technique: atlassian-operations::comment-jira-issue
-    technique_args:
-      issueIdOrKey: "{issue_number}"
-      commentBody: "Pull Request: {pr_url}"
+    technique:
+      name: atlassian-operations::comment-jira-issue
+      inputs:
+        issueIdOrKey: "{issue_number}"
+        commentBody: "Pull Request: {pr_url}"
     condition:
       type: and
       conditions[4]:
@@ -277,9 +291,10 @@ steps[31]:
           operator: "=="
           value: jira
   - id: link-pr-to-ticket-github
-    technique: github-cli-protocol::view-issue
-    technique_args:
-      identifier: "{issue_number}"
+    technique:
+      name: github-cli-protocol::view-issue
+      inputs:
+        identifier: "{issue_number}"
     condition:
       type: and
       conditions[4]:

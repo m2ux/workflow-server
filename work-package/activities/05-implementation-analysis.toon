@@ -1,5 +1,5 @@
 id: implementation-analysis
-version: 2.6.0
+version: 2.7.0
 name: Implementation Analysis
 description: "Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement."
 problem: User needs to understand current state before planning changes
@@ -19,9 +19,10 @@ steps[8]:
   - id: analyze-implementation
     technique: analyze
   - id: collect-assumptions
-    technique: review-assumptions::collect
-    technique_args:
-      assumption_categories: "Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding"
+    technique:
+      name: review-assumptions::collect
+      inputs:
+        assumption_categories: "Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding"
   - id: document
     technique: document
     checkpoint: analysis-confirmed

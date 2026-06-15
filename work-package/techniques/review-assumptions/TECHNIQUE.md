@@ -21,7 +21,7 @@ The context in which assumptions are generated
 
 ### assumption_categories
 
-The list of categories used to classify assumptions during collection (supplied via `technique_args`). Collection classifies each assumption into one of these categories.
+The list of categories used to classify assumptions during collection (supplied via `step.technique.inputs`). Collection classifies each assumption into one of these categories.
 
 ### assumptions_log
 

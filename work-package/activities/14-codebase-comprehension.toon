@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.6.0
+version: 1.7.0
 name: Codebase Comprehension
 description: "Build or augment a mental model of the codebase."
 problem: User lacks sufficient understanding of an unfamiliar codebase to qualify agent-proposed design choices
@@ -18,9 +18,10 @@ steps[6]:
   - id: initial-deep-dive
     technique: deep-dive
   - id: initial-lens-pass
-    technique: prism/portfolio-analysis
-    technique_args:
-      selected_lenses: ["pedagogy", "rejected-paths"]
+    technique:
+      name: prism/portfolio-analysis
+      inputs:
+        selected_lenses: ["pedagogy", "rejected-paths"]
   - id: update-artifact-initial
     technique: manage-artifacts::write-artifact
   - id: revise-initial-questions
@@ -68,9 +69,10 @@ loops[1]:
       - id: select-area
         technique: deep-dive
       - id: portfolio-lens-pass
-        technique: prism/portfolio-analysis
-        technique_args:
-          selected_lenses: ["pedagogy", "rejected-paths"]
+        technique:
+          name: prism/portfolio-analysis
+          inputs:
+            selected_lenses: ["pedagogy", "rejected-paths"]
       - id: update-artifact
         technique: manage-artifacts::write-artifact
       - id: revise-open-questions

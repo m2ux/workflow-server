@@ -508,7 +508,7 @@ graph TD
 5. **self-review** — `task-completion-review`; presents `symbol-provenance-confirmed` checkpoint when symbols are uncertain.
 6. **collect-assumptions** — `review-assumptions::collect`.
 
-Each task's per-unit outputs accumulate across the `forEach` loop into the activity-level `completed_tasks` / `commits` collections via the activity's `scatter-gather` supporting strategy — governed activity-wide, not through per-step `technique_args`.
+Each task's per-unit outputs accumulate across the `forEach` loop into the activity-level `completed_tasks` / `commits` collections via the activity's `scatter-gather` supporting strategy — governed activity-wide, not through per-step `technique.inputs`/`technique.outputs` deviations.
 
 **Post-loop steps:**
 

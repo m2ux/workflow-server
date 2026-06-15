@@ -1,5 +1,5 @@
 id: design-philosophy
-version: 1.6.0
+version: 1.7.0
 name: Design Philosophy
 description: "Apply the design framework to classify the problem and decide the workflow path."
 problem: User needs to understand problem nature before deciding on workflow path
@@ -43,15 +43,17 @@ steps[9]:
       - action: message
         message: "Created: design-philosophy.md"
   - id: collect-assumptions
-    technique: review-assumptions::collect
-    technique_args:
-      activity_context: design-philosophy
-      assumption_categories: "Problem Interpretation, Complexity Assessment, Workflow Path"
+    technique:
+      name: review-assumptions::collect
+      inputs:
+        activity_context: design-philosophy
+        assumption_categories: "Problem Interpretation, Complexity Assessment, Workflow Path"
   - id: create-assumptions-log
-    technique: review-assumptions::record
-    technique_args:
-      activity_context: design-philosophy
-      assumption_categories: "Problem Interpretation, Complexity Assessment, Workflow Path"
+    technique:
+      name: review-assumptions::record
+      inputs:
+        activity_context: design-philosophy
+        assumption_categories: "Problem Interpretation, Complexity Assessment, Workflow Path"
   - id: reconcile-assumptions
     technique: review-assumptions::reconcile
   - id: assess-ticket-completeness

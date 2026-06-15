@@ -1,5 +1,5 @@
 id: reflect-pass
-version: 1.1.0
+version: 1.2.0
 name: Reflect Analysis Pass
 description: "L12 structural analysis with recursive meta-analysis and constraint synthesis."
 problem: "Single-pass analysis cannot examine its own blind spots. Reflect uses the claim prism to attack the L12 output as a text artifact, revealing hidden assumptions in the analysis itself, not just the code."
@@ -22,9 +22,10 @@ artifacts[3]:
 steps[2]:
   - id: run-reflect
     required: true
-    technique: reflect-analysis
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: reflect-analysis
+      inputs:
+        target_content: "{target}"
   - id: collect-paths
     required: true
     actions[1]:

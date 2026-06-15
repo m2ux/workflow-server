@@ -1,5 +1,5 @@
 id: structural-pass
-version: 2.2.0
+version: 2.3.0
 name: Structural Analysis Pass
 description: "Run the assigned structural analysis for each analysis unit."
 techniques:
@@ -58,9 +58,10 @@ loops[1]:
             description: "Whether the target codebase is indexed."
       - id: run-structural
         required: true
-        technique: structural-analysis
-        technique_args:
-          target_content: "{current_unit.target}"
+        technique:
+          name: structural-analysis
+          inputs:
+            target_content: "{current_unit.target}"
         condition:
           type: or
           conditions[2]:
@@ -74,9 +75,10 @@ loops[1]:
               value: full-prism
       - id: run-portfolio
         required: true
-        technique: portfolio-analysis
-        technique_args:
-          target_content: "{current_unit.target}"
+        technique:
+          name: portfolio-analysis
+          inputs:
+            target_content: "{current_unit.target}"
         condition:
           type: simple
           variable: current_unit.pipeline_mode
@@ -84,9 +86,10 @@ loops[1]:
           value: portfolio
       - id: dispatch-behavioral-lenses
         required: true
-        technique: behavioral-pipeline
-        technique_args:
-          target_content: "{current_unit.target}"
+        technique:
+          name: behavioral-pipeline
+          inputs:
+            target_content: "{current_unit.target}"
         condition:
           type: simple
           variable: current_unit.pipeline_mode

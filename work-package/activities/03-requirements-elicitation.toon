@@ -1,5 +1,5 @@
 id: requirements-elicitation
-version: 2.8.0
+version: 2.9.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation.
 problem: User needs to clarify and capture requirements before implementation
@@ -15,9 +15,10 @@ steps[6]:
     technique: elicit
     checkpoint: domain-iteration
   - id: collect-assumptions
-    technique: review-assumptions::collect
-    technique_args:
-      assumption_categories: "Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation"
+    technique:
+      name: review-assumptions::collect
+      inputs:
+        assumption_categories: "Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation"
   - id: create-document
     technique: create-document
   - id: update-assumptions-log

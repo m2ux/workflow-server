@@ -1,5 +1,5 @@
 id: gap-analysis
-version: 2.2.0
+version: 2.3.0
 name: Gap Analysis
 description: "Compare the AI audit report against a professional reference."
 problem: Without comparison against a professional benchmark, the AI audit's coverage and calibration cannot be assessed. Gap analysis identifies structural blind spots and informs template improvements.
@@ -13,21 +13,25 @@ steps[6]:
   - id: load-reference
     technique: write-gap-analysis
   - id: map-findings
-    technique: compare-finding-sets
-    technique_args:
-      output_format: "Finding-by-finding mapping table"
+    technique:
+      name: compare-finding-sets
+      inputs:
+        output_format: "Finding-by-finding mapping table"
   - id: identify-gaps
-    technique: compare-finding-sets
-    technique_args:
-      output_format: "Gap list grouped by severity and root cause category"
+    technique:
+      name: compare-finding-sets
+      inputs:
+        output_format: "Gap list grouped by severity and root cause category"
   - id: analyze-severity
-    technique: compare-finding-sets
-    technique_args:
-      output_format: "Severity calibration analysis with over/under-rating patterns"
+    technique:
+      name: compare-finding-sets
+      inputs:
+        output_format: "Severity calibration analysis with over/under-rating patterns"
   - id: root-cause-analysis
-    technique: compare-finding-sets
-    technique_args:
-      output_format: "Root cause analysis with countermeasures per gap cluster"
+    technique:
+      name: compare-finding-sets
+      inputs:
+        output_format: "Root cause analysis with countermeasures per gap cluster"
   - id: write-gap-analysis
     technique: write-gap-analysis
 transitions[0]:

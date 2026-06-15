@@ -1,5 +1,5 @@
 id: subsystem-pass
-version: 1.1.0
+version: 1.2.0
 name: Subsystem Analysis Pass
 description: "Per-region prism analysis with cross-subsystem synthesis."
 problem: "Whole-file analysis with a single prism misses bugs that exist BETWEEN subsystems and structural properties that span class boundaries. Different code regions benefit from different analytical lenses."
@@ -18,32 +18,36 @@ artifacts[2]:
 steps[5]:
   - id: split-subsystems
     required: true
-    technique: subsystem-analysis::decompose
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: subsystem-analysis::decompose
+      inputs:
+        target_content: "{target}"
   - id: calibrate-assignments
     required: true
-    technique: subsystem-analysis::calibrate
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: subsystem-analysis::calibrate
+      inputs:
+        target_content: "{target}"
     actions[1]:
       - action: set
         target: subsystem_assignments
         description: "Map of subsystem to assigned prism."
   - id: execute-per-subsystem
     required: true
-    technique: subsystem-analysis::execute
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: subsystem-analysis::execute
+      inputs:
+        target_content: "{target}"
     actions[1]:
       - action: set
         target: subsystem_outputs
         description: "Per-subsystem analysis outputs."
   - id: synthesize-cross-subsystem
     required: true
-    technique: subsystem-analysis::synthesize
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: subsystem-analysis::synthesize
+      inputs:
+        target_content: "{target}"
   - id: collect-paths
     required: true
     actions[1]:

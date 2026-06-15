@@ -1,5 +1,5 @@
 id: end-workflow
-version: 4.1.0
+version: 4.2.0
 name: End Workflow
 description: "Close out the client workflow."
 problem: Workflow sessions need an explicit close-out so the user knows the work is done and the final state is durably persisted
@@ -10,15 +10,17 @@ techniques:
     - "workflow-engine::generate-summary"
 steps[2]:
   - id: verify-outcomes
-    technique: workflow-engine::verify-outcomes
-    technique_args:
-      outcome: target_workflow_outcomes
-      state: client_state
+    technique:
+      name: workflow-engine::verify-outcomes
+      inputs:
+        outcome: target_workflow_outcomes
+        state: client_state
   - id: generate-summary
-    technique: workflow-engine::generate-summary
-    technique_args:
-      workflow: target_workflow_id
-      trace: client_trace
+    technique:
+      name: workflow-engine::generate-summary
+      inputs:
+        workflow: target_workflow_id
+        trace: client_trace
 checkpoints[1]:
   - id: completion-confirmed
     name: Completion Confirmation

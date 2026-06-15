@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.5.0
+version: 1.6.0
 name: Submit for Review
 description: "Submit the PR for review and handle reviewer feedback."
 problem: User needs to submit the PR for review and handle reviewer feedback
@@ -101,9 +101,10 @@ loops[1]:
     maxIterations: 2
     steps[2]:
       - id: rerender-body
-        technique: update-pr::render
-        technique_args:
-          template: final
+        technique:
+          name: update-pr::render
+          inputs:
+            template: final
       - id: verify-body
         technique: update-pr::verify-body
 checkpoints[6]:

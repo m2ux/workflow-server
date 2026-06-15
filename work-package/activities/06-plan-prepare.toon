@@ -1,5 +1,5 @@
 id: plan-prepare
-version: 1.6.0
+version: 1.7.0
 name: Plan & Prepare
 description: "Design the approach, create the work package plan, and prepare for implementation."
 problem: User needs to plan the implementation approach
@@ -33,16 +33,18 @@ steps[10]:
   - id: create-test-plan
     technique: create-test-plan
   - id: present-solution-overview
-    technique: stakeholder-overview
-    technique_args:
-      readme_section_heading: "## Solution Overview"
+    technique:
+      name: stakeholder-overview
+      inputs:
+        readme_section_heading: "## Solution Overview"
     actions[1]:
       - action: message
         message: "**Solution Overview** (plain-language summary for stakeholder reference)"
   - id: collect-assumptions
-    technique: review-assumptions::collect
-    technique_args:
-      assumption_categories: "Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions"
+    technique:
+      name: review-assumptions::collect
+      inputs:
+        assumption_categories: "Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions"
   - id: update-assumptions-log
     technique: review-assumptions::record
   - id: reconcile-assumptions
@@ -52,9 +54,10 @@ steps[10]:
   - id: sync-branch
     technique: manage-git::sync-branch
   - id: update-pr
-    technique: update-pr::render
-    technique_args:
-      template: initial
+    technique:
+      name: update-pr::render
+      inputs:
+        template: initial
     checkpoint: approach-confirmed
 loops[1]:
   - id: assumption-reconciliation

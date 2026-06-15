@@ -1,5 +1,5 @@
 id: sub-crate-review
-version: 1.9.0
+version: 1.10.0
 name: "Sub-Agent: Crate Deep Review"
 description: "Structured crate review for Group A sub-agents."
 problem: "Sub-agents receiving free-form prompts skip per-field trace tables, mark PASS without cross-function comparison, and return prose instead of structured output. This activity enforces step-by-step execution with verifiable intermediate outputs."
@@ -10,9 +10,10 @@ required: false
 steps[8]:
   - id: read-all-files
     required: true
-    technique: build-function-registry
-    technique_args:
-      output_format: "| File | Lines | Read? |"
+    technique:
+      name: build-function-registry
+      inputs:
+        output_format: "| File | Lines | Read? |"
   - id: build-function-registry
     required: true
     technique: build-function-registry
@@ -21,19 +22,22 @@ steps[8]:
     technique: extract-invariants
   - id: apply-checklist
     required: true
-    technique: apply-checklist
-    technique_args:
-      output_format: "| Item | Verdict | Evidence | Finding ID |"
+    technique:
+      name: apply-checklist
+      inputs:
+        output_format: "| Item | Verdict | Evidence | Finding ID |"
   - id: produce-required-tables
     required: true
-    technique: apply-checklist
-    technique_args:
-      output_format: "| Table | Produced? | Justification |"
+    technique:
+      name: apply-checklist
+      inputs:
+        output_format: "| Table | Produced? | Justification |"
   - id: cross-function-comparison
     required: true
-    technique: scan-storage-lifecycle
-    technique_args:
-      verify_invariants: true
+    technique:
+      name: scan-storage-lifecycle
+      inputs:
+        verify_invariants: true
   - id: verify-completeness
     required: true
     technique: verify-sub-agent-output

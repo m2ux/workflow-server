@@ -11,11 +11,11 @@ Collect and classify the assumptions made during the work against `{assumption_c
 
 ### activity_context
 
-The context in which assumptions are generated, used to choose the category appropriate to the current phase (supplied via `technique_args`).
+The context in which assumptions are generated, used to choose the category appropriate to the current phase (supplied via `step.technique.inputs`).
 
 ### assumption_categories
 
-The list of categories used to classify each assumption (supplied via `technique_args`).
+The list of categories used to classify each assumption (supplied via `step.technique.inputs`).
 
 ### assumptions_log
 

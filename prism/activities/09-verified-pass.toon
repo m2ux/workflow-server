@@ -1,5 +1,5 @@
 id: verified-pass
-version: 1.1.0
+version: 1.2.0
 name: Verified Analysis Pass
 description: "L12 structural analysis with gap detection and re-analysis."
 problem: "Single-pass analysis may confabulate claims that depend on facts the model cannot verify. Verified mode detects these gaps and re-runs with corrections."
@@ -22,28 +22,32 @@ artifacts[3]:
 steps[5]:
   - id: run-initial-l12
     required: true
-    technique: verified-analysis::initial-analysis
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: verified-analysis::initial-analysis
+      inputs:
+        target_content: "{target}"
   - id: run-gap-detection
     required: true
-    technique: verified-analysis::gap-detection
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: verified-analysis::gap-detection
+      inputs:
+        target_content: "{target}"
   - id: extract-gaps
     required: true
-    technique: verified-analysis::gap-extraction
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: verified-analysis::gap-extraction
+      inputs:
+        target_content: "{target}"
     actions[1]:
       - action: set
         target: verified_gap_data
         description: "Structured gap data extracted from the gap analysis."
   - id: run-corrected-analysis
     required: true
-    technique: verified-analysis::corrected-analysis
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: verified-analysis::corrected-analysis
+      inputs:
+        target_content: "{target}"
   - id: collect-paths
     required: true
     actions[1]:

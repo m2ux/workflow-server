@@ -1,5 +1,5 @@
 id: research
-version: 2.5.0
+version: 2.6.0
 name: Research
 description: "Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity."
 problem: User needs to research best practices before planning
@@ -14,9 +14,10 @@ steps[9]:
     technique: synthesize
     checkpoint: research-findings
   - id: collect-assumptions
-    technique: review-assumptions::collect
-    technique_args:
-      assumption_categories: "Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment"
+    technique:
+      name: review-assumptions::collect
+      inputs:
+        assumption_categories: "Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment"
     checkpoint: research-focus
   - id: document
     technique: document

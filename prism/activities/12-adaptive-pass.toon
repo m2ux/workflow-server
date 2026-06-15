@@ -1,5 +1,5 @@
 id: adaptive-pass
-version: 1.1.0
+version: 1.2.0
 name: Adaptive Depth Pass
 description: "Cost-minimizing depth escalation."
 problem: "Users often don't know how deep an analysis needs to be. Running full-prism on every target is wasteful. Adaptive starts cheap and escalates only when needed."
@@ -30,18 +30,20 @@ artifacts[5]:
 steps[4]:
   - id: run-stage-1
     required: true
-    technique: adaptive-analysis::stage-1-sdl
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: adaptive-analysis::stage-1-sdl
+      inputs:
+        target_content: "{target}"
     actions[1]:
       - action: set
         target: adaptive_signal_quality
         description: "Signal-quality assessment at the current stage."
   - id: run-stage-2
     required: true
-    technique: adaptive-analysis::stage-2-l12
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: adaptive-analysis::stage-2-l12
+      inputs:
+        target_content: "{target}"
     actions[1]:
       - action: set
         target: adaptive_signal_quality
@@ -53,9 +55,10 @@ steps[4]:
       value: insufficient
   - id: run-stage-3
     required: true
-    technique: adaptive-analysis::stage-3-full
-    technique_args:
-      target_content: "{target}"
+    technique:
+      name: adaptive-analysis::stage-3-full
+      inputs:
+        target_content: "{target}"
     condition:
       type: simple
       variable: adaptive_signal_quality

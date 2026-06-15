@@ -1,5 +1,5 @@
 id: reconnaissance
-version: 3.1.0
+version: 3.2.0
 name: Reconnaissance
 description: "Run codebase reconnaissance and security decomposition."
 problem: "The orchestrator previously performed 9 inline reconnaissance steps (reading source files, scanning crates, building registries), consuming 10-15K tokens of context before primary agent dispatch. This reduced the orchestrator's effective context budget for its actual role: coordinating 10+ sub-agents across 6 workflow phases. Delegating analysis to sub-agents keeps the orchestrator's context clean for coordination."
@@ -15,17 +15,19 @@ steps[7]:
     technique: dispatch-sub-agents
   - id: verify-reconnaissance-files
     required: true
-    technique: dispatch-sub-agents
-    technique_args:
-      expected_output_files: "r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json"
+    technique:
+      name: dispatch-sub-agents
+      inputs:
+        expected_output_files: "r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json"
   - id: dispatch-security-architecture-agent
     required: true
     technique: dispatch-sub-agents
   - id: verify-security-architecture-file
     required: true
-    technique: dispatch-sub-agents
-    technique_args:
-      expected_output_files: "s-architectural-analysis.json"
+    technique:
+      name: dispatch-sub-agents
+      inputs:
+        expected_output_files: "s-architectural-analysis.json"
   - id: map-vulnerability-domains
     technique: map-vulnerability-domains
   - id: assign-agent-groups
