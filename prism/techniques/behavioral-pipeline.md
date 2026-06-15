@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 1.1.0
+  version: 1.2.0
   order: 5
   legacy_id: 5
 ---
@@ -15,7 +15,7 @@ Execute the behavioral pipeline — 4 independent behavioral lenses followed by 
 
 ### lens_name
 
-Which behavioral lens to apply: `error-resilience`, `optimize`, `evolution`, `api-surface`, or `synthesis`. The first four are the independent lenses; `synthesis` reconciles their outputs.
+*(optional)* Selects the dispatch phase. **Omit** to run the four independent lenses — `error-resilience`, `optimize`, `evolution`, `api-surface` — as a scatter (the dispatch phase). Set to **`synthesis`** to run the single synthesis pass that reconciles the four independent artifacts.
 
 ### prior_artifact_paths
 
@@ -25,7 +25,9 @@ Which behavioral lens to apply: `error-resilience`, `optimize`, `evolution`, `ap
 
 ### 1. Load Lens
 
-- Load the lens prompt for `{lens_name}`: `error-resilience` → [error-resilience](../resources/error-resilience.md), `optimize` → [optimize](../resources/optimize.md), `evolution` → [evolution](../resources/evolution.md), `api-surface` → [api-surface](../resources/api-surface.md), `synthesis` → [behavioral-synthesis](../resources/behavioral-synthesis.md). If the lens cannot be loaded, report the error; the valid behavioral lenses are `error-resilience`, `optimize`, `evolution`, `api-surface`, and `synthesis`.
+- When `{lens_name}` is omitted (the dispatch phase), this invocation runs the four independent lenses — load each lens prompt: `error-resilience` → [error-resilience](../resources/error-resilience.md), `optimize` → [optimize](../resources/optimize.md), `evolution` → [evolution](../resources/evolution.md), `api-surface` → [api-surface](../resources/api-surface.md). Per `independent-lenses-parallel`, dispatch them concurrently (up to four at once).
+- When `{lens_name}` is `synthesis`, load the [behavioral-synthesis](../resources/behavioral-synthesis.md) lens prompt for the synthesis pass.
+- If a lens cannot be loaded, report the error.
 - The behavioral pipeline is code-only: if `{target_type}` is `general`, report that the behavioral pipeline is code-only and recommend portfolio mode with individual neutral variant lenses for general targets.
 - The lens prompt is the program — execute its operations in order
 
@@ -33,11 +35,11 @@ Which behavioral lens to apply: `error-resilience`, `optimize`, `evolution`, `ap
 
 - If `{target_content}` is a file path, read the file to obtain the code
 
-### 3. Apply Independent Lens
+### 3. Apply Independent Lenses
 
-- For the independent lens passes (`error-resilience`, `optimize`, `evolution`, `api-surface`): apply the lens against the target content
+- In the dispatch phase, run each of the four independent lenses (`error-resilience`, `optimize`, `evolution`, `api-surface`) against the target content
 - Execute every operation completely — the analytical depth comes from the full chain
-- Write `{behavioral_artifact}` into `{output_path}` under its declared `#### artifact` name for `{lens_name}`
+- Write each lens's `{behavioral_artifact}` into `{output_path}` under that lens's declared `#### artifact` name
 
 ### 4. Augment With Graph
 
