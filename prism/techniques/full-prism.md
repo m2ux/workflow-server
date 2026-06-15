@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 2.1.0
+  version: 2.2.0
   order: 1
   legacy_id: 1
 ---
@@ -13,9 +13,9 @@ Execute a single pass of the Full Prism pipeline within an isolation model
 
 ## Inputs
 
-### lens_resource_index
+### lens_name
 
-Resource index to load from the prism workflow (00 for structural, 01 for adversarial, 02 for synthesis)
+Which lens to apply: `structural`, `adversarial`, or `synthesis`. Each names the lens resource the pass loads and the analytical role it performs.
 
 ### prior_artifact_paths
 
@@ -25,9 +25,9 @@ Resource index to load from the prism workflow (00 for structural, 01 for advers
 
 ### 1. Load Lens
 
-- Load the lens prompt for `{lens_resource_index}`: 00 → [l12](../resources/l12.md) (structural), 01 → [l12-complement-adversarial](../resources/l12-complement-adversarial.md) (adversarial), 02 → [l12-synthesis](../resources/l12-synthesis.md) (synthesis)
+- Load the lens prompt for `{lens_name}`: `structural` → [l12](../resources/l12.md), `adversarial` → [l12-complement-adversarial](../resources/l12-complement-adversarial.md), `synthesis` → [l12-synthesis](../resources/l12-synthesis.md)
 - The lens prompt is the program — it defines the exact sequence of analytical operations to execute
-- If the lens for the given index cannot be loaded, report the error and note that valid indices are 00-02 (all target types).
+- If the lens cannot be loaded, report the error and note that the valid lenses are `structural`, `adversarial`, and `synthesis` (all target types).
 
 ### 2. Read Prior Artifacts
 
@@ -43,12 +43,12 @@ Resource index to load from the prism workflow (00 for structural, 01 for advers
 
 ### 4. Verify With Graph
 
-- ADVERSARIAL PASS ONLY (`{lens_resource_index}` 01). Skip this step for structural (00) and synthesis (02) passes.
+- ADVERSARIAL PASS ONLY (`{lens_name}` is `adversarial`). Skip this step for the `structural` and `synthesis` passes.
 - Check GitNexus availability via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md). If the target codebase is not indexed, skip graph verification entirely.
 - For each blast-radius claim in the adversarial analysis (e.g., 'this affects module X only'), take the symbol the claim names as `{$claimed_symbol}` and use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)`(target: {claimed_symbol}, direction: 'upstream')` to mechanically verify or refute. Record the measured affected-symbol count, affected-process count, and affected-module count alongside the claim.
 - For each call-chain claim in the structural analysis being challenged, use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on the key symbols to verify whether the claimed callers/callees are actually connected in the graph. Note confirmed and refuted edges.
 - For 'dead code' or 'unused path' claims, use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) to query for incoming `CALLS` edges: `MATCH (a)-[:CodeRelation {type: 'CALLS'}]->(b {name: 'claimed_dead_symbol'}) RETURN a.name, a.filePath`. If results exist, the claim is refuted. Append a 'Graph Verification' section to the adversarial artifact with all verification results.
-- Graph verification results augment the adversarial analysis, not replace it. The adversarial lens operations execute first and produce the full analysis. Graph queries then provide mechanical evidence that strengthens or refutes specific claims. Graph verification is only performed during the adversarial pass (index 01).
+- Graph verification results augment the adversarial analysis, not replace it. The adversarial lens operations execute first and produce the full analysis. Graph queries then provide mechanical evidence that strengthens or refutes specific claims. Graph verification is only performed during the adversarial pass (`{lens_name}` is `adversarial`).
 
 ### 5. Write Artifact
 
@@ -69,7 +69,7 @@ Analysis artifact written to the filesystem
 
 #### artifact
 
-`structural-analysis.md` (`{lens_resource_index}` 00) / `adversarial-analysis.md` (01) / `synthesis.md` (02)
+`structural-analysis.md` (`{lens_name}` `structural`) / `adversarial-analysis.md` (`adversarial`) / `synthesis.md` (`synthesis`)
 
 #### artifact_path
 
