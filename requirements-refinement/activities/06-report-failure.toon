@@ -26,7 +26,6 @@ artifacts[1]:
   - id: failure-report
     name: failure-report.md
     location: planning
-    description: "Critical/irreconcilable issues, correction history, and manual-resolution guidance"
 outcome[2]:
   - Failure report compiled with critical issues and resolution guidance
   - No specification promoted

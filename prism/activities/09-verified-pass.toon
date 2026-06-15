@@ -10,15 +10,12 @@ artifacts[3]:
   - id: verified-initial
     name: "verified-initial.md"
     location: analysis
-    description: "Initial L12 structural analysis artifact"
   - id: verified-gaps
     name: "verified-gaps.md"
     location: analysis
-    description: "Combined knowledge_boundary + knowledge_audit gap analysis on the L12 output"
   - id: verified-corrected
     name: "verified-corrected.md"
     location: analysis
-    description: "Corrected L12 re-analysis with unverifiable claims marked, using injected gap context"
 steps[5]:
   - id: run-initial-l12
     required: true

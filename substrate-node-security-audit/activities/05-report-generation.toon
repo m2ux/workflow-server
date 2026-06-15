@@ -80,4 +80,3 @@ artifacts[1]:
   - id: audit-report
     name: 01-audit-report.md
     location: planning
-    description: "Complete security audit report with numbered findings, severity scores, and methodology notes"

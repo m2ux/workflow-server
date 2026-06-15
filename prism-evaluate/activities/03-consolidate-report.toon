@@ -30,7 +30,6 @@ artifacts[1]:
   - id: evaluation-report
     name: "EVALUATION-REPORT.md"
     location: evaluation
-    description: "Consolidated evaluation report with unified findings, cross-dimensional insights, and actionable recommendations"
 outcome[1]:
   - "EVALUATION-REPORT.md written with per-dimension findings, core finding, cross-dimensional patterns, and recommendations"
 transitions[1]:

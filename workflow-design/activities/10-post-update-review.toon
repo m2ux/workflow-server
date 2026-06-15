@@ -23,7 +23,6 @@ artifacts[1]:
   - id: post-update-review-report
     name: "{target_workflow_id}-post-update-review.md"
     location: reviews
-    description: "Post-update compliance snapshot with pass/fail counts and any new findings"
     action: create
 checkpoints[1]:
   - id: post-update-disposition

@@ -51,4 +51,3 @@ artifacts[1]:
   - id: gap-analysis-report
     name: 02-gap-analysis.md
     location: planning
-    description: "Finding-by-finding comparison against professional audit with gap analysis and root causes"

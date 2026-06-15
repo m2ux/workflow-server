@@ -10,15 +10,12 @@ artifacts[3]:
   - id: dispute-lens-a
     name: "dispute-lens-a.md"
     location: analysis
-    description: "Output of prism A (l12 or l12_universal) in isolation"
   - id: dispute-lens-b
     name: "dispute-lens-b.md"
     location: analysis
-    description: "Output of prism B (identity or claim) in isolation"
   - id: dispute-synthesis
     name: "dispute-synthesis.md"
     location: analysis
-    description: "Disagreement synthesis: blind spots, implicit convergence, deepest cross-lens finding"
 steps[2]:
   - id: run-dispute
     required: true

@@ -21,7 +21,6 @@ steps[1]:
 artifacts[1]:
   - id: routing-commit
     name: Skill routing commit
-    description: "Commit with updated technique files"
     location: workflows
     action: create
 

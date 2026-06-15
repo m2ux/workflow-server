@@ -10,15 +10,12 @@ artifacts[3]:
   - id: smart-prereq
     name: "smart-prereq.md"
     location: analysis
-    description: "Prerequisite scan: knowledge gaps and atomic questions"
   - id: smart-analysis
     name: "smart-analysis.md"
     location: analysis
-    description: "Primary analysis artifact (or per-subsystem subsystem-*.md when subsystem mode is selected)"
   - id: smart-dispute
     name: "smart-dispute-*.md"
     location: analysis
-    description: "Dispute self-correction output(s); filename pattern smart-dispute-*.md"
 steps[6]:
   - id: run-prereq
     required: true

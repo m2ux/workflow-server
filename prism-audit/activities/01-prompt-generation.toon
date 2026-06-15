@@ -57,7 +57,6 @@ artifacts[1]:
   - id: audit-prompt
     name: "audit-prompt.md"
     location: audit
-    description: "Tailored audit prompt with codebase-specific domains, risk levels, and focus areas"
 rules[4]:
   - "EVIDENCE-BASED DOMAINS: Every audit domain must be grounded in observed codebase characteristics. Do not include generic security domains that have no corresponding code in the target. If the codebase has no network-exposed surfaces, do not include an API security domain."
   - "RISK CALIBRATION: Risk levels must reflect the domain's exposure and blast radius, not generic severity. A cryptographic library used for transaction signing is CRITICAL; a cryptographic library used only for log hashing is MEDIUM."

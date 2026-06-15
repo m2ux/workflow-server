@@ -10,15 +10,12 @@ artifacts[3]:
   - id: reflect-l12
     name: "reflect-l12.md"
     location: analysis
-    description: "L12 structural analysis output for the original target"
   - id: reflect-meta
     name: "reflect-meta.md"
     location: analysis
-    description: "Claim-prism meta-analysis of the L12 output (analysis as artifact)"
   - id: reflect-synthesis
     name: "reflect-synthesis.md"
     location: analysis
-    description: "Constraint synthesis: recurring patterns, unexplored dimensions, false positives, next best scan"
 steps[2]:
   - id: run-reflect
     required: true

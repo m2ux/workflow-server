@@ -13,7 +13,6 @@ artifacts[1]:
   - id: analysis-document
     name: "01-COMPLETION-ANALYSIS.md / 02-CONTEXT-ANALYSIS.md"
     location: planning
-    description: "Completion analysis or context analysis document"
     action: create
 decisions[1]:
   - id: analysis-method

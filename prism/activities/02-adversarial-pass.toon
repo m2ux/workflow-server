@@ -10,7 +10,6 @@ artifacts[1]:
   - id: adversarial-analysis
     name: "{current_unit.unit_output_subdir}adversarial-analysis.md"
     location: analysis
-    description: "Adversarial challenge per unit: wrong predictions, overclaims, underclaims, revised findings table"
 loops[1]:
   - id: adversarial-unit-cycle
     name: Adversarial Unit Cycle

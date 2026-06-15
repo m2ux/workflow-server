@@ -53,11 +53,9 @@ artifacts[2]:
   - id: intake-doc
     name: intake.md
     location: planning
-    description: "Captured source-document and target-specification paths, classified source type, detected augment/create mode, and spec_basename"
   - id: requirements-analysis-doc
     name: requirements-analysis.md
     location: planning
-    description: "Structured requirements analysis report: source reference, new/updated/deprecated requirements, source-coverage matrix, document updates required, quality issues, implementation notes"
 transitions[1]:
   - to: update-specification
     condition:

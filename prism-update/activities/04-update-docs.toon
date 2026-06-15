@@ -21,7 +21,6 @@ steps[1]:
 artifacts[1]:
   - id: docs-commit
     name: Documentation commit
-    description: "Commit with updated README files"
     location: workflows
     action: create
 

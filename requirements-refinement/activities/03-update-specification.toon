@@ -17,7 +17,6 @@ artifacts[1]:
   - id: working-specification
     name: working-spec-{correction_iteration}.md
     location: planning
-    description: "Complete updated specification for this pass (pass 0 is the initial update; later numbers are correction passes)"
 transitions[1]:
   - to: validate-specification
     isDefault: true

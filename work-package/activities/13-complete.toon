@@ -8,19 +8,15 @@ artifacts[4]:
   - id: adr
     name: "NNNN-{decision-title}.md"
     location: .engineering/artifacts/adr
-    description: "Architecture Decision Record for moderate or complex implementations. Produced by create-adr step (conditional on complexity)."
   - id: complete-document
     name: COMPLETE.md
     location: planning
-    description: "Completion summary documenting deliverables, test coverage, and deferred items"
   - id: retrospective
     name: workflow-retrospective.md
     location: planning
-    description: "Workflow retrospective notes"
   - id: review-analysis
     name: "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md"
     location: reviews
-    description: "PR review analysis document"
 techniques:
   supporting[1]:
     - "variable-binding"

@@ -14,7 +14,6 @@ artifacts[1]:
   - id: final-report
     name: "REPORT.md"
     location: analysis
-    description: "Clean final report with definitive findings, unified identifiers, and no methodology-specific language"
 transitions[1]:
   - to: deliver-result
     isDefault: true

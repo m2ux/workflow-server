@@ -34,4 +34,3 @@ artifacts[1]:
   - id: verification-report
     name: verification-report.json
     location: planning
-    description: "Scan completeness verification with coverage status and gaps"

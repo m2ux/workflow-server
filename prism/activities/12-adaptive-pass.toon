@@ -10,23 +10,18 @@ artifacts[5]:
   - id: adaptive-stage1
     name: "adaptive-stage1.md"
     location: analysis
-    description: "SDL deep_scan (resource 12) output on Haiku — always produced"
   - id: adaptive-stage2
     name: "adaptive-stage2.md"
     location: analysis
-    description: "L12 (resource 00) output on Sonnet — produced only if stage 1 signal was insufficient"
   - id: full-prism-structural
     name: "structural-analysis.md"
     location: analysis
-    description: "Full-prism structural pass — produced only if stage 2 signal was still insufficient"
   - id: full-prism-adversarial
     name: "adversarial-analysis.md"
     location: analysis
-    description: "Full-prism adversarial pass — produced only when full 3-pass pipeline runs"
   - id: full-prism-synthesis
     name: "synthesis.md"
     location: analysis
-    description: "Full-prism synthesis pass — produced only when full 3-pass pipeline runs"
 steps[4]:
   - id: run-stage-1
     required: true

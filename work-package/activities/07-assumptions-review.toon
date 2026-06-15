@@ -81,7 +81,6 @@ artifacts[1]:
   - id: assumptions-log
     name: assumptions-log.md
     location: planning
-    description: "Assumptions log updated with user decisions from the interview"
     action: update
 checkpoints[2]:
   - id: assumption-decision

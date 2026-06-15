@@ -53,7 +53,6 @@ artifacts[1]:
   - id: evaluation-plan
     name: "evaluation-plan.md"
     location: evaluation
-    description: "Target overview, dimension-to-lens mapping, and execution group plan"
 outcome[2]:
   - "Evaluation plan written with dimension-to-lens mapping and execution groups"
   - "dimension_plan and execution_groups populated for the execute-analysis activity"

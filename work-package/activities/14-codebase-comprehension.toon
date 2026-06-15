@@ -30,7 +30,6 @@ artifacts[1]:
   - id: comprehension-artifact
     name: "{codebase-area}.md"
     location: comprehension
-    description: "Persistent knowledge artifact covering architecture, abstractions, design rationale, and domain mapping for a codebase area. Augmented across successive work packages."
 checkpoints[1]:
   - id: comprehension-sufficient
     name: Comprehension Sufficiency Checkpoint

@@ -13,27 +13,21 @@ artifacts[6]:
   - id: change-block-index
     name: "change-block-index.md"
     location: planning
-    description: "Indexed table of all change blocks (git diff hunks) with hyperlinked row numbers and per-block rationale paragraphs explaining intent and design choices, for cross-reference during manual review"
   - id: manual-diff-review-report
     name: "manual-diff-review.md"
     location: planning
-    description: "Manual diff review report with indexed findings from user's side-by-side review"
   - id: code-review-report
     name: "code-review.md"
     location: planning
-    description: "Code review report documenting findings by severity"
   - id: test-suite-review-report
     name: "test-suite-review.md"
     location: planning
-    description: "Test suite review report documenting quality assessment, anti-patterns, and recommendations"
   - id: architecture-summary
     name: "architecture-summary.md"
     location: planning
-    description: "High-level architecture summary with Mermaid C4 diagrams for management stakeholders"
   - id: structural-findings
     name: "structural-findings.md"
     location: planning
-    description: "Prism structural analysis findings — conservation law, meta-law, and classified bug table. For complex work packages, includes adversarial and synthesis pass artifacts."
 steps[8]:
   - id: gitnexus-detect-changes-preflight
     technique: gitnexus-operations::detect-changes

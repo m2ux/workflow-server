@@ -13,12 +13,10 @@ artifacts[2]:
   - id: start-here-final
     name: START-HERE.md
     location: planning
-    description: "Completed executive summary, status table, timeline, and success criteria"
     action: update
   - id: readme-final
     name: README.md
     location: planning
-    description: "Navigation links to all planning documents"
     action: update
 checkpoints[1]:
   - id: roadmap-complete

@@ -54,15 +54,12 @@ artifacts[3]:
   - id: audit-report
     name: "AUDIT-REPORT.md"
     location: audit
-    description: "Finalised summary report with hyperlinked tables, rubric-scored severities, and cross-references to companion documents"
   - id: detailed-findings
     name: "DETAILED-FINDINGS.md"
     location: audit
-    description: "Expanded write-ups for all findings organised by severity (Critical, High, Medium, Low)"
   - id: design-trade-offs
     name: "DESIGN-TRADE-OFFS.md"
     location: audit
-    description: "Trade-off catalogue, cross-domain interactions, and design decision register distilled from conservation laws"
 exitActions[1]:
   - action: validate
     description: "Verify all three audit deliverables exist before transitioning to delivery"

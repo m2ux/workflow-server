@@ -27,7 +27,6 @@ artifacts[1]:
   - id: validation-report
     name: validation-report-{correction_iteration}.md
     location: planning
-    description: "Validation verdict and categorized issues (critical/irreconcilable versus correctable) for this pass"
 transitions[3]:
   - to: finalize-specification
     condition:

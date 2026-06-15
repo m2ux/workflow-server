@@ -14,7 +14,6 @@ artifacts[1]:
   - id: package-plan
     name: "{package_name}-plan.md"
     location: planning
-    description: "Individual work package plan with scope, dependencies, effort, and success criteria"
     action: create
 checkpoints[1]:
   - id: plans-created

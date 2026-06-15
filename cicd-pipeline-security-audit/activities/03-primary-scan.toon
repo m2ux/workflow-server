@@ -71,4 +71,3 @@ artifacts[1]:
   - id: merged-findings
     name: merged-findings.json
     location: planning
-    description: "Unified finding set after deduplication and cross-pattern correlation"

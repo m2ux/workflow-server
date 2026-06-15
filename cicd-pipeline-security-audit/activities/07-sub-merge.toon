@@ -37,8 +37,6 @@ artifacts[2]:
   - id: merged-findings
     name: merged-findings.json
     location: planning
-    description: "Unified finding set after deduplication and cross-pattern correlation"
   - id: reconciliation-table
     name: reconciliation-table.json
     location: planning
-    description: "Per-scanner finding mapping showing how each scanner finding maps to a merged finding"

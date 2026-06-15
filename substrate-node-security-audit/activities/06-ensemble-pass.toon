@@ -55,4 +55,3 @@ artifacts[1]:
   - id: second-pass-findings
     name: second-pass-findings.md
     location: planning
-    description: "Second-pass findings artifact. Existence verifies ensemble was executed; must include at least one sub-agent result."

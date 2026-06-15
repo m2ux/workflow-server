@@ -34,4 +34,3 @@ artifacts[1]:
   - id: start-here
     name: START-HERE.md
     location: planning
-    description: "Session overview with audit target, commit, methodology, and artifact index"

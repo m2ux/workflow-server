@@ -10,7 +10,6 @@ artifacts[1]:
   - id: behavioral-synthesis
     name: "{current_unit.unit_output_subdir}behavioral-synthesis.md"
     location: analysis
-    description: "Behavioral synthesis per unit: convergence points, blind spots, and unified conservation law across ERRORS, COSTS, CHANGES, PROMISES"
 loops[1]:
   - id: behavioral-synthesis-unit-cycle
     name: Behavioral Synthesis Unit Cycle

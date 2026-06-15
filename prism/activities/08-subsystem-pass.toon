@@ -10,11 +10,9 @@ artifacts[2]:
   - id: subsystem-output
     name: "subsystem-{name}.md"
     location: analysis
-    description: "Per-subsystem analysis artifact (one per structural subsystem)"
   - id: subsystem-synthesis
     name: "subsystem-synthesis.md"
     location: analysis
-    description: "Cross-subsystem findings, cross-subsystem bugs, file-level conservation law, coverage map"
 steps[5]:
   - id: split-subsystems
     required: true

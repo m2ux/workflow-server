@@ -8,12 +8,10 @@ artifacts[2]:
   - id: assumptions-log
     name: assumptions-log.md
     location: planning
-    description: "Log of assumptions - continues from earlier phases (design-philosophy, requirements, research, analysis, planning)"
     action: update
   - id: provenance-log
     name: provenance-log.md
     location: planning
-    description: "AI assistance provenance record. One row per task: task ID, model ID, prompt class (code-generation|refactoring|test-writing|docs), context_scope, and a one-line description of what was generated. Created on first task, appended on each subsequent task. Linked from PR description."
     action: create
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes

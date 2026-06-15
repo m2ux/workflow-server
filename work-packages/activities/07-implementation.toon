@@ -21,7 +21,6 @@ artifacts[1]:
   - id: start-here-progress
     name: START-HERE.md
     location: planning
-    description: "Updated progress status after each completed package"
     action: update
 loops[1]:
   - id: package-iteration

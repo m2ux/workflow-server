@@ -60,20 +60,15 @@ artifacts[5]:
   - id: crate-map
     name: r-crate-map.json
     location: planning
-    description: "Crate classification by type, priority, and architectural category (produced by R)"
   - id: function-registry
     name: r-function-registry.json
     location: planning
-    description: "Registry of critical functions per priority-1/2 crate (produced by R)"
   - id: reconnaissance-data
     name: r-reconnaissance-data.json
     location: planning
-    description: "Trust boundaries, consensus paths, pallet hooks, config structs, data flows, safety overrides, large files, leads (produced by R)"
   - id: architectural-analysis
     name: s-architectural-analysis.json
     location: planning
-    description: "Interaction model, privilege map, candidate points, emergent domains (produced by S)"
   - id: readme
     name: README.md
     location: planning
-    description: "Audit scope, methodology, crate inventory, and architecture summary"

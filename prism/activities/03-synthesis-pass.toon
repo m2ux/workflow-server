@@ -10,7 +10,6 @@ artifacts[1]:
   - id: synthesis-artifact
     name: "{current_unit.unit_output_subdir}synthesis.md"
     location: analysis
-    description: "Final reconciliation per unit: refined conservation law, refined meta-law, definitive classification, deepest finding"
 loops[1]:
   - id: synthesis-unit-cycle
     name: Synthesis Unit Cycle

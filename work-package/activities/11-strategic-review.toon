@@ -11,11 +11,9 @@ artifacts[2]:
   - id: strategic-review-doc
     name: "strategic-review-{n}.md"
     location: planning
-    description: "Documents review findings, identified artifacts, and cleanup actions. NN follows artifact numbering sequence, n increments on successive reviews."
   - id: architecture-summary-doc
     name: "architecture-summary.md"
     location: planning
-    description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes. See architecture-summary resource for template."
 steps[9]:
   - id: review-strategy
     technique: review-scope

@@ -40,4 +40,3 @@ artifacts[1]:
   - id: audit-report
     name: 01-cicd-audit-report.md
     location: planning
-    description: "Complete CI/CD security audit report with findings, severity scores, remediation recommendations, and methodology"

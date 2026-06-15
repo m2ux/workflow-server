@@ -21,7 +21,6 @@ steps[1]:
 artifacts[1]:
   - id: import-commits
     name: Resource import commits
-    description: "Up to 4 commits: sync modified, apply renames, import new, remove deleted"
     location: workflows
     action: create
 

@@ -13,7 +13,6 @@ artifacts[1]:
   - id: priority-ranking
     name: priority-ranking.md
     location: planning
-    description: "Priority ranking with dependency graph and evaluation rationale"
     action: create
 checkpoints[1]:
   - id: priority-confirmed

@@ -43,8 +43,6 @@ artifacts[2]:
   - id: reconnaissance-summary
     name: reconnaissance-summary.json
     location: planning
-    description: "Per-workflow classification data: triggers, permissions, checkout patterns"
   - id: scanner-assignments
     name: scanner-assignments.json
     location: planning
-    description: "Agent-to-submodule assignment mapping"

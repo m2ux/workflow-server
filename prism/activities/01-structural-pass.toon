@@ -10,31 +10,24 @@ artifacts[7]:
   - id: structural-analysis
     name: "{current_unit.unit_output_subdir}structural-analysis.md"
     location: analysis
-    description: "L12 structural analysis per unit (single/full-prism modes)"
   - id: portfolio-lens
     name: "{current_unit.unit_output_subdir}portfolio-{lens_name}.md"
     location: analysis
-    description: "Per-lens portfolio analysis artifact (portfolio mode)"
   - id: portfolio-synthesis
     name: "{current_unit.unit_output_subdir}portfolio-synthesis.md"
     location: analysis
-    description: "Cross-lens synthesis artifact (portfolio mode)"
   - id: behavioral-errors
     name: "{current_unit.unit_output_subdir}behavioral-errors.md"
     location: analysis
-    description: "Error-resilience behavioral analysis (behavioral mode)"
   - id: behavioral-costs
     name: "{current_unit.unit_output_subdir}behavioral-costs.md"
     location: analysis
-    description: "Optimization behavioral analysis (behavioral mode)"
   - id: behavioral-changes
     name: "{current_unit.unit_output_subdir}behavioral-changes.md"
     location: analysis
-    description: "Evolution behavioral analysis (behavioral mode)"
   - id: behavioral-promises
     name: "{current_unit.unit_output_subdir}behavioral-promises.md"
     location: analysis
-    description: "API-surface behavioral analysis (behavioral mode)"
 loops[1]:
   - id: unit-cycle
     name: Analysis Unit Cycle

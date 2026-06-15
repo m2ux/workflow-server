@@ -15,12 +15,10 @@ artifacts[2]:
   - id: start-here-skeleton
     name: START-HERE.md
     location: planning
-    description: "Executive summary and status tracking skeleton"
     action: create
   - id: readme-skeleton
     name: README.md
     location: planning
-    description: "Navigation and document index skeleton"
     action: create
 checkpoints[1]:
   - id: folder-created

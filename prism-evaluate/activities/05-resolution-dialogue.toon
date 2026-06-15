@@ -65,7 +65,6 @@ artifacts[1]:
   - id: mitigation-plan
     name: "MITIGATION-PLAN.md"
     location: evaluation
-    description: "Comprehensive mitigation plan documenting all finding dispositions and accepted changes"
 transitions[1]:
   - to: apply-mitigations
     isDefault: true

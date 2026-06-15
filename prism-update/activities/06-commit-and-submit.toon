@@ -16,7 +16,6 @@ steps[1]:
 artifacts[1]:
   - id: pull-request
     name: Pull request
-    description: "PR against workflows branch with change summary"
     location: workflows
     action: create
 
