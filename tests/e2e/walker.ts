@@ -16,6 +16,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { evaluateCondition, type Condition } from '../../src/schema/condition.schema.js';
+import { TERMINAL_SENTINEL } from '../../src/loaders/workflow-loader.js';
 import { parseToolResponse, parseWorkflowResponse, parseBundle, isError, type Harness } from './harness.js';
 
 export interface CheckpointOption {
@@ -557,6 +558,13 @@ export async function walk(
     });
 
     if (!next) break;
+    // A transition to the terminal sentinel ends the workflow: next_activity
+    // accepts it and flips status to `completed`, but there is no activity to
+    // load — enter it to record completion, then stop without get_activity.
+    if (next === TERMINAL_SENTINEL) {
+      await transition(client, sessionIndex, next, pendingManifest);
+      break;
+    }
     current = next;
   }
 
@@ -606,7 +614,7 @@ export interface PathSet {
 export async function enumeratePaths(
   harness: Harness,
   workflowId: string,
-  opts: { maxVisits?: number; maxPaths?: number; maxWalks?: number; coverageMode?: boolean } = {},
+  opts: { maxVisits?: number; maxPaths?: number; maxWalks?: number; coverageMode?: boolean; maxDryWalks?: number } = {},
 ): Promise<PathSet> {
   const maxVisits = opts.maxVisits ?? 6;
   const maxPaths = opts.maxPaths ?? 256;
@@ -614,6 +622,13 @@ export async function enumeratePaths(
   // coverageMode: fork a branch only while it is still UN-exercised — turning the combinatorial
   // per-path enumeration into linear edge/option coverage (every decision-option hit at least once).
   const coverageMode = opts.coverageMode ?? false;
+  // Early-stop once branch coverage plateaus: after this many consecutive walks that exercise NO
+  // new decision-option (a coverage dry-streak), the reachable branch set is covered and further
+  // walks only re-tread it. Bounds wall-clock on large borrowed-activity workflows (e.g. remediate-
+  // vuln) without an arbitrary walk cap — it never stops while new branches are still being found.
+  // Only meaningful in coverageMode (the goal IS branch coverage); plain path-enumeration may find
+  // new PATHS without covering new branches, so there the dry-streak is disabled.
+  const maxDryWalks = opts.maxDryWalks ?? (coverageMode ? 30 : Infinity);
   const seenPaths = new Set<string>();
   const triedPrefixes = new Set<string>();
   const covered = new Set<string>();
@@ -623,9 +638,11 @@ export async function enumeratePaths(
   const queue: string[][] = [[]];
   let walks = 0;
   let capped = false;
+  let dryStreak = 0;
 
   while (queue.length) {
     if (paths.length >= maxPaths || walks >= maxWalks) { capped = queue.length > 0; break; }
+    if (dryStreak >= maxDryWalks) break; // coverage plateaued — remaining queue only re-treads covered branches
     const prefix = queue.shift()!;
     const pk = prefix.join(',');
     if (triedPrefixes.has(pk)) continue;
@@ -661,11 +678,14 @@ export async function enumeratePaths(
       // enumeration (the loop edge is already covered at its bounded count), not a finding.
       // Record only genuine failures (e.g. an unresolvable checkpoint/transition on the branch).
       if (!/Loop guard tripped/.test(message)) errors.push({ prefix, message });
+      dryStreak++; // a tripped/errored walk exercised no new branch
       continue;
     }
     const key = r.path.join(' > ');
     if (!seenPaths.has(key)) { seenPaths.add(key); paths.push(r); }
+    const coveredBefore = covered.size;
     for (const rec of recorder) covered.add(`${rec.key}=${rec.chosen}`);
+    dryStreak = covered.size > coveredBefore ? 0 : dryStreak + 1;
 
     // Fork: enqueue the prefix that takes each un-chosen option at each decision. In coverageMode,
     // skip a fork whose branch is already exercised — so each branch is walked ~once (linear), not

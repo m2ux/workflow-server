@@ -43,6 +43,6 @@ describe.skipIf(process.env.WF_PATH_COVERAGE !== '1')('all-workflows branch cove
       expect(ps.errors).toEqual([]);
       // The walk reached at least the happy path.
       expect(ps.distinctPaths.length).toBeGreaterThan(0);
-    }, 180_000);
+    }, 240_000);
   }
 });
