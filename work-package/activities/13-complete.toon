@@ -37,11 +37,11 @@ steps[8]:
         - type: or
           conditions[2]:
             - type: simple
-              variable: complexity
+              variable: problem_complexity
               operator: ==
               value: moderate
             - type: simple
-              variable: complexity
+              variable: problem_complexity
               operator: ==
               value: complex
   - id: update-adr-status
@@ -56,11 +56,11 @@ steps[8]:
         - type: or
           conditions[2]:
             - type: simple
-              variable: complexity
+              variable: problem_complexity
               operator: ==
               value: moderate
             - type: simple
-              variable: complexity
+              variable: problem_complexity
               operator: ==
               value: complex
   - id: finalize-test-plan

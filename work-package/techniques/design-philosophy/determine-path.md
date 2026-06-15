@@ -9,7 +9,7 @@ Map the assessed complexity to a workflow path and set the elicitation/research/
 
 ## Inputs
 
-### complexity
+### problem_complexity
 
 The assessed complexity (simple, moderate, or complex), mapped to a workflow path.
 

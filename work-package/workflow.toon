@@ -97,7 +97,7 @@ variables[95]:
     type: boolean
     description: Whether codebase comprehension is needed. Always true after design-philosophy (comprehension is mandatory). May be re-set to true by assumptions-review if stakeholder feedback requires deeper understanding.
     defaultValue: true
-  - name: complexity
+  - name: problem_complexity
     type: string
     description: "Problem complexity assessed during design-philosophy (simple|moderate|complex). Drives ADR creation."
   - name: project_type
@@ -263,7 +263,7 @@ variables[95]:
     description: "Assumptions collected during current task for review iteration"
   - name: current_task
     type: object
-    description: "Current task during implementation loop (from plan.tasks)"
+    description: "Current task during implementation loop (from implementation_plan.tasks)"
   - name: current_assumption
     type: object
     description: "Current assumption during assumption review loop (from task_assumptions). Sub-shape: { id: string (e.g., 'A-001'), statement: string }."
@@ -342,7 +342,7 @@ variables[95]:
     type: string
     description: "Filename of the comprehension artifact (basename only, no path) used in user-facing messages — distinct from comprehension_artifact which is the full path."
     defaultValue: ""
-  - name: plan
+  - name: implementation_plan
     type: object
     description: "Implementation plan produced by plan-prepare. Sub-shape: { task_count: number — count of tasks in the plan; tasks: array of { id: string, description: string, status: string } }. Fields actually interpolated in messages today: task_count, tasks[].id, tasks[].description. Additional fields are tolerated."
   - name: strategic_findings_summary
@@ -379,7 +379,7 @@ variables[95]:
     defaultValue: false
   - name: path_gating_complexity
     type: string
-    description: "Path-gating mirror of complexity. Used by design-philosophy's workflow-path-selected.skip-optional effect."
+    description: "Path-gating mirror of problem_complexity. Used by design-philosophy's workflow-path-selected.skip-optional effect."
     defaultValue: ""
   - name: gitnexus_indexed
     type: boolean

@@ -14,5 +14,5 @@ Analyze each subsystem with its assigned prism in a fresh worker, prefixing the 
 
 ### 1. Execute
 
-- For each subsystem, dispatch a fresh worker with its assigned prism, prefixing the subsystem content with a context header that names the region and its neighbours: ``# SUBSYSTEM: {subsystem.subsystem_name} (lines {subsystem.start_line}-{subsystem.end_line} of {subsystem.source_filename})`` then ``# OTHER SUBSYSTEMS: {subsystem.other_subsystem_names}``
+- For each subsystem, dispatch a fresh worker with its assigned prism, prefixing the subsystem content with a context header that names the region and its neighbours: ``# SUBSYSTEM: {code_subsystem.subsystem_name} (lines {code_subsystem.start_line}-{code_subsystem.end_line} of {code_subsystem.source_filename})`` then ``# OTHER SUBSYSTEMS: {code_subsystem.other_subsystem_names}``
 - Each worker writes one `{subsystem_result.subsystem_paths}` entry into `{output_path}`

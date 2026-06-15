@@ -15,7 +15,7 @@ steps[2]:
       name: version-control::commit-regular-files
       inputs:
         paths: "target_path, mitigation_plan_path"
-        message: "docs({target_name}): apply evaluation mitigations"
+        commit_message: "docs({target_name}): apply evaluation mitigations"
         branch: current
     required: true
     actions[1]:

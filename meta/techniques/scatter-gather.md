@@ -11,7 +11,7 @@ Build an ordered collection by accumulating one scalar output per work unit — 
 
 ### fan_out_items
 
-The ordered list of work units. In sequential mode this is the `forEach` `over` collection (e.g. `plan.tasks`); in parallel mode each entry yields one instance prompt for the fan-out.
+The ordered list of work units. In sequential mode this is the `forEach` `over` collection (e.g. `implementation_plan.tasks`); in parallel mode each entry yields one instance prompt for the fan-out.
 
 ### scatter_mode
 

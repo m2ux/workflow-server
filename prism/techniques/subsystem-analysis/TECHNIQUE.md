@@ -13,7 +13,7 @@ Decompose source code into subsystems, assign different prisms per region via ca
 
 ## Inputs
 
-### subsystem
+### code_subsystem
 
 One decomposed structural subsystem of the source, carrying its identity, line range, source file, and the names of its peer subsystems. Shared across the decompose, calibrate, and execute operations.
 
@@ -39,7 +39,7 @@ Names of the peer subsystems adjacent to this one
 
 ## Outputs
 
-### subsystem
+### code_subsystem
 
 The set of decomposed structural subsystems, each carrying its identity, line range, source file, and peer names (see the matching input declaration for the per-subsystem fields).
 
@@ -49,7 +49,7 @@ Paths to per-subsystem artifacts, synthesis artifact, and prism assignments
 
 #### artifact
 
-`subsystem-{subsystem.subsystem_name}.md` (one per structural subsystem) / `subsystem-synthesis.md` (cross-subsystem synthesis)
+`subsystem-{code_subsystem.subsystem_name}.md` (one per structural subsystem) / `subsystem-synthesis.md` (cross-subsystem synthesis)
 
 #### subsystem_paths
 

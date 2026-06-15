@@ -287,9 +287,9 @@ The workflow declares 95 variables that drive control flow, store checkpoint sta
 
 | Variable | Type | Description |
 |----------|------|-------------|
-| `complexity` | string | Problem complexity assessed during design-philosophy: simple, moderate, or complex. Drives ADR creation. |
+| `problem_complexity` | string | Problem complexity assessed during design-philosophy: simple, moderate, or complex. Drives ADR creation. |
 | `project_type` | string | Detected project type (e.g. `rust-substrate`); produced by project-type-detection and gates rust-substrate-specific validation steps. |
-| `path_gating_complexity` | string | Path-gating mirror of `complexity`, used by design-philosophy's skip-optional effect (default: `""`). |
+| `path_gating_complexity` | string | Path-gating mirror of `problem_complexity`, used by design-philosophy's skip-optional effect (default: `""`). |
 | `problem_type` | string | Problem or inventive-goal classification set during design-philosophy (e.g. defect, inventive-improvement). |
 | `needs_comprehension` | boolean | Whether codebase comprehension is needed; always true after design-philosophy, may be re-set by assumptions-review (default: `true`). |
 | `needs_elicitation` | boolean | Whether requirements elicitation is needed (default: `false`). |
@@ -383,8 +383,8 @@ The workflow declares 95 variables that drive control flow, store checkpoint sta
 
 | Variable | Type | Description |
 |----------|------|-------------|
-| `plan` | object | Implementation plan produced by plan-prepare: `{ task_count, tasks: [{ id, description, status }] }`. |
-| `current_task` | object | Current task during the implementation loop (from `plan.tasks`). |
+| `implementation_plan` | object | Implementation plan produced by plan-prepare: `{ task_count, tasks: [{ id, description, status }] }`. |
+| `current_task` | object | Current task during the implementation loop (from `implementation_plan.tasks`). |
 | `task_assumptions` | array | Assumptions collected during the current task for review iteration. |
 | `current_assumption` | object | Current assumption during the assumption review loop: `{ id, statement }`. |
 | `open_assumptions` | array | Open assumptions collected for `forEach` iteration during assumption interview loops. |

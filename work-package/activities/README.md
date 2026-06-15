@@ -113,7 +113,7 @@ graph TD
 
 ### 02. Design Philosophy
 
-**Purpose:** Apply structured design framework to classify the problem, determine complexity, and decide which optional activities are needed. Sets the `complexity` variable (simple / moderate / complex) which drives ADR creation in the Complete activity. In review mode: assesses ticket completeness against the ticket-completeness checklist.
+**Purpose:** Apply structured design framework to classify the problem, determine complexity, and decide which optional activities are needed. Sets the `problem_complexity` variable (simple / moderate / complex) which drives ADR creation in the Complete activity. In review mode: assesses ticket completeness against the ticket-completeness checklist.
 
 **Techniques:**
 
@@ -124,7 +124,7 @@ graph TD
 **Steps:**
 
 1. **define-problem** — `design-philosophy::define`.
-2. **classify-problem** — `design-philosophy::classify`; presents `classification-confirmed` checkpoint and sets `problem_type` and `complexity`.
+2. **classify-problem** — `design-philosophy::classify`; presents `classification-confirmed` checkpoint and sets `problem_type` and `problem_complexity`.
 3. **determine-path** — `design-philosophy::determine-path`; presents `workflow-path-selected` checkpoint and sets `needs_comprehension = true`.
 4. **document-philosophy** — `design-philosophy::document`; writes `design-philosophy.md`.
 5. **collect-assumptions** — `review-assumptions::collect`.
@@ -381,7 +381,7 @@ graph TD
 7. **reconcile-assumptions** — `review-assumptions::reconcile`.
 8. **create-todos** — `plan-prepare::create-todos`; breaks the plan into actionable tasks.
 9. **sync-branch** — `manage-git::sync-branch`; brings the feature branch up to date with `main`.
-10. **update-pr** — `update-pr::render` with `template: initial`; presents `approach-confirmed` checkpoint.
+10. **update-pr** — `update-pr::render` with `pr_template_variant: initial`; presents `approach-confirmed` checkpoint.
 
 **Loops:** `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each iteration runs `review-assumptions::reconcile`.
 
@@ -495,7 +495,7 @@ graph TD
 
 | Loop | Type | Iterates over | Max |
 |------|------|---------------|-----|
-| `task-cycle` | forEach | `plan.tasks` | (default) |
+| `task-cycle` | forEach | `implementation_plan.tasks` | (default) |
 | `assumption-reconciliation` | while | `has_resolvable_assumptions` | — |
 | `assumption-interview` | forEach | `open_assumptions` | 20 |
 
@@ -571,8 +571,8 @@ graph TD
 1. **gitnexus-detect-changes-preflight** — `gitnexus-operations::detect-changes` (when `gitnexus_indexed == true`); captures affected processes and the changed-symbol set.
 2. **manual-diff-review** — `review-diff`; presents `file-index-table` checkpoint.
 3. **code-review** — `review-code`.
-4. **structural-analysis-inline** — `prism/structural-analysis` single-pass (when `complexity != complex`).
-5. **dispatch-prism** — control step; triggers the `prism` workflow for the full 3-pass pipeline (when `complexity == complex`), passing `target`, `output_path`, `pipeline_mode`.
+4. **structural-analysis-inline** — `prism/structural-analysis` single-pass (when `problem_complexity != complex`).
+5. **dispatch-prism** — control step; triggers the `prism` workflow for the full 3-pass pipeline (when `problem_complexity == complex`), passing `target`, `output_path`, `pipeline_mode`.
 6. **test-suite-review** — `review-test-suite`.
 7. **architecture-summary** — `summarize-architecture` (when `skip_architecture_summary != true`).
 8. **classify-and-route-findings** — `findings-classification`.
@@ -613,7 +613,7 @@ graph TD
     cpInterview --> interviewLoop
     interviewLoop -->|"all done"| codeReview["Code review"]
 
-    codeReview --> structural{"complexity == complex?"}
+    codeReview --> structural{"problem_complexity == complex?"}
     structural -->|"no"| structuralInline["Structural analysis (single pass)"]
     structural -->|"yes"| dispatchPrism["Dispatch full prism pipeline"]
     structuralInline --> testReview["Test suite review"]
@@ -761,7 +761,7 @@ graph TD
 11. **process-review-comments** — `respond-to-pr-review`.
 12. **analyze-review-outcome** — `review-outcome-analysis`; presents `review-outcome` checkpoint; sets `recommended_outcome` and `review_comments_summary`.
 
-**Loops:** `verify-pr-body-rerender` — while `body_conforms == false` (max 2). Re-renders the PR body (`update-pr::render`, `template: final`) and verifies it (`update-pr::verify-body`).
+**Loops:** `verify-pr-body-rerender` — while `body_conforms == false` (max 2). Re-renders the PR body (`update-pr::render`, `pr_template_variant: final`) and verifies it (`update-pr::verify-body`).
 
 **Checkpoints (6):**
 
@@ -824,8 +824,8 @@ graph TD
 
 **Steps:**
 
-1. **create-adr** — `create-adr` (when not review mode and `complexity` is moderate or complex).
-2. **update-adr-status** — `finalize-documentation::update-adr`; set ADR status to Accepted (when not review mode and `complexity` is moderate or complex).
+1. **create-adr** — `create-adr` (when not review mode and `problem_complexity` is moderate or complex).
+2. **update-adr-status** — `finalize-documentation::update-adr`; set ADR status to Accepted (when not review mode and `problem_complexity` is moderate or complex).
 3. **finalize-test-plan** — `finalize-documentation::finalize-test-plan`; add hyperlinks to test source locations (when not review mode).
 4. **create-complete-doc** — `finalize-documentation::create-complete-doc`; writes `COMPLETE.md` (when not review mode).
 5. **ensure-docs** — `finalize-documentation::ensure-docs`; verify public APIs have inline documentation (when not review mode).

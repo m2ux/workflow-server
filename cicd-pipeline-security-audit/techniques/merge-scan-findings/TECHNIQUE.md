@@ -39,7 +39,7 @@ Compound vulnerability chains
 
 Informational items without clear source-to-sink flow
 
-### reconciliation
+### finding_reconciliation
 
 Per-scanner finding mapping to merged findings — the [reconciliation table](../../resources/intermediate-artifact-schemas.md#reconciliation)
 

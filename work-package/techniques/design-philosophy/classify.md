@@ -27,7 +27,7 @@ Summary, description, and context from the linked issue, used to infer the probl
 
 The classification result — one of: specific-cause-known, specific-cause-unknown, inventive-improvement, inventive-prevention.
 
-### complexity
+### problem_complexity
 
 The assessed complexity — one of: simple, moderate, or complex.
 

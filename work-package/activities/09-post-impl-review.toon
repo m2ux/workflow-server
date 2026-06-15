@@ -52,7 +52,7 @@ steps[8]:
       type: not
       condition:
         type: simple
-        variable: complexity
+        variable: problem_complexity
         operator: "=="
         value: complex
   - id: dispatch-prism
@@ -65,7 +65,7 @@ steps[8]:
           - pipeline_mode
     condition:
       type: simple
-      variable: complexity
+      variable: problem_complexity
       operator: "=="
       value: complex
   - id: test-suite-review

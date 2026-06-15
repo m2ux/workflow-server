@@ -39,7 +39,7 @@ Path to the target checkout (where the PR lives), from which the target repo URL
 
 *(optional)* True when the PR is being annotated with a consolidated review comment rather than updated with implementation detail
 
-### template
+### pr_template_variant
 
 *(optional, enum: `initial` | `final`, default `final`)* Which PR body template to render — `initial` before implementation (ADR-only), `final` after implementation
 
@@ -58,7 +58,7 @@ List of `{ rule_id, detail }` entries, one per failed conformance rule; empty wh
 ### template-selection
 
 - review-mode-template: In review mode, use attached [review-mode](../../resources/review-mode.md) for the consolidated PR review comment template. The review comment structure (sections, tables, Finding Details dropdowns, linked headings, reviewer agents) is defined there.
-- initial-template: When `{template}` is `initial` (creating a PR before implementation, ADR-only), use the Initial template from [pr-description](../../resources/pr-description.md). When `{template}` is `final` (updating after implementation), use the Final template.
+- initial-template: When `{pr_template_variant}` is `initial` (creating a PR before implementation, ADR-only), use the Initial template from [pr-description](../../resources/pr-description.md). When `{pr_template_variant}` is `final` (updating after implementation), use the Final template.
 
 ### pr-body-conformance
 

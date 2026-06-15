@@ -63,7 +63,7 @@ loops[1]:
           name: validate-build::analyze-failure
           inputs:
             check_id: "{validation_results.first_failure.check_id}"
-            diagnostics: "{validation_results.first_failure.diagnostics}"
+            failure_diagnostics: "{validation_results.first_failure.diagnostics}"
       - id: apply-fix
         technique:
           name: validate-build::apply-fix

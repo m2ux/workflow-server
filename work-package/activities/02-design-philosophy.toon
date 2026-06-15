@@ -27,7 +27,7 @@ steps[9]:
         target: problem_type
         description: "One of: specific-cause-known, specific-cause-unknown, inventive-improvement, inventive-prevention."
       - action: set
-        target: complexity
+        target: problem_complexity
         description: "One of: simple, moderate, complex."
   - id: determine-path
     technique: determine-path
@@ -90,7 +90,7 @@ loops[1]:
 checkpoints[3]:
   - id: classification-confirmed
     name: Classification Checkpoint
-    message: "Based on my analysis, this appears to be a {problem_type} with {complexity} complexity. Confirming in 30s unless you intervene."
+    message: "Based on my analysis, this appears to be a {problem_type} with {problem_complexity} complexity. Confirming in 30s unless you intervene."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
@@ -103,7 +103,7 @@ checkpoints[3]:
         description: The problem classification needs adjustment
   - id: workflow-path-selected
     name: Workflow Path Checkpoint
-    message: "Given the {complexity} classification, the recommended path is shown as default. Auto-advancing in 30s. For simple: skip optional, moderate: research only, complex: full workflow."
+    message: "Given the {problem_complexity} classification, the recommended path is shown as default. Auto-advancing in 30s. For simple: skip optional, moderate: research only, complex: full workflow."
     blocking: false
     defaultOption: skip-optional
     autoAdvanceMs: 30000
@@ -113,7 +113,7 @@ checkpoints[3]:
         description: Complex feature requiring requirements discovery and research
         effect:
           setVariable:
-            complexity: complex
+            problem_complexity: complex
             needs_elicitation: true
             needs_research: true
             skip_optional_activities: false
@@ -122,7 +122,7 @@ checkpoints[3]:
         description: Requirements unclear but domain is well-understood
         effect:
           setVariable:
-            complexity: moderate
+            problem_complexity: moderate
             needs_elicitation: true
             needs_research: false
             skip_optional_activities: false
@@ -131,7 +131,7 @@ checkpoints[3]:
         description: Requirements clear but need to research best practices
         effect:
           setVariable:
-            complexity: moderate
+            problem_complexity: moderate
             needs_elicitation: false
             needs_research: true
             skip_optional_activities: false
@@ -186,8 +186,8 @@ outcome[5]:
 context_to_preserve[8]:
   - problem_statement - Clear problem definition
   - problem_type - Specific problem or inventive goal
-  - complexity - simple, moderate, or complex
-  - path_gating_complexity - path-gating mirror of complexity for workflow-path-selected
+  - problem_complexity - simple, moderate, or complex
+  - path_gating_complexity - path-gating mirror of problem_complexity for workflow-path-selected
   - needs_elicitation - Whether requirements elicitation is needed
   - needs_research - Whether research is needed
   - skip_optional_activities - Whether to skip optional discovery activities

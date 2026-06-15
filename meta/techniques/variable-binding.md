@@ -15,7 +15,7 @@ The operation a step binds, named by `step.technique` — either a bare string (
 
 ### step_deviations
 
-The structured binding's `step.technique.inputs` map (input deviations) and `step.technique.outputs` map (output remaps), each optional and absent on a bare-string binding. An `inputs` entry is `op-input-id → source-expression` (rename / literal / `{template}`), carrying only what differs from same-name binding or from a declared `default`. An `outputs` entry is `op-output-id → bag-name`, carrying only an output whose landed name differs from the output's own id.
+The structured binding's `step.technique.inputs` map (input deviations) and `step.technique.outputs` map (output remaps), each optional and absent on a bare-string binding. An `inputs` entry is `op-input-id → source-expression` (rename / literal / template), carrying only what differs from same-name binding or from a declared `default`. An `outputs` entry is `op-output-id → bag-name`, carrying only an output whose landed name differs from the output's own id.
 
 ### variable_bag
 

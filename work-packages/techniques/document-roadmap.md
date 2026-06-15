@@ -61,7 +61,7 @@ Completed [START-HERE.md](../resources/roadmap-template.md#start-heremd-final-fo
 
 `START-HERE.md`
 
-### readme
+### planning_readme
 
 Updated [README.md](../resources/roadmap-template.md#readmemd-final-format) with navigation links
 

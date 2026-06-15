@@ -15,4 +15,4 @@ Write the unified finding set, reconciliation table, and observation list to the
 
 ### 1. Write Output
 
-- Produce `{merged_findings}` and `{reconciliation}` into `{planning_folder_path}`.
+- Produce `{merged_findings}` and `{finding_reconciliation}` into `{planning_folder_path}`.

@@ -75,7 +75,7 @@ variables[30]:
     type: boolean
     description: Whether codebase comprehension is needed. Always true after design-philosophy.
     defaultValue: true
-  - name: complexity
+  - name: problem_complexity
     type: string
     description: "Problem complexity assessed during design-philosophy (simple|moderate|complex)."
   - name: validation_passed

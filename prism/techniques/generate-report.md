@@ -95,11 +95,11 @@ Description of what was analysed — used in the report's Executive Summary scop
 
 ### 8. Write Artifact
 
-- Write the complete report as `{report}` into `{output_path}`, capturing its full filesystem path as `{report_path}`
+- Write the complete report as `{analysis_report}` into `{output_path}`, capturing its full filesystem path as `{report_path}`
 
 ## Outputs
 
-### report
+### analysis_report
 
 Clean final [report](../resources/final-output-template.md#reportmd-template) artifact
 

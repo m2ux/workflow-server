@@ -13,7 +13,7 @@ Create an Architecture Decision Record for moderate or complex implementations
 
 ## Inputs
 
-### complexity
+### problem_complexity
 
 Problem complexity assessment (simple|moderate|complex)
 
@@ -33,7 +33,7 @@ Directory holding the project's ADR files
 
 ### 1. Gate On Complexity
 
-- Proceed only when `{complexity}` is moderate or complex. For a simple assessment, do not create an `{adr_document}` — simple changes do not warrant one — and return without one.
+- Proceed only when `{problem_complexity}` is moderate or complex. For a simple assessment, do not create an `{adr_document}` — simple changes do not warrant one — and return without one.
 
 ### 2. Determine Number
 

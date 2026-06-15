@@ -26,7 +26,7 @@ loops[3]:
     name: Task Implementation Cycle
     type: forEach
     variable: current_task
-    over: plan.tasks
+    over: implementation_plan.tasks
     steps[6]:
       - id: implement-task
         technique: implement-task

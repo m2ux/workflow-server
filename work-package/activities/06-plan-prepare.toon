@@ -57,7 +57,7 @@ steps[10]:
     technique:
       name: update-pr::render
       inputs:
-        template: initial
+        pr_template_variant: initial
     checkpoint: approach-confirmed
 loops[1]:
   - id: assumption-reconciliation
@@ -102,6 +102,6 @@ outcome[3]:
   - Test plan created
   - PR updated with plan
 context_to_preserve[3]:
-  - plan - Work package plan document
+  - implementation_plan - Work package plan document
   - test_plan - Test plan document
   - tasks - List of implementation tasks

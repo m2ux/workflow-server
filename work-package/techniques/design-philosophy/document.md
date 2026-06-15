@@ -17,7 +17,7 @@ The problem definition recorded into the artifact.
 
 The classification recorded into the artifact.
 
-### complexity
+### problem_complexity
 
 The complexity assessment recorded into the artifact.
 

@@ -104,7 +104,7 @@ loops[1]:
         technique:
           name: update-pr::render
           inputs:
-            template: final
+            pr_template_variant: final
       - id: verify-body
         technique: update-pr::verify-body
 checkpoints[6]:

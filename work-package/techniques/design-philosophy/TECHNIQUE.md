@@ -41,7 +41,7 @@ Clear problem definition with system understanding
 
 Specific problem or inventive goal
 
-#### complexity
+#### problem_complexity
 
 simple, moderate, or complex
 
