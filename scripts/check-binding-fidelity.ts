@@ -3,9 +3,10 @@
  *
  * Two high-signal, deterministic checks over every workflow's activities + techniques:
  *
- *   (1) arg-conformance — every `technique_args` key is a declared input of the bound
- *       operation's composed signature (own ∪ group). A key that is not an input is a
- *       stale/overfit deviation left behind by a rename or refactor.
+ *   (1) arg-conformance — every `step.technique.inputs` key is a declared input, and every
+ *       `step.technique.outputs` key a declared output, of the bound operation's composed
+ *       signature (own ∪ group). A key that is not in the signature is a stale/overfit
+ *       deviation left behind by a rename or refactor.
  *
  *   (2) read-resolution — every `{token}` interpolation and structured-condition variable
  *       resolves to a producible bag name: a declared input/output id anywhere in the
@@ -139,14 +140,21 @@ function collectWorkflowVars(wf: string): void {
   } catch { /* structural errors are validate-workflow-toon's job */ }
 }
 
-type Step = { rel: string; stepId: string; technique: string; args: string[]; activityId: string };
+type Step = { rel: string; stepId: string; technique: string; inputs: string[]; outputs: string[]; activityId: string };
 const steps: Step[] = [];
 function walkSteps(rel: string, node: unknown, activityId: string): void {
   if (!node || typeof node !== 'object') return;
   if (Array.isArray(node)) { node.forEach((n) => walkSteps(rel, n, activityId)); return; }
   const o = node as Record<string, unknown>;
-  if (typeof o.technique === 'string') {
-    steps.push({ rel, stepId: typeof o.id === 'string' ? o.id : '?', technique: o.technique, args: Object.keys((o.technique_args as object) ?? {}), activityId });
+  // A step's technique binding is either a bare string (no deviations) or a structured object
+  // `{ name, inputs?, outputs? }` — inputs are op-input deviations, outputs are op-output remaps.
+  const t = o.technique;
+  if (typeof t === 'string' || (t && typeof t === 'object' && typeof (t as { name?: unknown }).name === 'string')) {
+    const tb = (typeof t === 'string' ? { name: t } : t) as { name: string; inputs?: object; outputs?: object };
+    steps.push({
+      rel, stepId: typeof o.id === 'string' ? o.id : '?', technique: tb.name,
+      inputs: Object.keys(tb.inputs ?? {}), outputs: Object.keys(tb.outputs ?? {}), activityId,
+    });
   }
   if (o.action === 'set' && typeof o.target === 'string') PRODUCED.add(o.target);
   if (o.setVariable && typeof o.setVariable === 'object') Object.keys(o.setVariable).forEach((k) => PRODUCED.add(k));
@@ -218,12 +226,14 @@ export function collectViolations(): Violation[] {
       v.push({ check: 'binding-resolution', site: `${s.rel}[${s.stepId}]`, detail: `step technique '${s.technique}' does not resolve` });
       continue;
     }
-    // A technique_args key is valid when it names a declared INPUT (a deviation: literal/rename/template)
-    // OR a declared OUTPUT (a reserved output-remap entry — variable-binding.md §"Land outputs": an output
-    // O lands under the remapped bag name when an entry for O is present). A key that is neither is a
-    // stale/overfit deviation left behind by a rename or refactor.
-    for (const key of s.args) if (!sig.inputs.has(key) && !sig.outputs.has(key)) {
-      v.push({ check: 'arg-conformance', site: `${s.rel}[${s.stepId}]`, detail: `${s.technique}: arg '${key}' is neither a declared input (deviation) nor a declared output (remap)` });
+    // The structured binding separates input deviations from output remaps: every `inputs` key must
+    // be a declared INPUT of the op, every `outputs` key a declared OUTPUT. A key that doesn't match
+    // its side is a stale/overfit binding left behind by a rename or refactor.
+    for (const key of s.inputs) if (!sig.inputs.has(key)) {
+      v.push({ check: 'arg-conformance', site: `${s.rel}[${s.stepId}]`, detail: `${s.technique}: inputs key '${key}' is not a declared input of the op` });
+    }
+    for (const key of s.outputs) if (!sig.outputs.has(key)) {
+      v.push({ check: 'arg-conformance', site: `${s.rel}[${s.stepId}]`, detail: `${s.technique}: outputs key '${key}' is not a declared output of the op` });
     }
   }
   // (2) read-resolution

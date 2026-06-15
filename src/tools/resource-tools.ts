@@ -41,6 +41,7 @@ import {
   PARENT_CHAIN_DEPTH_WARN_THRESHOLD,
   type SessionFile,
 } from '../schema/session.schema.js';
+import { techniqueName } from '../schema/activity.schema.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
 import { randomUUID } from 'node:crypto';
@@ -528,12 +529,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         } else {
           const step = activity.steps?.find(s => s.id === step_id);
           if (step) {
-            techniqueId = step.technique;
+            techniqueId = techniqueName(step.technique);
           } else if (activity.loops) {
             for (const loop of activity.loops) {
               const loopStep = loop.steps?.find(s => s.id === step_id);
               if (loopStep) {
-                techniqueId = loopStep.technique;
+                techniqueId = techniqueName(loopStep.technique);
                 break;
               }
             }

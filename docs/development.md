@@ -166,7 +166,7 @@ npx tsx scripts/validate-workflow-toon.ts <workflow-path>   # whole-directory sw
 # Every step.technique reference resolves through the loader
 npx tsx scripts/check-all-refs.ts
 
-# Binding fidelity: every technique_args key is a declared input, and every
+# Binding fidelity: every step.technique.inputs key is a declared input, and every
 # interpolation/condition read resolves to a producer (declared id, $-local,
 # workflow.toon variable, or set-target). Fails only on NEW drift beyond
 # scripts/binding-fidelity-baseline.json (re-snapshot intentional changes with

@@ -33,17 +33,28 @@ export const WorkflowTriggerSchema = z.object({
 export type WorkflowTrigger = z.infer<typeof WorkflowTriggerSchema>;
 
 // Step schema
+/**
+ * Structured per-step technique binding. `name` is the operation reference; `inputs` carries input
+ * deviations (op input id → source expression: rename / literal / `{template}`) and `outputs`
+ * carries output remaps (op output id → the workflow variable name its value lands under). A step
+ * with no deviations uses the bare-string form instead of this object.
+ */
+export const TechniqueBindingSchema = z.object({
+  name: z.string().describe('The `group::operation` (or bare op / `workflow::group::op`) technique reference this step invokes.'),
+  inputs: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('Input deviations: op input id → source expression (rename of a bag variable, literal, or `{template}`). Only what differs from same-name binding or a declared default.'),
+  outputs: z.record(z.string()).optional().describe('Output remaps: op output id → the workflow variable name its produced value lands under, when it differs from the output id.'),
+});
+
 export const StepSchema = z.object({
-  id: z.string().optional().describe('Identifier for this step within the activity. Optional when `technique` is present — the loader derives it from the last `::` segment of the technique. A step with no technique must declare an explicit id.'),
+  id: z.string().optional().describe('Identifier for this step within the activity. Optional when `technique` is present — the loader derives it from the last `::` segment of the technique name. A step with no technique must declare an explicit id.'),
   description: z.string().optional().describe('Detailed guidance for executing this step. May carry a deprecated inline operation invocation of the form `technique-id::operation-name(arg: {var}, ...)`; the canonical binding is the `technique` field.'),
-  technique: z.string().optional().describe('Canonical per-step binding: the `group::operation` technique reference this step invokes.'),
+  technique: z.union([z.string(), TechniqueBindingSchema]).optional().describe('Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps.'),
   checkpoint: z.string().optional().describe('Optional checkpoint ID. If present, the worker MUST yield this checkpoint to the orchestrator before executing the step.'),
   required: z.boolean().default(true),
   when: z.string().optional().describe('Inline boolean expression that gates this step. Examples: "has_saved_state == true", "is_monorepo == true", "client_workflow_completed == false". Evaluated against current variable state at runtime.'),
   condition: ConditionSchema.optional().describe('LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons.'),
   actions: z.array(ActionSchema).optional(),
   triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows to trigger from this step'),
-  technique_args: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('Canonical per-step deviation map: arguments passed to the bound technique.'),
 }).superRefine((step, ctx) => {
   if (!step.id && !step.technique) {
     ctx.addIssue({
@@ -55,7 +66,12 @@ export const StepSchema = z.object({
 });
 export type Step = z.infer<typeof StepSchema>;
 
-/** Derive the default step id from a technique ref: the last `::` segment. */
+/** The operation reference of a step's technique binding, whether bare-string or structured. */
+export function techniqueName(technique: Step['technique']): string | undefined {
+  return typeof technique === 'string' ? technique : technique?.name;
+}
+
+/** Derive the default step id from a technique ref: the last `::` segment of its name. */
 export function defaultStepId(technique: string): string {
   const segments = technique.split('::');
   return segments[segments.length - 1] ?? technique;
@@ -79,12 +95,12 @@ export function populateStepIds(activity: Activity): void {
             `Activity '${activity.id}': ${scopeLabel} has a step with neither an id nor a technique; control/action steps must declare an explicit id.`,
           );
         }
-        step.id = defaultStepId(step.technique);
+        step.id = defaultStepId(techniqueName(step.technique)!);
       }
       if (seen.has(step.id)) {
         throw new Error(
           `Activity '${activity.id}': ${scopeLabel} has duplicate resolved step id '${step.id}'` +
-            (step.technique ? ` (from technique '${step.technique}')` : '') +
+            (step.technique ? ` (from technique '${techniqueName(step.technique)}')` : '') +
             '; give the colliding step an explicit unique id.',
         );
       }

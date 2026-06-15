@@ -49,8 +49,28 @@
           "description": "Detailed guidance for executing this step. May carry a deprecated inline operation invocation of the form `technique-id::operation-name(arg: {var}, ...)`; the canonical binding is the `technique` field."
         },
         "technique": {
-          "type": "string",
-          "description": "Canonical per-step binding: the `group::operation` technique reference this step invokes."
+          "description": "Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or an object `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps.",
+          "oneOf": [
+            { "type": "string" },
+            {
+              "type": "object",
+              "required": ["name"],
+              "additionalProperties": false,
+              "properties": {
+                "name": { "type": "string", "description": "The `group::operation` (or bare op / `workflow::group::op`) technique reference this step invokes." },
+                "inputs": {
+                  "type": "object",
+                  "additionalProperties": { "type": ["string", "number", "boolean"] },
+                  "description": "Input deviations: op input id → source expression (rename of a bag variable, literal, or `{template}`). Only what differs from same-name binding or a declared default."
+                },
+                "outputs": {
+                  "type": "object",
+                  "additionalProperties": { "type": "string" },
+                  "description": "Output remaps: op output id → the workflow variable name its produced value lands under, when it differs from the output id."
+                }
+              }
+            }
+          ]
         },
         "when": {
           "type": "string",
@@ -80,13 +100,6 @@
             "$ref": "#/definitions/workflowTrigger"
           },
           "description": "Workflows to trigger from this step"
-        },
-        "technique_args": {
-          "type": "object",
-          "additionalProperties": {
-            "type": ["string", "number", "boolean"]
-          },
-          "description": "Canonical per-step deviation map: arguments passed to the bound technique."
         }
       },
       "additionalProperties": false

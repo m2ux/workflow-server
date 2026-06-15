@@ -1,8 +1,9 @@
 /**
  * check-bound-step-purity — deterministic guard for anti-pattern AP-64.
  *
- * A step (bound or a control step) must carry ONLY `id` + (`technique` when bound) + structural
- * fields (`actions`, `checkpoint`, `technique_args`, `when`, `required`, `loops`). It must NOT carry
+ * A step (bound or a control step) must carry ONLY `id` + (`technique` when bound — whose structured
+ * `inputs`/`outputs` maps carry any deviations) + structural fields (`actions`, `checkpoint`, `when`,
+ * `required`, `loops`). It must NOT carry
  * a `name` or `description`: WHAT the step does is the bound operation's `## Capability`, HOW it does
  * it is that operation's `## Protocol`, and a control step's `actions` (with their own descriptions)
  * carry its meaning. A `name`/`description` surviving on a step is the AP-64 defect — either a
