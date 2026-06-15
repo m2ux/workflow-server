@@ -456,9 +456,9 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           "id": "workflow-path-selected",
           "option": "elicitation-only",
           "setVariable": {
-            "complexity": "moderate",
             "needs_elicitation": true,
             "needs_research": false,
+            "problem_complexity": "moderate",
             "skip_optional_activities": false,
           },
         },
@@ -894,9 +894,9 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           "id": "workflow-path-selected",
           "option": "full-workflow",
           "setVariable": {
-            "complexity": "complex",
             "needs_elicitation": true,
             "needs_research": true,
+            "problem_complexity": "complex",
             "skip_optional_activities": false,
           },
         },
@@ -1369,9 +1369,9 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           "id": "workflow-path-selected",
           "option": "research-only",
           "setVariable": {
-            "complexity": "moderate",
             "needs_elicitation": false,
             "needs_research": true,
+            "problem_complexity": "moderate",
             "skip_optional_activities": false,
           },
         },

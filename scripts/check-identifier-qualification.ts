@@ -46,19 +46,25 @@ const EXEMPT = new Set<string>([
   'requirements', 'features', 'exclusions', 'dimensions', 'tasks', 'results',
   'submodules', 'paths', 'fields', 'filters', 'stats', 'effects', 'substitutions',
   'findings', 'assumptions', 'subsystems', 'transitions', 'options', 'branches',
-  'agents', 'changes', 'failures', 'items',
+  'agents', 'changes', 'failures', 'items', 'files', 'gaps', 'outcomes',
   // (b) external-tool / MCP-param / JSON-schema-field mirrors — the contract owns the spelling
   'body', 'query', 'repo', 'owner', 'number', 'title', 'branch', 'diff', 'limit',
   'name', 'sha', 'url', 'head', 'base', 'ref', 'labels', 'path', 'cursor',
-  'cql', 'jql', 'description',
+  'cql', 'jql', 'description', 'assignee', 'depth', 'direction', 'summary', 'state',
+  // (b') cross-workflow dispatch-contract names — the `passContext` handoff owns the spelling
+  // (renaming one side breaks the parent→child dispatch); treated like an external mirror.
+  'target',
+  // domain acronym carried as an artifact concept (Architecture Decision Record)
+  'adr',
   // (c) _type / _mode / kind discriminators (the bare discriminator word)
   'type', 'mode', 'kind',
 ]);
 
 /**
- * Pre-existing flagged ids, snapshotted in identifier-qualification-baseline.json. The guard fails
- * only on ids ABSENT from the baseline (new bare-word identifiers). The baseline is the work-list to
- * qualify down over time; regenerate after qualifying/exempting with `--update-baseline`.
+ * Accepted pre-existing flagged ids, snapshotted in identifier-qualification-baseline.json. The guard
+ * fails on any id ABSENT from the baseline (new bare-word identifiers). The corpus has now been fully
+ * qualified, so the baseline is EMPTY — every bare data id is a failure. Regenerate after an
+ * intentional, reviewed qualification/exemption with `--update-baseline`.
  */
 const BASELINE = join(DIR, 'identifier-qualification-baseline.json');
 
