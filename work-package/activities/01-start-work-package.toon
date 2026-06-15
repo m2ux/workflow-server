@@ -255,13 +255,7 @@ steps[31]:
           variable: use_existing_pr
           operator: ==
           value: false
-    actions[3]:
-      - action: set
-        target: pr_number
-        description: "PR number captured from gh pr create output"
-      - action: set
-        target: pr_url
-        description: "PR URL captured from gh pr create output"
+    actions[1]:
       - action: set
         target: pr_exists
         value: true

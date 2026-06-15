@@ -28,17 +28,9 @@ steps[5]:
   - id: classify-target
     technique: plan-evaluation::classify-target
     required: true
-    actions[1]:
-      - action: set
-        target: target_type
-        description: "The classified target type."
   - id: derive-dimensions
     technique: plan-evaluation::derive-dimensions
     required: true
-    actions[1]:
-      - action: set
-        target: dimensions
-        description: "The derived or user-supplied dimensions array."
   - id: create-output-directory
     technique: plan-evaluation::create-output-folder
     required: true

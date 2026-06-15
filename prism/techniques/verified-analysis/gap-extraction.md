@@ -21,4 +21,4 @@ Extract structured gap data from the gap analysis into a context block for re-an
 
 ### gap_data
 
-Structured gap claims extracted from the gap-detection output, injected as the `verified_knowledge` context block for the corrected re-analysis
+Structured gap data extracted from the gap analysis, injected as the `verified_knowledge` context block for the corrected re-analysis.

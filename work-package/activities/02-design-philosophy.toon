@@ -13,21 +13,9 @@ steps[9]:
   - id: classify-problem
     technique: classify
     checkpoint: classification-confirmed
-    actions[2]:
-      - action: set
-        target: problem_type
-        description: "One of: specific-cause-known, specific-cause-unknown, inventive-improvement, inventive-prevention."
-      - action: set
-        target: problem_complexity
-        description: "One of: simple, moderate, complex."
   - id: determine-path
     technique: determine-path
     checkpoint: workflow-path-selected
-    actions[1]:
-      - action: set
-        target: needs_comprehension
-        value: true
-        description: "Codebase comprehension is mandatory before planning"
   - id: document-philosophy
     technique: document
     actions[1]:

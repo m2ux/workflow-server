@@ -16,10 +16,7 @@ steps[9]:
     technique: changes-folder
   - id: verify-change-fragment
     technique: verify-fragment
-    actions[2]:
-      - action: set
-        target: fragment_references_issue
-        description: "true when the located fragment body contains issue_url verbatim; false when it does not; null when no changes/ directory exists at target_path root (skip)"
+    actions[1]:
       - action: validate
         target: "fragment_references_issue != false"
         message: "Change fragment for this work package does not reference issue_url ({issue_url}). Add a 'Closes: #{issue_number}' line (GitHub) or the full issue_url (when sibling fragments use that style) to the fragment body, commit, and re-run."
@@ -44,13 +41,6 @@ steps[9]:
   - id: analyze-strategic-findings
     technique: strategic-findings-analysis
     checkpoint: review-findings
-    actions[2]:
-      - action: set
-        target: recommended_strategic_option
-        description: "Set to the recommended strategic review option based on findings analysis"
-      - action: set
-        target: strategic_findings_summary
-        description: "Concise multi-line summary of strategic-review findings (severity tag + one-line description per finding). Empty string when no findings."
 checkpoints[1]:
   - id: review-findings
     name: Strategic Review Findings Checkpoint

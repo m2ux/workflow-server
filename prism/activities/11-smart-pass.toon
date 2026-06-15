@@ -25,10 +25,6 @@ steps[6]:
       name: smart-analysis::select-mode
       inputs:
         target_content: "{target}"
-    actions[1]:
-      - action: set
-        target: smart_pipeline_steps
-        description: "The composed pipeline steps."
   - id: run-analysis
     required: true
     technique:

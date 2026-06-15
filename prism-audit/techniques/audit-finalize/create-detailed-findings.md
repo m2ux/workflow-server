@@ -26,7 +26,7 @@ Create the detailed-findings document: an expanded write-up for every finding in
 
 ### detailed_findings_path
 
-File path to the detailed-findings document.
+Filesystem path to the written DETAILED-FINDINGS.md (the detailed-findings document).
 
 #### artifact
 

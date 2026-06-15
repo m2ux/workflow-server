@@ -19,10 +19,6 @@ steps[5]:
   - id: compose-report
     technique: compose-evaluation-report::compose-report
     required: true
-    actions[1]:
-      - action: set
-        target: evaluation_report_path
-        description: "The written EVALUATION-REPORT.md path."
   - id: verify-report
     technique: compose-evaluation-report::verify-report
     required: true

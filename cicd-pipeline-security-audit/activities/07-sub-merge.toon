@@ -21,10 +21,6 @@ steps[5]:
     technique: merge-scan-findings::reconcile
   - id: write-merged-output
     technique: merge-scan-findings::write-output
-    actions[1]:
-      - action: set
-        target: merge_complete
-        description: "true when the reconciliation shows zero unaccounted findings"
 transitions[0]:
 exitActions[1]{action,message}:
   log,Finding merge complete — reconciliation table produced with zero Unaccounted

@@ -11,9 +11,6 @@ steps[1]:
   - id: diff-upstream
     technique: diff-upstream
     required: true
-    actions[1]:
-      - action: set
-        target: next_index
 
 transitions[1]:
   - to: review-changes

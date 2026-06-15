@@ -25,7 +25,7 @@ Transform the prism report into a summary-focused report: retain every section e
 
 ### audit_report_path
 
-File path to the summary report.
+Filesystem path to the written AUDIT-REPORT.md (the summary report).
 
 #### artifact
 

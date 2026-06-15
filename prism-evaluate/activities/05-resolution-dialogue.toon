@@ -14,10 +14,6 @@ steps[2]:
   - id: compile-plan
     technique: resolve-findings::compile-plan
     required: true
-    actions[1]:
-      - action: set
-        target: mitigation_plan_path
-        description: "The written MITIGATION-PLAN.md path."
 loops[1]:
   - id: finding-iteration
     name: Finding Iteration

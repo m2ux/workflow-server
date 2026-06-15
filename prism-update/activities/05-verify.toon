@@ -12,9 +12,6 @@ steps[1]:
   - id: verify-prism-consistency
     technique: verify-prism-consistency
     required: true
-    actions[1]:
-      - action: set
-        target: has_issues
 
 checkpoints[1]:
   - id: verification-result

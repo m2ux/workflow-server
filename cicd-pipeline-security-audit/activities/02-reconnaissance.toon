@@ -21,10 +21,6 @@ steps[5]:
     technique: inventory-workflows::build-summary
   - id: assign-scanner-agents
     technique: inventory-workflows::assign-scanner-agents
-    actions[1]:
-      - action: set
-        target: scanners_assigned
-        description: "Count of scanner agents assigned, one per submodule with workflow files"
 transitions[1]{to,isDefault}:
   primary-scan,true
 exitActions[2]{action,message}:

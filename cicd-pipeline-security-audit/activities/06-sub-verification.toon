@@ -19,10 +19,6 @@ steps[4]:
     technique: verify-scan-output::verify-pattern-coverage
   - id: produce-gap-report
     technique: verify-scan-output::produce-gap-report
-    actions[1]:
-      - action: set
-        target: verification_complete
-        description: "true when the gap report finds zero gaps"
 transitions[0]:
 exitActions[1]{action,message}:
   log,Scan verification complete — gap report produced

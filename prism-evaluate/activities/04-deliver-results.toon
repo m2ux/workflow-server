@@ -10,10 +10,6 @@ steps[1]:
   - id: compile-and-present
     technique: compose-evaluation-report::compile-and-present
     required: true
-    actions[1]:
-      - action: set
-        target: evaluation_findings
-        description: "The flat findings list extracted from the report for downstream resolution."
 checkpoints[1]:
   - id: resolution-offer
     name: Resolution Dialogue Offer

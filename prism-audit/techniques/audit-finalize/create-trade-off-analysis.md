@@ -26,7 +26,7 @@ Distil the conservation laws surfaced during the prism passes into a design trad
 
 ### trade_offs_path
 
-File path to the design trade-off analysis.
+Filesystem path to the written DESIGN-TRADE-OFFS.md (the design trade-off analysis).
 
 #### artifact
 

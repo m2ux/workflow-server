@@ -13,20 +13,12 @@ steps[4]:
       name: adaptive-analysis::stage-1-sdl
       inputs:
         target_content: "{target}"
-    actions[1]:
-      - action: set
-        target: adaptive_signal_quality
-        description: "Signal-quality assessment at the current stage."
   - id: run-stage-2
     required: true
     technique:
       name: adaptive-analysis::stage-2-l12
       inputs:
         target_content: "{target}"
-    actions[1]:
-      - action: set
-        target: adaptive_signal_quality
-        description: "Signal-quality assessment at the current stage."
     condition:
       type: simple
       variable: adaptive_signal_quality

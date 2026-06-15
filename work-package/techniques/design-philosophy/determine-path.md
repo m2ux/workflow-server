@@ -27,6 +27,10 @@ Boolean gate — whether research is needed on the chosen path.
 
 Boolean gate — whether to skip optional discovery work.
 
+### needs_comprehension
+
+Always `true` — codebase comprehension is mandatory before planning, on every path.
+
 ### path_rationale
 
 The documented rationale for the selected workflow path (full, elicitation-only, research-only, or skip-optional).
@@ -38,4 +42,5 @@ The documented rationale for the selected workflow path (full, elicitation-only,
 - Map complexity to workflow path (full, elicitation-only, research-only, or skip optional discovery work): simple, clearly-scoped problems take the lighter paths; moderate and complex problems take the full path
 - Document path rationale
 - Set needs-elicitation, needs-research, skip-optional-activities accordingly
+- Set needs-comprehension to true — codebase comprehension is mandatory before planning, on every path
 - For simple changes, lightweight application is acceptable — not every bug fix needs full elicitation

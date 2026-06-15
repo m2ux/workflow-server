@@ -10,19 +10,6 @@ techniques:
 steps[1]:
   - id: validate-specification
     technique: validate-specification
-    actions[4]:
-      - action: set
-        target: source_coverage_complete
-        description: "True when every normative source statement maps to at least one requirement."
-      - action: set
-        target: validation_passed
-        description: "True when no critical or correctable issues remain and source_coverage_complete is true."
-      - action: set
-        target: has_critical_issues
-        description: "True when any issue is critical or irreconcilable."
-      - action: set
-        target: has_correctable_issues
-        description: "True when correctable issues remain — including source-coverage gaps — and no critical issue is present."
 transitions[3]:
   - to: finalize-specification
     condition:

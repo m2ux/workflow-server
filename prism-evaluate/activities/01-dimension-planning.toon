@@ -13,24 +13,12 @@ steps[4]:
   - id: map-dimensions
     technique: plan-evaluation::map-dimensions-to-lenses
     required: true
-    actions[1]:
-      - action: set
-        target: dimension_plan
-        description: "The array of dimension-to-lens mappings."
   - id: group-dimensions
     technique: plan-evaluation::group-for-execution
     required: true
-    actions[1]:
-      - action: set
-        target: execution_groups
-        description: "The array of execution groups."
   - id: write-plan
     technique: plan-evaluation::write-evaluation-plan
     required: true
-    actions[1]:
-      - action: set
-        target: evaluation_plan_path
-        description: "The written evaluation-plan.md path."
 checkpoints[1]:
   - id: confirm-plan
     name: Dimension Plan Confirmation

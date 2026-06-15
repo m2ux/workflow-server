@@ -39,7 +39,7 @@ Verify consistency across prism resources, techniques, and documentation, flaggi
 
 ### 6. Compile Findings
 
-- Assemble `{verification_report}` from the five checks and set `{verification_report.has_issues}` to `true` when any check produced a finding, `false` otherwise.
+- Assemble `{verification_report}` from the five checks and set both `{verification_report.has_issues}` and the top-level `{has_issues}` to `true` when any check produced a finding, `false` otherwise.
 
 ## Outputs
 
@@ -66,3 +66,7 @@ Array of `{ index, files }`.
 #### has_issues
 
 `true` when any check produced a finding.
+
+### has_issues
+
+`true` when any consistency check produced a finding, `false` otherwise.

@@ -25,10 +25,6 @@ steps[5]:
       name: verified-analysis::gap-extraction
       inputs:
         target_content: "{target}"
-    actions[1]:
-      - action: set
-        target: verified_gap_data
-        description: "Structured gap data extracted from the gap analysis."
   - id: run-corrected-analysis
     required: true
     technique:

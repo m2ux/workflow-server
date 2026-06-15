@@ -82,13 +82,6 @@ steps[12]:
   - id: analyze-review-outcome
     technique: review-outcome-analysis
     checkpoint: review-outcome
-    actions[2]:
-      - action: set
-        target: recommended_outcome
-        description: "Recommended review-outcome option."
-      - action: set
-        target: review_comments_summary
-        description: "Multi-line summary of reviewer comments (severity tag + one-line description per comment)."
 loops[1]:
   - id: verify-pr-body-rerender
     name: PR Body Verification Re-render Loop

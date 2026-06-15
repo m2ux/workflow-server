@@ -33,16 +33,6 @@ steps[7]:
   - id: verify-artifacts
     technique: verify-audit-consistency
     required: true
-    actions[3]:
-      - action: set
-        target: audit_report_path
-        description: "Path to AUDIT-REPORT.md"
-      - action: set
-        target: detailed_findings_path
-        description: "Path to DETAILED-FINDINGS.md"
-      - action: set
-        target: trade_offs_path
-        description: "Path to DESIGN-TRADE-OFFS.md"
 rules[6]:
   - "REPORT SPLIT: REPORT.md (from triggered prism workflow) is the input. AUDIT-REPORT.md is the output — a summary retaining domain tables, systemic patterns, risk assessment, remediation recommendations, and appendices, with inline detailed findings replaced by a reference to DETAILED-FINDINGS.md."
   - "DETAILED FINDING FORMAT: Every finding in DETAILED-FINDINGS.md must have exactly 5 fields plus an optional 6th: Description, Impact, Location, Recommendation, Adversarial confirmation, Graph Evidence (if GitNexus enrichment data is available — includes blast radius metrics and execution flow participation). Source priority for extraction: (1) structural-analysis.md for original findings, (2) adversarial-analysis.md for underclaims and significant corrections, (3) portfolio documents for portfolio-source findings."
