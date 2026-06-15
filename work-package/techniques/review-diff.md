@@ -72,7 +72,7 @@ Folder where the change block index and manual diff review report are written
 
 [Index](../resources/manual-diff-review.md#file-index-generation) of changed blocks for external diff review, with per-block rationale paragraphs hyperlinked from the index table to aid manual review
 
-#### change_block_index_artifact
+#### artifact
 
 `change-block-index.md`
 
@@ -88,7 +88,7 @@ Per-block descriptive paragraphs explaining intent, context, and non-obvious des
 
 Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-review-report-template) from user-flagged blocks
 
-#### manual_diff_review_artifact
+#### artifact
 
 `manual-diff-review.md`
 

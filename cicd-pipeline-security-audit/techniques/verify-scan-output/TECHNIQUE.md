@@ -27,6 +27,10 @@ Complete [inventory of workflow files](../../resources/intermediate-artifact-sch
 
 Scan completeness [verification](../../resources/intermediate-artifact-schemas.md#verification-report) with gaps and re-scan recommendations
 
+#### artifact
+
+`verification-report.json`
+
 #### file_coverage
 
 Scanned vs total files

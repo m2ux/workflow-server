@@ -15,13 +15,9 @@ Write a workflow audit report to disk as a dated markdown file in the designated
 
 Path to the written report file
 
-#### compliance_report_artifact
+#### artifact
 
-Filename of a compliance review report, dated and keyed to the workflow id
-
-#### post_update_review_artifact
-
-Filename of a post-update review snapshot, keyed to the target workflow id
+`{$date}-{workflow_id}-compliance-review.md` (compliance review mode) / `{target_workflow_id}-post-update-review.md` (post-update review mode)
 
 ## Protocol
 

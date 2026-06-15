@@ -19,7 +19,7 @@ Path to the planning folder where the completion document is created.
 
 [Summary](../../resources/complete-wp.md#section-guidelines) of delivered work, test coverage, and deferred items.
 
-#### completion_artifact
+#### artifact
 
 `COMPLETE.md`
 

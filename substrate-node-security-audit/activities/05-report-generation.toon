@@ -74,7 +74,3 @@ context_to_preserve[3]:
   - final_findings - Complete list of numbered findings with severity
   - coverage_status - Coverage gate pass/fail with details
   - report_path - Path to the final audit report
-artifacts[1]:
-  - id: audit-report
-    name: 01-audit-report.md
-    location: planning

@@ -55,6 +55,10 @@ Inter-package dependency map describing which packages block or depend on which 
 
 Ordered list of work packages by execution priority, with prioritization rationale
 
+#### artifact
+
+`priority-ranking.md`
+
 ### dependency_graph
 
 Dependency graph representation

@@ -6,16 +6,6 @@ problem: "Full-prism self-correction costs 3x more than needed for many targets.
 techniques:
   supporting[1]:
     - "variable-binding"
-artifacts[3]:
-  - id: dispute-lens-a
-    name: "dispute-lens-a.md"
-    location: analysis
-  - id: dispute-lens-b
-    name: "dispute-lens-b.md"
-    location: analysis
-  - id: dispute-synthesis
-    name: "dispute-synthesis.md"
-    location: analysis
 steps[2]:
   - id: run-dispute
     required: true

@@ -13,6 +13,10 @@ Write the strategic review document, categorizing every finding from the review-
 
 The strategic review document, with every entry in `{review_findings}` categorized by type (investigation artifacts, over-engineering, orphaned infrastructure) — or a clean review result when all changes are justified.
 
+#### artifact
+
+`strategic-review-{n}.md`
+
 ## Protocol
 
 ### 1. Document Findings

@@ -49,10 +49,6 @@ checkpoints[1]:
           transitionTo: dimension-planning
     required: true
     blocking: true
-artifacts[1]:
-  - id: evaluation-plan
-    name: "evaluation-plan.md"
-    location: evaluation
 outcome[1]:
   - "Each dimension is matched to the prism pipeline modes and lenses that will surface target-specific findings, grouped into runnable batches the analysis stage can execute directly"
 transitions[1]:

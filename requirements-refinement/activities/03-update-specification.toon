@@ -13,10 +13,6 @@ steps[1]:
     actions[1]:
       - action: message
         message: "Created: working-spec-{correction_iteration}.md"
-artifacts[1]:
-  - id: working-specification
-    name: working-spec-{correction_iteration}.md
-    location: planning
 transitions[1]:
   - to: validate-specification
     isDefault: true

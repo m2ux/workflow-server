@@ -6,16 +6,6 @@ problem: "Single-pass analysis may confabulate claims that depend on facts the m
 techniques:
   supporting[1]:
     - "variable-binding"
-artifacts[3]:
-  - id: verified-initial
-    name: "verified-initial.md"
-    location: analysis
-  - id: verified-gaps
-    name: "verified-gaps.md"
-    location: analysis
-  - id: verified-corrected
-    name: "verified-corrected.md"
-    location: analysis
 steps[5]:
   - id: run-initial-l12
     required: true

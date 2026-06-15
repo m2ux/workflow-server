@@ -61,10 +61,6 @@ loops[2]:
         checkpoint: analysis-assumption-interview
       - id: record-response
         technique: review-assumptions::record
-artifacts[1]:
-  - id: analysis-document
-    name: implementation-analysis.md
-    location: planning
 checkpoints[2]:
   - id: analysis-confirmed
     name: Analysis Confirmation Checkpoint

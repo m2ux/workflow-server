@@ -35,6 +35,10 @@ Path to the planning artifacts folder where the artifact is created.
 
 The design philosophy [artifact](../../resources/design-framework.md#design-philosophy-artifact-template) (`design-philosophy.md`) created in `{planning_folder_path}`, recording the problem statement, classification, complexity, and workflow path rationale. This file is the record of truth for the classification.
 
+#### artifact
+
+`design-philosophy.md`
+
 ## Protocol
 
 ### 1. Document Philosophy

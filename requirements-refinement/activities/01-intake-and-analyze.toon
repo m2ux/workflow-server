@@ -49,13 +49,6 @@ checkpoints[2]:
       - id: revise
         label: "Revise the analysis"
         description: "Analysis misreads the source or misses changes and must be revised before proceeding."
-artifacts[2]:
-  - id: intake-doc
-    name: intake.md
-    location: planning
-  - id: requirements-analysis-doc
-    name: requirements-analysis.md
-    location: planning
 transitions[1]:
   - to: update-specification
     condition:

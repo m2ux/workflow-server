@@ -28,13 +28,6 @@ checkpoints[1]:
       - id: revise
         label: "Revise before finalizing"
         description: "The final specification or change summary needs revision before acceptance."
-artifacts[2]:
-  - id: final-specification
-    name: final-spec.md
-    location: planning
-  - id: change-summary
-    name: change-summary.md
-    location: planning
 outcome[2]:
   - The user has a promotion-ready specification alongside a human-readable account of what changed, so they can review and promote in one step
   - The user has explicitly accepted the result for promotion, so the workflow can complete knowing the outcome is endorsed

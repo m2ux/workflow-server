@@ -17,11 +17,6 @@ triggers[1]:
 steps[1]:
   - id: initialize-iteration
     technique: "orchestrate-package-execution::initialize-iteration"
-artifacts[1]:
-  - id: start-here-progress
-    name: START-HERE.md
-    location: planning
-    action: update
 loops[1]:
   - id: package-iteration
     name: Package Iteration

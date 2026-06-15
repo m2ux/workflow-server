@@ -22,10 +22,6 @@ checkpoints[1]:
       - id: acknowledged
         label: "Acknowledged"
         description: "The failure report has been reviewed; manual intervention will follow outside the workflow."
-artifacts[1]:
-  - id: failure-report
-    name: failure-report.md
-    location: planning
 outcome[2]:
   - The user knows exactly which critical issues blocked refinement and what manual resolution each one needs
   - No unvalidated specification reaches the canonical location — the prior state is preserved until a human intervenes

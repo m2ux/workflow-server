@@ -33,13 +33,6 @@ rules[19]:
   - "Techniques are the universal capability primitive and the FIRST-CLASS extension mechanism. New strategic operations (scatter/gather, variable binding, retry/escalation, voting, dedup, …) are authored as techniques — preferentially universal ones in `meta` — in preference to schema or engine changes. The schema stays a minimal skeleton; capability grows in the technique library as a standard library of strategy primitives."
   - "Technique input/output names, shapes, and structures are defined for the technique's INTRINSIC, GENERIC, REUSABLE semantics — never overfit to a specific caller's local variable name or a single usage instance. Resolve a step-vs-technique name mismatch by aligning the CALLER's state variable to the technique's canonical signature (or an explicit `step.technique.inputs` deviation), NOT by bending the technique to the call-site. Signatures MAY be renamed/reshaped to integrate with the binding system, but only toward a better GENERIC form."
 techniques:
-artifactLocations:
-  planning:
-    path: "{planning_folder_path}"
-    gitignored: false
-  workflows:
-    path: "workflows/"
-    gitignored: false
 modes[2]:
   - id: update
     name: Update Mode

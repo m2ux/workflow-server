@@ -29,7 +29,3 @@ context_to_preserve[6]:
   - cargo_audit_available - Whether cargo audit ran successfully
   - reference_report - Path to reference report (quarantined until Phase 5)
   - has_reference_report - Whether a reference report was provided
-artifacts[1]:
-  - id: start-here
-    name: START-HERE.md
-    location: planning

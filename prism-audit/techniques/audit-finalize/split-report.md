@@ -20,3 +20,13 @@ Transform the prism report into a summary-focused report: retain every section e
 - Replace that section with a reference line: `*Detailed write-ups for all findings organised by severity are in [DETAILED-FINDINGS.md](DETAILED-FINDINGS.md).*`
 - Renumber subsequent sections to fill the section-number gap.
 - Fix internal cross-references that point to the old section numbers.
+
+## Outputs
+
+### audit_report_path
+
+File path to the summary report.
+
+#### artifact
+
+`AUDIT-REPORT.md`

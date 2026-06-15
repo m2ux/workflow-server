@@ -21,3 +21,13 @@ Create the detailed-findings document: an expanded write-up for every finding in
 - Group findings within each severity section under domain sub-headings.
 - Format each finding heading as a level-3 markdown heading carrying the finding's ID followed by its title: `### ID: Title`.
 - Where `{graph_evidence}` is available for a finding, include it as that finding's Graph Evidence subsection (blast-radius metrics and execution-flow participation).
+
+## Outputs
+
+### detailed_findings_path
+
+File path to the detailed-findings document.
+
+#### artifact
+
+`DETAILED-FINDINGS.md`

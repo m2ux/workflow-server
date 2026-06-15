@@ -6,16 +6,6 @@ problem: "Single-pass analysis cannot examine its own blind spots. Reflect uses 
 techniques:
   supporting[1]:
     - "variable-binding"
-artifacts[3]:
-  - id: reflect-l12
-    name: "reflect-l12.md"
-    location: analysis
-  - id: reflect-meta
-    name: "reflect-meta.md"
-    location: analysis
-  - id: reflect-synthesis
-    name: "reflect-synthesis.md"
-    location: analysis
 steps[2]:
   - id: run-reflect
     required: true

@@ -18,12 +18,6 @@ steps[1]:
     technique: sync-resources
     required: true
 
-artifacts[1]:
-  - id: import-commits
-    name: Resource import commits
-    location: workflows
-    action: create
-
 transitions[1]:
   - to: update-routing
     isDefault: true

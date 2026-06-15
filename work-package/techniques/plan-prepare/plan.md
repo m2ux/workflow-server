@@ -35,6 +35,10 @@ Path to the planning artifacts folder where `{plan_document}` is written.
 
 Work package plan artifact with task breakdown and dependencies. Written to `{planning_folder_path}` as `work-package-plan.md`, documenting design decisions and assumptions.
 
+#### artifact
+
+`work-package-plan.md`
+
 #### tasks
 
 Atomic tasks with explicit dependencies and ordering — each implementable, testable, and committable independently. Ordered by dependency depth (leaves before callers) when target symbols are knowable.

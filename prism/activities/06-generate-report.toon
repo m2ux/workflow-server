@@ -10,10 +10,6 @@ steps[1]:
   - id: generate-report
     required: true
     technique: generate-report
-artifacts[1]:
-  - id: final-report
-    name: "REPORT.md"
-    location: analysis
 transitions[1]:
   - to: deliver-result
     isDefault: true

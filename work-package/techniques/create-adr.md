@@ -59,7 +59,7 @@ Directory holding the project's ADR files
 
 [Architecture Decision Record](../resources/architecture-review.md#adr-template)
 
-#### adr_artifact
+#### artifact
 
 `NNNN-{decision_title}.md`
 

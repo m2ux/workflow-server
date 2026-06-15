@@ -6,10 +6,6 @@ techniques:
   supporting[2]:
     - "variable-binding"
     - "scatter-gather"
-artifacts[1]:
-  - id: adversarial-analysis
-    name: "{current_unit.unit_output_subdir}adversarial-analysis.md"
-    location: analysis
 loops[1]:
   - id: adversarial-unit-cycle
     name: Adversarial Unit Cycle

@@ -6,22 +6,6 @@ problem: "Users often don't know how deep an analysis needs to be. Running full-
 techniques:
   supporting[1]:
     - "variable-binding"
-artifacts[5]:
-  - id: adaptive-stage1
-    name: "adaptive-stage1.md"
-    location: analysis
-  - id: adaptive-stage2
-    name: "adaptive-stage2.md"
-    location: analysis
-  - id: full-prism-structural
-    name: "structural-analysis.md"
-    location: analysis
-  - id: full-prism-adversarial
-    name: "adversarial-analysis.md"
-    location: analysis
-  - id: full-prism-synthesis
-    name: "synthesis.md"
-    location: analysis
 steps[4]:
   - id: run-stage-1
     required: true

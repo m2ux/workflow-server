@@ -4,15 +4,6 @@ name: Implement Tasks
 description: "Execute the implementation plan task by task."
 problem: User needs to implement the planned tasks
 required: true
-artifacts[2]:
-  - id: assumptions-log
-    name: assumptions-log.md
-    location: planning
-    action: update
-  - id: provenance-log
-    name: provenance-log.md
-    location: planning
-    action: create
 entryActions[1]{action,target,message}:
   validate,branch,Verify on correct feature branch before any code changes
 techniques:

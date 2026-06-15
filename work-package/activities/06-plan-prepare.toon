@@ -71,13 +71,6 @@ loops[1]:
     steps[1]:
       - id: reconcile-iteration
         technique: review-assumptions::reconcile
-artifacts[2]:
-  - id: plan-document
-    name: work-package-plan.md
-    location: planning
-  - id: test-plan-document
-    name: test-plan.md
-    location: planning
 checkpoints[1]:
   - id: approach-confirmed
     name: Approach Checkpoint

@@ -19,11 +19,6 @@ steps[4]:
     technique: summarize-findings
   - id: save-review-snapshot
     technique: persist-report
-artifacts[1]:
-  - id: post-update-review-report
-    name: "{target_workflow_id}-post-update-review.md"
-    location: reviews
-    action: create
 checkpoints[1]:
   - id: post-update-disposition
     name: Post-Update Review Disposition

@@ -112,9 +112,4 @@ variables[27]:
     type: string
     description: "For adaptive mode: signal quality assessment at current stage (adequate or insufficient)"
 
-artifactLocations:
-  analysis:
-    path: "{output_path}"
-    gitignored: false
-
 initialActivity: select-mode

@@ -35,6 +35,10 @@ Path to the planning artifacts folder where `{research_document}` is written.
 
 Knowledge base and web research synthesis artifact for the work package. Written to `{planning_folder_path}` as `kb-research.md`, capturing `{kb_findings}`, `{web_findings}`, `{findings_synthesis}`, `{applicable_patterns}`, and risks.
 
+#### artifact
+
+`kb-research.md`
+
 ## Protocol
 
 ### 1. Create Research Artifact

@@ -9,15 +9,6 @@ techniques:
 steps[1]:
   - id: finalize-roadmap-docs
     technique: document-roadmap
-artifacts[2]:
-  - id: start-here-final
-    name: START-HERE.md
-    location: planning
-    action: update
-  - id: readme-final
-    name: README.md
-    location: planning
-    action: update
 checkpoints[1]:
   - id: roadmap-complete
     name: Roadmap Completion

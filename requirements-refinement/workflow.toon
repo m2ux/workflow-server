@@ -20,9 +20,6 @@ rules[7]:
   - "When the target document exists, preserve its existing section structure; when it does not, instantiate the full specification protocol structure."
   - "Validation includes a source-coverage check: every normative statement in the source document maps to at least one requirement; an uncovered statement is a correctable finding routed through the correction loop."
 techniques:
-artifactLocations:
-  planning:
-    path: "{planning_folder_path}"
 variables[14]:
   - name: source_path
     type: string

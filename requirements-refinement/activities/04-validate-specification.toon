@@ -23,10 +23,6 @@ steps[1]:
       - action: set
         target: has_correctable_issues
         description: "True when correctable issues remain — including source-coverage gaps — and no critical issue is present."
-artifacts[1]:
-  - id: validation-report
-    name: validation-report-{correction_iteration}.md
-    location: planning
 transitions[3]:
   - to: finalize-specification
     condition:

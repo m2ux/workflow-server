@@ -80,9 +80,4 @@ variables[17]:
     description: "Count of security-relevant patterns found in the target during reconnaissance. Gates the no-security-characteristics checkpoint (fires when 0)."
     defaultValue: 0
 
-artifactLocations:
-  audit:
-    path: "{output_path}"
-    gitignored: false
-
 initialActivity: scope-definition

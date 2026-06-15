@@ -63,7 +63,7 @@ Folder where the code review report is written
 
 Code review [report](../resources/rust-substrate-code-review.md#report-template) documenting findings by severity
 
-#### review_artifact
+#### artifact
 
 `code-review.md`
 

@@ -29,7 +29,3 @@ exitActions[1]{action,message}:
 outcome[2]:
   - The audit has independent proof that every inventoried file and all seven patterns were actually covered, not just assumed
   - The parent can either proceed to merge with confidence or knows exactly which scanners to re-run, gaps named
-artifacts[1]:
-  - id: verification-report
-    name: verification-report.json
-    location: planning

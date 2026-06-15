@@ -26,10 +26,6 @@ steps[6]:
   - id: reconcile-assumptions
     technique: review-assumptions::reconcile
     checkpoint: elicitation-complete
-artifacts[1]:
-  - id: requirements-document
-    name: requirements-elicitation.md
-    location: planning
 loops[2]:
   - id: assumption-reconciliation
     name: Assumption Reconciliation Loop

@@ -10,11 +10,6 @@ techniques:
 steps[1]:
   - id: present-planning-overview
     technique: "plan-work-package-scope::present-overview"
-artifacts[1]:
-  - id: package-plan
-    name: "{package_name}-plan.md"
-    location: planning
-    action: create
 checkpoints[1]:
   - id: plans-created
     name: Plans Created

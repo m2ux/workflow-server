@@ -23,6 +23,10 @@ The per-assumption decisions (accept/reject/defer) together with any user-suppli
 
 The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) updated with each assumption marked confirmed, corrected, or needs-discussion and the user's responses recorded inline; all assumptions and their resolution status are preserved. This file is the record of truth for assumption outcomes.
 
+#### artifact
+
+`assumptions-log.md`
+
 ### has_deferred_assumptions
 
 Boolean gate — true iff any assumption was marked deferred (needs-discussion); consumed downstream to decide whether a resolution summary is posted to the issue tracker.

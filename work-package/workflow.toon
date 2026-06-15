@@ -19,15 +19,6 @@ rules[6]:
   - "Decision points require user choice - When issues are found, user decides whether to proceed or loop back"
   - "Git configuration is user-owned. Validate-action messages describe a misconfiguration but never prescribe config-changing commands; the user fixes their own environment at whatever scope (system, global, local) they prefer."
 techniques:
-artifactLocations:
-  planning:
-    path: "{planning_folder_path}"
-  reviews:
-    path: ".engineering/artifacts/reviews"
-  adr:
-    path: ".engineering/artifacts/adr"
-  comprehension:
-    path: ".engineering/artifacts/comprehension"
 modes[1]:
   - id: review
     name: Review Mode

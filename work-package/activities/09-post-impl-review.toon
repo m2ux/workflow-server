@@ -9,25 +9,6 @@ entryActions[1]{action,message}:
 techniques:
   supporting[1]:
     - "variable-binding"
-artifacts[6]:
-  - id: change-block-index
-    name: "change-block-index.md"
-    location: planning
-  - id: manual-diff-review-report
-    name: "manual-diff-review.md"
-    location: planning
-  - id: code-review-report
-    name: "code-review.md"
-    location: planning
-  - id: test-suite-review-report
-    name: "test-suite-review.md"
-    location: planning
-  - id: architecture-summary
-    name: "architecture-summary.md"
-    location: planning
-  - id: structural-findings
-    name: "structural-findings.md"
-    location: planning
 steps[8]:
   - id: gitnexus-detect-changes-preflight
     technique: gitnexus-operations::detect-changes

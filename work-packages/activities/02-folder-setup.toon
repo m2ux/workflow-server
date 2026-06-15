@@ -11,15 +11,6 @@ steps[2]:
     technique: "version-control::initialize-folder"
   - id: setup-planning-folder
     technique: setup-planning-folder
-artifacts[2]:
-  - id: start-here-skeleton
-    name: START-HERE.md
-    location: planning
-    action: create
-  - id: readme-skeleton
-    name: README.md
-    location: planning
-    action: create
 checkpoints[1]:
   - id: folder-created
     name: Folder Setup Complete

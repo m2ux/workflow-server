@@ -43,7 +43,7 @@ Map of each security-critical symbol to its blast radius `{ direct_callers, affe
 
 The composed [audit prompt document](../../resources/audit-prompt-template.md#audit-prompt-template)
 
-#### artifact_filename
+#### artifact
 
 `audit-prompt.md`
 

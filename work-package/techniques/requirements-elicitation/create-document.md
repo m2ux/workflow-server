@@ -31,6 +31,10 @@ Path to the planning artifacts folder where the artifact is created.
 
 The requirements [artifact](../../resources/requirements-elicitation.md#document-template) (`requirements-elicitation.md`) created in `{planning_folder_path}`, capturing the elicited requirements, success criteria, scope boundaries, and assumptions. This file is the record of truth for the elicited requirements.
 
+#### artifact
+
+`requirements-elicitation.md`
+
 ## Protocol
 
 ### 1. Create Document

@@ -69,7 +69,7 @@ Folder where the architecture summary is written
 
 Stakeholder-facing architecture [summary](../resources/architecture-summary.md#architecture-summary-artifact-template) with diagrams
 
-#### architecture_summary_artifact
+#### artifact
 
 `architecture-summary.md`
 

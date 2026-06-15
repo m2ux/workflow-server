@@ -19,6 +19,10 @@ Folder where the strategic review document is written.
 
 The strategic review [document](../../resources/strategic-review.md#strategic-review-artifact-template), written under `{planning_folder_path}` as `strategic-review-{n}.md`, with every finding categorized by type (investigation artifacts, over-engineering, orphaned infrastructure) — or a clean review result when all changes are justified.
 
+#### artifact
+
+`strategic-review-{n}.md`
+
 ## Protocol
 
 ### 1. Document Findings

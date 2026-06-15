@@ -21,3 +21,13 @@ Distil the conservation laws surfaced during the prism passes into a design trad
 - Part 1 — Trade-Off Catalogue: one entry per domain with its constraint, current operating point, shift prediction, and design questions. Each entry must have a falsifiable constraint, code-level evidence for the operating point (citing specific finding IDs), concrete shift predictions, and actionable design questions.
 - Part 2 — Cross-Domain Interactions: map which trade-offs compound.
 - Part 3 — Design Decision Register: a table of implicit decisions that should be made explicit, with current choice, alternative, governing trade-off, and documentation status.
+
+## Outputs
+
+### trade_offs_path
+
+File path to the design trade-off analysis.
+
+#### artifact
+
+`DESIGN-TRADE-OFFS.md`

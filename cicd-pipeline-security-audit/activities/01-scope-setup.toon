@@ -36,7 +36,3 @@ context_to_preserve[5]:
   - workflow_file_count - Total workflow files discovered
   - submodule_count - Number of submodules in scope
   - ai_config_inventory - AI config files found per submodule
-artifacts[1]:
-  - id: start-here
-    name: START-HERE.md
-    location: planning

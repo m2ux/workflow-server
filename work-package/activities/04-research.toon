@@ -62,10 +62,6 @@ loops[2]:
         checkpoint: research-assumption-interview
       - id: record-response
         technique: review-assumptions::record
-artifacts[1]:
-  - id: research-document
-    name: kb-research.md
-    location: planning
 checkpoints[4]:
   - id: research-findings
     name: Research Findings Checkpoint

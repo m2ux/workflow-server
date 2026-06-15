@@ -54,6 +54,10 @@ Type of analysis to perform: 'completion' or 'context'.
 
 Analysis document with findings and recommendations, persisted as [01-COMPLETION-ANALYSIS.md](../resources/completion-analysis-guide.md#4-document-findings) (completion) or [02-CONTEXT-ANALYSIS.md](../resources/context-analysis-guide.md#5-document-findings) (context)
 
+#### artifact
+
+`01-COMPLETION-ANALYSIS.md` (when `analysis_type` is completion) / `02-CONTEXT-ANALYSIS.md` (when `analysis_type` is context)
+
 ### key_findings
 
 Summary of analysis findings

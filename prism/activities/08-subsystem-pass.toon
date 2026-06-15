@@ -6,13 +6,6 @@ problem: "Whole-file analysis with a single prism misses bugs that exist BETWEEN
 techniques:
   supporting[1]:
     - "variable-binding"
-artifacts[2]:
-  - id: subsystem-output
-    name: "subsystem-{name}.md"
-    location: analysis
-  - id: subsystem-synthesis
-    name: "subsystem-synthesis.md"
-    location: analysis
 steps[5]:
   - id: split-subsystems
     required: true

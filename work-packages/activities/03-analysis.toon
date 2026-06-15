@@ -9,11 +9,6 @@ techniques:
 steps[1]:
   - id: analyze-context
     technique: analyze-initiative-context
-artifacts[1]:
-  - id: analysis-document
-    name: "01-COMPLETION-ANALYSIS.md / 02-CONTEXT-ANALYSIS.md"
-    location: planning
-    action: create
 decisions[1]:
   - id: analysis-method
     name: Analysis Method Selection

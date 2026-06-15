@@ -35,6 +35,10 @@ Path to the planning artifacts folder where `{analysis_document}` is written.
 
 Current implementation analysis artifact with baselines and improvement opportunities. Written to `{planning_folder_path}` as `implementation-analysis.md`, capturing the located implementation, evaluated effectiveness, established baselines, and identified gaps.
 
+#### artifact
+
+`implementation-analysis.md`
+
 ## Protocol
 
 ### 1. Create Analysis Artifact

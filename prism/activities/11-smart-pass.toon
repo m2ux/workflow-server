@@ -6,16 +6,6 @@ problem: "Users must manually select the right pipeline mode. Smart mode removes
 techniques:
   supporting[1]:
     - "variable-binding"
-artifacts[3]:
-  - id: smart-prereq
-    name: "smart-prereq.md"
-    location: analysis
-  - id: smart-analysis
-    name: "smart-analysis.md"
-    location: analysis
-  - id: smart-dispute
-    name: "smart-dispute-*.md"
-    location: analysis
 steps[6]:
   - id: run-prereq
     required: true

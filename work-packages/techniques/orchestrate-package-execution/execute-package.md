@@ -51,7 +51,11 @@ List of remaining package names
 
 ### overall_progress
 
-Progress indicator (e.g., '3/7 complete')
+Progress indicator (e.g., '3/7 complete'), written into the updated START-HERE.md status table
+
+#### artifact
+
+`START-HERE.md`
 
 ### package_planning_paths
 

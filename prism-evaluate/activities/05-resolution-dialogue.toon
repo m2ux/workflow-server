@@ -61,10 +61,6 @@ checkpoints[1]:
         description: "Discuss this finding further before deciding"
     required: true
     blocking: true
-artifacts[1]:
-  - id: mitigation-plan
-    name: "MITIGATION-PLAN.md"
-    location: evaluation
 transitions[1]:
   - to: apply-mitigations
     isDefault: true

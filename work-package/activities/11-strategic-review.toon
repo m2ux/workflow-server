@@ -7,13 +7,6 @@ required: true
 techniques:
   supporting[1]:
     - "variable-binding"
-artifacts[2]:
-  - id: strategic-review-doc
-    name: "strategic-review-{n}.md"
-    location: planning
-  - id: architecture-summary-doc
-    name: "architecture-summary.md"
-    location: planning
 steps[9]:
   - id: review-strategy
     technique: review-scope

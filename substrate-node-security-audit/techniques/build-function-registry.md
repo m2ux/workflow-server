@@ -49,6 +49,10 @@ true
 
 Structured function registry table.
 
+#### artifact
+
+`r-function-registry.json`
+
 #### registry_table
 
 one row per function with file location, type classification, and priority

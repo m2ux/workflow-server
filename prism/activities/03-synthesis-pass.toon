@@ -6,10 +6,6 @@ techniques:
   supporting[2]:
     - "variable-binding"
     - "scatter-gather"
-artifacts[1]:
-  - id: synthesis-artifact
-    name: "{current_unit.unit_output_subdir}synthesis.md"
-    location: analysis
 loops[1]:
   - id: synthesis-unit-cycle
     name: Synthesis Unit Cycle

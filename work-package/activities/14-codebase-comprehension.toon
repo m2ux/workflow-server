@@ -26,10 +26,6 @@ steps[6]:
     technique: manage-artifacts::write-artifact
   - id: revise-initial-questions
     technique: revise-questions
-artifacts[1]:
-  - id: comprehension-artifact
-    name: "{codebase-area}.md"
-    location: comprehension
 checkpoints[1]:
   - id: comprehension-sufficient
     name: Comprehension Sufficiency Checkpoint

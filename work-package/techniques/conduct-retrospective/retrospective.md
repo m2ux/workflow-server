@@ -23,7 +23,7 @@ Path to the planning folder where the final outcome and retrospective are record
 
 Workflow [retrospective](../../resources/workflow-retrospective.md#output-document-template) with lessons learned.
 
-#### retrospective_artifact
+#### artifact
 
 `workflow-retrospective.md`
 

@@ -102,9 +102,4 @@ variables[23]:
     description: "Count of accepted mitigations, interpolated into the confirm-apply checkpoint message."
     defaultValue: 0
 
-artifactLocations:
-  evaluation:
-    path: "{output_path}"
-    gitignored: false
-
 initialActivity: scope-definition

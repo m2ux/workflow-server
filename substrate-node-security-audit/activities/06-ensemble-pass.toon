@@ -51,7 +51,3 @@ context_to_preserve[3]:
   - consensus_findings - Findings confirmed by both runs
   - single_source_findings - Findings from only one run
   - escalated_findings - PASSes in primary that became FAILs in ensemble
-artifacts[1]:
-  - id: second-pass-findings
-    name: second-pass-findings.md
-    location: planning

@@ -35,7 +35,3 @@ context_to_preserve[4]:
   - critical_findings - Number of Critical-severity findings
   - high_findings - Number of High-severity findings
   - report_path - Path to the final audit report
-artifacts[1]:
-  - id: audit-report
-    name: 01-cicd-audit-report.md
-    location: planning

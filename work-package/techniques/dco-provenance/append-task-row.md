@@ -55,6 +55,10 @@ One of: `repo-only` (only repository-local sources used) | `web-retrieval` (exte
 
 The updated provenance log, with the appended task row
 
+#### artifact
+
+`provenance-log.md`
+
 ## Protocol
 
 1. If the `{provenance_log}` does not exist, create it with the canonical header: `| Task ID | Assistant | Model | Prompt Class | Context Scope | Description |` followed by the divider `|---|---|---|---|---|---|`.

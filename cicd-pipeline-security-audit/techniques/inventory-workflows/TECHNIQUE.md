@@ -23,6 +23,10 @@ Comma-separated submodule paths to inventory, or `all` to inventory every submod
 
 Complete [inventory of workflow files](../../resources/intermediate-artifact-schemas.md#workflow-inventory) with classification data.
 
+#### artifact
+
+`reconnaissance-summary.json`
+
 #### workflow_files
 
 All workflow file paths with metadata.
@@ -46,6 +50,10 @@ AI configuration files and CODEOWNERS coverage found per target, for P6 detectio
 ### scanner_assignments
 
 [Agent-to-submodule mapping](../../resources/intermediate-artifact-schemas.md#scanner-assignments) — one scanner agent per submodule with workflow files.
+
+#### artifact
+
+`scanner-assignments.json`
 
 ### start_here
 

@@ -50,16 +50,6 @@ rules[6]:
   - "TRADE-OFF ANALYSIS REQUIREMENTS: Each trade-off entry must have a falsifiable constraint, code-level evidence for the current operating point (citing specific finding IDs), concrete shift predictions, and actionable design questions. Conservation laws rejected by the adversarial pass must NOT appear."
   - "REMEDIATION IMPACT COLUMN: Every priority table (P0, P1, P2, P3) in the remediation section must include an Impact column as the final column."
   - "MULTI-SCOPE CONSOLIDATION: For multi-scope audits (multiple triggered prism runs), findings are consolidated across all runs. Duplicate findings (same issue found in multiple scopes) are deduplicated. Cross-scope patterns are surfaced as systemic findings."
-artifacts[3]:
-  - id: audit-report
-    name: "AUDIT-REPORT.md"
-    location: audit
-  - id: detailed-findings
-    name: "DETAILED-FINDINGS.md"
-    location: audit
-  - id: design-trade-offs
-    name: "DESIGN-TRADE-OFFS.md"
-    location: audit
 exitActions[1]:
   - action: validate
     description: "Verify all three audit deliverables exist before transitioning to delivery"

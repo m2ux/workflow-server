@@ -47,7 +47,3 @@ context_to_preserve[4]:
   - gaps - List of missed findings with root causes
   - severity_calibration - Over-rating and under-rating patterns
   - recommendations - Suggestions for closing gaps
-artifacts[1]:
-  - id: gap-analysis-report
-    name: 02-gap-analysis.md
-    location: planning

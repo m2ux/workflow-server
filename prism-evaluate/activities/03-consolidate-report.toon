@@ -26,10 +26,6 @@ steps[5]:
   - id: verify-report
     technique: compose-evaluation-report::verify-report
     required: true
-artifacts[1]:
-  - id: evaluation-report
-    name: "EVALUATION-REPORT.md"
-    location: evaluation
 outcome[1]:
   - "The consumer has a single severity-calibrated evaluation of the target — cross-dimensional findings and actionable recommendations to decide from"
 transitions[1]:

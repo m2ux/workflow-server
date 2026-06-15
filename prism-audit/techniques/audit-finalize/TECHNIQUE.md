@@ -29,12 +29,24 @@ The prism-produced report consolidating findings, named `REPORT.md`
 
 ### audit_report_path
 
-File path to the summary report, named `AUDIT-REPORT.md`
+File path to the summary report.
+
+#### artifact
+
+`AUDIT-REPORT.md`
 
 ### detailed_findings_path
 
-File path to the detailed-findings document, named `DETAILED-FINDINGS.md`
+File path to the detailed-findings document.
+
+#### artifact
+
+`DETAILED-FINDINGS.md`
 
 ### trade_offs_path
 
-File path to the design trade-off analysis, named `DESIGN-TRADE-OFFS.md`
+File path to the design trade-off analysis.
+
+#### artifact
+
+`DESIGN-TRADE-OFFS.md`

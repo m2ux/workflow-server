@@ -27,6 +27,10 @@ Flag indicating whether the codebase is indexed; selects between gitnexus-operat
 
 Updated comprehension artifact — written as `{codebase_area}.md` in `{comprehension_dir}`, augmenting prior content rather than replacing it.
 
+#### artifact
+
+`{codebase_area}.md`
+
 #### deep_dives
 
 Targeted exploration subsections appended for the selected area: traced data flows, implementation details, and edge cases.

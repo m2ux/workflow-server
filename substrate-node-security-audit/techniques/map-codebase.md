@@ -61,6 +61,10 @@ Paths to include in the analysis
 
 Structured codebase map.
 
+#### artifact
+
+`r-crate-map.json` (component inventory and crate classification) / `r-reconnaissance-data.json` (trust boundaries, critical paths, hooks, data flows, safety overrides)
+
 #### component_inventory
 
 every crate/module with classification and priority

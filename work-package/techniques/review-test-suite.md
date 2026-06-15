@@ -63,7 +63,7 @@ Folder where the test suite review report is written
 
 Test suite review [report](../resources/test-suite-review.md#test-suite-review-report-template) documenting quality assessment
 
-#### test_suite_review_artifact
+#### artifact
 
 `test-suite-review.md`
 

@@ -9,14 +9,6 @@ tags[3]:
   - sync
 
 techniques:
-artifactLocations:
-  planning:
-    path: "{planning_folder_path}"
-    gitignored: false
-  workflows:
-    path: "workflows/"
-    gitignored: false
-
 rules[4]:
   - "WORKTREE SCOPE: All file operations happen in the workflows worktree (workflows/ directory). Never modify MCP server source (src/, schemas/)."
   - "RESOURCE NAMING: Resources use the convention {NN}-{hyphenated-name}.md where NN is a zero-padded index. Indices are permanent — never reuse a deleted index."

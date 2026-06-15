@@ -9,11 +9,6 @@ techniques:
 steps[1]:
   - id: prioritize
     technique: prioritize-packages
-artifacts[1]:
-  - id: priority-ranking
-    name: priority-ranking.md
-    location: planning
-    action: create
 checkpoints[1]:
   - id: priority-confirmed
     name: Priority Confirmation

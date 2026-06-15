@@ -64,7 +64,3 @@ context_to_preserve[7]:
   - verification_report - Gap report from V including coverage attestation
   - merge_complete - Whether M completed with zero Unaccounted
   - scanner_output_files - Paths to persisted JSON files for each scanner (canonical finding source)
-artifacts[1]:
-  - id: merged-findings
-    name: merged-findings.json
-    location: planning

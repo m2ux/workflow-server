@@ -77,11 +77,6 @@ loops[1]:
         checkpoint: assumption-decision
       - id: record-decision
         technique: review-assumptions::record
-artifacts[1]:
-  - id: assumptions-log
-    name: assumptions-log.md
-    location: planning
-    action: update
 checkpoints[2]:
   - id: assumption-decision
     name: Assumption Decision
