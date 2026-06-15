@@ -1,5 +1,5 @@
 id: verify
-version: 1.2.0
+version: 1.2.1
 name: Verify Consistency
 description: "Check for consistency issues across resources, techniques, and documentation."
 problem: Changes across multiple files may leave inconsistencies
@@ -37,7 +37,7 @@ checkpoints[1]:
         label: Abort
         description: "Stop the workflow without submitting"
         effect:
-          transitionTo: workflow-end
+          transitionTo: __terminal__
     required: true
     blocking: false
 
