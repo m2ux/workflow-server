@@ -78,9 +78,9 @@ transitions[1]:
       operator: "=="
       value: null
 outcome[3]:
-  - Client workflow's activity loop driven to completion by the meta orchestrator
-  - Every yielded checkpoint presented to the user; selections forwarded via respond_checkpoint
-  - Client workflow reached workflow_complete (current_activity == null after evaluate-transition)
+  - The client workflow has executed end to end with its artifacts committed and state persisted at every activity boundary
+  - The user retained control over every decision point — checkpoints surfaced to them and their selections steered the workflow
+  - The client workflow has no further activities to run, so the meta can proceed to close it out
 context_to_preserve[2]:
   - current_activity - Server-resident activity pointer mirrored locally for the loop condition
   - worker_yielded_checkpoint - Whether the dispatched worker yielded a checkpoint

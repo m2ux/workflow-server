@@ -43,8 +43,8 @@ checkpoints[1]:
         effect:
           transitionTo: intake-and-context
 outcome[2]:
-  - Updated workflow verified against all design principles and anti-patterns
-  - Post-update compliance snapshot saved as artifact
+  - The user knows whether the committed update is clean or carries new compliance debt, with severity-rated findings to decide the next move from
+  - A dated compliance snapshot of the committed state exists to compare future audits against and to show the update was checked, not assumed
 context_to_preserve[2]:
   - post_update_findings - List of findings from the post-update review
   - post_update_review_path - Path to the saved review snapshot

@@ -31,11 +31,9 @@ loops[1]:
     steps[1]:
       - id: execute-package
         technique: "orchestrate-package-execution::execute-package"
-outcome[4]:
-  - All planned work packages implemented via work-package workflow
-  - Each package has merged PR
-  - Roadmap status reflects completion
-  - Initiative complete
+outcome[2]:
+  - Every planned package is delivered as merged, reviewed work, so the initiative's intended capability is fully in place
+  - Progress tracking reflects a finished initiative, giving stakeholders a trustworthy completion signal
 context_to_preserve[6]:
   - current_package - Currently active work package (passed to work-package workflow)
   - completed_packages - List of completed work packages

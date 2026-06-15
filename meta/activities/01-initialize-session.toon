@@ -28,10 +28,10 @@ transitions[1]:
   - to: resolve-target
     isDefault: true
 outcome[4]:
-  - "client_planning_slug derived from the work item on fresh starts; preserved from saved state on resume"
-  - "Client session created or resumed; the meta's promoted workspace folder lives at client_planning_slug under the server's workspace .engineering root"
-  - "planning_folder_path bound to the canonical absolute path returned by the server — the single artifact location for the work package"
-  - "Prior variables restored from session.json on resume; schema defaults on fresh start"
+  - "The work package has a stable, work-item-derived identity that the server reuses on every resume rather than a date-stamped fallback name"
+  - "The client workflow is live as a child of the meta session — its orchestrator can be dispatched and its artifacts have a home"
+  - "Every downstream activity has one authoritative, server-canonical absolute location to write and read work-package artifacts"
+  - "A resumed session continues with all prior progress intact; a fresh session starts from a clean, schema-default state"
 context_to_preserve[3]:
   - client_session_index - The session_index for the dispatched client workflow
   - client_planning_slug - Planning slug for the client's planning folder, derived BEFORE dispatch_child so the server promotes the meta to that slug

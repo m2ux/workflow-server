@@ -28,11 +28,10 @@ steps[5]:
 transitions[0]:
 exitActions[1]{action,message}:
   log,Finding merge complete — reconciliation table produced with zero Unaccounted
-outcome[4]:
-  - All scanner findings loaded and processed
-  - Duplicates identified and merged
-  - Compound vulnerability chains correlated
-  - Reconciliation table produced with zero Unaccounted
+outcome[3]:
+  - Downstream scoring sees each real issue exactly once, with per-scanner duplicates collapsed into one canonical finding
+  - Compound attack chains spanning multiple patterns are surfaced as correlated risks rather than scattered single findings
+  - Every scanner finding can be traced into the merged set with none unaccounted, so the merge can be trusted as lossless
 artifacts[2]:
   - id: merged-findings
     name: merged-findings.json

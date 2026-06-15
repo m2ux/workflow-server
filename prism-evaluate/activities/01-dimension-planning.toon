@@ -53,9 +53,8 @@ artifacts[1]:
   - id: evaluation-plan
     name: "evaluation-plan.md"
     location: evaluation
-outcome[2]:
-  - "Evaluation plan written with dimension-to-lens mapping and execution groups"
-  - "dimension_plan and execution_groups populated for the execute-analysis activity"
+outcome[1]:
+  - "Each dimension is matched to the prism pipeline modes and lenses that will surface target-specific findings, grouped into runnable batches the analysis stage can execute directly"
 transitions[1]:
   - to: execute-analysis
     condition:

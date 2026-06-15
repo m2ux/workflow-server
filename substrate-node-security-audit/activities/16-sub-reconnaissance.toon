@@ -15,12 +15,11 @@ steps[2]:
     required: true
     technique: build-function-registry
 
-outcome[5]:
-  - All crates explicitly identified and classified in crate-map.json
-  - Trust boundaries, consensus paths, pallet hooks, config structs, data flows, safety overrides documented in reconnaissance-data.json
-  - Function registry built for priority-1/2 crates in function-registry.json
-  - .rs files sorted by line count with top files flagged for registry inclusion
-  - Reconnaissance leads recorded for downstream agent assignment
+outcome[4]:
+  - The in-scope surface is classified by crate priority, letting the orchestrator concentrate review where consensus-critical risk lives
+  - The system's security-relevant structure — trust boundaries, consensus paths, pallet hooks, config structs, data flows, and safety overrides — is documented as the foundation for vulnerability domain mapping
+  - Priority crates have an enumerated, size-prioritized function inventory agents can drive exhaustive coverage from
+  - Concrete reconnaissance leads are captured so agent assignment can route each observation to a responsible reviewer
 
 context_to_preserve[3]:
   - crate_map_file - Path to r-crate-map.json in planning folder

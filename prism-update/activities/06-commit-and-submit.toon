@@ -19,6 +19,5 @@ artifacts[1]:
     location: workflows
     action: create
 
-outcome[2]:
-  - "Feature branch pushed to remote"
-  - "Pull request created with change summary"
+outcome[1]:
+  - "The prism update is in front of a reviewer as an open pull request — ready for review and merge"

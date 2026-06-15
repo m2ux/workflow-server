@@ -27,7 +27,7 @@ artifacts[1]:
     name: failure-report.md
     location: planning
 outcome[2]:
-  - Failure report compiled with critical issues and resolution guidance
-  - No specification promoted
+  - The user knows exactly which critical issues blocked refinement and what manual resolution each one needs
+  - No unvalidated specification reaches the canonical location — the prior state is preserved until a human intervenes
 context_to_preserve[1]:
   - failure_report - Path to the failure report artifact

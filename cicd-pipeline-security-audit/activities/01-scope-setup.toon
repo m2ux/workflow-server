@@ -25,12 +25,11 @@ transitions[1]{to,isDefault}:
   reconnaissance,true
 exitActions[1]{action,message}:
   log,Scope setup complete — targets confirmed and workflow inventory built
-outcome[5]:
-  - Target submodules confirmed and validated
-  - All workflow files discovered and counted
-  - AI configuration files inventoried
-  - CODEOWNERS presence recorded per submodule
-  - Planning folder created with START-HERE.md
+outcome[4]:
+  - Scanning can begin against an agreed, validated set of in-scope submodules
+  - Scanners know the full universe of workflow and AI-config files they must cover, with a per-submodule count to verify completeness against
+  - Reviewers can tell which submodules lack CODEOWNERS protection on their workflow files
+  - Audit work has a single organized home where every downstream artifact lands and where a reader starts
 context_to_preserve[5]:
   - target_submodules - Comma-separated list of submodule paths in scope
   - planning_folder_path - Path to planning artifacts folder

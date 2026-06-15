@@ -36,5 +36,5 @@ checkpoints[1]:
     required: true
     blocking: true
 outcome[2]:
-  - "All accepted mitigations applied to the target document"
-  - "Application summary presented with verification results"
+  - "The target document now reflects every accepted mitigation, applied in priority order and committed"
+  - "The user can trust that each change landed correctly, with verification confirming what was modified"

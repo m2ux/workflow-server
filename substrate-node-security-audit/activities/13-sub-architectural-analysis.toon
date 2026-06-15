@@ -13,10 +13,10 @@ steps[1]:
     technique: analyze-architecture
 
 outcome[4]:
-  - Component interaction model with trust assumptions and required security properties
-  - Privilege and authority map with verification points
-  - Ranked candidate point list for sub-agent prioritization
-  - Emergent vulnerability domains not covered by §3 checklist
+  - Domain mapping can reason about what could go wrong from how components interact and what each interaction must guarantee, not just from a predefined checklist
+  - Privileged operations and their verification points are known, so missing or weak authority checks become identifiable
+  - Sub-agents have a risk-ranked list of where to spend their deepest scrutiny
+  - Vulnerability classes specific to this system's structure are surfaced beyond what the §3 checklist would catch
 
 context_to_preserve[4]:
   - interaction_model - Per-component-pair security property requirements

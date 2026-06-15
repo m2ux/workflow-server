@@ -102,10 +102,10 @@ exitActions[1]:
   - action: log
     message: "Workflow design complete — all files committed to workflows worktree"
 outcome[4]:
-  - All TOON files pass schema validation
-  - Scope manifest fully addressed
-  - README generated or updated
-  - All changes committed to workflows worktree
+  - Every TOON file passes schema validation, so the workflow is guaranteed loadable and the server will run it without surprise
+  - Nothing planned is left undone — every scope-manifest item is accounted for before the work lands
+  - A human-readable entry point exists for the workflow, so future users and authors can discover and understand it without reading the raw TOON
+  - The work is durably landed in the workflows worktree, available to every session that loads the library
 context_to_preserve[3]:
   - validation_results - Per-file validation pass/fail status
   - commit_hash - Git commit hash of the final commit

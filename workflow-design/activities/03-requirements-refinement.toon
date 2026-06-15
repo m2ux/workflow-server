@@ -130,9 +130,8 @@ transitions[2]:
       value: true
   - to: pattern-analysis
     isDefault: true
-outcome[2]:
-  - Complete workflow specification captured through guided elicitation
-  - All design dimensions confirmed by user
+outcome[1]:
+  - A complete workflow specification — purpose, activities, checkpoints, artifacts, variables, techniques, and rules — that the user has confirmed across every dimension, so drafting proceeds from settled requirements rather than open questions
 context_to_preserve[8]:
   - workflow_purpose - Confirmed purpose and domain
   - activity_list - Confirmed activity names, purposes, and artifacts

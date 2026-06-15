@@ -67,13 +67,12 @@ transitions[1]:
 exitActions[2]{action,message}:
   message,README PROGRESS: Update planning folder README.md — mark intake sources as ✅ Complete.
   message,README PROGRESS: Update planning folder README.md — mark source analysis as ✅ Complete.
-outcome[6]:
-  - Source-document and target-specification paths captured and validated
-  - Source classified as meeting transcript or unstructured document
-  - Augment-versus-create mode determined
-  - Sources loaded for downstream activities
-  - Requirement changes identified and mapped to identifiers
-  - Analysis report approved for application
+outcome[5]:
+  - The workflow can trust where to read from and where to write to — both paths exist and are confirmed correct by the user
+  - Downstream activities know how to read the source and whether they are augmenting an existing specification or creating a new one
+  - The source content is available for analysis without re-reading or re-classifying it
+  - Every requirement change the source implies is pinned to a stable identifier the specification can be updated against
+  - The user has signed off that the analysis faithfully reflects the source, so the update can proceed without second-guessing scope
 context_to_preserve[7]:
   - source_path - Path to the source document
   - source_type - Meeting transcript or unstructured document

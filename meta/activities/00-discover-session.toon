@@ -86,10 +86,9 @@ checkpoints[2]:
 transitions[1]:
   - to: initialize-session
     isDefault: true
-outcome[3]:
+outcome[2]:
   - Target workflow identified (and confirmed by user if ambiguous)
   - Existing saved session matched and resume decision captured, or no session found
-  - State variables set for initialize-session to create or adopt the client session
 context_to_preserve[5]:
   - target_workflow_id - The client workflow to dispatch
   - has_saved_state - Whether a saved client session was found

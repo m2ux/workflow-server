@@ -144,12 +144,11 @@ checkpoints[5]:
 transitions[1]:
   - to: quality-review
     isDefault: true
-outcome[5]:
-  - Complete file manifest with all files enumerated
-  - Structural design confirmed against existing patterns
-  - Implementation approach and order confirmed
-  - All files in the scope manifest drafted and individually reviewed
-  - All TOON files validated against their schemas
+outcome[4]:
+  - Every file the change requires is enumerated up front, closing the most common gap — work begun against an incomplete picture of what must be touched
+  - The folder structure and activity flow are agreed against established patterns, so the workflow's shape is sound before any file is written
+  - The full workflow is drafted with each file individually approved, giving the user a known-good body of content rather than an unreviewed dump
+  - Every TOON file is schema-valid, so downstream loading and validation start from clean, conformant content
 context_to_preserve[5]:
   - scope_manifest - Complete list of files with paths, actions, and descriptions
   - structural_design - Folder structure and activity transition diagram

@@ -34,9 +34,8 @@ checkpoints[1]:
 transitions[1]:
   - to: finalize-roadmap
     isDefault: true
-outcome[2]:
-  - Priority order established
-  - User has approved execution sequence
+outcome[1]:
+  - There is a user-approved execution order that respects dependencies, value, and risk, so implementation knows which package to start next
 context_to_preserve[3]:
   - priority_order - Ordered list of work packages
   - dependency_graph - Visual or structured dependency representation

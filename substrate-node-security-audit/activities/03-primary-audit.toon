@@ -57,10 +57,10 @@ exitActions[2]{action,message}:
   log,Primary audit complete — findings collected from all agent groups
   set,primary_audit_complete=true
 outcome[4]:
-  - All priority-1/2 crates reviewed with full §3 checklist via concurrent dispatch
-  - Static analysis patterns and mechanical checks run against full in-scope directories
-  - Storage lifecycle pairing table produced (insert/remove completeness)
-  - Toolkit code reviewed with mandatory minimum checklist (Group D)
+  - Every priority-1/2 crate has been evaluated against the full §3 checklist in a dedicated context window, giving depth no single agent could reach
+  - Mechanical and pattern-based weaknesses across the whole in-scope surface are caught independently of the human-led review
+  - Storage lifecycle pairing is known, so unbounded-growth and orphaned-state risks can be judged from insert/remove completeness
+  - Toolkit code has guaranteed minimum-checklist coverage, closing the gap where benign-looking helpers are usually skimmed
 context_to_preserve[10]:
   - merged_findings - Flat table of all agent findings with elevation mapping (produced by M, not orchestrator)
   - reconciliation_table - Per-agent finding count reconciliation with zero Unaccounted (produced by M)

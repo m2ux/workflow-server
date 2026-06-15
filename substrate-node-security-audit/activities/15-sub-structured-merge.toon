@@ -12,12 +12,11 @@ steps[1]:
     technique: merge-findings
     required: true
 
-outcome[5]:
-  - All agent findings accounted for in reconciliation table (zero Unaccounted)
-  - All security-relevant observations elevated or explicitly mapped to existing findings
-  - All findings severity-scored with bidirectional calibration cross-check
-  - Canonical merge table produced with report finding numbers
-  - Deduplication justified for every merged row
+outcome[4]:
+  - Every agent finding is reconciled with zero Unaccounted, so the merge is provably lossless even at 75-115K tokens of upstream context
+  - Every security-relevant observation is either elevated to a finding or explicitly mapped, so nothing is dropped or silently demoted
+  - Findings carry a calibrated severity from a cross-checked rubric, giving the report a trustworthy ranking
+  - The report consumes a single canonical, deduplicated finding set whose every merge decision is justified and traceable
 
 context_to_preserve[5]:
   - merge_table - Canonical flat table with report finding numbers and merge status

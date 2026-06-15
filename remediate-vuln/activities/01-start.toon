@@ -112,10 +112,10 @@ exitActions[1]:
   - action: log
     message: "Security initialization complete. Public disclosure paths disabled."
 outcome[4]:
-  - "is_sec_vuln_mode set to true"
-  - "Private 'security' remote configured"
-  - "Local vuln/ branch created"
-  - "Private planning folder initialized"
+  - "The workflow is locked into isolation: every public disclosure path is disabled for the rest of the fix"
+  - "All git operations have a private-only destination — the fix cannot be pushed to a public repository"
+  - "The fix develops on a dedicated advisory branch off the private fork, never touching a public branch"
+  - "Planning happens entirely off any public surface — no PR or Issue link is ever recorded"
 context_to_preserve[5]:
   - is_sec_vuln_mode
   - sec_vuln_url

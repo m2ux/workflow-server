@@ -45,10 +45,10 @@ steps[8]:
     required: true
     technique: execute-sub-agent
 outcome[4]:
-  - Every .rs file in the crate read and registered
-  - Every §3 checklist item evaluated with evidence
-  - Mandatory analysis tables produced or explicitly justified as N/A
-  - Cross-function invariants verified for all StorageMap operations
+  - The whole crate has been read, so no source file is silently left unreviewed
+  - Every §3 checklist item has an evidence-backed verdict the orchestrator can trust without re-deriving it
+  - Required analysis tables are either present or have a justified N/A, removing the ambiguity of a silently-skipped table
+  - Storage invariants are checked across functions, catching state bugs that per-function review alone misses
 context_to_preserve[4]:
   - findings - Structured findings list
   - checklist_coverage - Per-item verdicts

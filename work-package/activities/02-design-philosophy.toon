@@ -175,12 +175,11 @@ transitions[1]:
     isDefault: true
 exitActions[1]{action,message}:
   message,README PROGRESS: Update planning folder README.md — mark design philosophy artifacts as ✅ Complete.
-outcome[5]:
+outcome[4]:
   - Problem clearly defined and classified
   - Complexity assessed
   - Workflow path determined
-  - Design philosophy documented in artifact
-  - Ready for next activity based on problem nature
+  - A durable record of the classification and path rationale that downstream activities and reviewers can rely on
 context_to_preserve[8]:
   - problem_statement - Clear problem definition
   - problem_type - Specific problem or inventive goal

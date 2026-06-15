@@ -93,12 +93,11 @@ steps[8]:
     technique: conduct-retrospective::select-next
 exitActions[1]{action,message}:
   log,Work package workflow complete
-outcome[7]:
-  - ADR created and accepted when complexity is moderate or complex
-  - Documentation finalized
-  - Retrospective completed with lessons learned
-  - Work package status updated
-  - Component worktree removed when this work package created one
+outcome[6]:
+  - The key design decision is durably recorded for future reference when complexity is moderate or complex
+  - Project documentation reflects the delivered change
+  - Lessons learned are captured to improve future work packages
+  - The temporary worktree this work package created is cleaned up, leaving no orphaned workspaces
   - Reference monorepo left untouched
   - Ready for next work package
 context_to_preserve[6]:

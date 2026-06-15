@@ -151,8 +151,8 @@ exitActions[1]{action,message}:
   message,README PROGRESS: Update planning folder README.md — set Status to In Progress and mark implementation artifacts.
 outcome[3]:
   - All tasks implemented
-  - Changes committed
-  - Provenance log created
+  - The implemented work is captured as reviewable, attributable commits on the feature branch
+  - An auditable per-task record of what changed and why exists to support the later DCO attestation
 context_to_preserve[6]:
   - completed_tasks - Tasks completed during implementation
   - assumptions - Assumptions made during implementation

@@ -63,9 +63,8 @@ checkpoints[1]:
           transitionTo: scope-definition
     required: true
     blocking: true
-outcome[2]:
+outcome[1]:
   - "Evaluation scope confirmed with validated target path, target type, and dimensions"
-  - "Output directory created"
 transitions[1]:
   - to: dimension-planning
     condition:

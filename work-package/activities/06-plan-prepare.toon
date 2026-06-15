@@ -98,9 +98,9 @@ transitions[1]:
 exitActions[1]{action,message}:
   message,README PROGRESS: Update planning folder README.md — mark plan artifacts as ✅ Complete and set Status to Ready.
 outcome[3]:
-  - Implementation plan created
-  - Test plan created
-  - PR updated with plan
+  - An agreed, sequenced approach that the implement activity can execute against task by task
+  - A defined verification strategy that validation will run the implementation against
+  - Reviewers and stakeholders can see the intended approach on the PR before any code is written
 context_to_preserve[3]:
   - implementation_plan - Work package plan document
   - test_plan - Test plan document

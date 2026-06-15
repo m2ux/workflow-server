@@ -69,5 +69,5 @@ transitions[1]:
   - to: apply-mitigations
     isDefault: true
 outcome[2]:
-  - "All findings presented individually with proposed mitigations and user decisions collected"
-  - "MITIGATION-PLAN.md written with accepted mitigations, implementation priority, and detailed change specifications"
+  - "Every finding has a mitigation the user has explicitly decided on, preserving the nuance that batch review would lose"
+  - "The accepted mitigations are captured as a priority-ordered, change-specified plan precise enough to apply to the target"

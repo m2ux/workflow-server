@@ -19,10 +19,8 @@ transitions[1]:
   - to: review-changes
     isDefault: true
 
-outcome[3]:
-  - "change_set populated with the categorized diff"
-  - "New prisms classified by family with metadata"
-  - "next_index determined"
+outcome[1]:
+  - "The workflow knows exactly what changed upstream and how each new prism classifies by family — the import can proceed against an approved, well-understood scope"
 
 context_to_preserve[3]:
   - "change_set — categorized diff result"

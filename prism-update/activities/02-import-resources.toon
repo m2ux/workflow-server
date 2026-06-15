@@ -29,8 +29,8 @@ transitions[1]:
     isDefault: true
 
 outcome[2]:
-  - "All resource files match upstream state"
-  - "Changes committed in logical groups"
+  - "The workflow's resource catalog now matches upstream — consumers can rely on it being current"
+  - "The import lands as reviewable, logically grouped commits a maintainer can audit and revert independently"
 
 context_to_preserve[2]:
   - "change_set — needed by routing and docs activities"

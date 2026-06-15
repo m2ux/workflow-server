@@ -52,13 +52,10 @@ transitions[1]:
 exitActions[2]{action,message}:
   log,Primary scan complete — all findings merged and reconciled
   set,primary_scan_complete=true
-outcome[6]:
-  - All scanner agents dispatched and returned with verified dispatch completeness
-  - Every workflow file scanned for all seven patterns
-  - Verification agent confirmed completeness
-  - Merge agent produced unified finding set with zero Unaccounted in reconciliation
-  - All scanner output files persisted in planning folder
-  - Findings ready for severity scoring and report generation
+outcome[3]:
+  - "Every in-scope workflow file has been scanned for all seven vulnerability classes, with independent verification that no file or pattern was skipped"
+  - "The audit speaks with one voice: a single deduplicated, cross-correlated finding set where every scanner finding is reconciled and accounted for"
+  - "Findings are trustworthy and complete enough to drive severity scoring and the final report"
 context_to_preserve[7]:
   - scanners_dispatched - Number of scanner agents dispatched
   - dispatch_manifest - Per-scanner table with assigned/dispatched/returned status

@@ -31,10 +31,10 @@ exitActions[2]{action,message}:
   log,Reconnaissance complete — workflows classified and scanner agents assigned
   set,reconnaissance_complete=true
 outcome[4]:
-  - All workflows classified by trigger type
-  - Permission scopes mapped per workflow
-  - Checkout patterns identified and flagged
-  - Scanner agents assigned (one per submodule)
+  - Scanners can prioritize the riskiest workflows first, knowing each one's trigger type, permission scope, and checkout pattern
+  - The workflows most exposed to untrusted input are already flagged before scanning begins
+  - Every in-scope submodule has an owning scanner agent, so no submodule can be silently skipped
+  - Scan work is partitioned for parallel dispatch with no overlap or gap between agents
 context_to_preserve[3]:
   - scanners_assigned - Number of scanner agents assigned
   - workflow_inventory - Complete inventory of workflow files with per-workflow classification data

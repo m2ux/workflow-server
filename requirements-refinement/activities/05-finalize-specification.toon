@@ -36,8 +36,8 @@ artifacts[2]:
     name: change-summary.md
     location: planning
 outcome[2]:
-  - Final specification and change summary staged in the planning folder
-  - User acceptance for promotion recorded
+  - The user has a promotion-ready specification alongside a human-readable account of what changed, so they can review and promote in one step
+  - The user has explicitly accepted the result for promotion, so the workflow can complete knowing the outcome is endorsed
 context_to_preserve[3]:
   - finalization_confirmed - Whether the final specification was accepted
   - final_specification - Path to the final specification artifact

@@ -38,10 +38,10 @@ transitions[0]:
 exitActions[1]{action,message}:
   log,Gap analysis complete — audit workflow finished
 outcome[4]:
-  - Finding-by-finding mapping between AI and reference reports
-  - Gaps identified with root cause analysis
-  - Severity calibration differences documented
-  - Recommendations for workflow improvement
+  - The AI audit's coverage is measurable against a professional benchmark, finding by finding
+  - Structural blind spots are named with the root cause that let each one slip through
+  - Where the AI over- or under-rates risk relative to the benchmark is known, so its calibration can be trusted or corrected
+  - The template can be improved with concrete countermeasures targeted at the gap clusters this comparison exposed
 context_to_preserve[4]:
   - overlap_rate - Percentage of reference findings matched
   - gaps - List of missed findings with root causes

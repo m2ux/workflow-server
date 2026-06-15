@@ -41,8 +41,8 @@ transitions[1]:
   - to: prioritization
     isDefault: true
 outcome[2]:
-  - All work packages have detailed plans
-  - Dependencies documented
+  - Every work package now has enough scope, effort, and success-criteria detail to be prioritized and executed independently
+  - Inter-package dependencies are known, so prioritization can order packages without creating blocked work
 context_to_preserve[2]:
   - package_plans - List of created plan documents
   - dependency_map - Map of inter-package dependencies

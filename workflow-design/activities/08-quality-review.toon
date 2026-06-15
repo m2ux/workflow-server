@@ -202,10 +202,10 @@ transitions[1]:
   - to: validate-and-commit
     isDefault: true
 outcome[4]:
-  - All prose replaced with formal schema constructs where applicable
-  - Convention conformance verified against reference workflows
-  - Rule hygiene verified — no protocol restatements, contradictions, or cross-level duplications
-  - Critical rules backed by structural enforcement
+  - The workflow expresses its logic in schema constructs the engine can act on, not prose an agent must interpret — behavior is structural, not advisory
+  - The content reads and behaves like its sibling workflows, so users and agents carry one mental model across the whole library
+  - The rule set is lean and trustworthy — no restatements of protocol the engine already enforces, no contradictions, no duplicated guidance to drift out of sync
+  - Critical rules are enforced by structure rather than hope, so they hold even when an agent skips the prose
 context_to_preserve[4]:
   - expressiveness_corrections - List of prose-to-construct corrections applied
   - conformance_divergences - List of convention divergences and their disposition

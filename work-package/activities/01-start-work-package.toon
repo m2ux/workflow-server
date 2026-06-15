@@ -580,7 +580,7 @@ outcome[6]:
   - Feature branch created from main
   - Draft PR created, assigned to current GitHub user, and linked to issue
   - PR reference recorded on the issue via the platform's native PR linkage
-  - Planning folder initialized
+  - A canonical, writable location is established for every artifact this work package will produce
 context_to_preserve[20]:
   - issue_number - The associated issue number (GitHub #N or Jira KEY-N)
   - issue_platform - github or jira

@@ -36,9 +36,8 @@ checkpoints[1]:
 transitions[1]:
   - to: analysis
     isDefault: true
-outcome[2]:
-  - Planning folder structure created
-  - Initial documentation skeletons in place
+outcome[1]:
+  - There is a single known home for all planning artifacts, with entry-point and overview scaffolds ready for later activities to fill in
 context_to_preserve[2]:
   - planning_folder_path - Path to the created planning folder
   - documents_created - List of created document files

@@ -31,9 +31,9 @@ steps[4]:
     required: true
     technique: execute-sub-agent
 outcome[3]:
-  - Every function in toolkit crates enumerated and reviewed against all 8 checklist items
-  - Per-function x checklist matrix produced with no gaps
-  - Function coverage verified at 100%
+  - Every toolkit function is reviewed against all 8 checklist items, so benign-looking helpers can no longer be skimmed past
+  - State, arithmetic, and I/O bugs are surfaced per function rather than only on representative samples
+  - Coverage is attested at 100%, giving the orchestrator confidence that no function was selectively skipped
 context_to_preserve[4]:
   - findings - Structured findings list from all FAIL cells in the matrix
   - function_enumeration - Complete function list with metadata

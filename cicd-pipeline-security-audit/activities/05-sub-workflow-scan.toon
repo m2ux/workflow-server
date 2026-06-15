@@ -32,10 +32,9 @@ steps[9]:
 transitions[0]:
 exitActions[1]{action,message}:
   log,Per-submodule scan complete — findings written to output file
-outcome[3]:
-  - All seven detection patterns applied to every workflow file
-  - Findings documented with source-to-sink evidence
-  - Structured output written to planning folder
+outcome[2]:
+  - This submodule's workflows have full seven-class coverage, so the parent audit can account for it as scanned
+  - Each finding carries source-to-sink evidence a reviewer can independently confirm, and is structured so the parent can collect and merge it without re-parsing
 context_to_preserve[3]:
   - findings_count - Number of findings in this submodule
   - files_scanned - Number of workflow files scanned

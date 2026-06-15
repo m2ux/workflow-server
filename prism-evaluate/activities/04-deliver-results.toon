@@ -49,4 +49,4 @@ transitions[2]:
   - to: __terminal__
     isDefault: true
 outcome[1]:
-  - "Evaluation results presented to user with finding metrics and complete artifact index"
+  - "The user can see what the evaluation found and where every deliverable lives, and can decide whether to move into resolving the findings or stop here"

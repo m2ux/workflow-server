@@ -43,9 +43,9 @@ exitActions[2]{action,message}:
   log,Adversarial verification complete — false PASSes identified
   set,adversarial_complete=true
 outcome[3]:
-  - Every High/Medium PASS item decomposed and independently verified
-  - False PASSes identified and converted to new findings
-  - Verification results documented for report integration
+  - Every high-stakes PASS verdict has survived independent property-level re-checking, so first-positive-signal bias can no longer hide a real finding behind a premature PASS
+  - Findings that primary agents missed as false PASSes are recovered and promoted into the findings set
+  - The report can integrate calibrated verdicts that distinguish confirmed-safe from insufficiently-verified items
 context_to_preserve[3]:
   - confirmed_passes - PASS items verified as correct with evidence
   - refuted_passes - False PASSes converted to new findings

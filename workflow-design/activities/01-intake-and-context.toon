@@ -174,13 +174,11 @@ transitions[2]:
           operator: ==
           value: true
     isDefault: true
-outcome[6]:
-  - Operation classified as create or update
-  - Initial design intent extracted and confirmed
-  - Mode variables set correctly
-  - Schema system fully internalized
-  - TOON format conventions confirmed
-  - Applicable schema constructs identified and confirmed
+outcome[4]:
+  - The workflow knows whether it is creating, updating, or reviewing, and against which target — every downstream branch can route on a confirmed operation
+  - The user-confirmed design intent gives drafting a stable north star to build toward
+  - The agent can author schema-correct TOON without re-deriving syntax or guessing which constructs apply
+  - The set of schema constructs in play is agreed up front, so drafting reaches for the right construct instead of falling back to prose
 context_to_preserve[9]:
   - workflow_id - The ID of the workflow being created or updated
   - is_update_mode - Whether this is an update operation

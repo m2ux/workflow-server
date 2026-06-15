@@ -201,13 +201,12 @@ decisions[1]:
 transitions[1]:
   - to: validate
     isDefault: true
-outcome[6]:
-  - Manual diff review completed with indexed block table and interview findings
-  - Manual diff review report created (manual-diff-review.md)
-  - Code review complete with documented findings
-  - Structural analysis complete
-  - Test suite quality reviewed
-  - Architecture summary created when applicable
+outcome[5]:
+  - Every change block has a confirmed rationale and provenance attestation, so reviewers can trust each change is understood and intentional
+  - Code-level defects and risks are surfaced and triaged before validation
+  - Structural risks across the change set are identified for triage
+  - Test coverage gaps are surfaced so they can be closed before validation
+  - A stakeholder-readable architecture overview is available when the change warrants one
 context_to_preserve[10]:
   - change_block_index - Path to change-block-index.md file
   - change_block_data - Parsed hunk data for interview loop

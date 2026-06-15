@@ -67,11 +67,9 @@ transitions[2]:
 exitActions[2]{action,message}:
   log,Report generation complete — audit report finalized
   set,report_complete=true
-outcome[4]:
-  - All findings severity-scored using Impact x Feasibility rubric with calibration cross-check
-  - Coverage gate verified
-  - Elevation completeness verified via structured merge table
-  - Final audit report produced
+outcome[2]:
+  - Every finding carries a defensible, cross-checked severity, so consumers can triage and prioritize remediation with confidence
+  - The consumer has a single audit report whose coverage and finding-completeness are both attested — every in-scope area was reviewed and no merged finding was lost on the way in
 context_to_preserve[3]:
   - final_findings - Complete list of numbered findings with severity
   - coverage_status - Coverage gate pass/fail with details

@@ -145,7 +145,7 @@ exitActions[1]{action,message}:
 outcome[3]:
   - Requirements explicitly captured through structured conversation
   - Success criteria defined with verification methods
-  - Requirements document created in planning folder
+  - A single agreed reference of requirements and scope boundaries that planning and review can build against
 context_to_preserve[7]:
   - stakeholder_transcript - Transcript or summary from stakeholder discussion
   - has_stakeholder_input - Whether stakeholder discussion was provided

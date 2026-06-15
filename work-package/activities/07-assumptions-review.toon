@@ -167,8 +167,8 @@ exitActions[1]{action,message}:
   message,README PROGRESS: Update planning folder README.md — mark assumptions review artifacts as ✅ Complete.
 outcome[3]:
   - Each open assumption reviewed individually with user
-  - Assumptions log updated with accept/reject/defer decisions
-  - Resolution summary optionally posted to issue tracker
+  - Implementation can proceed on a vetted set of assumption decisions, with any deferred items explicitly tracked
+  - External stakeholders are notified of deferred assumptions that need their attention
 context_to_preserve[6]:
   - open_assumptions - List of open assumptions to review
   - assumption_decisions - Map of assumption ID to decision (accept/reject/defer)

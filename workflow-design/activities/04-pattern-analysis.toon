@@ -30,9 +30,8 @@ checkpoints[1]:
 transitions[1]:
   - to: scope-and-draft
     isDefault: true
-outcome[2]:
-  - Structural patterns extracted from 2+ reference workflows
-  - Pattern adoption decisions confirmed by user
+outcome[1]:
+  - A user-decided set of proven conventions to follow — and divergences to justify — so the new workflow inherits established structure instead of reinventing it
 context_to_preserve[2]:
   - adopted_patterns - List of patterns to follow
   - reference_workflows - IDs and key characteristics of reference workflows

@@ -26,10 +26,9 @@ steps[4]:
 transitions[0]:
 exitActions[1]{action,message}:
   log,Scan verification complete — gap report produced
-outcome[3]:
-  - File coverage verified against inventory
-  - Pattern coverage verified for all scanners
-  - Gap report produced with re-scan recommendations (if any)
+outcome[2]:
+  - The audit has independent proof that every inventoried file and all seven patterns were actually covered, not just assumed
+  - The parent can either proceed to merge with confidence or knows exactly which scanners to re-run, gaps named
 artifacts[1]:
   - id: verification-report
     name: verification-report.json

@@ -56,8 +56,8 @@ transitions[1]:
   - to: dispatch-client-workflow
     isDefault: true
 outcome[2]:
-  - Repository type confirmed by the user
-  - target_path resolved to '.' (regular) or a submodule path (monorepo)
+  - The orchestrator knows whether it is operating on a single repo or a submodule monorepo, and which submodule the user intends as the target
+  - Downstream git operations have a confirmed working git tree to act on, whether the repo root or a chosen submodule
 context_to_preserve[2]:
   - is_monorepo - Whether the target is a submodule monorepo
   - target_path - Resolved target directory for git operations

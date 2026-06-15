@@ -13,10 +13,10 @@ steps[1]:
     required: true
 
 outcome[4]:
-  - Dispatch completeness verified against target profile
-  - Coverage gate verified for all priority-1/2 files
-  - All mandatory tables verified as present or flagged for re-dispatch
-  - Table-derived findings extracted mechanically from all agent tables
+  - The orchestrator can trust that every agent the target profile required was dispatched and returned, without re-checking in a saturated context
+  - Coverage across all priority-1/2 files is attested, so under-reviewed files surface before merge rather than after
+  - Missing mandatory tables are flagged for re-dispatch instead of being assumed present, which is what stabilizes finding counts across runs
+  - Findings buried in agent tables are recovered mechanically rather than lost to shallow inline review
 
 context_to_preserve[4]:
   - gap_report - Structured gap report with re-dispatch recommendations

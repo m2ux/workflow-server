@@ -39,13 +39,12 @@ transitions[1]{to,isDefault}:
 exitActions[2]{action,message}:
   log,Reconnaissance complete — architecture mapped and function registry built
   set,reconnaissance_complete=true
-outcome[6]:
-  - All crates explicitly identified and classified (crate-map.json)
-  - Trust boundaries mapped (reconnaissance-data.json)
-  - Consensus-critical paths identified (reconnaissance-data.json)
-  - Function registry built for priority-1 and priority-2 crates (function-registry.json)
-  - Security architecture analyzed — interaction model, privilege map, candidate points, emergent domains (architectural-analysis.json)
-  - Agent groups assigned with domain map entries and cross-crate supplement mappings
+outcome[5]:
+  - The in-scope surface is fully classified by crate priority, so review effort can be concentrated where consensus-critical risk lives
+  - Trust boundaries and consensus-critical paths are known, telling agents where untrusted input crosses into privileged execution
+  - Priority crates have an enumerated function inventory agents can drive exhaustive coverage from
+  - A security model of the system — interaction trust assumptions, privilege map, ranked candidate points, and vulnerability domains beyond the §3 checklist — exists to derive what could go wrong from how the system is built
+  - Every in-scope area is bound to a responsible agent with its cross-crate context, so primary dispatch has complete, non-overlapping coverage
 context_to_preserve[9]:
   - crate_map - Read from r-crate-map.json
   - function_registry - Read from r-function-registry.json

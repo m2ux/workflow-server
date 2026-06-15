@@ -68,8 +68,8 @@ transitions[1]:
   - to: package-planning
     isDefault: true
 outcome[2]:
-  - Analysis documented
-  - Context confirmed by user
+  - Later planning rests on a validated understanding of the initiative's starting point - either existing progress or fresh-start context
+  - User has confirmed the captured context is accurate, so package planning can proceed without re-litigating assumptions
 context_to_preserve[3]:
   - analysis_type - completion or context
   - analysis_document - Path to analysis document

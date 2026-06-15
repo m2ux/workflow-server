@@ -82,9 +82,8 @@ loops[1]:
           - action: set
             target: completed_analyses
             description: "On failure, record status 'error' with the failure reason."
-outcome[2]:
-  - "All execution groups triggered and completed with analysis artifacts in completed_analyses"
-  - "all_artifact_paths populated with paths to all prism outputs"
+outcome[1]:
+  - "Every planned dimension has been analysed through the prism pipeline, yielding the per-dimension findings the consolidation stage draws on — with any failed runs flagged so gaps are visible rather than silent"
 transitions[1]:
   - to: consolidate-report
     isDefault: true

@@ -108,7 +108,7 @@ outcome[5]:
   - Mental model of codebase architecture established
   - Key abstractions and design rationale documented
   - Domain concepts mapped to technical constructs
-  - Persistent comprehension artifact created or augmented
+  - A reusable comprehension reference exists that future work can build on without re-investigating the same area
   - User confident to evaluate design assumptions in subsequent activities
 context_to_preserve[5]:
   - comprehension_artifact - Path to the created/updated comprehension artifact

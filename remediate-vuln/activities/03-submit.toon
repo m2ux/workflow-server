@@ -52,7 +52,7 @@ exitActions[1]:
   - action: log
     message: "Security submission complete. Fix securely pushed."
 outcome[1]:
-  - "Commits pushed to private security remote"
+  - "The fix has reached the designated private fork and no public destination — ready for private review without any disclosure"
 context_to_preserve[2]:
   - is_sec_vuln_mode
   - sec_vuln_url

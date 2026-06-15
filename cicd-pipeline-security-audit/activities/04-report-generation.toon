@@ -26,11 +26,10 @@ transitions[0]:
 exitActions[2]{action,message}:
   log,Report generation complete — CI/CD security audit report finalized
   set,report_complete=true
-outcome[4]:
-  - All findings severity-scored using Impact x Exploitability rubric
-  - Coverage gate verified
-  - Remediation guidance attached to every finding
-  - Final audit report produced
+outcome[3]:
+  - Readers can triage findings by consistent, defensible severity rather than gut feel, with the report backed by a passed coverage gate so they can trust nothing in scope was missed
+  - Every finding tells the reader not just what is wrong but how to fix it
+  - The consumer holds a single decision-ready CI/CD security verdict for the audited submodules
 context_to_preserve[4]:
   - total_findings - Total number of confirmed findings
   - critical_findings - Number of Critical-severity findings

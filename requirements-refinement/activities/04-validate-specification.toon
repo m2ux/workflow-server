@@ -55,8 +55,8 @@ transitions[3]:
 exitActions[1]{action,message}:
   message,README PROGRESS: Update planning folder README.md — record the validation verdict for this pass.
 outcome[2]:
-  - Updated specification validated and issues categorized
-  - Routing decision made toward finalization, correction, or failure
+  - The workflow knows whether the specification is sound and, for every remaining defect, whether it is fatal or fixable
+  - The workflow can route confidently to finalization, another correction pass, or failure without re-inspecting the specification
 context_to_preserve[5]:
   - validation_passed - Whether validation passed cleanly
   - has_correctable_issues - Whether a correction pass is warranted

@@ -30,8 +30,8 @@ transitions[1]:
   - to: folder-setup
     isDefault: true
 outcome[2]:
-  - Work packages identified and confirmed
-  - Initiative scope agreed with user
+  - The workflow has an agreed inventory of distinct work packages to plan, so planning can proceed package-by-package
+  - User and workflow share the same boundary for what this initiative covers, preventing scope drift downstream
 context_to_preserve[2]:
   - work_packages - List of identified work packages
   - initiative_name - Name of the overall initiative

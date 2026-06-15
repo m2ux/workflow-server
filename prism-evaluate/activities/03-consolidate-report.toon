@@ -31,7 +31,7 @@ artifacts[1]:
     name: "EVALUATION-REPORT.md"
     location: evaluation
 outcome[1]:
-  - "EVALUATION-REPORT.md written with per-dimension findings, core finding, cross-dimensional patterns, and recommendations"
+  - "The consumer has a single severity-calibrated evaluation of the target — cross-dimensional findings and actionable recommendations to decide from"
 transitions[1]:
   - to: deliver-results
     isDefault: true

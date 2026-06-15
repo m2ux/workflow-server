@@ -63,8 +63,8 @@ rules[4]:
   - "PROMPT COMPLETENESS: The prompt must be self-contained — an agent receiving only the prompt and the codebase path should be able to execute the full audit without additional context."
   - "USER FOCUS INTEGRATION: The user's audit_description MUST be reflected in the prompt. If the user mentions specific concerns (e.g., 'I am worried about the proof verification logic'), those concerns must appear as elevated focus areas in the relevant domain."
 outcome[2]:
-  - "Audit prompt written to audit_prompt_path with codebase-specific domains and risk levels"
-  - "audit_scopes populated for triggering prism workflows"
+  - "Prism runs against audit domains grounded in this codebase's actual architecture and risk exposure, rather than a generic security checklist"
+  - "The analysis is partitioned into the discrete scopes each prism run will cover"
 transitions[1]:
   - to: execute-analysis
     isDefault: true

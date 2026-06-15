@@ -112,10 +112,10 @@ exitActions[1]:
 outcome[6]:
   - Changes validated as minimal and focused
   - Investigation artifacts and over-engineering removed
-  - Review findings documented in strategic-review-{n}.md
-  - Architecture summary created in architecture-summary.md for stakeholder communication
+  - The consumer has a categorized record of every scope and artifact finding — enough to decide whether the fix is acceptable to submit
+  - Stakeholders can understand how the fix changes the system at a glance, without reading implementation detail
   - Resign completed for any unsigned commits, or user decline documented
-  - Changelog fragment added when target repo uses root changes/ and none existed for this work
+  - The fix is captured in the target repo's changelog convention when it uses one
 context_to_preserve[5]:
   - review_findings - Findings from strategic review
   - review_passed - Whether review passed

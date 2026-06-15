@@ -44,7 +44,7 @@ exitActions[1]:
   - action: log
     message: "Workflow session closed"
 outcome[2]:
-  - Outcome audit presented to the user with any gaps surfaced
-  - Final state persisted to session.json
+  - The user can decide whether the work is truly done — every target outcome is shown as met or flagged as a gap to address
+  - The completed session can be resumed or audited later because its final state is durably preserved
 context_to_preserve[1]:
   - abort_completion - Whether the user chose to return to dispatch instead of closing

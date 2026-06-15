@@ -42,9 +42,9 @@ transitions[1]:
   - to: scope-and-draft
     isDefault: true
 outcome[3]:
-  - All affected files identified and classified
-  - Transition and reference integrity verified
-  - Content removals explicitly confirmed by user
+  - Drafting knows exactly which files the change touches and how, so the edit blast radius is bounded before any content is written
+  - Transition chains and technique/resource references are known-intact, so the update won't silently orphan or break the workflow's wiring
+  - No content disappears by accident — every removal is one the user consciously approved
 context_to_preserve[3]:
   - impact_manifest - Classification of all files (unaffected, modified, affected, removed)
   - broken_references - Any broken transitions or technique/resource references found

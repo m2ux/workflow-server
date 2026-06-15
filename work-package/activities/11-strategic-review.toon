@@ -107,9 +107,9 @@ exitActions[1]{action,message}:
 outcome[5]:
   - Changes validated as minimal and focused
   - Investigation artifacts and over-engineering removed
-  - Review findings documented in strategic-review-{n}.md
-  - Architecture summary created in architecture-summary.md for stakeholder communication
-  - Changelog fragment added when target repo uses root changes/ and none existed for this work
+  - A record of scope and quality findings exists for reviewers to act on
+  - Stakeholders have an architecture overview to understand the change
+  - This work will appear in the project's release notes, traceable to the issue, when the repo uses a root changes/ convention
 context_to_preserve[5]:
   - review_findings - Findings from strategic review
   - review_passed - Whether review passed

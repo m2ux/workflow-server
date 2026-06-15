@@ -48,8 +48,8 @@ checkpoints[1]:
     required: true
     blocking: true
 outcome[2]:
-  - "Audit scope confirmed with validated target path and output directory"
-  - "GitNexus indexing status recorded in gitnexus_available"
+  - "Analysis can begin against a user-confirmed, validated target with a place to land its outputs"
+  - "Downstream activities know whether call-graph enrichment is available, so trust-boundary mapping and finding enrichment can branch accordingly"
 transitions[1]:
   - to: prompt-generation
     isDefault: true

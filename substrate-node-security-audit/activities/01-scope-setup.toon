@@ -16,13 +16,12 @@ transitions[1]{to,isDefault}:
   reconnaissance,true
 exitActions[1]{action,message}:
   log,Scope setup complete — target confirmed and planning folder created
-outcome[6]:
-  - Target submodule and commit confirmed
-  - Submodule checked out at exact commit
-  - Reference report path recorded (if provided) but not loaded
-  - Dependency scan completed or fallback noted
-  - File inventory generated
-  - Planning folder created with START-HERE.md
+outcome[5]:
+  - Downstream analysis runs against a single confirmed, reproducible target pinned to an exact commit
+  - Any reference report is quarantined out of scope until Phase 5, so the audit stays independent of it
+  - Known-vulnerable dependencies are surfaced (or their absence explicitly noted) before code review begins
+  - A reviewed file inventory establishes the in-scope surface every agent must cover
+  - A working artifact home exists where every phase reads and writes shared state
 context_to_preserve[6]:
   - target_submodule - Path to the submodule being audited
   - target_commit - Git commit hash
