@@ -3,12 +3,14 @@
  *
  * A step (bound or a control step) must carry ONLY `id` + (`technique` when bound — whose structured
  * `inputs`/`outputs` maps carry any deviations) + structural fields (`actions`, `checkpoint`, `when`,
- * `required`, `loops`). It must NOT carry
+ * `loops`, and `required` ONLY when false). It must NOT carry
  * a `name` or `description`: WHAT the step does is the bound operation's `## Capability`, HOW it does
  * it is that operation's `## Protocol`, and a control step's `actions` (with their own descriptions)
  * carry its meaning. A `name`/`description` surviving on a step is the AP-64 defect — either a
  * bound-redundant description duplicating the technique's protocol, or procedure masquerading as a
- * step summary. This is a hard-zero rule (no baseline): every violation must be fixed.
+ * step summary. A step-level `required: true` is also flagged: it is the schema default and the engine
+ * does not read step-level `required`, so it is pure noise — declare `required` only when `false` (a
+ * worker-facing optional-step hint). This is a hard-zero rule (no baseline): every violation must be fixed.
  *
  * `name`/`description` remain LEGITIMATE on non-step constructs — activities, checkpoints, options,
  * artifacts, loops, decisions, and action targets — so this walks `steps[]` arrays specifically.
@@ -37,6 +39,9 @@ function walk(node: unknown, file: string, out: StepPurityViolation[]): void {
           const s = step as Record<string, unknown>;
           const bad = (['name', 'description'] as const).filter((f) => f in s);
           if (bad.length) out.push({ site: `${file}[${s.id ?? '?'}]`, detail: `step carries ${bad.join(', ')} — a step is id + technique + structural fields only (AP-64)` });
+          // `required` defaults to true and the engine does not read step-level required — declare it
+          // ONLY when false (a worker-facing optional-step hint); `required: true` is default noise (AP-64).
+          if (s.required === true) out.push({ site: `${file}[${s.id ?? '?'}]`, detail: `step declares 'required: true' — that is the default (and the engine ignores step-level required); omit it. Declare 'required' only when false (AP-64)` });
         }
       }
     }
@@ -65,7 +70,7 @@ const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.ar
 if (isMain) {
   const violations = collectStepPurityViolations();
   if (violations.length) {
-    process.stdout.write(`bound-step purity: ${violations.length} step(s) carry name/description (AP-64) — remove them:\n`);
+    process.stdout.write(`bound-step purity: ${violations.length} step impurity(ies) — name/description, or a redundant 'required: true' (AP-64) — remove them:\n`);
     for (const v of violations.sort((a, b) => a.site.localeCompare(b.site))) process.stdout.write(`  ${v.site} — ${v.detail}\n`);
     process.exit(1);
   }
