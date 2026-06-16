@@ -32,13 +32,11 @@ This workflow codifies that process into a repeatable 7-activity pipeline: disco
 graph TD
     Start([Start]) --> DC["00 discover-changes"]
     DC --> RC["01 review-changes"]
-    RC --> IR["02 import-resources"]
-    IR --> UR["03 update-routing"]
-    UR --> UD["04 update-docs"]
-    UD --> VF["05 verify"]
+    RC --> AU["02 apply-updates"]
+    AU --> VF["03 verify"]
     VF --> VFD{"issues found?"}
-    VFD -->|"no"| CM["06 commit-and-submit"]
-    VFD -->|"yes"| IR
+    VFD -->|"no"| CM["04 commit-and-submit"]
+    VFD -->|"yes"| AU
     CM --> Done([End])
 ```
 
@@ -52,11 +50,9 @@ Each step binds its technique via `step.technique`. The Step Technique column na
 |---|----------|-------|----------------|------------|-------------|
 | 00 | **Discover Changes** | 1 | `diff-upstream` | `variable-binding` | Diff upstream prisms/ against current resources, categorize changes |
 | 01 | **Review Changes** | 2 | `review-change-set::present-summary`, `review-change-set::apply-exclusions` | `variable-binding` | Present change summary, user confirms scope and exclusions |
-| 02 | **Import Resources** | 1 | `sync-resources` | `variable-binding` | Copy/rename/delete resource files, commit per change type |
-| 03 | **Update Routing** | 1 | `update-skill-routing` | `variable-binding` | Fix renamed refs, add goal-mapping entries, expand catalogs |
-| 04 | **Update Documentation** | 1 | `update-prism-docs` | `variable-binding` | Rebuild resource README, prompt guide, model sensitivity |
-| 05 | **Verify Consistency** | 1 | `verify-prism-consistency` | `variable-binding` | Check for stale refs, routing mismatches, count/index errors |
-| 06 | **Commit and Submit** | 1 | `submit-update` | `variable-binding` | Create branch, push, create PR |
+| 02 | **Apply Updates** | 3 | `sync-resources`, `update-skill-routing`, `update-prism-docs` | `variable-binding` | Apply resource changes, then update skill routing and documentation to match |
+| 03 | **Verify Consistency** | 1 | `verify-prism-consistency` | `variable-binding` | Check for stale refs, routing mismatches, count/index errors |
+| 04 | **Commit and Submit** | 1 | `submit-update` | `variable-binding` | Create branch, push, create PR |
 
 ---
 
@@ -67,9 +63,9 @@ Each step binds its technique via `step.technique`. The Step Technique column na
 | `diff-upstream` | Discover Changes | Diff upstream prisms against current resources, classify changes by type and family |
 | `review-change-set::present-summary` | Review Changes | Present the categorized change set to the user as a reviewable summary |
 | `review-change-set::apply-exclusions` | Review Changes | Apply user-requested exclusion adjustments, yielding the approved change set |
-| `sync-resources` | Import Resources | Apply file changes: copy modified, git mv renames, import new with indexed names, remove deleted |
-| `update-skill-routing` | Update Routing | Update goal-mapping matrix, portfolio catalog, model sensitivity, resource lists in all prism techniques |
-| `update-prism-docs` | Update Documentation | Rebuild resource catalog, prompt guide entries, model sensitivity table, file structure |
+| `sync-resources` | Apply Updates | Apply file changes: copy modified, git mv renames, import new with indexed names, remove deleted |
+| `update-skill-routing` | Apply Updates | Update goal-mapping matrix, portfolio catalog, model sensitivity, resource lists in all prism techniques |
+| `update-prism-docs` | Apply Updates | Rebuild resource catalog, prompt guide entries, model sensitivity table, file structure |
 | `verify-prism-consistency` | Verify Consistency | Verify content integrity, stale references, prompt routing, counts, and duplicate indices |
 | `submit-update` | Commit and Submit | Ensure a feature branch, push commits, open a pull request, and report the result |
 
@@ -139,11 +135,9 @@ workflows/prism-update/
 │   ├── README.md
 │   ├── 00-discover-changes.toon
 │   ├── 01-review-changes.toon
-│   ├── 02-import-resources.toon
-│   ├── 03-update-routing.toon
-│   ├── 04-update-docs.toon
-│   ├── 05-verify.toon
-│   └── 06-commit-and-submit.toon
+│   ├── 02-apply-updates.toon
+│   ├── 03-verify.toon
+│   └── 04-commit-and-submit.toon
 └── techniques/
     ├── TECHNIQUE.md
     ├── diff-upstream.md

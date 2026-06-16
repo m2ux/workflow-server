@@ -24,7 +24,7 @@ checkpoints[1]:
             has_issues: false
       - id: fix-issues
         label: Fix issues
-        description: "Return to import-resources to address the findings"
+        description: "Return to apply-updates to address the findings"
         effect:
           setVariable:
             has_issues: true
@@ -44,7 +44,7 @@ transitions[2]:
       operator: "=="
       value: false
     isDefault: true
-  - to: import-resources
+  - to: apply-updates
     condition:
       type: simple
       variable: has_issues

@@ -36,7 +36,7 @@ checkpoints[1]:
     blocking: true
 
 transitions[1]:
-  - to: import-resources
+  - to: apply-updates
     isDefault: true
 
 outcome[1]:
