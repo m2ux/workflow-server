@@ -25,10 +25,6 @@ List of `.rs` files to enumerate (a crate, a set of crates, or a full scope)
 
 true
 
-### output_format
-
-*(optional)* The table shape the registry or file manifest is rendered in.
-
 ## Protocol
 
 ### 1. Read And Enumerate

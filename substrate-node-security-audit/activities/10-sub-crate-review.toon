@@ -6,26 +6,13 @@ problem: "Sub-agents receiving free-form prompts skip per-field trace tables, ma
 techniques[1]:
   - "variable-binding"
 required: false
-steps[8]:
-  - id: read-all-files
-    technique:
-      name: build-function-registry
-      inputs:
-        output_format: "| File | Lines | Read? |"
+steps[6]:
   - id: build-function-registry
     technique: build-function-registry
   - id: extract-invariants
     technique: extract-invariants
   - id: apply-checklist
-    technique:
-      name: apply-checklist
-      inputs:
-        output_format: "| Item | Verdict | Evidence | Finding ID |"
-  - id: produce-required-tables
-    technique:
-      name: apply-checklist
-      inputs:
-        output_format: "| Table | Produced? | Justification |"
+    technique: apply-checklist
   - id: cross-function-comparison
     technique:
       name: scan-storage-lifecycle

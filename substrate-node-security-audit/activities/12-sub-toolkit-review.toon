@@ -6,23 +6,12 @@ problem: "Toolkit review agents read files but skim functions with benign-lookin
 techniques[1]:
   - "variable-binding"
 required: false
-steps[4]:
-  - id: enumerate-functions
-    technique:
-      name: apply-checklist
-      inputs:
-        output_format: "| File | Function | Line | Visibility | Modifies State? | Returns Result? |"
-  - id: apply-checklist-per-function
+steps[2]:
+  - id: apply-toolkit-checklist
     technique:
       name: apply-checklist
       inputs:
         checklist_source: toolkit-checklist
-        output_format: "| Function | File:Line | Item 1 | ... | Item 8 | Findings |"
-  - id: verify-function-coverage
-    technique:
-      name: apply-checklist
-      inputs:
-        output_format: "Coverage attestation: total, reviewed, percentage, gaps"
   - id: format-output
     technique: execute-sub-agent
 outcome[3]:

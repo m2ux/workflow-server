@@ -2,7 +2,7 @@ id: sub-output-verification
 version: 1.1.0
 name: "Sub-Agent: Output Verification"
 description: "Mechanically validate primary-agent output completeness."
-problem: "The orchestrator executes 10+ verification protocols inline after composing prompts for 8+ agents and collecting their outputs. By this point the orchestrator's context window is saturated and verification becomes shallow — mandatory tables are assumed present, coverage gates are loosely checked, and target profile obligations are not mechanically verified. This produces inconsistent finding counts across runs on the same codebase."
+problem: "Agent outputs must be mechanically verified before findings advance to merge — every required agent dispatched and returned, coverage attested across priority-1/2 files, mandatory tables present, and target-profile obligations met. Verification that is shallow or assumes completeness lets incomplete outputs through and produces inconsistent finding counts across runs on the same codebase."
 techniques[1]:
   - "variable-binding"
 required: false
@@ -11,8 +11,8 @@ steps[1]:
     technique: verify-sub-agent-output
 
 outcome[4]:
-  - The orchestrator can trust that every agent the target profile required was dispatched and returned, without re-checking in a saturated context
+  - Every agent the target profile required is confirmed dispatched and returned, so coverage can be trusted without re-checking
   - Coverage across all priority-1/2 files is attested, so under-reviewed files surface before merge rather than after
   - Missing mandatory tables are flagged for re-dispatch instead of being assumed present, which is what stabilizes finding counts across runs
-  - Findings buried in agent tables are recovered mechanically rather than lost to shallow inline review
+  - Findings buried in agent tables are recovered mechanically rather than left undetected
 

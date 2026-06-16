@@ -6,7 +6,7 @@ problem: "Static analysis agents return individual grep hits without aggregation
 techniques[1]:
   - "variable-binding"
 required: false
-steps[6]:
+steps[4]:
   - id: run-grep-patterns
     technique:
       name: search-pattern-catalog
@@ -26,13 +26,6 @@ steps[6]:
       name: scan-storage-lifecycle
       inputs:
         output_format: "| StorageMap | Crate | insert() Sites | remove() Sites | Paired? | Cap Enforced? |"
-  - id: produce-zero-hit-audit
-    technique:
-      name: search-pattern-catalog
-      inputs:
-        output_format: "| Pattern | Category | Hits | Verdict | Justification |"
-  - id: aggregate-findings
-    technique: search-pattern-catalog
   - id: format-output
     technique: execute-sub-agent
 outcome[4]:

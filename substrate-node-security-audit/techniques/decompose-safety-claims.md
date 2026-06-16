@@ -25,10 +25,6 @@ Code files to read for independent verification
 
 *(optional)* Gap report listing §3 categories with incomplete coverage, missing tables, or unmet target profile obligations. PASS items in flagged categories are auto-included in the adversarial queue.
 
-### output_format
-
-*(optional)* The table or summary shape the result is rendered in.
-
 ## Protocol
 
 ### 1. Seed From Gaps

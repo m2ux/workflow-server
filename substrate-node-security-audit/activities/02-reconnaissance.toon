@@ -2,7 +2,7 @@ id: reconnaissance
 version: 3.2.0
 name: Reconnaissance
 description: "Run codebase reconnaissance and security decomposition."
-problem: "The orchestrator previously performed 9 inline reconnaissance steps (reading source files, scanning crates, building registries), consuming 10-15K tokens of context before primary agent dispatch. This reduced the orchestrator's effective context budget for its actual role: coordinating 10+ sub-agents across 6 workflow phases. Delegating analysis to sub-agents keeps the orchestrator's context clean for coordination."
+problem: "The primary audit can only dispatch agents with complete, non-overlapping, targeted coverage once the codebase is mapped. Without a crate-priority classification, a function inventory, identified trust boundaries and vulnerability domains, and a per-agent scope assignment, dispatch is blind — agents overlap, skip files, or analyse the wrong crates."
 techniques[1]:
   - "variable-binding"
 required: true

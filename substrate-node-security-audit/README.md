@@ -290,7 +290,6 @@ Techniques define tool orchestration, protocols, and composable capabilities.
 | `dispatch-sub-agents` | Compose sub-agent prompts, dispatch concurrently, verify dispatch completeness | reconnaissance, primary-audit |
 | `verify-sub-agent-output` | Validate structural completeness, file coverage, output tables | primary-audit, report-generation, sub-crate-review, sub-output-verification |
 | `merge-findings` | Concatenate finding lists, deduplicate by root cause, assign finding numbers | primary-audit, report-generation, ensemble-pass, sub-structured-merge |
-| `compare-finding-sets` | Finding-by-finding mapping, classify matches/gaps, severity calibration analysis | gap-analysis |
 | `write-report` | Structure and format the final audit report | report-generation, ensemble-pass |
 | `write-gap-analysis` | Structure and format the gap analysis report | gap-analysis |
 | `map-vulnerability-domains` | Bind architectural analysis to §3 verification procedures, partitioned by crate | reconnaissance |

@@ -2,7 +2,7 @@ id: execute-analysis
 version: 1.2.0
 name: Execute Prism Analysis
 description: "Trigger the prism workflow for each audit scope."
-problem: "The audit analysis must be executed through the prism workflow's analytical pipeline (structural, adversarial, synthesis passes) rather than inline. Using trigger-workflow keeps prism generic and reusable while prism-audit controls the audit-specific context passed to each run."
+problem: "Each audit scope must be analysed through the prism workflow's full analytical pipeline (structural, adversarial, synthesis passes), driven with the audit-specific context for that scope, and its completion verified before the results can be consolidated."
 techniques[2]:
   - variable-binding
   - scatter-gather

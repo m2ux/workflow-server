@@ -2,7 +2,7 @@ id: execute-analysis
 version: 1.3.0
 name: Execute Prism Analyses
 description: "Trigger the prism workflow for each execution group."
-problem: "The evaluation analysis must be executed through the prism workflow's analytical pipeline rather than inline. Using trigger-workflow keeps prism generic and reusable while prism-evaluate controls the evaluation-specific context passed to each run."
+problem: "Each evaluation group must be analysed through the prism workflow's analytical pipeline, driven with the evaluation-specific context for that group, and its completion verified before the results can be consolidated."
 techniques[2]:
   - variable-binding
   - scatter-gather

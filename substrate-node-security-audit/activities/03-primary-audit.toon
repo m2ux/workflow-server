@@ -2,7 +2,7 @@ id: primary-audit
 version: 4.18.0
 name: Primary Audit
 description: "Multi-agent primary audit via concurrent dispatch with verification and merge."
-problem: "A single agent cannot achieve sufficient depth across all crates, and the orchestrator's context window is saturated by the time it needs to merge and verify agent outputs. Multi-agent orchestration with dedicated verification (V) and merge (M) agents provides: (a) focused context windows per security domain, (b) mechanical output validation in a fresh context window (V), (c) finding-lossless merge in a fresh context window (M), (d) targeted re-dispatch for gaps before findings are merged."
+problem: "No single reviewer can audit every in-scope crate against the full §3 checklist with the depth each consensus-critical domain demands, and agent outputs must be validated and merged without losing findings. The audit needs focused per-domain analysis, independent mechanical verification of each agent's output, a finding-lossless merge, and targeted re-dispatch for any gaps before findings advance."
 techniques[1]:
   - "variable-binding"
 required: true

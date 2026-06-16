@@ -25,10 +25,6 @@ The enumerated items to evaluate against the checklist (e.g., function list, cra
 
 Source files to read for evidence gathering
 
-### output_format
-
-*(optional)* The table shape the verdict matrix is rendered in.
-
 ## Protocol
 
 ### 1. Load Checklist
@@ -65,7 +61,7 @@ Source files to read for evidence gathering
 
 ### 5. Produce Verdict Matrix
 
-- Output the `{verdict_matrix}`: the complete item x checklist matrix with its coverage attestation, rendered in `{output_format}`.
+- Output the `{verdict_matrix}`: the complete item x checklist matrix with its coverage attestation.
 
 ## Outputs
 
