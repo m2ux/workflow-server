@@ -221,8 +221,8 @@ export function collectViolations(): Violation[] {
     const sig = resolve(s.technique, wf, s.activityId);
     if (!sig) {
       // A step's `technique:` ref must resolve to a real operation (workflow-local, meta, or
-      // cross-workflow). check-all-refs only validates techniques.primary/supporting, so after the
-      // step-binding migration this is the only guard covering step.technique bindings.
+      // cross-workflow). check-all-refs only validates the activity/workflow `techniques[]` list, so
+      // after the step-binding migration this is the only guard covering step.technique bindings.
       v.push({ check: 'binding-resolution', site: `${s.rel}[${s.stepId}]`, detail: `step technique '${s.technique}' does not resolve` });
       continue;
     }

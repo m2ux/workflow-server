@@ -2,11 +2,11 @@ import { z } from 'zod';
 import { ConditionSchema } from './condition.schema.js';
 import { SemanticVersionSchema } from './common.js';
 
-// Techniques reference (activity-level — optional when steps declare their own techniques)
-export const TechniquesReferenceSchema = z.object({
-  primary: z.string().optional().describe('Primary technique ID for this activity. Optional when steps declare individual techniques.'),
-  supporting: z.array(z.string()).optional().describe('Supporting technique IDs'),
-});
+// Techniques reference (activity-level — optional when steps declare their own techniques).
+// A flat list of activity-wide technique references (`::` paths): the strategy/capability
+// techniques (e.g. `variable-binding`, `scatter-gather`) whose protocols apply across the
+// activity's steps. Per-step operations are bound at the step via `step.technique`, not here.
+export const TechniquesReferenceSchema = z.array(z.string()).describe('Activity-wide technique references (`::` paths); bundled into get_activity.');
 export type TechniquesReference = z.infer<typeof TechniquesReferenceSchema>;
 
 // Action schema
@@ -226,8 +226,7 @@ export const ActivitySchema = z.object({
   // Intent matching (optional - for entry-point activities)
   problem: z.string().optional().describe('Description of the user problem this activity addresses'),
 
-  // Techniques the activity uses: a primary technique and supporting techniques, referenced by
-  // `::` path. The server bundles them into get_activity.
+  // Activity-wide techniques, referenced by `::` path. The server bundles them into get_activity.
   techniques: TechniquesReferenceSchema.optional(),
 
   // Execution
@@ -239,14 +238,9 @@ export const ActivitySchema = z.object({
   loops: z.array(LoopSchema).optional().describe('Iteration constructs'),
   transitions: z.array(TransitionSchema).optional().describe('Navigation to other activities'),
   triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows to trigger from this activity'),
-  
-  // Lifecycle (optional)
-  entryActions: z.array(ActionSchema).optional().describe('Actions to execute when entering activity'),
-  exitActions: z.array(ActionSchema).optional().describe('Actions to execute when exiting activity'),
-  
+
   // Metadata (optional)
   outcome: z.array(z.string()).optional().describe('Expected outcomes when activity completes successfully'),
-  context_to_preserve: z.array(z.string()).optional().describe('Context items to preserve across the activity'),
   required: z.boolean().default(true).describe('Whether this activity is required in the workflow'),
   rules: z.array(z.string()).optional().describe('Activity-level rules and constraints that agents must follow'),
   artifactPrefix: z.string().optional().describe('Numeric prefix for artifact filenames, inferred from the activity filename (e.g., "02" from 02-design-philosophy.toon). Server-computed — do not set in TOON files.'),

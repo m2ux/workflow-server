@@ -402,8 +402,8 @@ A delivered technique body (`projectTechniqueBody`) carries `capability`, `input
 
 ### 7.3 Activity bundling
 
-`get_activity` and `get_workflow` deliver an activity's `techniques.primary` and
-`techniques.supporting[]` through this bundle; `get_technique` delivers a single technique via
+`get_activity` and `get_workflow` deliver an activity's `techniques[]` through this bundle;
+`get_technique` delivers a single technique via
 `composeTechnique`.
 
 ### 7.4 Binding

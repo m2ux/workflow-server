@@ -490,10 +490,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_technique',
-    'Load a single composed technique within the current workflow or activity. If called before next_activity (no current activity), it loads the workflow primary technique. During an activity, it resolves the technique reference from the activity definition; with step_id, it loads the technique assigned to that step; without step_id, the activity primary technique. The returned technique is fully COMPOSED: it inherits its workflow-root `techniques/TECHNIQUE.md` base contract recursively (inputs/outputs/rules merged; ancestor Initial/Final protocol blocks wrap the descendant protocol and the server renumbers) — never the meta root for a non-meta workflow. Techniques are loaded one at a time.',
+    'Load a single composed technique within the current workflow or activity. If called before next_activity (no current activity), it loads the workflow\'s first declared technique. During an activity, it resolves the technique reference from the activity definition; with step_id, it loads the technique assigned to that step; without step_id, the activity\'s first declared technique. The returned technique is fully COMPOSED: it inherits its workflow-root `techniques/TECHNIQUE.md` base contract recursively (inputs/outputs/rules merged; ancestor Initial/Final protocol blocks wrap the descendant protocol and the server renumbers) — never the meta root for a non-meta workflow. Techniques are loaded one at a time.',
     {
       ...sessionIndexParam,
-      step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the primary technique for the activity, or the workflow primary technique if no activity is active.'),
+      step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the activity\'s first declared technique, or the workflow\'s first declared technique if no activity is active.'),
     },
     withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, step_id }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
@@ -511,9 +511,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         if (step_id) {
           throw new Error('Cannot provide step_id when no activity is active. Call next_activity first.');
         }
-        techniqueId = wfResult.value.techniques?.primary;
+        techniqueId = wfResult.value.techniques?.[0];
         if (!techniqueId) {
-          throw new Error(`Workflow '${workflow_id}' does not define a primary technique.`);
+          throw new Error(`Workflow '${workflow_id}' does not declare any workflow-level techniques.`);
         }
       } else {
         const activity = getActivity(wfResult.value, state.currentActivity);
@@ -522,9 +522,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         }
 
         if (!step_id) {
-          techniqueId = activity.techniques?.primary;
+          techniqueId = activity.techniques?.[0];
           if (!techniqueId) {
-            throw new Error(`Activity '${state.currentActivity}' does not define a primary technique.`);
+            throw new Error(`Activity '${state.currentActivity}' does not declare any activity-level techniques.`);
           }
         } else {
           const step = activity.steps?.find(s => s.id === step_id);

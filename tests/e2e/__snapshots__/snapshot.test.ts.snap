@@ -48,6 +48,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "jira-project-selection",
       ],
       "stepsExecuted": [
+        "announce-start",
         "resolve-reference",
         "update-reference-submodules",
         "analyze-reference-with-gitnexus",
@@ -64,6 +65,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "check-branch",
         "check-pr",
         "create-pr",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -209,6 +211,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "next": "post-impl-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "verify-preconditions",
         "reconcile-assumptions",
         "present-resolved-assumptions",
         "interview-open-assumptions",
@@ -250,6 +253,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "rationale-amendment",
       ],
       "stepsExecuted": [
+        "announce-start",
         "gitnexus-detect-changes-preflight",
         "manual-diff-review",
         "code-review",
@@ -342,6 +346,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "body-non-conformant",
       ],
       "stepsExecuted": [
+        "announce-start",
         "dco-sign-off",
         "push-commits",
         "update-description",
@@ -350,6 +355,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "await-review",
         "process-review-comments",
         "analyze-review-outcome",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -375,6 +381,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "ensure-docs",
         "conduct-retrospective",
         "select-next",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -433,6 +440,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "jira-project-selection",
       ],
       "stepsExecuted": [
+        "announce-start",
         "resolve-reference",
         "update-reference-submodules",
         "analyze-reference-with-gitnexus",
@@ -449,6 +457,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "check-branch",
         "check-pr",
         "create-pr",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -664,6 +673,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "next": "post-impl-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "verify-preconditions",
         "reconcile-assumptions",
         "present-resolved-assumptions",
         "interview-open-assumptions",
@@ -705,6 +715,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "rationale-amendment",
       ],
       "stepsExecuted": [
+        "announce-start",
         "gitnexus-detect-changes-preflight",
         "manual-diff-review",
         "code-review",
@@ -797,6 +808,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "body-non-conformant",
       ],
       "stepsExecuted": [
+        "announce-start",
         "dco-sign-off",
         "push-commits",
         "update-description",
@@ -805,6 +817,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "await-review",
         "process-review-comments",
         "analyze-review-outcome",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -832,6 +845,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "ensure-docs",
         "conduct-retrospective",
         "select-next",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -891,6 +905,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "jira-project-selection",
       ],
       "stepsExecuted": [
+        "announce-start",
         "resolve-reference",
         "update-reference-submodules",
         "analyze-reference-with-gitnexus",
@@ -907,6 +922,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "check-branch",
         "check-pr",
         "create-pr",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -1162,6 +1178,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "next": "post-impl-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "verify-preconditions",
         "reconcile-assumptions",
         "present-resolved-assumptions",
         "interview-open-assumptions",
@@ -1203,6 +1220,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "rationale-amendment",
       ],
       "stepsExecuted": [
+        "announce-start",
         "gitnexus-detect-changes-preflight",
         "manual-diff-review",
         "code-review",
@@ -1295,6 +1313,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "body-non-conformant",
       ],
       "stepsExecuted": [
+        "announce-start",
         "dco-sign-off",
         "push-commits",
         "update-description",
@@ -1303,6 +1322,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "await-review",
         "process-review-comments",
         "analyze-review-outcome",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -1330,6 +1350,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "ensure-docs",
         "conduct-retrospective",
         "select-next",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -1388,6 +1409,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "jira-project-selection",
       ],
       "stepsExecuted": [
+        "announce-start",
         "resolve-reference",
         "update-reference-submodules",
         "analyze-reference-with-gitnexus",
@@ -1404,6 +1426,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "check-branch",
         "check-pr",
         "create-pr",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -1620,6 +1643,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "next": "post-impl-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "verify-preconditions",
         "reconcile-assumptions",
         "present-resolved-assumptions",
         "interview-open-assumptions",
@@ -1661,6 +1685,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "rationale-amendment",
       ],
       "stepsExecuted": [
+        "announce-start",
         "gitnexus-detect-changes-preflight",
         "manual-diff-review",
         "code-review",
@@ -1753,6 +1778,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "body-non-conformant",
       ],
       "stepsExecuted": [
+        "announce-start",
         "dco-sign-off",
         "push-commits",
         "update-description",
@@ -1761,6 +1787,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "await-review",
         "process-review-comments",
         "analyze-review-outcome",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -1788,6 +1815,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "ensure-docs",
         "conduct-retrospective",
         "select-next",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -1851,6 +1879,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "jira-project-selection",
       ],
       "stepsExecuted": [
+        "announce-start",
         "detect-review-mode",
         "capture-pr-reference",
         "resolve-reference",
@@ -1866,6 +1895,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "compute-canonical-target-path",
         "create-review-worktree",
         "check-branch",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -2020,6 +2050,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "next": "post-impl-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "verify-preconditions",
         "reconcile-assumptions",
         "present-resolved-assumptions",
         "interview-open-assumptions",
@@ -2061,6 +2092,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "rationale-amendment",
       ],
       "stepsExecuted": [
+        "announce-start",
         "gitnexus-detect-changes-preflight",
         "manual-diff-review",
         "code-review",
@@ -2158,6 +2190,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "body-non-conformant",
       ],
       "stepsExecuted": [
+        "announce-start",
         "consolidate-review-findings",
         "generate-review-summary",
         "present-summary-to-user",
@@ -2165,6 +2198,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "await-review",
         "process-review-comments",
         "analyze-review-outcome",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -2187,6 +2221,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "stepsExecuted": [
         "conduct-retrospective",
         "select-next",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -2243,6 +2278,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "jira-project-selection",
       ],
       "stepsExecuted": [
+        "announce-start",
         "resolve-reference",
         "update-reference-submodules",
         "analyze-reference-with-gitnexus",
@@ -2259,6 +2295,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "check-branch",
         "check-pr",
         "create-pr",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -2404,6 +2441,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "next": "post-impl-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "verify-preconditions",
         "reconcile-assumptions",
         "present-resolved-assumptions",
         "interview-open-assumptions",
@@ -2445,6 +2483,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "rationale-amendment",
       ],
       "stepsExecuted": [
+        "announce-start",
         "gitnexus-detect-changes-preflight",
         "manual-diff-review",
         "code-review",
@@ -2537,6 +2576,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "body-non-conformant",
       ],
       "stepsExecuted": [
+        "announce-start",
         "dco-sign-off",
         "push-commits",
         "update-description",
@@ -2545,6 +2585,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "await-review",
         "process-review-comments",
         "analyze-review-outcome",
+        "announce-completion",
       ],
       "unresolved": [],
     },
@@ -2570,6 +2611,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "ensure-docs",
         "conduct-retrospective",
         "select-next",
+        "announce-completion",
       ],
       "unresolved": [],
     },

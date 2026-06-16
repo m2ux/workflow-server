@@ -37,7 +37,7 @@ function parseToolResponse(result: any): any {
 }
 
 /**
- * Parse a get_workflow response which may contain a primary technique section
+ * Parse a get_workflow response which begins with the technique-bundle section
  * followed by a --- separator and the workflow definition.
  * Returns the workflow portion as a parsed object.
  */
@@ -409,9 +409,9 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBe(true);
     });
 
-    it('errors when the workflow declares no primary technique', async () => {
-      // The workflow declares supporting techniques but no techniques.primary;
-      // get_technique without a step_id has no primary to compose and errors.
+    it('errors when the workflow declares no workflow-level techniques', async () => {
+      // The workflow declares no workflow-level techniques[];
+      // get_technique without a step_id has no technique to compose and errors.
       const result = await client.callTool({
         name: 'get_technique',
         arguments: { session_index: sessionToken },
@@ -805,13 +805,13 @@ describe('mcp-server integration', () => {
 
       const fullText = (fullResult.content[0] as { type: 'text'; text: string }).text;
       const summaryText = (summaryResult.content[0] as { type: 'text'; text: string }).text;
-      // Full definition includes raw workflow TOON with techniques, modes, tags etc.
+      // Full definition includes raw workflow TOON with modes, tags etc.
       // Summary includes activity stubs but omits raw details
       expect(fullText).not.toBe(summaryText);
       // Full raw TOON includes fields not in summary
       const fullParsed = parseWorkflowResponse(fullResult);
-      expect(fullParsed.techniques).toBeDefined();
       expect(fullParsed.modes).toBeDefined();
+      expect(fullParsed.tags).toBeDefined();
     });
 
     it('should return full definition when summary=false', async () => {
@@ -820,8 +820,7 @@ describe('mcp-server integration', () => {
         arguments: { session_index: sessionToken, summary: false },
       });
       const wf = parseWorkflowResponse(result);
-      // Full raw workflow TOON includes fields like techniques, modes, tags that summary omits
-      expect(wf.techniques).toBeDefined();
+      // Full raw workflow TOON includes fields like modes, tags that summary omits
       expect(wf.modes).toBeDefined();
       expect(wf.tags).toBeDefined();
     });

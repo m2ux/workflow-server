@@ -281,7 +281,7 @@ Beyond enforcement, the server reduces the context burden on agents:
 
 ### Summary Mode
 
-`get_workflow(summary=true)` returns lightweight metadata (~2KB) instead of the full workflow definition (~13KB). The orchestrator gets rules, variables, `initialActivity`, and activity stubs without consuming its context window with step-level detail. The response is preceded by the workflow's primary technique (when present) and the technique bundle (the activity's primary plus supporting techniques), so the orchestrator receives its execution surface in a single round-trip.
+`get_workflow(summary=true)` returns lightweight metadata (~2KB) instead of the full workflow definition (~13KB). The orchestrator gets rules, variables, `initialActivity`, and activity stubs without consuming its context window with step-level detail. The response is preceded by the technique bundle (the workflow's `techniques[]` plus the core orchestrator techniques), so the orchestrator receives its execution surface in a single round-trip.
 
 ### Transitions in Activity Definitions
 
@@ -300,7 +300,7 @@ Transitions are also derived from `decisions` (branch `transitionTo` fields) and
 
 ### Technique and Resource Loading
 
-`get_workflow` and `get_activity` pre-resolve the activity's `techniques.primary` and `techniques.supporting[]` references and return them as the bundled technique set in the response preamble — agents read technique bodies (capability, flow, inputs, protocol, outputs) directly from the bundle rather than chasing per-step loads. `get_technique` loads a single fully composed technique on demand — the workflow primary technique before any activity, or the technique for the current activity (optionally a `step_id`'s technique). Call `get_resource` with the resource index when a technique references reference material that wasn't bundled.
+`get_workflow` and `get_activity` pre-resolve the activity's `techniques[]` references and return them as the bundled technique set in the response preamble — agents read technique bodies (capability, flow, inputs, protocol, outputs) directly from the bundle rather than chasing per-step loads. `get_technique` loads a single fully composed technique on demand — the workflow's first declared technique before any activity, or the technique for the current activity (optionally a `step_id`'s technique). Call `get_resource` with the resource index when a technique references reference material that wasn't bundled.
 
 ### Self-Describing Bootstrap
 

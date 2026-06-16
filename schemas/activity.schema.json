@@ -371,21 +371,11 @@
       "additionalProperties": false
     },
     "techniques": {
-      "type": "object",
-      "properties": {
-        "primary": {
-          "type": "string",
-          "description": "Primary technique ID for this activity"
-        },
-        "supporting": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Supporting technique IDs"
-        }
+      "type": "array",
+      "items": {
+        "type": "string"
       },
-      "additionalProperties": false
+      "description": "Activity-wide technique references (`::` paths); bundled into get_activity."
     },
     "activity": {
       "type": "object",
@@ -420,7 +410,7 @@
         },
         "techniques": {
           "$ref": "#/definitions/techniques",
-          "description": "Technique references (primary + supporting) the activity uses; bundled into get_activity."
+          "description": "Activity-wide technique references the activity uses; bundled into get_activity."
         },
         "steps": {
           "type": "array",
@@ -476,33 +466,12 @@
           },
           "description": "Workflows to trigger from this activity"
         },
-        "entryActions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/action"
-          },
-          "description": "Actions to execute when entering activity"
-        },
-        "exitActions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/action"
-          },
-          "description": "Actions to execute when exiting activity"
-        },
         "outcome": {
           "type": "array",
           "items": {
             "type": "string"
           },
           "description": "Expected outcomes when activity completes successfully"
-        },
-        "context_to_preserve": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Context items to preserve across the activity"
         },
         "required": {
           "type": "boolean",

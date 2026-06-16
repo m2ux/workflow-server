@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, readActivityRaw, readWorkflowRaw, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
-import { readTechniqueRaw, resolveTechniques, formatTechniqueBundle } from '../loaders/technique-loader.js';
+import { resolveTechniques, formatTechniqueBundle } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { injectResolvedStepIds, techniqueName } from '../schema/activity.schema.js';
@@ -146,28 +146,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const next = advanceSession(state);
       await saveSessionForTool(loaded, next);
 
-      const primaryTechniqueId = wf.techniques?.primary;
-      let primaryTechniqueContent = '';
-      if (primaryTechniqueId) {
-        const techniqueResult = await readTechniqueRaw(primaryTechniqueId, config.workflowDir, workflow_id);
-        if (techniqueResult.success) {
-          primaryTechniqueContent = techniqueResult.value;
-        }
-      }
-
-      // Bundle the workflow's technique refs (primary + supporting) and the core orchestrator
-      // techniques. Deduplicate by ref so a workflow that explicitly lists a core technique resolves it once.
-      const wfTech = (wf as { techniques?: { primary?: string; supporting?: string[] } }).techniques;
-      const wfTechRefs = [...(wfTech?.primary ? [wfTech.primary] : []), ...(wfTech?.supporting ?? [])];
+      // Bundle the workflow's technique refs and the core orchestrator techniques. Deduplicate by
+      // ref so a workflow that explicitly lists a core technique resolves it once.
+      const wfTechRefs = (wf as { techniques?: string[] }).techniques ?? [];
       const orchestratorTechniques = Array.from(new Set([...wfTechRefs, ...CORE_ORCHESTRATOR_TECHNIQUES]));
       const resolvedOrchestrator = await resolveTechniques(orchestratorTechniques, config.workflowDir, workflow_id);
       const opsBlock = encodeToon(formatTechniqueBundle(resolvedOrchestrator));
 
-      // Pre-separator preamble holds the legacy primary-technique body (when present)
-      // followed by the resolved-operations bundle. Tests and clients split on
-      // the first '\n\n---\n\n' to recover the workflow section, so we keep
-      // that single separator and concatenate technique + ops before it.
-      const preambleParts = [primaryTechniqueContent, opsBlock].filter(s => s.length > 0);
+      // Pre-separator preamble holds the resolved-operations bundle. Tests and clients split on
+      // the first '\n\n---\n\n' to recover the workflow section, so we keep that single separator.
+      const preambleParts = [opsBlock].filter(s => s.length > 0);
       const preamble = preambleParts.length > 0 ? preambleParts.join('\n\n') + '\n\n---\n\n' : '';
 
       if (summary) {
@@ -176,7 +164,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           version: wf.version,
           title: wf.title,
           description: wf.description,
-          rules: wf.rules,
+          rules: ((): string[] | undefined => {
+            const r = wf.rules as { workflow?: string[]; universal?: string[] } | undefined;
+            const orch = [...(r?.workflow ?? []), ...(r?.universal ?? [])];
+            return orch.length ? orch : undefined;
+          })(),
           variables: wf.variables,
           initialActivity: wf.initialActivity,
           activities: wf.activities?.map((a: { id: string; name?: string; required?: boolean; artifactPrefix?: string | undefined }) => ({ id: a.id, name: a.name, required: a.required, artifactPrefix: a.artifactPrefix })) ?? [],
@@ -376,11 +368,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         result.success ? validateWorkflowVersion(view, result.value) : null,
       );
 
-      // Bundle the techniques the activity references (primary + supporting, delivered as full
-      // protocols) and the core worker techniques, deduped.
+      // Bundle the techniques the activity references (delivered as full protocols) and the core
+      // worker techniques, deduped.
       const activity = result.success ? getActivity(result.value, activity_id) : undefined;
-      const actTech = (activity as { techniques?: { primary?: string; supporting?: string[] } } | undefined)?.techniques;
-      const techRefs = [...(actTech?.primary ? [actTech.primary] : []), ...(actTech?.supporting ?? [])];
+      const techRefs = (activity as { techniques?: string[] } | undefined)?.techniques ?? [];
       const workerTechniques = Array.from(new Set([...techRefs, ...CORE_WORKER_TECHNIQUES]));
       const resolvedWorker = await resolveTechniques(workerTechniques, config.workflowDir, workflow_id);
       const opsSection = encodeToon(formatTechniqueBundle(resolvedWorker)) + '\n\n---\n\n';
@@ -404,9 +395,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ? `${activityBody}\n${encodeToon({ artifacts: composedArtifacts })}`
         : activityBody;
 
+      // Worker-facing rules inherited by EVERY activity, injected into every get_activity so a
+      // worker dispatched for a single activity always receives them: the workflow's `rules.activity`
+      // plus the dual-audience `rules.universal`. (`rules.workflow` are orchestrator-only.)
+      const wfRules = result.success ? (result.value as { rules?: { activity?: string[]; universal?: string[] } }).rules : undefined;
+      const inheritedRules = [...(wfRules?.activity ?? []), ...(wfRules?.universal ?? [])];
+      const activityRulesBlock = inheritedRules.length ? `${encodeToon({ activity_rules: inheritedRules })}\n\n` : '';
+
       return {
-        content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${activityBodyWithArtifacts}` }],
-        _meta: { session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts },
+        content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${activityRulesBlock}${activityBodyWithArtifacts}` }],
+        _meta: { session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules },
       };
     }), traceOpts));
 

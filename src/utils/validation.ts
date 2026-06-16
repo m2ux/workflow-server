@@ -64,8 +64,7 @@ export function validateTechniqueAssociation(workflow: Workflow, activityId: str
 
   const declared = new Set<string>();
 
-  if (activity.techniques?.primary) declared.add(activity.techniques.primary);
-  if (activity.techniques?.supporting) activity.techniques.supporting.forEach(s => declared.add(s));
+  if (activity.techniques) activity.techniques.forEach(s => declared.add(s));
 
   if (activity.steps) {
     for (const step of activity.steps) {

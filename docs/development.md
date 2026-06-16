@@ -240,7 +240,7 @@ A technique file has:
 Universal techniques are stored in the `meta` workflow's `techniques/` subdirectory:
 
 1. Create `techniques/{slug}.md` under `workflows/meta/`
-2. Access via: `get_technique` (workflow- or activity-primary technique, optionally a step's technique via `step_id`)
+2. Access via: `get_technique` (workflow- or activity-level first declared technique, optionally a step's technique via `step_id`)
 3. Commit to the `workflows` branch
 
 ### Workflow-Specific Techniques

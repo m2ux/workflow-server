@@ -87,7 +87,7 @@ When a technique is delivered, an ancestor container's `Initial` and `Final` pro
 
 ## 6. Delivery at Workflow / Activity Granularity
 
-The server resolves an activity's `techniques.primary` plus its `techniques.supporting[]` and bundles them into the `techniques`, `rules`, and `unresolved` buckets, so agents never chain resolution calls themselves at runtime.
+The server resolves an activity's `techniques[]` and bundles them into the `techniques`, `rules`, and `unresolved` buckets, so agents never chain resolution calls themselves at runtime.
 
 ### `get_workflow` — orchestrator bundle
 
@@ -115,9 +115,9 @@ When resolving a technique, the server uses a two-step path:
 
 This lets workflows inherit standard meta capability techniques (`workflow-engine`, `agent-conduct`, `atlassian-operations`, …) while still being able to override them — a workflow-local technique of the same id shadows the meta one.
 
-## 8. Workflow-Level Primary Technique
+## 8. Workflow-Level Techniques
 
-A workflow may declare a `techniques.primary` field. That technique's composed body is returned by `get_technique` (before any activity) and is included as the preamble of `get_workflow`. Workflows compose behaviour by referencing capability techniques rather than maintaining a monolithic primary technique.
+A workflow may declare a `techniques[]` list. The composed body of the first of those techniques is returned by `get_technique` (before any activity); the workflow's techniques are also covered by the `get_workflow` technique bundle rather than appearing as a separate preamble. Workflows compose behaviour by referencing capability techniques rather than maintaining a monolithic technique.
 
 ## 9. Resources
 

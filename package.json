@@ -16,6 +16,8 @@
     "check:steps": "tsx scripts/check-bound-step-purity.ts",
     "check:identifiers": "tsx scripts/check-identifier-qualification.ts",
     "check:artifacts": "tsx scripts/check-artifact-description.ts",
+    "check:self-input": "tsx scripts/check-self-provisioned-input.ts",
+    "check:activity-tech": "tsx scripts/check-activity-technique-overlap.ts",
     "migrate-skills": "tsx scripts/migrate-skills/migrate.ts"
   },
   "license": "MIT",

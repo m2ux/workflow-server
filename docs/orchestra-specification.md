@@ -21,7 +21,7 @@ Orchestra defines the grammar and semantic constraints for the four workflow pri
 | Primitive | Description | Orchestra Status |
 |-----------|-------------|----------------|
 | **Workflow** | Top-level container: metadata, variables, activity sequencing, orchestrator technique refs | Legacy — Orchestra variant TBD |
-| **Activity** | Execution unit: steps, decisions, loops composed into flows; references techniques via `techniques.primary` / `techniques.supporting[]` | **Defined in this specification** |
+| **Activity** | Execution unit: steps, decisions, loops composed into flows; references techniques via a flat `techniques[]` list | **Defined in this specification** |
 | **Technique** | Markdown definition of a capability, optional inputs/outputs, an ordered protocol, and rules; may contain nested techniques | Legacy — Orchestra variant TBD |
 | **Resource** | Reference material: documentation, templates, guides | Legacy — Orchestra variant TBD |
 

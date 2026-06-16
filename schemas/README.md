@@ -302,9 +302,9 @@ A workflow is the top-level container representing a complete process definition
 | `description`     | string     | Detailed description                                       |
 | `author`          | string     | Creator of the workflow                                    |
 | `tags`            | string[]   | Categorization labels                                      |
-| `rules`           | string[]   | Execution guidelines                                       |
+| `rules`           | { workflow?, activity?, universal?: string[] } | Workflow rules partitioned by audience: `workflow` (orchestrator-only, in `get_workflow`), `activity` (worker-facing, injected into every `get_activity`), and `universal` (both — surfaced in `get_workflow` AND injected into every `get_activity`) |
 | `executionModel`  | ExecutionModel | Agent roles and orchestration model for this workflow (required) |
-| `techniques`      | TechniquesReference | Workflow-level techniques (primary + supporting); bundled into `get_workflow` |
+| `techniques`      | TechniquesReference | Workflow-level technique references; bundled into `get_workflow` |
 | `variables`       | Variable[] | State variables                                            |
 | `modes`           | Mode[]     | Execution modes that modify standard workflow behavior     |
 | `artifactLocations` | object   | Named artifact storage locations (keyed by location ID)    |
@@ -328,17 +328,14 @@ A unified activity combines intent matching (problem, recognition) with workflow
 | `description`     | string            | What this activity accomplishes            |
 | `problem`         | string            | User problem this activity addresses       |
 | `recognition`     | string[]          | Patterns to match user intent              |
-| `techniques`      | TechniquesReference | Primary and supporting technique references (`::` paths) |
+| `techniques`      | TechniquesReference | Activity-wide technique references (`::` paths) |
 | `steps`           | Step[]            | Individual tasks                           |
 | `checkpoints`     | Checkpoint[]      | User decision points                       |
 | `decisions`       | Decision[]        | Automated branching points                 |
 | `loops`           | Loop[]            | Iteration constructs                       |
 | `transitions`     | Transition[]      | Activity navigation rules                  |
 | `triggers`        | WorkflowTrigger[] | Workflows to trigger from this activity    |
-| `entryActions`    | Action[]          | Actions on entering activity               |
-| `exitActions`     | Action[]          | Actions on exiting activity                |
 | `outcome`         | string[]          | Expected outcomes on completion            |
-| `context_to_preserve` | string[]      | Context items to preserve                  |
 | `required`        | boolean           | Whether activity must be completed         |
 | `estimatedTime`   | string            | Time estimate (e.g., "10-15m")             |
 | `rules`           | string[]          | Activity-level execution rules             |
@@ -427,12 +424,11 @@ A loop enables iteration over collections or while conditions hold.
 
 #### TechniquesReference
 
-References to the techniques used at the activity or workflow level, addressed by `::` path. `primary` is optional — an activity may rely solely on the techniques its steps declare, and a workflow on the core orchestrator techniques.
+A flat array of strings — the activity- or workflow-wide technique references, addressed by `::` path. Optional: an activity may rely solely on the techniques its steps declare, and a workflow on the core orchestrator techniques.
 
-| Field        | Type     | Purpose                          |
-| ------------ | -------- | -------------------------------- |
-| `primary`    | string   | Primary technique ID             |
-| `supporting` | string[] | Supporting technique IDs         |
+```
+techniques: string[]
+```
 
 #### Action
 
@@ -534,8 +530,8 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
 | `description` | string | Workflow description |
 | `author` | string | Author name |
 | `tags` | string[] | Categorization tags |
-| `rules` | string[] | Execution rules/guidelines |
-| `techniques` | TechniquesReference | Workflow-level techniques (primary + supporting); bundled into `get_workflow` |
+| `rules` | { workflow?, activity?, universal?: string[] } | Orchestrator rules (`workflow`, in `get_workflow`) + worker rules inherited by every activity (`activity`, injected into every `get_activity`) + dual-audience rules (`universal`, both) |
+| `techniques` | TechniquesReference | Workflow-level technique references; bundled into `get_workflow` |
 | `variables` | array | Variable definitions with types and defaults |
 | `modes` | array | Execution modes that modify standard workflow behavior |
 | `artifactLocations` | object | Named artifact storage locations (keys are location IDs, values are path strings or `{path, description, gitignored}` objects) |
@@ -602,7 +598,7 @@ Every workflow must declare an `executionModel` that defines the agent roles par
 | `id` | string | Unique role identifier within this workflow |
 | `description` | string | What this role does in the workflow |
 
-Role declarations are descriptive metadata — the server stores and serves them via `get_workflow`, but does not enforce agent behavior against them. Behavioral constraints for each role are expressed in the workflow's `rules` array.
+Role declarations are descriptive metadata — the server stores and serves them via `get_workflow`, but does not enforce agent behavior against them. Behavioral constraints are expressed in the workflow's `rules`, partitioned by audience: orchestrator constraints in `rules.workflow` (surfaced via `get_workflow`), worker constraints in `rules.activity` (inherited by every activity and injected into every `get_activity`), and dual-audience constraints in `rules.universal` (both).
 
 **Common patterns:**
 
@@ -713,10 +709,7 @@ Activities are the execution units of a workflow. Each activity contains steps, 
 | `loops` | array | Iteration constructs |
 | `transitions` | array | Activity transition rules |
 | `triggers` | array | Workflows to trigger from this activity |
-| `entryActions` | array | Actions on entering activity |
-| `exitActions` | array | Actions on exiting activity |
 | `outcome` | string[] | Expected outcomes on completion |
-| `context_to_preserve` | string[] | Context items to preserve |
 | `rules` | array | Activity-level execution rules and constraints |
 | `artifacts` | array | Artifacts produced or updated by this activity |
 | `artifactPrefix` | string | Server-computed numeric prefix from activity filename (read-only) |
@@ -1332,8 +1325,7 @@ The activity schema (`activity.schema.json`) defines unified activities that com
     { "id": "identify-target", "name": "Identify target workflow and context" },
     { "id": "scan-planning-folders", "name": "Scan planning folders for saved sessions" }
   ],
-  "outcome": ["Workflow target identified", "Prior state located if available"],
-  "context_to_preserve": ["target_workflow", "has_saved_state"]
+  "outcome": ["Workflow target identified", "Prior state located if available"]
 }
 ```
 
@@ -1359,10 +1351,7 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 | `loops` | Loop[] | Iteration constructs |
 | `transitions` | Transition[] | Navigation to other activities |
 | `triggers` | WorkflowTrigger[] | Workflows to trigger from this activity |
-| `entryActions` | Action[] | Actions on entering activity |
-| `exitActions` | Action[] | Actions on exiting activity |
 | `outcome` | string[] | Expected outcomes when activity completes |
-| `context_to_preserve` | string[] | Context items to preserve |
 | `required` | boolean | Whether activity is required (default: true) |
 | `estimatedTime` | string | Time estimate (e.g., "10-15m") |
 | `rules` | string[] | Activity-level execution rules and constraints |
@@ -1419,12 +1408,6 @@ A complete activity definition with workflow trigger:
   "outcome": [
     "All planned work packages implemented",
     "Roadmap status reflects completion"
-  ],
-  "context_to_preserve": [
-    "current_package",
-    "completed_packages",
-    "remaining_packages",
-    "parent_workflow"
   ]
 }
 ```

@@ -16,9 +16,8 @@ describe('activity-loader', () => {
         expect(result.value.id).toBe('discover-session');
         expect(result.value.version).toBeDefined();
         expect(result.value.name).toBeDefined();
-        // discover-session declares its techniques via techniques.supporting (no primary).
-        const techniques = (result.value as { techniques?: { primary?: string; supporting?: string[] } }).techniques;
-        expect(techniques?.supporting?.length).toBeGreaterThan(0);
+        // discover-session's steps bind their operations via step.technique.
+        expect(result.value.steps?.some((s) => s.technique)).toBe(true);
         expect(result.value.workflowId).toBe('meta');
       }
     });
@@ -60,8 +59,9 @@ describe('activity-loader', () => {
         expect(typeof activity.id).toBe('string');
         expect(typeof activity.version).toBe('string');
         expect(typeof activity.name).toBe('string');
-        if (activity.techniques && typeof activity.techniques === 'object' && 'primary' in activity.techniques && activity.techniques.primary) {
-          expect(typeof activity.techniques.primary).toBe('string');
+        if (activity.techniques) {
+          expect(Array.isArray(activity.techniques)).toBe(true);
+          for (const t of activity.techniques) expect(typeof t).toBe('string');
         }
       }
     });

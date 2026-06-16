@@ -236,7 +236,7 @@ describe('schema-validation', () => {
         id: 'activity-1',
         version: '1.0.0',
         name: 'Activity One',
-        techniques: { primary: 'some-technique' },
+        techniques: ['some-technique'],
       };
       const result = ActivitySchema.safeParse(activity);
       expect(result.success).toBe(true);
@@ -250,7 +250,7 @@ describe('schema-validation', () => {
         description: 'An activity with everything',
         problem: 'User needs to do something',
         recognition: ['do something', 'perform action'],
-        techniques: { primary: 'main-technique', supporting: ['helper-technique'] },
+        techniques: ['main-technique', 'helper-technique'],
         estimatedTime: '1-2h',
         entryActions: [{ action: 'log', message: 'Entering' }],
         exitActions: [{ action: 'log', message: 'Exiting' }],
@@ -307,7 +307,7 @@ describe('schema-validation', () => {
       id: 'activity-1', 
       version: '1.0.0',
       name: 'Activity One',
-      techniques: { primary: 'some-technique' },
+      techniques: ['some-technique'],
     };
 
     it('should validate minimal workflow', () => {

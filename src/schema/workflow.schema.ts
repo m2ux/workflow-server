@@ -25,11 +25,21 @@ export const ModeSchema = z.object({
 });
 export type Mode = z.infer<typeof ModeSchema>;
 
-export const WorkflowTechniquesSchema = z.object({
-  primary: z.string().optional().describe('Primary technique ID for this workflow.'),
-  supporting: z.array(z.string()).optional().describe('Supporting technique references (`::` paths) the workflow uses at the orchestrator level; bundled into get_workflow alongside the core orchestrator techniques.'),
-});
+export const WorkflowTechniquesSchema = z.array(z.string()).describe('Workflow-level technique references (`::` paths) the orchestrator uses; bundled into get_workflow alongside the core orchestrator techniques.');
 export type WorkflowTechniquesReference = z.infer<typeof WorkflowTechniquesSchema>;
+
+// Workflow rules, partitioned by AUDIENCE. `workflow` rules govern orchestration (dispatch,
+// transitions, output forwarding) and are surfaced only to the orchestrator via get_workflow.
+// `activity` rules are worker-facing and inherited by EVERY activity: the server injects them into
+// every get_activity response so a worker dispatched for a single activity always receives them.
+// `universal` rules are dual-audience — the same directive both roles must follow — and reach BOTH
+// contexts (surfaced in get_workflow AND injected into every get_activity).
+export const WorkflowRulesSchema = z.object({
+  workflow: z.array(z.string()).optional().describe('Orchestrator-only rules governing workflow execution; surfaced in get_workflow.'),
+  activity: z.array(z.string()).optional().describe('Worker-facing rules inherited by every activity; injected into every get_activity response.'),
+  universal: z.array(z.string()).optional().describe('Dual-audience rules both roles must follow; surfaced in get_workflow AND injected into every get_activity.'),
+});
+export type WorkflowRules = z.infer<typeof WorkflowRulesSchema>;
 
 export const WorkflowSchema = z.object({
   $schema: z.string().optional(),
@@ -39,10 +49,10 @@ export const WorkflowSchema = z.object({
   description: z.string().optional().describe('Detailed workflow description'),
   author: z.string().optional(),
   tags: z.array(z.string()).optional(),
-  rules: z.array(z.string()).optional().describe('Rules that govern workflow execution'),
+  rules: WorkflowRulesSchema.optional().describe('Workflow rules partitioned by audience: `workflow` (orchestrator-only) and `activity` (inherited by every activity, injected into get_activity).'),
   variables: z.array(VariableDefinitionSchema).optional().describe('Workflow-level variables'),
   modes: z.array(ModeSchema).optional().describe('Execution modes that modify standard workflow behavior'),
-  techniques: WorkflowTechniquesSchema.optional().describe('Workflow-level techniques (primary + supporting) the orchestrator uses; bundled into get_workflow.'),
+  techniques: WorkflowTechniquesSchema.optional().describe('Workflow-level techniques the orchestrator uses; bundled into get_workflow.'),
   initialActivity: z.string().optional().describe('ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points.'),
   // JSON Schema validates individual TOON files where activities are separate files.
   // Zod validates the full assembled runtime workflow object, so activities are included here.
