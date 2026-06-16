@@ -3,9 +3,8 @@ version: 1.3.0
 name: Quality Review
 description: "Quality review of drafted workflow content."
 problem: Drafted content may contain prose that should be formal constructs, diverge from conventions, or have critical rules without structural enforcement
-techniques:
-  supporting[1]:
-    - variable-binding
+techniques[1]:
+  - variable-binding
 required: true
 rules[3]:
   - "Each review pass is independent — complete one pass fully before starting the next"
@@ -206,8 +205,3 @@ outcome[4]:
   - The content reads and behaves like its sibling workflows, so users and agents carry one mental model across the whole library
   - The rule set is lean and trustworthy — no restatements of protocol the engine already enforces, no contradictions, no duplicated guidance to drift out of sync
   - Critical rules are enforced by structure rather than hope, so they hold even when an agent skips the prose
-context_to_preserve[4]:
-  - expressiveness_corrections - List of prose-to-construct corrections applied
-  - conformance_divergences - List of convention divergences and their disposition
-  - rule_hygiene_findings - Protocol restatements removed, contradictions resolved, duplications deduplicated, prefix patterns grouped
-  - enforcement_additions - List of structural enforcement mechanisms added

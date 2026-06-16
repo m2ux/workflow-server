@@ -2,10 +2,9 @@ id: synthesis-pass
 version: 2.3.0
 name: Synthesis Pass
 description: "Run the synthesis lens against each full-prism unit's structural and adversarial artifacts."
-techniques:
-  supporting[2]:
-    - "variable-binding"
-    - "scatter-gather"
+techniques[2]:
+  - "variable-binding"
+  - "scatter-gather"
 loops[1]:
   - id: synthesis-unit-cycle
     name: Synthesis Unit Cycle

@@ -2,10 +2,9 @@ id: adversarial-pass
 version: 2.3.0
 name: Adversarial Analysis Pass
 description: "Run the adversarial lens against each full-prism unit's structural artifact."
-techniques:
-  supporting[2]:
-    - "variable-binding"
-    - "scatter-gather"
+techniques[2]:
+  - "variable-binding"
+  - "scatter-gather"
 loops[1]:
   - id: adversarial-unit-cycle
     name: Adversarial Unit Cycle

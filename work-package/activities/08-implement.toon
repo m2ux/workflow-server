@@ -4,12 +4,9 @@ name: Implement Tasks
 description: "Execute the implementation plan task by task."
 problem: User needs to implement the planned tasks
 required: true
-entryActions[1]{action,target,message}:
-  validate,branch,Verify on correct feature branch before any code changes
-techniques:
-  supporting[2]:
-    - "variable-binding"
-    - "scatter-gather"
+techniques[2]:
+  - "variable-binding"
+  - "scatter-gather"
 loops[3]:
   - id: task-cycle
     name: Task Implementation Cycle
@@ -57,7 +54,10 @@ loops[3]:
         checkpoint: implementation-assumption-interview
       - id: record-response
         technique: review-assumptions::record
-steps[4]:
+steps[5]:
+  - id: verify-preconditions
+    actions[1]{action,target,message}:
+      validate,branch,Verify on correct feature branch before any code changes
   - id: reconcile-assumptions
     technique: review-assumptions::reconcile
   - id: present-resolved-assumptions
@@ -138,16 +138,7 @@ checkpoints[4]:
 transitions[1]:
   - to: post-impl-review
     isDefault: true
-exitActions[1]{action,message}:
-  message,README PROGRESS: Update planning folder README.md — set Status to In Progress and mark implementation artifacts.
 outcome[3]:
   - All tasks implemented
   - The implemented work is captured as reviewable, attributable commits on the feature branch
   - An auditable per-task record of what changed and why exists to support the later DCO attestation
-context_to_preserve[6]:
-  - completed_tasks - Tasks completed during implementation
-  - assumptions - Assumptions made during implementation
-  - commits - Commits created
-  - provenance_log_path - Path to provenance-log.md
-  - has_uncertain_symbols - Whether the current task's self-review flagged symbols without provenance
-  - uncertain_symbols - Multi-line list of flagged symbols

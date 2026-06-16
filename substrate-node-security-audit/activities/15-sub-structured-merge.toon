@@ -3,9 +3,8 @@ version: 1.1.0
 name: "Sub-Agent: Structured Merge"
 description: "Structured merge, deduplication, and severity scoring of agent findings."
 problem: "The orchestrator accumulates 75-115K tokens of context (workflow definitions, reconnaissance data, 8 agent prompts, 8 agent outputs) before reaching the merge step. Performing the merge inline causes findings to be displaced from attention by sheer volume. Cross-run analysis shows 6-8 findings per run are produced by agents but dropped during inline merge. A dedicated merge agent with a clean context (~45K tokens: finding data + scoring rules) eliminates this structural failure mode."
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 required: false
 steps[1]:
   - id: merge-findings
@@ -17,9 +16,3 @@ outcome[4]:
   - Findings carry a calibrated severity from a cross-checked rubric, giving the report a trustworthy ranking
   - The report consumes a single canonical, deduplicated finding set whose every merge decision is justified and traceable
 
-context_to_preserve[5]:
-  - merge_table - Canonical flat table with report finding numbers and merge status
-  - reconciliation_table - Per-agent finding count reconciliation
-  - calibration_crosscheck - Per-finding calibration comparison with delta and action
-  - observation_dispositions - Per-observation table with disposition and finding reference
-  - elevation_summary - Total agent findings, total report findings, merged count, promoted count, elevated count

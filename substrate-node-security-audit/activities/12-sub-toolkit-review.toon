@@ -3,9 +3,8 @@ version: 1.5.0
 name: "Sub-Agent: Toolkit Per-Function Review"
 description: "Per-function toolkit review for Group D sub-agents."
 problem: "Toolkit review agents read files but skim functions with benign-looking names. The 8-item checklist exists but is applied to representative functions, not exhaustively. Per-function state management, arithmetic, and I/O bugs are consistently missed when the checklist is applied selectively rather than to every function."
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 required: false
 steps[4]:
   - id: enumerate-functions
@@ -30,8 +29,3 @@ outcome[3]:
   - Every toolkit function is reviewed against all 8 checklist items, so benign-looking helpers can no longer be skimmed past
   - State, arithmetic, and I/O bugs are surfaced per function rather than only on representative samples
   - Coverage is attested at 100%, giving the orchestrator confidence that no function was selectively skipped
-context_to_preserve[4]:
-  - findings - Structured findings list from all FAIL cells in the matrix
-  - function_enumeration - Complete function list with metadata
-  - checklist_matrix - Per-function x per-item matrix
-  - coverage_attestation - Coverage percentage and gap list

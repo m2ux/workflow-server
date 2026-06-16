@@ -31,7 +31,7 @@ This workflow guides the complete lifecycle of a single work package through 14 
 - **Techniques:** See [techniques/](./techniques/) for the technique inventory and protocol flows.
 - **Resources:** See [resources/README.md](./resources/README.md) for the resource index (27 resources).
 
-Each activity binds its step operations through `step.technique`. The activity's `techniques` block no longer names a single `primary` — every step carries its own operation binding. The block lists only a `supporting[]` set of strategy techniques, supplied by the universal `meta` techniques [`variable-binding`](../meta/techniques/variable-binding.md) (present on every activity, governing how steps read and write workflow variables) and [`scatter-gather`](../meta/techniques/scatter-gather.md) (present on activities that aggregate per-item outputs across `forEach` iteration loops). Steps reference operation techniques either by bare id (e.g. `create-test-plan`) or by namespaced id (e.g. `cargo-operations::run-suite`, `design-philosophy::classify`).
+Each activity binds its step operations through `step.technique`. Every step carries its own `step.technique` operation binding, and the activity's `techniques[]` block lists only its strategy techniques, supplied by the universal `meta` techniques [`variable-binding`](../meta/techniques/variable-binding.md) (present on every activity, governing how steps read and write workflow variables) and [`scatter-gather`](../meta/techniques/scatter-gather.md) (present on activities that aggregate per-item outputs across `forEach` iteration loops). Steps reference operation techniques either by bare id (e.g. `create-test-plan`) or by namespaced id (e.g. `cargo-operations::run-suite`, `design-philosophy::classify`).
 
 ---
 
@@ -83,7 +83,7 @@ graph TD
 
 ## Activities Summary
 
-Under the bound-step model no activity declares a primary technique — each step carries its own `step.technique` binding, so the only technique an activity declares at the block level is its `techniques.supporting[]`. The **Supporting Techniques** column lists those strategy meta techniques: `variable-binding` is present on every activity, and `scatter-gather` is added on activities that aggregate per-item outputs across `forEach` loops. The **Prefix** column shows the server-assigned `artifactPrefix` (matching the activity number) prepended to bare artifact names at write time; activities that produce no prefixed artifacts show `—`.
+Under the bound-step model each step carries its own `step.technique` binding, so the techniques an activity declares at the block level are just its strategy techniques in `techniques[]`. The **Supporting Techniques** column lists those strategy meta techniques: `variable-binding` is present on every activity, and `scatter-gather` is added on activities that aggregate per-item outputs across `forEach` loops. The **Prefix** column shows the server-assigned `artifactPrefix` (matching the activity number) prepended to bare artifact names at write time; activities that produce no prefixed artifacts show `—`.
 
 | # | Activity | Supporting Techniques | Checkpoints | Prefix |
 |---|----------|-------------------|-------------|--------|

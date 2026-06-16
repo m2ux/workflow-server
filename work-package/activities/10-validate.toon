@@ -4,9 +4,8 @@ name: Verify & Validate Design
 description: "Validate the implementation against tests, build, format, and lint checks."
 problem: User needs to validate the implementation passes all tests
 required: true
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[5]:
   - id: preflight
     technique: cargo-operations::preflight
@@ -77,10 +76,6 @@ loops[1]:
 transitions[1]:
   - to: strategic-review
     isDefault: true
-exitActions[1]{action,message}:
-  message,README PROGRESS: Update planning folder README.md — mark validation results as ✅ Complete.
 outcome[2]:
   - All tests passing
   - Build successful
-context_to_preserve[1]:
-  - validation_results - Aggregate validation envelope (per-check statuses + validation_passed)

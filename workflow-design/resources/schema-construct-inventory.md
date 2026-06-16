@@ -34,7 +34,7 @@ The MCP resource `workflow-server://schemas` returns all five schemas as a singl
 | "Repeat for each item" / "do until done" | **Loop** | `loops[].type` (forEach/while/doWhile), `.variable`, `.over`, `.condition` |
 | "Then move on to the next phase" | **Transition** | `transitions[].to`, `.condition`, `.isDefault` |
 | "This triggers the X workflow" | **Trigger** | `triggers.workflow`, `.description`, `.passContext` |
-| "When entering, log a message" | **Entry/exit actions** | `entryActions[]`/`exitActions[]` with `.action` (log/validate/set/emit/message) |
+| "When entering/finishing, log/validate/set" | **Leading/trailing control step** | a first/last `steps[]` entry with `actions[]` (`log`/`validate`/`set`/`emit`/`message`) — there is no activity-level entry/exit hook; lifecycle actions are ordinary control steps at the start/end of the step sequence |
 | "This produces a report file" | **Artifact** | `artifacts[].id`, `.name`, `.location`, `.description`, `.action` |
 | "The expected result is X" | **Outcome** | `outcome[]` (string array) |
 | "Only run when X is true" | **Step condition** | `steps[].condition` (references condition.schema.json) |

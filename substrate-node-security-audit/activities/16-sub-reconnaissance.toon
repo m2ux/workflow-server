@@ -3,9 +3,8 @@ version: 1.1.0
 name: "Sub-Agent: Codebase Reconnaissance"
 description: "Perform codebase reconnaissance and build the function registry."
 problem: "The orchestrator previously performed 9 heavy reconnaissance steps inline — reading Cargo.toml, scanning hundreds of source files, building crate maps and function registries. This consumed 10-15K tokens of context before primary agent dispatch, reducing the orchestrator's effective budget for coordination tasks. Since the orchestrator's role is coordination (dispatch, verify, route), the analysis work should be delegated to a sub-agent with a dedicated context window."
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 required: false
 steps[2]:
   - id: map-codebase
@@ -19,7 +18,3 @@ outcome[4]:
   - Priority crates have an enumerated, size-prioritized function inventory agents can drive exhaustive coverage from
   - Concrete reconnaissance leads are captured so agent assignment can route each observation to a responsible reviewer
 
-context_to_preserve[3]:
-  - crate_map_file - Path to r-crate-map.json in planning folder
-  - function_registry_file - Path to r-function-registry.json in planning folder
-  - reconnaissance_data_file - Path to r-reconnaissance-data.json in planning folder

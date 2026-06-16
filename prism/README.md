@@ -180,7 +180,7 @@ graph TD
 
 ## Techniques
 
-Steps bind to a technique via `step.technique`; each activity also lists strategy techniques under `techniques.supporting` (`variable-binding`, plus `scatter-gather` for the forEach passes). The structural-pass `check-gitnexus` step additionally binds the shared `gitnexus-operations::verify-index` operation. Operation-group techniques expose their steps as `<group>::<op>` references; standalone techniques bind a whole step.
+Steps bind to a technique via `step.technique`; each activity also lists strategy techniques in its `techniques[]` list (`variable-binding`, plus `scatter-gather` for the forEach passes). The structural-pass `check-gitnexus` step additionally binds the shared `gitnexus-operations::verify-index` operation. Operation-group techniques expose their steps as `<group>::<op>` references; standalone techniques bind a whole step.
 
 | Technique | Capability | Bound by |
 |-----------|------------|----------|

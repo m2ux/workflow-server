@@ -3,9 +3,8 @@ version: 1.2.0
 name: Subsystem Analysis Pass
 description: "Per-region prism analysis with cross-subsystem synthesis."
 problem: "Whole-file analysis with a single prism misses bugs that exist BETWEEN subsystems and structural properties that span class boundaries. Different code regions benefit from different analytical lenses."
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[5]:
   - id: split-subsystems
     technique:

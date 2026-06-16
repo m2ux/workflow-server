@@ -3,29 +3,23 @@ version: 2.1.0
 name: Scope Setup
 description: "Set up the audit scope and planning folder."
 problem: The audit requires a confirmed target, reproducible commit, dependency scan outputs, and an organized artifact folder before analysis begins.
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 required: true
-entryActions[1]{action,message}:
-  log,Starting security audit scope setup
-steps[1]:
+steps[3]:
+  - id: announce-start
+    actions[1]{action,message}:
+      log,Starting security audit scope setup
   - id: setup-target
     technique: setup-audit-target
+  - id: announce-completion
+    actions[1]{action,message}:
+      log,Scope setup complete — target confirmed and planning folder created
 transitions[1]{to,isDefault}:
   reconnaissance,true
-exitActions[1]{action,message}:
-  log,Scope setup complete — target confirmed and planning folder created
 outcome[5]:
   - Downstream analysis runs against a single confirmed, reproducible target pinned to an exact commit
   - Any reference report is quarantined out of scope until Phase 5, so the audit stays independent of it
   - Known-vulnerable dependencies are surfaced (or their absence explicitly noted) before code review begins
   - A reviewed file inventory establishes the in-scope surface every agent must cover
   - A working artifact home exists where every phase reads and writes shared state
-context_to_preserve[6]:
-  - target_submodule - Path to the submodule being audited
-  - target_commit - Git commit hash
-  - planning_folder_path - Path to planning artifacts folder
-  - cargo_audit_available - Whether cargo audit ran successfully
-  - reference_report - Path to reference report (quarantined until Phase 5)
-  - has_reference_report - Whether a reference report was provided

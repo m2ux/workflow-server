@@ -3,23 +3,9 @@ version: 1.2.0
 name: Execute Prism Analysis
 description: "Trigger the prism workflow for each audit scope."
 problem: "The audit analysis must be executed through the prism workflow's analytical pipeline (structural, adversarial, synthesis passes) rather than inline. Using trigger-workflow keeps prism generic and reusable while prism-audit controls the audit-specific context passed to each run."
-techniques:
-  supporting[1]:
-    - "variable-binding"
-entryActions[2]:
-  - action: validate
-    description: "Verify audit_scopes is non-empty before starting the trigger loop"
-    condition:
-      type: simple
-      variable: audit_scopes
-      operator: exists
-  - action: validate
-    description: "Verify analysis_focus does not equal 'security audit'"
-    condition:
-      type: simple
-      variable: analysis_focus
-      operator: "!="
-      value: security audit
+techniques[2]:
+  - variable-binding
+  - scatter-gather
 triggers[1]:
   - workflow: prism
     description: "Execute prism analytical pipeline for each audit scope."
@@ -28,9 +14,30 @@ triggers[1]:
       - output_path
       - pipeline_mode
       - analysis_focus
-steps[1]:
+steps[2]:
+  - id: verify-preconditions
+    actions[2]:
+      - action: validate
+        description: "Verify audit_scopes is non-empty before starting the trigger loop"
+        condition:
+          type: simple
+          variable: audit_scopes
+          operator: exists
+      - action: validate
+        description: "Verify analysis_focus does not equal 'security audit'"
+        condition:
+          type: simple
+          variable: analysis_focus
+          operator: "!="
+          value: security audit
   - id: prepare-triggers
-    technique: variable-binding
+    actions[2]:
+      - action: set
+        target: completed_analyses
+        value: []
+      - action: set
+        target: all_analysis_artifact_paths
+        value: []
 loops[1]:
   - id: scope-iteration
     name: Audit Scope Iteration
@@ -40,7 +47,7 @@ loops[1]:
     maxIterations: 10
     steps[4]:
       - id: set-trigger-context
-        technique: variable-binding
+        technique: execute-analysis::compose-trigger-context
       - id: trigger-prism
         technique:
           name: workflow-engine::handle-sub-workflow
@@ -50,9 +57,7 @@ loops[1]:
         technique: collect-prism-results
       - id: verify-completion
         technique: verify-prism-completion
-rules[3]:
-  - "TRIGGER ISOLATION: When setting analysis_focus for the triggered prism workflow, use the audit prompt content which describes the security focus areas in detail. Do NOT set analysis_focus to the literal string 'security audit' — this would activate prism's built-in audit-finalize activity, duplicating the post-processing that this workflow handles in its own audit-finalize activity."
-  - "PIPELINE MODE SELECTION: The pipeline_mode for each scope defaults to 'full-prism' (3-pass structural → adversarial → synthesis) which provides the depth needed for security audits. Individual scopes may override to 'behavioral' or 'portfolio' if the prompt-generation activity determined a different mode is more appropriate for that scope."
+rules[1]:
   - "SEQUENTIAL EXECUTION: Audit scopes are executed sequentially (one prism trigger at a time). This ensures each prism run has full system resources and avoids context interference between concurrent analyses."
 outcome[1]:
   - "Every audit scope has a completed prism analysis whose outputs finalization can locate and consolidate into deliverables"

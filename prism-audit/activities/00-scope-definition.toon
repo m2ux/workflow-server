@@ -3,9 +3,8 @@ version: 1.3.0
 name: Define Audit Scope
 description: "Collect the audit target, description, and output path."
 problem: "The audit requires a confirmed target codebase, a clear description of audit goals and focus areas, and an organised output directory before analysis can begin."
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[5]:
   - id: collect-inputs
     technique: collect-inputs

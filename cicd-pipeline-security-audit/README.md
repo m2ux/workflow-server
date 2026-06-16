@@ -35,7 +35,7 @@ Sub-Agent Model (Phase 3):
 
 ### Orchestration Model
 
-- **Fully automated** — no user checkpoints; phase gates via `exitActions`
+- **Fully automated** — no user checkpoints; phase gates set by each activity's completion step (a `set` flag on its final step)
 - **Per-submodule dispatch** — each scanner applies all 7 patterns to one submodule
 - **Coverage gate** — every `.github/workflows/*.yml` file must be scanned
 - **Reconciliation gate** — every scanner finding must map to a merged finding
@@ -91,7 +91,7 @@ cicd-pipeline-security-audit/
 
 The sequential phases of the audit — each activity represents a distinct stage that must complete before the next begins.
 
-Each activity binds techniques at the step level (`step.technique`). The Supporting column lists the activity's strategy techniques (`techniques.supporting`); the Step-Bound column lists the techniques its steps bind.
+Each activity binds techniques at the step level (`step.technique`). The Supporting column lists the activity's strategy techniques (`techniques[]`); the Step-Bound column lists the techniques its steps bind.
 
 | # | Activity | Purpose | Steps | Supporting | Step-Bound Techniques |
 |---|----------|---------|-------|------------|-----------------------|

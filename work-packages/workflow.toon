@@ -9,12 +9,12 @@ tags[5]:
   - multi-package
   - coordination
   - prioritization
-rules[4]:
-  - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
-  - Agents must NOT proceed past checkpoints without user confirmation
-  - "Ask, don't assume - Clarify scope and priorities before planning"
-  - "Explicit approval - Get clear 'yes' or 'proceed' before creating documents"
-techniques:
+rules:
+  workflow[4]:
+    - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
+    - Agents must NOT proceed past checkpoints without user confirmation
+    - "Ask, don't assume - Clarify scope and priorities before planning"
+    - "Explicit approval - Get clear 'yes' or 'proceed' before creating documents"
 variables[20]:
   - name: initiative_name
     type: string

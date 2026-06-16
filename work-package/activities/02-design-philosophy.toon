@@ -4,9 +4,8 @@ name: Design Philosophy
 description: "Apply the design framework to classify the problem and decide the workflow path."
 problem: User needs to understand problem nature before deciding on workflow path
 required: true
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[9]:
   - id: define-problem
     technique: define
@@ -154,19 +153,8 @@ checkpoints[3]:
 transitions[1]:
   - to: codebase-comprehension
     isDefault: true
-exitActions[1]{action,message}:
-  message,README PROGRESS: Update planning folder README.md — mark design philosophy artifacts as ✅ Complete.
 outcome[4]:
   - Problem clearly defined and classified
   - Complexity assessed
   - Workflow path determined
   - A durable record of the classification and path rationale that downstream activities and reviewers can rely on
-context_to_preserve[8]:
-  - problem_statement - Clear problem definition
-  - problem_type - Specific problem or inventive goal
-  - problem_complexity - simple, moderate, or complex
-  - path_gating_complexity - path-gating mirror of problem_complexity for workflow-path-selected
-  - needs_elicitation - Whether requirements elicitation is needed
-  - needs_research - Whether research is needed
-  - skip_optional_activities - Whether to skip optional discovery activities
-  - design_philosophy_doc - Path to design philosophy artifact

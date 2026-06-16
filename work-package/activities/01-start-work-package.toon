@@ -4,13 +4,13 @@ name: Start Work Package
 description: "Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder."
 problem: User needs to initialize a work package with issue tracking, branch, and PR
 required: true
-entryActions[1]:
-  - action: log
-    message: Starting issue management
-techniques:
-  supporting[1]:
-    - "variable-binding"
-steps[31]:
+techniques[1]:
+  - "variable-binding"
+steps[33]:
+  - id: announce-start
+    actions[1]:
+      - action: log
+        message: Starting issue management
   - id: detect-review-mode
     technique: review-mode-detection
     checkpoint: review-mode-detection
@@ -307,6 +307,9 @@ steps[31]:
           variable: issue_platform
           operator: "=="
           value: github
+  - id: announce-completion
+    actions[1]{action,message}:
+      log,"Issue management complete - issue verified/created, PR ready"
 checkpoints[10]:
   - id: issue-verification
     name: Issue Verification Checkpoint
@@ -566,8 +569,6 @@ checkpoints[10]:
 transitions[1]:
   - to: design-philosophy
     isDefault: true
-exitActions[1]{action,message}:
-  log,"Issue management complete - issue verified/created, PR ready"
 outcome[6]:
   - Issue exists or is created in appropriate platform
   - Issue transitioned to In Progress and assigned to current user
@@ -575,24 +576,3 @@ outcome[6]:
   - Draft PR created, assigned to current GitHub user, and linked to issue
   - PR reference recorded on the issue via the platform's native PR linkage
   - A canonical, writable location is established for every artifact this work package will produce
-context_to_preserve[20]:
-  - issue_number - The associated issue number (GitHub #N or Jira KEY-N)
-  - issue_platform - github or jira
-  - issue_type - Type of issue (feature, bug, task, enhancement, epic)
-  - issue_url - URL to the issue
-  - issue_assignee_account_id - Account ID of the assigned user (Jira)
-  - branch_name - Feature branch name
-  - pr_number - Draft PR number
-  - pr_url - URL to the PR
-  - project_type - Detected project type (rust-substrate or other)
-  - planning_folder_path - Path to planning artifacts folder
-  - reference_path - Path to the reference checkout
-  - component_name - Basename of the component being worked on
-  - target_path - Canonical worktree path '~/projects/work/{component_name}/{wp-slug}/'
-  - worktree_created - Whether create-component-worktree successfully materialized or reused the worktree at target_path
-  - pr_exists - Whether a PR already exists for the branch
-  - use_existing_pr - Whether to use the existing PR
-  - jira_cloud_id - Atlassian cloud ID for subsequent Jira operations
-  - github_issue_found - Whether a GitHub issue linked to the Jira ticket was found
-  - github_issue_number - GitHub issue number linked to the Jira ticket (if found or created)
-  - squash_merge_supported - Whether target repo allows squash merges (drives DCO merge path)

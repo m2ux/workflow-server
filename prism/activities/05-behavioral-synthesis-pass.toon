@@ -2,10 +2,9 @@ id: behavioral-synthesis-pass
 version: 1.3.0
 name: Behavioral Synthesis Pass
 description: "Run the behavioral synthesis lens against each behavioral unit's artifacts."
-techniques:
-  supporting[2]:
-    - "variable-binding"
-    - "scatter-gather"
+techniques[2]:
+  - "variable-binding"
+  - "scatter-gather"
 loops[1]:
   - id: behavioral-synthesis-unit-cycle
     name: Behavioral Synthesis Unit Cycle

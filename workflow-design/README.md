@@ -107,7 +107,7 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 
 ## Techniques
 
-The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) shared base contract inherited by all of them. There is no single primary technique; each activity step binds exactly one operation. Activity-wide strategy is supplied by the meta [`variable-binding`](../meta/techniques/variable-binding.md) technique (listed as `supporting` on every activity), and commits go through meta [`version-control::commit-regular-files`](../meta/techniques/version-control/commit-regular-files.md).
+The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) shared base contract inherited by all of them. Each activity step binds exactly one operation via `step.technique`. Activity-wide strategy is supplied by the meta [`variable-binding`](../meta/techniques/variable-binding.md) technique (listed in the `techniques[]` list on every activity), and commits go through meta [`version-control::commit-regular-files`](../meta/techniques/version-control/commit-regular-files.md).
 
 | Technique | Capability | Bound by |
 |-----------|------------|----------|

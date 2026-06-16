@@ -3,9 +3,8 @@ version: 1.3.0
 name: "Sub-Agent: Security Architecture Analysis"
 description: "Produce a security-oriented architectural decomposition."
 problem: "The orchestrator's reconnaissance produces an asset inventory (what exists) but not a security model (what could go wrong and why). Vulnerability domain mapping needs architectural properties — component interactions, trust assumptions, privilege models — that require dedicated reasoning, not mechanical enumeration. Without this step, domain mapping falls back to pattern-matching against a predefined checklist rather than deriving applicable vulnerability classes from the system's structure."
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 required: false
 steps[1]:
   - id: analyze-architecture
@@ -17,8 +16,3 @@ outcome[4]:
   - Sub-agents have a risk-ranked list of where to spend their deepest scrutiny
   - Vulnerability classes specific to this system's structure are surfaced beyond what the §3 checklist would catch
 
-context_to_preserve[4]:
-  - interaction_model - Per-component-pair security property requirements
-  - privilege_map - Per-operation authority requirements and verification points
-  - candidate_points - Ranked list of high-complexity security-relevant code locations
-  - emergent_domains - Vulnerability domains derived from architecture that extend beyond §3

@@ -4,9 +4,8 @@ name: Finalize Specification
 description: "Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts, and confirm the user accepts them for promotion to the canonical location."
 problem: A validated specification must be staged with a change summary for the user to review and promote
 required: true
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[1]:
   - id: finalize-specification
     technique: finalize-specification
@@ -31,7 +30,3 @@ checkpoints[1]:
 outcome[2]:
   - The user has a promotion-ready specification alongside a human-readable account of what changed, so they can review and promote in one step
   - The user has explicitly accepted the result for promotion, so the workflow can complete knowing the outcome is endorsed
-context_to_preserve[3]:
-  - finalization_confirmed - Whether the final specification was accepted
-  - final_specification - Path to the final specification artifact
-  - change_summary - Path to the change summary artifact

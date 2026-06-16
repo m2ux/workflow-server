@@ -4,16 +4,13 @@ name: Resolve Target
 description: "Detect the target repository structure (regular directory vs. submodule monorepo) and resolve target_path."
 problem: Workflows that operate on a target codebase need to know whether the working directory is a regular repo or a submodule monorepo, and which submodule is the target
 required: true
-techniques:
-  supporting[2]:
-    - "version-control::detect-repo-type"
-    - "version-control::list-submodules"
 rules[1]:
   - "target_path MUST resolve to a directory containing a working git tree"
-entryActions[1]:
-  - action: log
-    message: "Resolving target repository structure"
-steps[3]:
+steps[4]:
+  - id: announce-start
+    actions[1]:
+      - action: log
+        message: "Resolving target repository structure"
   - id: detect-monorepo
     technique: version-control::detect-repo-type
   - id: list-submodules
@@ -58,6 +55,3 @@ transitions[1]:
 outcome[2]:
   - The orchestrator knows whether it is operating on a single repo or a submodule monorepo, and which submodule the user intends as the target
   - Downstream git operations have a confirmed working git tree to act on, whether the repo root or a chosen submodule
-context_to_preserve[2]:
-  - is_monorepo - Whether the target is a submodule monorepo
-  - target_path - Resolved target directory for git operations

@@ -3,13 +3,13 @@ version: 2.3.0
 name: Gap Analysis
 description: "Compare the AI audit report against a professional reference."
 problem: Without comparison against a professional benchmark, the AI audit's coverage and calibration cannot be assessed. Gap analysis identifies structural blind spots and informs template improvements.
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 required: false
-entryActions[1]{action,message}:
-  log,Starting gap analysis — reference report will be loaded NOW (not before)
-steps[6]:
+steps[8]:
+  - id: announce-start
+    actions[1]{action,message}:
+      log,Starting gap analysis — reference report will be loaded NOW (not before)
   - id: load-reference
     technique: write-gap-analysis
   - id: map-findings
@@ -34,16 +34,12 @@ steps[6]:
         output_format: "Root cause analysis with countermeasures per gap cluster"
   - id: write-gap-analysis
     technique: write-gap-analysis
+  - id: announce-completion
+    actions[1]{action,message}:
+      log,Gap analysis complete — audit workflow finished
 transitions[0]:
-exitActions[1]{action,message}:
-  log,Gap analysis complete — audit workflow finished
 outcome[4]:
   - The AI audit's coverage is measurable against a professional benchmark, finding by finding
   - Structural blind spots are named with the root cause that let each one slip through
   - Where the AI over- or under-rates risk relative to the benchmark is known, so its calibration can be trusted or corrected
   - The template can be improved with concrete countermeasures targeted at the gap clusters this comparison exposed
-context_to_preserve[4]:
-  - overlap_rate - Percentage of reference findings matched
-  - gaps - List of missed findings with root causes
-  - severity_calibration - Over-rating and under-rating patterns
-  - recommendations - Suggestions for closing gaps

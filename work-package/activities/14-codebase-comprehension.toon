@@ -4,9 +4,8 @@ name: Codebase Comprehension
 description: "Build or augment a mental model of the codebase."
 problem: User lacks sufficient understanding of an unfamiliar codebase to qualify agent-proposed design choices
 required: false
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[6]:
   - id: build-comprehension
     technique: survey
@@ -106,9 +105,3 @@ outcome[5]:
   - Domain concepts mapped to technical constructs
   - A reusable comprehension reference exists that future work can build on without re-investigating the same area
   - User confident to evaluate design assumptions in subsequent activities
-context_to_preserve[5]:
-  - comprehension_artifact - Path to the created/updated comprehension artifact
-  - architecture_overview - High-level architecture summary
-  - key_abstractions - Core types, traits, and interfaces identified
-  - design_rationale_hypotheses - Inferred rationale for major design choices
-  - domain_glossary - Mapping of domain terms to technical constructs

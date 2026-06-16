@@ -11,14 +11,16 @@ tags[6]:
   - feature
   - bug-fix
   - pr
-rules[6]:
-  - "Ask, don't assume - Clarify requirements before acting"
-  - "Summarize, then proceed - Provide brief status before asking to continue"
-  - One task at a time - Complete current work before starting new work
-  - "Explicit approval - Get clear 'yes' or 'proceed' before major actions (within activity checkpoints only — NOT between activities)"
-  - "Decision points require user choice - When issues are found, user decides whether to proceed or loop back"
-  - "Git configuration is user-owned. Validate-action messages describe a misconfiguration but never prescribe config-changing commands; the user fixes their own environment at whatever scope (system, global, local) they prefer."
-techniques:
+rules:
+  workflow[6]:
+    - "Ask, don't assume - Clarify requirements before acting"
+    - "Summarize, then proceed - Provide brief status before asking to continue"
+    - One task at a time - Complete current work before starting new work
+    - "Explicit approval - Get clear 'yes' or 'proceed' before major actions (within activity checkpoints only — NOT between activities)"
+    - "Decision points require user choice - When issues are found, user decides whether to proceed or loop back"
+    - "Git configuration is user-owned. Validate-action messages describe a misconfiguration but never prescribe config-changing commands; the user fixes their own environment at whatever scope (system, global, local) they prefer."
+  activity[1]:
+    - "On completing each activity, update the planning-folder README.md progress tracker — mark this activity's artifacts as ✅ Complete and set the work-package Status to reflect the current milestone."
 modes[1]:
   - id: review
     name: Review Mode

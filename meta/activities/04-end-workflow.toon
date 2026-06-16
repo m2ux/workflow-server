@@ -4,11 +4,7 @@ name: End Workflow
 description: "Close out the client workflow."
 problem: Workflow sessions need an explicit close-out so the user knows the work is done and the final state is durably persisted
 required: true
-techniques:
-  supporting[2]:
-    - "workflow-engine::verify-outcomes"
-    - "workflow-engine::generate-summary"
-steps[2]:
+steps[3]:
   - id: verify-outcomes
     technique:
       name: workflow-engine::verify-outcomes
@@ -21,6 +17,10 @@ steps[2]:
       inputs:
         workflow_definition: target_workflow_id
         execution_trace: client_trace
+  - id: announce-completion
+    actions[1]:
+      - action: log
+        message: "Workflow session closed"
 checkpoints[1]:
   - id: completion-confirmed
     name: Completion Confirmation
@@ -40,11 +40,6 @@ checkpoints[1]:
             abort_completion: true
             client_workflow_completed: false
           transitionTo: dispatch-client-workflow
-exitActions[1]:
-  - action: log
-    message: "Workflow session closed"
 outcome[2]:
   - The user can decide whether the work is truly done — every target outcome is shown as met or flagged as a gap to address
   - The completed session can be resumed or audited later because its final state is durably preserved
-context_to_preserve[1]:
-  - abort_completion - Whether the user chose to return to dispatch instead of closing

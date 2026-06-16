@@ -64,7 +64,7 @@ If activities are being added, removed, or reordered:
 
 ### Step 4: Check Reference Integrity
 
-- Verify all `techniques.primary` and `techniques.supporting` references (`::`-path / slug references) resolve to existing technique `.md` files
+- Verify all `techniques[]` references (`::`-path / slug references) resolve to existing technique `.md` files
 - Verify all resource index references resolve to existing resource files
 - Verify all `artifactLocations` keys used by activities exist in the workflow
 

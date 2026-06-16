@@ -4,10 +4,9 @@ name: Assumptions Review
 description: "Review each open assumption with the user."
 problem: Open assumptions need resolution before implementation begins
 required: true
-techniques:
-  supporting[2]:
-    - variable-binding
-    - scatter-gather
+techniques[2]:
+  - variable-binding
+  - scatter-gather
 steps[5]:
   - id: evaluate-open-assumptions
     technique: review-assumptions::collect
@@ -158,16 +157,7 @@ transitions[4]:
       value: true
   - to: implement
     isDefault: true
-exitActions[1]{action,message}:
-  message,README PROGRESS: Update planning folder README.md — mark assumptions review artifacts as ✅ Complete.
 outcome[3]:
   - Each open assumption reviewed individually with user
   - Implementation can proceed on a vetted set of assumption decisions, with any deferred items explicitly tracked
   - External stakeholders are notified of deferred assumptions that need their attention
-context_to_preserve[6]:
-  - open_assumptions - List of open assumptions to review
-  - assumption_decisions - Map of assumption ID to decision (accept/reject/defer)
-  - has_deferred_assumptions - Whether any assumptions were deferred
-  - stakeholder_review_complete - Whether all assumptions have been reviewed
-  - needs_further_discussion - Whether further discussion is needed
-  - needs_plan_revision - Whether significant plan revision is needed

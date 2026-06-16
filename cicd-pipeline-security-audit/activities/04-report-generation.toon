@@ -3,14 +3,14 @@ version: 1.2.0
 name: Report Generation
 description: "Produce the final CI/CD security audit report."
 problem: Merged findings must be severity-scored using the Impact x Exploitability rubric, coverage verified, and formatted into a structured report with actionable remediation guidance.
-techniques:
-  supporting[2]:
-    - variable-binding
-    - execute-cicd-audit
+techniques[2]:
+  - variable-binding
+  - execute-cicd-audit
 required: true
-entryActions[1]{action,message}:
-  log,Starting report generation — scoring findings and producing audit report
-steps[5]:
+steps[7]:
+  - id: announce-start
+    actions[1]{action,message}:
+      log,Starting report generation — scoring findings and producing audit report
   - id: apply-severity
     technique: score-cicd-severity::apply-severity
   - id: severity-crosscheck
@@ -21,16 +21,12 @@ steps[5]:
     technique: write-cicd-report::attach-remediation
   - id: write-report
     technique: write-cicd-report::write-report
+  - id: finalize-activity
+    actions[2]{action,message}:
+      log,Report generation complete — CI/CD security audit report finalized
+      set,report_complete=true
 transitions[0]:
-exitActions[2]{action,message}:
-  log,Report generation complete — CI/CD security audit report finalized
-  set,report_complete=true
 outcome[3]:
   - Readers can triage findings by consistent, defensible severity rather than gut feel, with the report backed by a passed coverage gate so they can trust nothing in scope was missed
   - Every finding tells the reader not just what is wrong but how to fix it
   - The consumer holds a single decision-ready CI/CD security verdict for the audited submodules
-context_to_preserve[4]:
-  - total_findings - Total number of confirmed findings
-  - critical_findings - Number of Critical-severity findings
-  - high_findings - Number of High-severity findings
-  - report_path - Path to the final audit report

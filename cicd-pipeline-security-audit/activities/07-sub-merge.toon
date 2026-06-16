@@ -3,14 +3,14 @@ version: 1.2.0
 name: Finding Merge
 description: "Merge scanner outputs into a unified finding set."
 problem: Findings from multiple per-submodule scanners must be deduplicated, correlated across patterns, and reconciled into a single canonical finding set before severity scoring.
-techniques:
-  supporting[2]:
-    - variable-binding
-    - execute-sub-agent
+techniques[2]:
+  - variable-binding
+  - execute-sub-agent
 required: false
-entryActions[1]{action,message}:
-  log,Starting finding merge and reconciliation
-steps[5]:
+steps[7]:
+  - id: announce-start
+    actions[1]{action,message}:
+      log,Starting finding merge and reconciliation
   - id: load-scanner-outputs
     technique: merge-scan-findings::load-outputs
   - id: deduplicate
@@ -21,9 +21,10 @@ steps[5]:
     technique: merge-scan-findings::reconcile
   - id: write-merged-output
     technique: merge-scan-findings::write-output
+  - id: announce-completion
+    actions[1]{action,message}:
+      log,Finding merge complete — reconciliation table produced with zero Unaccounted
 transitions[0]:
-exitActions[1]{action,message}:
-  log,Finding merge complete — reconciliation table produced with zero Unaccounted
 outcome[3]:
   - Downstream scoring sees each real issue exactly once, with per-scanner duplicates collapsed into one canonical finding
   - Compound attack chains spanning multiple patterns are surfaced as correlated risks rather than scattered single findings

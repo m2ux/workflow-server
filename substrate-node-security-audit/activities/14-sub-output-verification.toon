@@ -3,9 +3,8 @@ version: 1.1.0
 name: "Sub-Agent: Output Verification"
 description: "Mechanically validate primary-agent output completeness."
 problem: "The orchestrator executes 10+ verification protocols inline after composing prompts for 8+ agents and collecting their outputs. By this point the orchestrator's context window is saturated and verification becomes shallow — mandatory tables are assumed present, coverage gates are loosely checked, and target profile obligations are not mechanically verified. This produces inconsistent finding counts across runs on the same codebase."
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 required: false
 steps[1]:
   - id: verify-output
@@ -17,8 +16,3 @@ outcome[4]:
   - Missing mandatory tables are flagged for re-dispatch instead of being assumed present, which is what stabilizes finding counts across runs
   - Findings buried in agent tables are recovered mechanically rather than lost to shallow inline review
 
-context_to_preserve[4]:
-  - gap_report - Structured gap report with re-dispatch recommendations
-  - table_derived_findings - Mechanically extracted findings from mandatory table cells
-  - coverage_attestation - Per-file coverage status table
-  - obligation_coverage - Target profile obligation status table

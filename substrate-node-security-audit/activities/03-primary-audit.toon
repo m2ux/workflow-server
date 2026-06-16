@@ -3,13 +3,13 @@ version: 4.18.0
 name: Primary Audit
 description: "Multi-agent primary audit via concurrent dispatch with verification and merge."
 problem: "A single agent cannot achieve sufficient depth across all crates, and the orchestrator's context window is saturated by the time it needs to merge and verify agent outputs. Multi-agent orchestration with dedicated verification (V) and merge (M) agents provides: (a) focused context windows per security domain, (b) mechanical output validation in a fresh context window (V), (c) finding-lossless merge in a fresh context window (M), (d) targeted re-dispatch for gaps before findings are merged."
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 required: true
-entryActions[1]{action,message}:
-  log,Starting primary audit — concurrent multi-agent dispatch
-steps[13]:
+steps[15]:
+  - id: announce-start
+    actions[1]{action,message}:
+      log,Starting primary audit — concurrent multi-agent dispatch
   - id: dispatch-all-agents
     technique: dispatch-sub-agents
   - id: verify-checklist-prompt-coverage
@@ -39,24 +39,14 @@ steps[13]:
     technique: dispatch-sub-agents
   - id: preserve-merge-output
     technique: merge-findings
+  - id: finalize-activity
+    actions[2]{action,message}:
+      log,Primary audit complete — findings collected from all agent groups
+      set,primary_audit_complete=true
 transitions[1]{to,isDefault}:
   adversarial-verification,true
-exitActions[2]{action,message}:
-  log,Primary audit complete — findings collected from all agent groups
-  set,primary_audit_complete=true
 outcome[4]:
   - Every priority-1/2 crate has been evaluated against the full §3 checklist in a dedicated context window, giving depth no single agent could reach
   - Mechanical and pattern-based weaknesses across the whole in-scope surface are caught independently of the human-led review
   - Storage lifecycle pairing is known, so unbounded-growth and orphaned-state risks can be judged from insert/remove completeness
   - Toolkit code has guaranteed minimum-checklist coverage, closing the gap where benign-looking helpers are usually skimmed
-context_to_preserve[10]:
-  - merged_findings - Flat table of all agent findings with elevation mapping (produced by M, not orchestrator)
-  - reconciliation_table - Per-agent finding count reconciliation with zero Unaccounted (produced by M)
-  - scratchpad_passes - All PASS items with cited evidence for adversarial verification
-  - checklist_coverage - §3 coverage matrix showing per-item evaluation status
-  - coverage_report - Files read by each §3-applying agent and checklist completion status
-  - dispatch_manifest - agents_assigned vs agents_dispatched with per-crate status
-  - "dispatch_complete - true when all assigned agents have been dispatched and returned"
-  - "verification_report - Gap report from verification sub-agent (V) including coverage attestation, missing tables, unmet target profile obligations, and re-dispatch outcomes. Consumed by adversarial verification for PASS item targeting."
-  - "agent_output_files - Paths to persisted JSON files for each agent (canonical finding source)"
-  - "observation_dispositions - Per-observation table showing 'captured by F-X' or 'elevated to F-Y' for every agent observation (produced by M)"

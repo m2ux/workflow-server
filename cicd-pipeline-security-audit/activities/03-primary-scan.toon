@@ -3,14 +3,14 @@ version: 1.2.0
 name: Primary Scan
 description: "Run per-submodule scanner agents and merge their findings."
 problem: Each submodule's GitHub Actions workflows must be scanned for all seven vulnerability classes, findings verified for completeness, and merged into a unified finding set.
-techniques:
-  supporting[2]:
-    - variable-binding
-    - execute-cicd-audit
+techniques[2]:
+  - variable-binding
+  - execute-cicd-audit
 required: true
-entryActions[1]{action,message}:
-  log,Starting primary scan — dispatching per-submodule scanner agents
-steps[8]:
+steps[10]:
+  - id: announce-start
+    actions[1]{action,message}:
+      log,Starting primary scan — dispatching per-submodule scanner agents
   - id: dispatch-all-scanners
     technique: dispatch-scanners::dispatch-all
   - id: verify-dispatch-completeness
@@ -27,6 +27,10 @@ steps[8]:
     technique: dispatch-scanners::dispatch-merge
   - id: validate-reconciliation
     technique: dispatch-scanners::verify-reconciliation
+  - id: finalize-activity
+    actions[2]{action,message}:
+      log,Primary scan complete — all findings merged and reconciled
+      set,primary_scan_complete=true
 transitions[1]:
   - to: report-generation
     isDefault: true
@@ -41,18 +45,7 @@ transitions[1]:
           variable: merge_complete
           operator: ==
           value: true
-exitActions[2]{action,message}:
-  log,Primary scan complete — all findings merged and reconciled
-  set,primary_scan_complete=true
 outcome[3]:
   - "Every in-scope workflow file has been scanned for all seven vulnerability classes, with independent verification that no file or pattern was skipped"
   - "The audit speaks with one voice: a single deduplicated, cross-correlated finding set where every scanner finding is reconciled and accounted for"
   - "Findings are trustworthy and complete enough to drive severity scoring and the final report"
-context_to_preserve[7]:
-  - scanners_dispatched - Number of scanner agents dispatched
-  - dispatch_manifest - Per-scanner table with assigned/dispatched/returned status
-  - dispatch_complete - true when all assigned scanners dispatched and returned
-  - verification_complete - Whether V confirmed completeness (set by V, not orchestrator)
-  - verification_report - Gap report from V including coverage attestation
-  - merge_complete - Whether M completed with zero Unaccounted
-  - scanner_output_files - Paths to persisted JSON files for each scanner (canonical finding source)

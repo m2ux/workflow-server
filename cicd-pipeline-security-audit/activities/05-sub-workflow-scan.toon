@@ -3,14 +3,14 @@ version: 1.2.0
 name: Per-Submodule Workflow Scan
 description: "Scan the assigned submodule's workflow files for the seven detection patterns."
 problem: Each submodule's workflow files must be systematically scanned for expression injection, Pwn Request patterns, comment trigger abuse, excessive permissions, fork code execution, AI config poisoning, and dangerous execution patterns.
-techniques:
-  supporting[2]:
-    - variable-binding
-    - execute-sub-agent
+techniques[2]:
+  - variable-binding
+  - execute-sub-agent
 required: false
-entryActions[1]{action,message}:
-  log,Starting per-submodule workflow scan
-steps[9]:
+steps[11]:
+  - id: announce-start
+    actions[1]{action,message}:
+      log,Starting per-submodule workflow scan
   - id: load-patterns
     technique: scan-injection-patterns::load-patterns
   - id: scan-expression-injection
@@ -29,13 +29,10 @@ steps[9]:
     technique: scan-injection-patterns::scan-p7
   - id: write-output
     technique: scan-injection-patterns::assemble-results
+  - id: announce-completion
+    actions[1]{action,message}:
+      log,Per-submodule scan complete — findings written to output file
 transitions[0]:
-exitActions[1]{action,message}:
-  log,Per-submodule scan complete — findings written to output file
 outcome[2]:
   - This submodule's workflows have full seven-class coverage, so the parent audit can account for it as scanned
   - Each finding carries source-to-sink evidence a reviewer can independently confirm, and is structured so the parent can collect and merge it without re-parsing
-context_to_preserve[3]:
-  - findings_count - Number of findings in this submodule
-  - files_scanned - Number of workflow files scanned
-  - patterns_applied - Confirmation that all seven patterns were applied

@@ -3,13 +3,13 @@ version: 2.4.0
 name: Adversarial Verification
 description: "Adversarially verify PASS items from the primary audit."
 problem: "AI agents exhibit first-positive-signal bias — they find one correct behavior and mark the entire check as PASS without verifying all related fields or paths. This consistently causes Medium/High findings to be missed as false PASSes. Additionally, adversarial PASS selection based solely on severity potential misses areas where primary agents produced structurally incomplete outputs."
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 required: true
-entryActions[1]{action,message}:
-  log,Starting adversarial verification of PASS items
-steps[6]:
+steps[8]:
+  - id: announce-start
+    actions[1]{action,message}:
+      log,Starting adversarial verification of PASS items
   - id: seed-from-verification-report
     technique: decompose-safety-claims
   - id: extract-pass-items
@@ -37,16 +37,13 @@ steps[6]:
       name: decompose-safety-claims
       inputs:
         output_format: "Verdict summary with CONFIRMED/REFUTED/INSUFFICIENT counts"
+  - id: finalize-activity
+    actions[2]{action,message}:
+      log,Adversarial verification complete — false PASSes identified
+      set,adversarial_complete=true
 transitions[1]{to,isDefault}:
   report-generation,true
-exitActions[2]{action,message}:
-  log,Adversarial verification complete — false PASSes identified
-  set,adversarial_complete=true
 outcome[3]:
   - Every high-stakes PASS verdict has survived independent property-level re-checking, so first-positive-signal bias can no longer hide a real finding behind a premature PASS
   - Findings that primary agents missed as false PASSes are recovered and promoted into the findings set
   - The report can integrate calibrated verdicts that distinguish confirmed-safe from insufficiently-verified items
-context_to_preserve[3]:
-  - confirmed_passes - PASS items verified as correct with evidence
-  - refuted_passes - False PASSes converted to new findings
-  - insufficient_items - Items requiring manual review

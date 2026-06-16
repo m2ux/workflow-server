@@ -3,9 +3,8 @@ version: 1.3.0
 name: Requirements Refinement
 description: "Guided elicitation of the workflow specification across purpose, activities, checkpoints, artifacts, variables, techniques, and rules."
 problem: The user's free-form description needs to be refined into a complete workflow specification
-techniques:
-  supporting[1]:
-    - variable-binding
+techniques[1]:
+  - variable-binding
 required: true
 rules[3]:
   - "One question at a time — present each checkpoint independently and wait for the response before proceeding"
@@ -132,12 +131,3 @@ transitions[2]:
     isDefault: true
 outcome[1]:
   - A complete workflow specification — purpose, activities, checkpoints, artifacts, variables, techniques, and rules — that the user has confirmed across every dimension, so drafting proceeds from settled requirements rather than open questions
-context_to_preserve[8]:
-  - workflow_purpose - Confirmed purpose and domain
-  - activity_list - Confirmed activity names, purposes, and artifacts
-  - activity_model - Sequential or independent
-  - checkpoint_design - Checkpoints per activity with options and effects
-  - artifact_design - Artifacts per activity with names and locations
-  - variable_design - Workflow variables with types and defaults
-  - technique_design - Techniques with capabilities and activity assignments
-  - rule_design - Workflow rules with enforcement classification

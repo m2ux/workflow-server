@@ -3,27 +3,11 @@ version: 1.2.0
 name: Define Evaluation Scope
 description: "Collect the evaluation target, description, and output path."
 problem: "The evaluation requires a confirmed target, a clear description of evaluation goals, validated dimensions, and an organised output directory before analysis planning can begin."
-techniques:
-  supporting[1]:
-    - variable-binding
+techniques[1]:
+  - variable-binding
 steps[5]:
   - id: collect-inputs
-    actions[5]:
-      - action: set
-        target: target_path
-        description: "Path to the target to evaluate."
-      - action: set
-        target: evaluation_description
-        description: "The user's description of evaluation goals, focus areas, and concerns."
-      - action: set
-        target: output_path
-        description: "Directory for the evaluation artifacts; derived from the target name and current date when not supplied."
-      - action: set
-        target: dimensions
-        description: "Evaluation dimensions, when explicitly provided by the user."
-      - action: set
-        target: lens_overrides
-        description: "Per-dimension lens overrides, when provided by the user."
+    technique: plan-evaluation::collect-scope
   - id: classify-target
     technique: plan-evaluation::classify-target
   - id: derive-dimensions

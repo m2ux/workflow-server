@@ -3,14 +3,14 @@ version: 1.2.0
 name: Reconnaissance
 description: "Classify discovered workflows and assign scanner agents."
 problem: Scanner agents need a structured inventory with trigger classification, permission mapping, and checkout pattern identification to apply detection patterns efficiently.
-techniques:
-  supporting[2]:
-    - variable-binding
-    - execute-cicd-audit
+techniques[2]:
+  - variable-binding
+  - execute-cicd-audit
 required: true
-entryActions[1]{action,message}:
-  log,Starting reconnaissance — classifying workflows and assigning scanner agents
-steps[5]:
+steps[7]:
+  - id: announce-start
+    actions[1]{action,message}:
+      log,Starting reconnaissance — classifying workflows and assigning scanner agents
   - id: classify-triggers
     technique: inventory-workflows::classify-triggers
   - id: map-permissions
@@ -21,17 +21,14 @@ steps[5]:
     technique: inventory-workflows::build-summary
   - id: assign-scanner-agents
     technique: inventory-workflows::assign-scanner-agents
+  - id: finalize-activity
+    actions[2]{action,message}:
+      log,Reconnaissance complete — workflows classified and scanner agents assigned
+      set,reconnaissance_complete=true
 transitions[1]{to,isDefault}:
   primary-scan,true
-exitActions[2]{action,message}:
-  log,Reconnaissance complete — workflows classified and scanner agents assigned
-  set,reconnaissance_complete=true
 outcome[4]:
   - Scanners can prioritize the riskiest workflows first, knowing each one's trigger type, permission scope, and checkout pattern
   - The workflows most exposed to untrusted input are already flagged before scanning begins
   - Every in-scope submodule has an owning scanner agent, so no submodule can be silently skipped
   - Scan work is partitioned for parallel dispatch with no overlap or gap between agents
-context_to_preserve[3]:
-  - scanners_assigned - Number of scanner agents assigned
-  - workflow_inventory - Complete inventory of workflow files with per-workflow classification data
-  - scanner_assignments - Agent-to-submodule mapping

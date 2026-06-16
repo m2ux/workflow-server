@@ -3,13 +3,13 @@ version: 3.6.0
 name: Report Generation
 description: "Consolidate findings into the final audit report."
 problem: Findings from multiple agents and phases must be severity-calibrated and formatted into a cohesive report with coverage verification. The structured merge table from primary-audit ensures no findings are lost.
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 required: true
-entryActions[1]{action,message}:
-  log,Starting report generation — consolidating findings from all phases
-steps[5]:
+steps[7]:
+  - id: announce-start
+    actions[1]{action,message}:
+      log,Starting report generation — consolidating findings from all phases
   - id: integrate-adversarial-results
     technique:
       name: merge-findings
@@ -26,6 +26,10 @@ steps[5]:
     technique: merge-findings
   - id: write-report
     technique: write-report
+  - id: finalize-activity
+    actions[2]{action,message}:
+      log,Report generation complete — audit report finalized
+      set,report_complete=true
 decisions[1]:
   - id: next-phase
     name: Next Phase Decision
@@ -63,13 +67,6 @@ transitions[2]:
       variable: has_reference_report
       operator: ==
       value: true
-exitActions[2]{action,message}:
-  log,Report generation complete — audit report finalized
-  set,report_complete=true
 outcome[2]:
   - Every finding carries a defensible, cross-checked severity, so consumers can triage and prioritize remediation with confidence
   - The consumer has a single audit report whose coverage and finding-completeness are both attested — every in-scope area was reviewed and no merged finding was lost on the way in
-context_to_preserve[3]:
-  - final_findings - Complete list of numbered findings with severity
-  - coverage_status - Coverage gate pass/fail with details
-  - report_path - Path to the final audit report

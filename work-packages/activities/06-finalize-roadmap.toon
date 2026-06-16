@@ -3,9 +3,8 @@ version: 1.2.0
 name: Finalize Roadmap
 description: Complete roadmap documentation with timeline, navigation, and success criteria
 problem: Need to finalize planning documentation before implementation begins
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[1]:
   - id: finalize-roadmap-docs
     technique: document-roadmap
@@ -30,6 +29,3 @@ transitions[1]:
 outcome[2]:
   - Anyone picking up the initiative can navigate it end-to-end - sequenced packages, timeline, and success criteria in one entry point
   - The plan is complete enough to gate the start of implementation, with no open planning questions blocking execution
-context_to_preserve[2]:
-  - roadmap_complete - Boolean indicating roadmap is finalized
-  - timeline_estimate - Overall timeline for initiative

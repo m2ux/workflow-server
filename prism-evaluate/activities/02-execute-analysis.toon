@@ -3,17 +3,9 @@ version: 1.3.0
 name: Execute Prism Analyses
 description: "Trigger the prism workflow for each execution group."
 problem: "The evaluation analysis must be executed through the prism workflow's analytical pipeline rather than inline. Using trigger-workflow keeps prism generic and reusable while prism-evaluate controls the evaluation-specific context passed to each run."
-techniques:
-  supporting[2]:
-    - variable-binding
-    - scatter-gather
-entryActions[1]:
-  - action: validate
-    message: "Verify execution_groups is non-empty before starting the trigger loop"
-    condition:
-      type: simple
-      variable: execution_groups
-      operator: exists
+techniques[2]:
+  - variable-binding
+  - scatter-gather
 triggers[1]:
   - workflow: prism
     description: "Execute prism analytical pipeline for each execution group. Each trigger passes the target, target type, output path, pipeline mode, selected lenses, and the dimension-specific analysis focus."
@@ -24,7 +16,15 @@ triggers[1]:
       - pipeline_mode
       - selected_lenses
       - analysis_focus
-steps[1]:
+steps[2]:
+  - id: verify-preconditions
+    actions[1]:
+      - action: validate
+        message: "Verify execution_groups is non-empty before starting the trigger loop"
+        condition:
+          type: simple
+          variable: execution_groups
+          operator: exists
   - id: log-execution-plan
     actions[1]:
       - action: log

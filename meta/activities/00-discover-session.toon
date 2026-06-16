@@ -4,13 +4,6 @@ name: Discover Session
 description: "Identify the target workflow and search for an existing client session to resume."
 problem: The meta workflow needs to determine which client workflow to dispatch and whether to resume an existing client session, before initialize-session creates or adopts the client session
 required: true
-techniques:
-  supporting[5]:
-    - "workflow-engine::list-workflows"
-    - "workflow-engine::match-target-workflow"
-    - "workflow-engine::extract-identifying-context"
-    - "workflow-engine::scan-saved-sessions"
-    - "workflow-engine::match-saved-session"
 rules[1]:
   - "Match identifying context against saved sessions even when the user said 'start' — surface saved state via the resume-session checkpoint"
 steps[7]:
@@ -89,9 +82,3 @@ transitions[1]:
 outcome[2]:
   - Target workflow identified (and confirmed by user if ambiguous)
   - Existing saved session matched and resume decision captured, or no session found
-context_to_preserve[5]:
-  - target_workflow_id - The client workflow to dispatch
-  - has_saved_state - Whether a saved client session was found
-  - is_resuming - Whether the user chose to resume
-  - saved_planning_slug - Planning slug of the matched saved session (when has_saved_state)
-  - planning_folder_path - Path to the matched planning folder (when has_saved_state)

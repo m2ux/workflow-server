@@ -3,10 +3,9 @@ version: 1.3.0
 name: Implementation
 description: Execute each planned work package in priority order by triggering the work-package workflow
 problem: Planned work packages need to be implemented one at a time according to the roadmap
-techniques:
-  supporting[2]:
-    - "variable-binding"
-    - "scatter-gather"
+techniques[2]:
+  - "variable-binding"
+  - "scatter-gather"
 triggers[1]:
   - workflow: work-package
     description: "Each iteration starts the work-package workflow for one planned package"
@@ -29,10 +28,3 @@ loops[1]:
 outcome[2]:
   - Every planned package is delivered as merged, reviewed work, so the initiative's intended capability is fully in place
   - Progress tracking reflects a finished initiative, giving stakeholders a trustworthy completion signal
-context_to_preserve[6]:
-  - current_package - Currently active work package (passed to work-package workflow)
-  - completed_packages - List of completed work packages
-  - remaining_packages - List of remaining work packages
-  - overall_progress - Percentage or fraction of completion
-  - parent_workflow - Reference back to work-packages context
-  - package_planning_paths - Map of package name to child planning folder path (captured from returnedContext)

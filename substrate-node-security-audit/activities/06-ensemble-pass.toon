@@ -3,11 +3,10 @@ version: 2.5.0
 name: Ensemble Pass
 description: "Optional second-model audit run with merged findings."
 problem: Different models and configurations find different subsets of findings. Running the template a second time and merging results captures findings that are non-deterministically detected in any single run, improving overall coverage.
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 required: false
-steps[3]:
+steps[4]:
   - id: execute-ensemble-pass
     technique: execute-ensemble-pass
   - id: union-merge
@@ -17,6 +16,9 @@ steps[3]:
         merge_strategy: union-merge
   - id: update-report
     technique: write-report
+  - id: announce-completion
+    actions[1]{action,message}:
+      log,Ensemble pass complete — findings merged with primary report
 decisions[1]:
   - id: next-phase
     name: Post-Ensemble Decision
@@ -40,13 +42,7 @@ transitions[1]:
       variable: has_reference_report
       operator: ==
       value: true
-exitActions[1]{action,message}:
-  log,Ensemble pass complete — findings merged with primary report
 outcome[3]:
   - Findings that any single run would have missed non-deterministically are now captured, raising overall coverage
   - Consumers can weight each finding by agreement, knowing whether it was consensus or detected by only one run
   - Items the primary run cleared but the ensemble flagged are recovered rather than lost to run-to-run variance
-context_to_preserve[3]:
-  - consensus_findings - Findings confirmed by both runs
-  - single_source_findings - Findings from only one run
-  - escalated_findings - PASSes in primary that became FAILs in ensemble

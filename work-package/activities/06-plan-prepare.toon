@@ -4,9 +4,8 @@ name: Plan & Prepare
 description: "Design the approach, create the work package plan, and prepare for implementation."
 problem: User needs to plan the implementation approach
 required: true
-techniques:
-  supporting[1]:
-    - variable-binding
+techniques[1]:
+  - variable-binding
 steps[10]:
   - id: env-prerequisites
     actions[6]:
@@ -88,13 +87,7 @@ checkpoints[1]:
 transitions[1]:
   - to: assumptions-review
     isDefault: true
-exitActions[1]{action,message}:
-  message,README PROGRESS: Update planning folder README.md — mark plan artifacts as ✅ Complete and set Status to Ready.
 outcome[3]:
   - An agreed, sequenced approach that the implement activity can execute against task by task
   - A defined verification strategy that validation will run the implementation against
   - Reviewers and stakeholders can see the intended approach on the PR before any code is written
-context_to_preserve[3]:
-  - implementation_plan - Work package plan document
-  - test_plan - Test plan document
-  - tasks - List of implementation tasks

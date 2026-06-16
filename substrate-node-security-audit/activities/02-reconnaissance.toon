@@ -3,13 +3,13 @@ version: 3.2.0
 name: Reconnaissance
 description: "Run codebase reconnaissance and security decomposition."
 problem: "The orchestrator previously performed 9 inline reconnaissance steps (reading source files, scanning crates, building registries), consuming 10-15K tokens of context before primary agent dispatch. This reduced the orchestrator's effective context budget for its actual role: coordinating 10+ sub-agents across 6 workflow phases. Delegating analysis to sub-agents keeps the orchestrator's context clean for coordination."
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 required: true
-entryActions[1]{action,message}:
-  log,Starting codebase reconnaissance (§1.2) — dispatching reconnaissance sub-agent
-steps[7]:
+steps[9]:
+  - id: announce-start
+    actions[1]{action,message}:
+      log,Starting codebase reconnaissance (§1.2) — dispatching reconnaissance sub-agent
   - id: dispatch-reconnaissance-agent
     technique: dispatch-sub-agents
   - id: verify-reconnaissance-files
@@ -30,24 +30,15 @@ steps[7]:
     technique: dispatch-sub-agents
   - id: route-reconnaissance-leads
     technique: dispatch-sub-agents
+  - id: finalize-activity
+    actions[2]{action,message}:
+      log,Reconnaissance complete — architecture mapped and function registry built
+      set,reconnaissance_complete=true
 transitions[1]{to,isDefault}:
   primary-audit,true
-exitActions[2]{action,message}:
-  log,Reconnaissance complete — architecture mapped and function registry built
-  set,reconnaissance_complete=true
 outcome[5]:
   - The in-scope surface is fully classified by crate priority, so review effort can be concentrated where consensus-critical risk lives
   - Trust boundaries and consensus-critical paths are known, telling agents where untrusted input crosses into privileged execution
   - Priority crates have an enumerated function inventory agents can drive exhaustive coverage from
   - A security model of the system — interaction trust assumptions, privilege map, ranked candidate points, and vulnerability domains beyond the §3 checklist — exists to derive what could go wrong from how the system is built
   - Every in-scope area is bound to a responsible agent with its cross-crate context, so primary dispatch has complete, non-overlapping coverage
-context_to_preserve[9]:
-  - crate_map - Read from r-crate-map.json
-  - function_registry - Read from r-function-registry.json
-  - trust_boundaries - Read from r-reconnaissance-data.json
-  - agent_assignments - Crate-to-agent-group assignments with cross-crate supplement files noted
-  - agents_assigned - Total count of agents in the assignment roster (used by dispatch completeness gate)
-  - large_files - Read from r-reconnaissance-data.json
-  - architectural_analysis - Read from s-architectural-analysis.json
-  - vulnerability_domain_map - Per-class list of codebase locations triggering each §3 category, partitioned by crate
-  - leads_routing - Per-lead table mapping each reconnaissance observation to its assigned sub-agent

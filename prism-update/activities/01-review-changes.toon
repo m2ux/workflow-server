@@ -4,9 +4,8 @@ name: Review Changes
 description: "Present discovered changes for approval and apply any exclusion adjustments before import."
 problem: User needs to review and approve which upstream changes to import
 required: true
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[2]:
   - id: present-summary
     technique: review-change-set::present-summary
@@ -43,6 +42,3 @@ transitions[1]:
 outcome[1]:
   - "User-approved change set ready for import"
 
-context_to_preserve[2]:
-  - "change_set — approved change set (may differ from discovered if exclusions applied)"
-  - "exclusions — final exclusion list"

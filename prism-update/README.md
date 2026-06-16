@@ -75,7 +75,7 @@ Each step binds its technique via `step.technique`. The Step Technique column na
 
 The `review-change-set` technique is an operation-group: a `review-change-set/` directory (`TECHNIQUE.md` shared contract plus one file per operation) whose ops are referenced as `review-change-set::present-summary` and `review-change-set::apply-exclusions`. All other techniques are flat standalones.
 
-In addition, every activity declares the `variable-binding` strategy technique under `techniques.supporting`.
+In addition, every activity declares the `variable-binding` strategy technique in its `techniques[]` list.
 
 ---
 

@@ -4,9 +4,8 @@ name: Report Failure
 description: "Compile a failure report describing the unresolved critical issues, the correction history, and the manual resolution required when refinement cannot complete automatically; no specification is promoted."
 problem: When critical issues remain or the correction budget is exhausted, the user needs a clear account of what requires manual intervention
 required: true
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[1]:
   - id: report-failure
     technique: report-failure
@@ -25,5 +24,3 @@ checkpoints[1]:
 outcome[2]:
   - The user knows exactly which critical issues blocked refinement and what manual resolution each one needs
   - No unvalidated specification reaches the canonical location — the prior state is preserved until a human intervenes
-context_to_preserve[1]:
-  - failure_report - Path to the failure report artifact

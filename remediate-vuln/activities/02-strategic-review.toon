@@ -4,10 +4,9 @@ name: Strategic Review
 description: "Review the implementation to ensure changes are minimal and focused."
 problem: User needs to ensure changes are minimal and focused
 required: true
-techniques:
-  supporting[1]:
-    - "variable-binding"
-steps[8]:
+techniques[1]:
+  - "variable-binding"
+steps[9]:
   - id: review-scope
     technique: review-scope
   - id: resign-unsigned-commits
@@ -39,6 +38,10 @@ steps[8]:
     technique: summarize-architecture
   - id: analyze-strategic-findings
     technique: analyze-findings
+  - id: announce-completion
+    actions[1]:
+      - action: log
+        message: "README PROGRESS: Update planning folder README.md — mark strategic review artifacts as ✅ Complete."
 checkpoints[2]:
   - id: unsigned-commits-prompt
     name: Unsigned or unverified commits
@@ -99,9 +102,6 @@ transitions[2]:
       value: true
   - to: plan-prepare
     isDefault: true
-exitActions[1]:
-  - action: log
-    message: "README PROGRESS: Update planning folder README.md — mark strategic review artifacts as ✅ Complete."
 outcome[6]:
   - Changes validated as minimal and focused
   - Investigation artifacts and over-engineering removed
@@ -109,9 +109,3 @@ outcome[6]:
   - Stakeholders can understand how the fix changes the system at a glance, without reading implementation detail
   - Resign completed for any unsigned commits, or user decline documented
   - The fix is captured in the target repo's changelog convention when it uses one
-context_to_preserve[5]:
-  - review_findings - Findings from strategic review
-  - review_passed - Whether review passed
-  - items_removed - List of items removed during cleanup
-  - unsigned_commits_in_pr - Whether any unsigned commits remained after strategic review
-  - resign_unsigned_commits_requested - Whether user requested resign at checkpoint

@@ -4,12 +4,12 @@ name: Post-Implementation Review
 description: "Review implementation quality before validation."
 problem: User needs to review implementation quality before validation
 required: true
-entryActions[1]{action,message}:
-  log,Starting post-implementation review
-techniques:
-  supporting[1]:
-    - "variable-binding"
-steps[8]:
+techniques[1]:
+  - "variable-binding"
+steps[9]:
+  - id: announce-start
+    actions[1]{action,message}:
+      log,Starting post-implementation review
   - id: gitnexus-detect-changes-preflight
     technique: gitnexus-operations::detect-changes
     when: "gitnexus_indexed == true"
@@ -177,16 +177,3 @@ outcome[5]:
   - Structural risks across the change set are identified for triage
   - Test coverage gaps are surfaced so they can be closed before validation
   - A stakeholder-readable architecture overview is available when the change warrants one
-context_to_preserve[10]:
-  - change_block_index - Path to change-block-index.md file
-  - change_block_data - Parsed hunk data for interview loop
-  - flagged_block_indices - List of indices flagged by user during review
-  - manual_review_findings - Interview responses for each flagged block
-  - has_critical_blocker - Whether any flagged block is a critical blocker
-  - code_review_findings - Findings from code review
-  - test_review_findings - Findings from test suite review
-  - architecture_summary_created - Whether architecture summary was created
-  - manual_diff_review_report_path - Path to generated manual diff review report
-  - prism_artifact_paths - Paths to prism structural analysis artifacts
-exitActions[1]{action,message}:
-  message,README PROGRESS: Update planning folder README.md — mark review artifacts as ✅ Complete.

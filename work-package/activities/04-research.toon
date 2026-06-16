@@ -4,9 +4,8 @@ name: Research
 description: "Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity."
 problem: User needs to research best practices before planning
 required: false
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[9]:
   - id: research-knowledge-base
     technique: research
@@ -151,14 +150,7 @@ checkpoints[4]:
 transitions[1]:
   - to: implementation-analysis
     isDefault: true
-exitActions[1]{action,message}:
-  message,README PROGRESS: Update planning folder README.md — mark research artifacts as ✅ Complete.
 outcome[3]:
   - Best practices identified from multiple sources
   - Patterns validated and mapped to requirements
   - Risks and anti-patterns documented
-context_to_preserve[4]:
-  - research_findings - Key research findings
-  - applicable_patterns - Patterns that apply to this work
-  - risks_identified - Risks and anti-patterns to avoid
-  - resources - Relevant resources identified

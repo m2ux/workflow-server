@@ -3,9 +3,8 @@ version: 1.2.0
 name: Smart Analysis Pass
 description: "Adaptively compose the analysis pipeline based on input characteristics."
 problem: "Users must manually select the right pipeline mode. Smart mode removes this burden by composing the pipeline automatically based on what the input needs."
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[6]:
   - id: run-prereq
     technique:

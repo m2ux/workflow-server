@@ -3,9 +3,8 @@ version: 1.2.0
 name: Pattern Analysis
 description: "Structural and content patterns extracted from comparable existing workflows for reuse in the target workflow."
 problem: New workflows must follow established conventions and reuse proven structural patterns
-techniques:
-  supporting[1]:
-    - variable-binding
+techniques[1]:
+  - variable-binding
 required: false
 rules[2]:
   - "Examine at least two existing workflows of the same model type (sequential or independent)"
@@ -32,6 +31,3 @@ transitions[1]:
     isDefault: true
 outcome[1]:
   - A user-decided set of proven conventions to follow — and divergences to justify — so the new workflow inherits established structure instead of reinventing it
-context_to_preserve[2]:
-  - adopted_patterns - List of patterns to follow
-  - reference_workflows - IDs and key characteristics of reference workflows

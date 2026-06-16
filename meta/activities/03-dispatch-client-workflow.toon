@@ -4,20 +4,14 @@ name: Dispatch Client Workflow
 description: "Drive the client workflow's activity loop."
 problem: The orchestrator must drive the client workflow's activity loop inline rather than via a spawned client orchestrator
 required: true
-techniques:
-  supporting[5]:
-    - "workflow-engine::dispatch-activity"
-    - "workflow-engine::evaluate-transition"
-    - "workflow-engine::commit-and-persist"
-    - "workflow-engine::present-checkpoint-to-user"
-    - "workflow-engine::respond-checkpoint"
 rules[1]:
   - "Authenticate every tool call inside the loop with client_session_index. The meta session_index is used only at activity boundaries (commit-and-persist's engineering commit) and at end-workflow."
-entryActions[1]:
-  - action: validate
-    target: client_session_index
-    message: "Cannot dispatch without a client session_index; initialize-session must run first"
-steps[1]:
+steps[2]:
+  - id: verify-preconditions
+    actions[1]:
+      - action: validate
+        target: client_session_index
+        message: "Cannot dispatch without a client session_index; initialize-session must run first"
   - id: prime-initial-activity
     actions[1]:
       - action: set
@@ -81,6 +75,3 @@ outcome[3]:
   - The client workflow has executed end to end with its artifacts committed and state persisted at every activity boundary
   - The user retained control over every decision point — checkpoints surfaced to them and their selections steered the workflow
   - The client workflow has no further activities to run, so the meta can proceed to close it out
-context_to_preserve[2]:
-  - current_activity - Server-resident activity pointer mirrored locally for the loop condition
-  - worker_yielded_checkpoint - Whether the dispatched worker yielded a checkpoint

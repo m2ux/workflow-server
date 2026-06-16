@@ -10,16 +10,16 @@ tags[5]:
   - lifecycle
   - dispatch
   - session
-techniques:
-  supporting[3]:
-    - "workflow-engine::handle-sub-workflow"
-    - "workflow-engine::dispatch-activity"
-    - "agent-conduct::orchestrator"
+techniques[3]:
+  - "workflow-engine::handle-sub-workflow"
+  - "workflow-engine::dispatch-activity"
+  - "agent-conduct::orchestrator"
 initialActivity: discover-session
-rules[3]:
-  - "This workflow is the entrypoint for all workflow operations — bootstrap protocol enters here directly via start_session({ workflow_id: 'meta' })"
-  - "Techniques in this workflow are universal and resolve for any client workflow via the loader's universal-technique fallback"
-  - "Meta does not perform domain work — every activity exists to identify, create, resume, dispatch, or close out a client session"
+rules:
+  workflow[3]:
+    - "This workflow is the entrypoint for all workflow operations — bootstrap protocol enters here directly via start_session({ workflow_id: 'meta' })"
+    - "Techniques in this workflow are universal and resolve for any client workflow via the loader's universal-technique fallback"
+    - "Meta does not perform domain work — every activity exists to identify, create, resume, dispatch, or close out a client session"
 variables[16]:
   - name: target_workflow_id
     type: string

@@ -4,9 +4,8 @@ name: Strategic Review
 description: "Review the implementation to ensure changes are minimal and focused."
 problem: User needs to ensure changes are minimal and focused
 required: true
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[9]:
   - id: review-strategy
     technique: review-scope
@@ -85,17 +84,9 @@ transitions[3]:
       value: true
   - to: plan-prepare
     isDefault: true
-exitActions[1]{action,message}:
-  message,README PROGRESS: Update planning folder README.md — mark strategic review artifacts as ✅ Complete.
 outcome[5]:
   - Changes validated as minimal and focused
   - Investigation artifacts and over-engineering removed
   - A record of scope and quality findings exists for reviewers to act on
   - Stakeholders have an architecture overview to understand the change
   - This work will appear in the project's release notes, traceable to the issue, when the repo uses a root changes/ convention
-context_to_preserve[5]:
-  - review_findings - Findings from strategic review
-  - review_passed - Whether review passed
-  - items_removed - List of items removed during cleanup
-  - strategic_findings_summary - Concise multi-line summary of findings
-  - fragment_references_issue - Whether the change fragment references issue_url (true, false, or null)

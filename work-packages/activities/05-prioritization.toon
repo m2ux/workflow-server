@@ -3,9 +3,8 @@ version: 1.2.0
 name: Prioritization
 description: Prioritize work packages based on dependencies, value, risk, and effort
 problem: Need to determine execution order for work packages
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[1]:
   - id: prioritize
     technique: prioritize-packages
@@ -31,7 +30,3 @@ transitions[1]:
     isDefault: true
 outcome[1]:
   - There is a user-approved execution order that respects dependencies, value, and risk, so implementation knows which package to start next
-context_to_preserve[3]:
-  - priority_order - Ordered list of work packages
-  - dependency_graph - Visual or structured dependency representation
-  - prioritization_rationale - Reasoning for the priority order

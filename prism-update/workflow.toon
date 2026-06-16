@@ -8,12 +8,13 @@ tags[3]:
   - maintenance
   - sync
 
-techniques:
-rules[4]:
-  - "WORKTREE SCOPE: All file operations happen in the workflows worktree (workflows/ directory). Never modify MCP server source (src/, schemas/)."
-  - "RESOURCE NAMING: Resources use the convention {NN}-{hyphenated-name}.md where NN is a zero-padded index. Indices are permanent — never reuse a deleted index."
-  - "VERBATIM COPY: Upstream prism content is copied verbatim including YAML frontmatter. Do not modify lens prompt content during import."
-  - "SINGLE-AGENT EXECUTION: This workflow runs as a single agent — no orchestrator/worker split. The executing agent performs all steps directly."
+rules:
+  workflow[1]:
+    - "SINGLE-AGENT EXECUTION: This workflow runs as a single agent — no orchestrator/worker split. The executing agent performs all steps directly."
+  activity[3]:
+    - "WORKTREE SCOPE: All file operations happen in the workflows worktree (workflows/ directory). Never modify MCP server source (src/, schemas/)."
+    - "RESOURCE NAMING: Resources use the convention {NN}-{hyphenated-name}.md where NN is a zero-padded index. Indices are permanent — never reuse a deleted index."
+    - "VERBATIM COPY: Upstream prism content is copied verbatim including YAML frontmatter. Do not modify lens prompt content during import."
 
 variables[9]:
   - name: planning_folder_path

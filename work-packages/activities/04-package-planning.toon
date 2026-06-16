@@ -3,10 +3,9 @@ version: 1.2.0
 name: Work Package Planning
 description: Define scope, dependencies, effort, and success criteria for each work package
 problem: Each work package needs detailed planning before prioritization
-techniques:
-  supporting[2]:
-    - "variable-binding"
-    - "scatter-gather"
+techniques[2]:
+  - "variable-binding"
+  - "scatter-gather"
 steps[1]:
   - id: present-planning-overview
     technique: "plan-work-package-scope::present-overview"
@@ -38,6 +37,3 @@ transitions[1]:
 outcome[2]:
   - Every work package now has enough scope, effort, and success-criteria detail to be prioritized and executed independently
   - Inter-package dependencies are known, so prioritization can order packages without creating blocked work
-context_to_preserve[2]:
-  - package_plans - List of created plan documents
-  - dependency_map - Map of inter-package dependencies

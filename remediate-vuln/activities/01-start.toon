@@ -4,33 +4,20 @@ name: Start Security Vulnerability Remediation
 description: "Initialize a high-sensitivity security fix."
 problem: User needs to remediate a security vulnerability without public disclosure
 required: true
-techniques:
-  supporting[1]:
-    - "variable-binding"
-entryActions[1]:
-  - action: log
-    message: "ENTERING SECURITY VULNERABILITY MODE - ISOLATION ACTIVE"
+techniques[1]:
+  - "variable-binding"
 steps[10]:
+  - id: announce-start
+    actions[1]:
+      - action: log
+        message: "ENTERING SECURITY VULNERABILITY MODE - ISOLATION ACTIVE"
   - id: set-security-mode
     actions[1]:
       - action: set
         target: is_sec_vuln_mode
         value: true
-  - id: capture-sec-vuln-url
-    actions[1]:
-      - action: set
-        target: sec_vuln_url
-        description: "Private security advisory URL provided by the user."
-  - id: capture-private-fork-url
-    actions[1]:
-      - action: set
-        target: private_fork_url
-        description: "Private fork URL provided by the user."
-  - id: capture-short-id
-    actions[1]:
-      - action: set
-        target: short_id
-        description: "Short advisory slug provided by the user."
+  - id: collect-security-inputs
+    technique: security-setup::collect-security-inputs
   - id: resolve-target
     actions[1]:
       - action: validate
@@ -46,6 +33,10 @@ steps[10]:
     technique: security-setup::present-security-overview
   - id: finalize-setup
     technique: security-setup::verify-origin-untracked
+  - id: announce-completion
+    actions[1]:
+      - action: log
+        message: "Security initialization complete. Public disclosure paths disabled."
 checkpoints[5]:
   - id: confirm-security-remote
     name: Confirm Security Remote
@@ -108,17 +99,8 @@ checkpoints[5]:
 transitions[1]:
   - to: design-philosophy
     isDefault: true
-exitActions[1]:
-  - action: log
-    message: "Security initialization complete. Public disclosure paths disabled."
 outcome[4]:
   - "The workflow is locked into isolation: every public disclosure path is disabled for the rest of the fix"
   - "All git operations have a private-only destination — the fix cannot be pushed to a public repository"
   - "The fix develops on a dedicated advisory branch off the private fork, never touching a public branch"
   - "Planning happens entirely off any public surface — no PR or Issue link is ever recorded"
-context_to_preserve[5]:
-  - is_sec_vuln_mode
-  - sec_vuln_url
-  - private_fork_url
-  - short_id
-  - branch_name

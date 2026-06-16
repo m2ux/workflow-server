@@ -4,9 +4,8 @@ name: Validate Specification
 description: "Validate the updated specification against structural, identifier-uniqueness, consistency, and protocol-conformance checks, categorize each issue as critical or correctable, and route to finalization, another correction pass, or failure reporting."
 problem: The updated specification must be checked for quality and conformance before it can be finalized
 required: true
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[1]:
   - id: validate-specification
     technique: validate-specification
@@ -35,14 +34,6 @@ transitions[3]:
           value: 3
   - to: report-failure
     isDefault: true
-exitActions[1]{action,message}:
-  message,README PROGRESS: Update planning folder README.md — record the validation verdict for this pass.
 outcome[2]:
   - The workflow knows whether the specification is sound and, for every remaining defect, whether it is fatal or fixable
   - The workflow can route confidently to finalization, another correction pass, or failure without re-inspecting the specification
-context_to_preserve[5]:
-  - validation_passed - Whether validation passed cleanly
-  - has_correctable_issues - Whether a correction pass is warranted
-  - has_critical_issues - Whether manual intervention is required
-  - source_coverage_complete - Whether every normative source statement maps to a requirement
-  - validation_report - Path to the validation report for this pass

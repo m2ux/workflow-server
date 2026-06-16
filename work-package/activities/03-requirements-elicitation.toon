@@ -4,9 +4,8 @@ name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation.
 problem: User needs to clarify and capture requirements before implementation
 required: false
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[6]:
   - id: stakeholder-discussion
     technique: discuss
@@ -136,17 +135,7 @@ transitions[3]:
       variable: elicitation_complete
       operator: ==
       value: false
-exitActions[1]{action,message}:
-  message,README PROGRESS: Update planning folder README.md — mark requirements elicitation artifacts as ✅ Complete.
 outcome[3]:
   - Requirements explicitly captured through structured conversation
   - Success criteria defined with verification methods
   - A single agreed reference of requirements and scope boundaries that planning and review can build against
-context_to_preserve[7]:
-  - stakeholder_transcript - Transcript or summary from stakeholder discussion
-  - has_stakeholder_input - Whether stakeholder discussion was provided
-  - requirements - Captured requirements list
-  - success_criteria - Defined success criteria
-  - planning_folder_path - Path to planning artifacts folder
-  - elicitation_log - Record of questions asked and responses
-  - scope_boundaries - In/out scope definitions

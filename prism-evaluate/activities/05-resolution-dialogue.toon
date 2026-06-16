@@ -3,10 +3,9 @@ version: 1.2.0
 name: Resolution Dialogue
 description: "Propose mitigations for each evaluation finding one-by-one."
 problem: "Evaluation findings require targeted mitigations that range from simple text corrections to novel architectural proposals. Each finding needs individual consideration — the appropriate mitigation depends on the finding's nature, the target's content, and the user's intent. Batch presentation loses nuance; one-by-one dialogue preserves it."
-techniques:
-  supporting[2]:
-    - variable-binding
-    - scatter-gather
+techniques[2]:
+  - variable-binding
+  - scatter-gather
 steps[2]:
   - id: load-and-classify
     technique: resolve-findings::load-and-classify
@@ -19,19 +18,15 @@ loops[1]:
     variable: current_finding
     over: evaluation_findings
     maxIterations: 100
-    steps[4]:
-      - id: present-finding
-        technique: resolve-findings::present-and-collect-per-finding
+    steps[2]:
       - id: propose-mitigation
         technique: resolve-findings::propose-mitigation-by-tier
-      - id: collect-decision
+      - id: present-and-collect-decision
         technique: resolve-findings::present-and-collect-per-finding
         actions[1]:
           - action: set
             target: accepted_mitigations
             description: "Append the finding's recorded decision."
-      - id: handle-discussion
-        technique: resolve-findings::present-and-collect-per-finding
 checkpoints[1]:
   - id: finding-decision
     name: Finding Mitigation Decision

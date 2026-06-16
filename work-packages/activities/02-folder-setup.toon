@@ -3,9 +3,8 @@ version: 1.3.0
 name: Planning Folder Setup
 description: Create planning folder structure with initial documentation skeletons
 problem: Need organized folder structure for multi-package planning artifacts
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[2]:
   - id: create-folder
     technique: "version-control::initialize-folder"
@@ -29,6 +28,3 @@ transitions[1]:
     isDefault: true
 outcome[1]:
   - There is a single known home for all planning artifacts, with entry-point and overview scaffolds ready for later activities to fill in
-context_to_preserve[2]:
-  - planning_folder_path - Path to the created planning folder
-  - documents_created - List of created document files

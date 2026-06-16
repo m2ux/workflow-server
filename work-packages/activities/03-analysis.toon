@@ -3,9 +3,8 @@ version: 1.2.0
 name: Analysis
 description: Perform completion or context analysis depending on whether continuing previous work or starting new initiative
 problem: Need to understand context before detailed work package planning
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 steps[1]:
   - id: analyze-context
     technique: analyze-initiative-context
@@ -65,7 +64,3 @@ transitions[1]:
 outcome[2]:
   - Later planning rests on a validated understanding of the initiative's starting point - either existing progress or fresh-start context
   - User has confirmed the captured context is accurate, so package planning can proceed without re-litigating assumptions
-context_to_preserve[3]:
-  - analysis_type - completion or context
-  - analysis_document - Path to analysis document
-  - key_findings - Summary of analysis findings

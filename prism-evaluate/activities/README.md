@@ -6,7 +6,7 @@
 
 Pipeline sequence with five blocking checkpoints; the final two activities run only when the user opts into resolution.
 
-Steps bind their domain technique via `step.technique`; activities declare only `techniques.supporting` (strategy techniques). The bound domain technique per activity is listed in the [workflow Techniques table](../README.md#techniques).
+Steps bind their domain technique via `step.technique`; activities declare a flat `techniques[]` list of strategy techniques. The bound domain technique per activity is listed in the [workflow Techniques table](../README.md#techniques).
 
 | # | ID | Name | Primary | Supporting | Checkpoint | Artifacts |
 |---|-----|------|---------|------------|------------|-----------|

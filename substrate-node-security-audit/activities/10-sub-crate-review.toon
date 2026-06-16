@@ -3,9 +3,8 @@ version: 1.10.0
 name: "Sub-Agent: Crate Deep Review"
 description: "Structured crate review for Group A sub-agents."
 problem: "Sub-agents receiving free-form prompts skip per-field trace tables, mark PASS without cross-function comparison, and return prose instead of structured output. This activity enforces step-by-step execution with verifiable intermediate outputs."
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 required: false
 steps[8]:
   - id: read-all-files
@@ -41,8 +40,3 @@ outcome[4]:
   - Every §3 checklist item has an evidence-backed verdict the orchestrator can trust without re-deriving it
   - Required analysis tables are either present or have a justified N/A, removing the ambiguity of a silently-skipped table
   - Storage invariants are checked across functions, catching state bugs that per-function review alone misses
-context_to_preserve[4]:
-  - findings - Structured findings list
-  - checklist_coverage - Per-item verdicts
-  - mandatory_tables - All produced tables
-  - reconnaissance_leads - Observations for orchestrator review

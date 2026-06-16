@@ -3,14 +3,14 @@ version: 1.2.0
 name: Scan Verification
 description: "Verify scan completeness across all scanner outputs."
 problem: Scanner outputs must be verified for completeness before merge to ensure no workflow files were missed and no detection patterns were skipped.
-techniques:
-  supporting[2]:
-    - variable-binding
-    - execute-sub-agent
+techniques[2]:
+  - variable-binding
+  - execute-sub-agent
 required: false
-entryActions[1]{action,message}:
-  log,Starting scan verification
-steps[4]:
+steps[6]:
+  - id: announce-start
+    actions[1]{action,message}:
+      log,Starting scan verification
   - id: load-scanner-outputs
     technique: verify-scan-output::validate-structure
   - id: verify-file-coverage
@@ -19,9 +19,10 @@ steps[4]:
     technique: verify-scan-output::verify-pattern-coverage
   - id: produce-gap-report
     technique: verify-scan-output::produce-gap-report
+  - id: announce-completion
+    actions[1]{action,message}:
+      log,Scan verification complete — gap report produced
 transitions[0]:
-exitActions[1]{action,message}:
-  log,Scan verification complete — gap report produced
 outcome[2]:
   - The audit has independent proof that every inventoried file and all seven patterns were actually covered, not just assumed
   - The parent can either proceed to merge with confidence or knows exactly which scanners to re-run, gaps named

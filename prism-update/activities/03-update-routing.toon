@@ -4,16 +4,16 @@ name: Update Routing
 description: "Update prism workflow techniques to reflect resource changes."
 problem: Skill routing tables reference prism names and indices that may have changed
 required: true
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 
-entryActions[1]:
-  - action: validate
-    target: change_set
-    message: "change_set must be populated before updating skill routing"
 
-steps[1]:
+steps[2]:
+  - id: verify-preconditions
+    actions[1]:
+      - action: validate
+        target: change_set
+        message: "change_set must be populated before updating skill routing"
   - id: update-skill-routing
     technique: update-skill-routing
 

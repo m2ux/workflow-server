@@ -4,23 +4,23 @@ name: Submit Security Vulnerability Remediation
 description: "Finalize a high-sensitivity security fix."
 problem: User needs to submit a security fix without public disclosure
 required: true
-techniques:
-  supporting[1]:
-    - "variable-binding"
-entryActions[1]:
-  - action: log
-    message: "ENTERING SECURITY SUBMISSION MODE - ISOLATION ACTIVE"
-steps[4]:
+techniques[1]:
+  - "variable-binding"
+steps[5]:
+  - id: announce-start
+    actions[1]:
+      - action: log
+        message: "ENTERING SECURITY SUBMISSION MODE - ISOLATION ACTIVE"
   - id: verify-security-remote
     technique: secure-submit::verify-security-remote
   - id: verify-commit-signatures
     technique: secure-submit::verify-commit-signatures
   - id: push-sec-vuln-commits
     technique: secure-submit::push-secure-commits
-  - id: log-completion
+  - id: announce-completion
     actions[1]:
       - action: log
-        message: "Security fix securely pushed to the private remote."
+        message: "Security submission complete. Fix securely pushed."
 checkpoints[2]:
   - id: verify-private-remote
     name: Verify Private Remote
@@ -47,11 +47,5 @@ checkpoints[2]:
 transitions[1]:
   - to: complete
     isDefault: true
-exitActions[1]:
-  - action: log
-    message: "Security submission complete. Fix securely pushed."
 outcome[1]:
   - "The fix has reached the designated private fork and no public destination — ready for private review without any disclosure"
-context_to_preserve[2]:
-  - is_sec_vuln_mode
-  - sec_vuln_url

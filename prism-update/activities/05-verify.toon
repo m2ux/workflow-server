@@ -4,9 +4,8 @@ name: Verify Consistency
 description: "Check for consistency issues across resources, techniques, and documentation."
 problem: Changes across multiple files may leave inconsistencies
 required: true
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 
 steps[1]:
   - id: verify-prism-consistency
@@ -55,6 +54,3 @@ transitions[2]:
 outcome[1]:
   - "All resources, techniques, and documentation are consistent"
 
-context_to_preserve[2]:
-  - "has_issues — whether verification found problems"
-  - "verification_report.stale_references — list of stale references found"

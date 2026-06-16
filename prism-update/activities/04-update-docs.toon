@@ -4,16 +4,16 @@ name: Update Documentation
 description: "Update prism workflow documentation to reflect the current resource catalog, model sensitivity, and prompt guide."
 problem: Documentation references resource counts, family groupings, and prism names that have changed
 required: true
-techniques:
-  supporting[1]:
-    - "variable-binding"
+techniques[1]:
+  - "variable-binding"
 
-entryActions[1]:
-  - action: validate
-    target: change_set
-    message: "change_set must be populated before updating documentation"
 
-steps[1]:
+steps[2]:
+  - id: verify-preconditions
+    actions[1]:
+      - action: validate
+        target: change_set
+        message: "change_set must be populated before updating documentation"
   - id: update-prism-docs
     technique: update-prism-docs
 
