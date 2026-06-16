@@ -12,28 +12,20 @@ entryActions[1]{action,message}:
   log,Starting primary scan — dispatching per-submodule scanner agents
 steps[8]:
   - id: dispatch-all-scanners
-    required: true
     technique: dispatch-scanners::dispatch-all
   - id: verify-dispatch-completeness
-    required: true
     technique: dispatch-scanners::verify-dispatch-completeness
   - id: collect-scanner-results
-    required: true
     technique: dispatch-scanners::collect-results
   - id: verify-scanner-output-files
-    required: true
     technique: dispatch-scanners::verify-output-files
   - id: dispatch-verification-agent
-    required: true
     technique: dispatch-scanners::dispatch-verification
   - id: act-on-gap-report
-    required: true
     technique: dispatch-scanners::act-on-gap-report
   - id: dispatch-merge-agent
-    required: true
     technique: dispatch-scanners::dispatch-merge
   - id: validate-reconciliation
-    required: true
     technique: dispatch-scanners::verify-reconciliation
 transitions[1]:
   - to: report-generation

@@ -9,6 +9,5 @@ techniques:
 steps[1]:
   - id: present-results
     technique: deliver-audit
-    required: true
 outcome[1]:
   - "The user can gauge the audit's outcome at a glance from severity metrics and go straight to any deliverable they want to act on"

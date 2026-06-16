@@ -15,7 +15,6 @@ loops[1]:
     maxIterations: 100
     steps[1]:
       - id: run-synthesis
-        required: true
         technique:
           name: full-prism
           inputs:

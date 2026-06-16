@@ -16,7 +16,6 @@ entryActions[1]:
 steps[1]:
   - id: update-prism-docs
     technique: update-prism-docs
-    required: true
 
 transitions[1]:
   - to: verify

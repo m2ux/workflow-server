@@ -9,40 +9,32 @@ techniques:
 required: false
 steps[8]:
   - id: read-all-files
-    required: true
     technique:
       name: build-function-registry
       inputs:
         output_format: "| File | Lines | Read? |"
   - id: build-function-registry
-    required: true
     technique: build-function-registry
   - id: extract-invariants
-    required: true
     technique: extract-invariants
   - id: apply-checklist
-    required: true
     technique:
       name: apply-checklist
       inputs:
         output_format: "| Item | Verdict | Evidence | Finding ID |"
   - id: produce-required-tables
-    required: true
     technique:
       name: apply-checklist
       inputs:
         output_format: "| Table | Produced? | Justification |"
   - id: cross-function-comparison
-    required: true
     technique:
       name: scan-storage-lifecycle
       inputs:
         verify_invariants: true
   - id: verify-completeness
-    required: true
     technique: verify-sub-agent-output
   - id: format-output
-    required: true
     technique: execute-sub-agent
 outcome[4]:
   - The whole crate has been read, so no source file is silently left unreviewed

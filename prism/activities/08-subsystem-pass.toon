@@ -8,31 +8,26 @@ techniques:
     - "variable-binding"
 steps[5]:
   - id: split-subsystems
-    required: true
     technique:
       name: subsystem-analysis::decompose
       inputs:
         target_content: "{target}"
   - id: calibrate-assignments
-    required: true
     technique:
       name: subsystem-analysis::calibrate
       inputs:
         target_content: "{target}"
   - id: execute-per-subsystem
-    required: true
     technique:
       name: subsystem-analysis::execute
       inputs:
         target_content: "{target}"
   - id: synthesize-cross-subsystem
-    required: true
     technique:
       name: subsystem-analysis::synthesize
       inputs:
         target_content: "{target}"
   - id: collect-paths
-    required: true
     actions[1]:
       - action: set
         target: all_artifact_paths

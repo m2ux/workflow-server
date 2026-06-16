@@ -16,7 +16,6 @@ entryActions[1]:
 steps[1]:
   - id: update-skill-routing
     technique: update-skill-routing
-    required: true
 
 transitions[1]:
   - to: update-docs

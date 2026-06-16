@@ -10,11 +10,9 @@ techniques:
 steps[2]:
   - id: present-summary
     technique: review-change-set::present-summary
-    required: true
     checkpoint: change-review
   - id: apply-exclusions
     technique: review-change-set::apply-exclusions
-    required: true
 
 checkpoints[1]:
   - id: change-review

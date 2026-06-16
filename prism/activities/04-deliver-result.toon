@@ -7,5 +7,4 @@ techniques:
     - "variable-binding"
 steps[1]:
   - id: present-result
-    required: true
     technique: present-result

@@ -26,7 +26,6 @@ triggers[1]:
       - analysis_focus
 steps[1]:
   - id: log-execution-plan
-    required: true
     actions[1]:
       - action: log
         message: "Log the execution group count, their pipeline modes, and total dimensions covered."
@@ -39,7 +38,6 @@ loops[1]:
     maxIterations: 10
     steps[4]:
       - id: set-trigger-context
-        required: true
         actions[6]:
           - action: set
             target: target
@@ -64,10 +62,8 @@ loops[1]:
           name: workflow-engine::handle-sub-workflow
           inputs:
             workflow_id: prism
-        required: true
       - id: collect-results
         technique: collect-prism-results
-        required: true
         actions[2]:
           - action: set
             target: completed_analyses
@@ -77,7 +73,6 @@ loops[1]:
             description: "Append the analysis artifact paths produced by the run."
       - id: verify-completion
         technique: verify-prism-completion
-        required: true
         actions[1]:
           - action: set
             target: completed_analyses

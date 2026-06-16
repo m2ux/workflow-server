@@ -9,26 +9,21 @@ techniques:
 steps[5]:
   - id: collect-inputs
     technique: collect-inputs
-    required: true
   - id: validate-target
     technique: validate-target
-    required: true
   - id: index-codebase
     technique:
       name: gitnexus-operations::analyze
       inputs:
         repo_path: target_path
-    required: true
     actions[1]:
       - action: set
         target: gitnexus_available
         description: "true when indexing succeeds, false otherwise"
   - id: summarize-scope
     technique: summarize-scope
-    required: true
   - id: create-output-directory
     technique: create-output-folder
-    required: true
 checkpoints[1]:
   - id: confirm-scope
     name: Audit Scope Confirmation

@@ -15,20 +15,17 @@ loops[1]:
     maxIterations: 100
     steps[7]:
       - id: resolve-unit-output
-        required: true
         actions[1]:
           - action: set
             target: unit_output_dir
             description: "{output_path}/{current_unit.unit_output_subdir} when a subdir is present, else {output_path}."
       - id: check-gitnexus
-        required: true
         technique: "gitnexus-operations::verify-index"
         actions[1]:
           - action: set
             target: gitnexus_available
             description: "Whether the target codebase is indexed."
       - id: run-structural
-        required: true
         technique:
           name: structural-analysis
           inputs:
@@ -45,7 +42,6 @@ loops[1]:
               operator: "=="
               value: full-prism
       - id: run-portfolio
-        required: true
         technique:
           name: portfolio-analysis
           inputs:
@@ -56,7 +52,6 @@ loops[1]:
           operator: "=="
           value: portfolio
       - id: dispatch-behavioral-lenses
-        required: true
         technique:
           name: behavioral-pipeline
           inputs:
@@ -67,13 +62,11 @@ loops[1]:
           operator: "=="
           value: behavioral
       - id: collect-behavioral-paths
-        required: true
         actions[1]:
           - action: set
             target: behavioral_output_paths
             description: "Map of role label to behavioral artifact path."
       - id: report-unit-paths
-        required: true
         actions[1]:
           - action: set
             target: all_artifact_paths

@@ -15,14 +15,11 @@ steps[8]:
     when: "gitnexus_indexed == true"
   - id: manual-diff-review
     technique: review-diff
-    required: true
     checkpoint: file-index-table
   - id: code-review
     technique: review-code
-    required: true
   - id: structural-analysis-inline
     technique: prism/structural-analysis
-    required: true
     condition:
       type: not
       condition:
@@ -31,7 +28,6 @@ steps[8]:
         operator: "=="
         value: complex
   - id: dispatch-prism
-    required: true
     triggers[1]:
       - workflow: prism
         passContext[3]:
@@ -45,7 +41,6 @@ steps[8]:
       value: complex
   - id: test-suite-review
     technique: review-test-suite
-    required: true
   - id: architecture-summary
     technique: summarize-architecture
     required: false
@@ -140,9 +135,7 @@ loops[1]:
     steps[6]:
       - id: apply-fixes
         technique: apply-review-fixes
-        required: true
       - id: reset-fix-flags
-        required: true
         actions[2]:
           - action: set
             target: needs_code_fixes
@@ -154,16 +147,12 @@ loops[1]:
             message: "Reset test-improvement flag before re-review."
       - id: regenerate-index
         technique: review-diff
-        required: true
       - id: re-manual-diff-review
         technique: review-diff
-        required: true
       - id: re-code-review
         technique: review-code
-        required: true
       - id: re-test-suite-review
         technique: review-test-suite
-        required: true
 decisions[1]:
   - id: blocker-gate
     name: Critical Blocker Gate

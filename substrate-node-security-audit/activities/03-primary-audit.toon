@@ -11,45 +11,33 @@ entryActions[1]{action,message}:
   log,Starting primary audit — concurrent multi-agent dispatch
 steps[13]:
   - id: dispatch-all-agents
-    required: true
     technique: dispatch-sub-agents
   - id: verify-checklist-prompt-coverage
-    required: true
     technique: verify-sub-agent-output
   - id: verify-dispatch-completeness
-    required: true
     technique: verify-sub-agent-output
   - id: collect-all
     technique: dispatch-sub-agents
-    required: true
   - id: verify-agent-output-files
-    required: true
     technique:
       name: dispatch-sub-agents
       inputs:
         expected_output_files: "a1-nto.json, a2-midnight-ledger.json, a3-node-startup.json, a4-node-consensus.json, a5-runtime.json, a6-primitives.json, a7-governance.json, b-static-analysis.json, d1-ledger-helpers.json, d2-toolkit.json"
   - id: dispatch-verification-agent
-    required: true
     technique: dispatch-sub-agents
   - id: act-on-gap-report
-    required: true
     technique: dispatch-sub-agents
   - id: extract-table-derived-findings
-    required: true
     technique: merge-findings
   - id: dispatch-merge-agent
-    required: true
     technique: dispatch-sub-agents
   - id: validate-reconciliation
-    required: true
     technique: verify-sub-agent-output
   - id: verify-checklist-completeness
     technique: verify-sub-agent-output
   - id: preserve-verification-report
-    required: true
     technique: dispatch-sub-agents
   - id: preserve-merge-output
-    required: true
     technique: merge-findings
 transitions[1]{to,isDefault}:
   adversarial-verification,true

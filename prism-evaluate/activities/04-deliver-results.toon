@@ -9,7 +9,6 @@ techniques:
 steps[1]:
   - id: compile-and-present
     technique: compose-evaluation-report::compile-and-present
-    required: true
 checkpoints[1]:
   - id: resolution-offer
     name: Resolution Dialogue Offer

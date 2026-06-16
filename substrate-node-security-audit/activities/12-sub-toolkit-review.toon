@@ -9,26 +9,22 @@ techniques:
 required: false
 steps[4]:
   - id: enumerate-functions
-    required: true
     technique:
       name: apply-checklist
       inputs:
         output_format: "| File | Function | Line | Visibility | Modifies State? | Returns Result? |"
   - id: apply-checklist-per-function
-    required: true
     technique:
       name: apply-checklist
       inputs:
         checklist_source: toolkit-checklist
         output_format: "| Function | File:Line | Item 1 | ... | Item 8 | Findings |"
   - id: verify-function-coverage
-    required: true
     technique:
       name: apply-checklist
       inputs:
         output_format: "Coverage attestation: total, reviewed, percentage, gaps"
   - id: format-output
-    required: true
     technique: execute-sub-agent
 outcome[3]:
   - Every toolkit function is reviewed against all 8 checklist items, so benign-looking helpers can no longer be skimmed past

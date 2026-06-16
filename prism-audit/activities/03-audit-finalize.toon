@@ -9,10 +9,8 @@ techniques:
 steps[7]:
   - id: locate-artifacts
     technique: locate-artifacts
-    required: true
   - id: enrich-findings-with-graph
     technique: enrich-findings-with-graph
-    required: true
     condition:
       type: simple
       variable: gitnexus_available
@@ -20,19 +18,14 @@ steps[7]:
       value: true
   - id: split-report
     technique: split-report
-    required: true
   - id: create-detailed-findings
     technique: create-detailed-findings
-    required: true
   - id: create-trade-off-analysis
     technique: create-trade-off-analysis
-    required: true
   - id: apply-formatting-rules
     technique: apply-formatting-rules
-    required: true
   - id: verify-artifacts
     technique: verify-audit-consistency
-    required: true
 rules[6]:
   - "REPORT SPLIT: REPORT.md (from triggered prism workflow) is the input. AUDIT-REPORT.md is the output — a summary retaining domain tables, systemic patterns, risk assessment, remediation recommendations, and appendices, with inline detailed findings replaced by a reference to DETAILED-FINDINGS.md."
   - "DETAILED FINDING FORMAT: Every finding in DETAILED-FINDINGS.md must have exactly 5 fields plus an optional 6th: Description, Impact, Location, Recommendation, Adversarial confirmation, Graph Evidence (if GitNexus enrichment data is available — includes blast radius metrics and execution flow participation). Source priority for extraction: (1) structural-analysis.md for original findings, (2) adversarial-analysis.md for underclaims and significant corrections, (3) portfolio documents for portfolio-source findings."

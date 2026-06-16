@@ -10,7 +10,6 @@ required: false
 steps[1]:
   - id: merge-findings
     technique: merge-findings
-    required: true
 
 outcome[4]:
   - Every agent finding is reconciled with zero Unaccounted, so the merge is provably lossless even at 75-115K tokens of upstream context

@@ -8,13 +8,11 @@ techniques:
     - "variable-binding"
 steps[2]:
   - id: run-dispute
-    required: true
     technique:
       name: dispute-analysis
       inputs:
         target_content: "{target}"
   - id: collect-paths
-    required: true
     actions[1]:
       - action: set
         target: all_artifact_paths

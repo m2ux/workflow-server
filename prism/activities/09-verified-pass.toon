@@ -8,31 +8,26 @@ techniques:
     - "variable-binding"
 steps[5]:
   - id: run-initial-l12
-    required: true
     technique:
       name: verified-analysis::initial-analysis
       inputs:
         target_content: "{target}"
   - id: run-gap-detection
-    required: true
     technique:
       name: verified-analysis::gap-detection
       inputs:
         target_content: "{target}"
   - id: extract-gaps
-    required: true
     technique:
       name: verified-analysis::gap-extraction
       inputs:
         target_content: "{target}"
   - id: run-corrected-analysis
-    required: true
     technique:
       name: verified-analysis::corrected-analysis
       inputs:
         target_content: "{target}"
   - id: collect-paths
-    required: true
     actions[1]:
       - action: set
         target: all_artifact_paths

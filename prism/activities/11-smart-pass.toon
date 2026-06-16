@@ -8,7 +8,6 @@ techniques:
     - "variable-binding"
 steps[6]:
   - id: run-prereq
-    required: true
     technique:
       name: smart-analysis::prereq-scan
       inputs:
@@ -20,13 +19,11 @@ steps[6]:
       inputs:
         target_content: "{target}"
   - id: select-analysis-mode
-    required: true
     technique:
       name: smart-analysis::select-mode
       inputs:
         target_content: "{target}"
   - id: run-analysis
-    required: true
     technique:
       name: smart-analysis::run-analysis
       inputs:
@@ -38,7 +35,6 @@ steps[6]:
       inputs:
         target_content: "{target}"
   - id: collect-paths
-    required: true
     actions[1]:
       - action: set
         target: all_artifact_paths

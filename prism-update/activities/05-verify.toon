@@ -11,7 +11,6 @@ techniques:
 steps[1]:
   - id: verify-prism-consistency
     technique: verify-prism-consistency
-    required: true
 
 checkpoints[1]:
   - id: verification-result

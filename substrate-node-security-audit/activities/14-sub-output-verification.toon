@@ -10,7 +10,6 @@ required: false
 steps[1]:
   - id: verify-output
     technique: verify-sub-agent-output
-    required: true
 
 outcome[4]:
   - The orchestrator can trust that every agent the target profile required was dispatched and returned, without re-checking in a saturated context

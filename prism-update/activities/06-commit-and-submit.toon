@@ -11,7 +11,6 @@ techniques:
 steps[1]:
   - id: submit-update
     technique: submit-update
-    required: true
 
 outcome[1]:
   - "The prism update is in front of a reviewer as an open pull request — ready for review and merge"

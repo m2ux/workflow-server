@@ -10,10 +10,8 @@ techniques:
 steps[2]:
   - id: load-and-classify
     technique: resolve-findings::load-and-classify
-    required: true
   - id: compile-plan
     technique: resolve-findings::compile-plan
-    required: true
 loops[1]:
   - id: finding-iteration
     name: Finding Iteration
@@ -24,20 +22,16 @@ loops[1]:
     steps[4]:
       - id: present-finding
         technique: resolve-findings::present-and-collect-per-finding
-        required: true
       - id: propose-mitigation
         technique: resolve-findings::propose-mitigation-by-tier
-        required: true
       - id: collect-decision
         technique: resolve-findings::present-and-collect-per-finding
-        required: true
         actions[1]:
           - action: set
             target: accepted_mitigations
             description: "Append the finding's recorded decision."
       - id: handle-discussion
         technique: resolve-findings::present-and-collect-per-finding
-        required: true
 checkpoints[1]:
   - id: finding-decision
     name: Finding Mitigation Decision

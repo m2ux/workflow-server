@@ -8,7 +8,6 @@ techniques:
     - variable-binding
 steps[5]:
   - id: collect-inputs
-    required: true
     actions[5]:
       - action: set
         target: target_path
@@ -27,16 +26,12 @@ steps[5]:
         description: "Per-dimension lens overrides, when provided by the user."
   - id: classify-target
     technique: plan-evaluation::classify-target
-    required: true
   - id: derive-dimensions
     technique: plan-evaluation::derive-dimensions
-    required: true
   - id: create-output-directory
     technique: plan-evaluation::create-output-folder
-    required: true
   - id: summarize-scope
     technique: plan-evaluation::summarize-scope
-    required: true
 checkpoints[1]:
   - id: confirm-scope
     name: Evaluation Scope Confirmation

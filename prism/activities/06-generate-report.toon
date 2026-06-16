@@ -8,7 +8,6 @@ techniques:
     - "variable-binding"
 steps[1]:
   - id: generate-report
-    required: true
     technique: generate-report
 transitions[1]:
   - to: deliver-result

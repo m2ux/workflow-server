@@ -11,19 +11,15 @@ entryActions[1]{action,message}:
   log,Starting codebase reconnaissance (§1.2) — dispatching reconnaissance sub-agent
 steps[7]:
   - id: dispatch-reconnaissance-agent
-    required: true
     technique: dispatch-sub-agents
   - id: verify-reconnaissance-files
-    required: true
     technique:
       name: dispatch-sub-agents
       inputs:
         expected_output_files: "r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json"
   - id: dispatch-security-architecture-agent
-    required: true
     technique: dispatch-sub-agents
   - id: verify-security-architecture-file
-    required: true
     technique:
       name: dispatch-sub-agents
       inputs:

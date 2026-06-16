@@ -9,7 +9,6 @@ techniques:
 steps[2]:
   - id: apply-changes
     technique: resolve-findings::apply-changes
-    required: true
   - id: commit-changes
     technique:
       name: version-control::commit-regular-files
@@ -17,7 +16,6 @@ steps[2]:
         paths: "target_path, mitigation_plan_path"
         commit_message: "docs({target_name}): apply evaluation mitigations"
         branch: current
-    required: true
     actions[1]:
       - action: set
         target: target_name

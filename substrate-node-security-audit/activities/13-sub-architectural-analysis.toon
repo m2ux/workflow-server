@@ -9,7 +9,6 @@ techniques:
 required: false
 steps[1]:
   - id: analyze-architecture
-    required: true
     technique: analyze-architecture
 
 outcome[4]:

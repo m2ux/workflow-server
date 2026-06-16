@@ -9,10 +9,8 @@ techniques:
 required: false
 steps[2]:
   - id: map-codebase
-    required: true
     technique: map-codebase
   - id: build-function-registry
-    required: true
     technique: build-function-registry
 
 outcome[4]:

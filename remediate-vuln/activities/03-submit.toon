@@ -15,7 +15,6 @@ steps[4]:
     technique: secure-submit::verify-security-remote
   - id: verify-commit-signatures
     technique: secure-submit::verify-commit-signatures
-    required: true
   - id: push-sec-vuln-commits
     technique: secure-submit::push-secure-commits
   - id: log-completion

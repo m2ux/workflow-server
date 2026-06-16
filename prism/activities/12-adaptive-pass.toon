@@ -8,13 +8,11 @@ techniques:
     - "variable-binding"
 steps[4]:
   - id: run-stage-1
-    required: true
     technique:
       name: adaptive-analysis::stage-1-sdl
       inputs:
         target_content: "{target}"
   - id: run-stage-2
-    required: true
     technique:
       name: adaptive-analysis::stage-2-l12
       inputs:
@@ -25,7 +23,6 @@ steps[4]:
       operator: "=="
       value: insufficient
   - id: run-stage-3
-    required: true
     technique:
       name: adaptive-analysis::stage-3-full
       inputs:
@@ -36,7 +33,6 @@ steps[4]:
       operator: "=="
       value: insufficient
   - id: collect-paths
-    required: true
     actions[2]:
       - action: set
         target: all_artifact_paths

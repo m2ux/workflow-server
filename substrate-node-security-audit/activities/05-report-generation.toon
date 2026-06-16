@@ -21,7 +21,6 @@ steps[5]:
       inputs:
         findings: merge_table
   - id: coverage-gate
-    required: true
     technique: verify-sub-agent-output
   - id: verify-elevation-completeness
     technique: merge-findings

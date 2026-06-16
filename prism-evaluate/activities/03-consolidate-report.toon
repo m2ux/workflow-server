@@ -9,19 +9,14 @@ techniques:
 steps[5]:
   - id: locate-artifacts
     technique: compose-evaluation-report::locate-artifacts
-    required: true
   - id: extract-findings
     technique: compose-evaluation-report::extract-findings
-    required: true
   - id: identify-patterns
     technique: compose-evaluation-report::identify-patterns
-    required: true
   - id: compose-report
     technique: compose-evaluation-report::compose-report
-    required: true
   - id: verify-report
     technique: compose-evaluation-report::verify-report
-    required: true
 outcome[1]:
   - "The consumer has a single severity-calibrated evaluation of the target — cross-dimensional findings and actionable recommendations to decide from"
 transitions[1]:

@@ -8,12 +8,9 @@ techniques:
     - "variable-binding"
 steps[3]:
   - id: plan
-    required: true
     technique: plan-analysis
   - id: summarize
-    required: true
   - id: apply-plan
-    required: true
     actions[2]:
       - action: set
         target: pipeline_mode

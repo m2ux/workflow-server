@@ -10,7 +10,6 @@ techniques:
 steps[1]:
   - id: diff-upstream
     technique: diff-upstream
-    required: true
 
 transitions[1]:
   - to: review-changes

@@ -9,16 +9,12 @@ techniques:
 steps[4]:
   - id: survey-target
     technique: plan-evaluation::survey-target
-    required: true
   - id: map-dimensions
     technique: plan-evaluation::map-dimensions-to-lenses
-    required: true
   - id: group-dimensions
     technique: plan-evaluation::group-for-execution
-    required: true
   - id: write-plan
     technique: plan-evaluation::write-evaluation-plan
-    required: true
 checkpoints[1]:
   - id: confirm-plan
     name: Dimension Plan Confirmation

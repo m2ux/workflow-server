@@ -9,7 +9,6 @@ techniques:
 required: false
 steps[3]:
   - id: execute-ensemble-pass
-    required: true
     technique: execute-ensemble-pass
   - id: union-merge
     technique:

@@ -9,13 +9,10 @@ techniques:
 steps[7]:
   - id: survey-structure
     technique: compose-audit-prompt::survey-structure
-    required: true
   - id: identify-security-characteristics
     technique: compose-audit-prompt::identify-security-characteristics
-    required: true
   - id: map-trust-boundaries
     technique: compose-audit-prompt::map-trust-boundaries
-    required: true
     condition:
       type: simple
       variable: gitnexus_available
@@ -23,16 +20,12 @@ steps[7]:
       value: true
   - id: map-audit-domains
     technique: compose-audit-prompt::map-audit-domains
-    required: true
   - id: identify-cross-cutting-concerns
     technique: compose-audit-prompt::identify-cross-cutting-concerns
-    required: true
   - id: compose-prompt
     technique: compose-audit-prompt::compose-prompt
-    required: true
   - id: build-audit-scopes
     technique: compose-audit-prompt::build-audit-scopes
-    required: true
 checkpoints[1]:
   - id: no-security-characteristics
     name: No Security Characteristics Found

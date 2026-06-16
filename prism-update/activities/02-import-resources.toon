@@ -16,7 +16,6 @@ entryActions[1]:
 steps[1]:
   - id: sync-resources
     technique: sync-resources
-    required: true
 
 transitions[1]:
   - to: update-routing

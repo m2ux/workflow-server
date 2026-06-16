@@ -9,7 +9,6 @@ techniques:
 required: false
 steps[6]:
   - id: run-grep-patterns
-    required: true
     technique:
       name: search-pattern-catalog
       inputs:
@@ -17,7 +16,6 @@ steps[6]:
         catalog_section: Grep Patterns
         output_format: "| Category | Pattern | File:Line | Hit | Triage |"
   - id: run-mechanical-checks
-    required: true
     technique:
       name: search-pattern-catalog
       inputs:
@@ -25,22 +23,18 @@ steps[6]:
         catalog_section: Mechanical Checks
         output_format: "| Check | Pattern | File:Line | PASS/FAIL | Evidence |"
   - id: run-storage-lifecycle-scan
-    required: true
     technique:
       name: scan-storage-lifecycle
       inputs:
         output_format: "| StorageMap | Crate | insert() Sites | remove() Sites | Paired? | Cap Enforced? |"
   - id: produce-zero-hit-audit
-    required: true
     technique:
       name: search-pattern-catalog
       inputs:
         output_format: "| Pattern | Category | Hits | Verdict | Justification |"
   - id: aggregate-findings
-    required: true
     technique: search-pattern-catalog
   - id: format-output
-    required: true
     technique: execute-sub-agent
 outcome[4]:
   - The full pattern catalog has been run against the whole scope, so no static-analysis category is left unexamined
