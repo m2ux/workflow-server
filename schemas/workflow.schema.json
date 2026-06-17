@@ -99,66 +99,26 @@
           },
           "description": "Workflow-level variables"
         },
-        "modes": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "description": "Unique identifier for this mode"
-              },
-              "name": {
-                "type": "string",
-                "description": "Human-readable mode name"
-              },
-              "description": {
-                "type": "string",
-                "description": "Detailed description of mode behavior"
-              },
-              "activationVariable": {
-                "type": "string",
-                "description": "Variable name that activates this mode when true"
-              },
-              "recognition": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Patterns to detect mode activation from user intent"
-              },
-              "skipActivities": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Activity IDs to skip entirely in this mode"
-              },
-              "defaults": {
-                "type": "object",
-                "additionalProperties": {},
-                "description": "Default variable values when mode is active"
-              },
-              "resource": {
-                "type": "string",
-                "description": "Path to resource file with detailed mode guidance"
-              }
-            },
-            "required": [
-              "id",
-              "name",
-              "activationVariable"
-            ],
-            "additionalProperties": false
-          },
-          "description": "Execution modes that modify standard workflow behavior"
-        },
         "techniques": {
-          "type": "array",
-          "items": {
-            "type": "string"
+          "type": "object",
+          "properties": {
+            "workflow": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Orchestrator-level technique references (`::` paths); bundled into get_workflow alongside the core orchestrator techniques."
+            },
+            "activity": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Technique references inherited by every activity; injected into every get_activity technique bundle."
+            }
           },
-          "description": "Workflow-level techniques the orchestrator uses; bundled into get_workflow."
+          "additionalProperties": false,
+          "description": "Workflow techniques partitioned by audience: `workflow` (orchestrator, bundled into get_workflow) and `activity` (inherited by every activity, injected into get_activity)."
         },
         "initialActivity": {
           "type": "string",
@@ -185,10 +145,6 @@
               "description": {
                 "type": "string",
                 "description": "Detailed description of the activity"
-              },
-              "problem": {
-                "type": "string",
-                "description": "Description of the user problem this activity addresses"
               },
               "techniques": {
                 "type": "array",

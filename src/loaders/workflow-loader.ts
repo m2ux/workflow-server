@@ -415,20 +415,3 @@ export async function readActivityRaw(
   return err(new ActivityNotFoundError(activityId, workflowId));
 }
 
-/** Read raw workflow.toon file content. */
-export async function readWorkflowRaw(
-  workflowDir: string,
-  workflowId: string,
-): Promise<Result<string, WorkflowNotFoundError>> {
-  const filePath = resolveWorkflowPath(workflowDir, workflowId);
-  if (!filePath) return err(new WorkflowNotFoundError(workflowId));
-
-  try {
-    const content = await readFile(filePath, 'utf-8');
-    return ok(content);
-  } catch (error) {
-    logWarn('Failed to read workflow raw', { workflowId, error: error instanceof Error ? error.message : String(error) });
-    return err(new WorkflowNotFoundError(workflowId));
-  }
-}
-

@@ -46,7 +46,7 @@ The following diagram shows a typical two-activity progression through a workflo
 flowchart TD
     subgraph bootstrap [Session Bootstrap]
         startSession["start_session(agent_id)"]
-        getWorkflow["get_workflow(summary=true)"]
+        getWorkflow["get_workflow(session_index)"]
         startSession -->|"L1: HMAC signed token issued"| getWorkflow
     end
 
@@ -279,9 +279,9 @@ The server automatically captures a mechanical trace of every tool call in a ses
 
 Beyond enforcement, the server reduces the context burden on agents:
 
-### Summary Mode
+### Lightweight Workflow Metadata
 
-`get_workflow(summary=true)` returns lightweight metadata (~2KB) instead of the full workflow definition (~13KB). The orchestrator gets rules, variables, `initialActivity`, and activity stubs without consuming its context window with step-level detail. The response is preceded by the technique bundle (the workflow's `techniques[]` plus the core orchestrator techniques), so the orchestrator receives its execution surface in a single round-trip.
+`get_workflow` returns lightweight metadata (~2KB) rather than the full workflow definition (~13KB): the orchestrator gets rules, variables, `initialActivity`, and activity stubs without consuming its context window with step-level detail. Step detail and the worker-facing `rules.activity` / `techniques.activity` reach workers through `get_activity`. The response is preceded by the technique bundle (the workflow's `techniques.workflow` plus the core orchestrator techniques), so the orchestrator receives its execution surface in a single round-trip.
 
 ### Transitions in Activity Definitions
 

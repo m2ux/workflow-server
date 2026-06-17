@@ -511,7 +511,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         if (step_id) {
           throw new Error('Cannot provide step_id when no activity is active. Call next_activity first.');
         }
-        techniqueId = wfResult.value.techniques?.[0];
+        techniqueId = (wfResult.value as { techniques?: { workflow?: string[] } }).techniques?.workflow?.[0];
         if (!techniqueId) {
           throw new Error(`Workflow '${workflow_id}' does not declare any workflow-level techniques.`);
         }

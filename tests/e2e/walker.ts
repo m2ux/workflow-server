@@ -447,7 +447,7 @@ export async function walk(
   const sessionIndex = startBody.session_index as string;
   const planningSlug = startBody.planning_slug as string;
 
-  const wfRes = await client.callTool({ name: 'get_workflow', arguments: { session_index: sessionIndex, summary: true } });
+  const wfRes = await client.callTool({ name: 'get_workflow', arguments: { session_index: sessionIndex } });
   if (isError(wfRes)) throw new Error('get_workflow failed');
   const wf = parseWorkflowResponse(wfRes);
   const orchestratorUnresolved = (parseBundle(wfRes).unresolved as string[] | undefined) ?? [];

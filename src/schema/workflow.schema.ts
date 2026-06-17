@@ -11,21 +11,15 @@ export const VariableDefinitionSchema = z.object({
 });
 export type VariableDefinition = z.infer<typeof VariableDefinitionSchema>;
 
-// Artifact location - accepts string shorthand (path only) or full object
-// Mode schema - defines workflow execution modes that modify standard behavior
-export const ModeSchema = z.object({
-  id: z.string().describe('Unique identifier for this mode'),
-  name: z.string().describe('Human-readable mode name'),
-  description: z.string().optional().describe('Detailed description of mode behavior'),
-  activationVariable: z.string().describe('Variable name that activates this mode when true'),
-  recognition: z.array(z.string()).optional().describe('Patterns to detect mode activation from user intent'),
-  skipActivities: z.array(z.string()).optional().describe('Activity IDs to skip entirely in this mode'),
-  defaults: z.record(z.unknown()).optional().describe('Default variable values when mode is active'),
-  resource: z.string().optional().describe('Path to resource file with detailed mode guidance'),
+// Workflow techniques, partitioned by AUDIENCE (mirrors WorkflowRulesSchema). `workflow` techniques
+// are the orchestrator's, bundled into get_workflow alongside the core orchestrator techniques.
+// `activity` techniques are inherited by EVERY activity: the server injects them into every
+// get_activity technique bundle, so a technique common to all activities (e.g. variable-binding) is
+// declared once here instead of duplicated on each activity's own `techniques[]`.
+export const WorkflowTechniquesSchema = z.object({
+  workflow: z.array(z.string()).optional().describe('Orchestrator-level technique references (`::` paths); bundled into get_workflow alongside the core orchestrator techniques.'),
+  activity: z.array(z.string()).optional().describe('Technique references inherited by every activity; injected into every get_activity technique bundle.'),
 });
-export type Mode = z.infer<typeof ModeSchema>;
-
-export const WorkflowTechniquesSchema = z.array(z.string()).describe('Workflow-level technique references (`::` paths) the orchestrator uses; bundled into get_workflow alongside the core orchestrator techniques.');
 export type WorkflowTechniquesReference = z.infer<typeof WorkflowTechniquesSchema>;
 
 // Workflow rules, partitioned by AUDIENCE. `workflow` rules govern orchestration (dispatch,
@@ -51,8 +45,7 @@ export const WorkflowSchema = z.object({
   tags: z.array(z.string()).optional(),
   rules: WorkflowRulesSchema.optional().describe('Workflow rules partitioned by audience: `workflow` (orchestrator-only) and `activity` (inherited by every activity, injected into get_activity).'),
   variables: z.array(VariableDefinitionSchema).optional().describe('Workflow-level variables'),
-  modes: z.array(ModeSchema).optional().describe('Execution modes that modify standard workflow behavior'),
-  techniques: WorkflowTechniquesSchema.optional().describe('Workflow-level techniques the orchestrator uses; bundled into get_workflow.'),
+  techniques: WorkflowTechniquesSchema.optional().describe('Workflow techniques partitioned by audience: `workflow` (orchestrator, bundled into get_workflow) and `activity` (inherited by every activity, injected into get_activity).'),
   initialActivity: z.string().optional().describe('ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points.'),
   // JSON Schema validates individual TOON files where activities are separate files.
   // Zod validates the full assembled runtime workflow object, so activities are included here.

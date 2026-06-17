@@ -397,17 +397,6 @@
           "type": "string",
           "description": "Detailed description of the activity"
         },
-        "problem": {
-          "type": "string",
-          "description": "Description of the user problem this activity addresses"
-        },
-        "recognition": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Patterns to match user intent to this activity"
-        },
         "techniques": {
           "$ref": "#/definitions/techniques",
           "description": "Activity-wide technique references the activity uses; bundled into get_activity."

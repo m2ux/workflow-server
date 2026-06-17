@@ -30,8 +30,8 @@ export {
 } from '../schema/activity.schema.js';
 
 // Workflow types
-export type { VariableDefinition, Mode, Workflow } from '../schema/workflow.schema.js';
-export { VariableDefinitionSchema, ModeSchema, WorkflowSchema, validateWorkflow, safeValidateWorkflow } from '../schema/workflow.schema.js';
+export type { VariableDefinition, Workflow } from '../schema/workflow.schema.js';
+export { VariableDefinitionSchema, WorkflowSchema, validateWorkflow, safeValidateWorkflow } from '../schema/workflow.schema.js';
 
 // Condition types
 export type { ComparisonOperator, SimpleCondition, AndCondition, OrCondition, NotCondition, Condition } from '../schema/condition.schema.js';

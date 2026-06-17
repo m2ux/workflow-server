@@ -117,7 +117,7 @@ This lets workflows inherit standard meta capability techniques (`workflow-engin
 
 ## 8. Workflow-Level Techniques
 
-A workflow may declare a `techniques[]` list. The composed body of the first of those techniques is returned by `get_technique` (before any activity); the workflow's techniques are also covered by the `get_workflow` technique bundle rather than appearing as a separate preamble. Workflows compose behaviour by referencing capability techniques rather than maintaining a monolithic technique.
+A workflow declares techniques partitioned by audience (mirroring `rules`): `techniques.workflow` for the orchestrator and `techniques.activity` for techniques inherited by every activity. The composed body of the first `techniques.workflow` entry is returned by `get_technique` (before any activity); those orchestrator techniques are also covered by the `get_workflow` technique bundle rather than appearing as a separate preamble. The `techniques.activity` references are injected into every `get_activity` technique bundle ahead of the activity's own `techniques[]`, so a technique common to all activities (e.g. variable-binding) is declared once at the workflow level instead of duplicated per activity. Workflows compose behaviour by referencing capability techniques rather than maintaining a monolithic technique.
 
 ## 9. Resources
 

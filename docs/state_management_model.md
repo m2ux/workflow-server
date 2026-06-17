@@ -67,16 +67,9 @@ The `evaluateCondition()` function in `condition.schema.ts` handles structured `
 - `and` / `or` — boolean combinations of nested conditions
 - `not` — negation of a single condition
 
-## 4. Mode Overrides
+## 4. Conditional Execution
 
-Workflows can define execution `modes` that modify standard behavior. Each mode has:
-- `activationVariable` — the variable that activates this mode when true
-- `recognition` — patterns to detect mode activation from user intent
-- `skipActivities` — activity IDs to skip entirely in this mode
-- `defaults` — default variable values when the mode is active
-- `resource` — optional path to a resource file with detailed mode guidance
-
-Activities react to active modes through their `transitions` (conditioned on the mode's activation variable) and via the workflow's `skipActivities` list — there is no per-activity override block in the current schema.
+A workflow varies its path through ordinary state. A boolean **activation variable** (e.g. `is_review_mode`), set by a detection step or checkpoint early in the workflow, marks the variant; conditional `transitions` and step `when` / `condition` gates branch on it to skip or redirect activities. Because the variable lives in the single state bag, the variant persists across activities automatically — work-package's review mode and workflow-design's update/review modes are built this way.
 
 ## 5. Persistence
 
@@ -84,7 +77,7 @@ Activities react to active modes through their `transitions` (conditioned on the
 
 For each session, the server maintains two files under the planning folder (`<workspace>/.engineering/artifacts/planning/<slug>/`):
 
-* **`session.json`** — Plaintext, JSON-Schema-validated session state (`schemas/session-file.schema.json`). Contains `sessionIndex`, `workflowId`, `workflowVersion`, `agentId`, `seq`, `currentActivity`, `currentSkill`, `condition`, `activeCheckpoint`, `variables`, `completedActivities`, `skippedActivities`, `checkpointResponses`, `history`, `triggeredWorkflows`, and (for child workflows) a snapshot of the parent under `parentSession`. The file is human-inspectable and reproducible from the workflow definition.
+* **`session.json`** — Plaintext, JSON-Schema-validated session state (`schemas/session-file.schema.json`). Contains `sessionIndex`, `workflowId`, `workflowVersion`, `agentId`, `seq`, `currentActivity`, `currentTechnique`, `condition`, `activeCheckpoint`, `variables`, `completedActivities`, `skippedActivities`, `checkpointResponses`, `history`, `triggeredWorkflows`, and (for child workflows) a snapshot of the parent under `parentSession`. The file is human-inspectable and reproducible from the workflow definition.
 * **`.session-token`** — A sealed, HMAC-signed envelope binding the `session.json` contents to the workspace + server signing key. Verified on every read; any mismatch between `session.json` and `.session-token` raises a hard `SealMismatchError`.
 
 Writes are atomic (write-temp + rename) and ordered: `session.json` first, then `.session-token`. Reads verify the seal before returning state.

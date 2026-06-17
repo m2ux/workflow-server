@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
-import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, readActivityRaw, readWorkflowRaw, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, readActivityRaw, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 import { resolveTechniques, formatTechniqueBundle } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
@@ -122,12 +122,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       content: [{ type: 'text' as const, text: encodeToon(await listWorkflows(config.workflowDir)) }],
     })));
 
-  server.tool('get_workflow', 'Load the workflow definition for the current session. The response begins with the workflow\'s primary technique (raw TOON), followed by the workflow definition. Use summary=true (the default) to get lightweight metadata including rules, variables, orchestration model, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Use summary=false for the raw workflow definition in TOON format. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity. The summary also carries `planning_folder_path`: the canonical absolute planning folder for this session under THIS server\'s workspace `.engineering` root — bind it as the single artifact location and never recompose it relative to your CWD or the target component repo.',
+  server.tool('get_workflow', 'Load the workflow definition for the current session. The response begins with the resolved orchestrator technique bundle, then a `---` separator, then lightweight workflow metadata: rules, variables, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity. The response also carries `planning_folder_path`: the canonical absolute planning folder for this session under THIS server\'s workspace `.engineering` root — bind it as the single artifact location and never recompose it relative to your CWD or the target component repo.',
     {
       ...sessionIndexParam,
-      summary: z.boolean().optional().default(true).describe('Returns lightweight summary by default. Set to false for the raw workflow definition.'),
     },
-    withAuditLog('get_workflow', withSessionStoreErrors(async ({ session_index, summary }) => {
+    withAuditLog('get_workflow', withSessionStoreErrors(async ({ session_index }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
       const { state } = loaded;
       assertNoActiveCheckpoint(state);
@@ -146,9 +145,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const next = advanceSession(state);
       await saveSessionForTool(loaded, next);
 
-      // Bundle the workflow's technique refs and the core orchestrator techniques. Deduplicate by
-      // ref so a workflow that explicitly lists a core technique resolves it once.
-      const wfTechRefs = (wf as { techniques?: string[] }).techniques ?? [];
+      // Bundle the workflow's orchestrator-level technique refs (`techniques.workflow`) and the core
+      // orchestrator techniques. Deduplicate by ref so a workflow that explicitly lists a core
+      // technique resolves it once.
+      const wfTechRefs = (wf as { techniques?: { workflow?: string[] } }).techniques?.workflow ?? [];
       const orchestratorTechniques = Array.from(new Set([...wfTechRefs, ...CORE_ORCHESTRATOR_TECHNIQUES]));
       const resolvedOrchestrator = await resolveTechniques(orchestratorTechniques, config.workflowDir, workflow_id);
       const opsBlock = encodeToon(formatTechniqueBundle(resolvedOrchestrator));
@@ -158,42 +158,35 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const preambleParts = [opsBlock].filter(s => s.length > 0);
       const preamble = preambleParts.length > 0 ? preambleParts.join('\n\n') + '\n\n---\n\n' : '';
 
-      if (summary) {
-        const summaryData = {
-          id: wf.id,
-          version: wf.version,
-          title: wf.title,
-          description: wf.description,
-          rules: ((): string[] | undefined => {
-            const r = wf.rules as { workflow?: string[]; universal?: string[] } | undefined;
-            const orch = [...(r?.workflow ?? []), ...(r?.universal ?? [])];
-            return orch.length ? orch : undefined;
-          })(),
-          variables: wf.variables,
-          initialActivity: wf.initialActivity,
-          activities: wf.activities?.map((a: { id: string; name?: string; required?: boolean; artifactPrefix?: string | undefined }) => ({ id: a.id, name: a.name, required: a.required, artifactPrefix: a.artifactPrefix })) ?? [],
-          session_index,
-          // Canonical absolute planning folder for this session, resolved by the
-          // server under its own workspace `.engineering` root. This is the single
-          // authoritative artifact location — the orchestrator binds
-          // `planning_folder_path` from here and never composes it relative to its
-          // CWD or the target component repo (which may be a submodule/worktree).
-          planning_folder_path: loaded.folderAbsPath,
-        };
+      // get_workflow returns lightweight metadata for the orchestrator: the technique bundle (above
+      // the separator) plus rules, variables, initialActivity, and activity stubs. Per-activity step
+      // detail and the worker-facing rules.activity / techniques.activity are delivered via get_activity.
+      const summaryData = {
+        id: wf.id,
+        version: wf.version,
+        title: wf.title,
+        description: wf.description,
+        rules: ((): string[] | undefined => {
+          const r = wf.rules as { workflow?: string[]; universal?: string[] } | undefined;
+          const orch = [...(r?.workflow ?? []), ...(r?.universal ?? [])];
+          return orch.length ? orch : undefined;
+        })(),
+        variables: wf.variables,
+        initialActivity: wf.initialActivity,
+        activities: wf.activities?.map((a: { id: string; name?: string; required?: boolean; artifactPrefix?: string | undefined }) => ({ id: a.id, name: a.name, required: a.required, artifactPrefix: a.artifactPrefix })) ?? [],
+        session_index,
+        // Canonical absolute planning folder for this session, resolved by the
+        // server under its own workspace `.engineering` root. This is the single
+        // authoritative artifact location — the orchestrator binds
+        // `planning_folder_path` from here and never composes it relative to its
+        // CWD or the target component repo (which may be a submodule/worktree).
+        planning_folder_path: loaded.folderAbsPath,
+      };
 
-        return {
-          content: [{ type: 'text' as const, text: preamble + encodeToon(summaryData) }],
-          _meta: { session_index, validation },
-        };
-      } else {
-        const rawResult = await readWorkflowRaw(config.workflowDir, workflow_id);
-        if (!rawResult.success) throw rawResult.error;
-
-        return {
-          content: [{ type: 'text' as const, text: preamble + `session_index: ${session_index}\n\n${rawResult.value}` }],
-          _meta: { session_index, validation },
-        };
-      }
+      return {
+        content: [{ type: 'text' as const, text: preamble + encodeToon(summaryData) }],
+        _meta: { session_index, validation },
+      };
     }), traceOpts));
 
   server.tool('next_activity', 'Transition to the specified activity. This is the orchestrator\'s tool for advancing the workflow — it validates the transition, advances the session state on disk, and records the trace, but does NOT return the activity definition. After calling next_activity, the worker should call get_activity to load the complete activity definition including steps, checkpoints, transitions, and technique references. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field of the current activity\'s response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation.',
@@ -368,11 +361,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         result.success ? validateWorkflowVersion(view, result.value) : null,
       );
 
-      // Bundle the techniques the activity references (delivered as full protocols) and the core
-      // worker techniques, deduped.
+      // Bundle the techniques the activity references (delivered as full protocols), deduped with
+      // the workflow-level techniques inherited by every activity (`techniques.activity`, injected
+      // here so a common technique is declared once on the workflow) and the core worker techniques.
       const activity = result.success ? getActivity(result.value, activity_id) : undefined;
-      const techRefs = (activity as { techniques?: string[] } | undefined)?.techniques ?? [];
-      const workerTechniques = Array.from(new Set([...techRefs, ...CORE_WORKER_TECHNIQUES]));
+      const ownTechRefs = (activity as { techniques?: string[] } | undefined)?.techniques ?? [];
+      const inheritedTechRefs = result.success ? ((result.value as { techniques?: { activity?: string[] } }).techniques?.activity ?? []) : [];
+      const workerTechniques = Array.from(new Set([...inheritedTechRefs, ...ownTechRefs, ...CORE_WORKER_TECHNIQUES]));
       const resolvedWorker = await resolveTechniques(workerTechniques, config.workflowDir, workflow_id);
       const opsSection = encodeToon(formatTechniqueBundle(resolvedWorker)) + '\n\n---\n\n';
 

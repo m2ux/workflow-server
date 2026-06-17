@@ -248,12 +248,8 @@ describe('schema-validation', () => {
         version: '1.0.0',
         name: 'Full Activity',
         description: 'An activity with everything',
-        problem: 'User needs to do something',
-        recognition: ['do something', 'perform action'],
         techniques: ['main-technique', 'helper-technique'],
         estimatedTime: '1-2h',
-        entryActions: [{ action: 'log', message: 'Entering' }],
-        exitActions: [{ action: 'log', message: 'Exiting' }],
         steps: [{ id: 'step-1' }],
         checkpoints: [
           {

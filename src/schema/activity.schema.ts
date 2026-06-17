@@ -222,9 +222,6 @@ export const ActivitySchema = z.object({
   
   // Description (optional)
   description: z.string().optional().describe('Detailed description of the activity'),
-  
-  // Intent matching (optional - for entry-point activities)
-  problem: z.string().optional().describe('Description of the user problem this activity addresses'),
 
   // Activity-wide techniques, referenced by `::` path. The server bundles them into get_activity.
   techniques: TechniquesReferenceSchema.optional(),

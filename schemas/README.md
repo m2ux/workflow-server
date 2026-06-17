@@ -72,7 +72,7 @@ At design-time, you work with `workflow.schema.json`, `activity.schema.json`, an
 flowchart TB
     subgraph Workflow["workflow.schema.json"]
         W[Workflow] --> A[Activities]
-        W --> SK1["techniques{}"]
+        W --> SK1["techniques{workflow,activity}"]
     end
     
     subgraph Activity["activity.schema.json"]
@@ -82,7 +82,7 @@ flowchart TB
         A --> L[Loops]
         A --> T[Transitions]
         A --> TR[Triggers]
-        A --> SK2["techniques{}"]
+        A --> SK2["techniques[]"]
     end
     
     subgraph Technique["technique.schema.json"]
@@ -157,41 +157,19 @@ erDiagram
     
     Transition |o--o| Condition : "guarded by"
 
-    Workflow ||--|| ExecutionModel : declares
-    ExecutionModel ||--|{ AgentRole : contains
-
     Workflow {
         string id PK
         string version
         string title
         string description
         string initialActivity FK
-        ExecutionModel executionModel
-        TechniquesReference techniques
-    }
-    
-    ExecutionModel {
-        AgentRole[] roles
-    }
-    
-    AgentRole {
-        string id PK
-        string description
-    }
-    
-    Mode {
-        string id PK
-        string name
-        string activationVariable
-        array skipActivities
+        WorkflowTechniquesReference techniques
     }
     
     Activity {
         string id PK
         string version
         string name
-        string problem
-        array recognition
         boolean required
         string estimatedTime
     }
@@ -292,7 +270,7 @@ erDiagram
 
 #### Workflow (Root Entity)
 
-A workflow is the top-level container representing a complete process definition. Workflows can have **sequential activities** (connected by transitions, requiring `initialActivity`) or **independent activities** (self-contained entry points matched via recognition patterns).
+A workflow is the top-level container representing a complete process definition. Its activities are connected by `transitions` and entered at `initialActivity`.
 
 | Field             | Type       | Purpose                                                    |
 | ----------------- | ---------- | ---------------------------------------------------------- |
@@ -303,22 +281,15 @@ A workflow is the top-level container representing a complete process definition
 | `author`          | string     | Creator of the workflow                                    |
 | `tags`            | string[]   | Categorization labels                                      |
 | `rules`           | { workflow?, activity?, universal?: string[] } | Workflow rules partitioned by audience: `workflow` (orchestrator-only, in `get_workflow`), `activity` (worker-facing, injected into every `get_activity`), and `universal` (both — surfaced in `get_workflow` AND injected into every `get_activity`) |
-| `executionModel`  | ExecutionModel | Agent roles and orchestration model for this workflow (required) |
-| `techniques`      | TechniquesReference | Workflow-level technique references; bundled into `get_workflow` |
+| `techniques`      | { workflow?, activity?: string[] } | Workflow techniques partitioned by audience: `workflow` (orchestrator-only, bundled into `get_workflow`) and `activity` (inherited by every activity, injected into every `get_activity` technique bundle) |
 | `variables`       | Variable[] | State variables                                            |
-| `modes`           | Mode[]     | Execution modes that modify standard workflow behavior     |
-| `artifactLocations` | object   | Named artifact storage locations (keyed by location ID)    |
 | `initialActivity` | string     | Starting activity ID (required for sequential workflows)   |
 | `activitiesDir`   | string     | Directory containing external activity files (server-resolved) |
 | `activities`      | Activity[] | Inline activity definitions (or loaded from activitiesDir) |
 
-**Activity Models:**
-- **Sequential**: Activities have `transitions`, require `initialActivity` (e.g., work-package)
-- **Independent**: Activities have no `transitions`, matched via `recognition` (e.g., meta)
-
 #### Activity
 
-A unified activity combines intent matching (problem, recognition) with workflow execution (steps, checkpoints, decisions, loops, transitions). Activities can also trigger other workflows.
+A unified activity defines workflow execution (steps, checkpoints, decisions, loops, transitions). Activities can also trigger other workflows.
 
 | Field             | Type              | Purpose                                    |
 | ----------------- | ----------------- | ------------------------------------------ |
@@ -326,8 +297,6 @@ A unified activity combines intent matching (problem, recognition) with workflow
 | `version`         | string            | Semantic version (X.Y.Z)                   |
 | `name`            | string            | Display name                               |
 | `description`     | string            | What this activity accomplishes            |
-| `problem`         | string            | User problem this activity addresses       |
-| `recognition`     | string[]          | Patterns to match user intent              |
 | `techniques`      | TechniquesReference | Activity-wide technique references (`::` paths) |
 | `steps`           | Step[]            | Individual tasks                           |
 | `checkpoints`     | Checkpoint[]      | User decision points                       |
@@ -424,10 +393,16 @@ A loop enables iteration over collections or while conditions hold.
 
 #### TechniquesReference
 
-A flat array of strings — the activity- or workflow-wide technique references, addressed by `::` path. Optional: an activity may rely solely on the techniques its steps declare, and a workflow on the core orchestrator techniques.
+A flat array of strings — an activity's technique references, addressed by `::` path. Optional: an activity may rely solely on the techniques its steps declare plus those inherited from the workflow's `techniques.activity`.
 
 ```
 techniques: string[]
+```
+
+At the **workflow** level, `techniques` is instead an object partitioned by audience (mirroring `rules`): `workflow` references go to the orchestrator (`get_workflow`), and `activity` references are inherited by every activity (injected into every `get_activity` bundle). There is no `universal` bucket for techniques.
+
+```
+techniques: { workflow?: string[]; activity?: string[] }
 ```
 
 #### Action
@@ -501,11 +476,6 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
   "author": "author-name",
   "tags": ["sample", "documentation"],
   "rules": ["Rule 1", "Rule 2"],
-  "executionModel": {
-    "roles": [
-      { "id": "agent", "description": "Single agent executing all activities" }
-    ]
-  },
   "variables": [],
   "initialActivity": "first-activity",
   "activitiesDir": "activities"
@@ -519,7 +489,6 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
 | `id` | string | Unique workflow identifier |
 | `version` | string | Semantic version (e.g., `1.0.0`) |
 | `title` | string | Human-readable title |
-| `executionModel` | ExecutionModel | Declares the agent roles for this workflow |
 | `activities` | array | Array of activity definitions (or loaded from activitiesDir) |
 
 ### Optional Properties
@@ -531,10 +500,8 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
 | `author` | string | Author name |
 | `tags` | string[] | Categorization tags |
 | `rules` | { workflow?, activity?, universal?: string[] } | Orchestrator rules (`workflow`, in `get_workflow`) + worker rules inherited by every activity (`activity`, injected into every `get_activity`) + dual-audience rules (`universal`, both) |
-| `techniques` | TechniquesReference | Workflow-level technique references; bundled into `get_workflow` |
+| `techniques` | { workflow?, activity?: string[] } | Orchestrator techniques (`workflow`, bundled into `get_workflow`) + techniques inherited by every activity (`activity`, injected into every `get_activity`) |
 | `variables` | array | Variable definitions with types and defaults |
-| `modes` | array | Execution modes that modify standard workflow behavior |
-| `artifactLocations` | object | Named artifact storage locations (keys are location IDs, values are path strings or `{path, description, gitignored}` objects) |
 | `initialActivity` | string | ID of first activity (required for sequential workflows) |
 | `activitiesDir` | string | Directory containing external activity TOON files (server-resolved, not in JSON schema) |
 
@@ -564,114 +531,9 @@ Variables store state that persists across activities. Define them at the workfl
 
 **Variable Types:** `string`, `number`, `boolean`, `array`, `object`
 
-### Orchestration Model
-
-Every workflow must declare an `executionModel` that defines the agent roles participating in its execution. Each workflow defines its own role vocabulary — role IDs are validated for uniqueness within the workflow.
-
-```json
-{
-  "executionModel": {
-    "roles": [
-      {
-        "id": "orchestrator",
-        "description": "Coordinates workflow execution, manages transitions, presents checkpoints"
-      },
-      {
-        "id": "worker",
-        "description": "Executes activity steps, produces artifacts, yields at checkpoints"
-      }
-    ]
-  }
-}
-```
-
-**ExecutionModel Properties:**
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `roles` | AgentRole[] | Agent roles declared for this workflow (min 1, unique IDs) |
-
-**AgentRole Properties:**
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `id` | string | Unique role identifier within this workflow |
-| `description` | string | What this role does in the workflow |
-
-Role declarations are descriptive metadata — the server stores and serves them via `get_workflow`, but does not enforce agent behavior against them. Behavioral constraints are expressed in the workflow's `rules`, partitioned by audience: orchestrator constraints in `rules.workflow` (surfaced via `get_workflow`), worker constraints in `rules.activity` (inherited by every activity and injected into every `get_activity`), and dual-audience constraints in `rules.universal` (both).
-
-**Common patterns:**
-
-| Pattern | Roles | Example Workflows |
-|---------|-------|-------------------|
-| Single agent | `agent` | meta, workflow-design, work-packages |
-| Orchestrator + worker | `orchestrator`, `worker` | work-package, prism family |
-| Named multi-agent | Multiple specific roles | substrate-node-security-audit (7 roles), cicd-pipeline-security-audit (4 roles) |
-
-### Modes
-
-Modes modify standard workflow behavior by skipping activities, overriding defaults, or adjusting execution. Each mode is activated by a workflow variable.
-
-```json
-{
-  "modes": [
-    {
-      "id": "fast-track",
-      "name": "Fast Track",
-      "description": "Streamlined execution skipping optional activities",
-      "activationVariable": "fast_track_enabled",
-      "recognition": ["fast track", "quick mode", "streamlined"],
-      "skipActivities": ["optional-review", "deep-analysis"],
-      "defaults": {
-        "max_iterations": 1
-      },
-      "resource": "resources/fast-track-guidance.md"
-    }
-  ]
-}
-```
-
-**Mode Properties:**
-
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `id` | string | Yes | Unique mode identifier |
-| `name` | string | Yes | Human-readable mode name |
-| `description` | string | No | Detailed description of mode behavior |
-| `activationVariable` | string | Yes | Variable name that activates this mode when true |
-| `recognition` | string[] | No | Patterns to detect mode activation from user intent |
-| `skipActivities` | string[] | No | Activity IDs to skip in this mode |
-| `defaults` | object | No | Default variable values when mode is active |
-| `resource` | string | No | Path to resource file with detailed mode guidance |
-
-### Artifact Locations
-
-Named artifact storage locations define where activities write their outputs. Keys are location identifiers referenced by activity `artifacts` definitions; values can be path strings (shorthand) or objects with metadata.
-
-```json
-{
-  "artifactLocations": {
-    "planning": {
-      "path": "{planning_folder_path}",
-      "description": "Planning artifacts and analysis documents",
-      "gitignored": true
-    },
-    "adr": "{planning_folder_path}/adr"
-  }
-}
-```
-
-**ArtifactLocation Properties (object form):**
-
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `path` | string | Yes | Path pattern (supports variable interpolation via `{variable_name}`) |
-| `description` | string | No | What artifacts this location stores |
-| `gitignored` | boolean | No | Whether artifacts here are gitignored from the host project (default: false) |
-
 ### Activities
 
-Activities are the execution units of a workflow. Each activity contains steps, checkpoints, and transitions. Activities can be **sequential** (with transitions) or **independent** (matched via recognition patterns).
+Activities are the execution units of a workflow. Each activity contains steps, checkpoints, and transitions, and is reached via `transitions` from the `initialActivity`.
 
 ```json
 {
@@ -698,8 +560,6 @@ Activities are the execution units of a workflow. Each activity contains steps, 
 | `version` | string | Semantic version (X.Y.Z) |
 | `name` | string | Human-readable activity name |
 | `description` | string | Activity description |
-| `problem` | string | User problem this activity addresses (for intent matching) |
-| `recognition` | string[] | Patterns to match user intent (for independent activities) |
 | `skills` | object | LEGACY: Primary and supporting technique references |
 | `required` | boolean | Whether activity is required (default: true) |
 | `estimatedTime` | string | Time estimate (e.g., `10-15m`, `1h`, `2-3h`) |
@@ -1169,11 +1029,6 @@ Here's a minimal valid workflow that demonstrates all key concepts:
   "version": "1.0.0",
   "title": "Example Workflow",
   "description": "A minimal workflow demonstrating key schema features",
-  "executionModel": {
-    "roles": [
-      { "id": "agent", "description": "Single agent executing all activities" }
-    ]
-  },
   "variables": [
     {
       "name": "approved",
@@ -1307,7 +1162,7 @@ if (result.success) {
 
 ## Activity Schema
 
-The activity schema (`activity.schema.json`) defines unified activities that combine intent matching (problem, recognition) with workflow execution (steps, checkpoints, decisions, loops, transitions, triggers). Activities are used both as standalone entry points and as workflow stages.
+The activity schema (`activity.schema.json`) defines unified activities that combine workflow execution (steps, checkpoints, decisions, loops, transitions, triggers). Activities are reached via `transitions` from the workflow's `initialActivity`.
 
 ### Top-Level Structure
 
@@ -1316,8 +1171,6 @@ The activity schema (`activity.schema.json`) defines unified activities that com
   "id": "discover-session",
   "version": "1.0.0",
   "name": "Discover Session",
-  "problem": "Determine whether to resume an existing workflow session or start fresh.",
-  "recognition": ["start a workflow", "resume a workflow", "continue a workflow"],
   "skills": {
     "primary": "state-management"
   },
@@ -1343,8 +1196,6 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 | Property | Type | Description |
 |----------|------|-------------|
 | `description` | string | Detailed description |
-| `problem` | string | User problem this activity addresses (for intent matching) |
-| `recognition` | string[] | Patterns to match user intent (for independent activities) |
 | `steps` | Step[] | Ordered execution steps |
 | `checkpoints` | Checkpoint[] | User decision points |
 | `decisions` | Decision[] | Automated branching points |
@@ -1358,17 +1209,9 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 | `artifacts` | Artifact[] | Artifacts produced or updated by this activity |
 | `artifactPrefix` | string | Server-computed numeric prefix from activity filename (read-only) |
 
-### Activity Types
+### Activity Flow
 
-**Independent Activities** (e.g., meta workflow):
-- Have `recognition` patterns for intent matching
-- No `transitions` to other activities
-- Matched via `list_workflows` and `start_session`
-
-**Sequential Activities** (e.g., work-package workflow):
-- Have `transitions` connecting them
-- Form a workflow flow
-- Require `initialActivity` on parent workflow
+Activities have `transitions` connecting them, form a workflow flow, and require `initialActivity` on the parent workflow. *Workflow* selection — which workflow handles a request — happens at the catalog level via `list_workflows` and `start_session`, scored on title, description, and `tags`.
 
 ### Complete Example
 
@@ -1380,7 +1223,6 @@ A complete activity definition with workflow trigger:
   "version": "1.1.0",
   "name": "Implementation",
   "description": "Execute each planned work package by triggering the work-package workflow",
-  "problem": "Planned work packages need to be implemented one at a time",
   "skills": {
     "primary": "activity-worker"
   },

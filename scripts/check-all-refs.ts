@@ -23,7 +23,7 @@ async function main() {
     const wfId = (s as { id: string }).id;
     const res = await loadWorkflow(WF_DIR, wfId);
     if (!res.success) { process.stdout.write(`\n[${wfId}] FAILED TO LOAD: ${String(res.error)}\n`); continue; }
-    const wf = res.value as { techniques?: string[]; activities?: ActivityLike[] };
+    const wf = res.value as { techniques?: { workflow?: string[]; activity?: string[] }; activities?: ActivityLike[] };
 
     // Per-ref → which activity declared it (for actionable output).
     const refSites = new Map<string, string[]>();
@@ -34,7 +34,8 @@ async function main() {
         refSites.get(r)!.push(site);
       }
     };
-    addRefs('workflow.toon', wf.techniques);
+    addRefs('workflow.toon (techniques.workflow)', wf.techniques?.workflow);
+    addRefs('workflow.toon (techniques.activity)', wf.techniques?.activity);
     for (const a of wf.activities ?? []) addRefs(a.id, a.techniques);
 
     const allRefs = [...refSites.keys()];
