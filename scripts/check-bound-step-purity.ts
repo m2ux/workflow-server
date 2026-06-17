@@ -12,8 +12,10 @@
  * does not read step-level `required`, so it is pure noise — declare `required` only when `false` (a
  * worker-facing optional-step hint). This is a hard-zero rule (no baseline): every violation must be fixed.
  *
- * `name`/`description` remain LEGITIMATE on non-step constructs — activities, checkpoints, options,
- * artifacts, loops, decisions, and action targets — so this walks `steps[]` arrays specifically.
+ * `name`/`description` remain LEGITIMATE on non-step constructs — activities, options, artifacts,
+ * decisions, and action targets — so this walks `steps[]` arrays specifically. In the unified model a
+ * loop is a `kind: loop` step; its `name` (labelling the iteration) is exempt, but no other kind may
+ * carry `name`/`description`.
  *
  * Run:
  *   npx tsx scripts/check-bound-step-purity.ts
@@ -37,7 +39,12 @@ function walk(node: unknown, file: string, out: StepPurityViolation[]): void {
       for (const step of v) {
         if (step && typeof step === 'object' && !Array.isArray(step)) {
           const s = step as Record<string, unknown>;
-          const bad = (['name', 'description'] as const).filter((f) => f in s);
+          const kind = typeof s.kind === 'string' ? s.kind : undefined;
+          // A loop-kind step legitimately carries `name` (it labels the iteration — a structural
+          // construct, not a bound operation). Every other kind (technique/action/checkpoint/legacy)
+          // is id + technique + structural only: WHAT/HOW lives in the bound technique. `description`
+          // is never a step field on any kind.
+          const bad = (['name', 'description'] as const).filter((f) => f in s && !(f === 'name' && kind === 'loop'));
           if (bad.length) out.push({ site: `${file}[${s.id ?? '?'}]`, detail: `step carries ${bad.join(', ')} — a step is id + technique + structural fields only (AP-64)` });
           // `required` defaults to true and the engine does not read step-level required — declare it
           // ONLY when false (a worker-facing optional-step hint); `required: true` is default noise (AP-64).

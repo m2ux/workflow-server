@@ -23,7 +23,7 @@ The schemas work together to define workflows (design-time) and track their exec
 
 ### Workflow Structure
 
-A workflow consists of activities connected by transitions. Each activity can contain steps (individual tasks), checkpoints (user decision points), decisions (automated branching), loops (iteration constructs), and optionally trigger other workflows. The `initialActivity` property determines where sequential workflows begin; workflows with all independent activities (no transitions) don't require `initialActivity`.
+A workflow consists of activities connected by transitions. Each activity contains a single ordered `steps[]` where every step carries a `kind`: a technique step (binds an operation), an action step (control-only), a checkpoint step (an inline user decision point at its concrete position), or a loop step (a compound step whose body is a nested `steps[]`). Activity-level `decisions` (automated branching) and `transitions` route between activities, and an activity can optionally trigger other workflows. The `initialActivity` property determines where sequential workflows begin; workflows with all independent activities (no transitions) don't require `initialActivity`.
 
 ```mermaid
 stateDiagram-v2
@@ -36,15 +36,15 @@ stateDiagram-v2
         Activity3 --> [*]: complete
         
         state Activity1 {
-            Steps
-            Checkpoints
+            TechniqueStep
+            CheckpointStep
         }
         state Activity2 {
             Steps
             Decisions
         }
         state Activity3 {
-            Loops
+            LoopStep
             Triggers
         }
     }
@@ -60,7 +60,7 @@ stateDiagram-v2
 The second diagram shows how the schema files depend on each other:
 
 - **workflow.schema.json** defines the overall structure and references `activity.schema.json` for activities
-- **activity.schema.json** defines unified activities with steps, checkpoints, decisions, loops, transitions, and triggers
+- **activity.schema.json** defines unified activities with a single ordered `steps[]` (each step a kind: technique, action, checkpoint, or loop), plus activity-level decisions, transitions, and triggers
 - **technique.schema.json** defines agent capabilities, tool orchestration patterns, and execution protocols
 - **condition.schema.json** provides reusable condition expressions (simple comparisons, AND/OR/NOT combinators)
 - **state.schema.json** describes the in-memory runtime execution state used internally by the workflow engine
@@ -76,10 +76,10 @@ flowchart TB
     end
     
     subgraph Activity["activity.schema.json"]
-        A --> S[Steps]
-        A --> C[Checkpoints]
+        A --> S["steps[] (kind: technique|action|checkpoint|loop)"]
+        S --> C["checkpoint step (inline)"]
+        S --> L["loop step (compound, nested steps[])"]
         A --> D[Decisions]
-        A --> L[Loops]
         A --> T[Transitions]
         A --> TR[Triggers]
         A --> SK2["techniques[]"]
@@ -132,28 +132,20 @@ erDiagram
     Workflow ||--o{ Variable : defines
     Workflow ||--o{ Mode : has
     
-    Activity ||--o{ Step : contains
-    Activity ||--o{ Checkpoint : contains
+    Activity ||--o{ Step : "contains (ordered, kind-tagged)"
     Activity ||--o{ Decision : contains
-    Activity ||--o{ Loop : contains
     Activity ||--o{ Transition : contains
     Activity ||--o{ WorkflowTrigger : triggers
-    Activity ||--o{ Action : "entry/exit"
     Activity ||--o{ Artifact : produces
     
-    Step ||--o{ Action : performs
-    Step |o--o| Condition : "conditional on"
-    
-    Checkpoint |o--o| Condition : "conditional on"
-    Checkpoint ||--|{ CheckpointOption : has
+    Step ||--o{ Action : "performs (technique/action kind)"
+    Step |o--o| Condition : "gated by (when/condition)"
+    Step ||--|{ CheckpointOption : "has (checkpoint kind)"
+    Step ||--o{ Step : "iterates (loop kind, nested body)"
     CheckpointOption ||--o| Effect : triggers
     
     Decision ||--|{ DecisionBranch : has
     DecisionBranch |o--o| Condition : "evaluated by"
-    
-    Loop |o--o| Condition : "controlled by"
-    Loop |o--o| Condition : "break on"
-    Loop ||--o{ Step : iterates
     
     Transition |o--o| Condition : "guarded by"
 
@@ -183,17 +175,17 @@ erDiagram
     
     Step {
         string id PK
-        string name
-        string description
-        string skill
+        enum kind
+        string technique
+        Action_array actions
+        string when
         boolean required
     }
     
-    Checkpoint {
+    CheckpointStep {
         string id PK
-        string name
+        enum kind
         string message
-        Condition condition
         boolean blocking
         string defaultOption
         integer autoAdvanceMs
@@ -223,10 +215,11 @@ erDiagram
         boolean isDefault
     }
     
-    Loop {
+    LoopStep {
         string id PK
+        enum kind
         string name
-        enum type
+        enum loopType
         string variable
         integer maxIterations
     }
@@ -289,7 +282,7 @@ A workflow is the top-level container representing a complete process definition
 
 #### Activity
 
-A unified activity defines workflow execution (steps, checkpoints, decisions, loops, transitions). Activities can also trigger other workflows.
+A unified activity defines workflow execution as a single ordered `steps[]` (each step kind-tagged), plus activity-level decisions and transitions. Activities can also trigger other workflows.
 
 | Field             | Type              | Purpose                                    |
 | ----------------- | ----------------- | ------------------------------------------ |
@@ -298,10 +291,8 @@ A unified activity defines workflow execution (steps, checkpoints, decisions, lo
 | `name`            | string            | Display name                               |
 | `description`     | string            | What this activity accomplishes            |
 | `techniques`      | TechniquesReference | Activity-wide technique references (`::` paths) |
-| `steps`           | Step[]            | Individual tasks                           |
-| `checkpoints`     | Checkpoint[]      | User decision points                       |
-| `decisions`       | Decision[]        | Automated branching points                 |
-| `loops`           | Loop[]            | Iteration constructs                       |
+| `steps`           | Step[]            | Ordered, kind-tagged execution list (technique / action / checkpoint / loop) |
+| `decisions`       | Decision[]        | Automated branching points (activity-level)|
 | `transitions`     | Transition[]      | Activity navigation rules                  |
 | `triggers`        | WorkflowTrigger[] | Workflows to trigger from this activity    |
 | `outcome`         | string[]          | Expected outcomes on completion            |
@@ -313,30 +304,33 @@ A unified activity defines workflow execution (steps, checkpoints, decisions, lo
 
 #### Step
 
-A step represents an individual task within an activity.
+A step is one entry in the activity's single ordered `steps[]`. Every step carries a required `kind` discriminator that selects its shape:
+
+- **`kind: technique`** — binds an operation via `technique` (a `group::operation` string, or `{ name, inputs?, outputs? }` when it has input deviations / output remaps); may also carry `actions`.
+- **`kind: action`** — a control-only step carrying `actions[]` (may be empty for a marker step).
+- **`kind: checkpoint`** — an inline user decision point (see below); its position in `steps[]` is when it is presented.
+- **`kind: loop`** — a compound step whose body is a nested `steps[]` (see below).
+
+Shared base fields on every kind:
 
 | Field         | Type     | Purpose                           |
 | ------------- | -------- | --------------------------------- |
-| `id`          | string   | Unique identifier within activity |
-| `name`        | string   | Task name                         |
-| `description` | string   | What this step accomplishes       |
-| `skill`       | string   | LEGACY: Technique ID to apply for this step (prefer inline operation invocation in `description`) |
-| `condition`   | Condition | Condition that must be true to execute; if false, step is skipped |
-| `required`    | boolean  | Whether step must be completed    |
-| `actions`     | Action[] | Actions to perform                |
+| `kind`        | enum     | Required discriminator: `technique`, `action`, `checkpoint`, or `loop` |
+| `id`          | string   | Unique identifier within activity (stable; required on a checkpoint step — it is the replay key) |
+| `when`        | string   | Inline boolean gate — run this step or skip it |
+| `condition`   | Condition | Structured gate (legacy compat); if false, step is skipped |
+| `required`    | boolean  | Worker hint; only meaningful when `false` (marks an optional step) |
 
-#### Checkpoint
+#### Checkpoint Step
 
-A checkpoint is a decision point requiring user input. Checkpoints block by default but can be non-blocking with auto-advance.
+A `kind: checkpoint` step is a decision point requiring user input, inlined at its concrete position in `steps[]` (replacing the old separate `checkpoints[]` array and the `step.checkpoint` reference). It blocks by default but can be non-blocking with auto-advance.
 
 | Field       | Type               | Purpose                                             |
 | ----------- | ------------------ | --------------------------------------------------- |
-| `id`        | string             | Unique identifier within activity                   |
-| `name`      | string             | Checkpoint name                                     |
+| `id`        | string             | Stable unique identifier (the checkpoint-response replay key) |
+| `kind`      | enum               | `checkpoint`                                        |
 | `message`   | string             | Question to present to user                         |
-| `condition` | Condition          | Condition that must be true to present; if false, skip |
 | `options`   | CheckpointOption[] | Available choices                                   |
-| `required`  | boolean            | Whether checkpoint must be answered                 |
 | `blocking`  | boolean            | Whether this checkpoint blocks progress (default: true). Non-blocking checkpoints support `defaultOption` and `autoAdvanceMs` for auto-advance. |
 | `defaultOption` | string          | Option ID to auto-select when `autoAdvanceMs` elapses. Only meaningful when `blocking` is false. |
 | `autoAdvanceMs` | integer         | Milliseconds to wait before auto-selecting `defaultOption`. Only meaningful when `blocking` is false and `defaultOption` is set. |
@@ -372,22 +366,22 @@ A workflow trigger allows an activity to invoke another workflow. Used for compo
 | `description` | string   | When/why this workflow is triggered        |
 | `passContext` | string[] | Context variables to pass to child workflow|
 
-#### Loop
+#### Loop Step
 
-A loop enables iteration over collections or while conditions hold.
+A `kind: loop` step is a compound step that iterates over collections or while conditions hold, with a nested `steps[]` body (replacing the old separate `loops[]` array). It is the one step kind that may carry a `name` (it labels the iteration).
 
 | Field            | Type      | Purpose                             |
 | ---------------- | --------- | ----------------------------------- |
 | `id`             | string    | Unique identifier within activity   |
-| `name`           | string    | Loop name                           |
-| `type`           | enum      | "forEach", "while", or "doWhile"    |
+| `kind`           | enum      | `loop`                              |
+| `name`           | string    | Loop name (optional; labels the iteration) |
+| `loopType`       | enum      | "forEach", "while", or "doWhile" (renamed from `type` to avoid clashing with `Condition.type`) |
 | `variable`       | string    | Iteration variable name             |
 | `over`           | string    | Collection to iterate (forEach)     |
 | `condition`      | Condition | Continue condition (while/doWhile)  |
 | `maxIterations`  | integer   | Safety limit                        |
 | `breakCondition` | Condition | Early exit condition                |
-| `steps`          | Step[]    | Steps to execute per iteration      |
-| `activities`     | string[]  | Activity IDs to execute in loop     |
+| `steps`          | Step[]    | Nested step body executed per iteration |
 
 ### Supporting Types
 
@@ -445,8 +439,8 @@ A conditional expression for control flow. Defined in `condition.schema.json`.
 
 | Pattern       | Usage                     | Examples                                |
 | ------------- | ------------------------- | --------------------------------------- |
-| `id`          | Unique identifier         | activity.id, step.id, checkpoint.id        |
-| `name`        | Display name for entities | activity.name, step.name, loop.name        |
+| `id`          | Unique identifier         | activity.id, step.id, checkpoint step id   |
+| `name`        | Display name for entities | activity.name, loop step name              |
 | `description` | Detailed explanation      | workflow.description, activity.description |
 | `required`    | Mandatory flag            | variable.required, step.required        |
 
@@ -533,7 +527,7 @@ Variables store state that persists across activities. Define them at the workfl
 
 ### Activities
 
-Activities are the execution units of a workflow. Each activity contains steps, checkpoints, and transitions, and is reached via `transitions` from the `initialActivity`.
+Activities are the execution units of a workflow. Each activity contains an ordered, kind-tagged `steps[]` and activity-level `transitions`, and is reached via `transitions` from the `initialActivity`.
 
 ```json
 {
@@ -545,7 +539,6 @@ Activities are the execution units of a workflow. Each activity contains steps, 
       "description": "The first activity of the workflow",
       "skills": { "primary": "activity-worker" },
       "steps": [],
-      "checkpoints": [],
       "transitions": []
     }
   ]
@@ -563,10 +556,8 @@ Activities are the execution units of a workflow. Each activity contains steps, 
 | `skills` | object | LEGACY: Primary and supporting technique references |
 | `required` | boolean | Whether activity is required (default: true) |
 | `estimatedTime` | string | Time estimate (e.g., `10-15m`, `1h`, `2-3h`) |
-| `steps` | array | Steps within the activity |
-| `checkpoints` | array | User decision points |
-| `decisions` | array | Automated branching points |
-| `loops` | array | Iteration constructs |
+| `steps` | array | Ordered, kind-tagged execution list (technique / action / checkpoint / loop) |
+| `decisions` | array | Automated branching points (activity-level) |
 | `transitions` | array | Activity transition rules |
 | `triggers` | array | Workflows to trigger from this activity |
 | `outcome` | string[] | Expected outcomes on completion |
@@ -576,45 +567,42 @@ Activities are the execution units of a workflow. Each activity contains steps, 
 
 ### Steps
 
-Steps are individual tasks within an activity:
+`steps[]` is the activity's single ordered execution list. Every step carries a `kind`. A technique step binds an operation; an action step is control-only:
 
 ```json
 {
   "steps": [
     {
-      "id": "step-1-1",
-      "name": "Verify prerequisites",
-      "description": "Check that all requirements are met",
-      "required": true
+      "kind": "technique",
+      "id": "verify-prerequisites",
+      "technique": "setup::verify-prerequisites"
+    },
+    {
+      "kind": "action",
+      "id": "log-start",
+      "actions": [{ "action": "log", "message": "Activity started" }]
     }
   ]
 }
 ```
 
-### Checkpoints
+### Checkpoint Steps
 
-Checkpoints pause execution and require user input:
+A `kind: checkpoint` step pauses execution and requires user input. It sits inline in `steps[]` at the position where it is presented (there is no separate `checkpoints[]` array and no `step.checkpoint` reference):
 
 ```json
 {
-  "checkpoints": [
+  "steps": [
     {
-      "id": "checkpoint-1",
-      "name": "Confirmation Checkpoint",
-      "message": "Do you want to proceed?",
-      "condition": {
-        "type": "simple",
-        "variable": "needs_confirmation",
-        "operator": "==",
-        "value": true
-      },
-      "required": true,
+      "kind": "checkpoint",
+      "id": "confirm-proceed",
+      "when": "needs_confirmation == true",
       "blocking": true,
+      "message": "Do you want to proceed?",
       "options": [
         {
           "id": "proceed",
           "label": "Yes, proceed",
-          "description": "Continue to the next activity",
           "effect": {
             "setVariable": { "user_confirmed": true }
           }
@@ -632,7 +620,7 @@ Checkpoints pause execution and require user input:
 }
 ```
 
-The `condition` field uses the same formal condition schema as steps, transitions, decisions, and loops (`condition.schema.json`). If omitted, the checkpoint is always presented.
+The `when` / `condition` gate uses the same formal condition schema shared by every step kind, transitions, and decisions (`condition.schema.json`). If omitted, the checkpoint is always presented.
 
 **Checkpoint Option Effects:**
 - `setVariable` - Set workflow variables
@@ -674,24 +662,26 @@ Decisions are automated branching points based on conditions:
 }
 ```
 
-### Loops
+### Loop Steps
 
-Loops enable iteration over collections or while conditions:
+A `kind: loop` step is a compound step that iterates over collections or while conditions. Its body is a nested `steps[]` (there is no separate `loops[]` array). It is the one step kind that may carry a `name`:
 
 ```json
 {
-  "loops": [
+  "steps": [
     {
-      "id": "loop-1",
+      "kind": "loop",
+      "id": "task-loop",
       "name": "Task Loop",
-      "type": "forEach",
+      "loopType": "forEach",
       "variable": "current_task",
       "over": "tasks",
       "maxIterations": 100,
       "steps": [
         {
-          "id": "step-loop-1",
-          "name": "Process task"
+          "kind": "technique",
+          "id": "process-task",
+          "technique": "tasks::process-task"
         }
       ]
     }
@@ -699,7 +689,7 @@ Loops enable iteration over collections or while conditions:
 }
 ```
 
-**Loop Types:** `forEach`, `while`, `doWhile`
+**Loop Types (`loopType`):** `forEach`, `while`, `doWhile`
 
 ### Transitions
 
@@ -1047,14 +1037,13 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "estimatedTime": "5-10m",
       "steps": [
         {
-          "id": "step-gather",
-          "name": "Gather information"
-        }
-      ],
-      "checkpoints": [
+          "kind": "technique",
+          "id": "gather",
+          "technique": "review::gather-information"
+        },
         {
-          "id": "checkpoint-approve",
-          "name": "Approval Checkpoint",
+          "kind": "checkpoint",
+          "id": "approve",
           "message": "Do you approve this item?",
           "blocking": true,
           "options": [
@@ -1098,8 +1087,9 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "skills": { "primary": "activity-worker" },
       "steps": [
         {
-          "id": "step-process",
-          "name": "Process the approved item"
+          "kind": "technique",
+          "id": "process",
+          "technique": "processing::process-item"
         }
       ]
     },
@@ -1110,8 +1100,9 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "skills": { "primary": "activity-worker" },
       "steps": [
         {
-          "id": "step-notify",
-          "name": "Notify of rejection"
+          "kind": "technique",
+          "id": "notify",
+          "technique": "notify::notify-rejection"
         }
       ]
     }
@@ -1162,7 +1153,7 @@ if (result.success) {
 
 ## Activity Schema
 
-The activity schema (`activity.schema.json`) defines unified activities that combine workflow execution (steps, checkpoints, decisions, loops, transitions, triggers). Activities are reached via `transitions` from the workflow's `initialActivity`.
+The activity schema (`activity.schema.json`) defines unified activities that combine workflow execution: a single ordered, kind-tagged `steps[]` (technique / action / checkpoint / loop) plus activity-level decisions, transitions, and triggers. Activities are reached via `transitions` from the workflow's `initialActivity`. This schema is **generated** by [`scripts/generate-schemas.ts`](../scripts/generate-schemas.ts) from the Zod source of truth (it was previously hand-maintained) — do not hand-edit `activity.schema.json`.
 
 ### Top-Level Structure
 
@@ -1175,8 +1166,8 @@ The activity schema (`activity.schema.json`) defines unified activities that com
     "primary": "state-management"
   },
   "steps": [
-    { "id": "identify-target", "name": "Identify target workflow and context" },
-    { "id": "scan-planning-folders", "name": "Scan planning folders for saved sessions" }
+    { "kind": "technique", "id": "identify-target", "technique": "state-management::identify-target" },
+    { "kind": "technique", "id": "scan-planning-folders", "technique": "state-management::scan-planning-folders" }
   ],
   "outcome": ["Workflow target identified", "Prior state located if available"]
 }
@@ -1196,10 +1187,8 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 | Property | Type | Description |
 |----------|------|-------------|
 | `description` | string | Detailed description |
-| `steps` | Step[] | Ordered execution steps |
-| `checkpoints` | Checkpoint[] | User decision points |
-| `decisions` | Decision[] | Automated branching points |
-| `loops` | Loop[] | Iteration constructs |
+| `steps` | Step[] | Ordered, kind-tagged execution list (technique / action / checkpoint / loop) |
+| `decisions` | Decision[] | Automated branching points (activity-level) |
 | `transitions` | Transition[] | Navigation to other activities |
 | `triggers` | WorkflowTrigger[] | Workflows to trigger from this activity |
 | `outcome` | string[] | Expected outcomes when activity completes |
@@ -1234,17 +1223,18 @@ A complete activity definition with workflow trigger:
     }
   ],
   "steps": [
-    { "id": "select", "name": "Select next work package" },
-    { "id": "trigger", "name": "Trigger work-package workflow" },
-    { "id": "update", "name": "Update roadmap status" }
-  ],
-  "loops": [
     {
+      "kind": "loop",
       "id": "package-iteration",
       "name": "Package Iteration",
-      "type": "forEach",
+      "loopType": "forEach",
       "variable": "current_package",
-      "over": "remaining_packages"
+      "over": "remaining_packages",
+      "steps": [
+        { "kind": "technique", "id": "select", "technique": "implementation::select-next-package" },
+        { "kind": "technique", "id": "trigger", "technique": "implementation::trigger-work-package" },
+        { "kind": "technique", "id": "update", "technique": "implementation::update-roadmap-status" }
+      ]
     }
   ],
   "outcome": [

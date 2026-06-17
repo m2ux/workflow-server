@@ -6,12 +6,15 @@ import { WorkflowSchema } from '../src/schema/workflow.schema.js';
 import { WorkflowStateSchema } from '../src/schema/state.schema.js';
 import { ConditionSchema } from '../src/schema/condition.schema.js';
 import { SessionFileSchema } from '../src/schema/session.schema.js';
+import { ActivitySchema } from '../src/schema/activity.schema.js';
 
 const schemasDir = join(import.meta.dirname, '..', 'schemas');
 mkdirSync(schemasDir, { recursive: true });
 
-function generate(schema: Parameters<typeof zodToJsonSchema>[0], name: string, desc: string): void {
-  const json = zodToJsonSchema(schema, { name, $refStrategy: 'none' });
+// `none` inlines fully (no $ref); `root` emits $defs for recursive schemas (the loop-kind step's
+// nested steps[] body references StepSchema), which `none` cannot represent.
+function generate(schema: Parameters<typeof zodToJsonSchema>[0], name: string, desc: string, refStrategy: 'none' | 'root' = 'none'): void {
+  const json = zodToJsonSchema(schema, { name, $refStrategy: refStrategy });
   writeFileSync(join(schemasDir, `${name}.schema.json`), JSON.stringify({ $schema: 'https://json-schema.org/draft/2020-12/schema', title: name, description: desc, ...json }, null, 2) + '\n');
   console.log(`[PASS] Generated ${name}.schema.json`);
 }
@@ -21,4 +24,5 @@ generate(WorkflowSchema, 'workflow', 'Workflow definition schema');
 generate(WorkflowStateSchema, 'state', 'Workflow state schema');
 generate(ConditionSchema, 'condition', 'Condition expression schema');
 generate(SessionFileSchema, 'session-file', 'Server-managed session file (session.json) — canonical session state owned by the workflow server.');
+generate(ActivitySchema, 'activity', 'Activity definition schema — unified ordered, kind-tagged steps[] (technique | action | checkpoint | loop).', 'root');
 console.log('\n[PASS] Done');

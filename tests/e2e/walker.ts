@@ -53,12 +53,23 @@ export interface StepAction {
 
 export interface StepDef {
   id: string;
-  checkpoint?: string;
+  /** Unified step kind (technique | action | checkpoint | loop). Absent only on pre-migration data. */
+  kind?: 'technique' | 'action' | 'checkpoint' | 'loop';
+  checkpoint?: string; // legacy pre-migration reference
   /** Inline boolean gate, e.g. "is_monorepo == true". */
   when?: string;
   /** Structured gate (legacy). */
   condition?: Condition;
   actions?: StepAction[];
+  // kind:checkpoint — the checkpoint definition inlined (so a checkpoint StepDef IS a CheckpointDef).
+  message?: string;
+  options?: CheckpointOption[];
+  defaultOption?: string;
+  autoAdvanceMs?: number;
+  blocking?: boolean;
+  // kind:loop — compound body.
+  loopType?: string;
+  steps?: StepDef[];
 }
 
 export interface ActivityDef {
@@ -336,34 +347,60 @@ async function executeActivitySteps(
   const stepsExecuted: string[] = [];
   let transitionOverride: string | undefined;
 
-  for (const step of act.steps ?? []) {
-    if (step.condition && !evaluateCondition(step.condition, variables)) continue;
-    if (step.when && !evaluateWhen(step.when, variables)) continue;
-    stepsExecuted.push(step.id);
-    manifest.push({ step_id: step.id, output: 'done' });
+  const fireCheckpoint = async (cp: CheckpointDef): Promise<void> => {
+    const optionId = policy.choose({ activityId, checkpoint: cp, variables });
+    const effect = await resolveCheckpoint(client, sessionIndex, cp.id, optionId);
+    if (effect.setVariable) Object.assign(variables, effect.setVariable);
+    if (effect.transitionTo) transitionOverride = effect.transitionTo;
+    cpRecords.push({
+      activityId, checkpointId: cp.id, optionId,
+      setVariable: effect.setVariable, transitionTo: effect.transitionTo, skipActivities: effect.skipActivities,
+    });
+  };
 
-    if (step.checkpoint) {
-      const cp = (act.checkpoints ?? []).find(c => c.id === step.checkpoint);
-      if (cp && (!cp.condition || evaluateCondition(cp.condition, variables))) {
-        const optionId = policy.choose({ activityId, checkpoint: cp, variables });
-        const effect = await resolveCheckpoint(client, sessionIndex, cp.id, optionId);
-        if (effect.setVariable) Object.assign(variables, effect.setVariable);
-        if (effect.transitionTo) transitionOverride = effect.transitionTo;
-        cpRecords.push({
-          activityId, checkpointId: cp.id, optionId,
-          setVariable: effect.setVariable, transitionTo: effect.transitionTo, skipActivities: effect.skipActivities,
-        });
+  // Walk steps in document order. A kind:checkpoint step IS the checkpoint, fired at its concrete
+  // position (present-then-checkpoint is now literal adjacency). A kind:loop step's body is walked
+  // once (a single deterministic pass), firing any checkpoints nested inside it. technique/action
+  // steps record into the manifest and apply explicit `set` actions.
+  const walk = async (steps: StepDef[] | undefined): Promise<void> => {
+    for (const step of steps ?? []) {
+      if (step.condition && !evaluateCondition(step.condition, variables)) continue;
+      if (step.when && !evaluateWhen(step.when, variables)) continue;
+      if (step.kind === 'checkpoint') { await fireCheckpoint(step as unknown as CheckpointDef); continue; }
+      if (step.kind === 'loop') { await walk(step.steps); continue; }
+      stepsExecuted.push(step.id);
+      manifest.push({ step_id: step.id, output: 'done' });
+      // Legacy pre-migration `step.checkpoint` reference (no longer emitted post-migration).
+      if (step.checkpoint) {
+        const cp = (act.checkpoints ?? []).find((c) => c.id === step.checkpoint);
+        if (cp && (!cp.condition || evaluateCondition(cp.condition, variables))) await fireCheckpoint(cp);
+      }
+      for (const a of step.actions ?? []) {
+        if (a.action === 'set' && a.target && a.value !== undefined) variables[a.target] = a.value;
       }
     }
-
-    for (const a of step.actions ?? []) {
-      if (a.action === 'set' && a.target && a.value !== undefined) variables[a.target] = a.value;
-    }
-  }
+  };
+  await walk(act.steps);
   return { cpRecords, manifest, stepsExecuted, transitionOverride };
 }
 
-/** Checkpoints the activity declares but no step (or loop step) references. */
+/** The activity's checkpoint definitions in document order: the inline kind:checkpoint steps (new
+ *  shape, recursing into loop bodies) plus any legacy top-level checkpoints[] (pre-migration). */
+export function activityCheckpointSteps(act: ActivityDef): CheckpointDef[] {
+  const out: CheckpointDef[] = [];
+  const rec = (steps?: StepDef[]): void => {
+    for (const s of steps ?? []) {
+      if (s.kind === 'checkpoint') out.push(s as unknown as CheckpointDef);
+      if (s.steps) rec(s.steps);
+    }
+  };
+  rec(act.steps);
+  for (const cp of act.checkpoints ?? []) out.push(cp);
+  return out;
+}
+
+/** Checkpoints the activity declares but no step references. In the unified model every checkpoint
+ *  is an inline kind:checkpoint step (no orphans); retained for legacy pre-migration data only. */
 function findOrphanCheckpoints(act: ActivityDef): string[] {
   const referenced = new Set<string>();
   for (const s of act.steps ?? []) if (s.checkpoint) referenced.add(s.checkpoint);
@@ -505,7 +542,7 @@ export async function walk(
       artifactsWritten = writeArtifactStubs(act, variables, planningFolder, activityPrefixes.get(current));
     } else {
       cpRecords = [];
-      for (const cp of act.checkpoints ?? []) {
+      for (const cp of activityCheckpointSteps(act)) {
         if (cp.condition && !evaluateCondition(cp.condition, variables)) continue;
         const suggested = policy.choose({ activityId: current, checkpoint: cp, variables });
         const optionId = opts.decide?.({ kind: 'checkpoint', activityId: current, id: cp.id, options: cp.options.map((o) => o.id), suggested })

@@ -344,7 +344,8 @@ describe('mcp-server integration', () => {
       expect(activity.id).toBe('start-work-package');
       expect(activity.steps).toBeDefined();
       expect(Array.isArray(activity.steps)).toBe(true);
-      expect(activity.checkpoints).toBeDefined();
+      // Unified model: checkpoints are inline kind:checkpoint steps (no separate checkpoints[] array).
+      expect(activity.steps.some((s: { kind?: string }) => s.kind === 'checkpoint')).toBe(true);
       expect(activity.transitions).toBeDefined();
       expect(activity.session_index).toBeDefined();
     });

@@ -41,7 +41,7 @@ import {
   PARENT_CHAIN_DEPTH_WARN_THRESHOLD,
   type SessionFile,
 } from '../schema/session.schema.js';
-import { techniqueName } from '../schema/activity.schema.js';
+import { techniqueName, flattenActivitySteps } from '../schema/activity.schema.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { createTraceEvent } from '../trace.js';
 import { randomUUID } from 'node:crypto';
@@ -527,24 +527,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             throw new Error(`Activity '${state.currentActivity}' does not declare any activity-level techniques.`);
           }
         } else {
-          const step = activity.steps?.find(s => s.id === step_id);
+          const allSteps = flattenActivitySteps(activity);
+          const step = allSteps.find(s => s.id === step_id);
           if (step) {
             techniqueId = techniqueName(step.technique);
-          } else if (activity.loops) {
-            for (const loop of activity.loops) {
-              const loopStep = loop.steps?.find(s => s.id === step_id);
-              if (loopStep) {
-                techniqueId = techniqueName(loopStep.technique);
-                break;
-              }
-            }
           }
 
           if (!step && !techniqueId) {
-            const allStepIds = [
-              ...(activity.steps?.map(s => s.id) ?? []),
-              ...(activity.loops?.flatMap(l => l.steps?.map(s => s.id) ?? []) ?? []),
-            ].filter((id): id is string => id !== undefined);
+            const allStepIds = allSteps.map(s => s.id).filter((id): id is string => id !== undefined);
             throw new Error(`Step '${step_id}' not found in activity '${state.currentActivity}'. Available steps: [${allStepIds.join(', ')}]`);
           }
 

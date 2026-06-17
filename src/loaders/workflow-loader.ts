@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { type Workflow, safeValidateWorkflow } from '../schema/workflow.schema.js';
-import { type Activity, safeValidateActivity, populateStepIds } from '../schema/activity.schema.js';
+import { type Activity, safeValidateActivity, populateStepIds, activityCheckpoints } from '../schema/activity.schema.js';
 import { type Result, ok, err } from '../result.js';
 import { WorkflowNotFoundError, WorkflowValidationError, ActivityNotFoundError } from '../errors.js';
 import { logInfo, logError, logWarn } from '../logging.js';
@@ -248,9 +248,11 @@ export function getActivity(workflow: Workflow, activityId: string): Activity | 
   return workflow.activities?.find(a => a.id === activityId);
 }
 
-/** Get a checkpoint from an activity */
-export function getCheckpoint(workflow: Workflow, activityId: string, checkpointId: string) { 
-  return getActivity(workflow, activityId)?.checkpoints?.find(c => c.id === checkpointId); 
+/** Get a checkpoint from an activity (unified kind:checkpoint step or legacy checkpoints[]). */
+export function getCheckpoint(workflow: Workflow, activityId: string, checkpointId: string) {
+  const activity = getActivity(workflow, activityId);
+  if (!activity) return undefined;
+  return activityCheckpoints(activity).find(c => c.id === checkpointId);
 }
 
 /** Get all valid transitions from an activity */
@@ -260,7 +262,7 @@ export function getValidTransitions(workflow: Workflow, fromActivityId: string):
   const transitions: string[] = [];
   activity.transitions?.forEach(t => transitions.push(t.to));
   activity.decisions?.forEach(d => d.branches.forEach(b => { if (b.transitionTo) transitions.push(b.transitionTo); }));
-  activity.checkpoints?.forEach(c => c.options.forEach(o => o.effect?.transitionTo && transitions.push(o.effect.transitionTo)));
+  activityCheckpoints(activity).forEach(c => c.options.forEach(o => o.effect?.transitionTo && transitions.push(o.effect.transitionTo)));
   return [...new Set(transitions)];
 }
 
@@ -296,7 +298,7 @@ export function getTransitionList(workflow: Workflow, fromActivityId: string): T
     }
   }
 
-  for (const c of activity.checkpoints ?? []) {
+  for (const c of activityCheckpoints(activity)) {
     for (const o of c.options) {
       if (o.effect?.transitionTo && !seen.has(o.effect.transitionTo)) {
         entries.push({ to: o.effect.transitionTo, condition: `checkpoint:${c.id}:${o.id}` });

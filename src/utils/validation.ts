@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { Workflow } from '../schema/workflow.schema.js';
 import { getValidTransitions, getActivity, getTransitionList, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
-import { techniqueName } from '../schema/activity.schema.js';
+import { techniqueName, flattenActivitySteps } from '../schema/activity.schema.js';
 
 /**
  * Minimal view of session state required by the validation helpers. The
@@ -66,19 +66,8 @@ export function validateTechniqueAssociation(workflow: Workflow, activityId: str
 
   if (activity.techniques) activity.techniques.forEach(s => declared.add(s));
 
-  if (activity.steps) {
-    for (const step of activity.steps) {
-      if (step.technique) declared.add(techniqueName(step.technique)!);
-    }
-  }
-  if (activity.loops) {
-    for (const loop of activity.loops) {
-      if (loop.steps) {
-        for (const step of loop.steps) {
-          if (step.technique) declared.add(techniqueName(step.technique)!);
-        }
-      }
-    }
+  for (const step of flattenActivitySteps(activity)) {
+    if (step.technique) declared.add(techniqueName(step.technique)!);
   }
 
   if (declared.size === 0) return null;

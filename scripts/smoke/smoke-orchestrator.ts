@@ -26,7 +26,7 @@ import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHarness } from '../../tests/e2e/harness.js';
 import { parseToolResponse, parseWorkflowResponse, parseBundle } from '../../tests/e2e/harness.js';
-import { pickNext, type ActivityDef, type CheckpointDef } from '../../tests/e2e/walker.js';
+import { pickNext, activityCheckpointSteps, type ActivityDef, type CheckpointDef } from '../../tests/e2e/walker.js';
 import { defaultPolicy } from '../../tests/e2e/policies.js';
 import { evaluateCondition } from '../../src/schema/condition.schema.js';
 
@@ -189,7 +189,7 @@ async function main() {
         const state = JSON.parse(readFileSync(sessionPath, 'utf8'));
         const active = state.activeCheckpoint;
         if (active && active.checkpointId) {
-          const cp = (act.checkpoints ?? []).find((c: CheckpointDef) => c.id === active.checkpointId);
+          const cp = activityCheckpointSteps(act).find((c: CheckpointDef) => c.id === active.checkpointId);
           let optionId: string;
           let sv: Record<string, unknown> | undefined;
           let decidedBy = ORCHESTRATOR;

@@ -61,22 +61,24 @@ function withSessionStoreErrors<T extends Record<string, unknown>, R>(
  * order. The technique `## Outputs` is the single source of truth for artifact identity (AP-43/65);
  * this synthesizes the activity-level view the worker reads, so it can never drift from the steps.
  */
+type StepLike = { technique?: unknown; steps?: unknown[] };
+
 export async function composeActivityArtifacts(
-  activity: { steps?: Array<{ technique?: unknown }>; loops?: Array<{ steps?: Array<{ technique?: unknown }> }> } | undefined,
+  activity: { steps?: Array<StepLike> } | undefined,
   workflowDir: string,
   workflowId: string,
   activityId?: string,
 ): Promise<Array<{ id: string; name: string }>> {
   if (!activity) return [];
   const refs = new Set<string>();
-  const collect = (steps?: Array<{ technique?: unknown }>): void => {
+  const collect = (steps?: Array<StepLike>): void => {
     for (const s of steps ?? []) {
       const n = techniqueName(s.technique as Parameters<typeof techniqueName>[0]);
       if (n) refs.add(n);
+      if (Array.isArray(s.steps)) collect(s.steps as Array<StepLike>); // loop-kind nested body
     }
   };
   collect(activity.steps);
-  for (const loop of activity.loops ?? []) collect(loop.steps);
   if (refs.size === 0) return [];
   // Resolve like get_technique: a bare op may be activity-group shorthand (`<activityId>::<op>`), so
   // try the activity-named-group form too. resolveTechniques returns type 'not-found' for a candidate

@@ -32,6 +32,19 @@ export const WorkflowTriggerSchema = z.object({
 });
 export type WorkflowTrigger = z.infer<typeof WorkflowTriggerSchema>;
 
+// Checkpoint option schema — defined before StepSchema so a kind:checkpoint step can carry its options inline.
+export const CheckpointOptionSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  description: z.string().optional(),
+  effect: z.object({
+    setVariable: z.record(z.unknown()).optional(),
+    transitionTo: z.string().optional().describe('Activity ID to transition to'),
+    skipActivities: z.array(z.string()).optional().describe('Activity IDs to skip'),
+  }).optional(),
+});
+export type CheckpointOption = z.infer<typeof CheckpointOptionSchema>;
+
 // Step schema
 /**
  * Structured per-step technique binding. `name` is the operation reference; `inputs` carries input
@@ -44,24 +57,59 @@ export const TechniqueBindingSchema = z.object({
   inputs: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('Input deviations: op input id → source expression (rename of a bag variable, literal, or `{template}`). Only what differs from same-name binding or a declared default.'),
   outputs: z.record(z.string()).optional().describe('Output remaps: op output id → the workflow variable name its produced value lands under, when it differs from the output id.'),
 });
+export type TechniqueBinding = z.infer<typeof TechniqueBindingSchema>;
 
+/**
+ * A step in an activity's ordered execution list — a `kind`-tagged unit in the unified model:
+ * `technique` (binds an operation), `action` (control-only), `checkpoint` (an inline user decision
+ * point at its concrete position in the sequence), or `loop` (a compound step whose body is the
+ * recursive `steps`). Per-kind required fields are enforced in the superRefine below.
+ */
 export const StepSchema = z.object({
-  id: z.string().optional().describe('Identifier for this step within the activity. Optional when `technique` is present — the loader derives it from the last `::` segment of the technique name. A step with no technique must declare an explicit id.'),
+  id: z.string().optional().describe('Identifier for this step within the activity. Optional only for a kind:technique step (the loader derives it from the last `::` segment of the technique name); every other kind must declare an explicit id.'),
   description: z.string().optional().describe('Detailed guidance for executing this step. May carry a deprecated inline operation invocation of the form `technique-id::operation-name(arg: {var}, ...)`; the canonical binding is the `technique` field.'),
   technique: z.union([z.string(), TechniqueBindingSchema]).optional().describe('Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps.'),
-  checkpoint: z.string().optional().describe('Optional checkpoint ID. If present, the worker MUST yield this checkpoint to the orchestrator before executing the step.'),
   required: z.boolean().default(true),
   when: z.string().optional().describe('Inline boolean expression that gates this step. Examples: "has_saved_state == true", "is_monorepo == true", "client_workflow_completed == false". Evaluated against current variable state at runtime.'),
   condition: ConditionSchema.optional().describe('LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons.'),
   actions: z.array(ActionSchema).optional(),
   triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows to trigger from this step'),
+  // --- unified step-kinds ---
+  kind: z.enum(['technique', 'action', 'checkpoint', 'loop']).describe('Step-kind discriminator for the unified ordered-steps model. Required on every step.'),
+  // kind:checkpoint — the checkpoint definition carried inline, at its concrete position in the sequence.
+  message: z.string().optional().describe('kind:checkpoint — message presented to the user.'),
+  options: z.array(CheckpointOptionSchema).optional().describe('kind:checkpoint — decision options with effects.'),
+  defaultOption: z.string().optional().describe('kind:checkpoint — option auto-selected when autoAdvanceMs elapses.'),
+  autoAdvanceMs: z.number().int().positive().optional().describe('kind:checkpoint — ms before auto-selecting defaultOption.'),
+  blocking: z.boolean().optional().describe('kind:checkpoint — true requires explicit user selection (no auto-advance).'),
+  // kind:loop — a compound step whose body is a nested ordered steps[] (renamed `type`→`loopType` to avoid clashing with Condition.type).
+  loopType: z.enum(['forEach', 'while', 'doWhile']).optional().describe('kind:loop — iteration type.'),
+  variable: z.string().optional().describe('kind:loop — current-item variable bound each iteration.'),
+  over: z.string().optional().describe('kind:loop — collection expression iterated by a forEach loop.'),
+  breakCondition: ConditionSchema.optional().describe('kind:loop — early-exit condition evaluated each iteration.'),
+  maxIterations: z.number().int().positive().optional().describe('kind:loop — safety bound on iteration count.'),
+  steps: z.array(z.lazy((): z.ZodTypeAny => StepSchema)).optional().describe('kind:loop — the loop body, a nested ordered list of steps.'),
 }).superRefine((step, ctx) => {
-  if (!step.id && !step.technique) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: 'a step without a technique must declare an explicit id',
-      path: ['id'],
-    });
+  const issue = (message: string, path: string[] = []) =>
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message, path });
+  // Every step needs a resolvable id: explicit, or derivable from a kind:technique ref.
+  if (!step.id && !(step.kind === 'technique' && step.technique)) {
+    issue('a step without a derivable technique id must declare an explicit id', ['id']);
+  }
+  // Per-kind required-field contract for the unified model.
+  switch (step.kind) {
+    case 'technique':
+      if (step.technique === undefined) issue('a kind:technique step must declare `technique`', ['technique']);
+      break;
+    case 'checkpoint':
+      if (!step.message) issue('a kind:checkpoint step must declare `message`', ['message']);
+      if (!step.options || step.options.length === 0) issue('a kind:checkpoint step must declare at least one option', ['options']);
+      break;
+    case 'loop':
+      if (!step.loopType) issue('a kind:loop step must declare `loopType`', ['loopType']);
+      if (!step.steps) issue('a kind:loop step must declare a `steps` body', ['steps']);
+      break;
+    // 'action' carries no additional required field (its actions[] may be empty for marker steps).
   }
 });
 export type Step = z.infer<typeof StepSchema>;
@@ -105,15 +153,15 @@ export function populateStepIds(activity: Activity): void {
         );
       }
       seen.add(step.id);
+      // A loop-kind step carries a nested body; validate it as its own independent scope.
+      if (step.steps && step.steps.length > 0) {
+        fillScope(step.steps, `loop '${step.id}' steps`);
+      }
     }
   };
 
+  // Top-level steps; fillScope recurses into each loop-kind step's nested body as its own scope.
   fillScope(activity.steps, 'top-level steps');
-  if (activity.loops) {
-    for (const loop of activity.loops) {
-      fillScope(loop.steps, `loop '${loop.id}' steps`);
-    }
-  }
 }
 
 /**
@@ -134,19 +182,6 @@ export function injectResolvedStepIds(rawToon: string): string {
     },
   );
 }
-
-// Checkpoint option schema
-export const CheckpointOptionSchema = z.object({
-  id: z.string(),
-  label: z.string(),
-  description: z.string().optional(),
-  effect: z.object({
-    setVariable: z.record(z.unknown()).optional(),
-    transitionTo: z.string().optional().describe('Activity ID to transition to'),
-    skipActivities: z.array(z.string()).optional().describe('Activity IDs to skip'),
-  }).optional(),
-});
-export type CheckpointOption = z.infer<typeof CheckpointOptionSchema>;
 
 // Checkpoint schema
 export const CheckpointSchema = z.object({
@@ -226,13 +261,13 @@ export const ActivitySchema = z.object({
   // Activity-wide techniques, referenced by `::` path. The server bundles them into get_activity.
   techniques: TechniquesReferenceSchema.optional(),
 
-  // Execution
-  steps: z.array(StepSchema).optional().describe('Ordered execution steps for this activity'),
-  
-  // Control flow (optional)
-  checkpoints: z.array(CheckpointSchema).optional().describe('User decision points'),
+  // Execution — the single ordered list of kind-tagged steps (technique | action | checkpoint | loop).
+  // Checkpoints are inline kind:checkpoint steps and loops are compound kind:loop steps: there are no
+  // separate checkpoints[]/loops[] arrays in the unified model.
+  steps: z.array(StepSchema).optional().describe('Ordered, kind-tagged execution steps for this activity'),
+
+  // Activity-level routing (read by the orchestrator at the activity boundary, not part of the worker step sequence).
   decisions: z.array(DecisionSchema).optional().describe('Conditional branching points'),
-  loops: z.array(LoopSchema).optional().describe('Iteration constructs'),
   transitions: z.array(TransitionSchema).optional().describe('Navigation to other activities'),
   triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows to trigger from this activity'),
 
@@ -248,3 +283,38 @@ export type Activity = z.infer<typeof ActivitySchema>;
 
 export function validateActivity(data: unknown): Activity { return ActivitySchema.parse(data); }
 export function safeValidateActivity(data: unknown) { return ActivitySchema.safeParse(data); }
+
+/**
+ * Walk every step of an activity in document order: top-level steps and each loop-kind body
+ * (recursively). The single traversal all step/checkpoint consumers route through.
+ */
+export function flattenActivitySteps(activity: Activity): Step[] {
+  const out: Step[] = [];
+  const rec = (steps?: Step[]): void => {
+    for (const s of steps ?? []) {
+      out.push(s);
+      if (s.steps && s.steps.length) rec(s.steps as Step[]);
+    }
+  };
+  rec(activity.steps);
+  return out;
+}
+
+/**
+ * The activity's checkpoint definitions: the inline kind:checkpoint steps, in document order. A
+ * kind:checkpoint step carries its message/options/effects inline, so it maps directly to a
+ * checkpoint definition (its id is the stable key used for checkpoint yield/respond/replay).
+ */
+export function activityCheckpoints(activity: Activity): Checkpoint[] {
+  return flattenActivitySteps(activity)
+    .filter((s) => s.kind === 'checkpoint' && !!s.id)
+    .map((s) => ({
+      id: s.id!,
+      name: s.id!,
+      message: s.message ?? '',
+      options: s.options ?? [],
+      defaultOption: s.defaultOption,
+      autoAdvanceMs: s.autoAdvanceMs,
+      condition: s.condition,
+    }));
+}

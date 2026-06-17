@@ -88,13 +88,14 @@ describe('schema-validation', () => {
 
   describe('StepSchema', () => {
     it('should validate minimal step', () => {
-      const step = { id: 'step-1' };
+      const step = { kind: 'action', id: 'step-1' };
       const result = StepSchema.safeParse(step);
       expect(result.success).toBe(true);
     });
 
     it('should validate step with description', () => {
       const step = {
+        kind: 'technique',
         id: 'step-1',
         description: 'Detailed guidance for this step',
         technique: 'some-technique',
@@ -104,13 +105,19 @@ describe('schema-validation', () => {
     });
 
     it('should validate a technique-bound step without an explicit id', () => {
-      const step = { technique: 'cargo-operations::run-suite' };
+      const step = { kind: 'technique', technique: 'cargo-operations::run-suite' };
       const result = StepSchema.safeParse(step);
       expect(result.success).toBe(true);
     });
 
-    it('should reject a step with neither id nor technique', () => {
-      const step = { description: 'a control step missing its id' };
+    it('should reject a kind:action step with no explicit id', () => {
+      const step = { kind: 'action', description: 'a control step missing its id' };
+      const result = StepSchema.safeParse(step);
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject a step with no kind', () => {
+      const step = { id: 'step-1', technique: 'some-technique' };
       const result = StepSchema.safeParse(step);
       expect(result.success).toBe(false);
     });
@@ -249,14 +256,16 @@ describe('schema-validation', () => {
         name: 'Full Activity',
         description: 'An activity with everything',
         techniques: ['main-technique', 'helper-technique'],
-        estimatedTime: '1-2h',
-        steps: [{ id: 'step-1' }],
-        checkpoints: [
+        // Unified model: one ordered, kind-tagged steps[] — technique, an inline checkpoint, and a compound loop.
+        steps: [
+          { kind: 'technique', id: 'step-1', technique: 'main-technique::do-it' },
+          { kind: 'checkpoint', id: 'cp-1', message: 'OK?', options: [{ id: 'yes', label: 'Yes' }] },
           {
-            id: 'cp-1',
-            name: 'Check',
-            message: 'OK?',
-            options: [{ id: 'yes', label: 'Yes' }],
+            kind: 'loop',
+            id: 'loop-1',
+            loopType: 'forEach',
+            over: 'items',
+            steps: [{ kind: 'technique', id: 'inner', technique: 'helper-technique::each' }],
           },
         ],
         transitions: [{ to: 'activity-2', isDefault: true }],
