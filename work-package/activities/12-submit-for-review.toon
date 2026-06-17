@@ -3,167 +3,37 @@ version: 1.6.0
 name: Submit for Review
 description: "Submit the PR for review and handle reviewer feedback."
 required: true
-steps[14]:
-  - id: announce-start
+steps[21]:
+  - kind: action
+    id: announce-start
     actions[1]{action,message}:
       log,Submitting PR for review
-  - id: consolidate-review-findings
+  - kind: technique
+    id: consolidate-review-findings
     technique: findings-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: generate-review-summary
+  - kind: technique
+    id: generate-review-summary
     technique: review-summary
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: present-summary-to-user
-    checkpoint: review-summary-approval
+  - kind: action
+    id: present-summary-to-user
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: post-pr-review
-    technique: update-pr::render
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "=="
-      value: true
-  - id: dco-sign-off
-    technique: dco-provenance::record-attestation
-    checkpoint: dco-sign-off
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: push-commits
-    technique: manage-git::push-commits
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: update-description
-    technique: update-pr::render
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: instruct-merge-strategy
-    technique: manage-git::instruct-merge-strategy
-    checkpoint: merge-strategy-reminder
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: mark-ready
-    technique: update-pr::mark-ready
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: await-review
-    checkpoint: review-received
-  - id: process-review-comments
-    technique: respond-to-pr-review
-  - id: analyze-review-outcome
-    technique: review-outcome-analysis
-    checkpoint: review-outcome
-  - id: announce-completion
-    actions[1]{action,message}:
-      log,PR submitted and review cycle complete
-loops[1]:
-  - id: verify-pr-body-rerender
-    name: PR Body Verification Re-render Loop
-    type: while
-    condition:
-      type: simple
-      variable: body_conforms
-      operator: ==
-      value: false
-    maxIterations: 2
-    steps[2]:
-      - id: rerender-body
-        technique:
-          name: update-pr::render
-          inputs:
-            pr_template_variant: final
-      - id: verify-body
-        technique: update-pr::verify-body
-checkpoints[6]:
-  - id: dco-sign-off
-    name: DCO Sign-off
-    message: "Before pushing: please certify the Developer Certificate of Origin for this work package.\n\nProvenance context:\n- Model: {model_id}\n- Context scope: {context_scope}\n- Squash merge available: {squash_merge_supported}\n- Provenance log: {provenance_log_path}\n\nCertify that you:\n1. Reviewed the entire diff and understand each material change\n2. Have the right to submit this contribution under the project's license\n3. Did not include code with unclear or incompatible provenance\n4. Can explain where the solution came from (your design, repo context, or approved references)\n5. Tests and linters have been run (or will run in CI)\n6. Are willing to take responsibility for defects and licensing issues in this patch"
-    blocking: true
-    options[2]:
-      - id: certify
-        label: "I certify all of the above — proceed"
-        description: "DCO attestation recorded. Timestamp and identity logged to provenance-log.md."
-      - id: flag-legal
-        label: "I have reservations — flag for legal review"
-        description: "Document concern in provenance-log.md before proceeding. Consider escalating to legal or OSS program review."
-  - id: merge-strategy-reminder
-    name: Merge Strategy Reminder
-    message: "PR is ready for review. Merge strategy guidance:\n\n**Squash merge available — use squash merge with signed commit.**\nTo get a GPG-signed + DCO-attested merge commit, merge locally:\n```\ngit checkout main && git pull\ngit merge --squash {branch_name}\ngit commit -s -S -m 'feat: description (#{pr_number})'\ngit push\n```\nNote: GitHub web UI squash merge is not GPG-signed. Use the local flow above for a verified commit.\n\nIf squash merge is not available on this repo, branch commits land as-is — no signing required."
-    condition:
-      type: simple
-      variable: squash_merge_supported
-      operator: "=="
-      value: true
-    blocking: false
-    defaultOption: acknowledged
-    autoAdvanceMs: 20000
-    options[1]:
-      - id: acknowledged
-        label: "Understood — will use squash merge with signed commit"
-        description: Proceed to mark PR ready for review
-  - id: review-received
-    name: Review Received Checkpoint
-    message: "Has the PR received manual review feedback?"
-    options[2]:
-      - id: yes-review
-        label: "Yes, review comments received"
-        description: Proceed to analyze and respond to review comments
-      - id: no-waiting
-        label: "No, still waiting for review"
-        description: Continue waiting for review
-  - id: review-outcome
-    name: Review Outcome Checkpoint
-    message: "Review outcome analysis complete.\n\nReviewer comments:\n{review_comments_summary}\n\nRecommended outcome: {recommended_outcome}. Auto-advancing in 30s."
-    blocking: false
-    defaultOption: approved
-    autoAdvanceMs: 30000
-    options[3]:
-      - id: approved
-        label: Approved - No changes required
-        description: PR approved, proceed to completion
-        effect:
-          setVariable:
-            review_requires_changes: false
-      - id: minor-changes
-        label: Minor changes - Can be addressed inline
-        description: Small fixes that don't require re-planning
-        effect:
-          setVariable:
-            review_requires_changes: false
-      - id: significant-changes
-        label: Significant changes required
-        description: Changes require returning to planning stage
-        effect:
-          setVariable:
-            review_requires_changes: true
-  - id: review-summary-approval
-    name: Review Summary Approval Checkpoint
+    actions[0]:
+  - kind: checkpoint
+    id: review-summary-approval
     condition:
       type: simple
       variable: is_review_mode
@@ -186,8 +56,71 @@ checkpoints[6]:
         effect:
           setVariable:
             review_posted: false
-  - id: body-non-conformant
-    name: PR Body Non-Conformant Checkpoint
+  - kind: technique
+    id: post-pr-review
+    technique: update-pr::render
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - kind: technique
+    id: dco-sign-off
+    technique: dco-provenance::record-attestation
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: checkpoint
+    id: dco-sign-off-confirmation
+    message: "Before pushing: please certify the Developer Certificate of Origin for this work package.\n\nProvenance context:\n- Model: {model_id}\n- Context scope: {context_scope}\n- Squash merge available: {squash_merge_supported}\n- Provenance log: {provenance_log_path}\n\nCertify that you:\n1. Reviewed the entire diff and understand each material change\n2. Have the right to submit this contribution under the project's license\n3. Did not include code with unclear or incompatible provenance\n4. Can explain where the solution came from (your design, repo context, or approved references)\n5. Tests and linters have been run (or will run in CI)\n6. Are willing to take responsibility for defects and licensing issues in this patch"
+    blocking: true
+    options[2]:
+      - id: certify
+        label: "I certify all of the above — proceed"
+        description: "DCO attestation recorded. Timestamp and identity logged to provenance-log.md."
+      - id: flag-legal
+        label: "I have reservations — flag for legal review"
+        description: "Document concern in provenance-log.md before proceeding. Consider escalating to legal or OSS program review."
+  - kind: technique
+    id: push-commits
+    technique: manage-git::push-commits
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: technique
+    id: update-description
+    technique: update-pr::render
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: loop
+    id: verify-pr-body-rerender
+    name: PR Body Verification Re-render Loop
+    loopType: while
+    condition:
+      type: simple
+      variable: body_conforms
+      operator: ==
+      value: false
+    maxIterations: 2
+    steps[2]:
+      - kind: technique
+        id: rerender-body
+        technique:
+          name: update-pr::render
+          inputs:
+            pr_template_variant: final
+      - kind: technique
+        id: verify-body
+        technique: update-pr::verify-body
+  - kind: checkpoint
+    id: body-non-conformant
     condition:
       type: simple
       variable: body_conforms
@@ -217,6 +150,85 @@ checkpoints[6]:
           setVariable:
             submission_aborted: true
           transitionTo: complete
+  - kind: technique
+    id: instruct-merge-strategy
+    technique: manage-git::instruct-merge-strategy
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: checkpoint
+    id: merge-strategy-reminder
+    message: "PR is ready for review. Merge strategy guidance:\n\n**Squash merge available — use squash merge with signed commit.**\nTo get a GPG-signed + DCO-attested merge commit, merge locally:\n```\ngit checkout main && git pull\ngit merge --squash {branch_name}\ngit commit -s -S -m 'feat: description (#{pr_number})'\ngit push\n```\nNote: GitHub web UI squash merge is not GPG-signed. Use the local flow above for a verified commit.\n\nIf squash merge is not available on this repo, branch commits land as-is — no signing required."
+    condition:
+      type: simple
+      variable: squash_merge_supported
+      operator: "=="
+      value: true
+    blocking: false
+    defaultOption: acknowledged
+    autoAdvanceMs: 20000
+    options[1]:
+      - id: acknowledged
+        label: "Understood — will use squash merge with signed commit"
+        description: Proceed to mark PR ready for review
+  - kind: technique
+    id: mark-ready
+    technique: update-pr::mark-ready
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: action
+    id: await-review
+    actions[0]:
+  - kind: checkpoint
+    id: review-received
+    message: "Has the PR received manual review feedback?"
+    options[2]:
+      - id: yes-review
+        label: "Yes, review comments received"
+        description: Proceed to analyze and respond to review comments
+      - id: no-waiting
+        label: "No, still waiting for review"
+        description: Continue waiting for review
+  - kind: technique
+    id: process-review-comments
+    technique: respond-to-pr-review
+  - kind: technique
+    id: analyze-review-outcome
+    technique: review-outcome-analysis
+  - kind: checkpoint
+    id: review-outcome
+    message: "Review outcome analysis complete.\n\nReviewer comments:\n{review_comments_summary}\n\nRecommended outcome: {recommended_outcome}. Auto-advancing in 30s."
+    blocking: false
+    defaultOption: approved
+    autoAdvanceMs: 30000
+    options[3]:
+      - id: approved
+        label: Approved - No changes required
+        description: PR approved, proceed to completion
+        effect:
+          setVariable:
+            review_requires_changes: false
+      - id: minor-changes
+        label: Minor changes - Can be addressed inline
+        description: Small fixes that don't require re-planning
+        effect:
+          setVariable:
+            review_requires_changes: false
+      - id: significant-changes
+        label: Significant changes required
+        description: Changes require returning to planning stage
+        effect:
+          setVariable:
+            review_requires_changes: true
+  - kind: action
+    id: announce-completion
+    actions[1]{action,message}:
+      log,PR submitted and review cycle complete
 transitions[3]:
   - to: complete
     condition:

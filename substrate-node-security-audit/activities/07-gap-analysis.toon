@@ -4,12 +4,15 @@ name: Gap Analysis
 description: "Compare the AI audit report against a professional reference."
 required: false
 steps[3]:
-  - id: announce-start
+  - kind: action
+    id: announce-start
     actions[1]{action,message}:
       log,Starting gap analysis — reference report will be loaded NOW (not before)
-  - id: produce-gap-analysis
+  - kind: technique
+    id: produce-gap-analysis
     technique: write-gap-analysis
-  - id: announce-completion
+  - kind: action
+    id: announce-completion
     actions[1]{action,message}:
       log,Gap analysis complete — audit workflow finished
 transitions[0]:

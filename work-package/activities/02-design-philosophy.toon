@@ -3,68 +3,15 @@ version: 1.7.0
 name: Design Philosophy
 description: "Apply the design framework to classify the problem and decide the workflow path."
 required: true
-steps[9]:
-  - id: define-problem
+steps[13]:
+  - kind: technique
+    id: define-problem
     technique: define
-  - id: classify-problem
+  - kind: technique
+    id: classify-problem
     technique: classify
-    checkpoint: classification-confirmed
-  - id: determine-path
-    technique: determine-path
-    checkpoint: workflow-path-selected
-  - id: document-philosophy
-    technique: document
-    actions[1]:
-      - action: message
-        message: "Created: design-philosophy.md"
-  - id: collect-assumptions
-    technique:
-      name: review-assumptions::collect
-      inputs:
-        activity_context: design-philosophy
-        assumption_categories: "Problem Interpretation, Complexity Assessment, Workflow Path"
-  - id: create-assumptions-log
-    technique:
-      name: review-assumptions::record
-      inputs:
-        activity_context: design-philosophy
-        assumption_categories: "Problem Interpretation, Complexity Assessment, Workflow Path"
-  - id: reconcile-assumptions
-    technique: review-assumptions::reconcile
-  - id: assess-ticket-completeness
-    technique: assess-ticket-completeness
-    checkpoint: ticket-completeness
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "=="
-      value: true
-  - id: set-review-mode-path
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "=="
-      value: true
-    actions[1]:
-      - action: set
-        target: needs_elicitation
-        value: false
-        description: "Force needs_elicitation=false in review mode."
-loops[1]:
-  - id: assumption-reconciliation
-    name: Assumption Reconciliation Loop
-    type: while
-    condition:
-      type: simple
-      variable: has_resolvable_assumptions
-      operator: ==
-      value: true
-    steps[1]:
-      - id: reconcile-iteration
-        technique: review-assumptions::reconcile
-checkpoints[3]:
-  - id: classification-confirmed
-    name: Classification Checkpoint
+  - kind: checkpoint
+    id: classification-confirmed
     message: "Based on my analysis, this appears to be a {problem_type} with {problem_complexity} complexity. Confirming in 30s unless you intervene."
     blocking: false
     defaultOption: confirmed
@@ -76,8 +23,11 @@ checkpoints[3]:
       - id: revise
         label: Revise classification
         description: The problem classification needs adjustment
-  - id: workflow-path-selected
-    name: Workflow Path Checkpoint
+  - kind: technique
+    id: determine-path
+    technique: determine-path
+  - kind: checkpoint
+    id: workflow-path-selected
     message: "Given the {problem_complexity} classification, the recommended path is shown as default. Auto-advancing in 30s. For simple: skip optional, moderate: research only, complex: full workflow."
     blocking: false
     defaultOption: skip-optional
@@ -119,8 +69,52 @@ checkpoints[3]:
             needs_elicitation: false
             needs_research: false
             skip_optional_activities: true
-  - id: ticket-completeness
-    name: Ticket Completeness Checkpoint
+  - kind: technique
+    id: document-philosophy
+    technique: document
+    actions[1]:
+      - action: message
+        message: "Created: design-philosophy.md"
+  - kind: technique
+    id: collect-assumptions
+    technique:
+      name: review-assumptions::collect
+      inputs:
+        activity_context: design-philosophy
+        assumption_categories: "Problem Interpretation, Complexity Assessment, Workflow Path"
+  - kind: technique
+    id: create-assumptions-log
+    technique:
+      name: review-assumptions::record
+      inputs:
+        activity_context: design-philosophy
+        assumption_categories: "Problem Interpretation, Complexity Assessment, Workflow Path"
+  - kind: technique
+    id: reconcile-assumptions
+    technique: review-assumptions::reconcile
+  - kind: loop
+    id: assumption-reconciliation
+    name: Assumption Reconciliation Loop
+    loopType: while
+    condition:
+      type: simple
+      variable: has_resolvable_assumptions
+      operator: ==
+      value: true
+    steps[1]:
+      - kind: technique
+        id: reconcile-iteration
+        technique: review-assumptions::reconcile
+  - kind: technique
+    id: assess-ticket-completeness
+    technique: assess-ticket-completeness
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - kind: checkpoint
+    id: ticket-completeness
     condition:
       type: simple
       variable: is_review_mode
@@ -147,6 +141,18 @@ checkpoints[3]:
         effect:
           setVariable:
             ticket_refactor_needed: false
+  - kind: action
+    id: set-review-mode-path
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+    actions[1]:
+      - action: set
+        target: needs_elicitation
+        value: false
+        description: "Force needs_elicitation=false in review mode."
 transitions[1]:
   - to: codebase-comprehension
     isDefault: true

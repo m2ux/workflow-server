@@ -7,162 +7,65 @@ rules[3]:
   - "Each review pass is independent — complete one pass fully before starting the next"
   - "Flag every instance of prose that maps to a formal schema construct"
   - "Flag every rule that can be violated by ignoring it and lacks structural enforcement"
-steps[11]:
-  - id: load-all-workflow-files
+steps[16]:
+  - kind: technique
+    id: load-all-workflow-files
     technique: reload-workflow
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: principle-compliance-audit
+  - kind: technique
+    id: principle-compliance-audit
     technique: audit-principles
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: anti-pattern-scan
+  - kind: technique
+    id: anti-pattern-scan
     technique: audit-anti-patterns
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: schema-validation-check
+  - kind: technique
+    id: schema-validation-check
     technique: audit-schema-validation
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: tool-technique-doc-consistency
+  - kind: technique
+    id: tool-technique-doc-consistency
     technique: audit-consistency
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: compile-report
+  - kind: technique
+    id: compile-report
     technique: compile-report
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: offer-fixes
-    checkpoint: review-disposition
+  - kind: action
+    id: offer-fixes
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: audit-expressiveness
-    technique: audit-expressiveness
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: audit-conformance
-    technique: audit-conformance
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: audit-rule-hygiene
-    technique: audit-rule-hygiene
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: audit-rule-enforcement
-    technique: audit-rule-enforcement
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-checkpoints[5]:
-  - id: expressiveness-confirmed
-    name: Expressiveness Review Checkpoint
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-    message: "Schema expressiveness review complete. {expressiveness_finding_count} findings. Accepting in 30s unless you intervene."
-    blocking: false
-    defaultOption: confirmed
-    autoAdvanceMs: 30000
-    options[2]:
-      - id: confirmed
-        label: "Accept corrections"
-        description: Apply the expressiveness corrections (default — auto-accepts after 30s)
-      - id: revise
-        label: "Revise corrections"
-        description: Change some of the corrections
-  - id: conformance-confirmed
-    name: Conformance Review Checkpoint
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-    message: "Convention conformance review complete. {conformance_finding_count} divergences found. Accepting in 30s unless you intervene."
-    blocking: false
-    defaultOption: accept-as-is
-    autoAdvanceMs: 30000
-    options[3]:
-      - id: fix-all
-        label: "Fix all divergences"
-        description: Bring all content into conformance
-      - id: selective
-        label: "Selective fixes"
-        description: Fix some divergences, keep justified ones
-      - id: accept-as-is
-        label: "Accept as-is"
-        description: The divergences are intentional (default — auto-accepts after 30s)
-  - id: rule-hygiene-confirmed
-    name: Rule Hygiene Checkpoint
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-    message: "Rule hygiene audit complete. {rule_hygiene_finding_count} findings (restatements, contradictions, duplications, prefix patterns). Accepting in 30s unless you intervene."
-    blocking: false
-    defaultOption: fix-all
-    autoAdvanceMs: 30000
-    options[2]:
-      - id: fix-all
-        label: "Fix all findings"
-        description: Remove restatements, resolve contradictions, deduplicate, regroup (default — auto-accepts after 30s)
-      - id: selective
-        label: "Selective fixes"
-        description: Choose which findings to address
-  - id: enforcement-confirmed
-    name: Rule Enforcement Checkpoint
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-    message: "Rule-to-structure audit complete. {enforcement_finding_count} text-only rules found. Accepting in 30s unless you intervene."
-    blocking: false
-    defaultOption: accept-text-only
-    autoAdvanceMs: 30000
-    options[2]:
-      - id: add-enforcement
-        label: "Add structural enforcement"
-        description: Add checkpoints, conditions, or validate actions for flagged rules
-      - id: accept-text-only
-        label: "Accept text-only rules"
-        description: These rules are acceptable as text-only guidance (default — auto-accepts after 30s)
-  - id: review-disposition
-    name: Review Disposition Checkpoint
+    actions[0]:
+  - kind: checkpoint
+    id: review-disposition
     condition:
       type: simple
       variable: is_review_mode
@@ -194,6 +97,113 @@ checkpoints[5]:
             is_update_mode: true
             is_review_mode: false
           transitionTo: intake-and-context
+  - kind: technique
+    id: audit-expressiveness
+    technique: audit-expressiveness
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: checkpoint
+    id: expressiveness-confirmed
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+    message: "Schema expressiveness review complete. {expressiveness_finding_count} findings. Accepting in 30s unless you intervene."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
+    options[2]:
+      - id: confirmed
+        label: "Accept corrections"
+        description: Apply the expressiveness corrections (default — auto-accepts after 30s)
+      - id: revise
+        label: "Revise corrections"
+        description: Change some of the corrections
+  - kind: technique
+    id: audit-conformance
+    technique: audit-conformance
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: checkpoint
+    id: conformance-confirmed
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+    message: "Convention conformance review complete. {conformance_finding_count} divergences found. Accepting in 30s unless you intervene."
+    blocking: false
+    defaultOption: accept-as-is
+    autoAdvanceMs: 30000
+    options[3]:
+      - id: fix-all
+        label: "Fix all divergences"
+        description: Bring all content into conformance
+      - id: selective
+        label: "Selective fixes"
+        description: Fix some divergences, keep justified ones
+      - id: accept-as-is
+        label: "Accept as-is"
+        description: The divergences are intentional (default — auto-accepts after 30s)
+  - kind: technique
+    id: audit-rule-hygiene
+    technique: audit-rule-hygiene
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: checkpoint
+    id: rule-hygiene-confirmed
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+    message: "Rule hygiene audit complete. {rule_hygiene_finding_count} findings (restatements, contradictions, duplications, prefix patterns). Accepting in 30s unless you intervene."
+    blocking: false
+    defaultOption: fix-all
+    autoAdvanceMs: 30000
+    options[2]:
+      - id: fix-all
+        label: "Fix all findings"
+        description: Remove restatements, resolve contradictions, deduplicate, regroup (default — auto-accepts after 30s)
+      - id: selective
+        label: "Selective fixes"
+        description: Choose which findings to address
+  - kind: technique
+    id: audit-rule-enforcement
+    technique: audit-rule-enforcement
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: checkpoint
+    id: enforcement-confirmed
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+    message: "Rule-to-structure audit complete. {enforcement_finding_count} text-only rules found. Accepting in 30s unless you intervene."
+    blocking: false
+    defaultOption: accept-text-only
+    autoAdvanceMs: 30000
+    options[2]:
+      - id: add-enforcement
+        label: "Add structural enforcement"
+        description: Add checkpoints, conditions, or validate actions for flagged rules
+      - id: accept-text-only
+        label: "Accept text-only rules"
+        description: These rules are acceptable as text-only guidance (default — auto-accepts after 30s)
 transitions[1]:
   - to: validate-and-commit
     isDefault: true

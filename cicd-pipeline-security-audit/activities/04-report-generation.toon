@@ -6,20 +6,27 @@ techniques[1]:
   - execute-cicd-audit
 required: true
 steps[7]:
-  - id: announce-start
+  - kind: action
+    id: announce-start
     actions[1]{action,message}:
       log,Starting report generation — scoring findings and producing audit report
-  - id: apply-severity
+  - kind: technique
+    id: apply-severity
     technique: score-cicd-severity::apply-severity
-  - id: severity-crosscheck
+  - kind: technique
+    id: severity-crosscheck
     technique: score-cicd-severity::calibrate
-  - id: coverage-gate
+  - kind: technique
+    id: coverage-gate
     technique: verify-scan-output::verify-file-coverage
-  - id: attach-remediation
+  - kind: technique
+    id: attach-remediation
     technique: write-cicd-report::attach-remediation
-  - id: write-report
+  - kind: technique
+    id: write-report
     technique: write-cicd-report::write-report
-  - id: finalize-activity
+  - kind: action
+    id: finalize-activity
     actions[2]{action,message}:
       log,Report generation complete — CI/CD security audit report finalized
       set,report_complete=true

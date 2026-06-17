@@ -2,17 +2,18 @@ id: scope-assessment
 version: 1.2.0
 name: Scope Assessment
 description: Confirm multi-work-package initiative and identify work packages to be planned
-steps[2]:
-  - id: verify-preconditions
+steps[3]:
+  - kind: action
+    id: verify-preconditions
     actions[1]:
       - action: validate
         target: agents_md_read
         message: "AGENTS.md must be read before starting workflow"
-  - id: assess-scope
+  - kind: technique
+    id: assess-scope
     technique: assess-initiative-scope
-checkpoints[1]:
-  - id: scope-confirmed
-    name: Scope Confirmation
+  - kind: checkpoint
+    id: scope-confirmed
     message: "I've identified N work packages. Proceed with planning?"
     options[2]:
       - id: proceed

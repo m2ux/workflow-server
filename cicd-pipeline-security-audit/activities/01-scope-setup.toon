@@ -6,20 +6,27 @@ techniques[1]:
   - execute-cicd-audit
 required: true
 steps[7]:
-  - id: announce-start
+  - kind: action
+    id: announce-start
     actions[1]{action,message}:
       log,Starting CI/CD pipeline security audit scope setup
-  - id: confirm-targets
+  - kind: technique
+    id: confirm-targets
     technique: inventory-workflows::confirm-targets
-  - id: discover-workflows
+  - kind: technique
+    id: discover-workflows
     technique: inventory-workflows::discover-files
-  - id: discover-ai-configs
+  - kind: technique
+    id: discover-ai-configs
     technique: inventory-workflows::inventory-ai-configs
-  - id: record-codeowners
+  - kind: technique
+    id: record-codeowners
     technique: inventory-workflows::record-codeowners
-  - id: create-planning-folder
+  - kind: technique
+    id: create-planning-folder
     technique: inventory-workflows::initialize-planning-folder
-  - id: announce-completion
+  - kind: action
+    id: announce-completion
     actions[1]{action,message}:
       log,Scope setup complete — targets confirmed and workflow inventory built
 transitions[1]{to,isDefault}:

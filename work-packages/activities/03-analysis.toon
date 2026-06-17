@@ -2,9 +2,39 @@ id: analysis
 version: 1.2.0
 name: Analysis
 description: Perform completion or context analysis depending on whether continuing previous work or starting new initiative
-steps[1]:
-  - id: analyze-context
+steps[3]:
+  - kind: checkpoint
+    id: analysis-type-selection
+    message: "Is this continuing previous work or a new initiative?"
+    options[2]:
+      - id: continuing
+        label: Continuing previous work
+        description: Perform completion analysis of existing progress
+        effect:
+          setVariable:
+            analysis_type: completion
+      - id: new-initiative
+        label: New initiative
+        description: Perform context analysis for a fresh start
+        effect:
+          setVariable:
+            analysis_type: context
+    blocking: true
+  - kind: technique
+    id: analyze-context
     technique: analyze-initiative-context
+  - kind: checkpoint
+    id: analysis-confirmed
+    message: "Analysis complete. Does this context look correct?"
+    options[2]:
+      - id: proceed
+        label: Context is correct, proceed
+        effect:
+          transitionTo: package-planning
+      - id: revise
+        label: Revise analysis
+        effect:
+          transitionTo: analysis
 decisions[1]:
   - id: analysis-method
     name: Analysis Method Selection
@@ -25,36 +55,6 @@ decisions[1]:
           operator: "=="
           value: context
         isDefault: true
-checkpoints[2]:
-  - id: analysis-type-selection
-    name: Analysis Type Selection
-    message: "Is this continuing previous work or a new initiative?"
-    options[2]:
-      - id: continuing
-        label: Continuing previous work
-        description: Perform completion analysis of existing progress
-        effect:
-          setVariable:
-            analysis_type: completion
-      - id: new-initiative
-        label: New initiative
-        description: Perform context analysis for a fresh start
-        effect:
-          setVariable:
-            analysis_type: context
-    blocking: true
-  - id: analysis-confirmed
-    name: Analysis Confirmation
-    message: "Analysis complete. Does this context look correct?"
-    options[2]:
-      - id: proceed
-        label: Context is correct, proceed
-        effect:
-          transitionTo: package-planning
-      - id: revise
-        label: Revise analysis
-        effect:
-          transitionTo: analysis
 transitions[1]:
   - to: package-planning
     isDefault: true

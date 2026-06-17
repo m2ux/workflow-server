@@ -4,15 +4,17 @@ name: Synthesis Pass
 description: "Run the synthesis lens against each full-prism unit's structural and adversarial artifacts."
 techniques[1]:
   - "scatter-gather"
-loops[1]:
-  - id: synthesis-unit-cycle
+steps[1]:
+  - kind: loop
+    id: synthesis-unit-cycle
     name: Synthesis Unit Cycle
-    type: forEach
+    loopType: forEach
     variable: current_unit
     over: analysis_units
     maxIterations: 100
     steps[1]:
-      - id: run-synthesis
+      - kind: technique
+        id: run-synthesis
         technique:
           name: full-prism
           inputs:

@@ -4,7 +4,8 @@ name: Apply Updates
 description: "Apply approved resource changes, then update skill routing and documentation to match the current resource catalog."
 required: true
 steps[4]:
-  - id: verify-preconditions
+  - kind: action
+    id: verify-preconditions
     actions[2]:
       - action: validate
         target: resource_path
@@ -12,11 +13,14 @@ steps[4]:
       - action: validate
         target: change_set
         message: "change_set must be populated before applying updates"
-  - id: sync-resources
+  - kind: technique
+    id: sync-resources
     technique: sync-resources
-  - id: update-skill-routing
+  - kind: technique
+    id: update-skill-routing
     technique: update-skill-routing
-  - id: update-prism-docs
+  - kind: technique
+    id: update-prism-docs
     technique: update-prism-docs
 transitions[1]:
   - to: verify

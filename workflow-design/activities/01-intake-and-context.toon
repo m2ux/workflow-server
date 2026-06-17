@@ -9,51 +9,12 @@ rules[5]:
   - "Do not proceed to content drafting until format_literacy_confirmed and schema_constructs_confirmed are both true"
   - "Read at least two existing workflows of similar type to establish pattern baseline"
   - "Present the schema construct summary to the user for confirmation"
-steps[3]:
-  - id: intake-classification
+steps[8]:
+  - kind: technique
+    id: intake-classification
     technique: intake-classification
-    checkpoint: mode-confirmation
-  - id: context-loading
-    technique: context-loading
-  - id: auto-confirm-literacy
-    condition:
-      type: simple
-      variable: is_update_mode
-      operator: "=="
-      value: true
-    actions[2]:
-      - action: set
-        target: format_literacy_confirmed
-        value: true
-      - action: set
-        target: schema_constructs_confirmed
-        value: true
-checkpoints[5]:
-  - id: review-scope-confirmed
-    name: Review Target Confirmation
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "=="
-      value: true
-    message: "Compliance review is scoped to workflow '{target_workflow_id}'. Is this the correct target?"
-    required: true
-    blocking: true
-    options[2]:
-      - id: confirm-review-target
-        label: "Yes — audit this workflow"
-        description: "Target confirmed; flow continues with the current `target_workflow_id`."
-        effect:
-          setVariable:
-            review_scope_confirmed: true
-      - id: wrong-review-target
-        label: "No — wrong target"
-        description: "Target rejected; checkpoint remains blocking until a correct `target_workflow_id` is supplied."
-        effect:
-          setVariable:
-            review_scope_confirmed: false
-  - id: mode-confirmation
-    name: Mode Confirmation
+  - kind: checkpoint
+    id: mode-confirmation
     condition:
       type: simple
       variable: is_review_mode
@@ -74,8 +35,33 @@ checkpoints[5]:
         effect:
           setVariable:
             is_update_mode: true
-  - id: change-request-confirmed
-    name: Change Request Confirmation
+  - kind: checkpoint
+    id: review-scope-confirmed
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+    message: "Compliance review is scoped to workflow '{target_workflow_id}'. Is this the correct target?"
+    blocking: true
+    options[2]:
+      - id: confirm-review-target
+        label: "Yes — audit this workflow"
+        description: "Target confirmed; flow continues with the current `target_workflow_id`."
+        effect:
+          setVariable:
+            review_scope_confirmed: true
+      - id: wrong-review-target
+        label: "No — wrong target"
+        description: "Target rejected; checkpoint remains blocking until a correct `target_workflow_id` is supplied."
+        effect:
+          setVariable:
+            review_scope_confirmed: false
+  - kind: technique
+    id: context-loading
+    technique: context-loading
+  - kind: checkpoint
+    id: change-request-confirmed
     condition:
       type: simple
       variable: is_update_mode
@@ -96,8 +82,8 @@ checkpoints[5]:
         effect:
           setVariable:
             is_update_mode: false
-  - id: format-literacy
-    name: Format Literacy Checkpoint
+  - kind: checkpoint
+    id: format-literacy
     condition:
       type: and
       conditions[2]:
@@ -120,8 +106,22 @@ checkpoints[5]:
       - id: incorrect
         label: "Needs correction"
         description: "Format understanding has errors that must be corrected before proceeding."
-  - id: constructs-confirmed
-    name: Schema Constructs Checkpoint
+  - kind: action
+    id: auto-confirm-literacy
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "=="
+      value: true
+    actions[2]:
+      - action: set
+        target: format_literacy_confirmed
+        value: true
+      - action: set
+        target: schema_constructs_confirmed
+        value: true
+  - kind: checkpoint
+    id: constructs-confirmed
     condition:
       type: and
       conditions[2]:

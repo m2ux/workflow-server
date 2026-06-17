@@ -4,20 +4,26 @@ name: "Sub-Agent: Crate Deep Review"
 description: "Structured crate review for Group A sub-agents."
 required: false
 steps[6]:
-  - id: build-function-registry
+  - kind: technique
+    id: build-function-registry
     technique: build-function-registry
-  - id: extract-invariants
+  - kind: technique
+    id: extract-invariants
     technique: extract-invariants
-  - id: apply-checklist
+  - kind: technique
+    id: apply-checklist
     technique: apply-checklist
-  - id: cross-function-comparison
+  - kind: technique
+    id: cross-function-comparison
     technique:
       name: scan-storage-lifecycle
       inputs:
         verify_invariants: true
-  - id: verify-completeness
+  - kind: technique
+    id: verify-completeness
     technique: verify-sub-agent-output
-  - id: format-output
+  - kind: technique
+    id: format-output
     technique: execute-sub-agent
 outcome[4]:
   - The whole crate has been read, so no source file is silently left unreviewed

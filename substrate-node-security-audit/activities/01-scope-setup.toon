@@ -4,12 +4,15 @@ name: Scope Setup
 description: "Set up the audit scope and planning folder."
 required: true
 steps[3]:
-  - id: announce-start
+  - kind: action
+    id: announce-start
     actions[1]{action,message}:
       log,Starting security audit scope setup
-  - id: setup-target
+  - kind: technique
+    id: setup-target
     technique: setup-audit-target
-  - id: announce-completion
+  - kind: action
+    id: announce-completion
     actions[1]{action,message}:
       log,Scope setup complete — target confirmed and planning folder created
 transitions[1]{to,isDefault}:

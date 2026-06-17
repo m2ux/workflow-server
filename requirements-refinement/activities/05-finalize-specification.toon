@@ -3,15 +3,15 @@ version: 1.2.0
 name: Finalize Specification
 description: "Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts, and confirm the user accepts them for promotion to the canonical location."
 required: true
-steps[1]:
-  - id: finalize-specification
+steps[2]:
+  - kind: technique
+    id: finalize-specification
     technique: finalize-specification
     actions[1]:
       - action: message
         message: "Created: final-spec.md and change-summary.md"
-checkpoints[1]:
-  - id: finalization-confirmed
-    name: Finalization Confirmation
+  - kind: checkpoint
+    id: finalization-confirmed
     message: "The final specification ({spec_basename}) and change summary are staged in the planning folder. Accept them for promotion?"
     blocking: true
     options[2]:

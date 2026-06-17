@@ -2,20 +2,24 @@ id: scope-definition
 version: 1.2.0
 name: Define Evaluation Scope
 description: "Collect the evaluation target, description, and output path."
-steps[5]:
-  - id: collect-inputs
+steps[6]:
+  - kind: technique
+    id: collect-inputs
     technique: plan-evaluation::collect-scope
-  - id: classify-target
+  - kind: technique
+    id: classify-target
     technique: plan-evaluation::classify-target
-  - id: derive-dimensions
+  - kind: technique
+    id: derive-dimensions
     technique: plan-evaluation::derive-dimensions
-  - id: create-output-directory
+  - kind: technique
+    id: create-output-directory
     technique: plan-evaluation::create-output-folder
-  - id: summarize-scope
+  - kind: technique
+    id: summarize-scope
     technique: plan-evaluation::summarize-scope
-checkpoints[1]:
-  - id: confirm-scope
-    name: Evaluation Scope Confirmation
+  - kind: checkpoint
+    id: confirm-scope
     message: "Please confirm the evaluation scope, dimensions, and configuration before proceeding to dimension planning."
     options[2]:
       - id: accept
@@ -29,7 +33,6 @@ checkpoints[1]:
         description: "Modify the target, description, dimensions, or output path before proceeding"
         effect:
           transitionTo: scope-definition
-    required: true
     blocking: true
 outcome[1]:
   - "Evaluation scope confirmed with validated target path, target type, and dimensions"

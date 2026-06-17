@@ -2,12 +2,12 @@ id: finalize-roadmap
 version: 1.2.0
 name: Finalize Roadmap
 description: Complete roadmap documentation with timeline, navigation, and success criteria
-steps[1]:
-  - id: finalize-roadmap-docs
+steps[2]:
+  - kind: technique
+    id: finalize-roadmap-docs
     technique: document-roadmap
-checkpoints[1]:
-  - id: roadmap-complete
-    name: Roadmap Completion
+  - kind: checkpoint
+    id: roadmap-complete
     message: "Roadmap complete. Ready to begin implementation?"
     options[2]:
       - id: begin

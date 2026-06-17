@@ -4,26 +4,33 @@ name: Report Generation
 description: "Consolidate findings into the final audit report."
 required: true
 steps[7]:
-  - id: announce-start
+  - kind: action
+    id: announce-start
     actions[1]{action,message}:
       log,Starting report generation — consolidating findings from all phases
-  - id: integrate-adversarial-results
+  - kind: technique
+    id: integrate-adversarial-results
     technique:
       name: merge-findings
       inputs:
         merge_strategy: integrate
-  - id: apply-severity
+  - kind: technique
+    id: apply-severity
     technique:
       name: score-severity
       inputs:
         findings: merge_table
-  - id: coverage-gate
+  - kind: technique
+    id: coverage-gate
     technique: verify-sub-agent-output
-  - id: verify-elevation-completeness
+  - kind: technique
+    id: verify-elevation-completeness
     technique: merge-findings
-  - id: write-report
+  - kind: technique
+    id: write-report
     technique: write-report
-  - id: finalize-activity
+  - kind: action
+    id: finalize-activity
     actions[2]{action,message}:
       log,Report generation complete — audit report finalized
       set,report_complete=true

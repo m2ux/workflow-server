@@ -4,30 +4,33 @@ name: Resolution Dialogue
 description: "Propose mitigations for each evaluation finding one-by-one."
 techniques[1]:
   - scatter-gather
-steps[2]:
-  - id: load-and-classify
+steps[4]:
+  - kind: technique
+    id: load-and-classify
     technique: resolve-findings::load-and-classify
-  - id: compile-plan
-    technique: resolve-findings::compile-plan
-loops[1]:
-  - id: finding-iteration
+  - kind: loop
+    id: finding-iteration
     name: Finding Iteration
-    type: forEach
+    loopType: forEach
     variable: current_finding
     over: evaluation_findings
     maxIterations: 100
     steps[2]:
-      - id: propose-mitigation
+      - kind: technique
+        id: propose-mitigation
         technique: resolve-findings::propose-mitigation-by-tier
-      - id: present-and-collect-decision
+      - kind: technique
+        id: present-and-collect-decision
         technique: resolve-findings::present-and-collect-per-finding
         actions[1]:
           - action: set
             target: accepted_mitigations
             description: "Append the finding's recorded decision."
-checkpoints[1]:
-  - id: finding-decision
-    name: Finding Mitigation Decision
+  - kind: technique
+    id: compile-plan
+    technique: resolve-findings::compile-plan
+  - kind: checkpoint
+    id: finding-decision
     message: "Finding {current_finding.id} ({current_finding.severity}): Here is the proposed mitigation. How would you like to proceed?"
     options[4]:
       - id: accept
@@ -42,7 +45,6 @@ checkpoints[1]:
       - id: discuss
         label: Discuss
         description: "Discuss this finding further before deciding"
-    required: true
     blocking: true
 transitions[1]:
   - to: apply-mitigations

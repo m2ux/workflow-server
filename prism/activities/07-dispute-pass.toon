@@ -3,12 +3,14 @@ version: 1.2.0
 name: Dispute Analysis Pass
 description: "Run two orthogonal prisms and synthesize their disagreements."
 steps[2]:
-  - id: run-dispute
+  - kind: technique
+    id: run-dispute
     technique:
       name: dispute-analysis
       inputs:
         target_content: "{target}"
-  - id: collect-paths
+  - kind: action
+    id: collect-paths
     actions[1]:
       - action: set
         target: all_artifact_paths

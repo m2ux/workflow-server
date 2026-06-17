@@ -6,12 +6,12 @@ required: false
 rules[2]:
   - "Examine at least two existing workflows of the same model type (sequential or independent)"
   - "Present patterns alongside the proposed structure so the user can see how conventions are being applied"
-steps[1]:
-  - id: pattern-analysis
+steps[2]:
+  - kind: technique
+    id: pattern-analysis
     technique: pattern-analysis
-checkpoints[1]:
-  - id: patterns-confirmed
-    name: Patterns Confirmation
+  - kind: checkpoint
+    id: patterns-confirmed
     message: "Here are the structural patterns extracted from existing workflows, with my proposed structure shown alongside. Which patterns should I adopt?"
     options[3]:
       - id: adopt-all

@@ -3,15 +3,20 @@ version: 1.2.0
 name: Consolidate Evaluation Report
 description: "Consolidate prism analysis artifacts into a unified EVALUATION-REPORT.md."
 steps[5]:
-  - id: locate-artifacts
+  - kind: technique
+    id: locate-artifacts
     technique: compose-evaluation-report::locate-artifacts
-  - id: extract-findings
+  - kind: technique
+    id: extract-findings
     technique: compose-evaluation-report::extract-findings
-  - id: identify-patterns
+  - kind: technique
+    id: identify-patterns
     technique: compose-evaluation-report::identify-patterns
-  - id: compose-report
+  - kind: technique
+    id: compose-report
     technique: compose-evaluation-report::compose-report
-  - id: verify-report
+  - kind: technique
+    id: verify-report
     technique: compose-evaluation-report::verify-report
 outcome[1]:
   - "The consumer has a single severity-calibrated evaluation of the target — cross-dimensional findings and actionable recommendations to decide from"

@@ -5,7 +5,8 @@ description: "Submit changes as a pull request."
 required: true
 
 steps[1]:
-  - id: submit-update
+  - kind: technique
+    id: submit-update
     technique: submit-update
 
 outcome[1]:

@@ -4,7 +4,8 @@ name: Complete Work Package
 description: "Wrap up the work package after PR merge."
 required: true
 steps[9]:
-  - id: create-adr
+  - kind: technique
+    id: create-adr
     technique: create-adr
     condition:
       type: and
@@ -23,7 +24,8 @@ steps[9]:
               variable: problem_complexity
               operator: ==
               value: complex
-  - id: update-adr-status
+  - kind: technique
+    id: update-adr-status
     technique: finalize-documentation::update-adr
     condition:
       type: and
@@ -42,39 +44,46 @@ steps[9]:
               variable: problem_complexity
               operator: ==
               value: complex
-  - id: finalize-test-plan
+  - kind: technique
+    id: finalize-test-plan
     technique: finalize-documentation::finalize-test-plan
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
-  - id: create-complete-doc
+  - kind: technique
+    id: create-complete-doc
     technique: finalize-documentation::create-complete-doc
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
-  - id: ensure-docs
+  - kind: technique
+    id: ensure-docs
     technique: finalize-documentation::ensure-docs
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
-  - id: conduct-retrospective
+  - kind: technique
+    id: conduct-retrospective
     technique: conduct-retrospective::retrospective
-  - id: remove-worktree
+  - kind: technique
+    id: remove-worktree
     technique: manage-git::remove-worktree
     condition:
       type: simple
       variable: worktree_created
       operator: ==
       value: true
-  - id: select-next
+  - kind: technique
+    id: select-next
     technique: conduct-retrospective::select-next
-  - id: announce-completion
+  - kind: action
+    id: announce-completion
     actions[1]{action,message}:
       log,Work package workflow complete
 outcome[6]:

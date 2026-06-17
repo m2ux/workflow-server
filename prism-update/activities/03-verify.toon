@@ -4,13 +4,12 @@ name: Verify Consistency
 description: "Check for consistency issues across resources, techniques, and documentation."
 required: true
 
-steps[1]:
-  - id: verify-prism-consistency
+steps[2]:
+  - kind: technique
+    id: verify-prism-consistency
     technique: verify-prism-consistency
-
-checkpoints[1]:
-  - id: verification-result
-    name: Verification Result
+  - kind: checkpoint
+    id: verification-result
     message: "Verification complete. Results presented above. Proceeding in 30s unless you intervene."
     options[3]:
       - id: accept
@@ -30,7 +29,6 @@ checkpoints[1]:
         description: "Stop the workflow without submitting"
         effect:
           transitionTo: __terminal__
-    required: true
     blocking: false
 
 transitions[2]:
@@ -50,4 +48,3 @@ transitions[2]:
 
 outcome[1]:
   - "All resources, techniques, and documentation are consistent"
-

@@ -5,22 +5,17 @@ description: "Detect the target repository structure (regular directory vs. subm
 required: true
 rules[1]:
   - "target_path MUST resolve to a directory containing a working git tree"
-steps[4]:
-  - id: announce-start
+steps[6]:
+  - kind: action
+    id: announce-start
     actions[1]:
       - action: log
         message: "Resolving target repository structure"
-  - id: detect-monorepo
+  - kind: technique
+    id: detect-monorepo
     technique: version-control::detect-repo-type
-  - id: list-submodules
-    technique: version-control::list-submodules
-    when: "is_monorepo == true"
-  - id: capture-submodule-target
-    when: "is_monorepo == true"
-    checkpoint: submodule-selection
-checkpoints[2]:
-  - id: repo-type-confirmed
-    name: Repository Type Confirmation
+  - kind: checkpoint
+    id: repo-type-confirmed
     message: "Is this a regular repository or a submodule monorepo?"
     options[2]:
       - id: regular
@@ -36,8 +31,16 @@ checkpoints[2]:
         effect:
           setVariable:
             is_monorepo: true
-  - id: submodule-selection
-    name: Submodule Target Selection
+  - kind: technique
+    id: list-submodules
+    technique: version-control::list-submodules
+    when: "is_monorepo == true"
+  - kind: action
+    id: capture-submodule-target
+    when: "is_monorepo == true"
+    actions[0]:
+  - kind: checkpoint
+    id: submodule-selection
     condition:
       type: simple
       variable: is_monorepo

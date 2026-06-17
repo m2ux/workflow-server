@@ -3,35 +3,40 @@ version: 3.2.0
 name: Verify & Validate Design
 description: "Validate the implementation against tests, build, format, and lint checks."
 required: true
-steps[5]:
-  - id: preflight
+steps[6]:
+  - kind: technique
+    id: preflight
     technique: cargo-operations::preflight
     when: "project_type == 'rust-substrate'"
     actions[1]:
       - action: validate
         target: "missing_prerequisites.length == 0"
         message: "Install missing toolchain prerequisites before validation: {missing_prerequisites}"
-  - id: run-suite
+  - kind: technique
+    id: run-suite
     technique:
       name: cargo-operations::run-suite
       inputs:
         build_scope: "--workspace"
     when: "project_type == 'rust-substrate'"
-  - id: document-failures
+  - kind: technique
+    id: document-failures
     technique: findings-classification
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: assess-test-coverage
+  - kind: technique
+    id: assess-test-coverage
     technique: review-test-suite
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: fix-failures
+  - kind: action
+    id: fix-failures
     condition:
       type: and
       conditions[2]:
@@ -43,10 +48,11 @@ steps[5]:
           variable: "validation_results.validation_passed"
           operator: ==
           value: false
-loops[1]:
-  - id: fix-revalidate-cycle
+    actions[0]:
+  - kind: loop
+    id: fix-revalidate-cycle
     name: Fix and Revalidate Cycle
-    type: doWhile
+    loopType: doWhile
     condition:
       type: simple
       variable: "validation_results.validation_passed"
@@ -54,18 +60,21 @@ loops[1]:
       value: false
     maxIterations: 10
     steps[3]:
-      - id: analyze-failure
+      - kind: technique
+        id: analyze-failure
         technique:
           name: validate-build::analyze-failure
           inputs:
             check_id: "{validation_results.first_failure.check_id}"
             failure_diagnostics: "{validation_results.first_failure.diagnostics}"
-      - id: apply-fix
+      - kind: technique
+        id: apply-fix
         technique:
           name: validate-build::apply-fix
           inputs:
             check_id: "{validation_results.first_failure.check_id}"
-      - id: revalidate
+      - kind: technique
+        id: revalidate
         technique:
           name: cargo-operations::run-suite
           inputs:

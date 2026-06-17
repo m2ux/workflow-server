@@ -4,15 +4,17 @@ name: Adversarial Analysis Pass
 description: "Run the adversarial lens against each full-prism unit's structural artifact."
 techniques[1]:
   - "scatter-gather"
-loops[1]:
-  - id: adversarial-unit-cycle
+steps[1]:
+  - kind: loop
+    id: adversarial-unit-cycle
     name: Adversarial Unit Cycle
-    type: forEach
+    loopType: forEach
     variable: current_unit
     over: analysis_units
     maxIterations: 100
     steps[1]:
-      - id: run-adversarial
+      - kind: technique
+        id: run-adversarial
         technique:
           name: full-prism
           inputs:

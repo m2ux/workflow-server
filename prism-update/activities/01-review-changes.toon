@@ -3,16 +3,12 @@ version: 1.2.1
 name: Review Changes
 description: "Present discovered changes for approval and apply any exclusion adjustments before import."
 required: true
-steps[2]:
-  - id: present-summary
+steps[3]:
+  - kind: technique
+    id: present-summary
     technique: review-change-set::present-summary
-    checkpoint: change-review
-  - id: apply-exclusions
-    technique: review-change-set::apply-exclusions
-
-checkpoints[1]:
-  - id: change-review
-    name: Change Review Checkpoint
+  - kind: checkpoint
+    id: change-review
     message: "Here are the upstream changes. Review the summary above and confirm which changes to apply."
     options[3]:
       - id: confirm
@@ -29,8 +25,10 @@ checkpoints[1]:
         description: "Do not import any changes"
         effect:
           transitionTo: __terminal__
-    required: true
     blocking: true
+  - kind: technique
+    id: apply-exclusions
+    technique: review-change-set::apply-exclusions
 
 transitions[1]:
   - to: apply-updates
@@ -38,4 +36,3 @@ transitions[1]:
 
 outcome[1]:
   - "User-approved change set ready for import"
-

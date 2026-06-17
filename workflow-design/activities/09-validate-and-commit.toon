@@ -7,53 +7,33 @@ rules[3]:
   - "All TOON files must pass schema validation before commit — no exceptions"
   - "The scope manifest must be fully addressed — every item checked off"
   - "Commit to the workflows worktree, not the main repository"
-steps[8]:
-  - id: save-compliance-report
+steps[10]:
+  - kind: technique
+    id: save-compliance-report
     technique: persist-report
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: commit-report
+  - kind: technique
+    id: commit-report
     technique: version-control::commit-regular-files
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: run-schema-validation
+  - kind: technique
+    id: run-schema-validation
     technique: audit-schema-validation
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
-  - id: verify-scope-manifest
-    technique: scope-verification
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: readme-authoring
-    technique: readme-authoring
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: stage-and-commit
-    technique: version-control::commit-regular-files
-  - id: verify-commit
-    technique: commit-verification
-  - id: announce-completion
-    actions[1]:
-      - action: log
-        message: "Workflow design complete — all files committed to workflows worktree"
-checkpoints[2]:
-  - id: validation-passed
-    name: Validation Results Checkpoint
+  - kind: checkpoint
+    id: validation-passed
     condition:
       type: simple
       variable: is_review_mode
@@ -73,8 +53,16 @@ checkpoints[2]:
       - id: fix
         label: "Fix failures first"
         description: "Validation failures must be addressed before committing."
-  - id: scope-verified
-    name: Scope Verification Checkpoint
+  - kind: technique
+    id: verify-scope-manifest
+    technique: scope-verification
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: checkpoint
+    id: scope-verified
     condition:
       type: simple
       variable: is_review_mode
@@ -91,6 +79,25 @@ checkpoints[2]:
       - id: fix
         label: "Address remaining items"
         description: "Some scope-manifest items remain unaddressed and require attention."
+  - kind: technique
+    id: readme-authoring
+    technique: readme-authoring
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: technique
+    id: stage-and-commit
+    technique: version-control::commit-regular-files
+  - kind: technique
+    id: verify-commit
+    technique: commit-verification
+  - kind: action
+    id: announce-completion
+    actions[1]:
+      - action: log
+        message: "Workflow design complete — all files committed to workflows worktree"
 transitions[1]:
   - to: post-update-review
     condition:

@@ -3,27 +3,32 @@ version: 1.2.0
 name: Verified Analysis Pass
 description: "L12 structural analysis with gap detection and re-analysis."
 steps[5]:
-  - id: run-initial-l12
+  - kind: technique
+    id: run-initial-l12
     technique:
       name: verified-analysis::initial-analysis
       inputs:
         target_content: "{target}"
-  - id: run-gap-detection
+  - kind: technique
+    id: run-gap-detection
     technique:
       name: verified-analysis::gap-detection
       inputs:
         target_content: "{target}"
-  - id: extract-gaps
+  - kind: technique
+    id: extract-gaps
     technique:
       name: verified-analysis::gap-extraction
       inputs:
         target_content: "{target}"
-  - id: run-corrected-analysis
+  - kind: technique
+    id: run-corrected-analysis
     technique:
       name: verified-analysis::corrected-analysis
       inputs:
         target_content: "{target}"
-  - id: collect-paths
+  - kind: action
+    id: collect-paths
     actions[1]:
       - action: set
         target: all_artifact_paths

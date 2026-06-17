@@ -30,7 +30,7 @@ Four mapping tables that translate informal prose patterns into their formal sch
 
 | Table | Schema | Constructs Covered |
 |-------|--------|-------------------|
-| Activity-level | `activity.schema.json` | Steps, checkpoints, decisions, loops, transitions, triggers, actions, outcomes, conditions, rules |
+| Activity-level | `activity.schema.json` | A unified `steps[]` with kinds (technique, action, checkpoint, loop), activity-level decisions and transitions, triggers, outcomes, step gates, rules |
 | Workflow-level | `workflow.schema.json` | Variables, workflow rules, inherited techniques, initial activity |
 | Technique-level | `technique.schema.json` | Protocol, inputs, output, rules (failure handling is inline in the triggering protocol step) |
 | Condition-level | `condition.schema.json` | Simple comparisons, AND/OR/NOT combinators, existence checks |

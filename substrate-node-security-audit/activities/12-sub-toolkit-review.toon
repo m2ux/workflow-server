@@ -4,12 +4,14 @@ name: "Sub-Agent: Toolkit Per-Function Review"
 description: "Per-function toolkit review for Group D sub-agents."
 required: false
 steps[2]:
-  - id: apply-toolkit-checklist
+  - kind: technique
+    id: apply-toolkit-checklist
     technique:
       name: apply-checklist
       inputs:
         checklist_source: toolkit-checklist
-  - id: format-output
+  - kind: technique
+    id: format-output
     technique: execute-sub-agent
 outcome[3]:
   - Every toolkit function is reviewed against all 8 checklist items, so benign-looking helpers can no longer be skimmed past

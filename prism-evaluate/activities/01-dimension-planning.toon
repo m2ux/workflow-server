@@ -2,18 +2,21 @@ id: dimension-planning
 version: 1.2.0
 name: Plan Dimension Analysis
 description: "Map each evaluation dimension to prism pipeline modes and lenses."
-steps[4]:
-  - id: survey-target
+steps[5]:
+  - kind: technique
+    id: survey-target
     technique: plan-evaluation::survey-target
-  - id: map-dimensions
+  - kind: technique
+    id: map-dimensions
     technique: plan-evaluation::map-dimensions-to-lenses
-  - id: group-dimensions
+  - kind: technique
+    id: group-dimensions
     technique: plan-evaluation::group-for-execution
-  - id: write-plan
+  - kind: technique
+    id: write-plan
     technique: plan-evaluation::write-evaluation-plan
-checkpoints[1]:
-  - id: confirm-plan
-    name: Dimension Plan Confirmation
+  - kind: checkpoint
+    id: confirm-plan
     message: "Please confirm the dimension-to-lens mapping and execution plan before triggering prism analyses."
     options[2]:
       - id: accept
@@ -27,7 +30,6 @@ checkpoints[1]:
         description: "Modify the lens mapping, pipeline modes, or execution grouping"
         effect:
           transitionTo: dimension-planning
-    required: true
     blocking: true
 outcome[1]:
   - "Each dimension is matched to the prism pipeline modes and lenses that will surface target-specific findings, grouped into runnable batches the analysis stage can execute directly"

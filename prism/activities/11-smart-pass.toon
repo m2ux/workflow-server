@@ -3,34 +3,40 @@ version: 1.2.0
 name: Smart Analysis Pass
 description: "Adaptively compose the analysis pipeline based on input characteristics."
 steps[6]:
-  - id: run-prereq
+  - kind: technique
+    id: run-prereq
     technique:
       name: smart-analysis::prereq-scan
       inputs:
         target_content: "{target}"
-  - id: fill-knowledge
+  - kind: technique
+    id: fill-knowledge
     required: false
     technique:
       name: smart-analysis::knowledge-fill
       inputs:
         target_content: "{target}"
-  - id: select-analysis-mode
+  - kind: technique
+    id: select-analysis-mode
     technique:
       name: smart-analysis::select-mode
       inputs:
         target_content: "{target}"
-  - id: run-analysis
+  - kind: technique
+    id: run-analysis
     technique:
       name: smart-analysis::run-analysis
       inputs:
         target_content: "{target}"
-  - id: run-dispute
+  - kind: technique
+    id: run-dispute
     required: false
     technique:
       name: smart-analysis::dispute-correction
       inputs:
         target_content: "{target}"
-  - id: collect-paths
+  - kind: action
+    id: collect-paths
     actions[1]:
       - action: set
         target: all_artifact_paths

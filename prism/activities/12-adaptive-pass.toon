@@ -3,12 +3,14 @@ version: 1.2.0
 name: Adaptive Depth Pass
 description: "Cost-minimizing depth escalation."
 steps[4]:
-  - id: run-stage-1
+  - kind: technique
+    id: run-stage-1
     technique:
       name: adaptive-analysis::stage-1-sdl
       inputs:
         target_content: "{target}"
-  - id: run-stage-2
+  - kind: technique
+    id: run-stage-2
     technique:
       name: adaptive-analysis::stage-2-l12
       inputs:
@@ -18,7 +20,8 @@ steps[4]:
       variable: adaptive_signal_quality
       operator: "=="
       value: insufficient
-  - id: run-stage-3
+  - kind: technique
+    id: run-stage-3
     technique:
       name: adaptive-analysis::stage-3-full
       inputs:
@@ -28,7 +31,8 @@ steps[4]:
       variable: adaptive_signal_quality
       operator: "=="
       value: insufficient
-  - id: collect-paths
+  - kind: action
+    id: collect-paths
     actions[2]:
       - action: set
         target: all_artifact_paths

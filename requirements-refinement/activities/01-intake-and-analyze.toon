@@ -3,22 +3,15 @@ version: 1.0.0
 name: Intake and Analyze
 description: "Capture and validate the source-document and target-specification paths, classify the source as a meeting transcript or an unstructured document, determine whether the specification is being augmented or created, and load both sources; then parse the source against the current specification and produce a structured requirements analysis report, confirming each boundary with the user before proceeding."
 required: true
-steps[2]:
-  - id: intake-sources
+steps[4]:
+  - kind: technique
+    id: intake-sources
     technique: intake-sources
-    checkpoint: sources-confirmed
     actions[1]:
       - action: message
         message: "Created: intake.md"
-  - id: analyze-source
-    technique: analyze-source
-    checkpoint: analysis-confirmed
-    actions[1]:
-      - action: message
-        message: "Created: requirements-analysis.md"
-checkpoints[2]:
-  - id: sources-confirmed
-    name: Sources Confirmation
+  - kind: checkpoint
+    id: sources-confirmed
     message: "Source ({source_type}): {source_path}. Target specification: {target_doc_path} ({target_doc_exists}). Proceed with these sources?"
     blocking: true
     options[2]:
@@ -31,8 +24,14 @@ checkpoints[2]:
       - id: revise
         label: "Correct the sources"
         description: "A source path, the classified source type, or the augment/create mode is wrong and must be corrected before proceeding."
-  - id: analysis-confirmed
-    name: Analysis Confirmation
+  - kind: technique
+    id: analyze-source
+    technique: analyze-source
+    actions[1]:
+      - action: message
+        message: "Created: requirements-analysis.md"
+  - kind: checkpoint
+    id: analysis-confirmed
     message: "Here is the requirements analysis derived from the source. Approve it for application to the specification?"
     blocking: true
     options[2]:

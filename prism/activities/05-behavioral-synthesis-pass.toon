@@ -4,15 +4,17 @@ name: Behavioral Synthesis Pass
 description: "Run the behavioral synthesis lens against each behavioral unit's artifacts."
 techniques[1]:
   - "scatter-gather"
-loops[1]:
-  - id: behavioral-synthesis-unit-cycle
+steps[1]:
+  - kind: loop
+    id: behavioral-synthesis-unit-cycle
     name: Behavioral Synthesis Unit Cycle
-    type: forEach
+    loopType: forEach
     variable: current_unit
     over: analysis_units
     maxIterations: 100
     steps[1]:
-      - id: run-behavioral-synthesis
+      - kind: technique
+        id: run-behavioral-synthesis
         technique:
           name: behavioral-pipeline
           inputs:

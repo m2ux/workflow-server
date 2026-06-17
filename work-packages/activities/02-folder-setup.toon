@@ -2,14 +2,15 @@ id: folder-setup
 version: 1.3.0
 name: Planning Folder Setup
 description: Create planning folder structure with initial documentation skeletons
-steps[2]:
-  - id: create-folder
+steps[3]:
+  - kind: technique
+    id: create-folder
     technique: "version-control::initialize-folder"
-  - id: setup-planning-folder
+  - kind: technique
+    id: setup-planning-folder
     technique: setup-planning-folder
-checkpoints[1]:
-  - id: folder-created
-    name: Folder Setup Complete
+  - kind: checkpoint
+    id: folder-created
     message: "Planning folder created. Proceed with analysis?"
     options[2]:
       - id: proceed

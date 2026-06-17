@@ -3,15 +3,15 @@ version: 1.2.0
 name: Report Failure
 description: "Compile a failure report describing the unresolved critical issues, the correction history, and the manual resolution required when refinement cannot complete automatically; no specification is promoted."
 required: true
-steps[1]:
-  - id: report-failure
+steps[2]:
+  - kind: technique
+    id: report-failure
     technique: report-failure
     actions[1]:
       - action: message
         message: "Created: failure-report.md"
-checkpoints[1]:
-  - id: failure-acknowledged
-    name: Failure Acknowledgement
+  - kind: checkpoint
+    id: failure-acknowledged
     message: "Refinement could not complete automatically. The failure report lists the critical issues and the manual resolution required. Acknowledge?"
     blocking: true
     options[1]:

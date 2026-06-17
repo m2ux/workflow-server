@@ -3,54 +3,20 @@ version: 1.13.0
 name: Post-Implementation Review
 description: "Review implementation quality before validation."
 required: true
-steps[9]:
-  - id: announce-start
+steps[13]:
+  - kind: action
+    id: announce-start
     actions[1]{action,message}:
       log,Starting post-implementation review
-  - id: gitnexus-detect-changes-preflight
+  - kind: technique
+    id: gitnexus-detect-changes-preflight
     technique: gitnexus-operations::detect-changes
     when: "gitnexus_indexed == true"
-  - id: manual-diff-review
+  - kind: technique
+    id: manual-diff-review
     technique: review-diff
-    checkpoint: file-index-table
-  - id: code-review
-    technique: review-code
-  - id: structural-analysis-inline
-    technique: prism/structural-analysis
-    condition:
-      type: not
-      condition:
-        type: simple
-        variable: problem_complexity
-        operator: "=="
-        value: complex
-  - id: dispatch-prism
-    triggers[1]:
-      - workflow: prism
-        passContext[3]:
-          - target
-          - output_path
-          - pipeline_mode
-    condition:
-      type: simple
-      variable: problem_complexity
-      operator: "=="
-      value: complex
-  - id: test-suite-review
-    technique: review-test-suite
-  - id: architecture-summary
-    technique: summarize-architecture
-    required: false
-    condition:
-      type: simple
-      variable: skip_architecture_summary
-      operator: "!="
-      value: true
-  - id: classify-and-route-findings
-    technique: findings-classification
-checkpoints[3]:
-  - id: file-index-table
-    name: File Index Checkpoint
+  - kind: checkpoint
+    id: file-index-table
     message: "File index written to {change_block_index}. The index includes a rationale paragraph for each change block written by the agent. Please review the diff in your side-by-side app. Then: (1) confirm the rationale paragraphs are accurate (or note corrections), and (2) provide row numbers for any blocks with issues (e.g., '24, 31, 106') or 'none'. Your confirmation of the rationale serves as your provenance attestation for each change."
     blocking: true
     options[3]:
@@ -73,8 +39,8 @@ checkpoints[3]:
         effect:
           setVariable:
             has_flagged_blocks: true
-  - id: rationale-amendment
-    name: Rationale Amendment Checkpoint
+  - kind: checkpoint
+    id: rationale-amendment
     condition:
       type: simple
       variable: rationale_confirmed
@@ -91,8 +57,8 @@ checkpoints[3]:
       - id: provide-corrections
         label: "Provide corrections to specific blocks"
         description: Amend rationale paragraphs for one or more blocks
-  - id: block-interview
-    name: Block Interview Checkpoint
+  - kind: checkpoint
+    id: block-interview
     condition:
       type: simple
       variable: has_flagged_blocks
@@ -113,10 +79,34 @@ checkpoints[3]:
       - id: skip-block
         label: Skip this block
         description: No longer an issue, move to next
-loops[1]:
-  - id: review-fix-cycle
+  - kind: technique
+    id: code-review
+    technique: review-code
+  - kind: technique
+    id: structural-analysis-inline
+    technique: prism/structural-analysis
+    condition:
+      type: not
+      condition:
+        type: simple
+        variable: problem_complexity
+        operator: "=="
+        value: complex
+  - kind: action
+    id: dispatch-prism
+    condition:
+      type: simple
+      variable: problem_complexity
+      operator: "=="
+      value: complex
+    actions[0]:
+  - kind: technique
+    id: test-suite-review
+    technique: review-test-suite
+  - kind: loop
+    id: review-fix-cycle
     name: Review-Fix Cycle
-    type: doWhile
+    loopType: doWhile
     condition:
       type: or
       conditions[2]:
@@ -130,9 +120,11 @@ loops[1]:
           value: true
     maxIterations: 3
     steps[6]:
-      - id: apply-fixes
+      - kind: technique
+        id: apply-fixes
         technique: apply-review-fixes
-      - id: reset-fix-flags
+      - kind: action
+        id: reset-fix-flags
         actions[2]:
           - action: set
             target: needs_code_fixes
@@ -142,14 +134,30 @@ loops[1]:
             target: needs_test_improvements
             value: false
             message: "Reset test-improvement flag before re-review."
-      - id: regenerate-index
+      - kind: technique
+        id: regenerate-index
         technique: review-diff
-      - id: re-manual-diff-review
+      - kind: technique
+        id: re-manual-diff-review
         technique: review-diff
-      - id: re-code-review
+      - kind: technique
+        id: re-code-review
         technique: review-code
-      - id: re-test-suite-review
+      - kind: technique
+        id: re-test-suite-review
         technique: review-test-suite
+  - kind: technique
+    id: architecture-summary
+    technique: summarize-architecture
+    required: false
+    condition:
+      type: simple
+      variable: skip_architecture_summary
+      operator: "!="
+      value: true
+  - kind: technique
+    id: classify-and-route-findings
+    technique: findings-classification
 decisions[1]:
   - id: blocker-gate
     name: Critical Blocker Gate

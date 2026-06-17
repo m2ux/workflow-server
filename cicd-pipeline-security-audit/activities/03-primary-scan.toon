@@ -6,26 +6,36 @@ techniques[1]:
   - execute-cicd-audit
 required: true
 steps[10]:
-  - id: announce-start
+  - kind: action
+    id: announce-start
     actions[1]{action,message}:
       log,Starting primary scan — dispatching per-submodule scanner agents
-  - id: dispatch-all-scanners
+  - kind: technique
+    id: dispatch-all-scanners
     technique: dispatch-scanners::dispatch-all
-  - id: verify-dispatch-completeness
+  - kind: technique
+    id: verify-dispatch-completeness
     technique: dispatch-scanners::verify-dispatch-completeness
-  - id: collect-scanner-results
+  - kind: technique
+    id: collect-scanner-results
     technique: dispatch-scanners::collect-results
-  - id: verify-scanner-output-files
+  - kind: technique
+    id: verify-scanner-output-files
     technique: dispatch-scanners::verify-output-files
-  - id: dispatch-verification-agent
+  - kind: technique
+    id: dispatch-verification-agent
     technique: dispatch-scanners::dispatch-verification
-  - id: act-on-gap-report
+  - kind: technique
+    id: act-on-gap-report
     technique: dispatch-scanners::act-on-gap-report
-  - id: dispatch-merge-agent
+  - kind: technique
+    id: dispatch-merge-agent
     technique: dispatch-scanners::dispatch-merge
-  - id: validate-reconciliation
+  - kind: technique
+    id: validate-reconciliation
     technique: dispatch-scanners::verify-reconciliation
-  - id: finalize-activity
+  - kind: action
+    id: finalize-activity
     actions[2]{action,message}:
       log,Primary scan complete — all findings merged and reconciled
       set,primary_scan_complete=true

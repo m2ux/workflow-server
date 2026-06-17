@@ -2,12 +2,12 @@ id: prioritization
 version: 1.2.0
 name: Prioritization
 description: Prioritize work packages based on dependencies, value, risk, and effort
-steps[1]:
-  - id: prioritize
+steps[2]:
+  - kind: technique
+    id: prioritize
     technique: prioritize-packages
-checkpoints[1]:
-  - id: priority-confirmed
-    name: Priority Confirmation
+  - kind: checkpoint
+    id: priority-confirmed
     message: "Here's the proposed priority order. Adjust as needed?"
     options[3]:
       - id: accept

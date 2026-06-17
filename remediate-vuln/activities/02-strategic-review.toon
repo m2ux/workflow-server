@@ -3,45 +3,12 @@ version: 1.2.0
 name: Strategic Review
 description: "Review the implementation to ensure changes are minimal and focused."
 required: true
-steps[9]:
-  - id: review-scope
+steps[11]:
+  - kind: technique
+    id: review-scope
     technique: review-scope
-  - id: resign-unsigned-commits
-    technique: resign-commits
-    condition:
-      type: simple
-      variable: resign_unsigned_commits_requested
-      operator: ==
-      value: true
-  - id: ensure-changes-folder-entry
-    technique: verify-fragment
-  - id: document-findings
-    technique: document-findings
-  - id: document-cleanup-recommendations
-    technique: recommend-cleanup
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "=="
-      value: true
-  - id: apply-cleanup
-    technique: apply-cleanup
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: create-architecture-summary
-    technique: summarize-architecture
-  - id: analyze-strategic-findings
-    technique: analyze-findings
-  - id: announce-completion
-    actions[1]:
-      - action: log
-        message: "README PROGRESS: Update planning folder README.md — mark strategic review artifacts as ✅ Complete."
-checkpoints[2]:
-  - id: unsigned-commits-prompt
-    name: Unsigned or unverified commits
+  - kind: checkpoint
+    id: unsigned-commits-prompt
     message: "Preflight scan reports one or more commits without a valid GPG signature in this branch range: {unsigned_commit_list_summary}. Re-sign all unsigned commits now? This rewrites branch history and may require force-with-lease push."
     condition:
       type: simple
@@ -62,8 +29,44 @@ checkpoints[2]:
         effect:
           setVariable:
             resign_unsigned_commits_requested: false
-  - id: review-findings
-    name: Strategic Review Findings Checkpoint
+  - kind: technique
+    id: resign-unsigned-commits
+    technique: resign-commits
+    condition:
+      type: simple
+      variable: resign_unsigned_commits_requested
+      operator: ==
+      value: true
+  - kind: technique
+    id: ensure-changes-folder-entry
+    technique: verify-fragment
+  - kind: technique
+    id: document-findings
+    technique: document-findings
+  - kind: technique
+    id: document-cleanup-recommendations
+    technique: recommend-cleanup
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - kind: technique
+    id: apply-cleanup
+    technique: apply-cleanup
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: technique
+    id: create-architecture-summary
+    technique: summarize-architecture
+  - kind: technique
+    id: analyze-strategic-findings
+    technique: analyze-findings
+  - kind: checkpoint
+    id: review-findings
     message: "Strategic review complete. Based on findings analysis, the recommended action is {recommended_strategic_option}. Auto-advancing in 30s."
     blocking: false
     defaultOption: acceptable
@@ -90,6 +93,11 @@ checkpoints[2]:
       - id: more-review
         label: Need more review
         description: Additional areas need examination
+  - kind: action
+    id: announce-completion
+    actions[1]:
+      - action: log
+        message: "README PROGRESS: Update planning folder README.md — mark strategic review artifacts as ✅ Complete."
 transitions[2]:
   - to: submit
     condition:

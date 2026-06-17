@@ -3,72 +3,80 @@ version: 1.7.0
 name: Codebase Comprehension
 description: "Build or augment a mental model of the codebase."
 required: false
-steps[6]:
-  - id: build-comprehension
+steps[7]:
+  - kind: technique
+    id: build-comprehension
     technique: survey
-  - id: create-comprehension-artifact
+  - kind: technique
+    id: create-comprehension-artifact
     technique: manage-artifacts::write-artifact
     actions[1]:
       - action: message
         message: "Created/Updated: [comprehension artifact](.engineering/artifacts/comprehension/{artifact_name}). Proceeding to mandatory initial deep-dive — comprehension-sufficient checkpoint surfaces only when unresolved questions remain after investigation."
-  - id: initial-deep-dive
+  - kind: technique
+    id: initial-deep-dive
     technique: deep-dive
-  - id: initial-lens-pass
+  - kind: technique
+    id: initial-lens-pass
     technique:
       name: prism/portfolio-analysis
       inputs:
         selected_lenses: ["pedagogy", "rejected-paths"]
-  - id: update-artifact-initial
+  - kind: technique
+    id: update-artifact-initial
     technique: manage-artifacts::write-artifact
-  - id: revise-initial-questions
+  - kind: technique
+    id: revise-initial-questions
     technique: revise-questions
-checkpoints[1]:
-  - id: comprehension-sufficient
-    name: Comprehension Sufficiency Checkpoint
-    condition:
-      type: simple
-      variable: has_open_questions
-      operator: "=="
-      value: true
-    message: "Open questions remain after deep-dive (see above). Proceeding in 30s — intervene to explore further."
-    blocking: false
-    defaultOption: sufficient
-    autoAdvanceMs: 30000
-    options[3]:
-      - id: sufficient
-        label: Understanding sufficient
-        description: "Accept remaining gaps and proceed (default — auto-proceeds after 30s)"
-        effect:
-          setVariable:
-            needs_comprehension: false
-      - id: dive-deeper
-        label: Dive deeper
-        description: "Investigate remaining open questions in more detail"
-      - id: different-area
-        label: Explore a different area
-        description: "Shift focus to a different part of the codebase"
-loops[1]:
-  - id: deep-dive-iteration
+  - kind: loop
+    id: deep-dive-iteration
     name: Deep-Dive Iteration
-    type: while
+    loopType: while
     condition:
       type: simple
       variable: needs_comprehension
       operator: ==
       value: true
-    steps[4]:
-      - id: select-area
+    steps[5]:
+      - kind: technique
+        id: select-area
         technique: deep-dive
-      - id: portfolio-lens-pass
+      - kind: technique
+        id: portfolio-lens-pass
         technique:
           name: prism/portfolio-analysis
           inputs:
             selected_lenses: ["pedagogy", "rejected-paths"]
-      - id: update-artifact
+      - kind: technique
+        id: update-artifact
         technique: manage-artifacts::write-artifact
-      - id: revise-open-questions
+      - kind: technique
+        id: revise-open-questions
         technique: revise-questions
-        checkpoint: comprehension-sufficient
+      - kind: checkpoint
+        id: comprehension-sufficient
+        condition:
+          type: simple
+          variable: has_open_questions
+          operator: "=="
+          value: true
+        message: "Open questions remain after deep-dive (see above). Proceeding in 30s — intervene to explore further."
+        blocking: false
+        defaultOption: sufficient
+        autoAdvanceMs: 30000
+        options[3]:
+          - id: sufficient
+            label: Understanding sufficient
+            description: "Accept remaining gaps and proceed (default — auto-proceeds after 30s)"
+            effect:
+              setVariable:
+                needs_comprehension: false
+          - id: dive-deeper
+            label: Dive deeper
+            description: "Investigate remaining open questions in more detail"
+          - id: different-area
+            label: Explore a different area
+            description: "Shift focus to a different part of the codebase"
 transitions[4]:
   - to: requirements-elicitation
     condition:

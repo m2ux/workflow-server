@@ -14,8 +14,9 @@ triggers[1]:
       - pipeline_mode
       - selected_lenses
       - analysis_focus
-steps[2]:
-  - id: verify-preconditions
+steps[3]:
+  - kind: action
+    id: verify-preconditions
     actions[1]:
       - action: validate
         message: "Verify execution_groups is non-empty before starting the trigger loop"
@@ -23,19 +24,21 @@ steps[2]:
           type: simple
           variable: execution_groups
           operator: exists
-  - id: log-execution-plan
+  - kind: action
+    id: log-execution-plan
     actions[1]:
       - action: log
         message: "Log the execution group count, their pipeline modes, and total dimensions covered."
-loops[1]:
-  - id: group-iteration
+  - kind: loop
+    id: group-iteration
     name: Execution Group Iteration
-    type: forEach
+    loopType: forEach
     variable: current_group
     over: execution_groups
     maxIterations: 10
     steps[4]:
-      - id: set-trigger-context
+      - kind: action
+        id: set-trigger-context
         actions[6]:
           - action: set
             target: target
@@ -55,12 +58,14 @@ loops[1]:
           - action: set
             target: analysis_focus
             description: "{current_group.analysis_focus}."
-      - id: trigger-prism
+      - kind: technique
+        id: trigger-prism
         technique:
           name: workflow-engine::handle-sub-workflow
           inputs:
             workflow_id: prism
-      - id: collect-results
+      - kind: technique
+        id: collect-results
         technique: collect-prism-results
         actions[2]:
           - action: set
@@ -69,7 +74,8 @@ loops[1]:
           - action: set
             target: all_artifact_paths
             description: "Append the analysis artifact paths produced by the run."
-      - id: verify-completion
+      - kind: technique
+        id: verify-completion
         technique: verify-prism-completion
         actions[1]:
           - action: set

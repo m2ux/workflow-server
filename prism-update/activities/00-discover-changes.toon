@@ -4,7 +4,8 @@ name: Discover Changes
 description: "Diff upstream prisms against current workflow resources."
 required: true
 steps[1]:
-  - id: diff-upstream
+  - kind: technique
+    id: diff-upstream
     technique: diff-upstream
 
 transitions[1]:
@@ -13,4 +14,3 @@ transitions[1]:
 
 outcome[1]:
   - "The workflow knows exactly what changed upstream and how each new prism classifies by family — the import can proceed against an approved, well-understood scope"
-

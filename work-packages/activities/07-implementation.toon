@@ -11,17 +11,19 @@ triggers[1]:
       - current_package
       - initiative_name
       - parent_workflow
-steps[1]:
-  - id: initialize-iteration
+steps[2]:
+  - kind: technique
+    id: initialize-iteration
     technique: "orchestrate-package-execution::initialize-iteration"
-loops[1]:
-  - id: package-iteration
+  - kind: loop
+    id: package-iteration
     name: Package Iteration
-    type: forEach
+    loopType: forEach
     variable: current_package
     over: remaining_packages
     steps[1]:
-      - id: execute-package
+      - kind: technique
+        id: execute-package
         technique: "orchestrate-package-execution::execute-package"
 outcome[2]:
   - Every planned package is delivered as merged, reviewed work, so the initiative's intended capability is fully in place

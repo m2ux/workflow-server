@@ -3,8 +3,9 @@ version: 1.7.0
 name: Plan & Prepare
 description: "Design the approach, create the work package plan, and prepare for implementation."
 required: true
-steps[10]:
-  - id: env-prerequisites
+steps[12]:
+  - kind: action
+    id: env-prerequisites
     actions[6]:
       - action: validate
         target: workflows.worktree.present == true
@@ -24,11 +25,14 @@ steps[10]:
       - action: validate
         target: gpg.agent.reachable == true
         message: "GPG agent is not reachable. Ensure it is running at your preferred scope before re-running."
-  - id: create-plan
+  - kind: technique
+    id: create-plan
     technique: plan
-  - id: create-test-plan
+  - kind: technique
+    id: create-test-plan
     technique: create-test-plan
-  - id: present-solution-overview
+  - kind: technique
+    id: present-solution-overview
     technique:
       name: stakeholder-overview
       inputs:
@@ -36,40 +40,45 @@ steps[10]:
     actions[1]:
       - action: message
         message: "**Solution Overview** (plain-language summary for stakeholder reference)"
-  - id: collect-assumptions
+  - kind: technique
+    id: collect-assumptions
     technique:
       name: review-assumptions::collect
       inputs:
         assumption_categories: "Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions"
-  - id: update-assumptions-log
+  - kind: technique
+    id: update-assumptions-log
     technique: review-assumptions::record
-  - id: reconcile-assumptions
+  - kind: technique
+    id: reconcile-assumptions
     technique: review-assumptions::reconcile
-  - id: create-todos
-    technique: create-todos
-  - id: sync-branch
-    technique: manage-git::sync-branch
-  - id: update-pr
-    technique:
-      name: update-pr::render
-      inputs:
-        pr_template_variant: initial
-    checkpoint: approach-confirmed
-loops[1]:
-  - id: assumption-reconciliation
+  - kind: loop
+    id: assumption-reconciliation
     name: Assumption Reconciliation Loop
-    type: while
+    loopType: while
     condition:
       type: simple
       variable: has_resolvable_assumptions
       operator: ==
       value: true
     steps[1]:
-      - id: reconcile-iteration
+      - kind: technique
+        id: reconcile-iteration
         technique: review-assumptions::reconcile
-checkpoints[1]:
-  - id: approach-confirmed
-    name: Approach Checkpoint
+  - kind: technique
+    id: create-todos
+    technique: create-todos
+  - kind: technique
+    id: sync-branch
+    technique: manage-git::sync-branch
+  - kind: technique
+    id: update-pr
+    technique:
+      name: update-pr::render
+      inputs:
+        pr_template_variant: initial
+  - kind: checkpoint
+    id: approach-confirmed
     message: "Approach presented above. Confirming in 30s unless you want to revise."
     blocking: false
     defaultOption: confirmed

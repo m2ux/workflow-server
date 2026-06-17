@@ -3,12 +3,14 @@ version: 1.2.0
 name: Reflect Analysis Pass
 description: "L12 structural analysis with recursive meta-analysis and constraint synthesis."
 steps[2]:
-  - id: run-reflect
+  - kind: technique
+    id: run-reflect
     technique:
       name: reflect-analysis
       inputs:
         target_content: "{target}"
-  - id: collect-paths
+  - kind: action
+    id: collect-paths
     actions[1]:
       - action: set
         target: all_artifact_paths

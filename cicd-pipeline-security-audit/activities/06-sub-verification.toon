@@ -6,18 +6,24 @@ techniques[1]:
   - execute-sub-agent
 required: false
 steps[6]:
-  - id: announce-start
+  - kind: action
+    id: announce-start
     actions[1]{action,message}:
       log,Starting scan verification
-  - id: load-scanner-outputs
+  - kind: technique
+    id: load-scanner-outputs
     technique: verify-scan-output::validate-structure
-  - id: verify-file-coverage
+  - kind: technique
+    id: verify-file-coverage
     technique: verify-scan-output::verify-file-coverage
-  - id: verify-pattern-coverage
+  - kind: technique
+    id: verify-pattern-coverage
     technique: verify-scan-output::verify-pattern-coverage
-  - id: produce-gap-report
+  - kind: technique
+    id: produce-gap-report
     technique: verify-scan-output::produce-gap-report
-  - id: announce-completion
+  - kind: action
+    id: announce-completion
     actions[1]{action,message}:
       log,Scan verification complete — gap report produced
 transitions[0]:

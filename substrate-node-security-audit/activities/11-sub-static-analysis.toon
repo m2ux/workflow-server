@@ -4,26 +4,30 @@ name: "Sub-Agent: Static Analysis and Mechanical Checks"
 description: "Structured static analysis with zero-hit audit and finding aggregation."
 required: false
 steps[4]:
-  - id: run-grep-patterns
+  - kind: technique
+    id: run-grep-patterns
     technique:
       name: search-pattern-catalog
       inputs:
         resource_id: 05-static-analysis-patterns
         catalog_section: Grep Patterns
         output_format: "| Category | Pattern | File:Line | Hit | Triage |"
-  - id: run-mechanical-checks
+  - kind: technique
+    id: run-mechanical-checks
     technique:
       name: search-pattern-catalog
       inputs:
         resource_id: 05-static-analysis-patterns
         catalog_section: Mechanical Checks
         output_format: "| Check | Pattern | File:Line | PASS/FAIL | Evidence |"
-  - id: run-storage-lifecycle-scan
+  - kind: technique
+    id: run-storage-lifecycle-scan
     technique:
       name: scan-storage-lifecycle
       inputs:
         output_format: "| StorageMap | Crate | insert() Sites | remove() Sites | Paired? | Cap Enforced? |"
-  - id: format-output
+  - kind: technique
+    id: format-output
     technique: execute-sub-agent
 outcome[4]:
   - The full pattern catalog has been run against the whole scope, so no static-analysis category is left unexamined

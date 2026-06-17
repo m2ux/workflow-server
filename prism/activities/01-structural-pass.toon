@@ -4,26 +4,30 @@ name: Structural Analysis Pass
 description: "Run the assigned structural analysis for each analysis unit."
 techniques[1]:
   - "scatter-gather"
-loops[1]:
-  - id: unit-cycle
+steps[1]:
+  - kind: loop
+    id: unit-cycle
     name: Analysis Unit Cycle
-    type: forEach
+    loopType: forEach
     variable: current_unit
     over: analysis_units
     maxIterations: 100
     steps[7]:
-      - id: resolve-unit-output
+      - kind: action
+        id: resolve-unit-output
         actions[1]:
           - action: set
             target: unit_output_dir
             description: "{output_path}/{current_unit.unit_output_subdir} when a subdir is present, else {output_path}."
-      - id: check-gitnexus
+      - kind: technique
+        id: check-gitnexus
         technique: "gitnexus-operations::verify-index"
         actions[1]:
           - action: set
             target: gitnexus_available
             description: "Whether the target codebase is indexed."
-      - id: run-structural
+      - kind: technique
+        id: run-structural
         technique:
           name: structural-analysis
           inputs:
@@ -39,7 +43,8 @@ loops[1]:
               variable: current_unit.pipeline_mode
               operator: "=="
               value: full-prism
-      - id: run-portfolio
+      - kind: technique
+        id: run-portfolio
         technique:
           name: portfolio-analysis
           inputs:
@@ -49,7 +54,8 @@ loops[1]:
           variable: current_unit.pipeline_mode
           operator: "=="
           value: portfolio
-      - id: dispatch-behavioral-lenses
+      - kind: technique
+        id: dispatch-behavioral-lenses
         technique:
           name: behavioral-pipeline
           inputs:
@@ -59,12 +65,14 @@ loops[1]:
           variable: current_unit.pipeline_mode
           operator: "=="
           value: behavioral
-      - id: collect-behavioral-paths
+      - kind: action
+        id: collect-behavioral-paths
         actions[1]:
           - action: set
             target: behavioral_output_paths
             description: "Map of role label to behavioral artifact path."
-      - id: report-unit-paths
+      - kind: action
+        id: report-unit-paths
         actions[1]:
           - action: set
             target: all_artifact_paths

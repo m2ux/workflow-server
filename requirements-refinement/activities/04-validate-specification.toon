@@ -4,7 +4,8 @@ name: Validate Specification
 description: "Validate the updated specification against structural, identifier-uniqueness, consistency, and protocol-conformance checks, categorize each issue as critical or correctable, and route to finalization, another correction pass, or failure reporting."
 required: true
 steps[1]:
-  - id: validate-specification
+  - kind: technique
+    id: validate-specification
     technique: validate-specification
 transitions[3]:
   - to: finalize-specification

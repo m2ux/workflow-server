@@ -5,35 +5,15 @@ description: "Identify the target workflow and search for an existing client ses
 required: true
 rules[1]:
   - "Match identifying context against saved sessions even when the user said 'start' — surface saved state via the resume-session checkpoint"
-steps[7]:
-  - id: list-available-workflows
+steps[9]:
+  - kind: technique
+    id: list-available-workflows
     technique: workflow-engine::list-workflows
-  - id: match-target
+  - kind: technique
+    id: match-target
     technique: workflow-engine::match-target-workflow
-  - id: extract-context
-    technique: workflow-engine::extract-identifying-context
-  - id: scan-planning-folders
-    technique: workflow-engine::scan-saved-sessions
-  - id: match-session
-    technique: workflow-engine::match-saved-session
-  - id: record-match
-    when: "has_saved_state == true"
-    actions[2]:
-      - action: set
-        target: has_saved_state
-        value: true
-      - action: set
-        target: saved_planning_slug
-        value: "{matched_session.planning_slug}"
-  - id: record-no-match
-    when: "has_saved_state == false"
-    actions[1]:
-      - action: set
-        target: has_saved_state
-        value: false
-checkpoints[2]:
-  - id: workflow-selection
-    name: Workflow Selection
+  - kind: checkpoint
+    id: workflow-selection
     condition:
       type: simple
       variable: workflow_match_ambiguous
@@ -53,8 +33,27 @@ checkpoints[2]:
         effect:
           setVariable:
             workflow_match_ambiguous: false
-  - id: resume-session
-    name: Resume Previous Session
+  - kind: technique
+    id: extract-context
+    technique: workflow-engine::extract-identifying-context
+  - kind: technique
+    id: scan-planning-folders
+    technique: workflow-engine::scan-saved-sessions
+  - kind: technique
+    id: match-session
+    technique: workflow-engine::match-saved-session
+  - kind: action
+    id: record-match
+    when: "has_saved_state == true"
+    actions[2]:
+      - action: set
+        target: has_saved_state
+        value: true
+      - action: set
+        target: saved_planning_slug
+        value: "{matched_session.planning_slug}"
+  - kind: checkpoint
+    id: resume-session
     condition:
       type: simple
       variable: has_saved_state
@@ -75,6 +74,13 @@ checkpoints[2]:
           setVariable:
             is_resuming: false
             has_saved_state: false
+  - kind: action
+    id: record-no-match
+    when: "has_saved_state == false"
+    actions[1]:
+      - action: set
+        target: has_saved_state
+        value: false
 transitions[1]:
   - to: initialize-session
     isDefault: true

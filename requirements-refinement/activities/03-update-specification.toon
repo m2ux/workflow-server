@@ -4,7 +4,8 @@ name: Update Specification
 description: "Apply the requirements analysis (initial pass) or the validation findings (correction pass) to produce the complete updated specification, preserving the specification protocol verbatim, and write it as a versioned working specification."
 required: true
 steps[1]:
-  - id: update-specification
+  - kind: technique
+    id: update-specification
     technique: update-specification
     actions[1]:
       - action: message

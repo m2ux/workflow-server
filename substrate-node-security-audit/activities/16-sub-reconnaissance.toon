@@ -4,9 +4,11 @@ name: "Sub-Agent: Codebase Reconnaissance"
 description: "Perform codebase reconnaissance and build the function registry."
 required: false
 steps[2]:
-  - id: map-codebase
+  - kind: technique
+    id: map-codebase
     technique: map-codebase
-  - id: build-function-registry
+  - kind: technique
+    id: build-function-registry
     technique: build-function-registry
 
 outcome[4]:
@@ -14,4 +16,3 @@ outcome[4]:
   - The system's security-relevant structure — trust boundaries, consensus paths, pallet hooks, config structs, data flows, and safety overrides — is documented as the foundation for vulnerability domain mapping
   - Priority crates have an enumerated, size-prioritized function inventory agents can drive exhaustive coverage from
   - Concrete reconnaissance leads are captured so agent assignment can route each observation to a responsible reviewer
-

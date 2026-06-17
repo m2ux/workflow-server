@@ -4,16 +4,20 @@ name: Ensemble Pass
 description: "Optional second-model audit run with merged findings."
 required: false
 steps[4]:
-  - id: execute-ensemble-pass
+  - kind: technique
+    id: execute-ensemble-pass
     technique: execute-ensemble-pass
-  - id: union-merge
+  - kind: technique
+    id: union-merge
     technique:
       name: merge-findings
       inputs:
         merge_strategy: union-merge
-  - id: update-report
+  - kind: technique
+    id: update-report
     technique: write-report
-  - id: announce-completion
+  - kind: action
+    id: announce-completion
     actions[1]{action,message}:
       log,Ensemble pass complete — findings merged with primary report
 decisions[1]:

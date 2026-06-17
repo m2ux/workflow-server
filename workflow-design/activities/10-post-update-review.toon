@@ -6,18 +6,21 @@ required: true
 rules[2]:
   - "Load the updated workflow from the workflow-server, not from cached data — the audit must verify the committed state"
   - "Produce a severity-rated findings summary; do not repeat the full compliance report structure unless findings exist"
-steps[4]:
-  - id: reload-updated-workflow
+steps[5]:
+  - kind: technique
+    id: reload-updated-workflow
     technique: reload-workflow
-  - id: run-audit-passes
+  - kind: technique
+    id: run-audit-passes
     technique: run-audit-passes
-  - id: summarize-findings
+  - kind: technique
+    id: summarize-findings
     technique: summarize-findings
-  - id: save-review-snapshot
+  - kind: technique
+    id: save-review-snapshot
     technique: persist-report
-checkpoints[1]:
-  - id: post-update-disposition
-    name: Post-Update Review Disposition
+  - kind: checkpoint
+    id: post-update-disposition
     message: "Post-update review complete. {review_findings_count} findings identified. The update has been committed."
     options[3]:
       - id: accept

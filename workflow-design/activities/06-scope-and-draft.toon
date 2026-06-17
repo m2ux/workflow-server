@@ -12,39 +12,18 @@ rules[8]:
   - "Validate each TOON file against its schema immediately after drafting"
   - "In update mode, compare new content against existing content and flag any material being removed"
   - "Draft files in the confirmed order: workflow.toon first, then activities, then techniques, then resources, then README"
-steps[6]:
-  - id: verify-preconditions
+steps[12]:
+  - kind: action
+    id: verify-preconditions
     actions[1]:
       - action: validate
         target: scope_manifest_confirmed
         message: "Cannot begin content drafting without a confirmed scope manifest"
-  - id: scope-definition
+  - kind: technique
+    id: scope-definition
     technique: scope-definition
-    checkpoint: scope-and-structure-confirmed
-  - id: present-file-approach
-    technique: content-drafting
-  - id: toon-authoring
-    technique: toon-authoring
-  - id: present-for-review
-    technique: content-drafting
-  - id: advance-to-next-file
-loops[1]:
-  - id: file-drafting-loop
-    name: File Drafting Loop
-    type: forEach
-    variable: current_file
-    over: scope_manifest
-    maxIterations: 50
-    steps[3]:
-      - id: present-file-approach
-        technique: content-drafting
-      - id: toon-authoring
-        technique: toon-authoring
-      - id: present-for-review
-        technique: content-drafting
-checkpoints[5]:
-  - id: scope-and-structure-confirmed
-    name: Scope and Structure Confirmation
+  - kind: checkpoint
+    id: scope-and-structure-confirmed
     message: "Here is the complete file manifest and implementation order. Proceeding in 30s unless you want to revise."
     blocking: false
     defaultOption: confirmed
@@ -60,8 +39,11 @@ checkpoints[5]:
       - id: revise
         label: "Needs revision"
         description: "File manifest or implementation order requires adjustment."
-  - id: file-approach-confirmed
-    name: File Approach Checkpoint
+  - kind: technique
+    id: present-file-approach
+    technique: content-drafting
+  - kind: checkpoint
+    id: file-approach-confirmed
     condition:
       type: simple
       variable: is_update_mode
@@ -75,8 +57,14 @@ checkpoints[5]:
       - id: revise
         label: "Change approach"
         description: "Drafting approach for this file requires revision."
-  - id: file-review
-    name: File Review Checkpoint
+  - kind: technique
+    id: toon-authoring
+    technique: toon-authoring
+  - kind: technique
+    id: present-for-review
+    technique: content-drafting
+  - kind: checkpoint
+    id: file-review
     condition:
       type: simple
       variable: is_update_mode
@@ -93,8 +81,8 @@ checkpoints[5]:
       - id: redraft
         label: "Redraft from scratch"
         description: "Drafted file content requires a fresh approach from scratch."
-  - id: preservation-check
-    name: Content Preservation Check
+  - kind: checkpoint
+    id: preservation-check
     condition:
       type: and
       conditions[2]:
@@ -117,8 +105,11 @@ checkpoints[5]:
       - id: rewrite
         label: "Rewrite approach"
         description: "File-level approach requires a different framing entirely."
-  - id: batch-review
-    name: Batch Content Review
+  - kind: action
+    id: advance-to-next-file
+    actions[0]:
+  - kind: checkpoint
+    id: batch-review
     condition:
       type: simple
       variable: is_update_mode
@@ -138,6 +129,23 @@ checkpoints[5]:
       - id: redraft-all
         label: "Redraft all changes"
         description: "Entire drafting pass requires restart from scratch."
+  - kind: loop
+    id: file-drafting-loop
+    name: File Drafting Loop
+    loopType: forEach
+    variable: current_file
+    over: scope_manifest
+    maxIterations: 50
+    steps[3]:
+      - kind: technique
+        id: present-file-approach
+        technique: content-drafting
+      - kind: technique
+        id: toon-authoring
+        technique: toon-authoring
+      - kind: technique
+        id: present-for-review
+        technique: content-drafting
 transitions[1]:
   - to: quality-review
     isDefault: true

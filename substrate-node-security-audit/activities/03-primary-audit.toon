@@ -4,39 +4,54 @@ name: Primary Audit
 description: "Multi-agent primary audit via concurrent dispatch with verification and merge."
 required: true
 steps[15]:
-  - id: announce-start
+  - kind: action
+    id: announce-start
     actions[1]{action,message}:
       log,Starting primary audit — concurrent multi-agent dispatch
-  - id: dispatch-all-agents
+  - kind: technique
+    id: dispatch-all-agents
     technique: dispatch-sub-agents
-  - id: verify-checklist-prompt-coverage
+  - kind: technique
+    id: verify-checklist-prompt-coverage
     technique: verify-sub-agent-output
-  - id: verify-dispatch-completeness
+  - kind: technique
+    id: verify-dispatch-completeness
     technique: verify-sub-agent-output
-  - id: collect-all
+  - kind: technique
+    id: collect-all
     technique: dispatch-sub-agents
-  - id: verify-agent-output-files
+  - kind: technique
+    id: verify-agent-output-files
     technique:
       name: dispatch-sub-agents
       inputs:
         expected_output_files: "a1-nto.json, a2-midnight-ledger.json, a3-node-startup.json, a4-node-consensus.json, a5-runtime.json, a6-primitives.json, a7-governance.json, b-static-analysis.json, d1-ledger-helpers.json, d2-toolkit.json"
-  - id: dispatch-verification-agent
+  - kind: technique
+    id: dispatch-verification-agent
     technique: dispatch-sub-agents
-  - id: act-on-gap-report
+  - kind: technique
+    id: act-on-gap-report
     technique: dispatch-sub-agents
-  - id: extract-table-derived-findings
+  - kind: technique
+    id: extract-table-derived-findings
     technique: merge-findings
-  - id: dispatch-merge-agent
+  - kind: technique
+    id: dispatch-merge-agent
     technique: dispatch-sub-agents
-  - id: validate-reconciliation
+  - kind: technique
+    id: validate-reconciliation
     technique: verify-sub-agent-output
-  - id: verify-checklist-completeness
+  - kind: technique
+    id: verify-checklist-completeness
     technique: verify-sub-agent-output
-  - id: preserve-verification-report
+  - kind: technique
+    id: preserve-verification-report
     technique: dispatch-sub-agents
-  - id: preserve-merge-output
+  - kind: technique
+    id: preserve-merge-output
     technique: merge-findings
-  - id: finalize-activity
+  - kind: action
+    id: finalize-activity
     actions[2]{action,message}:
       log,Primary audit complete — findings collected from all agent groups
       set,primary_audit_complete=true

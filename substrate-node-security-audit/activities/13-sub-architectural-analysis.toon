@@ -4,7 +4,8 @@ name: "Sub-Agent: Security Architecture Analysis"
 description: "Produce a security-oriented architectural decomposition."
 required: false
 steps[1]:
-  - id: analyze-architecture
+  - kind: technique
+    id: analyze-architecture
     technique: analyze-architecture
 
 outcome[4]:
@@ -12,4 +13,3 @@ outcome[4]:
   - Privileged operations and their verification points are known, so missing or weak authority checks become identifiable
   - Sub-agents have a risk-ranked list of where to spend their deepest scrutiny
   - Vulnerability classes specific to this system's structure are surfaced beyond what the §3 checklist would catch
-

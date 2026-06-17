@@ -12,8 +12,9 @@ triggers[1]:
       - output_path
       - pipeline_mode
       - analysis_focus
-steps[2]:
-  - id: verify-preconditions
+steps[3]:
+  - kind: action
+    id: verify-preconditions
     actions[2]:
       - action: validate
         description: "Verify audit_scopes is non-empty before starting the trigger loop"
@@ -28,7 +29,8 @@ steps[2]:
           variable: analysis_focus
           operator: "!="
           value: security audit
-  - id: prepare-triggers
+  - kind: action
+    id: prepare-triggers
     actions[2]:
       - action: set
         target: completed_analyses
@@ -36,24 +38,28 @@ steps[2]:
       - action: set
         target: all_analysis_artifact_paths
         value: []
-loops[1]:
-  - id: scope-iteration
+  - kind: loop
+    id: scope-iteration
     name: Audit Scope Iteration
-    type: forEach
+    loopType: forEach
     variable: current_scope
     over: audit_scopes
     maxIterations: 10
     steps[4]:
-      - id: set-trigger-context
+      - kind: technique
+        id: set-trigger-context
         technique: execute-analysis::compose-trigger-context
-      - id: trigger-prism
+      - kind: technique
+        id: trigger-prism
         technique:
           name: workflow-engine::handle-sub-workflow
           inputs:
             workflow_id: prism
-      - id: collect-results
+      - kind: technique
+        id: collect-results
         technique: collect-prism-results
-      - id: verify-completion
+      - kind: technique
+        id: verify-completion
         technique: verify-prism-completion
 rules[1]:
   - "SEQUENTIAL EXECUTION: Audit scopes are executed sequentially (one prism trigger at a time). This ensures each prism run has full system resources and avoids context interference between concurrent analyses."

@@ -3,27 +3,32 @@ version: 1.2.0
 name: Subsystem Analysis Pass
 description: "Per-region prism analysis with cross-subsystem synthesis."
 steps[5]:
-  - id: split-subsystems
+  - kind: technique
+    id: split-subsystems
     technique:
       name: subsystem-analysis::decompose
       inputs:
         target_content: "{target}"
-  - id: calibrate-assignments
+  - kind: technique
+    id: calibrate-assignments
     technique:
       name: subsystem-analysis::calibrate
       inputs:
         target_content: "{target}"
-  - id: execute-per-subsystem
+  - kind: technique
+    id: execute-per-subsystem
     technique:
       name: subsystem-analysis::execute
       inputs:
         target_content: "{target}"
-  - id: synthesize-cross-subsystem
+  - kind: technique
+    id: synthesize-cross-subsystem
     technique:
       name: subsystem-analysis::synthesize
       inputs:
         target_content: "{target}"
-  - id: collect-paths
+  - kind: action
+    id: collect-paths
     actions[1]:
       - action: set
         target: all_artifact_paths

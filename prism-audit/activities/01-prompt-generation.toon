@@ -2,29 +2,15 @@ id: prompt-generation
 version: 1.1.0
 name: Generate Audit Prompt
 description: "Compose a detailed audit prompt tailored to the codebase."
-steps[7]:
-  - id: survey-structure
+steps[8]:
+  - kind: technique
+    id: survey-structure
     technique: compose-audit-prompt::survey-structure
-  - id: identify-security-characteristics
+  - kind: technique
+    id: identify-security-characteristics
     technique: compose-audit-prompt::identify-security-characteristics
-  - id: map-trust-boundaries
-    technique: compose-audit-prompt::map-trust-boundaries
-    condition:
-      type: simple
-      variable: gitnexus_available
-      operator: "=="
-      value: true
-  - id: map-audit-domains
-    technique: compose-audit-prompt::map-audit-domains
-  - id: identify-cross-cutting-concerns
-    technique: compose-audit-prompt::identify-cross-cutting-concerns
-  - id: compose-prompt
-    technique: compose-audit-prompt::compose-prompt
-  - id: build-audit-scopes
-    technique: compose-audit-prompt::build-audit-scopes
-checkpoints[1]:
-  - id: no-security-characteristics
-    name: No Security Characteristics Found
+  - kind: checkpoint
+    id: no-security-characteristics
     message: "No security-relevant patterns were found in the target codebase. This may indicate a purely presentational or data-only codebase. Would you like to proceed with a generic structural analysis instead, or abort the audit?"
     condition:
       type: simple
@@ -40,8 +26,27 @@ checkpoints[1]:
         description: "Stop the audit workflow"
         effect:
           transitionTo: deliver-audit
-    required: true
     blocking: true
+  - kind: technique
+    id: map-trust-boundaries
+    technique: compose-audit-prompt::map-trust-boundaries
+    condition:
+      type: simple
+      variable: gitnexus_available
+      operator: "=="
+      value: true
+  - kind: technique
+    id: map-audit-domains
+    technique: compose-audit-prompt::map-audit-domains
+  - kind: technique
+    id: identify-cross-cutting-concerns
+    technique: compose-audit-prompt::identify-cross-cutting-concerns
+  - kind: technique
+    id: compose-prompt
+    technique: compose-audit-prompt::compose-prompt
+  - kind: technique
+    id: build-audit-scopes
+    technique: compose-audit-prompt::build-audit-scopes
 rules[4]:
   - "EVIDENCE-BASED DOMAINS: Every audit domain must be grounded in observed codebase characteristics. Do not include generic security domains that have no corresponding code in the target. If the codebase has no network-exposed surfaces, do not include an API security domain."
   - "RISK CALIBRATION: Risk levels must reflect the domain's exposure and blast radius, not generic severity. A cryptographic library used for transaction signing is CRITICAL; a cryptographic library used only for log hashing is MEDIUM."

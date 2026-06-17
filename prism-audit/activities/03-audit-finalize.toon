@@ -3,26 +3,34 @@ version: 1.1.0
 name: Audit Report Finalization
 description: "Post-process the prism REPORT.md into audit deliverables."
 steps[8]:
-  - id: locate-artifacts
+  - kind: technique
+    id: locate-artifacts
     technique: locate-artifacts
-  - id: enrich-findings-with-graph
+  - kind: technique
+    id: enrich-findings-with-graph
     technique: enrich-findings-with-graph
     condition:
       type: simple
       variable: gitnexus_available
       operator: "=="
       value: true
-  - id: split-report
+  - kind: technique
+    id: split-report
     technique: split-report
-  - id: create-detailed-findings
+  - kind: technique
+    id: create-detailed-findings
     technique: create-detailed-findings
-  - id: create-trade-off-analysis
+  - kind: technique
+    id: create-trade-off-analysis
     technique: create-trade-off-analysis
-  - id: apply-formatting-rules
+  - kind: technique
+    id: apply-formatting-rules
     technique: apply-formatting-rules
-  - id: verify-artifacts
+  - kind: technique
+    id: verify-artifacts
     technique: verify-audit-consistency
-  - id: verify-outcomes
+  - kind: action
+    id: verify-outcomes
     actions[1]:
       - action: validate
         description: "Verify all three audit deliverables exist before transitioning to delivery"

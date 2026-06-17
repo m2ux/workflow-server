@@ -4,12 +4,22 @@ name: Work Package Planning
 description: Define scope, dependencies, effort, and success criteria for each work package
 techniques[1]:
   - "scatter-gather"
-steps[1]:
-  - id: present-planning-overview
+steps[3]:
+  - kind: technique
+    id: present-planning-overview
     technique: "plan-work-package-scope::present-overview"
-checkpoints[1]:
-  - id: plans-created
-    name: Plans Created
+  - kind: loop
+    id: package-loop
+    name: Package Planning Loop
+    loopType: forEach
+    variable: current_package
+    over: work_packages
+    steps[1]:
+      - kind: technique
+        id: plan-package
+        technique: "plan-work-package-scope::plan-package"
+  - kind: checkpoint
+    id: plans-created
     message: "Work package plans created. Ready for prioritization?"
     options[2]:
       - id: proceed
@@ -20,15 +30,6 @@ checkpoints[1]:
         label: Revise plans
         effect:
           transitionTo: package-planning
-loops[1]:
-  - id: package-loop
-    name: Package Planning Loop
-    type: forEach
-    variable: current_package
-    over: work_packages
-    steps[1]:
-      - id: plan-package
-        technique: "plan-work-package-scope::plan-package"
 transitions[1]:
   - to: prioritization
     isDefault: true

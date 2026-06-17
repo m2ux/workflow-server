@@ -2,11 +2,15 @@ id: select-mode
 version: 2.1.0
 name: Plan Analysis
 description: "Select an analysis mode for the user's request."
-steps[3]:
-  - id: plan
+steps[4]:
+  - kind: technique
+    id: plan
     technique: plan-analysis
-  - id: summarize
-  - id: apply-plan
+  - kind: action
+    id: summarize
+    actions[0]:
+  - kind: action
+    id: apply-plan
     actions[2]:
       - action: set
         target: pipeline_mode
@@ -14,9 +18,8 @@ steps[3]:
       - action: set
         target: analysis_units
         description: "Ordered execution units."
-checkpoints[1]:
-  - id: confirm-mode
-    name: Pipeline Mode Confirmation
+  - kind: checkpoint
+    id: confirm-mode
     message: "Based on your request, I recommend the following analysis configuration. Would you like to proceed or adjust?"
     condition:
       type: simple
@@ -86,7 +89,6 @@ checkpoints[1]:
         effect:
           setVariable:
             pipeline_mode: adaptive
-    required: true
     blocking: true
 transitions[7]:
   - to: dispute-pass

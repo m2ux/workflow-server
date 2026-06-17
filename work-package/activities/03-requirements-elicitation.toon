@@ -3,63 +3,12 @@ version: 2.9.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation.
 required: false
-steps[6]:
-  - id: stakeholder-discussion
+steps[10]:
+  - kind: technique
+    id: stakeholder-discussion
     technique: discuss
-    checkpoint: stakeholder-transcript
-  - id: elicit-requirements
-    technique: elicit
-    checkpoint: domain-iteration
-  - id: collect-assumptions
-    technique:
-      name: review-assumptions::collect
-      inputs:
-        assumption_categories: "Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation"
-  - id: create-document
-    technique: create-document
-  - id: update-assumptions-log
-    technique: review-assumptions::record
-  - id: reconcile-assumptions
-    technique: review-assumptions::reconcile
-    checkpoint: elicitation-complete
-loops[2]:
-  - id: assumption-reconciliation
-    name: Assumption Reconciliation Loop
-    type: while
-    condition:
-      type: simple
-      variable: has_resolvable_assumptions
-      operator: ==
-      value: true
-    steps[1]:
-      - id: reconcile-iteration
-        technique: review-assumptions::reconcile
-  - id: domain-iteration
-    name: Question Domain Iteration
-    type: forEach
-    variable: current_domain
-    over: question_domains
-    maxIterations: 5
-    steps[1]:
-      - id: ask-question
-        technique: ask-question
-decisions[1]:
-  - id: user-intent
-    name: User Intent Check
-    branches[2]:
-      - id: continue
-        label: Continue elicitation (answered or skipped)
-        isDefault: true
-      - id: done
-        label: User signaled completion
-        condition:
-          type: simple
-          variable: elicitation_complete
-          operator: ==
-          value: true
-checkpoints[2]:
-  - id: stakeholder-transcript
-    name: Stakeholder Discussion Checkpoint
+  - kind: checkpoint
+    id: stakeholder-transcript
     message: "Before we begin elicitation, please discuss requirements with key stakeholders (product owner, domain experts, end users). Once complete, provide the discussion transcript or summary here."
     blocking: true
     options[2]:
@@ -75,8 +24,37 @@ checkpoints[2]:
         effect:
           setVariable:
             has_stakeholder_input: false
-  - id: elicitation-complete
-    name: Elicitation Complete Checkpoint
+  - kind: technique
+    id: elicit-requirements
+    technique: elicit
+  - kind: loop
+    id: domain-iteration
+    name: Question Domain Iteration
+    loopType: forEach
+    variable: current_domain
+    over: question_domains
+    maxIterations: 5
+    steps[1]:
+      - kind: technique
+        id: ask-question
+        technique: ask-question
+  - kind: technique
+    id: collect-assumptions
+    technique:
+      name: review-assumptions::collect
+      inputs:
+        assumption_categories: "Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation"
+  - kind: technique
+    id: create-document
+    technique: create-document
+  - kind: technique
+    id: update-assumptions-log
+    technique: review-assumptions::record
+  - kind: technique
+    id: reconcile-assumptions
+    technique: review-assumptions::reconcile
+  - kind: checkpoint
+    id: elicitation-complete
     message: "All question domains have been covered. Proceeding in 30s unless you want to revisit."
     blocking: false
     defaultOption: complete
@@ -100,6 +78,33 @@ checkpoints[2]:
         effect:
           setVariable:
             elicitation_complete: false
+  - kind: loop
+    id: assumption-reconciliation
+    name: Assumption Reconciliation Loop
+    loopType: while
+    condition:
+      type: simple
+      variable: has_resolvable_assumptions
+      operator: ==
+      value: true
+    steps[1]:
+      - kind: technique
+        id: reconcile-iteration
+        technique: review-assumptions::reconcile
+decisions[1]:
+  - id: user-intent
+    name: User Intent Check
+    branches[2]:
+      - id: continue
+        label: Continue elicitation (answered or skipped)
+        isDefault: true
+      - id: done
+        label: User signaled completion
+        condition:
+          type: simple
+          variable: elicitation_complete
+          operator: ==
+          value: true
 transitions[3]:
   - to: research
     condition:

@@ -3,43 +3,50 @@ version: 2.6.0
 name: Strategic Review
 description: "Review the implementation to ensure changes are minimal and focused."
 required: true
-steps[9]:
-  - id: review-strategy
+steps[10]:
+  - kind: technique
+    id: review-strategy
     technique: review-scope
-  - id: verify-readme
+  - kind: technique
+    id: verify-readme
     technique: manage-artifacts::verify-readme-conforms
-  - id: ensure-changes-folder-entry
+  - kind: technique
+    id: ensure-changes-folder-entry
     technique: changes-folder
-  - id: verify-change-fragment
+  - kind: technique
+    id: verify-change-fragment
     technique: verify-fragment
     actions[1]:
       - action: validate
         target: "fragment_references_issue != false"
         message: "Change fragment for this work package does not reference issue_url ({issue_url}). Add a 'Closes: #{issue_number}' line (GitHub) or the full issue_url (when sibling fragments use that style) to the fragment body, commit, and re-run."
-  - id: document-findings
+  - kind: technique
+    id: document-findings
     technique: document-findings
-  - id: document-cleanup-recommendations
+  - kind: technique
+    id: document-cleanup-recommendations
     technique: recommend-cleanup
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: apply-cleanup
+  - kind: technique
+    id: apply-cleanup
     technique: apply-cleanup
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
-  - id: create-architecture-summary
+  - kind: technique
+    id: create-architecture-summary
     technique: summarize-architecture
-  - id: analyze-strategic-findings
+  - kind: technique
+    id: analyze-strategic-findings
     technique: strategic-findings-analysis
-    checkpoint: review-findings
-checkpoints[1]:
-  - id: review-findings
-    name: Strategic Review Findings Checkpoint
+  - kind: checkpoint
+    id: review-findings
     message: "Strategic review complete.\n\nFindings:\n{strategic_findings_summary}\n\nRecommended action: {recommended_strategic_option}. Auto-advancing in 30s."
     blocking: false
     defaultOption: acceptable

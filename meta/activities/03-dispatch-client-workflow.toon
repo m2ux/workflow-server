@@ -5,21 +5,23 @@ description: "Drive the client workflow's activity loop."
 required: true
 rules[1]:
   - "Authenticate every tool call inside the loop with client_session_index. The meta session_index is used only at activity boundaries (commit-and-persist's engineering commit) and at end-workflow."
-steps[2]:
-  - id: verify-preconditions
+steps[3]:
+  - kind: action
+    id: verify-preconditions
     actions[1]:
       - action: validate
         target: client_session_index
         message: "Cannot dispatch without a client session_index; initialize-session must run first"
-  - id: prime-initial-activity
+  - kind: action
+    id: prime-initial-activity
     actions[1]:
       - action: set
         target: current_activity
         value: initialActivity
-loops[1]:
-  - id: client-activity-loop
+  - kind: loop
+    id: client-activity-loop
     name: Client Activity Loop
-    type: while
+    loopType: while
     condition:
       type: simple
       variable: current_activity
@@ -27,7 +29,8 @@ loops[1]:
       value: null
     maxIterations: 200
     steps[5]:
-      - id: dispatch-activity
+      - kind: technique
+        id: dispatch-activity
         technique:
           name: workflow-engine::dispatch-activity
           inputs:
@@ -35,26 +38,30 @@ loops[1]:
             session_index: client_session_index
             prompt_template: "meta/activity-worker-prompt"
             state: variables
-      - id: present-yielded-checkpoint
+      - kind: technique
+        id: present-yielded-checkpoint
         when: "worker_yielded_checkpoint == true"
         technique:
           name: workflow-engine::present-checkpoint-to-user
           inputs:
             session_index: client_session_index
-      - id: respond-yielded-checkpoint
+      - kind: technique
+        id: respond-yielded-checkpoint
         when: "worker_yielded_checkpoint == true"
         technique:
           name: workflow-engine::respond-checkpoint
           inputs:
             session_index: client_session_index
             checkpoint_resolution: user_selection
-      - id: commit-activity-artifacts
+      - kind: technique
+        id: commit-activity-artifacts
         when: "worker_yielded_checkpoint == false"
         technique:
           name: workflow-engine::commit-and-persist
           inputs:
             activity_id: current_activity
-      - id: advance-activity
+      - kind: technique
+        id: advance-activity
         when: "worker_yielded_checkpoint == false"
         technique:
           name: workflow-engine::evaluate-transition

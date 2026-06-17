@@ -5,10 +5,12 @@ description: "Review each open assumption with the user."
 required: true
 techniques[1]:
   - scatter-gather
-steps[5]:
-  - id: evaluate-open-assumptions
+steps[7]:
+  - kind: technique
+    id: evaluate-open-assumptions
     technique: review-assumptions::collect
-  - id: interview-assumptions
+  - kind: technique
+    id: interview-assumptions
     technique: review-assumptions::interview
     condition:
       type: and
@@ -21,11 +23,54 @@ steps[5]:
           variable: has_open_assumptions
           operator: "=="
           value: true
-  - id: update-assumptions-log
+  - kind: loop
+    id: assumption-interview-loop
+    name: Assumption Interview Loop
+    loopType: forEach
+    variable: current_assumption
+    over: open_assumptions
+    steps[3]:
+      - kind: technique
+        id: present-assumption
+        technique: review-assumptions::interview
+      - kind: checkpoint
+        id: assumption-decision
+        condition:
+          type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        message: "Assumption {current_assumption.id}: {current_assumption.statement}"
+        blocking: true
+        options[3]:
+          - id: accept
+            label: Accept assumption
+            description: "This assumption is valid — proceed with it"
+            effect:
+              setVariable:
+                assumption_resolved_inline: true
+          - id: reject
+            label: Reject assumption
+            description: "This assumption is wrong — provide a correction"
+            effect:
+              setVariable:
+                assumption_resolved_inline: true
+          - id: defer
+            label: Defer
+            description: "Not enough information to decide now — revisit later"
+            effect:
+              setVariable:
+                assumption_deferred: true
+                has_deferred_assumptions: true
+      - kind: technique
+        id: record-decision
+        technique: review-assumptions::record
+  - kind: technique
+    id: update-assumptions-log
     technique: review-assumptions::record
-  - id: post-summary-jira
+  - kind: technique
+    id: post-summary-jira
     technique: atlassian-operations::comment-jira-issue
-    checkpoint: post-summary-review
     condition:
       type: and
       conditions[4]:
@@ -45,67 +90,8 @@ steps[5]:
           variable: post_jira_comment
           operator: "!="
           value: false
-  - id: post-summary-github
-    technique: github-cli-protocol::comment-issue
-    condition:
-      type: and
-      conditions[3]:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_platform
-          operator: "=="
-          value: github
-        - type: simple
-          variable: has_deferred_assumptions
-          operator: "=="
-          value: true
-loops[1]:
-  - id: assumption-interview-loop
-    name: Assumption Interview Loop
-    type: forEach
-    variable: current_assumption
-    over: open_assumptions
-    steps[2]:
-      - id: present-assumption
-        technique: review-assumptions::interview
-        checkpoint: assumption-decision
-      - id: record-decision
-        technique: review-assumptions::record
-checkpoints[2]:
-  - id: assumption-decision
-    name: Assumption Decision
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-    message: "Assumption {current_assumption.id}: {current_assumption.statement}"
-    blocking: true
-    options[3]:
-      - id: accept
-        label: Accept assumption
-        description: "This assumption is valid — proceed with it"
-        effect:
-          setVariable:
-            assumption_resolved_inline: true
-      - id: reject
-        label: Reject assumption
-        description: "This assumption is wrong — provide a correction"
-        effect:
-          setVariable:
-            assumption_resolved_inline: true
-      - id: defer
-        label: Defer
-        description: "Not enough information to decide now — revisit later"
-        effect:
-          setVariable:
-            assumption_deferred: true
-            has_deferred_assumptions: true
-  - id: post-summary-review
-    name: Post Summary Review
+  - kind: checkpoint
+    id: post-summary-review
     condition:
       type: and
       conditions[3]:
@@ -134,6 +120,24 @@ checkpoints[2]:
         effect:
           setVariable:
             post_jira_comment: false
+  - kind: technique
+    id: post-summary-github
+    technique: github-cli-protocol::comment-issue
+    condition:
+      type: and
+      conditions[3]:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: issue_platform
+          operator: "=="
+          value: github
+        - type: simple
+          variable: has_deferred_assumptions
+          operator: "=="
+          value: true
 transitions[4]:
   - to: codebase-comprehension
     condition:
