@@ -15,6 +15,9 @@ rules:
     - Agents must NOT proceed past checkpoints without user confirmation
     - "Ask, don't assume - Clarify scope and priorities before planning"
     - "Explicit approval - Get clear 'yes' or 'proceed' before creating documents"
+techniques:
+  activity[1]:
+    - variable-binding
 variables[20]:
   - name: initiative_name
     type: string

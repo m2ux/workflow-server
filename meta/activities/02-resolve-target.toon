@@ -2,7 +2,6 @@ id: resolve-target
 version: 4.1.0
 name: Resolve Target
 description: "Detect the target repository structure (regular directory vs. submodule monorepo) and resolve target_path."
-problem: Workflows that operate on a target codebase need to know whether the working directory is a regular repo or a submodule monorepo, and which submodule is the target
 required: true
 rules[1]:
   - "target_path MUST resolve to a directory containing a working git tree"

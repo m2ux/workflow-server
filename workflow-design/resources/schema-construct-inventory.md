@@ -34,11 +34,10 @@ The MCP resource `workflow-server://schemas` returns all five schemas as a singl
 | "Repeat for each item" / "do until done" | **Loop** | `loops[].type` (forEach/while/doWhile), `.variable`, `.over`, `.condition` |
 | "Then move on to the next phase" | **Transition** | `transitions[].to`, `.condition`, `.isDefault` |
 | "This triggers the X workflow" | **Trigger** | `triggers.workflow`, `.description`, `.passContext` |
-| "When entering/finishing, log/validate/set" | **Leading/trailing control step** | a first/last `steps[]` entry with `actions[]` (`log`/`validate`/`set`/`emit`/`message`) — there is no activity-level entry/exit hook; lifecycle actions are ordinary control steps at the start/end of the step sequence |
-| "This produces a report file" | **Artifact** | `artifacts[].id`, `.name`, `.location`, `.description`, `.action` |
+| "When entering/finishing, log/validate/set" | **Leading/trailing control step** | a first/last `steps[]` entry with `actions[]` (`log`/`validate`/`set`/`emit`/`message`) — lifecycle actions are ordinary control steps at the start/end of the step sequence |
+| "This produces a report file" | **Technique output artifact** (activity `artifacts[]` is SERVER-COMPUTED, never authored) | declare a `#### artifact` on the producing technique's `## Outputs`; `get_activity` synthesizes the activity's artifact contract from its steps' bound techniques (AP-65) |
 | "The expected result is X" | **Outcome** | `outcome[]` (string array) |
 | "Only run when X is true" | **Step condition** | `steps[].condition` (references condition.schema.json) |
-| "In fast mode, skip steps 2 and 3" | **Mode overrides** | `modeOverrides.{mode}.skipSteps[]`, `.steps[]`, `.checkpoints[]` |
 | "The agent must follow these constraints" | **Activity rules** | `rules[]` (string array) |
 
 ## Workflow-Level Constructs (workflow.schema.json)
@@ -46,9 +45,9 @@ The MCP resource `workflow-server://schemas` returns all five schemas as a singl
 | Informal Pattern | Formal Construct | Schema Fields |
 |---|---|---|
 | "Track whether the user confirmed" | **Variable** | `variables[].name`, `.type`, `.description`, `.defaultValue` |
-| "Can run in fast or thorough mode" | **Mode** | `modes[].id`, `.name`, `.activationVariable`, `.skipActivities` |
-| "The agent must always do X" | **Workflow rules** | `rules[]` (string array) |
-| "Artifacts go in the planning folder" | **Artifact location** | `artifactLocations.{key}.path`, `.description` |
+| "Can run in fast or thorough mode" | **Activation variable + conditional flow** | a boolean `variable` set by a detection step/checkpoint early in the workflow, with `transitions[].condition` and step `when`/`condition` gates that branch on it |
+| "The agent must always do X" | **Workflow rules** | `rules.workflow` / `rules.activity` / `rules.universal` (partitioned by audience) |
+| "Every activity needs this strategy technique" | **Inherited techniques** | `techniques.workflow` (orchestrator, bundled into `get_workflow`) / `techniques.activity` (inherited by every activity, injected into `get_activity`) |
 | "Start with the first activity" | **Initial activity** | `initialActivity` (activity ID) |
 
 ## Technique-Level Constructs (technique.schema.json)
@@ -86,7 +85,7 @@ Always wire checkpoint option consequences to formal effects:
 
 ## Action Types
 
-Use entry/exit/step actions for lifecycle hooks:
+Step `actions[]` carry lifecycle behaviour (entry/exit logic lives on a leading/trailing control step in `steps[]`, not in a separate hook):
 
 | Action | Purpose |
 |---|---|

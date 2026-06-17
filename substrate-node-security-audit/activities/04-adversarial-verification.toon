@@ -2,9 +2,6 @@ id: adversarial-verification
 version: 2.4.0
 name: Adversarial Verification
 description: "Adversarially verify PASS items from the primary audit."
-problem: "AI agents exhibit first-positive-signal bias — they find one correct behavior and mark the entire check as PASS without verifying all related fields or paths. This consistently causes Medium/High findings to be missed as false PASSes. Additionally, adversarial PASS selection based solely on severity potential misses areas where primary agents produced structurally incomplete outputs."
-techniques[1]:
-  - "variable-binding"
 required: true
 steps[3]:
   - id: announce-start

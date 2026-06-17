@@ -25,7 +25,7 @@ Complete workflow definition: `workflow.toon`, activity files, technique files, 
 
 #### workflow_definition
 
-Root workflow definition with metadata, modes, variables, rules, artifactLocations
+Root workflow definition with metadata, variables, rules, and techniques
 
 #### activity_files
 

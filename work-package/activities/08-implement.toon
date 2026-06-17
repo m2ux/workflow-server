@@ -2,10 +2,8 @@ id: implement
 version: 2.9.0
 name: Implement Tasks
 description: "Execute the implementation plan task by task."
-problem: User needs to implement the planned tasks
 required: true
-techniques[2]:
-  - "variable-binding"
+techniques[1]:
   - "scatter-gather"
 loops[3]:
   - id: task-cycle

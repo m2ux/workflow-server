@@ -2,17 +2,17 @@
 
 > prism-update workflow — 5 activities (linear pipeline with a verify → apply-updates retry loop)
 
-Technique binding is per-step: each step declares the technique it runs via `step.technique`. The Step Technique column below names the technique those steps bind; the Supporting column lists the activity-level strategy techniques.
+Each activity's authoritative definition — steps, checkpoints, transitions — lives in its `NN-<id>.toon` file (served by `get_activity`). This README is orientation only.
 
 ## Activity Sequence
 
-| # | Activity | Steps | Step Technique | Supporting | Checkpoints | Transitions |
-|---|----------|-------|----------------|------------|-------------|-------------|
-| 00 | **Discover Changes** | 1 | `diff-upstream` | `variable-binding` | — | → review-changes |
-| 01 | **Review Changes** | 2 | `review-change-set::present-summary`, `review-change-set::apply-exclusions` | `variable-binding` | `change-review` (blocking) | → apply-updates |
-| 02 | **Apply Updates** | 3 | `sync-resources`, `update-skill-routing`, `update-prism-docs` | `variable-binding` | — | → verify |
-| 03 | **Verify Consistency** | 1 | `verify-prism-consistency` | `variable-binding` | `verification-result` (non-blocking) | → commit-and-submit (no issues) / → apply-updates (issues) |
-| 04 | **Commit and Submit** | 1 | `submit-update` | `variable-binding` | — | — (terminal) |
+| # | Activity | Role |
+|---|----------|------|
+| 00 | **[Discover Changes](00-discover-changes.toon)** | Diff upstream prisms/ against current resources and categorize what changed |
+| 01 | **[Review Changes](01-review-changes.toon)** | Present the change set at a user checkpoint to confirm scope and exclusions |
+| 02 | **[Apply Updates](02-apply-updates.toon)** | Import resource changes, then bring skill routing and docs into line with them |
+| 03 | **[Verify Consistency](03-verify.toon)** | Confirm no stale references, routing mismatches, or count/index errors remain |
+| 04 | **[Commit and Submit](04-commit-and-submit.toon)** | Land the update as a feature branch and open a pull request |
 
 ## Flow
 
@@ -24,35 +24,22 @@ discover-changes → review-changes → apply-updates → verify → commit-and-
 
 ## Activity Details
 
-### 00 — Discover Changes
+### 00 — [Discover Changes](00-discover-changes.toon)
 
-Diffs the upstream prisms directory against current workflow resources. Categorizes each prism as new, modified, renamed, or deleted, classifies new prisms by family, and determines the next available resource index. One step:
+Diffs the upstream prisms directory against current workflow resources, categorizing each prism as new, modified, renamed, or deleted and classifying new prisms by family. The import then proceeds against a well-understood scope.
 
-1. `diff-upstream` → `diff-upstream` (sets `next_index`)
+### 01 — [Review Changes](01-review-changes.toon)
 
-### 01 — Review Changes
+Presents the discovered changes to the user for approval at a blocking checkpoint, where they can confirm the full set, adjust exclusions, or abort. The result is a user-approved change set ready for import.
 
-Presents discovered changes to the user for approval. The `change-review` checkpoint allows the user to confirm all changes, adjust exclusions, or abort the workflow. Two steps, binding the operations of the `review-change-set` group:
+### 02 — [Apply Updates](02-apply-updates.toon)
 
-1. `present-summary` → `review-change-set::present-summary` (checkpoint `change-review`)
-2. `apply-exclusions` → `review-change-set::apply-exclusions`
+Applies the approved change set across resources, skill routing, and documentation, in that order, so the catalog, every routing table, and all docs reflect the current resource state with no stale prism name references.
 
-### 02 — Apply Updates
+### 03 — [Verify Consistency](03-verify.toon)
 
-Applies the approved upstream change set across resources, routing, and documentation, in that order. After a precondition check (`resource_path`, `change_set`), three bound steps:
+Checks content integrity against upstream, stale name references, prompt-guide routing accuracy, resource count alignment, and duplicate indices. A non-blocking checkpoint surfaces the findings; if issues remain, the flow loops back to apply-updates to address them.
 
-1. `sync-resources` → sync modified, apply renames, import new, remove deleted — committed in logical groups for clean git history
-2. `update-skill-routing` → fix renamed references, add goal-mapping entries, expand catalogs across the prism techniques (plan-analysis, portfolio-analysis, behavioral-pipeline, orchestrate-prism)
-3. `update-prism-docs` → rebuild the resource catalog, prompt guide entries, model sensitivity table, and file structure
+### 04 — [Commit and Submit](04-commit-and-submit.toon)
 
-### 03 — Verify Consistency
-
-Verifies content integrity against upstream, stale name references, prompt guide routing accuracy, resource count alignment, and duplicate index detection, then records the result. The `verification-result` checkpoint presents findings and auto-proceeds after 30 seconds unless the user intervenes; choosing "Fix issues" loops back to apply-updates. One step:
-
-1. `verify-prism-consistency` → `verify-prism-consistency` (sets `has_issues`)
-
-### 04 — Commit and Submit
-
-Ensures a feature branch, pushes all commits, and creates a pull request against the workflows branch. Produces the `pull-request` artifact. One step:
-
-1. `submit-update` → `submit-update`
+Ensures a feature branch, pushes the commits, and opens a pull request against the workflows branch — putting the update in front of a reviewer.

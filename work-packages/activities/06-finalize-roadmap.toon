@@ -2,9 +2,6 @@ id: finalize-roadmap
 version: 1.2.0
 name: Finalize Roadmap
 description: Complete roadmap documentation with timeline, navigation, and success criteria
-problem: Need to finalize planning documentation before implementation begins
-techniques[1]:
-  - "variable-binding"
 steps[1]:
   - id: finalize-roadmap-docs
     technique: document-roadmap

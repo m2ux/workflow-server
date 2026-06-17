@@ -180,23 +180,23 @@ graph TD
 
 ## Techniques
 
-Steps bind to a technique via `step.technique`; each activity also lists strategy techniques in its `techniques[]` list (`variable-binding`, plus `scatter-gather` for the forEach passes). The structural-pass `check-gitnexus` step additionally binds the shared `gitnexus-operations::verify-index` operation. Operation-group techniques expose their steps as `<group>::<op>` references; standalone techniques bind a whole step.
+The cross-cutting `variable-binding` technique is declared once at the workflow level and inherited by every activity. The rest are activity-specific strategy techniques. Operation-group techniques (`::*`) expose their operations as `<group>::<op>` references; standalone techniques bind directly. See each activity's TOON for the authoritative step-to-technique bindings.
 
-| Technique | Capability | Bound by |
-|-----------|------------|----------|
-| `plan-analysis` | Detect scope, classify targets, plan analysis strategy | select-mode (`plan` step) |
-| `structural-analysis` | Single-pass L12 structural analysis | structural-pass (`run-structural` step) |
-| `portfolio-analysis` | Run 2+ complementary portfolio lenses | structural-pass (`run-portfolio` step) |
-| `behavioral-pipeline` | Execute 4+1 behavioral pipeline with labeled synthesis | structural-pass (`dispatch-behavioral-lenses` step), behavioral-synthesis-pass (`run-behavioral-synthesis` step) |
-| `full-prism` | Execute one isolated pass of the Full Prism pipeline | adversarial-pass (`run-adversarial`), synthesis-pass (`run-synthesis`) |
-| `dispute-analysis` | Run two orthogonal prisms and synthesize disagreements | dispute-pass (`run-dispute` step) |
-| `subsystem-analysis::*` | Per-region prism assignment + cross-subsystem synthesis | subsystem-pass (`decompose`, `calibrate`, `execute`, `synthesize`) |
-| `verified-analysis::*` | L12 + gap detection + corrected re-analysis | verified-pass (`initial-analysis`, `gap-detection`, `gap-extraction`, `corrected-analysis`) |
-| `reflect-analysis` | L12 + claim-prism meta-analysis + constraint synthesis | reflect-pass (`run-reflect` step) |
-| `smart-analysis::*` | Adaptively compose the analysis pipeline | smart-pass (`prereq-scan`, `knowledge-fill`, `select-mode`, `run-analysis`, `dispute-correction`) |
-| `adaptive-analysis::*` | Cost-minimizing depth escalation (SDL → L12 → full-prism) | adaptive-pass (`stage-1-sdl`, `stage-2-l12`, `stage-3-full`) |
-| `generate-report` | Produce clean final report from analysis artifacts | generate-report (`generate-report` step) |
-| `present-result` | Read, cross-reference-format, and present the final report | deliver-result (`present-result` step) |
+| Technique | Capability |
+|-----------|------------|
+| `plan-analysis` | Detect scope, classify targets, plan analysis strategy |
+| `structural-analysis` | Single-pass L12 structural analysis |
+| `portfolio-analysis` | Run 2+ complementary portfolio lenses |
+| `behavioral-pipeline` | Execute 4+1 behavioral pipeline with labeled synthesis |
+| `full-prism` | Execute one isolated pass of the Full Prism pipeline |
+| `dispute-analysis` | Run two orthogonal prisms and synthesize disagreements |
+| `subsystem-analysis::*` | Per-region prism assignment + cross-subsystem synthesis |
+| `verified-analysis::*` | L12 + gap detection + corrected re-analysis |
+| `reflect-analysis` | L12 + claim-prism meta-analysis + constraint synthesis |
+| `smart-analysis::*` | Adaptively compose the analysis pipeline |
+| `adaptive-analysis::*` | Cost-minimizing depth escalation (SDL → L12 → full-prism) |
+| `generate-report` | Produce clean final report from analysis artifacts |
+| `present-result` | Read, cross-reference-format, and present the final report |
 
 The four `::*` techniques are **operation-groups** — a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `<op>.md` file per operation. The rest are standalone `techniques/<slug>.md` files.
 
@@ -281,40 +281,6 @@ sequenceDiagram
 ```
 
 Unlike the work-package workflow (which resumes a persistent worker), the prism workflow creates a **new worker for each pass**. This is the isolation guarantee — the adversarial worker has never seen the structural analysis being generated.
-
----
-
-## Variables
-
-| Variable | Type | Description |
-|----------|------|-------------|
-| `target` | string | What to analyze — a file path, directory path, inline text, question, or concept |
-| `target_type` | string | `code` or `general` (default: `code`) |
-| `pipeline_mode` | string | `single`, `full-prism`, `portfolio`, `behavioral`, `dispute`, `subsystem`, `verified`, `reflect`, `smart`, or `adaptive` (default: `single`) |
-| `output_path` | string | Directory to write analysis artifacts (default: `.`) |
-| `selected_lenses` | array | For portfolio mode: array of lens names |
-| `lens_name` | string | Name of the portfolio lens whose artifact is currently being written |
-| `analysis_focus` | string | Optional focus area to guide the analysis |
-| `analysis_units` | array | Ordered list of analysis units (for multi-unit scopes) |
-| `current_unit` | object | Current analysis unit during iteration loop |
-| `structural_output_path` | string | File path to structural pass artifact for current unit |
-| `adversarial_output_path` | string | File path to adversarial pass artifact for current unit |
-| `synthesis_output_path` | string | File path to synthesis pass artifact for current unit |
-| `portfolio_output_paths` | object | Map of lens name to file path for portfolio mode artifacts |
-| `behavioral_output_paths` | object | Map of role label (ERRORS, COSTS, CHANGES, PROMISES) to file path for behavioral mode artifacts |
-| `behavioral_synthesis_output_path` | string | File path to behavioral synthesis artifact for current unit |
-| `all_artifact_paths` | array | Accumulated list of all artifact paths across all units |
-| `report_path` | string | File path to the generated REPORT.md artifact |
-| `gitnexus_available` | boolean | Whether GitNexus has indexed the target codebase — set during structural-pass check-gitnexus step (default: `false`) |
-| `unit_output_dir` | string | Resolved output directory for the current analysis unit — computed in structural-pass resolve-unit-output step |
-| `dispute_outputs` | object | For dispute mode: map of `{prism_a, prism_b, synthesis}` outputs |
-| `subsystem_assignments` | object | For subsystem mode: map of `{subsystem_name: prism_name}` from calibration |
-| `subsystem_outputs` | array | For subsystem mode: per-subsystem analysis output objects |
-| `verified_gap_data` | string | For verified mode: extracted gap JSON from boundary + audit analysis |
-| `reflect_history_context` | string | For reflect mode: loaded constraint history for synthesis step |
-| `smart_pipeline_steps` | array | For smart mode: steps the adaptive engine decided to execute |
-| `adaptive_stage` | string | For adaptive mode: current escalation stage (`sdl`, `l12`, or `full`) |
-| `adaptive_signal_quality` | string | For adaptive mode: signal-quality assessment at current stage (`adequate` or `insufficient`) |
 
 ---
 

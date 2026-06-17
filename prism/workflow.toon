@@ -25,6 +25,9 @@ rules:
     - "NO PERMISSION QUESTIONS: Workers must NEVER ask 'Would you like me to save this?' or 'Can I write to this directory?' or similar permission-deferral questions. These questions create workflow stalls. Write artifacts immediately and report completion."
     - "BLOCKER SURFACING (Not Permission Deferrals): If a worker encounters a GENUINE BLOCKER (operational barrier, not permission question), it must surface immediately using format: '[BLOCKER]: [specific issue]. Requires: [resolution]. Blocking: [progress].' Genuine blockers: directory doesn't exist, file permissions system error, network unavailable. NOT genuine blockers: uncertainty about whether to write, asking permission, deferring to user."
     - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL). This confirms successful completion and prevents silent write failures."
+techniques:
+  activity[1]:
+    - variable-binding
 
 variables[27]:
   - name: target

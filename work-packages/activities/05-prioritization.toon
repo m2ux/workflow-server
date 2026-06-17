@@ -2,9 +2,6 @@ id: prioritization
 version: 1.2.0
 name: Prioritization
 description: Prioritize work packages based on dependencies, value, risk, and effort
-problem: Need to determine execution order for work packages
-techniques[1]:
-  - "variable-binding"
 steps[1]:
   - id: prioritize
     technique: prioritize-packages

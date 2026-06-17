@@ -2,9 +2,6 @@ id: scope-definition
 version: 1.2.0
 name: Define Evaluation Scope
 description: "Collect the evaluation target, description, and output path."
-problem: "The evaluation requires a confirmed target, a clear description of evaluation goals, validated dimensions, and an organised output directory before analysis planning can begin."
-techniques[1]:
-  - variable-binding
 steps[5]:
   - id: collect-inputs
     technique: plan-evaluation::collect-scope

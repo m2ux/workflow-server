@@ -2,9 +2,6 @@ id: scope-setup
 version: 2.1.0
 name: Scope Setup
 description: "Set up the audit scope and planning folder."
-problem: The audit requires a confirmed target, reproducible commit, dependency scan outputs, and an organized artifact folder before analysis begins.
-techniques[1]:
-  - "variable-binding"
 required: true
 steps[3]:
   - id: announce-start

@@ -2,9 +2,7 @@ id: report-generation
 version: 1.2.0
 name: Report Generation
 description: "Produce the final CI/CD security audit report."
-problem: Merged findings must be severity-scored using the Impact x Exploitability rubric, coverage verified, and formatted into a structured report with actionable remediation guidance.
-techniques[2]:
-  - variable-binding
+techniques[1]:
   - execute-cicd-audit
 required: true
 steps[7]:

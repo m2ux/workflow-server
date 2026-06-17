@@ -2,9 +2,6 @@ id: sub-toolkit-review
 version: 1.5.0
 name: "Sub-Agent: Toolkit Per-Function Review"
 description: "Per-function toolkit review for Group D sub-agents."
-problem: "Toolkit review agents read files but skim functions with benign-looking names. The 8-item checklist exists but is applied to representative functions, not exhaustively. Per-function state management, arithmetic, and I/O bugs are consistently missed when the checklist is applied selectively rather than to every function."
-techniques[1]:
-  - "variable-binding"
 required: false
 steps[2]:
   - id: apply-toolkit-checklist

@@ -2,9 +2,7 @@ id: reconnaissance
 version: 1.2.0
 name: Reconnaissance
 description: "Classify discovered workflows and assign scanner agents."
-problem: Scanner agents need a structured inventory with trigger classification, permission mapping, and checkout pattern identification to apply detection patterns efficiently.
-techniques[2]:
-  - variable-binding
+techniques[1]:
   - execute-cicd-audit
 required: true
 steps[7]:

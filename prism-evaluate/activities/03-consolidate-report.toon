@@ -2,9 +2,6 @@ id: consolidate-report
 version: 1.2.0
 name: Consolidate Evaluation Report
 description: "Consolidate prism analysis artifacts into a unified EVALUATION-REPORT.md."
-problem: "Prism produces per-dimension analysis artifacts with varying structures (synthesis documents for full-prism, individual lens artifacts for portfolio). The evaluation consumer needs a single consolidated report with unified finding IDs, severity-calibrated findings, cross-dimensional insights, and actionable recommendations — stripped of analytical process details."
-techniques[1]:
-  - variable-binding
 steps[5]:
   - id: locate-artifacts
     technique: compose-evaluation-report::locate-artifacts

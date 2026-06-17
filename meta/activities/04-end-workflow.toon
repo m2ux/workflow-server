@@ -2,7 +2,6 @@ id: end-workflow
 version: 4.2.0
 name: End Workflow
 description: "Close out the client workflow."
-problem: Workflow sessions need an explicit close-out so the user knows the work is done and the final state is durably persisted
 required: true
 steps[3]:
   - id: verify-outcomes

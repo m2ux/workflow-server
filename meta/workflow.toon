@@ -10,10 +10,11 @@ tags[5]:
   - lifecycle
   - dispatch
   - session
-techniques[3]:
-  - "workflow-engine::handle-sub-workflow"
-  - "workflow-engine::dispatch-activity"
-  - "agent-conduct::orchestrator"
+techniques:
+  workflow[3]:
+    - "workflow-engine::handle-sub-workflow"
+    - "workflow-engine::dispatch-activity"
+    - "agent-conduct::orchestrator"
 initialActivity: discover-session
 rules:
   workflow[3]:

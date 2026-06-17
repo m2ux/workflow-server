@@ -2,9 +2,6 @@ id: reconnaissance
 version: 3.2.0
 name: Reconnaissance
 description: "Run codebase reconnaissance and security decomposition."
-problem: "The primary audit can only dispatch agents with complete, non-overlapping, targeted coverage once the codebase is mapped. Without a crate-priority classification, a function inventory, identified trust boundaries and vulnerability domains, and a per-agent scope assignment, dispatch is blind — agents overlap, skip files, or analyse the wrong crates."
-techniques[1]:
-  - "variable-binding"
 required: true
 steps[9]:
   - id: announce-start

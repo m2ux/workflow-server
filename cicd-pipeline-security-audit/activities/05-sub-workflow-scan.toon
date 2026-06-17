@@ -2,9 +2,7 @@ id: sub-workflow-scan
 version: 1.2.0
 name: Per-Submodule Workflow Scan
 description: "Scan the assigned submodule's workflow files for the seven detection patterns."
-problem: Each submodule's workflow files must be systematically scanned for expression injection, Pwn Request patterns, comment trigger abuse, excessive permissions, fork code execution, AI config poisoning, and dangerous execution patterns.
-techniques[2]:
-  - variable-binding
+techniques[1]:
   - execute-sub-agent
 required: false
 steps[11]:

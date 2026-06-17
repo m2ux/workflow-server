@@ -13,7 +13,7 @@ Extract structural and content patterns from comparable existing workflows for r
 
 ### 1. Select References
 
-- Select a shortlist of 2+ reference workflows sharing the target's activity model (sequential or independent), preferring same-domain workflows
+- Select a shortlist of 2+ reference workflows of similar scope and structure, preferring same-domain workflows
 
 ### 2. Extract Patterns
 

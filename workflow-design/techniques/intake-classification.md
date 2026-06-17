@@ -23,6 +23,6 @@ Capture the operation type — create, update, or review — and establish the c
 
 ### 3. Classify Operation
 
-- Accept the `{user_description}` and summarize key design intent — purpose, domain, rough activity count, sequential vs independent model, constraints
+- Accept the `{user_description}` and summarize key design intent — purpose, domain, rough activity count, and constraints
 - Classify as create or update based on whether a `{target_workflow_id}` is supplied: an existing-workflow reference signals update, otherwise create
 - Present the classification and distilled intent for confirmation

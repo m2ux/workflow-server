@@ -98,7 +98,7 @@ git worktree add ./workflows workflows
 **Activities:**
 1. Create `{NN}-{activity-id}.toon` in `{workflow-id}/activities/`
 2. Prefix with two-digit index (01, 02, 03, etc.)
-3. For meta activities, include `recognition[]` patterns for intent matching
+3. Connect activities with `transitions`; set the workflow's `initialActivity`
 4. Commit to this branch
 
 **Resources:**

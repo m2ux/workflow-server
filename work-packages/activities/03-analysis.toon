@@ -2,9 +2,6 @@ id: analysis
 version: 1.2.0
 name: Analysis
 description: Perform completion or context analysis depending on whether continuing previous work or starting new initiative
-problem: Need to understand context before detailed work package planning
-techniques[1]:
-  - "variable-binding"
 steps[1]:
   - id: analyze-context
     technique: analyze-initiative-context

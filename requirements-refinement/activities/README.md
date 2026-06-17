@@ -13,5 +13,5 @@ each activity's artifact prefix.
 | 05 | [finalize-specification](05-finalize-specification.toon) | `final-spec.md`, `change-summary.md` | — (complete) |
 | 06 | [report-failure](06-report-failure.toon) | `failure-report.md` | — (complete) |
 
-The correction loop is the conditional edge from `validate-specification` back to `update-specification`,
-guarded by the correctable-issue flags and the `correction_iteration` counter.
+The conditional edge from `validate-specification` back to `update-specification` is the bounded correction
+loop; see each activity's TOON for the routing conditions.

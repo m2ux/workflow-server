@@ -2,10 +2,7 @@ id: submit
 version: 1.3.0
 name: Submit Security Vulnerability Remediation
 description: "Finalize a high-sensitivity security fix."
-problem: User needs to submit a security fix without public disclosure
 required: true
-techniques[1]:
-  - "variable-binding"
 steps[5]:
   - id: announce-start
     actions[1]:

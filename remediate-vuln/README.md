@@ -10,7 +10,3 @@ A highly isolated workflow for remediating security vulnerabilities without publ
 
 ## Referenced Activities (work-package)
 This workflow reuses several activities from the `work-package` workflow for design, analysis, and implementation.
-
-## Variables
-- `sec_vuln_url`: URL of the private security advisory.
-- `is_sec_vuln_mode`: Always true.

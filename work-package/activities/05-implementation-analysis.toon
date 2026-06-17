@@ -2,10 +2,8 @@ id: implementation-analysis
 version: 2.7.0
 name: Implementation Analysis
 description: "Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement."
-problem: User needs to understand current state before planning changes
 required: false
-techniques[2]:
-  - variable-binding
+techniques[1]:
   - scatter-gather
 steps[8]:
   - id: review-baseline-state

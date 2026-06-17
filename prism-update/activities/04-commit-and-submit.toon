@@ -2,10 +2,7 @@ id: commit-and-submit
 version: 1.2.0
 name: Commit and Submit
 description: "Submit changes as a pull request."
-problem: Changes need to be submitted as a PR for review
 required: true
-techniques[1]:
-  - "variable-binding"
 
 steps[1]:
   - id: submit-update

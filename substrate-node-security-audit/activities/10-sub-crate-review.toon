@@ -2,9 +2,6 @@ id: sub-crate-review
 version: 1.10.0
 name: "Sub-Agent: Crate Deep Review"
 description: "Structured crate review for Group A sub-agents."
-problem: "Sub-agents receiving free-form prompts skip per-field trace tables, mark PASS without cross-function comparison, and return prose instead of structured output. This activity enforces step-by-step execution with verifiable intermediate outputs."
-techniques[1]:
-  - "variable-binding"
 required: false
 steps[6]:
   - id: build-function-registry

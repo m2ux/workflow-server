@@ -4,19 +4,19 @@
 
 ## Activities (7)
 
-Pipeline sequence with five blocking checkpoints; the final two activities run only when the user opts into resolution.
+A pipeline that classifies a target, plans dimension-to-lens mappings, runs prism per dimension group, consolidates a report, and optionally resolves and applies mitigations. Several activities gate on a user checkpoint; the final two run only when the user opts into resolution. The authoritative definition of each activity — steps, checkpoints, transitions, and outcomes — lives in its TOON.
 
-Steps bind their domain technique via `step.technique`; activities declare a flat `techniques[]` list of strategy techniques. The bound domain technique per activity is listed in the [workflow Techniques table](../README.md#techniques).
+| # | ID | Name | Role |
+|---|-----|------|------|
+| 00 | [`scope-definition`](00-scope-definition.toon) | Define Evaluation Scope | Collect inputs, classify the target, and derive dimensions; user confirms scope |
+| 01 | [`dimension-planning`](01-dimension-planning.toon) | Plan Dimension Analysis | Survey the target, map dimensions to lenses, and group for execution; user confirms the plan; writes `evaluation-plan.md` |
+| 02 | [`execute-analysis`](02-execute-analysis.toon) | Execute Prism Analyses | Fan out a prism run per execution group and collect results |
+| 03 | [`consolidate-report`](03-consolidate-report.toon) | Consolidate Evaluation Report | Extract findings, synthesise cross-dimensional patterns, and write `EVALUATION-REPORT.md` |
+| 04 | [`deliver-results`](04-deliver-results.toon) | Deliver Evaluation Results | Present results and offer the optional resolution dialogue |
+| 05 | [`resolution-dialogue`](05-resolution-dialogue.toon) | Resolution Dialogue | Tier-classify findings and propose mitigations one at a time; writes `MITIGATION-PLAN.md` |
+| 06 | [`apply-mitigations`](06-apply-mitigations.toon) | Apply Accepted Mitigations | Apply accepted mitigations to the target after a final user confirmation |
 
-| # | ID | Name | Primary | Supporting | Checkpoint | Artifacts |
-|---|-----|------|---------|------------|------------|-----------|
-| 00 | `scope-definition` | Define Evaluation Scope | — | variable-binding | confirm-scope | — |
-| 01 | `dimension-planning` | Plan Dimension Analysis | — | variable-binding | confirm-plan | evaluation-plan.md |
-| 02 | `execute-analysis` | Execute Prism Analyses | — | variable-binding, scatter-gather | — | (prism artifacts via trigger) |
-| 03 | `consolidate-report` | Consolidate Evaluation Report | — | variable-binding | — | EVALUATION-REPORT.md |
-| 04 | `deliver-results` | Deliver Evaluation Results | — | variable-binding | resolution-offer | — |
-| 05 | `resolution-dialogue` | Resolution Dialogue | — | variable-binding, scatter-gather | finding-decision | MITIGATION-PLAN.md |
-| 06 | `apply-mitigations` | Apply Accepted Mitigations | — | variable-binding | confirm-apply | (modified target) |
+Steps bind their domain technique via `step.technique`; the cross-cutting `variable-binding` strategy technique is declared once at the workflow level and inherited by every activity. The bound domain technique per activity is in the [workflow Techniques table](../README.md#techniques).
 
 ## Transition Chain
 
@@ -27,18 +27,4 @@ scope-definition ──[scope_confirmed]──→ dimension-planning ──[dime
                                                                                                                                        └──→ __terminal__
 ```
 
-Transitions from scope-definition and dimension-planning are conditioned on their respective checkpoint variables; `deliver-results` branches on `resolution_requested`. All other transitions are unconditional defaults.
-
-## Checkpoints
-
-| Checkpoint | Activity | Options | Effect |
-|------------|----------|---------|--------|
-| confirm-scope | scope-definition | Proceed / Adjust scope | Sets `scope_confirmed = true` or loops back |
-| confirm-plan | dimension-planning | Proceed / Adjust plan | Sets `dimensions_confirmed = true` or loops back |
-| resolution-offer | deliver-results | Proceed / Evaluation only / Address externally | Sets `resolution_requested` true or false |
-| finding-decision | resolution-dialogue | Accept / Modify / Skip / Discuss | Records each finding's disposition |
-| confirm-apply | apply-mitigations | Apply / Keep plan only | Gates whether changes are written to the target |
-
-## Triggers
-
-The `execute-analysis` activity triggers the `prism` workflow via a forEach loop over `execution_groups`. Each group passes: `target`, `target_type`, `output_path`, `pipeline_mode`, `selected_lenses`, `analysis_focus`.
+`deliver-results` ends the workflow unless the user opts into the resolution dialogue. The `execute-analysis` activity fans out the `prism` workflow once per execution group.

@@ -2,9 +2,6 @@ id: sub-reconnaissance
 version: 1.1.0
 name: "Sub-Agent: Codebase Reconnaissance"
 description: "Perform codebase reconnaissance and build the function registry."
-problem: "Reconnaissance is heavy analysis — reading build manifests, scanning hundreds of source files, and building the crate map and function registry — that the whole audit's coverage depends on. Done shallowly or piecemeal, the crate map, function inventory, and security-relevant structure miss files and paths, so the audit dispatches agents blind."
-techniques[1]:
-  - "variable-binding"
 required: false
 steps[2]:
   - id: map-codebase

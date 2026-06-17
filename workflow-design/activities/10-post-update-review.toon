@@ -2,9 +2,6 @@ id: post-update-review
 version: 1.3.0
 name: Post-Update Review
 description: "Post-commit compliance audit of the updated workflow against design principles and anti-patterns."
-problem: Updates can introduce new compliance issues that are invisible without a post-commit audit against the full design principles and anti-pattern catalog
-techniques[1]:
-  - variable-binding
 required: true
 rules[2]:
   - "Load the updated workflow from the workflow-server, not from cached data — the audit must verify the committed state"

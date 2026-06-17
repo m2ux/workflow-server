@@ -2,10 +2,7 @@ id: verify
 version: 1.2.1
 name: Verify Consistency
 description: "Check for consistency issues across resources, techniques, and documentation."
-problem: Changes across multiple files may leave inconsistencies
 required: true
-techniques[1]:
-  - "variable-binding"
 
 steps[1]:
   - id: verify-prism-consistency

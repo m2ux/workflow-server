@@ -22,6 +22,9 @@ rules:
   universal[2]:
     - "Newly added requirements are created with status pending; changing a requirement's status requires explicit user confirmation."
     - "Confirm the requirements analysis with the user before applying any changes to the specification."
+techniques:
+  activity[1]:
+    - variable-binding
 variables[14]:
   - name: source_path
     type: string

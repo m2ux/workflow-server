@@ -2,9 +2,6 @@ id: impact-analysis
 version: 1.2.0
 name: Impact Analysis
 description: "Impact assessment of proposed changes against an existing workflow's files, transitions, and references."
-problem: Modifying an existing workflow can break transition chains, invalidate checkpoint assumptions, or orphan techniques and resources
-techniques[1]:
-  - variable-binding
 required: false
 rules[2]:
   - "Every file in the existing workflow must be examined for potential impact"

@@ -2,9 +2,6 @@ id: adaptive-pass
 version: 1.2.0
 name: Adaptive Depth Pass
 description: "Cost-minimizing depth escalation."
-problem: "Users often don't know how deep an analysis needs to be. Running full-prism on every target is wasteful. Adaptive starts cheap and escalates only when needed."
-techniques[1]:
-  - "variable-binding"
 steps[4]:
   - id: run-stage-1
     technique:

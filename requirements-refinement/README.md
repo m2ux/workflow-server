@@ -39,7 +39,7 @@ never edits the canonical document in place.
 
 | # | Activity | Purpose |
 |---|----------|---------|
-| 01 | [Intake and Analyze](activities/01-intake-and-analyze.toon) | Capture and validate the source paths, classify source type, detect augment-vs-create, load sources, then produce a structured requirements analysis report and confirm before applying |
+| 01 | [Intake and Analyze](activities/01-intake-and-analyze.toon) | Establish trusted, classified sources and a user-confirmed analysis of the requirement changes they imply |
 | 03 | [Update Specification](activities/03-update-specification.toon) | Apply the analysis (or corrections) to a versioned working specification |
 | 04 | [Validate Specification](activities/04-validate-specification.toon) | Validate (conformance + source coverage), categorize issues, and route |
 | 05 | [Finalize Specification](activities/05-finalize-specification.toon) | Stage the final specification and change summary for promotion |

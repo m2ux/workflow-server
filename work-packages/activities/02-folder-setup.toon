@@ -2,9 +2,6 @@ id: folder-setup
 version: 1.3.0
 name: Planning Folder Setup
 description: Create planning folder structure with initial documentation skeletons
-problem: Need organized folder structure for multi-package planning artifacts
-techniques[1]:
-  - "variable-binding"
 steps[2]:
   - id: create-folder
     technique: "version-control::initialize-folder"

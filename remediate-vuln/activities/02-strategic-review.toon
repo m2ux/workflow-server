@@ -2,10 +2,7 @@ id: strategic-review
 version: 1.2.0
 name: Strategic Review
 description: "Review the implementation to ensure changes are minimal and focused."
-problem: User needs to ensure changes are minimal and focused
 required: true
-techniques[1]:
-  - "variable-binding"
 steps[9]:
   - id: review-scope
     technique: review-scope

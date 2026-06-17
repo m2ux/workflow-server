@@ -44,34 +44,32 @@ graph TD
 
 ## Activities
 
-Each step binds its technique via `step.technique`. The Step Technique column names the technique an activity's steps run; every activity declares `variable-binding` as its supporting strategy technique.
+Each activity's authoritative definition lives in its [`activities/NN-<id>.toon`](activities/) file (served by `get_activity`). This is the at-a-glance map; see the [activities README](activities/README.md) for per-activity orientation.
 
-| # | Activity | Steps | Step Technique | Supporting | Description |
-|---|----------|-------|----------------|------------|-------------|
-| 00 | **Discover Changes** | 1 | `diff-upstream` | `variable-binding` | Diff upstream prisms/ against current resources, categorize changes |
-| 01 | **Review Changes** | 2 | `review-change-set::present-summary`, `review-change-set::apply-exclusions` | `variable-binding` | Present change summary, user confirms scope and exclusions |
-| 02 | **Apply Updates** | 3 | `sync-resources`, `update-skill-routing`, `update-prism-docs` | `variable-binding` | Apply resource changes, then update skill routing and documentation to match |
-| 03 | **Verify Consistency** | 1 | `verify-prism-consistency` | `variable-binding` | Check for stale refs, routing mismatches, count/index errors |
-| 04 | **Commit and Submit** | 1 | `submit-update` | `variable-binding` | Create branch, push, create PR |
+| # | Activity | Role |
+|---|----------|------|
+| 00 | **[Discover Changes](activities/00-discover-changes.toon)** | Diff upstream prisms/ against current resources and categorize what changed |
+| 01 | **[Review Changes](activities/01-review-changes.toon)** | Present the change set so the user can confirm scope and exclusions |
+| 02 | **[Apply Updates](activities/02-apply-updates.toon)** | Import resource changes, then bring skill routing and docs into line with them |
+| 03 | **[Verify Consistency](activities/03-verify.toon)** | Confirm no stale references, routing mismatches, or count/index errors remain |
+| 04 | **[Commit and Submit](activities/04-commit-and-submit.toon)** | Land the update as a feature branch and open a pull request |
 
 ---
 
 ## Techniques
 
-| Technique | Bound by | Capability |
-|-----------|----------|------------|
-| `diff-upstream` | Discover Changes | Diff upstream prisms against current resources, classify changes by type and family |
-| `review-change-set::present-summary` | Review Changes | Present the categorized change set to the user as a reviewable summary |
-| `review-change-set::apply-exclusions` | Review Changes | Apply user-requested exclusion adjustments, yielding the approved change set |
-| `sync-resources` | Apply Updates | Apply file changes: copy modified, git mv renames, import new with indexed names, remove deleted |
-| `update-skill-routing` | Apply Updates | Update goal-mapping matrix, portfolio catalog, model sensitivity, resource lists in all prism techniques |
-| `update-prism-docs` | Apply Updates | Rebuild resource catalog, prompt guide entries, model sensitivity table, file structure |
-| `verify-prism-consistency` | Verify Consistency | Verify content integrity, stale references, prompt routing, counts, and duplicate indices |
-| `submit-update` | Commit and Submit | Ensure a feature branch, push commits, open a pull request, and report the result |
+| Technique | Capability |
+|-----------|------------|
+| [`diff-upstream`](techniques/diff-upstream.md) | Diff upstream prisms against current resources, classify changes by type and family |
+| [`review-change-set::present-summary`](techniques/review-change-set/present-summary.md) | Present the categorized change set to the user as a reviewable summary |
+| [`review-change-set::apply-exclusions`](techniques/review-change-set/apply-exclusions.md) | Apply user-requested exclusion adjustments, yielding the approved change set |
+| [`sync-resources`](techniques/sync-resources.md) | Apply file changes: copy modified, git mv renames, import new with indexed names, remove deleted |
+| [`update-skill-routing`](techniques/update-skill-routing.md) | Update goal-mapping matrix, portfolio catalog, model sensitivity, resource lists in all prism techniques |
+| [`update-prism-docs`](techniques/update-prism-docs.md) | Rebuild resource catalog, prompt guide entries, model sensitivity table, file structure |
+| [`verify-prism-consistency`](techniques/verify-prism-consistency.md) | Verify content integrity, stale references, prompt routing, counts, and duplicate indices |
+| [`submit-update`](techniques/submit-update.md) | Ensure a feature branch, push commits, open a pull request, and report the result |
 
-The `review-change-set` technique is an operation-group: a `review-change-set/` directory (`TECHNIQUE.md` shared contract plus one file per operation) whose ops are referenced as `review-change-set::present-summary` and `review-change-set::apply-exclusions`. All other techniques are flat standalones.
-
-In addition, every activity declares the `variable-binding` strategy technique in its `techniques[]` list.
+`review-change-set` is an operation-group ([`review-change-set/`](techniques/review-change-set/) with a `TECHNIQUE.md` shared contract plus one file per operation); the rest are flat standalones. The cross-cutting `variable-binding` strategy technique is inherited by every activity.
 
 ---
 
@@ -97,31 +95,6 @@ User receives:
 - Feature branch with clean commit history
 - PR with change summary
 ```
-
----
-
-## Variables
-
-| Variable | Type | Required | Default | Description |
-|----------|------|----------|---------|-------------|
-| `planning_folder_path` | string | — | — | Path to the planning folder for this workflow execution |
-| `upstream_path` | string | yes | — | Path to upstream prisms directory |
-| `resource_path` | string | no | `prism/resources/` | Path to workflow resources directory |
-| `change_set` | object | — | — | Categorized diff: new, modified, renamed, deleted |
-| `exclusions` | array | no | `[]` | Upstream filenames to exclude |
-| `next_index` | number | — | — | Next available resource index |
-| `branch_name` | string | — | — | Feature branch name |
-| `exclusions_adjusted` | boolean | — | `false` | Whether the user adjusted exclusions at the review checkpoint |
-| `has_issues` | boolean | — | `false` | Whether verification found issues |
-
----
-
-## Checkpoints
-
-| Checkpoint | Activity | Blocking | Purpose |
-|------------|----------|----------|---------|
-| `change-review` | review-changes | yes | User confirms which changes to apply |
-| `verification-result` | verify | no (30s) | User reviews consistency check findings |
 
 ---
 

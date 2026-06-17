@@ -2,10 +2,7 @@ id: codebase-comprehension
 version: 1.7.0
 name: Codebase Comprehension
 description: "Build or augment a mental model of the codebase."
-problem: User lacks sufficient understanding of an unfamiliar codebase to qualify agent-proposed design choices
 required: false
-techniques[1]:
-  - "variable-binding"
 steps[6]:
   - id: build-comprehension
     technique: survey

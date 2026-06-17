@@ -2,10 +2,7 @@ id: submit-for-review
 version: 1.6.0
 name: Submit for Review
 description: "Submit the PR for review and handle reviewer feedback."
-problem: User needs to submit the PR for review and handle reviewer feedback
 required: true
-techniques[1]:
-  - "variable-binding"
 steps[14]:
   - id: announce-start
     actions[1]{action,message}:

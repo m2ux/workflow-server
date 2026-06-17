@@ -2,9 +2,7 @@ id: implementation
 version: 1.3.0
 name: Implementation
 description: Execute each planned work package in priority order by triggering the work-package workflow
-problem: Planned work packages need to be implemented one at a time according to the roadmap
-techniques[2]:
-  - "variable-binding"
+techniques[1]:
   - "scatter-gather"
 triggers[1]:
   - workflow: work-package

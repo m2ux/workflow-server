@@ -22,6 +22,9 @@ rules:
   activity[2]:
     - "WORKER PERMISSIONS: Sub-agents dispatched in this workflow have FULL READ/WRITE permissions. Workers MUST write all artifacts directly to target paths WITHOUT asking for permission."
     - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL)."
+techniques:
+  activity[1]:
+    - variable-binding
 
 variables[23]:
   - name: evaluation_description

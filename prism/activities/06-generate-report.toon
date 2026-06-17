@@ -2,9 +2,6 @@ id: generate-report
 version: 1.1.0
 name: Generate Final Report
 description: "Generate the final REPORT.md from prior-pass analysis artifacts."
-problem: Analysis artifacts carry methodology-specific language that obscures the definitive results for readers who need actionable findings
-techniques[1]:
-  - "variable-binding"
 steps[1]:
   - id: generate-report
     technique: generate-report

@@ -2,8 +2,7 @@ id: structural-pass
 version: 2.3.0
 name: Structural Analysis Pass
 description: "Run the assigned structural analysis for each analysis unit."
-techniques[2]:
-  - "variable-binding"
+techniques[1]:
   - "scatter-gather"
 loops[1]:
   - id: unit-cycle

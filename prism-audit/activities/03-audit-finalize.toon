@@ -2,9 +2,6 @@ id: audit-finalize
 version: 1.1.0
 name: Audit Report Finalization
 description: "Post-process the prism REPORT.md into audit deliverables."
-problem: "The prism workflow produces a single clean REPORT.md with definitive findings. Security audits require three deliverables: a summary report with hyperlinked domain tables, a detailed findings document with expanded write-ups for every finding organised by severity, and a design trade-off analysis distilled from the conservation laws surfaced during the prism passes."
-techniques[1]:
-  - "variable-binding"
 steps[8]:
   - id: locate-artifacts
     technique: locate-artifacts

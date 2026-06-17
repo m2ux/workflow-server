@@ -8,20 +8,20 @@
 
 This workflow manages the complete lifecycle of workflow definition authoring through eight activities, with three modes (create, update, review) that control which activities execute. All modes enforce schema expressiveness, convention conformance, and structural enforcement of critical constraints.
 
-| # | Activity | Mode | Est. Time | Purpose |
-|---|----------|------|-----------|---------|
-| 01 | [**Intake and Context**](./activities/README.md#01-intake-and-context) | All | 10-20m | Classify create/update/review, set mode + target, internalize schemas and TOON format |
-| 02 | [**Requirements Refinement**](./activities/README.md#02-requirements-refinement) | Create, Update | 15-30m | Elicit design details one question at a time (8 checkpoints) |
-| 03 | [**Pattern Analysis**](./activities/README.md#03-pattern-analysis) | Create only | 10-15m | Audit 2+ reference workflows for reusable patterns |
-| 04 | [**Impact Analysis**](./activities/README.md#04-impact-analysis) | Update only | 10-20m | Enumerate affected files, check integrity, flag removals |
-| 05 | [**Scope and Draft**](./activities/README.md#05-scope-and-draft) | Create, Update | 40-80m | Define file manifest, then draft and validate each file per-file |
-| 06 | [**Quality Review**](./activities/README.md#06-quality-review) | All | 15-25m | Expressiveness, conformance, rule-hygiene, and rule-enforcement audits (full compliance audit in review mode) |
-| 07 | [**Validate and Commit**](./activities/README.md#07-validate-and-commit) | All | 10-15m | Schema validation and commit (create/update) or save compliance report (review) |
-| 08 | [**Post-Update Review**](./activities/README.md#08-post-update-review) | Update only | 10-15m | Automatic post-commit compliance audit of the updated workflow |
+| # | Activity | Mode | Purpose |
+|---|----------|------|---------|
+| 01 | [**Intake and Context**](./activities/README.md#01-intake-and-context) | All | Classify create/update/review, set mode + target, internalize schemas and TOON format |
+| 02 | [**Requirements Refinement**](./activities/README.md#02-requirements-refinement) | Create, Update | Elicit design details one question at a time |
+| 03 | [**Pattern Analysis**](./activities/README.md#03-pattern-analysis) | Create only | Audit 2+ reference workflows for reusable patterns |
+| 04 | [**Impact Analysis**](./activities/README.md#04-impact-analysis) | Update only | Enumerate affected files, check integrity, flag removals |
+| 05 | [**Scope and Draft**](./activities/README.md#05-scope-and-draft) | Create, Update | Define file manifest, then draft and validate each file per-file |
+| 06 | [**Quality Review**](./activities/README.md#06-quality-review) | All | Expressiveness, conformance, rule-hygiene, and rule-enforcement audits (full compliance audit in review mode) |
+| 07 | [**Validate and Commit**](./activities/README.md#07-validate-and-commit) | All | Schema validation and commit (create/update) or save compliance report (review) |
+| 08 | [**Post-Update Review**](./activities/README.md#08-post-update-review) | Update only | Automatic post-commit compliance audit of the updated workflow |
 
 **Detailed documentation:**
 
-- **Activities:** See [activities/README.md](./activities/README.md) for detailed per-activity documentation including steps, checkpoints, transitions, and mode overrides.
+- **Activities:** See [activities/README.md](./activities/README.md) for the per-activity orientation map (purpose, value, and how each activity connects in the flow), with links to the authoritative activity TOON files. The full step/checkpoint/transition definitions are served by `get_activity`.
 - **Techniques:** See [techniques/](techniques/) for the full technique library (workflow-local standalone techniques plus the shared `TECHNIQUE.md` base contract) with protocol flows and rules.
 - **Resources:** See [resources/README.md](./resources/README.md) for the resource index (5 resources) with usage context and cross-workflow access.
 
@@ -90,7 +90,7 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 |---|-----------|-------------|
 | 1 | Internalize before producing | [Intake and Context](./activities/README.md#01-intake-and-context) gate checkpoints |
 | 2 | Define complete scope before execution | [Scope and Draft](./activities/README.md#05-scope-and-draft) `scope-and-structure-confirmed` checkpoint |
-| 3 | One question at a time | [Requirements Refinement](./activities/README.md#02-requirements-refinement) — 8 separate checkpoints |
+| 3 | One question at a time | [Requirements Refinement](./activities/README.md#02-requirements-refinement) — per-dimension checkpoints |
 | 4 | Maximize schema expressiveness | [Quality Review](./activities/README.md#06-quality-review) `expressiveness-confirmed` checkpoint |
 | 5 | Convention over invention | [Quality Review](./activities/README.md#06-quality-review) `conformance-confirmed` checkpoint |
 | 6 | Never modify upward | Schema validation on every TOON file |
@@ -107,7 +107,7 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 
 ## Techniques
 
-The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) shared base contract inherited by all of them. Each activity step binds exactly one operation via `step.technique`. Activity-wide strategy is supplied by the meta [`variable-binding`](../meta/techniques/variable-binding.md) technique (listed in the `techniques[]` list on every activity), and commits go through meta [`version-control::commit-regular-files`](../meta/techniques/version-control/commit-regular-files.md).
+The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) shared base contract inherited by all of them. Each activity step binds exactly one operation via `step.technique`. The cross-cutting meta [`variable-binding`](../meta/techniques/variable-binding.md) strategy technique is declared once at `workflow.techniques.activity` and inherited by every activity (injected into every `get_activity`), and commits go through meta [`version-control::commit-regular-files`](../meta/techniques/version-control/commit-regular-files.md).
 
 | Technique | Capability | Bound by |
 |-----------|------------|----------|
@@ -150,29 +150,6 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 
 ---
 
-## Variables
-
-| Variable | Type | Description |
-|----------|------|-------------|
-| `planning_folder_path` | string | Path to the unique planning folder for this workflow execution |
-| `is_update_mode` | boolean | Whether update mode is active |
-| `is_review_mode` | boolean | Whether review mode is active |
-| `review_scope_confirmed` | boolean | Review mode: user confirmed audit target in intake; gates transition to quality-review |
-| `target_workflow_id` | string | Update/review: existing workflow ID |
-| `workflow_id` | string | ID of the workflow being created/updated |
-| `format_literacy_confirmed` | boolean | Gates content drafting |
-| `schema_constructs_confirmed` | boolean | Gates content drafting |
-| `approach_confirmed` | boolean | Gates content drafting |
-| `scope_manifest_confirmed` | boolean | Gates content drafting |
-| `all_files_validated` | boolean | Gates commit |
-| `review_findings_count` | number | Total compliance findings (review mode) |
-| `user_wants_fixes` | boolean | Whether to fix issues after review |
-| `scope_manifest` | array | Files to create/modify/remove |
-| `requirements_confirmed` | boolean | Gates transition from requirements-refinement |
-| `current_file` | object | Current file in drafting loop |
-
----
-
 ## Outputs
 
 **Create mode:** A complete workflow file set in the `workflows/` worktree.
@@ -187,12 +164,12 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 
 ```
 workflows/workflow-design/
-├── workflow.toon                          # Workflow definition (3 modes, 17 variables, 19 rules)
+├── workflow.toon                          # Workflow definition (variables, rules, inherited techniques)
 ├── README.md                             # This file
 ├── activities/
 │   ├── README.md                         # Per-activity documentation
 │   ├── 01-intake-and-context.toon        # Classify mode + target, internalize schemas/format
-│   ├── 03-requirements-refinement.toon   # Elicit design details (8 checkpoints)
+│   ├── 03-requirements-refinement.toon   # Elicit design details one question at a time
 │   ├── 04-pattern-analysis.toon          # Audit reference workflows (create only)
 │   ├── 05-impact-analysis.toon           # Impact analysis (update mode)
 │   ├── 06-scope-and-draft.toon           # Define file manifest, then draft/validate per file

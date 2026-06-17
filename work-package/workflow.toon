@@ -21,21 +21,9 @@ rules:
     - "Git configuration is user-owned. Validate-action messages describe a misconfiguration but never prescribe config-changing commands; the user fixes their own environment at whatever scope (system, global, local) they prefer."
   activity[1]:
     - "On completing each activity, update the planning-folder README.md progress tracker — mark this activity's artifacts as ✅ Complete and set the work-package Status to reflect the current milestone."
-modes[1]:
-  - id: review
-    name: Review Mode
-    description: "Review existing PRs rather than implementing new code. Analyzes pre-change baseline, skips implementation, and generates structured PR review comments."
-    activationVariable: is_review_mode
-    recognition[3]:
-      - start review work package
-      - review pr
-      - review existing implementation
-    skipActivities[2]:
-      - requirements-elicitation
-      - implement
-    defaults:
-      needs_elicitation: false
-    resource: resources/review-mode.md
+techniques:
+  activity[1]:
+    - variable-binding
 variables[95]:
   - name: target_path
     type: string

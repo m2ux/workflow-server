@@ -31,29 +31,21 @@ scope-definition → dimension-planning → execute-analysis → consolidate-rep
 
 `deliver-results` ends the workflow unless the user opts into the resolution dialogue, which then iterates through findings and applies accepted mitigations.
 
-User checkpoints gate the work:
-
-1. **confirm-scope** (scope-definition) — confirm target, dimensions, and output path
-2. **confirm-plan** (dimension-planning) — confirm the dimension-to-lens mapping and execution groups
-3. **resolution-offer** (deliver-results) — choose whether to proceed with the resolution dialogue
-4. **finding-decision** (resolution-dialogue) — accept, modify, skip, or discuss each finding's mitigation
-5. **confirm-apply** (apply-mitigations) — confirm applying the accepted mitigations to the target
-
-Transitions between confirm-plan and deliver-results are automatic.
+User checkpoints gate the scope, the plan, the resolution offer, each finding's mitigation, and the final apply; the authoritative options and effects live in each activity's TOON.
 
 ---
 
 ## Activities
 
-| # | Activity | Purpose | Checkpoint |
-|---|----------|---------|------------|
-| 00 | **Define Evaluation Scope** | Collect target, classify type, derive dimensions | confirm-scope |
-| 01 | **Plan Dimension Analysis** | Survey target, map dimensions to lenses, group for execution | confirm-plan |
-| 02 | **Execute Prism Analyses** | Trigger prism per execution group, collect results | — |
-| 03 | **Consolidate Evaluation Report** | Extract findings, identify cross-dimensional patterns, compose report | — |
-| 04 | **Deliver Evaluation Results** | Present metrics, core finding, and artifact index; offer resolution | resolution-offer |
-| 05 | **Resolution Dialogue** | Tier-classify findings, propose mitigations one-by-one, compile mitigation plan | finding-decision |
-| 06 | **Apply Accepted Mitigations** | Apply the accepted mitigations to the target and commit | confirm-apply |
+| # | Activity | Purpose |
+|---|----------|---------|
+| 00 | **Define Evaluation Scope** | Collect the target, classify its type, and derive evaluation dimensions; user confirms scope before planning |
+| 01 | **Plan Dimension Analysis** | Survey the target, map each dimension to prism lenses, and group dimensions for execution; user confirms the plan |
+| 02 | **Execute Prism Analyses** | Trigger a prism run per execution group and collect the results |
+| 03 | **Consolidate Evaluation Report** | Extract findings, identify cross-dimensional patterns, and compose the evaluation report |
+| 04 | **Deliver Evaluation Results** | Present the results and artifact index, then offer the optional resolution dialogue |
+| 05 | **Resolution Dialogue** | Tier-classify findings and propose mitigations one finding at a time, compiling a mitigation plan |
+| 06 | **Apply Accepted Mitigations** | Apply the accepted mitigations to the target after a final user confirmation |
 
 **Detailed documentation:** See [activities/](activities/) for per-activity TOON definitions.
 
@@ -85,36 +77,6 @@ Each technique is an operation-group: a `TECHNIQUE.md` shared contract plus one 
 | [Mitigation Plan Template](./resources/mitigation-plan-template.md) | Structure for the MITIGATION-PLAN.md artifact |
 
 **Detailed documentation:** See [resources/](resources/) for full content.
-
----
-
-## Variables
-
-| Variable | Type | Required | Description |
-|----------|------|----------|-------------|
-| `evaluation_description` | string | yes | What to evaluate and why |
-| `target_path` | string | yes | Path to the target |
-| `output_path` | string | yes | Directory for all evaluation artifacts |
-| `target_type` | string | — | Classification: document, document-set, codebase, mixed |
-| `dimensions` | array | — | Evaluation dimensions (derived if omitted) |
-| `dimension_plan` | array | — | Per-dimension lens mapping |
-| `lens_overrides` | object | — | User-specified lens overrides per dimension |
-| `execution_groups` | array | — | Dimensions grouped by pipeline mode |
-| `current_group` | object | — | Current group during iteration |
-| `completed_analyses` | array | — | Completed prism runs with status |
-| `all_artifact_paths` | array | — | All artifact paths across prism runs |
-| `evaluation_report_path` | string | — | Path to EVALUATION-REPORT.md |
-| `evaluation_plan_path` | string | — | Path to evaluation-plan.md |
-| `scope_confirmed` | boolean | — | Checkpoint gate (default: false) |
-| `dimensions_confirmed` | boolean | — | Checkpoint gate (default: false) |
-| `pipeline_mode` | string | — | Per-group pipeline mode (default: full-prism) |
-| `gitnexus_available` | boolean | — | GitNexus indexing status (default: false) |
-| `resolution_requested` | boolean | — | Whether the user opted into the resolution dialogue (default: false) |
-| `mitigation_plan_path` | string | — | Path to MITIGATION-PLAN.md |
-| `current_finding` | object | — | Current finding during the resolution iteration |
-| `accepted_mitigations` | array | — | Accepted mitigation decisions per finding |
-| `evaluation_findings` | array | — | Findings extracted from the report for resolution |
-| `accepted_count` | number | — | Count of accepted mitigations (default: 0) |
 
 ---
 

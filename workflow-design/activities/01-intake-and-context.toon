@@ -2,9 +2,6 @@ id: intake-and-context
 version: 1.0.0
 name: Intake and Context
 description: "Operation-type capture followed by the schema-system and TOON-format baseline: classify the request as create, update, or review, establish the corresponding mode + target, then internalize the schema system and format conventions before drafting begins."
-problem: User wants to create or update a workflow and the agent must capture intent and internalize the schema system and format conventions before producing any workflow content
-techniques[1]:
-  - variable-binding
 required: true
 rules[5]:
   - "Do not begin drafting content during intake — this activity only captures intent"

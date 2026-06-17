@@ -2,9 +2,6 @@ id: quality-review
 version: 1.3.0
 name: Quality Review
 description: "Quality review of drafted workflow content."
-problem: Drafted content may contain prose that should be formal constructs, diverge from conventions, or have critical rules without structural enforcement
-techniques[1]:
-  - variable-binding
 required: true
 rules[3]:
   - "Each review pass is independent — complete one pass fully before starting the next"

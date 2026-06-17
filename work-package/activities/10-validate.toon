@@ -2,10 +2,7 @@ id: validate
 version: 3.2.0
 name: Verify & Validate Design
 description: "Validate the implementation against tests, build, format, and lint checks."
-problem: User needs to validate the implementation passes all tests
 required: true
-techniques[1]:
-  - "variable-binding"
 steps[5]:
   - id: preflight
     technique: cargo-operations::preflight

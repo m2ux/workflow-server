@@ -15,17 +15,17 @@ The meta workflow is the structural home for the orchestration logic that used t
 - Universal techniques resolve for any session via the loader's workflow-local → `meta` fallback chain.
 - State persistence is server-managed. Every authenticated tool call atomically writes `session.json` + `.session-token` (seal) into the planning folder, so there are no agent-side persist or restore steps.
 
-| # | Activity | Est. Time | Purpose |
-|---|----------|-----------|---------|
-| 00 | [**Discover Session**](./activities/README.md#00-discover-session) | 1-2m | Catalog workflows, match user request to `target_workflow_id`, scan for saved client sessions, present resume / workflow-selection checkpoints |
-| 01 | [**Initialize Session**](./activities/README.md#01-initialize-session) | 1-2m | Derive the client planning slug from the work item, then create or resume the client session as a child of meta via `create-session({ parent_session_index, workflow_id, planning_slug })`. Variables are restored automatically by the server on resume. |
-| 02 | [**Resolve Target**](./activities/README.md#02-resolve-target) | 1-2m | Detect repo type (regular vs. submodule monorepo) and resolve `target_path` for downstream git operations |
-| 03 | [**Dispatch Client Workflow**](./activities/README.md#03-dispatch-client-workflow) | variable | Drive the client workflow's activity loop inline — dispatch each activity, mediate yielded checkpoints, commit-and-persist, and evaluate transitions until `current_activity == null` |
-| 04 | [**End Workflow**](./activities/README.md#04-end-workflow) | 2-3m | Verify outcomes, generate summary, completion checkpoint (with abort-back path to dispatch). Final state is already on disk — the server has persisted every authenticated call. |
+| # | Activity | Role |
+|---|----------|------|
+| 00 | [**Discover Session**](./activities/README.md#00-discover-session) | Identify the target client workflow and surface any saved session to resume |
+| 01 | [**Initialize Session**](./activities/README.md#01-initialize-session) | Give the work package a stable identity and create or resume the client session as a child of meta |
+| 02 | [**Resolve Target**](./activities/README.md#02-resolve-target) | Detect the repo structure (regular vs. submodule monorepo) and resolve `target_path` |
+| 03 | [**Dispatch Client Workflow**](./activities/README.md#03-dispatch-client-workflow) | Drive the client workflow end to end inline, mediating its checkpoints with the user |
+| 04 | [**End Workflow**](./activities/README.md#04-end-workflow) | Verify the client workflow's outcomes, summarise the session, and confirm closure |
 
 **Detailed documentation:**
 
-- **Activities:** see [activities/README.md](./activities/README.md) for steps, checkpoints, transitions, and condition tables.
+- **Activities:** see [activities/README.md](./activities/README.md) for the role each activity plays and links to its authoritative definition.
 - **Techniques:** see [techniques/](./techniques/) for the universal techniques and the rule-authority map (the [`agent-conduct`](./techniques/agent-conduct.md) technique is the single source of truth for cross-cutting rules).
 - **Resources:** see [resources/README.md](./resources/README.md) for the bootstrap protocol and prompt templates.
 
@@ -133,29 +133,6 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | `session-summary-template` | [Session Summary Template](./resources/session-summary-template.md) | Skeleton for the markdown session summary composed by `generate-summary` at workflow close. |
 
 > The on-disk session-state shape is defined by [`schemas/session-file.schema.json`](../../schemas/session-file.schema.json); see [`docs/state_management_model.md`](../../docs/state_management_model.md) for the persistence model.
-
----
-
-## Variables
-
-| Variable | Type | Description |
-|----------|------|-------------|
-| `target_workflow_id` | string | Client workflow to dispatch (set by `discover-session`) |
-| `meta_session_index` | string | 6-character base32 `session_index` of the meta session itself — passed as `parent_session_index` when `create-session` creates the client session |
-| `workflow_match_ambiguous` | boolean | Multiple workflows could match the request — gates the workflow-selection checkpoint |
-| `has_saved_state` | boolean | A saved client session matched the request |
-| `saved_planning_slug` | string | Planning slug of the matched saved client session — passed to `start_session` to resume |
-| `is_resuming` | boolean | User chose to resume the matched saved session |
-| `planning_folder_path` | string | Canonical absolute path to the client workflow's planning folder, resolved by the server under its workspace `.engineering` root — the single artifact location, never anchored to `target_path`/CWD |
-| `client_session_index` | string | 6-character base32 `session_index` returned by `start_session` for the dispatched client workflow |
-| `client_planning_slug` | string | Planning slug of the dispatched client workflow's planning folder — stable identifier the server uses to locate `session.json` |
-| `is_monorepo` | boolean | Target is a submodule monorepo |
-| `target_path` | string | Resolved target directory — `.` for regular repos, a submodule path for monorepos |
-| `client_workflow_completed` | boolean | Dispatched client workflow reached `workflow_complete` |
-| `target_workflow_outcomes` | string | The client workflow's declared outcomes, read by `verify-outcomes` during end-workflow close-out |
-| `client_state` | string | The dispatched client workflow's final variable state, read by `verify-outcomes` during end-workflow |
-| `client_trace` | string | The dispatched client workflow's execution trace, read by `generate-summary` during end-workflow |
-| `abort_completion` | boolean | User chose to return to dispatch from end-workflow instead of closing |
 
 ---
 

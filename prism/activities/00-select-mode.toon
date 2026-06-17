@@ -2,9 +2,6 @@ id: select-mode
 version: 2.1.0
 name: Plan Analysis
 description: "Select an analysis mode for the user's request."
-problem: User needs the analysis planned and configured before execution begins
-techniques[1]:
-  - "variable-binding"
 steps[3]:
   - id: plan
     technique: plan-analysis

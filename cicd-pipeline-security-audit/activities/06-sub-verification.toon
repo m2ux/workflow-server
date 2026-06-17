@@ -2,9 +2,7 @@ id: sub-verification
 version: 1.2.0
 name: Scan Verification
 description: "Verify scan completeness across all scanner outputs."
-problem: Scanner outputs must be verified for completeness before merge to ensure no workflow files were missed and no detection patterns were skipped.
-techniques[2]:
-  - variable-binding
+techniques[1]:
   - execute-sub-agent
 required: false
 steps[6]:

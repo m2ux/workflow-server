@@ -35,7 +35,7 @@ Sub-Agent Model (Phase 3):
 
 ### Orchestration Model
 
-- **Fully automated** — no user checkpoints; phase gates set by each activity's completion step (a `set` flag on its final step)
+- **Fully automated** — no user checkpoints; each activity gates the next phase on completion
 - **Per-submodule dispatch** — each scanner applies all 7 patterns to one submodule
 - **Coverage gate** — every `.github/workflows/*.yml` file must be scanned
 - **Reconciliation gate** — every scanner finding must map to a merged finding
@@ -89,28 +89,24 @@ cicd-pipeline-security-audit/
 
 ## Activities
 
-The sequential phases of the audit — each activity represents a distinct stage that must complete before the next begins.
+The sequential phases of the audit — each activity is a distinct stage that must complete before the next begins. Each links to its authoritative TOON definition.
 
-Each activity binds techniques at the step level (`step.technique`). The Supporting column lists the activity's strategy techniques (`techniques[]`); the Step-Bound column lists the techniques its steps bind.
-
-| # | Activity | Purpose | Steps | Supporting | Step-Bound Techniques |
-|---|----------|---------|-------|------------|-----------------------|
-| [01](activities/01-scope-setup.toon) | Scope Setup | Discover targets, inventory workflows, create planning folder | 5 | variable-binding, execute-cicd-audit | inventory-workflows |
-| [02](activities/02-reconnaissance.toon) | Reconnaissance | Classify triggers, map permissions, assign scanner agents | 5 | variable-binding, execute-cicd-audit | inventory-workflows |
-| [03](activities/03-primary-scan.toon) | Primary Scan | Dispatch S1-Sn scanners, V verification, M merge | 8 | variable-binding, execute-cicd-audit | dispatch-scanners |
-| [04](activities/04-report-generation.toon) | Report Generation | Severity scoring + final report | 5 | variable-binding, execute-cicd-audit | score-cicd-severity, verify-scan-output, write-cicd-report |
+| # | Activity | Role in the flow |
+|---|----------|------------------|
+| [01](activities/01-scope-setup.toon) | Scope Setup | Discovers the target submodules and their workflow files, and stands up the planning folder the rest of the audit writes into |
+| [02](activities/02-reconnaissance.toon) | Reconnaissance | Classifies triggers, maps permissions, and assigns one scanner agent per submodule so the scan can fan out |
+| [03](activities/03-primary-scan.toon) | Primary Scan | Runs the scanner agents, independently verifies their coverage, and merges their findings into one reconciled set |
+| [04](activities/04-report-generation.toon) | Report Generation | Scores merged findings by severity and writes the final audit report |
 
 ### Sub-Agent Activities
 
 Delegated work units that run inside Phase 3 — each is executed by a dedicated sub-agent spawned by the orchestrator.
 
-Sub-agent activities carry `variable-binding` and `execute-sub-agent` as supporting techniques; each binds a detection or analysis technique at the step level.
-
-| # | Activity | Agent | Steps | Purpose | Step-Bound Techniques |
-|---|----------|-------|-------|---------|-----------------------|
-| [05](activities/05-sub-workflow-scan.toon) | Per-Submodule Workflow Scan | S1-Sn | 9 | Apply P1-P7 to all workflow files in assigned submodule | scan-injection-patterns |
-| [06](activities/06-sub-verification.toon) | Scan Verification | V | 4 | Verify file + pattern coverage across all scanners | verify-scan-output |
-| [07](activities/07-sub-merge.toon) | Finding Merge | M | 5 | Deduplicate, correlate, reconcile findings | merge-scan-findings |
+| # | Activity | Agent | Role in the flow |
+|---|----------|-------|------------------|
+| [05](activities/05-sub-workflow-scan.toon) | Per-Submodule Workflow Scan | S1-Sn | Applies all seven detection patterns to every workflow file in its assigned submodule |
+| [06](activities/06-sub-verification.toon) | Scan Verification | V | Independently confirms that no file or pattern was skipped across all scanners |
+| [07](activities/07-sub-merge.toon) | Finding Merge | M | Deduplicates, correlates, and reconciles scanner findings into a single trustworthy set |
 
 ## Techniques
 
@@ -143,25 +139,6 @@ Reference material loaded by the agent at runtime — pattern catalogs, scoring 
 | 04 | [Sub-Agent Output Schema](./resources/sub-agent-output-schema.md) | Scanner output JSON schema + validation rules |
 | 05 | [Intermediate Artifact Schemas](./resources/intermediate-artifact-schemas.md) | JSON shapes for artifacts between reconnaissance, dispatch, verification, and merge |
 | 06 | [CI/CD Audit Report Template](./resources/cicd-audit-report-template.md) | Document skeleton for the final audit report |
-
-## Variables
-
-| Variable | Type | Description |
-|----------|------|-------------|
-| `target_submodules` | string | Comma-separated submodule paths or "all" |
-| `planning_folder_path` | string | Path to planning artifact folder |
-| `workflow_file_count` | number | Total workflow files discovered |
-| `submodule_count` | number | Submodules in scope |
-| `scanners_assigned` | number | Scanner agents assigned |
-| `scanners_dispatched` | number | Scanner agents dispatched |
-| `reconnaissance_complete` | boolean | Phase 2 gate |
-| `primary_scan_complete` | boolean | Phase 3 gate |
-| `verification_complete` | boolean | V agent gate |
-| `merge_complete` | boolean | M agent gate |
-| `report_complete` | boolean | Phase 4 gate |
-| `total_findings` | number | Confirmed findings after merge |
-| `critical_findings` | number | Critical-severity count |
-| `high_findings` | number | High-severity count |
 
 ## Artifacts
 

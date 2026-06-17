@@ -2,10 +2,7 @@ id: finalize-specification
 version: 1.2.0
 name: Finalize Specification
 description: "Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts, and confirm the user accepts them for promotion to the canonical location."
-problem: A validated specification must be staged with a change summary for the user to review and promote
 required: true
-techniques[1]:
-  - "variable-binding"
 steps[1]:
   - id: finalize-specification
     technique: finalize-specification

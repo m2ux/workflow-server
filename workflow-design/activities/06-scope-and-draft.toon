@@ -2,9 +2,6 @@ id: scope-and-draft
 version: 1.0.0
 name: Scope and Draft
 description: "Complete file manifest and structural design for the target workflow, followed by a per-file drafting and review pass over every entry in the confirmed scope manifest, with schema validation on each TOON file."
-problem: Incomplete scope coverage is the most frequent misalignment pattern — every affected file must be enumerated before execution, then content must be drafted using formal schema constructs, validated per-file, and reviewed before proceeding
-techniques[1]:
-  - variable-binding
 required: true
 rules[8]:
   - "The scope manifest must include every file to be created, modified, or removed — no implicit files"

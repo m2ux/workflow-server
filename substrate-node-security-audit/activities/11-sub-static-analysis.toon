@@ -2,9 +2,6 @@ id: sub-static-analysis
 version: 1.7.0
 name: "Sub-Agent: Static Analysis and Mechanical Checks"
 description: "Structured static analysis with zero-hit audit and finding aggregation."
-problem: "Static analysis agents return individual grep hits without aggregation (multiple panics in the same pallet stay as separate results) and silently pass on patterns with zero hits (e.g., RPC fan-out). This activity forces aggregation and zero-hit verification."
-techniques[1]:
-  - "variable-binding"
 required: false
 steps[4]:
   - id: run-grep-patterns

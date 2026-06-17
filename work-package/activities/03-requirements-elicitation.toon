@@ -2,10 +2,7 @@ id: requirements-elicitation
 version: 2.9.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation.
-problem: User needs to clarify and capture requirements before implementation
 required: false
-techniques[1]:
-  - "variable-binding"
 steps[6]:
   - id: stakeholder-discussion
     technique: discuss

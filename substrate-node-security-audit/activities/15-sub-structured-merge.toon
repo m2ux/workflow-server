@@ -2,9 +2,6 @@ id: sub-structured-merge
 version: 1.1.0
 name: "Sub-Agent: Structured Merge"
 description: "Structured merge, deduplication, and severity scoring of agent findings."
-problem: "Merging findings from many agents is lossy when done amid high context volume — findings get displaced by sheer quantity and silently dropped (cross-run analysis showed 6-8 lost per run). The merge must be finding-lossless: every agent finding reconciled into a single canonical, deduplicated, severity-scored set with zero unaccounted."
-techniques[1]:
-  - "variable-binding"
 required: false
 steps[1]:
   - id: merge-findings

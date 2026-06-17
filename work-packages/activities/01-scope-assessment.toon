@@ -2,9 +2,6 @@ id: scope-assessment
 version: 1.2.0
 name: Scope Assessment
 description: Confirm multi-work-package initiative and identify work packages to be planned
-problem: User has multiple related work items that need coordination and planning
-techniques[1]:
-  - "variable-binding"
 steps[2]:
   - id: verify-preconditions
     actions[1]:

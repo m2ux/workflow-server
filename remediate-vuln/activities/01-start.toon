@@ -2,10 +2,7 @@ id: start
 version: 1.3.0
 name: Start Security Vulnerability Remediation
 description: "Initialize a high-sensitivity security fix."
-problem: User needs to remediate a security vulnerability without public disclosure
 required: true
-techniques[1]:
-  - "variable-binding"
 steps[10]:
   - id: announce-start
     actions[1]:

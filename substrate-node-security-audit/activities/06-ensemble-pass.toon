@@ -2,9 +2,6 @@ id: ensemble-pass
 version: 2.5.0
 name: Ensemble Pass
 description: "Optional second-model audit run with merged findings."
-problem: Different models and configurations find different subsets of findings. Running the template a second time and merging results captures findings that are non-deterministically detected in any single run, improving overall coverage.
-techniques[1]:
-  - "variable-binding"
 required: false
 steps[4]:
   - id: execute-ensemble-pass

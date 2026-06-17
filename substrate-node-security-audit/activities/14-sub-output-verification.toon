@@ -2,9 +2,6 @@ id: sub-output-verification
 version: 1.1.0
 name: "Sub-Agent: Output Verification"
 description: "Mechanically validate primary-agent output completeness."
-problem: "Agent outputs must be mechanically verified before findings advance to merge — every required agent dispatched and returned, coverage attested across priority-1/2 files, mandatory tables present, and target-profile obligations met. Verification that is shallow or assumes completeness lets incomplete outputs through and produces inconsistent finding counts across runs on the same codebase."
-techniques[1]:
-  - "variable-binding"
 required: false
 steps[1]:
   - id: verify-output

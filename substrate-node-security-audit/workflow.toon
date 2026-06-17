@@ -41,6 +41,9 @@ rules:
     - "OBSERVATION ELEVATION: M reviews all agent reconnaissance_leads and additional_observations, PLUS S agent emergent_domains from s-architectural-analysis.json and R agent leads from r-reconnaissance-data.json. Emergent domains are architectural vulnerability hypotheses — each MUST be dispositioned as captured, elevated, or not-applicable. Security-relevant observations (divergent code paths, missing validation, error-path persistence, silent errors, trust boundary amplification) MUST be elevated to findings or explicitly mapped to existing findings. Silent observation loss is a regression source."
   universal[1]:
     - "Artifacts in 'planning' location are gitignored — never reference them in PRs or issues"
+techniques:
+  activity[1]:
+    - variable-binding
 variables[19]:
   - name: target_submodule
     type: string

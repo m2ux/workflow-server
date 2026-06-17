@@ -2,10 +2,7 @@ id: start-work-package
 version: 3.10.0
 name: Start Work Package
 description: "Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder."
-problem: User needs to initialize a work package with issue tracking, branch, and PR
 required: true
-techniques[1]:
-  - "variable-binding"
 steps[33]:
   - id: announce-start
     actions[1]:

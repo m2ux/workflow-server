@@ -2,10 +2,8 @@ id: assumptions-review
 version: 2.1.1
 name: Assumptions Review
 description: "Review each open assumption with the user."
-problem: Open assumptions need resolution before implementation begins
 required: true
-techniques[2]:
-  - variable-binding
+techniques[1]:
   - scatter-gather
 steps[5]:
   - id: evaluate-open-assumptions

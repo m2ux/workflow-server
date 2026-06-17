@@ -2,10 +2,7 @@ id: research
 version: 2.6.0
 name: Research
 description: "Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity."
-problem: User needs to research best practices before planning
 required: false
-techniques[1]:
-  - "variable-binding"
 steps[9]:
   - id: research-knowledge-base
     technique: research

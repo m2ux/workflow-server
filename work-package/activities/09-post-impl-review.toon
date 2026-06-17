@@ -2,10 +2,7 @@ id: post-impl-review
 version: 1.13.0
 name: Post-Implementation Review
 description: "Review implementation quality before validation."
-problem: User needs to review implementation quality before validation
 required: true
-techniques[1]:
-  - "variable-binding"
 steps[9]:
   - id: announce-start
     actions[1]{action,message}:
