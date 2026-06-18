@@ -20,10 +20,6 @@ export const ActionSchema = z.object({
 });
 export type Action = z.infer<typeof ActionSchema>;
 
-// Forward-declare step and loop schemas for circular references
-// StepSchema references LoopSchema (via loops) and WorkflowTriggerSchema (via triggers)
-// LoopSchema references StepSchema (via steps)
-
 // Workflow trigger schema - allows an activity or step to trigger another workflow
 export const WorkflowTriggerSchema = z.object({
   workflow: z.string().describe('ID of the workflow to trigger'),
@@ -67,7 +63,7 @@ export type TechniqueBinding = z.infer<typeof TechniqueBindingSchema>;
  */
 export const StepSchema = z.object({
   id: z.string().optional().describe('Identifier for this step within the activity. Optional only for a kind:technique step (the loader derives it from the last `::` segment of the technique name); every other kind must declare an explicit id.'),
-  description: z.string().optional().describe('Detailed guidance for executing this step. May carry a deprecated inline operation invocation of the form `technique-id::operation-name(arg: {var}, ...)`; the canonical binding is the `technique` field.'),
+  description: z.string().optional().describe('Detailed guidance for executing this step. The canonical per-step binding is the `technique` field.'),
   technique: z.union([z.string(), TechniqueBindingSchema]).optional().describe('Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps.'),
   required: z.boolean().default(true),
   when: z.string().optional().describe('Inline boolean expression that gates this step. Examples: "has_saved_state == true", "is_monorepo == true", "client_workflow_completed == false". Evaluated against current variable state at runtime.'),
@@ -183,17 +179,18 @@ export function injectResolvedStepIds(rawToon: string): string {
   );
 }
 
-// Checkpoint schema
-export const CheckpointSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  message: z.string().describe('Message to present to user at checkpoint'),
-  condition: ConditionSchema.optional().describe('Condition that must be true before presenting this checkpoint. If false, the checkpoint is skipped.'),
-  options: z.array(CheckpointOptionSchema).min(1),
-  defaultOption: z.string().optional().describe('Option ID to auto-select when autoAdvanceMs elapses without user intervention'),
-  autoAdvanceMs: z.number().int().positive().optional().describe('Milliseconds to wait before auto-selecting defaultOption'),
-});
-export type Checkpoint = z.infer<typeof CheckpointSchema>;
+// Checkpoint definition. There is no standalone checkpoint Zod object — checkpoints are inline
+// kind:checkpoint steps on StepSchema. This is the shape activityCheckpoints() synthesizes from
+// them (its `id` is the stable checkpoint-response replay key).
+export interface Checkpoint {
+  id: string;
+  name: string;
+  message: string;
+  condition?: z.infer<typeof ConditionSchema> | undefined;
+  options: CheckpointOption[];
+  defaultOption?: string | undefined;
+  autoAdvanceMs?: number | undefined;
+}
 
 // Decision branch schema
 export const DecisionBranchSchema = z.object({
@@ -213,22 +210,6 @@ export const DecisionSchema = z.object({
   branches: z.array(DecisionBranchSchema).min(2),
 });
 export type Decision = z.infer<typeof DecisionSchema>;
-
-// Loop schema
-export const LoopSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  type: z.enum(['forEach', 'while', 'doWhile']),
-  variable: z.string().optional(),
-  over: z.string().optional(),
-  condition: ConditionSchema.optional(),
-  maxIterations: z.number().int().positive().default(100),
-  description: z.string().optional().describe('Human-readable description of what this loop does'),
-  breakCondition: ConditionSchema.optional(),
-  steps: z.array(StepSchema).optional(),
-  activities: z.array(z.string()).optional().describe('Activity IDs to execute in loop'),
-});
-export type Loop = z.infer<typeof LoopSchema>;
 
 // Transition schema
 export const TransitionSchema = z.object({

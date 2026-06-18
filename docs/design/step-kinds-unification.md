@@ -1,7 +1,7 @@
 # Design: Unify activity constructs as step *kinds*
 
 **Status:** IMPLEMENTED — landed. The unified kind-tagged `steps[]` model described below is now the schema; `checkpoints[]`/`loops[]`/`step.checkpoint` are gone. The body is retained as the design record.
-**Prototype codemod:** [`scripts/migrate-step-kinds.ts`](../../scripts/migrate-step-kinds.ts) — transforms an activity and validates the output against the schema below.
+**Prototype codemod:** `scripts/migrate-step-kinds.ts` (since removed) — transformed an activity and validated the output against the schema below.
 
 ## Problem
 
@@ -110,7 +110,7 @@ steps[3]:
 
 ## Codemod (prototype)
 
-[`scripts/migrate-step-kinds.ts`](../../scripts/migrate-step-kinds.ts) decodes a TOON activity, folds each `checkpoints[]` def into a checkpoint-kind step at its referencing step's position (present-then-checkpoint), converts `loops[]` to compound loop-kind steps (recursively folding inner checkpoints), leaves `decisions[]`/`transitions[]` untouched, re-encodes, and **validates the output against the schema above**. Both targets pass. It emits flags for the two decisions it cannot make:
+The prototype codemod `scripts/migrate-step-kinds.ts` (since removed) decoded a TOON activity, folded each `checkpoints[]` def into a checkpoint-kind step at its referencing step's position (present-then-checkpoint), converted `loops[]` to compound loop-kind steps (recursively folding inner checkpoints), left `decisions[]`/`transitions[]` untouched, re-encoded, and **validated the output against the schema above**. Both targets pass. It emits flags for the two decisions it cannot make:
 - **top-level/loop interleave** — emitted as `[steps…, loops…]`; needs manual ordering for the ~18 activities with both.
 - **orphan checkpoints** — appended at the end; their position is an authoring decision (3 in `01-start-work-package`).
 

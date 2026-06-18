@@ -6,10 +6,8 @@ import {
 } from '../src/schema/workflow.schema.js';
 import {
   ActivitySchema,
-  CheckpointSchema,
   StepSchema,
   DecisionSchema,
-  LoopSchema,
   safeValidateActivity,
 } from '../src/schema/activity.schema.js';
 import { ConditionSchema } from '../src/schema/condition.schema.js';
@@ -123,51 +121,6 @@ describe('schema-validation', () => {
     });
   });
 
-  describe('CheckpointSchema', () => {
-    it('should validate checkpoint with options', () => {
-      const checkpoint = {
-        id: 'checkpoint-1',
-        name: 'Confirm',
-        message: 'Do you want to proceed?',
-        options: [
-          { id: 'yes', label: 'Yes' },
-          { id: 'no', label: 'No' },
-        ],
-      };
-      const result = CheckpointSchema.safeParse(checkpoint);
-      expect(result.success).toBe(true);
-    });
-
-    it('should validate checkpoint with effects', () => {
-      const checkpoint = {
-        id: 'checkpoint-1',
-        name: 'Choose',
-        message: 'Select option',
-        options: [
-          {
-            id: 'option-a',
-            label: 'Option A',
-            effect: { setVariable: { selected: 'a' }, transitionTo: 'activity-2' },
-          },
-          { id: 'option-b', label: 'Option B' },
-        ],
-      };
-      const result = CheckpointSchema.safeParse(checkpoint);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject checkpoint with no options', () => {
-      const checkpoint = {
-        id: 'checkpoint-1',
-        name: 'Empty',
-        message: 'No options',
-        options: [],
-      };
-      const result = CheckpointSchema.safeParse(checkpoint);
-      expect(result.success).toBe(false);
-    });
-  });
-
   describe('DecisionSchema', () => {
     it('should validate decision with branches', () => {
       const decision = {
@@ -208,32 +161,6 @@ describe('schema-validation', () => {
       };
       const result = DecisionSchema.safeParse(decision);
       expect(result.success).toBe(false);
-    });
-  });
-
-  describe('LoopSchema', () => {
-    it('should validate forEach loop', () => {
-      const loop = {
-        id: 'loop-1',
-        name: 'Task Loop',
-        type: 'forEach',
-        variable: 'task',
-        over: 'tasks',
-      };
-      const result = LoopSchema.safeParse(loop);
-      expect(result.success).toBe(true);
-    });
-
-    it('should validate while loop with condition', () => {
-      const loop = {
-        id: 'loop-1',
-        name: 'Retry Loop',
-        type: 'while',
-        condition: { type: 'simple', variable: 'retries', operator: '<', value: 3 },
-        maxIterations: 5,
-      };
-      const result = LoopSchema.safeParse(loop);
-      expect(result.success).toBe(true);
     });
   });
 
@@ -365,18 +292,6 @@ describe('schema-validation', () => {
       };
       const result = safeValidateWorkflow(workflow);
       expect(result.success).toBe(false);
-    });
-
-    it('should accept workflow without executionModel', () => {
-      const workflow = {
-        id: 'test-workflow',
-        version: '1.0.0',
-        title: 'Test Workflow',
-        initialActivity: 'activity-1',
-        activities: [minimalActivity],
-      };
-      const result = safeValidateWorkflow(workflow);
-      expect(result.success).toBe(true);
     });
   });
 });

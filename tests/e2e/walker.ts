@@ -55,7 +55,6 @@ export interface StepDef {
   id: string;
   /** Unified step kind (technique | action | checkpoint | loop). Absent only on pre-migration data. */
   kind?: 'technique' | 'action' | 'checkpoint' | 'loop';
-  checkpoint?: string; // legacy pre-migration reference
   /** Inline boolean gate, e.g. "is_monorepo == true". */
   when?: string;
   /** Structured gate (legacy). */
@@ -75,13 +74,11 @@ export interface StepDef {
 export interface ActivityDef {
   id: string;
   steps?: StepDef[];
-  checkpoints?: CheckpointDef[];
   transitions?: TransitionDef[];
   operations?: string[];
   techniques?: { primary?: string; supporting?: string[] };
   artifactPrefix?: string;
   artifacts?: Array<{ id?: string; name: string; location?: string }>;
-  loops?: Array<{ id?: string; steps?: StepDef[] }>;
 }
 
 export interface PolicyContext {
@@ -370,11 +367,6 @@ async function executeActivitySteps(
       if (step.kind === 'loop') { await walk(step.steps); continue; }
       stepsExecuted.push(step.id);
       manifest.push({ step_id: step.id, output: 'done' });
-      // Legacy pre-migration `step.checkpoint` reference (no longer emitted post-migration).
-      if (step.checkpoint) {
-        const cp = (act.checkpoints ?? []).find((c) => c.id === step.checkpoint);
-        if (cp && (!cp.condition || evaluateCondition(cp.condition, variables))) await fireCheckpoint(cp);
-      }
       for (const a of step.actions ?? []) {
         if (a.action === 'set' && a.target && a.value !== undefined) variables[a.target] = a.value;
       }
@@ -384,8 +376,8 @@ async function executeActivitySteps(
   return { cpRecords, manifest, stepsExecuted, transitionOverride };
 }
 
-/** The activity's checkpoint definitions in document order: the inline kind:checkpoint steps (new
- *  shape, recursing into loop bodies) plus any legacy top-level checkpoints[] (pre-migration). */
+/** The activity's checkpoint definitions in document order: the inline kind:checkpoint steps,
+ *  recursing into loop bodies. */
 export function activityCheckpointSteps(act: ActivityDef): CheckpointDef[] {
   const out: CheckpointDef[] = [];
   const rec = (steps?: StepDef[]): void => {
@@ -395,17 +387,14 @@ export function activityCheckpointSteps(act: ActivityDef): CheckpointDef[] {
     }
   };
   rec(act.steps);
-  for (const cp of act.checkpoints ?? []) out.push(cp);
   return out;
 }
 
-/** Checkpoints the activity declares but no step references. In the unified model every checkpoint
- *  is an inline kind:checkpoint step (no orphans); retained for legacy pre-migration data only. */
-function findOrphanCheckpoints(act: ActivityDef): string[] {
-  const referenced = new Set<string>();
-  for (const s of act.steps ?? []) if (s.checkpoint) referenced.add(s.checkpoint);
-  for (const loop of act.loops ?? []) for (const s of loop.steps ?? []) if (s.checkpoint) referenced.add(s.checkpoint);
-  return (act.checkpoints ?? []).map(c => c.id).filter(id => !referenced.has(id));
+/** In the unified model every checkpoint is an inline kind:checkpoint step, so an activity has no
+ *  orphan (unreferenced) checkpoints by construction. Kept as the explicit [] invariant the e2e
+ *  robot-execution test asserts — a non-empty result would signal a regression to out-of-line checkpoints. */
+function findOrphanCheckpoints(_act: ActivityDef): string[] {
+  return [];
 }
 
 /**

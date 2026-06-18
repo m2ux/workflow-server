@@ -2,7 +2,7 @@
 
 This folder contains JSON Schema definitions for the workflow server. These schemas define the structure for workflow definitions, conditional logic, and runtime state tracking.
 
-The server also exposes these schemas as MCP resources under `workflow-server://schemas` (combined) and `workflow-server://schemas/{id}` (per schema), built from the JSON files in this folder plus the `schema-header.md` preamble.
+The server also exposes these schemas as MCP resources under `workflow-server://schemas` (combined) and `workflow-server://schemas/{id}` (per schema), built from the JSON files in this folder.
 
 ## Overview
 
@@ -130,7 +130,6 @@ This section defines the key concepts, their fields, and relationships within th
 erDiagram
     Workflow ||--o{ Activity : contains
     Workflow ||--o{ Variable : defines
-    Workflow ||--o{ Mode : has
     
     Activity ||--o{ Step : "contains (ordered, kind-tagged)"
     Activity ||--o{ Decision : contains
@@ -163,7 +162,6 @@ erDiagram
         string version
         string name
         boolean required
-        string estimatedTime
     }
     
     Artifact {
@@ -297,7 +295,6 @@ A unified activity defines workflow execution as a single ordered `steps[]` (eac
 | `triggers`        | WorkflowTrigger[] | Workflows to trigger from this activity    |
 | `outcome`         | string[]          | Expected outcomes on completion            |
 | `required`        | boolean           | Whether activity must be completed         |
-| `estimatedTime`   | string            | Time estimate (e.g., "10-15m")             |
 | `rules`           | string[]          | Activity-level execution rules             |
 | `artifacts`       | Artifact[]        | Artifacts produced or updated              |
 | `artifactPrefix`  | string            | Server-computed numeric prefix from filename |
@@ -537,7 +534,6 @@ Activities are the execution units of a workflow. Each activity contains an orde
       "version": "1.0.0",
       "name": "Initial Activity",
       "description": "The first activity of the workflow",
-      "skills": { "primary": "activity-worker" },
       "steps": [],
       "transitions": []
     }
@@ -553,9 +549,7 @@ Activities are the execution units of a workflow. Each activity contains an orde
 | `version` | string | Semantic version (X.Y.Z) |
 | `name` | string | Human-readable activity name |
 | `description` | string | Activity description |
-| `skills` | object | LEGACY: Primary and supporting technique references |
 | `required` | boolean | Whether activity is required (default: true) |
-| `estimatedTime` | string | Time estimate (e.g., `10-15m`, `1h`, `2-3h`) |
 | `steps` | array | Ordered, kind-tagged execution list (technique / action / checkpoint / loop) |
 | `decisions` | array | Automated branching points (activity-level) |
 | `transitions` | array | Activity transition rules |
@@ -1033,8 +1027,6 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "version": "1.0.0",
       "name": "Review",
       "description": "Initial review and approval",
-      "skills": { "primary": "activity-worker" },
-      "estimatedTime": "5-10m",
       "steps": [
         {
           "kind": "technique",
@@ -1084,7 +1076,6 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "id": "process",
       "version": "1.0.0",
       "name": "Processing",
-      "skills": { "primary": "activity-worker" },
       "steps": [
         {
           "kind": "technique",
@@ -1097,7 +1088,6 @@ Here's a minimal valid workflow that demonstrates all key concepts:
       "id": "rejected",
       "version": "1.0.0",
       "name": "Rejection",
-      "skills": { "primary": "activity-worker" },
       "steps": [
         {
           "kind": "technique",
@@ -1116,10 +1106,10 @@ Here's a minimal valid workflow that demonstrates all key concepts:
 
 ### Using the Validation Script
 
-Validate a workflow file:
+Validate a workflow directory:
 
 ```bash
-npx tsx scripts/validate-workflow.ts path/to/workflow.json
+npx tsx scripts/validate-workflow-toon.ts path/to/workflow-dir
 ```
 
 ### Programmatic Validation
@@ -1162,9 +1152,6 @@ The activity schema (`activity.schema.json`) defines unified activities that com
   "id": "discover-session",
   "version": "1.0.0",
   "name": "Discover Session",
-  "skills": {
-    "primary": "state-management"
-  },
   "steps": [
     { "kind": "technique", "id": "identify-target", "technique": "state-management::identify-target" },
     { "kind": "technique", "id": "scan-planning-folders", "technique": "state-management::scan-planning-folders" }
@@ -1180,7 +1167,6 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 | `id` | string | Unique activity identifier |
 | `version` | string | Semantic version (e.g., `3.0.0`) |
 | `name` | string | Human-readable activity name |
-| `skills` | object | LEGACY: Primary and supporting technique references |
 
 ### Optional Properties
 
@@ -1193,7 +1179,6 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 | `triggers` | WorkflowTrigger[] | Workflows to trigger from this activity |
 | `outcome` | string[] | Expected outcomes when activity completes |
 | `required` | boolean | Whether activity is required (default: true) |
-| `estimatedTime` | string | Time estimate (e.g., "10-15m") |
 | `rules` | string[] | Activity-level execution rules and constraints |
 | `artifacts` | Artifact[] | Artifacts produced or updated by this activity |
 | `artifactPrefix` | string | Server-computed numeric prefix from activity filename (read-only) |
@@ -1212,9 +1197,6 @@ A complete activity definition with workflow trigger:
   "version": "1.1.0",
   "name": "Implementation",
   "description": "Execute each planned work package by triggering the work-package workflow",
-  "skills": {
-    "primary": "activity-worker"
-  },
   "triggers": [
     {
       "workflow": "work-package",

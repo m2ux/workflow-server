@@ -164,7 +164,7 @@
                     },
                     "description": {
                       "type": "string",
-                      "description": "Detailed guidance for executing this step. May carry a deprecated inline operation invocation of the form `technique-id::operation-name(arg: {var}, ...)`; the canonical binding is the `technique` field."
+                      "description": "Detailed guidance for executing this step. The canonical per-step binding is the `technique` field."
                     },
                     "technique": {
                       "anyOf": [

@@ -248,7 +248,7 @@ export function getActivity(workflow: Workflow, activityId: string): Activity | 
   return workflow.activities?.find(a => a.id === activityId);
 }
 
-/** Get a checkpoint from an activity (unified kind:checkpoint step or legacy checkpoints[]). */
+/** Get a checkpoint from an activity (the inline kind:checkpoint step). */
 export function getCheckpoint(workflow: Workflow, activityId: string, checkpointId: string) {
   const activity = getActivity(workflow, activityId);
   if (!activity) return undefined;

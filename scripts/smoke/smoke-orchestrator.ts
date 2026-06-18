@@ -150,7 +150,7 @@ async function main() {
     log(`session ${sessionIndex} (slug ${slug})`);
 
     // Initial activity comes from the workflow definition, not a hardcoded id.
-    const wfSummary = parseWorkflowResponse(await h.client.callTool({ name: 'get_workflow', arguments: { session_index: sessionIndex, summary: true } }));
+    const wfSummary = parseWorkflowResponse(await h.client.callTool({ name: 'get_workflow', arguments: { session_index: sessionIndex } }));
     const variables: Record<string, unknown> = {};
     const visited = new Set<string>();
     let current: string | null = (wfSummary.initialActivity as string)

@@ -67,7 +67,6 @@ export {
   type CheckpointOption,
   type Decision,
   type DecisionBranch,
-  type Loop,
   type Transition,
   type Action,
   type TechniquesReference,

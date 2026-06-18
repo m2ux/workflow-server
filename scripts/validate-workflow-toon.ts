@@ -1,14 +1,12 @@
 #!/usr/bin/env npx tsx
 /**
- * Validate a workflow's TOON files (workflow.toon, activities/*.toon, skills/*.toon) against schemas.
+ * Validate a workflow's TOON files (workflow.toon, activities/*.toon) against schemas.
  * Usage: npx tsx scripts/validate-workflow-toon.ts <path-to-workflow-dir>
  * Example: npx tsx scripts/validate-workflow-toon.ts /path/to/workflows/substrate-node-security-audit
  */
 
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join, resolve } from 'path';
-import { decodeToonRaw as decodeToon } from '../src/utils/toon.js';
-import { safeValidateTechnique } from '../src/schema/technique.schema.js';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { parseActivityFilename } from '../src/loaders/filename-utils.js';
 import { validateActivityFile } from './validate-activities.js';
@@ -149,41 +147,6 @@ async function main() {
     }
     if (techFailed === 0) {
       console.log(`   [PASS] no unanchored protocol references`);
-    }
-  }
-
-  const skillsDir = join(workflowDirPath, 'skills');
-  if (existsSync(skillsDir)) {
-    const skillFiles = readdirSync(skillsDir).filter((f) => f.endsWith('.toon'));
-    console.log(`\n[INFO] skills/ (${skillFiles.length} files)`);
-    const layoutIssues = checkPrefixAndDuplicates(skillFiles);
-    for (const issue of layoutIssues) {
-      console.log(`   [FAIL] ${issue}`);
-      failed++;
-    }
-    for (const file of skillFiles) {
-      const content = readFileSync(join(skillsDir, file), 'utf-8');
-      try {
-        const decoded = decodeToon(content);
-        if (decoded == null || typeof decoded !== 'object') {
-          console.log(`   [FAIL] ${file}`);
-          console.log(`      - TOON decode returned non-object value`);
-          failed++;
-          continue;
-        }
-        const result = safeValidateTechnique(decoded);
-        if (result.success) {
-          console.log(`   [PASS] ${file}`);
-        } else {
-          console.log(`   [FAIL] ${file}`);
-          result.error.issues.forEach((i) => console.log(`      - ${i.path.join('.')}: ${i.message}`));
-          failed++;
-        }
-      } catch (e) {
-        console.log(`   [FAIL] ${file}`);
-        console.log(`      - Parse error: ${(e as Error).message}`);
-        failed++;
-      }
     }
   }
 
