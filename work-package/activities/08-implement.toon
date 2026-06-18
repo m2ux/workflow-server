@@ -1,170 +1,138 @@
 id: implement
-version: 2.7.0
+version: 2.9.0
 name: Implement Tasks
 description: "Execute the implementation plan task by task."
-problem: User needs to implement the planned tasks
-recognition[3]:
-  - implement tasks
-  - start implementation
-  - execute plan
 required: true
-estimatedTime: 1-4h
-artifacts[2]:
-  - id: assumptions-log
-    name: assumptions-log.md
-    location: planning
-    description: "Log of assumptions - continues from earlier phases (design-philosophy, requirements, research, analysis, planning)"
-    action: update
-  - id: provenance-log
-    name: provenance-log.md
-    location: planning
-    description: "AI assistance provenance record. One row per task: task ID, model ID, prompt class (code-generation|refactoring|test-writing|docs), context_scope, and a one-line description of what was generated. Created on first task, appended on each subsequent task. Linked from PR description."
-    action: create
-entryActions[1]{action,target,message}:
-  validate,branch,Verify on correct feature branch before any code changes
-techniques:
-  supporting[9]:
-    - "cargo-operations::test"
-    - "cargo-operations::check"
-    - "cargo-operations::clippy"
-    - "dco-provenance::append-task-row"
-    - implement-task
-    - "manage-git::artifact-commits"
-    - reconcile-assumptions
-    - review-assumptions
-    - validate-build
-loops[3]:
-  - id: task-cycle
+techniques[1]:
+  - "scatter-gather"
+steps[9]:
+  - kind: action
+    id: verify-preconditions
+    actions[1]{action,target,message}:
+      validate,branch,Verify on correct feature branch before any code changes
+  - kind: loop
+    id: task-cycle
     name: Task Implementation Cycle
-    type: forEach
+    loopType: forEach
     variable: current_task
-    over: plan.tasks
-    steps[6]:
-      - id: implement-task
-        name: Implement task
-        checkpoint: switch-model-pre-impl
-      - id: run-tests
-        name: Run tests
-        description: "cargo-operations::test(scope: '-p {current_task.crate}')"
-      - id: commit
-        name: Commit changes
-      - id: log-provenance
-        name: Log AI provenance
-        description: "Append a provenance record for this task to provenance-log.md."
-        technique: dco-provenance
-      - id: self-review
-        name: Self-review
-        description: "Perform task completion review: (1) Symbol verification — confirm all new/referenced symbols have provenance in codebase or dependencies, populating uncertain_symbols with any symbol the agent cannot confirm and setting has_uncertain_symbols=true when that list is non-empty (otherwise false); (2) Quality checks — code follows patterns, tests pass, no debug prints, no untracked TODOs. Use attached resource task-completion-review for verification checklist. The symbol-provenance-confirmed checkpoint only surfaces when has_uncertain_symbols is true — when every symbol resolves cleanly, the loop continues without prompting the user."
-        checkpoint: symbol-provenance-confirmed
-        actions[2]:
-          - action: set
-            target: has_uncertain_symbols
-            description: "true when one or more symbols cannot be confirmed against codebase, declared dependencies, or new symbols introduced by this task; false when every referenced symbol resolves cleanly"
-          - action: set
-            target: uncertain_symbols
-            description: "Multi-line list of uncertain symbols (one per line: symbol name + the file/line where the agent saw it). Empty string when has_uncertain_symbols is false. Interpolated into the symbol-provenance-confirmed checkpoint message so the user sees the flagged symbols alongside the options."
-      - id: collect-assumptions
-        name: Collect assumptions
-        description: "Identify all assumptions made during this task. Accumulate — do not review yet."
-  - id: assumption-reconciliation
+    over: implementation_plan.tasks
+    steps[8]:
+      - kind: technique
+        id: implement-task
+        technique: implement-task
+      - kind: checkpoint
+        id: switch-model-pre-impl
+        message: "Implementation requires the full model for code generation. You may switch to your preferred implementation model. Proceeding in 10s."
+        blocking: false
+        defaultOption: continue-current
+        autoAdvanceMs: 10000
+        options[2]:
+          - id: switched
+            label: "Switched model — proceed"
+            description: Model has been switched to a higher-capability model for implementation
+          - id: continue-current
+            label: Continue with current model
+            description: Proceed with the current model without switching
+      - kind: technique
+        id: run-tests
+        technique:
+          name: cargo-operations::test
+          inputs:
+            build_scope: "-p {current_task.crate}"
+      - kind: technique
+        id: commit
+        technique: manage-git::artifact-commits
+      - kind: technique
+        id: log-provenance
+        technique: dco-provenance::append-task-row
+      - kind: technique
+        id: self-review
+        technique: task-completion-review
+      - kind: checkpoint
+        id: symbol-provenance-confirmed
+        condition:
+          type: simple
+          variable: has_uncertain_symbols
+          operator: ==
+          value: true
+        message: "One or more symbols in this task could not be confirmed against the codebase or declared dependencies:\n\n{uncertain_symbols}\n\nInvestigate before proceeding, or confirm they were introduced intentionally by this task."
+        blocking: true
+        options[2]:
+          - id: confirmed
+            label: Symbols are intentional — proceed
+            description: The flagged symbols were introduced intentionally by this task or were verified manually; continue.
+          - id: uncertain
+            label: Investigate before proceeding
+            description: Pause the loop and investigate symbol provenance before continuing.
+      - kind: technique
+        id: collect-assumptions
+        technique: review-assumptions::collect
+  - kind: technique
+    id: reconcile-assumptions
+    technique: review-assumptions::reconcile
+  - kind: loop
+    id: assumption-reconciliation
     name: Assumption Reconciliation Loop
-    type: while
+    loopType: while
     condition:
       type: simple
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
     steps[1]:
-      - id: reconcile-iteration
-        name: Execute Reconciliation Iteration
-        description: "Execute one iteration of the reconcile-assumptions protocol: classify resolvability, perform targeted analysis, update logs, and reclassify for convergence."
-  - id: assumption-interview
-    name: Assumption Interview Loop
-    type: forEach
-    variable: current_assumption
-    over: open_assumptions
-    maxIterations: 20
-    description: "Iterates over each open (stakeholder-dependent) assumption, presenting the implementation-assumption-interview checkpoint for each."
-    steps[2]:
-      - id: present-assumption
-        name: Present assumption to user
-        description: "Present the current open assumption via the implementation-assumption-interview checkpoint."
-        checkpoint: implementation-assumption-interview
-      - id: record-response
-        name: Record user response
-        description: "Update assumptions-log.md: if resolved inline, mark Resolved. If deferred, mark Deferred-to-Stakeholder."
-steps[4]:
-  - id: reconcile-assumptions
-    name: Reconcile assumptions
-    description: "Classify all accumulated implementation assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions technique. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
-  - id: present-resolved-assumptions
-    name: Present resolved assumptions
-    description: "Display all code-resolved assumptions as a message to the user (non-interactive). Show each assumption's ID, statement, evidence, and resolution status."
+      - kind: technique
+        id: reconcile-iteration
+        technique: review-assumptions::reconcile
+  - kind: technique
+    id: present-resolved-assumptions
+    technique: review-assumptions::interview
     actions[1]:
       - action: message
         message: "**Resolved Assumptions** — the following implementation assumptions were resolved through code analysis."
-  - id: interview-open-assumptions
-    name: Interview open assumptions
-    description: "For each open (stakeholder-dependent) assumption, present it individually to the user via the implementation-assumption-interview checkpoint. The user can resolve it inline or defer it to stakeholder review. Update the assumptions log after each response."
-  - id: update-assumptions-log
-    name: Update assumptions log
-    description: "Record all implementation assumptions, reconciliation outcomes, and user interview responses in the assumptions log."
-    checkpoint: switch-model-post-impl
-checkpoints[4]:
-  - id: symbol-provenance-confirmed
-    name: Symbol Provenance Confirmation
-    condition:
-      type: simple
-      variable: has_uncertain_symbols
-      operator: ==
-      value: true
-    message: "One or more symbols in this task could not be confirmed against the codebase or declared dependencies:\n\n{uncertain_symbols}\n\nInvestigate before proceeding, or confirm they were introduced intentionally by this task."
-    blocking: true
-    options[2]:
-      - id: confirmed
-        label: Symbols are intentional — proceed
-        description: The flagged symbols were introduced intentionally by this task or were verified manually; continue.
-      - id: uncertain
-        label: Investigate before proceeding
-        description: Pause the loop and investigate symbol provenance before continuing.
-  - id: switch-model-pre-impl
-    name: Switch Model for Implementation
-    message: "Implementation requires the full model for code generation. You may switch to your preferred implementation model. Proceeding in 10s."
-    blocking: false
-    defaultOption: continue-current
-    autoAdvanceMs: 10000
-    options[2]:
-      - id: switched
-        label: "Switched model — proceed"
-        description: Model has been switched to a higher-capability model for implementation
-      - id: continue-current
-        label: Continue with current model
-        description: Proceed with the current model without switching
-  - id: implementation-assumption-interview
-    name: Implementation Assumption Interview
-    condition:
-      type: simple
-      variable: has_open_assumptions
-      operator: "=="
-      value: true
-    message: "Assumption {current_assumption.id}: {current_assumption.statement}. Can you resolve this, or defer to stakeholders?"
-    blocking: true
-    options[2]:
-      - id: resolve-inline
-        label: Resolve now
-        description: "Provide resolution for this assumption — it will be marked as resolved in the assumptions log"
-        effect:
-          setVariable:
-            assumption_resolved_inline: true
-      - id: defer-to-stakeholder
-        label: Defer to stakeholder review
-        description: "Queue this assumption for stakeholder review in the issue tracker"
-        effect:
-          setVariable:
-            assumption_deferred: true
-  - id: switch-model-post-impl
-    name: Switch Model for Review
+  - kind: technique
+    id: interview-open-assumptions
+    technique: review-assumptions::interview
+  - kind: loop
+    id: assumption-interview
+    name: Assumption Interview Loop
+    loopType: forEach
+    variable: current_assumption
+    over: open_assumptions
+    maxIterations: 20
+    steps[3]:
+      - kind: technique
+        id: present-assumption
+        technique: review-assumptions::interview
+      - kind: checkpoint
+        id: implementation-assumption-interview
+        condition:
+          type: simple
+          variable: has_open_assumptions
+          operator: "=="
+          value: true
+        message: "Assumption {current_assumption.id}: {current_assumption.statement}. Can you resolve this, or defer to stakeholders?"
+        blocking: true
+        options[2]:
+          - id: resolve-inline
+            label: Resolve now
+            description: "Provide resolution for this assumption — it will be marked as resolved in the assumptions log"
+            effect:
+              setVariable:
+                assumption_resolved_inline: true
+          - id: defer-to-stakeholder
+            label: Defer to stakeholder review
+            description: "Queue this assumption for stakeholder review in the issue tracker"
+            effect:
+              setVariable:
+                assumption_deferred: true
+      - kind: technique
+        id: record-response
+        technique: review-assumptions::record
+  - kind: technique
+    id: update-assumptions-log
+    technique: review-assumptions::record
+  - kind: checkpoint
+    id: switch-model-post-impl
     message: "Implementation complete. You may switch to a lower-cost model for the review phases. Proceeding in 10s."
     blocking: false
     defaultOption: continue-current
@@ -179,16 +147,7 @@ checkpoints[4]:
 transitions[1]:
   - to: post-impl-review
     isDefault: true
-exitActions[1]{action,message}:
-  message,README PROGRESS: Update planning folder README.md — set Status to In Progress and mark implementation artifacts.
 outcome[3]:
   - All tasks implemented
-  - Changes committed
-  - Provenance log created
-context_to_preserve[6]:
-  - completed_tasks - Tasks completed during implementation
-  - assumptions - Assumptions made during implementation
-  - commits - Commits created
-  - provenance_log_path - Path to provenance-log.md
-  - has_uncertain_symbols - Whether the current task's self-review flagged symbols without provenance
-  - uncertain_symbols - Multi-line list of flagged symbols
+  - The implemented work is captured as reviewable, attributable commits on the feature branch
+  - An auditable per-task record of what changed and why exists to support the later DCO attestation

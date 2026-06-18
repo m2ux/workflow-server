@@ -1,0 +1,31 @@
+id: apply-updates
+version: 1.0.0
+name: Apply Updates
+description: "Apply approved resource changes, then update skill routing and documentation to match the current resource catalog."
+required: true
+steps[4]:
+  - kind: action
+    id: verify-preconditions
+    actions[2]:
+      - action: validate
+        target: resource_path
+        message: "resource_path must be set — file operations require a valid workflows worktree path"
+      - action: validate
+        target: change_set
+        message: "change_set must be populated before applying updates"
+  - kind: technique
+    id: sync-resources
+    technique: sync-resources
+  - kind: technique
+    id: update-skill-routing
+    technique: update-skill-routing
+  - kind: technique
+    id: update-prism-docs
+    technique: update-prism-docs
+transitions[1]:
+  - to: verify
+    isDefault: true
+outcome[3]:
+  - "The workflow's resource catalog now matches upstream — consumers can rely on it being current"
+  - "All skill routing tables reflect the current resource state — no stale prism name references remain"
+  - "All documentation reflects the current resource catalog, model sensitivity, and prompt guide"

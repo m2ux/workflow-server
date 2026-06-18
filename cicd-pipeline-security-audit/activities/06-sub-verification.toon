@@ -1,50 +1,32 @@
 id: sub-verification
-version: 1.0.0
+version: 1.2.0
 name: Scan Verification
 description: "Verify scan completeness across all scanner outputs."
-problem: Scanner outputs must be verified for completeness before merge to ensure no workflow files were missed and no detection patterns were skipped.
-recognition[2]:
-  - verify scan results
-  - check scan completeness
-techniques:
-  supporting[1]:
-    - execute-sub-agent
+techniques[1]:
+  - execute-sub-agent
 required: false
-estimatedTime: 5-10m
-rules[5]:
-  - "This activity is dispatched by the orchestrator during primary-scan — it does NOT appear in the main workflow transition graph"
-  - "Every workflow file discovered during scope-setup MUST appear as scanned in at least one scanner output"
-  - "Every scanner output MUST confirm all seven patterns (P1-P7) were applied"
-  - "Malformed or incomplete scanner outputs MUST be flagged for re-dispatch"
-  - "The gap report drives targeted re-scan — the orchestrator re-dispatches scanners only for uncovered files/patterns"
-entryActions[1]{action,message}:
-  log,Starting scan verification
-steps[4]:
-  - id: load-scanner-outputs
-    name: Load All Scanner Outputs
-    technique: verify-scan-output
-    description: "Load every s{n}-{submodule}.json from the planning folder. Validate each against the output schema (resource 04)."
-  - id: verify-file-coverage
-    name: Verify File Coverage
-    technique: verify-scan-output
-    description: "Cross-reference scanned files against the workflow file inventory from scope-setup. Identify any unscanned files."
-  - id: verify-pattern-coverage
-    name: Verify Pattern Coverage
-    technique: verify-scan-output
-    description: "For each scanner output, confirm all seven detection patterns were applied. Flag any scanner that skipped a pattern."
-  - id: produce-gap-report
-    name: Produce Gap Report
-    technique: verify-scan-output
-    description: "Write verification-report.json with coverage status, gaps identified, and re-scan recommendations. Set verification_complete if no gaps found."
+steps[6]:
+  - kind: action
+    id: announce-start
+    actions[1]{action,message}:
+      log,Starting scan verification
+  - kind: technique
+    id: load-scanner-outputs
+    technique: verify-scan-output::validate-structure
+  - kind: technique
+    id: verify-file-coverage
+    technique: verify-scan-output::verify-file-coverage
+  - kind: technique
+    id: verify-pattern-coverage
+    technique: verify-scan-output::verify-pattern-coverage
+  - kind: technique
+    id: produce-gap-report
+    technique: verify-scan-output::produce-gap-report
+  - kind: action
+    id: announce-completion
+    actions[1]{action,message}:
+      log,Scan verification complete — gap report produced
 transitions[0]:
-exitActions[1]{action,message}:
-  log,Scan verification complete — gap report produced
-outcome[3]:
-  - File coverage verified against inventory
-  - Pattern coverage verified for all scanners
-  - Gap report produced with re-scan recommendations (if any)
-artifacts[1]:
-  - id: verification-report
-    name: verification-report.json
-    location: planning
-    description: "Scan completeness verification with coverage status and gaps"
+outcome[2]:
+  - The audit has independent proof that every inventoried file and all seven patterns were actually covered, not just assumed
+  - The parent can either proceed to merge with confidence or knows exactly which scanners to re-run, gaps named

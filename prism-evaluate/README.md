@@ -1,6 +1,6 @@
 # Evaluation Workflow
 
-> v1.0.0 — Orchestrate multi-dimensional evaluations of any target by mapping evaluation dimensions to prism analytical lenses.
+> v1.1.0 — Orchestrate multi-dimensional evaluations of any target by mapping evaluation dimensions to prism analytical lenses, then optionally resolve and apply mitigations for the findings.
 
 ---
 
@@ -24,26 +24,28 @@
 
 ```
 scope-definition → dimension-planning → execute-analysis → consolidate-report → deliver-results
+                                                                                      │
+                                                            (resolution requested)    ▼
+                                                            resolution-dialogue → apply-mitigations
 ```
 
-Two user checkpoints gate the analytical work:
+`deliver-results` ends the workflow unless the user opts into the resolution dialogue, which then iterates through findings and applies accepted mitigations.
 
-1. **confirm-scope** (scope-definition) — confirm target, dimensions, and output path
-2. **confirm-plan** (dimension-planning) — confirm the dimension-to-lens mapping and execution groups
-
-All transitions after confirm-plan are automatic.
+User checkpoints gate the scope, the plan, the resolution offer, each finding's mitigation, and the final apply; the authoritative options and effects live in each activity's TOON.
 
 ---
 
 ## Activities
 
-| # | Activity | Purpose | Checkpoint |
-|---|----------|---------|------------|
-| 00 | **Define Evaluation Scope** | Collect target, classify type, derive dimensions | confirm-scope |
-| 01 | **Plan Dimension Analysis** | Survey target, map dimensions to lenses, group for execution | confirm-plan |
-| 02 | **Execute Prism Analyses** | Trigger prism per execution group, collect results | — |
-| 03 | **Consolidate Evaluation Report** | Extract findings, identify cross-dimensional patterns, compose report | — |
-| 04 | **Deliver Evaluation Results** | Present metrics, core finding, and artifact index | — |
+| # | Activity | Purpose |
+|---|----------|---------|
+| 00 | **Define Evaluation Scope** | Collect the target, classify its type, and derive evaluation dimensions; user confirms scope before planning |
+| 01 | **Plan Dimension Analysis** | Survey the target, map each dimension to prism lenses, and group dimensions for execution; user confirms the plan |
+| 02 | **Execute Prism Analyses** | Trigger a prism run per execution group and collect the results |
+| 03 | **Consolidate Evaluation Report** | Extract findings, identify cross-dimensional patterns, and compose the evaluation report |
+| 04 | **Deliver Evaluation Results** | Present the results and artifact index, then offer the optional resolution dialogue |
+| 05 | **Resolution Dialogue** | Tier-classify findings and propose mitigations one finding at a time, compiling a mitigation plan |
+| 06 | **Apply Accepted Mitigations** | Apply the accepted mitigations to the target after a final user confirmation |
 
 **Detailed documentation:** See [activities/](activities/) for per-activity TOON definitions.
 
@@ -51,10 +53,14 @@ All transitions after confirm-plan are automatic.
 
 ## Techniques
 
-| # | Technique | Capability | Used By |
-|---|-------|------------|---------|
-| 00 | `plan-evaluation` | Target classification, dimension derivation, dimension-to-lens mapping | scope-definition, dimension-planning, execute-analysis |
-| 01 | `compose-evaluation-report` | Cross-artifact extraction, cross-dimensional synthesis, report composition, result presentation | consolidate-report, deliver-results |
+Each technique is an operation-group: a `TECHNIQUE.md` shared contract plus one operation file per phase, referenced as `<group>::<op>`. Steps bind a single operation; `execute-analysis`'s trigger step binds the shared `workflow-engine::handle-sub-workflow`.
+
+| Technique group | Capability | Used By |
+|-------|------------|---------|
+| `plan-evaluation` | Target classification, dimension derivation, target survey, dimension-to-lens mapping, execution grouping, plan authoring | scope-definition, dimension-planning |
+| `execute-analysis` | Prism run result collection and completion verification | execute-analysis |
+| `compose-evaluation-report` | Cross-artifact extraction, cross-dimensional synthesis, report composition and verification, result presentation | consolidate-report, deliver-results |
+| `resolve-findings` | Finding tier-classification, one-by-one mitigation proposal, mitigation plan composition, change application | resolution-dialogue, apply-mitigations |
 
 **Detailed documentation:** See [techniques/](techniques/) for protocol details.
 
@@ -62,36 +68,15 @@ All transitions after confirm-plan are automatic.
 
 ## Resources
 
-| Index | Resource | Description |
-|-------|----------|-------------|
-| 00 | [Default Dimensions](./resources/default-dimensions.md) | Default dimension sets by target type (proposal, codebase, mixed) |
-| 01 | [Dimension-Lens Mapping](./resources/dimension-lens-mapping.md) | Standard and custom dimension-to-prism-lens mapping matrix |
+| Resource | Description |
+|----------|-------------|
+| [Default Dimensions](./resources/default-dimensions.md) | Default dimension sets by target type (proposal, codebase, mixed) |
+| [Dimension-Lens Mapping](./resources/dimension-lens-mapping.md) | Standard and custom dimension-to-prism-lens mapping matrix |
+| [Evaluation Plan Template](./resources/evaluation-plan-template.md) | Structure for the evaluation-plan.md artifact |
+| [Evaluation Report Template](./resources/evaluation-report-template.md) | Structure for the EVALUATION-REPORT.md artifact |
+| [Mitigation Plan Template](./resources/mitigation-plan-template.md) | Structure for the MITIGATION-PLAN.md artifact |
 
 **Detailed documentation:** See [resources/](resources/) for full content.
-
----
-
-## Variables
-
-| Variable | Type | Required | Description |
-|----------|------|----------|-------------|
-| `evaluation_description` | string | yes | What to evaluate and why |
-| `target_path` | string | yes | Path to the target |
-| `output_path` | string | yes | Directory for all evaluation artifacts |
-| `target_type` | string | — | Classification: document, document-set, codebase, mixed |
-| `dimensions` | array | — | Evaluation dimensions (derived if omitted) |
-| `dimension_plan` | array | — | Per-dimension lens mapping |
-| `lens_overrides` | object | — | User-specified lens overrides per dimension |
-| `execution_groups` | array | — | Dimensions grouped by pipeline mode |
-| `current_group` | object | — | Current group during iteration |
-| `completed_analyses` | array | — | Completed prism runs with status |
-| `all_artifact_paths` | array | — | All artifact paths across prism runs |
-| `evaluation_report_path` | string | — | Path to EVALUATION-REPORT.md |
-| `evaluation_plan_path` | string | — | Path to evaluation-plan.md |
-| `scope_confirmed` | boolean | — | Checkpoint gate (default: false) |
-| `dimensions_confirmed` | boolean | — | Checkpoint gate (default: false) |
-| `pipeline_mode` | string | — | Per-group pipeline mode (default: full-prism) |
-| `gitnexus_available` | boolean | — | GitNexus indexing status (default: false) |
 
 ---
 
@@ -128,19 +113,26 @@ For a standard 4-dimension evaluation (Consistency, Veracity, Plausibility, Feas
 
 ```
 workflows/prism-evaluate/
-├── workflow.toon                    # Workflow definition (9 rules, 17 variables)
-├── README.md                        # This file
+├── workflow.toon                     # Workflow definition (8 rules, 23 variables)
+├── README.md                         # This file
 ├── activities/
-│   ├── 00-scope-definition.toon     # Collect inputs, classify target, derive dimensions
-│   ├── 01-dimension-planning.toon   # Survey target, map to lenses, group for execution
-│   ├── 02-execute-analysis.toon     # Trigger prism per execution group
-│   ├── 03-consolidate-report.toon   # Extract findings, compose EVALUATION-REPORT.md
-│   └── 04-deliver-results.toon      # Present results and artifact index
+│   ├── 00-scope-definition.toon      # Collect inputs, classify target, derive dimensions
+│   ├── 01-dimension-planning.toon    # Survey target, map to lenses, group for execution
+│   ├── 02-execute-analysis.toon      # Trigger prism per execution group
+│   ├── 03-consolidate-report.toon    # Extract findings, compose EVALUATION-REPORT.md
+│   ├── 04-deliver-results.toon       # Present results and artifact index; offer resolution
+│   ├── 05-resolution-dialogue.toon   # Tier-classify findings, propose mitigations, compile plan
+│   └── 06-apply-mitigations.toon     # Apply accepted mitigations to the target and commit
 ├── techniques/
-│   ├── TECHNIQUE.md                 # Inherited base contract
-│   ├── plan-evaluation.md           # Target classification, dimension-to-lens mapping
-│   └── compose-evaluation-report.md # Cross-dimensional synthesis, report composition
+│   ├── TECHNIQUE.md                  # Inherited base contract
+│   ├── plan-evaluation/              # Target classification, dimension-to-lens mapping (one op per phase)
+│   ├── execute-analysis/             # Prism run result collection and completion verification (one op per phase)
+│   ├── compose-evaluation-report/    # Cross-dimensional synthesis, report composition (one op per phase)
+│   └── resolve-findings/             # Finding tier-classification, mitigation, change application (one op per phase)
 └── resources/
-    ├── 00-default-dimensions.md     # Default dimension sets by target type
-    └── 01-dimension-lens-mapping.md # Dimension-to-lens mapping matrix
+    ├── default-dimensions.md         # Default dimension sets by target type
+    ├── dimension-lens-mapping.md     # Dimension-to-lens mapping matrix
+    ├── evaluation-plan-template.md   # evaluation-plan.md structure
+    ├── evaluation-report-template.md # EVALUATION-REPORT.md structure
+    └── mitigation-plan-template.md   # MITIGATION-PLAN.md structure
 ```

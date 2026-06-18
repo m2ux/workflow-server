@@ -10,26 +10,21 @@ tags[5]:
   - vulnerability
   - remediation
   - private
-rules[8]:
-  - "Agents MUST NOT skip or auto-resolve blocking checkpoints (blocking: true) — these require explicit user selection."
-  - "STRICT ISOLATION: The agent MUST NOT use any public GitHub tools (e.g. gh pr create, gh issue create) during this workflow."
-  - "PRIVATE REMOTE ONLY: All git operations must target the 'security' remote, never 'origin'."
-  - "Ask, don't assume - Clarify requirements before acting"
-  - "Summarize, then proceed - Provide brief status before asking to continue"
-  - "One task at a time - Complete current work before starting new work"
-  - "Explicit approval - Get clear 'yes' or 'proceed' before major actions"
-  - "ORCHESTRATION MODEL: This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (technique: meta-orchestrator from meta/techniques) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A worker sub-agent (technique: activity-worker from meta/techniques) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a checkpoint_pending result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. CONSTRAINT: Only ONE level of sub-agent indirection (the worker)."
+rules:
+  workflow[6]:
+    - "Agents MUST NOT skip or auto-resolve blocking checkpoints (blocking: true) — these require explicit user selection."
+    - "Ask, don't assume - Clarify requirements before acting"
+    - "Summarize, then proceed - Provide brief status before asking to continue"
+    - "One task at a time - Complete current work before starting new work"
+    - "Explicit approval - Get clear 'yes' or 'proceed' before major actions"
+    - "ORCHESTRATION MODEL: This workflow uses an orchestrator/worker pattern. The agent receiving the user request acts AS the orchestrator inline (technique: meta-orchestrator from meta/techniques) — it MUST NOT be spawned as a sub-agent. The orchestrator loads the workflow, manages transitions, tracks state, and presents checkpoints to the user. A worker sub-agent (technique: activity-worker from meta/techniques) executes activity steps and produces artifacts. When the worker reaches a blocking checkpoint, it yields a checkpoint_pending result. The orchestrator presents the checkpoint to the user, then resumes the worker with the response. CONSTRAINT: Only ONE level of sub-agent indirection (the worker)."
+  activity[2]:
+    - "STRICT ISOLATION: The agent MUST NOT use any public GitHub tools (e.g. gh pr create, gh issue create) during this workflow."
+    - "PRIVATE REMOTE ONLY: All git operations must target the 'security' remote, never 'origin'."
 techniques:
-artifactLocations:
-  planning:
-    path: "{planning_folder_path}"
-  reviews:
-    path: ".engineering/artifacts/reviews"
-  adr:
-    path: ".engineering/artifacts/adr"
-  comprehension:
-    path: ".engineering/artifacts/comprehension"
-variables[28]:
+  activity[1]:
+    - variable-binding
+variables[30]:
   - name: target_path
     type: string
     description: "Path to the target directory. All git operations (branch, push) are performed inside this directory. Resolved by start-workflow discover-target checkpoints."
@@ -49,6 +44,12 @@ variables[28]:
   - name: sec_vuln_url
     type: string
     description: "URL of the vulnerability advisory to remediate"
+  - name: private_fork_url
+    type: string
+    description: "URL of the private fork that backs the 'security' git remote"
+  - name: short_id
+    type: string
+    description: "Short slug identifying the advisory, used to form the security branch name"
   - name: is_review_mode
     type: boolean
     description: "Always false for this workflow."
@@ -69,7 +70,7 @@ variables[28]:
     type: boolean
     description: Whether codebase comprehension is needed. Always true after design-philosophy.
     defaultValue: true
-  - name: complexity
+  - name: problem_complexity
     type: string
     description: "Problem complexity assessed during design-philosophy (simple|moderate|complex)."
   - name: validation_passed

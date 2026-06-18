@@ -1,22 +1,25 @@
 id: end-workflow
-version: 4.0.0
+version: 4.2.0
 name: End Workflow
 description: "Close out the client workflow."
-problem: Workflow sessions need an explicit close-out so the user knows the work is done and the final state is durably persisted
 required: true
-estimatedTime: 2-3m
-techniques:
-  supporting[2]:
-    - "workflow-engine::verify-outcomes"
-    - "workflow-engine::generate-summary"
-steps[2]:
-  - id: verify-outcomes
-    description: "workflow-engine::verify-outcomes(outcome: {target_workflow_outcomes}, state: {client_state})"
-  - id: generate-summary
-    description: "workflow-engine::generate-summary(workflow: {target_workflow}, trace: {client_trace})"
-checkpoints[1]:
-  - id: completion-confirmed
-    name: Completion Confirmation
+steps[4]:
+  - kind: technique
+    id: verify-outcomes
+    technique:
+      name: workflow-engine::verify-outcomes
+      inputs:
+        outcomes: target_workflow_outcomes
+        state: client_state
+  - kind: technique
+    id: generate-summary
+    technique:
+      name: workflow-engine::generate-summary
+      inputs:
+        workflow_definition: target_workflow_id
+        execution_trace: client_trace
+  - kind: checkpoint
+    id: completion-confirmed
     message: "Session summary presented above. Confirm closure or return to the workflow to address remaining items."
     options[2]:
       - id: confirm
@@ -33,11 +36,11 @@ checkpoints[1]:
             abort_completion: true
             client_workflow_completed: false
           transitionTo: dispatch-client-workflow
-exitActions[1]:
-  - action: log
-    message: "Workflow session closed"
+  - kind: action
+    id: announce-completion
+    actions[1]:
+      - action: log
+        message: "Workflow session closed"
 outcome[2]:
-  - Outcome audit presented to the user with any gaps surfaced
-  - Final state persisted to session.json
-context_to_preserve[1]:
-  - abort_completion - Whether the user chose to return to dispatch instead of closing
+  - The user can decide whether the work is truly done — every target outcome is shown as met or flagged as a gap to address
+  - The completed session can be resumed or audited later because its final state is durably preserved

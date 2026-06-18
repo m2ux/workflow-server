@@ -34,7 +34,7 @@ Condensed, agent-executable reference of the 14 design principles governing work
 
 ## 4. Maximize Schema Expressiveness
 
-**Rule:** Every piece of structured workflow information must use the most specific formal construct the schema provides. Prose is only acceptable for `description`, `problem`, and `recognition` fields. Even in those fields, prose must not (a) restate what the surrounding structure already encodes — step position, loop bounds, checkpoint effects, variable defaults; (b) narrate rationale, downstream consumers, or prior-implementation comparisons; (c) enumerate the sequence of activities, modes, phases, or steps (the canonical declaration is `activities[]`, `modes[]`, or the on-disk directory); (d) prescribe modifications to user-owned environment state (git config, shell, GPG, GitHub account); or (e) carry behavioural rules / role-prescriptions ("The orchestrator coordinates only", "Workers MUST X"). The dedicated `rules:` section on the construct or a parent construct is the canonical home for behavioural constraints. See anti-patterns 36-40.
+**Rule:** Every piece of structured workflow information must use the most specific formal construct the schema provides. Prose is only acceptable for the `description` and `outcome` fields. Even in those fields, prose must not (a) restate what the surrounding structure already encodes — step position, loop bounds, checkpoint effects, variable defaults; (b) narrate rationale, downstream consumers, or prior-implementation comparisons; (c) enumerate the sequence of activities, phases, or steps (the canonical declaration is `activities[]` or the on-disk directory); (d) prescribe modifications to user-owned environment state (git config, shell, GPG, GitHub account); or (e) carry behavioural rules / role-prescriptions ("The orchestrator coordinates only", "Workers MUST X"). The dedicated `rules:` section on the construct or a parent construct is the canonical home for behavioural constraints. See anti-patterns 36-40.
 
 **Enforcement:** `08-quality-review` with `expressiveness-confirmed` checkpoint. Schema construct inventory ([schema-construct-inventory](./schema-construct-inventory.md)) is the reference.
 
@@ -48,7 +48,7 @@ Condensed, agent-executable reference of the 14 design principles governing work
 
 **Rule:** The schema is a fixed constraint. Fix content to match the schema, never the reverse. If a gap exists, ask the user whether it's a schema gap or a loader convention.
 
-**Enforcement:** `validate` entry action on content-drafting. Schema validation on every TOON file.
+**Enforcement:** `validate` action on a leading control step of content-drafting. Schema validation on every TOON file.
 
 ## 7. Confirm Before Irreversible Changes
 
@@ -94,6 +94,6 @@ Condensed, agent-executable reference of the 14 design principles governing work
 
 ## 14. Complete Documentation Structure
 
-**Rule:** Every workflow must include a README.md at the root and in each subfolder (activities/, techniques/, resources/). Root README documents the workflow overview, modes, activity sequence, variables, and file structure. Subfolder READMEs document the contents of that folder.
+**Rule:** Every workflow must include a README.md at the root and in each subfolder (activities/, techniques/, resources/). READMEs ORIENT — they state the workflow's purpose, the at-a-glance activity sequence with its flow diagrams, the value each activity delivers, the file structure, a techniques overview, and links to the authoritative files. They do NOT transcribe the structured definition: an activity's `steps[]` (including its inline `kind: checkpoint` and `kind: loop` steps), its activity-level decisions and transitions, per-step technique bindings, the workflow's `variables`, its `rules`, and per-activity estimated times all live in the TOON files and are never restated in a README. Flow diagrams (mermaid/ASCII) are visual orientation and are kept (AP-76).
 
 **Enforcement:** `generate-readme` / `update-readme` steps in validate-and-commit. Scope manifest must include README files.

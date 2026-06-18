@@ -13,7 +13,7 @@ Create an Architecture Decision Record for moderate or complex implementations
 
 ## Inputs
 
-### complexity
+### problem_complexity
 
 Problem complexity assessment (simple|moderate|complex)
 
@@ -33,7 +33,7 @@ Directory holding the project's ADR files
 
 ### 1. Gate On Complexity
 
-- Proceed only when `{complexity}` is moderate or complex. For a simple assessment, do not create an ADR — simple changes do not warrant one — and return without an `{adr_document}`.
+- Proceed only when `{problem_complexity}` is moderate or complex. For a simple assessment, do not create an `{adr_document}` — simple changes do not warrant one — and return without one.
 
 ### 2. Determine Number
 
@@ -49,10 +49,9 @@ Directory holding the project's ADR files
 
 ### 4. Write Adr
 
-- Write the `{adr_document}` as `NNNN-{decision_title}.md` in `{adr_dir}`
+- Write the `{adr_document}` as `NNNN-{$decision_title}.md` in `{adr_dir}`, deriving `{$decision_title}` as a slugified short title of the decision
 - Use standard ADR format (Title, Status, Context, Decision, Consequences)
-- Set status to Proposed (finalize activity updates to Accepted)
-- New ADRs are created with status Proposed — the finalize activity updates to Accepted
+- Set the `{adr_document}` status to Proposed; acceptance is recorded later in a separate finalization step
 
 ## Outputs
 
@@ -60,7 +59,7 @@ Directory holding the project's ADR files
 
 [Architecture Decision Record](../resources/architecture-review.md#adr-template)
 
-#### adr_artifact
+#### artifact
 
 `NNNN-{decision_title}.md`
 
@@ -68,4 +67,4 @@ Directory holding the project's ADR files
 
 ### alternatives-required
 
-Every ADR must document at least one alternative that was considered
+Every `{adr_document}` must document at least one alternative that was considered

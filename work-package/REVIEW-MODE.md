@@ -1,6 +1,6 @@
 # Review Mode
 
-Review mode adapts the work-package workflow for **reviewing existing implementations** rather than creating new ones. It is formally defined in the workflow schema using the `modes` construct and conditional steps/checkpoints/transitions.
+Review mode adapts the work-package workflow for **reviewing existing implementations** rather than creating new ones. It is not a special schema construct — it is expressed entirely through ordinary state: a boolean `is_review_mode` variable set by a detection step early in the workflow, plus conditional steps, checkpoints, and transitions that branch on it.
 
 ---
 
@@ -16,30 +16,19 @@ When activated, review mode:
 
 ---
 
-## Schema Definition
+## How It Works
 
-### Workflow-Level Mode
+### State-Driven Activation
 
-Review mode is defined in `workflow.toon` under the `modes` section:
+Review mode has no dedicated schema construct. It is driven by a single boolean variable, `is_review_mode`, declared like any other workflow variable (default `false`):
 
 ```
-modes[1]:
-  - id: review
-    name: Review Mode
-    activationVariable: is_review_mode
-    skipActivities: [requirements-elicitation, implement]
-    defaults: { needs_elicitation: false }
-    resource: resources/review-mode.md
+- name: is_review_mode
+  type: boolean
+  defaultValue: false
 ```
 
-| Property | Purpose |
-|----------|---------|
-| `id` | Unique identifier for the mode |
-| `activationVariable` | Variable that activates the mode when true |
-| `recognition` | Patterns to detect mode from user intent |
-| `skipActivities` | Activities to skip entirely in this mode |
-| `defaults` | Default variable values when mode is active |
-| `resource` | Link to detailed guide document |
+A detection step early in `start-work-package` (`detect-review-mode`) recognizes review intent, confirms with the user, and sets `is_review_mode = true`. Everything mode-specific downstream is a conditional step, checkpoint, or transition that reads this variable. There is no `skipActivities` list and no mode `defaults` block: activities are "skipped" only because their steps and inbound transitions are gated on `is_review_mode`, and mode-specific variable values (e.g. `needs_elicitation = false`) are set by an ordinary control step gated the same way.
 
 ### Activity-Level Behavior
 
@@ -56,7 +45,7 @@ Per-activity review guidance is in `resources/review-mode.md`.
 
 ## Activating Review Mode
 
-Review mode is detected from user request patterns defined in `modes[].recognition`:
+The `detect-review-mode` step in `start-work-package` recognizes review mode from user request patterns such as:
 
 | Pattern | Example |
 |---------|---------|
@@ -135,7 +124,7 @@ graph TD
 | `start-work-package` | Detect mode, capture PR reference, skip branch/PR creation |
 | `design-philosophy` | Assess ticket completeness, force skip elicitation |
 | `implementation-analysis` | Checkout base branch, document expected changes |
-| `implement` | **SKIPPED** via `skipActivities` |
+| `implement` | **SKIPPED** — its steps and inbound transition are gated `when is_review_mode != true` |
 | `validate` | Document failures as findings, skip fix-failures |
 | `strategic-review` | Document recommendations, transition to submit-for-review |
 | `submit-for-review` | Generate review summary, post to PR, end workflow |
@@ -145,6 +134,6 @@ graph TD
 
 ## Related Resources
 
-- [24-review-mode.md](./resources/review-mode.md) - Detailed review mode guide with output formats
-- [16-rust-substrate-code-review.md](./resources/rust-substrate-code-review.md) - Code review criteria
-- [17-test-suite-review.md](./resources/test-suite-review.md) - Test quality assessment
+- [review-mode.md](./resources/review-mode.md) - Detailed review mode guide with output formats
+- [rust-substrate-code-review.md](./resources/rust-substrate-code-review.md) - Code review criteria
+- [test-suite-review.md](./resources/test-suite-review.md) - Test quality assessment

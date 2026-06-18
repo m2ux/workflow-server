@@ -37,7 +37,7 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 
 ### 1. Check Dispatch Completeness
 
-- If a `{dispatch_manifest}` is provided, verify every agent in the `{agent_assignments}` was dispatched and returned. Produce a dispatch status table: crate, assigned-group, agent-dispatched (yes/no), structured-output-received (yes/no) — i.e. output conforming to the [sub-agent-output-schema](../resources/sub-agent-output-schema.md). If one or more assigned agents were not dispatched, flag as DISPATCH_INCOMPLETE. This is a HARD STOP — dispatch the missing agents before proceeding to finding consolidation.
+- If a `{dispatch_manifest}` is provided, verify every agent in the `{agent_assignments}` was dispatched and returned. Produce a dispatch status table: crate, assigned-group, agent-dispatched (yes/no), structured-output-received (yes/no) — i.e. output conforming to the [sub-agent-output-schema](../resources/sub-agent-output-schema.md). If one or more assigned agents were not dispatched, flag as DISPATCH_INCOMPLETE. This is a HARD STOP — dispatch the missing agents and re-verify.
 
 ### 2. Check Coverage Gate
 
@@ -49,7 +49,7 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 
 ### 4. Check Structural Completeness
 
-- Across the `{agent_results}`, check that each agent's steps-completed list matches the completeness criteria in `{expected_outputs}`. Check that every FAIL verdict has a corresponding finding entry. Check that every mandatory-tables field is populated or null with justification.
+- Across the `{agent_results}`, check that each agent's `steps_completed` list matches the completeness criteria in `{expected_outputs}`. Check that every FAIL verdict has a corresponding finding entry. Check that every `mandatory_tables` field is populated or null with justification.
 
 ### 5. Check Cross Chain Timestamp
 
@@ -57,7 +57,7 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 
 ### 6. Extract Table Findings
 
-- DETERMINISTIC CELL-LEVEL SCAN: Iterate every row in every mandatory table from every agent. For each cell, apply keyword match: FAIL, DIFF, Missing, No, absent, not validated, unconditional, no guard, no check, unpaired. Each matching cell becomes a table-derived finding (source-table, cell-description, agent-id, severity=TBD). The orchestrator MUST NOT apply judgment to skip cells — all matches are extracted. Deduplication occurs later in merge-findings.
+- DETERMINISTIC CELL-LEVEL SCAN: Iterate every row in every mandatory table from every agent. For each cell, apply keyword match: FAIL, DIFF, Missing, No, absent, not validated, unconditional, no guard, no check, unpaired. Each matching cell becomes a table-derived finding (source-table, cell-description, agent-id, severity=TBD). The orchestrator MUST NOT apply judgment to skip cells — all matching cells are extracted without deduplication.
 
 ### 7. Verify Event Construction Site
 
@@ -77,7 +77,7 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 
 ### 11. Produce Verification Report
 
-- Emit the `{verification_report}` as a structured report listing: dispatch completeness status, all coverage gaps (files not read by §3-agents), all missing tables (agent + table ID), all structural issues, cross-chain timestamp check status, table-derived findings from extract-table-findings step, event construction site coverage status. For each gap, recommend a targeted follow-up dispatch.
+- Emit the `{verification_report}` as a structured report listing: dispatch completeness status, all coverage gaps (files not read by §3-agents), all missing tables (agent + table ID), all structural issues, cross-chain timestamp check status, the table-derived findings, event construction site coverage status. For each gap, recommend a targeted follow-up dispatch.
 
 ## Outputs
 
@@ -100,3 +100,17 @@ agent-id, table-id, reason
 #### redispatch_recommendations
 
 agent-id, scope, specific check to perform
+
+## Rules
+
+### validates-not-audits
+
+The verification agent validates that primary agents applied the §3 checklist and read source — it does not apply the §3 checklist or read source code itself, working exclusively from the agents' structured outputs.
+
+### every-protocol-executed-mechanically
+
+Every verification protocol is executed mechanically with no protocol skipped or summarized; table-derived findings are extracted by deterministic cell-level scan, and each gap carries a specific re-dispatch recommendation with agent id, file scope, and the check to perform.
+
+### gap-report-persisted-as-json-file
+
+The verification agent writes its gap report and table-derived findings as a JSON file into `{planning_folder_path}`.

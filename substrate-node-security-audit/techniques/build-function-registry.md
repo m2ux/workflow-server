@@ -45,6 +45,10 @@ true
 
 Structured function registry table.
 
+#### artifact
+
+`r-function-registry.json`
+
 #### registry_table
 
 one row per function with file location, type classification, and priority
@@ -52,3 +56,9 @@ one row per function with file location, type classification, and priority
 #### file_manifest
 
 every file read with line count and read status
+
+## Rules
+
+### largest-files-in-registry
+
+`.rs` files are sorted by line count and the top 10 are included in the registry; the registry covers every priority-1 and priority-2 crate.

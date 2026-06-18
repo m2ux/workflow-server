@@ -11,34 +11,39 @@ tags[6]:
   - substrate
   - automated
   - multi-phase
-rules[26]:
-  - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
-  - "PREREQUISITE: A target submodule MUST be specified before the workflow begins"
-  - "PREREQUISITE: Use attached resource 06 (target-profile) during scope-setup. It contains target-specific crate assignments, file paths, calibration data, and ensemble blind-spot items."
-  - "FULLY AUTOMATED: This workflow executes without user checkpoints. Phase gates are set via exitActions."
-  - "The audit prompt template defines the checklist — the workflow defines the execution phases"
-  - "Severity scoring MUST use the Impact x Feasibility rubric, not intuitive assignment. CALIBRATION: If the target profile includes a severity benchmark table, use it as calibration anchors. DIVERGENCE GATE: If a finding diverges by >=2 levels from a matching benchmark, the benchmark severity is the floor. If no benchmark table exists, apply the rubric's common calibration error guidance (operational hazards: F>=3 when the trigger occurs without an attacker; shared resources with external consumers: F>=3)."
-  - "Every PASS in the scratchpad MUST cite specific code — bare PASSes are invalid"
-  - "Every agent finding MUST appear in the structured merge table and map to a report finding number"
-  - "Artifacts in 'planning' location are gitignored — never reference them in PRs or issues"
-  - "CONTAMINATION PREVENTION: A reference report must NEVER be loaded or discussed before Phase 5 (gap-analysis). Record the path at scope-setup; defer loading."
-  - "TOOLKIT DEPTH LIMITATION: Per-function toolkit findings have low single-pass detection rates. Enable ensemble_enabled=true for reliable detection."
-  - "COVERAGE GATE IS A HARD STOP: Report generation MUST NOT begin until every .rs file >200 lines in priority-1/2 crates has been read by at least one §3-applying sub-agent."
-  - "CONCURRENT DISPATCH: All primary agents (A1-A7, B, D1, D2) dispatch simultaneously in a single batch. Every assigned agent MUST be dispatched — skipping any agent is a HARD STOP."
-  - "DISPATCH COMPLETENESS GATE: agents_dispatched MUST equal agents_assigned. Reconnaissance data does NOT substitute for §3-applying sub-agents. This is a HARD STOP."
-  - "MANDATORY TABLE AUTO-ELEVATION: The orchestrator scans mandatory tables for FAIL/DIFF/Missing/No cells and auto-promotes each to a finding. The sub-agent is NOT responsible for elevation."
-  - "DEFENSE-IN-DEPTH VALIDATION: For §3.6 input validation, PASS requires evidence at the consumption layer (pallet), not just the production layer."
-  - "MANDATORY WEIGHTS.RS READ: For every pallet with hooks, the sub-agent MUST read weights.rs. The orchestrator includes it in supplementary files."
-  - "ENSEMBLE TARGETED BLIND-SPOTS: The ensemble agent verifies items 1-4 (universal) plus target-specific items from the target profile FIRST, before general review."
-  - "CHECKLIST-TO-PROMPT COVERAGE GATE: The orchestrator verifies every §3 checklist item (§3.1-§3.14) is explicitly represented in at least one dispatched agent's context."
-  - "CONFIGURATION-VARIANT PANIC TRIAGE: For every expect()/unwrap() on an Option derived from configuration or runtime state, the reviewing agent MUST enumerate ALL valid configuration variants and check whether any variant produces None. Specifically: DatabaseConfig::InMemory causes path() to return None; development/test presets may omit optional fields; pruning/archive modes may produce missing headers. An unwrap that panics on any valid configuration is a finding regardless of the 'default' configuration."
-  - "GENESIS PARSING PATH COVERAGE: The node startup agent (A3) MUST trace ALL genesis data parsing paths — not only StorageInit construction but also genesis extrinsics decoding, genesis header construction, and chain spec property parsing. Iteration patterns that stop at the first invalid element (take_while, early-return on error, filter_map) silently truncate remaining data. Each parsing path must be verified for silent truncation independently."
-  - "NODE BINARY SCOPE SPLIT: The node binary is split into A3 (startup/config) and A4 (consensus/network) per the target profile. This addresses prompt saturation that historically caused config struct invariant validation and consensus-path panic checks to be deprioritized."
-  - "VERIFICATION AGENT GATE: After collecting all primary agent results, the orchestrator MUST dispatch a verification sub-agent (V) following the sub-output-verification activity. The verification agent's gap report drives targeted re-dispatch before structured merge. The gap report also informs adversarial PASS item selection. The orchestrator MUST NOT self-certify verification — verification_complete MUST be set by V's output."
-  - "MERGE AGENT GATE: After verification and re-dispatch, the orchestrator MUST dispatch a merge sub-agent (M) following the sub-structured-merge activity. M performs the structured merge, deduplication, severity scoring with bidirectional calibration, reconciliation, and observation elevation in a fresh context window. The orchestrator MUST NOT perform the merge inline — inline merge under context saturation is the primary cause of finding regression across runs."
-  - "FINDING COUNT RECONCILIATION: M produces a reconciliation table where Unaccounted MUST equal zero for every agent. This is a HARD STOP — report generation MUST NOT begin with Unaccounted > 0."
-  - "OBSERVATION ELEVATION: M reviews all agent reconnaissance_leads and additional_observations, PLUS S agent emergent_domains from s-architectural-analysis.json and R agent leads from r-reconnaissance-data.json. Emergent domains are architectural vulnerability hypotheses — each MUST be dispositioned as captured, elevated, or not-applicable. Security-relevant observations (divergent code paths, missing validation, error-path persistence, silent errors, trust boundary amplification) MUST be elevated to findings or explicitly mapped to existing findings. Silent observation loss is a regression source."
+rules:
+  workflow[16]:
+    - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
+    - "PREREQUISITE: A target submodule MUST be specified before the workflow begins"
+    - "PREREQUISITE: Use attached resource 06 (target-profile) during scope-setup. It contains target-specific crate assignments, file paths, calibration data, and ensemble blind-spot items."
+    - "FULLY AUTOMATED: This workflow executes without user checkpoints. Phase gates are set by each activity's completion step (a `set` flag on its final step)."
+    - "The audit prompt template defines the checklist — the workflow defines the execution phases"
+    - "CONTAMINATION PREVENTION: A reference report must NEVER be loaded or discussed before Phase 5 (gap-analysis). Record the path at scope-setup; defer loading."
+    - "TOOLKIT DEPTH LIMITATION: Per-function toolkit findings have low single-pass detection rates. Enable ensemble_enabled=true for reliable detection."
+    - "COVERAGE GATE IS A HARD STOP: Report generation MUST NOT begin until every .rs file >200 lines in priority-1/2 crates has been read by at least one §3-applying sub-agent."
+    - "CONCURRENT DISPATCH: All primary agents (A1-A7, B, D1, D2) dispatch simultaneously in a single batch. Every assigned agent MUST be dispatched — skipping any agent is a HARD STOP."
+    - "DISPATCH COMPLETENESS GATE: agents_dispatched MUST equal agents_assigned. Reconnaissance data does NOT substitute for §3-applying sub-agents. This is a HARD STOP."
+    - "MANDATORY TABLE AUTO-ELEVATION: The orchestrator scans mandatory tables for FAIL/DIFF/Missing/No cells and auto-promotes each to a finding. The sub-agent is NOT responsible for elevation."
+    - "CHECKLIST-TO-PROMPT COVERAGE GATE: The orchestrator verifies every §3 checklist item (§3.1-§3.14) is explicitly represented in at least one dispatched agent's context."
+    - "NODE BINARY SCOPE SPLIT: The node binary is split into A3 (startup/config) and A4 (consensus/network) per the target profile. This addresses prompt saturation that historically caused config struct invariant validation and consensus-path panic checks to be deprioritized."
+    - "VERIFICATION AGENT GATE: After collecting all primary agent results, the orchestrator MUST dispatch a verification sub-agent (V) following the sub-output-verification activity. The verification agent's gap report drives targeted re-dispatch before structured merge. The gap report also informs adversarial PASS item selection. The orchestrator MUST NOT self-certify verification — verification_complete MUST be set by V's output."
+    - "MERGE AGENT GATE: After verification and re-dispatch, the orchestrator MUST dispatch a merge sub-agent (M) following the sub-structured-merge activity. M performs the structured merge, deduplication, severity scoring with bidirectional calibration, reconciliation, and observation elevation in a fresh context window. The orchestrator MUST NOT perform the merge inline — inline merge under context saturation is the primary cause of finding regression across runs."
+    - "FINDING COUNT RECONCILIATION: M produces a reconciliation table where Unaccounted MUST equal zero for every agent. This is a HARD STOP — report generation MUST NOT begin with Unaccounted > 0."
+  activity[9]:
+    - "Severity scoring MUST use the Impact x Feasibility rubric, not intuitive assignment. CALIBRATION: If the target profile includes a severity benchmark table, use it as calibration anchors. DIVERGENCE GATE: If a finding diverges by >=2 levels from a matching benchmark, the benchmark severity is the floor. If no benchmark table exists, apply the rubric's common calibration error guidance (operational hazards: F>=3 when the trigger occurs without an attacker; shared resources with external consumers: F>=3)."
+    - "Every PASS in the scratchpad MUST cite specific code — bare PASSes are invalid"
+    - "Every agent finding MUST appear in the structured merge table and map to a report finding number"
+    - "DEFENSE-IN-DEPTH VALIDATION: For §3.6 input validation, PASS requires evidence at the consumption layer (pallet), not just the production layer."
+    - "MANDATORY WEIGHTS.RS READ: For every pallet with hooks, the sub-agent MUST read weights.rs. The orchestrator includes it in supplementary files."
+    - "ENSEMBLE TARGETED BLIND-SPOTS: The ensemble agent verifies items 1-4 (universal) plus target-specific items from the target profile FIRST, before general review."
+    - "CONFIGURATION-VARIANT PANIC TRIAGE: For every expect()/unwrap() on an Option derived from configuration or runtime state, the reviewing agent MUST enumerate ALL valid configuration variants and check whether any variant produces None. Specifically: DatabaseConfig::InMemory causes path() to return None; development/test presets may omit optional fields; pruning/archive modes may produce missing headers. An unwrap that panics on any valid configuration is a finding regardless of the 'default' configuration."
+    - "GENESIS PARSING PATH COVERAGE: The node startup agent (A3) MUST trace ALL genesis data parsing paths — not only StorageInit construction but also genesis extrinsics decoding, genesis header construction, and chain spec property parsing. Iteration patterns that stop at the first invalid element (take_while, early-return on error, filter_map) silently truncate remaining data. Each parsing path must be verified for silent truncation independently."
+    - "OBSERVATION ELEVATION: M reviews all agent reconnaissance_leads and additional_observations, PLUS S agent emergent_domains from s-architectural-analysis.json and R agent leads from r-reconnaissance-data.json. Emergent domains are architectural vulnerability hypotheses — each MUST be dispositioned as captured, elevated, or not-applicable. Security-relevant observations (divergent code paths, missing validation, error-path persistence, silent errors, trust boundary amplification) MUST be elevated to findings or explicitly mapped to existing findings. Silent observation loss is a regression source."
+  universal[1]:
+    - "Artifacts in 'planning' location are gitignored — never reference them in PRs or issues"
 techniques:
+  activity[1]:
+    - variable-binding
 variables[19]:
   - name: target_submodule
     type: string

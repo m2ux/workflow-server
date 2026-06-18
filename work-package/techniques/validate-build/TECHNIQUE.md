@@ -17,7 +17,7 @@ Triage validation failures and aggregate cross-check results.
 
 ### no-cargo-here
 
-This technique MUST NOT invoke cargo, describe cargo invocations, or duplicate cargo command-line text. Cargo execution belongs entirely to [cargo-operations](../cargo-operations/TECHNIQUE.md). validate-build operates on the OUTPUTS of cargo-operations operations.
+This technique MUST NOT invoke cargo, describe cargo invocations, or duplicate cargo command-line text. Cargo execution belongs entirely to [cargo-operations](../../../meta/techniques/cargo-operations/TECHNIQUE.md). validate-build operates on the OUTPUTS of cargo-operations operations.
 
 ### no-duplicate-review
 
@@ -25,4 +25,4 @@ Test suite quality was already reviewed in post-impl-review. [analyze-failure](.
 
 ### do-not-mask-flaky
 
-When [analyze-failure](./analyze-failure.md) classifies a failure as flaky, surface that classification — do not silently retry. The activity loop decides whether to retry or escalate.
+When [analyze-failure](./analyze-failure.md) classifies a failure as flaky, surface that classification — do not silently retry; whether to retry or escalate is decided by the caller.

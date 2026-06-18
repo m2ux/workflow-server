@@ -23,7 +23,7 @@ The pipeline mode that produced the artifacts: 'single', 'full-prism', 'portfoli
 
 ### all_artifact_paths
 
-Array of all artifact file paths produced by prior passes. The worker reads these to extract findings.
+Array of filesystem paths to the analysis artifacts available for this report.
 
 ### target_description
 
@@ -42,7 +42,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 ### 2. Read Artifacts
 
 - Read each authoritative artifact from the filesystem using the paths in `{all_artifact_paths}`
-- If one or more paths in `{all_artifact_paths}` do not exist on the filesystem, report which artifacts are missing; the orchestrator may need to re-run the corresponding pass.
+- If one or more paths in `{all_artifact_paths}` do not exist on the filesystem, report which artifacts are missing.
 - For full-prism, also read the structural and adversarial artifacts to extract location details and evidence for findings that the synthesis references by ID but does not fully reproduce
 - For multi-unit analyses, read per-unit artifacts from their respective subdirectories
 
@@ -59,9 +59,9 @@ Description of what was analysed — used in the report's Executive Summary scop
 ### 4. Enrich Blast Radius
 
 - Check GitNexus availability via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md). If the target codebase is not indexed, skip blast radius enrichment.
-- For each finding that references a specific symbol (function, class, module), use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)`(target: symbol_name, direction: upstream)` to compute the measured blast radius: direct callers (d=1), likely affected (d=2), affected execution flows, and affected modules.
+- For each finding that references a specific symbol (function, class, module), take the symbol the finding references as `{$finding_symbol}` and use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)`(target: {finding_symbol}, direction: 'upstream')` to compute the measured blast radius: direct callers (d=1), likely affected (d=2), affected execution flows, and affected modules.
 - Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on the finding's primary symbol to determine which execution flows it participates in — this adds process context to the finding location.
-- Record enrichment data per finding: { direct_callers, affected_processes, affected_modules, process_names }. Findings without identifiable symbols are not enriched.  
+- Record enrichment data per finding: `{ direct_callers, affected_processes, affected_modules, process_names }`. Findings without identifiable symbols are not enriched.  
   > Graph-backed blast radius is reported alongside the finding as additional evidence for the reader but does not override the severity from the authoritative source. Blast radius data is omitted when GitNexus is unavailable or when a finding does not reference an identifiable symbol.
 
 ### 5. Strip Methodology
@@ -80,7 +80,7 @@ Description of what was analysed — used in the report's Executive Summary scop
 - If no dimensions, use severity-ordered sequential numbering (e.g., F-01, F-02)
 - For multi-unit analyses, prefix with a short unit identifier where needed to avoid collisions
 - If two findings from different units or lenses map to the same report ID, add a unit or lens prefix to disambiguate and report the collision.
-- Record the full mapping: report_id → { source_artifact_path, original_id, original_severity }
+- Record the full mapping: `report_id → { source_artifact_path, original_id, original_severity }`
 
 ### 7. Compose Report
 
@@ -95,21 +95,17 @@ Description of what was analysed — used in the report's Executive Summary scop
 
 ### 8. Write Artifact
 
-- Write the complete report as `{report}` into `{output_path}`
+- Write the complete report as `{analysis_report}` into `{output_path}`, capturing its full filesystem path as `{report_path}`
 
 ## Outputs
 
-### report
+### analysis_report
 
 Clean final [report](../resources/final-output-template.md#reportmd-template) artifact
 
-#### artifact_filename
+#### artifact
 
 `REPORT.md`
-
-#### report_path
-
-Full filesystem path to `REPORT.md`
 
 #### finding_count
 
@@ -119,11 +115,27 @@ Total findings by severity
 
 Summary of the core finding (if any)
 
+### report_path
+
+Full filesystem path to `REPORT.md`
+
 ## Rules
 
 ### complete-extraction
 
 Every finding in the authoritative artifact must appear in the report. Omitting findings is a report integrity violation.
+
+### methodology-stripped
+
+The report contains no reference to the analytical process. Forbidden phrasing includes 'the structural analysis found', 'the adversarial pass identified', 'ANALYSIS 1', 'ANALYSIS 2', 'conservation law' (unless the finding itself describes a conserved property), 'meta-law', 'analysis scorecard', 'dispute resolution', 'overclaim', 'underclaim', 'wrong prediction', and 'the synthesis determined'. The reader sees only definitive conclusions.
+
+### core-finding-promoted
+
+When the authoritative artifact identifies a deepest finding (full-prism synthesis) or convergence point (behavioral synthesis), it is promoted to the Core Finding section with its testable prediction, stated as the central structural insight with the discovery narrative stripped.
+
+### multi-unit-consolidated
+
+For a multi-unit analysis, the report consolidates findings across all units; finding IDs are prefixed by unit where ambiguity would otherwise arise, and a pattern appearing in multiple units is surfaced as a systemic finding.
 
 ### severities-inherited
 

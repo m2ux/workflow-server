@@ -26,3 +26,7 @@ Always apply [detect-changes](./detect-changes.md) after applying a rename or ba
 ### index-freshness-first
 
 Apply [verify-index](./verify-index.md) at the start of any GitNexus session. Stale indexes return misleading results.
+
+### must-use-operations
+
+Indexed-codebase structural analysis (call relationships, execution flows, blast radius, change impact) MUST go through these operations — do NOT paste raw `gitnexus_*` calls or Cypher into technique protocols; raw calls live only inside the operation procedures here. grep / Read / glob are the fallback ONLY when the codebase is not indexed or stale.

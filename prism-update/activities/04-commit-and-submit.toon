@@ -1,0 +1,13 @@
+id: commit-and-submit
+version: 1.2.0
+name: Commit and Submit
+description: "Submit changes as a pull request."
+required: true
+
+steps[1]:
+  - kind: technique
+    id: submit-update
+    technique: submit-update
+
+outcome[1]:
+  - "The prism update is in front of a reviewer as an open pull request — ready for review and merge"

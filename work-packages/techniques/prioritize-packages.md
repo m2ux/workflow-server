@@ -25,8 +25,8 @@ Inter-package dependency map describing which packages block or depend on which 
 
 ### 1. Analyze Dependencies
 
-- Use attached [prioritization-framework](../resources/prioritization-framework.md) (prioritization-framework) for the evaluation methodology
-- Build a dependency graph from the dependency sections of all `{package_plans}`, cross-checking against the `{dependency_map}` to confirm which packages block or depend on which others
+- Apply the [prioritization-framework](../resources/prioritization-framework.md#step-1-dependency-graph) evaluation methodology
+- Build a dependency graph from the dependency sections of all `{package_plans}`, cross-checking against `{dependency_map}` to confirm which packages block or depend on which others
 - Perform topological sort to identify valid orderings
 - If the dependency graph contains cycles, present the cycle to the user and recommend decomposition or dependency removal
 
@@ -45,25 +45,25 @@ Inter-package dependency map describing which packages block or depend on which 
 
 ### 4. Present Prioritization
 
-- Present the dependency graph (text or mermaid diagram)
-- Present the priority table with rationale for the proposed order, forming the `{priority_order}` to be returned
+- Present the `{dependency_graph}` (text or mermaid diagram)
+- Present the priority table with `{prioritization_rationale}` for the proposed order, forming `{priority_order}`
 - Note alternative orderings if multiple valid sequences exist
 
 ## Outputs
 
 ### priority_order
 
-Ordered list of work packages with prioritization rationale
+Ordered list of work packages by execution priority, with prioritization rationale
 
-#### ordered_packages
+#### artifact
 
-Ordered list of packages by execution priority
+`priority-ranking.md`
 
-#### dependency_graph
+### dependency_graph
 
 Dependency graph representation
 
-#### prioritization_rationale
+### prioritization_rationale
 
 Per-package rationale for the ordering
 

@@ -13,7 +13,7 @@ Find saved client sessions matching a target workflow under `.engineering/artifa
 
 Workflow ID to filter candidates by.
 
-## Output
+## Outputs
 
 ### saved_session_candidates
 

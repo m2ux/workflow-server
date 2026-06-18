@@ -2,80 +2,33 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 1.0.0
+  version: 1.1.0
   order: 0
   legacy_id: 0
 ---
 
 ## Capability
 
-Orchestrate a CI/CD pipeline security audit from scope setup through report generation, driving the phase sequence and activity transitions, dispatching scanner sub-agents, and enforcing phase gates while coordinating only — all detection and analysis is delegated to sub-agents.
-
-## Inputs
-
-### target_submodules
-
-Comma-separated submodule paths or 'all'
-
-### planning_folder_path
-
-Path to the planning folder for artifacts
-
-## Protocol
-
-### 1. Phase 1 Setup
-
-- Confirm each path in `{target_submodules}` exists and contains `.github/workflows/`
-  - If no target submodules were specified or none are found, fail with an error listing the available submodules.
-- Discover all workflow files (`.yml` and `.yaml`) across targets
-- Initialize the `{planning_folder_path}` with [START-HERE.md](../resources/start-here.md)
-
-### 2. Phase 2 Reconnaissance
-
-- Classify all workflows by trigger type
-- Map permission scopes and checkout patterns
-- Assign scanner agents (one per submodule)
-
-### 3. Phase 3 Primary Scan
-
-- Dispatch all scanner agents concurrently
-- Collect scanner outputs and verify dispatch completeness
-- Dispatch verification agent (V) — check coverage
-- Dispatch merge agent (M) — deduplicate and reconcile
-  - If the merge agent reports Unaccounted > 0, HARD STOP and investigate the missing findings.
-- Verify all assigned agents were dispatched before proceeding
-  - If not all assigned scanners were dispatched, HARD STOP and re-dispatch the missing agents.
-
-### 4. Phase 4 Report
-
-- Apply severity scoring using the Impact x Exploitability [severity rubric](../resources/cicd-severity-rubric.md#severity-matrix)
-- Verify coverage gate
-- Produce the final `{audit_report}` with remediation guidance
-
-## Outputs
-
-### audit_report
-
-Complete CI/CD security [audit report](../resources/cicd-audit-report-template.md#cicd-audit-report-template)
-
-#### findings
-
-All findings with pattern ID, severity, source, sink, remediation
-
-#### file_coverage_status
-
-Workflow file coverage verification
-
-#### methodology_notes
-
-Audit methodology and pattern catalog version
+Orchestrator contract for a CI/CD pipeline security audit: dispatch scanner, verification, and merge sub-agents, and enforce the phase, dispatch-completeness, coverage, and reconciliation gates that govern the audit.
 
 ## Rules
 
-### orchestrator-discipline
+### orchestration-only
 
-Coordinate only — never analyze workflow files directly
+Coordinate sub-agent dispatch and gate enforcement only; never analyze workflow files or produce findings directly. All detection is delegated to scanner sub-agents.
 
-### phase-gates
+### verification-not-self-certified
 
-Enforce `exitAction` gates before advancing phases
+A verification sub-agent (V) produces the gap report; the orchestrator never self-certifies completeness.
+
+### merge-not-inline
+
+A merge sub-agent (M) performs deduplication, cross-pattern correlation, and reconciliation; the orchestrator never performs the merge inline.
+
+### reconciliation-gate
+
+The merge sub-agent's reconciliation table MUST show zero unaccounted findings for every scanner; a non-zero count is a hard stop.
+
+### coverage-gate
+
+Every `.github/workflows/*.yml` and `.github/workflows/*.yaml` file in scope MUST be scanned; report generation blocks while any file is uncovered.

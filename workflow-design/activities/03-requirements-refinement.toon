@@ -1,60 +1,18 @@
 id: requirements-refinement
-version: 1.1.1
+version: 1.3.0
 name: Requirements Refinement
 description: "Guided elicitation of the workflow specification across purpose, activities, checkpoints, artifacts, variables, techniques, and rules."
-problem: The user's free-form description needs to be refined into a complete workflow specification
-techniques:
-  supporting[1]:
-    - workflow-design
 required: true
-estimatedTime: 15-30m
 rules[3]:
   - "One question at a time — present each checkpoint independently and wait for the response before proceeding"
   - "Show what was captured so far before asking the next question"
   - "Do not assume answers — if the user's description is ambiguous, ask for clarification"
-steps[8]:
-  - id: elicit-purpose
-    name: Elicit Workflow Purpose
-    description: "Workflow purpose, target domain, value proposition (what problem it solves, who uses it)."
-  - id: elicit-activities
-    name: Elicit Activity List
-    description: "Activity list with per-activity name, one-sentence purpose, user-interaction flag, and expected artifacts."
-  - id: elicit-activity-model
-    name: Elicit Activity Model
-    description: "Activity model: sequential (transitions + `initialActivity`) vs independent (recognition-pattern matched)."
-    condition:
-      type: simple
-      variable: is_update_mode
-      operator: "!="
-      value: true
-  - id: elicit-checkpoints
-    name: Elicit Checkpoints
-    description: "Per-activity decision points: checkpoint question, available options, and per-option effects (setVariable, transitionTo, skipActivities)."
-  - id: elicit-artifacts
-    name: Elicit Artifacts
-    description: "Per-activity artifacts: name, `artifactLocations` key, description, and create/update action."
-  - id: elicit-variables
-    name: Elicit Variables
-    description: "Workflow-level state-tracking variables: name, type, description, default, required flag."
-    condition:
-      type: simple
-      variable: is_update_mode
-      operator: "!="
-      value: true
-  - id: elicit-techniques
-    name: Elicit Techniques
-    description: "Technique inventory: capability description, primary/supporting activity assignments, required tools / protocol phases / rules per technique."
-    condition:
-      type: simple
-      variable: is_update_mode
-      operator: "!="
-      value: true
-  - id: elicit-rules
-    name: Elicit Rules
-    description: "Workflow-level cross-activity rules with their enforcement classification (structural via checkpoint/condition/validate, or guidance-only)."
-checkpoints[8]:
-  - id: purpose-confirmed
-    name: Purpose Confirmation
+steps[9]:
+  - kind: technique
+    id: elicitation
+    technique: elicitation
+  - kind: checkpoint
+    id: purpose-confirmed
     message: "Here is the workflow purpose and domain I've captured. Is this accurate?"
     blocking: true
     options[2]:
@@ -64,8 +22,8 @@ checkpoints[8]:
       - id: refine
         label: "Needs refinement"
         description: "Purpose statement requires clarification before proceeding."
-  - id: activities-confirmed
-    name: Activity List Confirmation
+  - kind: checkpoint
+    id: activities-confirmed
     message: "Here is the activity list I've captured with names, purposes, and expected artifacts. Is this complete?"
     blocking: true
     options[2]:
@@ -75,8 +33,8 @@ checkpoints[8]:
       - id: refine
         label: "Needs changes"
         description: "Activity list requires additions, removals, or modifications."
-  - id: model-confirmed
-    name: Activity Model Confirmation
+  - kind: checkpoint
+    id: model-confirmed
     condition:
       type: simple
       variable: is_update_mode
@@ -91,8 +49,8 @@ checkpoints[8]:
       - id: change
         label: "Change model"
         description: "Activity model needs to be switched to the alternative."
-  - id: checkpoints-confirmed
-    name: Checkpoints Confirmation
+  - kind: checkpoint
+    id: checkpoints-confirmed
     message: "Here are the checkpoints I've defined for each activity with their options and effects. Do these cover all necessary user decision points?"
     blocking: true
     options[2]:
@@ -102,8 +60,8 @@ checkpoints[8]:
       - id: refine
         label: "Needs changes"
         description: "Checkpoint set requires additions, removals, or modifications."
-  - id: artifacts-confirmed
-    name: Artifacts Confirmation
+  - kind: checkpoint
+    id: artifacts-confirmed
     message: "Here are the artifacts each activity produces. Is this complete?"
     blocking: true
     options[2]:
@@ -113,8 +71,8 @@ checkpoints[8]:
       - id: refine
         label: "Needs changes"
         description: "Artifact set requires additions, removals, or modifications."
-  - id: variables-confirmed
-    name: Variables Confirmation
+  - kind: checkpoint
+    id: variables-confirmed
     condition:
       type: simple
       variable: is_update_mode
@@ -129,8 +87,8 @@ checkpoints[8]:
       - id: refine
         label: "Needs changes"
         description: "Variable set requires additions, removals, or modifications."
-  - id: techniques-confirmed
-    name: Techniques Confirmation
+  - kind: checkpoint
+    id: techniques-confirmed
     condition:
       type: simple
       variable: is_update_mode
@@ -145,8 +103,8 @@ checkpoints[8]:
       - id: refine
         label: "Needs changes"
         description: "Technique set requires additions, removals, or modifications."
-  - id: rules-confirmed
-    name: Rules Confirmation
+  - kind: checkpoint
+    id: rules-confirmed
     message: "Here are the workflow rules I've captured, each marked as text-only or structurally enforced. Is this complete?"
     blocking: true
     options[2]:
@@ -168,15 +126,5 @@ transitions[2]:
       value: true
   - to: pattern-analysis
     isDefault: true
-outcome[2]:
-  - Complete workflow specification captured through guided elicitation
-  - All design dimensions confirmed by user
-context_to_preserve[8]:
-  - workflow_purpose - Confirmed purpose and domain
-  - activity_list - Confirmed activity names, purposes, and artifacts
-  - activity_model - Sequential or independent
-  - checkpoint_design - Checkpoints per activity with options and effects
-  - artifact_design - Artifacts per activity with names and locations
-  - variable_design - Workflow variables with types and defaults
-  - technique_design - Techniques with capabilities and activity assignments
-  - rule_design - Workflow rules with enforcement classification
+outcome[1]:
+  - A complete workflow specification — purpose, activities, checkpoints, artifacts, variables, techniques, and rules — that the user has confirmed across every dimension, so drafting proceeds from settled requirements rather than open questions

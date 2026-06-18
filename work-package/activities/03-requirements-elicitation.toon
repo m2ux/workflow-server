@@ -1,91 +1,14 @@
 id: requirements-elicitation
-version: 2.7.1
+version: 2.9.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation.
-problem: User needs to clarify and capture requirements before implementation
-recognition[3]:
-  - elicit requirements
-  - clarify requirements
-  - gather requirements
 required: false
-estimatedTime: 15-30m
-techniques:
-  supporting[4]:
-    - elicit-requirements
-    - "manage-artifacts::write-artifact"
-    - reconcile-assumptions
-    - review-assumptions
-steps[6]:
-  - id: stakeholder-discussion
-    name: Stakeholder Discussion
-    description: "Prompt user to initiate discussion with key stakeholders. User provides transcript or summary as input for subsequent elicitation."
-    checkpoint: stakeholder-transcript
-  - id: elicit-requirements
-    name: Elicit requirements through conversation
-    description: "Iterate through question domains, asking one question at a time. Use stakeholder transcript as context."
-    checkpoint: domain-iteration
-  - id: collect-assumptions
-    name: Collect assumptions
-    description: "Identify assumptions made when interpreting user responses. Categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation."
-  - id: create-document
-    name: Create requirements document
-    description: "Create requirements document using elicitation output template"
-  - id: update-assumptions-log
-    name: Update assumptions log
-    description: "Add requirements-phase assumptions to the assumptions log"
-  - id: reconcile-assumptions
-    name: Reconcile assumptions
-    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions technique. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
-    checkpoint: elicitation-complete
-artifacts[1]:
-  - id: requirements-document
-    name: requirements-elicitation.md
-    location: planning
-loops[2]:
-  - id: assumption-reconciliation
-    name: Assumption Reconciliation Loop
-    type: while
-    condition:
-      type: simple
-      variable: has_resolvable_assumptions
-      operator: ==
-      value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
-    steps[1]:
-      - id: reconcile-iteration
-        name: Execute Reconciliation Iteration
-        description: "Execute one iteration of the reconcile-assumptions protocol: classify resolvability, perform targeted analysis, update logs, and reclassify for convergence."
-  - id: domain-iteration
-    name: Question Domain Iteration
-    type: forEach
-    variable: current_domain
-    over: question_domains
-    maxIterations: 5
-    steps[2]:
-      - id: ask-question
-        name: Ask domain question
-        description: "Present ONE question from current domain. Wait for response before proceeding."
-      - id: record-response
-        name: Record response
-        description: "Capture answer or mark as skipped. Adapt follow-up based on response."
-decisions[1]:
-  - id: user-intent
-    name: User Intent Check
-    description: "Evaluate user response during domain-iteration loop to determine next action. Branching is handled by the elicit-requirements technique protocol within the loop — the technique interprets the user's response and controls iteration flow (continue to next question, skip domain, or signal completion)."
-    branches[2]:
-      - id: continue
-        label: Continue elicitation (answered or skipped)
-        isDefault: true
-      - id: done
-        label: User signaled completion
-        condition:
-          type: simple
-          variable: elicitation_complete
-          operator: ==
-          value: true
-checkpoints[2]:
-  - id: stakeholder-transcript
-    name: Stakeholder Discussion Checkpoint
+steps[10]:
+  - kind: technique
+    id: stakeholder-discussion
+    technique: discuss
+  - kind: checkpoint
+    id: stakeholder-transcript
     message: "Before we begin elicitation, please discuss requirements with key stakeholders (product owner, domain experts, end users). Once complete, provide the discussion transcript or summary here."
     blocking: true
     options[2]:
@@ -101,8 +24,37 @@ checkpoints[2]:
         effect:
           setVariable:
             has_stakeholder_input: false
-  - id: elicitation-complete
-    name: Elicitation Complete Checkpoint
+  - kind: technique
+    id: elicit-requirements
+    technique: elicit
+  - kind: loop
+    id: domain-iteration
+    name: Question Domain Iteration
+    loopType: forEach
+    variable: current_domain
+    over: question_domains
+    maxIterations: 5
+    steps[1]:
+      - kind: technique
+        id: ask-question
+        technique: ask-question
+  - kind: technique
+    id: collect-assumptions
+    technique:
+      name: review-assumptions::collect
+      inputs:
+        assumption_categories: "Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation"
+  - kind: technique
+    id: create-document
+    technique: create-document
+  - kind: technique
+    id: update-assumptions-log
+    technique: review-assumptions::record
+  - kind: technique
+    id: reconcile-assumptions
+    technique: review-assumptions::reconcile
+  - kind: checkpoint
+    id: elicitation-complete
     message: "All question domains have been covered. Proceeding in 30s unless you want to revisit."
     blocking: false
     defaultOption: complete
@@ -126,6 +78,33 @@ checkpoints[2]:
         effect:
           setVariable:
             elicitation_complete: false
+  - kind: loop
+    id: assumption-reconciliation
+    name: Assumption Reconciliation Loop
+    loopType: while
+    condition:
+      type: simple
+      variable: has_resolvable_assumptions
+      operator: ==
+      value: true
+    steps[1]:
+      - kind: technique
+        id: reconcile-iteration
+        technique: review-assumptions::reconcile
+decisions[1]:
+  - id: user-intent
+    name: User Intent Check
+    branches[2]:
+      - id: continue
+        label: Continue elicitation (answered or skipped)
+        isDefault: true
+      - id: done
+        label: User signaled completion
+        condition:
+          type: simple
+          variable: elicitation_complete
+          operator: ==
+          value: true
 transitions[3]:
   - to: research
     condition:
@@ -158,17 +137,7 @@ transitions[3]:
       variable: elicitation_complete
       operator: ==
       value: false
-exitActions[1]{action,message}:
-  message,README PROGRESS: Update planning folder README.md — mark requirements elicitation artifacts as ✅ Complete.
 outcome[3]:
   - Requirements explicitly captured through structured conversation
   - Success criteria defined with verification methods
-  - Requirements document created in planning folder
-context_to_preserve[7]:
-  - stakeholder_transcript - Transcript or summary from stakeholder discussion
-  - has_stakeholder_input - Whether stakeholder discussion was provided
-  - requirements - Captured requirements list
-  - success_criteria - Defined success criteria
-  - planning_folder_path - Path to planning artifacts folder
-  - elicitation_log - Record of questions asked and responses
-  - scope_boundaries - In/out scope definitions
+  - A single agreed reference of requirements and scope boundaries that planning and review can build against

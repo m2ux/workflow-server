@@ -1,82 +1,14 @@
 id: strategic-review
-version: 1.0.0
+version: 1.2.0
 name: Strategic Review
 description: "Review the implementation to ensure changes are minimal and focused."
-problem: User needs to ensure changes are minimal and focused
-recognition[3]:
-  - strategic review
-  - review changes
-  - review implementation
 required: true
-estimatedTime: 15-30m
-artifacts[2]:
-  - id: strategic-review-doc
-    name: "strategic-review-{n}.md"
-    location: planning
-    description: "Documents review findings, identified artifacts, and cleanup actions. NN follows artifact numbering sequence, n increments on successive reviews."
-  - id: architecture-summary-doc
-    name: "architecture-summary.md"
-    location: planning
-    description: "High-level architecture summary for management stakeholders. Uses UML-style diagrams (system context, package, sequence) to visualize changes. See architecture-summary resource for template."
-techniques:
-steps[9]:
-  - id: diff-review
-    name: Review diff
-    description: "Examine all changes on the branch for scope and relevance"
-    technique: review-strategy
-  - id: resign-unsigned-commits
-    name: Re-sign unsigned commits
-    description: "Only when resign_unsigned_commits_requested is true. In target_path, rebase onto MERGE_BASE (same resolution as validate scan) and re-sign each commit: e.g. git rebase --exec 'git commit --amend --no-edit -S' MERGE_BASE (or equivalent interactive rebase) so every commit in MERGE_BASE..HEAD ends with a good GPG signature. Then git log --format='%h %G?' MERGE_BASE..HEAD to confirm no N/B remains. If push is required, use git push --force-with-lease. Set unsigned_commits_in_pr to false and resign_unsigned_commits_requested to false on success; document any failure in strategic-review-{n}.md."
-    technique: manage-git
-    condition:
-      type: simple
-      variable: resign_unsigned_commits_requested
-      operator: ==
-      value: true
-  - id: identify-artifacts
-    name: Identify artifacts
-    description: "Find investigation artifacts, over-engineering, orphaned infrastructure"
-    technique: review-strategy
-  - id: ensure-changes-folder-entry
-    name: Ensure changes/ fragment when required
-    description: "If a directory named changes exists at the repository root of target_path (Towncrier, release notes fragments, or similar), inspect existing fragment filenames and bodies. Determine whether this work package already has a matching fragment (same issue/ticket id in the name or clearly linked content). If not, add one new fragment under changes/ that matches the naming pattern and structure (sections, bullets, RST/Markdown style) of the existing files. Commit it on the feature branch if appropriate. If there is no changes/ directory, skip this step."
-    technique: review-strategy
-  - id: document-findings
-    name: Document findings
-    description: "Create strategic-review-{n}.md with items that should be removed or simplified"
-    technique: review-strategy
-  - id: document-cleanup-recommendations
-    name: Document Cleanup Recommendations
-    description: "Document recommended cleanup actions as review feedback. Do NOT apply changes."
-    technique: review-strategy
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "=="
-      value: true
-  - id: apply-cleanup
-    name: Apply cleanup
-    description: "If cleanup needed, remove identified artifacts and update review document with actions taken"
-    technique: review-strategy
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: create-architecture-summary
-    name: Create architecture summary
-    description: "Create architecture-summary.md using the architecture-summary resource template. Include system context diagram, package diagram (if module structure affected), and sequence diagrams for key flows."
-    technique: review-strategy
-  - id: analyze-strategic-findings
-    name: Analyze Strategic Findings
-    description: "Analyze the severity of strategic review findings. If significant scope issues, over-engineering, or investigation artifacts are found, recommend fix-findings. If findings are minor, recommend acceptable. Set recommended_strategic_option accordingly."
-    actions[1]:
-      - action: set
-        target: recommended_strategic_option
-        description: "Set to the recommended strategic review option based on findings analysis"
-checkpoints[2]:
-  - id: unsigned-commits-prompt
-    name: Unsigned or unverified commits
+steps[11]:
+  - kind: technique
+    id: review-scope
+    technique: review-scope
+  - kind: checkpoint
+    id: unsigned-commits-prompt
     message: "Preflight scan reports one or more commits without a valid GPG signature in this branch range: {unsigned_commit_list_summary}. Re-sign all unsigned commits now? This rewrites branch history and may require force-with-lease push."
     condition:
       type: simple
@@ -97,8 +29,44 @@ checkpoints[2]:
         effect:
           setVariable:
             resign_unsigned_commits_requested: false
-  - id: review-findings
-    name: Strategic Review Findings Checkpoint
+  - kind: technique
+    id: resign-unsigned-commits
+    technique: resign-commits
+    condition:
+      type: simple
+      variable: resign_unsigned_commits_requested
+      operator: ==
+      value: true
+  - kind: technique
+    id: ensure-changes-folder-entry
+    technique: verify-fragment
+  - kind: technique
+    id: document-findings
+    technique: document-findings
+  - kind: technique
+    id: document-cleanup-recommendations
+    technique: recommend-cleanup
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "=="
+      value: true
+  - kind: technique
+    id: apply-cleanup
+    technique: apply-cleanup
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: technique
+    id: create-architecture-summary
+    technique: summarize-architecture
+  - kind: technique
+    id: analyze-strategic-findings
+    technique: analyze-findings
+  - kind: checkpoint
+    id: review-findings
     message: "Strategic review complete. Based on findings analysis, the recommended action is {recommended_strategic_option}. Auto-advancing in 30s."
     blocking: false
     defaultOption: acceptable
@@ -125,6 +93,11 @@ checkpoints[2]:
       - id: more-review
         label: Need more review
         description: Additional areas need examination
+  - kind: action
+    id: announce-completion
+    actions[1]:
+      - action: log
+        message: "README PROGRESS: Update planning folder README.md — mark strategic review artifacts as ✅ Complete."
 transitions[2]:
   - to: submit
     condition:
@@ -134,19 +107,10 @@ transitions[2]:
       value: true
   - to: plan-prepare
     isDefault: true
-exitActions[1]:
-  - action: log
-    message: "README PROGRESS: Update planning folder README.md — mark strategic review artifacts as ✅ Complete."
 outcome[6]:
   - Changes validated as minimal and focused
   - Investigation artifacts and over-engineering removed
-  - Review findings documented in strategic-review-{n}.md
-  - Architecture summary created in architecture-summary.md for stakeholder communication
+  - The consumer has a categorized record of every scope and artifact finding — enough to decide whether the fix is acceptable to submit
+  - Stakeholders can understand how the fix changes the system at a glance, without reading implementation detail
   - Resign completed for any unsigned commits, or user decline documented
-  - Changelog fragment added when target repo uses root changes/ and none existed for this work
-context_to_preserve[5]:
-  - review_findings - Findings from strategic review
-  - review_passed - Whether review passed
-  - items_removed - List of items removed during cleanup
-  - unsigned_commits_in_pr - Whether any unsigned commits remained after strategic review
-  - resign_unsigned_commits_requested - Whether user requested resign at checkpoint
+  - The fix is captured in the target repo's changelog convention when it uses one

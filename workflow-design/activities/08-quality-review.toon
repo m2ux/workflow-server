@@ -1,149 +1,112 @@
 id: quality-review
-version: 1.1.1
+version: 1.3.0
 name: Quality Review
 description: "Quality review of drafted workflow content."
-problem: Drafted content may contain prose that should be formal constructs, diverge from conventions, or have critical rules without structural enforcement
-techniques:
-  supporting[1]:
-    - workflow-design
 required: true
-estimatedTime: 15-25m
 rules[3]:
   - "Each review pass is independent — complete one pass fully before starting the next"
   - "Flag every instance of prose that maps to a formal schema construct"
   - "Flag every rule that can be violated by ignoring it and lacks structural enforcement"
 steps[16]:
-  - id: load-all-workflow-files
-    name: Load All Workflow Files
-    description: "Full file inventory of the target workflow as the audit baseline (workflow.toon, activities, techniques, resources, READMEs)."
+  - kind: technique
+    id: load-all-workflow-files
+    technique: reload-workflow
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: principle-compliance-audit
-    name: Principle Compliance Audit
-    description: "Principle-compliance audit pass: target adherence to the 14 design principles in resource 00, classified per principle as Pass / Partial / Violation with file/field/line citations."
+  - kind: technique
+    id: principle-compliance-audit
+    technique: audit-principles
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: anti-pattern-scan
-    name: Anti-Pattern Scan
-    description: "Anti-pattern scan pass: target content matched against the AP catalog in resource 02 (40 entries across 7 categories)."
+  - kind: technique
+    id: anti-pattern-scan
+    technique: audit-anti-patterns
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: schema-validation-check
-    name: Schema Validation Check
-    description: "Schema validation pass: every TOON file checked against its JSON schema, with per-file pass/fail."
+  - kind: technique
+    id: schema-validation-check
+    technique: audit-schema-validation
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: tool-technique-doc-consistency
-    name: Tool-Technique-Doc Consistency Audit
-    description: "Consistency audit pass over the tool / technique / bootstrap-resource / doc boundary: tool-name accuracy, return-value fidelity, bootstrap completeness, cross-technique consistency, behavioural-guidance duplication, tool-surface overlap, doc parity (AP-30–35)."
+  - kind: technique
+    id: tool-technique-doc-consistency
+    technique: audit-consistency
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: compile-compliance-report
-    name: Compile Compliance Report
-    description: "Structured findings report assembled from every audit pass, following the report template in resource 04."
+  - kind: technique
+    id: compile-report
+    technique: compile-report
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: present-compliance-report
-    name: Present Compliance Report
-    description: "User-facing surface of the compliance report with severity-rated findings and recommended fixes."
+  - kind: action
+    id: offer-fixes
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: offer-fixes
-    name: Offer to Fix Issues
-    description: "Disposition gate for remediation — review-disposition checkpoint that transitions to update mode when fixes are wanted."
+    actions[0]:
+  - kind: checkpoint
+    id: review-disposition
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: expressiveness-review
-    name: Schema Expressiveness Review
-    description: "Schema-expressiveness audit pass over drafted content: prose passages cross-checked against the construct inventory in resource 01; substitutions for formal constructs flagged for rewriting."
+    message: "Compliance report complete. {review_findings_count} findings identified. Would you like to fix the issues?"
+    options[3]:
+      - id: fix-issues
+        label: "Fix identified issues"
+        description: Switch to update mode and apply recommended fixes
+        effect:
+          setVariable:
+            user_wants_fixes: true
+            is_update_mode: true
+            is_review_mode: false
+          transitionTo: intake-and-context
+      - id: report-only
+        label: "Report only — no changes"
+        description: Save the compliance report without making changes
+        effect:
+          setVariable:
+            user_wants_fixes: false
+      - id: selective-fixes
+        label: "Selective fixes"
+        description: Choose which findings to fix
+        effect:
+          setVariable:
+            user_wants_fixes: true
+            is_update_mode: true
+            is_review_mode: false
+          transitionTo: intake-and-context
+  - kind: technique
+    id: audit-expressiveness
+    technique: audit-expressiveness
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
-  - id: present-expressiveness-findings
-    name: Present Expressiveness Findings
-    description: "User-facing surface of the expressiveness-pass results: counts, affected files, replacement constructs, before/after per flagged instance."
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: conformance-review
-    name: Convention Conformance Review
-    description: "Convention-conformance audit pass over drafted content vs reference workflows (file naming, field ordering, version format, transition patterns, checkpoint structure, technique structure)."
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: present-conformance-findings
-    name: Present Conformance Findings
-    description: "User-facing surface of the conformance-pass results: conventions followed, conventions diverged, and the justification status for each divergence."
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: rule-hygiene-audit
-    name: Rule Hygiene Audit
-    description: "Rule-hygiene audit pass over rules[] across the workflow, activities, and techniques (AP-24–29 plus the worker-visibility carve-out on AP-27)."
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: present-rule-hygiene-findings
-    name: Present Rule Hygiene Findings
-    description: "User-facing surface of the rule-hygiene-pass results: restatements, contradictions, cross-level duplications, prefix patterns, and ambiguities with file + rule-key citations and recommended actions."
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: rule-to-structure-audit
-    name: Rule-to-Structure Audit
-    description: "Rule-to-structure audit pass over rules[] entries: text-only enforcement vs structural backing (checkpoint, condition, validate action, decision)."
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: present-enforcement-findings
-    name: Present Enforcement Findings
-    description: "User-facing surface of the rule-to-structure-pass results: text-only rules, structurally-enforced rules, and recommendations for adding enforcement where needed."
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-checkpoints[5]:
-  - id: expressiveness-confirmed
-    name: Expressiveness Review Checkpoint
+  - kind: checkpoint
+    id: expressiveness-confirmed
     condition:
       type: simple
       variable: is_review_mode
@@ -160,8 +123,16 @@ checkpoints[5]:
       - id: revise
         label: "Revise corrections"
         description: Change some of the corrections
-  - id: conformance-confirmed
-    name: Conformance Review Checkpoint
+  - kind: technique
+    id: audit-conformance
+    technique: audit-conformance
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: checkpoint
+    id: conformance-confirmed
     condition:
       type: simple
       variable: is_review_mode
@@ -181,8 +152,16 @@ checkpoints[5]:
       - id: accept-as-is
         label: "Accept as-is"
         description: The divergences are intentional (default — auto-accepts after 30s)
-  - id: rule-hygiene-confirmed
-    name: Rule Hygiene Checkpoint
+  - kind: technique
+    id: audit-rule-hygiene
+    technique: audit-rule-hygiene
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: checkpoint
+    id: rule-hygiene-confirmed
     condition:
       type: simple
       variable: is_review_mode
@@ -199,8 +178,16 @@ checkpoints[5]:
       - id: selective
         label: "Selective fixes"
         description: Choose which findings to address
-  - id: enforcement-confirmed
-    name: Rule Enforcement Checkpoint
+  - kind: technique
+    id: audit-rule-enforcement
+    technique: audit-rule-enforcement
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: checkpoint
+    id: enforcement-confirmed
     condition:
       type: simple
       variable: is_review_mode
@@ -217,49 +204,11 @@ checkpoints[5]:
       - id: accept-text-only
         label: "Accept text-only rules"
         description: These rules are acceptable as text-only guidance (default — auto-accepts after 30s)
-  - id: review-disposition
-    name: Review Disposition Checkpoint
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "=="
-      value: true
-    message: "Compliance report complete. {review_findings_count} findings identified. Would you like to fix the issues?"
-    options[3]:
-      - id: fix-issues
-        label: "Fix identified issues"
-        description: Switch to update mode and apply recommended fixes
-        effect:
-          setVariable:
-            user_wants_fixes: true
-            is_update_mode: true
-            is_review_mode: false
-          transitionTo: intake
-      - id: report-only
-        label: "Report only — no changes"
-        description: Save the compliance report without making changes
-        effect:
-          setVariable:
-            user_wants_fixes: false
-      - id: selective-fixes
-        label: "Selective fixes"
-        description: Choose which findings to fix
-        effect:
-          setVariable:
-            user_wants_fixes: true
-            is_update_mode: true
-            is_review_mode: false
-          transitionTo: intake
 transitions[1]:
   - to: validate-and-commit
     isDefault: true
 outcome[4]:
-  - All prose replaced with formal schema constructs where applicable
-  - Convention conformance verified against reference workflows
-  - Rule hygiene verified — no protocol restatements, contradictions, or cross-level duplications
-  - Critical rules backed by structural enforcement
-context_to_preserve[4]:
-  - expressiveness_corrections - List of prose-to-construct corrections applied
-  - conformance_divergences - List of convention divergences and their disposition
-  - rule_hygiene_findings - Protocol restatements removed, contradictions resolved, duplications deduplicated, prefix patterns grouped
-  - enforcement_additions - List of structural enforcement mechanisms added
+  - The workflow expresses its logic in schema constructs the engine can act on, not prose an agent must interpret — behavior is structural, not advisory
+  - The content reads and behaves like its sibling workflows, so users and agents carry one mental model across the whole library
+  - The rule set is lean and trustworthy — no restatements of protocol the engine already enforces, no contradictions, no duplicated guidance to drift out of sync
+  - Critical rules are enforced by structure rather than hope, so they hold even when an agent skips the prose

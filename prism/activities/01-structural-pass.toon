@@ -1,59 +1,37 @@
 id: structural-pass
-version: 2.1.0
+version: 2.3.0
 name: Structural Analysis Pass
 description: "Run the assigned structural analysis for each analysis unit."
-techniques:
-  supporting[1]:
-    - structural-analysis
-artifacts[6]:
-  - id: structural-analysis
-    name: "{unit_output_subdir}structural-analysis.md"
-    location: analysis
-    description: "L12 structural analysis per unit (single/full-prism modes)"
-  - id: portfolio-lens
-    name: "{unit_output_subdir}portfolio-{lens_name}.md"
-    location: analysis
-    description: "Per-lens portfolio analysis artifact (portfolio mode)"
-  - id: portfolio-synthesis
-    name: "{unit_output_subdir}portfolio-synthesis.md"
-    location: analysis
-    description: "Cross-lens synthesis artifact (portfolio mode)"
-  - id: behavioral-errors
-    name: "{unit_output_subdir}behavioral-errors.md"
-    location: analysis
-    description: "Error-resilience behavioral analysis (behavioral mode)"
-  - id: behavioral-costs
-    name: "{unit_output_subdir}behavioral-costs.md"
-    location: analysis
-    description: "Optimization behavioral analysis (behavioral mode)"
-  - id: behavioral-changes
-    name: "{unit_output_subdir}behavioral-changes.md"
-    location: analysis
-    description: "Evolution behavioral analysis (behavioral mode)"
-rules[3]:
-  - "MODE ROUTING: Steps load-lens through write-structural-artifact execute only for single and full-prism pipeline modes. Steps select-portfolio-lenses through write-portfolio-artifacts execute only for portfolio mode. Steps dispatch-behavioral-lenses and collect-behavioral-paths execute only for behavioral mode. Step report-unit-paths always executes."
-  - "LENS LOADING: Workers load the L12 structural lens from resource 00 via get_technique (resources attached). Portfolio lenses are loaded per the portfolio-analysis technique. Behavioral lenses are resources 19-22."
-  - "PARALLEL BEHAVIORAL: The 4 behavioral lenses are independent and can be dispatched in parallel (up to 4 concurrent sub-agents)."
-loops[1]:
-  - id: unit-cycle
+techniques[1]:
+  - "scatter-gather"
+steps[1]:
+  - kind: loop
+    id: unit-cycle
     name: Analysis Unit Cycle
-    type: forEach
+    loopType: forEach
     variable: current_unit
     over: analysis_units
     maxIterations: 100
-    steps[11]:
-      - id: resolve-unit-output
-        name: Resolve Unit Output Directory
-        description: "Set unit_output_dir from {output_path}/{current_unit.unit_output_subdir} if unit_output_subdir is present (multi-unit), otherwise {output_path}. Create the directory if needed."
-        required: true
-      - id: check-gitnexus
-        name: Check GitNexus Availability
-        description: "Check whether GitNexus has indexed the target codebase via gitnexus_list_repos. Set gitnexus_available for use by subsequent workers."
-        required: true
-      - id: load-lens
-        name: Load Structural Lens
-        description: "Load the L12 lens resource 00 (works for all target types)."
-        required: true
+    steps[7]:
+      - kind: action
+        id: resolve-unit-output
+        actions[1]:
+          - action: set
+            target: unit_output_dir
+            description: "{output_path}/{current_unit.unit_output_subdir} when a subdir is present, else {output_path}."
+      - kind: technique
+        id: check-gitnexus
+        technique: "gitnexus-operations::verify-index"
+        actions[1]:
+          - action: set
+            target: gitnexus_available
+            description: "Whether the target codebase is indexed."
+      - kind: technique
+        id: run-structural
+        technique:
+          name: structural-analysis
+          inputs:
+            target_content: "{current_unit.target}"
         condition:
           type: or
           conditions[2]:
@@ -65,85 +43,40 @@ loops[1]:
               variable: current_unit.pipeline_mode
               operator: "=="
               value: full-prism
-      - id: execute-lens
-        name: Execute Lens Operations
-        description: "Apply every operation in the lens prompt sequentially against current_unit.target. Execute completely — do not abbreviate."
-        required: true
-        condition:
-          type: or
-          conditions[2]:
-            - type: simple
-              variable: current_unit.pipeline_mode
-              operator: "=="
-              value: single
-            - type: simple
-              variable: current_unit.pipeline_mode
-              operator: "=="
-              value: full-prism
-      - id: write-structural-artifact
-        name: Write Structural Artifact
-        description: "Write the analysis to {unit_output_dir}/structural-analysis.md."
-        required: true
-        condition:
-          type: or
-          conditions[2]:
-            - type: simple
-              variable: current_unit.pipeline_mode
-              operator: "=="
-              value: single
-            - type: simple
-              variable: current_unit.pipeline_mode
-              operator: "=="
-              value: full-prism
-      - id: select-portfolio-lenses
-        name: Select Portfolio Lenses
-        description: "Use current_unit.lenses if provided. Otherwise default to claim + degradation (code) or pedagogy + rejected-paths (general). Load the portfolio-analysis supporting technique for the selection guide."
-        required: true
+      - kind: technique
+        id: run-portfolio
+        technique:
+          name: portfolio-analysis
+          inputs:
+            target_content: "{current_unit.target}"
         condition:
           type: simple
           variable: current_unit.pipeline_mode
           operator: "=="
           value: portfolio
-      - id: execute-portfolio
-        name: Execute Portfolio Lenses
-        description: "Apply each selected lens independently to current_unit.target. Keep outputs separate and labelled by lens name."
-        required: true
-        condition:
-          type: simple
-          variable: current_unit.pipeline_mode
-          operator: "=="
-          value: portfolio
-      - id: write-portfolio-artifacts
-        name: Write Portfolio Artifacts
-        description: "Write each lens output to {unit_output_dir}/portfolio-{lens_name}.md. Write cross-lens synthesis to {unit_output_dir}/portfolio-synthesis.md."
-        required: true
-        condition:
-          type: simple
-          variable: current_unit.pipeline_mode
-          operator: "=="
-          value: portfolio
-      - id: dispatch-behavioral-lenses
-        name: Dispatch Behavioral Lenses
-        description: "Dispatch 4 independent behavioral lenses against current_unit.target: error-resilience (19), optim (20), evolution (21), api-surface (22). All 4 are independent and can run in parallel (up to 4 concurrent)."
-        required: true
+      - kind: technique
+        id: dispatch-behavioral-lenses
+        technique:
+          name: behavioral-pipeline
+          inputs:
+            target_content: "{current_unit.target}"
         condition:
           type: simple
           variable: current_unit.pipeline_mode
           operator: "=="
           value: behavioral
-      - id: collect-behavioral-paths
-        name: Collect Behavioral Artifact Paths
-        description: "Capture all 4 behavioral artifact paths in behavioral_output_paths."
-        required: true
-        condition:
-          type: simple
-          variable: current_unit.pipeline_mode
-          operator: "=="
-          value: behavioral
-      - id: report-unit-paths
-        name: Report Unit Artifact Paths
-        description: "Append the artifact paths from this unit to all_artifact_paths."
-        required: true
+      - kind: action
+        id: collect-behavioral-paths
+        actions[1]:
+          - action: set
+            target: behavioral_output_paths
+            description: "Map of role label to behavioral artifact path."
+      - kind: action
+        id: report-unit-paths
+        actions[1]:
+          - action: set
+            target: all_artifact_paths
+            description: "Accumulated artifact paths across units."
 transitions[3]:
   - to: adversarial-pass
     condition:

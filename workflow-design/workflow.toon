@@ -12,65 +12,31 @@ tags[7]:
   - design-principles
   - elicitation
   - conventions
-rules[14]:
-  - "Never use prose where a formal schema construct exists — steps, checkpoints, decisions, loops, transitions, conditions, triggers, actions, artifacts, and variables must use their dedicated schema fields"
-  - "Never modify schemas during workflow creation — the schema is a fixed constraint; all content must conform as-is"
-  - "Present approach before implementation — show what will change, how, and in what order before modifying any file"
-  - "One question at a time — each elicitation question and each checkpoint is atomic; never combine multiple questions"
-  - "All TOON files must pass schema validation before commit — run validation on every produced file"
-  - "Content-reducing updates require explicit user approval — flag removed material and get confirmation"
-  - "Convention over invention — search for existing naming conventions before introducing new patterns"
-  - "Modular over inline — workflow.toon defines metadata and references; activities, techniques, and resources live in their own files"
-  - "Encode critical constraints as structure, not just text — back rules with checkpoints, conditions, and validate actions"
-  - "Format literacy before content — verify TOON syntax understanding by reading existing files before drafting"
-  - "Define complete scope before execution — enumerate all files to create, modify, or remove before starting"
-  - "Corrections must persist — record corrections and verify compliance at every subsequent checkpoint"
-  - "Non-destructive updates — compare new content against existing content and flag any material being removed"
-  - "Every workflow must include a README.md at the root and in each subfolder (activities/, techniques/, resources/) following the style established by the prism workflow."
+rules:
+  workflow[7]:
+    - "Present approach before implementation — show what will change, how, and in what order before modifying any file"
+    - "One question at a time — each elicitation question and each checkpoint is atomic; never combine multiple questions"
+    - "All TOON files must pass schema validation before commit — run validation on every produced file"
+    - "Content-reducing updates require explicit user approval — flag removed material and get confirmation"
+    - "Define complete scope before execution — enumerate all files to create, modify, or remove before starting"
+    - "Corrections must persist — record corrections and verify compliance at every subsequent checkpoint"
+    - "Non-destructive updates — compare new content against existing content and flag any material being removed"
+  activity[12]:
+    - "Never use prose where a formal schema construct exists — steps, checkpoints, decisions, loops, transitions, conditions, triggers, actions, artifacts, and variables must use their dedicated schema fields"
+    - "Never modify schemas during workflow creation — the schema is a fixed constraint; all content must conform as-is"
+    - "Convention over invention — search for existing naming conventions before introducing new patterns"
+    - "Modular over inline — workflow.toon defines metadata and references; activities, techniques, and resources live in their own files"
+    - "Encode critical constraints as structure, not just text — back rules with checkpoints, conditions, and validate actions"
+    - "Format literacy before content — verify TOON syntax understanding by reading existing files before drafting"
+    - "Every workflow must include a README.md at the root and in each subfolder (activities/, techniques/, resources/) following the style established by the prism workflow."
+    - "Ordered-procedure prose is forbidden in any `description` field (activity or step) — a step's procedure lives in its bound technique's `protocol[]`, reached via the structured `step.technique` — either a bare string (`group::operation` or a bare single-file id, no deviations) or an object `{ name, inputs, outputs }` whose `inputs` map carries input deviations and `outputs` map carries output remaps. A BOUND step has NO `description` at all (omit it entirely): the step's `name` is the one-line WHAT label, and the bound technique's `capability` / `protocol` / `rules` carry ALL of the step's semantics. There is NO `step.note` field: any agent-relevant action or constraint that might read as a step caveat is, by nature, technique content — encode it IN the bound technique (as a `## Rules` entry, a protocol step, or an input), never on the step. A caveat that adds no agent value is omitted. Caveat prose never lives in a step `description` or any note."
+    - "Every step must bind an operation via `step.technique`, EXCEPT a pure action/control step — one whose only effects are `set`/`log`/`emit`/`message` actions and/or a `when` gate and/or a `checkpoint`/`triggers` — which is exempt. A bound step names exactly ONE operation; compound multi-operation steps are split, one operation per step."
+    - "`techniques[]` is reserved for activity-wide STRATEGY/capability techniques (e.g. `variable-binding`, `scatter-gather`) — protocols that apply across the activity's steps. It MUST NOT list per-step operations; an operation a step invokes is bound at that step via `step.technique`."
+    - "Techniques are the universal capability primitive and the FIRST-CLASS extension mechanism. New strategic operations (scatter/gather, variable binding, retry/escalation, voting, dedup, …) are authored as techniques — preferentially universal ones in `meta` — in preference to schema or engine changes. The schema stays a minimal skeleton; capability grows in the technique library as a standard library of strategy primitives."
+    - "Technique input/output names, shapes, and structures are defined for the technique's INTRINSIC, GENERIC, REUSABLE semantics — never overfit to a specific caller's local variable name or a single usage instance. Resolve a step-vs-technique name mismatch by aligning the CALLER's state variable to the technique's canonical signature (or an explicit `step.technique.inputs` deviation), NOT by bending the technique to the call-site. Signatures MAY be renamed/reshaped to integrate with the binding system, but only toward a better GENERIC form."
 techniques:
-artifactLocations:
-  planning:
-    path: "{planning_folder_path}"
-    gitignored: false
-  workflows:
-    path: "workflows/"
-    gitignored: false
-modes[2]:
-  - id: update
-    name: Update Mode
-    description: "Modify an existing workflow following design principles."
-    activationVariable: is_update_mode
-    recognition[4]:
-      - update workflow
-      - modify workflow
-      - change workflow
-      - edit workflow
-    skipActivities[1]:
-      - pattern-analysis
-    defaults:
-      is_update_mode: true
-    resource: update-mode-guide
-  - id: review
-    name: Review Mode
-    description: "Audit an existing workflow against the design principles and produce a compliance report."
-    activationVariable: is_review_mode
-    recognition[6]:
-      - review workflow
-      - audit workflow
-      - check workflow compliance
-      - workflow review
-      - assess workflow quality
-      - evaluate workflow
-    skipActivities[5]:
-      - requirements-refinement
-      - pattern-analysis
-      - impact-analysis
-      - scope-and-structure
-      - content-drafting
-    defaults:
-      is_review_mode: true
-      review_scope_confirmed: false
-    resource: review-mode-guide
+  activity[1]:
+    - variable-binding
 variables[17]:
   - name: planning_folder_path
     type: string
@@ -135,4 +101,4 @@ variables[17]:
     type: boolean
     description: "True when content drafting detects removals not flagged during impact analysis. Gates the preservation-check checkpoint in content-drafting (update mode)."
     defaultValue: false
-initialActivity: intake
+initialActivity: intake-and-context

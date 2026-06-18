@@ -25,6 +25,10 @@ Directory scope to scan (a single crate for per-crate review, or full in-scope p
 
 false
 
+### output_format
+
+*(optional)* The table shape the pairing results are rendered in.
+
 ## Protocol
 
 ### 1. Find Storage Declarations

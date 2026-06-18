@@ -9,10 +9,10 @@ View an existing PR (read-only — safe via `gh` CLI).
 
 ## Inputs
 
-### identifier
+### pr_identifier
 
 PR number or URL
 
 ## Protocol
 
-1. `gh pr view {identifier}`.
+1. `gh pr view {pr_identifier}`.

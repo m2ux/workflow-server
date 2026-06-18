@@ -7,7 +7,7 @@ metadata:
 
 Determine whether the working directory is a regular repo or a submodule monorepo.
 
-## Output
+## Outputs
 
 ### is_monorepo
 

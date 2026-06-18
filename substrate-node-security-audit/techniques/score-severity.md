@@ -11,11 +11,23 @@ metadata:
 
 Compute finding severity using the Impact x Feasibility rubric with calibrated examples
 
+## Inputs
+
+### findings
+
+The finding set to score, each carrying its title, evidence, and affected code location.
+
+## Outputs
+
+### scored_findings
+
+The finding set annotated with per-finding Impact score, Feasibility score, computed severity level, and calibration crosscheck result.
+
 ## Protocol
 
 ### 1. Determine Impact
 
-- For each finding, determine the Impact score (1-4) with a one-sentence justification
+- For each finding in `{findings}`, determine the Impact score (1-4) with a one-sentence justification
 
 ### 2. Determine Feasibility
 
@@ -26,7 +38,7 @@ Compute finding severity using the Impact x Feasibility rubric with calibrated e
 
 ### 3. Map To Severity
 
-- Compute average and map to severity using the scale ([severity-rubric](../resources/severity-rubric.md)/08)
+- Compute the average and map it to a severity level using the [severity-rubric](../resources/severity-rubric.md) scale, recording the result on each finding in `{scored_findings}`
 
 ### 4. Compare Calibration
 
@@ -34,7 +46,7 @@ Compute finding severity using the Impact x Feasibility rubric with calibrated e
 
 ### 5. Apply Crosscheck
 
-- For each finding with Impact >= 3, apply the severity crosscheck procedure in [severity-calibration](../resources/severity-calibration.md)
+- For each finding in `{scored_findings}` with Impact >= 3, apply the severity crosscheck procedure in [severity-calibration](../resources/severity-calibration.md)
 
 ## Rules
 

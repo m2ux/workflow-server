@@ -13,7 +13,7 @@ Derive the canonical planning slug for a work package. The planning FOLDER itsel
 
 Kebab-case identifier for the work package, slugified from the issue title or work-package description (lowercase, alphanumerics and hyphens). The caller derives it; this operation does not.
 
-## Output
+## Outputs
 
 ### planning_slug
 

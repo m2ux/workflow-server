@@ -2,73 +2,32 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-Each activity section below includes its purpose, techniques, steps, checkpoints, transitions, and a mermaid diagram showing its internal flow.
+This is the per-activity orientation map: each entry gives the activity's purpose, the value it delivers, how it connects to the rest of the workflow, and a link to its authoritative definition. The structured definition of each activity — its steps, checkpoints, loops, decisions, transitions, and artifacts — lives in the corresponding `NN-<id>.toon` file and is served by `get_activity`; it is not duplicated here.
+
+For the activity-to-activity flow diagram, the feedback loops, and review-mode behaviour, see the [workflow README](../README.md). Each activity section below also includes a mermaid diagram showing its internal flow.
 
 ---
 
 ### 01. Start Work Package
 
-**Purpose:** Initialize the work package — detect monorepo vs standalone reference, refresh the reference (submodules + GitNexus), verify or create an issue, materialize a dedicated git worktree of the component at `~/projects/work/{component_name}/{wp-slug}/`, set up the feature branch + draft PR inside that worktree, and bind the server-resolved planning folder (created by the server under its workspace `.engineering` root, never inside the worktree). In review mode: captures PR reference, checks out the PR's branch in the worktree, extracts associated Jira ticket.
+Initializes the work package: detects monorepo vs standalone reference, refreshes the reference (submodules + GitNexus), verifies or creates a tracker issue, materializes a dedicated git worktree of the component at `~/projects/work/{component_name}/{wp-slug}/`, sets up the feature branch and draft PR inside that worktree, and binds the server-resolved planning folder. In review mode it instead captures the existing PR reference and checks out the PR's branch. Entry activity; leads to design-philosophy.
 
-**Techniques:**
-
-| Role | Technique ID |
-|------|----------|
-| primary | `create-issue` |
-| supporting | `manage-git` |
-| supporting | `manage-artifacts` |
-| supporting | `gitnexus-operations` |
-
-**Steps:**
-
-1. **resolve-reference** — Read the user-provided path; detect monorepo vs standalone. Set `reference_path` (monorepo root or standalone repo) and `component_name` (basename).
-2. **update-reference-submodules** — `git -C {reference_path} submodule update --init --recursive --remote` so the reference mirrors current upstream HEAD across every submodule. Skipped silently for standalone references.
-3. **analyze-reference-with-gitnexus** — `gitnexus-operations::analyze` against `reference_path` so downstream comprehension/impact queries see fresh content.
-4. **detect-project-type** — Auto-detect project type from `Cargo.toml` inside `reference_path/component_name`.
-5. **check-issue** — Verify whether an issue has been specified by user or in context. Detect platform from key format.
-6. **verify-jira-issue** — Load Jira issue via Atlassian MCP (conditional: `issue_platform == jira`).
-7. **verify-github-issue** — Verify GitHub issue via `gh issue view` (conditional: `issue_platform == github`).
-8. **search-github-issue / check-github-issue / create-github-issue-for-jira** — Pair Jira tickets with a GitHub issue in the target repo (find or create).
-9. **create-issue** — If needed, create issue in selected platform (GitHub or Jira) via platform-selection checkpoint.
-10. **activate-issue** — Transition issue to In Progress and assign to current user.
-11. **present-problem-overview** — Synthesize a plain-language problem overview for stakeholder reference.
-12. **derive-branch-name** — Compute feature branch name `type/issue-number-short-description` from the verified/created issue.
-13. **compute-canonical-target-path** — Compute `target_path = ~/projects/work/{component_name}/{wp-slug}/` where wp-slug matches the planning-folder slug.
-14. **create-component-worktree** — `manage-git::create-worktree` materializes the worktree at `target_path` and creates the feature branch in one step. Idempotent on the canonical path.
-15. **create-review-worktree** — Review-mode counterpart: worktree on the existing PR branch (no new branch).
-16. **check-branch / check-pr / create-pr** — Inside the worktree, ensure feature-branch state is correct and create (or reuse) the draft PR.
-17. **link-pr-to-ticket** — Record the PR reference on the issue via the platform's native PR linkage.
-18. **initialize-planning-folder** — Create planning folder at `.engineering/artifacts/planning/YYYY-MM-DD-{initiative-name}/`.
-19. **determine-next-activity** — Based on issue details, determine if requirements elicitation is needed.
-
-**Checkpoints (10):**
-
-| Checkpoint | Purpose | Blocking |
-|------------|---------|----------|
-| `review-mode-detection` | Confirm review mode (when detected from request) | yes |
-| `review-pr-reference` | Capture PR reference in review mode | yes |
-| `issue-verification` | Confirm issue exists or choose to create/skip | yes |
-| `pr-check` | Use existing PR or create new one | yes |
-| `platform-selection` | Choose GitHub or Jira for issue creation | yes |
-| `jira-project-selection` | Select Jira project (if Jira chosen) | yes |
-| `issue-type-selection` | Choose issue type: Feature, Bug, Task, Enhancement, Epic | yes |
-| `issue-review` | Confirm drafted issue before creation | no (autoAdvance 30s) |
-| `pr-creation` | Confirm branch and PR creation | no (autoAdvance 30s) |
-| `github-issue-missing` | Offer to create GitHub issue paired with Jira ticket | no (autoAdvance 30s) |
-
-**Transitions:** Default transition to `design-philosophy`.
+Definition: [`01-start-work-package.toon`](./01-start-work-package.toon)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> resolveRef["Resolve reference: monorepo or standalone"]
+    entryNode(["Entry"]) --> detectReview["Detect review mode"]
+    detectReview --> resolveRef["Resolve reference: monorepo or standalone"]
     resolveRef --> updateSubs["Update reference submodules to HEAD"]
     updateSubs --> analyze["GitNexus analyze (reference)"]
-    analyze --> detectProject["Detect project type"]
+    analyze --> verifySigning["Verify commit-signing pre-conditions"]
+    verifySigning --> detectMerge["Detect merge strategy"]
+    detectMerge --> detectProject["Detect project type"]
     detectProject --> checkIssue["Check for existing issue"]
     checkIssue --> cpIssue{"issue-verification checkpoint"}
     cpIssue -->|"provide existing"| platformSelect
     cpIssue -->|"create new"| platformSelect{"platform-selection checkpoint"}
-    cpIssue -->|"skip issue"| deriveBranch
+    cpIssue -->|"skip issue"| bindPlanning
 
     platformSelect -->|"GitHub"| createGitHub["Create GitHub issue"]
     platformSelect -->|"Jira"| selectJiraProject{"jira-project-selection checkpoint"}
@@ -77,601 +36,293 @@ graph TD
 
     createGitHub --> reviewIssue{"issue-review checkpoint"}
     createJira --> reviewIssue
-    reviewIssue --> deriveBranch["Derive feature branch name"]
+    reviewIssue --> assignIssue["Assign and transition issue"]
+    assignIssue --> bindPlanning["Bind planning folder path"]
 
+    bindPlanning --> initPlanning["Initialize planning folder README"]
+    initPlanning --> problemOverview["Present problem overview"]
+    problemOverview --> deriveBranch["Derive feature branch name"]
     deriveBranch --> computePath["Compute canonical target_path"]
     computePath --> createWorktree["Create component worktree (branch + worktree in one step)"]
-    createWorktree --> checkPR["Check for existing PR (inside worktree)"]
+    createWorktree --> checkBranch["Check current branch"]
+    checkBranch --> checkPR["Check for existing PR (inside worktree)"]
 
     checkPR --> cpPR{"pr-check checkpoint"}
-    cpPR -->|"use existing"| initPlanning
+    cpPR -->|"use existing"| linkPR
     cpPR -->|"create new"| createPR["Create draft PR"]
     createPR --> cpPRCreation{"pr-creation checkpoint"}
-    cpPRCreation --> initPlanning["Initialize planning folder"]
+    cpPRCreation --> linkPR["Link PR to issue"]
 
-    initPlanning --> exitNode(["design-philosophy"])
+    linkPR --> exitNode(["design-philosophy"])
 ```
 
 ---
 
 ### 02. Design Philosophy
 
-**Purpose:** Apply structured design framework to classify the problem, determine complexity, and decide which optional activities are needed. Sets the `complexity` variable (simple / moderate / complex) which drives ADR creation in the Complete activity. In review mode: assesses ticket completeness using the Jira Issue Creation Guide checklist.
+Applies a structured design framework to classify the problem (type and complexity), reconcile early assumptions, and decide which optional discovery activities are needed. The complexity it sets drives ADR creation later in Complete. In review mode it also assesses ticket completeness. Always transitions to codebase-comprehension, which then routes onward.
 
-**Techniques:**
-
-| Role | Technique ID |
-|------|----------|
-| primary | `classify-problem` |
-| supporting | `review-assumptions` |
-| supporting | `reconcile-assumptions` |
-
-**Steps:**
-
-1. **define-problem** — Create clear problem statement with system understanding, impact assessment, success criteria, and constraints.
-2. **classify-problem** — Determine if this is a specific problem (cause known/unknown) or an inventive goal (improvement/prevention). Assess complexity.
-3. **determine-path** — Based on problem complexity and clarity, determine which optional activities are needed.
-4. **document-philosophy** — Create `design-philosophy.md` with problem statement, classification, complexity assessment, workflow path rationale, and constraints.
-5. **collect-assumptions** — Identify assumptions made during problem classification and path selection.
-6. **create-assumptions-log** — Create the assumptions log with initial assumptions from this activity.
-
-**Checkpoints (2):**
-
-| Checkpoint | Purpose | Blocking |
-|------------|---------|----------|
-| `classification-confirmed` | Confirm problem type and complexity assessment | no (autoAdvance 30s) |
-| `workflow-path-selected` | Select workflow path: full, elicit-only, research-only, or skip | no (autoAdvance 30s) |
-
-**Transitions:**
-
-| Condition | Target |
-|-----------|--------|
-| default | codebase-comprehension |
-
-Design philosophy always transitions to codebase-comprehension (`required: false` on that activity in the workflow definition). Subsequent routing (to elicitation, research, or plan-prepare) is handled by codebase-comprehension's own transitions.
-
-**Artifacts:** `design-philosophy.md`, `assumptions-log.md` (both in planning folder).
+Definition: [`02-design-philosophy.toon`](./02-design-philosophy.toon)
 
 ```mermaid
 graph TD
     entryNode(["Entry"]) --> defineProblem["Define problem statement"]
-    defineProblem --> classifyProblem["Classify problem type"]
-    classifyProblem --> assessComplexity["Assess complexity"]
-    assessComplexity --> cpClassified{"problem-classified checkpoint"}
+    defineProblem --> classifyProblem["Classify problem type and complexity"]
+    classifyProblem --> cpClassified{"classification-confirmed checkpoint"}
     cpClassified -->|"confirmed"| determinePath["Determine workflow path"]
     cpClassified -->|"revise"| classifyProblem
 
-    determinePath --> cpPath{"workflow-path checkpoint"}
-    cpPath -->|"full workflow"| docPhilosophy
-    cpPath -->|"elicit-only"| docPhilosophy
-    cpPath -->|"research-only"| docPhilosophy
-    cpPath -->|"skip optional"| docPhilosophy
-
-    docPhilosophy["Document design philosophy"] --> cpDoc{"design-philosophy-doc checkpoint"}
-    cpDoc -->|"confirmed"| collectAssumptions["Collect assumptions"]
-    cpDoc -->|"revise"| docPhilosophy
-
+    determinePath --> cpPath{"workflow-path-selected checkpoint"}
+    cpPath --> docPhilosophy["Document design philosophy"]
+    docPhilosophy --> collectAssumptions["Collect assumptions"]
     collectAssumptions --> createLog["Create assumptions log"]
-    createLog --> cpAssumptions{"assumptions-review checkpoint"}
-    cpAssumptions -->|"confirmed"| exitComprehension(["codebase-comprehension"])
-    cpAssumptions -->|"corrections"| collectAssumptions
+    createLog --> reconcile["Reconcile assumptions"]
+    reconcile --> reviewMode{"Review mode?"}
+    reviewMode -->|"yes"| ticketCompleteness{"ticket-completeness checkpoint"}
+    reviewMode -->|"no"| exitComprehension(["codebase-comprehension"])
+    ticketCompleteness --> exitComprehension
 ```
 
 ---
 
-### Codebase Comprehension
+### Codebase Comprehension (optional)
 
-**Purpose:** Build or augment a mental model of the codebase sufficient to qualify design assumptions presented in later activities. Produces persistent knowledge artifacts in `.engineering/artifacts/comprehension/` that grow across successive tasks, forming a reusable knowledge base. Always runs after design-philosophy.
+Builds or augments a durable mental model of the codebase sufficient to qualify the design assumptions raised in later activities. Produces persistent knowledge artifacts under `.engineering/artifacts/comprehension/` that grow across successive work packages. Runs after design-philosophy and routes to elicitation, research, analysis, or plan-prepare depending on the chosen path.
 
-**Techniques:**
-
-| Role | Technique ID |
-|------|----------|
-| primary | `build-comprehension` |
-| supporting | `manage-artifacts` |
-
-**Steps:**
-
-1. **check-existing-artifacts** — Search `.engineering/artifacts/comprehension/` for existing artifacts related to this codebase area.
-2. **recommend-existing** — Present relevant existing comprehension artifacts to the user. Summarize coverage and suggest reviewing them.
-3. **architecture-survey** — Top-down survey: project structure, key modules, dependency graph, entry points, design patterns. Uses hypothesis-driven approach.
-4. **key-abstractions** — Identify core types, traits, interfaces, data structures, error handling, and state management. Document domain meaning.
-5. **design-rationale** — Infer likely rationale for significant design choices. Document as hypotheses for user validation.
-6. **domain-concept-mapping** — Map technical constructs to domain concepts. Create glossary of domain-specific terminology.
-7. **create-comprehension-artifact** — Write/augment artifact to `.engineering/artifacts/comprehension/{codebase-area}.md`.
-8. **deep-dive-loop** — Interactive loop: present areas for deeper exploration, perform targeted analysis, append to artifact.
-
-**Checkpoints (1):**
-
-| Checkpoint | Purpose | Blocking |
-|------------|---------|----------|
-| `comprehension-sufficient` | Confirm understanding is sufficient or select area for deeper exploration (conditional: has_open_questions) | no (autoAdvance 30s) |
-
-**Loops:** `deep-dive-iteration` — while `needs_comprehension == true`. Each iteration explores a selected area, performs targeted analysis, and updates the artifact.
-
-**Transitions:**
-
-| Condition | Target |
-|-----------|--------|
-| `needs_elicitation == true` | requirements-elicitation |
-| `needs_elicitation == false AND needs_research == true` | research |
-| `skip_optional_activities == true` (default) | plan-prepare |
-
-**Artifacts:** `{codebase-area}.md` (in comprehension folder — persistent, not gitignored).
+Definition: [`14-codebase-comprehension.toon`](./14-codebase-comprehension.toon)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> checkExisting["Check existing comprehension artifacts"]
-    checkExisting --> hasExisting{"Related artifacts found?"}
-    hasExisting -->|"yes"| cpExisting{"existing-artifacts-review checkpoint"}
-    hasExisting -->|"no"| archSurvey
-
-    cpExisting -->|"review existing"| reviewArtifacts["Review existing artifacts"]
-    cpExisting -->|"proceed fresh"| archSurvey
-    reviewArtifacts --> archSurvey
-
-    archSurvey["Architecture survey"] --> keyAbstractions["Key abstractions & data model"]
-    keyAbstractions --> designRationale["Design rationale mapping"]
-    designRationale --> domainMapping["Domain concept mapping"]
-    domainMapping --> createArtifact["Create/augment comprehension artifact"]
+    entryNode(["Entry"]) --> buildComprehension["Build comprehension (existing artifacts, architecture survey, key abstractions, design rationale, domain mapping)"]
+    buildComprehension --> createArtifact["Create/augment comprehension artifact"]
 
     createArtifact --> initialDeepDive["Initial deep-dive (mandatory)"]
-    initialDeepDive --> reviseQuestions["Revise open questions"]
+    initialDeepDive --> initialLens["Apply portfolio lenses"]
+    initialLens --> updateInitial["Update artifact with initial findings"]
+    updateInitial --> reviseQuestions["Revise open questions"]
     reviseQuestions --> hasOpen{"Open questions remain?"}
     hasOpen -->|"no"| pathBranch
     hasOpen -->|"yes"| cpSufficient{"comprehension-sufficient checkpoint"}
     cpSufficient -->|"sufficient"| pathBranch{"Selected path?"}
-    cpSufficient -->|"dive deeper"| deepDive["Deep-dive: select area"]
-    cpSufficient -->|"different area"| deepDive
+    cpSufficient -->|"dive deeper / different area"| selectArea["Select deep-dive area"]
 
-    deepDive --> targetedAnalysis["Targeted analysis"]
-    targetedAnalysis --> updateArtifact["Update comprehension artifact"]
-    updateArtifact --> cpSufficient
+    selectArea --> targetedAnalysis["Targeted analysis"]
+    targetedAnalysis --> lensPass["Apply portfolio lenses"]
+    lensPass --> updateArtifact["Update comprehension artifact"]
+    updateArtifact --> reviseOpen["Revise open questions"]
+    reviseOpen --> cpSufficient
 
     pathBranch -->|"needs elicitation"| exitElicit(["requirements-elicitation"])
     pathBranch -->|"needs research"| exitResearch(["research"])
-    pathBranch -->|"direct"| exitPlan(["plan-prepare"])
+    pathBranch -->|"skip optional"| exitPlan(["plan-prepare"])
+    pathBranch -->|"default"| exitAnalysis(["implementation-analysis"])
 ```
 
 ---
 
 ### 03. Requirements Elicitation (optional)
 
-**Purpose:** Discover and clarify what the work package should accomplish through structured sequential conversation. Elicitation discovers what the user needs before planning how to implement it. Includes a stakeholder discussion phase and sequential question-domain iteration.
+Discovers and clarifies what the work package should accomplish through a structured stakeholder conversation, so that planning starts from agreed requirements rather than guesses. Skipped in review mode (requirements come from the ticket). Leads to research or directly to implementation-analysis.
 
-**Techniques:**
-
-| Role | Technique ID |
-|------|----------|
-| primary | `elicit-requirements` |
-| supporting | `manage-artifacts` |
-| supporting | `review-assumptions` |
-| supporting | `reconcile-assumptions` |
-
-**Steps:**
-
-1. **stakeholder-discussion** — Prompt user to initiate discussion with key stakeholders. User provides transcript or summary.
-2. **elicit-requirements** — Iterate through question domains, asking one question at a time. Use stakeholder transcript as context.
-3. **collect-assumptions** — Identify assumptions made when interpreting user responses.
-4. **create-document** — Create requirements document using elicitation output template.
-5. **update-assumptions-log** — Add requirements-phase assumptions to the assumptions log.
-6. **reconcile-assumptions** — Classify and iteratively resolve code-analyzable assumptions through targeted codebase analysis.
-
-**Checkpoints (2):**
-
-| Checkpoint | Purpose | Blocking |
-|------------|---------|----------|
-| `stakeholder-transcript` | Provide or skip stakeholder discussion transcript | yes |
-| `elicitation-complete` | Confirm elicitation is complete | no (autoAdvance 30s) |
-
-**Loops:**
-- `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each cycle analyzes code-resolvable assumptions, updates the log, and reclassifies.
-- `domain-iteration` — forEach over `question_domains` (max 5 iterations). Each iteration asks one question and records the response.
-
-**Transitions:**
-
-| Condition | Target |
-|-----------|--------|
-| `elicitation_complete == true` (default) | research |
-| `elicitation_complete == false` | requirements-elicitation (self-loop) |
-
-**Artifacts:** `requirements-elicitation.md` (in planning folder).
+Definition: [`03-requirements-elicitation.toon`](./03-requirements-elicitation.toon)
 
 ```mermaid
 graph TD
     entryNode(["Entry"]) --> cpStakeholder{"stakeholder-transcript checkpoint"}
-    cpStakeholder -->|"provide transcript"| startElicit["Begin elicitation"]
-    cpStakeholder -->|"skip discussion"| startElicit
+    cpStakeholder -->|"provide transcript"| elicit["Elicit requirements"]
+    cpStakeholder -->|"skip discussion"| elicit
 
-    startElicit --> askQuestion["Ask domain question"]
+    elicit --> askQuestion["Ask domain question"]
     askQuestion --> recordResponse["Record response"]
-    recordResponse --> cpDomain{"domain-complete checkpoint"}
-    cpDomain -->|"next domain"| askQuestion
-    cpDomain -->|"revisit"| askQuestion
-    cpDomain -->|"finish early"| collectAssumptions
+    recordResponse --> userIntent{"user-intent decision"}
+    userIntent -->|"continue"| askQuestion
+    userIntent -->|"done"| collectAssumptions["Collect assumptions"]
 
-    collectAssumptions["Collect assumptions"] --> createDoc["Create requirements document"]
+    collectAssumptions --> createDoc["Create requirements document"]
     createDoc --> updateLog["Update assumptions log"]
-    updateLog --> cpDocReview{"document-review checkpoint"}
-    cpDocReview -->|"proceed"| exitNode(["research"])
-    cpDocReview -->|"revise"| createDoc
+    updateLog --> reconcile["Reconcile assumptions"]
+    reconcile --> cpComplete{"elicitation-complete checkpoint"}
+    cpComplete -->|"complete + research"| exitResearch(["research"])
+    cpComplete -->|"complete, no research"| exitAnalysis(["implementation-analysis"])
+    cpComplete -->|"revisit / add"| askQuestion
 ```
 
 ---
 
 ### 04. Research (optional)
 
-**Purpose:** Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+Gathers best practices, patterns, and reference material from the knowledge base and external sources to inform the plan, and reconciles or interviews any open assumptions surfaced along the way. Leads to implementation-analysis.
 
-**Techniques:**
-
-| Role | Technique ID |
-|------|----------|
-| primary | `research-knowledge-base` |
-| supporting | `dco-provenance` |
-| supporting | `knowledge-base-search` |
-| supporting | `manage-artifacts` |
-| supporting | `reconcile-assumptions` |
-| supporting | `review-assumptions` |
-
-**Steps:**
-
-1. **kb-research** — Call `get_guidance` before making concept-rag MCP tool calls. Search for relevant patterns and practices.
-2. **web-research** — Search web for current information, documentation, and best practices.
-3. **synthesize** — Connect findings to requirements: which patterns apply, what modifications needed, risks, success metrics.
-4. **collect-assumptions** — Identify assumptions made during research synthesis.
-5. **document** — Create knowledge base research document.
-6. **update-assumptions-log** — Add research-phase assumptions to the assumptions log.
-7. **reconcile-assumptions** — Classify and iteratively resolve code-analyzable assumptions through targeted codebase analysis.
-8. **present-resolved-assumptions** — Display code-resolved assumptions to the user (non-interactive) before the interview loop.
-9. **declare-context-scope** — Classify the provenance scope of research sources (`repo-only` | `web-retrieval` | `mixed`) via the `context-scope-declaration` checkpoint. Sets `context_scope` for the provenance log and PR description.
-10. **interview-open-assumptions** — Present each open assumption via `research-assumption-interview`; user resolves inline or defers.
-
-**Loops:** `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each cycle analyzes code-resolvable assumptions, updates the log, and reclassifies.
-
-**Checkpoints (4):**
-
-| Checkpoint | Purpose | Blocking |
-|------------|---------|----------|
-| `research-findings` | Confirm research findings | no (autoAdvance 30s) |
-| `research-focus` | Specify additional research focus (conditional: `needs_further_research`) | yes |
-| `research-assumption-interview` | Resolve or defer open assumptions (conditional: `has_open_assumptions`) | yes |
-| `context-scope-declaration` | Classify provenance scope of research sources | no (autoAdvance 15s) |
-
-**Transitions:** Default to `implementation-analysis`.
-
-**Artifacts:** `kb-research.md` (in planning folder).
+Definition: [`04-research.toon`](./04-research.toon)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> kbResearch["Knowledge base research"]
-    kbResearch --> cpKB{"kb-insights checkpoint"}
-    cpKB -->|"confirmed"| webResearch["Web research"]
-    cpKB -->|"more research"| kbResearch
-    cpKB -->|"different focus"| kbResearch
+    entryNode(["Entry"]) --> kbResearch["Knowledge base and web research"]
+    kbResearch --> synthesize["Synthesize findings"]
+    synthesize --> cpFindings{"research-findings checkpoint"}
+    cpFindings -->|"sufficient"| collectAssumptions["Collect assumptions"]
+    cpFindings -->|"further research"| cpFocus{"research-focus checkpoint"}
+    cpFocus --> collectAssumptions
 
-    webResearch --> cpWeb{"web-research-confirmed checkpoint"}
-    cpWeb -->|"confirmed"| synthesize["Synthesize findings"]
-    cpWeb -->|"more research"| webResearch
-
-    synthesize --> collectAssumptions["Collect assumptions"]
-    collectAssumptions --> cpAssumptions{"assumptions-review checkpoint"}
-    cpAssumptions -->|"confirmed"| createDoc["Create research document"]
-    cpAssumptions -->|"corrections"| collectAssumptions
-
+    collectAssumptions --> createDoc["Create research document"]
     createDoc --> updateLog["Update assumptions log"]
-    updateLog --> cpComplete{"research-complete checkpoint"}
-    cpComplete -->|"proceed"| exitNode(["implementation-analysis"])
-    cpComplete -->|"revisit"| kbResearch
+    updateLog --> reconcile["Reconcile assumptions"]
+    reconcile --> presentResolved["Present resolved assumptions"]
+    presentResolved --> cpScope{"context-scope-declaration checkpoint"}
+    cpScope --> interviewLoop{"Next open assumption?"}
+    interviewLoop -->|"yes"| cpInterview{"research-assumption-interview checkpoint"}
+    cpInterview --> interviewLoop
+    interviewLoop -->|"all done"| exitNode(["implementation-analysis"])
 ```
 
 ---
 
-### 05. Implementation Analysis
+### 05. Implementation Analysis (optional)
 
-**Purpose:** Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement. In review mode: checks out the base branch to analyze the pre-change state, documents expected changes, then returns to the PR branch.
+Analyzes the current implementation to understand effectiveness, establish baselines, and identify improvement opportunities — giving planning a grounded starting point. In review mode it analyzes the pre-change baseline from the base branch and documents the expected changes. Leads to plan-prepare.
 
-**Techniques:**
-
-| Role | Technique ID |
-|------|----------|
-| primary | `analyze-implementation` |
-| supporting | `manage-artifacts` |
-| supporting | `review-assumptions` |
-| supporting | `reconcile-assumptions` |
-
-**Steps:**
-
-1. **review-implementation** — Understand where and how the feature/component is used: location, usage, dependencies, architecture. When the codebase has a GitNexus index, use `gitnexus_query` for execution-flow discovery, `gitnexus_context` for usage/dependency mapping, and the `clusters` / `processes` resources for architectural surface. Falls back to grep/Read when not indexed. See work-package resource gitnexus-reference.
-2. **evaluate-effectiveness** — Gather evidence of existing performance: logs, metrics, tests, issues, comments.
-3. **establish-baselines** — Establish quantitative measurements: performance, quality, usage, reliability.
-4. **collect-assumptions** — Identify assumptions made during analysis.
-5. **document** — Create implementation analysis document.
-6. **update-assumptions-log** — Add analysis-phase assumptions to the assumptions log.
-7. **reconcile-assumptions** — Classify and iteratively resolve code-analyzable assumptions through targeted codebase analysis.
-
-**Loops:** `assumption-reconciliation` — while `has_resolvable_assumptions == true`. Each cycle analyzes code-resolvable assumptions, updates the log, and reclassifies.
-
-**Checkpoints (2):**
-
-| Checkpoint | Purpose | Blocking |
-|------------|---------|----------|
-| `analysis-confirmed` | Confirm analysis findings are correct | no (autoAdvance 30s) |
-| `analysis-assumption-interview` | Resolve or defer open assumptions (conditional: `has_open_assumptions`) | yes |
-
-**Transitions:** Default to `plan-prepare`.
-
-**Artifacts:** `implementation-analysis.md` (in planning folder).
+Definition: [`05-implementation-analysis.toon`](./05-implementation-analysis.toon)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> reviewImpl["Review implementation"]
-    reviewImpl --> evalEffectiveness["Evaluate effectiveness"]
-    evalEffectiveness --> establishBaselines["Establish baseline metrics"]
-    establishBaselines --> cpAnalysis{"analysis-confirmed checkpoint"}
-    cpAnalysis -->|"confirmed"| collectAssumptions["Collect assumptions"]
-    cpAnalysis -->|"clarify"| reviewImpl
-    cpAnalysis -->|"more analysis"| reviewImpl
+    entryNode(["Entry"]) --> reviewMode{"Review mode?"}
+    reviewMode -->|"yes"| reviewBaseline["Review baseline state (checkout base, document expected changes, return to PR branch)"]
+    reviewBaseline --> reviewImpl
+    reviewMode -->|"no"| reviewImpl["Analyze implementation (review, evaluate effectiveness, establish baselines)"]
 
+    reviewImpl --> collectAssumptions["Collect assumptions"]
     collectAssumptions --> createDoc["Create analysis document"]
-    createDoc --> updateLog["Update assumptions log"]
-    updateLog --> cpAssumptions{"assumptions-review checkpoint"}
-    cpAssumptions -->|"confirmed"| exitNode(["plan-prepare"])
-    cpAssumptions -->|"corrections"| collectAssumptions
+    createDoc --> cpAnalysis{"analysis-confirmed checkpoint"}
+    cpAnalysis -->|"confirmed"| updateLog["Update assumptions log"]
+    cpAnalysis -->|"clarify / more analysis"| reviewImpl
+
+    updateLog --> reconcile["Reconcile assumptions"]
+    reconcile --> presentResolved["Present resolved assumptions"]
+    presentResolved --> interviewLoop{"Next open assumption?"}
+    interviewLoop -->|"yes"| cpInterview{"analysis-assumption-interview checkpoint"}
+    cpInterview --> interviewLoop
+    interviewLoop -->|"all done"| exitNode(["plan-prepare"])
 ```
 
 ---
 
 ### 06. Plan & Prepare
 
-**Purpose:** Design the approach, create the work package plan (task breakdown), create the test plan, and prepare for implementation. This is the convergence point for all optional paths.
+Designs the approach and produces the work-package plan (task breakdown) and test plan, then prepares the branch and PR for implementation. This is the convergence point for all optional discovery paths, and the target that rework loops return to. Leads to assumptions-review.
 
-**Techniques:**
-
-| Role | Technique ID |
-|------|----------|
-| primary | `create-plan` |
-| supporting | `classify-problem` |
-| supporting | `review-assumptions` |
-| supporting | `create-test-plan` |
-
-**Steps:**
-
-1. **apply-design** — Use design framework technique to structure the approach.
-2. **create-plan** — Create work package plan document with task breakdown.
-3. **create-test-plan** — Create test plan document.
-4. **collect-assumptions** — Identify assumptions made during planning.
-5. **update-assumptions-log** — Add planning-phase assumptions to the assumptions log.
-6. **create-todos** — Break down plan into actionable tasks and add to assumptions log for review.
-7. **sync-branch** — Ensure feature branch is up to date with `main`.
-8. **update-pr** — Update PR with planning information.
-
-**Checkpoints (1):**
-
-| Checkpoint | Purpose | Blocking |
-|------------|---------|----------|
-| `approach-confirmed` | Confirm implementation approach | no (autoAdvance 30s) |
-
-**Transitions:** Default to `assumptions-review`.
-
-**Artifacts:** `work-package-plan.md`, `test-plan.md` (both in planning folder).
+Definition: [`06-plan-prepare.toon`](./06-plan-prepare.toon)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> applyDesign["Apply design framework"]
-    applyDesign --> createPlan["Create work package plan"]
-    createPlan --> cpApproach{"approach-confirmed checkpoint"}
-    cpApproach -->|"confirmed"| createTestPlan["Create test plan"]
-    cpApproach -->|"revise"| applyDesign
-
-    createTestPlan --> collectAssumptions["Collect assumptions"]
+    entryNode(["Entry"]) --> envPrereqs["Verify environment prerequisites"]
+    envPrereqs --> createPlan["Create work package plan"]
+    createPlan --> createTestPlan["Create test plan"]
+    createTestPlan --> solutionOverview["Present solution overview"]
+    solutionOverview --> collectAssumptions["Collect assumptions"]
     collectAssumptions --> updateLog["Update assumptions log"]
-    updateLog --> createTodos["Create TODO list from plan"]
+    updateLog --> reconcile["Reconcile assumptions"]
+    reconcile --> createTodos["Create TODO list from plan"]
     createTodos --> syncBranch["Sync branch with main"]
-
-    syncBranch --> updatePR["Update PR description"]
-    updatePR --> exitNode(["assumptions-review"])
+    syncBranch --> updatePR["Update PR description (render initial)"]
+    updatePR --> cpApproach{"approach-confirmed checkpoint"}
+    cpApproach -->|"confirmed"| exitNode(["assumptions-review"])
+    cpApproach -->|"revise"| createPlan
 ```
 
 ---
 
 ### 07. Assumptions Review
 
-**Purpose:** Post accumulated assumptions from all prior phases (design, requirements, research, analysis, planning) to the issue tracker for stakeholder review. Supports both Jira and GitHub platforms. Awaits stakeholder feedback and iterates if further discussion is needed.
+Reviews each open assumption with the user and posts deferred assumptions to the issue tracker for stakeholder attention, ensuring the plan rests on confirmed ground before code is written. May loop back for further discussion, deeper comprehension, or plan revision; otherwise leads to implement.
 
-**Techniques:**
-
-| Role | Technique ID |
-|------|----------|
-| primary | `review-assumptions` |
-| supporting | `manage-artifacts` |
-
-**Steps:**
-
-1. **prepare-assumptions-summary** — Compile all accumulated assumptions from prior phases into an issue comment.
-2. **post-assumptions-comment** — Post comment to issue tracker (conditional on `issue_platform` being set).
-3. **await-stakeholder-response** — Wait for stakeholder feedback on posted comment.
-4. **update-assumptions-log** — Update assumptions log with stakeholder review outcomes.
-
-**Checkpoints (2):**
-
-| Checkpoint | Purpose | Blocking |
-|------------|---------|----------|
-| `assumption-decision` | Accept, reject, or defer each assumption in the interview loop | yes |
-| `post-summary-review` | Confirm posting deferred-assumption summary to issue tracker (conditional: `issue_platform` set and `has_deferred_assumptions`) | no (autoAdvance 30s) |
-
-**Transitions:**
-
-| Condition | Target |
-|-----------|--------|
-| `needs_comprehension == true` | codebase-comprehension |
-| `needs_plan_revision == true` | plan-prepare |
-| `needs_further_discussion == true` | assumptions-review (self-loop) |
-| default | implement |
-
-**Artifacts:** `assumptions-log.md` (update, in planning folder).
+Definition: [`07-assumptions-review.toon`](./07-assumptions-review.toon)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> prepSummary["Prepare assumptions summary"]
-    prepSummary --> checkPlatform{"issue_platform set?"}
-    checkPlatform -->|"jira or github"| cpComment{"comment-review checkpoint"}
-    checkPlatform -->|"no platform"| updateLog["Update assumptions log"]
+    entryNode(["Entry"]) --> evalOpen["Evaluate open assumptions"]
+    evalOpen --> interviewLoop{"Next open assumption?"}
+    interviewLoop -->|"yes"| cpDecision{"assumption-decision checkpoint"}
+    cpDecision -->|"accept / reject / defer"| interviewLoop
+    interviewLoop -->|"all reviewed"| updateLog["Update assumptions log"]
 
-    cpComment -->|"post comment"| postComment["Post to issue tracker"]
-    cpComment -->|"edit comment"| prepSummary
-    cpComment -->|"skip posting"| updateLog
+    updateLog --> checkPlatform{"Deferred + platform set?"}
+    checkPlatform -->|"jira"| cpSummary{"post-summary-review checkpoint"}
+    cpSummary -->|"post"| postJira["Post summary to Jira"]
+    cpSummary -->|"skip"| route
+    checkPlatform -->|"github"| postGithub["Post summary to GitHub"]
+    checkPlatform -->|"no platform"| route
 
-    postComment --> cpResponse{"stakeholder-response checkpoint"}
-    cpResponse -->|"approved"| updateLog
-    cpResponse -->|"commented"| cpTriage{"feedback-triage checkpoint"}
-
-    cpTriage -->|"minor corrections"| prepSummary
-    cpTriage -->|"needs comprehension"| exitComprehension(["codebase-comprehension"])
-    cpTriage -->|"plan revision"| exitPlan(["plan-prepare"])
-
-    updateLog --> exitNode(["implement"])
+    postJira --> route{"Routing"}
+    postGithub --> route
+    route -->|"needs comprehension"| exitComprehension(["codebase-comprehension"])
+    route -->|"needs plan revision"| exitPlan(["plan-prepare"])
+    route -->|"further discussion"| evalOpen
+    route -->|"default"| exitImplement(["implement"])
 ```
 
 ---
 
 ### 08. Implement
 
-**Purpose:** Execute the implementation plan task by task. Each task follows a cycle of implement, test, commit, review assumptions, checkpoint. Contains two nested loops: the task implementation cycle and the assumption review cycle within each task.
+Executes the implementation plan task by task, each task following an implement-test-commit-log-self-review cycle and accumulating per-task outputs across the work. Skipped in review mode (the code already exists). Leads to post-impl-review.
 
-**Techniques:**
-
-| Role | Technique ID |
-|------|----------|
-| primary | `implement-task` |
-| supporting | `cargo-operations` |
-| supporting | `dco-provenance` |
-| supporting | `manage-git` |
-| supporting | `reconcile-assumptions` |
-| supporting | `review-assumptions` |
-| supporting | `validate-build` |
-
-**Entry action:** Verify on correct feature branch before any code changes.
-
-**Loops:**
-
-| Loop | Type | Iterates over | Max |
-|------|------|---------------|-----|
-| `task-cycle` | forEach | `plan.tasks` | (default) |
-| `assumption-reconciliation` | while | `has_resolvable_assumptions` | — |
-| `assumption-interview` | forEach | `open_assumptions` | 20 |
-
-**Task cycle steps (per task):**
-
-1. **implement-task** — Write code for the current task. The `implement-task` technique encodes the project CLAUDE.md mandate: a `pre-edit-impact-check` protocol phase runs `gitnexus_impact` before any edit (HIGH/CRITICAL risk surfaced to the user) and a `post-edit-verification` phase runs `gitnexus_detect_changes` before commit. Backed by a `gitnexus-discipline` MUST rule.
-2. **run-tests** — Execute tests to verify implementation.
-3. **commit** — Commit changes.
-4. **log-provenance** — Append a provenance record for this task to `provenance-log.md` via `dco-provenance`.
-5. **self-review** — Verify symbol provenance (flags via `symbol-provenance-confirmed` checkpoint when uncertain) and apply task-completion quality checks.
-6. **collect-assumptions** — Identify all assumptions made during this task.
-
-**Checkpoints (4):**
-
-| Checkpoint | Purpose | Blocking |
-|------------|---------|----------|
-| `switch-model-pre-impl` | Switch model before implementation | no (autoAdvance 10s) |
-| `symbol-provenance-confirmed` | Investigate or confirm symbols flagged during self-review (conditional: `has_uncertain_symbols`) | yes |
-| `implementation-assumption-interview` | Resolve or defer open assumptions (conditional: `has_open_assumptions`) | yes |
-| `switch-model-post-impl` | Switch model after implementation | no (autoAdvance 10s) |
-
-**Transitions:** Default to `post-impl-review`.
-
-**Artifacts:** `assumptions-log.md` (continues from earlier phases); `provenance-log.md` (created on first task, appended per task — one row per task with task ID, model ID, prompt class, `context_scope`, and a short description; linked from PR description).
+Definition: [`08-implement.toon`](./08-implement.toon)
 
 ```mermaid
 graph TD
     entryNode(["Entry"]) --> verifyBranch["Verify feature branch"]
     verifyBranch --> nextTask{"Next task in plan?"}
-    nextTask -->|"yes"| implementTask["Implement task"]
-    nextTask -->|"all done"| exitNode(["post-impl-review"])
-
+    nextTask -->|"yes"| cpPreImpl{"switch-model-pre-impl checkpoint"}
+    cpPreImpl --> implementTask["Implement task"]
     implementTask --> runTests["Run tests"]
     runTests --> commitChanges["Commit changes"]
-    commitChanges --> collectAssumptions["Collect assumptions"]
-    collectAssumptions --> cpTask{"task-complete checkpoint"}
-    cpTask -->|"review assumptions"| nextAssumption{"Next assumption?"}
-    cpTask -->|"no assumptions"| nextTask
+    commitChanges --> logProvenance["Log AI provenance"]
+    logProvenance --> selfReview["Self-review"]
+    selfReview --> cpSymbol{"symbol-provenance-confirmed checkpoint"}
+    cpSymbol --> collectAssumptions["Collect assumptions"]
+    collectAssumptions --> nextTask
 
-    nextAssumption -->|"yes"| presentAssumption["Present assumption"]
-    nextAssumption -->|"all reviewed"| updateLog["Update assumptions log"]
-    presentAssumption --> cpAssumption{"assumption-review checkpoint"}
-    cpAssumption -->|"confirmed"| nextAssumption
-    cpAssumption -->|"alternative"| nextAssumption
-    cpAssumption -->|"discuss"| nextAssumption
-
-    updateLog --> nextTask
+    nextTask -->|"all done"| reconcile["Reconcile assumptions"]
+    reconcile --> presentResolved["Present resolved assumptions"]
+    presentResolved --> interviewLoop{"Next open assumption?"}
+    interviewLoop -->|"yes"| cpInterview{"implementation-assumption-interview checkpoint"}
+    cpInterview --> interviewLoop
+    interviewLoop -->|"all done"| updateLog["Update assumptions log"]
+    updateLog --> cpPostImpl{"switch-model-post-impl checkpoint"}
+    cpPostImpl --> exitNode(["post-impl-review"])
 ```
 
 ---
 
 ### 09. Post-Implementation Review
 
-**Purpose:** Review implementation quality through manual diff review, code review, test suite review, and architecture summary. Includes a blocker gate: if a critical blocker is found, transitions back to implement for remediation.
+Reviews implementation quality through manual diff review, code review, structural analysis, test-suite review, and an architecture summary, catching issues before validation. If a critical blocker is found it routes back to implement for remediation; otherwise leads to validate.
 
-**Artifact prefix:** `09`
-
-**Techniques:**
-
-| Role | Technique ID |
-|------|----------|
-| primary | `review-diff` |
-| supporting | `review-code` |
-| supporting | `review-test-suite` |
-| supporting | `summarize-architecture` |
-
-**Review stages:**
-
-1. **GitNexus detect-changes preflight** — Run `gitnexus_detect_changes()` on the current diff to capture the affected processes and changed-symbol set. Output feeds the subsequent code-review and test-suite-review stages. Gated by `when: gitnexus_indexed == true` — automatically skipped when the workflow's `gitnexus_indexed` variable is false (i.e., the reference codebase was not indexed in `start-work-package`). See work-package resource gitnexus-reference.
-2. **Manual diff review** — Pull and diff, create change-block index, present file table to user, collect flagged blocks, interview each flagged block, write report.
-3. **Code review** — Comprehensive code review using Rust/Substrate criteria (if applicable).
-4. **Test suite review** — Assess test quality, coverage, and anti-patterns.
-5. **Architecture summary** — Create high-level architecture summary with diagrams.
-
-**Checkpoints (3):**
-
-| Checkpoint | Purpose | Blocking |
-|------------|---------|----------|
-| `file-index-table` | Present file/block index with per-block rationale paragraphs; user confirms rationale and flags blocks with issues. Confirmation serves as the human's per-block provenance attestation. | yes |
-| `rationale-amendment` | Provide corrections to specific rationale paragraphs (conditional: `rationale_confirmed == true`); corrections recorded in `manual-diff-review-report.md` as the human's provenance statement | no (autoAdvance 20s) |
-| `block-interview` | Interview user on each flagged block (conditional: `has_flagged_blocks`) | yes |
-
-**Decision:** `blocker-gate` — If `has_critical_blocker == true`, transition back to `implement`. Otherwise proceed to `validate`.
-
-**Artifacts (prefixed with `09-`):**
-
-| Artifact | Description |
-|----------|-------------|
-| `09-change-block-index.md` | Indexed table of all changed blocks in the diff |
-| `09-manual-diff-review.md` | Manual diff review findings from interview process |
-| `09-code-review.md` | Comprehensive code review document |
-| `09-test-suite-review.md` | Test suite quality assessment |
-| `09-architecture-summary.md` | High-level architecture summary with diagrams |
+Definition: [`09-post-impl-review.toon`](./09-post-impl-review.toon)
 
 ```mermaid
 graph TD
     entryNode(["Entry"]) --> preflight["GitNexus detect-changes preflight"]
-    preflight --> pullDiff["Pull and diff"]
-    pullDiff --> createIndex["Create change-block index"]
-    createIndex --> cpFileIndex{"file-index-table checkpoint"}
-    cpFileIndex --> collectFlagged["Collect flagged blocks"]
-    collectFlagged --> interviewLoop{"Next flagged block?"}
+    preflight --> manualDiff["Manual diff review"]
+    manualDiff --> cpFileIndex{"file-index-table checkpoint"}
+    cpFileIndex --> cpRationale{"rationale-amendment checkpoint"}
+    cpRationale --> interviewLoop{"Next flagged block?"}
     interviewLoop -->|"yes"| cpInterview{"block-interview checkpoint"}
     cpInterview --> interviewLoop
-    interviewLoop -->|"all done"| writeReport["Write manual diff review report"]
+    interviewLoop -->|"all done"| codeReview["Code review"]
 
-    writeReport --> codeReview["Run code review"]
-    codeReview --> cpCodeReview{"code-review checkpoint"}
-    cpCodeReview --> testReview["Run test suite review"]
-    testReview --> cpTestQuality{"test-quality checkpoint"}
-    cpTestQuality --> archSummary["Create architecture summary"]
-    archSummary --> cpArch{"architecture-summary checkpoint"}
+    codeReview --> structural{"problem_complexity == complex?"}
+    structural -->|"no"| structuralInline["Structural analysis (single pass)"]
+    structural -->|"yes"| dispatchPrism["Dispatch full prism pipeline"]
+    structuralInline --> testReview["Test suite review"]
+    dispatchPrism --> testReview
+    testReview --> archSummary["Architecture summary"]
+    archSummary --> classify["Classify and route findings"]
 
-    cpArch --> blockerGate{"has_critical_blocker?"}
+    classify --> fixCycle{"needs code fixes or test improvements?"}
+    fixCycle -->|"yes (max 3)"| applyFixes["Apply fixes, regenerate index, re-review"]
+    applyFixes --> fixCycle
+    fixCycle -->|"no"| blockerGate{"has_critical_blocker?"}
     blockerGate -->|"yes"| exitImplement(["implement"])
     blockerGate -->|"no"| exitValidate(["validate"])
 ```
@@ -680,163 +331,83 @@ graph TD
 
 ### 10. Validate
 
-**Purpose:** Validate the implementation through testing, build verification, and lint checking. If failures are found, analyze root cause, fix, and re-run until all pass. In review mode: documents failures as review findings and does not attempt fixes.
+Validates the implementation against tests, build, format, and lint checks, fixing and re-running until everything passes. In review mode it documents failures as findings and assesses coverage rather than fixing. Leads to strategic-review.
 
-**Techniques:**
-
-| Role | Technique ID |
-|------|----------|
-| primary | `validate-build` |
-
-**Steps:**
-
-1. **preflight** — `cargo-operations::preflight()` — fail fast when toolchain prerequisites are missing.
-2. **run-suite** — `cargo-operations::run-suite(scope: '--workspace')` — runs check, clippy, test, and fmt-check concurrently and emits a single `validation_results` envelope.
-3. **evaluate-results** — Read `validation_results` from `run-suite`. Set `has_failures` and `validation_passed`.
-4. **document-failures** / **assess-test-coverage** — Review mode only: document failures and assess coverage.
-5. **fix-failures** — If tests/build/lint fail, enter the `fix-revalidate-cycle` loop (analyze failure, apply fix, re-run). Skipped in review mode.
-
-**Checkpoints (0):** This activity has no checkpoints. Test/build/lint results are observable and do not require user confirmation.
-
-**Transitions:** Default to `strategic-review`.
+Definition: [`10-validate.toon`](./10-validate.toon)
 
 ```mermaid
 graph TD
     entryNode(["Entry"]) --> preflight["Toolchain preflight"]
     preflight --> runSuite["Run validation suite (check + clippy + test + fmt-check)"]
-    runSuite --> evaluateResults["Evaluate validation_results"]
-    evaluateResults --> fixBranch{"Failures and not review mode?"}
-    fixBranch -->|"no"| exitNode(["strategic-review"])
-    fixBranch -->|"yes"| fixFailures["Fix and revalidate loop"]
-    fixFailures --> runSuite
+    runSuite --> reviewMode{"Review mode?"}
+    reviewMode -->|"yes"| documentFailures["Document failures as findings"]
+    documentFailures --> assessCoverage["Assess test coverage"]
+    assessCoverage --> exitNode(["strategic-review"])
+    reviewMode -->|"no"| fixBranch{"validation_results.validation_passed == false?"}
+    fixBranch -->|"no"| exitNode
+    fixBranch -->|"yes"| analyzeFailure["Analyze failure root cause"]
+    analyzeFailure --> applyFix["Apply fix"]
+    applyFix --> revalidate["Re-run validation"]
+    revalidate --> fixBranch
 ```
 
 ---
 
 ### 11. Strategic Review
 
-**Purpose:** Review the implementation to ensure changes are minimal and focused. Validates that the final PR contains only the changes required for the solution. When the target repo has a root-level `changes/` directory, ensures a matching changelog fragment exists. Creates strategic review document and architecture summary. In review mode: documents cleanup recommendations without applying them.
+Reviews the change set to ensure it is minimal and focused — that the PR contains only what the solution requires — and produces the strategic review document and architecture summary. In review mode it documents cleanup recommendations without applying them. Leads to submit-for-review when the review passes, otherwise back to plan-prepare for rework.
 
-**Artifact prefix:** `11`
-
-**Techniques:**
-
-| Role | Technique ID |
-|------|----------|
-| primary | `review-strategy` |
-| supporting | `manage-git` |
-
-**Steps:**
-
-1. **diff-review** — Examine all changes in the PR for scope and relevance.
-2. **identify-artifacts** — Find investigation artifacts, over-engineering, orphaned infrastructure. Uses `gitnexus_cypher` (zero in-degree CALLS edges) for graph-aware orphan detection and `gitnexus_detect_changes` for scope-discipline checks (flag changes touching processes outside the work package's intended scope). See work-package resource gitnexus-reference.
-3. **verify-readme** — `manage-artifacts::verify-readme-conforms`; surface drift as an informational strategic finding.
-4. **ensure-changes-folder-entry** — If `changes/` exists at repo root, add a fragment matching existing conventions when none exists for this work.
-5. **verify-change-fragment** — Confirm the change fragment references `issue_url`; block until fixed.
-6. **document-findings** — Create `11-strategic-review-{n}.md` with items that should be removed or simplified, plus any informational findings.
-7. **document-cleanup-recommendations** — Review mode only.
-8. **apply-cleanup** — Remove identified artifacts when not in review mode.
-9. **create-architecture-summary** — Create `11-architecture-summary.md` using the architecture summary resource template.
-10. **analyze-strategic-findings** — Set `recommended_strategic_option` and produce `strategic_findings_summary`.
-
-**Checkpoints (1):**
-
-| Checkpoint | Purpose | Blocking |
-|------------|---------|----------|
-| `review-findings` | Confirm strategic review findings | no (autoAdvance 30s) |
-
-**Transitions:** To `submit-for-review` when `is_review_mode` or `review_passed`; default to `plan-prepare`.
-
-**Artifacts (prefixed with `11-`):**
-
-| Artifact | Description |
-|----------|-------------|
-| `11-strategic-review-{n}.md` | Review findings, identified artifacts, cleanup actions. `{n}` increments on successive reviews. |
-| `11-architecture-summary.md` | High-level architecture summary with UML-style diagrams |
+Definition: [`11-strategic-review.toon`](./11-strategic-review.toon)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> diffReview["Review diff"]
-    diffReview --> identifyArtifacts["Identify artifacts"]
-    identifyArtifacts --> verifyReadme["Verify README conformance"]
+    entryNode(["Entry"]) --> reviewScope["Review scope (changes and artifacts)"]
+    reviewScope --> verifyReadme["Verify README conformance"]
     verifyReadme --> changesFrag["Ensure changes/ fragment if repo uses it"]
     changesFrag --> verifyFragment["Verify fragment references issue"]
     verifyFragment --> documentFindings["Document findings"]
-    documentFindings --> applyCleanup["Apply cleanup or review-mode doc"]
+    documentFindings --> cleanupBranch{"Review mode?"}
+    cleanupBranch -->|"yes"| docCleanup["Document cleanup recommendations"]
+    cleanupBranch -->|"no"| applyCleanup["Apply cleanup"]
+    docCleanup --> createArchSummary
     applyCleanup --> createArchSummary["Architecture summary"]
     createArchSummary --> analyze["Analyze strategic findings"]
-    analyze --> cpFindings["review-findings checkpoint"]
-    cpFindings --> exitSubmit(["submit-for-review or plan-prepare"])
+    analyze --> cpFindings{"review-findings checkpoint"}
+    cpFindings -->|"review mode or passed"| exitSubmit(["submit-for-review"])
+    cpFindings -->|"fix / more review"| exitPlan(["plan-prepare"])
 ```
 
 ---
 
 ### 12. Submit for Review
 
-**Purpose:** Gate PR submission on a human DCO sign-off, push the branch, update the PR description, present the merge-strategy reminder, mark the PR ready, and await reviewer feedback. If significant changes are requested, loop back to plan-prepare. In review mode: consolidates all review findings and posts structured PR review comments, then ends the workflow.
+Gates submission on a human DCO sign-off, then pushes the branch, finalizes the PR description, marks the PR ready, and handles reviewer feedback. In review mode it instead consolidates all findings, posts structured PR review comments, and ends the workflow. Significant requested changes loop back to plan-prepare; otherwise leads to complete.
 
-**Techniques:**
-
-| Role | Technique ID |
-|------|----------|
-| primary | `update-pr` |
-| supporting | `dco-provenance` |
-| supporting | `github-cli-protocol` |
-| supporting | `manage-git` |
-| supporting | `respond-to-pr-review` |
-| supporting | `review-code` |
-
-**Steps (standard mode):**
-
-1. **dco-sign-off** — Gate submission on the human's DCO attestation via the `dco-sign-off` checkpoint; records timestamp/identity to `provenance-log.md`.
-2. **push-commits** — Push all commits to remote.
-3. **update-description** — Update PR description with final implementation details (including the `## AI Assistance` section).
-4. **instruct-merge-strategy** — Present the `merge-strategy-reminder` checkpoint with the local squash-merge-with-`-s -S` flow when `squash_merge_supported` is true.
-5. **mark-ready** — Mark PR as ready for review (`gh pr ready`).
-6. **await-review** — Wait for the PR to receive manual review.
-7. **process-review-comments** — Analyze and respond to review feedback using `respond-to-pr-review`.
-8. **analyze-review-outcome** — Recommend a review-outcome option and produce `review_comments_summary` for the `review-outcome` checkpoint.
-
-**Loops:** `verify-pr-body-rerender` — while `body_conforms == false` (max 2 iterations). Re-renders the PR body until it passes `update-pr::rules.pr-body-conformance`.
-
-**Checkpoints (6):**
-
-| Checkpoint | Purpose | Blocking |
-|------------|---------|----------|
-| `dco-sign-off` | Human DCO certification (6-item attestation); records attestation in `provenance-log.md` | yes |
-| `merge-strategy-reminder` | Walk the human through the local squash-merge-with-`-s -S` flow (conditional: `squash_merge_supported`) | no (autoAdvance 20s) |
-| `review-received` | Confirm that review comments have been received | yes |
-| `review-outcome` | Determine outcome: approved, minor changes, or significant changes | no (autoAdvance 30s) |
-| `review-summary-approval` | Confirm consolidated review summary before posting (review mode) | yes |
-| `body-non-conformant` | Resolve PR body conformance violations after the re-render loop exhausts (conditional: `body_conforms == false`) | yes |
-
-**Artifacts:** updates `provenance-log.md` with the DCO attestation entry; PR description re-rendered to include the `## AI Assistance` section.
-
-**Transitions:**
-
-| Condition | Target |
-|-----------|--------|
-| `is_review_mode == true` | complete |
-| `review_requires_changes == true` | plan-prepare |
-| default | complete |
+Definition: [`12-submit-for-review.toon`](./12-submit-for-review.toon)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> cpDco{"dco-sign-off checkpoint"}
-    cpDco -->|"certify"| pushCommits["Push all commits"]
-    cpDco -->|"flag legal"| pushCommits
+    entryNode(["Entry"]) --> reviewMode{"Review mode?"}
+    reviewMode -->|"yes"| consolidate["Consolidate review findings"]
+    consolidate --> genSummary["Generate review summary"]
+    genSummary --> cpSummaryApproval{"review-summary-approval checkpoint"}
+    cpSummaryApproval --> postReview["Post PR review"]
+    postReview --> awaitReview
+
+    reviewMode -->|"no"| cpDco{"dco-sign-off checkpoint"}
+    cpDco --> pushCommits["Push all commits"]
     pushCommits --> updateDesc["Update PR description"]
-    updateDesc --> cpMerge{"merge-strategy-reminder if squash available"}
+    updateDesc --> cpMerge{"merge-strategy-reminder checkpoint"}
     cpMerge --> markReady["Mark PR ready for review"]
     markReady --> awaitReview["Await manual review"]
 
-    awaitReview --> cpReview{"review-received checkpoint"}
-    cpReview -->|"comments received"| processComments["Process review comments"]
-    cpReview -->|"still waiting"| awaitReview
+    awaitReview --> cpReceived{"review-received checkpoint"}
+    cpReceived -->|"comments received"| processComments["Process review comments"]
+    cpReceived -->|"still waiting"| awaitReview
 
-    processComments --> cpOutcome{"review-outcome checkpoint"}
-    cpOutcome -->|"approved"| exitComplete(["complete"])
-    cpOutcome -->|"minor changes"| exitComplete
+    processComments --> analyzeOutcome["Analyze review outcome"]
+    analyzeOutcome --> cpOutcome{"review-outcome checkpoint"}
+    cpOutcome -->|"approved / minor"| exitComplete(["complete"])
     cpOutcome -->|"significant changes"| exitPlan(["plan-prepare"])
 ```
 
@@ -844,59 +415,23 @@ graph TD
 
 ### 13. Complete
 
-**Purpose:** Final activity — create Architecture Decision Record (if moderate or complex implementation), finalize documentation, conduct retrospective, capture session history, update status, and select next work package. In review mode: ends after retrospective.
+The terminal activity: creates an ADR for moderate or complex work, finalizes documentation, conducts a retrospective, removes the component worktree, and selects the next work package. In review mode it skips the documentation steps and ends after the retrospective and worktree removal.
 
-**Artifact prefix:** `13`
-
-**Techniques:**
-
-| Role | Technique ID |
-|------|----------|
-| primary | `finalize-documentation` |
-| supporting | `create-adr` |
-| supporting | `conduct-retrospective` |
-
-**Steps:**
-
-1. **create-adr** — Automatically create ADR based on design philosophy complexity assessment (triggered for moderate or complex implementations).
-2. **update-adr-status** — If ADR exists, update status to Accepted.
-3. **finalize-test-plan** — Add hyperlinks to test source locations.
-4. **create-complete-doc** — Create `COMPLETE.md` completion document.
-5. **ensure-docs** — Verify public APIs have inline documentation.
-6. **capture-history** — If metadata repository exists (private, never committed).
-7. **retrospective** — Workflow retrospective (skip if trivial session).
-8. **update-status** — Update work package plan status after PR merge.
-9. **select-next** — Select next work package.
-
-**Checkpoints (0):** This activity has no checkpoints.
-
-**Transitions:** None — this is the terminal activity.
-
-**Artifacts:**
-
-| Artifact | Location | Description |
-|----------|----------|-------------|
-| `COMPLETE.md` | planning | Completion document |
-| `workflow-retrospective.md` | planning | Retrospective notes |
-| `NNNN-{decision-title}.md` | `.engineering/artifacts/adr` | ADR for moderate/complex implementations |
-| `{YYYY-MM-DD}-pr{N}-review-analysis.md` | `.engineering/artifacts/reviews` | PR review analysis |
+Definition: [`13-complete.toon`](./13-complete.toon)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> checkADR{"Architecturally significant?"}
+    entryNode(["Entry"]) --> checkADR{"Not review mode and moderate/complex?"}
     checkADR -->|"yes"| createADR["Create ADR"]
-    checkADR -->|"no"| finalizeTestPlan
-
     createADR --> updateADR["Update ADR status to Accepted"]
-    updateADR --> finalizeTestPlan["Finalize test plan with source links"]
+    updateADR --> finalizeTestPlan
+    checkADR -->|"no"| retrospective
 
-    finalizeTestPlan --> createComplete["Create COMPLETE.md"]
+    finalizeTestPlan["Finalize test plan with source links"] --> createComplete["Create COMPLETE.md"]
     createComplete --> ensureDocs["Ensure inline docs on public APIs"]
-    ensureDocs --> captureHistory["Capture session history"]
-    captureHistory --> retrospective["Conduct retrospective"]
-    retrospective --> cpRetro{"retrospective-review checkpoint"}
-    cpRetro --> updateStatus["Update work package plan status"]
-    updateStatus --> selectNext["Select next work package"]
+    ensureDocs --> retrospective["Conduct retrospective (capture history, retrospective, update status)"]
+    retrospective --> removeWorktree["Remove component worktree"]
+    removeWorktree --> selectNext["Select next work package"]
     selectNext --> doneNode(["End"])
 ```
 

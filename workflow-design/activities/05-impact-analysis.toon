@@ -1,39 +1,23 @@
 id: impact-analysis
-version: 1.0.1
+version: 1.2.0
 name: Impact Analysis
 description: "Impact assessment of proposed changes against an existing workflow's files, transitions, and references."
-problem: Modifying an existing workflow can break transition chains, invalidate checkpoint assumptions, or orphan techniques and resources
-techniques:
-  supporting[1]:
-    - workflow-design
 required: false
-estimatedTime: 10-20m
-entryActions[1]:
-  - action: validate
-    target: is_update_mode
-    message: "Impact analysis requires update mode — is_update_mode must be true"
 rules[2]:
   - "Every file in the existing workflow must be examined for potential impact"
   - "Content being removed must be explicitly flagged and confirmed"
-steps[5]:
-  - id: enumerate-existing-files
-    name: Enumerate Existing Files
-    description: "Full inventory of the target workflow's files (workflow.toon, activities, techniques, resources, README.md) with paths and purposes."
-  - id: classify-impact
-    name: Classify File Impact
-    description: "Per-file impact classification (unaffected, directly modified, indirectly affected, removed) with justification."
-  - id: check-transition-integrity
-    name: Check Transition Integrity
-    description: "Transition-chain integrity report covering added/removed/reordered activities, including any broken 'to' references."
-  - id: check-reference-integrity
-    name: Check Reference Integrity
-    description: "Reference-integrity report for technique (primary/supporting) and resource references, including any orphaned references."
-  - id: flag-content-removal
-    name: Flag Content Removal
-    description: "Diff-based inventory of material being removed across modified files, surfaced for explicit user confirmation."
-checkpoints[2]:
-  - id: impact-confirmed
-    name: Impact Scope Confirmation
+steps[4]:
+  - kind: action
+    id: verify-preconditions
+    actions[1]:
+      - action: validate
+        target: is_update_mode
+        message: "Impact analysis requires update mode — is_update_mode must be true"
+  - kind: technique
+    id: impact-analysis
+    technique: impact-analysis
+  - kind: checkpoint
+    id: impact-confirmed
     message: "Here is the impact analysis: files directly modified, files indirectly affected, and any broken references detected. Does this scope look correct?"
     options[2]:
       - id: confirmed
@@ -42,8 +26,8 @@ checkpoints[2]:
       - id: revise
         label: "Needs revision"
         description: "Impact scope is incomplete or over-inclusive."
-  - id: preservation-confirmed
-    name: Content Preservation Confirmation
+  - kind: checkpoint
+    id: preservation-confirmed
     message: "The following content will be removed or replaced. Please confirm each removal is intentional."
     options[2]:
       - id: confirmed
@@ -53,13 +37,9 @@ checkpoints[2]:
         label: "Preserve some content"
         description: "Some flagged content must be preserved rather than removed."
 transitions[1]:
-  - to: scope-and-structure
+  - to: scope-and-draft
     isDefault: true
 outcome[3]:
-  - All affected files identified and classified
-  - Transition and reference integrity verified
-  - Content removals explicitly confirmed by user
-context_to_preserve[3]:
-  - impact_manifest - Classification of all files (unaffected, modified, affected, removed)
-  - broken_references - Any broken transitions or technique/resource references found
-  - confirmed_removals - Content removals confirmed by user
+  - Drafting knows exactly which files the change touches and how, so the edit blast radius is bounded before any content is written
+  - Transition chains and technique/resource references are known-intact, so the update won't silently orphan or break the workflow's wiring
+  - No content disappears by accident — every removal is one the user consciously approved

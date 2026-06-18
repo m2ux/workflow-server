@@ -28,83 +28,9 @@ The task completion review has three mandatory components:
 
 ---
 
-## 1. Symbol Verification
+## 1. Symbol Verification and Quality Checks
 
-### What is Symbol Verification?
-
-**Every symbol (type, function, constant, field, etc.) introduced or referenced in code or documentation MUST have provenance in the actual codebase.**
-
-**Provenance means:**
-- The symbol exists in the codebase (can be found via grep/search)
-- The symbol exists in a declared dependency (verified in Cargo.toml, package.json, etc.)
-- The symbol is being newly created by the current task (and is correctly defined)
-
-### ⚠️ CRITICAL: Never Fabricate Symbols
-
-**Fabricating symbols is unacceptable.** This includes:
-
-- Inventing type names, trait names, or struct names that don't exist
-- Referencing functions or methods that aren't implemented
-- Using field names in documentation that don't match actual code
-- Assuming symbol names based on patterns without verification
-- Renaming symbols in documentation without corresponding code changes
-
-### Symbol Verification Checklist
-
-For each task, verify:
-
-| Check | How to Verify |
-|-------|---------------|
-| **New types/structs** | Definition exists in committed code |
-| **New functions/methods** | Implementation exists in committed code |
-| **New constants/fields** | Declaration exists in committed code |
-| **Referenced existing symbols** | `grep` confirms symbol exists in codebase |
-| **Symbols from dependencies** | Dependency declared in manifest AND symbol exists in that crate/package |
-| **Symbols in documentation** | Every symbol mentioned in docs/ADRs/change files exists in code |
-
-### Verification Commands
-
-```bash
-# Verify a symbol exists in the codebase
-grep -r "SymbolName" --include="*.rs" .
-grep -r "symbol_name" --include="*.rs" .
-
-# Verify a symbol exists in dependencies (Rust)
-grep "crate-name" Cargo.toml
-# Then check the crate's documentation for the symbol
-
-# Verify a symbol exists in dependencies (TypeScript)
-grep "package-name" package.json
-# Then check the package's types/documentation
-
-# List all new symbols introduced in this branch
-git diff origin/main --name-only -- "*.rs" | xargs grep -h "^pub " | sort -u
-```
-
-### Documentation Symbol Verification
-
-**Change files, ADRs, and test plans must only reference symbols that exist in code.**
-
-| Document Type | Symbol Sources |
-|---------------|----------------|
-| **Change files** (`changes/`) | Symbols from actual code changes in PR |
-| **ADRs** (`docs/decisions/`) | Symbols from implemented architecture |
-| **Test plans** (`docs/tests/`) | Symbols from actual test implementations |
-
-**Anti-patterns:**
-- ❌ Describing a trait that was "planned" but never implemented
-- ❌ Mentioning storage items that were "removed" but never existed
-- ❌ Referencing extrinsics that don't appear in the pallet
-- ❌ Renaming concepts without verifying the new name exists
-
-### When Symbol Verification Fails
-
-If you cannot verify a symbol:
-
-1. **Stop immediately** — Do not proceed with the assumption
-2. **Search more thoroughly** — Try alternative search patterns, check git history
-3. **Check if it should exist** — Is this something you need to create?
-4. **Ask the user** — If uncertain, request clarification before proceeding
+Symbol verification and quality checks are owned by the [task-completion-review](../techniques/task-completion-review.md) technique, which is bound by the `self-review` step in the implement activity. Refer to that technique for the symbol-provenance procedure (including documentation symbol verification and the stop-when-unverifiable rule) and the code, test, and documentation quality checklists.
 
 ---
 
@@ -139,34 +65,6 @@ After completing a task, review your implementation:
 - Surfaces design decisions that may conflict with user intent
 - Creates opportunities for course correction early
 - Documents rationale that would otherwise be lost
-
----
-
-## 3. Quality Checks
-
-### Code Quality Checklist
-
-- [ ] Follows existing patterns and architecture
-- [ ] Type-safe (compiler checks pass)
-- [ ] Error handling implemented
-- [ ] No hardcoded values (use constants or configuration)
-- [ ] Documentation comments on public APIs
-- [ ] No debug prints in production code
-- [ ] No TODO comments without issue references
-
-### Test Quality Checklist
-
-- [ ] Unit tests written for new code
-- [ ] Edge cases covered
-- [ ] Error conditions tested
-- [ ] All tests passing (unit, integration, e2e)
-
-### Documentation Quality Checklist
-
-- [ ] All symbols in docs exist in code (see Symbol Verification)
-- [ ] Change file accurately describes actual changes
-- [ ] No fabricated or speculative content
-- [ ] Commit messages follow conventional commits
 
 ---
 
@@ -217,12 +115,11 @@ After user confirmation, update the assumptions log artifact:
 
 | Don't | Why |
 |-------|-----|
-| **Skip symbol verification** | Fabricated symbols create incorrect documentation, confuse reviewers, and may indicate deeper implementation issues |
-| **Assume symbol names from patterns** | Symbol naming varies; always verify with grep |
-| **Reference "planned" but unimplemented symbols** | Documentation must reflect actual code, not intentions |
 | **Skip self-review after each task** | Hidden errors compound; early detection saves time |
-| **Proceed when symbol cannot be verified** | Stop and investigate; the symbol may not exist |
-| **Document symbols from memory** | Always verify against actual code |
+| **Skip the assumption review** | Surfacing design decisions early creates opportunities for course correction before they compound |
+| **Omit the phase section from the log when no assumptions arise** | The log should still show that assumption review was performed |
+
+(For symbol-verification and quality-check anti-patterns, see the [task-completion-review](../techniques/task-completion-review.md) technique.)
 
 ---
 
@@ -230,26 +127,10 @@ After user confirmation, update the assumptions log artifact:
 
 ### Mandatory Self-Review Steps
 
-1. ✅ **Symbol Verification** — All symbols have provenance
+1. ✅ **Symbol Verification** — All symbols have provenance (see the [task-completion-review](../techniques/task-completion-review.md) technique)
 2. ✅ **Assumption Review** — Design decisions documented
-3. ✅ **Quality Checks** — Code, tests, docs meet standards
+3. ✅ **Quality Checks** — Code, tests, docs meet standards (see the [task-completion-review](../techniques/task-completion-review.md) technique)
 4. ✅ **User Checkpoint** — Confirmation before proceeding
-
-### Key Commands
-
-```bash
-# Verify symbol exists
-grep -r "SymbolName" --include="*.rs" .
-
-# Check git history for removed symbols
-git log --all --oneline -S "SymbolName" -- "*.rs"
-
-# Compare branch to main for new symbols
-git diff origin/main -- "*.rs" | grep "^+"
-
-# List files with changes
-git diff origin/main --name-only
-```
 
 ---
 

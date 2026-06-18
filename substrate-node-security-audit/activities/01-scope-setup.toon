@@ -1,77 +1,25 @@
 id: scope-setup
-version: 2.0.0
+version: 2.1.0
 name: Scope Setup
 description: "Set up the audit scope and planning folder."
-problem: The audit requires a confirmed target, reproducible commit, dependency scan outputs, and an organized artifact folder before analysis begins.
-recognition[4]:
-  - start security audit
-  - audit codebase
-  - run security review
-  - security audit setup
-techniques:
-  supporting[1]:
-    - execute-audit
 required: true
-estimatedTime: 5-15m
-rules[5]:
-  - "The target submodule MUST be specified in the initial request — if not provided, fail with an error describing the required format"
-  - "The target commit MUST be specified or default to the submodule's current HEAD"
-  - "The submodule must be checked out at the exact target commit before any analysis"
-  - "cargo audit and cargo deny are best-effort — the fallback in §2.2 handles unavailability"
-  - "The planning folder naming pattern must match existing audit folders (YYYY-MM-DD-NN-{name})"
-entryActions[1]{action,message}:
-  log,Starting security audit scope setup
-steps[8]:
-  - id: confirm-target
-    name: Confirm Target Submodule
+steps[3]:
+  - kind: action
+    id: announce-start
+    actions[1]{action,message}:
+      log,Starting security audit scope setup
+  - kind: technique
+    id: setup-target
     technique: setup-audit-target
-    description: "Extract and validate the target submodule."
-  - id: confirm-commit
-    name: Confirm Target Commit
-    technique: setup-audit-target
-    description: "Extract and validate the target commit."
-  - id: record-reference
-    name: Record Reference Report Path
-    technique: setup-audit-target
-    description: "Record any reference report path without loading."
-  - id: checkout-submodule
-    name: Checkout Submodule at Commit
-    technique: setup-audit-target
-    description: "Checkout the submodule at the target revision."
-  - id: run-cargo-audit
-    name: Run Dependency Scanning
-    technique: setup-audit-target
-    description: "Run dependency scanners with fallback."
-  - id: create-file-inventory
-    name: Create File Inventory
-    technique: setup-audit-target
-    description: "Generate sorted file inventory by line count."
-  - id: create-planning-folder
-    name: Create Planning Folder
-    description: "Create planning folder with START-HERE.md following the naming pattern YYYY-MM-DD-NN-{submodule}-security-audit."
-  - id: load-template
-    name: Load Audit Template
-    description: "Confirm audit prompt template is accessible at audit_prompt_template."
+  - kind: action
+    id: announce-completion
+    actions[1]{action,message}:
+      log,Scope setup complete — target confirmed and planning folder created
 transitions[1]{to,isDefault}:
   reconnaissance,true
-exitActions[1]{action,message}:
-  log,Scope setup complete — target confirmed and planning folder created
-outcome[6]:
-  - Target submodule and commit confirmed
-  - Submodule checked out at exact commit
-  - Reference report path recorded (if provided) but not loaded
-  - Dependency scan completed or fallback noted
-  - File inventory generated
-  - Planning folder created with START-HERE.md
-context_to_preserve[6]:
-  - target_submodule - Path to the submodule being audited
-  - target_commit - Git commit hash
-  - planning_folder_path - Path to planning artifacts folder
-  - cargo_audit_available - Whether cargo audit ran successfully
-  - reference_report - Path to reference report (quarantined until Phase 5)
-  - has_reference_report - Whether a reference report was provided
-artifacts[1]:
-  - id: start-here
-    name: START-HERE.md
-    location: planning
-    description: "Session overview with audit target, commit, methodology, and artifact index"
+outcome[5]:
+  - Downstream analysis runs against a single confirmed, reproducible target pinned to an exact commit
+  - Any reference report is quarantined out of scope until Phase 5, so the audit stays independent of it
+  - Known-vulnerable dependencies are surfaced (or their absence explicitly noted) before code review begins
+  - A reviewed file inventory establishes the in-scope surface every agent must cover
+  - A working artifact home exists where every phase reads and writes shared state

@@ -1,55 +1,39 @@
 id: report-generation
-version: 3.4.0
+version: 3.6.0
 name: Report Generation
 description: "Consolidate findings into the final audit report."
-problem: Findings from multiple agents and phases must be severity-calibrated and formatted into a cohesive report with coverage verification. The structured merge table from primary-audit ensures no findings are lost.
-recognition[3]:
-  - generate audit report
-  - consolidate findings
-  - finalize report
-techniques:
-  supporting[1]:
-    - execute-audit
 required: true
-estimatedTime: 20-40m
-rules[7]:
-  - "The structured merge table from the merge agent (M) is the canonical finding inventory — every row must appear in the report as a finding or be explicitly marked as merged"
-  - "Coverage gate (§5.14): every >200-line file in priority-1/2 crates must have been read"
-  - "CONTAMINATION GUARD: The reference report is quarantined until the gap-analysis activity. DO NOT read, open, or query the reference report during report generation."
-  - "BLOCKING ENTRY CONDITION: This activity MUST NOT begin unless: (a) the coverage gate was verified by the verification sub-agent (V) during primary-audit (verification_complete=true, set by V not orchestrator), AND (b) the reconciliation gate passed with zero Unaccounted findings (validated by M). If either condition is unmet, return to primary-audit."
-  - "MANDATORY TABLE VERIFICATION: Before writing the report, verify that the following mandatory tables were produced during primary-audit: (a) §3.3 per-field event trace tables for all pallet agents, (b) §3.5 StorageInit construction site enumeration from the node startup agent (A3), (c) Group D per-function checklist matrix. Missing tables indicate incomplete review and MUST be resolved before the report is finalized."
-  - "BIDIRECTIONAL CALIBRATION: The severity-crosscheck step MUST evaluate ALL findings against the calibration benchmark table, not just High/Critical. Under-scoring (finding scored below benchmark by >= 2 levels) is treated the same as over-scoring — the benchmark severity is the floor."
-  - "RECONCILIATION TABLE IN REPORT: The final report MUST include the reconciliation table from M as an appendix or methodology section. This provides auditable evidence that all agent findings were accounted for."
-entryActions[1]{action,message}:
-  log,Starting report generation — consolidating findings from all phases
-steps[6]:
-  - id: integrate-adversarial-results
-    name: Integrate Adversarial Verification Results
-    technique: merge-findings
-    technique_args:
-      merge_strategy: integrate
-    description: "Add REFUTED items from adversarial verification as new rows in the merge table."
-  - id: apply-severity
-    name: Apply Severity Scoring
-    technique: score-severity
-    description: "Score every finding in the merge table using the severity rubric and calibration examples."
-  - id: severity-crosscheck
-    name: Bidirectional Severity Cross-Check Against Calibration Examples
-    technique: score-severity
-    description: "Re-evaluate ALL findings (not just High/Critical) against the calibration benchmark table. For every finding, search for a matching benchmark pattern. If divergence >= 1 level, flag for review. If divergence >= 2 levels, the benchmark severity is the floor. This catches both over-rating AND under-rating. The merge agent (M) performs initial calibration; this step verifies M's scoring after adversarial results are integrated."
-  - id: coverage-gate
-    name: "Verify Coverage Gate (BLOCKING)"
-    required: true
+steps[7]:
+  - kind: action
+    id: announce-start
+    actions[1]{action,message}:
+      log,Starting report generation — consolidating findings from all phases
+  - kind: technique
+    id: integrate-adversarial-results
+    technique:
+      name: merge-findings
+      inputs:
+        merge_strategy: integrate
+  - kind: technique
+    id: apply-severity
+    technique:
+      name: score-severity
+      inputs:
+        findings: merge_table
+  - kind: technique
+    id: coverage-gate
     technique: verify-sub-agent-output
-    description: "Re-verify file coverage before report generation. Block if any file is UNREAD."
-  - id: verify-elevation-completeness
-    name: Verify Elevation Completeness
+  - kind: technique
+    id: verify-elevation-completeness
     technique: merge-findings
-    description: "Verify every row in the merge table has a report finding number. Promote any unmapped rows."
-  - id: write-report
-    name: Write Final Report
+  - kind: technique
+    id: write-report
     technique: write-report
-    description: "Produce 01-audit-report.md per the write-report technique structure."
+  - kind: action
+    id: finalize-activity
+    actions[2]{action,message}:
+      log,Report generation complete — audit report finalized
+      set,report_complete=true
 decisions[1]:
   - id: next-phase
     name: Next Phase Decision
@@ -87,20 +71,6 @@ transitions[2]:
       variable: has_reference_report
       operator: ==
       value: true
-exitActions[2]{action,message}:
-  log,Report generation complete — audit report finalized
-  set,report_complete=true
-outcome[4]:
-  - All findings severity-scored using Impact x Feasibility rubric with calibration cross-check
-  - Coverage gate verified
-  - Elevation completeness verified via structured merge table
-  - Final audit report produced
-context_to_preserve[3]:
-  - final_findings - Complete list of numbered findings with severity
-  - coverage_status - Coverage gate pass/fail with details
-  - report_path - Path to the final audit report
-artifacts[1]:
-  - id: audit-report
-    name: 01-audit-report.md
-    location: planning
-    description: "Complete security audit report with numbered findings, severity scores, and methodology notes"
+outcome[2]:
+  - Every finding carries a defensible, cross-checked severity, so consumers can triage and prioritize remediation with confidence
+  - The consumer has a single audit report whose coverage and finding-completeness are both attested — every in-scope area was reviewed and no merged finding was lost on the way in

@@ -7,7 +7,7 @@ metadata:
 
 Get the current user's account ID.
 
-## Output
+## Outputs
 
 ### accountId
 

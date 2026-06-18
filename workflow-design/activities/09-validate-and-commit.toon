@@ -1,87 +1,39 @@
 id: validate-and-commit
-version: 1.0.1
+version: 1.2.0
 name: Validate and Commit
 description: "Final validation, scope verification, README generation/update, and commit of the workflow changes to the workflows worktree."
-problem: All workflow content must pass validation and the complete scope must be verified before committing
-techniques:
-  supporting[1]:
-    - workflow-design
 required: true
-estimatedTime: 10-15m
 rules[3]:
   - "All TOON files must pass schema validation before commit — no exceptions"
   - "The scope manifest must be fully addressed — every item checked off"
   - "Commit to the workflows worktree, not the main repository"
-steps[8]:
-  - id: save-compliance-report
-    name: Save Compliance Report
-    description: "Compliance report markdown file in the planning folder, named YYYY-MM-DD-{workflow-id}-compliance-review.md."
+steps[10]:
+  - kind: technique
+    id: save-compliance-report
+    technique: persist-report
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: commit-report
-    name: Commit Report
-    description: "Compliance report committed to the parent repository (planning folder is a regular directory, not a submodule)."
+  - kind: technique
+    id: commit-report
+    technique: version-control::commit-regular-files
     condition:
       type: simple
       variable: is_review_mode
       operator: "=="
       value: true
-  - id: run-schema-validation
-    name: Run Schema Validation
-    description: "Schema-validation pass/fail results for every TOON file (workflow.toon, activities, techniques), with failures resolved before proceeding."
+  - kind: technique
+    id: run-schema-validation
+    technique: audit-schema-validation
     condition:
       type: simple
       variable: is_review_mode
       operator: "!="
       value: true
-  - id: verify-scope-manifest
-    name: Verify Scope Manifest
-    description: "Scope-manifest verification report: every item checked for file presence, performed action, and content match against the reviewed draft, with any unaddressed items flagged."
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-  - id: generate-readme
-    name: Generate README
-    description: "Newly generated README.md (create mode) with workflow title, description, activity sequence table, mode descriptions, usage instructions, and resource links."
-    condition:
-      type: and
-      conditions[2]:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_update_mode
-          operator: ==
-          value: false
-  - id: update-readme
-    name: Update README
-    description: "Updated README.md (update mode) reflecting any structural changes such as new activities, modified activity descriptions, or changed modes."
-    condition:
-      type: and
-      conditions[2]:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_update_mode
-          operator: ==
-          value: true
-  - id: stage-and-commit
-    name: Stage and Commit
-    description: "Signed commit on the workflows worktree containing all created/modified files, with a conventional message ('feat(workflow-design): ...' for create mode, 'fix(workflow-design): ...' for update mode)."
-  - id: verify-commit
-    name: Verify Commit
-    description: "Post-commit verification on the workflows worktree confirming the commit landed and no files were missed."
-checkpoints[2]:
-  - id: validation-passed
-    name: Validation Results Checkpoint
+  - kind: checkpoint
+    id: validation-passed
     condition:
       type: simple
       variable: is_review_mode
@@ -101,8 +53,16 @@ checkpoints[2]:
       - id: fix
         label: "Fix failures first"
         description: "Validation failures must be addressed before committing."
-  - id: scope-verified
-    name: Scope Verification Checkpoint
+  - kind: technique
+    id: verify-scope-manifest
+    technique: scope-verification
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: checkpoint
+    id: scope-verified
     condition:
       type: simple
       variable: is_review_mode
@@ -119,6 +79,25 @@ checkpoints[2]:
       - id: fix
         label: "Address remaining items"
         description: "Some scope-manifest items remain unaddressed and require attention."
+  - kind: technique
+    id: readme-authoring
+    technique: readme-authoring
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: technique
+    id: stage-and-commit
+    technique: version-control::commit-regular-files
+  - kind: technique
+    id: verify-commit
+    technique: commit-verification
+  - kind: action
+    id: announce-completion
+    actions[1]:
+      - action: log
+        message: "Workflow design complete — all files committed to workflows worktree"
 transitions[1]:
   - to: post-update-review
     condition:
@@ -126,15 +105,8 @@ transitions[1]:
       variable: is_update_mode
       operator: ==
       value: true
-exitActions[1]:
-  - action: log
-    message: "Workflow design complete — all files committed to workflows worktree"
 outcome[4]:
-  - All TOON files pass schema validation
-  - Scope manifest fully addressed
-  - README generated or updated
-  - All changes committed to workflows worktree
-context_to_preserve[3]:
-  - validation_results - Per-file validation pass/fail status
-  - commit_hash - Git commit hash of the final commit
-  - workflow_path - Full path to the created/updated workflow directory
+  - Every TOON file passes schema validation, so the workflow is guaranteed loadable and the server will run it without surprise
+  - Nothing planned is left undone — every scope-manifest item is accounted for before the work lands
+  - A human-readable entry point exists for the workflow, so future users and authors can discover and understand it without reading the raw TOON
+  - The work is durably landed in the workflows worktree, available to every session that loads the library

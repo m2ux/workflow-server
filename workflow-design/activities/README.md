@@ -2,178 +2,70 @@
 
 > Part of the [Workflow Design Workflow](../README.md)
 
-Ten sequential activities that guide an agent from free-form description to validated, committed workflow files. Activities 3–7 are mode-dependent (skipped in review mode). Activity 10 runs only in update mode as an automatic post-commit compliance audit. Each activity section below includes its purpose, techniques, steps, checkpoints, transitions, and mode overrides.
+Eight activities that guide an agent from free-form description to validated, committed workflow files. `requirements-refinement`, `pattern-analysis`, `impact-analysis`, and `scope-and-draft` are mode-dependent (skipped in review mode); `pattern-analysis` is also skipped in update mode. `post-update-review` runs only in update mode as an automatic post-commit compliance audit.
+
+This file is an orientation map. The authoritative definition of each activity — its steps, checkpoints, decisions, loops, and transitions — lives in the per-activity TOON linked from each section below and is served by `get_activity`.
 
 ---
 
-### 01. Intake
+### 01. Intake and Context
 
-**Purpose:** Accept the user's free-form description, classify as create/update/review, and extract initial design intent. In update mode, loads the existing workflow and parses the change request. In review mode, loads the target workflow and presents its structure for audit.
+Classify the request as create, update, or review, set the corresponding mode + target, then internalize the schema system and TOON format conventions before any drafting begins. In update mode it loads the existing workflow first; in review mode it confirms the audit target and branches straight to quality review. This is the literacy gate: nothing downstream proceeds until the agent has the schema and format baseline.
 
-**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md)
-
-**Steps:**
-
-1. **accept-description** — Receive and summarize the user's workflow description
-2. **classify-operation** — Determine create, update, or review based on user intent
-3. **extract-design-intent** — Extract purpose, domain, activity count, model type, constraints
-4. **set-mode** — Set `is_update_mode`, `is_review_mode`, and `workflow_id` variables
-
-**Checkpoints:** `mode-confirmation` — Confirm the classified operation type.
-
-**Transitions:** Default to [Context and Literacy](#02-context-and-literacy).
-
-**Mode overrides:**
-- **Update:** Adds steps to load existing workflow, parse change request, and present current structure. Adds `change-request-confirmed` checkpoint.
-- **Review:** Adds steps to load target workflow, enumerate contents, and present review scope. Skips `accept-description`, `classify-operation`, `extract-design-intent`, `set-mode`. **`review-scope-confirmed` checkpoint** (blocking) sets `review_scope_confirmed` before continuing.
+Definition: [`01-intake-and-context.toon`](./01-intake-and-context.toon). Leads to [Requirements Refinement](#02-requirements-refinement), or directly to [Quality Review](#06-quality-review) in review mode.
 
 ---
 
-### 02. Context and Literacy
+### 02. Requirements Refinement
 
-**Purpose:** Load schema definitions, read existing workflows to understand conventions, and verify TOON format comprehension. Gates all subsequent content production via `format_literacy_confirmed` and `schema_constructs_confirmed` variables.
+Guided one-question-at-a-time elicitation of the workflow specification across its design dimensions — purpose, activities, checkpoints, artifacts, variables, techniques, and rules. The value is a confirmed specification captured incrementally, without overwhelming the user with combined questions.
 
-**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md), supporting [`toon-authoring`](../techniques/toon-authoring.md)
-
-**Steps:**
-
-1. **load-schemas** — Fetch `workflow-server://schemas` to load all schema definitions
-2. **read-schema-documentation** — Read `schemas/README.md` for the full schema ontology, field tables, and validation guidance
-3. **survey-existing-workflows** — Call `list_workflows` and `get_workflow` for 2+ reference workflows
-4. **read-toon-examples** — Read existing TOON files to confirm syntax understanding
-5. **identify-applicable-constructs** — Identify which schema constructs apply to this workflow
-6. **present-convention-summary** — Summarize observed conventions for user confirmation
-
-**Checkpoints:** `format-literacy` (TOON format understanding), `constructs-confirmed` (schema constructs identified). In review mode, `format-literacy` is skipped and `constructs-confirmed` is adapted to audit context.
-
-**Transitions:** Default to [Requirements Refinement](#03-requirements-refinement) (gated by both confirmed variables). In review mode, to [Quality Review](#08-quality-review) when `is_review_mode` and `review_scope_confirmed` are true.
+Definition: [`03-requirements-refinement.toon`](./03-requirements-refinement.toon). Skipped in review mode; leads to [Pattern Analysis](#03-pattern-analysis) (create) or [Impact Analysis](#04-impact-analysis) (update).
 
 ---
 
-### 03. Requirements Refinement
+### 03. Pattern Analysis
 
-**Purpose:** Systematically elicit workflow design details one question at a time. Each design dimension has its own checkpoint to enforce atomic, sequential elicitation.
+Extract structural and content patterns from comparable existing workflows so the target workflow reuses proven conventions rather than reinventing them, and present those patterns alongside the proposed structure. Create mode only.
 
-**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md)
-
-**Steps:** 8 steps covering purpose, activities, activity model, checkpoints, artifacts, variables, techniques, and rules.
-
-**Checkpoints:** 8 atomic checkpoints — one per design dimension: `purpose-confirmed`, `activities-confirmed`, `model-confirmed`, `checkpoints-confirmed`, `artifacts-confirmed`, `variables-confirmed`, `techniques-confirmed`, `rules-confirmed`.
-
-**Transitions:** Default to [Pattern Analysis](#04-pattern-analysis).
-
-**Mode:** Skipped in review mode. In update mode, skips `elicit-activity-model`, `elicit-variables`, `elicit-techniques`.
+Definition: [`04-pattern-analysis.toon`](./04-pattern-analysis.toon). Leads to [Scope and Draft](#05-scope-and-draft).
 
 ---
 
-### 04. Pattern Analysis
+### 04. Impact Analysis
 
-**Purpose:** Audit 2+ existing workflows of the same type to extract reusable structural and content patterns. Present patterns alongside proposed structure.
+Assess the impact of proposed changes against an existing workflow's files, transitions, and references, and flag any content that will be removed so removals are deliberate rather than silent. Update mode only.
 
-**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md)
-
-**Steps:** Select reference workflows, extract structural patterns, extract content patterns, present comparison.
-
-**Checkpoints:** `patterns-confirmed` — Confirm which patterns to adopt.
-
-**Transitions:** Default to [Scope and Structure](#06-scope-and-structure).
-
-**Mode:** Skipped in update and review modes.
+Definition: [`05-impact-analysis.toon`](./05-impact-analysis.toon). Leads to [Scope and Draft](#05-scope-and-draft).
 
 ---
 
-### 05. Impact Analysis
+### 05. Scope and Draft
 
-**Purpose:** For update mode only. Enumerate all files in the existing workflow, identify affected files, check transition and reference integrity, flag content that will be removed.
+Define the complete file manifest and structural design up front, then run a per-file drafting and review pass over every entry in the confirmed manifest, validating each TOON file against its schema as it is written. The value is a complete, pre-approved scope and a set of drafted files that are individually reviewed and schema-valid. Carries a per-file user checkpoint in create mode and a content-preservation guard in update mode.
 
-**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md)
-
-**Steps:** Enumerate existing files, classify impact, check transition integrity, check reference integrity, flag content removal.
-
-**Checkpoints:** `impact-confirmed` (impact scope), `preservation-confirmed` (content removals).
-
-**Transitions:** Default to [Scope and Structure](#06-scope-and-structure).
-
-**Mode:** Skipped in create and review modes.
+Definition: [`06-scope-and-draft.toon`](./06-scope-and-draft.toon). Skipped in review mode; leads to [Quality Review](#06-quality-review).
 
 ---
 
-### 06. Scope and Structure
+### 06. Quality Review
 
-**Purpose:** Define the complete file manifest and structural design. Enumerates every file to create, modify, or remove, and proposes the folder structure and implementation order.
+Quality review of the drafted content. In create/update modes it runs the expressiveness, conformance, rule-hygiene, and rule-enforcement audit passes. In review mode it runs the full compliance audit (load all files, principle compliance, anti-pattern scan, schema validation, tool-technique-doc consistency) and compiles a severity-rated report, after which the user chooses whether to fix the findings. The value is workflow content that has been checked against the design principles and conventions before it is committed.
 
-**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md)
-
-**Steps:** Verify worktree, design folder structure, enumerate file manifest, present structural design, present approach.
-
-**Checkpoints:** `scope-confirmed` (sets `scope_manifest_confirmed`), `structure-confirmed` (sets `approach_confirmed`).
-
-**Transitions:** Default to [Content Drafting](#07-content-drafting) (gated by both confirmed variables).
-
-**Mode:** Skipped in review mode. In update mode, skips `design-folder-structure`.
+Definition: [`08-quality-review.toon`](./08-quality-review.toon). Leads to [Validate and Commit](#07-validate-and-commit).
 
 ---
 
-### 07. Content Drafting
+### 07. Validate and Commit
 
-**Purpose:** Draft or modify each file in the scope manifest with per-file approach and review checkpoints. Validates all TOON files against the schema immediately after drafting.
+Final schema validation, scope verification, README generation/update, and commit of the workflow changes to the workflows worktree. In review mode it instead saves and commits the compliance report. The value is a workflow that is guaranteed loadable, has nothing left undone from its scope, has a human-readable entry point, and is committed.
 
-**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md), supporting [`toon-authoring`](../techniques/toon-authoring.md)
-
-**Steps:** Present file approach, draft file content, validate against schema, present for review, advance to next file.
-
-**Loop:** `forEach` over `scope_manifest` files.
-
-**Checkpoints:** `file-approach-confirmed` (per file), `file-review` (per file).
-
-**Transitions:** Default to [Quality Review](#08-quality-review).
-
-**Mode:** Skipped in review mode. In update mode, adds `preservation-check` checkpoint for content being removed.
+Definition: [`09-validate-and-commit.toon`](./09-validate-and-commit.toon). Terminal in create and review modes; leads to [Post-Update Review](#08-post-update-review) in update mode.
 
 ---
 
-### 08. Quality Review
+### 08. Post-Update Review
 
-**Purpose:** Four review passes over all content: schema expressiveness, convention conformance, rule hygiene, and rule-to-structure (enforcement) audit. Each pass has its own checkpoint.
+Automatic post-commit compliance audit of the updated workflow against the design principles and anti-patterns. It reloads the committed state from the workflow-server (not cached data) and produces a severity-rated findings summary persisted as a review snapshot, so update work is verified against the principles after it lands. Update mode only.
 
-**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md)
-
-**Steps:** 8 steps — review and present findings for each of the four passes. Uses [schema-construct-inventory](../resources/schema-construct-inventory.md) for expressiveness audit and [anti-patterns](../resources/anti-patterns.md) for anti-pattern scan. The `rule-hygiene-audit` step applies a worker-visibility carve-out when checking cross-level rule duplication: behavioural rules that workers must read cannot be lifted to the workflow root, since workers receive `get_activity` and `get_technique` responses but never `workflow.toon`. Per-technique duplication of worker-directed rules is the correct mechanism and is not flagged.
-
-**Checkpoints:** `expressiveness-confirmed`, `conformance-confirmed`, `rule-hygiene-confirmed`, `enforcement-confirmed`.
-
-**Transitions:** Default to [Validate and Commit](#09-validate-and-commit).
-
-**Mode:** In review mode, gains 7 additional steps (load all workflow files, principle compliance audit, anti-pattern scan, schema validation check, compile compliance report, present report, offer fixes) and a `review-disposition` checkpoint.
-
----
-
-### 09. Validate and Commit
-
-**Purpose:** Run schema validation, re-verify scope manifest, generate/update README, commit to the workflows worktree. In review mode, save the compliance report as an artifact.
-
-**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md), supporting [`toon-authoring`](../techniques/toon-authoring.md)
-
-**Steps:** Run schema validation, verify scope manifest, generate README (create) or update README (update), stage and commit, verify commit.
-
-**Checkpoints:** `validation-passed`, `scope-verified`.
-
-**Transitions:** In update mode, transitions to [Post-Update Review](#10-post-update-review). Terminal in create and review modes.
-
-**Mode:** In review mode, skips validation/scope/README steps and instead saves the compliance report and commits it to the parent repository.
-
----
-
-### 10. Post-Update Review
-
-**Purpose:** Automatically runs after validate-and-commit in update mode. Reloads the updated workflow from the workflow-server and runs all 5 audit passes (schema expressiveness, convention conformance, rule enforcement, anti-pattern scan, schema validation) to verify the update did not introduce new compliance issues.
-
-**Techniques:** primary [`workflow-design`](../techniques/workflow-design.md)
-
-**Steps:** Reload updated workflow, run 5 audit passes, compile findings summary, present results, save review snapshot.
-
-**Checkpoints:** `post-update-disposition` — Accept results, fix findings (transitions back to intake), or revert commit.
-
-**Transitions:** Terminal activity. The `iterate` and `revert` checkpoint options use `transitionTo: intake` to restart the workflow in update mode if findings need to be addressed.
-
-**Mode:** Update mode only (reached via conditional transition from validate-and-commit).
+Definition: [`10-post-update-review.toon`](./10-post-update-review.toon). Terminal activity; the fix/revert dispositions restart the workflow at [Intake and Context](#01-intake-and-context).

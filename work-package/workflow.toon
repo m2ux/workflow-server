@@ -11,39 +11,20 @@ tags[6]:
   - feature
   - bug-fix
   - pr
-rules[6]:
-  - "Ask, don't assume - Clarify requirements before acting"
-  - "Summarize, then proceed - Provide brief status before asking to continue"
-  - One task at a time - Complete current work before starting new work
-  - "Explicit approval - Get clear 'yes' or 'proceed' before major actions (within activity checkpoints only — NOT between activities)"
-  - "Decision points require user choice - When issues are found, user decides whether to proceed or loop back"
-  - "Git configuration is user-owned. Validate-action messages describe a misconfiguration but never prescribe config-changing commands; the user fixes their own environment at whatever scope (system, global, local) they prefer."
+rules:
+  workflow[6]:
+    - "Ask, don't assume - Clarify requirements before acting"
+    - "Summarize, then proceed - Provide brief status before asking to continue"
+    - One task at a time - Complete current work before starting new work
+    - "Explicit approval - Get clear 'yes' or 'proceed' before major actions (within activity checkpoints only — NOT between activities)"
+    - "Decision points require user choice - When issues are found, user decides whether to proceed or loop back"
+    - "Git configuration is user-owned. Validate-action messages describe a misconfiguration but never prescribe config-changing commands; the user fixes their own environment at whatever scope (system, global, local) they prefer."
+  activity[1]:
+    - "On completing each activity, update the planning-folder README.md progress tracker — mark this activity's artifacts as ✅ Complete and set the work-package Status to reflect the current milestone."
 techniques:
-artifactLocations:
-  planning:
-    path: "{planning_folder_path}"
-  reviews:
-    path: ".engineering/artifacts/reviews"
-  adr:
-    path: ".engineering/artifacts/adr"
-  comprehension:
-    path: ".engineering/artifacts/comprehension"
-modes[1]:
-  - id: review
-    name: Review Mode
-    description: "Review existing PRs rather than implementing new code. Analyzes pre-change baseline, skips implementation, and generates structured PR review comments."
-    activationVariable: is_review_mode
-    recognition[3]:
-      - start review work package
-      - review pr
-      - review existing implementation
-    skipActivities[2]:
-      - requirements-elicitation
-      - implement
-    defaults:
-      needs_elicitation: false
-    resource: resources/review-mode.md
-variables[91]:
+  activity[1]:
+    - variable-binding
+variables[95]:
   - name: target_path
     type: string
     description: "Path to the working directory where edits, branch creation, builds, and PR operations occur. As of work-package 3.10, this is a dedicated git worktree of the component repo at the canonical path '~/projects/work/{component_name}/{wp-slug}/' — NOT the component's checkout inside the reference monorepo. Set by start-work-package's compute-canonical-target-path step after the work-package slug is known. All downstream activities (cargo-operations, manage-git, validate, strategic-review, etc.) operate on this path."
@@ -62,6 +43,10 @@ variables[91]:
   - name: planning_folder_path
     type: string
     description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}"
+  - name: provenance_log_path
+    type: string
+    description: "Absolute path to the AI-assistance provenance log (provenance-log.md), created under the planning folder during implementation. Read by the submit-for-review DCO checkpoint to show the log location."
+    defaultValue: ""
   - name: issue_number
     type: string
     description: GitHub or Jira issue number
@@ -93,9 +78,12 @@ variables[91]:
     type: boolean
     description: Whether codebase comprehension is needed. Always true after design-philosophy (comprehension is mandatory). May be re-set to true by assumptions-review if stakeholder feedback requires deeper understanding.
     defaultValue: true
-  - name: complexity
+  - name: problem_complexity
     type: string
     description: "Problem complexity assessed during design-philosophy (simple|moderate|complex). Drives ADR creation."
+  - name: project_type
+    type: string
+    description: "Detected project type (e.g. rust-substrate); produced by project-type-detection and gates rust-substrate-specific validation steps."
   - name: elicitation_complete
     type: boolean
     description: Whether requirements elicitation is finished
@@ -104,10 +92,9 @@ variables[91]:
     type: boolean
     description: Whether validation phase passed
     defaultValue: false
-  - name: has_failures
-    type: boolean
-    description: Whether test/build/lint failures were detected during validation
-    defaultValue: false
+  - name: validation_results
+    type: object
+    description: "Aggregate validation envelope emitted by cargo-operations::run-suite — { check_status, clippy_status, test_status, fmt_status, validation_passed }. The validate activity reads its fields by dotted path (e.g. validation_results.validation_passed) to drive the fix-revalidate loop."
   - name: review_passed
     type: boolean
     description: Whether strategic review passed
@@ -257,7 +244,7 @@ variables[91]:
     description: "Assumptions collected during current task for review iteration"
   - name: current_task
     type: object
-    description: "Current task during implementation loop (from plan.tasks)"
+    description: "Current task during implementation loop (from implementation_plan.tasks)"
   - name: current_assumption
     type: object
     description: "Current assumption during assumption review loop (from task_assumptions). Sub-shape: { id: string (e.g., 'A-001'), statement: string }."
@@ -336,7 +323,7 @@ variables[91]:
     type: string
     description: "Filename of the comprehension artifact (basename only, no path) used in user-facing messages — distinct from comprehension_artifact which is the full path."
     defaultValue: ""
-  - name: plan
+  - name: implementation_plan
     type: object
     description: "Implementation plan produced by plan-prepare. Sub-shape: { task_count: number — count of tasks in the plan; tasks: array of { id: string, description: string, status: string } }. Fields actually interpolated in messages today: task_count, tasks[].id, tasks[].description. Additional fields are tolerated."
   - name: strategic_findings_summary
@@ -373,7 +360,7 @@ variables[91]:
     defaultValue: false
   - name: path_gating_complexity
     type: string
-    description: "Path-gating mirror of complexity. Used by design-philosophy's workflow-path-selected.skip-optional effect."
+    description: "Path-gating mirror of problem_complexity. Used by design-philosophy's workflow-path-selected.skip-optional effect."
     defaultValue: ""
   - name: gitnexus_indexed
     type: boolean
@@ -386,4 +373,10 @@ variables[91]:
     type: string
     description: "URL of the pull request created during start-work-package. Captured alongside pr_number and recorded on the linked issue."
     defaultValue: ""
+  - name: discovered_path
+    type: string
+    description: "Path the user originally pointed at; resolved by reference-resolution into reference_path/component_name."
+  - name: issue_title
+    type: string
+    description: "Tracker issue/ticket title; used by naming-conventions to derive the branch name."
 initialActivity: start-work-package

@@ -21,16 +21,16 @@ Path to the reference report artifact.
 
 1. Load reference report from input `{reference_report}` (first and only time).
 2. Extract reference finding list with severities and affected files.
-3. Map, classify, and analyze per the sections above.
-4. Write the `{gap_analysis}` report, assembling the `{summary_metrics}`, `{finding_mapping}`, `{gaps}`, `{severity_calibration}`, `{ai_only_findings}`, and `{recommendations}` sections into the artifact.
+3. Map each reference finding to the closest AI finding, classify each as matched/partial/gap, and severity-calibrate the matched findings.
+4. Write the `{gap_analysis}` report, assembling the `{gap_analysis.summary_metrics}`, `{gap_analysis.finding_mapping}`, `{gap_analysis.gaps}`, `{gap_analysis.severity_calibration}`, `{gap_analysis.ai_only_findings}`, and `{gap_analysis.recommendations}` sections into the artifact.
 
 ## Outputs
 
 ### gap_analysis
 
-[Gap analysis report](../resources/gap-analysis-template.md#gap-analysis-template). When persisted, use artifact name.
+[Gap analysis report](../resources/gap-analysis-template.md#gap-analysis-template).
 
-#### artifact_filename
+#### artifact
 
 `02-gap-analysis.md`
 
@@ -57,3 +57,13 @@ Findings in the AI report not present in the reference. Assess whether novel or 
 #### recommendations
 
 Workflow improvement suggestions derived from gap root causes
+
+## Rules
+
+### reference-targets-same-commit
+
+The reference report compared against must target the same commit as the AI audit for the comparison to be valid.
+
+### reference-loaded-once-here
+
+The reference report is loaded for the first and only time during this comparison; it must not have been read or discussed earlier.

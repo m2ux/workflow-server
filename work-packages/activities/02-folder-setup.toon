@@ -1,41 +1,16 @@
 id: folder-setup
-version: 1.2.0
+version: 1.3.0
 name: Planning Folder Setup
 description: Create planning folder structure with initial documentation skeletons
-problem: Need organized folder structure for multi-package planning artifacts
-techniques:
-  supporting[3]:
-    - "version-control::initialize-folder"
-    - "work-package/manage-artifacts::create-readme"
-    - "work-package/manage-artifacts::write-artifact"
-steps[4]:
-  - id: create-folder
-    name: Bind planning folder
-    description: "Bind planning_folder_path to the canonical absolute path the server returned in the get_workflow summary — the planning folder under the server's OWN workspace .engineering root, which the server has already created. Use version-control::initialize-folder only to derive the slug (initiative_name: <kebab-case slug>) when you need it; do NOT mkdir a folder relative to the CWD or the target repo. All multi-package planning artifacts are written under that absolute path."
+steps[3]:
+  - kind: technique
+    id: create-folder
     technique: "version-control::initialize-folder"
-  - id: create-start-here
-    name: Create START-HERE.md
-    description: "Create {planning_folder_path}/START-HERE.md skeleton with header and placeholders"
-  - id: create-readme
-    name: Create README.md
-    description: "Create {planning_folder_path}/README.md skeleton for navigation"
-  - id: present-structure
-    name: Present folder structure
-    description: Show user the created folder structure
-artifacts[2]:
-  - id: start-here-skeleton
-    name: START-HERE.md
-    location: planning
-    description: "Executive summary and status tracking skeleton"
-    action: create
-  - id: readme-skeleton
-    name: README.md
-    location: planning
-    description: "Navigation and document index skeleton"
-    action: create
-checkpoints[1]:
-  - id: folder-created
-    name: Folder Setup Complete
+  - kind: technique
+    id: setup-planning-folder
+    technique: setup-planning-folder
+  - kind: checkpoint
+    id: folder-created
     message: "Planning folder created. Proceed with analysis?"
     options[2]:
       - id: proceed
@@ -49,9 +24,5 @@ checkpoints[1]:
 transitions[1]:
   - to: analysis
     isDefault: true
-outcome[2]:
-  - Planning folder structure created
-  - Initial documentation skeletons in place
-context_to_preserve[2]:
-  - planning_folder_path - Path to the created planning folder
-  - documents_created - List of created document files
+outcome[1]:
+  - There is a single known home for all planning artifacts, with entry-point and overview scaffolds ready for later activities to fill in

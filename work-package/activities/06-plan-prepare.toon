@@ -1,27 +1,11 @@
 id: plan-prepare
-version: 1.5.1
+version: 1.7.0
 name: Plan & Prepare
 description: "Design the approach, create the work package plan, and prepare for implementation."
-problem: User needs to plan the implementation approach
-recognition[3]:
-  - plan implementation
-  - create plan
-  - prepare for implementation
 required: true
-estimatedTime: 20-45m
-techniques:
-  supporting[7]:
-    - classify-problem
-    - create-plan
-    - create-test-plan
-    - "manage-git::sync-branch"
-    - reconcile-assumptions
-    - review-assumptions
-    - update-pr
-steps[11]:
-  - id: env-prerequisites
-    name: Verify Environment Prerequisites
-    description: "Verify environment prerequisites."
+steps[12]:
+  - kind: action
+    id: env-prerequisites
     actions[6]:
       - action: validate
         target: workflows.worktree.present == true
@@ -41,64 +25,60 @@ steps[11]:
       - action: validate
         target: gpg.agent.reachable == true
         message: "GPG agent is not reachable. Ensure it is running at your preferred scope before re-running."
-  - id: apply-design
-    name: Apply design framework
-    description: Use design framework technique to structure the approach
-  - id: create-plan
-    name: Create work package plan
-    description: "Create work package plan document"
-  - id: create-test-plan
-    name: Create test plan
-    description: "Create test plan document"
-  - id: present-solution-overview
-    name: Present Solution Overview
-    description: "Synthesize and present a plain-language solution overview to the user. Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders. The first paragraph should describe what the solution does and how it addresses the problem. The second paragraph should explain how the fix works at a high level — what changes are made and what guarantees they provide. Do not use jargon without explanation. Base the overview on the work package plan, test plan, and design decisions made during this activity. After generating the overview, write it into the planning folder README.md by replacing the placeholder text under the '## Solution Overview' section."
+  - kind: technique
+    id: create-plan
+    technique: plan
+  - kind: technique
+    id: create-test-plan
+    technique: create-test-plan
+  - kind: technique
+    id: present-solution-overview
+    technique:
+      name: stakeholder-overview
+      inputs:
+        readme_section_heading: "## Solution Overview"
     actions[1]:
       - action: message
         message: "**Solution Overview** (plain-language summary for stakeholder reference)"
-  - id: collect-assumptions
-    name: Collect assumptions
-    description: "Identify assumptions made during planning. Categories: Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions."
-  - id: update-assumptions-log
-    name: Update assumptions log
-    description: "Add planning-phase assumptions to the assumptions log"
-  - id: reconcile-assumptions
-    name: Reconcile assumptions
-    description: "Classify all assumptions by resolvability (code-analyzable vs stakeholder-dependent). Iteratively resolve code-analyzable assumptions through targeted codebase analysis using the reconcile-assumptions technique. Continue until no code-resolvable assumptions remain (convergence). Update assumptions-log.md and comprehension artifact with findings."
-  - id: create-todos
-    name: Create TODO list from plan
-    description: "Break down plan into actionable tasks and add to assumptions log for review"
-  - id: sync-branch
-    name: Sync feature branch with main
-    description: Ensure feature branch is up to date with main
-  - id: update-pr
-    name: Update PR description
-    description: "Update PR description with planning information. Use attached resource pr-description for the PR description template — use the 'Initial' template and populate with planning details (summary, motivation, planned changes, checklist, fork strategy)."
-    checkpoint: approach-confirmed
-loops[1]:
-  - id: assumption-reconciliation
+  - kind: technique
+    id: collect-assumptions
+    technique:
+      name: review-assumptions::collect
+      inputs:
+        assumption_categories: "Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions"
+  - kind: technique
+    id: update-assumptions-log
+    technique: review-assumptions::record
+  - kind: technique
+    id: reconcile-assumptions
+    technique: review-assumptions::reconcile
+  - kind: loop
+    id: assumption-reconciliation
     name: Assumption Reconciliation Loop
-    type: while
+    loopType: while
     condition:
       type: simple
       variable: has_resolvable_assumptions
       operator: ==
       value: true
-    description: "Iterative codebase investigation to resolve code-analyzable assumptions. Follows the reconcile-assumptions technique protocol."
     steps[1]:
-      - id: reconcile-iteration
-        name: Execute Reconciliation Iteration
-        description: "Execute one iteration of the reconcile-assumptions protocol: classify resolvability, perform targeted analysis, update logs, and reclassify for convergence."
-artifacts[2]:
-  - id: plan-document
-    name: work-package-plan.md
-    location: planning
-  - id: test-plan-document
-    name: test-plan.md
-    location: planning
-checkpoints[1]:
-  - id: approach-confirmed
-    name: Approach Checkpoint
+      - kind: technique
+        id: reconcile-iteration
+        technique: review-assumptions::reconcile
+  - kind: technique
+    id: create-todos
+    technique: create-todos
+  - kind: technique
+    id: sync-branch
+    technique: manage-git::sync-branch
+  - kind: technique
+    id: update-pr
+    technique:
+      name: update-pr::render
+      inputs:
+        pr_template_variant: initial
+  - kind: checkpoint
+    id: approach-confirmed
     message: "Approach presented above. Confirming in 30s unless you want to revise."
     blocking: false
     defaultOption: confirmed
@@ -113,13 +93,7 @@ checkpoints[1]:
 transitions[1]:
   - to: assumptions-review
     isDefault: true
-exitActions[1]{action,message}:
-  message,README PROGRESS: Update planning folder README.md — mark plan artifacts as ✅ Complete and set Status to Ready.
 outcome[3]:
-  - Implementation plan created
-  - Test plan created
-  - PR updated with plan
-context_to_preserve[3]:
-  - plan - Work package plan document
-  - test_plan - Test plan document
-  - tasks - List of implementation tasks
+  - An agreed, sequenced approach that the implement activity can execute against task by task
+  - A defined verification strategy that validation will run the implementation against
+  - Reviewers and stakeholders can see the intended approach on the PR before any code is written

@@ -1,96 +1,50 @@
 id: reconnaissance
-version: 3.0.0
+version: 3.2.0
 name: Reconnaissance
 description: "Run codebase reconnaissance and security decomposition."
-problem: "The orchestrator previously performed 9 inline reconnaissance steps (reading source files, scanning crates, building registries), consuming 10-15K tokens of context before primary agent dispatch. This reduced the orchestrator's effective context budget for its actual role: coordinating 10+ sub-agents across 6 workflow phases. Delegating analysis to sub-agents keeps the orchestrator's context clean for coordination."
-recognition[3]:
-  - map architecture
-  - codebase reconnaissance
-  - identify crates and trust boundaries
-techniques:
-  supporting[1]:
-    - execute-audit
 required: true
-estimatedTime: 15-30m
-rules[5]:
-  - "ORCHESTRATOR ROLE: The orchestrator dispatches sub-agents and reads their file outputs. It does NOT read source code, scan directories, or build registries during reconnaissance."
-  - "RECONNAISSANCE SUB-AGENT (R): Dispatched first. Performs crate identification, architecture mapping, trust boundary analysis, consensus path identification, config struct enumeration, pallet hook discovery, data flow tracing, safety override checks, and function registry construction. Writes r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json to the planning folder."
-  - "SECURITY ARCHITECTURE SUB-AGENT (S): Dispatched after R completes. Receives R's file outputs. Produces interaction model, privilege map, candidate points, and emergent vulnerability domains. Writes s-architectural-analysis.json to the planning folder."
-  - "DOMAIN MAPPING AND AGENT ASSIGNMENT: After both sub-agents complete and their output files are verified, the orchestrator performs vulnerability domain mapping, agent group assignment, and lead routing. These are coordination tasks that require the target profile and agent roster — they stay with the orchestrator."
-  - "All sub-agent outputs MUST be persisted as files in the planning folder before the orchestrator reads them. The orchestrator reads files, not sub-agent return values, to avoid context accumulation from large outputs."
-entryActions[1]{action,message}:
-  log,Starting codebase reconnaissance (§1.2) — dispatching reconnaissance sub-agent
-steps[7]:
-  - id: dispatch-reconnaissance-agent
-    name: "Dispatch Reconnaissance Sub-Agent (R)"
-    required: true
+steps[9]:
+  - kind: action
+    id: announce-start
+    actions[1]{action,message}:
+      log,Starting codebase reconnaissance (§1.2) — dispatching reconnaissance sub-agent
+  - kind: technique
+    id: dispatch-reconnaissance-agent
     technique: dispatch-sub-agents
-    description: "Dispatch the reconnaissance sub-agent (R) following the sub-reconnaissance activity. R receives: target_submodule, target_commit, in_scope, out_of_scope, planning_folder_path, target profile (resource 06). R writes r-crate-map.json, r-function-registry.json, and r-reconnaissance-data.json to the planning folder."
-  - id: verify-reconnaissance-files
-    name: "Verify Reconnaissance Output Files"
-    required: true
-    description: "Verify that R produced all required output files in the planning folder: r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json. If any file is missing, re-dispatch R."
-  - id: dispatch-security-architecture-agent
-    name: "Dispatch Security Architecture Sub-Agent (S)"
-    required: true
+  - kind: technique
+    id: verify-reconnaissance-files
+    technique:
+      name: dispatch-sub-agents
+      inputs:
+        expected_output_files: "r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json"
+  - kind: technique
+    id: dispatch-security-architecture-agent
     technique: dispatch-sub-agents
-    description: "Dispatch the security architecture sub-agent (S) following the sub-architectural-analysis activity. S receives R's output files from the planning folder (r-crate-map.json, r-reconnaissance-data.json) plus the file inventory. S writes s-architectural-analysis.json to the planning folder."
-  - id: verify-security-architecture-file
-    name: "Verify Security Architecture Output File"
-    required: true
-    description: "Verify that S produced s-architectural-analysis.json in the planning folder. If missing, re-dispatch S."
-  - id: map-vulnerability-domains
-    name: Map Vulnerability Domains
+  - kind: technique
+    id: verify-security-architecture-file
+    technique:
+      name: dispatch-sub-agents
+      inputs:
+        expected_output_files: "s-architectural-analysis.json"
+  - kind: technique
+    id: map-vulnerability-domains
     technique: map-vulnerability-domains
-    description: "Read r-crate-map.json, r-reconnaissance-data.json, and s-architectural-analysis.json from the planning folder. Bind architectural analysis artifacts to §3 verification procedures. Produces a domain map partitioned by crate for sub-agent distribution. This is a coordination task — the orchestrator uses the target profile's vulnerability domain hints as seeds."
-  - id: assign-agent-groups
-    name: Assign Agent Groups
+  - kind: technique
+    id: assign-agent-groups
     technique: dispatch-sub-agents
-    description: "Read the crate map and target profile. Assign crates to sub-agent groups per the target profile's Agent Dispatch Assignments and File Coverage Obligations tables. Identify cross-crate supplementary files."
-  - id: route-reconnaissance-leads
-    name: Route Reconnaissance Leads to Agents
+  - kind: technique
+    id: route-reconnaissance-leads
     technique: dispatch-sub-agents
-    description: "Read r-reconnaissance-data.json for leads. Produce a leads-to-agent routing table. Every pattern, potential issue, or observation noted by R MUST be explicitly assigned to a specific sub-agent designator (a1, a2, ..., a7, b, d1, d2). Unrouted leads are lost."
+  - kind: action
+    id: finalize-activity
+    actions[2]{action,message}:
+      log,Reconnaissance complete — architecture mapped and function registry built
+      set,reconnaissance_complete=true
 transitions[1]{to,isDefault}:
   primary-audit,true
-exitActions[2]{action,message}:
-  log,Reconnaissance complete — architecture mapped and function registry built
-  set,reconnaissance_complete=true
-outcome[6]:
-  - All crates explicitly identified and classified (crate-map.json)
-  - Trust boundaries mapped (reconnaissance-data.json)
-  - Consensus-critical paths identified (reconnaissance-data.json)
-  - Function registry built for priority-1 and priority-2 crates (function-registry.json)
-  - Security architecture analyzed — interaction model, privilege map, candidate points, emergent domains (architectural-analysis.json)
-  - Agent groups assigned with domain map entries and cross-crate supplement mappings
-context_to_preserve[9]:
-  - crate_map - Read from r-crate-map.json
-  - function_registry - Read from r-function-registry.json
-  - trust_boundaries - Read from r-reconnaissance-data.json
-  - agent_assignments - Crate-to-agent-group assignments with cross-crate supplement files noted
-  - agents_assigned - Total count of agents in the assignment roster (used by dispatch completeness gate)
-  - large_files - Read from r-reconnaissance-data.json
-  - architectural_analysis - Read from s-architectural-analysis.json
-  - vulnerability_domain_map - Per-class list of codebase locations triggering each §3 category, partitioned by crate
-  - leads_routing - Per-lead table mapping each reconnaissance observation to its assigned sub-agent
-artifacts[5]:
-  - id: crate-map
-    name: r-crate-map.json
-    location: planning
-    description: "Crate classification by type, priority, and architectural category (produced by R)"
-  - id: function-registry
-    name: r-function-registry.json
-    location: planning
-    description: "Registry of critical functions per priority-1/2 crate (produced by R)"
-  - id: reconnaissance-data
-    name: r-reconnaissance-data.json
-    location: planning
-    description: "Trust boundaries, consensus paths, pallet hooks, config structs, data flows, safety overrides, large files, leads (produced by R)"
-  - id: architectural-analysis
-    name: s-architectural-analysis.json
-    location: planning
-    description: "Interaction model, privilege map, candidate points, emergent domains (produced by S)"
-  - id: readme
-    name: README.md
-    location: planning
-    description: "Audit scope, methodology, crate inventory, and architecture summary"
+outcome[5]:
+  - The in-scope surface is fully classified by crate priority, so review effort can be concentrated where consensus-critical risk lives
+  - Trust boundaries and consensus-critical paths are known, telling agents where untrusted input crosses into privileged execution
+  - Priority crates have an enumerated function inventory agents can drive exhaustive coverage from
+  - A security model of the system — interaction trust assumptions, privilege map, ranked candidate points, and vulnerability domains beyond the §3 checklist — exists to derive what could go wrong from how the system is built
+  - Every in-scope area is bound to a responsible agent with its cross-crate context, so primary dispatch has complete, non-overlapping coverage

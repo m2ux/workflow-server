@@ -1,87 +1,59 @@
 id: primary-scan
-version: 1.0.0
+version: 1.2.0
 name: Primary Scan
 description: "Run per-submodule scanner agents and merge their findings."
-problem: Each submodule's GitHub Actions workflows must be scanned for all seven vulnerability classes, findings verified for completeness, and merged into a unified finding set.
-recognition[3]:
-  - scan workflows
-  - run detection
-  - primary scan
-techniques:
-  supporting[1]:
-    - execute-cicd-audit
+techniques[1]:
+  - execute-cicd-audit
 required: true
-estimatedTime: 20-40m
-rules[8]:
-  - "CONCURRENT DISPATCH: All scanner agents (S1-Sn) MUST be dispatched simultaneously in a single batch"
-  - "DISPATCH COMPLETENESS GATE: scanners_dispatched MUST equal scanners_assigned. This is a HARD STOP."
-  - "Each scanner agent follows the sub-workflow-scan activity and applies all seven patterns (P1-P7)"
-  - "Scanner output: each agent writes s{n}-{submodule}.json to the planning folder"
-  - "After all scanners return, dispatch verification agent (V) following sub-verification activity"
-  - "After verification, dispatch merge agent (M) following sub-merge activity"
-  - "The orchestrator MUST NOT analyze workflow files directly — all detection is delegated to scanner sub-agents"
-  - "FINDING COUNT RECONCILIATION: M produces a reconciliation table. Unaccounted MUST equal zero. This is a HARD STOP."
-entryActions[1]{action,message}:
-  log,Starting primary scan — dispatching per-submodule scanner agents
-steps[8]:
-  - id: dispatch-all-scanners
-    name: "Dispatch All Scanner Agents"
-    required: true
-    technique: dispatch-scanners
-    description: "Dispatch all per-submodule scanner agents (S1-Sn) concurrently in a single batch. Each agent receives its submodule path, workflow file list, reconnaissance data, and workflow-server bootstrap instructions to load the sub-workflow-scan activity. Every assigned scanner MUST be dispatched."
-  - id: verify-dispatch-completeness
-    name: "Verify Dispatch Completeness (HARD STOP)"
-    required: true
-    technique: dispatch-scanners
-    description: "Compare scanners_dispatched against scanners_assigned. Dispatch missing scanners before proceeding. HARD STOP."
-  - id: collect-scanner-results
-    name: Collect All Scanner Results
-    required: true
-    description: "Wait for all scanner agents to return. Verify each scanner produced a valid output file (s{n}-{submodule}.json) in the planning folder."
-  - id: verify-scanner-output-files
-    name: "Verify Scanner Output Files Exist in Planning Folder"
-    required: true
-    description: "Each sub-agent writes its own output file per its activity's rules. The orchestrator verifies all expected JSON files exist in the planning folder: one per dispatched scanner (s{n}-{submodule}.json). If any file is missing, re-dispatch the scanner. This step MUST complete before V or M are dispatched."
-  - id: dispatch-verification-agent
-    name: "Dispatch Verification Sub-Agent (V)"
-    required: true
-    technique: dispatch-scanners
-    description: "Dispatch the verification sub-agent with bootstrap instructions to load the sub-verification activity. V receives all scanner output file paths and the workflow file inventory. V mechanically validates output completeness and produces a gap report. The orchestrator MUST NOT self-certify verification — V sets verification_complete."
-  - id: act-on-gap-report
-    name: "Act on Verification Gap Report"
-    required: true
-    description: "Read V's gap report. For each gap, re-dispatch a targeted scanner for uncovered files or patterns. Collect follow-up results. If no gaps found, proceed to merge agent dispatch."
-  - id: dispatch-merge-agent
-    name: "Dispatch Merge Sub-Agent (M)"
-    required: true
-    technique: dispatch-scanners
-    description: "Dispatch the merge sub-agent with bootstrap instructions to load the sub-merge activity. M receives all scanner output files and the severity rubric (resource 02). M performs deduplication, cross-pattern correlation, and reconciliation in a fresh context window. The orchestrator MUST NOT perform the merge inline."
-  - id: validate-reconciliation
-    name: "Validate Finding Count Reconciliation (HARD STOP)"
-    required: true
-    description: "Read M's reconciliation table. Verify Unaccounted == 0 for every scanner. If Unaccounted > 0, re-dispatch M. This is a HARD STOP — report generation MUST NOT begin with Unaccounted > 0."
-transitions[1]{to,isDefault}:
-  report-generation,true
-exitActions[2]{action,message}:
-  log,Primary scan complete — all findings merged and reconciled
-  set,primary_scan_complete=true
-outcome[6]:
-  - All scanner agents dispatched and returned with verified dispatch completeness
-  - Every workflow file scanned for all seven patterns
-  - Verification agent confirmed completeness
-  - Merge agent produced unified finding set with zero Unaccounted in reconciliation
-  - All scanner output files persisted in planning folder
-  - Findings ready for severity scoring and report generation
-context_to_preserve[7]:
-  - scanners_dispatched - Number of scanner agents dispatched
-  - dispatch_manifest - Per-scanner table with assigned/dispatched/returned status
-  - dispatch_complete - true when all assigned scanners dispatched and returned
-  - verification_complete - Whether V confirmed completeness (set by V, not orchestrator)
-  - verification_report - Gap report from V including coverage attestation
-  - merge_complete - Whether M completed with zero Unaccounted
-  - scanner_output_files - Paths to persisted JSON files for each scanner (canonical finding source)
-artifacts[1]:
-  - id: merged-findings
-    name: merged-findings.json
-    location: planning
-    description: "Unified finding set after deduplication and cross-pattern correlation"
+steps[10]:
+  - kind: action
+    id: announce-start
+    actions[1]{action,message}:
+      log,Starting primary scan — dispatching per-submodule scanner agents
+  - kind: technique
+    id: dispatch-all-scanners
+    technique: dispatch-scanners::dispatch-all
+  - kind: technique
+    id: verify-dispatch-completeness
+    technique: dispatch-scanners::verify-dispatch-completeness
+  - kind: technique
+    id: collect-scanner-results
+    technique: dispatch-scanners::collect-results
+  - kind: technique
+    id: verify-scanner-output-files
+    technique: dispatch-scanners::verify-output-files
+  - kind: technique
+    id: dispatch-verification-agent
+    technique: dispatch-scanners::dispatch-verification
+  - kind: technique
+    id: act-on-gap-report
+    technique: dispatch-scanners::act-on-gap-report
+  - kind: technique
+    id: dispatch-merge-agent
+    technique: dispatch-scanners::dispatch-merge
+  - kind: technique
+    id: validate-reconciliation
+    technique: dispatch-scanners::verify-reconciliation
+  - kind: action
+    id: finalize-activity
+    actions[2]{action,message}:
+      log,Primary scan complete — all findings merged and reconciled
+      set,primary_scan_complete=true
+transitions[1]:
+  - to: report-generation
+    isDefault: true
+    condition:
+      type: and
+      conditions[2]:
+        - type: simple
+          variable: verification_complete
+          operator: ==
+          value: true
+        - type: simple
+          variable: merge_complete
+          operator: ==
+          value: true
+outcome[3]:
+  - "Every in-scope workflow file has been scanned for all seven vulnerability classes, with independent verification that no file or pattern was skipped"
+  - "The audit speaks with one voice: a single deduplicated, cross-correlated finding set where every scanner finding is reconciled and accounted for"
+  - "Findings are trustworthy and complete enough to drive severity scoring and the final report"

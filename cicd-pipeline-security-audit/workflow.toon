@@ -11,27 +11,26 @@ tags[6]:
   - injection-detection
   - automated
   - multi-phase
-rules[19]:
-  - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
-  - "PREREQUISITE: At least one target submodule MUST be specified before the workflow begins. If 'all' is specified, scan every submodule that contains .github/workflows/."
-  - "FULLY AUTOMATED: This workflow executes without user checkpoints. Phase gates are set via exitActions."
-  - "DETECTION SCOPE: Seven vulnerability classes derived from the hackerbot-claw campaign (P1-P7): expression injection, Pwn Request, comment trigger abuse, excessive permissions, fork code execution, AI config poisoning, dangerous execution patterns."
-  - "SOURCE-SINK MENTAL MODEL: Every finding MUST identify the source (attacker-controlled input) and the sink (privileged execution point). Findings without a clear source-to-sink flow are observations, not vulnerabilities."
-  - "CONCURRENT DISPATCH: All per-submodule scanner agents (S1-Sn) dispatch simultaneously in a single batch. Every assigned agent MUST be dispatched — skipping any agent is a HARD STOP."
-  - "DISPATCH COMPLETENESS GATE: scanners_dispatched MUST equal scanners_assigned. This is a HARD STOP."
-  - "COVERAGE GATE: Every .github/workflows/*.yml and .github/workflows/*.yaml file in scope MUST be scanned. Report generation blocks on incomplete coverage."
-  - "VERIFICATION AGENT GATE: After collecting all scanner results, the orchestrator MUST dispatch a verification sub-agent (V). V's gap report drives targeted re-scan before merge. The orchestrator MUST NOT self-certify verification."
-  - "MERGE AGENT GATE: After verification, the orchestrator MUST dispatch a merge sub-agent (M). M performs deduplication, cross-pattern correlation, and severity scoring. The orchestrator MUST NOT perform the merge inline."
-  - "SEVERITY SCORING: Use Impact x Exploitability rubric from resource 02. Impact factors: secret exposure, code execution scope, repository takeover potential. Exploitability factors: unauthenticated fork PR (high), comment trigger without auth check (high), requires maintainer action (low)."
-  - "CROSS-PATTERN CORRELATION: Compound vulnerabilities (e.g., pull_request_target + expression injection + excessive permissions) receive elevated severity over individual patterns."
-  - "Artifacts in 'planning' location are gitignored — never reference them in PRs or issues"
-  - "SCANNER OUTPUT FORMAT: Each scanner writes structured JSON to s{n}-{submodule}.json in the planning folder, following the schema in resource 04."
-  - "FINDING COUNT RECONCILIATION: M produces a reconciliation table where Unaccounted MUST equal zero for every scanner. This is a HARD STOP."
-  - "REMEDIATION GUIDANCE: Every finding in the final report MUST include a specific remediation recommendation referencing the playbook in resource 03."
-  - "AI CONFIG FILES: Detection pattern P6 covers CLAUDE.md, AGENTS.md, .cursorrules, .cursor/rules/, and similar AI agent configuration files. These are high-value prompt injection targets when not protected by CODEOWNERS."
-  - "AGENT OUTPUT PERSISTENCE: Every sub-agent MUST write its own structured output as a JSON file to the planning folder. The orchestrator verifies all expected files exist BEFORE dispatching V or M. If any file is missing, the orchestrator re-dispatches the agent. File naming: s{n}-{submodule}.json for scanners, verification-report.json for V, merged-findings.json and reconciliation-table.json for M."
-  - "SUB-AGENT BOOTSTRAP: Every sub-agent receives workflow-server bootstrap instructions in its spawn-agent prompt (harness-compat): call start_session(session_token, agent_id) to inherit the dispatched session, then next_activity({ activity_id: <assigned> }), then follow activity steps sequentially. Sub-agents self-load their activity definition — the orchestrator does NOT inline the activity content."
+rules:
+  workflow[6]:
+    - "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
+    - "PREREQUISITE: At least one target submodule MUST be specified before the workflow begins. If 'all' is specified, scan every submodule that contains .github/workflows/."
+    - "FULLY AUTOMATED: This workflow executes without user checkpoints. Phase gates are set by each activity's completion step (a `set` flag on its final step)."
+    - "CONCURRENT DISPATCH: All per-submodule scanner agents (S1-Sn) dispatch simultaneously in a single batch. Every assigned agent MUST be dispatched — skipping any agent is a HARD STOP."
+    - "AGENT OUTPUT PERSISTENCE: The orchestrator verifies all expected sub-agent output files exist BEFORE dispatching V or M, and re-dispatches any agent whose file is missing. File naming: s{scanner_number}-{submodule_path}.json for scanners, verification-report.json for V, merged-findings.json and reconciliation-table.json for M."
+    - "SUB-AGENT BOOTSTRAP: Every sub-agent receives workflow-server bootstrap instructions in its spawn-agent prompt (harness-compat): call start_session(session_token, agent_id) to inherit the dispatched session, then next_activity({ activity_id: <assigned> }), then follow activity steps sequentially. Sub-agents self-load their activity definition — the orchestrator does NOT inline the activity content."
+  activity[6]:
+    - "DETECTION SCOPE: Seven vulnerability classes derived from the hackerbot-claw campaign (P1-P7): expression injection, Pwn Request, comment trigger abuse, excessive permissions, fork code execution, AI config poisoning, dangerous execution patterns."
+    - "SEVERITY SCORING: Use Impact x Exploitability rubric from resource 02. Impact factors: secret exposure, code execution scope, repository takeover potential. Exploitability factors: unauthenticated fork PR (high), comment trigger without auth check (high), requires maintainer action (low)."
+    - "CROSS-PATTERN CORRELATION: Compound vulnerabilities (e.g., pull_request_target + expression injection + excessive permissions) receive elevated severity over individual patterns."
+    - "SCANNER OUTPUT FORMAT: Each scanner writes structured JSON to s{scanner_number}-{submodule_path}.json in the planning folder, following the schema in resource 04."
+    - "REMEDIATION GUIDANCE: Every finding in the final report MUST include a specific remediation recommendation referencing the playbook in resource 03."
+    - "AI CONFIG FILES: Detection pattern P6 covers CLAUDE.md, AGENTS.md, .cursorrules, .cursor/rules/, and similar AI agent configuration files. These are high-value prompt injection targets when not protected by CODEOWNERS."
+  universal[1]:
+    - "Artifacts in 'planning' location are gitignored — never reference them in PRs or issues"
 techniques:
+  activity[1]:
+    - variable-binding
 variables[14]:
   - name: target_submodules
     type: string

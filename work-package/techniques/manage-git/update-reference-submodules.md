@@ -7,12 +7,24 @@ metadata:
 
 Refresh the monorepo reference's submodules to their tracked remote HEADs, with locking and skip-if-recent semantics to coordinate concurrent invocations from sibling work packages.
 
+## Inputs
+
+### reference_path
+
+Path to the reference checkout (the engineering / parent monorepo whose submodules are refreshed); the gate, lock, freshness sentinel, and `git submodule update` all operate inside it. The op is a no-op when this is empty or the reference is a standalone repo with no `.gitmodules`.
+
+## Outputs
+
+### refreshed_submodules
+
+The reference's submodules advanced to their tracked branches' remote HEADs (or a silent skip when gated out / skip-if-recent), with the `.workflow-submodule-refresh` freshness sentinel touched on success. Pointer changes are NOT committed. A side-effect op; reference-side freshness is its product.
+
 ## Protocol
 
 ### 1. Gate and Lock
 
 - Run only when `{reference_path}` is set AND points at a monorepo (i.e. `{reference_path}/.gitmodules` exists). Skip silently when `{reference_path}` is empty or the reference is a standalone repo with no submodules.
-- Coordinate concurrent invocations from sibling work packages: serialize via an exclusive flock on `{reference_path}/.git/.workflow-submodule-refresh.lock` (blocking). Concrete form: `flock {reference_path}/.git/.workflow-submodule-refresh.lock -c <command>`. The lock prevents two parallel start-work-package activities from racing on `.git/index.lock` during the submodule update.
+- Coordinate concurrent invocations from sibling work packages: serialize via an exclusive flock on `{reference_path}/.git/.workflow-submodule-refresh.lock` (blocking). Concrete form: `flock {reference_path}/.git/.workflow-submodule-refresh.lock -c <command>`. The lock prevents two parallel start-work-package runs from racing on `.git/index.lock` during the submodule update.
 
 ### 2. Refresh Under Lock
 

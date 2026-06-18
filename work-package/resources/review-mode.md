@@ -26,31 +26,21 @@ Review mode adapts the standard work-package workflow for reviewing existing imp
 
 ---
 
-## Schema Integration
+## How Review Mode Is Driven
 
-Review mode is formally defined in the workflow schema:
+Review mode is not a dedicated schema construct — it is plain workflow state.
 
-### Workflow-Level Definition
+### Workflow-Level State
 
-The mode is defined in `workflow.toon` under the `modes` section:
+A single boolean variable, `is_review_mode` (default `false`), drives the entire mode:
 
 ```
-modes[1]:
-  - id: review
-    name: Review Mode
-    description: "Review existing PRs rather than implementing new code"
-    activationVariable: is_review_mode
-    recognition[3]:
-      - start review work package
-      - review pr
-      - review existing implementation
-    skipActivities[2]:
-      - requirements-elicitation
-      - implement
-    defaults:
-      needs_elicitation: false
-    resource: resources/review-mode.md
+- name: is_review_mode
+  type: boolean
+  defaultValue: false
 ```
+
+The `detect-review-mode` step in `start-work-package` recognizes review intent (from requests like "start review work package", "review pr", or "review existing implementation"), confirms with the user, and sets `is_review_mode = true`. There is no `skipActivities` list and no mode `defaults` block: requirements-elicitation and implement are skipped purely because their steps and inbound transitions are gated on `is_review_mode`, and mode-specific values such as `needs_elicitation = false` are set by an ordinary control step gated the same way.
 
 ### Activity-Level Behavior
 

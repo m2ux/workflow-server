@@ -64,14 +64,13 @@ If activities are being added, removed, or reordered:
 
 ### Step 4: Check Reference Integrity
 
-- Verify all `techniques.primary` and `techniques.supporting` references (`::`-path / slug references) resolve to existing technique `.md` files
+- Verify all `techniques[]` references (`::`-path / slug references) resolve to existing technique `.md` files
 - Verify all resource index references resolve to existing resource files
-- Verify all `artifactLocations` keys used by activities exist in the workflow
 
 ### Step 5: Check Variable Integrity
 
-- Verify all `condition.variable` references in transitions, decisions, and loops resolve to defined workflow variables
-- Verify all `effect.setVariable` keys in checkpoints resolve to defined variables
+- Verify all `condition.variable` references in transitions, decisions, step gates (`when`/`condition`), and `kind: loop` steps resolve to defined workflow variables
+- Verify all `effect.setVariable` keys in `kind: checkpoint` steps resolve to defined variables
 - Check for orphaned variables (defined but never referenced)
 
 ## Side-Effect Detection Patterns
@@ -80,8 +79,8 @@ If activities are being added, removed, or reordered:
 |---|---|
 | Add activity | May need new transitions from upstream activities. May need new techniques or resources. |
 | Remove activity | Breaks incoming transitions. May orphan techniques only used by this activity. |
-| Rename activity ID | Breaks all transition references, initialActivity, modeOverrides keys. |
-| Add checkpoint | May need new variables for checkpoint effects. |
-| Modify checkpoint options | May invalidate downstream conditions that depend on set variables. |
-| Add/remove mode | Affects modeOverrides in all activities. May change skipActivities. |
+| Rename activity ID | Breaks all transition references and `initialActivity`. |
+| Add checkpoint step | May need new variables for checkpoint effects. |
+| Modify checkpoint step options | May invalidate downstream conditions that depend on set variables. |
+| Add/remove mode | Affects the mode activation variable and every `transition.condition` / step `when` gate that branches on it. |
 | Change variable type | Affects all conditions comparing that variable. |

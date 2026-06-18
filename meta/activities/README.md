@@ -2,110 +2,46 @@
 
 > Part of the [Meta Workflow](../README.md)
 
-Five sequential activities that run inside the meta session: identify the target client workflow and any saved session, create or resume the client session, resolve target_path, dispatch the client orchestrator and mediate its checkpoint loop, and close out the session.
+Five sequential activities that run inside the meta session: identify the target client workflow and any saved session, create or resume the client session, resolve target_path, drive the client workflow's activity loop inline and mediate its yielded checkpoints, and close out the session.
+
+The authoritative definition of each activity — its steps, technique bindings, checkpoints, loop, transitions, and outcomes — lives in the linked `.toon` file and is served by `get_activity`. The entries below are orientation only.
 
 ---
 
 ### 00. Discover Session
 
-**Purpose:** Identify the user's intended target workflow and search for an existing client session to resume. Calls `list_workflows`, matches the user request against the workflow catalog, scans planning folders for saved sessions matching the request's identifying context (ticket, branch, PR, work-package name), and presents resume / workflow-selection checkpoints.
+Identifies the target workflow and looks for an existing client session to resume. It matches the user request against the workflow catalog, extracts the request's identifying context (ticket, branch, PR, work-package name), and scans planning folders so saved progress can be surfaced — even when the user said "start". It can surface a workflow-selection checkpoint (when the match is ambiguous) and a resume-session checkpoint (when saved state is found). Leads to [Initialize Session](#01-initialize-session).
 
-**Steps:**
-
-1. **list-available-workflows** — Call `list_workflows` to retrieve the catalog
-2. **identify-target** — Match user request to a workflow_id; extract identifying context; flag ambiguity if multiple candidates
-3. **scan-planning-folders** — List directories under `.engineering/artifacts/planning/` and read each `session.json` whose `workflowId` matches `target_workflow_id`
-4. **match-session** — Compare identifying context against saved candidates; select most recently updated on a tie
-5. **record-match / record-no-match** — Set `has_saved_state`, `saved_planning_slug`, `planning_folder_path`
-
-**Role:** `activity-worker` (a role defined in `workflow.toon`; resolved via the workflow-local → `meta` fallback).
-
-**Checkpoints:**
-
-- `workflow-selection` (conditional on `workflow_match_ambiguous == true`) — confirm or re-prompt for the target workflow
-- `resume-session` (conditional on `has_saved_state == true`) — resume previous session or start fresh
-
-**Transitions:** Default to [Initialize Session](#01-initialize-session).
+Definition: [`00-discover-session.toon`](./00-discover-session.toon)
 
 ---
 
 ### 01. Initialize Session
 
-**Purpose:** Create or resume the client workflow's session as a child of the meta session via a single `start_session` call. The server resolves whether the call creates a fresh session or rebinds an existing `session.json` on disk; the agent issues one call regardless. On resume the server reads the existing `session.json` keyed by `planning_slug` and returns its `session_index`; on a fresh start the server creates `session.json` and writes its `.session-token` seal atomically. Variables are restored automatically by the server on resume — there is no agent-side restore step.
+Gives the work package a stable, work-item-derived identity, then creates or resumes the client session as a child of the meta session. The slug is derived from the work item before dispatch so the server reuses it on every resume instead of a date-stamped fallback. The server owns folder creation and returns the canonical `planning_folder_path`; on resume it restores prior variables automatically, so there is no agent-side restore. Leads to [Resolve Target](#02-resolve-target).
 
-**Role:** `activity-worker`.
-
-**Steps:**
-
-1. **derive-planning-slug** — Conditional on a fresh session: `version-control::initialize-folder` derives the planning slug (`YYYY-MM-DD-{initiative_name}`) and binds `client_planning_slug`. It does NOT create a folder — the server owns folder creation under its workspace `.engineering` root.
-2. **start-or-resume-session** — `workflow-engine::create-session(parent_session_index, workflow_id, planning_slug)`. Capture `client_session_index` and the server-resolved absolute `planning_folder_path` from the response. The server appends the child under `meta.triggeredWorkflows[N].state` (or promotes the transient meta into a workspace folder named by the slug), and returns the canonical artifact location.
-
-**Transitions:** Default to [Resolve Target](#02-resolve-target).
+Definition: [`01-initialize-session.toon`](./01-initialize-session.toon)
 
 ---
 
 ### 02. Resolve Target
 
-**Purpose:** Detect the target repository structure (regular vs. submodule monorepo) and resolve `target_path`. Skipped when `target_path` was already restored from the server-managed `session.json`.
+Detects the target repository structure — regular directory vs. submodule monorepo — and resolves `target_path` so downstream git operations have a confirmed working git tree to act on. For a monorepo the user picks the target submodule via a checkpoint; `target_path` must resolve to a directory containing a working git tree. Leads to [Dispatch Client Workflow](#03-dispatch-client-workflow).
 
-**Role:** `activity-worker`.
-
-**Steps:**
-
-1. **detect-monorepo** — Check for `.gitmodules` to determine repo type
-2. **list-submodules** — Conditional on `is_monorepo == true`: parse `.gitmodules` and present submodule paths
-3. **capture-target-path** — Set `target_path` (root for regular, selected submodule for monorepo)
-
-**Checkpoints:**
-
-- `repo-type-confirmed` — confirm regular vs. monorepo (sets `is_monorepo` and, for regular, `target_path`)
-
-**Transitions:** Default to [Dispatch Client Workflow](#03-dispatch-client-workflow).
+Definition: [`02-resolve-target.toon`](./02-resolve-target.toon)
 
 ---
 
 ### 03. Dispatch Client Workflow
 
-**Purpose:** Compose the workflow-orchestrator prompt, dispatch the orchestrator (sub-agent in spawning harnesses, inline persona otherwise), and drive the checkpoint-yield loop. Each iteration: parse the orchestrator's most recent output; on `<checkpoint_yield>`, read the active checkpoint from the server-managed `session.json#activeCheckpoint` via `present_checkpoint`, capture the user's selection, and resume the orchestrator with the resolved effects; on `workflow_complete`, exit the loop.
+Drives the client workflow end to end inline. The orchestrator dispatches each client activity to a worker, mediates any yielded checkpoint with the user, commits and persists completed-activity artifacts, and evaluates transitions to advance — looping until the client workflow has no further activities. Every tool call inside the loop authenticates with `client_session_index`; the meta `session_index` is used only at activity boundaries and at close-out. The user retains control at every decision point. Leads to [End Workflow](#04-end-workflow) when the client workflow is exhausted.
 
-**Role:** `activity-worker`. **Techniques:** [`harness-compat`](../techniques/harness-compat/TECHNIQUE.md) (resolved via the workflow-local → `meta` fallback).
-
-**Entry actions:** `validate` `client_session_index` is set.
-
-**Steps:**
-
-1. **compose-orchestrator-prompt** — Build the orchestrator prompt from resource [`workflow-orchestrator-prompt`](../resources/workflow-orchestrator-prompt.md), substituting `session_index` and other context.
-2. **dispatch-orchestrator** — `harness-compat::spawn-agent` (foreground, blocking).
-
-**Loop:** `checkpoint-loop` — `doWhile` (`condition: client_workflow_completed == false`, `maxIterations: 200`)
-
-| Loop step | Description |
-|-----------|-------------|
-| `capture-checkpoint-yield` | `workflow-engine::extract-checkpoint-handle` — `<checkpoint_yield>` has no payload; the active checkpoint is read from `session.json#activeCheckpoint` |
-| `capture-workflow-complete` | `workflow-engine::handle-workflow-complete` on `workflow_complete` results |
-| `present-and-resolve` | `present_checkpoint({ session_index })` to surface the active checkpoint, then `AskQuestion` for the user's selection |
-| `respond-checkpoint` | `respond_checkpoint({ session_index, option_id })` (or `auto_advance` / `condition_not_met`) |
-| `continue-orchestrator` | `harness-compat::continue-agent` with the resolved effects |
-
-**Transitions:** To [End Workflow](#04-end-workflow) when `client_workflow_completed == true`.
+Definition: [`03-dispatch-client-workflow.toon`](./03-dispatch-client-workflow.toon)
 
 ---
 
 ### 04. End Workflow
 
-**Purpose:** Verify the client workflow's outcomes, generate a session summary, and confirm closure. The final state is already durably persisted by the server on every authenticated tool call; no agent-side persist step is required. If the user opts to return to the workflow, transitions back to dispatch with `abort_completion = true`.
+Closes out the client workflow so the user can decide whether the work is truly done: it verifies the client workflow's declared outcomes against final state, generates a session summary, and surfaces a completion checkpoint. Final state is already durably persisted by the server on every authenticated call, so no agent-side persist step is needed. The completed session can be resumed or audited later. If outcomes are unmet, the user can return to [Dispatch Client Workflow](#03-dispatch-client-workflow); otherwise the session is closed.
 
-**Role:** `activity-worker`.
-
-**Steps:**
-
-1. **verify-outcomes** — Read the client workflow's `outcome[]` and check satisfaction.
-2. **generate-summary** — Compose a markdown summary (workflow id, dates, activities, decisions, artifacts, outcomes met/unmet, follow-ups).
-
-**Checkpoints:**
-
-- `completion-confirmed` — confirm closure or return to workflow (sets `abort_completion`; `transitionTo: dispatch-client-workflow` when returning)
-
-**Exit actions:** `log: "Workflow session closed"`.
-
-**Transitions:** Terminal under `confirm`. Returns to [Dispatch Client Workflow](#03-dispatch-client-workflow) under `return`.
+Definition: [`04-end-workflow.toon`](./04-end-workflow.toon)

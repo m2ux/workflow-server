@@ -11,6 +11,16 @@ metadata:
 
 Conduct structured manual diff review using external side-by-side diff tool with indexed block references
 
+## Inputs
+
+### branch_name
+
+Feature branch whose diff is reviewed (synced via `git pull`, parsed via `git diff`)
+
+### planning_folder_path
+
+Folder where the change block index and manual diff review report are written
+
 ## Protocol
 
 ### 1. Sync Branch
@@ -62,7 +72,7 @@ Conduct structured manual diff review using external side-by-side diff tool with
 
 [Index](../resources/manual-diff-review.md#file-index-generation) of changed blocks for external diff review, with per-block rationale paragraphs hyperlinked from the index table to aid manual review
 
-#### change_block_index_artifact
+#### artifact
 
 `change-block-index.md`
 
@@ -78,11 +88,11 @@ Per-block descriptive paragraphs explaining intent, context, and non-obvious des
 
 Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-review-report-template) from user-flagged blocks
 
-#### manual_diff_review_artifact
+#### artifact
 
 `manual-diff-review.md`
 
-#### findings
+#### block_findings
 
 Per-block issues with interview responses
 

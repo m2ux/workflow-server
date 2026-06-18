@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Commit planning artifacts to the parent engineering repo with the activity message pattern, rebasing onto sibling work-package commits to avoid push rejections.
+Commit planning artifacts to the parent engineering repo with the canonical message pattern, rebasing onto sibling work-package commits to avoid push rejections.
 
 ## Inputs
 
@@ -24,6 +24,16 @@ List of files to stage and commit
 ### branch
 
 Engineering branch to push to
+
+### reference_path
+
+Path to the reference checkout (the engineering / parent repo where planning artifacts live), in which all staging, commit, rebase, and push operations run.
+
+## Outputs
+
+### artifact_commit
+
+The artifact commit pushed to `{branch}` on `origin` in `{reference_path}`, carrying the canonical `docs(work-package): {activity_name} artifacts for {issue_key}` message and rebased onto sibling work-package commits. A side-effect op; the pushed commit is its product.
 
 ## Protocol
 

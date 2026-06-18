@@ -1,46 +1,25 @@
 id: select-mode
-version: 2.0.0
+version: 2.1.0
 name: Plan Analysis
 description: "Select an analysis mode for the user's request."
-problem: User needs the analysis planned and configured before execution begins
-recognition[11]:
-  - analyze
-  - structural analysis
-  - full prism
-  - deep analysis
-  - portfolio
-  - multiple lenses
-  - scan
-  - review code
-  - behavioral
-  - error resilience
-  - behavioral analysis
-techniques:
-  supporting[1]:
-    - plan-analysis
-steps[3]:
-  - id: plan
-    name: Plan the Analysis
-    description: "Execute the plan-analysis technique protocol: detect scope from the target, classify units if multi-scope, recommend pipeline_mode and lens selection, resolve output_path."
-    required: true
-  - id: summarize
-    name: Summarize Configuration
-    description: "Present the recommended configuration: scope, target, target_type, pipeline_mode, selected_lenses (if portfolio), output_path, and rationale. This is the checkpoint context."
-    required: true
-  - id: apply-plan
-    name: Apply Plan
-    description: "Apply the selected pipeline_mode and any lens selections to workflow state variables."
-    required: true
+steps[4]:
+  - kind: technique
+    id: plan
+    technique: plan-analysis
+  - kind: action
+    id: summarize
+    actions[0]:
+  - kind: action
+    id: apply-plan
     actions[2]:
       - action: set
         target: pipeline_mode
-        description: "Set pipeline_mode from checkpoint selection or plan recommendation"
+        description: "Selected analysis mode."
       - action: set
         target: analysis_units
-        description: "Set analysis_units from the plan-analysis technique output"
-checkpoints[1]:
-  - id: confirm-mode
-    name: Pipeline Mode Confirmation
+        description: "Ordered execution units."
+  - kind: checkpoint
+    id: confirm-mode
     message: "Based on your request, I recommend the following analysis configuration. Would you like to proceed or adjust?"
     condition:
       type: simple
@@ -110,7 +89,6 @@ checkpoints[1]:
         effect:
           setVariable:
             pipeline_mode: adaptive
-    required: true
     blocking: true
 transitions[7]:
   - to: dispute-pass

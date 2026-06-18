@@ -11,7 +11,7 @@ Compile a failure report describing the unresolved critical issues, the correcti
 
 ### validation_report
 
-Categorized validation findings whose critical or unresolved issues stopped refinement.
+Categorized validation findings carrying the critical or unresolved issues.
 
 ## Protocol
 
@@ -27,7 +27,11 @@ Categorized validation findings whose critical or unresolved issues stopped refi
 
 - Write `{failure_report}` to `{planning_folder_path}`.
 
-## Output
+### 4. Present Failure Report
+
+- Present `{failure_report}` and the manual intervention it requires to the user.
+
+## Outputs
 
 ### failure_report
 

@@ -7,6 +7,30 @@ metadata:
 
 Parse a source document — a meeting transcript or an unstructured document — against the current specification and produce a structured requirements analysis report identifying new, updated, and deprecated requirements, with a source-coverage matrix tracing every normative statement to a requirement.
 
+## Inputs
+
+### source_type
+
+Classification of the source document: `meeting` when it is a meeting transcript, `document` when it is an unstructured document.
+
+### target_doc_exists
+
+`true` when the target specification already exists and is being augmented; `false` when it is created from scratch.
+
+## Outputs
+
+### requirements_analysis
+
+Structured analysis of the requirement changes derived from the source document, including the source-coverage matrix.
+
+#### artifact
+
+`requirements-analysis.md`
+
+#### source_coverage_matrix
+
+Mapping of each source section to the requirement identifier(s) it is covered by, with out-of-scope sections marked.
+
 ## Protocol
 
 ### 1. Read Sources
@@ -29,25 +53,11 @@ Parse a source document — a meeting transcript or an unstructured document —
 
 - Re-walk the source document section by section as a completeness critic: for every normative statement (a `SHALL`/`MUST`/`SHOULD`/`MAY` obligation, constraint, or rule), confirm it maps to an identified requirement.
 - Add any normative statement that has no mapped requirement as a new requirement.
-- Record each source section against the requirement(s) it maps to as the source-coverage matrix, marking any section with no obligation as out of scope.
+- Record each source section against the requirement(s) it maps to in `{requirements_analysis.source_coverage_matrix}`, marking any section with no obligation as out of scope.
 
 ### 5. Compile Analysis Report
 
 - Write `{requirements_analysis}` to `{planning_folder_path}` using the [requirements-analysis-report](../resources/requirements-analysis-report.md) structure: source reference, new / updated / deprecated requirements, the [source coverage matrix](../resources/requirements-analysis-report.md#source-coverage-matrix), document updates required, quality issues, and implementation notes.
-
-## Output
-
-### requirements_analysis
-
-Structured analysis of the requirement changes derived from the source document, including the source-coverage matrix.
-
-#### artifact
-
-`requirements-analysis.md`
-
-#### source_coverage_matrix
-
-Mapping of each source section to the requirement identifier(s) it is covered by, with out-of-scope sections marked.
 
 ## Rules
 

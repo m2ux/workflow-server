@@ -21,34 +21,32 @@ Type of analysis to perform: 'completion' or 'context'.
 
 ### 1. Select Analysis Type
 
-- Present the analysis-type-selection checkpoint to determine if this is continuing or new
-- Set `{analysis_type}` variable based on user selection
-- If the user is unsure whether this is continuing or new, check for existing planning artifacts — if found, suggest completion analysis; if not, suggest context analysis
+- Read `{analysis_type}` to determine whether this is `completion` (continuing) or `context` (new)  
+  > If the user is unsure which applies, scan `{planning_root}` for existing planning artifacts — found suggests `completion`, none suggests `context`.
 
 ### 2. Perform Completion Analysis
 
-- Use attached [completion-analysis-guide](../resources/completion-analysis-guide.md) (completion-analysis-guide) for the analysis procedure
-- Locate existing planning artifacts in `.engineering/artifacts/planning/`
-- If completion analysis was selected but no prior artifacts are found, switch to context analysis and note that no prior work was found
+- Apply the [completion analysis](../resources/completion-analysis-guide.md#analysis-steps) procedure
+- Locate existing planning artifacts in `{planning_root}`  
+  > If `{analysis_type}` is `completion` but no prior artifacts are found, switch to context analysis and note that no prior work was found.
 - Assess completion state of each previously identified work package
 - Identify changes since last session from git log and issue trackers
 
 ### 3. Perform Context Analysis
 
-- Use attached [context-analysis-guide](../resources/context-analysis-guide.md) (context-analysis-guide) for the analysis procedure
+- Apply the [context analysis](../resources/context-analysis-guide.md#analysis-steps) procedure
 - Understand the domain, codebase, and technology stack
 - Identify cross-cutting concerns: shared dependencies, common infrastructure, ordering constraints
 - Assess external context: related issues, documentation, deadlines
 
 ### 4. Document Analysis
 
-- Create the `{analysis_document}` in the `{planning_folder_path}` using the appropriate template
-- Set `{analysis_document}` variable to the document path
+- Write `{analysis_document}` to `{planning_folder_path}` using the [completion analysis findings](../resources/completion-analysis-guide.md#4-document-findings) or [context analysis findings](../resources/context-analysis-guide.md#5-document-findings) section matching `{analysis_type}`
+- Distil the documented findings into `{key_findings}` and the suggested approach into `{planning_recommendation}`
 
 ### 5. Present Findings
 
-- Summarize key findings for user review
-- Present the analysis-confirmed checkpoint
+- Summarize `{key_findings}` for user review
 
 ## Outputs
 
@@ -56,15 +54,15 @@ Type of analysis to perform: 'completion' or 'context'.
 
 Analysis document with findings and recommendations, persisted as [01-COMPLETION-ANALYSIS.md](../resources/completion-analysis-guide.md#4-document-findings) (completion) or [02-CONTEXT-ANALYSIS.md](../resources/context-analysis-guide.md#5-document-findings) (context)
 
-#### analysis_type
+#### artifact
 
-completion or context
+`01-COMPLETION-ANALYSIS.md` (when `analysis_type` is completion) / `02-CONTEXT-ANALYSIS.md` (when `analysis_type` is context)
 
-#### key_findings
+### key_findings
 
 Summary of analysis findings
 
-#### recommendation
+### planning_recommendation
 
 Suggested approach for planning and prioritization
 
@@ -72,7 +70,7 @@ Suggested approach for planning and prioritization
 
 ### type-determines-method
 
-The analysis-type variable determines which analysis method to use — never mix them
+`{analysis_type}` determines which analysis method applies — never mix them
 
 ### document-everything
 

@@ -1,47 +1,17 @@
 id: update-specification
-version: 1.0.0
+version: 1.2.0
 name: Update Specification
 description: "Apply the requirements analysis (initial pass) or the validation findings (correction pass) to produce the complete updated specification, preserving the specification protocol verbatim, and write it as a versioned working specification."
-problem: The confirmed requirement changes — or outstanding correction findings — must be applied to produce an updated specification
 required: true
-estimatedTime: 15-30m
-techniques:
-  primary: update-specification
-steps[3]:
-  - id: register-correction-pass
-    name: Register Correction Pass
-    description: "On a correction re-entry, increment correction_iteration so the working specification is versioned per pass."
-    condition:
-      type: simple
-      variable: has_correctable_issues
-      operator: ==
-      value: true
-    actions[1]:
-      - action: set
-        target: correction_iteration
-        description: "Previous correction_iteration value plus one; runs only on correction re-entry."
-  - id: apply-changes
-    name: Apply Changes
-    description: "Apply update-specification: in the initial pass apply the confirmed analysis; in a correction pass address the correctable validation findings. Produce the complete updated specification with the protocol preserved and new requirements set to pending."
-  - id: record-working-spec
-    name: Record Working Specification
-    description: "Record the updated specification as the versioned working specification for this pass."
+steps[1]:
+  - kind: technique
+    id: update-specification
+    technique: update-specification
     actions[1]:
       - action: message
         message: "Created: working-spec-{correction_iteration}.md"
-artifacts[1]:
-  - id: working-specification
-    name: working-spec-{correction_iteration}.md
-    location: planning
-    description: "Complete updated specification for this pass (pass 0 is the initial update; later numbers are correction passes)"
 transitions[1]:
   - to: validate-specification
     isDefault: true
-exitActions[1]{action,message}:
-  message,README PROGRESS: Update planning folder README.md — record the working specification for this pass.
-outcome[2]:
-  - Complete updated specification produced with the protocol preserved
-  - Versioned working specification recorded for validation
-context_to_preserve[2]:
-  - correction_iteration - Current correction pass number
-  - working_specification - Path to the working specification for this pass
+outcome[1]:
+  - The full specification now reflects every confirmed change with its protocol intact, ready for validation to judge against

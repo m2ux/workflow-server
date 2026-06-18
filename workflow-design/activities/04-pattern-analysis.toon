@@ -1,32 +1,17 @@
 id: pattern-analysis
-version: 1.0.1
+version: 1.2.0
 name: Pattern Analysis
 description: "Structural and content patterns extracted from comparable existing workflows for reuse in the target workflow."
-problem: New workflows must follow established conventions and reuse proven structural patterns
-techniques:
-  supporting[1]:
-    - workflow-design
 required: false
-estimatedTime: 10-15m
 rules[2]:
   - "Examine at least two existing workflows of the same model type (sequential or independent)"
   - "Present patterns alongside the proposed structure so the user can see how conventions are being applied"
-steps[4]:
-  - id: select-reference-workflows
-    name: Select Reference Workflows
-    description: "Reference workflow shortlist (2+) sharing the target's activity model, preferring same-domain workflows."
-  - id: extract-structural-patterns
-    name: Extract Structural Patterns
-    description: "Structural conventions across references: activity naming, step/checkpoint ratios, transitions, technique assignment, artifact naming, resource organization."
-  - id: extract-content-patterns
-    name: Extract Content Patterns
-    description: "Content conventions across references: rule structuring, checkpoint effects, transition conditions, artifact location references, technique protocol/inputs/output usage."
-  - id: present-patterns
-    name: Present Patterns
-    description: "Comparison table of extracted patterns alongside the proposed structure, noting alignments and divergences."
-checkpoints[1]:
-  - id: patterns-confirmed
-    name: Patterns Confirmation
+steps[2]:
+  - kind: technique
+    id: pattern-analysis
+    technique: pattern-analysis
+  - kind: checkpoint
+    id: patterns-confirmed
     message: "Here are the structural patterns extracted from existing workflows, with my proposed structure shown alongside. Which patterns should I adopt?"
     options[3]:
       - id: adopt-all
@@ -39,11 +24,7 @@ checkpoints[1]:
         label: Diverge with justification
         description: "The new workflow requires different patterns, with rationale provided."
 transitions[1]:
-  - to: scope-and-structure
+  - to: scope-and-draft
     isDefault: true
-outcome[2]:
-  - Structural patterns extracted from 2+ reference workflows
-  - Pattern adoption decisions confirmed by user
-context_to_preserve[2]:
-  - adopted_patterns - List of patterns to follow
-  - reference_workflows - IDs and key characteristics of reference workflows
+outcome[1]:
+  - A user-decided set of proven conventions to follow — and divergences to justify — so the new workflow inherits established structure instead of reinventing it

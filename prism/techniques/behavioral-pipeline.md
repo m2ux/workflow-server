@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 1.0.0
+  version: 1.2.0
   order: 5
   legacy_id: 5
 ---
@@ -13,9 +13,9 @@ Execute the behavioral pipeline — 4 independent behavioral lenses followed by 
 
 ## Inputs
 
-### lens_resource_index
+### lens_name
 
-Resource index for this pass: 19 (error-resilience), 20 (optimize), 21 (evolution), 22 (api-surface), or 23 (behavioral-synthesis)
+*(optional)* Selects the dispatch phase. **Omit** to run the four independent lenses — `error-resilience`, `optimize`, `evolution`, `api-surface` — as a scatter (the dispatch phase). Set to **`synthesis`** to run the single synthesis pass that reconciles the four independent artifacts.
 
 ### prior_artifact_paths
 
@@ -25,40 +25,40 @@ Resource index for this pass: 19 (error-resilience), 20 (optimize), 21 (evolutio
 
 ### 1. Load Lens
 
-- Load the lens prompt for `{lens_resource_index}`. If the lens for the given index cannot be loaded, report the error; valid behavioral indices are 19-23.
-- The behavioral pipeline is code-only: if invoked with target_type 'general', report that the behavioral pipeline is code-only and recommend portfolio mode with individual neutral variant lenses (24-26) for general targets.
+- When `{lens_name}` is omitted (the dispatch phase), this invocation runs the four independent lenses — load each lens prompt: `error-resilience` → [error-resilience](../resources/error-resilience.md), `optimize` → [optimize](../resources/optimize.md), `evolution` → [evolution](../resources/evolution.md), `api-surface` → [api-surface](../resources/api-surface.md). Per `independent-lenses-parallel`, dispatch them concurrently (up to four at once).
+- When `{lens_name}` is `synthesis`, load the [behavioral-synthesis](../resources/behavioral-synthesis.md) lens prompt for the synthesis pass.
+- If a lens cannot be loaded, report the error.
+- The behavioral pipeline is code-only: if `{target_type}` is `general`, report that the behavioral pipeline is code-only and recommend portfolio mode with individual neutral variant lenses for general targets.
 - The lens prompt is the program — execute its operations in order
 
 ### 2. Read Target
 
 - If `{target_content}` is a file path, read the file to obtain the code
 
-### 3. Apply Independent Lens
+### 3. Apply Independent Lenses
 
-- For independent lens passes (indices 19-22): apply the lens against the target content
+- In the dispatch phase, run each of the four independent lenses (`error-resilience`, `optimize`, `evolution`, `api-surface`) against the target content
 - Execute every operation completely — the analytical depth comes from the full chain
-- Write the artifact to `{output_path}/{artifact_filename}` per the artifact naming convention
+- Write each lens's `{behavioral_artifact}` into `{output_path}` under that lens's declared `#### artifact` name
 
 ### 4. Augment With Graph
 
-- After lens execution for independent passes (19-22), check GitNexus availability via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md). If unavailable, skip graph augmentation.
-- Error-resilience (19): Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on error-returning functions identified by the lens to check whether all callers handle the error. Append a 'Graph Evidence: Error Propagation' section with measured error-handling completeness per function.
-- Evolution (21): Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)`(direction: upstream)` on coupling points identified by the lens to measure blast radius quantitatively. Append a 'Graph Evidence: Coupling Measurement' section with measured affected-symbol and affected-process counts.
-- API-surface (22): Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) to enumerate exported/public symbols with caller counts (`MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(fn) RETURN fn.name, fn.filePath, count(caller) ORDER BY count(caller) DESC`). Append a 'Graph Evidence: Measured API Surface' section with the actual public surface from the graph.
-- Optimize (20): No graph augmentation — optimization analysis concerns algorithmic complexity, not graph structure.
+- After lens execution for the independent passes (`error-resilience`, `optimize`, `evolution`, `api-surface`), check GitNexus availability via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../meta/techniques/gitnexus-operations/verify-index.md). If unavailable, skip graph augmentation.
+- Error-resilience: Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) on error-returning functions identified by the lens to check whether all callers handle the error. Append a 'Graph Evidence: Error Propagation' section with measured error-handling completeness per function.
+- Evolution: Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)`(direction: 'upstream')` on coupling points identified by the lens to measure blast radius quantitatively. Append a 'Graph Evidence: Coupling Measurement' section with measured affected-symbol and affected-process counts.
+- API-surface: Use [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) to enumerate exported/public symbols with caller counts (`MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(fn) RETURN fn.name, fn.filePath, count(caller) ORDER BY count(caller) DESC`). Append a 'Graph Evidence: Measured API Surface' section with the actual public surface from the graph.
+- Optimize: No graph augmentation — optimization analysis concerns algorithmic complexity, not graph structure.
 - GitNexus data is appended as a 'Graph Evidence' section at the end of each behavioral artifact. The lens output stands alone; graph data provides supplementary measurement that the synthesis pass can reference.
 
 ### 5. Construct Synthesis Input
 
-- For synthesis pass (when `{lens_resource_index}` is 23): read all 4 prior artifacts from `{prior_artifact_paths}`
-- If a provided prior artifact path does not exist, report the missing artifact; the orchestrator may need to re-dispatch the independent lens pass that produces it
-- Construct the synthesis input by concatenating each artifact under its role heading: ## ERRORS, ## COSTS, ## CHANGES, ## PROMISES — separated by horizontal rules
-- The synthesis lens expects exactly these 4 labeled sections
-- The synthesis input is constructed as: ## ERRORS\n\n`{errors_content}`\n\n---\n\n## COSTS\n\n`{costs_content}`\n\n---\n\n## CHANGES\n\n`{changes_content}`\n\n---\n\n## PROMISES\n\n`{promises_content}`
+- When `{lens_name}` is `synthesis`, read all 4 prior artifacts from `{prior_artifact_paths}`, capturing their contents as `{$errors_content}`, `{$costs_content}`, `{$changes_content}`, and `{$promises_content}`.  
+  > If a provided prior artifact path does not exist, report the missing artifact.
+- Construct `{$synthesis_input}` by concatenating each artifact under its role heading separated by horizontal rules: ``## ERRORS\n\n`{errors_content}`\n\n---\n\n## COSTS\n\n`{costs_content}`\n\n---\n\n## CHANGES\n\n`{changes_content}`\n\n---\n\n## PROMISES\n\n`{promises_content}` ``
 
 ### 6. Apply Synthesis Lens
 
-- Apply the behavioral_synthesis lens (when `{lens_resource_index}` is 23) against the constructed input
+- When `{lens_name}` is `synthesis`, apply the [behavioral-synthesis](../resources/behavioral-synthesis.md) lens against `{synthesis_input}`
 
 ### 7. Write Artifact
 
@@ -70,9 +70,9 @@ Resource index for this pass: 19 (error-resilience), 20 (optimize), 21 (evolutio
 
 Behavioral analysis artifact written to the filesystem
 
-#### artifact_filename
+#### artifact
 
-`behavioral-errors.md` (19) / `behavioral-costs.md` (20) / `behavioral-changes.md` (21) / `behavioral-promises.md` (22) / `behavioral-synthesis.md` (23)
+`behavioral-errors.md` (`error-resilience`) / `behavioral-costs.md` (`optimize`) / `behavioral-changes.md` (`evolution`) / `behavioral-promises.md` (`api-surface`) / `behavioral-synthesis.md` (`synthesis`)
 
 #### artifact_path
 
@@ -86,9 +86,13 @@ The role label for this pass (ERRORS, COSTS, CHANGES, PROMISES, or SYNTHESIS)
 
 ### label-mapping
 
-The behavioral pipeline uses fixed role labels mapped to specific lenses: error-resilience (19) → ERRORS, optimize (20) → COSTS, evolution (21) → CHANGES, api-surface (22) → PROMISES. The synthesis lens (23) expects these exact labels.
+The behavioral pipeline uses fixed role labels mapped to specific lenses: `error-resilience` → ERRORS, `optimize` → COSTS, `evolution` → CHANGES, `api-surface` → PROMISES. The `synthesis` lens expects these exact labels.
 
 ### code-only
 
-The behavioral pipeline is code-only. optim (20) uses strongly code-oriented vocabulary with no domain-neutral variant. Do not use behavioral mode when target_type is 'general'.
+The behavioral pipeline is code-only. `optimize` uses strongly code-oriented vocabulary with no domain-neutral variant. Do not use the behavioral pipeline when `{target_type}` is `general`.
+
+### independent-lenses-parallel
+
+The four independent behavioral lenses (`error-resilience`, `optimize`, `evolution`, `api-surface`) share no context and may be dispatched concurrently, up to four at once. Only the `synthesis` lens depends on their outputs.
 

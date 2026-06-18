@@ -345,8 +345,6 @@ Session 16 had better Critical finding accuracy and severity calibration but reg
 
 **Schema alignment:**
 - Activity `notes` field renamed to `rules` across all activities — aligns with workflow-level `rules` field and makes the imperative nature explicit
-- `modeOverrides` and `modes` added to the Zod schema (previously only in JSON schema)
-- `artifactLocations` now accepts string shorthand in addition to full object form
 
 **Activity version bumps:**
 - scope-setup: 1.0.0 → 2.0.0

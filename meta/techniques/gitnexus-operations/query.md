@@ -13,7 +13,7 @@ Find execution flows related to a concept, symptom, or error string — the stru
 
 a concept, symptom, or error text (e.g. `'payment validation error'`)
 
-## Output
+## Outputs
 
 ### query_report
 

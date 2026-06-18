@@ -9,6 +9,10 @@ Transition the session to a target activity and spawn a worker for it.
 
 ## Inputs
 
+### session_index
+
+`session_index` of the session whose activity is being dispatched
+
 ### activity_id
 
 Activity ID to enter.
@@ -21,7 +25,7 @@ Resource ref for the worker prompt (e.g., [activity-worker-prompt](../../resourc
 
 Current variable state for prompt substitution
 
-## Output
+## Outputs
 
 ### worker_result
 

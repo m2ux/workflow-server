@@ -1,74 +1,36 @@
 id: sub-static-analysis
-version: 1.5.0
+version: 1.7.0
 name: "Sub-Agent: Static Analysis and Mechanical Checks"
 description: "Structured static analysis with zero-hit audit and finding aggregation."
-problem: "Static analysis agents return individual grep hits without aggregation (multiple panics in the same pallet stay as separate results) and silently pass on patterns with zero hits (e.g., RPC fan-out). This activity forces aggregation and zero-hit verification."
-recognition[3]:
-  - static analysis
-  - pattern-based search
-  - mechanical checks
-techniques:
-  supporting[1]:
-    - execute-sub-agent
 required: false
-estimatedTime: 15-30m
-
-rules[6]:
-  - "This activity is dispatched by the orchestrator during primary-audit — it does NOT appear in the main workflow transition graph"
-  - "The sub-agent receives context variables: in_scope paths, out_of_scope exclusions, resource 05 (static-analysis-patterns), and planning_folder_path"
-  - "Steps 1 and 2 delegate to the search-pattern-catalog technique, which defines the execution protocol for catalog-based searching"
-  - "The final output must conform to the structured schema in resource 04 (sub-agent-output-schema)"
-  - "CONSENSUS-FILE ELEVATION FLOOR: Any pattern hit in a file classified as priority-1 in the crate map MUST be elevated to at minimum a Low-severity finding during aggregation. Hits in these files are not suppressed during zero-hit triage or aggregation."
-  - "FILE OUTPUT: The sub-agent MUST write its complete structured output as a JSON file to the planning folder: {planning_folder_path}/b-static-analysis.json. This file is the canonical source for the merge agent (M) and the auditable record of the agent's work."
-steps[6]:
-  - id: run-grep-patterns
-    name: Run All Grep Patterns
-    required: true
-    technique: search-pattern-catalog
-    technique_args:
-      resource_id: 05-static-analysis-patterns
-      catalog_section: Grep Patterns
-      output_format: "| Category | Pattern | File:Line | Hit | Triage |"
-    description: "Apply the 'Grep Patterns' catalog section against the full in-scope directory set, excluding test/mock/bench files."
-  - id: run-mechanical-checks
-    name: Run Mechanical Checks
-    required: true
-    technique: search-pattern-catalog
-    technique_args:
-      resource_id: 05-static-analysis-patterns
-      catalog_section: Mechanical Checks
-      output_format: "| Check | Pattern | File:Line | PASS/FAIL | Evidence |"
-    description: "Apply the 'Mechanical Checks' catalog section."
-  - id: run-storage-lifecycle-scan
-    name: Run Storage Lifecycle Pairing Scan
-    required: true
-    technique: scan-storage-lifecycle
-    technique_args:
-      output_format: "| StorageMap | Crate | insert() Sites | remove() Sites | Paired? | Cap Enforced? |"
-    description: "Scan all storage maps in the full in-scope codebase."
-  - id: produce-zero-hit-audit
-    name: Produce Zero-Hit Pattern Audit
-    required: true
-    technique: search-pattern-catalog
-    technique_args:
-      output_format: "| Pattern | Category | Hits | Verdict | Justification |"
-    description: "Compile zero-hit verdicts from steps 1 and 2 into a single table."
-  - id: aggregate-findings
-    name: Aggregate Hits Into Distinct Findings
-    required: true
-    description: "Aggregate hits into distinct findings per resource 05 aggregation rules."
-  - id: format-output
-    name: Format Structured Output
-    required: true
+steps[4]:
+  - kind: technique
+    id: run-grep-patterns
+    technique:
+      name: search-pattern-catalog
+      inputs:
+        resource_id: 05-static-analysis-patterns
+        catalog_section: Grep Patterns
+        output_format: "| Category | Pattern | File:Line | Hit | Triage |"
+  - kind: technique
+    id: run-mechanical-checks
+    technique:
+      name: search-pattern-catalog
+      inputs:
+        resource_id: 05-static-analysis-patterns
+        catalog_section: Mechanical Checks
+        output_format: "| Check | Pattern | File:Line | PASS/FAIL | Evidence |"
+  - kind: technique
+    id: run-storage-lifecycle-scan
+    technique:
+      name: scan-storage-lifecycle
+      inputs:
+        output_format: "| StorageMap | Crate | insert() Sites | remove() Sites | Paired? | Cap Enforced? |"
+  - kind: technique
+    id: format-output
     technique: execute-sub-agent
-    description: "Format all findings and tables as structured output."
 outcome[4]:
-  - All patterns from resource 05 executed against full scope via search-pattern-catalog technique
-  - Mechanical checks completed with per-pattern PASS/FAIL
-  - Storage lifecycle pairing table produced
-  - Zero-hit patterns audited and classified
-context_to_preserve[4]:
-  - findings - Aggregated findings list
-  - zero_hit_patterns - Patterns with no results and their verdicts
-  - storage_lifecycle_table - Insert/remove pairing for all StorageMaps
-  - reconnaissance_leads - Observations for orchestrator review
+  - The full pattern catalog has been run against the whole scope, so no static-analysis category is left unexamined
+  - Each mechanical check has a decisive PASS/FAIL the orchestrator can act on without re-running it
+  - Storage lifecycle pairing is known, exposing insert/remove imbalances that signal unbounded growth or orphaned state
+  - Patterns with zero hits are verified rather than silently assumed clean, closing the false-negative gap on cases like RPC fan-out

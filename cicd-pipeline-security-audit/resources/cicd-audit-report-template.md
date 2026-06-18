@@ -34,7 +34,7 @@ What good looks like: every finding has a confirmed source-to-sink flow and a sp
 
 > Grouped by submodule. Each finding has a confirmed source-to-sink flow.
 
-### {submodule}
+### {submodule_path}
 
 #### Finding {n} — {pattern ID P1-P7}: {title}
 

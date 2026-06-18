@@ -8,24 +8,18 @@ tags[3]:
   - maintenance
   - sync
 
+rules:
+  workflow[1]:
+    - "SINGLE-AGENT EXECUTION: This workflow runs as a single agent — no orchestrator/worker split. The executing agent performs all steps directly."
+  activity[3]:
+    - "WORKTREE SCOPE: All file operations happen in the workflows worktree (workflows/ directory). Never modify MCP server source (src/, schemas/)."
+    - "RESOURCE NAMING: Resources use the convention {NN}-{hyphenated-name}.md where NN is a zero-padded index. Indices are permanent — never reuse a deleted index."
+    - "VERBATIM COPY: Upstream prism content is copied verbatim including YAML frontmatter. Do not modify lens prompt content during import."
 techniques:
-artifactLocations:
-  planning:
-    path: "{planning_folder_path}"
-    gitignored: false
-  workflows:
-    path: "workflows/"
-    gitignored: false
+  activity[1]:
+    - variable-binding
 
-rules[6]:
-  - "WORKTREE SCOPE: All file operations happen in the workflows worktree (workflows/ directory). Never modify MCP server source (src/, schemas/)."
-  - "RESOURCE NAMING: Resources use the convention {NN}-{hyphenated-name}.md where NN is a zero-padded index. Indices are permanent — never reuse a deleted index."
-  - "VERBATIM COPY: Upstream prism content is copied verbatim including YAML frontmatter. Do not modify lens prompt content during import."
-  - "ROUTING COVERAGE: Skill routing updates must cover all affected surfaces: goal-mapping-matrix, code-vs-general, model-sensitivity, neutral-variant-routing, resource lists, lens catalogs, and selection guides in plan-analysis, portfolio-analysis, behavioral-pipeline, and orchestrate-prism."
-  - "SINGLE-AGENT EXECUTION: This workflow runs as a single agent — no orchestrator/worker split. The executing agent performs all steps directly."
-  - "AUTOMATIC TRANSITIONS: Transitions between activities are automatic. User interaction occurs only at defined checkpoints within activities."
-
-variables[10]:
+variables[9]:
   - name: planning_folder_path
     type: string
     description: "Path to the planning folder for this workflow execution (e.g., .engineering/artifacts/planning/prism-update-YYYY-MM-DD)"
@@ -58,9 +52,5 @@ variables[10]:
     type: boolean
     description: "Whether verification found consistency issues requiring fixes"
     defaultValue: false
-  - name: stale_references
-    type: array
-    description: "List of stale name references found during verification"
-    defaultValue: []
 
 initialActivity: discover-changes

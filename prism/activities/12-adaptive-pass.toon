@@ -1,62 +1,45 @@
 id: adaptive-pass
-version: 1.0.0
+version: 1.2.0
 name: Adaptive Depth Pass
 description: "Cost-minimizing depth escalation."
-problem: "Users often don't know how deep an analysis needs to be. Running full-prism on every target is wasteful. Adaptive starts cheap and escalates only when needed."
-techniques:
-  supporting[1]:
-    - adaptive-analysis
-artifacts[5]:
-  - id: adaptive-stage1
-    name: "adaptive-stage1.md"
-    location: analysis
-    description: "SDL deep_scan (resource 12) output on Haiku — always produced"
-  - id: adaptive-stage2
-    name: "adaptive-stage2.md"
-    location: analysis
-    description: "L12 (resource 00) output on Sonnet — produced only if stage 1 signal was insufficient"
-  - id: full-prism-structural
-    name: "structural-analysis.md"
-    location: analysis
-    description: "Full-prism structural pass — produced only if stage 2 signal was still insufficient"
-  - id: full-prism-adversarial
-    name: "adversarial-analysis.md"
-    location: analysis
-    description: "Full-prism adversarial pass — produced only when full 3-pass pipeline runs"
-  - id: full-prism-synthesis
-    name: "synthesis.md"
-    location: analysis
-    description: "Full-prism synthesis pass — produced only when full 3-pass pipeline runs"
-rules[2]:
-  - "Signal quality is assessed by checking: (1) conservation law presence (regex for 'conservation law' or '= constant'), (2) output word count > 300, (3) bug table presence. If all 3 are present, signal is adequate."
-  - "Adaptive mode always starts with the cheapest option. It never skips stages — each stage builds confidence."
 steps[4]:
-  - id: run-stage-1
-    name: "Run Stage 1: SDL Quick Scan"
-    description: "Create a FRESH worker with deep_scan resource (12). Worker runs on Haiku for fastest/cheapest result. Writes to {output_path}/adaptive-stage1.md. Assess signal quality: conservation law presence, word count > 300, and bug table presence."
-    required: true
-  - id: run-stage-2
-    name: "Run Stage 2: L12 Deep"
-    description: "If stage 1 signal is insufficient, create a FRESH worker with L12 resource (00) on Sonnet. Writes to {output_path}/adaptive-stage2.md. Assess signal quality. Skip if stage 1 was adequate."
-    required: true
+  - kind: technique
+    id: run-stage-1
+    technique:
+      name: adaptive-analysis::stage-1-sdl
+      inputs:
+        target_content: "{target}"
+  - kind: technique
+    id: run-stage-2
+    technique:
+      name: adaptive-analysis::stage-2-l12
+      inputs:
+        target_content: "{target}"
     condition:
       type: simple
       variable: adaptive_signal_quality
       operator: "=="
       value: insufficient
-  - id: run-stage-3
-    name: "Run Stage 3: Full Pipeline"
-    description: "If stage 2 signal is still insufficient, run the full-prism 3-pass pipeline (structural + adversarial + synthesis). Writes standard full-prism artifacts. Skip if earlier stage was adequate."
-    required: true
+  - kind: technique
+    id: run-stage-3
+    technique:
+      name: adaptive-analysis::stage-3-full
+      inputs:
+        target_content: "{target}"
     condition:
       type: simple
       variable: adaptive_signal_quality
       operator: "=="
       value: insufficient
-  - id: collect-paths
-    name: Collect Artifact Paths
-    description: "Add all produced artifacts to all_artifact_paths. Record adaptive_stage and adaptive_signal_quality."
-    required: true
+  - kind: action
+    id: collect-paths
+    actions[2]:
+      - action: set
+        target: all_artifact_paths
+        description: "Accumulated artifact paths across the run."
+      - action: set
+        target: adaptive_stage
+        description: "Deepest escalation stage that ran."
 transitions[1]:
   - to: generate-report
     isDefault: true

@@ -21,6 +21,10 @@ List of files changed in the work package (from `git diff`)
 
 *(optional)* Detected project type (rust-substrate or other)
 
+### planning_folder_path
+
+Folder where the code review report is written
+
 ## Protocol
 
 ### 1. Load Guidance
@@ -51,7 +55,7 @@ List of files changed in the work package (from `git diff`)
 
 ### 5. Present Summary
 
-- Summarize critical and high findings for checkpoint presentation
+- Summarize critical and high findings
 
 ## Outputs
 
@@ -59,7 +63,7 @@ List of files changed in the work package (from `git diff`)
 
 Code review [report](../resources/rust-substrate-code-review.md#report-template) documenting findings by severity
 
-#### review_artifact
+#### artifact
 
 `code-review.md`
 

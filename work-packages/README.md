@@ -46,285 +46,163 @@ graph TD
 
 ## Activities
 
-### 1. Scope Assessment
+The seven activities run as a sequential chain (see the flow diagram above). Each links to its authoritative definition — steps, checkpoints, decisions, loops, and transitions live in the activity TOON and are served by `get_activity`.
 
-**Purpose:** Confirm multi-work-package initiative and identify work packages to be planned.
+### 1. [Scope Assessment](activities/01-scope-assessment.toon)
 
-**Primary Technique:** `assess-initiative-scope`
+Confirms this is a genuine multi-package initiative and produces an agreed inventory of distinct work packages, so planning can proceed package-by-package without scope drift. Ends at a user checkpoint before moving on to folder setup.
 
 ```mermaid
 graph TD
     subgraph scope-assessment[Scope Assessment]
-        s1([Confirm initiative scope])
-        s2([Identify work packages])
-        s3([Present scope summary])
+        s1([assess-scope → assess-initiative-scope])
         cp1{Scope confirmed?}
         
-        s1 --> s2 --> s3 --> cp1
+        s1 --> cp1
         cp1 -->|proceed| Next([→ folder-setup])
         cp1 -->|refine| s1
     end
 ```
 
-| Step | Description |
-|------|-------------|
-| Confirm initiative scope | Verify this is a multi-work-package initiative |
-| Identify work packages | List all work packages to be planned |
-| Present scope summary | Summarize identified work packages for confirmation |
+### 2. [Folder Setup](activities/02-folder-setup.toon)
 
-**Checkpoint:** "I've identified N work packages. Proceed with planning?"
-
----
-
-### 2. Folder Setup
-
-**Purpose:** Create planning folder structure with initial documentation skeletons.
-
-**Primary Technique:** `workflow-engine`  
-**Supporting Technique:** `manage-artifacts`
+Creates the planning folder and its initial documentation skeletons (START-HERE.md and README.md), giving the initiative a canonical home before analysis begins.
 
 ```mermaid
 graph TD
     subgraph folder-setup[Planning Folder Setup]
-        f1([Create planning folder])
-        f2([Create START-HERE.md])
-        f3([Create README.md])
-        f4([Present folder structure])
+        f1([create-folder → version-control::initialize-folder])
+        f2([setup-planning-folder → setup-planning-folder])
         cp1{Folder setup complete?}
         
-        f1 --> f2 --> f3 --> f4 --> cp1
+        f1 --> f2 --> cp1
         cp1 -->|proceed| Next([→ analysis])
         cp1 -->|adjust| f1
     end
-    
-    technique((manage-artifacts))
-    f1 -.-> technique
 ```
 
-| Step | Description |
-|------|-------------|
-| Create planning folder | Create folder at `.engineering/artifacts/planning/YYYY-MM-DD-initiative-name/` |
-| Create START-HERE.md | Create initial skeleton with header and placeholders |
-| Create README.md | Create skeleton for navigation |
-| Present folder structure | Show user the created structure |
+### 3. [Analysis](activities/03-analysis.toon)
 
-**Artifacts:** START-HERE.md (create), README.md (create)
-
-**Checkpoint:** "Planning folder created. Proceed with analysis?"
-
----
-
-### 3. Analysis
-
-**Purpose:** Perform completion or context analysis depending on whether continuing previous work or starting new.
-
-**Primary Technique:** `analyze-initiative-context`
+Establishes a validated understanding of the initiative's starting point — either completion analysis of existing progress when continuing previous work, or context analysis for a fresh start. The path is chosen at a user checkpoint so later planning rests on confirmed context.
 
 ```mermaid
 graph TD
     subgraph analysis[Analysis]
-        a1([Determine analysis type])
+        cpType{Analysis type?}
         d1{analysis_type?}
-        a2a([Completion analysis])
-        a2b([Context analysis])
-        a3([Document analysis])
-        a4([Present findings])
+        a1([analyze-context → analyze-initiative-context])
         cp1{Analysis confirmed?}
         
-        a1 --> d1
-        d1 -->|completion| a2a --> a3
-        d1 -->|context| a2b --> a3
-        a3 --> a4 --> cp1
+        cpType -->|continuing| d1
+        cpType -->|new initiative| d1
+        d1 -->|completion| a1
+        d1 -->|context| a1
+        a1 --> cp1
         cp1 -->|proceed| Next([→ package-planning])
-        cp1 -->|revise| a2a
+        cp1 -->|revise| cpType
     end
 ```
 
-| Step | Description |
-|------|-------------|
-| Determine analysis type | Ask: Is this continuing previous work or new initiative? |
-| Perform analysis | Execute completion or context analysis based on decision |
-| Document analysis | Create analysis document using resource template |
-| Present findings | Summarize analysis findings for review |
+### 4. [Package Planning](activities/04-package-planning.toon)
 
-**Artifacts:** analysis.md (create)
-
-**Checkpoint:** "Analysis complete. Does this context look correct?"
-
----
-
-### 4. Package Planning
-
-**Purpose:** Define scope, dependencies, effort, and success criteria for each work package.
-
-**Primary Technique:** `plan-work-package-scope`
+Defines scope, dependencies, effort, and success criteria for each package, fanning out over the identified work packages so every one is detailed enough to be prioritized and executed independently.
 
 ```mermaid
 graph TD
     subgraph package-planning[Work Package Planning]
+        p1([present-planning-overview → plan-work-package-scope::present-overview])
         loop[[forEach: work_packages]]
-        p1([Iterate through packages])
-        p2([Define scope])
-        p3([Identify dependencies])
-        p4([Estimate effort])
-        p5([Define success criteria])
-        p6([Document plan])
+        p2([plan-package → plan-work-package-scope::plan-package])
         cp1{Plans created?}
         
         p1 --> loop
-        loop --> p2 --> p3 --> p4 --> p5 --> p6
-        p6 --> loop
+        loop --> p2
+        p2 --> loop
         loop -->|done| cp1
         cp1 -->|proceed| Next([→ prioritization])
         cp1 -->|revise| p1
     end
 ```
 
-| Step | Description |
-|------|-------------|
-| Iterate through packages | For each identified work package |
-| Define scope | Identify in scope and out of scope |
-| Identify dependencies | Document dependencies on other packages or external factors |
-| Estimate effort | Provide rough effort estimate |
-| Define success criteria | Establish measurable success criteria |
-| Document plan | Create NN-package-name-plan.md |
+### 5. [Prioritization](activities/05-prioritization.toon)
 
-**Artifacts:** {package-name}-plan.md (create, per package)
-
-**Checkpoint:** "Work package plans created. Ready for prioritization?"
-
----
-
-### 5. Prioritization
-
-**Purpose:** Prioritize work packages based on dependencies, value, risk, and effort.
-
-**Primary Technique:** `prioritize-packages`
+Orders the packages by dependencies, value, risk, and effort, producing a priority ranking the user accepts (or sends back to planning) before the roadmap is finalized.
 
 ```mermaid
 graph TD
     subgraph prioritization[Prioritization]
-        r1([Analyze dependencies])
-        r2([Evaluate criteria])
-        r3([Propose priority order])
-        r4([Present prioritization])
+        r1([prioritize → prioritize-packages])
         cp1{Priority confirmed?}
         
-        r1 --> r2 --> r3 --> r4 --> cp1
+        r1 --> cp1
         cp1 -->|accept| Next([→ finalize-roadmap])
-        cp1 -->|adjust| r3
+        cp1 -->|adjust| r1
         cp1 -->|revisit plans| Back([→ package-planning])
     end
 ```
 
-| Step | Description |
-|------|-------------|
-| Analyze dependencies | Create dependency graph showing blockers |
-| Evaluate criteria | Assess each package on: business value, risk, effort |
-| Propose priority order | Generate recommended execution order |
-| Present prioritization | Show dependency graph and proposed order |
+### 6. [Finalize Roadmap](activities/06-finalize-roadmap.toon)
 
-**Artifacts:** priority-ranking.md (create)
-
-**Checkpoint:** "Here's the proposed priority order. Adjust as needed?"
-
----
-
-### 6. Finalize Roadmap
-
-**Purpose:** Complete roadmap documentation with timeline, navigation, and success criteria.
-
-**Primary Technique:** `document-roadmap`
+Completes the roadmap documentation — timeline, navigation, and success criteria — so the initiative has a single source of truth before implementation begins.
 
 ```mermaid
 graph TD
     subgraph finalize-roadmap[Finalize Roadmap]
-        fr1([Update START-HERE.md])
-        fr2([Update README.md])
-        fr3([Add timeline estimates])
-        fr4([Document success criteria])
-        fr5([Present final roadmap])
+        fr1([finalize-roadmap-docs → document-roadmap])
         cp1{Roadmap complete?}
         
-        fr1 --> fr2 --> fr3 --> fr4 --> fr5 --> cp1
+        fr1 --> cp1
         cp1 -->|begin| Next([→ implementation])
         cp1 -->|refine| fr1
     end
 ```
 
-| Step | Description |
-|------|-------------|
-| Update START-HERE.md | Complete with executive summary, status table, success criteria |
-| Update README.md | Add navigation links to all planning documents |
-| Add timeline estimates | Include timeline based on effort and dependencies |
-| Document success criteria | Define how initiative completion will be measured |
-| Present final roadmap | Show completed roadmap for final approval |
+### 7. [Implementation](activities/07-implementation.toon)
 
-**Artifacts:** START-HERE.md (update), README.md (update)
-
-**Checkpoint:** "Roadmap complete. Ready to begin implementation?"
-
----
-
-### 7. Implementation
-
-**Purpose:** Execute each planned work package in priority order by triggering the work-package workflow.
-
-**Primary Technique:** `orchestrate-package-execution`
+Executes each planned package in priority order, triggering the `work-package` workflow for each one in turn and tracking progress until the whole initiative is delivered as merged, reviewed work.
 
 ```mermaid
 graph TD
     subgraph implementation[Implementation]
+        i0([initialize-iteration → orchestrate-package-execution::initialize-iteration])
         loop[[forEach: remaining_packages]]
-        i1([Select next work package])
-        i2([Trigger work-package workflow])
-        i3([Execute workflow])
-        i4([Return to roadmap])
-        i5([Update roadmap status])
-        i6([Check remaining packages])
+        i1([execute-package → orchestrate-package-execution::execute-package])
         
+        i0 --> loop
+        loop --> i1
         i1 --> loop
-        loop --> i2 --> i3
-        i3 -->|complete| i4 --> i5 --> i6
-        i6 -->|more| loop
-        i6 -->|done| Done([All Complete])
+        loop -->|done| Done([All Complete])
     end
     
     trigger([work-package workflow])
-    i2 -.-> trigger
-    trigger -.-> i3
+    i1 -.->|triggers| trigger
+    trigger -.-> i1
 ```
 
-| Step | Description |
-|------|-------------|
-| Select next work package | Choose highest priority unstarted package |
-| Trigger work-package workflow | Load `work-package` workflow and start |
-| Execute workflow | Follow work-package workflow through all activities |
-| Return to roadmap | After workflow completes, return context |
-| Update roadmap status | Mark completed package, update progress |
-| Check remaining packages | Determine if more packages remain |
+## Artifacts
 
-**Artifacts:** START-HERE.md (update, progress tracking)
-
-**Outcome:**
-- All planned work packages implemented via work-package workflow
-- Each package has merged PR
-- Roadmap status reflects completion
-
----
+The workflow produces planning documentation under the planning folder: START-HERE.md and README.md skeletons (created at setup, finalized at roadmap), a completion or context analysis document, a plan per work package, a priority ranking, and progress tracking updated as packages complete. See the activity TOONs for the precise artifact each activity reads or writes.
 
 ## Techniques Summary
 
-| Technique | Type | Capability | Used By |
-|-------|------|------------|---------|
-| `assess-initiative-scope` | Workflow-specific | Identify and categorize work packages | Scope Assessment |
-| `analyze-initiative-context` | Workflow-specific | Completion or context analysis | Analysis |
-| `plan-work-package-scope` | Workflow-specific | Scope, dependencies, effort, success criteria per package | Package Planning |
-| `prioritize-packages` | Workflow-specific | Evaluate and order packages | Prioritization |
-| `document-roadmap` | Workflow-specific | Produce finalized roadmap documentation | Finalize Roadmap |
-| `orchestrate-package-execution` | Workflow-specific | Trigger and manage work-package workflow instances | Implementation |
-| `workflow-engine` | Universal | Execute workflows following schema patterns | All activities (supporting) |
-| `manage-artifacts` | Universal | Manage planning artifacts folder structure | Folder Setup |
+Workflow-specific techniques live under `techniques/`. Two are **operation groups** (a `TECHNIQUE.md` contract plus one file per operation, referenced as `<group>::<op>`); the rest are standalone techniques. All share the base contract in `techniques/TECHNIQUE.md`.
+
+| Technique / Operation | Type | Capability | Used By |
+|-----------------------|------|------------|---------|
+| `assess-initiative-scope` | Standalone | Identify and categorize work packages | Scope Assessment |
+| `setup-planning-folder` | Standalone | Create START-HERE.md and README.md skeletons | Folder Setup |
+| `analyze-initiative-context` | Standalone | Completion or context analysis | Analysis |
+| `plan-work-package-scope` | Group | Scope, dependencies, effort, success criteria per package | Package Planning |
+| `plan-work-package-scope::present-overview` | Group op | Present packages and the per-package planning approach | Package Planning |
+| `plan-work-package-scope::plan-package` | Group op | Plan and document one package (scope, deps, effort, success) | Package Planning (loop) |
+| `prioritize-packages` | Standalone | Evaluate and order packages | Prioritization |
+| `document-roadmap` | Standalone | Produce finalized roadmap documentation | Finalize Roadmap |
+| `orchestrate-package-execution` | Group | Trigger and manage work-package workflow instances | Implementation |
+| `orchestrate-package-execution::initialize-iteration` | Group op | Build the remaining-packages list and progress indicator | Implementation |
+| `orchestrate-package-execution::execute-package` | Group op | Execute one package via the work-package workflow, update status | Implementation (loop) |
+| `version-control::initialize-folder` | Meta | Derive the canonical planning-folder slug | Folder Setup |
+| `variable-binding` | Meta | Bind step operations to the workflow variable bag | Inherited by every activity (declared at `workflow.techniques.activity`) |
+| `scatter-gather` | Meta | Fan out and aggregate forEach iterations | Package Planning, Implementation (supporting) |
 
 ## Resources
 
@@ -339,22 +217,6 @@ graph TD
 | 06 | Workflow Triggering Protocol | How to trigger and manage work-package workflow instances |
 
 ---
-
-## Context Preserved
-
-The workflow declares its variables in [`workflow.toon`](workflow.toon). Key variables include:
-
-| Variable | Description |
-|----------|-------------|
-| `initiative_name` | Name of the overall initiative |
-| `work_packages` | List of identified work packages |
-| `planning_folder_path` | Path to the created planning folder |
-| `analysis_type` | Completion or context |
-| `package_plans` | List of created plan document paths |
-| `priority_order` | Ordered list of work packages |
-| `completed_packages` | List of completed work packages |
-| `remaining_packages` | List of remaining work packages |
-| `overall_progress` | Progress indicator |
 
 ## File Structure
 
@@ -374,18 +236,25 @@ work-packages/
 ├── techniques/
 │   ├── TECHNIQUE.md
 │   ├── assess-initiative-scope.md
+│   ├── setup-planning-folder.md
 │   ├── analyze-initiative-context.md
-│   ├── plan-work-package-scope.md
 │   ├── prioritize-packages.md
 │   ├── document-roadmap.md
-│   └── orchestrate-package-execution.md
+│   ├── plan-work-package-scope/
+│   │   ├── TECHNIQUE.md
+│   │   ├── present-overview.md
+│   │   └── plan-package.md
+│   └── orchestrate-package-execution/
+│       ├── TECHNIQUE.md
+│       ├── initialize-iteration.md
+│       └── execute-package.md
 └── resources/
     ├── README.md
-    ├── 00-planning-folder-template.md
-    ├── 01-completion-analysis-guide.md
-    ├── 02-context-analysis-guide.md
-    ├── 03-package-plan-template.md
-    ├── 04-prioritization-framework.md
-    ├── 05-roadmap-template.md
-    └── 06-workflow-triggering-protocol.md
+    ├── planning-folder-template.md
+    ├── completion-analysis-guide.md
+    ├── context-analysis-guide.md
+    ├── package-plan-template.md
+    ├── prioritization-framework.md
+    ├── roadmap-template.md
+    └── workflow-triggering-protocol.md
 ```

@@ -7,7 +7,7 @@ metadata:
 
 Obtain the `{cloudId}` for the target Atlassian site.
 
-## Output
+## Outputs
 
 ### cloudId
 
