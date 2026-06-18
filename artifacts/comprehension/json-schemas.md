@@ -1,8 +1,9 @@
 # JSON Schema Comprehension — Workflow Server
 
-**Scope:** `schemas/workflow.schema.json`, `schemas/activity.schema.json`, `schemas/skill.schema.json`, `schemas/condition.schema.json`, `schemas/state.schema.json`
-**Schema dialect:** JSON Schema draft-07
+**Scope:** `schemas/workflow.schema.json`, `schemas/activity.schema.json`, `schemas/technique.schema.json`, `schemas/condition.schema.json`, `schemas/state.schema.json`, `schemas/session-file.schema.json`
+**Schema dialect:** JSON Schema draft-07 (declared `"$schema": "http://json-schema.org/draft-07/schema#"` in every file)
 **Created:** 2026-03-27
+**Last updated:** 2026-06-18
 
 ---
 
@@ -10,11 +11,29 @@
 
 | File | Title | Root `$ref` | Definitions | Lines |
 |------|-------|-------------|-------------|-------|
-| workflow.schema.json | workflow | `#/definitions/workflow` | variable, mode, artifactLocation, workflow | 175 |
-| activity.schema.json | activity | `#/definitions/activity` | action, step, checkpointOption, checkpoint, decisionBranch, decision, loop, transition, workflowTrigger, artifact, skills, activity | 555 |
-| skill.schema.json | skill | `#/definitions/skill` | toolDefinition, errorDefinition, executionPattern, architecture, matching, stateStructure, stateDefinition, interpretation, numericFormat, initialization, updatePattern, resumption, inputItemDefinition, protocolStep, inputsDefinition, protocolDefinition, rulesDefinition, outputComponentsDefinition, outputArtifact, outputItemDefinition, outputDefinition, skill | 493 |
-| condition.schema.json | condition | `#/definitions/condition` | condition (anyOf: simple, and, or, not) | 119 |
-| state.schema.json | state | `#/definitions/state` | parentWorkflowRef, triggeredWorkflowRef, stateSaveFile, state | 451 |
+| workflow.schema.json | workflow | `#/definitions/workflow` | workflow (variables, rules, techniques, and the inline `activities[]` shape are all defined inline under the root) | 1032 |
+| activity.schema.json | activity | `#/definitions/activity` | activity — a single inline definition; the ordered `steps[]` (with inline checkpoint/loop step-kinds), `decisions`, `transitions`, `triggers`, and the server-computed `artifacts[]` are all nested under it | 514 |
+| technique.schema.json | technique | `#/definitions/technique` | inputItemDefinition, inputsDefinition, protocolBlock, protocolDefinition, rulesDefinition, outputComponentsDefinition, outputArtifact, outputItemDefinition, outputsDefinition, technique | 109 |
+| condition.schema.json | condition | `#/definitions/condition` | condition (anyOf: simple, and, or, not) | 104 |
+| state.schema.json | state | `#/definitions/state` | state (single inline definition; nested objects for checkpointResponses, decisionOutcomes, activeLoops, history, parentWorkflow, triggeredWorkflows, lastError are inlined) | 398 |
+| session-file.schema.json | session-file | `#/definitions/session-file` | session-file (single inline definition; server-managed `session.json` state) | 306 |
+
+The model is **Goal → Activity → Technique → Tools**. Activities bind techniques. `technique.schema.json` defines the technique authoring shape (inputs / protocol / outputs / rules). `condition.schema.json` and `state.schema.json` describe runtime structures. `session-file.schema.json` describes the server-managed `session.json`.
+
+### Generation provenance
+
+`workflow`, `state`, `condition`, `session-file`, and `activity` are **generated** from their Zod schemas by `scripts/generate-schemas.ts`, which calls `zodToJsonSchema`. The script emits each file with two `$refStrategy` settings:
+
+- `activity` is generated with `$refStrategy: 'root'` (it emits internal `$ref`s so the recursive loop-kind step body — `steps[].steps[]` referencing the step item — can be represented).
+- `workflow`, `state`, `condition`, and `session-file` are generated with `$refStrategy: 'none'`, which **inlines fully** (no internal `$ref`s).
+
+`technique.schema.json` is hand-maintained (it is the only schema carrying a `$id`, `"technique.schema.json"`).
+
+> Note: `scripts/generate-schemas.ts` writes a `"$schema": "https://json-schema.org/draft/2020-12/schema"` wrapper, but every on-disk schema file declares draft-07. The on-disk files are the source of truth for validation; the dialect mismatch in the generator wrapper is noted as an open question below.
+
+### Schemas served by the server vs. files on disk
+
+The server's schema loader (`src/loaders/schema-loader.ts`, `SCHEMA_IDS`) serves exactly five schema IDs: **`workflow`, `activity`, `condition`, `technique`, `state`**. `session-file.schema.json` exists on disk (and is generated) but is **not** in the served `AllSchemas` set — it documents the server's internal session file rather than authored workflow content.
 
 ---
 
@@ -22,35 +41,41 @@
 
 ```
 workflow.schema.json
-  └── (self-contained, no external $ref)
-      workflow → variable, mode, artifactLocation (all internal)
+  └── (self-contained, fully inlined — no external $ref)
+      workflow → variables, rules, techniques, activities (all inline,
+      with conditions inlined within activities[].steps/decisions/transitions)
 
 activity.schema.json
-  └── condition.schema.json (relative $ref, 6 occurrences)
-      step.condition, checkpoint.condition, decisionBranch.condition,
-      loop.condition, loop.breakCondition, transition.condition
+  └── (self-contained — uses INTERNAL $ref only)
+      condition is inlined as a reusable node at
+        #/definitions/activity/properties/steps/items/properties/condition
+      and referenced via that internal path from: nested and/or/not conditions,
+      step.actions[].condition, decisions[].branches[].condition,
+      transitions[].condition, and the loop-kind step.breakCondition.
+      The loop-kind body steps[].items is an internal $ref to the step item
+        (#/definitions/activity/properties/steps/items) — the only recursive ref.
 
-skill.schema.json
-  └── (self-contained, no external $ref)
-      skill → toolDefinition, errorDefinition, executionPattern,
-      architecture, matching, stateDefinition, interpretation, etc.
+technique.schema.json
+  └── (self-contained, internal $ref between definitions)
+      technique → inputsDefinition, protocolDefinition, outputsDefinition,
+      rulesDefinition; inputs/outputs reference outputComponentsDefinition / outputArtifact
 
 condition.schema.json
-  └── (self-contained — BUT recursive $ref is broken)
-      and.conditions.items → {} (should be $ref: #/definitions/condition)
-      or.conditions.items → {} (should be $ref: #/definitions/condition)
-      not.condition → untyped (should be $ref: #/definitions/condition)
+  └── (self-contained; nested boolean conditions are empty schemas under 'none' generation)
+      and.conditions.items → {}  (an empty schema that accepts anything)
+      or.conditions.items  → {}
+      not.condition        → {}
 
 state.schema.json
-  └── (self-contained, self-recursive)
-      state → parentWorkflowRef, triggeredWorkflowRef (internal)
-      triggeredWorkflowRef.state → $ref: #/definitions/state (recursive)
-      stateSaveFile.state → $ref: #/definitions/state
+  └── (self-contained, fully inlined — no external $ref)
+
+session-file.schema.json
+  └── (self-contained, fully inlined — no external $ref; triggeredWorkflows[].state is {})
 ```
 
-**Key observation:** Only `activity.schema.json` uses cross-file `$ref`. It references `condition.schema.json` via bare relative path (`"$ref": "condition.schema.json"`). This works when schemas are loaded from the same directory, but no `$id` is declared in any schema file, making resolution implicitly dependent on the validator's base URI strategy.
+**Key observation:** No schema uses a cross-FILE `$ref`. Each consumer carries its own copy of the condition shape (inlined by `$refStrategy: 'none'`, or referenced through an internal `$ref` path in the `'root'`-strategy activity schema). The standalone `condition.schema.json` is the canonical hand-readable copy; the activity and workflow schemas embed their own.
 
-**Note**: `workflow.schema.json` now includes an `activities` property. The JSON Schema and Zod schema are partially aligned — `workflow.schema.json` includes `activities` as an array of activity objects, while `WorkflowSchema` in Zod also includes `activities` as `z.array(ActivitySchema).min(1).optional()`.
+No file declares an `$id` except `technique.schema.json`. Because the other schemas inline everything and avoid cross-file references, resolution is not dependent on a validator base-URI strategy.
 
 ---
 
@@ -58,24 +83,21 @@ state.schema.json
 
 ### Per-Schema Summary
 
-| Schema | Root definition | Sub-definitions |
-|--------|----------------|-----------------|
-| workflow | `false` | All `false` (variable, mode, artifactLocation) |
-| activity | **`true`** | All `false` (action, step, checkpointOption, checkpoint, decisionBranch, decision, loop, transition, workflowTrigger, artifact, skills) — except `modeOverrides` values which are `false` |
-| skill | **`true`** | 16 of 22 sub-definitions use **`true`** |
+| Schema | Root definition | Sub-structures |
+|--------|----------------|----------------|
+| workflow | `false` | All nested objects `false` (variables, rules, techniques, activities and everything within) |
+| activity | **`false`** | All nested structures `false` (steps, checkpoint options/effects, decisions, transitions, triggers, artifacts) |
+| technique | `false` | Most definitions `false`; the open-value points are `inputItemDefinition.default` (untyped), `outputComponentsDefinition`/`rulesDefinition` (open `additionalProperties` by design — named keys with string/array values) |
 | condition | `false` (on all 4 anyOf branches) | N/A |
-| state | `false` | All `false` |
+| state | `false` | All `false`; flexible value maps use `additionalProperties: {}` (e.g. `variables`, `data`, `passedContext`, `returnedContext`) |
+| session-file | `false` | All `false`; flexible value maps use `additionalProperties: {}` (e.g. `variables`, effect `variablesSet`) |
 
 ### Inconsistency Pattern
 
 - **Workflow schema:** Strictly `false` everywhere — the strictest schema.
-- **Activity schema:** Root `activity` uses `true`, but every sub-definition uses `false`. This means the activity object itself accepts unknown top-level keys, but none of its nested structures do.
-- **Skill schema:** Both root and most sub-definitions use `true`. This is the most permissive schema, designed for extensibility because skills contain domain knowledge for AI agents and new fields are expected.
-- **Condition/State schemas:** Strictly `false` — these are runtime data structures where extra fields would indicate bugs.
-
-### Rationale for Skill Permissiveness
-
-Skill sub-definitions like `toolDefinition`, `errorDefinition`, `executionPattern`, `architecture`, `matching`, `stateDefinition`, and `interpretation` all use `additionalProperties: true`. These definitions describe domain-specific knowledge structures consumed by AI agents. They are intentionally extensible — skill authors add custom fields to convey domain context that the schema cannot anticipate. Forcing `false` here would require constant schema updates as new skill patterns emerge.
+- **Activity schema:** Root `activity` is `false`, and every nested structure is `false`. Unknown top-level keys on an activity are rejected.
+- **Technique schema:** Mostly `false`. Intentional open points are the named-map definitions (`rulesDefinition`, `outputComponentsDefinition`) whose KEYS are author-chosen but whose VALUE shapes are constrained, plus `inputItemDefinition.default` which is an untyped passthrough.
+- **Condition / State / Session-file schemas:** Strictly `false` on object shapes; open `additionalProperties: {}` only where a runtime value bag legitimately holds arbitrary JSON values (variable maps, history `data`, passed/returned context).
 
 ---
 
@@ -83,29 +105,26 @@ Skill sub-definitions like `toolDefinition`, `errorDefinition`, `executionPatter
 
 | Schema | Location | Type | Description |
 |--------|----------|------|-------------|
-| workflow | `workflow.rules` | `string[]` | Ordered imperative rules agents MUST follow |
+| workflow | `workflow.rules.workflow` | `string[]` | Orchestrator-only ordered imperative rules; surfaced in get_workflow |
+| workflow | `workflow.rules.activity` | `string[]` | Worker-facing rules inherited by every activity; injected into get_activity |
+| workflow | `workflow.rules.universal` | `string[]` | Dual-audience rules surfaced in get_workflow AND injected into every get_activity |
 | activity | `activity.rules` | `string[]` | Activity-level rules and constraints |
-| activity | `modeOverrides.*.rules` | `string[]` | Mode-specific rules |
-| skill | `skill.rules` | `object` (`rulesDefinition`) | Named key→value rule pairs |
+| technique | `technique.rules` | `object` (`rulesDefinition`) | Named key → (string \| string[]) rule pairs |
 
-The semantic difference is intentional: workflow/activity rules are ordered lists of imperative directives, while skill rules are named domain constraints. The type difference is not a bug per se, but it creates a naming collision that could confuse tooling that processes `rules` generically across schema types.
+`workflow.rules` is an **audience-partitioned object** (`workflow` / `activity` / `universal`). The semantic split is intentional: workflow/activity rules are ordered lists of imperative directives, while technique rules are named domain constraints (a single string or an array of related rules per key). `technique.schema.json`'s `rulesDefinition` description notes that workflow/activity schemas use the string-array format. The naming collision across schema types could confuse tooling that processes `rules` generically.
 
 ---
 
 ## Condition Schema Deep Dive (QC-013, QC-068)
 
-### Recursive Validation
+### Recursion depends on the generation strategy
 
-The `and` and `or` condition types correctly declare `conditions` with recursive `$ref`:
-```json
-"conditions": {
-  "type": "array",
-  "items": { "$ref": "#/definitions/condition" },
-  "minItems": 2
-}
-```
+The Zod source (`src/schema/condition.schema.ts`) **is** genuinely recursive: `ConditionSchema` is a `z.union` of simple/and/or/not where the and/or/not branches use `z.lazy(() => ConditionSchema)`. `evaluateCondition` recurses on `and`/`or`/`not` accordingly. The nested boolean conditions are inlined via `z.lazy`.
 
-The `not` type also correctly references `#/definitions/condition`. The recursive references are properly defined in the current JSON Schema.
+What lands in the JSON Schema files depends on the `$refStrategy` used to generate each file:
+
+- **`activity.schema.json`** (generated with `'root'`): conditions preserve recursion through an internal `$ref` path. Nested `and`/`or` `conditions.items` and `not.condition` reference `#/definitions/activity/properties/steps/items/properties/condition`, which IS the condition shape — recursion holds.
+- **`condition.schema.json`** and the conditions embedded in **`workflow.schema.json`** (generated with `'none'`): the recursion is **flattened**. The `and`/`or` `conditions` arrays declare `"items": {}` and the `not` branch declares `"condition": {}` — an empty schema that accepts anything. So at the JSON-Schema level, nested boolean conditions in these files are not structurally validated, even though the runtime Zod validator validates them fully. The empty-schema flattening is a consequence of `'none'` inlining.
 
 ### Value Type Gap
 
@@ -114,17 +133,18 @@ The `simple` condition's `value` property accepts:
 "type": ["string", "number", "boolean", "null"]
 ```
 
-But workflow variables can be of type `"array"` or `"object"` (per `workflow.schema.json` variable definition). If the runtime supports equality comparison for these types, the condition value should accept them too.
+But workflow variables can be of type `"array"` or `"object"` (per `workflow.schema.json` `variables[].type`). If the runtime supports equality comparison for these types, the condition value should accept them too. (In practice `evaluateSimpleCondition` only does numeric/`===` comparisons, so array/object values would compare by reference — a real gap to weigh.)
 
 ---
 
-## Workflow Schema Missing `activities` Property (QC-001)
+## Workflow Schema `activities` Property (QC-001)
 
-The `workflow` definition has `initialActivity` (a string referencing the first activity ID) and `modes[].skipActivities` (referencing activity IDs), but there is no `activities` property on the workflow object itself. The workflow schema has:
+The `workflow` schema declares an `activities` property: an array of inline activity objects (`z.array(ActivitySchema).min(1).optional()` in Zod; an inline activity object array in the JSON Schema). This reflects the dual validation surface:
 
-- `id`, `version`, `title`, `description`, `author`, `tags`, `rules`, `variables`, `modes`, `artifactLocations`, `initialActivity`
+- **TOON files on disk** keep activities as separate files, so a workflow TOON typically omits `activities`.
+- **The assembled runtime workflow object** (validated by Zod) includes the fully-resolved `activities[]`.
 
-Activities are defined as separate files and loaded by the runtime, not embedded in the workflow document. The `activities` property would be an array of activity references or inline activity definitions. Given the current architecture (activities are separate `.toon` files), the `activities` property should be an array of objects with at minimum an `id` and optionally an `activityFile` path reference, or an array of `$ref` to activity schema instances.
+The workflow root properties are: `$schema`, `id`, `version`, `title`, `description`, `author`, `tags`, `rules` (audience-partitioned object), `variables`, `techniques` (audience-partitioned object: `workflow` / `activity`), `initialActivity`, `activities`. Workflow-level technique inheritance is handled by `techniques`, and activity skipping by checkpoint-step effects (`skipActivities`).
 
 ---
 
@@ -132,16 +152,16 @@ Activities are defined as separate files and loaded by the runtime, not embedded
 
 ### `currentActivity` Required Status
 
-The `state` definition has:
+The `state` definition's required set is:
 ```json
-"required": ["workflowId", "workflowVersion", "startedAt", "updatedAt", "currentActivity"]
+"required": ["workflowId", "workflowVersion", "startedAt", "updatedAt"]
 ```
 
-`currentActivity` is always required, but for `status: "completed"` or `status: "aborted"` workflows, there is no current activity. The schema should use conditional validation (`if`/`then`) or make `currentActivity` optional with a description noting when it's required.
+`currentActivity` is **optional** — consistent with `status: "completed"` / `"aborted"` states where there is no current activity.
 
 ### `stateVersion` Bounds
 
-Currently: `"exclusiveMinimum": 0` with no upper bound. Should add a `maximum` constraint.
+`"exclusiveMinimum": 0` with no upper bound and `"default": 1`. Could add a `maximum` constraint, though monotonically-incrementing version counters rarely warrant one.
 
 ### `variables` Typing
 
@@ -149,52 +169,58 @@ State `variables` uses `additionalProperties: {}` — any value type. This match
 
 ---
 
-## `triggers` Singular/Plural Mismatch (QC-122)
+## Session-file Schema Observations
 
-In `activity.activity`:
-```json
-"triggers": {
-  "$ref": "#/definitions/workflowTrigger",
-  "description": "Workflow to trigger from this activity"
-}
-```
+`session-file.schema.json` describes the server-owned `session.json`. Notable shape:
 
-The property name is plural (`triggers`) but the type is a single object (`workflowTrigger`), not an array. Either rename to `trigger` (singular) or change to an array type. Given that `additionalProperties: true` is currently set on the activity root, renaming is less risky than changing the type (which would break existing documents). However, since activities could plausibly trigger multiple workflows, changing to an array may be the better semantic fix.
+- Required: `schemaVersion` (const `1`), `sessionIndex` (`^[A-Z2-7]{6}$`), `workflowId`, `workflowVersion`, `agentId`, `seq`, `ts`, `startedAt`.
+- `activeCheckpoint` carries `{ checkpointId, activityId, yieldedAt }` — the yielded checkpoint awaiting a response. Checkpoint yield/respond/resume is keyed by `<activityId>-<checkpointId>` (the inline checkpoint step's id).
+- `checkpointResponses` is a map keyed by checkpoint identifier, each value `{ optionId, respondedAt, effects? }` where `effects` may carry `variablesSet` / `transitionedTo` / `activitiesSkipped`.
+- `triggeredWorkflows[]` records child workflow dispatch (with its own `sessionIndex`), and `parentSession` / `planningFolderPath` link the session graph.
+- Open value bags (`variables`, effect `variablesSet`, `data`) use `additionalProperties: {}`.
 
 ---
 
-## `setVariable` / `mode.defaults` Type Gaps (QC-067, QC-124)
+## Step-level `triggers` (QC-122)
 
-### `setVariable` in checkpoint effects
+In both the activity schema's `steps[].triggers` and `activity.triggers`, `triggers` is an **array** of trigger objects (`{ workflow, description?, passContext? }`). `activity.triggers[].items` shares the same shape as the step-level trigger item via internal `$ref`.
 
+---
+
+## `setVariable` / checkpoint-effect Type Gaps (QC-067, QC-124)
+
+### `setVariable` in checkpoint-step effects
+
+A `kind:checkpoint` step's `options[].effect.setVariable`:
 ```json
 "setVariable": {
   "type": "object",
-  "additionalProperties": {},
-  "description": "Variables to set..."
+  "additionalProperties": {}
 }
 ```
 
-`additionalProperties: {}` allows any value type. Should be constrained to match the workflow variable types.
+`additionalProperties: {}` allows any value type. Could be constrained to match the workflow variable types.
 
-### `mode.defaults` in workflow schema
+### Variable-setting effect surface
 
-```json
-"defaults": {
-  "type": "object",
-  "additionalProperties": {},
-  "description": "Default variable values when mode is active"
-}
-```
+The checkpoint step's `setVariable` is the variable-setting effect surface (alongside the `state`/`session-file` `variablesSet` records). If value-type tightening is pursued, it applies to this single location.
 
-Same pattern — any value type accepted. Should match the variable type constraints.
+---
 
-### Asymmetry
+## Open Questions
 
-`mode.defaults` and `setVariable` are semantically equivalent (both set variable values), but neither has type constraints on the values. They should share the same value-type constraint.
+| # | Question | Status |
+|---|----------|--------|
+| QC-013 / QC-068 | Are nested boolean conditions validated recursively in the JSON Schemas? | PARTIALLY — recursion holds in `activity.schema.json` (`'root'` strategy, internal `$ref`); it is flattened to `"items": {}` / `"condition": {}` in `condition.schema.json` and workflow-embedded conditions (`'none'` strategy). Runtime Zod validates fully via `z.lazy`. |
+| QC-067 / QC-124 | Should variable-setting effects constrain value types? | OPEN — checkpoint-step `setVariable` uses `additionalProperties: {}`. This is a single-site decision (the checkpoint step's `setVariable`). |
+| QC-125 | Should `stateVersion` have an upper bound? | OPEN — `exclusiveMinimum: 0`, no `maximum`. |
+| QC-126 | Should state `variables` constrain value types? | OPEN — `additionalProperties: {}`. |
+| QC-128 | The condition `value` type omits `array`/`object` while workflow variable types allow them — intended? | OPEN — `evaluateSimpleCondition` only does numeric/`===` comparisons, so equality on arrays/objects would be by reference. |
+| QC-129 | `scripts/generate-schemas.ts` writes a `draft/2020-12` `$schema` wrapper, but the on-disk files all declare draft-07. Which dialect is authoritative, and should the generator be aligned? | OPEN. |
+| QC-130 | `session-file.schema.json` is generated and present on disk but not in the server's served `SCHEMA_IDS`. Should it be exposed, or is the omission intentional (internal-only state)? | OPEN. |
 
 ---
 
 ## Checkpoint: architecture-confirmed
 
-Auto-advanced — the schema architecture is well understood. The 5 schemas form a mostly self-contained set with one cross-file reference (activity → condition). The findings are all localized to specific schema properties and can be addressed independently.
+The schema set is six files: five served by the server (`workflow`, `activity`, `condition`, `technique`, `state`) plus the internal `session-file`. All are self-contained, resolving without a cross-FILE `$ref`; conditions are inlined or internally `$ref`'d per file. The generated schemas come from Zod via `scripts/generate-schemas.ts`; `technique.schema.json` is hand-maintained. The findings are localized to specific schema properties and can be addressed independently.

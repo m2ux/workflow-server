@@ -1,186 +1,217 @@
 # Prism Workflow — Comprehension Artifact
 
-> **Last updated**: 2026-03-13
-> **Work packages**: [#53 Import Prism Families](../planning/2026-03-13-import-prism-families/README.md)
-> **Coverage**: Prism workflow architecture, pipeline modes, resource system, skill routing, activity chain, integration surface for new prism families
+> **Last updated**: 2026-06-18
+> **Work packages**: [#53 Import Prism Families](../planning/2026-03-13-import-prism-families/06-work-package-plan.md)
+> **Coverage**: Prism workflow architecture, pipeline modes, resource system, technique routing, activity chain, integration surface for new prism families
 > **Related artifacts**: [orchestration.md](orchestration.md) (server architecture), [assumptions-log.md](../planning/2026-03-13-import-prism-families/01-assumptions-log.md)
 
 ## Architecture Overview
 
 ### Workflow Structure
 
-The prism workflow (`workflows/prism/`, v1.3.0) orchestrates structural analysis through isolated sub-agent passes. It follows the orchestrator/worker execution model with disposable workers — each analytical pass runs in a fresh sub-agent that is never resumed, guaranteeing context isolation.
+The prism workflow (`workflows/prism/`, `workflow.toon` v2.0.0) orchestrates structural analysis through isolated sub-agent passes. It follows the orchestrator/worker execution model with disposable workers — each analytical pass runs in a fresh sub-agent that is never resumed, guaranteeing context isolation. The isolation invariant is codified in `rules.workflow[0]` ("Each analytical pass MUST be dispatched to a FRESH sub-agent using `harness-compat::spawn-agent`").
 
 ```
 workflows/prism/
-├── workflow.toon                    # 13 variables, 12 rules, initialActivity: select-mode
-├── activities/
-│   ├── 00-select-mode.toon         # Plans analysis, selects pipeline mode
-│   ├── 01-structural-pass.toon     # Iterates analysis_units, runs L12 or portfolio
-│   ├── 02-adversarial-pass.toon    # Challenges structural findings (full-prism only)
-│   ├── 03-synthesis-pass.toon      # Reconciles structural + adversarial (full-prism only)
-│   └── 04-deliver-result.toon      # Presents final artifact(s) to user
-├── skills/
-│   ├── 00-structural-analysis.toon # Single-pass L12 execution
-│   ├── 01-full-prism.toon          # Worker-side pass execution (any pass)
-│   ├── 02-portfolio-analysis.toon  # Multi-lens independent execution
-│   ├── 03-plan-analysis.toon       # Scope detection, lens selection, strategy
-│   └── 04-orchestrate-prism.toon   # Orchestrator coordination
+├── workflow.toon                       # 27 variables, rules.{workflow[6],activity[5]},
+│                                       #   techniques.activity:[variable-binding], initialActivity: select-mode
+├── activities/                         # 13 activities — one per pipeline mode's pass chain
+│   ├── 00-select-mode.toon            # Plans analysis, selects pipeline mode (confirm-mode checkpoint)
+│   ├── 01-structural-pass.toon        # forEach analysis_units: single/full-prism/portfolio/behavioral dispatch
+│   ├── 02-adversarial-pass.toon       # Challenges structural findings (full-prism only)
+│   ├── 03-synthesis-pass.toon         # Reconciles structural + adversarial (full-prism only)
+│   ├── 04-deliver-result.toon         # Presents the final report to the user
+│   ├── 05-behavioral-synthesis-pass.toon  # Behavioral synthesis lens over the 4 labeled outputs
+│   ├── 06-generate-report.toon        # Builds REPORT.md from prior-pass artifacts (runs before deliver)
+│   ├── 07-dispute-pass.toon           # 2 orthogonal prisms + disagreement synthesis
+│   ├── 08-subsystem-pass.toon         # AST split + per-region prism assignment + cross-subsystem synthesis
+│   ├── 09-verified-pass.toon          # L12 + gap detection (boundary+audit) + re-analysis with corrections
+│   ├── 10-reflect-pass.toon           # L12 + meta-analysis + constraint synthesis
+│   ├── 11-smart-pass.toon             # Adaptive chain: prereq + knowledge fill + analysis + dispute + profile
+│   └── 12-adaptive-pass.toon          # Depth escalation: SDL → L12 → full-prism (stops at first adequate signal)
+├── techniques/                         # worker-side techniques
+│   ├── TECHNIQUE.md                    # base contract: inputs + isolation/evidence/write-discipline invariants
+│   ├── plan-analysis.md                # scope detection, classification, lens selection, strategy (the "brain")
+│   ├── structural-analysis.md          # single-pass L12 execution
+│   ├── full-prism.md                   # worker-side adversarial/synthesis pass execution
+│   ├── portfolio-analysis.md           # multi-lens independent execution
+│   ├── behavioral-pipeline.md          # 4 behavioral lenses + synthesis
+│   ├── generate-report.md / present-result.md / dispute-analysis.md / reflect-analysis.md
+│   ├── adaptive-analysis/ smart-analysis/ subsystem-analysis/ verified-analysis/  # compound techniques (TECHNIQUE.md + stages)
+│   └── (each technique is a markdown file with YAML frontmatter; compound techniques are directories)
 └── resources/
-    ├── 00-l12-structural.md through 11-contract.md  (12 resources)
+    ├── <slug>.md × 58  (l12.md, pedagogy.md, deep-scan.md, error-resilience.md, oracle.md, …)
     └── README.md
 ```
 
 ### Activity Chain and Transitions
 
-The activity chain is linear with conditional branching at `structural-pass`:
+`select-mode` is the hub: it runs `plan-analysis`, applies the chosen `pipeline_mode`, and routes via a 7-branch transition table to the activity chain for that mode. Most chains converge on `generate-report` → `deliver-result`:
 
 ```
-select-mode ──→ structural-pass ──┬──→ adversarial-pass ──→ synthesis-pass ──→ deliver-result
-                                  │      (only if pipeline_mode == "full-prism")
-                                  └──→ deliver-result
-                                       (default: single or portfolio modes)
+select-mode ──┬──→ structural-pass ──┬──→ adversarial-pass ──→ synthesis-pass ──┐
+              │   (single/full-prism/   │   (full-prism only)                   │
+              │    portfolio/behavioral) ├──→ behavioral-synthesis-pass ─────────┤
+              │                          └──→ (default) ───────────────────────┤
+              ├──→ dispute-pass ─────────────────────────────────────────────────┤
+              ├──→ subsystem-pass ───────────────────────────────────────────────┤
+              ├──→ verified-pass ────────────────────────────────────────────────┼─→ generate-report ──→ deliver-result
+              ├──→ reflect-pass ─────────────────────────────────────────────────┤
+              ├──→ smart-pass ───────────────────────────────────────────────────┤
+              └──→ adaptive-pass ────────────────────────────────────────────────┘
 ```
 
-- **select-mode** delegates to `plan-analysis` skill to detect scope, classify targets, select lenses, and recommend a pipeline mode. Yields a `confirm-mode` checkpoint (unless mode was explicitly provided).
-- **structural-pass** iterates over `analysis_units` (a forEach loop). For each unit, checks `pipeline_mode`: if `single` or `full-prism`, loads and executes the L12 structural lens; if `portfolio`, selects and executes multiple independent portfolio lenses. Writes per-unit artifacts.
-- **adversarial-pass** iterates the same `analysis_units`, skipping units not in `full-prism` mode. Loads the adversarial lens, reads the structural artifact, and challenges it.
-- **synthesis-pass** iterates `analysis_units`, skipping non-`full-prism` units. Loads the synthesis lens, reads both structural and adversarial artifacts, and produces the reconciled result.
-- **deliver-result** reads the final artifact(s) and presents them.
+- **select-mode** (`00`, v2.1.0) runs the `plan-analysis` technique (`kind: technique` step) to detect scope, classify targets, select lenses, and recommend a pipeline mode. It then sets `pipeline_mode` and `analysis_units` (`kind: action` steps) and yields a `confirm-mode` checkpoint (a `kind: checkpoint` step) with 11 options — one per mode — gated by `condition: pipeline_mode notExists`, i.e. skipped when the caller supplied a mode. The transition table routes by `pipeline_mode` to dispute / subsystem / verified / reflect / smart / adaptive passes, defaulting to `structural-pass`.
+- **structural-pass** (`01`, v2.3.0) is a single `kind: loop` step (`loopType: forEach` over `analysis_units`, `maxIterations: 100`). Its nested body branches per `current_unit.pipeline_mode`: `single`/`full-prism` → `structural-analysis` technique; `portfolio` → `portfolio-analysis`; `behavioral` → `behavioral-pipeline`. A `check-gitnexus` step runs `gitnexus-operations::verify-index` and sets `gitnexus_available`. Transitions: → `adversarial-pass` (full-prism), → `behavioral-synthesis-pass` (behavioral), default → `generate-report`.
+- **adversarial-pass** (`02`) iterates the same `analysis_units`, running the `full-prism` technique with `lens_name: adversarial` only for units whose `pipeline_mode == "full-prism"`; transitions to `synthesis-pass`.
+- **synthesis-pass** (`03`) runs `full-prism` with `lens_name: synthesis` on full-prism units; transitions to `generate-report`.
+- **behavioral-synthesis-pass** (`05`) runs `behavioral-pipeline` with `lens_name: synthesis` on behavioral units; transitions to `generate-report`.
+- **generate-report** (`06`) runs the `generate-report` technique to build `REPORT.md` from the accumulated artifacts, then transitions to `deliver-result`.
+- **deliver-result** (`04`, v3.1.0) runs the `present-result` technique to present the final report.
+
+All pass activities declare `techniques[1]: ["scatter-gather"]` at the activity level (an inherited orchestration technique) and use inline `kind: loop` steps.
 
 ### Pipeline Modes
 
-| Mode | Passes | Activities Used | Artifact(s) |
-|------|--------|----------------|-------------|
-| `single` | 1 | structural-pass → deliver-result | `structural-analysis.md` |
-| `full-prism` | 3 (sequential) | structural-pass → adversarial-pass → synthesis-pass → deliver-result | `structural-analysis.md`, `adversarial-analysis.md`, `synthesis.md` |
-| `portfolio` | N (parallel within structural-pass) | structural-pass → deliver-result | `portfolio-{lens}.md` × N, `portfolio-synthesis.md` |
+`pipeline_mode` (default `single`) selects one of eleven analysis strategies. The first four are dispatched inside `structural-pass`; the remaining seven each have a dedicated pass activity reached directly from `select-mode`.
+
+| Mode | Passes | Activity chain | Notes |
+|------|--------|----------------|-------|
+| `single` | 1 | structural-pass → generate-report → deliver-result | Single L12 (or single best lens) |
+| `full-prism` | 3 (sequential) | structural-pass → adversarial-pass → synthesis-pass → generate-report → deliver-result | L12 structural → adversarial → synthesis |
+| `portfolio` | N (parallel within structural-pass) | structural-pass → generate-report → deliver-result | N independent lenses + inline cross-lens synthesis |
+| `behavioral` | 4 + 1 | structural-pass → behavioral-synthesis-pass → generate-report → deliver-result | 4 parallel lenses (ERRORS/COSTS/CHANGES/PROMISES) + dedicated synthesis. Code-only |
+| `dispute` | 3 | dispute-pass → generate-report → deliver-result | 2 orthogonal prisms + disagreement synthesis |
+| `subsystem` | per-region + synthesis | subsystem-pass → generate-report → deliver-result | AST split + per-region prism assignment + cross-subsystem synthesis. Code-only |
+| `verified` | L12 + gap + re-analysis | verified-pass → generate-report → deliver-result | Boundary+audit gap detection then corrected re-analysis. Highest accuracy |
+| `reflect` | 3 | reflect-pass → generate-report → deliver-result | L12 + meta-analysis (claim on L12 output) + constraint synthesis |
+| `smart` | adaptive chain | smart-pass → generate-report → deliver-result | prereq + knowledge fill + analysis + dispute + profile; system decides the pipeline |
+| `adaptive` | escalating | adaptive-pass → generate-report → deliver-result | Depth escalation SDL → L12 → full-prism; stops at first adequate signal |
 
 ### Resource System
 
-Resources are indexed `{NN}-{name}.md` files. Skills reference them by string index. The MCP tool `get_resource(workflow_id: "prism", index: "00")` loads the resource content.
+Resources are slug-named `<name>.md` files under `resources/` (e.g. `l12.md`, `pedagogy.md`, `error-resilience.md`). The server's resource loader (`src/loaders/resource-loader.ts:12-16`) identifies resources **by id** — the frontmatter `name:` slug, which equals the file/folder name on disk. The MCP tool is `get_resource(session_index, resource_id)` (`src/tools/resource-tools.ts:582-588`), where `resource_id` is a text slug: bare (`"l12"`) resolves within the session's workflow, cross-workflow prefixed (`"prism/l12"` from another workflow's session), each optionally suffixed with a `#section` anchor.
 
-| Index | Name | Family | Target Type | Role |
-|-------|------|--------|-------------|------|
-| `00` | l12-structural | L12 Pipeline | code | Primary structural analysis (330w, 12-step chain) |
-| `01` | l12-adversarial | L12 Pipeline | code | Adversarial challenge (150w, receives output of 00) |
-| `02` | l12-synthesis | L12 Pipeline | code | Reconciliation (130w, receives outputs of 00+01) |
-| `03` | l12-general-structural | L12 Pipeline | general | Same operations as 00 with domain-neutral language |
-| `04` | l12-general-adversarial | L12 Pipeline | general | Same operations as 01 with domain-neutral language |
-| `05` | l12-general-synthesis | L12 Pipeline | general | Same operations as 02 with domain-neutral language |
-| `06` | pedagogy | Portfolio | both | Transfer corruption (75w) |
-| `07` | claim | Portfolio | both | Assumption inversion (80w) |
-| `08` | scarcity | Portfolio | both | Resource conservation (60w) |
-| `09` | rejected-paths | Portfolio | both | Design trade-offs (65w) |
-| `10` | degradation | Portfolio | both | Decay timeline (65w) |
-| `11` | contract | Portfolio | code only | Interface violations (80w) |
+The lens catalog holds **58 resources across fifteen families** (see `resources/README.md` for the full table). Core families include L12 pipeline — `l12` (structural), `l12-complement-adversarial`, `l12-synthesis`; portfolio — `pedagogy`, `claim`, `scarcity`, `rejected-paths`, `degradation`, `contract`. The code L12 lenses work for all target types. Other families include Structural SDL (`deep-scan`, `sdl-trust`, `sdl-coupling`, `sdl-abstraction`, `fix-cascade`, `identity`, `l12-universal`), Behavioral (`error-resilience`, `optimize`, `evolution`, `api-surface`, `behavioral-synthesis`), domain-neutral and compressed behavioral variants, hybrid/specialized (`evidence-cost`, `reachability`, `fidelity`, `state-audit`), analysis, knowledge/epistemic (`knowledge-audit`, `oracle`, `l12g`, …), a writer pipeline, and meta lenses (`strategist`, `blindspot`, `falsify`, `significance`).
 
-### Skill Routing
+> **Numeric labels in technique prose are mnemonic, not addresses.** The `plan-analysis`, `portfolio-analysis`, and `resources/README.md` text annotate lenses with parenthetical numbers (`pedagogy (06)`, `oracle (44)`) as stable human-facing labels from the upstream agi-in-md catalog. These are *not* the resolution key — the server loads each lens by its slug id. The numbers serve as a routing-table mnemonic; the slug is the contract.
 
-**plan-analysis** (skill 03) is the brain of the workflow. It has two key lookup tables:
+### Technique Routing
 
-1. **Goal-mapping matrix** — maps analytical goals to lens resource indices:
-   - Bug detection → 00 (L12)
-   - Code review → 00 + 11 (L12 + contract)
-   - Design review → 07 + 09 (claim + rejected-paths)
-   - Comprehension → 06 + 09 (pedagogy + rejected-paths)
-   - Pre-commit → 00-02 (L12 pipeline)
-   - Planning review → 03 (L12-general)
-   - Maintainability → 10 + 11 (degradation + contract)
-   - Assumption validation → 07 + 08 (claim + scarcity)
-   - Security review → 00-02 (L12 pipeline)
+Lens selection lives in **techniques**, the worker-side construct. Each technique is a markdown file with YAML frontmatter under `techniques/`; compound techniques (`adaptive-analysis`, `smart-analysis`, `subsystem-analysis`, `verified-analysis`) are directories with a `TECHNIQUE.md` and per-stage files. `techniques/TECHNIQUE.md` is the base contract every analysis technique inherits (inputs `target_content`/`target_type`/`output_path`; rules `complete-execution`, `evidence-required`, `isolated-context`, `artifact-mediated`, `write-immediately`, `model-selection`).
 
-2. **Code-vs-general rule** — selects lens variant by target_type:
-   - Code → resources 00-02 + 06-11
-   - General → resources 03-05 + 06-10 (no contract)
+**plan-analysis** (`techniques/plan-analysis.md`) is the brain of the workflow. Its protocol detects scope (query / file / module / codebase / document-set), classifies and risk-rates units, maps the analytical goal to lenses, and builds the `analysis_units` array. It carries two key lookup tables as `Rules`:
 
-**portfolio-analysis** (skill 02) operates on a fixed lens catalog: pedagogy=06, claim=07, scarcity=08, rejected-paths=09, degradation=10, contract=11. Its selection guide recommends pairs for specific goals.
+1. **goal-mapping-matrix** — maps analytical goals to lenses (slug + mnemonic number), e.g.:
+   - Bug detection → l12 or deep-scan
+   - Code review → l12 + contract
+   - Design review → claim + rejected-paths
+   - Comprehension → pedagogy + rejected-paths
+   - Pre-commit → L12 pipeline (l12 + l12-complement-adversarial + l12-synthesis)
+   - Maintainability → degradation + contract
+   - Security review → sdl-trust + security-v1
+   - Error handling → error-resilience; Performance → optimize; API quality → api-surface
+   - Comprehensive behavioral → behavioral pipeline
+   - …plus ~40 more goals spanning the full 58-lens catalog
 
-**orchestrate-prism** (skill 04) handles dispatch. It has a `determine-lens-indices` protocol step that hardcodes the index mapping: code structural=00, adversarial=01, synthesis=02; general structural=03, adversarial=04, synthesis=05; portfolio: pedagogy=06 through contract=11.
+2. **code-vs-general** — selects lens variants by `target_type`: the L12 pipeline works for **all** target types; code targets get the full catalog; general targets get a curated subset (portfolio lenses + sdl-abstraction + l12-universal + the neutral behavioral variants + knowledge/epistemic + a few generative/meta lenses). Contract, most SDL lenses, the behavioral pipeline, security-v1, testability-v1, codegen, emergence, history, and verify-claims are code-only.
+
+**portfolio-analysis** (`techniques/portfolio-analysis.md`) operates on the full standalone-lens catalog (its `selected_lenses` input enumerates ~50 portfolio-eligible lenses) and carries a lens-selection guide recommending complementary pairs per goal. It enforces a minimum of two lenses — a single-lens request routes to `structural-analysis` instead.
+
+**full-prism** (`techniques/full-prism.md`) is the worker-side adversarial/synthesis pass: it loads the lens for `lens_name` (`adversarial` → `l12-complement-adversarial`, `synthesis` → `l12-synthesis`), reads `prior_artifact_paths`, applies the lens, and (adversarial only) augments findings with GitNexus graph verification via `gitnexus-operations::{impact,context,cypher}`.
+
+Orchestration concerns are split across the activity transition tables, the `scatter-gather` activity technique, and the per-pass techniques above.
 
 ### Isolation Model
 
-The isolation model is the workflow's core invariant. Each pass runs in a fresh sub-agent (never resumed) to prevent context contamination. The adversarial pass must genuinely challenge the structural analysis without being biased by having generated it. Outputs pass between workers via filesystem artifacts (artifact-mediated communication). The orchestrator provides artifact paths; workers read from and write to the filesystem.
+The isolation model is the workflow's core invariant, codified in `rules.workflow` and in `techniques/TECHNIQUE.md`'s `isolated-context`/`artifact-mediated` rules. Each pass runs in a fresh sub-agent dispatched via `harness-compat::spawn-agent` (never `continue-agent` on a prior worker) to prevent context contamination. A worker receives only the textual content provided in its prompt — never the generation history of a prior pass. The adversarial pass must genuinely challenge the structural analysis without being biased by having generated it. Outputs pass between workers via filesystem artifacts addressed by path (artifact-mediated communication); the orchestrator captures each pass's text output and forwards artifact paths to subsequent passes.
 
 ## Key Abstractions
 
 | Abstraction | Definition | Implementation |
 |-------------|-----------|----------------|
-| **Lens** | An imperative prompt encoding a sequence of analytical operations. The model executes these operations as a program. | Markdown file in `resources/`, loaded by index via `get_resource` |
-| **Pipeline Mode** | The execution pattern for a lens or set of lenses. | String variable: `single`, `full-prism`, `portfolio` |
-| **Pass** | A single lens execution by an isolated sub-agent. | Fresh Task sub-agent dispatched by orchestrator |
-| **Analysis Unit** | A unit of work to analyze — a file, module, or query with assigned pipeline mode and lenses. | Object in `analysis_units` array, iterated by activity forEach loops |
-| **Target Type** | Whether the input is `code` or `general`, determining which lens variants to use. | String variable defaulting to `code` |
+| **Lens** | An imperative prompt encoding a sequence of analytical operations. The model executes these operations as a program. | Slug-named markdown file in `resources/`, loaded by id via `get_resource` |
+| **Pipeline Mode** | The execution pattern for a lens or set of lenses. | `pipeline_mode` variable: one of eleven values (`single`, `full-prism`, `portfolio`, `behavioral`, `dispute`, `subsystem`, `verified`, `reflect`, `smart`, `adaptive`) |
+| **Pass** | A single lens execution by an isolated sub-agent. | Fresh Task sub-agent dispatched via `harness-compat::spawn-agent` |
+| **Analysis Unit** | A unit of work to analyze — a file, module, or query with assigned pipeline mode and lenses. | Object in `analysis_units` array, iterated by inline `kind: loop` (`loopType: forEach`) steps |
+| **Target Type** | Whether the input is `code` or `general`, determining which lens variants to use. | `target_type` variable defaulting to `code` |
 | **Conservation Law** | The structural finding that the L12 lens chain converges on — a named trade-off that cannot be eliminated, only relocated. | Section in the structural analysis artifact |
 | **Portfolio** | A set of independent lenses applied to the same artifact for breadth. Each finds genuinely different structural properties. | Dispatched in parallel within structural-pass (up to 4 concurrent) |
-| **Resource Index** | String identifier (e.g., "00", "11") for loading a specific lens. Skills hardcode these indices. | Used in `get_resource(workflow_id, index)` calls |
+| **Technique** | A worker-side capability (analysis pass, planning, reporting) with declared inputs and a protocol. | Markdown file (or directory for compound techniques) under `techniques/`; bound to activity steps as `kind: technique` |
+| **Resource Id (slug)** | The canonical identifier of a lens — the frontmatter `name:` slug, equal to the on-disk filename. | Used in `get_resource(session_index, resource_id)` calls; the numeric `(06)`-style labels in technique prose are mnemonics, not the resolution key |
 
 ## Design Rationale
 
-### R1: Fixed resource indices in skills
+### R1: Fixed lens routing tables in techniques
 
-**Observation**: Skills hardcode resource indices (e.g., plan-analysis maps "bug detection → 00", portfolio-analysis maps "pedagogy=06"). No dynamic discovery.
+**Observation**: Techniques carry static lens routing tables (e.g., `plan-analysis` maps "bug detection → l12", `portfolio-analysis` maps "pedagogy"). No dynamic discovery.
 
 **Rationale**: Lens selection is a design decision, not a runtime discovery problem. The goal-mapping matrix encodes research-validated pairings (from the agi-in-md experiment rounds). Dynamic discovery would add complexity without improving selection quality.
 
-**Integration implication**: Adding new lenses requires updating every skill that references resource indices. This is the primary maintenance cost of expansion — each new lens needs entries in plan-analysis (goal-mapping matrix, code-vs-general rule), portfolio-analysis (if portfolio-eligible), and orchestrate-prism (if applicable to new pipeline modes).
+**Integration implication**: Adding new lenses requires updating every technique that references the lens — entries in `plan-analysis` (goal-mapping-matrix, code-vs-general rule), `portfolio-analysis` (if portfolio-eligible), and any per-mode technique. With the catalog at 58 lenses, these tables are large; Q10 (below) tracks the maintenance-vs-routing-quality trade-off, still unresolved.
 
 ### R2: Activity chain hardcoded for 3-pass L12
 
-**Observation**: The activity chain (structural → adversarial → synthesis) is specifically designed for the L12 pipeline. Adversarial-pass and synthesis-pass activities filter on `pipeline_mode == "full-prism"` and are structurally coupled to the L12 lens sequence (resource 00/03 → 01/04 → 02/05).
+**Observation**: The L12 activity chain (structural → adversarial → synthesis) is specifically designed for the L12 pipeline. `adversarial-pass` and `synthesis-pass` filter on `current_unit.pipeline_mode == "full-prism"` and are structurally coupled to the L12 lens sequence (`l12` → `l12-complement-adversarial` → `l12-synthesis`).
 
-**Rationale**: The 3-pass L12 pipeline is the workflow's primary analytical mode. The sequential dependency is inherent to the method — the adversarial pass must receive the structural output, and synthesis must receive both. Encoding this as separate activities preserves the isolation boundary (each activity dispatches to a fresh worker).
+**Rationale**: The 3-pass L12 pipeline is the workflow's primary deep-analysis mode. The sequential dependency is inherent to the method — the adversarial pass must receive the structural output, and synthesis must receive both. Encoding this as separate activities preserves the isolation boundary (each activity dispatches to a fresh worker).
 
-**Integration implication**: The behavioral pipeline (4 independent + 1 synthesis) cannot reuse the adversarial-pass and synthesis-pass activities. The behavioral pipeline is structurally different: 4 independent lenses (parallelizable, no sequential dependencies) followed by 1 synthesis that receives all 4 labeled outputs. This either requires new activities or a generalization of the existing activity chain.
+**Integration implication**: The behavioral pipeline has its own `behavioral-synthesis-pass` activity (`05`), reached from `structural-pass` when `pipeline_mode == "behavioral"`. The four independent behavioral lenses are dispatched inside `structural-pass` (alongside the portfolio branch); the dedicated synthesis is its own pass — exactly the "new activity" path R2 anticipated. The dispute, subsystem, verified, reflect, smart, and adaptive modes each likewise have a dedicated pass activity rather than a generalized variable-length chain.
 
 ### R3: Portfolio mode is inline within structural-pass
 
-**Observation**: Portfolio mode is handled inside structural-pass via conditional steps, not as a separate activity chain. When `pipeline_mode == "portfolio"`, structural-pass selects and executes multiple independent lenses and writes per-lens artifacts plus a cross-lens synthesis.
+**Observation**: Portfolio mode is handled inside `structural-pass` via a conditional `kind: technique` step (`run-portfolio`, gated on `current_unit.pipeline_mode == "portfolio"`), not a separate activity chain. The portfolio worker executes multiple independent lenses and writes per-lens artifacts plus an inline cross-lens synthesis.
 
-**Rationale**: Portfolio lenses are independent single-pass operations — no sequential dependencies. Handling them within structural-pass avoids creating unnecessary activities for what is essentially "run N independent analyses."
+**Rationale**: Portfolio lenses are independent single-pass operations — no sequential dependencies. Handling them within `structural-pass` avoids creating unnecessary activities for what is essentially "run N independent analyses."
 
-**Integration implication**: The behavioral pipeline's 4 independent lenses share this "run N independent analyses" pattern. The key difference is that behavioral pipeline has a mandatory synthesis pass using a specialized synthesis lens that expects labeled inputs. Portfolio's cross-lens synthesis is inline (generated by the worker itself), while behavioral synthesis is a separate lens with specific expectations.
+**Integration implication**: The behavioral pipeline's four independent lenses use this same "run N independent analyses" pattern — they are dispatched inside `structural-pass` (the `dispatch-behavioral-lenses` step, gated on `pipeline_mode == "behavioral"`). The key difference is that behavioral has a *mandatory* synthesis using a specialized lens (`behavioral-synthesis`) that expects four labeled inputs, so it gets a dedicated pass (`05`) rather than the inline worker-generated synthesis portfolio uses.
 
 ### R4: Target type determines lens variant
 
-**Observation**: The `target_type` variable (`code`/`general`) selects between code-specific (00-02) and general-domain (03-05) lens variants. Portfolio lenses 06-10 work on both; contract (11) is code-only.
+**Observation**: The `target_type` variable (`code`/`general`) selects which lenses are eligible. The L12 pipeline works for all target types; portfolio lenses largely work on both; contract and most SDL/behavioral lenses are code-only.
 
-**Rationale**: The underlying analytical operations are identical — only the framing language differs. Code lenses use "code review" and "function"; general lenses use "expert review" and "input." This dual-track approach emerged from the agi-in-md experiments which showed domain vocabulary is a mode trigger.
+**Rationale**: The underlying analytical operations are identical — only the framing language differs. This dual-track approach emerged from the agi-in-md experiments which showed domain vocabulary is a mode trigger.
 
-**Integration implication**: The behavioral pipeline has domain-neutral variants for 3 of 4 lenses (no optim_neutral). SDL lenses are code-specific. This creates three categories of new lenses by target_type: code-only (SDL, optim, evidence_cost, reachability, fidelity, state_audit), both (73w), and lenses-with-neutral-variants (error_resilience, api_surface, evolution). The incomplete neutral coverage of the behavioral pipeline is a design consideration — a fully domain-neutral behavioral pipeline is not currently possible.
+**Integration implication**: The behavioral pipeline has domain-neutral variants for three of four lenses (`error-resilience-neutral`, `api-surface-neutral`, `evolution-neutral`), and the behavioral pipeline as a whole is code-only (`plan-analysis` rejects `behavioral` for general targets). For non-code behavioral-style analysis, `plan-analysis`'s `neutral-variant-routing` rule recommends the individual neutral variants in portfolio mode, and points general performance analysis at `scarcity`. SDL lenses are code-specific. The partial neutral coverage R4 flagged is an explicit, documented constraint.
 
 ## Domain Concept Mapping
 
-### Glossary — New Concepts (from agi-in-md)
+### Glossary — Lens Families (from agi-in-md)
 
-| Domain Term | Definition | Integration Role |
-|-------------|-----------|-----------------|
-| **SDL (Structural Deep-Scan Lens)** | Family of 3-step single-pass lenses (~180w) that each target a specific architectural concern. Always single-shot on all models. | Portfolio-eligible standalone lenses. SDL-1 through SDL-5: deep_scan, sdl_trust, sdl_coupling, sdl_abstraction + rec, ident |
-| **Behavioral Pipeline** | 4 independent lenses (error_resilience, optim, evolution, api_surface) + 1 synthesis lens (behavioral_synthesis). Each lens asks a different question about code behavior. | New pipeline mode — structurally distinct from L12 3-pass and portfolio |
-| **ERRORS (error_resilience)** | "How does this break? What failure information is destroyed?" 3-step lens (~165w). | Behavioral pipeline input labeled ERRORS in synthesis |
-| **COSTS (optim)** | "What does this cost? What performance data is hidden?" 3-step lens (~120w). | Behavioral pipeline input labeled COSTS in synthesis |
-| **CHANGES (evolution)** | "How does this change? What invisible handshakes bind components?" 3-step lens (~130w). | Behavioral pipeline input labeled CHANGES in synthesis |
-| **PROMISES (api_surface)** | "What does this promise vs do? Where do labels lie?" 3-step lens (~130w). | Behavioral pipeline input labeled PROMISES in synthesis |
-| **Behavioral Synthesis** | Synthesis lens that reads 4 labeled behavioral analyses and finds convergence points, blind spots, and a unified conservation law (~150w). | Terminal pass in behavioral pipeline |
-| **Domain-Neutral Variant** | A rewriting of a code-specific lens with domain-neutral language for non-code targets. | Follows the existing code/general pattern (resources 00-02 vs 03-05) |
-| **Compressed Variant** | A shorter version of a lens optimized for smaller models (Haiku) to stay single-shot. | Model-specific optimization, secondary routing concern |
-| **Hybrid Lens** | A lens that combines operations from two parent lenses (e.g., evidence_cost = error_resilience × optim). | Portfolio-eligible standalone lens with cross-dimensional insights |
-| **Fidelity (SDL-9)** | Contract fidelity — finds documentation-code drift, help text inaccuracy, stale comments. | Portfolio-eligible standalone lens, related to but distinct from contract (11) |
+> The slug column is the resource id the server resolves on (the `(NN)` mnemonic numbers used in technique prose appear in parentheses).
+
+| Domain Term | Slug(s) | Definition | Role |
+|-------------|---------|-----------|------|
+| **SDL (Structural Deep-scan Lens)** | `deep-scan`, `sdl-trust`, `sdl-coupling`, `sdl-abstraction`, `fix-cascade`, `identity`, `l12-universal`, `sdl-simulation` | Single-pass lenses (~73–200w) each targeting a specific architectural concern. Always single-shot; model-independent quality (Haiku ≈ Sonnet ≈ Opus). | Portfolio-eligible standalone lenses |
+| **Behavioral Pipeline** | `error-resilience`, `optimize`, `evolution`, `api-surface` + `behavioral-synthesis` | 4 independent lenses + 1 synthesis lens. Each asks a different question about code behavior. | Pipeline mode `behavioral` — structurally distinct from L12 3-pass and portfolio. Code-only |
+| **ERRORS (error-resilience)** | `error-resilience` | "How does code break? What failure information is destroyed?" (~165w). | Behavioral input labeled ERRORS in synthesis |
+| **COSTS (optimize)** | `optimize` | "What does code cost? What performance data is hidden?" (~120w). | Behavioral input labeled COSTS in synthesis |
+| **CHANGES (evolution)** | `evolution` | "How does code change? What invisible handshakes bind components?" (~130w). | Behavioral input labeled CHANGES in synthesis |
+| **PROMISES (api-surface)** | `api-surface` | "What does code promise vs do? Where do labels lie?" (~130w). | Behavioral input labeled PROMISES in synthesis |
+| **Behavioral Synthesis** | `behavioral-synthesis` | Synthesis lens that reads the 4 labeled behavioral analyses and finds convergence points, blind spots, and a unified conservation law (~150w). | Terminal pass of the behavioral pipeline (activity `05`) |
+| **Domain-Neutral Variant** | `error-resilience-neutral`, `api-surface-neutral`, `evolution-neutral` | A rewrite of a code-specific lens with domain-neutral language for non-code targets. Quality ~0.5–1.0 lower than the code version on code. | Standalone portfolio lenses for general targets; the neutral set covers three of the four behavioral lenses |
+| **Compressed Variant** | `error-resilience-compact`, `error-resilience-70w`, `l12-universal` | A shorter version of a lens to keep smaller models single-shot. | Model-specific optimization; selected by recommending the slug directly (no parameterization — see Q3) |
+| **Hybrid Lens** | `evidence-cost` | A lens combining operations from two parents (`evidence-cost` = error-resilience × optimize). | Portfolio-eligible standalone lens |
+| **Fidelity** | `fidelity` | Contract fidelity — finds documentation-code drift, help-text inaccuracy, stale comments. | Portfolio-eligible standalone lens, related to but distinct from `contract` |
+
+> The catalog also includes Analysis (`archaeology`, `audit-code`, `cultivation`, `simulation`, `security-v1`, `testability-v1`), Knowledge/Epistemic (`knowledge-audit`, `knowledge-boundary`, `knowledge-typed`, `l12g`, `oracle`), a Writer pipeline (`writer`, `writer-critique`, `writer-synthesis`), Meta (`strategist`, `blindspot`, `falsify`, `significance`), Generative (`arc-code`, `architect`, `codegen`, `genesis`), and Counterfactual/Emergent (`counterfactual`, `history`, `emergence`) families.
 
 ## Open Questions
 
 | # | Question | Status | Resolution | Deep-Dive Section |
 |---|----------|--------|------------|-------------------|
-| Q1 | Should the behavioral pipeline be a new pipeline_mode ("behavioral") or be modeled as a special portfolio mode with mandatory synthesis? | Resolved | New pipeline mode. Structurally distinct from both portfolio (no dedicated synthesis lens) and full-prism (3 sequential vs 4 parallel + 1 synthesis). The orchestrator needs a `dispatch-behavioral-passes` protocol. | DD-1 |
-| Q2 | How should new resources be numbered? Should there be a logical grouping scheme (e.g., 12-18 SDL, 19-23 behavioral) or flat sequential? | Resolved | Sequential from 12, grouped by family: 12-18 SDL, 19-23 behavioral, 24-26 domain-neutral, 27-28 compressed, 29-32 hybrid/specialized. Keeps related lenses adjacent. | DD-2 |
-| Q3 | Should compressed variants (error_resilience_compact, error_resilience_70w) be separate resources or handled via a model-routing parameter? | Resolved | Separate resources. The resource system has no parameterization mechanism — `get_resource` loads by index, no variant selection. Each compressed variant is a complete standalone lens file. | DD-3 |
-| Q4 | Can the behavioral pipeline reuse the existing structural-pass activity (as portfolio mode does), or does it need its own activity chain? | Resolved | Hybrid approach. The 4 independent behavioral lenses can be dispatched within structural-pass (adding `pipeline_mode == "behavioral"` conditions alongside portfolio conditions). The behavioral synthesis needs a new activity (behavioral-synthesis-pass) for consistency with the existing pattern where synthesis is a separate activity. | DD-4 |
-| Q5 | How should plan-analysis route to the behavioral pipeline? What analytical goals map to behavioral analysis vs. structural L12? | Resolved | Add goal mappings: error handling → error_resilience or behavioral pipeline; performance → optim or behavioral; API quality → api_surface or behavioral; comprehensive behavioral → behavioral pipeline mode. Individual behavioral lenses are also portfolio-eligible for targeted single-concern analysis. | DD-5 |
-| Q6 | Should SDL lenses be added to the portfolio lens catalog, or should they have their own "sdl-portfolio" mode? | Resolved | Add to portfolio catalog. SDL lenses are 3-step standalone lenses matching the portfolio pattern (independent, no sequential dependencies). An "SDL portfolio" is just portfolio mode with SDL-family lenses selected — no new mode needed. | DD-6 |
-| Q7 | How should the behavioral synthesis pass be orchestrated — it expects 4 labeled inputs (ERRORS, COSTS, CHANGES, PROMISES), unlike L12 synthesis which expects 2 unlabeled inputs? | Resolved | New dispatch protocol in orchestrate-prism. The worker loads the behavioral_synthesis resource and reads 4 artifact files from the filesystem, labeled per the synthesis lens expectations. The label mapping (error_resilience→ERRORS, optim→COSTS, evolution→CHANGES, api_surface→PROMISES) must be encoded in the orchestrator or behavioral-pipeline skill. | DD-7 |
-| Q8 | How should the incomplete domain-neutral coverage of the behavioral pipeline be handled (no optim_neutral)? Skip behavioral mode for general targets, use code optim on general, or leave optim out? | Resolved | Behavioral pipeline is code-only. optim uses strongly code-oriented vocabulary (allocations, cache misses, nanoseconds). Individual domain-neutral behavioral lenses can be used in portfolio mode for non-code targets. | DD-8 |
-| Q9 | How should the label mapping between behavioral lens names and synthesis input labels be maintained to prevent silent breakage? | Open | Identified by pedagogy lens. The mapping (error_resilience→ERRORS, optim→COSTS, evolution→CHANGES, api_surface→PROMISES) is an implicit contract between the behavioral lenses and behavioral_synthesis. If lenses are reordered or a 5th is added, synthesis labels break silently. Should this be encoded in a skill, a resource metadata file, or the activity definition? | — |
-| Q10 | As the resource catalog grows from 12 to 33, should the hardcoded index lookup tables in skills be replaced with a more maintainable pattern? | Open | Identified by rejected-paths lens. Currently 3+ skills hardcode index mappings. Each new lens requires updating all skills. Alternative: per-lens metadata in resource front matter declaring family, target compatibility, and pipeline eligibility — allowing skills to query capabilities rather than maintain static tables. Trade-off: research-validated routing quality vs. maintenance cost. | — |
+| Q1 | Should the behavioral pipeline be a distinct pipeline_mode ("behavioral") or be modeled as a special portfolio mode with mandatory synthesis? | Resolved | A distinct pipeline mode `behavioral`, structurally separate from both portfolio (no dedicated synthesis lens) and full-prism (3 sequential vs 4 parallel + 1 synthesis). Structure: 4 lenses dispatched in `structural-pass` (`dispatch-behavioral-lenses` step) + a dedicated `behavioral-synthesis-pass` activity. | DD-1 |
+| Q2 | How are resources addressed and grouped? | Resolved | Resources are slug-named files resolved by id (`src/loaders/resource-loader.ts`). The mnemonic numbers in `resources/README.md`'s family tables label the families (12-18 SDL, 19-23 behavioral, and so on). | DD-2 |
+| Q3 | Should compressed variants (`error-resilience-compact`, `error-resilience-70w`) be separate resources or handled via a model-routing parameter? | Resolved | Separate resources. The resource system has no parameterization mechanism — `get_resource(session_index, resource_id)` loads by slug id, with no variant selection. `error-resilience-compact`, `error-resilience-70w`, and `l12-universal` are complete standalone lens files. | DD-3 |
+| Q4 | Does the behavioral pipeline reuse the structural-pass activity (as portfolio mode does), or have its own activity chain? | Resolved | Hybrid approach. The 4 independent behavioral lenses are dispatched within structural-pass (`pipeline_mode == "behavioral"` conditions alongside portfolio conditions). The behavioral synthesis is a dedicated activity (behavioral-synthesis-pass), matching the pattern where synthesis is a separate activity. | DD-4 |
+| Q5 | How does plan-analysis route to the behavioral pipeline? What analytical goals map to behavioral analysis vs. structural L12? | Resolved | Goal mappings: error handling → error-resilience or behavioral pipeline; performance → optimize or behavioral; API quality → api-surface or behavioral; comprehensive behavioral → behavioral pipeline mode. Individual behavioral lenses are also portfolio-eligible for targeted single-concern analysis. | DD-5 |
+| Q6 | Are SDL lenses part of the portfolio lens catalog, or do they have their own "sdl-portfolio" mode? | Resolved | Part of the portfolio catalog. SDL lenses are 3-step standalone lenses matching the portfolio pattern (independent, no sequential dependencies). An "SDL portfolio" is portfolio mode with SDL-family lenses selected. | DD-6 |
+| Q7 | How is the behavioral synthesis pass orchestrated — it expects 4 labeled inputs (ERRORS, COSTS, CHANGES, PROMISES), unlike L12 synthesis which expects 2 unlabeled inputs? | Resolved | A dedicated `behavioral-synthesis-pass` activity runs `behavioral-pipeline` with `lens_name: synthesis`. The worker loads the `behavioral-synthesis` resource and reads the 4 artifacts from `prior_artifact_paths` (keyed by role label), concatenating them under labeled headings (protocol step 5). The label mapping is encoded in the `behavioral-pipeline` technique. | DD-7 |
+| Q8 | How is the partial domain-neutral coverage of the behavioral pipeline handled? | Resolved | Behavioral pipeline is code-only. `optimize` uses strongly code-oriented vocabulary (allocations, cache misses, nanoseconds). Individual domain-neutral behavioral lenses serve in portfolio mode for non-code targets. | DD-8 |
+| Q9 | How is the label mapping between behavioral lens names and synthesis input labels maintained to prevent silent breakage? | Resolved | The mapping is an **explicit input contract**: `behavioral-pipeline`'s `prior_artifact_paths` input is a map keyed by role label (ERRORS, COSTS, CHANGES, PROMISES), and protocol step 5 ("Construct Synthesis Input") assembles the labeled sections. The `behavioral_output_paths` workflow variable is described as "map of role label … to file path". The contract lives in the technique definition. | — |
+| Q10 | As the resource catalog grows, should the static lens lookup tables in techniques be replaced with a more maintainable pattern? | Open | Identified by rejected-paths lens. The catalog holds **58** lenses and the routing tables live in `plan-analysis`, `portfolio-analysis`, and `resources/README.md`. Each new lens requires updating all of them. Alternative: per-lens metadata in resource front matter declaring family, target compatibility, and pipeline eligibility — letting techniques query capabilities rather than maintain static tables. Trade-off: research-validated routing quality vs. maintenance cost. | — |
+| Q11 | Resources include YAML front matter with calibration metadata (`optimal_model`, `quality_baseline`, target compatibility) and `plan-analysis` encodes a `model-sensitivity` rule. Could the server expose this front matter so routing/model selection reads it directly instead of duplicating it in technique prose? | Open | The front-matter metadata exists per `resources/README.md` and the calibration fields are real, but no server tool surfaces it for programmatic routing. This is the concrete form Q10's "per-lens metadata" alternative would take. | — |
+| Q12 | The 13 pass activities (one chain per pipeline mode) share a near-identical `scatter-gather` forEach-over-`analysis_units` shell. Should there be a generalized variable-length pass chain rather than a distinct activity per mode? | Open | R2 chooses "distinct activity per mode" to preserve isolation boundaries, holding across all modes. Whether the duplication becomes a maintenance liability at the next expansion is unevaluated. | — |
 
 ### Remaining follow-up items (out of scope)
 
@@ -191,11 +222,11 @@ The isolation model is the workflow's core invariant. Each pass runs in a fresh 
 
 ### DD-1: Behavioral Pipeline Mode Decision
 
-The orchestrate-prism skill (`04-orchestrate-prism.toon` lines 34-68) has distinct dispatch protocols per mode:
-- `dispatch-structural-pass` (lines 39-45): single fresh sub-agent, single lens
-- `dispatch-adversarial-pass` (lines 46-52): sequential after structural, reads structural artifact
-- `dispatch-synthesis-pass` (lines 53-58): sequential after adversarial, reads both prior artifacts
-- `dispatch-portfolio-passes` (lines 59-64): parallel independent lenses, up to 4 concurrent, inline cross-lens synthesis
+Dispatch concerns are distributed across the workflow: the per-mode routing is the `select-mode` transition table, the parallel/sequential discipline is the activity-level `scatter-gather` technique, and the actual lens execution is the per-pass techniques (`structural-analysis`, `full-prism`, `portfolio-analysis`, `behavioral-pipeline`). The runtime behavior per mode:
+- structural: single fresh sub-agent, single lens (`structural-analysis`)
+- adversarial: sequential after structural, reads structural artifact (`full-prism` `lens_name: adversarial`)
+- synthesis: sequential after adversarial, reads both prior artifacts (`full-prism` `lens_name: synthesis`)
+- portfolio: parallel independent lenses, up to 4 concurrent, inline cross-lens synthesis (`portfolio-analysis`)
 
 The behavioral pipeline requires a pattern not currently supported: **4 parallel independent lenses followed by 1 dedicated synthesis lens that reads all 4 outputs with specific labels**. This is distinct from:
 - Portfolio: parallel independent + **inline** synthesis (worker generates, no dedicated lens)
