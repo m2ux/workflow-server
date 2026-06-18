@@ -37,7 +37,7 @@ export function projectTechniqueToToon(technique: Technique): string {
   ordered['capability'] = technique.capability;
   if (technique.inputs !== undefined) ordered['inputs'] = technique.inputs;
   if (technique.protocol !== undefined) ordered['protocol'] = technique.protocol;
-  if (technique.output !== undefined) ordered['output'] = technique.output;
+  if (technique.outputs !== undefined) ordered['outputs'] = technique.outputs;
   if (technique.rules !== undefined) ordered['rules'] = technique.rules;
   // Trail with the catch-all extension surface — anything an authoring path adds that the canonical
   // ordering above does not cover is still emitted, just at the end.
@@ -150,6 +150,29 @@ export async function readTechnique(
   // Handle nested :: path (group::op or deeper group::subgroup::op).
   if (techniqueId.includes('::')) {
     const segs = techniqueId.split('::');
+    // A leading segment that names a real workflow's techniques directory is a CROSS-WORKFLOW
+    // prefix (`workflow::technique` or `workflow::group::op`): resolve the remainder within THAT
+    // workflow exactly, with no meta fallback — mirroring the legacy `/` explicit-prefix form and
+    // parseTechniquePath, so the canonical `::` form resolves identically on the bundle
+    // (resolveTechniques) and standalone (composeTechnique / get_technique) paths.
+    if (segs.length >= 2 && existsSync(getWorkflowTechniquesDir(workflowDir, segs[0]!))) {
+      const targetWorkflow = segs[0]!;
+      const rest = segs.slice(1);
+      try {
+        const t = rest.length === 1
+          ? await tryLoadSkillInWorkflow(workflowDir, targetWorkflow, rest[0]!)
+          : await tryLoadNestedTechnique(getWorkflowTechniquesDir(workflowDir, targetWorkflow), rest[0]!, rest.slice(1).join('/'));
+        if (t) {
+          logInfo('Technique loaded (cross-workflow ::)', { id: techniqueId, targetWorkflow });
+          return ok(t);
+        }
+      } catch (error) {
+        if (!(error instanceof MarkdownTechniqueParseError)) throw error;
+        logWarn('Malformed nested technique file', { techniqueId, workflowId: targetWorkflow, error: error instanceof Error ? error.message : String(error) });
+      }
+      return err(new TechniqueNotFoundError(techniqueId));
+    }
+
     const group = segs[0]!;
     const opPath = segs.slice(1).join('/');
     const candidates = workflowId && workflowId !== META_WORKFLOW_ID ? [workflowId, META_WORKFLOW_ID] : [META_WORKFLOW_ID];
@@ -256,7 +279,7 @@ function projectTechniqueBody(t: Technique): Record<string, unknown> {
   if (t.capability) body['capability'] = t.capability;
   if (t.inputs) body['inputs'] = t.inputs;
   if (t.protocol) body['protocol'] = t.protocol;
-  if (t.output) body['output'] = t.output;
+  if (t.outputs) body['outputs'] = t.outputs;
   return body;
 }
 
@@ -568,11 +591,11 @@ async function composeLoaded(
   // call treats the ancestor as "parent" (provides base) and acc as "child" (wins).
   // Final precedence: technique > innermost ancestor > ... > workflow root.
   let inputs = technique.inputs;
-  let output = technique.output;
+  let outputs = technique.outputs;
   let rules = technique.rules;
   for (const anc of [...ancestors].reverse()) {
     inputs = mergeById(anc.inputs, inputs);
-    output = mergeById(anc.output, output);
+    outputs = mergeById(anc.outputs, outputs);
     rules = mergeKeyed(anc.rules, rules);
   }
 
@@ -580,7 +603,7 @@ async function composeLoaded(
 
   const composed: Record<string, unknown> = { ...technique };
   if (inputs) composed['inputs'] = inputs; else delete composed['inputs'];
-  if (output) composed['output'] = output; else delete composed['output'];
+  if (outputs) composed['outputs'] = outputs; else delete composed['outputs'];
   if (rules) composed['rules'] = rules; else delete composed['rules'];
   if (protocol) composed['protocol'] = protocol; else delete composed['protocol'];
 

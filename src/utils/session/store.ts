@@ -878,32 +878,6 @@ export async function sessionFileExists(folderAbsPath: string): Promise<boolean>
 // Re-exports for test convenience; production callers should import directly.
 export { writeAtomic as _writeAtomicForTests };
 
-/**
- * Round-trip-and-re-canonicalise a JSON value. Helper for migration code
- * that ingests legacy state and re-emits it in canonical form before sealing.
- */
-export function recanonicalise(value: unknown): string {
-  return canonicaliseJson(value);
-}
-
-/** Convenience: write an arbitrary string directly (used by migration). */
-export async function writeSessionFileRaw(
-  folderAbsPath: string,
-  canonicalJsonBytes: string,
-): Promise<{ bytes: string; seal: string }> {
-  await mkdir(folderAbsPath, { recursive: true, mode: PLANNING_DIR_MODE });
-  // Validate the bytes parse as JSON so callers can't accidentally seal garbage.
-  JSON.parse(canonicalJsonBytes);
-  const seal = await computeSeal(canonicalJsonBytes);
-  await writeAtomic(
-    sessionFilePath(folderAbsPath),
-    canonicalJsonBytes,
-    PLANNING_FILE_MODE,
-  );
-  await writeAtomic(sealFilePath(folderAbsPath), seal, PLANNING_FILE_MODE);
-  return { bytes: canonicalJsonBytes, seal };
-}
-
 /** Throwable type alias kept stable for test imports. */
 export type { SessionStoreError as SessionStoreErrorType };
 

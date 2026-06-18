@@ -107,17 +107,14 @@ describe('work-package robot execution (Layer 3c)', () => {
   // branching (e.g. only when creating a new issue, or when a review finds
   // gaps) — so the deterministic robot never reaches them. They mark 3c's
   // coverage boundary and are exercised only by the agent runs (3a/3b).
-  // Baseline-relative: a NEW unbound checkpoint (beyond this set) fails the gate.
-  const BASELINE_UNBOUND_CHECKPOINTS = [
-    'post-impl-review::block-interview',
-    'post-impl-review::rationale-amendment',
-    'start-work-package::issue-review',
-    'start-work-package::issue-type-selection',
-    'start-work-package::jira-project-selection',
-    'submit-for-review::body-non-conformant',
-  ].sort();
+  // In the unified step-kinds model every checkpoint is an inline kind:checkpoint step at a concrete
+  // position, so there are NO orphan/unbound checkpoints — the deterministic robot reaches them all.
+  // (Previously six situational checkpoints — block-interview, rationale-amendment, the three
+  // start-work-package selection gates, body-non-conformant — were defined out-of-line and
+  // unreachable by the robot; the migration positioned them in the sequence.)
+  const BASELINE_UNBOUND_CHECKPOINTS: string[] = [];
 
-  it('surfaces only the known step-unbound (situational) checkpoints', () => {
+  it('surfaces no unbound checkpoints (all are inline kind:checkpoint steps)', () => {
     const unbound: string[] = [];
     for (const s of full.steps) for (const o of s.orphanCheckpoints) unbound.push(`${s.activityId}::${o}`);
     expect(unbound.sort()).toEqual(BASELINE_UNBOUND_CHECKPOINTS);

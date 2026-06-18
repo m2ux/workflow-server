@@ -1,14 +1,12 @@
 #!/usr/bin/env npx tsx
 /**
- * Validate a workflow's TOON files (workflow.toon, activities/*.toon, skills/*.toon) against schemas.
+ * Validate a workflow's TOON files (workflow.toon, activities/*.toon) against schemas.
  * Usage: npx tsx scripts/validate-workflow-toon.ts <path-to-workflow-dir>
  * Example: npx tsx scripts/validate-workflow-toon.ts /path/to/workflows/substrate-node-security-audit
  */
 
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join, resolve } from 'path';
-import { decodeToonRaw as decodeToon } from '../src/utils/toon.js';
-import { safeValidateSkill } from '../src/schema/skill.schema.js';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { parseActivityFilename } from '../src/loaders/filename-utils.js';
 import { validateActivityFile } from './validate-activities.js';
@@ -38,6 +36,47 @@ function checkPrefixAndDuplicates(files: string[]): string[] {
     }
   }
   return issues;
+}
+
+/** Recursively collect technique .md files (group dirs contain per-operation files). */
+function walkTechniqueFiles(dir: string): string[] {
+  const out: string[] = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...walkTechniqueFiles(p));
+    else if (entry.name.endsWith('.md')) out.push(p);
+  }
+  return out;
+}
+
+/**
+ * Flag unanchored value-references in a technique's `## Protocol` section: a
+ * multi-word snake_case token used BARE — neither a `{designator}` (the
+ * technique's input/output/local), nor a `code` token, nor an invocation
+ * arg-key (`name:`). Every value a protocol sets or reads must resolve to a
+ * declared designator (AP-49/59). Single-word tokens are excluded — they
+ * routinely coincide with ordinary prose ("complexity", "plan") and require
+ * human judgement rather than mechanical bracing.
+ */
+function checkTechniqueProtocolRefs(file: string): string[] {
+  const s = readFileSync(file, 'utf-8');
+  const m = s.match(/^##\s+Protocol\b/m);
+  if (m?.index == null) return [];
+  const rest = s.slice(m.index + 1);
+  const next = rest.search(/^##\s+(?!#)/m);
+  const protocol = next === -1 ? s.slice(m.index) : s.slice(m.index, m.index + 1 + next);
+  const stripCode = (t: string) => t.replace(/```[\s\S]*?```/g, '').replace(/`[^`]*`/g, '');
+  const bare = new Set<string>();
+  for (const rawLine of protocol.split('\n')) {
+    if (/^\s*#{1,4}\s/.test(rawLine)) continue; // skip headings
+    const line = stripCode(rawLine);
+    for (const mm of line.matchAll(/(?<![\w{])([a-z][a-z0-9]*(?:_[a-z0-9]+)+)(?![\w}:])/g)) {
+      bare.add(mm[1]);
+    }
+  }
+  return [...bare].map(
+    (t) => `unanchored protocol reference '${t}' — brace as {${t}} (declared designator) or backtick as a code token`,
+  );
 }
 
 const workflowDirPath = resolve(process.argv[2] ?? '');
@@ -92,38 +131,22 @@ async function main() {
     }
   }
 
-  const skillsDir = join(workflowDirPath, 'skills');
-  if (existsSync(skillsDir)) {
-    const skillFiles = readdirSync(skillsDir).filter((f) => f.endsWith('.toon'));
-    console.log(`\n[INFO] skills/ (${skillFiles.length} files)`);
-    const layoutIssues = checkPrefixAndDuplicates(skillFiles);
-    for (const issue of layoutIssues) {
-      console.log(`   [FAIL] ${issue}`);
-      failed++;
-    }
-    for (const file of skillFiles) {
-      const content = readFileSync(join(skillsDir, file), 'utf-8');
-      try {
-        const decoded = decodeToon(content);
-        if (decoded == null || typeof decoded !== 'object') {
-          console.log(`   [FAIL] ${file}`);
-          console.log(`      - TOON decode returned non-object value`);
-          failed++;
-          continue;
-        }
-        const result = safeValidateSkill(decoded);
-        if (result.success) {
-          console.log(`   [PASS] ${file}`);
-        } else {
-          console.log(`   [FAIL] ${file}`);
-          result.error.issues.forEach((i) => console.log(`      - ${i.path.join('.')}: ${i.message}`));
-          failed++;
-        }
-      } catch (e) {
-        console.log(`   [FAIL] ${file}`);
-        console.log(`      - Parse error: ${(e as Error).message}`);
+  const techniquesDir = join(workflowDirPath, 'techniques');
+  if (existsSync(techniquesDir)) {
+    const techFiles = walkTechniqueFiles(techniquesDir);
+    console.log(`\n[INFO] techniques/ (${techFiles.length} files)`);
+    let techFailed = 0;
+    for (const file of techFiles) {
+      const issues = checkTechniqueProtocolRefs(file);
+      if (issues.length) {
+        console.log(`   [FAIL] ${file.replace(techniquesDir + '/', '')}`);
+        for (const issue of issues) console.log(`      - ${issue}`);
         failed++;
+        techFailed++;
       }
+    }
+    if (techFailed === 0) {
+      console.log(`   [PASS] no unanchored protocol references`);
     }
   }
 

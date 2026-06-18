@@ -67,7 +67,6 @@ workflow-server/
 │   │   ├── resource-loader.ts
 │   │   ├── core-ops.ts       # CORE_ORCHESTRATOR_TECHNIQUES / CORE_WORKER_TECHNIQUES (core technique refs bundled into get_workflow / get_activity)
 │   │   ├── schema-loader.ts
-│   │   ├── schema-preamble.ts
 │   │   ├── filename-utils.ts
 │   │   └── index.ts          # Barrel exports
 │   ├── tools/                # MCP tool implementations
@@ -90,7 +89,7 @@ workflow-server/
 │   └── state.schema.json
 ├── scripts/                  # Build scripts
 │   ├── generate-schemas.ts
-│   └── validate-workflow.ts
+│   └── validate-workflow-toon.ts
 ├── tests/                    # Test suites
 ├── workflows/                # Worktree (workflows branch)
 │   ├── meta/                 # Bootstrap workflow
@@ -156,11 +155,24 @@ Run `npm test -- --run` for the live count and pass/fail summary.
 
 ## Validating Workflows
 
-Use the validation script to check workflow TOON files:
+Several layered checks validate workflow data:
 
 ```bash
-npx tsx scripts/validate-workflow.ts workflows/work-package/workflow.toon
+# Structural / schema validation of TOON files (whole-directory sweep)
+npx tsx scripts/validate-workflow-toon.ts <workflow-path>
+
+# Every step.technique reference resolves through the loader
+npx tsx scripts/check-all-refs.ts
+
+# Binding fidelity: every step.technique.inputs key is a declared input, and every
+# interpolation/condition read resolves to a producer (declared id, $-local,
+# workflow.toon variable, or set-target). Fails only on NEW drift beyond
+# scripts/binding-fidelity-baseline.json (re-snapshot intentional changes with
+# --update-baseline).
+npm run check:binding
 ```
+
+The binding-fidelity guard also runs as a Vitest test (`tests/binding-fidelity.test.ts`), so `npm test` fails on new binding drift.
 
 ## Branch Structure
 
@@ -192,7 +204,7 @@ git push origin workflows
 
 1. Create a new directory in `workflows/{workflow-id}/`
 2. Create `workflow.toon` workflow definition in that directory
-3. Validate with: `npx tsx scripts/validate-workflow.ts <path>`
+3. Validate with: `npx tsx scripts/validate-workflow-toon.ts <path>`, then run `npx tsx scripts/check-all-refs.ts` and `npm run check:binding` to confirm references resolve and no binding drift
 4. Commit to the `workflows` branch
 
 ## Adding New Resources
@@ -217,7 +229,7 @@ A technique file has:
 
 - **YAML frontmatter** carrying `metadata.version`.
 - **`## Capability`** — what the technique does.
-- **`## Inputs`** / **`## Output(s)`** (optional) — each `### entry` may carry `####` sub-section components, plus the reserved `#### artifact` (output persistence filename) and `#### default` (input default).
+- **`## Inputs`** / **`## Outputs`** (optional) — each `### entry` may carry `####` sub-section components, plus the reserved `#### artifact` (output persistence filename) and `#### default` (input default).
 - **`## Protocol`** — ordered blocks `### N. Title` with step bullets, or a flat list. Failure handling is written inline in the protocol step that gives rise to it.
 - **`## Rules`** — constraints the technique enforces.
 
@@ -226,7 +238,7 @@ A technique file has:
 Universal techniques are stored in the `meta` workflow's `techniques/` subdirectory:
 
 1. Create `techniques/{slug}.md` under `workflows/meta/`
-2. Access via: `get_technique` (workflow- or activity-primary technique, optionally a step's technique via `step_id`)
+2. Access via: `get_technique` (workflow- or activity-level first declared technique, optionally a step's technique via `step_id`)
 3. Commit to the `workflows` branch
 
 ### Workflow-Specific Techniques

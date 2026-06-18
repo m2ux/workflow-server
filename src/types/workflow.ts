@@ -4,24 +4,21 @@ export type {
   Step, 
   CheckpointOption, 
   Checkpoint, 
-  DecisionBranch, 
-  Decision, 
-  Transition, 
-  Loop,
+  DecisionBranch,
+  Decision,
+  Transition,
   TechniquesReference,
   WorkflowTrigger,
   Activity,
 } from '../schema/activity.schema.js';
 
 export { 
-  ActionSchema, 
-  StepSchema, 
-  CheckpointOptionSchema, 
-  CheckpointSchema, 
-  DecisionBranchSchema, 
-  DecisionSchema, 
-  TransitionSchema, 
-  LoopSchema, 
+  ActionSchema,
+  StepSchema,
+  CheckpointOptionSchema,
+  DecisionBranchSchema,
+  DecisionSchema,
+  TransitionSchema,
   TechniquesReferenceSchema,
   WorkflowTriggerSchema,
   ActivitySchema,
@@ -30,10 +27,10 @@ export {
 } from '../schema/activity.schema.js';
 
 // Workflow types
-export type { VariableDefinition, ArtifactLocation, Mode, Workflow } from '../schema/workflow.schema.js';
-export { VariableDefinitionSchema, ModeSchema, WorkflowSchema, validateWorkflow, safeValidateWorkflow } from '../schema/workflow.schema.js';
+export type { VariableDefinition, Workflow } from '../schema/workflow.schema.js';
+export { VariableDefinitionSchema, WorkflowSchema, validateWorkflow, safeValidateWorkflow } from '../schema/workflow.schema.js';
 
 // Condition types
-export type { ComparisonOperator, SimpleCondition, AndCondition, OrCondition, NotCondition, Condition } from '../schema/condition.schema.js';
-export { ComparisonOperatorSchema, SimpleConditionSchema, AndConditionSchema, OrConditionSchema, NotConditionSchema, ConditionSchema, evaluateCondition, validateCondition, safeValidateCondition } from '../schema/condition.schema.js';
+export type { ComparisonOperator, SimpleCondition, Condition } from '../schema/condition.schema.js';
+export { ComparisonOperatorSchema, SimpleConditionSchema, ConditionSchema, evaluateCondition, validateCondition, safeValidateCondition } from '../schema/condition.schema.js';
 

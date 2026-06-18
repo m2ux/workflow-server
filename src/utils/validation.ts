@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { Workflow } from '../schema/workflow.schema.js';
-import { getValidTransitions, getActivity, getTransitionList } from '../loaders/workflow-loader.js';
+import { getValidTransitions, getActivity, getTransitionList, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { techniqueName, flattenActivitySteps } from '../schema/activity.schema.js';
 
 /**
  * Minimal view of session state required by the validation helpers. The
@@ -42,6 +43,9 @@ export function validateActivityTransition(view: SessionView, workflow: Workflow
     return null;
   }
   if (view.act === activityId) return null;
+  // The terminal sentinel is a valid terminal target from any activity (it may
+  // be reached via an abort/checkpoint effect rather than a declared transition).
+  if (activityId === TERMINAL_SENTINEL) return null;
 
   const valid = getValidTransitions(workflow, view.act);
   if (valid.length === 0) return null;
@@ -60,22 +64,10 @@ export function validateTechniqueAssociation(workflow: Workflow, activityId: str
 
   const declared = new Set<string>();
 
-  if (activity.techniques?.primary) declared.add(activity.techniques.primary);
-  if (activity.techniques?.supporting) activity.techniques.supporting.forEach(s => declared.add(s));
+  if (activity.techniques) activity.techniques.forEach(s => declared.add(s));
 
-  if (activity.steps) {
-    for (const step of activity.steps) {
-      if (step.technique) declared.add(step.technique);
-    }
-  }
-  if (activity.loops) {
-    for (const loop of activity.loops) {
-      if (loop.steps) {
-        for (const step of loop.steps) {
-          if (step.technique) declared.add(step.technique);
-        }
-      }
-    }
+  for (const step of flattenActivitySteps(activity)) {
+    if (step.technique) declared.add(techniqueName(step.technique)!);
   }
 
   if (declared.size === 0) return null;
@@ -109,7 +101,7 @@ export function validateStepManifest(
   const { steps } = activity;
   if (!steps || steps.length === 0) return [];
 
-  const expectedIds = steps.map(s => s.id);
+  const expectedIds = steps.map(s => s.id).filter((id): id is string => id !== undefined);
   const manifestIds = manifest.map(m => m.step_id);
   const warnings: string[] = [];
 

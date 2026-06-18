@@ -6,10 +6,8 @@ import {
 } from '../src/schema/workflow.schema.js';
 import {
   ActivitySchema,
-  CheckpointSchema,
   StepSchema,
   DecisionSchema,
-  LoopSchema,
   safeValidateActivity,
 } from '../src/schema/activity.schema.js';
 import { ConditionSchema } from '../src/schema/condition.schema.js';
@@ -88,15 +86,15 @@ describe('schema-validation', () => {
 
   describe('StepSchema', () => {
     it('should validate minimal step', () => {
-      const step = { id: 'step-1', name: 'Step One' };
+      const step = { kind: 'action', id: 'step-1' };
       const result = StepSchema.safeParse(step);
       expect(result.success).toBe(true);
     });
 
     it('should validate step with description', () => {
       const step = {
+        kind: 'technique',
         id: 'step-1',
-        name: 'Step One',
         description: 'Detailed guidance for this step',
         technique: 'some-technique',
       };
@@ -104,54 +102,21 @@ describe('schema-validation', () => {
       expect(result.success).toBe(true);
     });
 
-    it('should reject step without id', () => {
-      const step = { name: 'Step One' };
+    it('should validate a technique-bound step without an explicit id', () => {
+      const step = { kind: 'technique', technique: 'cargo-operations::run-suite' };
+      const result = StepSchema.safeParse(step);
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject a kind:action step with no explicit id', () => {
+      const step = { kind: 'action', description: 'a control step missing its id' };
       const result = StepSchema.safeParse(step);
       expect(result.success).toBe(false);
     });
-  });
 
-  describe('CheckpointSchema', () => {
-    it('should validate checkpoint with options', () => {
-      const checkpoint = {
-        id: 'checkpoint-1',
-        name: 'Confirm',
-        message: 'Do you want to proceed?',
-        options: [
-          { id: 'yes', label: 'Yes' },
-          { id: 'no', label: 'No' },
-        ],
-      };
-      const result = CheckpointSchema.safeParse(checkpoint);
-      expect(result.success).toBe(true);
-    });
-
-    it('should validate checkpoint with effects', () => {
-      const checkpoint = {
-        id: 'checkpoint-1',
-        name: 'Choose',
-        message: 'Select option',
-        options: [
-          {
-            id: 'option-a',
-            label: 'Option A',
-            effect: { setVariable: { selected: 'a' }, transitionTo: 'activity-2' },
-          },
-          { id: 'option-b', label: 'Option B' },
-        ],
-      };
-      const result = CheckpointSchema.safeParse(checkpoint);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject checkpoint with no options', () => {
-      const checkpoint = {
-        id: 'checkpoint-1',
-        name: 'Empty',
-        message: 'No options',
-        options: [],
-      };
-      const result = CheckpointSchema.safeParse(checkpoint);
+    it('should reject a step with no kind', () => {
+      const step = { id: 'step-1', technique: 'some-technique' };
+      const result = StepSchema.safeParse(step);
       expect(result.success).toBe(false);
     });
   });
@@ -199,39 +164,13 @@ describe('schema-validation', () => {
     });
   });
 
-  describe('LoopSchema', () => {
-    it('should validate forEach loop', () => {
-      const loop = {
-        id: 'loop-1',
-        name: 'Task Loop',
-        type: 'forEach',
-        variable: 'task',
-        over: 'tasks',
-      };
-      const result = LoopSchema.safeParse(loop);
-      expect(result.success).toBe(true);
-    });
-
-    it('should validate while loop with condition', () => {
-      const loop = {
-        id: 'loop-1',
-        name: 'Retry Loop',
-        type: 'while',
-        condition: { type: 'simple', variable: 'retries', operator: '<', value: 3 },
-        maxIterations: 5,
-      };
-      const result = LoopSchema.safeParse(loop);
-      expect(result.success).toBe(true);
-    });
-  });
-
   describe('ActivitySchema', () => {
     it('should validate minimal activity', () => {
       const activity = {
         id: 'activity-1',
         version: '1.0.0',
         name: 'Activity One',
-        techniques: { primary: 'some-technique' },
+        techniques: ['some-technique'],
       };
       const result = ActivitySchema.safeParse(activity);
       expect(result.success).toBe(true);
@@ -243,19 +182,17 @@ describe('schema-validation', () => {
         version: '1.0.0',
         name: 'Full Activity',
         description: 'An activity with everything',
-        problem: 'User needs to do something',
-        recognition: ['do something', 'perform action'],
-        techniques: { primary: 'main-technique', supporting: ['helper-technique'] },
-        estimatedTime: '1-2h',
-        entryActions: [{ action: 'log', message: 'Entering' }],
-        exitActions: [{ action: 'log', message: 'Exiting' }],
-        steps: [{ id: 'step-1', name: 'Step 1' }],
-        checkpoints: [
+        techniques: ['main-technique', 'helper-technique'],
+        // Unified model: one ordered, kind-tagged steps[] — technique, an inline checkpoint, and a compound loop.
+        steps: [
+          { kind: 'technique', id: 'step-1', technique: 'main-technique::do-it' },
+          { kind: 'checkpoint', id: 'cp-1', message: 'OK?', options: [{ id: 'yes', label: 'Yes' }] },
           {
-            id: 'cp-1',
-            name: 'Check',
-            message: 'OK?',
-            options: [{ id: 'yes', label: 'Yes' }],
+            kind: 'loop',
+            id: 'loop-1',
+            loopType: 'forEach',
+            over: 'items',
+            steps: [{ kind: 'technique', id: 'inner', technique: 'helper-technique::each' }],
           },
         ],
         transitions: [{ to: 'activity-2', isDefault: true }],
@@ -302,7 +239,7 @@ describe('schema-validation', () => {
       id: 'activity-1', 
       version: '1.0.0',
       name: 'Activity One',
-      techniques: { primary: 'some-technique' },
+      techniques: ['some-technique'],
     };
 
     it('should validate minimal workflow', () => {
@@ -355,18 +292,6 @@ describe('schema-validation', () => {
       };
       const result = safeValidateWorkflow(workflow);
       expect(result.success).toBe(false);
-    });
-
-    it('should accept workflow without executionModel', () => {
-      const workflow = {
-        id: 'test-workflow',
-        version: '1.0.0',
-        title: 'Test Workflow',
-        initialActivity: 'activity-1',
-        activities: [minimalActivity],
-      };
-      const result = safeValidateWorkflow(workflow);
-      expect(result.success).toBe(true);
     });
   });
 });

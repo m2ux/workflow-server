@@ -28,14 +28,6 @@ export const ConditionSchema: z.ZodType<Condition> = z.union([
   z.object({ type: z.literal('not'), condition: z.lazy(() => ConditionSchema) }),
 ]);
 
-export const AndConditionSchema = z.object({ type: z.literal('and'), conditions: z.array(ConditionSchema).min(2) });
-export const OrConditionSchema = z.object({ type: z.literal('or'), conditions: z.array(ConditionSchema).min(2) });
-export const NotConditionSchema = z.object({ type: z.literal('not'), condition: ConditionSchema });
-
-export type AndCondition = z.infer<typeof AndConditionSchema>;
-export type OrCondition = z.infer<typeof OrConditionSchema>;
-export type NotCondition = z.infer<typeof NotConditionSchema>;
-
 export function evaluateCondition(condition: Condition, variables: Record<string, unknown>): boolean {
   switch (condition.type) {
     case 'simple': return evaluateSimpleCondition(condition, variables);

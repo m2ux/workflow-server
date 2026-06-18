@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { type Workflow, safeValidateWorkflow } from '../schema/workflow.schema.js';
-import { type Activity, safeValidateActivity } from '../schema/activity.schema.js';
+import { type Activity, safeValidateActivity, populateStepIds, activityCheckpoints } from '../schema/activity.schema.js';
 import { type Result, ok, err } from '../result.js';
 import { WorkflowNotFoundError, WorkflowValidationError, ActivityNotFoundError } from '../errors.js';
 import { logInfo, logError, logWarn } from '../logging.js';
@@ -47,6 +47,7 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<Activity[]
         continue;
       }
       const activity = validation.data;
+      populateStepIds(activity);
       activity.artifactPrefix = parsed.index;
       activities.push(activity);
     } catch (error) {
@@ -117,7 +118,8 @@ async function resolveActivityReference(workflowDir: string, workflowId: string,
     }
     
     const activity = validation.data;
-    
+    populateStepIds(activity);
+
     // Attempt to parse prefix from filename
     const actualFilename = filename.split('/').pop() || '';
     const parsed = parseActivityFilename(actualFilename);
@@ -246,9 +248,11 @@ export function getActivity(workflow: Workflow, activityId: string): Activity | 
   return workflow.activities?.find(a => a.id === activityId);
 }
 
-/** Get a checkpoint from an activity */
-export function getCheckpoint(workflow: Workflow, activityId: string, checkpointId: string) { 
-  return getActivity(workflow, activityId)?.checkpoints?.find(c => c.id === checkpointId); 
+/** Get a checkpoint from an activity (the inline kind:checkpoint step). */
+export function getCheckpoint(workflow: Workflow, activityId: string, checkpointId: string) {
+  const activity = getActivity(workflow, activityId);
+  if (!activity) return undefined;
+  return activityCheckpoints(activity).find(c => c.id === checkpointId);
 }
 
 /** Get all valid transitions from an activity */
@@ -258,7 +262,7 @@ export function getValidTransitions(workflow: Workflow, fromActivityId: string):
   const transitions: string[] = [];
   activity.transitions?.forEach(t => transitions.push(t.to));
   activity.decisions?.forEach(d => d.branches.forEach(b => { if (b.transitionTo) transitions.push(b.transitionTo); }));
-  activity.checkpoints?.forEach(c => c.options.forEach(o => o.effect?.transitionTo && transitions.push(o.effect.transitionTo)));
+  activityCheckpoints(activity).forEach(c => c.options.forEach(o => o.effect?.transitionTo && transitions.push(o.effect.transitionTo)));
   return [...new Set(transitions)];
 }
 
@@ -294,7 +298,7 @@ export function getTransitionList(workflow: Workflow, fromActivityId: string): T
     }
   }
 
-  for (const c of activity.checkpoints ?? []) {
+  for (const c of activityCheckpoints(activity)) {
     for (const o of c.options) {
       if (o.effect?.transitionTo && !seen.has(o.effect.transitionTo)) {
         entries.push({ to: o.effect.transitionTo, condition: `checkpoint:${c.id}:${o.id}` });
@@ -323,12 +327,24 @@ function conditionToString(condition: { type: string; variable?: string; operato
   }
 }
 
+/**
+ * Canonical terminal sentinel. A transition whose target is this id ends the
+ * workflow without resolving to a real activity: `next_activity` accepts it,
+ * flips the session status to `completed`, and the workflow stops. Use it for
+ * a terminal reached via an explicit transition (a default end-of-flow link or
+ * an `abort` checkpoint option) where there is no terminal activity to land on.
+ * A workflow that ends simply by having no outgoing transition (terminal-by-
+ * omission) needs no sentinel. The `complete` and `end-workflow` real terminal
+ * activities remain valid and unchanged.
+ */
+export const TERMINAL_SENTINEL = '__terminal__';
+
 /** Validate a transition between activities */
 export function validateTransition(workflow: Workflow, fromActivityId: string, toActivityId: string): { valid: boolean; reason?: string } {
   if (!getActivity(workflow, fromActivityId)) return { valid: false, reason: `Source activity not found: ${fromActivityId}` };
-  
-  // end-workflow is a special terminal state, not an actual activity
-  if (toActivityId !== 'end-workflow' && !getActivity(workflow, toActivityId)) {
+
+  // end-workflow and the terminal sentinel are special terminal states, not actual activities
+  if (toActivityId !== 'end-workflow' && toActivityId !== TERMINAL_SENTINEL && !getActivity(workflow, toActivityId)) {
     return { valid: false, reason: `Target activity not found: ${toActivityId}` };
   }
   
@@ -368,23 +384,36 @@ export async function readActivityRaw(
     logWarn('Failed to read activity raw', { activityId, workflowId, error: error instanceof Error ? error.message : String(error) });
   }
 
-  return err(new ActivityNotFoundError(activityId, workflowId));
-}
-
-/** Read raw workflow.toon file content. */
-export async function readWorkflowRaw(
-  workflowDir: string,
-  workflowId: string,
-): Promise<Result<string, WorkflowNotFoundError>> {
-  const filePath = resolveWorkflowPath(workflowDir, workflowId);
-  if (!filePath) return err(new WorkflowNotFoundError(workflowId));
-
+  // Fallback: a borrowed cross-workflow activity declared as a string ref in this workflow's
+  // activities[] list (e.g. "work-package/02-design-philosophy.toon"). The local-dir scan above
+  // covers only the workflow's own activities; resolve the borrowed file so a raw read returns the
+  // same definition loadWorkflow already merges into the activity set — keeping get_activity in
+  // step with the workflow summary and next_activity for workflows that compose another's activities.
   try {
-    const content = await readFile(filePath, 'utf-8');
-    return ok(content);
+    const wfRaw = decodeToonRaw(await readFile(filePath, 'utf-8')) as RawWorkflow;
+    const refs = (wfRaw['activities'] as unknown[] | undefined) ?? [];
+    for (const ref of refs) {
+      if (typeof ref !== 'string' || !ref.includes('/')) continue;
+      const targetWorkflowId = ref.split('/')[0]!;
+      const filename = ref.split('/').slice(1).join('/');
+      const parsed = parseActivityFilename(filename.split('/').pop() ?? '');
+      if (!parsed || parsed.id !== activityId) continue;
+      const borrowedPath = filename.startsWith('activities/')
+        ? join(workflowDir, targetWorkflowId, filename)
+        : join(workflowDir, targetWorkflowId, 'activities', filename);
+      if (!existsSync(borrowedPath)) continue;
+      const content = await readFile(borrowedPath, 'utf-8');
+      const validation = safeValidateActivity(decodeToonRaw(content));
+      if (!validation.success) {
+        logWarn('Borrowed activity validation failed (raw read)', { activityId, ref, errors: validation.error.issues });
+        return err(new ActivityNotFoundError(activityId, workflowId));
+      }
+      return ok(content);
+    }
   } catch (error) {
-    logWarn('Failed to read workflow raw', { workflowId, error: error instanceof Error ? error.message : String(error) });
-    return err(new WorkflowNotFoundError(workflowId));
+    logWarn('Failed to resolve borrowed activity (raw read)', { activityId, workflowId, error: error instanceof Error ? error.message : String(error) });
   }
+
+  return err(new ActivityNotFoundError(activityId, workflowId));
 }
 

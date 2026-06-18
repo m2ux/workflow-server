@@ -12,12 +12,16 @@
     "dev": "tsx src/index.ts",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
-    "migrate-skills": "tsx scripts/migrate-skills/migrate.ts"
+    "check:binding": "tsx scripts/check-binding-fidelity.ts",
+    "check:steps": "tsx scripts/check-bound-step-purity.ts",
+    "check:identifiers": "tsx scripts/check-identifier-qualification.ts",
+    "check:artifacts": "tsx scripts/check-artifact-description.ts",
+    "check:self-input": "tsx scripts/check-self-provisioned-input.ts",
+    "check:activity-tech": "tsx scripts/check-activity-technique-overlap.ts"
   },
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.19.30",
-    "ajv": "^8.17.1",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "vitest": "^1.6.1"

@@ -21,8 +21,8 @@ Orchestra defines the grammar and semantic constraints for the four workflow pri
 | Primitive | Description | Orchestra Status |
 |-----------|-------------|----------------|
 | **Workflow** | Top-level container: metadata, variables, activity sequencing, orchestrator technique refs | Legacy — Orchestra variant TBD |
-| **Activity** | Execution unit: steps, decisions, loops composed into flows; references techniques via `techniques.primary` / `techniques.supporting[]` | **Defined in this specification** |
-| **Technique** | Markdown definition of a capability, optional inputs/output, an ordered protocol, and rules; may contain nested techniques | Legacy — Orchestra variant TBD |
+| **Activity** | Execution unit: steps, decisions, loops composed into flows; references techniques via a flat `techniques[]` list | **Defined in this specification** |
+| **Technique** | Markdown definition of a capability, optional inputs/outputs, an ordered protocol, and rules; may contain nested techniques | Legacy — Orchestra variant TBD |
 | **Resource** | Reference material: documentation, templates, guides | Legacy — Orchestra variant TBD |
 
 This specification fully defines the Orchestra grammar and constraints for **activities**. The workflow, technique, and resource primitives continue to use the prior schema definitions (see `schemas/*.schema.json`) until their Orchestra variants are designed.
@@ -49,7 +49,7 @@ The activity is the primary execution unit. It defines steps, decisions, and loo
 
 A step is a unit of work. Trivial steps are performed directly by the agent. Non-trivial steps name a technique by its `::` path, resolved through `get_technique(step_id)`. A same-workflow path is implicit; an unqualified path resolves current-workflow-first and then falls back to `meta`.
 
-**Input/output resolution**: A technique declares its inputs and output by name in its definition. At runtime, the agent resolves each input by pattern-matching against variables in the scoping chain (local flow > loop variable > activity-level > workflow-level). Outputs are injected into the current scope after execution.
+**Input/output resolution**: A technique declares its inputs and outputs by name in its definition. At runtime, the agent resolves each input by pattern-matching against variables in the scoping chain (local flow > loop variable > activity-level > workflow-level). Outputs are injected into the current scope after execution.
 
 **Rules live in techniques**: Steps do not carry rules. If a step requires behavioural constraints, that signals a rule is needed, and rules live in the technique definition. They are pulled into the activity's bundled response when the activity references the technique. This keeps steps as pure references and rules co-located with the procedural knowledge that enforces them.
 
@@ -902,7 +902,7 @@ TBD — Orchestra grammar and constraints for the technique primitive are not ye
 
 * **Frontmatter** — carries `metadata.version`.
 * **`## Capability`** — what the technique accomplishes.
-* **`## Inputs` / `## Output(s)`** (optional) — each entry's component members are listed under `####` headings, including the reserved `#### artifact` and `#### default` components.
+* **`## Inputs` / `## Outputs`** (optional) — each entry's component members are listed under `####` headings, including the reserved `#### artifact` and `#### default` components.
 * **`## Protocol`** — the ordered procedure, written either as `### N. Title` blocks or as a flat list. Failure handling is described inline in the protocol step that triggers it.
 * **`## Rules`** — named behavioural invariants, pulled into the bundle when the technique is referenced.
 

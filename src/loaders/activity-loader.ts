@@ -5,7 +5,7 @@ import { type Result, ok, err } from '../result.js';
 import { ActivityNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
 import { decodeToonRaw } from '../utils/toon.js';
-import { type Activity, safeValidateActivity } from '../schema/activity.schema.js';
+import { type Activity, safeValidateActivity, populateStepIds } from '../schema/activity.schema.js';
 import { parseActivityFilename } from './filename-utils.js';
 
 export interface ActivityEntry { 
@@ -120,28 +120,29 @@ async function readActivityFromWorkflow(
     }
     
     const activity = validation.data;
-    
+    populateStepIds(activity);
+
     // Infer artifactPrefix from the activity filename index
     const parsedFilename = parseActivityFilename(matchingFile);
     if (parsedFilename) {
       activity.artifactPrefix = parsedFilename.index;
     }
-    
+
     logInfo('Activity loaded', { id: activityId, workflowId, path: filePath });
-    
+
     const primaryStep = activity.steps?.find(s => s.technique);
 
     const activityWithGuidance: ActivityWithGuidance = {
       ...activity,
       workflowId,
-      ...(primaryStep ? {
+      ...(primaryStep?.id ? {
         next_action: {
           tool: 'get_technique',
           parameters: { step_id: primaryStep.id },
         },
       } : {}),
     };
-    
+
     return ok(activityWithGuidance);
   } catch (error) {
     logWarn('Failed to load activity', { activityId, workflowId, error: error instanceof Error ? error.message : String(error) });
@@ -197,96 +198,4 @@ async function listActivitiesFromWorkflow(workflowDir: string, workflowId: strin
     logWarn('Failed to list activities', { workflowId, error: error instanceof Error ? error.message : String(error) });
     return []; 
   }
-}
-
-export interface ActivityIndexEntry {
-  id: string;
-  workflowId: string;
-  problem: string;
-  primary_technique?: string;
-  next_action?: {
-    tool: string;
-    parameters: Record<string, string>;
-  };
-}
-
-export interface ActivityIndex {
-  description: string;
-  usage: string;
-  next_action: {
-    tool: string;
-    parameters: Record<string, unknown>;
-  };
-  activities: ActivityIndexEntry[];
-  quick_match: Record<string, string>;
-}
-
-/**
- * Build activity index dynamically from activity files across all workflows.
- * Each activity's `recognition` patterns become quick_match entries.
- * Loads activities directly from the already-enumerated entries to avoid redundant readdir calls.
- */
-export async function readActivityIndex(workflowDir: string): Promise<Result<ActivityIndex, ActivityNotFoundError>> {
-  const activityEntries = await listActivities(workflowDir);
-  
-  if (activityEntries.length === 0) {
-    return err(new ActivityNotFoundError('index'));
-  }
-  
-  const activities: ActivityIndex['activities'] = [];
-  const quick_match: Record<string, string> = {};
-  
-  for (const entry of activityEntries) {
-    const activityDir = getActivityDir(workflowDir, entry.workflowId);
-    const filePath = join(activityDir, entry.path);
-    
-    try {
-      const content = await readFile(filePath, 'utf-8');
-      const decoded = decodeToonRaw(content);
-      
-      const validation = safeValidateActivity(decoded);
-      const activity = validation.success ? validation.data : decoded as Activity;
-      
-      const primaryTechnique = activity.techniques?.primary
-        ?? activity.steps?.find(s => s.technique)?.technique;
-      const primaryStep = activity.steps?.find(s => s.technique);
-
-      const activityEntry: ActivityIndex['activities'][number] = {
-        id: activity.id,
-        workflowId: entry.workflowId,
-        problem: activity.problem ?? activity.description ?? activity.name,
-        ...(primaryTechnique ? { primary_technique: primaryTechnique } : {}),
-        ...(primaryStep ? {
-          next_action: {
-            tool: 'get_technique',
-            parameters: { step_id: primaryStep.id },
-          },
-        } : {}),
-      };
-      
-      activities.push(activityEntry);
-      
-      if (activity.recognition) {
-        for (const pattern of activity.recognition) {
-          quick_match[pattern.toLowerCase()] = activity.id;
-        }
-      }
-    } catch (error) {
-      logWarn('Failed to load activity for index', { activityId: entry.id, workflowId: entry.workflowId, error: error instanceof Error ? error.message : String(error) });
-    }
-  }
-  
-  const index: ActivityIndex = {
-    description: 'Match user goal to an activity. Activities use techniques to achieve outcomes.',
-    usage: 'Call the tool in next_action first (start_session), then proceed to the matched activity.',
-    next_action: {
-      tool: 'start_session',
-      parameters: {},
-    },
-    activities,
-    quick_match,
-  };
-  
-  logInfo('Activity index built dynamically', { activityCount: activities.length });
-  return ok(index);
 }

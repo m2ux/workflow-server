@@ -1,0 +1,202 @@
+[
+  {
+    "check": "read-resolution",
+    "site": "meta/techniques/cargo-operations/run-suite.md:59",
+    "detail": "{failed_checks} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "meta/techniques/cargo-operations/run-suite.md:59",
+    "detail": "{failed_checks} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "meta/techniques/cargo-operations/run-suite.md:59",
+    "detail": "{failed_checks} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "meta/techniques/cargo-operations/run-suite.md:60",
+    "detail": "{failed_checks} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "meta/techniques/cargo-operations/run-suite.md:59",
+    "detail": "{first_failure} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "meta/techniques/cargo-operations/run-suite.md:60",
+    "detail": "{first_failure} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:81",
+    "detail": "{average} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:83",
+    "detail": "{category} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:79",
+    "detail": "{feasibility} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:81",
+    "detail": "{feasibility} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:85",
+    "detail": "{file} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:77",
+    "detail": "{impact} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:81",
+    "detail": "{impact} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:77",
+    "detail": "{justification} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:79",
+    "detail": "{justification} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:81",
+    "detail": "{level} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "substrate-node-security-audit/techniques/write-report.md:85",
+    "detail": "{lines} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/create-issue.md:35",
+    "detail": "{jira_cloud_id} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/create-issue.md:50",
+    "detail": "{jira_cloud_id} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:38",
+    "detail": "{conforms} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:20",
+    "detail": "{extra_top_level_headings} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:38",
+    "detail": "{extra_top_level_headings} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:20",
+    "detail": "{header_block_drift} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:38",
+    "detail": "{header_block_drift} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:20",
+    "detail": "{missing_sections} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md:38",
+    "detail": "{missing_sections} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/manage-git/detect-merge-strategy.md:26",
+    "detail": "{allow_squash_merge} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/manage-git/TECHNIQUE.md:30",
+    "detail": "{display_name} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/manage-git/TECHNIQUE.md:30",
+    "detail": "{display_name} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/manage-git/TECHNIQUE.md:30",
+    "detail": "{email} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/manage-git/TECHNIQUE.md:30",
+    "detail": "{email} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "workflow-design/activities/06-scope-and-draft.toon:130",
+    "detail": "{file_count} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "workflow-design/activities/08-quality-review.toon:118",
+    "detail": "{conformance_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "workflow-design/activities/08-quality-review.toon:157",
+    "detail": "{enforcement_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "workflow-design/activities/08-quality-review.toon:100",
+    "detail": "{expressiveness_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "workflow-design/activities/08-quality-review.toon:139",
+    "detail": "{rule_hygiene_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "workflow-design/activities/09-validate-and-commit.toon:83",
+    "detail": "{addressed_count} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "workflow-design/activities/09-validate-and-commit.toon:62",
+    "detail": "{fail_count} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "workflow-design/activities/09-validate-and-commit.toon:62",
+    "detail": "{pass_count} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "workflow-design/activities/09-validate-and-commit.toon:83",
+    "detail": "{total_count} has no producer (declared id / $-local / workflow var / set-target)"
+  }
+]

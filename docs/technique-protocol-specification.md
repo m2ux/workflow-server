@@ -61,7 +61,7 @@ metadata:
 #### default         (optional: the input's default value)
 <value>
 
-## Output            (optional; "## Outputs" also accepted)
+## Outputs           (optional)
 ### <output-id>
 <description>
 #### <member>        (optional: a component of this output)
@@ -84,13 +84,14 @@ metadata:
 - Frontmatter declares `metadata.version`; the loader uses it as the technique's version.
 - `## Capability` is a single paragraph stating what the technique does.
 
-### 3.2 Inputs and Output
+### 3.2 Inputs and Outputs
 
-Each `### <id>` under `## Inputs` / `## Output` is an entry: a description, optionally with `####`
-sub-section members.
+Each `### <id>` under `## Inputs` / `## Outputs` is an entry: a description, optionally with `####`
+sub-section members. The section headers are exactly the plural `## Inputs` and `## Outputs`; the
+loader rejects the singular `## Input` / `## Output` (and `## Output(s)`) variants with a parse error.
 
 - `#### <member>` is a named component of the entry (`components[member]`).
-- `#### artifact` (Output) is the persistence filename — a literal (`code-review.md`) or a
+- `#### artifact` (Outputs) is the persistence filename — a literal (`code-review.md`) or a
   `{token}`-template the worker interpolates at runtime (`{package_name}-plan.md`, the token being a snake_case symbol).
 - `#### default` (Inputs) is the input's default value.
 - An entry whose description opens with `optional` (e.g. `*(optional)*`) is `required: false`.
@@ -105,7 +106,7 @@ section a symbol is declared under, never by its spelling**:
 
 - An **input** (`## Inputs`) is a symbol *populated on entry* — by the caller, or by an upstream
   technique's output bound to it. Optional inputs may be absent and fall back to `#### default`.
-- An **output** (`## Output`) is a symbol *exposed at the technique's surface on completion*.
+- An **output** (`## Outputs`) is a symbol *exposed at the technique's surface on completion*.
 - A **protocol variable** (`{$name}`, §3.3) is a symbol created and used within one protocol run,
   neither received nor exposed.
 
@@ -387,7 +388,7 @@ on the `get_technique` path, where the workflow root is the ancestor.
 ### 7.1 Body
 
 A delivered technique body (`projectTechniqueBody`) carries `capability`, `inputs?`, `protocol?`
-(wrapped per §6), and `output?`. A technique's rules are delivered as `rule` entries (§7.2).
+(wrapped per §6), and `outputs?`. A technique's rules are delivered as `rule` entries (§7.2).
 
 ### 7.2 Bundle
 
@@ -401,8 +402,8 @@ A delivered technique body (`projectTechniqueBody`) carries `capability`, `input
 
 ### 7.3 Activity bundling
 
-`get_activity` and `get_workflow` deliver an activity's `techniques.primary` and
-`techniques.supporting[]` through this bundle; `get_technique` delivers a single technique via
+`get_activity` and `get_workflow` deliver an activity's `techniques[]` through this bundle;
+`get_technique` delivers a single technique via
 `composeTechnique`.
 
 ### 7.4 Binding

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { readActivity, listActivities, readActivityIndex } from '../src/loaders/activity-loader.js';
+import { readActivity, listActivities } from '../src/loaders/activity-loader.js';
 import { resolve, join } from 'node:path';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -16,9 +16,8 @@ describe('activity-loader', () => {
         expect(result.value.id).toBe('discover-session');
         expect(result.value.version).toBeDefined();
         expect(result.value.name).toBeDefined();
-        // discover-session declares its techniques via techniques.supporting (no primary).
-        const techniques = (result.value as { techniques?: { primary?: string; supporting?: string[] } }).techniques;
-        expect(techniques?.supporting?.length).toBeGreaterThan(0);
+        // discover-session's steps bind their operations via step.technique.
+        expect(result.value.steps?.some((s) => s.technique)).toBe(true);
         expect(result.value.workflowId).toBe('meta');
       }
     });
@@ -60,8 +59,9 @@ describe('activity-loader', () => {
         expect(typeof activity.id).toBe('string');
         expect(typeof activity.version).toBe('string');
         expect(typeof activity.name).toBe('string');
-        if (activity.techniques && typeof activity.techniques === 'object' && 'primary' in activity.techniques && activity.techniques.primary) {
-          expect(typeof activity.techniques.primary).toBe('string');
+        if (activity.techniques) {
+          expect(Array.isArray(activity.techniques)).toBe(true);
+          for (const t of activity.techniques) expect(typeof t).toBe('string');
         }
       }
     });
@@ -164,67 +164,6 @@ describe('activity-loader', () => {
       const indices = activities.map(a => a.index);
       const sorted = [...indices].sort();
       expect(indices).toEqual(sorted);
-    });
-  });
-
-  describe('readActivityIndex', () => {
-    it('should build an index from all workflow activities', async () => {
-      const result = await readActivityIndex(WORKFLOW_DIR);
-
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.value.activities.length).toBeGreaterThanOrEqual(3);
-        expect(result.value.description).toBeDefined();
-        expect(result.value.usage).toBeDefined();
-        expect(result.value.next_action).toBeDefined();
-        expect(result.value.next_action.tool).toBe('start_session');
-      }
-    });
-
-    it('should include id, workflowId, problem, and primary_skill for each entry', async () => {
-      const result = await readActivityIndex(WORKFLOW_DIR);
-
-      expect(result.success).toBe(true);
-      if (result.success) {
-        for (const activity of result.value.activities) {
-          expect(activity.id).toBeDefined();
-          expect(activity.workflowId).toBeDefined();
-          expect(activity.problem).toBeDefined();
-          if (activity.next_action) {
-            expect(activity.next_action.tool).toBe('get_technique');
-            expect(activity.next_action.parameters.step_id).toBeDefined();
-          }
-        }
-      }
-    });
-
-    it('should populate quick_match from recognition patterns', async () => {
-      const result = await readActivityIndex(WORKFLOW_DIR);
-
-      expect(result.success).toBe(true);
-      if (result.success) {
-        const keys = Object.keys(result.value.quick_match);
-        expect(keys.length).toBeGreaterThan(0);
-
-        const matchesStartWorkflow = Object.entries(result.value.quick_match)
-          .some(([, activityId]) => activityId === 'discover-session');
-        expect(matchesStartWorkflow).toBe(true);
-      }
-    });
-
-    it('should return ActivityNotFoundError for empty workflow directory', async () => {
-      const tempDir = await import('node:fs/promises').then(fs =>
-        fs.mkdtemp(join(tmpdir(), 'empty-wf-'))
-      );
-      try {
-        const result = await readActivityIndex(tempDir);
-        expect(result.success).toBe(false);
-        if (!result.success) {
-          expect(result.error.name).toBe('ActivityNotFoundError');
-        }
-      } finally {
-        await rm(tempDir, { recursive: true, force: true });
-      }
     });
   });
 });

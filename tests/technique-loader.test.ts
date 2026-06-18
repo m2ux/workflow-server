@@ -35,6 +35,32 @@ describe('technique-loader', () => {
       }
     });
 
+    it('resolves a cross-workflow technique via the canonical :: form (parity with the / form)', async () => {
+      // The `::` cross-workflow prefix must resolve on the standalone readTechnique path exactly as
+      // the legacy `/` form does. `prism::structural-analysis` (referenced from work-package
+      // activities) targets the prism workflow even though the current workflow is work-package.
+      const viaColons = await readTechnique('prism::structural-analysis', WORKFLOW_DIR, 'work-package');
+      const viaSlash = await readTechnique('prism/structural-analysis', WORKFLOW_DIR, 'work-package');
+      expect(viaColons.success).toBe(true);
+      expect(viaSlash.success).toBe(true);
+      if (viaColons.success && viaSlash.success) {
+        expect(viaColons.value.id).toBe('structural-analysis');
+        expect(viaColons.value.id).toBe(viaSlash.value.id);
+        expect(viaColons.value.capability).toBeDefined();
+      }
+    });
+
+    it('resolves a nested cross-workflow op via :: (workflow::group::op)', async () => {
+      // Nested cross-workflow addressing — only the `::` form handles this (the `/` form cannot
+      // express a nested op after the workflow segment).
+      const result = await readTechnique('meta::workflow-engine::dispatch-activity', WORKFLOW_DIR, 'work-package');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.id).toBe('dispatch-activity');
+        expect(result.value.capability).toBeDefined();
+      }
+    });
+
     it('returns TechniqueNotFoundError for non-existent technique', async () => {
       const result = await readTechnique('non-existent-technique', WORKFLOW_DIR);
       expect(result.success).toBe(false);
@@ -210,6 +236,41 @@ describe('technique-loader', () => {
       await writeFile(join(tempDir, 'meta', 'techniques', 'malformed.md'), 'just a plain string', 'utf-8');
       const result = await readTechnique('malformed', tempDir);
       expect(result.success).toBe(false);
+    });
+
+    it('rejects a non-canonical singular interface header (## Output / ## Input / ## Output(s))', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(dir, { recursive: true });
+      for (const banned of ['## Output', '## Input', '## Output(s)']) {
+        await writeFile(
+          join(dir, 'singular.md'),
+          ['---', 'metadata:', '  version: 1.0.0', '---', '',
+           '## Capability', '', 'Cap.', '',
+           banned, '', '### result', '', 'The outcome.', ''].join('\n'),
+          'utf-8',
+        );
+        const result = await readTechnique('singular', tempDir);
+        expect(result.success).toBe(false);
+      }
+    });
+
+    it('loads the canonical plural interface headers (## Inputs / ## Outputs)', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(dir, 'plural.md'),
+        ['---', 'metadata:', '  version: 1.0.0', '---', '',
+         '## Capability', '', 'Cap.', '',
+         '## Inputs', '', '### in_a', '', 'An input.', '',
+         '## Outputs', '', '### out_a', '', 'An output.', ''].join('\n'),
+        'utf-8',
+      );
+      const result = await readTechnique('plural', tempDir);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.inputs?.map((i) => i.id)).toContain('in_a');
+        expect(result.value.outputs?.map((o) => o.id)).toContain('out_a');
+      }
     });
 
     it('loads a minimal flat technique with frontmatter + Capability', async () => {
@@ -402,7 +463,7 @@ describe('technique-loader', () => {
           '## Inputs', '',
           '### root-input', '', 'Provided by the root contract.', '',
           '### shared-id', '', 'Root version — technique should override.', '',
-          '## Output', '',
+          '## Outputs', '',
           '### result', '', 'The outcome.', '',
         ].join('\n'),
         'utf-8',
@@ -429,8 +490,8 @@ describe('technique-loader', () => {
         // Technique-local description wins on id conflict.
         const shared = result.value.inputs?.find(i => i.id === 'shared-id');
         expect(shared?.description).toMatch(/Technique override wins/);
-        // Output inherited from root (technique declares none).
-        expect(result.value.output?.map(o => o.id)).toContain('result');
+        // Outputs inherited from root (technique declares none).
+        expect(result.value.outputs?.map(o => o.id)).toContain('result');
       }
     });
 

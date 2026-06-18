@@ -45,7 +45,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **2026-06-04-technique-e2e-harness** (7510 symbols, 9712 relationships, 234 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **workflow-server** (9319 symbols, 11826 relationships, 237 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
@@ -68,10 +68,10 @@ This project is indexed by GitNexus as **2026-06-04-technique-e2e-harness** (751
 
 | Resource | Use for |
 |----------|---------|
-| `gitnexus://repo/2026-06-04-technique-e2e-harness/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/2026-06-04-technique-e2e-harness/clusters` | All functional areas |
-| `gitnexus://repo/2026-06-04-technique-e2e-harness/processes` | All execution flows |
-| `gitnexus://repo/2026-06-04-technique-e2e-harness/process/{name}` | Step-by-step execution trace |
+| `gitnexus://repo/workflow-server/context` | Codebase overview, check index freshness |
+| `gitnexus://repo/workflow-server/clusters` | All functional areas |
+| `gitnexus://repo/workflow-server/processes` | All execution flows |
+| `gitnexus://repo/workflow-server/process/{name}` | Step-by-step execution trace |
 
 ## CLI
 
