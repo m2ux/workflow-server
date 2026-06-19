@@ -7,7 +7,7 @@ import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { injectResolvedStepIds, techniqueName } from '../schema/activity.schema.js';
 import { withAuditLog } from '../logging.js';
-import { encodeToon } from '../utils/toon.js';
+import { stringifyForResponse } from '../utils/serialization.js';
 import {
   sessionIndexParam,
   assertNoActiveCheckpoint,
@@ -121,7 +121,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
   server.tool('list_workflows', 'List all available workflow definitions with their ID, title, version, and tags. Use this when you need to discover or filter available workflows. Returns an array of workflow summaries with tag-based categorization. Does not require a session_index.', {},
     withAuditLog('list_workflows', async () => ({
-      content: [{ type: 'text' as const, text: encodeToon(await listWorkflows(config.workflowDir)) }],
+      content: [{ type: 'text' as const, text: stringifyForResponse(await listWorkflows(config.workflowDir)) }],
     })));
 
   server.tool('get_workflow', 'Load the workflow definition for the current session. The response begins with the resolved orchestrator technique bundle, then a `---` separator, then lightweight workflow metadata: rules, variables, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity. The response also carries `planning_folder_path`: the canonical absolute planning folder for this session under THIS server\'s workspace `.engineering` root — bind it as the single artifact location and never recompose it relative to your CWD or the target component repo.',
@@ -153,7 +153,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const wfTechRefs = (wf as { techniques?: { workflow?: string[] } }).techniques?.workflow ?? [];
       const orchestratorTechniques = Array.from(new Set([...wfTechRefs, ...CORE_ORCHESTRATOR_TECHNIQUES]));
       const resolvedOrchestrator = await resolveTechniques(orchestratorTechniques, config.workflowDir, workflow_id);
-      const opsBlock = encodeToon(formatTechniqueBundle(resolvedOrchestrator));
+      const opsBlock = stringifyForResponse(formatTechniqueBundle(resolvedOrchestrator));
 
       // Pre-separator preamble holds the resolved-operations bundle. Tests and clients split on
       // the first '\n\n---\n\n' to recover the workflow section, so we keep that single separator.
@@ -186,7 +186,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
 
       return {
-        content: [{ type: 'text' as const, text: preamble + encodeToon(summaryData) }],
+        content: [{ type: 'text' as const, text: preamble + stringifyForResponse(summaryData) }],
         _meta: { session_index, validation },
       };
     }), traceOpts));
@@ -371,10 +371,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const inheritedTechRefs = result.success ? ((result.value as { techniques?: { activity?: string[] } }).techniques?.activity ?? []) : [];
       const workerTechniques = Array.from(new Set([...inheritedTechRefs, ...ownTechRefs, ...CORE_WORKER_TECHNIQUES]));
       const resolvedWorker = await resolveTechniques(workerTechniques, config.workflowDir, workflow_id);
-      const opsSection = encodeToon(formatTechniqueBundle(resolvedWorker)) + '\n\n---\n\n';
+      const opsSection = stringifyForResponse(formatTechniqueBundle(resolvedWorker)) + '\n\n---\n\n';
 
       // artifactPrefix is server-computed from the activity filename and is NOT in
-      // the raw activity TOON, so surface it in the header (and _meta) — the worker
+      // the raw activity definition, so surface it in the header (and _meta) — the worker
       // needs it to name artifacts as {artifactPrefix}-{bare_filename}.
       const artifactPrefix = (activity as { artifactPrefix?: string } | undefined)?.artifactPrefix;
       const header = artifactPrefix
@@ -389,7 +389,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         activity as Parameters<typeof composeActivityArtifacts>[0], config.workflowDir, workflow_id, activity_id,
       );
       const activityBodyWithArtifacts = composedArtifacts.length
-        ? `${activityBody}\n${encodeToon({ artifacts: composedArtifacts })}`
+        ? `${activityBody}\n${stringifyForResponse({ artifacts: composedArtifacts })}`
         : activityBody;
 
       // Worker-facing rules inherited by EVERY activity, injected into every get_activity so a
@@ -397,7 +397,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // plus the dual-audience `rules.universal`. (`rules.workflow` are orchestrator-only.)
       const wfRules = result.success ? (result.value as { rules?: { activity?: string[]; universal?: string[] } }).rules : undefined;
       const inheritedRules = [...(wfRules?.activity ?? []), ...(wfRules?.universal ?? [])];
-      const activityRulesBlock = inheritedRules.length ? `${encodeToon({ activity_rules: inheritedRules })}\n\n` : '';
+      const activityRulesBlock = inheritedRules.length ? `${stringifyForResponse({ activity_rules: inheritedRules })}\n\n` : '';
 
       return {
         content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${activityRulesBlock}${activityBodyWithArtifacts}` }],
@@ -440,7 +440,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const responseKey = `${activity_id}-${checkpoint_id}`;
       const priorResponse = state.checkpointResponses?.[responseKey];
       if (priorResponse) {
-        // Reconstitute the TOON-shape effect payload from the schema-shape
+        // Reconstitute the response-shape effect payload from the schema-shape
         // record (mirrors respond_checkpoint's reverse transform). The
         // variable bag has already been mutated on the original response, so
         // this payload is informational for the worker's own bookkeeping.
@@ -559,7 +559,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       );
 
       return {
-        content: [{ type: 'text' as const, text: encodeToon({ ...checkpoint, session_index }) }],
+        content: [{ type: 'text' as const, text: stringifyForResponse({ ...checkpoint, session_index }) }],
         _meta: { session_index, validation },
       };
     }), traceOpts));
@@ -657,8 +657,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // `condition_not_met` dismissals we still record the resolution with
         // a sentinel option id so the on-disk schema stays valid.
         const recordedOptionId = resolvedOptionId ?? (condition_not_met ? '__condition_not_met__' : '__unknown__');
-        // Unwrap the TOON effect into the schema-flat shape:
-        // TOON gives { setVariable: {...}, transitionTo: '...', skipActivities: [...] };
+        // Unwrap the response effect into the schema-flat shape:
+        // The encoded effect gives { setVariable: {...}, transitionTo: '...', skipActivities: [...] };
         // the schema stores variablesSet / transitionedTo / activitiesSkipped.
         const effectObj = effect as undefined | { setVariable?: Record<string, unknown>; transitionTo?: string; skipActivities?: string[] };
         const variablesSet = effectObj?.setVariable;

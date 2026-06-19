@@ -76,7 +76,7 @@ workflow-server/
 │   ├── resources/            # MCP resource registration
 │   │   └── schema-resources.ts # workflow-server://schemas
 │   └── utils/                # Utility functions
-│       ├── toon.ts           # TOON format parser wrapper
+│       ├── yaml.ts           # YAML format parser wrapper
 │       ├── session.ts        # Session token create/decode/advance (HMAC-SHA256)
 │       ├── validation.ts     # Transition, manifest, and activity validation
 │       ├── crypto.ts         # AES-256-GCM encryption, HMAC signing
@@ -89,15 +89,15 @@ workflow-server/
 │   └── state.schema.json
 ├── scripts/                  # Build scripts
 │   ├── generate-schemas.ts
-│   └── validate-workflow-toon.ts
+│   └── validate-workflow-yaml.ts
 ├── tests/                    # Test suites
 ├── workflows/                # Worktree (workflows branch)
 │   ├── meta/                 # Bootstrap workflow
-│   │   ├── workflow.toon
+│   │   ├── workflow.yaml
 │   │   ├── activities/
 │   │   └── techniques/
 │   └── {workflow-id}/        # Each workflow folder
-│       ├── workflow.toon
+│       ├── workflow.yaml
 │       ├── activities/
 │       ├── resources/
 │       └── techniques/
@@ -158,15 +158,15 @@ Run `npm test -- --run` for the live count and pass/fail summary.
 Several layered checks validate workflow data:
 
 ```bash
-# Structural / schema validation of TOON files (whole-directory sweep)
-npx tsx scripts/validate-workflow-toon.ts <workflow-path>
+# Structural / schema validation of YAML files (whole-directory sweep)
+npx tsx scripts/validate-workflow-yaml.ts <workflow-path>
 
 # Every step.technique reference resolves through the loader
 npx tsx scripts/check-all-refs.ts
 
 # Binding fidelity: every step.technique.inputs key is a declared input, and every
 # interpolation/condition read resolves to a producer (declared id, $-local,
-# workflow.toon variable, or set-target). Fails only on NEW drift beyond
+# workflow.yaml variable, or set-target). Fails only on NEW drift beyond
 # scripts/binding-fidelity-baseline.json (re-snapshot intentional changes with
 # --update-baseline).
 npm run check:binding
@@ -179,7 +179,7 @@ The binding-fidelity guard also runs as a Vitest test (`tests/binding-fidelity.t
 | Branch | Content | Purpose |
 |--------|---------|---------|
 | `main` | TypeScript server code | Implementation |
-| `workflows` | TOON workflows + resources | Data (orphan branch) |
+| `workflows` | YAML workflows + resources | Data (orphan branch) |
 
 ### Working with the Workflows Branch
 
@@ -203,8 +203,8 @@ git push origin workflows
 ## Adding New Workflows
 
 1. Create a new directory in `workflows/{workflow-id}/`
-2. Create `workflow.toon` workflow definition in that directory
-3. Validate with: `npx tsx scripts/validate-workflow-toon.ts <path>`, then run `npx tsx scripts/check-all-refs.ts` and `npm run check:binding` to confirm references resolve and no binding drift
+2. Create `workflow.yaml` workflow definition in that directory
+3. Validate with: `npx tsx scripts/validate-workflow-yaml.ts <path>`, then run `npx tsx scripts/check-all-refs.ts` and `npm run check:binding` to confirm references resolve and no binding drift
 4. Commit to the `workflows` branch
 
 ## Adding New Resources

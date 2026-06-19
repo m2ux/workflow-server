@@ -14,7 +14,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'fs';
 import { join, resolve, basename } from 'path';
 import { pathToFileURL } from 'url';
-import { decodeToonRaw as decodeToon } from '../src/utils/toon.js';
+import { parseDefinition } from '../src/utils/serialization.js';
 import { safeValidateActivity, populateStepIds } from '../src/schema/activity.schema.js';
 
 export interface ValidationResult {
@@ -27,9 +27,9 @@ export interface ValidationResult {
 export function validateActivityFile(filePath: string): { passed: boolean; errors?: string[] } {
   const content = readFileSync(filePath, 'utf-8');
   try {
-    const decoded = decodeToon(content);
+    const decoded = parseDefinition(content);
     if (decoded == null || typeof decoded !== 'object') {
-      return { passed: false, errors: ['TOON decode returned non-object value'] };
+      return { passed: false, errors: ['YAML decode returned non-object value'] };
     }
     const result = safeValidateActivity(decoded);
     if (result.success) {
@@ -100,7 +100,7 @@ if (isDirectInvocation) {
   for (const workflowDir of workflowDirs) {
     const workflowName = basename(workflowDir);
     const activitiesDir = join(workflowDir, 'activities');
-    const files = readdirSync(activitiesDir).filter(f => f.endsWith('.toon'));
+    const files = readdirSync(activitiesDir).filter(f => f.endsWith('.yaml'));
 
     console.log(`\n[INFO] ${workflowName} (${files.length} activities)`);
 

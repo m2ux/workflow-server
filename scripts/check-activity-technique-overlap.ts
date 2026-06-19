@@ -16,7 +16,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { decodeToonRaw } from '../src/utils/toon.js';
+import { parseDefinition } from '../src/utils/serialization.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = join(DIR, '..', 'workflows');
@@ -58,10 +58,10 @@ export function collectActivityTechniqueOverlapViolations(): ActivityTechniqueOv
   });
   for (const wf of wfs.sort()) {
     const adir = join(ROOT, wf, 'activities');
-    for (const f of readdirSync(adir).filter((x) => x.endsWith('.toon'))) {
+    for (const f of readdirSync(adir).filter((x) => x.endsWith('.yaml'))) {
       const rel = relative(ROOT, join(adir, f));
       let doc: unknown;
-      try { doc = decodeToonRaw(readFileSync(join(adir, f), 'utf-8')); } catch { continue; }
+      try { doc = parseDefinition(readFileSync(join(adir, f), 'utf-8')); } catch { continue; }
       if (!doc || typeof doc !== 'object') continue;
       const actTech = (doc as Record<string, unknown>).techniques;
       if (!Array.isArray(actTech) || !actTech.length) continue;

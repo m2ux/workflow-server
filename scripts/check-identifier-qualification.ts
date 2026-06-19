@@ -2,7 +2,7 @@
  * Identifier-qualification guard — AP-60 sub-rule (3).
  *
  * Every DATA identifier MUST be a qualified noun phrase, never a bare single word:
- *   - a workflow.toon `variables[]` / `context[]` name, and
+ *   - a workflow.yaml `variables[]` / `context[]` name, and
  *   - a technique's top-level I/O id — a `###` heading under `## Inputs` / `## Outputs`.
  *
  * (`####` sub-field descriptors — e.g. the pervasive `#### artifact` filename convention — are a
@@ -30,7 +30,7 @@
 import { readFileSync, readdirSync, existsSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { decodeToonRaw } from '../src/utils/toon.js';
+import { parseDefinition } from '../src/utils/serialization.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = join(DIR, '..', 'workflows');
@@ -97,17 +97,17 @@ function scanTechniqueDir(dir: string, wf: string): void {
 }
 
 function scanWorkflowVars(wf: string): void {
-  const wt = join(ROOT, wf, 'workflow.toon');
+  const wt = join(ROOT, wf, 'workflow.yaml');
   if (!existsSync(wt)) return;
   try {
-    const p = decodeToonRaw(readFileSync(wt, 'utf-8')) as {
+    const p = parseDefinition(readFileSync(wt, 'utf-8')) as {
       variables?: Array<{ name?: string }>; context?: Array<{ name?: string }>;
     };
     for (const v of [...(p?.variables ?? []), ...(p?.context ?? [])]) {
       const id = v?.name;
-      if (id && isSingleWord(id) && !EXEMPT.has(id)) hits.push({ id, where: `${wf}/workflow.toon` });
+      if (id && isSingleWord(id) && !EXEMPT.has(id)) hits.push({ id, where: `${wf}/workflow.yaml` });
     }
-  } catch { /* structural errors are validate-workflow-toon's job */ }
+  } catch { /* structural errors are validate-workflow-yaml's job */ }
 }
 
 const workflows = readdirSync(ROOT).filter((d) => statSync(join(ROOT, d)).isDirectory());

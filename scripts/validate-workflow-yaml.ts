@@ -1,8 +1,8 @@
 #!/usr/bin/env npx tsx
 /**
- * Validate a workflow's TOON files (workflow.toon, activities/*.toon) against schemas.
- * Usage: npx tsx scripts/validate-workflow-toon.ts <path-to-workflow-dir>
- * Example: npx tsx scripts/validate-workflow-toon.ts /path/to/workflows/substrate-node-security-audit
+ * Validate a workflow's YAML files (workflow.yaml, activities/*.yaml) against schemas.
+ * Usage: npx tsx scripts/validate-workflow-yaml.ts <path-to-workflow-dir>
+ * Example: npx tsx scripts/validate-workflow-yaml.ts /path/to/workflows/substrate-node-security-audit
  */
 
 import { readFileSync, readdirSync, existsSync } from 'fs';
@@ -13,7 +13,7 @@ import { validateActivityFile } from './validate-activities.js';
 
 /**
  * Check NN- filename prefix and report duplicate skill/activity IDs.
- * Files without a NN-{id}.toon prefix are invisible to the runtime loader
+ * Files without a NN-{id}.yaml prefix are invisible to the runtime loader
  * (see src/loaders/filename-utils.ts), and duplicate IDs cause non-deterministic
  * resolution (whichever file readdir returns first wins).
  */
@@ -81,14 +81,14 @@ function checkTechniqueProtocolRefs(file: string): string[] {
 
 const workflowDirPath = resolve(process.argv[2] ?? '');
 if (!workflowDirPath || !existsSync(workflowDirPath)) {
-  console.error('Usage: npx tsx scripts/validate-workflow-toon.ts <path-to-workflow-dir>');
-  console.error('Example: npx tsx scripts/validate-workflow-toon.ts workflows/substrate-node-security-audit');
+  console.error('Usage: npx tsx scripts/validate-workflow-yaml.ts <path-to-workflow-dir>');
+  console.error('Example: npx tsx scripts/validate-workflow-yaml.ts workflows/substrate-node-security-audit');
   process.exit(2);
 }
 
-const workflowToonPath = join(workflowDirPath, 'workflow.toon');
-if (!existsSync(workflowToonPath)) {
-  console.error(`[FAIL] workflow.toon not found at ${workflowToonPath}`);
+const workflowYamlPath = join(workflowDirPath, 'workflow.yaml');
+if (!existsSync(workflowYamlPath)) {
+  console.error(`[FAIL] workflow.yaml not found at ${workflowYamlPath}`);
   console.error('The specified directory does not appear to be a workflow directory.');
   process.exit(2);
 }
@@ -101,16 +101,16 @@ async function main() {
 
   const loadResult = await loadWorkflow(parentDir, workflowId);
   if (loadResult.success) {
-    console.log('[PASS] workflow.toon valid');
+    console.log('[PASS] workflow.yaml valid');
     console.log(`   ID: ${loadResult.value.id}, Version: ${loadResult.value.version}, Activities: ${loadResult.value.activities.length}`);
   } else {
-    console.error('[FAIL] workflow.toon validation failed:', loadResult.error);
+    console.error('[FAIL] workflow.yaml validation failed:', loadResult.error);
     failed++;
   }
 
   const activitiesDir = join(workflowDirPath, 'activities');
   if (existsSync(activitiesDir)) {
-    const activityFiles = readdirSync(activitiesDir).filter((f) => f.endsWith('.toon'));
+    const activityFiles = readdirSync(activitiesDir).filter((f) => f.endsWith('.yaml'));
     console.log(`\n[INFO] activities/ (${activityFiles.length} files)`);
     const layoutIssues = checkPrefixAndDuplicates(activityFiles);
     for (const issue of layoutIssues) {
@@ -151,7 +151,7 @@ async function main() {
   }
 
   console.log('\n' + '─'.repeat(50));
-  console.log(failed === 0 ? 'All TOON files valid.' : `Validation failed: ${failed} file(s).`);
+  console.log(failed === 0 ? 'All YAML files valid.' : `Validation failed: ${failed} file(s).`);
   process.exit(failed > 0 ? 1 : 0);
 }
 

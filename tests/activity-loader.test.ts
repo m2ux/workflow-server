@@ -83,7 +83,7 @@ describe('activity-loader', () => {
 
     it('should return ActivityNotFoundError on validation failure, not raw data', async () => {
       await writeFile(
-        join(tempDir, 'test-wf', 'activities', '01-bad-activity.toon'),
+        join(tempDir, 'test-wf', 'activities', '01-bad-activity.yaml'),
         'just plain text, not a valid activity',
         'utf-8',
       );
@@ -97,9 +97,9 @@ describe('activity-loader', () => {
       }
     });
 
-    it('should return ActivityNotFoundError for TOON missing required fields', async () => {
+    it('should return ActivityNotFoundError for YAML missing required fields', async () => {
       await writeFile(
-        join(tempDir, 'test-wf', 'activities', '01-missing-fields.toon'),
+        join(tempDir, 'test-wf', 'activities', '01-missing-fields.yaml'),
         'id: missing-fields\nname: Missing Fields\n',
         'utf-8',
       );
@@ -111,9 +111,9 @@ describe('activity-loader', () => {
       }
     });
 
-    it('should return ActivityNotFoundError for empty TOON file', async () => {
+    it('should return ActivityNotFoundError for empty YAML file', async () => {
       await writeFile(
-        join(tempDir, 'test-wf', 'activities', '01-empty.toon'),
+        join(tempDir, 'test-wf', 'activities', '01-empty.yaml'),
         '',
         'utf-8',
       );
@@ -142,7 +142,7 @@ describe('activity-loader', () => {
       expect(startWf).toBeDefined();
       expect(startWf?.index).toBe('00');
       expect(startWf?.name).toBe('Discover Session');
-      expect(startWf?.path).toBe('00-discover-session.toon');
+      expect(startWf?.path).toBe('00-discover-session.yaml');
       expect(startWf?.workflowId).toBe('meta');
     });
 

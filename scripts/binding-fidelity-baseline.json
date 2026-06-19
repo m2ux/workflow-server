@@ -156,47 +156,47 @@
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/06-scope-and-draft.toon:130",
+    "site": "workflow-design/activities/06-scope-and-draft.yaml:118",
     "detail": "{file_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/08-quality-review.toon:118",
+    "site": "workflow-design/activities/08-quality-review.yaml:141",
     "detail": "{conformance_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/08-quality-review.toon:157",
+    "site": "workflow-design/activities/08-quality-review.yaml:196",
     "detail": "{enforcement_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/08-quality-review.toon:100",
+    "site": "workflow-design/activities/08-quality-review.yaml:115",
     "detail": "{expressiveness_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/08-quality-review.toon:139",
+    "site": "workflow-design/activities/08-quality-review.yaml:170",
     "detail": "{rule_hygiene_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/09-validate-and-commit.toon:83",
+    "site": "workflow-design/activities/09-validate-and-commit.yaml:71",
     "detail": "{addressed_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/09-validate-and-commit.toon:62",
+    "site": "workflow-design/activities/09-validate-and-commit.yaml:42",
     "detail": "{fail_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/09-validate-and-commit.toon:62",
+    "site": "workflow-design/activities/09-validate-and-commit.yaml:42",
     "detail": "{pass_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/activities/09-validate-and-commit.toon:83",
+    "site": "workflow-design/activities/09-validate-and-commit.yaml:71",
     "detail": "{total_count} has no producer (declared id / $-local / workflow var / set-target)"
   }
 ]

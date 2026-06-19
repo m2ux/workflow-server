@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { Result, ok, err } from '../result.js';
 
 /**
- * All TOON schema definitions keyed by schema ID.
+ * All schema definitions keyed by schema ID.
  */
 export interface AllSchemas {
   workflow: object;

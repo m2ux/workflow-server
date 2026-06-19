@@ -75,7 +75,7 @@ The server verifies that the checkpoint has been resolved (by the Meta Orchestra
 
 ## Checkpoint Schema
 
-Checkpoints are defined in activity TOON files with this structure:
+Checkpoints are defined in activity YAML files with this structure:
 
 ```yaml
 checkpoints:

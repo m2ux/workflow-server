@@ -478,7 +478,7 @@
         },
         "artifactPrefix": {
           "type": "string",
-          "description": "Numeric prefix for artifact filenames, inferred from the activity filename (e.g., \"02\" from 02-design-philosophy.toon). Server-computed — do not set in TOON files."
+          "description": "Numeric prefix for artifact filenames, inferred from the activity filename (e.g., \"02\" from 02-design-philosophy.yaml). Server-computed — do not set in definition files."
         },
         "artifacts": {
           "type": "array",

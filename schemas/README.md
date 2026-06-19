@@ -494,7 +494,7 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
 | `techniques` | { workflow?, activity?: string[] } | Orchestrator techniques (`workflow`, bundled into `get_workflow`) + techniques inherited by every activity (`activity`, injected into every `get_activity`) |
 | `variables` | array | Variable definitions with types and defaults |
 | `initialActivity` | string | ID of first activity (required for sequential workflows) |
-| `activitiesDir` | string | Directory containing external activity TOON files (server-resolved, not in JSON schema) |
+| `activitiesDir` | string | Directory containing external activity YAML files (server-resolved, not in JSON schema) |
 
 ### Variables
 
@@ -1109,7 +1109,7 @@ Here's a minimal valid workflow that demonstrates all key concepts:
 Validate a workflow directory:
 
 ```bash
-npx tsx scripts/validate-workflow-toon.ts path/to/workflow-dir
+npx tsx scripts/validate-workflow-yaml.ts path/to/workflow-dir
 ```
 
 ### Programmatic Validation

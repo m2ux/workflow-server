@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { ActivityNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
-import { decodeToonRaw } from '../utils/toon.js';
+import { parseDefinition } from '../utils/serialization.js';
 import { type Activity, safeValidateActivity, populateStepIds } from '../schema/activity.schema.js';
 import { parseActivityFilename } from './filename-utils.js';
 
@@ -93,7 +93,7 @@ async function readActivityFromWorkflow(
   }
   
   try {
-    // Find file matching NN-{activityId}.toon pattern
+    // Find file matching NN-{activityId}.{yaml|yml} pattern
     const files = await readdir(activityDir);
     const matchingFile = files.find(f => {
       const parsed = parseActivityFilename(f);
@@ -111,7 +111,7 @@ async function readActivityFromWorkflow(
     
     const filePath = join(activityDir, matchingFile);
     const content = await readFile(filePath, 'utf-8');
-    const decoded = decodeToonRaw(content);
+    const decoded = parseDefinition(content);
     
     const validation = safeValidateActivity(decoded);
     if (!validation.success) {

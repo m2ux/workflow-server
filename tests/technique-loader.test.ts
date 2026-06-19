@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { readTechnique, readTechniqueRaw, projectTechniqueToToon, listWorkflowTechniqueIds, composeTechnique, resolveTechniques } from '../src/loaders/technique-loader.js';
+import { readTechnique, readTechniqueRaw, projectTechniqueToYaml, listWorkflowTechniqueIds, composeTechnique, resolveTechniques } from '../src/loaders/technique-loader.js';
 import { resolve, join } from 'node:path';
 import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { decodeToonRaw } from '../src/utils/toon.js';
+import { parse as parseYaml } from 'yaml';
 import { safeValidateTechnique } from '../src/schema/technique.schema.js';
 
 const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
@@ -173,12 +173,12 @@ describe('technique-loader', () => {
       }
     });
 
-    it('PR126-TC-08: projectTechniqueToToon round-trip preserves the Technique object', async () => {
+    it('PR126-TC-08: projectTechniqueToYaml round-trip preserves the Technique object', async () => {
       const result = await readTechnique('cargo-operations', FIXTURE_DIR, 'work-package');
       expect(result.success).toBe(true);
       if (result.success) {
-        const toon = projectTechniqueToToon(result.value);
-        const decoded = decodeToonRaw(toon);
+        const projected = projectTechniqueToYaml(result.value);
+        const decoded = parseYaml(projected);
         const parsed = safeValidateTechnique(decoded);
         expect(parsed.success).toBe(true);
         if (parsed.success) {
@@ -197,11 +197,11 @@ describe('technique-loader', () => {
       expect(source).not.toMatch(/parseSkillFilename\b/);
     });
 
-    it('readTechniqueRaw returns projected TOON (decodes back to a valid Technique)', async () => {
+    it('readTechniqueRaw returns projected YAML (decodes back to a valid Technique)', async () => {
       const result = await readTechniqueRaw('cargo-operations', FIXTURE_DIR, 'work-package');
       expect(result.success).toBe(true);
       if (result.success) {
-        const decoded = decodeToonRaw(result.value);
+        const decoded = parseYaml(result.value);
         const parsed = safeValidateTechnique(decoded);
         expect(parsed.success).toBe(true);
       }
@@ -209,7 +209,7 @@ describe('technique-loader', () => {
   });
 
   /* ------------------------------------------------------------------------ */
-  /* Tempdir parsing edge cases (markdown variant of the old TOON tests)       */
+  /* Tempdir parsing edge cases (markdown variant of the old YAML tests)       */
   /* ------------------------------------------------------------------------ */
 
   describe('markdown loader edge cases', () => {
@@ -342,14 +342,14 @@ describe('technique-loader', () => {
       const result = await readTechnique('reslink', tempDir);
       expect(result.success).toBe(true);
       if (result.success) {
-        const toon = projectTechniqueToToon(result.value);
+        const projected = projectTechniqueToYaml(result.value);
         // resource links: path + .md stripped, anchor kept; cross-workflow keeps the wf prefix
-        expect(toon).toContain('[log](assumption-reconciliation#integration-with-assumptions-log)');
-        expect(toon).toContain('[lens](prism/portfolio#scoring)');
-        expect(toon).toContain('[guide](guide)');
-        expect(toon).not.toContain('../resources/');
+        expect(projected).toContain('[log](assumption-reconciliation#integration-with-assumptions-log)');
+        expect(projected).toContain('[lens](prism/portfolio#scoring)');
+        expect(projected).toContain('[guide](guide)');
+        expect(projected).not.toContain('../resources/');
         // technique links are NOT rewritten
-        expect(toon).toContain('[grp](./grp/TECHNIQUE.md)');
+        expect(projected).toContain('[grp](./grp/TECHNIQUE.md)');
       }
     });
 

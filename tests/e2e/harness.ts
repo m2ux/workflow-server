@@ -13,7 +13,7 @@ import { createServer } from '../../src/server.js';
 import { resolve, join } from 'node:path';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { decode } from '@toon-format/toon';
+import { parse } from 'yaml';
 
 export interface Harness {
   client: Client;
@@ -64,12 +64,12 @@ type ToolResult = any;
 
 /**
  * Parse a tool response into a plain object. Mirrors the integration suite's
- * parser: tries JSON, then TOON, then a header + TOON-body split.
+ * parser: tries JSON, then YAML, then a header + YAML-body split.
  */
 export function parseToolResponse(result: ToolResult): Record<string, unknown> {
   const text = (result.content[0] as { type: 'text'; text: string }).text;
   try { return JSON.parse(text); } catch { /* not JSON */ }
-  try { return decode(text) as Record<string, unknown>; } catch { /* not pure TOON */ }
+  try { return parse(text) as Record<string, unknown>; } catch { /* not pure YAML */ }
   const splitIdx = text.indexOf('\n\n');
   if (splitIdx > 0) {
     const header = text.substring(0, splitIdx);
@@ -79,7 +79,7 @@ export function parseToolResponse(result: ToolResult): Record<string, unknown> {
       const colonIdx = line.indexOf(': ');
       if (colonIdx > 0) meta[line.substring(0, colonIdx)] = line.substring(colonIdx + 2);
     }
-    try { return { ...meta, ...(decode(body) as Record<string, unknown>) }; } catch { /* body not TOON */ }
+    try { return { ...meta, ...(parse(body) as Record<string, unknown>) }; } catch { /* body not YAML */ }
     return { ...meta, _body: body };
   }
   return { _raw: text };
@@ -95,7 +95,7 @@ export function parseWorkflowResponse(result: ToolResult): Record<string, unknow
   const sepIdx = text.indexOf('\n\n---\n\n');
   const body = sepIdx >= 0 ? text.substring(sepIdx + 5) : text;
   try { return JSON.parse(body); } catch { /* not JSON */ }
-  try { return decode(body) as Record<string, unknown>; } catch { /* not pure TOON */ }
+  try { return parse(body) as Record<string, unknown>; } catch { /* not pure YAML */ }
   return parseToolResponse({ content: [{ type: 'text' as const, text: body }] });
 }
 
@@ -117,7 +117,7 @@ export function parseBundle(result: ToolResult): Record<string, unknown> {
   if (sepIdx < 0) return {};
   const head = text.substring(0, sepIdx);
   try { return JSON.parse(head); } catch { /* not JSON */ }
-  try { return decode(head) as Record<string, unknown>; } catch { /* not TOON */ }
+  try { return parse(head) as Record<string, unknown>; } catch { /* not YAML */ }
   return {};
 }
 

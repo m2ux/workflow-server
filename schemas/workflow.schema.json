@@ -985,7 +985,7 @@
               },
               "artifactPrefix": {
                 "type": "string",
-                "description": "Numeric prefix for artifact filenames, inferred from the activity filename (e.g., \"02\" from 02-design-philosophy.toon). Server-computed — do not set in TOON files."
+                "description": "Numeric prefix for artifact filenames, inferred from the activity filename (e.g., \"02\" from 02-design-philosophy.yaml). Server-computed — do not set in definition files."
               },
               "artifacts": {
                 "type": "array",
@@ -1018,7 +1018,7 @@
             "additionalProperties": false
           },
           "minItems": 1,
-          "description": "Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points. Omitted in TOON files where activities are separate files."
+          "description": "Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points. Omitted in definition files where activities are separate files."
         }
       },
       "required": [

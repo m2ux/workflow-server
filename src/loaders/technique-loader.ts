@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { TechniqueNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
-import { encodeToon } from '../utils/toon.js';
+import { stringifyForResponse } from '../utils/serialization.js';
 import type { Technique, ProtocolBlock } from '../schema/technique.schema.js';
 import { safeValidateTechnique } from '../schema/technique.schema.js';
 import {
@@ -16,21 +16,21 @@ import {
 } from './markdown-technique-loader.js';
 
 /* -------------------------------------------------------------------------- */
-/* TOON-projection delivery (B3)                                              */
+/* YAML-projection delivery (B3)                                              */
 /* -------------------------------------------------------------------------- */
 
 /**
- * Project an in-memory Technique object into its TOON wire form.
+ * Project an in-memory Technique object into its YAML wire form.
  *
  * Used by readTechniqueRaw (and indirectly by get_skill / get_skills / get_workflow's primary-technique preamble)
  * to render markdown-sourced techniques in the same shape consumers parsed pre-migration.
  *
- * Field-ordering follows the canonical TechniqueSchema field declaration order — encodeToon serialises
+ * Field-ordering follows the canonical TechniqueSchema field declaration order — stringifyForResponse serialises
  * object keys in insertion order, so we construct the projection with the fields in the intended sequence
  * (id, version, capability, then the optional structured fields) instead of letting the
  * caller-built object's accidental key order leak into the wire payload.
  */
-export function projectTechniqueToToon(technique: Technique): string {
+export function projectTechniqueToYaml(technique: Technique): string {
   const ordered: Record<string, unknown> = {};
   ordered['id'] = technique.id;
   ordered['version'] = technique.version;
@@ -46,7 +46,7 @@ export function projectTechniqueToToon(technique: Technique): string {
       ordered[String(key)] = technique[key];
     }
   }
-  return encodeToon(ordered);
+  return stringifyForResponse(ordered);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -71,7 +71,7 @@ async function tryLoadSkillInWorkflow(workflowDir: string, workflowId: string, t
 
 async function tryReadSkillRawInWorkflow(workflowDir: string, workflowId: string, techniqueId: string): Promise<string | null> {
   try {
-    return await tryReadMarkdownTechniqueRaw(getWorkflowTechniquesDir(workflowDir, workflowId), techniqueId, projectTechniqueToToon);
+    return await tryReadMarkdownTechniqueRaw(getWorkflowTechniquesDir(workflowDir, workflowId), techniqueId, projectTechniqueToYaml);
   } catch (error) {
     logWarn('Markdown technique parse error', { techniqueId, workflowId, error: error instanceof Error ? error.message : String(error) });
     return null;
@@ -212,9 +212,9 @@ export async function readTechnique(
 }
 
 /**
- * Read a technique's projected TOON wire form by ID. Same precedence as readTechnique.
+ * Read a technique's projected YAML wire form by ID. Same precedence as readTechnique.
  *
- * The output is the projection `projectTechniqueToToon(loadedTechnique)`, which decodes back to a
+ * The output is the projection `projectTechniqueToYaml(loadedTechnique)`, which decodes back to a
  * Technique object that validates against TechniqueSchema.
  */
 export async function readTechniqueRaw(
@@ -256,7 +256,7 @@ export async function readTechniqueRaw(
 
 /* -------------------------------------------------------------------------- */
 /* Operations resolution (unchanged in shape — only the underlying load layer  */
-/* has flipped from TOON to markdown).                                         */
+/* loads markdown-sourced techniques).                                         */
 /* -------------------------------------------------------------------------- */
 
 export interface ResolvedTechnique {
