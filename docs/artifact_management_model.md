@@ -24,7 +24,7 @@ Before an Activity Worker can yield an `activity_complete` result, its `finalize
 
 ## 3. Artifact Naming Conventions
 
-To ensure artifacts are generated predictably and don't clash, activities define an `artifactPrefix` (e.g., `08`). The server automatically infers this prefix from the activity filename (e.g., `02-design-philosophy.toon` → prefix `02`).
+To ensure artifacts are generated predictably and don't clash, activities define an `artifactPrefix` (e.g., `08`). The server automatically infers this prefix from the activity filename (e.g., `02-design-philosophy.yaml` → prefix `02`).
 
 When an Activity Worker produces an artifact (e.g., a code review document), it is instructed to prepend this prefix to the filename.
 * **Intended File:** `design-philosophy.md`

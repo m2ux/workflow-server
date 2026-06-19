@@ -6,14 +6,14 @@
  * `## Outputs` is the single source of truth for artifact identity (AP-43). A hand-authored
  * `artifacts[]` block on an activity duplicates that, drifts from it, and is forbidden.
  *
- * Hard-zero: no activity `.toon` may contain an `artifacts` block.
+ * Hard-zero: no activity `.yaml` may contain an `artifacts` block.
  *
  * Run: npx tsx scripts/check-artifact-description.ts
  */
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { decodeToonRaw } from '../src/utils/toon.js';
+import { parseDefinition } from '../src/utils/serialization.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = join(DIR, '..', 'workflows');
@@ -25,11 +25,11 @@ export function collectAuthoredArtifacts(): ArtifactHit[] {
   for (const wf of readdirSync(ROOT).filter((d) => statSync(join(ROOT, d)).isDirectory())) {
     const adir = join(ROOT, wf, 'activities');
     if (!existsSync(adir)) continue;
-    for (const f of readdirSync(adir).filter((x) => x.endsWith('.toon'))) {
+    for (const f of readdirSync(adir).filter((x) => x.endsWith('.yaml'))) {
       let parsed: { artifacts?: unknown[] };
       try {
-        parsed = decodeToonRaw(readFileSync(join(adir, f), 'utf-8')) as typeof parsed;
-      } catch { continue; /* structural errors are validate-workflow-toon's job */ }
+        parsed = parseDefinition(readFileSync(join(adir, f), 'utf-8')) as typeof parsed;
+      } catch { continue; /* structural errors are validate-workflow-yaml's job */ }
       if (Array.isArray(parsed.artifacts) && parsed.artifacts.length > 0) {
         hits.push({ where: `${wf}/activities/${f}`, count: parsed.artifacts.length });
       }

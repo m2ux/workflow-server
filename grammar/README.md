@@ -21,7 +21,7 @@ The Orchestra DSL covers four workflow primitives. Activity is defined; the othe
 
 - **`schemas/`** — JSON Schema files for runtime validation of the same structures
 - **`constraints/`** — Alloy semantic constraints that complement the grammar with structural rules (provenance, uniqueness, reachability)
-- **`.engineering/artifacts/planning/2026-02-10-toon-v3-schema-specification/`** — Full design specification with rationale, examples, and design decisions
+- **`.engineering/artifacts/planning/2026-02-10-yaml-v3-schema-specification/`** — Full design specification with rationale, examples, and design decisions
 
 ## Reading the Grammar
 

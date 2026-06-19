@@ -10,7 +10,7 @@
  *
  *   (2) read-resolution — every `{token}` interpolation and structured-condition variable
  *       resolves to a producible bag name: a declared input/output id anywhere in the
- *       corpus, a `{$local}` introduced in the same file, a `workflow.toon` variable, an
+ *       corpus, a `{$local}` introduced in the same file, a `workflow.yaml` variable, an
  *       activity-produced var (set / setVariable / loop variable), or a known ambient.
  *       A read with no producer is a binding gap (typically a renamed/removed producer).
  *
@@ -31,7 +31,7 @@
 import { readFileSync, readdirSync, existsSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { decodeToonRaw } from '../src/utils/toon.js';
+import { parseDefinition } from '../src/utils/serialization.js';
 
 // Resolve paths from this file's own URL (reliable under both tsx CLI and the vitest runner,
 // where import.meta.dirname is not populated).
@@ -127,17 +127,17 @@ function resolve(ref: string, wf: string, activityId?: string): Sig | null {
 /* ----------------------------- corpus collection ----------------------------- */
 const AMBIENT = new Set(['target_symbol', 'impact_report', 'model_id']);
 const PLACEHOLDER = new Set(['path', 'token', 'placeholder', 'field', 'key', 'value', 'var', 'x', 'n', 'i', 'templated', 'output_id', 'declared_id', 'id', 'name', 'type', 'o']);
-const PRODUCED = new Set<string>(); // workflow.toon vars + activity set/loop/effect targets
+const PRODUCED = new Set<string>(); // workflow.yaml vars + activity set/loop/effect targets
 const fileLocals = new Map<string, Set<string>>();
 
 function collectWorkflowVars(wf: string): void {
-  const wt = join(ROOT, wf, 'workflow.toon');
+  const wt = join(ROOT, wf, 'workflow.yaml');
   if (!existsSync(wt)) return;
   try {
-    const p = decodeToonRaw(readFileSync(wt, 'utf-8')) as { variables?: Array<{ name?: string }>; context?: Array<{ name?: string }> };
+    const p = parseDefinition(readFileSync(wt, 'utf-8')) as { variables?: Array<{ name?: string }>; context?: Array<{ name?: string }> };
     for (const v of p?.variables ?? []) if (v?.name) PRODUCED.add(v.name);
     for (const v of p?.context ?? []) if (v?.name) PRODUCED.add(v.name);
-  } catch { /* structural errors are validate-workflow-toon's job */ }
+  } catch { /* structural errors are validate-workflow-yaml's job */ }
 }
 
 type Step = { rel: string; stepId: string; technique: string; inputs: string[]; outputs: string[]; activityId: string };
@@ -199,14 +199,14 @@ for (const wf of allWf) {
   const adir = join(ROOT, wf, 'activities');
   if (!existsSync(adir)) continue;
   for (const f of readdirSync(adir)) {
-    if (!f.endsWith('.toon')) continue;
+    if (!f.endsWith('.yaml')) continue;
     const rel = relative(ROOT, join(adir, f)); const raw = readFileSync(join(adir, f), 'utf-8');
     collectReads(rel, raw, 'activity');
     try {
-      const dec = decodeToonRaw(raw);
+      const dec = parseDefinition(raw);
       const activityId = dec && typeof dec === 'object' && typeof (dec as { id?: unknown }).id === 'string' ? (dec as { id: string }).id : '';
       walkSteps(rel, dec, activityId);
-    } catch { /* validate-workflow-toon's job */ }
+    } catch { /* validate-workflow-yaml's job */ }
   }
 }
 

@@ -161,15 +161,15 @@ export function populateStepIds(activity: Activity): void {
 }
 
 /**
- * Surface each step's resolved id in raw activity TOON before it is handed to a
+ * Surface each step's resolved id in raw activity YAML before it is handed to a
  * worker. A step whose id was derived from its technique begins with the
  * `- technique:` field (the id line is absent); this inserts the derived
  * `id:` line (the technique's last `::` segment) ahead of it, preserving the
  * step's indentation, so a worker reading the activity sees the same id the
  * server resolves for `get_technique` and step-manifest validation.
  */
-export function injectResolvedStepIds(rawToon: string): string {
-  return rawToon.replace(
+export function injectResolvedStepIds(rawDefinition: string): string {
+  return rawDefinition.replace(
     /^(\s*)- technique:[ \t]*(.+)$/gm,
     (_match, indent: string, techniqueValue: string) => {
       const unquoted = techniqueValue.trim().replace(/^["']|["']$/g, '');
@@ -256,7 +256,7 @@ export const ActivitySchema = z.object({
   outcome: z.array(z.string()).optional().describe('Expected outcomes when activity completes successfully'),
   required: z.boolean().default(true).describe('Whether this activity is required in the workflow'),
   rules: z.array(z.string()).optional().describe('Activity-level rules and constraints that agents must follow'),
-  artifactPrefix: z.string().optional().describe('Numeric prefix for artifact filenames, inferred from the activity filename (e.g., "02" from 02-design-philosophy.toon). Server-computed — do not set in TOON files.'),
+  artifactPrefix: z.string().optional().describe('Numeric prefix for artifact filenames, inferred from the activity filename (e.g., "02" from 02-design-philosophy.yaml). Server-computed — do not set in definition files.'),
   artifacts: z.array(ArtifactSchema).optional().describe('SERVER-COMPUTED — do NOT author. The activity\'s artifact contract, synthesized by get_activity from the `## Outputs` of the techniques its steps bind (the technique outputs own artifact identity, AP-43). Bare filenames are prefixed with artifactPrefix at write time.'),
 });
 

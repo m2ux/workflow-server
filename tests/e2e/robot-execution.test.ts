@@ -7,7 +7,7 @@ import { fullWorkflowPolicy } from './policies.js';
 
 /**
  * Source of truth for the expected numeric prefix of each activity, read from
- * the activity FILENAMES (e.g. 02-design-philosophy.toon → design-philosophy: "02").
+ * the activity FILENAMES (e.g. 02-design-philosophy.yaml → design-philosophy: "02").
  * This is independent of the server's artifactPrefix computation, so comparing
  * written artifact names against it verifies the whole chain: filename →
  * server artifactPrefix → get_workflow exposure → robot application.
@@ -16,7 +16,7 @@ function expectedActivityPrefixes(): Map<string, string> {
   const dir = resolve(import.meta.dirname, '../../workflows/work-package/activities');
   const map = new Map<string, string>();
   for (const f of readdirSync(dir)) {
-    const m = f.match(/^(\d+)-(.+)\.toon$/);
+    const m = f.match(/^(\d+)-(.+)\.yaml$/);
     if (m) map.set(m[2], m[1]);
   }
   return map;

@@ -197,4 +197,4 @@ drift, surfacing known issues without going red.
 
 Classifying the resolution findings as migration regressions vs. pre-existing is
 the job of the **legacy comparison** (run the same suite against a
-`main`/skill.toon build and diff) — deferred for now.
+`main`/skill.yaml build and diff) — deferred for now.

@@ -5,7 +5,7 @@ import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
-import { composeTechnique, projectTechniqueToToon } from '../loaders/technique-loader.js';
+import { composeTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
 import {
   sessionIndexParam,
   assertNoActiveCheckpoint,
@@ -560,7 +560,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         composed = await composeTechnique(techniqueId, config.workflowDir, workflow_id);
       }
       if (!composed.success) throw composed.error;
-      const text = projectTechniqueToToon(composed.value);
+      const text = projectTechniqueToYaml(composed.value);
 
       const view = sessionView(state);
       const validation = buildValidation(

@@ -5,7 +5,7 @@ import { createServer } from '../src/server.js';
 import { resolve, join } from 'node:path';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { decode } from '@toon-format/toon';
+import { parse } from 'yaml';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseToolResponse(result: any): any {
@@ -14,9 +14,9 @@ function parseToolResponse(result: any): any {
   // Try JSON first (tier 3 tools: yield/respond/resume checkpoint, get_trace, health_check, etc.)
   try { return JSON.parse(text); } catch { /* not JSON */ }
 
-  // Try TOON decode (handles encodeToon output AND header+TOON body since
-  // TOON treats blank lines as whitespace between top-level keys)
-  try { return decode(text); } catch { /* not pure TOON */ }
+  // Try YAML decode (handles stringifyForResponse output AND header+YAML body since
+  // YAML treats blank lines as whitespace between top-level keys)
+  try { return parse(text); } catch { /* not pure YAML */ }
 
   // Fallback: split header from body on first double-newline
   const splitIdx = text.indexOf('\n\n');
@@ -28,8 +28,8 @@ function parseToolResponse(result: any): any {
       const colonIdx = line.indexOf(': ');
       if (colonIdx > 0) meta[line.substring(0, colonIdx)] = line.substring(colonIdx + 2);
     }
-    // Try decoding body as TOON
-    try { return { ...meta, ...decode(body) }; } catch { /* body is not TOON */ }
+    // Try decoding body as YAML
+    try { return { ...meta, ...parse(body) }; } catch { /* body is not YAML */ }
     return { ...meta, _body: body };
   }
 
@@ -49,8 +49,8 @@ function parseWorkflowResponse(result: any): any {
   const workflowText = sepIdx >= 0 ? text.substring(sepIdx + 5) : text;
   // Try JSON first
   try { return JSON.parse(workflowText); } catch { /* not JSON */ }
-  // Try TOON decode
-  try { return decode(workflowText); } catch { /* not pure TOON */ }
+  // Try YAML decode
+  try { return parse(workflowText); } catch { /* not pure YAML */ }
   // Fallback to parseToolResponse on the workflow portion
   return parseToolResponse({ content: [{ type: 'text' as const, text: workflowText }] });
 }
@@ -364,7 +364,7 @@ describe('mcp-server integration', () => {
       const text = (result.content[0] as { type: 'text'; text: string }).text;
       const sepIdx = text.indexOf('\n\n---\n\n');
       expect(sepIdx).toBeGreaterThan(0);
-      const bundle = decode(text.substring(0, sepIdx)) as Record<string, unknown>;
+      const bundle = parse(text.substring(0, sepIdx)) as Record<string, unknown>;
       const techniques = bundle['techniques'] as Record<string, unknown>;
 
       // work-package declares `variable-binding` once at workflow.techniques.activity.
@@ -791,7 +791,7 @@ describe('mcp-server integration', () => {
       const sepIdx = text.indexOf('\n\n---\n\n');
       expect(sepIdx).toBeGreaterThan(0);
       const preamble = text.substring(0, sepIdx);
-      const decoded = decode(preamble) as Record<string, unknown>;
+      const decoded = parse(preamble) as Record<string, unknown>;
       // All techniques — standalone and nested — live in the single `techniques` bucket,
       // nested ones keyed by their `<technique>::<name>` path. There is no separate sub-technique bucket.
       expect(decoded['techniques']).toBeDefined();
@@ -825,7 +825,7 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
       const text = (result.content[0] as { type: 'text'; text: string }).text;
       const sepIdx = text.indexOf('\n\n---\n\n');
-      const preamble = decode(text.substring(0, sepIdx)) as Record<string, unknown>;
+      const preamble = parse(text.substring(0, sepIdx)) as Record<string, unknown>;
       const body = parseWorkflowResponse(result);
 
       // work-package declares `variable-binding` at techniques.activity (worker-inherited). It is NOT

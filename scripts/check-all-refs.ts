@@ -1,6 +1,6 @@
 /**
  * Cross-workflow technique-reference check. For every workflow, collect the
- * technique references its activities (and workflow.toon) declare — the flat
+ * technique references its activities (and workflow.yaml) declare — the flat
  * `techniques[]` list — and resolve them through the real loader. Reports any
  * that do not resolve (the broken/unwired refs to fix). Generalises the
  * work-package Layer 2 lint to the whole repo.
@@ -34,8 +34,8 @@ async function main() {
         refSites.get(r)!.push(site);
       }
     };
-    addRefs('workflow.toon (techniques.workflow)', wf.techniques?.workflow);
-    addRefs('workflow.toon (techniques.activity)', wf.techniques?.activity);
+    addRefs('workflow.yaml (techniques.workflow)', wf.techniques?.workflow);
+    addRefs('workflow.yaml (techniques.activity)', wf.techniques?.activity);
     for (const a of wf.activities ?? []) addRefs(a.id, a.techniques);
 
     const allRefs = [...refSites.keys()];

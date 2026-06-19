@@ -4,9 +4,9 @@ The Workflow Server strictly enforces **deterministic state machine transitions*
 
 ## 1. Variable Initialization
 
-Every workflow defines a set of schema-validated state variables in its `workflow.toon` file. When a new session is bootstrapped by the Meta Orchestrator, the Workflow Orchestrator initializes its internal state dictionary using these default values.
+Every workflow defines a set of schema-validated state variables in its `workflow.yaml` file. When a new session is bootstrapped by the Meta Orchestrator, the Workflow Orchestrator initializes its internal state dictionary using these default values.
 
-Example `workflow.toon` variables:
+Example `workflow.yaml` variables:
 ```yaml
 variables:
   - name: is_monorepo
@@ -41,7 +41,7 @@ When an Activity Worker successfully completes an activity, it returns a structu
 
 ## 3. Transition Evaluation
 
-When an activity is fully complete, the Workflow Orchestrator consults the `transitions` array defined in the activity's `.toon` file.
+When an activity is fully complete, the Workflow Orchestrator consults the `transitions` array defined in the activity's `.yaml` file.
 
 Example transition block:
 ```yaml

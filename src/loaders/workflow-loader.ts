@@ -6,7 +6,7 @@ import { type Activity, safeValidateActivity, populateStepIds, activityCheckpoin
 import { type Result, ok, err } from '../result.js';
 import { WorkflowNotFoundError, WorkflowValidationError, ActivityNotFoundError } from '../errors.js';
 import { logInfo, logError, logWarn } from '../logging.js';
-import { decodeToonRaw } from '../utils/toon.js';
+import { parseDefinition } from '../utils/serialization.js';
 import { parseActivityFilename } from './filename-utils.js';
 
 export interface WorkflowManifestEntry { id: string; title: string; version: string; tags?: string[] | undefined; }
@@ -39,7 +39,7 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<Activity[]
     
     try {
       const content = await readFile(join(activitiesPath, file), 'utf-8');
-      const decoded = decodeToonRaw(content);
+      const decoded = parseDefinition(content);
       
       const validation = safeValidateActivity(decoded);
       if (!validation.success) {
@@ -60,27 +60,34 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<Activity[]
   );
 }
 
+/** Definition file extensions, in resolution priority. */
+const DEFINITION_EXTENSIONS = ['yaml', 'yml'] as const;
+
 /**
  * Resolve the path to a workflow file.
  * Supports two directory structures:
- * 1. Subdirectory (preferred): {workflowDir}/{workflowId}/workflow.toon
- * 2. Root-level (legacy): {workflowDir}/{workflowId}.toon
+ * 1. Subdirectory (preferred): {workflowDir}/{workflowId}/workflow.{yaml|yml}
+ * 2. Root-level (legacy): {workflowDir}/{workflowId}.{yaml|yml}
  */
 function resolveWorkflowPath(workflowDir: string, workflowId: string): string | null {
   // Try subdirectory first (preferred pattern)
-  const subPath = join(workflowDir, workflowId, 'workflow.toon');
-  if (existsSync(subPath)) return subPath;
-  
+  for (const ext of DEFINITION_EXTENSIONS) {
+    const subPath = join(workflowDir, workflowId, `workflow.${ext}`);
+    if (existsSync(subPath)) return subPath;
+  }
+
   // Fall back to root-level (legacy)
-  const rootPath = join(workflowDir, `${workflowId}.toon`);
-  if (existsSync(rootPath)) return rootPath;
-  
+  for (const ext of DEFINITION_EXTENSIONS) {
+    const rootPath = join(workflowDir, `${workflowId}.${ext}`);
+    if (existsSync(rootPath)) return rootPath;
+  }
+
   return null;
 }
 
 /**
- * Resolve a shorthand activity reference like "work-package/02-design-philosophy.toon"
- * or local references like "01-start-work-package.toon".
+ * Resolve a shorthand activity reference like "work-package/02-design-philosophy.yaml"
+ * or local references like "01-start-work-package.yaml".
  */
 async function resolveActivityReference(workflowDir: string, workflowId: string, ref: string): Promise<Activity | null> {
   const parts = ref.split('/');
@@ -89,11 +96,11 @@ async function resolveActivityReference(workflowDir: string, workflowId: string,
   let filename: string;
   
   if (parts.length === 1) {
-    // Local reference within the same workflow (e.g., "01-start.toon")
+    // Local reference within the same workflow (e.g., "01-start.yaml")
     targetWorkflowId = workflowId;
     filename = parts[0] || '';
   } else {
-    // Cross-workflow reference (e.g., "work-package/02-design.toon" or "work-package/activities/02-design.toon")
+    // Cross-workflow reference (e.g., "work-package/02-design.yaml" or "work-package/activities/02-design.yaml")
     targetWorkflowId = parts[0] || '';
     filename = parts.slice(1).join('/');
   }
@@ -109,7 +116,7 @@ async function resolveActivityReference(workflowDir: string, workflowId: string,
   
   try {
     const content = await readFile(activityPath, 'utf-8');
-    const decoded = decodeToonRaw(content);
+    const decoded = parseDefinition(content);
     
     const validation = safeValidateActivity(decoded);
     if (!validation.success) {
@@ -140,7 +147,7 @@ export async function loadWorkflow(workflowDir: string, workflowId: string): Pro
   
   try {
     const content = await readFile(filePath, 'utf-8');
-    const rawWorkflow = decodeToonRaw(content) as RawWorkflow;
+    const rawWorkflow = parseDefinition(content) as RawWorkflow;
     
     // Load activities from directory if not inline or resolve shorthand string refs
     const existingActivities = rawWorkflow['activities'] as (Activity | string)[] | undefined;
@@ -213,25 +220,28 @@ export async function listWorkflows(workflowDir: string): Promise<WorkflowManife
       const entryPath = join(workflowDir, entry);
       const stats = await stat(entryPath);
       
-      let toonPath: string | null = null;
-      if (stats.isFile() && entry.endsWith('.toon')) {
-        toonPath = entryPath;
+      let defPath: string | null = null;
+      if (stats.isFile() && /\.ya?ml$/.test(entry)) {
+        defPath = entryPath;
       } else if (stats.isDirectory()) {
-        const subWorkflowPath = join(entryPath, 'workflow.toon');
-        if (existsSync(subWorkflowPath)) {
-          toonPath = subWorkflowPath;
+        for (const ext of DEFINITION_EXTENSIONS) {
+          const subWorkflowPath = join(entryPath, `workflow.${ext}`);
+          if (existsSync(subWorkflowPath)) {
+            defPath = subWorkflowPath;
+            break;
+          }
         }
       }
-      
-      if (toonPath) {
+
+      if (defPath) {
         try {
-          const content = await readFile(toonPath, 'utf-8');
-          const raw = decodeToonRaw(content) as RawWorkflow;
+          const content = await readFile(defPath, 'utf-8');
+          const raw = parseDefinition(content) as RawWorkflow;
           if (raw.id && raw.title && raw.version) {
             manifests.push({ id: raw.id, title: raw.title, version: raw.version, tags: Array.isArray(raw['tags']) ? raw['tags'] as string[] : undefined });
           }
         } catch (error) {
-          logWarn('Failed to read workflow manifest', { path: toonPath, error: error instanceof Error ? error.message : String(error) });
+          logWarn('Failed to read workflow manifest', { path: defPath, error: error instanceof Error ? error.message : String(error) });
         }
       }
     }
@@ -353,7 +363,7 @@ export function validateTransition(workflow: Workflow, fromActivityId: string, t
   return { valid: true };
 }
 
-/** Read raw activity TOON by ID. Validates but returns the original file content. */
+/** Read raw activity definition (YAML) by ID. Validates but returns the original file content. */
 export async function readActivityRaw(
   workflowDir: string,
   workflowId: string,
@@ -372,7 +382,7 @@ export async function readActivityRaw(
       if (!parsed || parsed.id !== activityId) continue;
 
       const content = await readFile(join(activitiesDir, file), 'utf-8');
-      const decoded = decodeToonRaw(content);
+      const decoded = parseDefinition(content);
       const validation = safeValidateActivity(decoded);
       if (!validation.success) {
         logWarn('Activity validation failed (raw read)', { activityId, errors: validation.error.issues });
@@ -385,12 +395,12 @@ export async function readActivityRaw(
   }
 
   // Fallback: a borrowed cross-workflow activity declared as a string ref in this workflow's
-  // activities[] list (e.g. "work-package/02-design-philosophy.toon"). The local-dir scan above
+  // activities[] list (e.g. "work-package/02-design-philosophy.yaml"). The local-dir scan above
   // covers only the workflow's own activities; resolve the borrowed file so a raw read returns the
   // same definition loadWorkflow already merges into the activity set — keeping get_activity in
   // step with the workflow summary and next_activity for workflows that compose another's activities.
   try {
-    const wfRaw = decodeToonRaw(await readFile(filePath, 'utf-8')) as RawWorkflow;
+    const wfRaw = parseDefinition(await readFile(filePath, 'utf-8')) as RawWorkflow;
     const refs = (wfRaw['activities'] as unknown[] | undefined) ?? [];
     for (const ref of refs) {
       if (typeof ref !== 'string' || !ref.includes('/')) continue;
@@ -403,7 +413,7 @@ export async function readActivityRaw(
         : join(workflowDir, targetWorkflowId, 'activities', filename);
       if (!existsSync(borrowedPath)) continue;
       const content = await readFile(borrowedPath, 'utf-8');
-      const validation = safeValidateActivity(decodeToonRaw(content));
+      const validation = safeValidateActivity(parseDefinition(content));
       if (!validation.success) {
         logWarn('Borrowed activity validation failed (raw read)', { activityId, ref, errors: validation.error.issues });
         return err(new ActivityNotFoundError(activityId, workflowId));

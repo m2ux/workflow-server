@@ -11,7 +11,7 @@ const SCHEMA_DESCRIPTIONS: Record<string, string> = {
 };
 
 /**
- * Register MCP resources for TOON schema access.
+ * Register MCP resources for workflow-definition schema access.
  * Exposes each schema individually at workflow-server://schemas/{id}
  * and all schemas combined at workflow-server://schemas.
  */
@@ -22,7 +22,7 @@ export function registerSchemaResources(server: McpServer, config: ServerConfig)
       `schema-${id}`,
       `workflow-server://schemas/${id}`,
       {
-        description: SCHEMA_DESCRIPTIONS[id] ?? `TOON ${id} schema definition`,
+        description: SCHEMA_DESCRIPTIONS[id] ?? `${id} schema definition`,
         mimeType: 'application/json',
       },
       async (uri) => {
@@ -46,7 +46,7 @@ export function registerSchemaResources(server: McpServer, config: ServerConfig)
     'schemas',
     'workflow-server://schemas',
     {
-      description: 'All TOON schema definitions for workflow interpretation (workflow, activity, condition, technique, state)',
+      description: 'All schema definitions for workflow interpretation (workflow, activity, condition, technique, state)',
       mimeType: 'application/json',
     },
     async (uri) => {

@@ -504,7 +504,7 @@ export async function tryLoadMarkdownTechnique(techniquesDir: string, techniqueI
 }
 
 /**
- * Try to read a raw markdown technique and return the projected TOON wire form.
+ * Try to read a raw markdown technique and return the projected YAML wire form.
  * Delegates to tryLoadMarkdownTechnique and then projects via the injected projector
  * (passed by technique-loader.ts to avoid an import cycle).
  */
