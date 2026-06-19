@@ -1,0 +1,41 @@
+id: scope-setup
+version: 1.2.0
+name: Scope Setup
+description: Set up the audit scope and planning folder.
+techniques:
+  - execute-cicd-audit
+required: true
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting CI/CD pipeline security audit scope setup
+  - kind: technique
+    id: confirm-targets
+    technique: inventory-workflows::confirm-targets
+  - kind: technique
+    id: discover-workflows
+    technique: inventory-workflows::discover-files
+  - kind: technique
+    id: discover-ai-configs
+    technique: inventory-workflows::inventory-ai-configs
+  - kind: technique
+    id: record-codeowners
+    technique: inventory-workflows::record-codeowners
+  - kind: technique
+    id: create-planning-folder
+    technique: inventory-workflows::initialize-planning-folder
+  - kind: action
+    id: announce-completion
+    actions:
+      - action: log
+        message: Scope setup complete — targets confirmed and workflow inventory built
+transitions:
+  - to: reconnaissance
+    isDefault: true
+outcome:
+  - Scanning can begin against an agreed, validated set of in-scope submodules
+  - Scanners know the full universe of workflow and AI-config files they must cover, with a per-submodule count to verify completeness against
+  - Reviewers can tell which submodules lack CODEOWNERS protection on their workflow files
+  - Audit work has a single organized home where every downstream artifact lands and where a reader starts

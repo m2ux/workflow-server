@@ -13,7 +13,7 @@ Audit every `rules[]` entry for structural backing: distinguish text-only enforc
 
 ### 1. Audit Rule To Structure
 
-- For every `rules[]` entry in `workflow.toon` and activity files, ask: can this rule be violated by ignoring it? If yes, verify a structural mechanism (checkpoint, condition, validate action) backs it
+- For every `rules[]` entry in `workflow.yaml` and activity files, ask: can this rule be violated by ignoring it? If yes, verify a structural mechanism (checkpoint, condition, validate action) backs it
 - Flag any critical rule that relies solely on text
 
 ### 2. Present Findings

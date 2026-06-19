@@ -1,0 +1,23 @@
+id: report-failure
+version: 1.2.0
+name: Report Failure
+description: Compile a failure report describing the unresolved critical issues, the correction history, and the manual resolution required when refinement cannot complete automatically; no specification is promoted.
+required: true
+steps:
+  - kind: technique
+    id: report-failure
+    technique: report-failure
+    actions:
+      - action: message
+        message: "Created: failure-report.md"
+  - kind: checkpoint
+    id: failure-acknowledged
+    message: Refinement could not complete automatically. The failure report lists the critical issues and the manual resolution required. Acknowledge?
+    blocking: true
+    options:
+      - id: acknowledged
+        label: Acknowledged
+        description: The failure report has been reviewed; manual intervention will follow outside the workflow.
+outcome:
+  - The user knows exactly which critical issues blocked refinement and what manual resolution each one needs
+  - No unvalidated specification reaches the canonical location — the prior state is preserved until a human intervenes

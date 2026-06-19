@@ -1,0 +1,85 @@
+$schema: ../../schemas/workflow.schema.json
+id: requirements-refinement
+version: 1.1.0
+title: Requirements Refinement Workflow
+description: Refine a canonical requirements specification from a source document — a meeting transcript or an unstructured document — preserving the specification protocol verbatim and staging the finalized specification and a change summary in the planning folder for human promotion. Operates on local files and performs no version-control operations.
+author: m2ux
+tags:
+  - requirements
+  - specification
+  - source-document
+  - document-automation
+  - validation
+  - iterative-refinement
+rules:
+  activity:
+    - The target specification's protocol — section structure, requirement-entry format, identifier schemes (SRC-MTG###, SRC-DOC###, REQ-F###, REQ-NF###), and status conventions defined in resources/specification-protocol.md — is preserved verbatim across every activity.
+    - The source document is classified as a meeting transcript or an unstructured document; a meeting source takes an SRC-MTG### reference, and a document source takes an SRC-DOC### reference credited to the document's author.
+    - All artifacts — analysis report, working specifications, validation reports, final specification, and failure report — are written to the planning folder; the workflow performs no git operations and never edits the canonical document in place.
+    - When the target document exists, preserve its existing section structure; when it does not, instantiate the full specification protocol structure.
+    - "Validation includes a source-coverage check: every normative statement in the source document maps to at least one requirement; an uncovered statement is a correctable finding routed through the correction loop."
+    - On completing each activity, update the planning-folder README.md progress tracker — mark this activity's artifacts as ✅ Complete.
+  universal:
+    - Newly added requirements are created with status pending; changing a requirement's status requires explicit user confirmation.
+    - Confirm the requirements analysis with the user before applying any changes to the specification.
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: source_path
+    type: string
+    description: Filesystem path to the local source document being processed (a meeting transcript or an unstructured document)
+    required: true
+  - name: source_type
+    type: string
+    description: "Classification of the source document: meeting (a meeting transcript) or document (an unstructured document)"
+    defaultValue: ""
+  - name: target_doc_path
+    type: string
+    description: Filesystem path to the canonical requirements specification being augmented or created
+    required: true
+  - name: target_doc_exists
+    type: boolean
+    description: True when the target specification already exists and is being augmented; false when it is created from scratch
+    defaultValue: false
+  - name: spec_basename
+    type: string
+    description: Basename of the target specification
+    defaultValue: ""
+  - name: sources_confirmed
+    type: boolean
+    description: True once the source-document and target-specification sources are captured and confirmed
+    defaultValue: false
+  - name: analysis_confirmed
+    type: boolean
+    description: True once the requirements analysis is approved for application to the specification
+    defaultValue: false
+  - name: validation_passed
+    type: boolean
+    description: True when the updated specification passed validation with no critical or correctable issues
+    defaultValue: false
+  - name: has_correctable_issues
+    type: boolean
+    description: True when validation found issues that can be addressed by another correction pass
+    defaultValue: false
+  - name: has_critical_issues
+    type: boolean
+    description: True when validation found critical or irreconcilable issues that require manual intervention
+    defaultValue: false
+  - name: correction_iteration
+    type: number
+    description: Count of correction passes performed so far; 0 on the initial update
+    defaultValue: 0
+  - name: max_correction_iterations
+    type: number
+    description: Maximum number of correction passes before routing to report-failure
+    defaultValue: 3
+  - name: finalization_confirmed
+    type: boolean
+    description: True once the user has accepted the finalized specification for promotion
+    defaultValue: false
+  - name: source_coverage_complete
+    type: boolean
+    description: True once every normative statement in the source document maps to at least one requirement
+    defaultValue: false
+initialActivity: intake-and-analyze

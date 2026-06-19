@@ -1,0 +1,143 @@
+id: requirements-elicitation
+version: 2.9.0
+name: Requirements Elicitation
+description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+required: false
+steps:
+  - kind: technique
+    id: stakeholder-discussion
+    technique: discuss
+  - kind: checkpoint
+    id: stakeholder-transcript
+    message: Before we begin elicitation, please discuss requirements with key stakeholders (product owner, domain experts, end users). Once complete, provide the discussion transcript or summary here.
+    blocking: true
+    options:
+      - id: provide-transcript
+        label: Provide transcript/summary
+        description: Paste or attach the stakeholder discussion content
+        effect:
+          setVariable:
+            has_stakeholder_input: true
+      - id: skip-discussion
+        label: Skip stakeholder discussion
+        description: Proceed directly to agent-led elicitation (not recommended)
+        effect:
+          setVariable:
+            has_stakeholder_input: false
+  - kind: technique
+    id: elicit-requirements
+    technique: elicit
+  - kind: loop
+    id: domain-iteration
+    name: Question Domain Iteration
+    loopType: forEach
+    variable: current_domain
+    over: question_domains
+    maxIterations: 5
+    steps:
+      - kind: technique
+        id: ask-question
+        technique: ask-question
+  - kind: technique
+    id: collect-assumptions
+    technique:
+      name: review-assumptions::collect
+      inputs:
+        assumption_categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation
+  - kind: technique
+    id: create-document
+    technique: create-document
+  - kind: technique
+    id: update-assumptions-log
+    technique: review-assumptions::record
+  - kind: technique
+    id: reconcile-assumptions
+    technique: review-assumptions::reconcile
+  - kind: checkpoint
+    id: elicitation-complete
+    message: All question domains have been covered. Proceeding in 30s unless you want to revisit.
+    blocking: false
+    defaultOption: complete
+    autoAdvanceMs: 30000
+    options:
+      - id: complete
+        label: Elicitation complete
+        description: Requirements are captured — proceed to next activity (default — auto-proceeds after 30s)
+        effect:
+          setVariable:
+            elicitation_complete: true
+      - id: revisit-domain
+        label: Revisit a domain
+        description: Ask more questions in a specific domain before finalizing
+        effect:
+          setVariable:
+            elicitation_complete: false
+      - id: add-requirements
+        label: Add additional requirements
+        description: Capture requirements not covered by the question domains
+        effect:
+          setVariable:
+            elicitation_complete: false
+  - kind: loop
+    id: assumption-reconciliation
+    name: Assumption Reconciliation Loop
+    loopType: while
+    condition:
+      type: simple
+      variable: has_resolvable_assumptions
+      operator: ==
+      value: true
+    steps:
+      - kind: technique
+        id: reconcile-iteration
+        technique: review-assumptions::reconcile
+decisions:
+  - id: user-intent
+    name: User Intent Check
+    branches:
+      - id: continue
+        label: Continue elicitation (answered or skipped)
+        isDefault: true
+      - id: done
+        label: User signaled completion
+        condition:
+          type: simple
+          variable: elicitation_complete
+          operator: ==
+          value: true
+transitions:
+  - to: research
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: elicitation_complete
+          operator: ==
+          value: true
+        - type: simple
+          variable: needs_research
+          operator: ==
+          value: true
+    isDefault: true
+  - to: implementation-analysis
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: elicitation_complete
+          operator: ==
+          value: true
+        - type: simple
+          variable: needs_research
+          operator: ==
+          value: false
+  - to: requirements-elicitation
+    condition:
+      type: simple
+      variable: elicitation_complete
+      operator: ==
+      value: false
+outcome:
+  - Requirements explicitly captured through structured conversation
+  - Success criteria defined with verification methods
+  - A single agreed reference of requirements and scope boundaries that planning and review can build against

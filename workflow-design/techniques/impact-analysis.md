@@ -13,7 +13,7 @@ Assess the impact of proposed changes against an existing workflow: enumerate it
 
 ### 1. Enumerate Files
 
-- Build a full inventory of the target workflow's files (`workflow.toon`, activities, techniques, resources, `README.md`) with paths and purposes
+- Build a full inventory of the target workflow's files (`workflow.yaml`, activities, techniques, resources, `README.md`) with paths and purposes
 
 ### 2. Classify Impact
 

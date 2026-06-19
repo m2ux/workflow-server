@@ -1,0 +1,40 @@
+id: report-generation
+version: 1.2.0
+name: Report Generation
+description: Produce the final CI/CD security audit report.
+techniques:
+  - execute-cicd-audit
+required: true
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting report generation — scoring findings and producing audit report
+  - kind: technique
+    id: apply-severity
+    technique: score-cicd-severity::apply-severity
+  - kind: technique
+    id: severity-crosscheck
+    technique: score-cicd-severity::calibrate
+  - kind: technique
+    id: coverage-gate
+    technique: verify-scan-output::verify-file-coverage
+  - kind: technique
+    id: attach-remediation
+    technique: write-cicd-report::attach-remediation
+  - kind: technique
+    id: write-report
+    technique: write-cicd-report::write-report
+  - kind: action
+    id: finalize-activity
+    actions:
+      - action: log
+        message: Report generation complete — CI/CD security audit report finalized
+      - action: set
+        message: report_complete=true
+transitions: []
+outcome:
+  - Readers can triage findings by consistent, defensible severity rather than gut feel, with the report backed by a passed coverage gate so they can trust nothing in scope was missed
+  - Every finding tells the reader not just what is wrong but how to fix it
+  - The consumer holds a single decision-ready CI/CD security verdict for the audited submodules

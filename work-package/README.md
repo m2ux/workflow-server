@@ -27,7 +27,7 @@ This workflow guides the complete lifecycle of a single work package through 14 
 
 **Detailed documentation:**
 
-- **Activities:** See [activities/README.md](./activities/README.md) for per-activity orientation (purpose, role, and a flow diagram) and a link to each activity's authoritative TOON definition.
+- **Activities:** See [activities/README.md](./activities/README.md) for per-activity orientation (purpose, role, and a flow diagram) and a link to each activity's authoritative YAML definition.
 - **Techniques:** See [techniques/](./techniques/) for the technique inventory and protocol flows.
 - **Resources:** See [resources/README.md](./resources/README.md) for the resource index (27 resources).
 
@@ -102,7 +102,7 @@ Under the bound-step model each step carries its own `step.technique` binding, s
 | 12 | [Submit for Review](./activities/README.md#12-submit-for-review) | — | — |
 | 13 | [Complete](./activities/README.md#13-complete) | — | `13` |
 
-See [activities/README.md](./activities/README.md) for per-activity orientation and flow diagrams; each activity's full definition (steps, checkpoints, transitions) lives in its TOON, served by `get_activity`.
+See [activities/README.md](./activities/README.md) for per-activity orientation and flow diagrams; each activity's full definition (steps, checkpoints, transitions) lives in its YAML, served by `get_activity`.
 
 ---
 ## Orchestration Model

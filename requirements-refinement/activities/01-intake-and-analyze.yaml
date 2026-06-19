@@ -1,0 +1,60 @@
+id: intake-and-analyze
+version: 1.0.0
+name: Intake and Analyze
+description: Capture and validate the source-document and target-specification paths, classify the source as a meeting transcript or an unstructured document, determine whether the specification is being augmented or created, and load both sources; then parse the source against the current specification and produce a structured requirements analysis report, confirming each boundary with the user before proceeding.
+required: true
+steps:
+  - kind: technique
+    id: intake-sources
+    technique: intake-sources
+    actions:
+      - action: message
+        message: "Created: intake.md"
+  - kind: checkpoint
+    id: sources-confirmed
+    message: "Source ({source_type}): {source_path}. Target specification: {target_doc_path} ({target_doc_exists}). Proceed with these sources?"
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes, proceed
+        description: Sources, classified type, and mode are correct; continue to analysis.
+        effect:
+          setVariable:
+            sources_confirmed: true
+      - id: revise
+        label: Correct the sources
+        description: A source path, the classified source type, or the augment/create mode is wrong and must be corrected before proceeding.
+  - kind: technique
+    id: analyze-source
+    technique: analyze-source
+    actions:
+      - action: message
+        message: "Created: requirements-analysis.md"
+  - kind: checkpoint
+    id: analysis-confirmed
+    message: Here is the requirements analysis derived from the source. Approve it for application to the specification?
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes, apply this analysis
+        description: Analysis is accurate; proceed to update the specification.
+        effect:
+          setVariable:
+            analysis_confirmed: true
+      - id: revise
+        label: Revise the analysis
+        description: Analysis misreads the source or misses changes and must be revised before proceeding.
+transitions:
+  - to: update-specification
+    condition:
+      type: simple
+      variable: analysis_confirmed
+      operator: ==
+      value: true
+    isDefault: true
+outcome:
+  - The workflow can trust where to read from and where to write to — both paths exist and are confirmed correct by the user
+  - Downstream activities know how to read the source and whether they are augmenting an existing specification or creating a new one
+  - The source content is available for analysis without re-reading or re-classifying it
+  - Every requirement change the source implies is pinned to a stable identifier the specification can be updated against
+  - The user has signed off that the analysis faithfully reflects the source, so the update can proceed without second-guessing scope

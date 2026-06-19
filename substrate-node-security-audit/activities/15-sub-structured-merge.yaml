@@ -1,0 +1,14 @@
+id: sub-structured-merge
+version: 1.1.0
+name: "Sub-Agent: Structured Merge"
+description: Structured merge, deduplication, and severity scoring of agent findings.
+required: false
+steps:
+  - kind: technique
+    id: merge-findings
+    technique: merge-findings
+outcome:
+  - Every agent finding is reconciled with zero Unaccounted, so the merge is provably lossless even at 75-115K tokens of upstream context
+  - Every security-relevant observation is either elevated to a finding or explicitly mapped, so nothing is dropped or silently demoted
+  - Findings carry a calibrated severity from a cross-checked rubric, giving the report a trustworthy ranking
+  - The report consumes a single canonical, deduplicated finding set whose every merge decision is justified and traceable

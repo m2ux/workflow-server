@@ -13,7 +13,7 @@ Audit drafted content for schema expressiveness: cross-check every prose passage
 
 ### 1. Audit Expressiveness
 
-- Walk every prose passage in `workflow.toon`, activity files, and technique files against the construct inventory in [schema-construct-inventory](../resources/schema-construct-inventory.md)
+- Walk every prose passage in `workflow.yaml`, activity files, and technique files against the construct inventory in [schema-construct-inventory](../resources/schema-construct-inventory.md)
 - Flag every instance where prose substitutes for: steps, checkpoints, decisions, loops, transitions, conditions, triggers, actions, artifacts, variables, modes, inputs, outputs, or protocol phases
 - For each flagged instance, rewrite the prose as the formal construct or move it to a field that fits
 

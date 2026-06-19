@@ -1,0 +1,43 @@
+id: reconnaissance
+version: 1.2.0
+name: Reconnaissance
+description: Classify discovered workflows and assign scanner agents.
+techniques:
+  - execute-cicd-audit
+required: true
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting reconnaissance — classifying workflows and assigning scanner agents
+  - kind: technique
+    id: classify-triggers
+    technique: inventory-workflows::classify-triggers
+  - kind: technique
+    id: map-permissions
+    technique: inventory-workflows::map-permissions
+  - kind: technique
+    id: identify-checkout-patterns
+    technique: inventory-workflows::identify-checkouts
+  - kind: technique
+    id: build-reconnaissance-summary
+    technique: inventory-workflows::build-summary
+  - kind: technique
+    id: assign-scanner-agents
+    technique: inventory-workflows::assign-scanner-agents
+  - kind: action
+    id: finalize-activity
+    actions:
+      - action: log
+        message: Reconnaissance complete — workflows classified and scanner agents assigned
+      - action: set
+        message: reconnaissance_complete=true
+transitions:
+  - to: primary-scan
+    isDefault: true
+outcome:
+  - Scanners can prioritize the riskiest workflows first, knowing each one's trigger type, permission scope, and checkout pattern
+  - The workflows most exposed to untrusted input are already flagged before scanning begins
+  - Every in-scope submodule has an owning scanner agent, so no submodule can be silently skipped
+  - Scan work is partitioned for parallel dispatch with no overlap or gap between agents

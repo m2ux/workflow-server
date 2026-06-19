@@ -40,7 +40,7 @@ Condensed, agent-executable reference of the 14 design principles governing work
 
 ## 5. Convention Over Invention
 
-**Rule:** Search for existing conventions before introducing new patterns. Use established naming (NN-name.toon), field ordering, and structural patterns.
+**Rule:** Search for existing conventions before introducing new patterns. Use established naming (NN-name.yaml), field ordering, and structural patterns.
 
 **Enforcement:** `08-quality-review` with `conformance-confirmed` checkpoint comparing against reference workflows.
 
@@ -48,7 +48,7 @@ Condensed, agent-executable reference of the 14 design principles governing work
 
 **Rule:** The schema is a fixed constraint. Fix content to match the schema, never the reverse. If a gap exists, ask the user whether it's a schema gap or a loader convention.
 
-**Enforcement:** `validate` action on a leading control step of content-drafting. Schema validation on every TOON file.
+**Enforcement:** `validate` action on a leading control step of content-drafting. Schema validation on every YAML file.
 
 ## 7. Confirm Before Irreversible Changes
 
@@ -64,7 +64,7 @@ Condensed, agent-executable reference of the 14 design principles governing work
 
 ## 9. Modular Over Inline
 
-**Rule:** workflow.toon defines metadata and references only. Activities, techniques, and resources live in their own files. Content exists in exactly one location.
+**Rule:** workflow.yaml defines metadata and references only. Activities, techniques, and resources live in their own files. Content exists in exactly one location.
 
 **Enforcement:** Workflow rule. `08-quality-review` conformance check flags inline content.
 
@@ -88,12 +88,12 @@ Condensed, agent-executable reference of the 14 design principles governing work
 
 ## 13. Format Literacy Before Content
 
-**Rule:** Verify TOON format comprehension by reading existing files before drafting. Validate all TOON files against their schema before committing.
+**Rule:** Verify YAML format comprehension by reading existing files before drafting. Validate all YAML files against their schema before committing.
 
 **Enforcement:** `format-literacy` checkpoint in context-and-literacy. Schema validation in content-drafting and validate-and-commit.
 
 ## 14. Complete Documentation Structure
 
-**Rule:** Every workflow must include a README.md at the root and in each subfolder (activities/, techniques/, resources/). READMEs ORIENT — they state the workflow's purpose, the at-a-glance activity sequence with its flow diagrams, the value each activity delivers, the file structure, a techniques overview, and links to the authoritative files. They do NOT transcribe the structured definition: an activity's `steps[]` (including its inline `kind: checkpoint` and `kind: loop` steps), its activity-level decisions and transitions, per-step technique bindings, the workflow's `variables`, its `rules`, and per-activity estimated times all live in the TOON files and are never restated in a README. Flow diagrams (mermaid/ASCII) are visual orientation and are kept (AP-76).
+**Rule:** Every workflow must include a README.md at the root and in each subfolder (activities/, techniques/, resources/). READMEs ORIENT — they state the workflow's purpose, the at-a-glance activity sequence with its flow diagrams, the value each activity delivers, the file structure, a techniques overview, and links to the authoritative files. They do NOT transcribe the structured definition: an activity's `steps[]` (including its inline `kind: checkpoint` and `kind: loop` steps), its activity-level decisions and transitions, per-step technique bindings, the workflow's `variables`, its `rules`, and per-activity estimated times all live in the YAML files and are never restated in a README. Flow diagrams (mermaid/ASCII) are visual orientation and are kept (AP-76).
 
 **Enforcement:** `generate-readme` / `update-readme` steps in validate-and-commit. Scope manifest must include README files.

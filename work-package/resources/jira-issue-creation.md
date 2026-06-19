@@ -15,7 +15,7 @@ metadata:
 
 ## Overview
 
-This guide provides reference material for Jira issue creation. For the creation flow, see the [Issue Management Activity](../activities/01-issue-management.toon).
+This guide provides reference material for Jira issue creation. For the creation flow, see the [Issue Management Activity](../activities/01-issue-management.yaml).
 
 > **Key Principle:** Issues define problems, not solutions. Describe *what* needs to be solved and *why*, leaving *how* for subsequent design work.
 

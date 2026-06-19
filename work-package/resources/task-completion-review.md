@@ -137,5 +137,5 @@ After user confirmation, update the assumptions log artifact:
 ## Related Guides
 
 - [Assumptions Guide](assumptions-review.md) — Detailed assumption categories and log template
-- [Work Package Workflow](../workflow.toon) — Overall implementation workflow
+- [Work Package Workflow](../workflow.yaml) — Overall implementation workflow
 - [Architecture Review Guide](architecture-review.md) — Architecture decision records

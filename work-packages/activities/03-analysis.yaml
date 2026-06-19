@@ -1,0 +1,63 @@
+id: analysis
+version: 1.2.0
+name: Analysis
+description: Perform completion or context analysis depending on whether continuing previous work or starting new initiative
+steps:
+  - kind: checkpoint
+    id: analysis-type-selection
+    message: Is this continuing previous work or a new initiative?
+    options:
+      - id: continuing
+        label: Continuing previous work
+        description: Perform completion analysis of existing progress
+        effect:
+          setVariable:
+            analysis_type: completion
+      - id: new-initiative
+        label: New initiative
+        description: Perform context analysis for a fresh start
+        effect:
+          setVariable:
+            analysis_type: context
+    blocking: true
+  - kind: technique
+    id: analyze-context
+    technique: analyze-initiative-context
+  - kind: checkpoint
+    id: analysis-confirmed
+    message: Analysis complete. Does this context look correct?
+    options:
+      - id: proceed
+        label: Context is correct, proceed
+        effect:
+          transitionTo: package-planning
+      - id: revise
+        label: Revise analysis
+        effect:
+          transitionTo: analysis
+decisions:
+  - id: analysis-method
+    name: Analysis Method Selection
+    description: Route to completion or context analysis based on analysis_type variable
+    branches:
+      - id: completion
+        label: Perform completion analysis when continuing previous work
+        condition:
+          type: simple
+          variable: analysis_type
+          operator: ==
+          value: completion
+      - id: context
+        label: Perform context analysis for a new initiative
+        condition:
+          type: simple
+          variable: analysis_type
+          operator: ==
+          value: context
+        isDefault: true
+transitions:
+  - to: package-planning
+    isDefault: true
+outcome:
+  - Later planning rests on a validated understanding of the initiative's starting point - either existing progress or fresh-start context
+  - User has confirmed the captured context is accurate, so package planning can proceed without re-litigating assumptions

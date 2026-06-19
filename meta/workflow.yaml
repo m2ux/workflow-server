@@ -1,0 +1,79 @@
+$schema: ../../schemas/workflow.schema.json
+id: meta
+version: 5.1.0
+title: Meta Workflow
+description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
+author: m2ux
+tags:
+  - meta
+  - bootstrap
+  - lifecycle
+  - dispatch
+  - session
+techniques:
+  workflow:
+    - workflow-engine::handle-sub-workflow
+    - workflow-engine::dispatch-activity
+    - agent-conduct::orchestrator
+initialActivity: discover-session
+rules:
+  workflow:
+    - "This workflow is the entrypoint for all workflow operations — bootstrap protocol enters here directly via start_session({ workflow_id: 'meta' })"
+    - Techniques in this workflow are universal and resolve for any client workflow via the loader's universal-technique fallback
+    - Meta does not perform domain work — every activity exists to identify, create, resume, dispatch, or close out a client session
+variables:
+  - name: target_workflow_id
+    type: string
+    description: ID of the client workflow to dispatch (set by discover-session)
+  - name: meta_session_index
+    type: string
+    description: 6-character base32 session_index of the meta session itself — read by initialize-session and passed as parent_session_index when create-session creates the client session
+  - name: target_workflow_outcomes
+    type: string
+    description: The client workflow's declared outcomes, read by verify-outcomes during end-workflow close-out
+  - name: client_state
+    type: string
+    description: The dispatched client workflow's final variable state, read by verify-outcomes during end-workflow
+  - name: client_trace
+    type: string
+    description: The dispatched client workflow's execution trace, read by generate-summary during end-workflow
+  - name: workflow_match_ambiguous
+    type: boolean
+    description: Whether the user request matched multiple workflows — gates the workflow-selection checkpoint in discover-session
+    defaultValue: false
+  - name: has_saved_state
+    type: boolean
+    description: Whether discover-session matched a saved client session for the request
+    defaultValue: false
+  - name: saved_planning_slug
+    type: string
+    description: Planning slug of the matched saved client session (set by discover-session when has_saved_state) — passed to start_session to resume the existing session.json
+  - name: is_resuming
+    type: boolean
+    description: Whether the user chose to resume the matched saved session
+    defaultValue: false
+  - name: planning_folder_path
+    type: string
+    description: Canonical absolute path to the client workflow's planning folder, as resolved by the server under its own workspace .engineering root. Returned by create-session/dispatch_child (and start_session on resume); the single artifact location, never composed by the agent or anchored to target_path/CWD
+  - name: client_session_index
+    type: string
+    description: 6-character base32 session_index for the dispatched client workflow (returned by start_session when initialize-session creates or resumes the session)
+  - name: client_planning_slug
+    type: string
+    description: Planning slug of the dispatched client workflow's planning folder — stable identifier the server uses to locate session.json
+  - name: is_monorepo
+    type: boolean
+    description: Whether the target repository is a submodule monorepo (set by resolve-target)
+    defaultValue: false
+  - name: target_path
+    type: string
+    description: Resolved target directory for git operations — '.' for regular repos, a submodule path for monorepos
+    defaultValue: .
+  - name: client_workflow_completed
+    type: boolean
+    description: Whether the dispatched client workflow has reached workflow_complete
+    defaultValue: false
+  - name: abort_completion
+    type: boolean
+    description: Whether the user chose to return to dispatch from end-workflow instead of closing
+    defaultValue: false

@@ -1,0 +1,28 @@
+id: finalize-roadmap
+version: 1.2.0
+name: Finalize Roadmap
+description: Complete roadmap documentation with timeline, navigation, and success criteria
+steps:
+  - kind: technique
+    id: finalize-roadmap-docs
+    technique: document-roadmap
+  - kind: checkpoint
+    id: roadmap-complete
+    message: Roadmap complete. Ready to begin implementation?
+    options:
+      - id: begin
+        label: Begin implementation
+        effect:
+          transitionTo: implementation
+          setVariable:
+            roadmap_complete: true
+      - id: refine
+        label: Refine roadmap
+        effect:
+          transitionTo: finalize-roadmap
+transitions:
+  - to: implementation
+    isDefault: true
+outcome:
+  - Anyone picking up the initiative can navigate it end-to-end - sequenced packages, timeline, and success criteria in one entry point
+  - The plan is complete enough to gate the start of implementation, with no open planning questions blocking execution

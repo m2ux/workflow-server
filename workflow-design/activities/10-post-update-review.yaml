@@ -1,0 +1,41 @@
+id: post-update-review
+version: 1.3.0
+name: Post-Update Review
+description: Post-commit compliance audit of the updated workflow against design principles and anti-patterns.
+required: true
+rules:
+  - Load the updated workflow from the workflow-server, not from cached data — the audit must verify the committed state
+  - Produce a severity-rated findings summary; do not repeat the full compliance report structure unless findings exist
+steps:
+  - kind: technique
+    id: reload-updated-workflow
+    technique: reload-workflow
+  - kind: technique
+    id: run-audit-passes
+    technique: run-audit-passes
+  - kind: technique
+    id: summarize-findings
+    technique: summarize-findings
+  - kind: technique
+    id: save-review-snapshot
+    technique: persist-report
+  - kind: checkpoint
+    id: post-update-disposition
+    message: Post-update review complete. {review_findings_count} findings identified. The update has been committed.
+    options:
+      - id: accept
+        label: Accept — update complete
+        description: Update accepted as-is; no further action.
+      - id: iterate
+        label: Fix findings — start another update cycle
+        description: Findings become the change spec for a fresh update cycle starting at intake.
+        effect:
+          transitionTo: intake-and-context
+      - id: revert
+        label: Revert commit
+        description: Update commit rolled back; flow re-enters intake.
+        effect:
+          transitionTo: intake-and-context
+outcome:
+  - The user knows whether the committed update is clean or carries new compliance debt, with severity-rated findings to decide the next move from
+  - A dated compliance snapshot of the committed state exists to compare future audits against and to show the update was checked, not assumed

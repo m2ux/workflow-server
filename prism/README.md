@@ -174,13 +174,13 @@ graph TD
 | 11 | **Smart Analysis Pass** | Adaptively compose the analysis pipeline based on input characteristics (smart only) |
 | 12 | **Adaptive Depth Pass** | Cost-minimizing depth escalation (adaptive only) |
 
-**Detailed documentation:** See [activities/](activities/) for per-activity TOON definitions.
+**Detailed documentation:** See [activities/](activities/) for per-activity YAML definitions.
 
 ---
 
 ## Techniques
 
-The cross-cutting `variable-binding` technique is declared once at the workflow level and inherited by every activity. The rest are activity-specific strategy techniques. Operation-group techniques (`::*`) expose their operations as `<group>::<op>` references; standalone techniques bind directly. See each activity's TOON for the authoritative step-to-technique bindings.
+The cross-cutting `variable-binding` technique is declared once at the workflow level and inherited by every activity. The rest are activity-specific strategy techniques. Operation-group techniques (`::*`) expose their operations as `<group>::<op>` references; standalone techniques bind directly. See each activity's YAML for the authoritative step-to-technique bindings.
 
 | Technique | Capability |
 |-----------|------------|
@@ -288,23 +288,23 @@ Unlike the work-package workflow (which resumes a persistent worker), the prism 
 
 ```
 workflows/prism/
-├── workflow.toon                            # Workflow definition (10 modes, 27 variables, 10 rules, 13 activities)
+├── workflow.yaml                            # Workflow definition (10 modes, 27 variables, 10 rules, 13 activities)
 ├── README.md                                # This file
 ├── concept-lexicon.md                       # Analytical concept definitions (49 concepts)
 ├── activities/
-│   ├── 00-select-mode.toon                  # Plan analysis configuration
-│   ├── 01-structural-pass.toon              # L12, portfolio, or behavioral lens dispatch
-│   ├── 02-adversarial-pass.toon             # Adversarial lens (full-prism only)
-│   ├── 03-synthesis-pass.toon               # Synthesis lens (full-prism only)
-│   ├── 04-deliver-result.toon               # Present final report
-│   ├── 05-behavioral-synthesis-pass.toon    # Behavioral synthesis (behavioral only)
-│   ├── 06-generate-report.toon              # Generate clean REPORT.md from analysis artifacts
-│   ├── 07-dispute-pass.toon                 # Two orthogonal prisms + disagreement synthesis (dispute only)
-│   ├── 08-subsystem-pass.toon               # Per-region prism analysis + cross-subsystem synthesis (subsystem only)
-│   ├── 09-verified-pass.toon                # L12 + gap detection + corrected re-analysis (verified only)
-│   ├── 10-reflect-pass.toon                 # L12 + meta-analysis + constraint synthesis (reflect only)
-│   ├── 11-smart-pass.toon                   # Adaptive pipeline composition (smart only)
-│   └── 12-adaptive-pass.toon                # Depth escalation SDL → L12 → full-prism (adaptive only)
+│   ├── 00-select-mode.yaml                  # Plan analysis configuration
+│   ├── 01-structural-pass.yaml              # L12, portfolio, or behavioral lens dispatch
+│   ├── 02-adversarial-pass.yaml             # Adversarial lens (full-prism only)
+│   ├── 03-synthesis-pass.yaml               # Synthesis lens (full-prism only)
+│   ├── 04-deliver-result.yaml               # Present final report
+│   ├── 05-behavioral-synthesis-pass.yaml    # Behavioral synthesis (behavioral only)
+│   ├── 06-generate-report.yaml              # Generate clean REPORT.md from analysis artifacts
+│   ├── 07-dispute-pass.yaml                 # Two orthogonal prisms + disagreement synthesis (dispute only)
+│   ├── 08-subsystem-pass.yaml               # Per-region prism analysis + cross-subsystem synthesis (subsystem only)
+│   ├── 09-verified-pass.yaml                # L12 + gap detection + corrected re-analysis (verified only)
+│   ├── 10-reflect-pass.yaml                 # L12 + meta-analysis + constraint synthesis (reflect only)
+│   ├── 11-smart-pass.yaml                   # Adaptive pipeline composition (smart only)
+│   └── 12-adaptive-pass.yaml                # Depth escalation SDL → L12 → full-prism (adaptive only)
 ├── techniques/
 │   ├── TECHNIQUE.md                         # Inherited base contract (shared by all prism techniques)
 │   ├── plan-analysis.md                     # Analysis planning (58 goal mappings)

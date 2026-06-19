@@ -342,7 +342,7 @@ Define measurable targets based on baselines:
 
 ## Related Guides
 
-- [Work Package Implementation Workflow](../workflow.toon)
+- [Work Package Implementation Workflow](../workflow.yaml)
 - [Knowledge Base Research Guide](knowledge-base-research.md)
 - [Architecture Review Guide](architecture-review.md)
 - [Test Plan Creation Guide](test-plan.md)

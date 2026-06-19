@@ -1,0 +1,17 @@
+id: update-specification
+version: 1.2.0
+name: Update Specification
+description: Apply the requirements analysis (initial pass) or the validation findings (correction pass) to produce the complete updated specification, preserving the specification protocol verbatim, and write it as a versioned working specification.
+required: true
+steps:
+  - kind: technique
+    id: update-specification
+    technique: update-specification
+    actions:
+      - action: message
+        message: "Created: working-spec-{correction_iteration}.md"
+transitions:
+  - to: validate-specification
+    isDefault: true
+outcome:
+  - The full specification now reflects every confirmed change with its protocol intact, ready for validation to judge against

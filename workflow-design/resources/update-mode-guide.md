@@ -41,8 +41,8 @@ Update mode is activated by recognition patterns: "update workflow", "modify wor
 ### Step 1: Enumerate Existing Files
 
 List all files in the target workflow directory with their purpose:
-- `workflow.toon` — root definition
-- `activities/*.toon` — activity definitions
+- `workflow.yaml` — root definition
+- `activities/*.yaml` — activity definitions
 - `techniques/*.md` — technique definitions (`techniques/<slug>.md` standalone, `techniques/<group>/TECHNIQUE.md` container base contracts, `techniques/<group>/<sub>.md` nested)
 - `resources/*.md` — resource files
 - `README.md` — documentation

@@ -1,0 +1,31 @@
+id: initialize-session
+version: 6.2.0
+name: Initialize Session
+description: Derive the client planning slug, then dispatch the client workflow as a child of the meta session.
+required: true
+steps:
+  - kind: technique
+    id: derive-planning-slug
+    technique:
+      name: version-control::initialize-folder
+      outputs:
+        planning_slug: client_planning_slug
+    when: is_resuming == false
+  - kind: technique
+    id: start-or-resume-session
+    technique:
+      name: workflow-engine::create-session
+      inputs:
+        parent_session_index: meta_session_index
+        workflow_id: target_workflow_id
+        planning_slug: client_planning_slug
+      outputs:
+        session_index: client_session_index
+transitions:
+  - to: resolve-target
+    isDefault: true
+outcome:
+  - The work package has a stable, work-item-derived identity that the server reuses on every resume rather than a date-stamped fallback name
+  - The client workflow is live as a child of the meta session — its orchestrator can be dispatched and its artifacts have a home
+  - Every downstream activity has one authoritative, server-canonical absolute location to write and read work-package artifacts
+  - A resumed session continues with all prior progress intact; a fresh session starts from a clean, schema-default state

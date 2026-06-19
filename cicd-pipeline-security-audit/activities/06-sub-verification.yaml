@@ -1,0 +1,34 @@
+id: sub-verification
+version: 1.2.0
+name: Scan Verification
+description: Verify scan completeness across all scanner outputs.
+techniques:
+  - execute-sub-agent
+required: false
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting scan verification
+  - kind: technique
+    id: load-scanner-outputs
+    technique: verify-scan-output::validate-structure
+  - kind: technique
+    id: verify-file-coverage
+    technique: verify-scan-output::verify-file-coverage
+  - kind: technique
+    id: verify-pattern-coverage
+    technique: verify-scan-output::verify-pattern-coverage
+  - kind: technique
+    id: produce-gap-report
+    technique: verify-scan-output::produce-gap-report
+  - kind: action
+    id: announce-completion
+    actions:
+      - action: log
+        message: Scan verification complete — gap report produced
+transitions: []
+outcome:
+  - The audit has independent proof that every inventoried file and all seven patterns were actually covered, not just assumed
+  - The parent can either proceed to merge with confidence or knows exactly which scanners to re-run, gaps named

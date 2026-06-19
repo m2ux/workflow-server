@@ -166,7 +166,7 @@ https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artif
 
 Section titles (e.g., `### Code Review Findings`) must NOT be hyperlinks — the report links live in the header instead.
 
-**Reviewers list:** The `Reviewers` field must list each agent role that contributed findings, with each name hyperlinked to the workflow `.toon` file that defines that role. The workflow definitions live in a separate repository (submodule), so construct links using the workflow repo base URL — not the engineering repo's submodule path, which does not resolve on GitHub:
+**Reviewers list:** The `Reviewers` field must list each agent role that contributed findings, with each name hyperlinked to the workflow `.yaml` file that defines that role. The workflow definitions live in a separate repository (submodule), so construct links using the workflow repo base URL — not the engineering repo's submodule path, which does not resolve on GitHub:
 
 ```
 https://github.com/{WORKFLOW_REPO_OWNER}/{WORKFLOW_REPO_NAME}/blob/{WORKFLOW_BRANCH}/work-package/
@@ -174,12 +174,12 @@ https://github.com/{WORKFLOW_REPO_OWNER}/{WORKFLOW_REPO_NAME}/blob/{WORKFLOW_BRA
 
 Resolve `{WORKFLOW_REPO_OWNER}`, `{WORKFLOW_REPO_NAME}`, and `{WORKFLOW_BRANCH}` from the `.gitmodules` entry for the workflows submodule (typically `.engineering/workflows`).
 
-| Agent Role | Toon File |
+| Agent Role | YAML File |
 |------------|-----------|
 | Code Review Agent | `techniques/review-code.md` |
 | Test Suite Review Agent | `techniques/review-test-suite.md` |
-| Validation Agent | `activities/10-validate.toon` |
-| Strategic Review Agent | `activities/11-strategic-review.toon` |
+| Validation Agent | `activities/10-validate.yaml` |
+| Strategic Review Agent | `activities/11-strategic-review.yaml` |
 
 **Table format:** All review tables only include non-passing findings — do not list passing or positive items. The `#` column value is a hyperlink to the pertinent artifact or symbol (file path and line for code review, test method for test review, document URL for documentation, CI run URL for validation, branch/commit for hygiene). Every table must include a `Severity` column. Every `#` link MUST be validated against the actual source at the referenced commit before inclusion — do not carry over line numbers from earlier analysis without verification.
 
@@ -199,7 +199,7 @@ Example: `(CR-1)` refers to Code Review finding 1, `(TR-3)` refers to Test Revie
 ## PR Review Summary
 
 **PR**: #XXX - Title  
-**Reviewers**: [Code Review Agent]({workflow_base}/techniques/review-code.md) · [Test Suite Review Agent]({workflow_base}/techniques/review-test-suite.md) · [Validation Agent]({workflow_base}/activities/10-validate.toon) · [Strategic Review Agent]({workflow_base}/activities/11-strategic-review.toon)  
+**Reviewers**: [Code Review Agent]({workflow_base}/techniques/review-code.md) · [Test Suite Review Agent]({workflow_base}/techniques/review-test-suite.md) · [Validation Agent]({workflow_base}/activities/10-validate.yaml) · [Strategic Review Agent]({workflow_base}/activities/11-strategic-review.yaml)  
 **Reports**: `Code Review` · `Test Suite Review`  
 **Date**: YYYY-MM-DD
 

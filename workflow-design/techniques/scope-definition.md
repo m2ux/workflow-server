@@ -17,7 +17,7 @@ Define the complete scope and structure before drafting: verify the workflows wo
 
 ### 2. Design Folder Structure
 
-- Design the folder layout — `workflow-{id}/` with `activities/`, `techniques/`, `resources/` — and the file naming scheme: `NN-name.toon` for activities and techniques, `NN-name.md` for resources
+- Design the folder layout — `workflow-{id}/` with `activities/`, `techniques/`, `resources/` — and the file naming scheme: `NN-name.yaml` for activities and techniques, `NN-name.md` for resources
 
 ### 3. Enumerate Files
 
@@ -26,4 +26,4 @@ Define the complete scope and structure before drafting: verify the workflows wo
 ### 4. Present Design
 
 - Present the directory tree of the proposed structure with its file manifest, a transition diagram (for sequential workflows), and a comparison against the adopted reference patterns
-- Present the drafting order (`workflow.toon`, activities, techniques, resources, README) with rationale grounded in the reference-dependency chain
+- Present the drafting order (`workflow.yaml`, activities, techniques, resources, README) with rationale grounded in the reference-dependency chain

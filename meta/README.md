@@ -151,14 +151,14 @@ Meta itself produces no domain artefacts. Its outputs are session-state side-eff
 
 ```
 workflows/meta/
-├── workflow.toon                            # Meta workflow definition (16 variables, 3 rules)
+├── workflow.yaml                            # Meta workflow definition (16 variables, 3 rules)
 ├── README.md                                # This file
 ├── activities/
-│   ├── 00-discover-session.toon             # Match user request, scan saved sessions
-│   ├── 01-initialize-session.toon           # Create or resume the client session
-│   ├── 02-resolve-target.toon               # Detect repo type, set target_path
-│   ├── 03-dispatch-client-workflow.toon     # Drive the client activity loop (while current_activity != null)
-│   └── 04-end-workflow.toon                 # Outcome verification, summary
+│   ├── 00-discover-session.yaml             # Match user request, scan saved sessions
+│   ├── 01-initialize-session.yaml           # Create or resume the client session
+│   ├── 02-resolve-target.yaml               # Detect repo type, set target_path
+│   ├── 03-dispatch-client-workflow.yaml     # Drive the client activity loop (while current_activity != null)
+│   └── 04-end-workflow.yaml                 # Outcome verification, summary
 ├── techniques/
 │   ├── TECHNIQUE.md                         # Root base contract (inherited by every meta technique)
 │   ├── agent-conduct.md                     # Cross-cutting rules (single source of truth)

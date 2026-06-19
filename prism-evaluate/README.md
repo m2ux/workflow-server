@@ -31,7 +31,7 @@ scope-definition → dimension-planning → execute-analysis → consolidate-rep
 
 `deliver-results` ends the workflow unless the user opts into the resolution dialogue, which then iterates through findings and applies accepted mitigations.
 
-User checkpoints gate the scope, the plan, the resolution offer, each finding's mitigation, and the final apply; the authoritative options and effects live in each activity's TOON.
+User checkpoints gate the scope, the plan, the resolution offer, each finding's mitigation, and the final apply; the authoritative options and effects live in each activity's YAML.
 
 ---
 
@@ -47,7 +47,7 @@ User checkpoints gate the scope, the plan, the resolution offer, each finding's 
 | 05 | **Resolution Dialogue** | Tier-classify findings and propose mitigations one finding at a time, compiling a mitigation plan |
 | 06 | **Apply Accepted Mitigations** | Apply the accepted mitigations to the target after a final user confirmation |
 
-**Detailed documentation:** See [activities/](activities/) for per-activity TOON definitions.
+**Detailed documentation:** See [activities/](activities/) for per-activity YAML definitions.
 
 ---
 
@@ -113,16 +113,16 @@ For a standard 4-dimension evaluation (Consistency, Veracity, Plausibility, Feas
 
 ```
 workflows/prism-evaluate/
-├── workflow.toon                     # Workflow definition (8 rules, 23 variables)
+├── workflow.yaml                     # Workflow definition (8 rules, 23 variables)
 ├── README.md                         # This file
 ├── activities/
-│   ├── 00-scope-definition.toon      # Collect inputs, classify target, derive dimensions
-│   ├── 01-dimension-planning.toon    # Survey target, map to lenses, group for execution
-│   ├── 02-execute-analysis.toon      # Trigger prism per execution group
-│   ├── 03-consolidate-report.toon    # Extract findings, compose EVALUATION-REPORT.md
-│   ├── 04-deliver-results.toon       # Present results and artifact index; offer resolution
-│   ├── 05-resolution-dialogue.toon   # Tier-classify findings, propose mitigations, compile plan
-│   └── 06-apply-mitigations.toon     # Apply accepted mitigations to the target and commit
+│   ├── 00-scope-definition.yaml      # Collect inputs, classify target, derive dimensions
+│   ├── 01-dimension-planning.yaml    # Survey target, map to lenses, group for execution
+│   ├── 02-execute-analysis.yaml      # Trigger prism per execution group
+│   ├── 03-consolidate-report.yaml    # Extract findings, compose EVALUATION-REPORT.md
+│   ├── 04-deliver-results.yaml       # Present results and artifact index; offer resolution
+│   ├── 05-resolution-dialogue.yaml   # Tier-classify findings, propose mitigations, compile plan
+│   └── 06-apply-mitigations.yaml     # Apply accepted mitigations to the target and commit
 ├── techniques/
 │   ├── TECHNIQUE.md                  # Inherited base contract
 │   ├── plan-evaluation/              # Target classification, dimension-to-lens mapping (one op per phase)

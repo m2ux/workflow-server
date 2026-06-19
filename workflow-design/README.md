@@ -10,7 +10,7 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 
 | # | Activity | Mode | Purpose |
 |---|----------|------|---------|
-| 01 | [**Intake and Context**](./activities/README.md#01-intake-and-context) | All | Classify create/update/review, set mode + target, internalize schemas and TOON format |
+| 01 | [**Intake and Context**](./activities/README.md#01-intake-and-context) | All | Classify create/update/review, set mode + target, internalize schemas and YAML format |
 | 02 | [**Requirements Refinement**](./activities/README.md#02-requirements-refinement) | Create, Update | Elicit design details one question at a time |
 | 03 | [**Pattern Analysis**](./activities/README.md#03-pattern-analysis) | Create only | Audit 2+ reference workflows for reusable patterns |
 | 04 | [**Impact Analysis**](./activities/README.md#04-impact-analysis) | Update only | Enumerate affected files, check integrity, flag removals |
@@ -21,7 +21,7 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 
 **Detailed documentation:**
 
-- **Activities:** See [activities/README.md](./activities/README.md) for the per-activity orientation map (purpose, value, and how each activity connects in the flow), with links to the authoritative activity TOON files. The full step/checkpoint/transition definitions are served by `get_activity`.
+- **Activities:** See [activities/README.md](./activities/README.md) for the per-activity orientation map (purpose, value, and how each activity connects in the flow), with links to the authoritative activity YAML files. The full step/checkpoint/transition definitions are served by `get_activity`.
 - **Techniques:** See [techniques/](techniques/) for the full technique library (workflow-local standalone techniques plus the shared `TECHNIQUE.md` base contract) with protocol flows and rules.
 - **Resources:** See [resources/README.md](./resources/README.md) for the resource index (5 resources) with usage context and cross-workflow access.
 
@@ -76,7 +76,7 @@ Review mode audits an existing workflow against:
 2. **Convention conformance** — checks naming, structure, and field ordering
 3. **Rule-to-structure enforcement** — identifies critical rules lacking structural backing
 4. **Anti-pattern scan** — checks all 64 prohibited patterns
-5. **Schema validation** — validates every TOON file
+5. **Schema validation** — validates every YAML file
 
 The output is a severity-rated compliance report saved to `.engineering/artifacts/reviews/`. After review, the user can opt to fix issues (transitions to update mode) or accept the report as-is.
 
@@ -93,7 +93,7 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 | 3 | One question at a time | [Requirements Refinement](./activities/README.md#02-requirements-refinement) — per-dimension checkpoints |
 | 4 | Maximize schema expressiveness | [Quality Review](./activities/README.md#06-quality-review) `expressiveness-confirmed` checkpoint |
 | 5 | Convention over invention | [Quality Review](./activities/README.md#06-quality-review) `conformance-confirmed` checkpoint |
-| 6 | Never modify upward | Schema validation on every TOON file |
+| 6 | Never modify upward | Schema validation on every YAML file |
 | 7 | Confirm before irreversible changes | [Impact Analysis](./activities/README.md#04-impact-analysis) checkpoints (update mode) |
 | 8 | Corrections must persist | Cross-cutting: tracked throughout all activities |
 | 9 | Modular over inline | [Quality Review](./activities/README.md#06-quality-review) conformance check |
@@ -118,14 +118,14 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`impact-analysis`](./techniques/impact-analysis.md) | Assess change impact on files, transitions, and references | Impact Analysis |
 | [`scope-definition`](./techniques/scope-definition.md) | Enumerate the complete file manifest and structural design | Scope and Draft |
 | [`content-drafting`](./techniques/content-drafting.md) | Present per-file approach and drafted content for review | Scope and Draft |
-| [`toon-authoring`](./techniques/toon-authoring.md) | Author syntactically valid TOON files that pass schema validation | Scope and Draft |
+| [`yaml-authoring`](./techniques/yaml-authoring.md) | Author syntactically valid YAML files that pass schema validation | Scope and Draft |
 | [`audit-expressiveness`](./techniques/audit-expressiveness.md) | Flag prose that maps to formal schema constructs | Quality Review |
 | [`audit-conformance`](./techniques/audit-conformance.md) | Check convention conformance against reference workflows | Quality Review |
 | [`audit-rule-hygiene`](./techniques/audit-rule-hygiene.md) | Detect rule restatements, contradictions, duplications, prefix patterns | Quality Review |
 | [`audit-rule-enforcement`](./techniques/audit-rule-enforcement.md) | Flag critical rules lacking structural enforcement | Quality Review |
 | [`audit-principles`](./techniques/audit-principles.md) | Audit against the design principles (review mode) | Quality Review |
 | [`audit-anti-patterns`](./techniques/audit-anti-patterns.md) | Scan for all prohibited patterns (review mode) | Quality Review |
-| [`audit-schema-validation`](./techniques/audit-schema-validation.md) | Validate every TOON file against its schema | Quality Review, Validate and Commit |
+| [`audit-schema-validation`](./techniques/audit-schema-validation.md) | Validate every YAML file against its schema | Quality Review, Validate and Commit |
 | [`audit-consistency`](./techniques/audit-consistency.md) | Audit tool/technique/doc consistency (review mode) | Quality Review |
 | [`compile-report`](./techniques/compile-report.md) | Compile the severity-rated compliance report (review mode) | Quality Review |
 | [`reload-workflow`](./techniques/reload-workflow.md) | Reload the committed workflow from the server | Quality Review, Post-Update Review |
@@ -164,18 +164,18 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 
 ```
 workflows/workflow-design/
-├── workflow.toon                          # Workflow definition (variables, rules, inherited techniques)
+├── workflow.yaml                          # Workflow definition (variables, rules, inherited techniques)
 ├── README.md                             # This file
 ├── activities/
 │   ├── README.md                         # Per-activity documentation
-│   ├── 01-intake-and-context.toon        # Classify mode + target, internalize schemas/format
-│   ├── 03-requirements-refinement.toon   # Elicit design details one question at a time
-│   ├── 04-pattern-analysis.toon          # Audit reference workflows (create only)
-│   ├── 05-impact-analysis.toon           # Impact analysis (update mode)
-│   ├── 06-scope-and-draft.toon           # Define file manifest, then draft/validate per file
-│   ├── 08-quality-review.toon            # Audit passes (full compliance audit in review mode)
-│   ├── 09-validate-and-commit.toon       # Validate and commit
-│   └── 10-post-update-review.toon        # Post-commit compliance audit (update mode)
+│   ├── 01-intake-and-context.yaml        # Classify mode + target, internalize schemas/format
+│   ├── 03-requirements-refinement.yaml   # Elicit design details one question at a time
+│   ├── 04-pattern-analysis.yaml          # Audit reference workflows (create only)
+│   ├── 05-impact-analysis.yaml           # Impact analysis (update mode)
+│   ├── 06-scope-and-draft.yaml           # Define file manifest, then draft/validate per file
+│   ├── 08-quality-review.yaml            # Audit passes (full compliance audit in review mode)
+│   ├── 09-validate-and-commit.yaml       # Validate and commit
+│   └── 10-post-update-review.yaml        # Post-commit compliance audit (update mode)
 ├── techniques/                           # Flat library of workflow-local standalone techniques
 │   ├── TECHNIQUE.md                      # Workflow-root base contract (inherited by all techniques)
 │   ├── intake-classification.md
@@ -185,7 +185,7 @@ workflows/workflow-design/
 │   ├── impact-analysis.md
 │   ├── scope-definition.md
 │   ├── content-drafting.md
-│   ├── toon-authoring.md
+│   ├── yaml-authoring.md
 │   ├── scope-verification.md
 │   ├── readme-authoring.md
 │   ├── commit-verification.md

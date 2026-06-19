@@ -1,0 +1,14 @@
+id: sub-output-verification
+version: 1.1.0
+name: "Sub-Agent: Output Verification"
+description: Mechanically validate primary-agent output completeness.
+required: false
+steps:
+  - kind: technique
+    id: verify-output
+    technique: verify-sub-agent-output
+outcome:
+  - Every agent the target profile required is confirmed dispatched and returned, so coverage can be trusted without re-checking
+  - Coverage across all priority-1/2 files is attested, so under-reviewed files surface before merge rather than after
+  - Missing mandatory tables are flagged for re-dispatch instead of being assumed present, which is what stabilizes finding counts across runs
+  - Findings buried in agent tables are recovered mechanically rather than left undetected

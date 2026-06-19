@@ -46,9 +46,9 @@ graph TD
 
 ## Activities
 
-The seven activities run as a sequential chain (see the flow diagram above). Each links to its authoritative definition — steps, checkpoints, decisions, loops, and transitions live in the activity TOON and are served by `get_activity`.
+The seven activities run as a sequential chain (see the flow diagram above). Each links to its authoritative definition — steps, checkpoints, decisions, loops, and transitions live in the activity YAML and are served by `get_activity`.
 
-### 1. [Scope Assessment](activities/01-scope-assessment.toon)
+### 1. [Scope Assessment](activities/01-scope-assessment.yaml)
 
 Confirms this is a genuine multi-package initiative and produces an agreed inventory of distinct work packages, so planning can proceed package-by-package without scope drift. Ends at a user checkpoint before moving on to folder setup.
 
@@ -64,7 +64,7 @@ graph TD
     end
 ```
 
-### 2. [Folder Setup](activities/02-folder-setup.toon)
+### 2. [Folder Setup](activities/02-folder-setup.yaml)
 
 Creates the planning folder and its initial documentation skeletons (START-HERE.md and README.md), giving the initiative a canonical home before analysis begins.
 
@@ -81,7 +81,7 @@ graph TD
     end
 ```
 
-### 3. [Analysis](activities/03-analysis.toon)
+### 3. [Analysis](activities/03-analysis.yaml)
 
 Establishes a validated understanding of the initiative's starting point — either completion analysis of existing progress when continuing previous work, or context analysis for a fresh start. The path is chosen at a user checkpoint so later planning rests on confirmed context.
 
@@ -103,7 +103,7 @@ graph TD
     end
 ```
 
-### 4. [Package Planning](activities/04-package-planning.toon)
+### 4. [Package Planning](activities/04-package-planning.yaml)
 
 Defines scope, dependencies, effort, and success criteria for each package, fanning out over the identified work packages so every one is detailed enough to be prioritized and executed independently.
 
@@ -124,7 +124,7 @@ graph TD
     end
 ```
 
-### 5. [Prioritization](activities/05-prioritization.toon)
+### 5. [Prioritization](activities/05-prioritization.yaml)
 
 Orders the packages by dependencies, value, risk, and effort, producing a priority ranking the user accepts (or sends back to planning) before the roadmap is finalized.
 
@@ -141,7 +141,7 @@ graph TD
     end
 ```
 
-### 6. [Finalize Roadmap](activities/06-finalize-roadmap.toon)
+### 6. [Finalize Roadmap](activities/06-finalize-roadmap.yaml)
 
 Completes the roadmap documentation — timeline, navigation, and success criteria — so the initiative has a single source of truth before implementation begins.
 
@@ -157,7 +157,7 @@ graph TD
     end
 ```
 
-### 7. [Implementation](activities/07-implementation.toon)
+### 7. [Implementation](activities/07-implementation.yaml)
 
 Executes each planned package in priority order, triggering the `work-package` workflow for each one in turn and tracking progress until the whole initiative is delivered as merged, reviewed work.
 
@@ -181,7 +181,7 @@ graph TD
 
 ## Artifacts
 
-The workflow produces planning documentation under the planning folder: START-HERE.md and README.md skeletons (created at setup, finalized at roadmap), a completion or context analysis document, a plan per work package, a priority ranking, and progress tracking updated as packages complete. See the activity TOONs for the precise artifact each activity reads or writes.
+The workflow produces planning documentation under the planning folder: START-HERE.md and README.md skeletons (created at setup, finalized at roadmap), a completion or context analysis document, a plan per work package, a priority ranking, and progress tracking updated as packages complete. See the activity YAMLs for the precise artifact each activity reads or writes.
 
 ## Techniques Summary
 
@@ -222,17 +222,17 @@ Workflow-specific techniques live under `techniques/`. Two are **operation group
 
 ```
 work-packages/
-├── workflow.toon
+├── workflow.yaml
 ├── README.md
 ├── activities/
 │   ├── README.md
-│   ├── 01-scope-assessment.toon
-│   ├── 02-folder-setup.toon
-│   ├── 03-analysis.toon
-│   ├── 04-package-planning.toon
-│   ├── 05-prioritization.toon
-│   ├── 06-finalize-roadmap.toon
-│   └── 07-implementation.toon
+│   ├── 01-scope-assessment.yaml
+│   ├── 02-folder-setup.yaml
+│   ├── 03-analysis.yaml
+│   ├── 04-package-planning.yaml
+│   ├── 05-prioritization.yaml
+│   ├── 06-finalize-roadmap.yaml
+│   └── 07-implementation.yaml
 ├── techniques/
 │   ├── TECHNIQUE.md
 │   ├── assess-initiative-scope.md

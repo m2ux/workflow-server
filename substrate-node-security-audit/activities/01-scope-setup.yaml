@@ -1,0 +1,28 @@
+id: scope-setup
+version: 2.1.0
+name: Scope Setup
+description: Set up the audit scope and planning folder.
+required: true
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting security audit scope setup
+  - kind: technique
+    id: setup-target
+    technique: setup-audit-target
+  - kind: action
+    id: announce-completion
+    actions:
+      - action: log
+        message: Scope setup complete — target confirmed and planning folder created
+transitions:
+  - to: reconnaissance
+    isDefault: true
+outcome:
+  - Downstream analysis runs against a single confirmed, reproducible target pinned to an exact commit
+  - Any reference report is quarantined out of scope until Phase 5, so the audit stays independent of it
+  - Known-vulnerable dependencies are surfaced (or their absence explicitly noted) before code review begins
+  - A reviewed file inventory establishes the in-scope surface every agent must cover
+  - A working artifact home exists where every phase reads and writes shared state

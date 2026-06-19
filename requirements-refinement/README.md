@@ -39,11 +39,11 @@ never edits the canonical document in place.
 
 | # | Activity | Purpose |
 |---|----------|---------|
-| 01 | [Intake and Analyze](activities/01-intake-and-analyze.toon) | Establish trusted, classified sources and a user-confirmed analysis of the requirement changes they imply |
-| 03 | [Update Specification](activities/03-update-specification.toon) | Apply the analysis (or corrections) to a versioned working specification |
-| 04 | [Validate Specification](activities/04-validate-specification.toon) | Validate (conformance + source coverage), categorize issues, and route |
-| 05 | [Finalize Specification](activities/05-finalize-specification.toon) | Stage the final specification and change summary for promotion |
-| 06 | [Report Failure](activities/06-report-failure.toon) | Compile a failure report when critical issues or the correction budget stop refinement |
+| 01 | [Intake and Analyze](activities/01-intake-and-analyze.yaml) | Establish trusted, classified sources and a user-confirmed analysis of the requirement changes they imply |
+| 03 | [Update Specification](activities/03-update-specification.yaml) | Apply the analysis (or corrections) to a versioned working specification |
+| 04 | [Validate Specification](activities/04-validate-specification.yaml) | Validate (conformance + source coverage), categorize issues, and route |
+| 05 | [Finalize Specification](activities/05-finalize-specification.yaml) | Stage the final specification and change summary for promotion |
+| 06 | [Report Failure](activities/06-report-failure.yaml) | Compile a failure report when critical issues or the correction budget stop refinement |
 
 ## Flow
 
@@ -61,7 +61,7 @@ specification is promoted automatically.
 
 ## Structure
 
-- [`workflow.toon`](workflow.toon) — metadata, variables, rules, and artifact location.
+- [`workflow.yaml`](workflow.yaml) — metadata, variables, rules, and artifact location.
 - [`activities/`](activities/) — the five pipeline activities.
 - [`techniques/`](techniques/) — the procedures the activities apply.
 - [`resources/`](resources/) — the specification protocol and the report/rubric/summary templates.

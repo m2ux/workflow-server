@@ -1,0 +1,60 @@
+id: prompt-generation
+version: 1.1.0
+name: Generate Audit Prompt
+description: Compose a detailed audit prompt tailored to the codebase.
+steps:
+  - kind: technique
+    id: survey-structure
+    technique: compose-audit-prompt::survey-structure
+  - kind: technique
+    id: identify-security-characteristics
+    technique: compose-audit-prompt::identify-security-characteristics
+  - kind: checkpoint
+    id: no-security-characteristics
+    message: No security-relevant patterns were found in the target codebase. This may indicate a purely presentational or data-only codebase. Would you like to proceed with a generic structural analysis instead, or abort the audit?
+    condition:
+      type: simple
+      variable: security_characteristics_count
+      operator: ==
+      value: 0
+    options:
+      - id: proceed-generic
+        label: Proceed with generic analysis
+        description: Continue with a generic structural analysis prompt instead of a security-focused one
+      - id: abort
+        label: Abort audit
+        description: Stop the audit workflow
+        effect:
+          transitionTo: deliver-audit
+    blocking: true
+  - kind: technique
+    id: map-trust-boundaries
+    technique: compose-audit-prompt::map-trust-boundaries
+    condition:
+      type: simple
+      variable: gitnexus_available
+      operator: ==
+      value: true
+  - kind: technique
+    id: map-audit-domains
+    technique: compose-audit-prompt::map-audit-domains
+  - kind: technique
+    id: identify-cross-cutting-concerns
+    technique: compose-audit-prompt::identify-cross-cutting-concerns
+  - kind: technique
+    id: compose-prompt
+    technique: compose-audit-prompt::compose-prompt
+  - kind: technique
+    id: build-audit-scopes
+    technique: compose-audit-prompt::build-audit-scopes
+rules:
+  - "EVIDENCE-BASED DOMAINS: Every audit domain must be grounded in observed codebase characteristics. Do not include generic security domains that have no corresponding code in the target. If the codebase has no network-exposed surfaces, do not include an API security domain."
+  - "RISK CALIBRATION: Risk levels must reflect the domain's exposure and blast radius, not generic severity. A cryptographic library used for transaction signing is CRITICAL; a cryptographic library used only for log hashing is MEDIUM."
+  - "PROMPT COMPLETENESS: The prompt must be self-contained — an agent receiving only the prompt and the codebase path should be able to execute the full audit without additional context."
+  - "USER FOCUS INTEGRATION: The user's audit_description MUST be reflected in the prompt. If the user mentions specific concerns (e.g., 'I am worried about the proof verification logic'), those concerns must appear as elevated focus areas in the relevant domain."
+outcome:
+  - Prism runs against audit domains grounded in this codebase's actual architecture and risk exposure, rather than a generic security checklist
+  - The analysis is partitioned into the discrete scopes each prism run will cover
+transitions:
+  - to: execute-analysis
+    isDefault: true

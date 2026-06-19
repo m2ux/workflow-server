@@ -82,8 +82,8 @@ technique; agents do not assemble it by hand.
 
 A persona contract: responsibilities, authority, refusals, qualified techniques.
 Roles have **no on-disk file** — they live as `##` sections within the workflow
-definition (`workflow.toon`, e.g. `## Engineer`, `## Reviewer`). Role-to-technique
-binding lives in `workflow.toon` activity definitions, not in frontmatter.
+definition (`workflow.yaml`, e.g. `## Engineer`, `## Reviewer`). Role-to-technique
+binding lives in `workflow.yaml` activity definitions, not in frontmatter.
 
 ## Tools
 

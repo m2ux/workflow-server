@@ -1,0 +1,30 @@
+id: implementation
+version: 1.3.0
+name: Implementation
+description: Execute each planned work package in priority order by triggering the work-package workflow
+techniques:
+  - scatter-gather
+triggers:
+  - workflow: work-package
+    description: Each iteration starts the work-package workflow for one planned package
+    passContext:
+      - current_package
+      - initiative_name
+      - parent_workflow
+steps:
+  - kind: technique
+    id: initialize-iteration
+    technique: orchestrate-package-execution::initialize-iteration
+  - kind: loop
+    id: package-iteration
+    name: Package Iteration
+    loopType: forEach
+    variable: current_package
+    over: remaining_packages
+    steps:
+      - kind: technique
+        id: execute-package
+        technique: orchestrate-package-execution::execute-package
+outcome:
+  - Every planned package is delivered as merged, reviewed work, so the initiative's intended capability is fully in place
+  - Progress tracking reflects a finished initiative, giving stakeholders a trustworthy completion signal

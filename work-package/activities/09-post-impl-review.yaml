@@ -1,0 +1,185 @@
+id: post-impl-review
+version: 1.13.0
+name: Post-Implementation Review
+description: Review implementation quality before validation.
+required: true
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting post-implementation review
+  - kind: technique
+    id: gitnexus-detect-changes-preflight
+    technique: gitnexus-operations::detect-changes
+    when: gitnexus_indexed == true
+  - kind: technique
+    id: manual-diff-review
+    technique: review-diff
+  - kind: checkpoint
+    id: file-index-table
+    message: "File index written to {change_block_index}. The index includes a rationale paragraph for each change block written by the agent. Please review the diff in your side-by-side app. Then: (1) confirm the rationale paragraphs are accurate (or note corrections), and (2) provide row numbers for any blocks with issues (e.g., '24, 31, 106') or 'none'. Your confirmation of the rationale serves as your provenance attestation for each change."
+    blocking: true
+    options:
+      - id: rationale-confirmed
+        label: Rationale confirmed — no issues
+        description: Agent rationale paragraphs are accurate. All changes understood. Proceed with automated reviews.
+        effect:
+          setVariable:
+            rationale_confirmed: true
+      - id: rationale-confirmed-with-issues
+        label: Rationale confirmed (with corrections) — issues found
+        description: Provide corrections to any rationale paragraphs and comma-separated block indices with issues
+        effect:
+          setVariable:
+            has_flagged_blocks: true
+            rationale_confirmed: true
+      - id: has-issues
+        label: Issues found — rationale not yet reviewed
+        description: Enter comma-separated list of block indices with issues; rationale review deferred
+        effect:
+          setVariable:
+            has_flagged_blocks: true
+  - kind: checkpoint
+    id: rationale-amendment
+    condition:
+      type: simple
+      variable: rationale_confirmed
+      operator: ==
+      value: true
+    message: Please provide any corrections to the agent rationale paragraphs in change-block-index.md, or confirm they are all accurate. Corrections are recorded in manual-diff-review-report.md as your provenance statement.
+    blocking: false
+    defaultOption: all-accurate
+    autoAdvanceMs: 20000
+    options:
+      - id: all-accurate
+        label: All rationale paragraphs are accurate (default)
+        description: No corrections needed — rationale confirmed as written
+      - id: provide-corrections
+        label: Provide corrections to specific blocks
+        description: Amend rationale paragraphs for one or more blocks
+  - kind: checkpoint
+    id: block-interview
+    condition:
+      type: simple
+      variable: has_flagged_blocks
+      operator: ==
+      value: true
+    message: "Reviewing block {current_block_index}: {block_path}:{block_line_range}. What's the issue with this change?"
+    blocking: true
+    options:
+      - id: issue-recorded
+        label: Issue recorded - continue
+        description: Move to next flagged block
+      - id: critical-blocker
+        label: This is a critical blocker
+        description: Mark as blocking issue that must be fixed
+        effect:
+          setVariable:
+            has_critical_blocker: true
+      - id: skip-block
+        label: Skip this block
+        description: No longer an issue, move to next
+  - kind: technique
+    id: code-review
+    technique: review-code
+  - kind: technique
+    id: structural-analysis-inline
+    technique: prism/structural-analysis
+    condition:
+      type: not
+      condition:
+        type: simple
+        variable: problem_complexity
+        operator: ==
+        value: complex
+  - kind: action
+    id: dispatch-prism
+    condition:
+      type: simple
+      variable: problem_complexity
+      operator: ==
+      value: complex
+    actions: []
+  - kind: technique
+    id: test-suite-review
+    technique: review-test-suite
+  - kind: loop
+    id: review-fix-cycle
+    name: Review-Fix Cycle
+    loopType: doWhile
+    condition:
+      type: or
+      conditions:
+        - type: simple
+          variable: needs_code_fixes
+          operator: ==
+          value: true
+        - type: simple
+          variable: needs_test_improvements
+          operator: ==
+          value: true
+    maxIterations: 3
+    steps:
+      - kind: technique
+        id: apply-fixes
+        technique: apply-review-fixes
+      - kind: action
+        id: reset-fix-flags
+        actions:
+          - action: set
+            target: needs_code_fixes
+            value: false
+            message: Reset code-fix flag before re-review.
+          - action: set
+            target: needs_test_improvements
+            value: false
+            message: Reset test-improvement flag before re-review.
+      - kind: technique
+        id: regenerate-index
+        technique: review-diff
+      - kind: technique
+        id: re-manual-diff-review
+        technique: review-diff
+      - kind: technique
+        id: re-code-review
+        technique: review-code
+      - kind: technique
+        id: re-test-suite-review
+        technique: review-test-suite
+  - kind: technique
+    id: architecture-summary
+    technique: summarize-architecture
+    required: false
+    condition:
+      type: simple
+      variable: skip_architecture_summary
+      operator: "!="
+      value: true
+  - kind: technique
+    id: classify-and-route-findings
+    technique: findings-classification
+decisions:
+  - id: blocker-gate
+    name: Critical Blocker Gate
+    branches:
+      - id: has-blocker
+        label: Critical blocker found — return to implement
+        condition:
+          type: simple
+          variable: has_critical_blocker
+          operator: ==
+          value: true
+        transitionTo: implement
+      - id: no-blocker
+        label: No critical blockers — proceed to validate
+        isDefault: true
+transitions:
+  - to: validate
+    isDefault: true
+outcome:
+  - Every change block has a confirmed rationale and provenance attestation, so reviewers can trust each change is understood and intentional
+  - Code-level defects and risks are surfaced and triaged before validation
+  - Structural risks across the change set are identified for triage
+  - Test coverage gaps are surfaced so they can be closed before validation
+  - A stakeholder-readable architecture overview is available when the change warrants one
