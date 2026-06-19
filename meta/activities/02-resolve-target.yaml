@@ -1,0 +1,59 @@
+id: resolve-target
+version: 4.1.0
+name: Resolve Target
+description: Detect the target repository structure (regular directory vs. submodule monorepo) and resolve target_path.
+required: true
+rules:
+  - target_path MUST resolve to a directory containing a working git tree
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Resolving target repository structure
+  - kind: technique
+    id: detect-monorepo
+    technique: version-control::detect-repo-type
+  - kind: checkpoint
+    id: repo-type-confirmed
+    message: Is this a regular repository or a submodule monorepo?
+    options:
+      - id: regular
+        label: Regular repository
+        description: Single-repo project; target_path will be the repository root
+        effect:
+          setVariable:
+            is_monorepo: false
+            target_path: .
+      - id: monorepo
+        label: Submodule monorepo
+        description: Parent repo with submodules; the next step will list submodules for selection
+        effect:
+          setVariable:
+            is_monorepo: true
+  - kind: technique
+    id: list-submodules
+    technique: version-control::list-submodules
+    when: is_monorepo == true
+  - kind: action
+    id: capture-submodule-target
+    when: is_monorepo == true
+    actions: []
+  - kind: checkpoint
+    id: submodule-selection
+    condition:
+      type: simple
+      variable: is_monorepo
+      operator: ==
+      value: true
+    message: Select the target submodule from the enumerated entries. target_path is set to the chosen submodule path.
+    options:
+      - id: submodule-chosen
+        label: Submodule selected
+        description: Proceed with the chosen submodule as target_path
+transitions:
+  - to: dispatch-client-workflow
+    isDefault: true
+outcome:
+  - The orchestrator knows whether it is operating on a single repo or a submodule monorepo, and which submodule the user intends as the target
+  - Downstream git operations have a confirmed working git tree to act on, whether the repo root or a chosen submodule

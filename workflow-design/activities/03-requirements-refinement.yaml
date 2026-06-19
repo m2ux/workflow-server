@@ -1,0 +1,130 @@
+id: requirements-refinement
+version: 1.3.0
+name: Requirements Refinement
+description: Guided elicitation of the workflow specification across purpose, activities, checkpoints, artifacts, variables, techniques, and rules.
+required: true
+rules:
+  - One question at a time — present each checkpoint independently and wait for the response before proceeding
+  - Show what was captured so far before asking the next question
+  - Do not assume answers — if the user's description is ambiguous, ask for clarification
+steps:
+  - kind: technique
+    id: elicitation
+    technique: elicitation
+  - kind: checkpoint
+    id: purpose-confirmed
+    message: Here is the workflow purpose and domain I've captured. Is this accurate?
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes, that's right
+        description: Purpose is accurately captured
+      - id: refine
+        label: Needs refinement
+        description: Purpose statement requires clarification before proceeding.
+  - kind: checkpoint
+    id: activities-confirmed
+    message: Here is the activity list I've captured with names, purposes, and expected artifacts. Is this complete?
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes, this is complete
+        description: Activity list is accurate and complete
+      - id: refine
+        label: Needs changes
+        description: Activity list requires additions, removals, or modifications.
+  - kind: checkpoint
+    id: model-confirmed
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "!="
+      value: true
+    message: Based on our discussion, this workflow uses a {sequential/independent} activity model. Is this correct?
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes, correct model
+        description: Activity model is correct
+      - id: change
+        label: Change model
+        description: Activity model needs to be switched to the alternative.
+  - kind: checkpoint
+    id: checkpoints-confirmed
+    message: Here are the checkpoints I've defined for each activity with their options and effects. Do these cover all necessary user decision points?
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes, checkpoints are complete
+        description: Checkpoint coverage is adequate
+      - id: refine
+        label: Needs changes
+        description: Checkpoint set requires additions, removals, or modifications.
+  - kind: checkpoint
+    id: artifacts-confirmed
+    message: Here are the artifacts each activity produces. Is this complete?
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes, artifacts are complete
+        description: Artifact list is accurate
+      - id: refine
+        label: Needs changes
+        description: Artifact set requires additions, removals, or modifications.
+  - kind: checkpoint
+    id: variables-confirmed
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "!="
+      value: true
+    message: Here are the workflow variables I've identified for state tracking. Is this complete?
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes, variables are complete
+        description: Variable list is accurate
+      - id: refine
+        label: Needs changes
+        description: Variable set requires additions, removals, or modifications.
+  - kind: checkpoint
+    id: techniques-confirmed
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "!="
+      value: true
+    message: Here are the techniques needed by this workflow. Is this complete?
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes, techniques are complete
+        description: Technique list is accurate
+      - id: refine
+        label: Needs changes
+        description: Technique set requires additions, removals, or modifications.
+  - kind: checkpoint
+    id: rules-confirmed
+    message: Here are the workflow rules I've captured, each marked as text-only or structurally enforced. Is this complete?
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes, rules are complete
+        description: Rule list is accurate
+        effect:
+          setVariable:
+            requirements_confirmed: true
+      - id: refine
+        label: Needs changes
+        description: Rule set requires additions, removals, or modifications.
+transitions:
+  - to: impact-analysis
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: ==
+      value: true
+  - to: pattern-analysis
+    isDefault: true
+outcome:
+  - A complete workflow specification — purpose, activities, checkpoints, artifacts, variables, techniques, and rules — that the user has confirmed across every dimension, so drafting proceeds from settled requirements rather than open questions

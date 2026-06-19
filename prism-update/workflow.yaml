@@ -1,0 +1,53 @@
+id: prism-update
+version: 1.1.0
+title: Prism Update Workflow
+description: Sync the prism workflow's resources, techniques, and documentation with upstream changes from the agi-in-md project.
+author: m2ux
+tags:
+  - prism
+  - maintenance
+  - sync
+rules:
+  workflow:
+    - "SINGLE-AGENT EXECUTION: This workflow runs as a single agent — no orchestrator/worker split. The executing agent performs all steps directly."
+  activity:
+    - "WORKTREE SCOPE: All file operations happen in the workflows worktree (workflows/ directory). Never modify MCP server source (src/, schemas/)."
+    - "RESOURCE NAMING: Resources use the convention {NN}-{hyphenated-name}.md where NN is a zero-padded index. Indices are permanent — never reuse a deleted index."
+    - "VERBATIM COPY: Upstream prism content is copied verbatim including YAML frontmatter. Do not modify lens prompt content during import."
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: planning_folder_path
+    type: string
+    description: Path to the planning folder for this workflow execution (e.g., .engineering/artifacts/planning/prism-update-YYYY-MM-DD)
+  - name: upstream_path
+    type: string
+    description: Path to the upstream prisms directory (e.g., /path/to/agi-in-md/prisms/)
+    required: true
+  - name: resource_path
+    type: string
+    description: Path to the prism workflow resources directory
+    defaultValue: prism/resources/
+  - name: change_set
+    type: object
+    description: "Categorized diff result: { new: [{name, upstream_file, family, optimal_model}], modified: [{name, resource_file, upstream_file}], renamed: [{old_name, new_name, resource_file, upstream_file}], deleted: [{name, resource_file}] }"
+  - name: exclusions
+    type: array
+    description: Prism filenames to exclude from import (e.g., arc_code.md, codegen.md)
+    defaultValue: "[]"
+  - name: next_index
+    type: number
+    description: Next available resource index, derived from highest existing index + 1
+  - name: branch_name
+    type: string
+    description: Feature branch name for the update
+  - name: exclusions_adjusted
+    type: boolean
+    description: Whether the user chose to adjust exclusions at the review checkpoint
+    defaultValue: false
+  - name: has_issues
+    type: boolean
+    description: Whether verification found consistency issues requiring fixes
+    defaultValue: false
+initialActivity: discover-changes

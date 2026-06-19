@@ -1,0 +1,160 @@
+id: implement
+version: 2.9.0
+name: Implement Tasks
+description: Execute the implementation plan task by task.
+required: true
+techniques:
+  - scatter-gather
+steps:
+  - kind: action
+    id: verify-preconditions
+    actions:
+      - action: validate
+        target: branch
+        message: Verify on correct feature branch before any code changes
+  - kind: loop
+    id: task-cycle
+    name: Task Implementation Cycle
+    loopType: forEach
+    variable: current_task
+    over: implementation_plan.tasks
+    steps:
+      - kind: technique
+        id: implement-task
+        technique: implement-task
+      - kind: checkpoint
+        id: switch-model-pre-impl
+        message: Implementation requires the full model for code generation. You may switch to your preferred implementation model. Proceeding in 10s.
+        blocking: false
+        defaultOption: continue-current
+        autoAdvanceMs: 10000
+        options:
+          - id: switched
+            label: Switched model — proceed
+            description: Model has been switched to a higher-capability model for implementation
+          - id: continue-current
+            label: Continue with current model
+            description: Proceed with the current model without switching
+      - kind: technique
+        id: run-tests
+        technique:
+          name: cargo-operations::test
+          inputs:
+            build_scope: -p {current_task.crate}
+      - kind: technique
+        id: commit
+        technique: manage-git::artifact-commits
+      - kind: technique
+        id: log-provenance
+        technique: dco-provenance::append-task-row
+      - kind: technique
+        id: self-review
+        technique: task-completion-review
+      - kind: checkpoint
+        id: symbol-provenance-confirmed
+        condition:
+          type: simple
+          variable: has_uncertain_symbols
+          operator: ==
+          value: true
+        message: |-
+          One or more symbols in this task could not be confirmed against the codebase or declared dependencies:
+
+          {uncertain_symbols}
+
+          Investigate before proceeding, or confirm they were introduced intentionally by this task.
+        blocking: true
+        options:
+          - id: confirmed
+            label: Symbols are intentional — proceed
+            description: The flagged symbols were introduced intentionally by this task or were verified manually; continue.
+          - id: uncertain
+            label: Investigate before proceeding
+            description: Pause the loop and investigate symbol provenance before continuing.
+      - kind: technique
+        id: collect-assumptions
+        technique: review-assumptions::collect
+  - kind: technique
+    id: reconcile-assumptions
+    technique: review-assumptions::reconcile
+  - kind: loop
+    id: assumption-reconciliation
+    name: Assumption Reconciliation Loop
+    loopType: while
+    condition:
+      type: simple
+      variable: has_resolvable_assumptions
+      operator: ==
+      value: true
+    steps:
+      - kind: technique
+        id: reconcile-iteration
+        technique: review-assumptions::reconcile
+  - kind: technique
+    id: present-resolved-assumptions
+    technique: review-assumptions::interview
+    actions:
+      - action: message
+        message: "**Resolved Assumptions** — the following implementation assumptions were resolved through code analysis."
+  - kind: technique
+    id: interview-open-assumptions
+    technique: review-assumptions::interview
+  - kind: loop
+    id: assumption-interview
+    name: Assumption Interview Loop
+    loopType: forEach
+    variable: current_assumption
+    over: open_assumptions
+    maxIterations: 20
+    steps:
+      - kind: technique
+        id: present-assumption
+        technique: review-assumptions::interview
+      - kind: checkpoint
+        id: implementation-assumption-interview
+        condition:
+          type: simple
+          variable: has_open_assumptions
+          operator: ==
+          value: true
+        message: "Assumption {current_assumption.id}: {current_assumption.statement}. Can you resolve this, or defer to stakeholders?"
+        blocking: true
+        options:
+          - id: resolve-inline
+            label: Resolve now
+            description: Provide resolution for this assumption — it will be marked as resolved in the assumptions log
+            effect:
+              setVariable:
+                assumption_resolved_inline: true
+          - id: defer-to-stakeholder
+            label: Defer to stakeholder review
+            description: Queue this assumption for stakeholder review in the issue tracker
+            effect:
+              setVariable:
+                assumption_deferred: true
+      - kind: technique
+        id: record-response
+        technique: review-assumptions::record
+  - kind: technique
+    id: update-assumptions-log
+    technique: review-assumptions::record
+  - kind: checkpoint
+    id: switch-model-post-impl
+    message: Implementation complete. You may switch to a lower-cost model for the review phases. Proceeding in 10s.
+    blocking: false
+    defaultOption: continue-current
+    autoAdvanceMs: 10000
+    options:
+      - id: switched
+        label: Switched model — proceed
+        description: Model has been switched for the review phases
+      - id: continue-current
+        label: Continue with current model
+        description: Proceed with the current model without switching
+transitions:
+  - to: post-impl-review
+    isDefault: true
+outcome:
+  - All tasks implemented
+  - The implemented work is captured as reviewable, attributable commits on the feature branch
+  - An auditable per-task record of what changed and why exists to support the later DCO attestation

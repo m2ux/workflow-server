@@ -1,0 +1,8 @@
+id: deliver-result
+version: 3.1.0
+name: Deliver Result
+description: Present the final report to the user.
+steps:
+  - kind: technique
+    id: present-result
+    technique: present-result

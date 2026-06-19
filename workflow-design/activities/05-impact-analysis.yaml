@@ -1,0 +1,45 @@
+id: impact-analysis
+version: 1.2.0
+name: Impact Analysis
+description: Impact assessment of proposed changes against an existing workflow's files, transitions, and references.
+required: false
+rules:
+  - Every file in the existing workflow must be examined for potential impact
+  - Content being removed must be explicitly flagged and confirmed
+steps:
+  - kind: action
+    id: verify-preconditions
+    actions:
+      - action: validate
+        target: is_update_mode
+        message: Impact analysis requires update mode — is_update_mode must be true
+  - kind: technique
+    id: impact-analysis
+    technique: impact-analysis
+  - kind: checkpoint
+    id: impact-confirmed
+    message: "Here is the impact analysis: files directly modified, files indirectly affected, and any broken references detected. Does this scope look correct?"
+    options:
+      - id: confirmed
+        label: Yes, impact scope is correct
+        description: Impact scope is accurate and complete.
+      - id: revise
+        label: Needs revision
+        description: Impact scope is incomplete or over-inclusive.
+  - kind: checkpoint
+    id: preservation-confirmed
+    message: The following content will be removed or replaced. Please confirm each removal is intentional.
+    options:
+      - id: confirmed
+        label: All removals are intentional
+        description: Every flagged removal is intentional and approved.
+      - id: preserve
+        label: Preserve some content
+        description: Some flagged content must be preserved rather than removed.
+transitions:
+  - to: scope-and-draft
+    isDefault: true
+outcome:
+  - Drafting knows exactly which files the change touches and how, so the edit blast radius is bounded before any content is written
+  - Transition chains and technique/resource references are known-intact, so the update won't silently orphan or break the workflow's wiring
+  - No content disappears by accident — every removal is one the user consciously approved

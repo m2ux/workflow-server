@@ -1,0 +1,54 @@
+id: resolution-dialogue
+version: 1.2.0
+name: Resolution Dialogue
+description: Propose mitigations for each evaluation finding one-by-one.
+techniques:
+  - scatter-gather
+steps:
+  - kind: technique
+    id: load-and-classify
+    technique: resolve-findings::load-and-classify
+  - kind: loop
+    id: finding-iteration
+    name: Finding Iteration
+    loopType: forEach
+    variable: current_finding
+    over: evaluation_findings
+    maxIterations: 100
+    steps:
+      - kind: technique
+        id: propose-mitigation
+        technique: resolve-findings::propose-mitigation-by-tier
+      - kind: technique
+        id: present-and-collect-decision
+        technique: resolve-findings::present-and-collect-per-finding
+        actions:
+          - action: set
+            target: accepted_mitigations
+            description: Append the finding's recorded decision.
+  - kind: technique
+    id: compile-plan
+    technique: resolve-findings::compile-plan
+  - kind: checkpoint
+    id: finding-decision
+    message: "Finding {current_finding.id} ({current_finding.severity}): Here is the proposed mitigation. How would you like to proceed?"
+    options:
+      - id: accept
+        label: Accept
+        description: Accept the proposed mitigation as-is
+      - id: modify
+        label: Accept with modifications
+        description: Accept the intent but adjust the wording or approach
+      - id: skip
+        label: Skip
+        description: Skip this finding — no mitigation
+      - id: discuss
+        label: Discuss
+        description: Discuss this finding further before deciding
+    blocking: true
+transitions:
+  - to: apply-mitigations
+    isDefault: true
+outcome:
+  - Every finding has a mitigation the user has explicitly decided on, preserving the nuance that batch review would lose
+  - The accepted mitigations are captured as a priority-ordered, change-specified plan precise enough to apply to the target

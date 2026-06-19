@@ -44,15 +44,15 @@ graph TD
 
 ## Activities
 
-Each activity's authoritative definition lives in its [`activities/NN-<id>.toon`](activities/) file (served by `get_activity`). This is the at-a-glance map; see the [activities README](activities/README.md) for per-activity orientation.
+Each activity's authoritative definition lives in its [`activities/NN-<id>.yaml`](activities/) file (served by `get_activity`). This is the at-a-glance map; see the [activities README](activities/README.md) for per-activity orientation.
 
 | # | Activity | Role |
 |---|----------|------|
-| 00 | **[Discover Changes](activities/00-discover-changes.toon)** | Diff upstream prisms/ against current resources and categorize what changed |
-| 01 | **[Review Changes](activities/01-review-changes.toon)** | Present the change set so the user can confirm scope and exclusions |
-| 02 | **[Apply Updates](activities/02-apply-updates.toon)** | Import resource changes, then bring skill routing and docs into line with them |
-| 03 | **[Verify Consistency](activities/03-verify.toon)** | Confirm no stale references, routing mismatches, or count/index errors remain |
-| 04 | **[Commit and Submit](activities/04-commit-and-submit.toon)** | Land the update as a feature branch and open a pull request |
+| 00 | **[Discover Changes](activities/00-discover-changes.yaml)** | Diff upstream prisms/ against current resources and categorize what changed |
+| 01 | **[Review Changes](activities/01-review-changes.yaml)** | Present the change set so the user can confirm scope and exclusions |
+| 02 | **[Apply Updates](activities/02-apply-updates.yaml)** | Import resource changes, then bring skill routing and docs into line with them |
+| 03 | **[Verify Consistency](activities/03-verify.yaml)** | Confirm no stale references, routing mismatches, or count/index errors remain |
+| 04 | **[Commit and Submit](activities/04-commit-and-submit.yaml)** | Land the update as a feature branch and open a pull request |
 
 ---
 
@@ -102,15 +102,15 @@ User receives:
 
 ```
 workflows/prism-update/
-├── workflow.toon
+├── workflow.yaml
 ├── README.md
 ├── activities/
 │   ├── README.md
-│   ├── 00-discover-changes.toon
-│   ├── 01-review-changes.toon
-│   ├── 02-apply-updates.toon
-│   ├── 03-verify.toon
-│   └── 04-commit-and-submit.toon
+│   ├── 00-discover-changes.yaml
+│   ├── 01-review-changes.yaml
+│   ├── 02-apply-updates.yaml
+│   ├── 03-verify.yaml
+│   └── 04-commit-and-submit.yaml
 └── techniques/
     ├── TECHNIQUE.md
     ├── diff-upstream.md

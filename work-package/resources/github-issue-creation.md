@@ -9,7 +9,7 @@ metadata:
 
 # GitHub Issue Creation Guide
 
-**Purpose:** Reference material for creating GitHub issues. Provides templates, anti-patterns, and guidelines. Flow and checkpoints are defined in the [Issue Management Activity](../activities/01-issue-management.toon).
+**Purpose:** Reference material for creating GitHub issues. Provides templates, anti-patterns, and guidelines. Flow and checkpoints are defined in the [Issue Management Activity](../activities/01-issue-management.yaml).
 
 ---
 

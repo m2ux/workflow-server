@@ -1,0 +1,29 @@
+id: prioritization
+version: 1.2.0
+name: Prioritization
+description: Prioritize work packages based on dependencies, value, risk, and effort
+steps:
+  - kind: technique
+    id: prioritize
+    technique: prioritize-packages
+  - kind: checkpoint
+    id: priority-confirmed
+    message: Here's the proposed priority order. Adjust as needed?
+    options:
+      - id: accept
+        label: Accept priority order
+        effect:
+          transitionTo: finalize-roadmap
+      - id: adjust
+        label: Adjust priorities
+        effect:
+          transitionTo: prioritization
+      - id: revisit
+        label: Revisit package plans
+        effect:
+          transitionTo: package-planning
+transitions:
+  - to: finalize-roadmap
+    isDefault: true
+outcome:
+  - There is a user-approved execution order that respects dependencies, value, and risk, so implementation knows which package to start next

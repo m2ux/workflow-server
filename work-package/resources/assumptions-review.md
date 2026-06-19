@@ -588,5 +588,5 @@ N/A
 
 ## Related Guides
 
-- [Work Package Implementation Workflow](../workflow.toon)
+- [Work Package Implementation Workflow](../workflow.yaml)
 - [Task Completion Review Guide](task-completion-review.md)

@@ -1,0 +1,37 @@
+id: validate-specification
+version: 1.3.0
+name: Validate Specification
+description: Validate the updated specification against structural, identifier-uniqueness, consistency, and protocol-conformance checks, categorize each issue as critical or correctable, and route to finalization, another correction pass, or failure reporting.
+required: true
+steps:
+  - kind: technique
+    id: validate-specification
+    technique: validate-specification
+transitions:
+  - to: finalize-specification
+    condition:
+      type: simple
+      variable: validation_passed
+      operator: ==
+      value: true
+  - to: update-specification
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: has_correctable_issues
+          operator: ==
+          value: true
+        - type: simple
+          variable: has_critical_issues
+          operator: ==
+          value: false
+        - type: simple
+          variable: correction_iteration
+          operator: <
+          value: 3
+  - to: report-failure
+    isDefault: true
+outcome:
+  - The workflow knows whether the specification is sound and, for every remaining defect, whether it is fatal or fixable
+  - The workflow can route confidently to finalization, another correction pass, or failure without re-inspecting the specification

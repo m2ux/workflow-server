@@ -13,7 +13,7 @@ Audit drafted content for convention conformance against reference workflows —
 
 ### 1. Audit Conformance
 
-- Compare against reference workflows for file naming (`NN-name.toon`), field ordering, version format (`X.Y.Z`), transition patterns, checkpoint structure, and technique structure
+- Compare against reference workflows for file naming (`NN-name.yaml`), field ordering, version format (`X.Y.Z`), transition patterns, checkpoint structure, and technique structure
 - Flag every divergence; for each, decide whether the divergence is justified or should be brought into conformance
 - Where drafted content uses different naming or structural patterns than existing workflows, identify the divergence against the reference workflows and align with the established conventions
 

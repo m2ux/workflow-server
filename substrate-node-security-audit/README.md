@@ -85,11 +85,11 @@ The primary audit dispatches all specialized agent groups concurrently in a sing
 
 | Group | Agents | Activity | Scope |
 |-------|--------|----------|-------|
-| A | 1 per priority-1/2 scope (~7 agents: A1-A7) | [`sub-crate-review`](./activities/10-sub-crate-review.toon) | Deep crate-level review of priority-1/2 crates. Node binary is split into A3 (startup/config) and A4 (consensus/network); runtime and governance are split into A5 (runtime) and A7 (governance pallets) to prevent prompt saturation. |
-| B | 1 | [`sub-static-analysis`](./activities/11-sub-static-analysis.toon) | Pattern-based and mechanical static analysis across the whole in-scope surface. |
-| D | 2 (D1, D2) | [`sub-toolkit-review`](./activities/12-sub-toolkit-review.toon) | D1: ledger helpers (wallet, transaction, context). D2: toolkit, upgrader, aiken crates. |
-| V | 1 | [`sub-output-verification`](./activities/14-sub-output-verification.toon) | Mechanical validation of all agent outputs in a fresh context window. Dispatched after collection, before merge. |
-| M | 1 | [`sub-structured-merge`](./activities/15-sub-structured-merge.toon) | Finding-lossless merge, deduplication, severity scoring, and reconciliation in a fresh context window after V. |
+| A | 1 per priority-1/2 scope (~7 agents: A1-A7) | [`sub-crate-review`](./activities/10-sub-crate-review.yaml) | Deep crate-level review of priority-1/2 crates. Node binary is split into A3 (startup/config) and A4 (consensus/network); runtime and governance are split into A5 (runtime) and A7 (governance pallets) to prevent prompt saturation. |
+| B | 1 | [`sub-static-analysis`](./activities/11-sub-static-analysis.yaml) | Pattern-based and mechanical static analysis across the whole in-scope surface. |
+| D | 2 (D1, D2) | [`sub-toolkit-review`](./activities/12-sub-toolkit-review.yaml) | D1: ledger helpers (wallet, transaction, context). D2: toolkit, upgrader, aiken crates. |
+| V | 1 | [`sub-output-verification`](./activities/14-sub-output-verification.yaml) | Mechanical validation of all agent outputs in a fresh context window. Dispatched after collection, before merge. |
+| M | 1 | [`sub-structured-merge`](./activities/15-sub-structured-merge.yaml) | Finding-lossless merge, deduplication, severity scoring, and reconciliation in a fresh context window after V. |
 
 ### Dispatch and Consolidation
 
@@ -129,9 +129,9 @@ All 10 primary agents (A1-A7, B, D1, D2) dispatch concurrently. After all agents
 
 ### Verification Gates
 
-After agent collection, a dedicated verification sub-agent (V) runs all verification checks in a fresh context window. This prevents the orchestrator's context saturation from causing shallow verification — the primary source of cross-run inconsistency. Any failure triggers targeted follow-up agent dispatch before proceeding. The authoritative gate set lives in the [`verify-sub-agent-output`](./techniques/verify-sub-agent-output.md) technique and [`sub-output-verification`](./activities/14-sub-output-verification.toon) activity.
+After agent collection, a dedicated verification sub-agent (V) runs all verification checks in a fresh context window. This prevents the orchestrator's context saturation from causing shallow verification — the primary source of cross-run inconsistency. Any failure triggers targeted follow-up agent dispatch before proceeding. The authoritative gate set lives in the [`verify-sub-agent-output`](./techniques/verify-sub-agent-output.md) technique and [`sub-output-verification`](./activities/14-sub-output-verification.yaml) activity.
 
-Each sub-agent bootstraps the workflow-server, loads its assigned activity and the [`execute-sub-agent`](./techniques/execute-sub-agent.md) technique, then follows its steps sequentially with verifiable outputs. The structured sub-agent flows are defined in [`sub-crate-review`](./activities/10-sub-crate-review.toon), [`sub-static-analysis`](./activities/11-sub-static-analysis.toon), and [`sub-toolkit-review`](./activities/12-sub-toolkit-review.toon).
+Each sub-agent bootstraps the workflow-server, loads its assigned activity and the [`execute-sub-agent`](./techniques/execute-sub-agent.md) technique, then follows its steps sequentially with verifiable outputs. The structured sub-agent flows are defined in [`sub-crate-review`](./activities/10-sub-crate-review.yaml), [`sub-static-analysis`](./activities/11-sub-static-analysis.yaml), and [`sub-toolkit-review`](./activities/12-sub-toolkit-review.yaml).
 
 ### Sub-Agent Activity Flows
 
@@ -176,7 +176,7 @@ The `variable-binding` technique is declared once at `workflow.techniques.activi
 
 ### 1. Scope Setup
 
-Pins the audit to a single confirmed, reproducible target at an exact commit, surfaces known-vulnerable dependencies before code review begins, and establishes the planning folder every later phase reads and writes. Any reference report is quarantined out of scope until gap analysis. See [`01-scope-setup.toon`](./activities/01-scope-setup.toon).
+Pins the audit to a single confirmed, reproducible target at an exact commit, surfaces known-vulnerable dependencies before code review begins, and establishes the planning folder every later phase reads and writes. Any reference report is quarantined out of scope until gap analysis. See [`01-scope-setup.yaml`](./activities/01-scope-setup.yaml).
 
 **Artifacts:** `START-HERE.md`
 
@@ -184,7 +184,7 @@ Pins the audit to a single confirmed, reproducible target at an exact commit, su
 
 ### 2. Reconnaissance
 
-Classifies the in-scope surface by crate priority, maps trust boundaries and consensus-critical paths, builds the function registry, and produces a security model of the system, so every in-scope area is bound to a responsible agent with complete, non-overlapping coverage. See [`02-reconnaissance.toon`](./activities/02-reconnaissance.toon).
+Classifies the in-scope surface by crate priority, maps trust boundaries and consensus-critical paths, builds the function registry, and produces a security model of the system, so every in-scope area is bound to a responsible agent with complete, non-overlapping coverage. See [`02-reconnaissance.yaml`](./activities/02-reconnaissance.yaml).
 
 **Artifacts:** `r-crate-map.json`, `r-function-registry.json`, `r-reconnaissance-data.json`, `s-architectural-analysis.json`, `README.md` (scope and architecture summary)
 
@@ -192,19 +192,19 @@ Classifies the in-scope surface by crate priority, maps trust boundaries and con
 
 ### 3. Primary Audit
 
-Evaluates every priority-1/2 crate against the full §3 checklist in dedicated context windows via concurrent multi-agent dispatch, then validates output completeness with a fresh-context verification agent (V) and consolidates with a fresh-context merge agent (M) before proceeding. See [`03-primary-audit.toon`](./activities/03-primary-audit.toon).
+Evaluates every priority-1/2 crate against the full §3 checklist in dedicated context windows via concurrent multi-agent dispatch, then validates output completeness with a fresh-context verification agent (V) and consolidates with a fresh-context merge agent (M) before proceeding. See [`03-primary-audit.yaml`](./activities/03-primary-audit.yaml).
 
 ---
 
 ### 4. Adversarial Verification
 
-Re-checks every high-stakes PASS verdict at the property level to recover findings primary agents missed as false PASSes, so first-positive-signal bias can no longer hide a real finding behind a premature PASS. The agent's role is to refute, not confirm. See [`04-adversarial-verification.toon`](./activities/04-adversarial-verification.toon).
+Re-checks every high-stakes PASS verdict at the property level to recover findings primary agents missed as false PASSes, so first-positive-signal bias can no longer hide a real finding behind a premature PASS. The agent's role is to refute, not confirm. See [`04-adversarial-verification.yaml`](./activities/04-adversarial-verification.yaml).
 
 ---
 
 ### 5. Report Generation
 
-Consolidates findings from primary audit and adversarial verification into a single audit report where every finding carries a defensible, cross-checked severity and both coverage and finding-completeness are attested. See [`05-report-generation.toon`](./activities/05-report-generation.toon).
+Consolidates findings from primary audit and adversarial verification into a single audit report where every finding carries a defensible, cross-checked severity and both coverage and finding-completeness are attested. See [`05-report-generation.yaml`](./activities/05-report-generation.yaml).
 
 **Artifacts:** `01-audit-report.md`
 
@@ -212,7 +212,7 @@ Consolidates findings from primary audit and adversarial verification into a sin
 
 ### 6. Ensemble Pass (Optional)
 
-Runs the audit a second time with a different model configuration on priority-1/2 components and union-merges with primary results, so findings any single run misses non-deterministically are recovered. Runs only when an ensemble pass was requested. See [`06-ensemble-pass.toon`](./activities/06-ensemble-pass.toon).
+Runs the audit a second time with a different model configuration on priority-1/2 components and union-merges with primary results, so findings any single run misses non-deterministically are recovered. Runs only when an ensemble pass was requested. See [`06-ensemble-pass.yaml`](./activities/06-ensemble-pass.yaml).
 
 **Artifacts:** `second-pass-findings.md`
 
@@ -220,7 +220,7 @@ Runs the audit a second time with a different model configuration on priority-1/
 
 ### 7. Gap Analysis (Optional)
 
-Compares the finalized AI audit report against a professional reference report so its coverage and severity calibration are measurable against a benchmark, with root-cause analysis for any structural blind spots. Runs only when a reference report is supplied. See [`07-gap-analysis.toon`](./activities/07-gap-analysis.toon).
+Compares the finalized AI audit report against a professional reference report so its coverage and severity calibration are measurable against a benchmark, with root-cause analysis for any structural blind spots. Runs only when a reference report is supplied. See [`07-gap-analysis.yaml`](./activities/07-gap-analysis.yaml).
 
 **Artifacts:** `02-gap-analysis.md`
 
@@ -232,13 +232,13 @@ These activities are dispatched by the orchestrator during reconnaissance or pri
 
 | Activity | Used By | Phase | Role |
 |----------|---------|-------|------|
-| [`sub-reconnaissance`](./activities/16-sub-reconnaissance.toon) | R | Reconnaissance | Classifies the in-scope surface and builds the function registry agents drive coverage from |
-| [`sub-architectural-analysis`](./activities/13-sub-architectural-analysis.toon) | S | Reconnaissance | Security-oriented architectural decomposition surfacing vulnerability domains beyond the §3 checklist |
-| [`sub-crate-review`](./activities/10-sub-crate-review.toon) | Group A | Primary Audit | Deep, evidence-backed §3 review of an entire priority crate |
-| [`sub-static-analysis`](./activities/11-sub-static-analysis.toon) | Group B | Primary Audit | Pattern-based and mechanical analysis across the whole scope, with zero-hit cases verified rather than assumed clean |
-| [`sub-toolkit-review`](./activities/12-sub-toolkit-review.toon) | Group D | Primary Audit | Per-function toolkit review so benign-looking helpers can no longer be skimmed past |
-| [`sub-output-verification`](./activities/14-sub-output-verification.toon) | V | Primary Audit | Fresh-context validation that every required agent ran and every mandatory table is present, stabilizing finding counts across runs |
-| [`sub-structured-merge`](./activities/15-sub-structured-merge.toon) | M | Primary Audit | Fresh-context, provably-lossless merge into a single canonical, deduplicated, severity-scored finding set |
+| [`sub-reconnaissance`](./activities/16-sub-reconnaissance.yaml) | R | Reconnaissance | Classifies the in-scope surface and builds the function registry agents drive coverage from |
+| [`sub-architectural-analysis`](./activities/13-sub-architectural-analysis.yaml) | S | Reconnaissance | Security-oriented architectural decomposition surfacing vulnerability domains beyond the §3 checklist |
+| [`sub-crate-review`](./activities/10-sub-crate-review.yaml) | Group A | Primary Audit | Deep, evidence-backed §3 review of an entire priority crate |
+| [`sub-static-analysis`](./activities/11-sub-static-analysis.yaml) | Group B | Primary Audit | Pattern-based and mechanical analysis across the whole scope, with zero-hit cases verified rather than assumed clean |
+| [`sub-toolkit-review`](./activities/12-sub-toolkit-review.yaml) | Group D | Primary Audit | Per-function toolkit review so benign-looking helpers can no longer be skimmed past |
+| [`sub-output-verification`](./activities/14-sub-output-verification.yaml) | V | Primary Audit | Fresh-context validation that every required agent ran and every mandatory table is present, stabilizing finding counts across runs |
+| [`sub-structured-merge`](./activities/15-sub-structured-merge.yaml) | M | Primary Audit | Fresh-context, provably-lossless merge into a single canonical, deduplicated, severity-scored finding set |
 
 ---
 

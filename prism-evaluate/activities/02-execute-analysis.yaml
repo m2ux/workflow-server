@@ -1,0 +1,88 @@
+id: execute-analysis
+version: 1.3.0
+name: Execute Prism Analyses
+description: Trigger the prism workflow for each execution group.
+techniques:
+  - scatter-gather
+triggers:
+  - workflow: prism
+    description: Execute prism analytical pipeline for each execution group. Each trigger passes the target, target type, output path, pipeline mode, selected lenses, and the dimension-specific analysis focus.
+    passContext:
+      - target
+      - target_type
+      - output_path
+      - pipeline_mode
+      - selected_lenses
+      - analysis_focus
+steps:
+  - kind: action
+    id: verify-preconditions
+    actions:
+      - action: validate
+        message: Verify execution_groups is non-empty before starting the trigger loop
+        condition:
+          type: simple
+          variable: execution_groups
+          operator: exists
+  - kind: action
+    id: log-execution-plan
+    actions:
+      - action: log
+        message: Log the execution group count, their pipeline modes, and total dimensions covered.
+  - kind: loop
+    id: group-iteration
+    name: Execution Group Iteration
+    loopType: forEach
+    variable: current_group
+    over: execution_groups
+    maxIterations: 10
+    steps:
+      - kind: action
+        id: set-trigger-context
+        actions:
+          - action: set
+            target: target
+            description: "{target_path}."
+          - action: set
+            target: target_type
+            description: "Prism's expected value mapped from the classification: 'document', 'document-set', and 'mixed' to 'general'; 'codebase' to 'code'."
+          - action: set
+            target: output_path
+            description: "{output_path}/{current_group.output_subdir}."
+          - action: set
+            target: pipeline_mode
+            description: "{current_group.pipeline_mode}."
+          - action: set
+            target: selected_lenses
+            description: "{current_group.lenses}."
+          - action: set
+            target: analysis_focus
+            description: "{current_group.analysis_focus}."
+      - kind: technique
+        id: trigger-prism
+        technique:
+          name: workflow-engine::handle-sub-workflow
+          inputs:
+            workflow_id: prism
+      - kind: technique
+        id: collect-results
+        technique: collect-prism-results
+        actions:
+          - action: set
+            target: completed_analyses
+            description: "Append the run reference: artifact paths, REPORT.md path when generated, and status."
+          - action: set
+            target: all_artifact_paths
+            description: Append the analysis artifact paths produced by the run.
+      - kind: technique
+        id: verify-completion
+        technique: verify-prism-completion
+        actions:
+          - action: set
+            target: completed_analyses
+            description: On failure, record status 'error' with the failure reason.
+outcome:
+  - Every planned dimension has been analysed through the prism pipeline, yielding the per-dimension findings the consolidation stage draws on — with any failed runs flagged so gaps are visible rather than silent
+transitions:
+  - to: consolidate-report
+    isDefault: true

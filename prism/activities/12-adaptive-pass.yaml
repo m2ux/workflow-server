@@ -1,0 +1,45 @@
+id: adaptive-pass
+version: 1.2.0
+name: Adaptive Depth Pass
+description: Cost-minimizing depth escalation.
+steps:
+  - kind: technique
+    id: run-stage-1
+    technique:
+      name: adaptive-analysis::stage-1-sdl
+      inputs:
+        target_content: "{target}"
+  - kind: technique
+    id: run-stage-2
+    technique:
+      name: adaptive-analysis::stage-2-l12
+      inputs:
+        target_content: "{target}"
+    condition:
+      type: simple
+      variable: adaptive_signal_quality
+      operator: ==
+      value: insufficient
+  - kind: technique
+    id: run-stage-3
+    technique:
+      name: adaptive-analysis::stage-3-full
+      inputs:
+        target_content: "{target}"
+    condition:
+      type: simple
+      variable: adaptive_signal_quality
+      operator: ==
+      value: insufficient
+  - kind: action
+    id: collect-paths
+    actions:
+      - action: set
+        target: all_artifact_paths
+        description: Accumulated artifact paths across the run.
+      - action: set
+        target: adaptive_stage
+        description: Deepest escalation stage that ran.
+transitions:
+  - to: generate-report
+    isDefault: true

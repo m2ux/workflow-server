@@ -1,0 +1,52 @@
+id: submit
+version: 1.3.0
+name: Submit Security Vulnerability Remediation
+description: Finalize a high-sensitivity security fix.
+required: true
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: ENTERING SECURITY SUBMISSION MODE - ISOLATION ACTIVE
+  - kind: technique
+    id: verify-security-remote
+    technique: secure-submit::verify-security-remote
+  - kind: checkpoint
+    id: verify-private-remote
+    message: "FINAL ISOLATION CHECK: You are about to push to '{sec_vuln_url}'. Is this the private security remote? (NEVER push to origin in this workflow)."
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes, push to private remote
+        description: Proceed with push to verified private remote
+      - id: abort
+        label: No, abort push
+        description: Push aborted due to remote verification failure
+  - kind: technique
+    id: verify-commit-signatures
+    technique: secure-submit::verify-commit-signatures
+  - kind: checkpoint
+    id: confirm-push
+    message: Ready to push the security fix to the private remote '{sec_vuln_url}'. Confirm to proceed?
+    blocking: true
+    options:
+      - id: confirm
+        label: Confirm push
+        description: Push to private remote
+      - id: cancel
+        label: Cancel
+        description: Do not push
+  - kind: technique
+    id: push-sec-vuln-commits
+    technique: secure-submit::push-secure-commits
+  - kind: action
+    id: announce-completion
+    actions:
+      - action: log
+        message: Security submission complete. Fix securely pushed.
+transitions:
+  - to: complete
+    isDefault: true
+outcome:
+  - The fix has reached the designated private fork and no public destination — ready for private review without any disclosure

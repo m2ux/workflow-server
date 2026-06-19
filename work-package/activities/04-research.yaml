@@ -1,0 +1,161 @@
+id: research
+version: 2.6.0
+name: Research
+description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
+required: false
+steps:
+  - kind: technique
+    id: research-knowledge-base
+    technique: research
+  - kind: technique
+    id: synthesize
+    technique: synthesize
+  - kind: checkpoint
+    id: research-findings
+    message: Here are the combined findings from knowledge base and web research. Proceeding in 30s unless you want changes.
+    blocking: false
+    defaultOption: sufficient
+    autoAdvanceMs: 30000
+    options:
+      - id: sufficient
+        label: Findings Sufficient
+        description: Research findings are relevant and sufficient (default — auto-proceeds after 30s)
+      - id: further-research
+        label: Need Further Research
+        description: Additional research is needed — specify focus area at next checkpoint
+        effect:
+          setVariable:
+            needs_further_research: true
+  - kind: technique
+    id: collect-assumptions
+    technique:
+      name: review-assumptions::collect
+      inputs:
+        assumption_categories: Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment
+  - kind: checkpoint
+    id: research-focus
+    condition:
+      type: simple
+      variable: needs_further_research
+      operator: ==
+      value: true
+    message: What additional research is needed? Describe the focus area or questions to investigate.
+    blocking: true
+    options:
+      - id: focus-provided
+        label: Focus area provided
+        description: Proceed with the specified research focus
+        effect:
+          setVariable:
+            needs_further_research: true
+      - id: cancel-further
+        label: Cancel — findings are sufficient after all
+        description: Proceed without additional research
+        effect:
+          setVariable:
+            needs_further_research: false
+  - kind: technique
+    id: document
+    technique: document
+  - kind: technique
+    id: update-assumptions-log
+    technique: review-assumptions::record
+  - kind: technique
+    id: reconcile-assumptions
+    technique: review-assumptions::reconcile
+  - kind: loop
+    id: assumption-reconciliation
+    name: Assumption Reconciliation Loop
+    loopType: while
+    condition:
+      type: simple
+      variable: has_resolvable_assumptions
+      operator: ==
+      value: true
+    steps:
+      - kind: technique
+        id: reconcile-iteration
+        technique: review-assumptions::reconcile
+  - kind: technique
+    id: present-resolved-assumptions
+    technique: review-assumptions::interview
+    actions:
+      - action: message
+        message: "**Resolved Assumptions** — the following assumptions were resolved through code analysis during this phase."
+  - kind: action
+    id: declare-context-scope
+    actions:
+      - action: set
+        target: context_scope
+        description: repo-only | web-retrieval | mixed based on research sources used
+  - kind: checkpoint
+    id: context-scope-declaration
+    message: Did research use external web sources (web search, documentation URLs, external references)? This determines the provenance scope recorded in commit trailers and the provenance log.
+    blocking: false
+    defaultOption: repo-only
+    autoAdvanceMs: 15000
+    options:
+      - id: repo-only
+        label: Repository only — no external web sources used
+        description: All research was based on codebase and local knowledge (default)
+        effect:
+          setVariable:
+            context_scope: repo-only
+      - id: web-retrieval
+        label: External web sources used for design decisions
+        description: Web search, external docs, or third-party references informed the approach
+        effect:
+          setVariable:
+            context_scope: web-retrieval
+      - id: mixed
+        label: Both repository and external sources used
+        description: Mix of codebase analysis and external references
+        effect:
+          setVariable:
+            context_scope: mixed
+  - kind: technique
+    id: interview-open-assumptions
+    technique: review-assumptions::interview
+  - kind: loop
+    id: assumption-interview
+    name: Assumption Interview Loop
+    loopType: forEach
+    variable: current_assumption
+    over: open_assumptions
+    maxIterations: 20
+    steps:
+      - kind: technique
+        id: present-assumption
+        technique: review-assumptions::interview
+      - kind: checkpoint
+        id: research-assumption-interview
+        condition:
+          type: simple
+          variable: has_open_assumptions
+          operator: ==
+          value: true
+        message: "Assumption {current_assumption.id}: {current_assumption.statement}. Can you resolve this, or defer to stakeholders?"
+        blocking: true
+        options:
+          - id: resolve-inline
+            label: Resolve now
+            description: Provide resolution for this assumption — it will be marked as resolved in the assumptions log
+            effect:
+              setVariable:
+                assumption_resolved_inline: true
+          - id: defer-to-stakeholder
+            label: Defer to stakeholder review
+            description: Queue this assumption for stakeholder review in the issue tracker
+            effect:
+              setVariable:
+                assumption_deferred: true
+      - kind: technique
+        id: record-response
+        technique: review-assumptions::record
+transitions:
+  - to: implementation-analysis
+    isDefault: true
+outcome:
+  - Best practices identified from multiple sources
+  - Patterns validated and mapped to requirements
+  - Risks and anti-patterns documented

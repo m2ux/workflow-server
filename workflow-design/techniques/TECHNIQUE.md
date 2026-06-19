@@ -21,7 +21,7 @@ Free-form description of the workflow the user wants to create or modify
 
 ### workflow_files
 
-Complete workflow definition: `workflow.toon`, activity files, technique files, resource files, README
+Complete workflow definition: `workflow.yaml`, activity files, technique files, resource files, README
 
 #### workflow_definition
 
@@ -29,11 +29,11 @@ Root workflow definition with metadata, variables, rules, and techniques
 
 #### activity_files
 
-One `.toon` file per activity with steps, checkpoints, transitions
+One `.yaml` file per activity with steps, checkpoints, transitions
 
 #### technique_files
 
-One `.toon` file per technique with protocol, inputs, outputs, rules
+One `.yaml` file per technique with protocol, inputs, outputs, rules
 
 #### resource_files
 
@@ -47,7 +47,7 @@ Workflow README with description, activity table, and usage
 
 ### workflow-rules-authoritative
 
-Cross-cutting design invariants live in `workflow.toon` `rules[]`. Apply those as the single source of truth; this technique does not duplicate them.
+Cross-cutting design invariants live in `workflow.yaml` `rules[]`. Apply those as the single source of truth; this technique does not duplicate them.
 
 ### resource-loading
 

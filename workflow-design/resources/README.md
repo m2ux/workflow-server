@@ -46,11 +46,11 @@ Also includes checkpoint effect types (`setVariable`, `transitionTo`, `skipActiv
 | Structural | 4 | Inline content, schema modification, partial implementations, invented naming |
 | Interaction | 4 | Combined checkpoints, assumption-based execution, scope non-verification, multiple questions |
 | Schema expressiveness | 9 | Prose checkpoints, prose loops, prose decisions, prose artifacts, implicit variables, prose modes, prose protocols, prose inputs, bound-step purity (description/name on a bound step) |
-| Rule hygiene | 6 | Protocol-restating rules, ungrouped contradictory rules, flat prefix keys, cross-level duplication (with worker-visibility carve-out — workers receive get_activity + get_technique but never workflow.toon, so behavioural rules workers must read cannot be lifted to the workflow root), contradictory siblings, single-step rules |
+| Rule hygiene | 6 | Protocol-restating rules, ungrouped contradictory rules, flat prefix keys, cross-level duplication (with worker-visibility carve-out — workers receive get_activity + get_technique but never workflow.yaml, so behavioural rules workers must read cannot be lifted to the workflow root), contradictory siblings, single-step rules |
 | Description hygiene | 5 | Rationale/process narration in description fields, justification tails on validate messages, prose-based sequence in description, prescribing user-environment modification, role-rule baked into description |
 | Coupling | 23 | I/O contracts naming a workflow-internal producer/consumer, literal artifact names in protocol, raw tool names instead of canonical references, unanchored protocol references, identifier-shape and placement conventions, technique referencing activity-level constructs, prose rules at the activity level |
 | Tool-technique-doc consistency | 6 | Inaccurate return-value descriptions, incomplete bootstrap sequences, inconsistent tool names across techniques, behavioural guidance duplicated across techniques, mechanics-not-value tool descriptions, redundant tools with subset outputs |
-| Execution | 7 | Premature implementation, recommendations without action, text-only rules, destructive updates, invalid TOON syntax, informal execution, defending output |
+| Execution | 7 | Premature implementation, recommendations without action, text-only rules, destructive updates, invalid YAML syntax, informal execution, defending output |
 
 ### 03 — Update Mode Guide
 

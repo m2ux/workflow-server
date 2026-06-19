@@ -7,7 +7,7 @@ metadata:
 
 ## Capability
 
-Internalize the schema system and TOON-format conventions before drafting: load the authoritative JSON schemas and their documentation, survey reference workflows and sample TOON files, identify the schema constructs applicable to the design intent, and present the observed conventions as the literacy-confirmation surface.
+Internalize the schema system and YAML-format conventions before drafting: load the authoritative JSON schemas and their documentation, survey reference workflows and sample YAML files, identify the schema constructs applicable to the design intent, and present the observed conventions as the literacy-confirmation surface.
 
 ## Protocol
 
@@ -19,7 +19,7 @@ Internalize the schema system and TOON-format conventions before drafting: load 
 ### 2. Survey References
 
 - Call `list_workflows` and `get_workflow` for 2+ reference workflows of similar type as the pattern baseline
-- Read existing TOON files (workflow / activity / technique) to ground TOON syntax understanding: key-value pairs, `[N]` array suffixes, nested objects, inline `{}` shorthand
+- Read existing YAML files (workflow / activity / technique) to ground YAML syntax understanding: key-value pairs, `[N]` array suffixes, nested objects, inline `{}` shorthand
 
 ### 3. Identify Constructs
 

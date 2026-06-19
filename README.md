@@ -5,7 +5,7 @@ This orphan branch contains workflow definitions, activities, techniques, and re
 ## Branch Structure
 
 - **`main`** - Server code (TypeScript implementation)
-- **`workflows`** - Workflow data (TOON definitions) ← You are here
+- **`workflows`** - Workflow data (YAML definitions) ← You are here
 
 ## Directory Structure
 
@@ -13,9 +13,9 @@ This orphan branch contains workflow definitions, activities, techniques, and re
 workflows/                        # Worktree checkout
 ├── meta/                         # Lifecycle workflow + cross-workflow shared layer
 │   ├── README.md                 # Meta documentation with Mermaid diagrams
-│   ├── workflow.toon             # Meta definition (activities for lifecycle management)
+│   ├── workflow.yaml             # Meta definition (activities for lifecycle management)
 │   ├── activities/               # Lifecycle activities (indexed)
-│   │   └── {NN}-{id}.toon        # 00-discover-session, 01-initialize-session, ...
+│   │   └── {NN}-{id}.yaml        # 00-discover-session, 01-initialize-session, ...
 │   ├── techniques/               # Markdown techniques (canonical source of truth)
 │   │   ├── TECHNIQUE.md          #   root base contract — inherited by every technique here
 │   │   ├── {slug}.md             #   standalone technique (agent-conduct, version-control, ...)
@@ -26,9 +26,9 @@ workflows/                        # Worktree checkout
 │       └── {slug}.md             #   bootstrap-protocol, activity-worker-prompt, workflow-canonical, ...
 ├── {workflow-id}/                # Each workflow folder
 │   ├── README.md                 # Workflow documentation with Mermaid diagrams
-│   ├── workflow.toon             # Workflow definition
+│   ├── workflow.yaml             # Workflow definition
 │   ├── activities/               # Activity subdirectory (indexed)
-│   │   └── {NN}-{id}.toon        # Activities for this workflow
+│   │   └── {NN}-{id}.yaml        # Activities for this workflow
 │   ├── techniques/               # Workflow-local markdown techniques
 │   │   ├── TECHNIQUE.md          #   root base contract for this workflow
 │   │   ├── {slug}.md             #   standalone technique (workflow-local takes precedence over a meta technique of the same name)
@@ -90,13 +90,13 @@ git worktree add ./workflows workflows
 
 **New Workflow:**
 1. Create `{workflow-id}/` directory
-2. Add `workflow.toon` workflow definition
+2. Add `workflow.yaml` workflow definition
 3. Add `README.md` with Mermaid diagrams documenting the workflow
 4. Add `activities/`, `resources/`, `techniques/` subdirectories as needed
 5. Commit to this branch
 
 **Activities:**
-1. Create `{NN}-{activity-id}.toon` in `{workflow-id}/activities/`
+1. Create `{NN}-{activity-id}.yaml` in `{workflow-id}/activities/`
 2. Prefix with two-digit index (01, 02, 03, etc.)
 3. Connect activities with `transitions`; set the workflow's `initialActivity`
 4. Commit to this branch

@@ -75,7 +75,7 @@ Addresses 4 gap categories identified in Session 19 gap analysis (95.5% overlap 
 - +4 ensemble blind-spot items (#12-#15) for the new gap patterns
 
 **Version bumps:**
-- workflow.toon: 4.12.0 → 4.13.0
+- workflow.yaml: 4.12.0 → 4.13.0
 - primary-audit: 4.9.0 → 4.10.0
 - sub-crate-review: 1.7.0 → 1.8.0
 - verify-sub-agent-output: 1.3.0 → 1.4.0
@@ -131,7 +131,7 @@ Integrates 3 of 8 gaps identified from cross-project security pattern analysis (
 Introduces a dedicated security architecture analysis sub-agent dispatched during reconnaissance. Separates architectural reasoning (sub-agent) from mechanical domain binding (skill), following the orchestrator role discipline principle.
 
 **Architectural change — Security Architecture Sub-Agent:**
-- NEW activity `sub-architectural-analysis` (13-sub-architectural-analysis.toon): A sub-agent dispatched during reconnaissance that performs security-oriented architectural decomposition. Receives the crate map, file inventory, and trust boundaries; returns four structured artifacts:
+- NEW activity `sub-architectural-analysis` (13-sub-architectural-analysis.yaml): A sub-agent dispatched during reconnaissance that performs security-oriented architectural decomposition. Receives the crate map, file inventory, and trust boundaries; returns four structured artifacts:
   1. **Component Interaction Model** — per-component-pair data flows, trust assumptions, and required security properties
   2. **Privilege and Authority Map** — per-operation authority requirements and verification points
   3. **Candidate Point List** — ranked locations where code complexity concentrates (Dowd methodology)
@@ -159,7 +159,7 @@ Introduces a dedicated security architecture analysis sub-agent dispatched durin
 Addresses structural overfitting identified in the S18 overfitting analysis. Replaces 22 target-specific rule references with domain-map-driven generics, removes 11 session statistics from rules/skills/resources, and relocates midnight-specific content to the target profile.
 
 **Architectural change — Vulnerability Domain Mapping:**
-- NEW skill `map-vulnerability-domains` (17-map-vulnerability-domains.toon): Maps generic §3 vulnerability classes to specific codebase locations using reconnaissance data. Sub-agents receive dynamically derived domain map entries instead of hardcoded target-specific rules.
+- NEW skill `map-vulnerability-domains` (17-map-vulnerability-domains.yaml): Maps generic §3 vulnerability classes to specific codebase locations using reconnaissance data. Sub-agents receive dynamically derived domain map entries instead of hardcoded target-specific rules.
 - NEW reconnaissance step `map-vulnerability-domains`: Invoked after function registry, before agent assignment. Produces a per-crate partition of vulnerability targets.
 - Sub-crate-review rules now reference "§3.X targets in the vulnerability domain map" instead of naming specific functions or files.
 
@@ -264,7 +264,7 @@ Addresses 6 gaps from Session 17 gap analysis plus quality improvements from wor
 - resource 06 (NEW): Target profile for midnight-node
 
 **Activity changes:**
-- workflow.toon (4.6.0 → 4.7.0): 24 → 20 rules, 18 → 17 variables
+- workflow.yaml (4.6.0 → 4.7.0): 24 → 20 rules, 18 → 17 variables
 - primary-audit (4.6.0 → 4.7.0): 21 → 17 rules, +1 step (checklist-to-prompt coverage gate)
 - sub-crate-review (1.2.0 → 1.3.0): Session narratives compressed, rules unchanged in count
 - ensemble-pass (2.2.0 → 2.3.0): Blind-spot list references target profile; supplementary files from profile

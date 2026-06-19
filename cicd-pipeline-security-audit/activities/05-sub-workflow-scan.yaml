@@ -1,0 +1,49 @@
+id: sub-workflow-scan
+version: 1.2.0
+name: Per-Submodule Workflow Scan
+description: Scan the assigned submodule's workflow files for the seven detection patterns.
+techniques:
+  - execute-sub-agent
+required: false
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting per-submodule workflow scan
+  - kind: technique
+    id: load-patterns
+    technique: scan-injection-patterns::load-patterns
+  - kind: technique
+    id: scan-expression-injection
+    technique: scan-injection-patterns::scan-p1
+  - kind: technique
+    id: scan-pwn-request
+    technique: scan-injection-patterns::scan-p2
+  - kind: technique
+    id: scan-comment-triggers
+    technique: scan-injection-patterns::scan-p3
+  - kind: technique
+    id: scan-permissions
+    technique: scan-injection-patterns::scan-p4
+  - kind: technique
+    id: scan-fork-execution
+    technique: scan-injection-patterns::scan-p5
+  - kind: technique
+    id: scan-ai-config
+    technique: scan-injection-patterns::scan-p6
+  - kind: technique
+    id: scan-dangerous-patterns
+    technique: scan-injection-patterns::scan-p7
+  - kind: technique
+    id: write-output
+    technique: scan-injection-patterns::assemble-results
+  - kind: action
+    id: announce-completion
+    actions:
+      - action: log
+        message: Per-submodule scan complete — findings written to output file
+transitions: []
+outcome:
+  - This submodule's workflows have full seven-class coverage, so the parent audit can account for it as scanned
+  - Each finding carries source-to-sink evidence a reviewer can independently confirm, and is structured so the parent can collect and merge it without re-parsing

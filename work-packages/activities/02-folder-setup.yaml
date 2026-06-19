@@ -1,0 +1,28 @@
+id: folder-setup
+version: 1.3.0
+name: Planning Folder Setup
+description: Create planning folder structure with initial documentation skeletons
+steps:
+  - kind: technique
+    id: create-folder
+    technique: version-control::initialize-folder
+  - kind: technique
+    id: setup-planning-folder
+    technique: setup-planning-folder
+  - kind: checkpoint
+    id: folder-created
+    message: Planning folder created. Proceed with analysis?
+    options:
+      - id: proceed
+        label: Proceed with analysis
+        effect:
+          transitionTo: analysis
+      - id: adjust
+        label: Adjust structure
+        effect:
+          transitionTo: folder-setup
+transitions:
+  - to: analysis
+    isDefault: true
+outcome:
+  - There is a single known home for all planning artifacts, with entry-point and overview scaffolds ready for later activities to fill in

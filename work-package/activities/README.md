@@ -2,7 +2,7 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-This is the per-activity orientation map: each entry gives the activity's purpose, the value it delivers, how it connects to the rest of the workflow, and a link to its authoritative definition. The structured definition of each activity — its steps, checkpoints, loops, decisions, transitions, and artifacts — lives in the corresponding `NN-<id>.toon` file and is served by `get_activity`; it is not duplicated here.
+This is the per-activity orientation map: each entry gives the activity's purpose, the value it delivers, how it connects to the rest of the workflow, and a link to its authoritative definition. The structured definition of each activity — its steps, checkpoints, loops, decisions, transitions, and artifacts — lives in the corresponding `NN-<id>.yaml` file and is served by `get_activity`; it is not duplicated here.
 
 For the activity-to-activity flow diagram, the feedback loops, and review-mode behaviour, see the [workflow README](../README.md). Each activity section below also includes a mermaid diagram showing its internal flow.
 
@@ -12,7 +12,7 @@ For the activity-to-activity flow diagram, the feedback loops, and review-mode b
 
 Initializes the work package: detects monorepo vs standalone reference, refreshes the reference (submodules + GitNexus), verifies or creates a tracker issue, materializes a dedicated git worktree of the component at `~/projects/work/{component_name}/{wp-slug}/`, sets up the feature branch and draft PR inside that worktree, and binds the server-resolved planning folder. In review mode it instead captures the existing PR reference and checks out the PR's branch. Entry activity; leads to design-philosophy.
 
-Definition: [`01-start-work-package.toon`](./01-start-work-package.toon)
+Definition: [`01-start-work-package.yaml`](./01-start-work-package.yaml)
 
 ```mermaid
 graph TD
@@ -62,7 +62,7 @@ graph TD
 
 Applies a structured design framework to classify the problem (type and complexity), reconcile early assumptions, and decide which optional discovery activities are needed. The complexity it sets drives ADR creation later in Complete. In review mode it also assesses ticket completeness. Always transitions to codebase-comprehension, which then routes onward.
 
-Definition: [`02-design-philosophy.toon`](./02-design-philosophy.toon)
+Definition: [`02-design-philosophy.yaml`](./02-design-philosophy.yaml)
 
 ```mermaid
 graph TD
@@ -89,7 +89,7 @@ graph TD
 
 Builds or augments a durable mental model of the codebase sufficient to qualify the design assumptions raised in later activities. Produces persistent knowledge artifacts under `.engineering/artifacts/comprehension/` that grow across successive work packages. Runs after design-philosophy and routes to elicitation, research, analysis, or plan-prepare depending on the chosen path.
 
-Definition: [`14-codebase-comprehension.toon`](./14-codebase-comprehension.toon)
+Definition: [`14-codebase-comprehension.yaml`](./14-codebase-comprehension.yaml)
 
 ```mermaid
 graph TD
@@ -124,7 +124,7 @@ graph TD
 
 Discovers and clarifies what the work package should accomplish through a structured stakeholder conversation, so that planning starts from agreed requirements rather than guesses. Skipped in review mode (requirements come from the ticket). Leads to research or directly to implementation-analysis.
 
-Definition: [`03-requirements-elicitation.toon`](./03-requirements-elicitation.toon)
+Definition: [`03-requirements-elicitation.yaml`](./03-requirements-elicitation.yaml)
 
 ```mermaid
 graph TD
@@ -153,7 +153,7 @@ graph TD
 
 Gathers best practices, patterns, and reference material from the knowledge base and external sources to inform the plan, and reconciles or interviews any open assumptions surfaced along the way. Leads to implementation-analysis.
 
-Definition: [`04-research.toon`](./04-research.toon)
+Definition: [`04-research.yaml`](./04-research.yaml)
 
 ```mermaid
 graph TD
@@ -181,7 +181,7 @@ graph TD
 
 Analyzes the current implementation to understand effectiveness, establish baselines, and identify improvement opportunities — giving planning a grounded starting point. In review mode it analyzes the pre-change baseline from the base branch and documents the expected changes. Leads to plan-prepare.
 
-Definition: [`05-implementation-analysis.toon`](./05-implementation-analysis.toon)
+Definition: [`05-implementation-analysis.yaml`](./05-implementation-analysis.yaml)
 
 ```mermaid
 graph TD
@@ -210,7 +210,7 @@ graph TD
 
 Designs the approach and produces the work-package plan (task breakdown) and test plan, then prepares the branch and PR for implementation. This is the convergence point for all optional discovery paths, and the target that rework loops return to. Leads to assumptions-review.
 
-Definition: [`06-plan-prepare.toon`](./06-plan-prepare.toon)
+Definition: [`06-plan-prepare.yaml`](./06-plan-prepare.yaml)
 
 ```mermaid
 graph TD
@@ -235,7 +235,7 @@ graph TD
 
 Reviews each open assumption with the user and posts deferred assumptions to the issue tracker for stakeholder attention, ensuring the plan rests on confirmed ground before code is written. May loop back for further discussion, deeper comprehension, or plan revision; otherwise leads to implement.
 
-Definition: [`07-assumptions-review.toon`](./07-assumptions-review.toon)
+Definition: [`07-assumptions-review.yaml`](./07-assumptions-review.yaml)
 
 ```mermaid
 graph TD
@@ -266,7 +266,7 @@ graph TD
 
 Executes the implementation plan task by task, each task following an implement-test-commit-log-self-review cycle and accumulating per-task outputs across the work. Skipped in review mode (the code already exists). Leads to post-impl-review.
 
-Definition: [`08-implement.toon`](./08-implement.toon)
+Definition: [`08-implement.yaml`](./08-implement.yaml)
 
 ```mermaid
 graph TD
@@ -298,7 +298,7 @@ graph TD
 
 Reviews implementation quality through manual diff review, code review, structural analysis, test-suite review, and an architecture summary, catching issues before validation. If a critical blocker is found it routes back to implement for remediation; otherwise leads to validate.
 
-Definition: [`09-post-impl-review.toon`](./09-post-impl-review.toon)
+Definition: [`09-post-impl-review.yaml`](./09-post-impl-review.yaml)
 
 ```mermaid
 graph TD
@@ -333,7 +333,7 @@ graph TD
 
 Validates the implementation against tests, build, format, and lint checks, fixing and re-running until everything passes. In review mode it documents failures as findings and assesses coverage rather than fixing. Leads to strategic-review.
 
-Definition: [`10-validate.toon`](./10-validate.toon)
+Definition: [`10-validate.yaml`](./10-validate.yaml)
 
 ```mermaid
 graph TD
@@ -357,7 +357,7 @@ graph TD
 
 Reviews the change set to ensure it is minimal and focused — that the PR contains only what the solution requires — and produces the strategic review document and architecture summary. In review mode it documents cleanup recommendations without applying them. Leads to submit-for-review when the review passes, otherwise back to plan-prepare for rework.
 
-Definition: [`11-strategic-review.toon`](./11-strategic-review.toon)
+Definition: [`11-strategic-review.yaml`](./11-strategic-review.yaml)
 
 ```mermaid
 graph TD
@@ -383,7 +383,7 @@ graph TD
 
 Gates submission on a human DCO sign-off, then pushes the branch, finalizes the PR description, marks the PR ready, and handles reviewer feedback. In review mode it instead consolidates all findings, posts structured PR review comments, and ends the workflow. Significant requested changes loop back to plan-prepare; otherwise leads to complete.
 
-Definition: [`12-submit-for-review.toon`](./12-submit-for-review.toon)
+Definition: [`12-submit-for-review.yaml`](./12-submit-for-review.yaml)
 
 ```mermaid
 graph TD
@@ -417,7 +417,7 @@ graph TD
 
 The terminal activity: creates an ADR for moderate or complex work, finalizes documentation, conducts a retrospective, removes the component worktree, and selects the next work package. In review mode it skips the documentation steps and ends after the retrospective and worktree removal.
 
-Definition: [`13-complete.toon`](./13-complete.toon)
+Definition: [`13-complete.yaml`](./13-complete.yaml)
 
 ```mermaid
 graph TD

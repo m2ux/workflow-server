@@ -56,16 +56,16 @@ Run CI/CD pipeline security audit for all submodules
 
 ```
 cicd-pipeline-security-audit/
-├── workflow.toon                          # Workflow definition
+├── workflow.yaml                          # Workflow definition
 ├── README.md                              # This file
 ├── activities/
-│   ├── 01-scope-setup.toon                # Target + workflow file discovery
-│   ├── 02-reconnaissance.toon             # Classify, map, assign agents
-│   ├── 03-primary-scan.toon               # Dispatch scanners, verify, merge
-│   ├── 04-report-generation.toon          # Severity score + report
-│   ├── 05-sub-workflow-scan.toon          # Per-submodule scan (sub-agent)
-│   ├── 06-sub-verification.toon           # Coverage verification (sub-agent)
-│   └── 07-sub-merge.toon                  # Finding merge (sub-agent)
+│   ├── 01-scope-setup.yaml                # Target + workflow file discovery
+│   ├── 02-reconnaissance.yaml             # Classify, map, assign agents
+│   ├── 03-primary-scan.yaml               # Dispatch scanners, verify, merge
+│   ├── 04-report-generation.yaml          # Severity score + report
+│   ├── 05-sub-workflow-scan.yaml          # Per-submodule scan (sub-agent)
+│   ├── 06-sub-verification.yaml           # Coverage verification (sub-agent)
+│   └── 07-sub-merge.yaml                  # Finding merge (sub-agent)
 ├── techniques/
 │   ├── TECHNIQUE.md                        # Inherited base contract
 │   ├── execute-cicd-audit.md              # Orchestrator coordination (standalone)
@@ -89,14 +89,14 @@ cicd-pipeline-security-audit/
 
 ## Activities
 
-The sequential phases of the audit — each activity is a distinct stage that must complete before the next begins. Each links to its authoritative TOON definition.
+The sequential phases of the audit — each activity is a distinct stage that must complete before the next begins. Each links to its authoritative YAML definition.
 
 | # | Activity | Role in the flow |
 |---|----------|------------------|
-| [01](activities/01-scope-setup.toon) | Scope Setup | Discovers the target submodules and their workflow files, and stands up the planning folder the rest of the audit writes into |
-| [02](activities/02-reconnaissance.toon) | Reconnaissance | Classifies triggers, maps permissions, and assigns one scanner agent per submodule so the scan can fan out |
-| [03](activities/03-primary-scan.toon) | Primary Scan | Runs the scanner agents, independently verifies their coverage, and merges their findings into one reconciled set |
-| [04](activities/04-report-generation.toon) | Report Generation | Scores merged findings by severity and writes the final audit report |
+| [01](activities/01-scope-setup.yaml) | Scope Setup | Discovers the target submodules and their workflow files, and stands up the planning folder the rest of the audit writes into |
+| [02](activities/02-reconnaissance.yaml) | Reconnaissance | Classifies triggers, maps permissions, and assigns one scanner agent per submodule so the scan can fan out |
+| [03](activities/03-primary-scan.yaml) | Primary Scan | Runs the scanner agents, independently verifies their coverage, and merges their findings into one reconciled set |
+| [04](activities/04-report-generation.yaml) | Report Generation | Scores merged findings by severity and writes the final audit report |
 
 ### Sub-Agent Activities
 
@@ -104,9 +104,9 @@ Delegated work units that run inside Phase 3 — each is executed by a dedicated
 
 | # | Activity | Agent | Role in the flow |
 |---|----------|-------|------------------|
-| [05](activities/05-sub-workflow-scan.toon) | Per-Submodule Workflow Scan | S1-Sn | Applies all seven detection patterns to every workflow file in its assigned submodule |
-| [06](activities/06-sub-verification.toon) | Scan Verification | V | Independently confirms that no file or pattern was skipped across all scanners |
-| [07](activities/07-sub-merge.toon) | Finding Merge | M | Deduplicates, correlates, and reconciles scanner findings into a single trustworthy set |
+| [05](activities/05-sub-workflow-scan.yaml) | Per-Submodule Workflow Scan | S1-Sn | Applies all seven detection patterns to every workflow file in its assigned submodule |
+| [06](activities/06-sub-verification.yaml) | Scan Verification | V | Independently confirms that no file or pattern was skipped across all scanners |
+| [07](activities/07-sub-merge.yaml) | Finding Merge | M | Deduplicates, correlates, and reconciles scanner findings into a single trustworthy set |
 
 ## Techniques
 

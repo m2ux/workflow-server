@@ -1,0 +1,38 @@
+id: package-planning
+version: 1.2.0
+name: Work Package Planning
+description: Define scope, dependencies, effort, and success criteria for each work package
+techniques:
+  - scatter-gather
+steps:
+  - kind: technique
+    id: present-planning-overview
+    technique: plan-work-package-scope::present-overview
+  - kind: loop
+    id: package-loop
+    name: Package Planning Loop
+    loopType: forEach
+    variable: current_package
+    over: work_packages
+    steps:
+      - kind: technique
+        id: plan-package
+        technique: plan-work-package-scope::plan-package
+  - kind: checkpoint
+    id: plans-created
+    message: Work package plans created. Ready for prioritization?
+    options:
+      - id: proceed
+        label: Proceed to prioritization
+        effect:
+          transitionTo: prioritization
+      - id: revise
+        label: Revise plans
+        effect:
+          transitionTo: package-planning
+transitions:
+  - to: prioritization
+    isDefault: true
+outcome:
+  - Every work package now has enough scope, effort, and success-criteria detail to be prioritized and executed independently
+  - Inter-package dependencies are known, so prioritization can order packages without creating blocked work

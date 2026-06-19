@@ -13,7 +13,7 @@ Capture the operation type — create, update, or review — and establish the c
 
 ### 1. Load Baseline
 
-- For update or review mode, load the full workflow definition for `{target_workflow_id}` (`workflow.toon` + per-activity detail) via `list_workflows` and `get_workflow`
+- For update or review mode, load the full workflow definition for `{target_workflow_id}` (`workflow.yaml` + per-activity detail) via `list_workflows` and `get_workflow`
 - Build a structural inventory of the target: file counts and entity counts (activities, techniques, resources, checkpoints, transitions)
 - Present the loaded structure to the user as the scope-confirmation surface
 

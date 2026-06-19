@@ -17,4 +17,4 @@ Run the workflow-design audit across its five passes — expressiveness, conform
 - Apply [audit-conformance](audit-conformance.md) against the reference workflows
 - Apply [audit-rule-enforcement](audit-rule-enforcement.md) over `rules[]`
 - Apply [audit-anti-patterns](audit-anti-patterns.md) over all content
-- Apply [audit-schema-validation](audit-schema-validation.md) over every TOON file
+- Apply [audit-schema-validation](audit-schema-validation.md) over every YAML file
