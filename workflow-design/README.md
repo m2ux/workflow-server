@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.2.1 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits an existing workflow against the 14 design principles and produces a compliance report.
+> v1.3.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits an existing workflow against the 14 design principles and produces a compliance report.
 
 ---
 
@@ -15,7 +15,7 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 | 03 | [**Pattern Analysis**](./activities/README.md#03-pattern-analysis) | Create only | Audit 2+ reference workflows for reusable patterns |
 | 04 | [**Impact Analysis**](./activities/README.md#04-impact-analysis) | Update only | Enumerate affected files, check integrity, flag removals |
 | 05 | [**Scope and Draft**](./activities/README.md#05-scope-and-draft) | Create, Update | Define file manifest, then draft and validate each file per-file |
-| 06 | [**Quality Review**](./activities/README.md#06-quality-review) | All | Expressiveness, conformance, rule-hygiene, and rule-enforcement audits (full compliance audit in review mode) |
+| 06 | [**Quality Review**](./activities/README.md#06-quality-review) | All | Expressiveness, conformance, rule-hygiene, and rule-enforcement audits, then a bounded fix-revalidate loop (max 3) with a critical-blocker gate (full compliance audit in review mode) |
 | 07 | [**Validate and Commit**](./activities/README.md#07-validate-and-commit) | All | Schema validation and commit (create/update) or save compliance report (review) |
 | 08 | [**Post-Update Review**](./activities/README.md#08-post-update-review) | Update only | Automatic post-commit compliance audit of the updated workflow |
 
@@ -135,6 +135,9 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`persist-report`](./techniques/persist-report.md) | Persist the compliance/review report as an artifact | Validate and Commit, Post-Update Review |
 | [`run-audit-passes`](./techniques/run-audit-passes.md) | Run all audit passes against the committed workflow | Post-Update Review |
 | [`summarize-findings`](./techniques/summarize-findings.md) | Produce a severity-rated findings summary | Post-Update Review |
+| [`review-draft-yaml`](./techniques/review-draft-yaml.md) | Block-indexed review of the drafted YAML, capturing a draft attestation before the audit passes | Scope and Draft |
+| [`apply-audit-fixes`](./techniques/apply-audit-fixes.md) | Apply selected audit findings via `yaml-authoring`, re-validating each changed file | Quality Review |
+| [`scope-audit`](./techniques/scope-audit.md) | Audit the committed change set against the scope manifest for drift | Post-Update Review |
 
 ---
 
@@ -204,7 +207,10 @@ workflows/workflow-design/
 │   ├── audit-expressiveness.md
 │   ├── audit-conformance.md
 │   ├── audit-rule-hygiene.md
-│   └── audit-rule-enforcement.md
+│   ├── audit-rule-enforcement.md
+│   ├── review-draft-yaml.md
+│   ├── apply-audit-fixes.md
+│   └── scope-audit.md
 └── resources/
     ├── README.md                         # Resource index
     ├── design-principles.md              # 14 principles reference

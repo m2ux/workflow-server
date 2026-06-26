@@ -1,5 +1,5 @@
 id: validate-and-commit
-version: 1.2.0
+version: 1.3.0
 name: Validate and Commit
 description: Final validation, scope verification, README generation/update, and commit of the workflow changes to the workflows worktree.
 required: true
@@ -98,6 +98,27 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
+  - kind: checkpoint
+    id: pre-commit-attestation
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+    message: "Ready to commit workflow '{workflow_id}' to the workflows worktree. Review the staged changes and confirm sign-off."
+    blocking: true
+    options:
+      - id: approved
+        label: Approved — commit
+        description: The staged changes are reviewed and approved for commit.
+        effect:
+          setVariable:
+            all_files_validated: true
+      - id: return-to-draft
+        label: Return to drafting
+        description: The changes are not ready; return to scope-and-draft for revision.
+        effect:
+          transitionTo: scope-and-draft
   - kind: technique
     id: stage-and-commit
     technique: version-control::commit-regular-files

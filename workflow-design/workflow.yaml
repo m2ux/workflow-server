@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.2.1
+version: 1.3.0
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -101,5 +101,13 @@ variables:
   - name: has_unflagged_removals
     type: boolean
     description: True when content drafting detects removals not flagged during impact analysis. Gates the preservation-check checkpoint in content-drafting (update mode).
+    defaultValue: false
+  - name: needs_audit_fixes
+    type: boolean
+    description: Whether the quality-review audit passes surfaced findings the user elected to fix. Drives the bounded audit-fix-cycle loop in quality-review (apply fixes, re-run audits, re-assess); reset to false when the content is clean.
+    defaultValue: false
+  - name: has_critical_finding
+    type: boolean
+    description: Whether any quality-review audit finding is Critical severity (a schema-invalid or structurally broken construct that must not be committed). Drives the blocker-gate decision that returns to scope-and-draft.
     defaultValue: false
 initialActivity: intake-and-context

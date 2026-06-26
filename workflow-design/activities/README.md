@@ -42,7 +42,7 @@ Definition: [`05-impact-analysis.yaml`](./05-impact-analysis.yaml). Leads to [Sc
 
 ### 05. Scope and Draft
 
-Define the complete file manifest and structural design up front, then run a per-file drafting and review pass over every entry in the confirmed manifest, validating each YAML file against its schema as it is written. The value is a complete, pre-approved scope and a set of drafted files that are individually reviewed and schema-valid. Carries a per-file user checkpoint in create mode and a content-preservation guard in update mode.
+Define the complete file manifest and structural design up front, then run a per-file drafting and review pass over every entry in the confirmed manifest, validating each YAML file against its schema as it is written. After drafting, a block-indexed review of the full drafted set (`review-draft-yaml`) captures a draft attestation before the audit passes run. The value is a complete, pre-approved scope and a set of drafted files that are individually reviewed, attested, and schema-valid. Carries a per-file user checkpoint in create mode and a content-preservation guard in update mode.
 
 Definition: [`06-scope-and-draft.yaml`](./06-scope-and-draft.yaml). Skipped in review mode; leads to [Quality Review](#06-quality-review).
 
@@ -50,7 +50,7 @@ Definition: [`06-scope-and-draft.yaml`](./06-scope-and-draft.yaml). Skipped in r
 
 ### 06. Quality Review
 
-Quality review of the drafted content. In create/update modes it runs the expressiveness, conformance, rule-hygiene, and rule-enforcement audit passes. In review mode it runs the full compliance audit (load all files, principle compliance, anti-pattern scan, schema validation, tool-technique-doc consistency) and compiles a severity-rated report, after which the user chooses whether to fix the findings. The value is workflow content that has been checked against the design principles and conventions before it is committed.
+Quality review of the drafted content. In create/update modes it runs the expressiveness, conformance, rule-hygiene, and rule-enforcement audit passes, then a bounded fix-revalidate loop — apply the selected fixes via `apply-audit-fixes`, re-run the audits, up to 3 iterations — and a critical-blocker gate that returns to Scope and Draft when a Critical finding remains. In review mode it runs the full compliance audit (load all files, principle compliance, anti-pattern scan, schema validation, tool-technique-doc consistency) and compiles a severity-rated report, after which the user chooses whether to fix the findings. The value is workflow content that has been checked against the design principles and conventions, and had its fixable findings resolved in place, before it is committed.
 
 Definition: [`08-quality-review.yaml`](./08-quality-review.yaml). Leads to [Validate and Commit](#07-validate-and-commit).
 
@@ -58,7 +58,7 @@ Definition: [`08-quality-review.yaml`](./08-quality-review.yaml). Leads to [Vali
 
 ### 07. Validate and Commit
 
-Final schema validation, scope verification, README generation/update, and commit of the workflow changes to the workflows worktree. In review mode it instead saves and commits the compliance report. The value is a workflow that is guaranteed loadable, has nothing left undone from its scope, has a human-readable entry point, and is committed.
+Final schema validation, scope verification, README generation/update, and commit of the workflow changes to the workflows worktree. A blocking pre-commit attestation gate confirms sign-off before staging, with an option to return to Scope and Draft. In review mode it instead saves and commits the compliance report. The value is a workflow that is guaranteed loadable, has nothing left undone from its scope, has a human-readable entry point, and is committed with a deliberate sign-off.
 
 Definition: [`09-validate-and-commit.yaml`](./09-validate-and-commit.yaml). Terminal in create and review modes; leads to [Post-Update Review](#08-post-update-review) in update mode.
 
@@ -66,6 +66,6 @@ Definition: [`09-validate-and-commit.yaml`](./09-validate-and-commit.yaml). Term
 
 ### 08. Post-Update Review
 
-Automatic post-commit compliance audit of the updated workflow against the design principles and anti-patterns. It reloads the committed state from the workflow-server (not cached data) and produces a severity-rated findings summary persisted as a review snapshot, so update work is verified against the principles after it lands. Update mode only.
+Automatic post-commit compliance audit of the updated workflow against the design principles and anti-patterns. It reloads the committed state from the workflow-server (not cached data), runs a scope-discipline audit (`scope-audit`) comparing the committed change set against the scope manifest to flag drift, and produces a severity-rated findings summary persisted as a review snapshot, so update work is verified against the principles after it lands. Update mode only.
 
 Definition: [`10-post-update-review.yaml`](./10-post-update-review.yaml). Terminal activity; the fix/revert dispositions restart the workflow at [Intake and Context](#01-intake-and-context).

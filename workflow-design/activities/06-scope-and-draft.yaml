@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.0.0
+version: 1.1.0
 name: Scope and Draft
 description: Complete file manifest and structural design for the target workflow, followed by a per-file drafting and review pass over every entry in the confirmed scope manifest, with schema validation on each YAML file.
 required: true
@@ -146,6 +146,22 @@ steps:
       - kind: technique
         id: present-for-review
         technique: content-drafting
+  - kind: technique
+    id: review-draft-yaml
+    technique: review-draft-yaml
+  - kind: checkpoint
+    id: draft-attestation
+    message: "Drafted-content review: each block's rationale is shown above. Accepting in 30s unless you flag a block to revise before the audit passes."
+    blocking: false
+    defaultOption: attested
+    autoAdvanceMs: 30000
+    options:
+      - id: attested
+        label: Attest — drafted content is understood and intentional
+        description: Every drafted block is reviewed and approved as presented (default — auto-accepts after 30s).
+      - id: revise-block
+        label: Revise a flagged block
+        description: One or more drafted blocks require targeted revision before the audit passes.
 transitions:
   - to: quality-review
     isDefault: true

@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.3.0
+version: 1.4.0
 name: Quality Review
 description: Quality review of drafted workflow content.
 required: true
@@ -204,6 +204,70 @@ steps:
       - id: accept-text-only
         label: Accept text-only rules
         description: These rules are acceptable as text-only guidance (default — auto-accepts after 30s)
+  - kind: action
+    id: classify-audit-findings
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+    actions:
+      - action: set
+        target: needs_audit_fixes
+        message: Set true iff any of the four audit passes surfaced findings the user elected to fix (fix-all / selective / add-enforcement / revise); false when every pass was accepted as-is.
+      - action: set
+        target: has_critical_finding
+        message: Set true iff any audit finding is Critical severity — a schema-invalid or structurally broken construct that must not be committed.
+  - kind: loop
+    id: audit-fix-cycle
+    name: Audit Fix Cycle
+    loopType: while
+    condition:
+      type: simple
+      variable: needs_audit_fixes
+      operator: ==
+      value: true
+    maxIterations: 3
+    steps:
+      - kind: technique
+        id: apply-audit-fixes
+        technique: apply-audit-fixes
+      - kind: technique
+        id: re-audit-expressiveness
+        technique: audit-expressiveness
+      - kind: technique
+        id: re-audit-conformance
+        technique: audit-conformance
+      - kind: technique
+        id: re-audit-rule-hygiene
+        technique: audit-rule-hygiene
+      - kind: technique
+        id: re-audit-rule-enforcement
+        technique: audit-rule-enforcement
+      - kind: action
+        id: reassess-audit-fixes
+        actions:
+          - action: set
+            target: needs_audit_fixes
+            message: After re-running the audits, set true iff fixable findings remain that the user still wants applied; false when the content is clean.
+          - action: set
+            target: has_critical_finding
+            message: After re-running the audits, set true iff any remaining finding is Critical severity.
+decisions:
+  - id: blocker-gate
+    name: Critical Blocker Gate
+    branches:
+      - id: has-blocker
+        label: Critical finding remains — return to drafting
+        condition:
+          type: simple
+          variable: has_critical_finding
+          operator: ==
+          value: true
+        transitionTo: scope-and-draft
+      - id: no-blocker
+        label: No critical findings — proceed to validate and commit
+        isDefault: true
 transitions:
   - to: validate-and-commit
     isDefault: true
