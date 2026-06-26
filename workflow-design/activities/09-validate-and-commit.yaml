@@ -137,6 +137,8 @@ transitions:
       variable: is_update_mode
       operator: ==
       value: true
+  - to: retrospective
+    isDefault: true
 outcome:
   - Every YAML file passes schema validation, so the workflow is guaranteed loadable and the server will run it without surprise
   - Nothing planned is left undone — every scope-manifest item is accounted for before the work lands

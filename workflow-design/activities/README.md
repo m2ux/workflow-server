@@ -2,7 +2,7 @@
 
 > Part of the [Workflow Design Workflow](../README.md)
 
-Eight activities that guide an agent from free-form description to validated, committed workflow files. `requirements-refinement`, `pattern-analysis`, `impact-analysis`, and `scope-and-draft` are mode-dependent (skipped in review mode); `pattern-analysis` is also skipped in update mode. `post-update-review` runs only in update mode as an automatic post-commit compliance audit.
+Nine activities that guide an agent from free-form description to validated, committed workflow files and a closing retrospective. `requirements-refinement`, `pattern-analysis`, `impact-analysis`, and `scope-and-draft` are mode-dependent (skipped in review mode); `pattern-analysis` is also skipped in update mode. `post-update-review` runs only in update mode as an automatic post-commit compliance audit. `retrospective` is the terminal activity in every mode.
 
 This file is an orientation map. The authoritative definition of each activity — its steps, checkpoints, decisions, loops, and transitions — lives in the per-activity YAML linked from each section below and is served by `get_activity`.
 
@@ -68,4 +68,12 @@ Definition: [`09-validate-and-commit.yaml`](./09-validate-and-commit.yaml). Term
 
 Automatic post-commit compliance audit of the updated workflow against the design principles and anti-patterns. It reloads the committed state from the workflow-server (not cached data), runs a scope-discipline audit (`scope-audit`) comparing the committed change set against the scope manifest to flag drift, and produces a severity-rated findings summary persisted as a review snapshot, so update work is verified against the principles after it lands. Update mode only.
 
-Definition: [`10-post-update-review.yaml`](./10-post-update-review.yaml). Terminal activity; the fix/revert dispositions restart the workflow at [Intake and Context](#01-intake-and-context).
+Definition: [`10-post-update-review.yaml`](./10-post-update-review.yaml). The accept disposition proceeds to the [Retrospective](#09-retrospective); the fix/revert dispositions restart the workflow at [Intake and Context](#01-intake-and-context).
+
+---
+
+### 09. Retrospective
+
+Terminal activity for every mode. In create/update modes it records a `COMPLETE.md` completion summary (`create-completion-doc`) — what was delivered, the design decisions and alternatives rejected, scope outcome, and known limitations — then conducts a session retrospective (`conduct-retrospective`) that analyses the non-checkpoint interactions and records prioritized workflow improvements. It is the workflow-design counterpart of work-package's Complete activity, minus the PR-merge and next-package-selection steps (workflow-design commits directly and has no package portfolio). A trivial session skips the retrospective.
+
+Definition: [`11-retrospective.yaml`](./11-retrospective.yaml). Terminal in all modes.

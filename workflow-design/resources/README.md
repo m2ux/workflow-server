@@ -2,7 +2,7 @@
 
 > Part of the [Workflow Design Workflow](../README.md)
 
-Six markdown resources providing the design principles, construct inventories, anti-pattern catalogs, mode-specific guidance, and the planning-folder README template used by the workflow-design workflow.
+Seven markdown resources providing the design principles, construct inventories, anti-pattern catalogs, mode-specific guidance, and the planning-folder README and completion-summary templates used by the workflow-design workflow.
 
 ---
 
@@ -16,6 +16,7 @@ Six markdown resources providing the design principles, construct inventories, a
 | `03` | [Update Mode Guide](update-mode-guide.md) | Content preservation rules, impact analysis procedure, side-effect detection patterns |
 | `04` | [Review Mode Guide](review-mode-guide.md) | Supplementary guide: activation, activity flow, compliance report template, transition-to-update-mode contract. **The audit procedure itself is canonical in the quality-review activity's `audit-*` technique protocols** — this resource does not duplicate it. |
 | `05` | [Design Context README](design-context-readme.md) | Template + guidelines for the planning-folder `README.md` seeded at intake. Consumed cross-workflow by [`work-package::manage-artifacts::create-readme`](../../work-package/techniques/manage-artifacts/create-readme.md) via its `readme_template` input; the workflow-design counterpart of the work-package [readme](../../work-package/resources/readme.md) guide. |
+| `06` | [Completion Artifact](completion-artifact.md) | Template + guidelines for the `COMPLETE.md` completion summary written by the Retrospective activity; the workflow-design counterpart of the work-package [complete-wp](../../work-package/resources/complete-wp.md) guide, with design-authoring sections in place of code/test sections. |
 
 ---
 
@@ -73,6 +74,10 @@ Supplementary guide for review mode. The audit procedure itself is canonical in 
 ### 05 — Design Context README
 
 Template and section guidelines for the `README.md` entry-point of a workflow-design session's planning folder — the workflow-design counterpart of the work-package readme guide. The intake activity seeds it by binding `work-package::manage-artifacts::create-readme` with this resource as the `readme_template`, and `work-package::manage-artifacts::verify-readme-conforms` validates it before commit. Sections: header (workflow id / mode / status), Executive Summary, Design Decisions, Compliance Findings, Scope Manifest, Activity Progress table, Links.
+
+### 06 — Completion Artifact
+
+Template and section guidelines for the `COMPLETE.md` completion summary written by the Retrospective activity (`create-completion-doc`). Sections: header (workflow id / mode / status), Summary, What Was Delivered, Design Decisions, Scope Outcome, Known Limitations & Deferrals, Lessons Learned. Design-authoring sections replace the work-package guide's code/test sections, per the per-workflow completion-doc decision.
 
 ---
 

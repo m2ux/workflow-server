@@ -6,7 +6,7 @@
 
 ## Overview
 
-This workflow manages the complete lifecycle of workflow definition authoring through eight activities, with three modes (create, update, review) that control which activities execute. All modes enforce schema expressiveness, convention conformance, and structural enforcement of critical constraints.
+This workflow manages the complete lifecycle of workflow definition authoring through nine activities, with three modes (create, update, review) that control which activities execute. All modes enforce schema expressiveness, convention conformance, and structural enforcement of critical constraints.
 
 | # | Activity | Mode | Purpose |
 |---|----------|------|---------|
@@ -18,12 +18,13 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 | 06 | [**Quality Review**](./activities/README.md#06-quality-review) | All | Expressiveness, conformance, rule-hygiene, and rule-enforcement audits, then a bounded fix-revalidate loop (max 3) with a critical-blocker gate (full compliance audit in review mode) |
 | 07 | [**Validate and Commit**](./activities/README.md#07-validate-and-commit) | All | Schema validation and commit (create/update) or save compliance report (review) |
 | 08 | [**Post-Update Review**](./activities/README.md#08-post-update-review) | Update only | Automatic post-commit compliance audit of the updated workflow |
+| 09 | [**Retrospective**](./activities/README.md#09-retrospective) | All | Record a completion summary (create/update) and conduct a session retrospective |
 
 **Detailed documentation:**
 
 - **Activities:** See [activities/README.md](./activities/README.md) for the per-activity orientation map (purpose, value, and how each activity connects in the flow), with links to the authoritative activity YAML files. The full step/checkpoint/transition definitions are served by `get_activity`.
 - **Techniques:** See [techniques/](techniques/) for the full technique library (workflow-local standalone techniques plus the shared `TECHNIQUE.md` base contract) with protocol flows and rules.
-- **Resources:** See [resources/README.md](./resources/README.md) for the resource index (5 resources) with usage context and cross-workflow access.
+- **Resources:** See [resources/README.md](./resources/README.md) for the resource index (7 resources) with usage context and cross-workflow access.
 
 ---
 
@@ -57,14 +58,24 @@ graph TD
 
     SCD --> QR["06 quality-review"]
 
+    QR -->|"critical blocker"| SCD
     QR --> VAL["07 validate-and-commit"]
+    VAL -.->|"return to drafting"| SCD
 
-    VAL -->|"create"| doneNode(["End"])
-    VAL -->|"review"| doneNode
+    VAL -->|"create / review"| RETRO["11 retrospective"]
     VAL -->|"update"| PUR["08 post-update-review"]
-    PUR --> doneNode2(["End"])
-    PUR -.->|"fix findings"| INT
+    PUR -->|"accept"| RETRO
+    PUR -.->|"fix / revert"| INT
+    RETRO --> doneNode(["End"])
 ```
+
+---
+
+## Orchestration Model
+
+Like the other workflows in this library, workflow-design runs under the **orchestrator/worker two-agent pattern** defined in the `meta` layer. An orchestrator loads the definition, initializes state, and dispatches one activity at a time to a worker, which executes the activity's steps, handles its checkpoints, and reports variable changes back; the orchestrator then evaluates transitions and dispatches the next activity. The worker persists across activities, carrying the accumulated design context (schemas internalized, patterns adopted, scope manifest, drafted files) rather than re-deriving it each step.
+
+The roles, the dispatch protocol, and the checkpoint protocol are defined once in the `meta` layer — the [workflow-orchestrator-prompt](../meta/resources/workflow-orchestrator-prompt.md) and [activity-worker-prompt](../meta/resources/activity-worker-prompt.md) resources and the [workflow-engine](../meta/techniques/workflow-engine/TECHNIQUE.md) technique — and workflow-design inherits them unchanged.
 
 ---
 
@@ -138,6 +149,8 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`review-draft-yaml`](./techniques/review-draft-yaml.md) | Block-indexed review of the drafted YAML, capturing a draft attestation before the audit passes | Scope and Draft |
 | [`apply-audit-fixes`](./techniques/apply-audit-fixes.md) | Apply selected audit findings via `yaml-authoring`, re-validating each changed file | Quality Review |
 | [`scope-audit`](./techniques/scope-audit.md) | Audit the committed change set against the scope manifest for drift | Post-Update Review |
+| [`create-completion-doc`](./techniques/create-completion-doc.md) | Record the `COMPLETE.md` completion summary in the planning folder | Retrospective |
+| [`conduct-retrospective`](./techniques/conduct-retrospective.md) | Analyse non-checkpoint interactions and record a prioritized session retrospective | Retrospective |
 
 ---
 
@@ -151,6 +164,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | 03 | [Update Mode Guide](./resources/update-mode-guide.md) | Content preservation and impact analysis procedures | Update mode activities |
 | 04 | [Review Mode Guide](./resources/review-mode-guide.md) | Compliance audit procedure and report structure | Review mode activities |
 | 05 | [Design Context README](./resources/design-context-readme.md) | Planning-folder README template seeded at intake | Intake and Context, Validate and Commit |
+| 06 | [Completion Artifact](./resources/completion-artifact.md) | `COMPLETE.md` completion-summary template | Retrospective |
 
 ---
 
@@ -163,6 +177,8 @@ In create and update modes the workflow seeds and maintains a **planning folder*
 **Update mode:** Modified workflow files in the `workflows/` worktree, plus a post-update compliance snapshot in the planning folder.
 
 **Review mode:** A compliance report in the planning folder.
+
+Every mode ends with the [Retrospective](./activities/README.md#09-retrospective) activity, which records a session retrospective in the planning folder; create and update modes also produce a `COMPLETE.md` completion summary there.
 
 ---
 
@@ -181,7 +197,8 @@ workflows/workflow-design/
 │   ├── 06-scope-and-draft.yaml           # Define file manifest, then draft/validate per file
 │   ├── 08-quality-review.yaml            # Audit passes (full compliance audit in review mode)
 │   ├── 09-validate-and-commit.yaml       # Validate and commit
-│   └── 10-post-update-review.yaml        # Post-commit compliance audit (update mode)
+│   ├── 10-post-update-review.yaml        # Post-commit compliance audit (update mode)
+│   └── 11-retrospective.yaml             # Completion summary + session retrospective (terminal)
 ├── techniques/                           # Flat library of workflow-local standalone techniques
 │   ├── TECHNIQUE.md                      # Workflow-root base contract (inherited by all techniques)
 │   ├── intake-classification.md
@@ -210,7 +227,9 @@ workflows/workflow-design/
 │   ├── audit-rule-enforcement.md
 │   ├── review-draft-yaml.md
 │   ├── apply-audit-fixes.md
-│   └── scope-audit.md
+│   ├── scope-audit.md
+│   ├── create-completion-doc.md
+│   └── conduct-retrospective.md
 └── resources/
     ├── README.md                         # Resource index
     ├── design-principles.md              # 14 principles reference
@@ -218,5 +237,6 @@ workflows/workflow-design/
     ├── anti-patterns.md                  # 64 anti-patterns
     ├── update-mode-guide.md              # Update mode guide
     ├── review-mode-guide.md              # Review mode guide
-    └── design-context-readme.md          # Planning-folder README template
+    ├── design-context-readme.md          # Planning-folder README template
+    └── completion-artifact.md            # COMPLETE.md completion-summary template
 ```
