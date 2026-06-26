@@ -80,6 +80,17 @@ steps:
         label: Address remaining items
         description: Some scope-manifest items remain unaddressed and require attention.
   - kind: technique
+    id: verify-planning-readme
+    technique:
+      name: work-package::manage-artifacts::verify-readme-conforms
+      inputs:
+        readme_template: workflow-design/design-context-readme
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: technique
     id: readme-authoring
     technique: readme-authoring
     condition:

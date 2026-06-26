@@ -10,7 +10,7 @@ This file is an orientation map. The authoritative definition of each activity â
 
 ### 01. Intake and Context
 
-Classify the request as create, update, or review, set the corresponding mode + target, then internalize the schema system and YAML format conventions before any drafting begins. In update mode it loads the existing workflow first; in review mode it confirms the audit target and branches straight to quality review. This is the literacy gate: nothing downstream proceeds until the agent has the schema and format baseline.
+Classify the request as create, update, or review, set the corresponding mode + target, then internalize the schema system and YAML format conventions before any drafting begins. It also binds the session's planning folder and, in create/update modes, seeds its `README.md` from the [design-context-readme](../resources/design-context-readme.md) template via `work-package::manage-artifacts::create-readme` â€” the entry point whose progress tracker every later activity updates. In update mode it loads the existing workflow first; in review mode it confirms the audit target and branches straight to quality review. This is the literacy gate: nothing downstream proceeds until the agent has the schema and format baseline.
 
 Definition: [`01-intake-and-context.yaml`](./01-intake-and-context.yaml). Leads to [Requirements Refinement](#02-requirements-refinement), or directly to [Quality Review](#06-quality-review) in review mode.
 

@@ -107,7 +107,7 @@ This workflow encodes 14 design principles derived from analysis of 175+ histori
 
 ## Techniques
 
-The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) shared base contract inherited by all of them. Each activity step binds exactly one operation via `step.technique`. The cross-cutting meta [`variable-binding`](../meta/techniques/variable-binding.md) strategy technique is declared once at `workflow.techniques.activity` and inherited by every activity (injected into every `get_activity`), and commits go through meta [`version-control::commit-regular-files`](../meta/techniques/version-control/commit-regular-files.md).
+The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) shared base contract inherited by all of them. Each activity step binds exactly one operation via `step.technique`. The cross-cutting meta [`variable-binding`](../meta/techniques/variable-binding.md) strategy technique is declared once at `workflow.techniques.activity` and inherited by every activity (injected into every `get_activity`), and commits go through meta [`version-control::commit-regular-files`](../meta/techniques/version-control/commit-regular-files.md). Planning-folder artifacts are managed cross-workflow through [`work-package::manage-artifacts`](../work-package/techniques/manage-artifacts/TECHNIQUE.md) — `create-readme` (seed the planning README at intake), `write-artifact` (numbered report artifacts), and `verify-readme-conforms` (drift check before commit).
 
 | Technique | Capability | Bound by |
 |-----------|------------|----------|
@@ -147,16 +147,19 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | 02 | [Anti-Patterns](./resources/anti-patterns.md) | 64 prohibited patterns by category | Quality Review, Review Mode |
 | 03 | [Update Mode Guide](./resources/update-mode-guide.md) | Content preservation and impact analysis procedures | Update mode activities |
 | 04 | [Review Mode Guide](./resources/review-mode-guide.md) | Compliance audit procedure and report structure | Review mode activities |
+| 05 | [Design Context README](./resources/design-context-readme.md) | Planning-folder README template seeded at intake | Intake and Context, Validate and Commit |
 
 ---
 
 ## Outputs
 
-**Create mode:** A complete workflow file set in the `workflows/` worktree.
+In create and update modes the workflow seeds and maintains a **planning folder** under `.engineering/artifacts/planning/`: a `README.md` (from the [design-context-readme](./resources/design-context-readme.md) template) whose progress tracker is updated on completing each activity. In all modes, report artifacts are written into the planning folder as numbered files via [`work-package::manage-artifacts::write-artifact`](../work-package/techniques/manage-artifacts/write-artifact.md).
 
-**Update mode:** Modified workflow files in the `workflows/` worktree, plus a post-update compliance snapshot in `.engineering/artifacts/reviews/`.
+**Create mode:** A complete workflow file set in the `workflows/` worktree, plus a planning folder.
 
-**Review mode:** A compliance report in `.engineering/artifacts/reviews/`.
+**Update mode:** Modified workflow files in the `workflows/` worktree, plus a post-update compliance snapshot in the planning folder.
+
+**Review mode:** A compliance report in the planning folder.
 
 ---
 
@@ -208,5 +211,6 @@ workflows/workflow-design/
     ├── schema-construct-inventory.md     # Construct mapping tables
     ├── anti-patterns.md                  # 64 anti-patterns
     ├── update-mode-guide.md              # Update mode guide
-    └── review-mode-guide.md              # Review mode guide
+    ├── review-mode-guide.md              # Review mode guide
+    └── design-context-readme.md          # Planning-folder README template
 ```

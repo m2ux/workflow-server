@@ -2,7 +2,7 @@
 
 > Part of the [Workflow Design Workflow](../README.md)
 
-Five markdown resources providing the design principles, construct inventories, anti-pattern catalogs, and mode-specific guidance used by the workflow-design workflow.
+Six markdown resources providing the design principles, construct inventories, anti-pattern catalogs, mode-specific guidance, and the planning-folder README template used by the workflow-design workflow.
 
 ---
 
@@ -15,6 +15,7 @@ Five markdown resources providing the design principles, construct inventories, 
 | `02` | [Anti-Patterns](anti-patterns.md) | 64 prohibited patterns organized by category: structural, interaction, schema expressiveness, rule hygiene, description hygiene, coupling, tool-technique-doc consistency, execution |
 | `03` | [Update Mode Guide](update-mode-guide.md) | Content preservation rules, impact analysis procedure, side-effect detection patterns |
 | `04` | [Review Mode Guide](review-mode-guide.md) | Supplementary guide: activation, activity flow, compliance report template, transition-to-update-mode contract. **The audit procedure itself is canonical in the quality-review activity's `audit-*` technique protocols** — this resource does not duplicate it. |
+| `05` | [Design Context README](design-context-readme.md) | Template + guidelines for the planning-folder `README.md` seeded at intake. Consumed cross-workflow by [`work-package::manage-artifacts::create-readme`](../../work-package/techniques/manage-artifacts/create-readme.md) via its `readme_template` input; the workflow-design counterpart of the work-package [readme](../../work-package/resources/readme.md) guide. |
 
 ---
 
@@ -68,6 +69,10 @@ Supplementary guide for review mode. The audit procedure itself is canonical in 
 - Activation patterns and shortened activity flow
 - Compliance report structure template (markdown skeleton with severity table and per-pass finding sections)
 - Transition-to-update-mode contract (variable changes, finding-to-change-spec handoff)
+
+### 05 — Design Context README
+
+Template and section guidelines for the `README.md` entry-point of a workflow-design session's planning folder — the workflow-design counterpart of the work-package readme guide. The intake activity seeds it by binding `work-package::manage-artifacts::create-readme` with this resource as the `readme_template`, and `work-package::manage-artifacts::verify-readme-conforms` validates it before commit. Sections: header (workflow id / mode / status), Executive Summary, Design Decisions, Compliance Findings, Scope Manifest, Activity Progress table, Links.
 
 ---
 
