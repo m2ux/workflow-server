@@ -10,7 +10,7 @@ metadata:
 
 Guidance for auditing existing workflows against the 14 design principles. Review mode produces a compliance report without modifying the target workflow, then offers to switch to update mode for remediation.
 
-This guide carries the **supplementary** material for review mode: activation/flow framing, the compliance report template, and the transition-to-update-mode contract. The **audit procedure itself** is canonical in the `workflow-design` technique protocol — the worker loads the technique via `get_technique` and reads the procedure phases inline. This file does not restate the procedure.
+This guide carries the **supplementary** material for review mode: activation/flow framing, the compliance report template, and the transition-to-update-mode contract. The **audit procedure itself** is canonical in the `quality-review` activity's bound `audit-*` techniques — the worker loads each via `get_technique` and executes its protocol. This file does not restate the procedure.
 
 ---
 
@@ -22,24 +22,24 @@ Review mode is activated by recognition patterns: "review workflow", "audit work
 
 Review mode follows a shortened activity sequence:
 
-1. **Intake** — Load the target workflow, enumerate its contents, then the `review-scope-confirmed` checkpoint (blocking) confirms `target_workflow_id` before continuing.
-2. **Context and Literacy** — Load schemas and construct inventory as the audit baseline.
-3. **Quality Review** — Run the audit passes from the `workflow-design` technique protocol against the existing workflow. This is the core of review mode.
-4. **Validate and Commit** — Save the compliance report as an artifact.
+1. **Intake and Context** — Load the target workflow, enumerate its contents, internalize the schemas as the audit baseline, then the `review-scope-confirmed` checkpoint (blocking) confirms `target_workflow_id` before continuing.
+2. **Quality Review** — Run the audit passes against the existing workflow. This is the core of review mode.
+3. **Validate and Commit** — Save the compliance report as an artifact.
+4. **Retrospective** — Capture a session retrospective.
 
-Activities 3–7 (requirements-refinement, pattern-analysis, impact-analysis, scope-and-structure, content-drafting) are skipped — there is no design or drafting in review mode.
+`requirements-refinement`, `pattern-analysis`, `impact-analysis`, and `scope-and-draft` are skipped — there is no design or drafting in review mode.
 
 ## Audit Procedure
 
-Canonical location: the `workflow-design` technique protocol, phases prefixed with `audit-` (e.g. `audit-expressiveness`, `audit-conformance`, `audit-rule-to-structure`, `audit-anti-pattern-scan`, `audit-schema-validation`, `audit-tool-technique-doc-consistency`, `audit-principle-compliance`, `audit-rule-hygiene`), plus `compile-compliance-report`.
+Canonical location: the `audit-*` techniques bound by the `quality-review` activity — `audit-expressiveness`, `audit-conformance`, `audit-rule-hygiene`, `audit-rule-enforcement`, `audit-principles`, `audit-anti-patterns`, `audit-schema-validation`, `audit-consistency` — plus `compile-report`.
 
-Each phase's bullets are the executable procedure. The `quality-review` and `post-update-review` activities reference these phases from their step descriptions; the worker loads the technique and executes the phase. This file deliberately does not duplicate the bullets — there is one canonical source.
+Each technique's protocol is the executable procedure. The `quality-review` and `post-update-review` activities bind these techniques at their steps; the worker loads each via `get_technique` and executes its protocol. This file deliberately does not duplicate the bullets — there is one canonical source.
 
-References cited by the audit phases:
+References cited by the audit techniques:
 
-- [design-principles](./design-principles.md) — design principles (input for `audit-principle-compliance`)
+- [design-principles](./design-principles.md) — design principles (input for `audit-principles`)
 - [schema-construct-inventory](./schema-construct-inventory.md) — schema construct inventory (input for `audit-expressiveness`)
-- [anti-patterns](./anti-patterns.md) — anti-pattern catalog (input for `audit-anti-pattern-scan` and `audit-rule-hygiene`)
+- [anti-patterns](./anti-patterns.md) — anti-pattern catalog (input for `audit-anti-patterns` and `audit-rule-hygiene`)
 
 ## Compliance Report Structure
 

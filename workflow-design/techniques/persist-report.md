@@ -2,12 +2,12 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Write a workflow audit report to disk as a dated markdown file in the designated folder.
+Persist a workflow audit report into the planning folder as a numbered artifact via the shared [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) operation, so the report sorts with the session's other artifacts and a re-run updates it in place rather than minting a duplicate.
 
 ## Outputs
 
@@ -17,11 +17,11 @@ Path to the written report file
 
 #### artifact
 
-`{$date}-{workflow_id}-compliance-review.md` (compliance review mode) / `{target_workflow_id}-post-update-review.md` (post-update review mode)
+`compliance-review.md` (compliance review mode) / `post-update-review.md` (post-update review mode)
 
 ## Protocol
 
 ### 1. Persist Report
 
-- Using today's date `{$date}`, construct the report filename: for a compliance report, bind `{$compliance_report_artifact}` as `{$date}-{workflow_id}-compliance-review.md` in the planning folder; for a post-update review snapshot, bind `{$post_update_review_artifact}` as `{target_workflow_id}-post-update-review.md` in `.engineering/artifacts/reviews/`
-- Write the report to its destination folder as a dated markdown file, naming it `{$compliance_report_artifact}` or `{$post_update_review_artifact}` per mode, capturing `{$report_path}`
+- Choose the bare filename for the mode: `compliance-review.md` for a compliance report, `post-update-review.md` for a post-update review snapshot.
+- Persist the report content via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and the chosen bare filename; the server prepends the activity `artifactPrefix` and find-or-creates the instance. Capture the written location as `{report_path}`.

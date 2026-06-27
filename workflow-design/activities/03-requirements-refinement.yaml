@@ -1,122 +1,109 @@
 id: requirements-refinement
-version: 1.3.0
+version: 1.4.0
 name: Requirements Refinement
-description: Guided elicitation of the workflow specification across purpose, activities, checkpoints, artifacts, variables, techniques, and rules.
+description: Guided elicitation of the workflow specification across its design dimensions, then surfacing, reconciling, and reviewing the design assumptions the specification rests on.
 required: true
+techniques:
+  - scatter-gather
 rules:
   - One question at a time — present each checkpoint independently and wait for the response before proceeding
   - Show what was captured so far before asking the next question
   - Do not assume answers — if the user's description is ambiguous, ask for clarification
 steps:
-  - kind: technique
-    id: elicitation
-    technique: elicitation
   - kind: checkpoint
-    id: purpose-confirmed
-    message: Here is the workflow purpose and domain I've captured. Is this accurate?
-    blocking: true
+    id: design-context
+    message: "Optional: provide design context before elicitation — reference workflows to model after, integration points, or operators and triggers. Skipping in 30s; elicitation can proceed without it."
+    blocking: false
+    defaultOption: skip-context
+    autoAdvanceMs: 30000
     options:
-      - id: confirmed
-        label: Yes, that's right
-        description: Purpose is accurately captured
-      - id: refine
-        label: Needs refinement
-        description: Purpose statement requires clarification before proceeding.
-  - kind: checkpoint
-    id: activities-confirmed
-    message: Here is the activity list I've captured with names, purposes, and expected artifacts. Is this complete?
-    blocking: true
-    options:
-      - id: confirmed
-        label: Yes, this is complete
-        description: Activity list is accurate and complete
-      - id: refine
-        label: Needs changes
-        description: Activity list requires additions, removals, or modifications.
-  - kind: checkpoint
-    id: model-confirmed
-    condition:
-      type: simple
-      variable: is_update_mode
-      operator: "!="
-      value: true
-    message: Based on our discussion, this workflow uses a {sequential/independent} activity model. Is this correct?
-    blocking: true
-    options:
-      - id: confirmed
-        label: Yes, correct model
-        description: Activity model is correct
-      - id: change
-        label: Change model
-        description: Activity model needs to be switched to the alternative.
-  - kind: checkpoint
-    id: checkpoints-confirmed
-    message: Here are the checkpoints I've defined for each activity with their options and effects. Do these cover all necessary user decision points?
-    blocking: true
-    options:
-      - id: confirmed
-        label: Yes, checkpoints are complete
-        description: Checkpoint coverage is adequate
-      - id: refine
-        label: Needs changes
-        description: Checkpoint set requires additions, removals, or modifications.
-  - kind: checkpoint
-    id: artifacts-confirmed
-    message: Here are the artifacts each activity produces. Is this complete?
-    blocking: true
-    options:
-      - id: confirmed
-        label: Yes, artifacts are complete
-        description: Artifact list is accurate
-      - id: refine
-        label: Needs changes
-        description: Artifact set requires additions, removals, or modifications.
-  - kind: checkpoint
-    id: variables-confirmed
-    condition:
-      type: simple
-      variable: is_update_mode
-      operator: "!="
-      value: true
-    message: Here are the workflow variables I've identified for state tracking. Is this complete?
-    blocking: true
-    options:
-      - id: confirmed
-        label: Yes, variables are complete
-        description: Variable list is accurate
-      - id: refine
-        label: Needs changes
-        description: Variable set requires additions, removals, or modifications.
-  - kind: checkpoint
-    id: techniques-confirmed
-    condition:
-      type: simple
-      variable: is_update_mode
-      operator: "!="
-      value: true
-    message: Here are the techniques needed by this workflow. Is this complete?
-    blocking: true
-    options:
-      - id: confirmed
-        label: Yes, techniques are complete
-        description: Technique list is accurate
-      - id: refine
-        label: Needs changes
-        description: Technique set requires additions, removals, or modifications.
-  - kind: checkpoint
-    id: rules-confirmed
-    message: Here are the workflow rules I've captured, each marked as text-only or structurally enforced. Is this complete?
-    blocking: true
-    options:
-      - id: confirmed
-        label: Yes, rules are complete
-        description: Rule list is accurate
+      - id: provide-context
+        label: Provide design context
+        description: Capture reference workflows, integration points, and operators before elicitation.
         effect:
           setVariable:
-            requirements_confirmed: true
-      - id: refine
-        label: Needs changes
-        description: Rule set requires additions, removals, or modifications.
+            has_design_context: true
+      - id: skip-context
+        label: Skip — proceed to elicitation
+        description: Proceed without additional design context (default — auto-skips after 30s).
+  - kind: action
+    id: set-design-dimensions
+    actions:
+      - action: set
+        target: design_dimensions
+        message: "Set the ordered design dimensions to elicit. Create mode: purpose, activity list, activity model, checkpoints, artifacts, variables, techniques, rules. Update mode: purpose, activity list, checkpoints, artifacts, rules."
+  - kind: loop
+    id: dimension-elicitation-loop
+    name: Dimension Elicitation Loop
+    loopType: forEach
+    variable: current_dimension
+    over: design_dimensions
+    maxIterations: 12
+    steps:
+      - kind: technique
+        id: elicit-dimension
+        technique: elicitation
+      - kind: checkpoint
+        id: dimension-confirmed
+        message: "Here is the {current_dimension} I've captured. Is it accurate and complete?"
+        blocking: true
+        options:
+          - id: confirmed
+            label: Yes, that's right
+            description: This dimension is accurately captured.
+          - id: refine
+            label: Needs changes
+            description: This dimension requires additions, removals, or modifications.
+  - kind: action
+    id: confirm-requirements
+    actions:
+      - action: set
+        target: requirements_confirmed
+        value: true
+  - kind: technique
+    id: collect-assumptions
+    technique:
+      name: work-package::review-assumptions::collect
+      inputs:
+        activity_context: workflow requirements refinement
+        assumption_categories: "Activity Boundaries, Checkpoint Necessity, Technique Selection, Rule Scope, Variable State, Schema Construct Choice"
+  - kind: technique
+    id: reconcile-assumptions
+    technique: reconcile-design-assumptions
+  - kind: loop
+    id: assumption-interview-loop
+    name: Assumption Interview Loop
+    loopType: forEach
+    variable: current_assumption
+    over: open_assumptions
+    maxIterations: 20
+    steps:
+      - kind: technique
+        id: present-assumption
+        technique: work-package::review-assumptions::interview
+      - kind: checkpoint
+        id: assumption-decision
+        message: "Assumption {current_assumption.id}: {current_assumption.statement}"
+        blocking: true
+        options:
+          - id: accept
+            label: Accept assumption
+            description: This design assumption is valid — proceed with it.
+          - id: reject
+            label: Reject assumption
+            description: This assumption is wrong — provide a correction.
+          - id: defer
+            label: Defer
+            description: Not enough information to decide now — revisit later.
+            effect:
+              setVariable:
+                has_deferred_assumptions: true
+      - kind: technique
+        id: record-decision
+        technique: work-package::review-assumptions::record
+  - kind: technique
+    id: update-assumptions-log
+    technique: work-package::review-assumptions::record
 transitions:
   - to: impact-analysis
     condition:

@@ -1,5 +1,5 @@
 id: post-update-review
-version: 1.3.0
+version: 1.4.0
 name: Post-Update Review
 description: Post-commit compliance audit of the updated workflow against design principles and anti-patterns.
 required: true
@@ -14,6 +14,9 @@ steps:
     id: run-audit-passes
     technique: run-audit-passes
   - kind: technique
+    id: scope-audit
+    technique: scope-audit
+  - kind: technique
     id: summarize-findings
     technique: summarize-findings
   - kind: technique
@@ -25,7 +28,9 @@ steps:
     options:
       - id: accept
         label: Accept — update complete
-        description: Update accepted as-is; no further action.
+        description: Update accepted as-is; proceed to the retrospective.
+        effect:
+          transitionTo: retrospective
       - id: iterate
         label: Fix findings — start another update cycle
         description: Findings become the change spec for a fresh update cycle starting at intake.

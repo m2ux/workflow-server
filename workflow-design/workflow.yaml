@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.2.1
+version: 1.5.0
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -34,6 +34,7 @@ rules:
     - "`techniques[]` is reserved for activity-wide STRATEGY/capability techniques (e.g. `variable-binding`, `scatter-gather`) — protocols that apply across the activity's steps. It MUST NOT list per-step operations; an operation a step invokes is bound at that step via `step.technique`."
     - Techniques are the universal capability primitive and the FIRST-CLASS extension mechanism. New strategic operations (scatter/gather, variable binding, retry/escalation, voting, dedup, …) are authored as techniques — preferentially universal ones in `meta` — in preference to schema or engine changes. The schema stays a minimal skeleton; capability grows in the technique library as a standard library of strategy primitives.
     - Technique input/output names, shapes, and structures are defined for the technique's INTRINSIC, GENERIC, REUSABLE semantics — never overfit to a specific caller's local variable name or a single usage instance. Resolve a step-vs-technique name mismatch by aligning the CALLER's state variable to the technique's canonical signature (or an explicit `step.technique.inputs` deviation), NOT by bending the technique to the call-site. Signatures MAY be renamed/reshaped to integrate with the binding system, but only toward a better GENERIC form.
+    - On completing each activity, update the planning-folder `README.md` progress tracker — mark this activity's row ✅ Complete in the Activity Progress table and set the session Status to the current milestone. (No session README exists in review mode, where the seed step is skipped.)
 techniques:
   activity:
     - variable-binding
@@ -101,4 +102,48 @@ variables:
     type: boolean
     description: True when content drafting detects removals not flagged during impact analysis. Gates the preservation-check checkpoint in content-drafting (update mode).
     defaultValue: false
+  - name: needs_audit_fixes
+    type: boolean
+    description: Whether the quality-review audit passes surfaced findings the user elected to fix. Drives the bounded audit-fix-cycle loop in quality-review (apply fixes, re-run audits, re-assess); reset to false when the content is clean.
+    defaultValue: false
+  - name: has_critical_finding
+    type: boolean
+    description: Whether any quality-review audit finding is Critical severity (a schema-invalid or structurally broken construct that must not be committed). Drives the blocker-gate decision that returns to scope-and-draft.
+    defaultValue: false
+  - name: assumptions_log
+    type: object
+    description: The design-assumptions log surfaced and reviewed during requirements-refinement — each assumption with its category, risk, resolvability, and outcome. Written via work-package::review-assumptions and reconcile-design-assumptions.
+  - name: open_assumptions
+    type: array
+    description: The design assumptions still open after audit reconciliation — the genuine design judgements the assumption-interview loop iterates.
+  - name: has_open_assumptions
+    type: boolean
+    description: Whether open design judgements remain after reconcile-design-assumptions; gates the assumption interview.
+    defaultValue: false
+  - name: current_assumption
+    type: object
+    description: "The open assumption under review in the current iteration of the assumption-interview loop (from open_assumptions). Sub-shape: { id, statement }."
+  - name: has_deferred_assumptions
+    type: boolean
+    description: Whether any design assumption was deferred during the interview; recorded back into the assumptions log.
+    defaultValue: false
+  - name: design_dimensions
+    type: array
+    description: The ordered design dimensions to elicit in requirements-refinement, set per mode (create elicits all eight; update skips the already-established activity model, variables, and techniques). Iterated by the dimension-elicitation loop.
+  - name: has_design_context
+    type: boolean
+    description: Whether the user supplied optional design context (reference workflows, integration points, operators) before elicitation.
+    defaultValue: false
+  - name: workflow_branch
+    type: string
+    description: The feature branch in the workflows repo that the authored/updated workflow's changes are committed to (e.g., workflow/{workflow_id}); set by prepare-workflow-branch in create/update modes.
+    defaultValue: ""
+  - name: pr_url
+    type: string
+    description: URL of the pull request opened against the workflows branch for the workflow change (create/update modes).
+    defaultValue: ""
+  - name: pr_number
+    type: string
+    description: Number of the pull request opened for the workflow change (create/update modes).
+    defaultValue: ""
 initialActivity: intake-and-context

@@ -60,6 +60,24 @@ steps:
   - kind: technique
     id: context-loading
     technique: context-loading
+  - kind: action
+    id: bind-planning-folder-path
+    actions:
+      - action: set
+        target: planning_folder_path
+        message: Server-resolved canonical absolute planning folder from the start_session / get_workflow summary (under the server's workspace .engineering planning root). Write location for ALL of this design session's planning artifacts.
+  - kind: technique
+    id: initialize-planning-folder
+    technique:
+      name: work-package::manage-artifacts::create-readme
+      inputs:
+        entity_context: "entity_title={workflow_id}; entity_type=workflow-design-session; status=Planning"
+        readme_template: workflow-design/design-context-readme
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - kind: checkpoint
     id: change-request-confirmed
     condition:

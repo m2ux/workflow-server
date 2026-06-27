@@ -2,7 +2,7 @@
 
 > Part of the [Workflow Design Workflow](../README.md)
 
-Five markdown resources providing the design principles, construct inventories, anti-pattern catalogs, and mode-specific guidance used by the workflow-design workflow.
+Ten markdown resources providing the design principles, construct inventories, anti-pattern catalogs, mode-specific guidance, the planning-folder README and completion-summary templates, and the design-assumption and elicitation guides used by the workflow-design workflow.
 
 ---
 
@@ -15,6 +15,11 @@ Five markdown resources providing the design principles, construct inventories, 
 | `02` | [Anti-Patterns](anti-patterns.md) | 64 prohibited patterns organized by category: structural, interaction, schema expressiveness, rule hygiene, description hygiene, coupling, tool-technique-doc consistency, execution |
 | `03` | [Update Mode Guide](update-mode-guide.md) | Content preservation rules, impact analysis procedure, side-effect detection patterns |
 | `04` | [Review Mode Guide](review-mode-guide.md) | Supplementary guide: activation, activity flow, compliance report template, transition-to-update-mode contract. **The audit procedure itself is canonical in the quality-review activity's `audit-*` technique protocols** — this resource does not duplicate it. |
+| `05` | [Design Context README](design-context-readme.md) | Template + guidelines for the planning-folder `README.md` seeded at intake. Consumed cross-workflow by [`work-package::manage-artifacts::create-readme`](../../work-package/techniques/manage-artifacts/create-readme.md) via its `readme_template` input; the workflow-design counterpart of the work-package [readme](../../work-package/resources/readme.md) guide. |
+| `06` | [Completion Artifact](completion-artifact.md) | Template + guidelines for the `COMPLETE.md` completion summary written by the Retrospective activity; the workflow-design counterpart of the work-package [complete-wp](../../work-package/resources/complete-wp.md) guide, with design-authoring sections in place of code/test sections. |
+| `07` | [Design Assumptions](design-assumptions.md) | Assumption categories and log template for surfacing and reviewing design assumptions during requirements-refinement; reuses the work-package [assumptions-review](../../work-package/resources/assumptions-review.md) methodology cross-workflow. |
+| `08` | [Design Assumption Reconciliation](design-assumption-reconciliation.md) | How workflow-design reconciles audit-resolvable assumptions via its own audit techniques, in place of work-package's code analysis. |
+| `09` | [Elicitation Guide](elicitation-guide.md) | Per-dimension question bank for the one-dimension-at-a-time elicitation; the counterpart of the work-package [requirements-elicitation](../../work-package/resources/requirements-elicitation.md) guide. |
 
 ---
 
@@ -68,6 +73,26 @@ Supplementary guide for review mode. The audit procedure itself is canonical in 
 - Activation patterns and shortened activity flow
 - Compliance report structure template (markdown skeleton with severity table and per-pass finding sections)
 - Transition-to-update-mode contract (variable changes, finding-to-change-spec handoff)
+
+### 05 — Design Context README
+
+Template and section guidelines for the `README.md` entry-point of a workflow-design session's planning folder — the workflow-design counterpart of the work-package readme guide. The intake activity seeds it by binding `work-package::manage-artifacts::create-readme` with this resource as the `readme_template`, and `work-package::manage-artifacts::verify-readme-conforms` validates it before commit. Sections: header (workflow id / mode / status), Executive Summary, Design Decisions, Compliance Findings, Scope Manifest, Activity Progress table, Links.
+
+### 06 — Completion Artifact
+
+Template and section guidelines for the `COMPLETE.md` completion summary written by the Retrospective activity (`create-completion-doc`). Sections: header (workflow id / mode / status), Summary, What Was Delivered, Design Decisions, Scope Outcome, Known Limitations & Deferrals, Lessons Learned. Design-authoring sections replace the work-package guide's code/test sections, per the per-workflow completion-doc decision.
+
+### 07 — Design Assumptions
+
+Assumption categories (Activity Boundaries, Checkpoint Necessity, Technique Selection, Rule Scope, Variable State, Schema Construct Choice) and the assumptions-log template for the design-assumption lifecycle that requirements-refinement runs (collect → reconcile → interview → record). The shared methodology — sources of false assumptions, risk assessment, judgement-augmentation review — is reused from the work-package [assumptions-review](../../work-package/resources/assumptions-review.md) guide; this resource adds only the workflow-design categories and log shape.
+
+### 08 — Design Assumption Reconciliation
+
+How workflow-design reconciles audit-resolvable assumptions — mapping each kind of assumption to the audit technique that settles it (`audit-schema-validation`, `audit-conformance`, `audit-consistency`, `audit-principles`) — in place of work-package's GitNexus-backed code analysis. Backs the `reconcile-design-assumptions` technique.
+
+### 09 — Elicitation Guide
+
+Per-dimension question bank for the guided, one-dimension-at-a-time elicitation in requirements-refinement: goal and anchor questions per dimension (purpose, activity list, model, checkpoints, artifacts, variables, techniques, rules), plus a minimum-viable-elicitation note. Consulted by the `elicitation` technique as the dimension-elicitation loop iterates.
 
 ---
 
