@@ -18,7 +18,7 @@ Definition: [`01-intake-and-context.yaml`](./01-intake-and-context.yaml). Leads 
 
 ### 02. Requirements Refinement
 
-Guided one-question-at-a-time elicitation of the workflow specification across its design dimensions — purpose, activities, checkpoints, artifacts, variables, techniques, and rules. The value is a confirmed specification captured incrementally, without overwhelming the user with combined questions.
+Guided, one-dimension-at-a-time elicitation of the workflow specification: an optional design-context checkpoint, then a `forEach` over the design dimensions (purpose, activity list, model, checkpoints, artifacts, variables, techniques, rules — the list set per mode) that elicits and confirms each in turn. It then surfaces the design assumptions the spec rests on (`work-package::review-assumptions::collect`), reconciles the audit-resolvable ones autonomously (`reconcile-design-assumptions`), and interviews the user on the genuinely open ones (`work-package::review-assumptions::interview`/`record`) — mirroring work-package's elicitation-with-assumptions structure. The value is a confirmed specification plus a vetted set of design decisions, captured incrementally.
 
 Definition: [`03-requirements-refinement.yaml`](./03-requirements-refinement.yaml). Skipped in review mode; leads to [Pattern Analysis](#03-pattern-analysis) (create) or [Impact Analysis](#04-impact-analysis) (update).
 

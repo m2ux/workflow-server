@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.3.0
+version: 1.4.0
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -109,5 +109,29 @@ variables:
   - name: has_critical_finding
     type: boolean
     description: Whether any quality-review audit finding is Critical severity (a schema-invalid or structurally broken construct that must not be committed). Drives the blocker-gate decision that returns to scope-and-draft.
+    defaultValue: false
+  - name: assumptions_log
+    type: object
+    description: The design-assumptions log surfaced and reviewed during requirements-refinement — each assumption with its category, risk, resolvability, and outcome. Written via work-package::review-assumptions and reconcile-design-assumptions.
+  - name: open_assumptions
+    type: array
+    description: The design assumptions still open after audit reconciliation — the genuine design judgements the assumption-interview loop iterates.
+  - name: has_open_assumptions
+    type: boolean
+    description: Whether open design judgements remain after reconcile-design-assumptions; gates the assumption interview.
+    defaultValue: false
+  - name: current_assumption
+    type: object
+    description: "The open assumption under review in the current iteration of the assumption-interview loop (from open_assumptions). Sub-shape: { id, statement }."
+  - name: has_deferred_assumptions
+    type: boolean
+    description: Whether any design assumption was deferred during the interview; recorded back into the assumptions log.
+    defaultValue: false
+  - name: design_dimensions
+    type: array
+    description: The ordered design dimensions to elicit in requirements-refinement, set per mode (create elicits all eight; update skips the already-established activity model, variables, and techniques). Iterated by the dimension-elicitation loop.
+  - name: has_design_context
+    type: boolean
+    description: Whether the user supplied optional design context (reference workflows, integration points, operators) before elicitation.
     defaultValue: false
 initialActivity: intake-and-context
