@@ -7,7 +7,7 @@ metadata:
 
 ## Capability
 
-Push the workflow's feature branch and open (or update) a pull request against the `workflows` branch, then mark it ready — so an authored or updated workflow is reviewed and merged through a PR rather than committed straight to `workflows`.
+Push the workflow's feature branch, open (or update) a pull request against the `workflows` branch, and mark it ready for review.
 
 ## Outputs
 

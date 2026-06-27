@@ -7,7 +7,7 @@ metadata:
 
 ## Capability
 
-Review the freshly drafted workflow files as a block-indexed table — one row per drafted construct (activity, technique, resource, workflow metadata) — confirming each block's rationale before the automated audit passes run, and capture a draft attestation. The structural counterpart of a manual diff review, indexed by construct rather than by git hunk.
+Review the drafted workflow files as a block-indexed table — one row per drafted construct (activity, technique, resource, workflow metadata) — confirming each block's rationale and capturing a draft attestation.
 
 ## Inputs
 

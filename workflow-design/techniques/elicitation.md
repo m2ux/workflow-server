@@ -7,7 +7,7 @@ metadata:
 
 ## Capability
 
-Elicit a single design dimension of the workflow specification — posing the questions for `{current_dimension}` from the elicitation guide, recording the answers, and presenting the accumulated design so far. The per-iteration unit of the dimension-elicitation loop.
+Elicit a single design dimension of the workflow specification — posing the questions for `{current_dimension}` from the [elicitation-guide](../resources/elicitation-guide.md), recording the answers, and presenting the accumulated design so far.
 
 ## Inputs
 

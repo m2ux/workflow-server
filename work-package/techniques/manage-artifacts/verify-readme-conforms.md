@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Verify the planning folder's `README.md` still matches its template's structure (header block, executive summary, the template's overview/progress sections, links). Catches template drift that would otherwise only be flagged late in the workflow by a human reviewer.
+Verify the planning folder's `README.md` still matches its template's structure — header block, executive summary, the template's overview/progress sections, and links.
 
 ## Inputs
 

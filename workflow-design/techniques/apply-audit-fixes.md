@@ -7,7 +7,7 @@ metadata:
 
 ## Capability
 
-Apply the quality-review audit findings the user elected to fix, editing the affected YAML files in place via [yaml-authoring](./yaml-authoring.md), then re-validating each changed file with [audit-schema-validation](./audit-schema-validation.md) so a fix never lands schema-invalid content.
+Apply the selected audit findings, editing the affected YAML files in place via [yaml-authoring](./yaml-authoring.md) and re-validating each changed file with [audit-schema-validation](./audit-schema-validation.md).
 
 ## Inputs
 

@@ -7,7 +7,7 @@ metadata:
 
 ## Capability
 
-Audit the committed change set for scope discipline: compare the files actually changed for the workflow against the confirmed `{scope_manifest}`, flagging drift — files changed outside the manifest, and manifest items left unaddressed — so the update stays minimal and focused.
+Audit the committed change set for scope discipline: compare the files actually changed for the workflow against the confirmed `{scope_manifest}`, flagging drift — files changed outside the manifest, and manifest items left unaddressed.
 
 ## Outputs
 

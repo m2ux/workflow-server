@@ -31,7 +31,7 @@ steps:
     actions:
       - action: set
         target: design_dimensions
-        message: "Set the ordered design dimensions to elicit. Create mode: purpose, activity list, activity model, checkpoints, artifacts, variables, techniques, rules. Update mode: purpose, activity list, checkpoints, artifacts, rules — the activity model, variables, and techniques are already established and are skipped."
+        message: "Set the ordered design dimensions to elicit. Create mode: purpose, activity list, activity model, checkpoints, artifacts, variables, techniques, rules. Update mode: purpose, activity list, checkpoints, artifacts, rules."
   - kind: loop
     id: dimension-elicitation-loop
     name: Dimension Elicitation Loop

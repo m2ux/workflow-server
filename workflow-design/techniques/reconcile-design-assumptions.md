@@ -7,7 +7,7 @@ metadata:
 
 ## Capability
 
-Autonomously resolve the design assumptions that the schema and conventions can settle — running the audit techniques against the drafted workflow — so only genuine design judgements remain open for the user. The workflow-design counterpart of work-package's code-analysis reconcile, with audit passes in place of codebase tracing.
+Autonomously resolve the design assumptions that the schema and conventions can settle — running the audit techniques against the drafted workflow — leaving only genuine design judgements open.
 
 ## Inputs
 

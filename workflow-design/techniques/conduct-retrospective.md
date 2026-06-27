@@ -7,7 +7,7 @@ metadata:
 
 ## Capability
 
-Conduct a session retrospective: analyse the non-checkpoint user interactions to surface friction points and produce a prioritized list of workflow improvements, recorded in the planning folder. The workflow-design counterpart of the work-package retrospective, without the PR-merge status step — workflow-design commits directly, with no PR.
+Conduct a session retrospective: analyse the non-checkpoint user interactions to surface friction points and produce a prioritized list of workflow improvements, recorded in the planning folder.
 
 ## Outputs
 

@@ -7,7 +7,7 @@ metadata:
 
 ## Capability
 
-Ensure the workflows repo is on a dedicated feature branch for this workflow before its changes are committed — creating `workflow/{workflow_id}` off the `workflows` branch (or checking it out if it already exists) — so the work lands on a branch for review rather than directly on `workflows`.
+Ensure the workflows repo is on a dedicated feature branch for this workflow — creating `workflow/{workflow_id}` off the `workflows` branch, or checking it out if it already exists.
 
 ## Outputs
 
