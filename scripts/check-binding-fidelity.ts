@@ -101,6 +101,21 @@ const workflows = readdirSync(ROOT).filter((d) => statSync(join(ROOT, d)).isDire
 for (const wf of workflows) buildRegistry(wf);
 
 function resolve(ref: string, wf: string, activityId?: string): Sig | null {
+  // Cross-workflow canonical prefix (mirrors the server's readTechnique `::` cross-workflow branch in
+  // technique-loader.ts): `<workflow>::<technique>` or `<workflow>::<group>::<op>` resolves DIRECTLY
+  // against that workflow's registry, with NO meta fallback. The leading segment is treated as a
+  // workflow only when it names a real workflow in the registry; otherwise it is a same-workflow
+  // `<group>::<op>` and falls through to the blocks below.
+  if (ref.includes('::')) {
+    const segs = ref.split('::');
+    if (segs.length >= 2 && registry.has(segs[0]!)) {
+      const r = registry.get(segs[0]!)!;
+      const rest = segs.slice(1).join('::');
+      if (r.ops.has(rest)) return r.ops.get(rest)!;
+      if (r.groups.has(rest)) return r.groups.get(rest)!;
+      return null;
+    }
+  }
   // Activity-group convention (mirrors the server's get_technique): a bare op resolves FIRST against
   // the group named after the current activity — `<activity-id>::<op>` — taking precedence over a
   // same-named standalone/group-base, so an op that shares its group's name (`research` ->
