@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.4.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits an existing workflow against the 14 design principles and produces a compliance report.
+> v1.5.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits an existing workflow against the 14 design principles and produces a compliance report.
 
 ---
 
@@ -16,7 +16,7 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 | 04 | [**Impact Analysis**](./activities/README.md#04-impact-analysis) | Update only | Enumerate affected files, check integrity, flag removals |
 | 05 | [**Scope and Draft**](./activities/README.md#05-scope-and-draft) | Create, Update | Define file manifest, then draft and validate each file per-file |
 | 06 | [**Quality Review**](./activities/README.md#06-quality-review) | All | Expressiveness, conformance, rule-hygiene, and rule-enforcement audits, then a bounded fix-revalidate loop (max 3) with a critical-blocker gate (full compliance audit in review mode) |
-| 07 | [**Validate and Commit**](./activities/README.md#07-validate-and-commit) | All | Schema validation and commit (create/update) or save compliance report (review) |
+| 07 | [**Validate and Commit**](./activities/README.md#07-validate-and-commit) | All | Schema validation, then commit on a feature branch + open a PR against `workflows` (create/update) or save the compliance report (review) |
 | 08 | [**Post-Update Review**](./activities/README.md#08-post-update-review) | Update only | Automatic post-commit compliance audit of the updated workflow |
 | 09 | [**Retrospective**](./activities/README.md#09-retrospective) | All | Record a completion summary (create/update) and conduct a session retrospective |
 
@@ -144,6 +144,8 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`scope-verification`](./techniques/scope-verification.md) | Verify every scope-manifest item is addressed | Validate and Commit |
 | [`readme-authoring`](./techniques/readme-authoring.md) | Generate or update the workflow README set | Validate and Commit |
 | [`commit-verification`](./techniques/commit-verification.md) | Verify the commit landed correctly | Validate and Commit |
+| [`prepare-workflow-branch`](./techniques/prepare-workflow-branch.md) | Create/checkout the feature branch in the workflows repo before committing | Validate and Commit |
+| [`publish-workflow-pr`](./techniques/publish-workflow-pr.md) | Push the branch and open/mark-ready a PR against the `workflows` branch | Validate and Commit |
 | [`persist-report`](./techniques/persist-report.md) | Persist the compliance/review report as an artifact | Validate and Commit, Post-Update Review |
 | [`run-audit-passes`](./techniques/run-audit-passes.md) | Run all audit passes against the committed workflow | Post-Update Review |
 | [`summarize-findings`](./techniques/summarize-findings.md) | Produce a severity-rated findings summary | Post-Update Review |
@@ -176,11 +178,11 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 
 In create and update modes the workflow seeds and maintains a **planning folder** under `.engineering/artifacts/planning/`: a `README.md` (from the [design-context-readme](./resources/design-context-readme.md) template) whose progress tracker is updated on completing each activity. In all modes, report artifacts are written into the planning folder as numbered files via [`work-package::manage-artifacts::write-artifact`](../work-package/techniques/manage-artifacts/write-artifact.md).
 
-**Create mode:** A complete workflow file set in the `workflows/` worktree, plus a planning folder.
+**Create mode:** A complete workflow file set committed on a feature branch in the workflows repo, with a pull request opened against the `workflows` branch, plus a planning folder.
 
-**Update mode:** Modified workflow files in the `workflows/` worktree, plus a post-update compliance snapshot in the planning folder.
+**Update mode:** Modified workflow files committed on a feature branch with a pull request against the `workflows` branch, plus a post-update compliance snapshot in the planning folder.
 
-**Review mode:** A compliance report in the planning folder.
+**Review mode:** A compliance report committed in the planning folder.
 
 Every mode ends with the [Retrospective](./activities/README.md#09-retrospective) activity, which records a session retrospective in the planning folder; create and update modes also produce a `COMPLETE.md` completion summary there.
 
@@ -234,7 +236,9 @@ workflows/workflow-design/
 │   ├── scope-audit.md
 │   ├── create-completion-doc.md
 │   ├── conduct-retrospective.md
-│   └── reconcile-design-assumptions.md
+│   ├── reconcile-design-assumptions.md
+│   ├── prepare-workflow-branch.md
+│   └── publish-workflow-pr.md
 └── resources/
     ├── README.md                         # Resource index
     ├── design-principles.md              # 14 principles reference

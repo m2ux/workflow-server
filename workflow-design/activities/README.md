@@ -58,7 +58,7 @@ Definition: [`08-quality-review.yaml`](./08-quality-review.yaml). Leads to [Vali
 
 ### 07. Validate and Commit
 
-Final schema validation, scope verification, README generation/update, and commit of the workflow changes to the workflows worktree. A blocking pre-commit attestation gate confirms sign-off before staging, with an option to return to Scope and Draft. In review mode it instead saves and commits the compliance report. The value is a workflow that is guaranteed loadable, has nothing left undone from its scope, has a human-readable entry point, and is committed with a deliberate sign-off.
+Final schema validation, scope verification, and README generation/update, then — in create/update modes — a blocking pre-commit attestation gate, a feature branch in the workflows repo (`prepare-workflow-branch`), a commit, and a pull request opened against the `workflows` branch and marked ready (`publish-workflow-pr`); workflow changes never land straight on `workflows`. In review mode it instead saves and commits the compliance report directly. The value is a workflow that is guaranteed loadable, has nothing left undone from its scope, has a human-readable entry point, and is delivered through a reviewable pull request after a deliberate sign-off.
 
 Definition: [`09-validate-and-commit.yaml`](./09-validate-and-commit.yaml). Terminal in create and review modes; leads to [Post-Update Review](#08-post-update-review) in update mode.
 

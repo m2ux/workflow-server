@@ -1,12 +1,13 @@
 id: validate-and-commit
-version: 1.3.0
+version: 1.4.0
 name: Validate and Commit
-description: Final validation, scope verification, README generation/update, and commit of the workflow changes to the workflows worktree.
+description: Final validation, scope verification, and README generation/update, then commit of the workflow changes on a feature branch with a pull request opened against the workflows branch (create/update); in review mode the compliance report is committed directly.
 required: true
 rules:
   - All YAML files must pass schema validation before commit — no exceptions
   - The scope manifest must be fully addressed — every item checked off
-  - Commit to the workflows worktree, not the main repository
+  - Commit to the workflows repository, not the main repository
+  - In create/update modes, land changes on a feature branch and open a pull request against the workflows branch — never commit workflow changes straight to the workflows branch
 steps:
   - kind: technique
     id: save-compliance-report
@@ -120,16 +121,32 @@ steps:
         effect:
           transitionTo: scope-and-draft
   - kind: technique
+    id: prepare-workflow-branch
+    technique: prepare-workflow-branch
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: technique
     id: stage-and-commit
     technique: version-control::commit-regular-files
   - kind: technique
     id: verify-commit
     technique: commit-verification
+  - kind: technique
+    id: publish-workflow-pr
+    technique: publish-workflow-pr
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - kind: action
     id: announce-completion
     actions:
       - action: log
-        message: Workflow design complete — all files committed to workflows worktree
+        message: Workflow design complete — changes committed and a pull request opened against the workflows branch (create/update), or the compliance report committed (review)
 transitions:
   - to: post-update-review
     condition:

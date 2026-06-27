@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.4.0
+version: 1.5.0
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -134,4 +134,16 @@ variables:
     type: boolean
     description: Whether the user supplied optional design context (reference workflows, integration points, operators) before elicitation.
     defaultValue: false
+  - name: workflow_branch
+    type: string
+    description: The feature branch in the workflows repo that the authored/updated workflow's changes are committed to (e.g., workflow/{workflow_id}); set by prepare-workflow-branch in create/update modes.
+    defaultValue: ""
+  - name: pr_url
+    type: string
+    description: URL of the pull request opened against the workflows branch for the workflow change (create/update modes).
+    defaultValue: ""
+  - name: pr_number
+    type: string
+    description: Number of the pull request opened for the workflow change (create/update modes).
+    defaultValue: ""
 initialActivity: intake-and-context
