@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "workflow-design",
+  "workflowVersion": "1.5.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "YSE7SZ",
+  "planningFolderPath": "/home/mike1/projects/main/workflow-server/.engineering/artifacts/planning/2026-06-27-workflow-design-self-review",
+  "currentActivity": "quality-review",
+  "currentTechnique": "",
+  "condition": "is_review_mode == true && review_scope_confirmed == true",
+  "seq": 8,
+  "ts": 1782546571,
+  "startedAt": "2026-06-27T07:45:53.336Z",
+  "completedActivities": [
+    "intake-and-context"
+  ],
+  "skippedActivities": [],
+  "variables": {},
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-06-27T07:45:53.336Z",
+      "type": "workflow_started"
+    },
+    {
+      "activity": "intake-and-context",
+      "timestamp": "2026-06-27T07:46:48.306Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "intake-and-context",
+      "timestamp": "2026-06-27T07:47:09.706Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "quality-review",
+      "timestamp": "2026-06-27T07:47:09.706Z",
+      "type": "activity_entered"
+    }
+  ],
+  "triggeredWorkflows": []
+}
