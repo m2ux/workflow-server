@@ -59,10 +59,11 @@ graph TD
     SCD --> QR["06 quality-review"]
 
     QR -->|"critical blocker"| SCD
+    QR -.->|"review: fix issues"| INT
     QR --> VAL["07 validate-and-commit"]
     VAL -.->|"return to drafting"| SCD
 
-    VAL -->|"create / review"| RETRO["11 retrospective"]
+    VAL -->|"create / review"| RETRO["09 retrospective"]
     VAL -->|"update"| PUR["08 post-update-review"]
     PUR -->|"accept"| RETRO
     PUR -.->|"fix / revert"| INT
