@@ -50,7 +50,7 @@ This work makes the README easier to read without changing what it covers. The s
 | Resource | Link |
 |----------|------|
 | Issue | _Skipped — no tracking issue for this work package_ |
-| PR | _Pending_ |
+| PR | _Branch `chore/simplify-readme-prose` pushed to origin; draft PR deferred until the first implementation commit exists (GitHub rejects an empty-diff PR)_ |
 
 ---
 
