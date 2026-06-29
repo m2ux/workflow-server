@@ -37,7 +37,7 @@ User Goal → Workflow → Activities → Techniques → Tools
 
 ### MCP Tools at a Glance
 
-The server registers 16 MCP tools across five concerns. See [docs/api-reference.md](docs/api-reference.md) for full signatures.
+The server registers 16 MCP tools across six concerns. See [docs/api-reference.md](docs/api-reference.md) for full signatures.
 
 | Concern | Tools |
 |---------|-------|
