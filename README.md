@@ -30,10 +30,10 @@ Workflow Server guides AI agents through multi-step workflows, one step at a tim
 User Goal → Workflow → Activities → Techniques → Tools
 ```
 
-- **Workflows** define the overall process (e.g., implement a feature from issue to merged PR)
-- **Activities** are phases within a workflow (e.g., plan, implement, review, validate)
-- **Techniques** are markdown definitions of a capability, with optional rules
-- **Tools** are the operations the agent invokes
+- **Workflows** describe the whole process (e.g., implement a feature from issue to merged PR)
+- **Activities** are the phases within a workflow (e.g., plan, implement, review, validate)
+- **Techniques** are markdown files that describe one capability, each with optional rules
+- **Tools** are the operations the agent calls
 
 ### MCP Tools at a Glance
 
@@ -105,7 +105,7 @@ This creates a `.engineering/` folder with workflows and artifact directories. S
 
 ### Setup IDE Rule
 
-Add the bootstrap rule from [`docs/ide-setup.md`](docs/ide-setup.md) to your IDE's 'always-applied' rule set. The rule tells the agent to call `discover` on every workflow request so the bootstrap procedure stays in sync with the server.
+Add the bootstrap rule from [`docs/ide-setup.md`](docs/ide-setup.md) to your IDE's 'always-applied' rule set. The rule tells the agent to call `discover` on every workflow request. That way, the bootstrap procedure always stays in sync with the server.
 
 ### Execute a Workflow
 
@@ -135,11 +135,11 @@ End the current work-package workflow
 Complete the work package and clean up
 ```
 
-The agent matches your request to the appropriate activity and guides you through the structured phases.
+The agent matches your request to the right activity. It then guides you through the phases, one at a time.
 
 ## Engineering layout
 
-The `.engineering/` directory holds engineering artifacts and workflow-related assets.
+The `.engineering/` directory holds your engineering artifacts and the files that support your workflows.
 
 ### Directory structure
 
