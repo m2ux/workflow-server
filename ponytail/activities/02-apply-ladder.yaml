@@ -1,0 +1,41 @@
+id: apply-ladder
+version: 1.1.0
+name: Apply Ladder
+description: Produce the minimal solution by climbing the rungs, marking deliberate simplifications and leaving one runnable check, then confirm it clears the safety floor.
+steps:
+  - kind: loop
+    id: climb-until-safe
+    name: Climb Until Safe
+    loopType: doWhile
+    condition:
+      type: simple
+      variable: safety_floor_cleared
+      operator: ==
+      value: false
+    maxIterations: 5
+    steps:
+      - kind: technique
+        id: climb-ladder
+        technique: apply-ladder
+      - kind: checkpoint
+        id: safety-floor-cleared
+        blocking: true
+        message: "Confirm the minimal solution clears the safety floor — input validation, error handling, security, accessibility, calibration, and the one runnable check — before the over-engineering review."
+        options:
+          - id: confirmed
+            label: Safety floor cleared
+            description: The minimal solution clears every safety-floor obligation as presented.
+            effect:
+              setVariable:
+                safety_floor_cleared: true
+          - id: needs-work
+            label: Safety floor not yet cleared
+            description: A safety-floor gap remains — re-climb to close it before review.
+            effect:
+              setVariable:
+                safety_floor_cleared: false
+transitions:
+  - to: over-engineering-review
+    isDefault: true
+outcome:
+  - The minimal solution is built and verified to clear the safety floor, with its deliberate ceilings marked for later harvest

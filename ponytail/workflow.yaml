@@ -1,0 +1,49 @@
+$schema: ../../schemas/workflow.schema.json
+id: ponytail
+version: 1.0.0
+title: Ponytail Lean-Coding Workflow
+description: Drive a coding task, change, or codebase toward the leanest solution that still clears a non-negotiable safety floor, tracking every deliberate simplification as ponytail debt.
+author: m2ux
+tags:
+  - refactoring
+  - over-engineering
+  - code-review
+  - simplification
+  - yagni
+rules:
+  universal:
+    - "safety-floor-never-simplified: The safety floor is never simplified away — understanding the problem, input validation at trust boundaries, error handling that prevents data loss, security, accessibility, hardware calibration, anything explicitly requested, and one runnable assert-based check for non-trivial logic. Backed by the safety-floor-cleared blocking checkpoint and the safety_floor_cleared gate."
+    - "understand-before-climb: The real end-to-end flow a change touches is read and traced before a rung is selected. Backed by intake-and-scope preceding apply-ladder in the activity graph."
+  workflow:
+    - "intensity-and-scope-gate-before-optional: Honour the confirmed intensity and scope before dispatching the optional repo-audit activity — repo-audit is reached only when lazy_intensity is ultra or pass_scope is repo."
+  activity:
+    - "present-approach-before-implementation: Present the approach for a change before implementing it, so the user sees what will be built and which rung was chosen before any code lands."
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: task_description
+    type: string
+    description: The coding task, change, or audit target to be made lean
+    required: true
+  - name: target_path
+    type: string
+    description: Path to the code or repo under the lazy lens
+    defaultValue: "."
+  - name: lazy_intensity
+    type: string
+    description: Strictness of the lazy lens — lite, full, or ultra. Governs review depth and gates the repo-audit activity.
+    defaultValue: full
+  - name: pass_scope
+    type: string
+    description: Breadth of the pass — change (diff-scoped) or repo (whole-tree). Gates the repo-audit activity.
+    defaultValue: change
+  - name: safety_floor_cleared
+    type: boolean
+    description: Whether the minimal solution clears the safety floor — set by the safety-floor-cleared checkpoint, gates the transition into over-engineering-review.
+    defaultValue: false
+  - name: has_debt_markers
+    type: boolean
+    description: Whether ponytail markers were found during harvest — gates the gain report tail.
+    defaultValue: false
+initialActivity: intake-and-scope
