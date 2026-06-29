@@ -1,0 +1,46 @@
+id: intake-and-scope
+version: 1.0.0
+name: Intake and Scope
+description: Capture the task and target, set intensity and scope, and trace the real end-to-end flow the change touches before the ladder is climbed.
+steps:
+  - kind: technique
+    id: capture-and-trace
+    technique: ponytail-operations::scope-intake
+  - kind: checkpoint
+    id: intensity-and-scope-confirmed
+    blocking: true
+    message: "Confirm the lazy lens before climbing. Intensity: lite, full, or ultra. Scope: change (diff only) or repo (whole tree). Ultra intensity or repo scope adds the repo-wide audit."
+    options:
+      - id: lite-change
+        label: Lite intensity, change scope
+        description: Lightest pass over the diff only — minimal review depth, no repo audit.
+        effect:
+          setVariable:
+            lazy_intensity: lite
+            pass_scope: change
+      - id: full-change
+        label: Full intensity, change scope
+        description: Standard pass over the diff — full review depth, no repo audit.
+        effect:
+          setVariable:
+            lazy_intensity: full
+            pass_scope: change
+      - id: ultra-change
+        label: Ultra intensity, change scope
+        description: Strictest pass over the diff — adds the repo-wide audit.
+        effect:
+          setVariable:
+            lazy_intensity: ultra
+            pass_scope: change
+      - id: full-repo
+        label: Full intensity, repo scope
+        description: Standard pass over the whole tree — adds the repo-wide audit.
+        effect:
+          setVariable:
+            lazy_intensity: full
+            pass_scope: repo
+transitions:
+  - to: apply-ladder
+    isDefault: true
+outcome:
+  - The task and the real flow it touches are understood and recorded, with the lazy lens calibrated to the user's chosen intensity and scope before any simplification begins

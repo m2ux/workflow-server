@@ -1,0 +1,25 @@
+id: over-engineering-review
+version: 1.0.0
+name: Over-Engineering Review
+description: Review the change against the over-engineering taxonomy, one line per finding, ending in a net line-count scoreboard.
+steps:
+  - kind: technique
+    id: review-change
+    technique: ponytail-operations::review-over-engineering
+transitions:
+  - to: repo-audit
+    condition:
+      type: or
+      conditions:
+        - type: simple
+          variable: lazy_intensity
+          operator: ==
+          value: ultra
+        - type: simple
+          variable: pass_scope
+          operator: ==
+          value: repo
+  - to: harvest-debt-and-report
+    isDefault: true
+outcome:
+  - The change's over-engineering is tagged and quantified so a cut decision can be made

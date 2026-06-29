@@ -1,0 +1,14 @@
+id: repo-audit
+version: 1.0.0
+name: Repo Audit
+description: Hunt repo-wide over-engineering biggest-cut-first, ending in a net lines-and-deps scoreboard.
+required: false
+steps:
+  - kind: technique
+    id: audit-repo
+    technique: ponytail-operations::audit-repo
+transitions:
+  - to: harvest-debt-and-report
+    isDefault: true
+outcome:
+  - The whole tree's biggest over-engineering cuts are ranked and quantified
