@@ -6,24 +6,24 @@ The technique library for the ponytail workflow. Each operation is one capabilit
 
 ---
 
-## The `ponytail-operations` Group
+## Base Contract and Standalone Techniques
 
-`ponytail-operations` is an operation-group: a `ponytail-operations/` directory holding a [`TECHNIQUE.md`](ponytail-operations/TECHNIQUE.md) base contract plus one `<op>.md` file per operation. The base contract owns the shared inputs (`task_description`, `target_path`, `lazy_intensity`, `pass_scope`) and the shared rules (`output-discipline`, `take-higher-rung`, `deletion-over-addition`); every operation inherits them.
+The workflow-root [`TECHNIQUE.md`](TECHNIQUE.md) is the base contract, inherited by every standalone technique below. It owns the shared inputs (`task_description`, `target_path`, `lazy_intensity`, `pass_scope`) and the shared rules (`output-discipline`, `take-higher-rung`, `deletion-over-addition`); each technique inherits them automatically.
 
-| Operation | Capability | Artifact |
+| Technique | Capability | Artifact |
 |-----------|------------|----------|
-| [`scope-intake`](ponytail-operations/scope-intake.md) | Capture the task and target, fix intensity and scope, and trace the real end-to-end flow before a rung is chosen | `lean-brief.md` |
-| [`apply-ladder`](ponytail-operations/apply-ladder.md) | Climb to the minimal solution, mark every deliberate simplification, and leave one runnable check | `lean-change.md` |
-| [`review-over-engineering`](ponytail-operations/review-over-engineering.md) | Tag the change's over-engineering one line per finding and close with a net-lines scoreboard | `review-findings.md` |
-| [`audit-repo`](ponytail-operations/audit-repo.md) | Hunt repo-wide over-engineering biggest-cut-first and close with a net lines-and-deps scoreboard | `audit-findings.md` |
-| [`harvest-debt`](ponytail-operations/harvest-debt.md) | Harvest every ponytail marker into a debt ledger and flag any marker missing an upgrade trigger | `debt-ledger.md` |
-| [`report-gain`](ponytail-operations/report-gain.md) | Append an honesty-bounded gain scoreboard to the foot of the debt ledger | *(appends to `debt-ledger.md`)* |
+| [`scope-intake`](scope-intake.md) | Capture the task and target, fix intensity and scope, and trace the real end-to-end flow before a rung is chosen | `lean-brief.md` |
+| [`apply-ladder`](apply-ladder.md) | Climb to the minimal solution, mark every deliberate simplification, and leave one runnable check | `lean-change.md` |
+| [`review-over-engineering`](review-over-engineering.md) | Tag the change's over-engineering one line per finding and close with a net-lines scoreboard | `review-findings.md` |
+| [`audit-repo`](audit-repo.md) | Hunt repo-wide over-engineering biggest-cut-first and close with a net lines-and-deps scoreboard | `audit-findings.md` |
+| [`harvest-debt`](harvest-debt.md) | Harvest every ponytail marker into a debt ledger and flag any marker missing an upgrade trigger | `debt-ledger.md` |
+| [`report-gain`](report-gain.md) | Append an honesty-bounded gain scoreboard to the foot of the debt ledger | *(appends to `debt-ledger.md`)* |
 
 ---
 
 ## Reference Convention
 
-`ponytail-operations` is named for its capability, not for any single activity, so its operations are always written **qualified** — `ponytail-operations::<op>` — wherever a step binds one (for example `ponytail-operations::apply-ladder`). The activity-group shorthand (a bare op id) does not apply here, because no group is named after an activity.
+Each technique is a standalone top-level file and is bound **bare** — `<op>` — wherever a step references one (for example `apply-ladder`). A bare reference resolves workflow-local to the matching `techniques/<op>.md`.
 
 ---
 

@@ -6,7 +6,7 @@ required: false
 steps:
   - kind: technique
     id: audit-repo
-    technique: ponytail-operations::audit-repo
+    technique: audit-repo
 transitions:
   - to: harvest-debt-and-report
     isDefault: true

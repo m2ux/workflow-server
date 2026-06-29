@@ -5,7 +5,7 @@ description: Review the change against the over-engineering taxonomy, one line p
 steps:
   - kind: technique
     id: review-change
-    technique: ponytail-operations::review-over-engineering
+    technique: review-over-engineering
 transitions:
   - to: repo-audit
     condition:

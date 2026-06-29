@@ -16,7 +16,7 @@ steps:
     steps:
       - kind: technique
         id: climb-ladder
-        technique: ponytail-operations::apply-ladder
+        technique: apply-ladder
       - kind: checkpoint
         id: safety-floor-cleared
         blocking: true

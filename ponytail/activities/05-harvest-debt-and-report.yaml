@@ -5,10 +5,10 @@ description: Harvest the deliberate-simplification markers into a debt ledger an
 steps:
   - kind: technique
     id: harvest-markers
-    technique: ponytail-operations::harvest-debt
+    technique: harvest-debt
   - kind: technique
     id: report-gain
-    technique: ponytail-operations::report-gain
+    technique: report-gain
     when: has_debt_markers == true
 outcome:
   - Every deliberate simplification is recorded as trackable debt with its upgrade trigger, and the honest gain is shown

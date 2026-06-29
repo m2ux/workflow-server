@@ -21,7 +21,7 @@ The lazy lens has two dials. **Intensity** (`lite` / `full` / `ultra`) sets how 
 
 ## Adaptation notes (skill → workflow)
 
-This workflow is adapted from the always-on Ponytail skill. Two divergences are intentional:
+This workflow distills the original **[Ponytail](https://github.com/DietrichGebert/ponytail)** project by Dietrich Gebert — an always-on "lazy senior developer" skill set (the ladder, the safety floor, and the over-engineering review / repo audit / debt / gain skills) — into the workflow-server model. Two divergences from the source are intentional:
 
 - **Invoked, not persistent.** The original skill is a per-response lens active on every reply until switched off. This workflow is invoked for a piece of work: intensity is selected once at intake and held for the pass, rather than persisting across a whole session.
 - **Governs what is built, not how you talk.** The skill pairs with Caveman to also shape conversational style; that pairing is out of scope here. The `output-discipline` rule constrains only *unrequested* code-adjacent prose (design notes, feature tours) — not user-facing communication, and never the report artifacts the workflow's own techniques are asked to produce.
@@ -75,22 +75,22 @@ graph TD
 
 ## Techniques
 
-The cross-cutting [`variable-binding`](../meta/techniques/variable-binding.md) technique is declared once at the workflow level and inherited by every activity. Every step binds one operation from the workflow-local `ponytail-operations` group.
+The cross-cutting [`variable-binding`](../meta/techniques/variable-binding.md) technique is declared once at the workflow level and inherited by every activity. Every step binds one of the workflow's standalone techniques.
 
-`ponytail-operations` is an operation-group — a `TECHNIQUE.md` base contract plus one `<op>.md` file per operation — owning the lean-coding capability. The base contract holds the shared inputs (`task_description`, `target_path`, `lazy_intensity`, `pass_scope`) and rules (`output-discipline`, `take-higher-rung`, `deletion-over-addition`); every operation inherits them and is referenced qualified as `ponytail-operations::<op>`.
+The lean-coding capability is owned by six standalone top-level techniques, each inheriting the workflow-root [`techniques/TECHNIQUE.md`](techniques/TECHNIQUE.md) base contract. The base contract holds the shared inputs (`task_description`, `target_path`, `lazy_intensity`, `pass_scope`) and rules (`output-discipline`, `take-higher-rung`, `deletion-over-addition`); every technique inherits them and is bound bare as `<op>`.
 
-| Operation | Capability |
+| Technique | Capability |
 |-----------|------------|
-| `ponytail-operations::scope-intake` | Capture and trace the change before a rung is chosen |
-| `ponytail-operations::apply-ladder` | Climb to the minimal solution, mark ceilings, leave one check |
-| `ponytail-operations::review-over-engineering` | Tag a change's over-engineering with a net-lines scoreboard |
-| `ponytail-operations::audit-repo` | Hunt repo-wide over-engineering biggest-cut-first |
-| `ponytail-operations::harvest-debt` | Harvest ponytail markers into a debt ledger |
-| `ponytail-operations::report-gain` | Append an honesty-bounded gain scoreboard to the ledger |
+| `scope-intake` | Capture and trace the change before a rung is chosen |
+| `apply-ladder` | Climb to the minimal solution, mark ceilings, leave one check |
+| `review-over-engineering` | Tag a change's over-engineering with a net-lines scoreboard |
+| `audit-repo` | Hunt repo-wide over-engineering biggest-cut-first |
+| `harvest-debt` | Harvest ponytail markers into a debt ledger |
+| `report-gain` | Append an honesty-bounded gain scoreboard to the ledger |
 
 `scope-intake` also binds the cross-workflow [`gitnexus-operations`](../meta/techniques/gitnexus-operations/TECHNIQUE.md) `query` / `context` operations for flow tracing when the codebase is indexed.
 
-**Detailed documentation:** See [techniques/README.md](techniques/README.md) and [techniques/ponytail-operations/TECHNIQUE.md](techniques/ponytail-operations/TECHNIQUE.md).
+**Detailed documentation:** See [techniques/README.md](techniques/README.md) and [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md).
 
 ---
 
@@ -124,14 +124,13 @@ workflows/ponytail/
 │   └── 05-harvest-debt-and-report.yaml        # Harvest markers + gain report tail (terminal)
 ├── techniques/
 │   ├── README.md                              # Techniques orientation map
-│   └── ponytail-operations/
-│       ├── TECHNIQUE.md                       # Group base contract (shared inputs + rules)
-│       ├── scope-intake.md                    # Capture and trace → lean-brief.md
-│       ├── apply-ladder.md                    # Climb the rungs → lean-change.md
-│       ├── review-over-engineering.md         # Diff-scoped tagged review → review-findings.md
-│       ├── audit-repo.md                      # Repo-wide hunt → audit-findings.md
-│       ├── harvest-debt.md                    # Grep ponytail markers → debt-ledger.md
-│       └── report-gain.md                     # Honesty-bounded gain scoreboard (appends to debt-ledger.md)
+│   ├── TECHNIQUE.md                           # Workflow-root base contract (shared inputs + rules)
+│   ├── scope-intake.md                        # Capture and trace → lean-brief.md
+│   ├── apply-ladder.md                        # Climb the rungs → lean-change.md
+│   ├── review-over-engineering.md             # Diff-scoped tagged review → review-findings.md
+│   ├── audit-repo.md                          # Repo-wide hunt → audit-findings.md
+│   ├── harvest-debt.md                        # Grep ponytail markers → debt-ledger.md
+│   └── report-gain.md                         # Honesty-bounded gain scoreboard (appends to debt-ledger.md)
 └── resources/
     ├── README.md                              # Resource catalog
     ├── the-ladder.md                          # 7 rungs + safety floor + understand-first

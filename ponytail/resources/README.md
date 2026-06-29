@@ -2,7 +2,7 @@
 
 > Part of the [Ponytail Lean-Coding Workflow](../README.md)
 
-Four single-source reference files holding the discipline the `ponytail-operations` techniques apply: the ladder and its safety floor, the over-engineering taxonomy, the marker convention, and the honesty boundary on reporting. Each resource owns its subject once; the techniques link into it by `#section` anchor rather than restating it.
+Four single-source reference files holding the discipline the techniques apply: the ladder and its safety floor, the over-engineering taxonomy, the marker convention, and the honesty boundary on reporting. Each resource owns its subject once; the techniques link into it by `#section` anchor rather than restating it.
 
 The authoritative content lives in each `.md` file and is served by `get_resource`. This file is the catalog — what each resource owns.
 

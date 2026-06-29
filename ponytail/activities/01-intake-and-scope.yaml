@@ -5,7 +5,7 @@ description: Capture the task and target, set intensity and scope, and trace the
 steps:
   - kind: technique
     id: capture-and-trace
-    technique: ponytail-operations::scope-intake
+    technique: scope-intake
   - kind: checkpoint
     id: intensity-and-scope-confirmed
     blocking: true
