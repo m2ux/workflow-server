@@ -34,7 +34,9 @@ The tagged findings for the change — one line per finding, each carrying a [ta
 
 - Write each finding as a single line in `{review_findings}`: the tag, the location, the simpler alternative, and the lines it would save.
 - Keep to over-engineering. Do not record correctness, security, or performance findings — those belong to the [safety floor](../../resources/the-ladder.md#safety-floor), not this review.
+- Never emit a `delete` finding against the lone smoke test or assert-based self-check — it is the ponytail minimum, not bloat.
+- This review reports only: it lists findings into `{review_findings}` and applies nothing. The fixes are not made here.
 
 ### 3. Score the net
 
-- Close with a `net: -N lines` scoreboard summing the savings across all findings. When the change is already lean, record a clean result with `net: 0 lines`.
+- Close with a `net: -N lines` scoreboard summing the savings across all findings. When the change carries no over-engineering, record the clean result as `Lean already. Ship.`

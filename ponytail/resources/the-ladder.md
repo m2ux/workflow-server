@@ -10,7 +10,7 @@ A rung is never chosen against a guess at the problem. Before climbing, the real
 
 - **Read the code fully.** Not the function under the cursor — the flow it sits inside. What calls it, what it returns into, what happens when it fails.
 - **Trace the real path end to end.** Follow the data from the entry point through to where it leaves or errors. The rung that fits is the one that fits the actual flow, not the imagined one.
-- **State the one-sentence problem.** If the problem cannot be stated in a sentence, it is not yet understood, and understanding it is the first obligation — a [safety-floor](#safety-floor) obligation, not an optional preamble.
+- **Understand before you climb.** If the problem cannot yet be stated plainly, it is not yet understood — and understanding it is the first obligation, a [safety-floor](#safety-floor) obligation, not an optional preamble. The reading and tracing above are how the understanding is reached; the rung is chosen only once they hold.
 
 A bug fix follows the same rule, one level deeper: fix the root cause, not the symptom, and grep every caller before changing a shared signature. Climbing without understanding produces a lean solution to the wrong problem.
 
@@ -26,7 +26,7 @@ Climb from the laziest rung down, and stop at the highest rung that solves the u
 4. **Reach for a native platform feature.** A language native or platform primitive (a built-in operator, a runtime capability, a framework hook) does the work without added code.
 5. **Lean on an already-installed dependency.** A dependency the project already pulls in covers the case. Use it before adding a new one — a new dependency must earn its place against a present, concrete need.
 6. **Write the one line.** No abstraction, no helper, no indirection — the single expression that does it.
-7. **Write the minimum code that works.** The floor rung: the smallest correct implementation, with no abstraction introduced before its third concrete caller exists.
+7. **Write the minimum code that works.** The floor rung: the smallest correct implementation, with no abstraction introduced before a second concrete case exists — inline it until a second one exists. No interface with one implementation, no factory for one product.
 
 Deletion is preferred over addition at every rung. Removing code, dependencies, or indirection counts as progress; adding any of them must earn its place.
 
@@ -43,6 +43,6 @@ The safety floor is never simplified away. No rung above is climbed at the cost 
 - **Accessibility.** User-facing affordances stay accessible; accessibility is not an over-engineering finding.
 - **Hardware calibration.** Where the code drives or reads hardware, calibration and tolerances stand.
 - **Anything explicitly requested.** A behaviour the user asked for is in scope by definition and is never simplified away as "unnecessary."
-- **One runnable assert-based check.** Any non-trivial logic carries one runnable assert-based check that proves it works — the floor includes a way to demonstrate the change is correct.
+- **One runnable assert-based check.** Any non-trivial logic carries one runnable check — the smallest thing that fails if the logic breaks: an assert-based `demo()`/`__main__` self-check or one small test file. No frameworks, no fixtures, no per-function suites unless asked. Trivial one-liners need no test; YAGNI applies to tests too.
 
 Everything else is fair game for the ladder. Correctness, security, and performance live here on the floor, which is why the over-engineering review leaves them out of scope: the floor already protects them.

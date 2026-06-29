@@ -39,6 +39,13 @@ steps:
           setVariable:
             lazy_intensity: full
             pass_scope: repo
+      - id: ultra-repo
+        label: Ultra intensity, repo scope
+        description: Strictest pass over the whole tree — adds the repo-wide audit.
+        effect:
+          setVariable:
+            lazy_intensity: ultra
+            pass_scope: repo
 transitions:
   - to: apply-ladder
     isDefault: true

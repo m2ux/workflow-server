@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Summarize the honest gain from the lazy pass, appended to the foot of the debt ledger. Cite [benchmark medians](../../resources/honesty-boundary.md#rule) for the kinds of cuts made, point at the ledger for the only real per-repo count, and never fabricate a per-repo savings number.
+Summarize the honest gain from the lazy pass, appended to the foot of the debt ledger. Cite the aggregate [benchmark medians](../../resources/honesty-boundary.md#medians) — lines of code, cost, and speed — point at the ledger for the only real per-repo count, and never fabricate a per-repo savings number. This is the workflow's adaptation of the source's read-only display: it appends a summary to the ledger and mutates no source code.
 
 ## Inputs
 
@@ -17,7 +17,7 @@ The harvested debt [ledger](../../resources/ponytail-marker-convention.md#conven
 
 ### gain_scoreboard
 
-The honesty-bounded gain summary appended to the foot of the debt ledger — benchmark medians for the kinds of cuts made, the real ledger row count as the only per-repo number, and no fabricated savings.
+The honesty-bounded gain summary appended to the foot of the debt ledger — the aggregate benchmark medians (lines of code, cost, speed), the real ledger row count as the only per-repo number, and no fabricated savings.
 
 ## Protocol
 
@@ -27,14 +27,14 @@ The honesty-bounded gain summary appended to the foot of the debt ledger — ben
 
 ### 2. Cite benchmark medians
 
-- For the kinds of cuts made, cite the [benchmark medians](../../resources/honesty-boundary.md#rule) for typical savings. Frame them as medians for that class of cut, never as this repo's measured savings.
+- Cite the published aggregate [benchmark medians](../../resources/honesty-boundary.md#medians) — lines of code, cost, and speed. Frame them as medians measured over the fixed benchmark suite, never as this repo's measured savings.
 
 ### 3. Append the scoreboard
 
-- Append the `{gain_scoreboard}` to the foot of the debt ledger: the ledger row count, the benchmark medians, and a pointer to the ledger as the source of the real per-repo count.
+- Append the `{gain_scoreboard}` to the foot of the debt ledger: the ledger row count, the aggregate benchmark medians, and a pointer to the ledger as the source of the real per-repo count. This append is the workflow's only mutation — it adds a summary to the ledger artifact and changes no source code.
 
 ## Rules
 
 ### honesty-boundary-on-reporting
 
-Never fabricate a per-repo savings number. The only genuine per-repo figure is the [debt-ledger](../../resources/ponytail-marker-convention.md#convention) row count; everything else is a [benchmark median](../../resources/honesty-boundary.md#rule) for a class of cut and must be labelled as such.
+Never fabricate a per-repo savings number. The only genuine per-repo figure is the [debt-ledger](../../resources/ponytail-marker-convention.md#convention) row count; everything else is a published aggregate [benchmark median](../../resources/honesty-boundary.md#medians) and must be labelled as such.

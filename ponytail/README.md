@@ -15,7 +15,16 @@ Ponytail encodes the discipline of the lazy senior developer — lazy meaning *e
 - Surface and track the deliberate simplifications already sitting in a codebase
 - Get an honest accounting of the lean gain without fabricated savings numbers
 
-The lazy lens has two dials. **Intensity** (`lite` / `full` / `ultra`) sets how aggressively a construct is flagged; **scope** (`change` / `repo`) sets whether the pass covers the diff or the whole tree. Setting either to its widest — `ultra` intensity or `repo` scope — adds the repo-wide audit.
+The lazy lens has two dials. **Intensity** (`lite` / `full` / `ultra`) sets how aggressively a construct is flagged and how the code is built; **scope** (`change` / `repo`) sets whether the pass covers the diff or the whole tree. Setting either to its widest — `ultra` intensity or `repo` scope — adds the repo-wide audit.
+
+---
+
+## Adaptation notes (skill → workflow)
+
+This workflow is adapted from the always-on Ponytail skill. Two divergences are intentional:
+
+- **Invoked, not persistent.** The original skill is a per-response lens active on every reply until switched off. This workflow is invoked for a piece of work: intensity is selected once at intake and held for the pass, rather than persisting across a whole session.
+- **Governs what is built, not how you talk.** The skill pairs with Caveman to also shape conversational style; that pairing is out of scope here. The `output-discipline` rule constrains only *unrequested* code-adjacent prose (design notes, feature tours) — not user-facing communication, and never the report artifacts the workflow's own techniques are asked to produce.
 
 ---
 
@@ -96,7 +105,7 @@ Four single-source reference files carry the discipline the operations apply:
 | [ponytail-marker-convention.md](resources/ponytail-marker-convention.md) | The `ponytail: <ceiling>, add when <trigger>` marker convention and `no-trigger` flag |
 | [honesty-boundary.md](resources/honesty-boundary.md) | The gain-reporting rule — benchmark medians only, never a fabricated per-repo figure |
 
-**Detailed documentation:** See [resources/README.md](resources/README.md) for the catalog with per-technique consumer mapping.
+**Detailed documentation:** See [resources/README.md](resources/README.md) for the catalog.
 
 ---
 
@@ -124,7 +133,7 @@ workflows/ponytail/
 │       ├── harvest-debt.md                    # Grep ponytail markers → debt-ledger.md
 │       └── report-gain.md                     # Honesty-bounded gain scoreboard (appends to debt-ledger.md)
 └── resources/
-    ├── README.md                              # Resource catalog with consumer mapping
+    ├── README.md                              # Resource catalog
     ├── the-ladder.md                          # 7 rungs + safety floor + understand-first
     ├── review-taxonomy.md                     # 5 tags: delete / stdlib / native / yagni / shrink
     ├── ponytail-marker-convention.md          # ponytail: marker convention + no-trigger

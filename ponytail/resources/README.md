@@ -4,18 +4,18 @@
 
 Four single-source reference files holding the discipline the `ponytail-operations` techniques apply: the ladder and its safety floor, the over-engineering taxonomy, the marker convention, and the honesty boundary on reporting. Each resource owns its subject once; the techniques link into it by `#section` anchor rather than restating it.
 
-The authoritative content lives in each `.md` file and is served by `get_resource`. This file is the catalog — what each resource owns and which techniques consume it.
+The authoritative content lives in each `.md` file and is served by `get_resource`. This file is the catalog — what each resource owns.
 
 ---
 
 ## Resource Catalog
 
-| Resource | Owns | Anchors | Consumed by |
-|----------|------|---------|-------------|
-| [the-ladder.md](the-ladder.md) | The understand-first trace, the seven rungs, and the non-negotiable safety floor | `#understand-first`, `#rungs`, `#safety-floor` | `scope-intake`, `apply-ladder`, `review-over-engineering`, and the group base contract ([`TECHNIQUE.md`](../techniques/ponytail-operations/TECHNIQUE.md)) |
-| [review-taxonomy.md](review-taxonomy.md) | The five over-engineering tags, the one-line finding format, and the net-savings scoreboard | `#tags` | `review-over-engineering`, `audit-repo` |
-| [ponytail-marker-convention.md](ponytail-marker-convention.md) | The `ponytail: <ceiling>, add when <trigger>` inline-comment convention and the `no-trigger` flag | `#convention`, `#no-trigger` | `apply-ladder`, `harvest-debt`, `report-gain` |
-| [honesty-boundary.md](honesty-boundary.md) | The gain-reporting rule — benchmark medians only, never a fabricated per-repo figure | `#rule` | `report-gain` |
+| Resource | Owns | Anchors |
+|----------|------|---------|
+| [the-ladder.md](the-ladder.md) | The understand-first trace, the seven rungs, and the non-negotiable safety floor | `#understand-first`, `#rungs`, `#safety-floor` |
+| [review-taxonomy.md](review-taxonomy.md) | The five over-engineering tags, the one-line finding format, and the net-savings scoreboard | `#tags` |
+| [ponytail-marker-convention.md](ponytail-marker-convention.md) | The `ponytail: <ceiling>, add when <trigger>` inline-comment convention and the `no-trigger` flag | `#convention`, `#no-trigger` |
+| [honesty-boundary.md](honesty-boundary.md) | The gain-reporting rule — benchmark medians only, never a fabricated per-repo figure | `#rule` |
 
 ---
 
