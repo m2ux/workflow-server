@@ -349,20 +349,6 @@ function conditionToString(condition: { type: string; variable?: string; operato
  */
 export const TERMINAL_SENTINEL = '__terminal__';
 
-/** Validate a transition between activities */
-export function validateTransition(workflow: Workflow, fromActivityId: string, toActivityId: string): { valid: boolean; reason?: string } {
-  if (!getActivity(workflow, fromActivityId)) return { valid: false, reason: `Source activity not found: ${fromActivityId}` };
-
-  // end-workflow and the terminal sentinel are special terminal states, not actual activities
-  if (toActivityId !== 'end-workflow' && toActivityId !== TERMINAL_SENTINEL && !getActivity(workflow, toActivityId)) {
-    return { valid: false, reason: `Target activity not found: ${toActivityId}` };
-  }
-  
-  const valid = getValidTransitions(workflow, fromActivityId);
-  if (!valid.includes(toActivityId)) return { valid: false, reason: `No valid transition. Valid: ${valid.join(', ') || 'none'}` };
-  return { valid: true };
-}
-
 /** Read raw activity definition (YAML) by ID. Validates but returns the original file content. */
 export async function readActivityRaw(
   workflowDir: string,

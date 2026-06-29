@@ -9,7 +9,6 @@ import type { Technique, ProtocolBlock } from '../schema/technique.schema.js';
 import { safeValidateTechnique } from '../schema/technique.schema.js';
 import {
   tryLoadMarkdownTechnique,
-  tryReadMarkdownTechniqueRaw,
   tryLoadNestedTechnique,
   getWorkflowTechniquesDir,
   MarkdownTechniqueParseError,
@@ -22,8 +21,7 @@ import {
 /**
  * Project an in-memory Technique object into its YAML wire form.
  *
- * Used by readTechniqueRaw (and indirectly by get_skill / get_skills / get_workflow's primary-technique preamble)
- * to render markdown-sourced techniques in the same shape consumers parsed pre-migration.
+ * Renders a markdown-sourced technique into its YAML wire shape — used by the get_technique raw projection.
  *
  * Field-ordering follows the canonical TechniqueSchema field declaration order — stringifyForResponse serialises
  * object keys in insertion order, so we construct the projection with the fields in the intended sequence
@@ -56,7 +54,7 @@ export function projectTechniqueToYaml(technique: Technique): string {
 /**
  * Try to load a technique from a workflow's techniques directory.
  * Accepts `workflowDir + workflowId` so this call site owns the `techniques/` path layout —
- * callers in readTechnique / readTechniqueRaw don't need to know it.
+ * callers in readTechnique don't need to know it.
  */
 async function tryLoadSkillInWorkflow(workflowDir: string, workflowId: string, techniqueId: string): Promise<Technique | null> {
   try {
@@ -67,50 +65,6 @@ async function tryLoadSkillInWorkflow(workflowDir: string, workflowId: string, t
     logWarn('Markdown technique parse error', { techniqueId, workflowId, error: error instanceof Error ? error.message : String(error) });
     return null;
   }
-}
-
-async function tryReadSkillRawInWorkflow(workflowDir: string, workflowId: string, techniqueId: string): Promise<string | null> {
-  try {
-    return await tryReadMarkdownTechniqueRaw(getWorkflowTechniquesDir(workflowDir, workflowId), techniqueId, projectTechniqueToYaml);
-  } catch (error) {
-    logWarn('Markdown technique parse error', { techniqueId, workflowId, error: error instanceof Error ? error.message : String(error) });
-    return null;
-  }
-}
-
-/* -------------------------------------------------------------------------- */
-/* Listing (used by external callers — preserves the public contract)         */
-/* -------------------------------------------------------------------------- */
-
-async function listMarkdownTechniqueIds(techniquesDir: string): Promise<string[]> {
-  if (!existsSync(techniquesDir)) return [];
-  try {
-    const entries = await readdir(techniquesDir, { withFileTypes: true });
-    const result = new Set<string>();
-    for (const entry of entries) {
-      if (entry.isDirectory()) {
-        // Grouped technique: folder with a TECHNIQUE.md index.
-        if (existsSync(join(techniquesDir, entry.name, 'TECHNIQUE.md'))) {
-          result.add(entry.name);
-        }
-      } else if (entry.isFile() && entry.name.endsWith('.md')) {
-        // Standalone technique: flat <slug>.md. Exclude the workflow-root index and READMEs.
-        if (entry.name === 'TECHNIQUE.md' || entry.name === 'README.md') continue;
-        result.add(entry.name.replace(/\.md$/, ''));
-      }
-    }
-    return [...result].sort();
-  } catch (error) {
-    logWarn('Failed to list markdown techniques', { techniquesDir, error: error instanceof Error ? error.message : String(error) });
-    return [];
-  }
-}
-
-/**
- * List technique IDs available in a workflow's techniques directory.
- */
-export async function listWorkflowTechniqueIds(workflowDir: string, workflowId: string): Promise<string[]> {
-  return listMarkdownTechniqueIds(getWorkflowTechniquesDir(workflowDir, workflowId));
 }
 
 /* -------------------------------------------------------------------------- */
@@ -204,49 +158,6 @@ export async function readTechnique(
     const shared = await tryLoadSkillInWorkflow(workflowDir, META_WORKFLOW_ID, techniqueId);
     if (shared) {
       logInfo('Technique loaded (meta shared layer)', { id: techniqueId, workflowId: workflowId ?? '(none)' });
-      return ok(shared);
-    }
-  }
-
-  return err(new TechniqueNotFoundError(techniqueId));
-}
-
-/**
- * Read a technique's projected YAML wire form by ID. Same precedence as readTechnique.
- *
- * The output is the projection `projectTechniqueToYaml(loadedTechnique)`, which decodes back to a
- * Technique object that validates against TechniqueSchema.
- */
-export async function readTechniqueRaw(
-  techniqueId: string,
-  workflowDir: string,
-  workflowId?: string,
-): Promise<Result<string, TechniqueNotFoundError>> {
-  if (techniqueId.includes('/')) {
-    const [targetWorkflow, actualSkillId] = techniqueId.split('/', 2);
-    if (!targetWorkflow || !actualSkillId) {
-      return err(new TechniqueNotFoundError(techniqueId));
-    }
-    const raw = await tryReadSkillRawInWorkflow(workflowDir, targetWorkflow, actualSkillId);
-    if (raw !== null) {
-      logInfo('Technique loaded raw (explicit prefix)', { id: techniqueId, targetWorkflow });
-      return ok(raw);
-    }
-    return err(new TechniqueNotFoundError(techniqueId));
-  }
-
-  if (workflowId) {
-    const local = await tryReadSkillRawInWorkflow(workflowDir, workflowId, techniqueId);
-    if (local !== null) {
-      logInfo('Technique loaded raw (workflow-local)', { id: techniqueId, workflowId });
-      return ok(local);
-    }
-  }
-
-  if (workflowId !== META_WORKFLOW_ID) {
-    const shared = await tryReadSkillRawInWorkflow(workflowDir, META_WORKFLOW_ID, techniqueId);
-    if (shared !== null) {
-      logInfo('Technique loaded raw (meta shared layer)', { id: techniqueId, workflowId: workflowId ?? '(none)' });
       return ok(shared);
     }
   }
@@ -476,7 +387,7 @@ export async function resolveTechniques(
 /* -------------------------------------------------------------------------- */
 
 /** Filename stem of the per-workflow root index. Loadable for its contract, but never an
- *  addressable technique (excluded from listWorkflowTechniqueIds). */
+ *  addressable technique. */
 const ROOT_INDEX_ID = 'TECHNIQUE';
 
 /** Union two id-keyed arrays (inputs/outputs); child entries override parent entries by `id`. */

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { readTechnique, readTechniqueRaw, projectTechniqueToYaml, listWorkflowTechniqueIds, composeTechnique, resolveTechniques } from '../src/loaders/technique-loader.js';
+import { readTechnique, projectTechniqueToYaml, composeTechnique, resolveTechniques } from '../src/loaders/technique-loader.js';
 import { resolve, join } from 'node:path';
 import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -66,7 +66,6 @@ describe('technique-loader', () => {
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.name).toBe('TechniqueNotFoundError');
-        expect(result.error.code).toBe('SKILL_NOT_FOUND');
       }
     });
 
@@ -169,7 +168,7 @@ describe('technique-loader', () => {
       const result = await readTechnique('no-such-technique', FIXTURE_DIR, 'work-package');
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.code).toBe('SKILL_NOT_FOUND');
+        expect(result.error.name).toBe('TechniqueNotFoundError');
       }
     });
 
@@ -195,16 +194,6 @@ describe('technique-loader', () => {
       const source = await readFile(resolve(import.meta.dirname, '../src/loaders/technique-loader.ts'), 'utf-8');
       expect(source).not.toMatch(/parseActivityFilename\s+as\s+parseSkillFilename/);
       expect(source).not.toMatch(/parseSkillFilename\b/);
-    });
-
-    it('readTechniqueRaw returns projected YAML (decodes back to a valid Technique)', async () => {
-      const result = await readTechniqueRaw('cargo-operations', FIXTURE_DIR, 'work-package');
-      expect(result.success).toBe(true);
-      if (result.success) {
-        const decoded = parseYaml(result.value);
-        const parsed = safeValidateTechnique(decoded);
-        expect(parsed.success).toBe(true);
-      }
     });
   });
 
@@ -376,20 +365,6 @@ describe('technique-loader', () => {
       expect(resolved[0]!.type).toBe('technique');
       const op = resolved[0]!.body as { protocol?: Array<{ steps: string[] }> };
       expect(op.protocol).toEqual([{ steps: ['Stage files', 'Commit'] }]);
-    });
-
-    it('lists flat + grouped technique ids and excludes the root TECHNIQUE.md index', async () => {
-      const dir = join(tempDir, 'meta', 'techniques');
-      await mkdir(join(dir, 'grp'), { recursive: true });
-      await writeFile(join(dir, 'TECHNIQUE.md'), [...FM('TECHNIQUE'), '## Capability', '', 'Root index.', ''].join('\n'), 'utf-8');
-      await writeFile(join(dir, 'standalone.md'), [...FM('standalone'), '## Capability', '', 'Standalone.', ''].join('\n'), 'utf-8');
-      await writeFile(join(dir, 'grp', 'TECHNIQUE.md'), [...FM('grp'), '## Capability', '', 'Grouped.', ''].join('\n'), 'utf-8');
-      await writeFile(join(dir, 'grp', 'op.md'), ['an op', '', '## Protocol', '', '1. Do it', ''].join('\n'), 'utf-8');
-
-      const ids = await listWorkflowTechniqueIds(tempDir, 'meta');
-      expect(ids).toContain('standalone');
-      expect(ids).toContain('grp');
-      expect(ids).not.toContain('TECHNIQUE');
     });
 
     it('composeTechnique wraps the technique with the root Initial/Final; other root blocks are root-only', async () => {

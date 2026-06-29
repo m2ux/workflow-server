@@ -6,7 +6,6 @@ import {
   getCheckpoint,
   getValidTransitions,
   getTransitionList,
-  validateTransition,
 } from '../src/loaders/workflow-loader.js';
 import type { Workflow } from '../src/schema/workflow.schema.js';
 import { resolve } from 'node:path';
@@ -202,48 +201,6 @@ describe('workflow-loader', () => {
     it('should return empty array for non-existent activity', async () => {
       const workflow = await loadMetaWorkflow();
       expect(getValidTransitions(workflow, 'no-such-activity')).toEqual([]);
-    });
-  });
-
-  describe('validateTransition (BF-12)', () => {
-    it('should validate a real transition between activities', async () => {
-      const workflow = await loadMetaWorkflow();
-      // discover-session transitions to initialize-session
-      const result = validateTransition(workflow, 'discover-session', 'initialize-session');
-      expect(result.valid).toBe(true);
-      expect(result.reason).toBeUndefined();
-    });
-
-    it('should reject transition to activity not in the valid transitions list', async () => {
-      const workflow = await loadMetaWorkflow();
-      // discover-session -> end-workflow is not a defined transition
-      const result = validateTransition(workflow, 'discover-session', 'end-workflow');
-      expect(result.valid).toBe(false);
-      expect(result.reason).toBeDefined();
-      expect(result.reason).toContain('No valid transition');
-    });
-
-    it('should reject transition from non-existent source activity', async () => {
-      const workflow = await loadMetaWorkflow();
-      const result = validateTransition(workflow, 'no-such-activity', 'dispatch-workflow');
-      expect(result.valid).toBe(false);
-      expect(result.reason).toContain('Source activity not found');
-    });
-
-    it('should reject transition to non-existent target activity', async () => {
-      const workflow = await loadMetaWorkflow();
-      const result = validateTransition(workflow, 'discover-session', 'no-such-activity');
-      expect(result.valid).toBe(false);
-      expect(result.reason).toContain('Target activity not found');
-    });
-
-    it('should include valid targets in the rejection reason', async () => {
-      const workflow = await loadMetaWorkflow();
-      const result = validateTransition(workflow, 'discover-session', 'end-workflow');
-      expect(result.valid).toBe(false);
-      if (result.reason) {
-        expect(result.reason).toContain('Valid:');
-      }
     });
   });
 });
