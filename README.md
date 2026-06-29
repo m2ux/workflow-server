@@ -5,7 +5,7 @@
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI agent workflow orchestration. Create structured, fidelity-enforced workflows that agents discover, navigate, and execute to fulfill user goals.
+A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that gives AI agents a clear, repeatable process to follow. You define that process as a workflow — an ordered set of steps for a goal. The server keeps the agent on that defined path, so these workflows are fidelity-enforced. Agents discover, navigate, and execute them to fulfill user goals.
 
 ---
 
@@ -15,7 +15,7 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI
 
 ## 🎯 Overview
 
-Workflow Server guides AI agents through structured, multi-step workflows. A single always-applied [IDE rule](docs/ide-setup.md) bootstraps the agent — from there, the server handles workflow discovery, session management, and step-by-step navigation.
+Workflow Server guides AI agents through multi-step workflows, one step at a time. You add a single [IDE rule](docs/ide-setup.md) that is always applied, and it starts the agent off. From there the server takes over: it helps the agent find a workflow, tracks the session, and walks it through the steps.
 
 ### How It Works
 
