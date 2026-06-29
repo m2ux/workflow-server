@@ -17,6 +17,7 @@ const WORKFLOWS = [
   'work-package', 'work-packages', 'meta', 'workflow-design', 'requirements-refinement',
   'prism', 'prism-audit', 'prism-evaluate', 'prism-update',
   'cicd-pipeline-security-audit', 'substrate-node-security-audit', 'remediate-vuln',
+  'ponytail',
 ];
 
 describe('all-workflows E2E walk (workflow-agnostic drift guard)', () => {

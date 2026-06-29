@@ -1664,7 +1664,7 @@ describe('mcp-server integration', () => {
       expect(entry.state.workflowId).toBe('work-package');
       expect(entry.state.sessionIndex).toBe(childResponse.session_index);
 
-      // The original /tmp folder for the meta is gone (discardTransient ran).
+      // The original /tmp folder for the meta is gone (the redirect removed it).
       const tmpAfter = readdirSync(os.tmpdir())
         .filter((n) => n.startsWith('workflow-server-transient-'));
       // Exactly the new tmp entries created since the snapshot must be
@@ -1713,8 +1713,8 @@ describe('mcp-server integration', () => {
     });
 
     it('the parent session_index keeps resolving after dispatch_child promotes a transient meta', async () => {
-      // Regression: before the redirect, discardTransient unregistered the
-      // caller's session_index along with the tmp folder. The workspace
+      // Regression: a naive promote would drop the caller's session_index
+      // entry along with the tmp folder. The workspace
       // folder hashes to a different value, so the orchestrator was unable
       // to authenticate next_activity for subsequent meta activities.
       const meta = await client.callTool({
@@ -1972,7 +1972,7 @@ describe('mcp-server integration', () => {
       expect(existsSync(join(nestedChildFolder, '.session-token'))).toBe(true);
       expect(existsSync(wrongPeerFolder)).toBe(false);
 
-      // Resume by slug still finds the nested child — resolveSessionIndex
+      // Resume by slug still finds the nested child — resolveSessionLocation
       // recurses through the tree.
       const childIdx = parseToolResponse(child).session_index;
       const resumed = await client.callTool({

@@ -504,21 +504,6 @@ export async function tryLoadMarkdownTechnique(techniquesDir: string, techniqueI
 }
 
 /**
- * Try to read a raw markdown technique and return the projected YAML wire form.
- * Delegates to tryLoadMarkdownTechnique and then projects via the injected projector
- * (passed by technique-loader.ts to avoid an import cycle).
- */
-export async function tryReadMarkdownTechniqueRaw(
-  techniquesDir: string,
-  techniqueId: string,
-  project: (technique: Technique) => string,
-): Promise<string | null> {
-  const technique = await tryLoadMarkdownTechnique(techniquesDir, techniqueId);
-  if (!technique) return null;
-  return project(technique);
-}
-
-/**
  * Load a technique nested inside a group folder: `<techniquesDir>/<group>/<opName>.md`.
  * A nested technique is parsed and built EXACTLY like a standalone one — same parser, same
  * Technique shape. Returns null when the file does not exist. Throws MarkdownTechniqueParseError
@@ -543,24 +528,4 @@ export async function tryLoadNestedTechnique(techniquesDir: string, group: strin
  */
 export function getWorkflowTechniquesDir(workflowDir: string, workflowId: string): string {
   return join(workflowDir, workflowId, 'techniques');
-}
-
-/**
- * Wrap tryLoadMarkdownTechnique in a Result-returning facade for direct use by callers that
- * already speak Result<Technique, TechniqueNotFoundError>. Used by technique-loader.ts.
- */
-export async function readMarkdownTechnique(
-  techniquesDir: string,
-  techniqueId: string,
-): Promise<Result<Technique, TechniqueNotFoundError>> {
-  try {
-    const technique = await tryLoadMarkdownTechnique(techniquesDir, techniqueId);
-    if (!technique) return err(new TechniqueNotFoundError(techniqueId));
-    return ok(technique);
-  } catch (error) {
-    if (error instanceof MarkdownTechniqueParseError) {
-      logWarn('Markdown technique parse error', { techniqueId, techniquesDir, error: error.message });
-    }
-    return err(new TechniqueNotFoundError(techniqueId));
-  }
 }

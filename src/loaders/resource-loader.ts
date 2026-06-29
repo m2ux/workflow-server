@@ -1,30 +1,13 @@
 import { existsSync } from 'node:fs';
-import { readFile, readdir, stat } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { ResourceNotFoundError } from '../errors.js';
-import { logInfo, logError, logWarn } from '../logging.js';
+import { logInfo, logError } from '../logging.js';
 import type { Resource } from '../schema/resource.schema.js';
 
 export { ResourceNotFoundError } from '../errors.js';
 export type { Resource };
-
-/**
- * A resource entry. Resources are identified ONLY by id (the frontmatter `name:`
- * slug, which equals the folder name on disk). The numeric-index layout
- * (`NN-name.md` flat files) is no longer supported.
- */
-export interface ResourceEntry {
-  /** Canonical id — the folder slug (also the frontmatter `name:`). */
-  id: string;
-  /** Same as id; kept for callers that previously read .name. */
-  name: string;
-  /** Human-readable title derived from the slug. */
-  title: string;
-  /** Repo-relative path to the resource's `SKILL.md`. */
-  path: string;
-  format: 'markdown';
-}
 
 /**
  * Extract a YAML-frontmatter scalar value (e.g. `name`, `version`) by key.
@@ -44,15 +27,10 @@ function extractFrontmatterScalar(content: string, key: string): string | undefi
 
 /**
  * Resolve the resource directory for a workflow.
- * The `guides/` fallback is retained for backward compatibility (orthogonal to this migration).
  */
 function getResourceDir(workflowDir: string, workflowId: string): string | null {
   const resourceDir = join(workflowDir, workflowId, 'resources');
   if (existsSync(resourceDir)) return resourceDir;
-
-  const guidesDir = join(workflowDir, workflowId, 'guides');
-  if (existsSync(guidesDir)) return guidesDir;
-
   return null;
 }
 
@@ -90,20 +68,6 @@ async function findResourceSkillMd(workflowDir: string, workflowId: string, id: 
 }
 
 /**
- * Read a resource by id.
- * Returns the raw markdown content as a string.
- */
-export async function readResource(
-  workflowDir: string,
-  workflowId: string,
-  resourceId: string,
-): Promise<Result<Resource | string, ResourceNotFoundError>> {
-  const rawResult = await readResourceRaw(workflowDir, workflowId, resourceId);
-  if (!rawResult.success) return rawResult;
-  return ok(rawResult.value.content);
-}
-
-/**
  * Read a resource by id and return raw markdown content with format metadata.
  *
  * Resources live exclusively under `<workflowDir>/<workflowId>/resources/<id>/SKILL.md`.
@@ -129,51 +93,6 @@ export async function readResourceRaw(
   }
 
   return err(new ResourceNotFoundError(resourceId, workflowId));
-}
-
-/**
- * List all resources available for a workflow. Folder-shape only.
- */
-export async function listResources(workflowDir: string, workflowId: string): Promise<ResourceEntry[]> {
-  const resourceDir = getResourceDir(workflowDir, workflowId);
-  if (!resourceDir) return [];
-
-  const resources: ResourceEntry[] = [];
-
-  try {
-    const entries = await readdir(resourceDir, { withFileTypes: true });
-    for (const entry of entries) {
-      // Flat resource file `<slug>.md`.
-      if (!entry.isFile() || !entry.name.endsWith('.md') || entry.name === 'README.md') continue;
-      const candidate = join(resourceDir, entry.name);
-      const slug = entry.name.replace(/\.md$/, '');
-      const relPath = `resources/${entry.name}`;
-      try {
-        const content = await readFile(candidate, 'utf-8');
-        const id = extractFrontmatterScalar(content, 'name') ?? slug;
-        const title = slug.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-        resources.push({ id, name: slug, title, path: relPath, format: 'markdown' });
-      } catch {
-        // ignore unreadable entries
-      }
-    }
-
-    resources.sort((a, b) => a.name.localeCompare(b.name));
-    return resources;
-  } catch (error) {
-    logWarn('Failed to list resources', { workflowId, error: error instanceof Error ? error.message : String(error) });
-    return [];
-  }
-}
-
-/** Get a resource entry by id without loading content. */
-export async function getResourceEntry(
-  workflowDir: string,
-  workflowId: string,
-  resourceId: string,
-): Promise<ResourceEntry | null> {
-  const resources = await listResources(workflowDir, workflowId);
-  return resources.find((r) => r.id === resourceId || r.name === resourceId) ?? null;
 }
 
 export interface StructuredResource {
@@ -217,33 +136,4 @@ export async function readResourceStructured(
 
   const { name, version, content } = parseStructuredFrontmatter(rawResult.value.content);
   return ok({ id: name ?? resourceId, version, content });
-}
-
-/**
- * List all workflows that contain resources. Folder-shape only.
- */
-export async function listWorkflowsWithResources(workflowDir: string): Promise<string[]> {
-  if (!existsSync(workflowDir)) return [];
-
-  try {
-    const entries = await readdir(workflowDir);
-    const workflows: string[] = [];
-
-    for (const entry of entries) {
-      const entryPath = join(workflowDir, entry);
-      const stats = await stat(entryPath);
-
-      if (stats.isDirectory()) {
-        const resources = await listResources(workflowDir, entry);
-        if (resources.length > 0) {
-          workflows.push(entry);
-        }
-      }
-    }
-
-    return workflows.sort();
-  } catch (error) {
-    logWarn('Failed to list workflows with resources', { workflowDir, error: error instanceof Error ? error.message : String(error) });
-    return [];
-  }
 }

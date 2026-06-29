@@ -27,7 +27,7 @@ import { fileURLToPath } from 'node:url';
 import { createHarness } from '../../tests/e2e/harness.js';
 import { parseToolResponse, parseWorkflowResponse, parseBundle } from '../../tests/e2e/harness.js';
 import { pickNext, activityCheckpointSteps, type ActivityDef, type CheckpointDef } from '../../tests/e2e/walker.js';
-import { defaultPolicy } from '../../tests/e2e/policies.js';
+import { defaultPolicy, makePolicy } from '../../tests/e2e/policies.js';
 import { evaluateCondition } from '../../src/schema/condition.schema.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -58,7 +58,12 @@ const ORCHESTRATOR = getArg('orchestrator', 'policy');
 // initial activity from get_workflow and drives transitions with pickNext + a forward-advance
 // fallback, so any workflow can be exercised by a real worker without per-workflow wiring.
 const WORKFLOW = getArg('workflow', 'work-package');
-const policy = defaultPolicy;
+// Optional checkpoint steering: --choices=cp1:opt1,cp2:opt2 (mirrors run-3c's policy flexibility),
+// e.g. --choices=intensity-and-scope-confirmed:full-repo to open a gated branch.
+const CHOICES = getArg('choices', '');
+const policy = CHOICES
+  ? makePolicy({ name: 'cli-choices', choices: Object.fromEntries(CHOICES.split(',').filter(Boolean).map(p => p.split(':') as [string, string])) })
+  : defaultPolicy;
 
 function log(msg: string) { process.stdout.write(`[orchestrator] ${msg}\n`); }
 

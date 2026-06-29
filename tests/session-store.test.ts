@@ -22,7 +22,7 @@ import {
   ensurePlanningFolder,
   planningRoot,
   readSessionFile,
-  resolveSessionIndex,
+  resolveSessionLocation,
   sealFilePath,
   sessionFileExists,
   sessionFilePath,
@@ -248,7 +248,7 @@ describe('session-store primitives', () => {
     afterEachCleanup(() => workspace);
   });
 
-  describe('resolveSessionIndex', () => {
+  describe('resolveSessionLocation', () => {
     let workspace: string;
 
     beforeEach(async () => {
@@ -261,8 +261,8 @@ describe('session-store primitives', () => {
       const folder = await ensurePlanningFolder(workspace, '2026-05-14-tc10');
       const idx = await computeSessionIndex(folder);
       await writeSessionFile(folder, { sessionIndex: idx, sentinel: 'tc10' });
-      const resolved = await resolveSessionIndex(workspace, idx);
-      expect(resolved).toBe(folder);
+      const resolved = await resolveSessionLocation(workspace, idx);
+      expect(resolved.folder).toBe(folder);
     });
 
     it('errors with all candidate paths on collision', async () => {
@@ -275,12 +275,12 @@ describe('session-store primitives', () => {
       await writeSessionFile(a, { sessionIndex: idx, sentinel: 'a' });
       await writeSessionFile(b, { sessionIndex: idx, sentinel: 'b' });
 
-      await expect(resolveSessionIndex(workspace, idx)).rejects.toMatchObject({
+      await expect(resolveSessionLocation(workspace, idx)).rejects.toMatchObject({
         name: 'SessionStoreError',
         code: 'COLLISION',
       });
       try {
-        await resolveSessionIndex(workspace, idx);
+        await resolveSessionLocation(workspace, idx);
       } catch (err) {
         const e = err as SessionStoreError;
         expect(e.details).toHaveProperty('candidates');
@@ -300,31 +300,31 @@ describe('session-store primitives', () => {
       const moved = join(planningRoot(workspace), '2026-05-14-mobile-after');
       await rename(folder, moved);
 
-      const resolved = await resolveSessionIndex(workspace, idx);
-      expect(resolved).toBe(moved);
+      const resolved = await resolveSessionLocation(workspace, idx);
+      expect(resolved.folder).toBe(moved);
     });
 
     it('errors with NOT_FOUND when no folder matches', async () => {
       // Empty planning root → no matches for any index.
-      await expect(resolveSessionIndex(workspace, 'ZZZZZZ')).rejects.toMatchObject({
+      await expect(resolveSessionLocation(workspace, 'ZZZZZZ')).rejects.toMatchObject({
         code: 'NOT_FOUND',
       });
     });
 
     it('rejects malformed session_index strings', async () => {
-      await expect(resolveSessionIndex(workspace, 'lower6')).rejects.toMatchObject({
+      await expect(resolveSessionLocation(workspace, 'lower6')).rejects.toMatchObject({
         code: 'INVALID_INDEX',
       });
-      await expect(resolveSessionIndex(workspace, 'A1CDEF')).rejects.toMatchObject({
+      await expect(resolveSessionLocation(workspace, 'A1CDEF')).rejects.toMatchObject({
         code: 'INVALID_INDEX',
       });
-      await expect(resolveSessionIndex(workspace, 'TOOLONG')).rejects.toMatchObject({
+      await expect(resolveSessionLocation(workspace, 'TOOLONG')).rejects.toMatchObject({
         code: 'INVALID_INDEX',
       });
     });
 
     it('rejects relative workspace paths', async () => {
-      await expect(resolveSessionIndex('relative/ws', 'ABCDEF')).rejects.toMatchObject({
+      await expect(resolveSessionLocation('relative/ws', 'ABCDEF')).rejects.toMatchObject({
         code: 'WORKSPACE_INVALID',
       });
     });
@@ -332,7 +332,7 @@ describe('session-store primitives', () => {
     it('errors with NOT_FOUND when the planning root does not exist', async () => {
       const empty = await mkdtemp(join(tmpdir(), 'sx-empty-'));
       try {
-        await expect(resolveSessionIndex(empty, 'ABCDEF')).rejects.toMatchObject({
+        await expect(resolveSessionLocation(empty, 'ABCDEF')).rejects.toMatchObject({
           code: 'NOT_FOUND',
         });
       } finally {

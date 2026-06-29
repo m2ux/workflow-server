@@ -11,8 +11,7 @@ import {
   safeValidateActivity,
 } from '../src/schema/activity.schema.js';
 import { ConditionSchema } from '../src/schema/condition.schema.js';
-import { loadWorkflow } from '../src/loaders/workflow-loader.js';
-import { readActivity } from '../src/loaders/activity-loader.js';
+import { loadWorkflow, getActivity } from '../src/loaders/workflow-loader.js';
 
 const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
 
@@ -214,10 +213,11 @@ describe('schema-validation', () => {
     });
 
     it('loaded activity should pass ActivitySchema validation', async () => {
-      const result = await readActivity(WORKFLOW_DIR, 'discover-session', 'meta');
+      const result = await loadWorkflow(WORKFLOW_DIR, 'meta');
       expect(result.success).toBe(true);
       if (result.success) {
-        const validation = safeValidateActivity(result.value);
+        const activity = getActivity(result.value, 'discover-session');
+        const validation = safeValidateActivity(activity);
         expect(validation.success).toBe(true);
       }
     });

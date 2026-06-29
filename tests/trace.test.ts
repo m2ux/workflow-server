@@ -37,14 +37,6 @@ describe('TraceStore', () => {
     expect(store.getEvents('nonexistent')).toEqual([]);
   });
 
-  it('listSessions returns all initialized sessions (UT-5)', () => {
-    const store = new TraceStore();
-    store.initSession('s1');
-    store.initSession('s2');
-    store.initSession('s3');
-    expect(store.listSessions().sort()).toEqual(['s1', 's2', 's3']);
-  });
-
   it('sessions are isolated (UT-6)', () => {
     const store = new TraceStore();
     store.initSession('s1');

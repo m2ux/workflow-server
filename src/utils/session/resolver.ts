@@ -200,22 +200,6 @@ export async function saveSessionForTool(
 }
 
 /**
- * Convenience: load → mutate → persist. Most authenticated tools fit this
- * shape; the few that need to read without writing (`get_workflow_status`,
- * `get_trace`) can use `loadSessionForTool` directly.
- */
-export async function withSession<R>(
-  workspaceDir: string,
-  sessionIndex: string,
-  fn: (loaded: LoadedSession) => Promise<{ next: SessionFile; result: R }>,
-): Promise<{ result: R; loaded: LoadedSession; written: { bytes: string; seal: string } }> {
-  const loaded = await loadSessionForTool(workspaceDir, sessionIndex);
-  const { next, result } = await fn(loaded);
-  const written = await saveSessionForTool(loaded, next);
-  return { result, loaded, written };
-}
-
-/**
  * Map a session-store error to an actionable user-facing message. Tools call
  * this when they catch a `SessionStoreError` so the response surfaces both
  * what went wrong and how to recover.
