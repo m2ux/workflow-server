@@ -5,7 +5,7 @@
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
-A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI agent workflow orchestration. Create structured, fidelity-enforced workflows that agents discover, navigate, and execute to fulfill user goals.
+A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that gives AI agents a clear, repeatable process to follow. You define that process as a workflow — an ordered set of steps for a goal. The server keeps the agent on that defined path, so these workflows are fidelity-enforced. Agents discover, navigate, and execute them to fulfill user goals.
 
 ---
 
@@ -15,13 +15,13 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI
 
 ## 🎯 Overview
 
-Workflow Server guides AI agents through structured, multi-step workflows. A single always-applied [IDE rule](docs/ide-setup.md) bootstraps the agent — from there, the server handles workflow discovery, session management, and step-by-step navigation.
+Workflow Server guides AI agents through multi-step workflows, one step at a time. You add a single [IDE rule](docs/ide-setup.md) that is always applied, and it starts the agent off. From there the server takes over: it helps the agent find a workflow, tracks the session, and walks it through the steps.
 
 ### How It Works
 
 1. **Discover** — The agent calls `discover` to learn available workflows and the bootstrap procedure
-2. **Start session** — `start_session` returns a session token; `get_workflow` returns the workflow structure, the workflow's `techniques.workflow` bundled under `techniques` and `rules`, and the `initialActivity` ID
-3. **Navigate** — `next_activity` advances the session to the next activity; `get_activity` returns the activity's full definition (steps, checkpoints, transitions) along with the activity's bundled techniques — the workflow's inherited `techniques.activity` plus the activity's own `techniques[]` — under `techniques` and `rules`. `get_resource` lazy-loads reference material referenced by a technique
+2. **Start session** — `start_session` returns a session token. `get_workflow` then returns the workflow structure, along with the techniques and rules it needs and the `initialActivity` ID
+3. **Navigate** — `next_activity` advances the session to the next activity. `get_activity` returns that activity's full definition (steps, checkpoints, transitions), plus the techniques that activity uses. `get_resource` loads reference material a technique points to, only when it is needed
 4. **Execute** — The agent works through activities, with checkpoints for user decisions and transitions governing the flow between activities
 
 ### Architecture
@@ -30,14 +30,14 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 User Goal → Workflow → Activities → Techniques → Tools
 ```
 
-- **Workflows** define the overall process (e.g., implement a feature from issue to merged PR)
-- **Activities** are phases within a workflow (e.g., plan, implement, review, validate)
-- **Techniques** are markdown definitions of a capability, with optional rules
-- **Tools** are the operations the agent invokes
+- **Workflows** describe the whole process (e.g., implement a feature from issue to merged PR)
+- **Activities** are the phases within a workflow (e.g., plan, implement, review, validate)
+- **Techniques** are markdown files that describe one capability, each with optional rules
+- **Tools** are the operations the agent calls
 
 ### MCP Tools at a Glance
 
-The server registers 16 MCP tools across five concerns. See [docs/api-reference.md](docs/api-reference.md) for full signatures.
+The server registers 16 MCP tools across six concerns. See [docs/api-reference.md](docs/api-reference.md) for full signatures.
 
 | Concern | Tools |
 |---------|-------|
@@ -105,7 +105,7 @@ This creates a `.engineering/` folder with workflows and artifact directories. S
 
 ### Setup IDE Rule
 
-Add the bootstrap rule from [`docs/ide-setup.md`](docs/ide-setup.md) to your IDE's 'always-applied' rule set. The rule tells the agent to call `discover` on every workflow request so the bootstrap procedure stays in sync with the server.
+Add the bootstrap rule from [`docs/ide-setup.md`](docs/ide-setup.md) to your IDE's 'always-applied' rule set. The rule tells the agent to call `discover` on every workflow request. That way, the bootstrap procedure always stays in sync with the server.
 
 ### Execute a Workflow
 
@@ -135,11 +135,11 @@ End the current work-package workflow
 Complete the work package and clean up
 ```
 
-The agent matches your request to the appropriate activity and guides you through the structured phases.
+The agent matches your request to the right activity. It then guides you through the phases, one at a time.
 
 ## Engineering layout
 
-The `.engineering/` directory holds engineering artifacts and workflow-related assets.
+The `.engineering/` directory holds your engineering artifacts and the files that support your workflows.
 
 ### Directory structure
 
