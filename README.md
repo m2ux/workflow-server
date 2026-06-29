@@ -20,8 +20,8 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 ### How It Works
 
 1. **Discover** — The agent calls `discover` to learn available workflows and the bootstrap procedure
-2. **Start session** — `start_session` returns a session token; `get_workflow` returns the workflow structure, the workflow's `techniques.workflow` bundled under `techniques` and `rules`, and the `initialActivity` ID
-3. **Navigate** — `next_activity` advances the session to the next activity; `get_activity` returns the activity's full definition (steps, checkpoints, transitions) along with the activity's bundled techniques — the workflow's inherited `techniques.activity` plus the activity's own `techniques[]` — under `techniques` and `rules`. `get_resource` lazy-loads reference material referenced by a technique
+2. **Start session** — `start_session` returns a session token. `get_workflow` then returns the workflow structure, along with the techniques and rules it needs and the `initialActivity` ID
+3. **Navigate** — `next_activity` advances the session to the next activity. `get_activity` returns that activity's full definition (steps, checkpoints, transitions), plus the techniques that activity uses. `get_resource` loads reference material a technique points to, only when it is needed
 4. **Execute** — The agent works through activities, with checkpoints for user decisions and transitions governing the flow between activities
 
 ### Architecture
