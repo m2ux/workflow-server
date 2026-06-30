@@ -1,7 +1,7 @@
 # Review-Mode Hardening: Config-Change & Interaction Defects - June 2026
 
 **Created:** 2026-06-30  
-**Status:** In Progress — Design Philosophy complete; entering Codebase Comprehension  
+**Status:** In Progress — Codebase Comprehension complete; entering Plan & Prepare  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -41,7 +41,7 @@ This work package closes that gap by teaching the review process five new habits
 | 06 | `Code review` | Automated definition-quality review | 10-20m | ⬚ Pending |
 | 06 | [Test suite review](test-suite-review.md) | Harness coverage assessment | 10-20m | ⬚ Pending |
 | 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
-| — | `Comprehension artifact` | Persistent codebase knowledge | 20-45m | ⬚ Pending |
+| — | [Comprehension artifact](../../comprehension/review-mode-path.md) | Review-mode path: branching, techniques, severity model, augmentation binding points (+ portfolio pedagogy/rejected-paths lenses & synthesis) | 20-45m | ✅ Complete |
 | — | Validation | Walk + lint + smoke verification | 15-30m | ⬚ Pending |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | `Completion summary` | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
