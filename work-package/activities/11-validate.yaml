@@ -35,6 +35,14 @@ steps:
       variable: is_review_mode
       operator: ==
       value: true
+  - kind: technique
+    id: triage-reported-failures
+    technique: review-test-suite
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: ==
+      value: true
   - kind: action
     id: fix-failures
     condition:

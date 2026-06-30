@@ -17,6 +17,14 @@ The findings gathered and classified across code review, test review, validation
 
 The attached [review-mode](../resources/review-mode.md) resource, whose [Consolidated Review Format](../resources/review-mode.md#consolidated-review-format) defines the summary structure.
 
+### prior_feedback_triage
+
+The triage of prior PR feedback — each prior comment dispositioned Confirmed / Refuted / Superseded — rendered as the summary's Prior Feedback Triage section.
+
+### rating_cap
+
+The ceiling the Overall Rating may not exceed, derived from the prior-feedback triage. When set to the request-changes tier (an unaddressed external blocker), the rendered Overall Rating is held at or below Request Changes.
+
 ## Outputs
 
 ### review_summary
@@ -32,5 +40,7 @@ The structured consolidated review summary text, organized per the Consolidated 
 ### 2. Render the Summary
 
 - Populate the template from `{consolidated_findings}`: executive summary, per-category findings (code, test, documentation, validation, branch hygiene), action items, and severity definitions.
+- Render the Prior Feedback Triage section from `{prior_feedback_triage}`: one row per prior comment with its Confirmed / Refuted / Superseded disposition, and carry each Confirmed blocker-class entry into the Action Items as a blocking item.
+- Apply `{rating_cap}` to the Overall Rating: when the cap is the request-changes tier, the Overall Rating is held at or below Request Changes — never Approve or Comment Only — even if the review's own findings are light.
 - Produce `{review_summary}` as the rendered text.
 - Follow the loaded format exactly — do not invent a parallel structure; the review-mode resource is the authoritative owner of the format.

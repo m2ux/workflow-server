@@ -21,6 +21,10 @@ List of files changed in the work package (from `git diff`)
 
 Folder where the test suite review report is written
 
+### prior_feedback_triage
+
+*(optional)* The triage of prior PR feedback, when present. Its entries tagged as reported runtime failures are the input to reported-failure triage — each is traced to a code path and state precondition here rather than re-read from the PR thread.
+
 ## Protocol
 
 ### 1. Load Guidance
@@ -47,6 +51,21 @@ Folder where the test suite review report is written
 - Verify test isolation and independence
 - Review assertion quality and error message clarity
 - For Rust projects, reference TDD best practices from [tdd-concepts-rust](../resources/tdd-concepts-rust.md)
+
+#### Multi-instance coverage gate
+
+Generic and multi-instance code — a generic function, a trait implemented for several types, a handler parameterised over a runtime-configured instance set — is covered only when each instance it can take is exercised. Coverage of one instance is not coverage of the type:
+
+- Enumerate the instances the changed generic / multi-instance code can take in the running system, and flag any instance with no exercising test as a coverage gap (≥ Minor, so it routes).
+- When a branch is unreachable under the current test mock — the mock pins a single instance, so a path that only the other instances reach can never execute — escalate the **test harness itself** as a finding: the mock conceals the branch from coverage. This is a harness defect, classified ≥ Minor, not a default-Medium nit on the untested branch.
+
+#### Reported-failure triage
+
+When `{prior_feedback_triage}` is present, every entry tagged as a reported runtime failure is traced to its origin — captured once during feedback ingest, traced once here, never re-read from the thread:
+
+- Trace each reported failure to the specific code path that raises it and the state precondition under which that path is reached.
+- Reproduce the failure where the harness allows; otherwise trace it statically and name the triggering conditions.
+- Record each traced failure as a finding (≥ Minor, so it routes); a failure with no test exercising its triggering path is also a coverage gap per the multi-instance gate above.
 
 ### 5. Document Findings
 

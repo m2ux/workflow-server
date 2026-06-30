@@ -47,6 +47,15 @@ Apply L12 structural analysis lens to code for deep structural findings, conserv
 - Conclude with the concrete bug table — every bug, edge case, and silent failure discovered at any stage
 - If the analysis stays at the surface without reaching the conservation law, re-execute from the structural invariant step — the depth comes from the inversion chain, not the initial claim
 
+#### Producer/clearer ledger
+
+The conservation law names a resource the code must conserve (a storage record, a queue entry, an allocation, a lock, a handle). Make the conservation concrete with a written ledger that enumerates, set-wide, every site that **produces** the resource against every site that **clears** it — not only the sites on the diff's path. For each resource the conservation law identifies:
+
+- List every producer (each site that creates an instance of the resource) and every clearer (each site that ends an instance's lifecycle), across the whole reachable code set, using the structural context gathered in step 3 to find producers and clearers in unchanged upstream code.
+- Match each producer to the clearer(s) that release what it creates, and trace **every** termination path — normal completion, early return, error, panic, and governance/teardown — to confirm a matching clear exists on each.
+- A producer with no matching clearer on some reachable termination path is an **unmatched producer**: the resource accumulates without bound on that path. Record it as a Bug-Table entry (see step 6) so it reaches classification.
+- The conservation law holds — "no new bug" — only when the invariant is satisfied on **every** producing path. A single unmatched path falsifies it.
+
 ### 5. Write Artifact
 
 - Write the complete analysis as `{structural_analysis}` into `{output_path}`. If the write fails, verify `{output_path}` exists and is writable.
@@ -55,7 +64,8 @@ Apply L12 structural analysis lens to code for deep structural findings, conserv
 ### 6. Format Output
 
 - Structure `{structural_analysis}` with clear section headers: Claim, Dialectic, Concealment Mechanism, Improvements, Structural Invariant, Conservation Law, Meta-Law, Bug Table
-- In the Bug Table, classify each finding as fixable or structural based on whether the conservation law predicts it can be resolved
+- Render the producer/clearer ledger as a table within the Conservation Law section — one row per resource with its producers, clearers, and the matched/unmatched verdict per termination path
+- In the Bug Table, classify each finding as fixable or structural based on whether the conservation law predicts it can be resolved; every unmatched producer from the ledger appears as a Bug-Table entry
 - Include file paths, line numbers, and specific function names for every finding
 
 ## Outputs
@@ -70,7 +80,7 @@ L12 structural analysis with conservation law, meta-law, and classified bug tabl
 
 #### conservation_law
 
-The named conservation law between original and inverted impossibilities
+The named conservation law between original and inverted impossibilities, carrying the producer/clearer ledger — the set-wide enumeration of every producer of each conserved resource against its clearers, with the matched/unmatched verdict per termination path
 
 #### meta_law
 
@@ -78,7 +88,7 @@ What the conservation law itself conceals — the deeper finding
 
 #### bug_table
 
-Every concrete bug with location, severity, and fixable/structural classification
+Every concrete bug with location, severity, and fixable/structural classification — including each unmatched producer surfaced by the producer/clearer ledger
 
 #### concealment_mechanism
 

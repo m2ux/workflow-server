@@ -165,6 +165,7 @@ https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artif
 
 | Report Name | Artifact |
 |-------------|----------|
+| Prior Feedback Triage | `prior-feedback-triage.md` |
 | Code Review | `code-review.md` |
 | Test Suite Review | `test-suite-review.md` |
 
@@ -191,6 +192,7 @@ Resolve `{WORKFLOW_REPO_OWNER}`, `{WORKFLOW_REPO_NAME}`, and `{WORKFLOW_BRANCH}`
 
 | Section | Prefix |
 |---------|--------|
+| Prior Feedback Triage | PF |
 | Code Review Findings | CR |
 | Test Review Findings | TR |
 | Documentation Review | DR |
@@ -212,6 +214,26 @@ Example: `(CR-1)` refers to Code Review finding 1, `(TR-3)` refers to Test Revie
 [1-2 sentence overall assessment]
 
 **Overall Rating**: [Approve / Request Changes / Comment Only]
+
+---
+
+### Prior Feedback Triage
+
+Disposition of every prior comment and review on the PR (human and bot), determined before independent analysis.
+
+| # | Prior Comment | Author | Disposition | Reasoning |
+|---|---------------|--------|-------------|-----------|
+| [1](pr-comment-url) | Storage record never cleared on close | reviewer | Confirmed | Unaddressed — clear missing on the governance-close path |
+| [2](pr-comment-url) | Naming nit on handler | bot | Refuted | Name follows the crate convention |
+
+<details>
+<summary>Finding Details</summary>
+
+#### PF-1. Storage record never cleared on close (Confirmed — blocker)
+[Why the concern holds and remains unaddressed]
+**Disposition**: Confirmed — caps the Overall Rating
+
+</details>
 
 ---
 
@@ -338,6 +360,18 @@ Example: `(CR-1)` refers to Code Review finding 1, `(TR-3)` refers to Test Revie
 | Medium | No | Can be follow-up PR |
 | Low | No | Nice to have |
 
+Findings are classified on the classification scale (Critical / Major / Minor / Nit / Informational) and rendered on the summary scale above. The render map preserves the classified severity end to end — a finding classified above "safe" renders above "safe":
+
+| Classified severity | Renders as |
+|---------------------|------------|
+| Critical | Critical |
+| Major | High |
+| Minor | Medium |
+| Nit | Low |
+| Informational | (omitted from the tables — recorded in the report only) |
+
+A correct-but-harmful finding (one classified Major or Critical on an impact axis such as unbounded state growth, economic/spam, liveness/halt, or migration/upgrade) therefore renders at High or Critical and reaches the Action Items as a blocking item — it is not downgraded to "safe" at the render boundary.
+
 ---
 
 ## Posting Reviews
@@ -362,6 +396,8 @@ gh pr review {pr_number} --approve --body-file review.md
 | Critical/High severity blockers | `--request-changes` |
 | Medium/Low findings only | `--comment` |
 | No significant issues | `--approve` with summary |
+
+The Prior Feedback Triage caps the Overall Rating: when any prior blocker-class comment is dispositioned Confirmed (valid and unaddressed), the rating cannot exceed Request Changes — it cannot be Approve or Comment Only — regardless of how light the review's own findings are. An unaddressed external blocker is never rated away.
 
 ---
 
