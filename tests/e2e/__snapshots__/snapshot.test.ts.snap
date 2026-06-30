@@ -12,6 +12,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
     "plan-prepare",
     "assumptions-review",
     "implement",
+    "lean-coding-audit",
     "post-impl-review",
     "validate",
     "strategic-review",
@@ -114,9 +115,9 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "portfolio-synthesis.md",
       ],
       "artifactsWritten": [
-        "14-codebase_area.md",
-        "14-portfolio-lens_name.md",
-        "14-portfolio-synthesis.md",
+        "15-codebase_area.md",
+        "15-portfolio-lens_name.md",
+        "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -223,7 +224,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         },
       ],
       "manifestStatus": "warning",
-      "next": "post-impl-review",
+      "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "verify-preconditions",
@@ -243,6 +244,36 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "unresolved": [],
     },
     {
+      "activity": "lean-coding-audit",
+      "artifacts": [
+        "review-findings.md",
+        "debt-ledger.md",
+        "lean-change.md",
+      ],
+      "artifactsWritten": [
+        "09-review-findings.md",
+        "09-debt-ledger.md",
+        "09-lean-change.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "audit-findings-confirmed",
+          "option": "audit-accepted",
+          "setVariable": {
+            "audit_confirmed": true,
+          },
+        },
+      ],
+      "manifestStatus": "warning",
+      "next": "post-impl-review",
+      "orphanCheckpoints": [],
+      "stepsExecuted": [
+        "review-over-engineering",
+        "harvest-debt",
+      ],
+      "unresolved": [],
+    },
+    {
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
@@ -253,12 +284,12 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "09-change-block-index.md",
-        "09-manual-diff-review.md",
-        "09-code-review.md",
-        "09-structural-analysis.md",
-        "09-test-suite-review.md",
-        "09-architecture-summary.md",
+        "10-change-block-index.md",
+        "10-manual-diff-review.md",
+        "10-code-review.md",
+        "10-structural-analysis.md",
+        "10-test-suite-review.md",
+        "10-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -295,7 +326,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "test-suite-review.md",
       ],
       "artifactsWritten": [
-        "09-test-suite-review.md",
+        "10-test-suite-review.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -311,8 +342,8 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "11-strategic-review-n.md",
-        "09-architecture-summary.md",
+        "12-strategic-review-n.md",
+        "10-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -344,7 +375,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
-        "12-YYYY-MM-DD-prpr_number-review-analysis.md",
+        "13-YYYY-MM-DD-prpr_number-review-analysis.md",
       ],
       "checkpoints": [
         {
@@ -400,9 +431,9 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "workflow-retrospective.md",
       ],
       "artifactsWritten": [
-        "13-NNNN-decision_title.md",
-        "13-COMPLETE.md",
-        "13-workflow-retrospective.md",
+        "14-NNNN-decision_title.md",
+        "14-COMPLETE.md",
+        "14-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -437,6 +468,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
     "plan-prepare",
     "assumptions-review",
     "implement",
+    "lean-coding-audit",
     "post-impl-review",
     "validate",
     "strategic-review",
@@ -539,9 +571,9 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "portfolio-synthesis.md",
       ],
       "artifactsWritten": [
-        "14-codebase_area.md",
-        "14-portfolio-lens_name.md",
-        "14-portfolio-synthesis.md",
+        "15-codebase_area.md",
+        "15-portfolio-lens_name.md",
+        "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -721,7 +753,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         },
       ],
       "manifestStatus": "warning",
-      "next": "post-impl-review",
+      "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "verify-preconditions",
@@ -741,6 +773,36 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "unresolved": [],
     },
     {
+      "activity": "lean-coding-audit",
+      "artifacts": [
+        "review-findings.md",
+        "debt-ledger.md",
+        "lean-change.md",
+      ],
+      "artifactsWritten": [
+        "09-review-findings.md",
+        "09-debt-ledger.md",
+        "09-lean-change.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "audit-findings-confirmed",
+          "option": "audit-accepted",
+          "setVariable": {
+            "audit_confirmed": true,
+          },
+        },
+      ],
+      "manifestStatus": "warning",
+      "next": "post-impl-review",
+      "orphanCheckpoints": [],
+      "stepsExecuted": [
+        "review-over-engineering",
+        "harvest-debt",
+      ],
+      "unresolved": [],
+    },
+    {
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
@@ -751,12 +813,12 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "09-change-block-index.md",
-        "09-manual-diff-review.md",
-        "09-code-review.md",
-        "09-structural-analysis.md",
-        "09-test-suite-review.md",
-        "09-architecture-summary.md",
+        "10-change-block-index.md",
+        "10-manual-diff-review.md",
+        "10-code-review.md",
+        "10-structural-analysis.md",
+        "10-test-suite-review.md",
+        "10-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -793,7 +855,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "test-suite-review.md",
       ],
       "artifactsWritten": [
-        "09-test-suite-review.md",
+        "10-test-suite-review.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -809,8 +871,8 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "11-strategic-review-n.md",
-        "09-architecture-summary.md",
+        "12-strategic-review-n.md",
+        "10-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -842,7 +904,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
-        "12-YYYY-MM-DD-prpr_number-review-analysis.md",
+        "13-YYYY-MM-DD-prpr_number-review-analysis.md",
       ],
       "checkpoints": [
         {
@@ -898,9 +960,9 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "workflow-retrospective.md",
       ],
       "artifactsWritten": [
-        "13-NNNN-decision_title.md",
-        "13-COMPLETE.md",
-        "13-workflow-retrospective.md",
+        "14-NNNN-decision_title.md",
+        "14-COMPLETE.md",
+        "14-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -938,6 +1000,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
     "plan-prepare",
     "assumptions-review",
     "implement",
+    "lean-coding-audit",
     "post-impl-review",
     "validate",
     "strategic-review",
@@ -1040,9 +1103,9 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "portfolio-synthesis.md",
       ],
       "artifactsWritten": [
-        "14-codebase_area.md",
-        "14-portfolio-lens_name.md",
-        "14-portfolio-synthesis.md",
+        "15-codebase_area.md",
+        "15-portfolio-lens_name.md",
+        "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -1264,7 +1327,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         },
       ],
       "manifestStatus": "warning",
-      "next": "post-impl-review",
+      "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "verify-preconditions",
@@ -1284,6 +1347,36 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "unresolved": [],
     },
     {
+      "activity": "lean-coding-audit",
+      "artifacts": [
+        "review-findings.md",
+        "debt-ledger.md",
+        "lean-change.md",
+      ],
+      "artifactsWritten": [
+        "09-review-findings.md",
+        "09-debt-ledger.md",
+        "09-lean-change.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "audit-findings-confirmed",
+          "option": "audit-accepted",
+          "setVariable": {
+            "audit_confirmed": true,
+          },
+        },
+      ],
+      "manifestStatus": "warning",
+      "next": "post-impl-review",
+      "orphanCheckpoints": [],
+      "stepsExecuted": [
+        "review-over-engineering",
+        "harvest-debt",
+      ],
+      "unresolved": [],
+    },
+    {
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
@@ -1294,12 +1387,12 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "09-change-block-index.md",
-        "09-manual-diff-review.md",
-        "09-code-review.md",
-        "09-structural-analysis.md",
-        "09-test-suite-review.md",
-        "09-architecture-summary.md",
+        "10-change-block-index.md",
+        "10-manual-diff-review.md",
+        "10-code-review.md",
+        "10-structural-analysis.md",
+        "10-test-suite-review.md",
+        "10-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -1336,7 +1429,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "test-suite-review.md",
       ],
       "artifactsWritten": [
-        "09-test-suite-review.md",
+        "10-test-suite-review.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -1352,8 +1445,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "11-strategic-review-n.md",
-        "09-architecture-summary.md",
+        "12-strategic-review-n.md",
+        "10-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -1385,7 +1478,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
-        "12-YYYY-MM-DD-prpr_number-review-analysis.md",
+        "13-YYYY-MM-DD-prpr_number-review-analysis.md",
       ],
       "checkpoints": [
         {
@@ -1441,9 +1534,9 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "workflow-retrospective.md",
       ],
       "artifactsWritten": [
-        "13-NNNN-decision_title.md",
-        "13-COMPLETE.md",
-        "13-workflow-retrospective.md",
+        "14-NNNN-decision_title.md",
+        "14-COMPLETE.md",
+        "14-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -1480,6 +1573,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
     "plan-prepare",
     "assumptions-review",
     "implement",
+    "lean-coding-audit",
     "post-impl-review",
     "validate",
     "strategic-review",
@@ -1582,9 +1676,9 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "portfolio-synthesis.md",
       ],
       "artifactsWritten": [
-        "14-codebase_area.md",
-        "14-portfolio-lens_name.md",
-        "14-portfolio-synthesis.md",
+        "15-codebase_area.md",
+        "15-portfolio-lens_name.md",
+        "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -1766,7 +1860,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         },
       ],
       "manifestStatus": "warning",
-      "next": "post-impl-review",
+      "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "verify-preconditions",
@@ -1786,6 +1880,36 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "unresolved": [],
     },
     {
+      "activity": "lean-coding-audit",
+      "artifacts": [
+        "review-findings.md",
+        "debt-ledger.md",
+        "lean-change.md",
+      ],
+      "artifactsWritten": [
+        "09-review-findings.md",
+        "09-debt-ledger.md",
+        "09-lean-change.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "audit-findings-confirmed",
+          "option": "audit-accepted",
+          "setVariable": {
+            "audit_confirmed": true,
+          },
+        },
+      ],
+      "manifestStatus": "warning",
+      "next": "post-impl-review",
+      "orphanCheckpoints": [],
+      "stepsExecuted": [
+        "review-over-engineering",
+        "harvest-debt",
+      ],
+      "unresolved": [],
+    },
+    {
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
@@ -1796,12 +1920,12 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "09-change-block-index.md",
-        "09-manual-diff-review.md",
-        "09-code-review.md",
-        "09-structural-analysis.md",
-        "09-test-suite-review.md",
-        "09-architecture-summary.md",
+        "10-change-block-index.md",
+        "10-manual-diff-review.md",
+        "10-code-review.md",
+        "10-structural-analysis.md",
+        "10-test-suite-review.md",
+        "10-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -1838,7 +1962,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "test-suite-review.md",
       ],
       "artifactsWritten": [
-        "09-test-suite-review.md",
+        "10-test-suite-review.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -1854,8 +1978,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "11-strategic-review-n.md",
-        "09-architecture-summary.md",
+        "12-strategic-review-n.md",
+        "10-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -1887,7 +2011,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
-        "12-YYYY-MM-DD-prpr_number-review-analysis.md",
+        "13-YYYY-MM-DD-prpr_number-review-analysis.md",
       ],
       "checkpoints": [
         {
@@ -1943,9 +2067,9 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "workflow-retrospective.md",
       ],
       "artifactsWritten": [
-        "13-NNNN-decision_title.md",
-        "13-COMPLETE.md",
-        "13-workflow-retrospective.md",
+        "14-NNNN-decision_title.md",
+        "14-COMPLETE.md",
+        "14-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -1980,6 +2104,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
     "plan-prepare",
     "assumptions-review",
     "implement",
+    "lean-coding-audit",
     "post-impl-review",
     "validate",
     "strategic-review",
@@ -2104,9 +2229,9 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "portfolio-synthesis.md",
       ],
       "artifactsWritten": [
-        "14-codebase_area.md",
-        "14-portfolio-lens_name.md",
-        "14-portfolio-synthesis.md",
+        "15-codebase_area.md",
+        "15-portfolio-lens_name.md",
+        "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -2205,7 +2330,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         },
       ],
       "manifestStatus": "warning",
-      "next": "post-impl-review",
+      "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "verify-preconditions",
@@ -2225,6 +2350,28 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "unresolved": [],
     },
     {
+      "activity": "lean-coding-audit",
+      "artifacts": [
+        "review-findings.md",
+        "debt-ledger.md",
+        "lean-change.md",
+      ],
+      "artifactsWritten": [
+        "09-review-findings.md",
+        "09-debt-ledger.md",
+        "09-lean-change.md",
+      ],
+      "checkpoints": [],
+      "manifestStatus": "warning",
+      "next": "post-impl-review",
+      "orphanCheckpoints": [],
+      "stepsExecuted": [
+        "review-over-engineering",
+        "harvest-debt",
+      ],
+      "unresolved": [],
+    },
+    {
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
@@ -2235,12 +2382,12 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "09-change-block-index.md",
-        "09-manual-diff-review.md",
-        "09-code-review.md",
-        "09-structural-analysis.md",
-        "09-test-suite-review.md",
-        "09-architecture-summary.md",
+        "10-change-block-index.md",
+        "10-manual-diff-review.md",
+        "10-code-review.md",
+        "10-structural-analysis.md",
+        "10-test-suite-review.md",
+        "10-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -2277,7 +2424,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "test-suite-review.md",
       ],
       "artifactsWritten": [
-        "09-test-suite-review.md",
+        "10-test-suite-review.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -2296,8 +2443,8 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "11-strategic-review-n.md",
-        "09-architecture-summary.md",
+        "12-strategic-review-n.md",
+        "10-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -2329,7 +2476,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
-        "12-YYYY-MM-DD-prpr_number-review-analysis.md",
+        "13-YYYY-MM-DD-prpr_number-review-analysis.md",
       ],
       "checkpoints": [
         {
@@ -2391,9 +2538,9 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "workflow-retrospective.md",
       ],
       "artifactsWritten": [
-        "13-NNNN-decision_title.md",
-        "13-COMPLETE.md",
-        "13-workflow-retrospective.md",
+        "14-NNNN-decision_title.md",
+        "14-COMPLETE.md",
+        "14-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -2423,6 +2570,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
     "plan-prepare",
     "assumptions-review",
     "implement",
+    "lean-coding-audit",
     "post-impl-review",
     "validate",
     "strategic-review",
@@ -2525,9 +2673,9 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "portfolio-synthesis.md",
       ],
       "artifactsWritten": [
-        "14-codebase_area.md",
-        "14-portfolio-lens_name.md",
-        "14-portfolio-synthesis.md",
+        "15-codebase_area.md",
+        "15-portfolio-lens_name.md",
+        "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -2634,7 +2782,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         },
       ],
       "manifestStatus": "warning",
-      "next": "post-impl-review",
+      "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "verify-preconditions",
@@ -2654,6 +2802,36 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "unresolved": [],
     },
     {
+      "activity": "lean-coding-audit",
+      "artifacts": [
+        "review-findings.md",
+        "debt-ledger.md",
+        "lean-change.md",
+      ],
+      "artifactsWritten": [
+        "09-review-findings.md",
+        "09-debt-ledger.md",
+        "09-lean-change.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "audit-findings-confirmed",
+          "option": "audit-accepted",
+          "setVariable": {
+            "audit_confirmed": true,
+          },
+        },
+      ],
+      "manifestStatus": "warning",
+      "next": "post-impl-review",
+      "orphanCheckpoints": [],
+      "stepsExecuted": [
+        "review-over-engineering",
+        "harvest-debt",
+      ],
+      "unresolved": [],
+    },
+    {
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
@@ -2664,12 +2842,12 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "09-change-block-index.md",
-        "09-manual-diff-review.md",
-        "09-code-review.md",
-        "09-structural-analysis.md",
-        "09-test-suite-review.md",
-        "09-architecture-summary.md",
+        "10-change-block-index.md",
+        "10-manual-diff-review.md",
+        "10-code-review.md",
+        "10-structural-analysis.md",
+        "10-test-suite-review.md",
+        "10-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -2706,7 +2884,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "test-suite-review.md",
       ],
       "artifactsWritten": [
-        "09-test-suite-review.md",
+        "10-test-suite-review.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -2722,8 +2900,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "architecture-summary.md",
       ],
       "artifactsWritten": [
-        "11-strategic-review-n.md",
-        "09-architecture-summary.md",
+        "12-strategic-review-n.md",
+        "10-architecture-summary.md",
       ],
       "checkpoints": [
         {
@@ -2755,7 +2933,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "{YYYY-MM-DD}-pr{pr_number}-review-analysis.md",
       ],
       "artifactsWritten": [
-        "12-YYYY-MM-DD-prpr_number-review-analysis.md",
+        "13-YYYY-MM-DD-prpr_number-review-analysis.md",
       ],
       "checkpoints": [
         {
@@ -2811,9 +2989,9 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "workflow-retrospective.md",
       ],
       "artifactsWritten": [
-        "13-NNNN-decision_title.md",
-        "13-COMPLETE.md",
-        "13-workflow-retrospective.md",
+        "14-NNNN-decision_title.md",
+        "14-COMPLETE.md",
+        "14-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
