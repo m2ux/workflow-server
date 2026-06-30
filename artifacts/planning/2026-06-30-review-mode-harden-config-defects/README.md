@@ -1,7 +1,7 @@
 # Review-Mode Hardening: Config-Change & Interaction Defects - June 2026
 
 **Created:** 2026-06-30  
-**Status:** In Progress — Plan & Prepare complete; entering Assumptions Review  
+**Status:** In Progress — Assumptions Review complete (no open/deferred); entering Implement  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -66,4 +66,4 @@ These are delivered as one new technique (ingest-and-rebut existing feedback) pl
 
 ---
 
-**Status:** In Progress — Plan & Prepare complete; entering Assumptions Review
+**Status:** In Progress — Assumptions Review complete (no open/deferred); entering Implement

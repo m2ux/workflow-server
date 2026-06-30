@@ -168,7 +168,7 @@
         ],
         "condition": "default",
         "currentActivity": "assumptions-review",
-        "currentTechnique": "create-test-plan",
+        "currentTechnique": "review-assumptions::record",
         "history": [
           {
             "timestamp": "2026-06-30T15:29:46.526Z",
@@ -326,13 +326,13 @@
           }
         ],
         "schemaVersion": 1,
-        "seq": 69,
+        "seq": 72,
         "sessionIndex": "CF5LX4",
         "skippedActivities": [],
         "startedAt": "2026-06-30T15:29:46.526Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1782849058,
+        "ts": 1782849147,
         "variables": {
           "needs_elicitation": false,
           "needs_research": false,

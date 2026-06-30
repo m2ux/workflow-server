@@ -3,7 +3,7 @@
 **Work Package:** Review-Mode Hardening: Config-Change & Interaction Defects  
 **Issue:** #145 - Harden review-mode path against config-change & interaction defects  
 **Created:** 2026-06-30  
-**Last Updated:** 2026-06-30
+**Last Updated:** 2026-06-30 (assumptions-review: no open/deferred assumptions)
 
 ---
 
@@ -13,6 +13,8 @@
 |------------|-------------|-----------|-----------|----------|
 | Design Philosophy | 5 | 5 | 0 | 0 |
 | **Total** | **5** | **5** | **0** | **0** |
+
+**Assumptions review (review-mode):** No open or deferred assumptions. The five design-philosophy assumptions were reconciled to convergence in design-philosophy/plan-prepare; collection in this activity surfaced no new stakeholder-dependent assumptions, so no interview was required.
 
 ---
 
