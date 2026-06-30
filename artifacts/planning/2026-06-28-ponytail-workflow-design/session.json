@@ -1,0 +1,625 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "5.1.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "IXPIYO",
+  "currentActivity": "end-workflow",
+  "currentTechnique": "workflow-engine::generate-summary",
+  "condition": "client_workflow_completed == true",
+  "seq": 28,
+  "ts": 1782717605,
+  "startedAt": "2026-06-28T05:59:56.800Z",
+  "completedActivities": [
+    "discover-session",
+    "initialize-session",
+    "resolve-target",
+    "dispatch-client-workflow"
+  ],
+  "skippedActivities": [],
+  "variables": {
+    "is_monorepo": false,
+    "target_path": "."
+  },
+  "checkpointResponses": {
+    "resolve-target-repo-type-confirmed": {
+      "effects": {
+        "variablesSet": {
+          "is_monorepo": false,
+          "target_path": "."
+        }
+      },
+      "optionId": "regular",
+      "respondedAt": "2026-06-28T09:00:45.000Z"
+    }
+  },
+  "history": [
+    {
+      "timestamp": "2026-06-28T05:59:56.800Z",
+      "type": "workflow_started"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-06-28T06:01:24.513Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-06-28T06:04:21.007Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-06-28T06:04:21.007Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "sessionIndex": "E2FKQL",
+        "workflowId": "workflow-design"
+      },
+      "timestamp": "2026-06-28T06:05:13.355Z",
+      "type": "workflow_triggered"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-06-28T06:05:41.579Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-06-28T06:05:41.579Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "resolve-target",
+      "checkpoint": "repo-type-confirmed",
+      "timestamp": "2026-06-28T06:06:30.107Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "resolve-target",
+      "checkpoint": "repo-type-confirmed",
+      "data": {
+        "optionId": "regular"
+      },
+      "timestamp": "2026-06-28T09:00:45.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "is_monorepo",
+        "value": false
+      },
+      "timestamp": "2026-06-28T09:00:45.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "target_path",
+        "value": "."
+      },
+      "timestamp": "2026-06-28T09:00:45.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "checkpoint": "repo-type-confirmed",
+      "data": {
+        "optionId": "regular"
+      },
+      "timestamp": "2026-06-28T09:01:46.872Z",
+      "type": "checkpoint_replayed"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-06-28T09:02:39.863Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-06-28T09:02:39.863Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-06-29T07:19:09.170Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-06-29T07:19:09.170Z",
+      "type": "activity_entered"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "E2FKQL",
+      "state": {
+        "agentId": "orchestrator",
+        "checkpointResponses": {
+          "intake-and-context-constructs-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "schema_constructs_confirmed": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-06-28T09:19:20.000Z"
+          },
+          "intake-and-context-format-literacy": {
+            "effects": {
+              "variablesSet": {
+                "format_literacy_confirmed": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-06-28T09:15:33.000Z"
+          },
+          "intake-and-context-mode-confirmation": {
+            "effects": {
+              "variablesSet": {
+                "is_update_mode": false
+              }
+            },
+            "optionId": "confirm-create",
+            "respondedAt": "2026-06-28T09:11:23.000Z"
+          },
+          "pattern-analysis-patterns-confirmed": {
+            "optionId": "adopt-all",
+            "respondedAt": "2026-06-28T09:37:34.000Z"
+          },
+          "quality-review-enforcement-confirmed": {
+            "optionId": "add-enforcement",
+            "respondedAt": "2026-06-28T21:34:12.000Z"
+          },
+          "requirements-refinement-assumption-decision": {
+            "optionId": "accept",
+            "respondedAt": "2026-06-28T09:29:41.000Z"
+          },
+          "requirements-refinement-dimension-confirmed": {
+            "optionId": "confirmed",
+            "respondedAt": "2026-06-28T09:28:30.000Z"
+          },
+          "scope-and-draft-scope-and-structure-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "approach_confirmed": true,
+                "scope_manifest_confirmed": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-06-28T09:45:48.000Z"
+          },
+          "validate-and-commit-pre-commit-attestation": {
+            "effects": {
+              "variablesSet": {
+                "all_files_validated": true
+              }
+            },
+            "optionId": "approved",
+            "respondedAt": "2026-06-29T07:01:34.000Z"
+          }
+        },
+        "completedActivities": [
+          "intake-and-context",
+          "requirements-refinement",
+          "pattern-analysis",
+          "scope-and-draft",
+          "quality-review",
+          "validate-and-commit"
+        ],
+        "condition": "is_update_mode == false",
+        "currentActivity": "retrospective",
+        "currentTechnique": "conduct-retrospective",
+        "history": [
+          {
+            "timestamp": "2026-06-28T06:05:13.356Z",
+            "type": "workflow_started"
+          },
+          {
+            "activity": "intake-and-context",
+            "timestamp": "2026-06-28T09:03:20.842Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "mode-confirmation",
+            "timestamp": "2026-06-28T09:04:42.579Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "mode-confirmation",
+            "data": {
+              "optionId": "confirm-create"
+            },
+            "timestamp": "2026-06-28T09:11:23.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "is_update_mode",
+              "value": false
+            },
+            "timestamp": "2026-06-28T09:11:23.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "mode-confirmation",
+            "data": {
+              "optionId": "confirm-create"
+            },
+            "timestamp": "2026-06-28T09:12:38.802Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "format-literacy",
+            "timestamp": "2026-06-28T09:13:38.998Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "format-literacy",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-06-28T09:15:33.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "format_literacy_confirmed",
+              "value": true
+            },
+            "timestamp": "2026-06-28T09:15:33.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "mode-confirmation",
+            "data": {
+              "optionId": "confirm-create"
+            },
+            "timestamp": "2026-06-28T09:16:36.067Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "format-literacy",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-06-28T09:16:38.973Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "constructs-confirmed",
+            "timestamp": "2026-06-28T09:16:43.934Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "constructs-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-06-28T09:19:20.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "schema_constructs_confirmed",
+              "value": true
+            },
+            "timestamp": "2026-06-28T09:19:20.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "mode-confirmation",
+            "data": {
+              "optionId": "confirm-create"
+            },
+            "timestamp": "2026-06-28T09:19:57.535Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "format-literacy",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-06-28T09:20:00.585Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "constructs-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-06-28T09:20:03.931Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "intake-and-context",
+            "timestamp": "2026-06-28T09:21:48.829Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "requirements-refinement",
+            "timestamp": "2026-06-28T09:21:48.829Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "requirements-refinement",
+            "checkpoint": "dimension-confirmed",
+            "timestamp": "2026-06-28T09:27:00.583Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "requirements-refinement",
+            "checkpoint": "dimension-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-06-28T09:28:30.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "requirements-refinement",
+            "checkpoint": "dimension-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-06-28T09:29:12.186Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "requirements-refinement",
+            "checkpoint": "assumption-decision",
+            "timestamp": "2026-06-28T09:29:20.972Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "requirements-refinement",
+            "checkpoint": "assumption-decision",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-06-28T09:29:41.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "requirements-refinement",
+            "checkpoint": "assumption-decision",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-06-28T09:30:39.177Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "requirements-refinement",
+            "checkpoint": "assumption-decision",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-06-28T09:30:42.706Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "requirements-refinement",
+            "checkpoint": "assumption-decision",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-06-28T09:30:49.908Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "requirements-refinement",
+            "timestamp": "2026-06-28T09:32:39.592Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "pattern-analysis",
+            "timestamp": "2026-06-28T09:32:39.592Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "pattern-analysis",
+            "checkpoint": "patterns-confirmed",
+            "timestamp": "2026-06-28T09:36:40.695Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "pattern-analysis",
+            "checkpoint": "patterns-confirmed",
+            "data": {
+              "optionId": "adopt-all"
+            },
+            "timestamp": "2026-06-28T09:37:34.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "pattern-analysis",
+            "checkpoint": "patterns-confirmed",
+            "data": {
+              "optionId": "adopt-all"
+            },
+            "timestamp": "2026-06-28T09:37:57.233Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "pattern-analysis",
+            "timestamp": "2026-06-28T09:39:34.061Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-06-28T09:39:34.061Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-and-structure-confirmed",
+            "timestamp": "2026-06-28T09:43:56.868Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-and-structure-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-06-28T09:45:48.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "value": true
+            },
+            "timestamp": "2026-06-28T09:45:48.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "approach_confirmed",
+              "value": true
+            },
+            "timestamp": "2026-06-28T09:45:48.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-06-28T21:24:32.095Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-06-28T21:24:32.095Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "quality-review",
+            "checkpoint": "enforcement-confirmed",
+            "timestamp": "2026-06-28T21:32:54.477Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "quality-review",
+            "checkpoint": "enforcement-confirmed",
+            "data": {
+              "optionId": "add-enforcement"
+            },
+            "timestamp": "2026-06-28T21:34:12.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-06-28T21:35:03.029Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-06-28T21:35:03.029Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-06-28T21:40:27.503Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-06-28T21:40:27.503Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-06-28T21:43:41.390Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-06-28T21:43:41.390Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "pre-commit-attestation",
+            "timestamp": "2026-06-28T21:51:59.570Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "pre-commit-attestation",
+            "data": {
+              "optionId": "approved"
+            },
+            "timestamp": "2026-06-29T07:01:34.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "all_files_validated",
+              "value": true
+            },
+            "timestamp": "2026-06-29T07:01:34.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-06-29T07:07:52.400Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "retrospective",
+            "timestamp": "2026-06-29T07:07:52.400Z",
+            "type": "activity_entered"
+          }
+        ],
+        "schemaVersion": 1,
+        "seq": 102,
+        "sessionIndex": "E2FKQL",
+        "skippedActivities": [],
+        "startedAt": "2026-06-28T06:05:13.356Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1782716912,
+        "variables": {
+          "all_files_validated": true,
+          "approach_confirmed": true,
+          "format_literacy_confirmed": true,
+          "is_update_mode": false,
+          "schema_constructs_confirmed": true,
+          "scope_manifest_confirmed": true
+        },
+        "workflowId": "workflow-design",
+        "workflowVersion": "1.5.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-06-28T06:05:13.355Z",
+      "triggeredFrom": {
+        "activityId": "initialize-session"
+      },
+      "workflowId": "workflow-design"
+    }
+  ]
+}

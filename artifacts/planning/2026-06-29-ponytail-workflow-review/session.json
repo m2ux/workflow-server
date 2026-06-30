@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "workflow-design",
+  "workflowVersion": "1.5.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "3SNMHN",
+  "planningFolderPath": "/home/mike1/projects/main/workflow-server/.engineering/artifacts/planning/2026-06-29-ponytail-workflow-review",
+  "currentActivity": "quality-review",
+  "currentTechnique": "reload-workflow",
+  "condition": "is_review_mode == true && review_scope_confirmed == true",
+  "seq": 20,
+  "ts": 1782721246,
+  "startedAt": "2026-06-29T08:12:18.495Z",
+  "completedActivities": [
+    "intake-and-context"
+  ],
+  "skippedActivities": [],
+  "variables": {
+    "review_scope_confirmed": true,
+    "user_wants_fixes": false
+  },
+  "checkpointResponses": {
+    "intake-and-context-review-scope-confirmed": {
+      "effects": {
+        "variablesSet": {
+          "review_scope_confirmed": true
+        }
+      },
+      "optionId": "confirm-review-target",
+      "respondedAt": "2026-06-29T08:14:04.000Z"
+    },
+    "quality-review-review-disposition": {
+      "effects": {
+        "variablesSet": {
+          "user_wants_fixes": false
+        }
+      },
+      "optionId": "report-only",
+      "respondedAt": "2026-06-29T08:20:46.000Z"
+    }
+  },
+  "history": [
+    {
+      "timestamp": "2026-06-29T08:12:18.495Z",
+      "type": "workflow_started"
+    },
+    {
+      "activity": "intake-and-context",
+      "timestamp": "2026-06-29T08:12:25.537Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "intake-and-context",
+      "checkpoint": "review-scope-confirmed",
+      "timestamp": "2026-06-29T08:13:28.706Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "intake-and-context",
+      "checkpoint": "review-scope-confirmed",
+      "data": {
+        "optionId": "confirm-review-target"
+      },
+      "timestamp": "2026-06-29T08:14:04.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "intake-and-context",
+      "data": {
+        "name": "review_scope_confirmed",
+        "value": true
+      },
+      "timestamp": "2026-06-29T08:14:04.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "intake-and-context",
+      "timestamp": "2026-06-29T08:14:14.449Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "quality-review",
+      "timestamp": "2026-06-29T08:14:14.449Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "quality-review",
+      "checkpoint": "review-disposition",
+      "timestamp": "2026-06-29T08:18:46.618Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "quality-review",
+      "checkpoint": "review-disposition",
+      "data": {
+        "optionId": "report-only"
+      },
+      "timestamp": "2026-06-29T08:20:46.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "quality-review",
+      "data": {
+        "name": "user_wants_fixes",
+        "value": false
+      },
+      "timestamp": "2026-06-29T08:20:46.000Z",
+      "type": "variable_set"
+    }
+  ],
+  "triggeredWorkflows": []
+}

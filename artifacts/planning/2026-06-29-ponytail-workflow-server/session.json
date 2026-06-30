@@ -1,0 +1,367 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "5.1.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "KKIXHW",
+  "currentActivity": "end-workflow",
+  "currentTechnique": "workflow-engine::generate-summary",
+  "condition": "",
+  "seq": 32,
+  "ts": 1782730418,
+  "startedAt": "2026-06-29T10:12:29.963Z",
+  "completedActivities": [
+    "discover-session",
+    "initialize-session",
+    "resolve-target",
+    "dispatch-client-workflow"
+  ],
+  "skippedActivities": [],
+  "variables": {
+    "abort_completion": false,
+    "is_monorepo": false,
+    "target_path": "."
+  },
+  "checkpointResponses": {
+    "end-workflow-completion-confirmed": {
+      "effects": {
+        "variablesSet": {
+          "abort_completion": false
+        }
+      },
+      "optionId": "confirm",
+      "respondedAt": "2026-06-29T10:52:58.000Z"
+    },
+    "resolve-target-repo-type-confirmed": {
+      "effects": {
+        "variablesSet": {
+          "is_monorepo": false,
+          "target_path": "."
+        }
+      },
+      "optionId": "regular",
+      "respondedAt": "2026-06-29T10:21:12.000Z"
+    }
+  },
+  "history": [
+    {
+      "timestamp": "2026-06-29T10:12:29.963Z",
+      "type": "workflow_started"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-06-29T10:14:29.922Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-06-29T10:17:26.145Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-06-29T10:17:26.145Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "sessionIndex": "OGMQAL",
+        "workflowId": "ponytail"
+      },
+      "timestamp": "2026-06-29T10:18:12.652Z",
+      "type": "workflow_triggered"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-06-29T10:18:45.348Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-06-29T10:18:45.348Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "resolve-target",
+      "checkpoint": "repo-type-confirmed",
+      "timestamp": "2026-06-29T10:19:48.185Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "resolve-target",
+      "checkpoint": "repo-type-confirmed",
+      "data": {
+        "optionId": "regular"
+      },
+      "timestamp": "2026-06-29T10:21:12.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "is_monorepo",
+        "value": false
+      },
+      "timestamp": "2026-06-29T10:21:12.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "target_path",
+        "value": "."
+      },
+      "timestamp": "2026-06-29T10:21:12.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "checkpoint": "repo-type-confirmed",
+      "data": {
+        "optionId": "regular"
+      },
+      "timestamp": "2026-06-29T10:22:34.835Z",
+      "type": "checkpoint_replayed"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-06-29T10:23:21.155Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-06-29T10:23:21.155Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-06-29T10:50:07.028Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-06-29T10:50:07.028Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "timestamp": "2026-06-29T10:52:16.072Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "data": {
+        "optionId": "confirm"
+      },
+      "timestamp": "2026-06-29T10:52:58.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "name": "abort_completion",
+        "value": false
+      },
+      "timestamp": "2026-06-29T10:52:58.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "data": {
+        "optionId": "confirm"
+      },
+      "timestamp": "2026-06-29T10:53:38.445Z",
+      "type": "checkpoint_replayed"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "OGMQAL",
+      "state": {
+        "agentId": "orchestrator",
+        "checkpointResponses": {
+          "apply-ladder-safety-floor-cleared": {
+            "effects": {
+              "variablesSet": {
+                "safety_floor_cleared": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-06-29T10:34:11.000Z"
+          },
+          "intake-and-scope-intensity-and-scope-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "lazy_intensity": "ultra",
+                "pass_scope": "repo"
+              }
+            },
+            "optionId": "ultra-repo",
+            "respondedAt": "2026-06-29T10:28:29.000Z"
+          }
+        },
+        "completedActivities": [
+          "intake-and-scope",
+          "apply-ladder",
+          "over-engineering-review",
+          "repo-audit"
+        ],
+        "condition": "isDefault",
+        "currentActivity": "harvest-debt-and-report",
+        "currentTechnique": "report-gain",
+        "history": [
+          {
+            "timestamp": "2026-06-29T10:18:12.653Z",
+            "type": "workflow_started"
+          },
+          {
+            "activity": "intake-and-scope",
+            "timestamp": "2026-06-29T10:24:52.157Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "intake-and-scope",
+            "checkpoint": "intensity-and-scope-confirmed",
+            "timestamp": "2026-06-29T10:27:25.884Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "intake-and-scope",
+            "checkpoint": "intensity-and-scope-confirmed",
+            "data": {
+              "optionId": "ultra-repo"
+            },
+            "timestamp": "2026-06-29T10:28:29.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "name": "lazy_intensity",
+              "value": "ultra"
+            },
+            "timestamp": "2026-06-29T10:28:29.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "name": "pass_scope",
+              "value": "repo"
+            },
+            "timestamp": "2026-06-29T10:28:29.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-scope",
+            "checkpoint": "intensity-and-scope-confirmed",
+            "data": {
+              "optionId": "ultra-repo"
+            },
+            "timestamp": "2026-06-29T10:29:37.094Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "intake-and-scope",
+            "timestamp": "2026-06-29T10:30:58.875Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "apply-ladder",
+            "timestamp": "2026-06-29T10:30:58.875Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "apply-ladder",
+            "checkpoint": "safety-floor-cleared",
+            "timestamp": "2026-06-29T10:33:30.554Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "apply-ladder",
+            "checkpoint": "safety-floor-cleared",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-06-29T10:34:11.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "name": "safety_floor_cleared",
+              "value": true
+            },
+            "timestamp": "2026-06-29T10:34:11.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "apply-ladder",
+            "checkpoint": "safety-floor-cleared",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-06-29T10:34:51.587Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "apply-ladder",
+            "timestamp": "2026-06-29T10:35:43.930Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "over-engineering-review",
+            "timestamp": "2026-06-29T10:35:43.930Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "over-engineering-review",
+            "timestamp": "2026-06-29T10:42:18.917Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "repo-audit",
+            "timestamp": "2026-06-29T10:42:18.917Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "repo-audit",
+            "timestamp": "2026-06-29T10:47:08.055Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "harvest-debt-and-report",
+            "timestamp": "2026-06-29T10:47:08.055Z",
+            "type": "activity_entered"
+          }
+        ],
+        "schemaVersion": 1,
+        "seq": 33,
+        "sessionIndex": "OGMQAL",
+        "skippedActivities": [],
+        "startedAt": "2026-06-29T10:18:12.653Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1782730063,
+        "variables": {
+          "lazy_intensity": "ultra",
+          "pass_scope": "repo",
+          "safety_floor_cleared": true
+        },
+        "workflowId": "ponytail",
+        "workflowVersion": "1.0.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-06-29T10:18:12.652Z",
+      "triggeredFrom": {
+        "activityId": "initialize-session"
+      },
+      "workflowId": "ponytail"
+    }
+  ]
+}

@@ -1051,7 +1051,7 @@ Lowering follows the R-IR-2/R-IR-3 table verbatim (§3.3's construct→node mapp
 - **Semantic order is authored order**: `run`/block items, branch arms and their sequences, checkpoint options, transitions, route branches, activity `inputs`, `activities[]`.
 - **Non-semantic key sets sort by UTF-16 code unit** (the pinned meaning of "lexicographic" everywhere in this spec — it matches both JS default string comparison and RFC 8785): `vars`, `artifactLocations`, `Invoke.bindings`, `technique_args`, effect `setVariable` maps. (Serialized as pair-arrays, §6.2, so order is explicit in the bytes.)
 - **Value reuse** lowers to one node + N id-references (the legacy declare-once/reference-many graph): nodes live in a per-activity node table; sequences hold `NodeId` strings.
-- **Node-table order** is the depth-first first-occurrence walk of `run`, then declared `blocks` in authored order, **then `artifacts` in authored order, then activity-level `triggers` in authored order, then step-level triggers in first-referencing-step order** (artifact/trigger envelopes are referenced by NodeId from the activity productions, so their node-table position must be pinned or canonical bytes are underdetermined) — deterministic from canonical structure, independent of builder internals.
+- **Node-table order** is the depth-first first-occurrence walk of `run` — appending each envelope at first encounter, then descending into its referenced sequences (branch arms, `ifElse` then/else, route branches) **and into a referenced declared block** (a loop `body:{block}` or an `InvokeBlock`) at the point of reference, before the next sibling — **then any declared `blocks` not reachable from `run`, in authored order** (genuine FLOW-002 orphans), **then `artifacts` in authored order, then activity-level `triggers` in authored order, then step-level triggers in first-referencing-step order** (artifact/trigger envelopes are referenced by NodeId from the activity productions, so their node-table position must be pinned or canonical bytes are underdetermined) — deterministic from canonical structure, independent of builder internals. Descending into the loop body at the loop's position — rather than deferring every declared block to the trailing phase — is what makes the `Invoke` first-occurrence order equal the legacy step-declaration order (legacy `steps[]` are declared in flow-first-occurrence order), so `stepIndex` (§5.3) reproduces the legacy numbering; the trailing declared-blocks phase therefore serializes only blocks no control-flow path reaches.
 - **`CONTRACT_DIGEST` inputs (normative)**: sha256 over the concatenation of (relative POSIX path + `\0` + LF-normalized UTF-8 file content) for every source markdown file, paths sorted by UTF-16 code unit. The same LF normalization applies when the compiler re-derives contracts (git autocrlf must not fork the digest).
 - **Envelope**: every node is wrapped `NodeEnvelope { id, node, policy }` with the inert Phase-1 `ExecutionPolicy` (R-IR-ENV). The envelope is present in the bytes so Phase-2 policy attachment never reshapes the IR.
 - **Hash**: sha256 over the canonical bytes is the signable artifact identity (R-GOV-4, R-X-1).
@@ -1864,6 +1864,185 @@ export default activity('requirements-elicitation', {
 ### 8.2 Idiomatic variant (default profile)
 
 New authoring of the same activity would differ only in: snake_case symbols (requires the technique markdown to declare them so — §4.6), `it.break`/`it.restart` tokens instead of `breakLoop()`/`rerun()`, an anonymous loop body instead of `block('domain-body')`, `outputOf('issue-setup', 'create-issue', 'issue_number')` instead of the raw qualified strings, and an `otherwise:` on `platform-routing` (silencing DEC-001). None of these change the runtime semantics; all of them change the IR bytes — which is exactly why the transpiler never makes those substitutions itself.
+
+### 8.3 Lowered canonical IR
+
+The §8 source lowers to the `Activity` production below — the entry this module contributes to `workflow.activities[]` in the work-package `Document`. The surrounding `Workflow` production (the `"format":"wp-ir/0.1"` header, `execution_model`, the `variables` declaring `mode`, `question-domains`, `elicitation-complete`, `requirements-document`, the sibling activities) is elided: canonical bytes are always workflow-rooted (DET-005), so this fragment never stands alone. Canonical bytes are compact (no insignificant whitespace, §6.1); the listing is pretty-printed for reading only — field presence, field order, and array order are exactly the canonical bytes.
+
+```json
+{
+  "id": "requirements-elicitation",
+  "ordinal": 2,
+  "version": "3.0.0",
+  "artifact_prefix": "02",
+  "description": "Discover and clarify what the work package should accomplish through structured sequential conversation.",
+  "inputs": [
+    { "symbol": "raw-responses" },
+    { "symbol": "issue-number", "qualified": "01.create-issue.issue-number" },
+    { "symbol": "issue-platform", "qualified": "01.check-issue.issue-platform" }
+  ],
+  "nodes": [
+    { "id": "main#0",
+      "node": { "kind": "emit_message", "text": "Starting requirements elicitation" },
+      "policy": { "audit": false } },
+    { "id": "mode-elicitation-path",
+      "node": { "kind": "branch_match", "variable": "mode",
+        "cases": [
+          { "key": "implement", "items": [ "stakeholder-discussion" ] },
+          { "key": "review", "items": [ "mode-elicitation-path@review#0" ] }
+        ] },
+      "policy": { "audit": false } },
+    { "id": "stakeholder-discussion",
+      "node": { "kind": "invoke",
+        "description": "Prompt user to initiate discussion with key stakeholders." },
+      "policy": { "audit": false } },
+    { "id": "mode-elicitation-path@review#0",
+      "node": { "kind": "goto_activity", "to": "implementation-analysis" },
+      "policy": { "audit": false } },
+    { "id": "stakeholder-transcript",
+      "node": { "kind": "await_input",
+        "prompt": "Provide the stakeholder transcript or summary here.",
+        "arms": [
+          { "key": "provide-transcript", "items": [ "stakeholder-discussion" ] },
+          { "key": "skip-discussion", "items": [] }
+        ] },
+      "policy": { "audit": false } },
+    { "id": "domain-iteration",
+      "node": { "kind": "iterate", "loop_kind": "for_each",
+        "var": "current-domain", "over": "question-domains",
+        "max_iterations": 5,
+        "body": { "block": "domain-body" } },
+      "policy": { "audit": false } },
+    { "id": "ask-question",
+      "node": { "kind": "invoke",
+        "description": "Present ONE question from current domain. Wait for response.",
+        "technique_ref": "domain-question" },
+      "policy": { "audit": false } },
+    { "id": "user-intent",
+      "node": { "kind": "await_input", "prompt": "How would you like to proceed?",
+        "arms": [
+          { "key": "answered", "items": [ "record-response" ] },
+          { "key": "skip-question", "items": [] },
+          { "key": "skip-domain", "items": [ "user-intent@skip-domain#0" ] },
+          { "key": "done", "items": [ "user-intent@done#0" ] }
+        ] },
+      "policy": { "audit": false } },
+    { "id": "record-response",
+      "node": { "kind": "invoke",
+        "description": "Capture answer or mark as skipped. Adapt follow-up.",
+        "technique_ref": "response-capture" },
+      "policy": { "audit": false } },
+    { "id": "user-intent@skip-domain#0",
+      "node": { "kind": "loop_exit" },
+      "policy": { "audit": false } },
+    { "id": "user-intent@done#0",
+      "node": { "kind": "loop_exit" },
+      "policy": { "audit": false } },
+    { "id": "domain-complete",
+      "node": { "kind": "await_input", "prompt": "Domain '{current-domain}' complete.",
+        "arms": [
+          { "key": "next-domain", "items": [] },
+          { "key": "revisit", "items": [ "domain-complete@revisit#0" ] },
+          { "key": "finish-early", "items": [ "domain-complete@finish-early#0" ] }
+        ] },
+      "policy": { "audit": false } },
+    { "id": "domain-complete@revisit#0",
+      "node": { "kind": "loop_restart", "loop": "domain-iteration" },
+      "policy": { "audit": false } },
+    { "id": "domain-complete@finish-early#0",
+      "node": { "kind": "loop_exit" },
+      "policy": { "audit": false } },
+    { "id": "collect-assumptions",
+      "node": { "kind": "invoke",
+        "description": "Identify assumptions made when interpreting user responses.",
+        "technique_ref": "assumptions-review" },
+      "policy": { "audit": false } },
+    { "id": "platform-routing",
+      "node": { "kind": "branch_match", "variable": "01.check-issue.issue-platform",
+        "cases": [
+          { "key": "jira", "items": [ "post-assumptions-to-jira", "jira-comment-review" ] },
+          { "key": "github", "items": [ "post-assumptions-to-github" ] }
+        ] },
+      "policy": { "audit": false } },
+    { "id": "post-assumptions-to-jira",
+      "node": { "kind": "invoke",
+        "description": "Prepare assumptions as Jira comment, get approval, post to ticket.",
+        "technique_ref": "jira-comment",
+        "bindings": [
+          { "input": "issue-number", "source": { "qualified": "01.create-issue.issue-number" } }
+        ] },
+      "policy": { "audit": false } },
+    { "id": "jira-comment-review",
+      "node": { "kind": "await_input", "prompt": "Review the Jira comment before posting.",
+        "arms": [
+          { "key": "post-comment", "items": [] },
+          { "key": "edit-comment",
+            "items": [ "post-assumptions-to-jira", "jira-comment-review@edit-comment#1" ] },
+          { "key": "skip-posting", "items": [] }
+        ] },
+      "policy": { "audit": false } },
+    { "id": "jira-comment-review@edit-comment#1",
+      "node": { "kind": "reevaluate", "decision": "jira-comment-review" },
+      "policy": { "audit": false } },
+    { "id": "post-assumptions-to-github",
+      "node": { "kind": "invoke",
+        "description": "Post assumptions as GitHub issue comment.",
+        "technique_ref": "github-comment" },
+      "policy": { "audit": false } },
+    { "id": "create-document",
+      "node": { "kind": "invoke",
+        "description": "Create requirements document using elicitation output template.",
+        "technique_ref": "artifact-management" },
+      "policy": { "audit": false } },
+    { "id": "update-assumptions-log",
+      "node": { "kind": "invoke",
+        "description": "Add requirements-phase assumptions to the assumptions log.",
+        "technique_ref": "assumptions-log-update" },
+      "policy": { "audit": false } },
+    { "id": "requirements-confirmed",
+      "node": { "kind": "branch_cond",
+        "condition": { "all": [
+          { "op": "==", "var": "elicitation-complete", "value": true },
+          { "op": "!=", "var": "requirements-document", "value": null }
+        ] },
+        "then": [ "requirements-confirmed@then#0" ],
+        "else": [ "stakeholder-transcript" ] },
+      "policy": { "audit": false } },
+    { "id": "requirements-confirmed@then#0",
+      "node": { "kind": "goto_activity", "to": "research" },
+      "policy": { "audit": false } },
+    { "id": "main#9",
+      "node": { "kind": "emit_message", "text": "Requirements elicitation complete" },
+      "policy": { "audit": false } }
+  ],
+  "blocks": [
+    { "id": "main",
+      "items": [ "main#0", "mode-elicitation-path", "stakeholder-transcript",
+                 "domain-iteration", "collect-assumptions", "platform-routing",
+                 "create-document", "update-assumptions-log",
+                 "requirements-confirmed", "main#9" ] },
+    { "id": "domain-body",
+      "items": [ "ask-question", "user-intent", "domain-complete" ],
+      "declared": true }
+  ],
+  "entry": "main"
+}
+```
+
+Lowering observations, keyed to the rules that produce each byte:
+
+- **Node-table order** is the §5.2 depth-first first-occurrence walk of `run`: each envelope is appended at first encounter, then the walk descends into its referenced sequences (branch arms, loop body) before the next sibling — which is why `stakeholder-discussion` (first reached inside `mode-elicitation-path`'s `implement` arm) precedes `mode-elicitation-path@review#0`, and why the `domain-body` items sit between `domain-iteration` and `collect-assumptions`. The trailing declared-blocks phase contributes nothing here: `domain-body` is already fully reachable from `run`.
+- **One envelope, N references** (§5.2): `stakeholder-discussion`, `post-assumptions-to-jira`, and `stakeholder-transcript` each appear once in `nodes` and are referenced by `NodeId` from every use site — the legacy declare-once/reference-many graph, byte-preserved.
+- **Structural ids** (§5.3): anonymous items take `<owner>#<index>` with the index counted over *all* items of the owning sequence — the closing message is `main#9` (position 9 among `main`'s ten items, not "second message"); arm-owned items take `<decision-id>@<arm-key>#<index>`, so the `retry()` token in `edit-comment` is `jira-comment-review@edit-comment#1` (index 1, after the `post-assumptions-to-jira` reference).
+- **Self-retry vs plain reference**: `retry('jira-comment-review')` lowers to a distinct `reevaluate` envelope; a plain node value at a use site (the `else` arm's `stakeholder-transcript`) lowers to a bare `NodeId` reference. The two forms are different bytes because they are different semantics (§3.3.4, OQ-S11).
+- **Token-free terminal forms** (§6.3 note 3): `breakLoop()` lowers to `loop_exit` with `loop` absent (dynamic innermost); `rerun('domain-iteration')` lowers to `loop_restart` with `bound` absent (by-reference). The reader produces the same forms, preserving §9.2 byte equality.
+- **Default materialization** (§6.1): `max_iterations: 5` is present (≠ 100); `Invoke.required` is absent everywhere (= true); `Block.declared` appears only on `domain-body` (authored `block()`); `main` is first in `blocks` and never `declared` (§6.3 note 4).
+- **Operand classification** (§6.1): `platform-routing`'s match operand `"01.check-issue.issue-platform"` serializes as a bare string — the leading all-digits segment lexically marks it `QualifiedRef`, no wrapper needed.
+- **Contract-carried qualification** (§4.3 `qualifiedSource`): `post-assumptions-to-jira` is the only step with a `bindings` array — the `jira-comment` technique's *definition* qualifies its `issue-number` input as `01.create-issue.issue-number` (the binding lives in the contract, where legacy declared it), and the reader and Score both materialize that `qualifiedSource` into `Invoke.bindings`. Every other technique input across all steps resolves implicitly by name through the scope chain — activity input, local-flow output, or loop-carried value — and produces **no** `bindings` bytes. A caller-side `bind:` conflicting with the contract qualification would be BIND-004 ERROR.
+- **Qualified activity inputs** split into local symbol + provenance: `inputs[1]` binds local `issue-number` from `01.create-issue.issue-number` (the symbol an in-activity consumer reads is the tail segment; the `QualifiedRef` records where it comes from).
+- **The inert envelope** (R-IR-ENV): every node carries `"policy": { "audit": false }` — Phase-1 bytes already reserve the §10 attachment point, so governance never reshapes the IR.
+- **Empty arms are empty `items` arrays**, not `pass_through` nodes — `pass_through` serializes only for authored `passThrough()` / legacy `- flow: continue` intent (§6.3, §3.6).
+- **What the runtime traces**: `decisionOutcomes.branchId` records the arm keys (`"implement"`, `"answered"`, …) and `"true"`/`"false"` for `requirements-confirmed` (§6.3 note 5); `stepIndex` 1–8 enumerates the `invoke` envelopes in node-table order (§5.3), reproducing the legacy numbering.
 
 ---
 
