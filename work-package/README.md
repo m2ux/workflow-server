@@ -174,6 +174,7 @@ This workflow supports **review mode** for reviewing existing PRs rather than im
 | [Start Work Package](./activities/README.md#01-start-work-package) (01) | Skip branch/PR creation; capture existing PR reference and Jira ticket |
 | [Design Philosophy](./activities/README.md#02-design-philosophy) (02) | Assess ticket completeness; always skip elicitation |
 | [Implementation Analysis](./activities/README.md#05-implementation-analysis) (05) | Checkout base branch to analyze pre-change state; document expected changes |
+| [Lean-Coding Audit](./activities/README.md#09-lean-coding-audit) (09) | Run the audit read-only — document over-engineering findings and the debt ledger; skip the apply checkpoint and simplification cycle (no code changes) |
 | [Post-Implementation Review](./activities/README.md#10-post-implementation-review) (10) | Compare PR changes against expected changes from analysis |
 | [Validate](./activities/README.md#11-validate) (11) | Document failures as findings; do not fix |
 | [Strategic Review](./activities/README.md#12-strategic-review) (12) | Document cleanup recommendations; do not apply. Override transition to submit-for-review |
@@ -183,7 +184,7 @@ This workflow supports **review mode** for reviewing existing PRs rather than im
 **Review mode flow:**
 
 ```
-start-work-package → design-philosophy → [research →] implementation-analysis → plan-prepare → assumptions-review → post-impl-review → validate → strategic-review → submit-for-review → END
+start-work-package → design-philosophy → [research →] implementation-analysis → plan-prepare → assumptions-review → lean-coding-audit → post-impl-review → validate → strategic-review → submit-for-review → END
 ```
 
 **See [REVIEW-MODE.md](./REVIEW-MODE.md) for complete documentation.**
