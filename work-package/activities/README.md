@@ -89,7 +89,7 @@ graph TD
 
 Builds or augments a durable mental model of the codebase sufficient to qualify the design assumptions raised in later activities. Produces persistent knowledge artifacts under `.engineering/artifacts/comprehension/` that grow across successive work packages. Runs after design-philosophy and routes to elicitation, research, analysis, or plan-prepare depending on the chosen path.
 
-Definition: [`14-codebase-comprehension.yaml`](./14-codebase-comprehension.yaml)
+Definition: [`15-codebase-comprehension.yaml`](./15-codebase-comprehension.yaml)
 
 ```mermaid
 graph TD
@@ -264,7 +264,7 @@ graph TD
 
 ### 08. Implement
 
-Executes the implementation plan task by task, each task following an implement-test-commit-log-self-review cycle and accumulating per-task outputs across the work. Skipped in review mode (the code already exists). Leads to post-impl-review.
+Executes the implementation plan task by task, each task following an implement-test-commit-log-self-review cycle and accumulating per-task outputs across the work. Skipped in review mode (the code already exists). Leads to lean-coding-audit.
 
 Definition: [`08-implement.yaml`](./08-implement.yaml)
 
@@ -289,16 +289,40 @@ graph TD
     cpInterview --> interviewLoop
     interviewLoop -->|"all done"| updateLog["Update assumptions log"]
     updateLog --> cpPostImpl{"switch-model-post-impl checkpoint"}
-    cpPostImpl --> exitNode(["post-impl-review"])
+    cpPostImpl --> exitNode(["lean-coding-audit"])
 ```
 
 ---
 
-### 09. Post-Implementation Review
+### 09. Lean-Coding Audit
+
+Applies the ponytail lean-coding lens to the just-implemented change: tags it against the over-engineering taxonomy (delete / stdlib / native / yagni / shrink) with a net-lines scoreboard, harvests deliberate-simplification `ponytail:` markers into a tracked debt ledger, and records the honest gain. Accepted simplifications are then applied in a bounded cycle that re-validates the safety floor each pass. Complementary to strategic-review (leanness lens, not scope-vs-issue fit). In review mode the apply path is gated out — findings are documented, not applied. Leads to post-impl-review.
+
+Definition: [`09-lean-coding-audit.yaml`](./09-lean-coding-audit.yaml)
+
+```mermaid
+graph TD
+    entryNode(["Entry"]) --> reviewOverEng["Review over-engineering (taxonomy tags + net-lines scoreboard)"]
+    reviewOverEng --> harvestDebt["Harvest ponytail markers into debt ledger"]
+    harvestDebt --> hasMarkers{"has_debt_markers?"}
+    hasMarkers -->|"yes"| reportGain["Append honest gain scoreboard to ledger"]
+    hasMarkers -->|"no"| cpFindings
+    reportGain --> cpFindings{"audit-findings-confirmed checkpoint"}
+    cpFindings -->|"accept"| exitNode(["post-impl-review"])
+    cpFindings -->|"dispute"| exitNode
+    cpFindings -->|"apply simplifications"| applyCycle{"needs_simplification? (max 3)"}
+    applyCycle -->|"yes"| applyLadder["Apply simplifications, re-score, validate safety floor, re-assess flag"]
+    applyLadder --> applyCycle
+    applyCycle -->|"no"| exitNode
+```
+
+---
+
+### 10. Post-Implementation Review
 
 Reviews implementation quality through manual diff review, code review, structural analysis, test-suite review, and an architecture summary, catching issues before validation. If a critical blocker is found it routes back to implement for remediation; otherwise leads to validate.
 
-Definition: [`09-post-impl-review.yaml`](./09-post-impl-review.yaml)
+Definition: [`10-post-impl-review.yaml`](./10-post-impl-review.yaml)
 
 ```mermaid
 graph TD
@@ -329,11 +353,11 @@ graph TD
 
 ---
 
-### 10. Validate
+### 11. Validate
 
 Validates the implementation against tests, build, format, and lint checks, fixing and re-running until everything passes. In review mode it documents failures as findings and assesses coverage rather than fixing. Leads to strategic-review.
 
-Definition: [`10-validate.yaml`](./10-validate.yaml)
+Definition: [`11-validate.yaml`](./11-validate.yaml)
 
 ```mermaid
 graph TD
@@ -353,11 +377,11 @@ graph TD
 
 ---
 
-### 11. Strategic Review
+### 12. Strategic Review
 
 Reviews the change set to ensure it is minimal and focused — that the PR contains only what the solution requires — and produces the strategic review document and architecture summary. In review mode it documents cleanup recommendations without applying them. Leads to submit-for-review when the review passes, otherwise back to plan-prepare for rework.
 
-Definition: [`11-strategic-review.yaml`](./11-strategic-review.yaml)
+Definition: [`12-strategic-review.yaml`](./12-strategic-review.yaml)
 
 ```mermaid
 graph TD
@@ -379,11 +403,11 @@ graph TD
 
 ---
 
-### 12. Submit for Review
+### 13. Submit for Review
 
 Gates submission on a human DCO sign-off, then pushes the branch, finalizes the PR description, marks the PR ready, and handles reviewer feedback. In review mode it instead consolidates all findings, posts structured PR review comments, and ends the workflow. Significant requested changes loop back to plan-prepare; otherwise leads to complete.
 
-Definition: [`12-submit-for-review.yaml`](./12-submit-for-review.yaml)
+Definition: [`13-submit-for-review.yaml`](./13-submit-for-review.yaml)
 
 ```mermaid
 graph TD
@@ -413,11 +437,11 @@ graph TD
 
 ---
 
-### 13. Complete
+### 14. Complete
 
 The terminal activity: creates an ADR for moderate or complex work, finalizes documentation, conducts a retrospective, removes the component worktree, and selects the next work package. In review mode it skips the documentation steps and ends after the retrospective and worktree removal.
 
-Definition: [`13-complete.yaml`](./13-complete.yaml)
+Definition: [`14-complete.yaml`](./14-complete.yaml)
 
 ```mermaid
 graph TD

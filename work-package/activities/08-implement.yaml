@@ -152,7 +152,7 @@ steps:
         label: Continue with current model
         description: Proceed with the current model without switching
 transitions:
-  - to: post-impl-review
+  - to: lean-coding-audit
     isDefault: true
 outcome:
   - All tasks implemented

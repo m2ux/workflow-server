@@ -135,6 +135,18 @@ variables:
   - name: recommended_strategic_option
     type: string
     description: Agent-recommended action after strategic review analysis (fix-findings|acceptable). Set by analyze-strategic-findings step.
+  - name: audit_confirmed
+    type: boolean
+    description: True once the user has resolved the lean-coding-audit's audit-findings-confirmed gate (accept, apply-simplifications, or dispute).
+    defaultValue: false
+  - name: needs_simplification
+    type: boolean
+    description: Whether accepted simplifications remain to apply at the audit-findings-confirmed gate. Drives the simplification-apply-cycle loop in lean-coding-audit; re-assessed each iteration after the safety floor is re-validated and cleared once the re-score surfaces no further accepted simplifications.
+    defaultValue: false
+  - name: has_debt_markers
+    type: boolean
+    description: Whether the harvest-debt step found at least one ponytail marker in the tree. Set by lean-coding-audit's harvest-debt step; gates the report-gain step.
+    defaultValue: false
 initialActivity: start
 activities:
   - 01-start.yaml
@@ -145,9 +157,10 @@ activities:
   - work-package/06-plan-prepare.yaml
   - work-package/07-assumptions-review.yaml
   - work-package/08-implement.yaml
-  - work-package/09-post-impl-review.yaml
-  - work-package/10-validate.yaml
+  - work-package/09-lean-coding-audit.yaml
+  - work-package/10-post-impl-review.yaml
+  - work-package/11-validate.yaml
   - 02-strategic-review.yaml
   - 03-submit.yaml
-  - work-package/13-complete.yaml
-  - work-package/14-codebase-comprehension.yaml
+  - work-package/14-complete.yaml
+  - work-package/15-codebase-comprehension.yaml

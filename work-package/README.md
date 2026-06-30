@@ -1,29 +1,30 @@
 # Work Package Implementation Workflow
 
-> v3.13.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
+> v3.14.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
 
 ---
 
 ## Overview
 
-This workflow guides the complete lifecycle of a single work package through 14 activities total — 13 main activities plus 1 sub-flow (codebase comprehension, entered from design-philosophy or assumptions-review). Each activity has defined techniques, checkpoints, and transitions. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
+This workflow guides the complete lifecycle of a single work package through 15 activities total — 14 main activities plus 1 sub-flow (codebase comprehension, entered from design-philosophy or assumptions-review). Each activity has defined techniques, checkpoints, and transitions. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
 
 | # | Activity | Required | Description |
 |---|----------|----------|-------------|
 | 01 | [**Start Work Package**](./activities/README.md#01-start-work-package) | yes | Verify/create issue, set up branch, PR, and planning folder |
 | 02 | [**Design Philosophy**](./activities/README.md#02-design-philosophy) | yes | Classify problem, assess complexity, determine workflow path |
-| 14 | [**Codebase Comprehension**](./activities/README.md#codebase-comprehension) | no | Build/augment mental model of codebase via persistent knowledge artifacts |
+| 15 | [**Codebase Comprehension**](./activities/README.md#codebase-comprehension-optional) | no | Build/augment mental model of codebase via persistent knowledge artifacts |
 | 03 | [**Requirements Elicitation**](./activities/README.md#03-requirements-elicitation-optional) | optional | Clarify requirements through stakeholder conversation |
 | 04 | [**Research**](./activities/README.md#04-research-optional) | optional | Gather best practices from knowledge base and web |
 | 05 | [**Implementation Analysis**](./activities/README.md#05-implementation-analysis) | conditional | Understand current state, establish baselines |
 | 06 | [**Plan & Prepare**](./activities/README.md#06-plan--prepare) | yes | Create implementation and test plans |
 | 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | yes | Post plan summary and assumptions to issue tracker for stakeholder review |
 | 08 | [**Implement**](./activities/README.md#08-implement) | yes | Execute tasks with implement-test-commit cycles |
-| 09 | [**Post-Implementation Review**](./activities/README.md#09-post-implementation-review) | yes | Manual diff review, code review, test review, architecture summary |
-| 10 | [**Validate**](./activities/README.md#10-validate) | yes | Run tests, build, and lint checks |
-| 11 | [**Strategic Review**](./activities/README.md#11-strategic-review) | yes | Ensure minimal, focused changes |
-| 12 | [**Submit for Review**](./activities/README.md#12-submit-for-review) | yes | Push PR, mark ready, handle reviewer feedback |
-| 13 | [**Complete**](./activities/README.md#13-complete) | yes | Finalize documentation, create ADR, conduct retrospective |
+| 09 | [**Lean-Coding Audit**](./activities/README.md#09-lean-coding-audit) | yes | Tag and score over-engineering, harvest deliberate-simplification debt, apply accepted simplifications |
+| 10 | [**Post-Implementation Review**](./activities/README.md#10-post-implementation-review) | yes | Manual diff review, code review, test review, architecture summary |
+| 11 | [**Validate**](./activities/README.md#11-validate) | yes | Run tests, build, and lint checks |
+| 12 | [**Strategic Review**](./activities/README.md#12-strategic-review) | yes | Ensure minimal, focused changes |
+| 13 | [**Submit for Review**](./activities/README.md#13-submit-for-review) | yes | Push PR, mark ready, handle reviewer feedback |
+| 14 | [**Complete**](./activities/README.md#14-complete) | yes | Finalize documentation, create ADR, conduct retrospective |
 
 **Detailed documentation:**
 
@@ -61,19 +62,20 @@ graph TD
     ARD -->|"approved"| IMP["08 implement"]
     ARD -->|"minor corrections"| AR
     ARD -->|"significant revision"| PP
-    IMP --> PIR["09 post-impl-review"]
+    IMP --> LCA["09 lean-coding-audit"]
+    LCA --> PIR["10 post-impl-review"]
     PIR --> BLK{"critical blocker?"}
     BLK -->|"yes"| IMP
-    BLK -->|"no"| VAL["10 validate"]
+    BLK -->|"no"| VAL["11 validate"]
 
-    VAL --> SR["11 strategic-review"]
+    VAL --> SR["12 strategic-review"]
 
     SR --> SRD{"review passed?"}
-    SRD -->|"yes"| SFR["12 submit-for-review"]
+    SRD -->|"yes"| SFR["13 submit-for-review"]
     SRD -->|"rework"| PP
 
     SFR --> RVD{"review outcome?"}
-    RVD -->|"approved/minor"| COMP["13 complete"]
+    RVD -->|"approved/minor"| COMP["14 complete"]
     RVD -->|"significant changes"| PP
 
     COMP --> doneNode(["End"])
@@ -89,18 +91,19 @@ Under the bound-step model each step carries its own `step.technique` binding, s
 |---|----------|-------------------|--------|
 | 01 | [Start Work Package](./activities/README.md#01-start-work-package) | — | — |
 | 02 | [Design Philosophy](./activities/README.md#02-design-philosophy) | — | `02` |
-| 14 | [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) | — | — |
+| 15 | [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) | — | — |
 | 03 | [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) | — | `03` |
 | 04 | [Research](./activities/README.md#04-research-optional) | — | `04` |
 | 05 | [Implementation Analysis](./activities/README.md#05-implementation-analysis) | `scatter-gather` | `05` |
 | 06 | [Plan & Prepare](./activities/README.md#06-plan--prepare) | — | `06` |
 | 07 | [Assumptions Review](./activities/README.md#07-assumptions-review) | `scatter-gather` | `07` |
 | 08 | [Implement](./activities/README.md#08-implement) | `scatter-gather` | `08` |
-| 09 | [Post-Impl Review](./activities/README.md#09-post-implementation-review) | — | `09` |
-| 10 | [Validate](./activities/README.md#10-validate) | — | — |
-| 11 | [Strategic Review](./activities/README.md#11-strategic-review) | — | `11` |
-| 12 | [Submit for Review](./activities/README.md#12-submit-for-review) | — | — |
-| 13 | [Complete](./activities/README.md#13-complete) | — | `13` |
+| 09 | [Lean-Coding Audit](./activities/README.md#09-lean-coding-audit) | — | `09` |
+| 10 | [Post-Impl Review](./activities/README.md#10-post-implementation-review) | — | `10` |
+| 11 | [Validate](./activities/README.md#11-validate) | — | — |
+| 12 | [Strategic Review](./activities/README.md#12-strategic-review) | — | `12` |
+| 13 | [Submit for Review](./activities/README.md#13-submit-for-review) | — | — |
+| 14 | [Complete](./activities/README.md#14-complete) | — | `14` |
 
 See [activities/README.md](./activities/README.md) for per-activity orientation and flow diagrams; each activity's full definition (steps, checkpoints, transitions) lives in its YAML, served by `get_activity`.
 
@@ -171,11 +174,11 @@ This workflow supports **review mode** for reviewing existing PRs rather than im
 | [Start Work Package](./activities/README.md#01-start-work-package) (01) | Skip branch/PR creation; capture existing PR reference and Jira ticket |
 | [Design Philosophy](./activities/README.md#02-design-philosophy) (02) | Assess ticket completeness; always skip elicitation |
 | [Implementation Analysis](./activities/README.md#05-implementation-analysis) (05) | Checkout base branch to analyze pre-change state; document expected changes |
-| [Post-Implementation Review](./activities/README.md#09-post-implementation-review) (09) | Compare PR changes against expected changes from analysis |
-| [Validate](./activities/README.md#10-validate) (10) | Document failures as findings; do not fix |
-| [Strategic Review](./activities/README.md#11-strategic-review) (11) | Document cleanup recommendations; do not apply. Override transition to submit-for-review |
-| [Submit for Review](./activities/README.md#12-submit-for-review) (12) | Consolidate all review findings; post PR review comments. Override transition to workflow-end |
-| [Complete](./activities/README.md#13-complete) (13) | Skip ADR and documentation steps; retrospective only |
+| [Post-Implementation Review](./activities/README.md#10-post-implementation-review) (10) | Compare PR changes against expected changes from analysis |
+| [Validate](./activities/README.md#11-validate) (11) | Document failures as findings; do not fix |
+| [Strategic Review](./activities/README.md#12-strategic-review) (12) | Document cleanup recommendations; do not apply. Override transition to submit-for-review |
+| [Submit for Review](./activities/README.md#13-submit-for-review) (13) | Consolidate all review findings; post PR review comments. Override transition to workflow-end |
+| [Complete](./activities/README.md#14-complete) (14) | Skip ADR and documentation steps; retrospective only |
 
 **Review mode flow:**
 
@@ -201,11 +204,13 @@ Each review and documentation activity is assigned a server-computed `artifactPr
 
 | Activity | Prefix | Bare Name | Final Name |
 |----------|--------|-----------|------------|
-| [Post-Implementation Review](./activities/README.md#09-post-implementation-review) | `09` | `code-review.md` | `09-code-review.md` |
-| [Post-Implementation Review](./activities/README.md#09-post-implementation-review) | `09` | `test-suite-review.md` | `09-test-suite-review.md` |
-| [Strategic Review](./activities/README.md#11-strategic-review) | `11` | `strategic-review-1.md` | `11-strategic-review-1.md` |
-| [Strategic Review](./activities/README.md#11-strategic-review) | `11` | `architecture-summary.md` | `11-architecture-summary.md` |
-| [Complete](./activities/README.md#13-complete) | `13` | `COMPLETE.md` | `13-COMPLETE.md` |
+| [Lean-Coding Audit](./activities/README.md#09-lean-coding-audit) | `09` | `review-findings.md` | `09-review-findings.md` |
+| [Lean-Coding Audit](./activities/README.md#09-lean-coding-audit) | `09` | `debt-ledger.md` | `09-debt-ledger.md` |
+| [Post-Implementation Review](./activities/README.md#10-post-implementation-review) | `10` | `code-review.md` | `10-code-review.md` |
+| [Post-Implementation Review](./activities/README.md#10-post-implementation-review) | `10` | `test-suite-review.md` | `10-test-suite-review.md` |
+| [Strategic Review](./activities/README.md#12-strategic-review) | `12` | `strategic-review-1.md` | `12-strategic-review-1.md` |
+| [Strategic Review](./activities/README.md#12-strategic-review) | `12` | `architecture-summary.md` | `12-architecture-summary.md` |
+| [Complete](./activities/README.md#14-complete) | `14` | `COMPLETE.md` | `14-COMPLETE.md` |
 
 This convention ensures artifacts are naturally sorted by workflow phase when listed in the planning folder.
 
@@ -218,22 +223,22 @@ The workflow contains seven feedback loops that enable iterative quality improve
 | From | To | Purpose |
 |------|----|---------|
 | [Assumptions Review](./activities/README.md#07-assumptions-review) (07) | [Assumptions Review](./activities/README.md#07-assumptions-review) (07) | Minor corrections — re-prepare and re-post plan and assumptions comment |
-| [Assumptions Review](./activities/README.md#07-assumptions-review) (07) | [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) (14) | Stakeholder feedback reveals codebase understanding gaps — deepen comprehension before revising plan |
+| [Assumptions Review](./activities/README.md#07-assumptions-review) (07) | [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) (15) | Stakeholder feedback reveals codebase understanding gaps — deepen comprehension before revising plan |
 | [Assumptions Review](./activities/README.md#07-assumptions-review) (07) | [Plan & Prepare](./activities/README.md#06-plan--prepare) (06) | Stakeholder feedback requires significant approach revision |
-| [Post-Implementation Review](./activities/README.md#09-post-implementation-review) (09) | [Implement](./activities/README.md#08-implement) (08) | Critical blocker found during review requires code fix before proceeding |
-| [Strategic Review](./activities/README.md#11-strategic-review) (11) | [Plan & Prepare](./activities/README.md#06-plan--prepare) (06) | Significant rework needed — changes are not minimal or focused |
-| [Submit for Review](./activities/README.md#12-submit-for-review) (12) | [Plan & Prepare](./activities/README.md#06-plan--prepare) (06) | Reviewer requested significant changes requiring re-planning |
+| [Post-Implementation Review](./activities/README.md#10-post-implementation-review) (10) | [Implement](./activities/README.md#08-implement) (08) | Critical blocker found during review requires code fix before proceeding |
+| [Strategic Review](./activities/README.md#12-strategic-review) (12) | [Plan & Prepare](./activities/README.md#06-plan--prepare) (06) | Significant rework needed — changes are not minimal or focused |
+| [Submit for Review](./activities/README.md#13-submit-for-review) (13) | [Plan & Prepare](./activities/README.md#06-plan--prepare) (06) | Reviewer requested significant changes requiring re-planning |
 | [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) (03) | [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) (03) | Elicitation incomplete — self-loop for further stakeholder discussion |
 
 ```mermaid
 graph LR
     assumptionsReview["07 Assumptions Review"] -->|"minor corrections"| assumptionsReview
-    assumptionsReview -->|"needs comprehension"| codebaseComprehension["14 Codebase Comprehension"]
+    assumptionsReview -->|"needs comprehension"| codebaseComprehension["15 Codebase Comprehension"]
     assumptionsReview -->|"significant revision"| planPrepare["06 Plan and Prepare"]
     codebaseComprehension -->|"comprehension complete"| planPrepare
-    postImplReview["09 Post-Impl Review"] -->|"critical blocker"| implement["08 Implement"]
-    strategicReview["11 Strategic Review"] -->|"rework needed"| planPrepare
-    submitReview["12 Submit for Review"] -->|"significant changes"| planPrepare
+    postImplReview["10 Post-Impl Review"] -->|"critical blocker"| implement["08 Implement"]
+    strategicReview["12 Strategic Review"] -->|"rework needed"| planPrepare
+    submitReview["13 Submit for Review"] -->|"significant changes"| planPrepare
     reqElicit["03 Requirements Elicitation"] -->|"incomplete"| reqElicit
 ```
 

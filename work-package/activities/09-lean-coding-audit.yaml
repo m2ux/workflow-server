@@ -1,0 +1,83 @@
+id: lean-coding-audit
+version: 1.0.0
+name: Lean-Coding Audit
+description: Apply the ponytail lean-coding lens to the just-implemented change.
+required: true
+steps:
+  - kind: technique
+    id: review-over-engineering
+    technique: ponytail/review-over-engineering
+  - kind: technique
+    id: harvest-debt
+    technique: ponytail/harvest-debt
+  - kind: technique
+    id: report-gain
+    technique: ponytail/report-gain
+    when: has_debt_markers == true
+  - kind: checkpoint
+    id: audit-findings-confirmed
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+    message: "Lean-coding audit complete. The over-engineering findings under each taxonomy bucket (delete / stdlib / native / yagni / shrink) with the net-lines scoreboard are in review-findings.md, and the harvested ponytail-marker debt ledger with its honesty-bounded gain scoreboard is in debt-ledger.md — all judged against the safety floor. Accept the audit as-is, apply the recommended simplifications, or flag the findings for correction?"
+    blocking: true
+    options:
+      - id: audit-accepted
+        label: Accept audit — no changes to apply
+        description: The audit findings and scoreboard are accurate; apply no simplifications and proceed.
+        effect:
+          setVariable:
+            audit_confirmed: true
+      - id: apply-simplifications
+        label: Apply recommended simplifications
+        description: Apply the accepted simplifications in a bounded cycle, then re-score.
+        effect:
+          setVariable:
+            audit_confirmed: true
+            needs_simplification: true
+      - id: audit-findings-disputed
+        label: Findings need correction
+        description: The findings require correction; record the dispute and apply no simplifications this pass.
+        effect:
+          setVariable:
+            audit_confirmed: true
+            needs_simplification: false
+  - kind: loop
+    id: simplification-apply-cycle
+    name: Simplification Apply Cycle
+    loopType: doWhile
+    when: is_review_mode != true
+    condition:
+      type: simple
+      variable: needs_simplification
+      operator: ==
+      value: true
+    maxIterations: 3
+    steps:
+      - kind: technique
+        id: apply-simplifications
+        technique: ponytail/apply-ladder
+      - kind: technique
+        id: re-review-over-engineering
+        technique: ponytail/review-over-engineering
+      - kind: action
+        id: validate-safety-floor
+        actions:
+          - action: validate
+            target: safety_floor
+            message: Confirm the applied simplifications hold the safety floor — reject any simplification that breaches it.
+      - kind: action
+        id: reassess-simplification
+        actions:
+          - action: set
+            target: needs_simplification
+            message: After applying the accepted simplifications and re-running the over-engineering re-score, set true iff the re-score still surfaces accepted-but-unapplied simplifications that hold the safety floor; false when none remain.
+transitions:
+  - to: post-impl-review
+    isDefault: true
+outcome:
+  - The change is tagged and scored against the over-engineering taxonomy
+  - Every deliberate simplification is harvested into a tracked debt ledger with its upgrade trigger and honest gain
+  - Accepted simplifications are applied without breaching the safety floor
