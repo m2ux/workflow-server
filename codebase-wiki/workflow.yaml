@@ -12,66 +12,48 @@ tags:
   - karpathy-wiki
   - code-comprehension
 rules:
-  workflow:
-    - The raw baseline is immutable — it is the source tree at the pinned raw_baseline_commit and is never edited or copied; citations reference repo-relative source paths at that commit
-    - Every wiki claim cites a raw source path — no claim is recorded without a citation to the source it rests on
-    - Every wiki claim carries a confidence score of high, medium, or low
-    - index.md and log.md are maintained on every mutation — the catalog and the append-only operation ledger never fall behind the pages
-    - Contradictions between pages or claims are surfaced at lint, not silently reconciled
-    - Knowledge compounds across operations — each ingest augments the existing wiki rather than rebuilding it
-    - Hierarchical navigation over brute-force context loading — read index.md and follow [[wikilinks]] to the relevant pages instead of loading the whole wiki
-  activity:
-    - Never use prose where a formal schema construct exists — steps, checkpoints, decisions, loops, transitions, conditions, triggers, actions, artifacts, and variables must use their dedicated schema fields
-    - Never modify schemas during workflow creation — the schema is a fixed constraint; all content must conform as-is
-    - Convention over invention — search for existing naming conventions before introducing new patterns
-    - Modular over inline — workflow.yaml defines metadata and references; activities, techniques, and resources live in their own files
-    - Encode critical constraints as structure, not just text — back rules with checkpoints, conditions, and validate actions
-    - Every workflow must include a README.md at the root and in each subfolder (activities/, techniques/, resources/) following the style established by the prism workflow
-    - "Ordered-procedure prose is forbidden in any `description` field (activity or step) — a step's procedure lives in its bound technique's `protocol[]`, reached via the structured `step.technique` — either a bare string (`group::operation` or a bare single-file id, no deviations) or an object `{ name, inputs, outputs }` whose `inputs` map carries input deviations and `outputs` map carries output remaps. A BOUND step has NO `description` at all (omit it entirely): the step's `name` is the one-line WHAT label, and the bound technique's `capability` / `protocol` / `rules` carry ALL of the step's semantics. There is NO `step.note` field: any agent-relevant action or constraint that might read as a step caveat is, by nature, technique content — encode it IN the bound technique (as a `## Rules` entry, a protocol step, or an input), never on the step. A caveat that adds no agent value is omitted. Caveat prose never lives in a step `description` or any note."
-    - Every step must bind an operation via `step.technique`, EXCEPT a pure action/control step — one whose only effects are `set`/`log`/`emit`/`message` actions and/or a `when` gate and/or a `checkpoint`/`triggers` — which is exempt. A bound step names exactly ONE operation; compound multi-operation steps are split, one operation per step.
-    - "`techniques[]` is reserved for activity-wide STRATEGY/capability techniques (e.g. `variable-binding`, `scatter-gather`) — protocols that apply across the activity's steps. It MUST NOT list per-step operations; an operation a step invokes is bound at that step via `step.technique`."
-    - On completing each activity, update the planning-folder `README.md` progress tracker — mark this activity's row ✅ Complete in the Activity Progress table and set the session Status to the current milestone. (No session README exists in review mode, where the seed step is skipped.)
+  activity: []
 techniques:
   activity:
     - variable-binding
 variables:
   - name: wiki_path
     type: string
-    description: Root of the wiki tree (holds index.md, log.md, overview.md, and the typed-page subfolders). Resolved and confirmed at wiki-target-confirmed; bound as target_dir when delegating page writes to manage-artifacts.
+    description: Root of the wiki tree — holds index.md, log.md, overview.md, and the typed-page subfolders.
   - name: raw_baseline_commit
     type: string
-    description: The pinned source commit every citation is relative to. The raw baseline is the source tree at this commit, referenced in place — there is no physical copy. Set at wiki-target-confirmed.
+    description: The pinned source commit every citation is relative to. The raw baseline is the source tree at this commit, referenced in place — there is no physical copy.
   - name: ingest_scope
     type: string
     description: Free-form description of what this build pass should cover — the source areas, and any task-derived knowledge, to ingest into the wiki.
     defaultValue: ""
   - name: target_area
     type: string
-    description: A single source area (module, package, subsystem, or file set) named within the ingest scope — the unit an ingest pass operates over. Bound by the build-wiki loop to the current entry of ingest_plan each iteration, and consumed by ingest as its target_area input.
+    description: A single source area — module, package, subsystem, or file set — named within the ingest scope, the unit an ingest pass operates over.
     defaultValue: ""
   - name: ingest_plan
     type: array
-    description: Ordered list of areas to ingest, derived from ingest_scope and confirmed at ingest-scope-confirmed. Iterated by the build-wiki loop.
+    description: Ordered list of areas to ingest, derived from ingest_scope.
   - name: ingest_scope_confirmed
     type: boolean
-    description: Whether the user confirmed the ingest scope and plan — gates the transition into build-wiki. Set at ingest-scope-confirmed.
+    description: Whether the user confirmed the ingest scope and plan.
     defaultValue: false
   - name: lint_findings_count
     type: number
-    description: Number of lint findings from the lint pass. Drives the lint-findings-confirmed gate.
+    description: Number of lint findings from the lint pass.
     defaultValue: 0
   - name: needs_reingest
     type: boolean
-    description: Whether the user opted to fix lint findings by re-ingesting. Drives the rework back-edge from lint-wiki to build-wiki.
+    description: Whether the user opted to fix lint findings by re-ingesting.
     defaultValue: false
   - name: published_pages
     type: array
-    description: The pages the publish refresh touches — the overview.md finalized at publish. Set at publish (set-published-pages) and bound as mutated_pages when maintain-index-log records the publish finalization, mirroring how the build loop binds wiki_pages.page_slugs.
+    description: The pages the publish refresh touches — the overview.md finalized at publish.
   - name: wiki_overview
     type: string
-    description: The composed overview.md completion summary — areas covered, page counts by type, the citation baseline commit, and any accepted lint findings. Set at publish (compose-overview) and written to wiki_path as overview.md.
+    description: The composed overview.md completion summary — areas covered, page counts by type, the citation baseline commit, and any accepted lint findings.
   - name: wiki_published
     type: boolean
-    description: Whether the wiki has been finalized — index/log/overview refreshed and the completion summary written. Set at publish.
+    description: Whether the wiki has been finalized — index, log, and overview refreshed and the completion summary written.
     defaultValue: false
 initialActivity: confirm-scope

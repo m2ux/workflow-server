@@ -8,7 +8,7 @@ metadata:
 
 # Lint Checklist
 
-The [lint](../techniques/lint.md) technique runs every check below in one pass over the whole wiki and counts the violations as `lint_findings_count`. Each finding names the offending page(s) and the check it failed. Lint reports; it never fixes — fixing is a re-ingest decision.
+Every check below is run in one pass over the whole wiki and the violations are counted as `lint_findings_count`. Each finding names the offending page(s) and the check it failed. The checklist reports; it never fixes — fixing is a re-ingest decision.
 
 | # | Check | Passes when | Fails when |
 |---|-------|-------------|------------|

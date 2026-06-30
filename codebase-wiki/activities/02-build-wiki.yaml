@@ -12,7 +12,7 @@ steps:
         message: Cannot build the wiki without a confirmed ingest plan
       - action: validate
         target: raw_baseline_commit
-        message: Cannot ingest without a pinned raw_baseline_commit — every area is read from the immutable source tree at this commit, so the baseline pointer must be set before the build loop reads any raw source
+        message: Cannot ingest without a pinned raw_baseline_commit
   - kind: loop
     id: area-ingest-cycle
     name: Area Ingest Cycle

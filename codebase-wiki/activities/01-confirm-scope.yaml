@@ -4,15 +4,9 @@ name: Confirm Scope
 description: "Resolve the wiki target and pin the citation baseline, then capture and confirm what this build pass will ingest."
 required: true
 steps:
-  - kind: action
-    id: resolve-wiki-target
-    actions:
-      - action: set
-        target: wiki_path
-        message: Resolve the wiki tree root from the user request — an existing wiki to augment or a new directory to create. Holds index.md, log.md, overview.md, and the typed-page subfolders.
-      - action: set
-        target: raw_baseline_commit
-        message: Pin the source commit every citation will be relative to — the current HEAD of the target source tree unless the user names a specific commit. The raw baseline is the source at this commit, referenced in place; there is no physical copy.
+  - kind: technique
+    id: collect-scope
+    technique: collect-scope
   - kind: checkpoint
     id: wiki-target-confirmed
     message: "Wiki tree root and citation baseline: wiki_path '{wiki_path}', raw_baseline_commit '{raw_baseline_commit}'. Confirm these before ingest begins."
@@ -28,15 +22,6 @@ steps:
       - id: revise
         label: Change target or baseline
         description: The wiki root or the pinned commit needs adjustment before ingest begins.
-  - kind: action
-    id: capture-ingest-plan
-    actions:
-      - action: set
-        target: ingest_scope
-        message: Capture the free-form description of what this build pass should cover — the source areas, and any task-derived knowledge, to ingest into the wiki.
-      - action: set
-        target: ingest_plan
-        message: Derive the ordered list of areas to ingest from ingest_scope — one entry per module, package, subsystem, or file set named in the scope. This is the collection the build-wiki loop iterates.
   - kind: checkpoint
     id: ingest-scope-confirmed
     message: "Here is the ingest plan derived from the scope — the ordered list of areas to ingest. Confirm before the build pass runs."

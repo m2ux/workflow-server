@@ -8,7 +8,7 @@ metadata:
 
 # Citation Conventions
 
-The wiki's two non-negotiable invariants — every claim cites a raw source, and every claim carries a confidence — are encoded by the conventions below. They are referenced by [ingest](../techniques/ingest.md), [query](../techniques/query.md), [lint](../techniques/lint.md), and [cross-link](../techniques/cross-link.md).
+The wiki's two non-negotiable invariants — every claim cites a raw source, and every claim carries a confidence — are encoded by the conventions below.
 
 ## Raw-baseline citations
 
@@ -47,7 +47,7 @@ Cross-references between pages use double-bracket wikilinks naming the target pa
 ```
 
 - A wikilink names the **slug** (the filename without `.md` or subfolder), not a path — the index and the page type locate it.
-- Relationships are **bidirectional**: a `[[wikilink]]` from page A to page B is matched by one from B to A (maintained by [cross-link](../techniques/cross-link.md)).
+- Relationships are **bidirectional**: a `[[wikilink]]` from page A to page B is matched by one from B to A.
 - The body links are the source of truth; each page's `related[]` frontmatter mirrors them.
 - A wikilink is inserted only to an **existing** page — a dangling link is a missing-referenced-concept lint finding, so an intended link to a not-yet-created page waits for the ingest that creates it.
 - In a synthesized `query` answer, each part of the answer carries the `[[wikilink]]` of the page it rests on, so the answer is traceable back to its evidence.

@@ -18,12 +18,9 @@ steps:
       inputs:
         mutated_pages: published_pages
         operation_summary: publish finalization — index, log, and overview refreshed at publish
-  - kind: action
+  - kind: technique
     id: compose-overview
-    actions:
-      - action: set
-        target: wiki_overview
-        message: Compose the overview.md completion summary from the log ledger and index — what areas the build covered, the page counts by type, the citation baseline commit, and any accepted lint findings. Follows the overview section of the wiki-format resource.
+    technique: compose-overview
   - kind: technique
     id: write-overview
     technique:
