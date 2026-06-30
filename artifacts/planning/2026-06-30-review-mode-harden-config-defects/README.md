@@ -1,7 +1,7 @@
 # Review-Mode Hardening: Config-Change & Interaction Defects - June 2026
 
 **Created:** 2026-06-30  
-**Status:** In Progress  
+**Status:** In Progress — Design Philosophy complete; entering Codebase Comprehension  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -32,8 +32,8 @@ This work package closes that gap by teaching the review process five new habits
 
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
-| 01 | `Design philosophy` | Problem classification, design rationale, workflow path | 15-30m | ⬚ Pending |
-| 01 | `Assumptions log` | Tracked assumptions across all activities | 10-15m | ⬚ Pending |
+| 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
+| 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
 | 05 | [Test plan](test-plan.md) | E2E walk / lint / smoke coverage strategy | 15-30m | ⬚ Pending |
 | — | Implementation | Technique + activity definition changes | 1-4h | ⬚ Pending |
