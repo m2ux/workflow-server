@@ -1,0 +1,53 @@
+id: lint-wiki
+version: 1.0.0
+name: Lint Wiki
+description: Run the wiki integrity checks over the built pages and decide whether findings warrant a re-ingest pass.
+required: true
+steps:
+  - kind: technique
+    id: lint
+    technique: lint
+  - kind: checkpoint
+    id: lint-findings-confirmed
+    condition:
+      type: simple
+      variable: lint_findings_count
+      operator: ">"
+      value: 0
+    message: "Lint surfaced {lint_findings_count} finding(s) — see the report above. Re-ingest to fix them, or accept and publish as-is?"
+    blocking: true
+    options:
+      - id: reingest
+        label: Re-ingest to fix findings
+        description: Return to the build pass to address the lint findings before publishing.
+        effect:
+          setVariable:
+            needs_reingest: true
+      - id: accept
+        label: Accept findings and publish
+        description: The findings are acceptable as recorded; proceed to publish without a further build pass.
+        effect:
+          setVariable:
+            needs_reingest: false
+decisions:
+  - id: reingest-gate
+    name: Re-Ingest Gate
+    branches:
+      - id: needs-reingest
+        label: Findings to fix — return to build
+        condition:
+          type: simple
+          variable: needs_reingest
+          operator: ==
+          value: true
+        transitionTo: build-wiki
+      - id: clean
+        label: No re-ingest needed — proceed to publish
+        isDefault: true
+transitions:
+  - to: publish
+    isDefault: true
+outcome:
+  - The wiki has been checked for citation coverage, confidence presence, contradictions, orphan pages, missing referenced concepts, and stale claims
+  - Contradictions and gaps are surfaced explicitly rather than silently reconciled, so the user decides whether to fix or accept them
+  - When findings warrant it, the flow returns to the build pass to re-ingest, closing the one rework loop before publish

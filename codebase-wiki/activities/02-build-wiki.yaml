@@ -1,0 +1,40 @@
+id: build-wiki
+version: 1.0.0
+name: Build Wiki
+description: Ingest each area in the confirmed plan into typed, cited wiki pages, maintaining the index and log on every mutation.
+required: true
+steps:
+  - kind: action
+    id: verify-preconditions
+    actions:
+      - action: validate
+        target: ingest_scope_confirmed
+        message: Cannot build the wiki without a confirmed ingest plan
+      - action: validate
+        target: raw_baseline_commit
+        message: Cannot ingest without a pinned raw_baseline_commit — every area is read from the immutable source tree at this commit, so the baseline pointer must be set before the build loop reads any raw source
+  - kind: loop
+    id: area-ingest-cycle
+    name: Area Ingest Cycle
+    loopType: forEach
+    variable: target_area
+    over: ingest_plan
+    maxIterations: 50
+    steps:
+      - kind: technique
+        id: ingest-area
+        technique: ingest
+      - kind: technique
+        id: maintain-index-log
+        technique:
+          name: maintain-index-log
+          inputs:
+            mutated_pages: wiki_pages.page_slugs
+            operation_summary: ingest_summary
+transitions:
+  - to: lint-wiki
+    isDefault: true
+outcome:
+  - Every area in the ingest plan is captured as typed wiki pages whose claims cite a raw source path and carry a confidence score
+  - The index catalog and the append-only log ledger are kept current with each ingest, so navigation and provenance never fall behind the pages
+  - Knowledge compounds — each area augments the existing wiki rather than rebuilding it, including any task-derived knowledge folded into the same pages
