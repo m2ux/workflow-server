@@ -1,7 +1,7 @@
 # Review-Mode Hardening: Config-Change & Interaction Defects - June 2026
 
 **Created:** 2026-06-30  
-**Status:** In Progress — Codebase Comprehension complete; entering Plan & Prepare  
+**Status:** In Progress — Plan & Prepare complete; entering Assumptions Review  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -24,7 +24,15 @@ This work package closes that gap by teaching the review process five new habits
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+The review-mode path of the `work-package` workflow learns five new habits so the class of defect that recently slipped through cannot pass un-flagged again:
+
+1. **Read existing PR feedback first.** Before forming a verdict, ingest every comment already on the pull request (including other automated reviewers) and explicitly rebut or absorb each one — no prior warning goes unread.
+2. **Trace config/type changes through their blast radius.** When a configuration or type setting changes, follow its effect through all dependent code, not just the changed lines.
+3. **Prove conservation.** For anything created (records, allocations, handles), prove there is a matching cleanup on *every* path — not only the one shown in the diff.
+4. **Score correct-but-harmful code.** Add an impact-based severity axis so a change that is technically correct yet harmful (e.g. unbounded growth) is rated accordingly rather than waved through.
+5. **Triage reported failures and untested variants.** Treat reported runtime errors and untested code variants as findings that must be explained, never silently downgraded.
+
+These are delivered as one new technique (ingest-and-rebut existing feedback) plus edits to four existing techniques, one resource, and two activity definitions — definition-layer only, no server source changes. See [the implementation plan](06-work-package-plan.md) for tasks and the [test plan](06-test-plan.md) for the verification strategy.
 
 ---
 
@@ -34,8 +42,8 @@ This work package closes that gap by teaching the review process five new habits
 |---|------|-------------|----------|--------|
 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
-| 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](test-plan.md) | E2E walk / lint / smoke coverage strategy | 15-30m | ⬚ Pending |
+| 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 06 | [Test plan](06-test-plan.md) | E2E walk / lint / smoke coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Technique + activity definition changes | 1-4h | ⬚ Pending |
 | 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | `Code review` | Automated definition-quality review | 10-20m | ⬚ Pending |
@@ -58,4 +66,4 @@ This work package closes that gap by teaching the review process five new habits
 
 ---
 
-**Status:** In Progress
+**Status:** In Progress — Plan & Prepare complete; entering Assumptions Review
