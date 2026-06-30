@@ -1,0 +1,59 @@
+$schema: ../../schemas/workflow.schema.json
+id: codebase-wiki
+version: 1.0.0
+title: Codebase Wiki Workflow
+description: Build and maintain a durable, citation-backed, navigable LLM knowledge base over a codebase, in the Karpathy LLM-wiki format adapted for code. Its operations are reusable techniques other workflows bind via codebase-wiki/<op> to create, augment, query, or update the wiki.
+author: m2ux
+tags:
+  - codebase-wiki
+  - knowledge-base
+  - documentation
+  - citations
+  - karpathy-wiki
+  - code-comprehension
+rules:
+  activity: []
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: wiki_path
+    type: string
+    description: Root of the wiki tree — holds index.md, log.md, overview.md, and the typed-page subfolders.
+  - name: raw_baseline_commit
+    type: string
+    description: The pinned source commit every citation is relative to. The raw baseline is the source tree at this commit, referenced in place — there is no physical copy.
+  - name: ingest_scope
+    type: string
+    description: Free-form description of what this build pass should cover — the source areas, and any task-derived knowledge, to ingest into the wiki.
+    defaultValue: ""
+  - name: target_area
+    type: string
+    description: A single source area — module, package, subsystem, or file set — named within the ingest scope, the unit an ingest pass operates over.
+    defaultValue: ""
+  - name: ingest_plan
+    type: array
+    description: Ordered list of areas to ingest, derived from ingest_scope.
+  - name: ingest_scope_confirmed
+    type: boolean
+    description: Whether the user confirmed the ingest scope and plan.
+    defaultValue: false
+  - name: lint_findings_count
+    type: number
+    description: Number of lint findings from the lint pass.
+    defaultValue: 0
+  - name: needs_reingest
+    type: boolean
+    description: Whether the user opted to fix lint findings by re-ingesting.
+    defaultValue: false
+  - name: published_pages
+    type: array
+    description: The pages the publish refresh touches — the overview.md finalized at publish.
+  - name: wiki_overview
+    type: string
+    description: The composed overview.md completion summary — areas covered, page counts by type, the citation baseline commit, and any accepted lint findings.
+  - name: wiki_published
+    type: boolean
+    description: Whether the wiki has been finalized — index, log, and overview refreshed and the completion summary written.
+    defaultValue: false
+initialActivity: confirm-scope

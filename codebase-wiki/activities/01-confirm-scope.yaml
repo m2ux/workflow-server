@@ -1,0 +1,46 @@
+id: confirm-scope
+version: 1.0.0
+name: Confirm Scope
+description: "Resolve the wiki target and pin the citation baseline, then capture and confirm what this build pass will ingest."
+required: true
+steps:
+  - kind: technique
+    id: collect-scope
+    technique: collect-scope
+  - kind: checkpoint
+    id: wiki-target-confirmed
+    message: "Wiki tree root and citation baseline: wiki_path '{wiki_path}', raw_baseline_commit '{raw_baseline_commit}'. Confirm these before ingest begins."
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes, target and baseline are correct
+        description: The wiki tree root and the pinned source commit are correct; citations will be relative to this commit.
+        effect:
+          setVariable:
+            wiki_path: "{wiki_path}"
+            raw_baseline_commit: "{raw_baseline_commit}"
+      - id: revise
+        label: Change target or baseline
+        description: The wiki root or the pinned commit needs adjustment before ingest begins.
+  - kind: checkpoint
+    id: ingest-scope-confirmed
+    message: "Here is the ingest plan derived from the scope — the ordered list of areas to ingest. Confirm before the build pass runs."
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes, the ingest plan is correct
+        description: The ordered list of source areas and any task-derived knowledge to ingest is accurate.
+        effect:
+          setVariable:
+            ingest_plan: "{ingest_plan}"
+            ingest_scope_confirmed: true
+      - id: revise
+        label: Revise the ingest plan
+        description: The set or order of areas to ingest needs adjustment.
+transitions:
+  - to: build-wiki
+    isDefault: true
+outcome:
+  - The wiki tree root is fixed, so every page and the index/log ledger land in one known location
+  - The citation baseline is pinned to a single source commit, so every claim is anchored to an immutable, reproducible reference
+  - The build pass has a confirmed, ordered ingest plan, so the loop covers exactly the agreed areas with no implicit scope

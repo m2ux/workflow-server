@@ -1,0 +1,43 @@
+id: publish
+version: 1.0.0
+name: Publish
+description: Finalize the index, log, and overview, then record the wiki as published. Local-only — no branch, commit, or pull-request operations.
+required: true
+steps:
+  - kind: action
+    id: set-published-pages
+    actions:
+      - action: set
+        target: published_pages
+        value:
+          - overview.md
+  - kind: technique
+    id: finalize-index-log
+    technique:
+      name: maintain-index-log
+      inputs:
+        mutated_pages: published_pages
+        operation_summary: publish finalization — index, log, and overview refreshed at publish
+  - kind: technique
+    id: compose-overview
+    technique: compose-overview
+  - kind: technique
+    id: write-overview
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: overview.md
+        artifact_content: wiki_overview
+        target_dir: "{wiki_path}"
+  - kind: action
+    id: record-published
+    actions:
+      - action: set
+        target: wiki_published
+        value: true
+      - action: message
+        message: "Wiki published locally at {wiki_path} — index.md, log.md, and overview.md are finalized. No branch, commit, or PR was created."
+outcome:
+  - The index catalog, the append-only log, and the overview are finalized, so the wiki reads as a complete, navigable knowledge base
+  - A completion summary in overview.md records what the build covered, leaving a durable entry point for future readers and augment passes
+  - The wiki is published in place under wiki_path with no version-control side effects — delivery is local-only by design
