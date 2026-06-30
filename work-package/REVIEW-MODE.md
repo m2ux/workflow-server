@@ -83,7 +83,8 @@ graph TD
     BASELINE --> PP[plan-prepare]
     
     PP -->|review mode| SKIP_IMP[Skip implement]
-    SKIP_IMP --> PIR[post-impl-review]
+    SKIP_IMP --> LCA[lean-coding-audit: document findings]
+    LCA --> PIR[post-impl-review]
     
     PIR --> VAL[validate]
     VAL -->|document failures| SR[strategic-review]
@@ -111,6 +112,7 @@ graph TD
 | **Elicitation** | Interactive gathering | **SKIPPED** |
 | **Implementation Analysis** | Analyze current state | Analyze **pre-change** baseline |
 | **Implement** | Execute tasks | **SKIPPED** |
+| **Lean-Coding Audit** | Audit, then apply accepted simplifications | **Document** over-engineering/leanness findings; apply path gated out |
 | **Validate** | Fix failures | **Document** failures as findings |
 | **Strategic Review** | Apply cleanup | **Document** recommendations |
 | **Update PR** | Push and mark ready | **Generate and post review comments** |
@@ -125,6 +127,7 @@ graph TD
 | `design-philosophy` | Assess ticket completeness, force skip elicitation |
 | `implementation-analysis` | Checkout base branch, document expected changes |
 | `implement` | **SKIPPED** — its steps and inbound transition are gated `when is_review_mode != true` |
+| `lean-coding-audit` | Run the read-only over-engineering review, debt harvest, and gain report; the findings-confirmation checkpoint and simplification-apply-cycle are gated out so no code changes — findings become PR feedback |
 | `validate` | Document failures as findings, skip fix-failures |
 | `strategic-review` | Document recommendations, transition to submit-for-review |
 | `submit-for-review` | Generate review summary, post to PR, end workflow |

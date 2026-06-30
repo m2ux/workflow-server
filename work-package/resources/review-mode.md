@@ -67,6 +67,9 @@ Analyze the pre-change baseline state from the base branch to establish referenc
 ### assumptions-review
 Skip the assumption interview and issue tracker posting. The review plan is for the reviewer's own use. Set `stakeholder_review_complete=true` and proceed directly to the next activity.
 
+### lean-coding-audit
+Run the read-only over-engineering review, debt harvest, and gain report so findings reach the artifacts. Skip the apply path — the findings-confirmation checkpoint and the simplification-apply-cycle are gated out so no code is changed; over-engineering and leanness findings become feedback for the PR author.
+
 ### post-impl-review
 Compare PR changes against expected changes from implementation analysis. Document findings for PR author. Identify deviations — missing changes, unexpected changes, alternative approaches.
 
@@ -97,6 +100,7 @@ In review mode, only conduct retrospective. Skip ADR creation and documentation 
 | **Implementation Analysis** | Analyze current state | Analyze **pre-change** state (base branch) |
 | **Plan & Prepare** | Plan implementation tasks | Plan as reference (retrospective analysis) |
 | **Implement** | Execute implementation | **SKIPPED** - code already exists |
+| **Lean-Coding Audit** | Audit + apply simplifications | **Document** over-engineering findings (no apply) |
 | **Post-Impl Review** | Review own implementation | Compare PR to expected changes |
 | **Validate** | Fix failures | **Document** failures as findings |
 | **Strategic Review** | Apply cleanup | **Document** cleanup recommendations |
@@ -178,8 +182,8 @@ Resolve `{WORKFLOW_REPO_OWNER}`, `{WORKFLOW_REPO_NAME}`, and `{WORKFLOW_BRANCH}`
 |------------|-----------|
 | Code Review Agent | `techniques/review-code.md` |
 | Test Suite Review Agent | `techniques/review-test-suite.md` |
-| Validation Agent | `activities/10-validate.yaml` |
-| Strategic Review Agent | `activities/11-strategic-review.yaml` |
+| Validation Agent | `activities/11-validate.yaml` |
+| Strategic Review Agent | `activities/12-strategic-review.yaml` |
 
 **Table format:** All review tables only include non-passing findings — do not list passing or positive items. The `#` column value is a hyperlink to the pertinent artifact or symbol (file path and line for code review, test method for test review, document URL for documentation, CI run URL for validation, branch/commit for hygiene). Every table must include a `Severity` column. Every `#` link MUST be validated against the actual source at the referenced commit before inclusion — do not carry over line numbers from earlier analysis without verification.
 
@@ -199,7 +203,7 @@ Example: `(CR-1)` refers to Code Review finding 1, `(TR-3)` refers to Test Revie
 ## PR Review Summary
 
 **PR**: #XXX - Title  
-**Reviewers**: [Code Review Agent]({workflow_base}/techniques/review-code.md) · [Test Suite Review Agent]({workflow_base}/techniques/review-test-suite.md) · [Validation Agent]({workflow_base}/activities/10-validate.yaml) · [Strategic Review Agent]({workflow_base}/activities/11-strategic-review.yaml)  
+**Reviewers**: [Code Review Agent]({workflow_base}/techniques/review-code.md) · [Test Suite Review Agent]({workflow_base}/techniques/review-test-suite.md) · [Validation Agent]({workflow_base}/activities/11-validate.yaml) · [Strategic Review Agent]({workflow_base}/activities/12-strategic-review.yaml)  
 **Reports**: `Code Review` · `Test Suite Review`  
 **Date**: YYYY-MM-DD
 
