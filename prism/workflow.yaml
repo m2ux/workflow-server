@@ -49,7 +49,7 @@ variables:
     description: "For portfolio mode: array of lens names"
   - name: lens_name
     type: string
-    description: Name of the portfolio lens whose artifact is currently being written
+    description: Lens name used for per-lens artifact naming in portfolio mode (e.g. portfolio-{lens_name}.md). Distinct from the per-unit current_unit.lens_name that selects the single-mode lens.
   - name: analysis_focus
     type: string
     description: Optional focus area to guide the analysis

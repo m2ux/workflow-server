@@ -24,7 +24,7 @@ The lens resource to apply, named by its slug (e.g. `reachability`, `state-audit
 
 ### 1. Load Lens
 
-- Load the lens prompt for `{lens_name}` from the prism workflow resources (the orchestrator provides the resource index; the worker loads `{lens_name}.md`, e.g. `{lens_name}` = `reachability` → [reachability](../resources/reachability.md))
+- Load the lens named by `{lens_name}` from the prism workflow resources (e.g. `{lens_name}` = `reachability` → [reachability](../resources/reachability.md))
 - The lens prompt is the program — it defines the exact sequence of analytical operations to execute
 - If the named lens cannot be loaded, report the error and the fact that `{lens_name}` did not resolve to a known resource; do not silently fall back to a different lens
 
@@ -63,10 +63,6 @@ The applied lens's complete output following its own operations
 #### artifact
 
 `{lens_name}-analysis.md`
-
-#### artifact_path
-
-Full filesystem path to the written artifact
 
 #### findings
 

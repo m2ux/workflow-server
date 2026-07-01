@@ -74,7 +74,6 @@ steps:
           inputs:
             target_content: "{current_unit.target}"
             selected_lenses: current_unit.lenses
-            analytical_goal: "{analysis_focus}"
         condition:
           type: simple
           variable: current_unit.pipeline_mode
