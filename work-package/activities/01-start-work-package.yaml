@@ -68,6 +68,14 @@ steps:
           setVariable:
             is_review_mode: false
   - kind: technique
+    id: ingest-prior-feedback
+    technique: review-existing-feedback
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: ==
+      value: true
+  - kind: technique
     id: resolve-reference
     technique: reference-resolution
   - kind: technique
