@@ -1,7 +1,7 @@
 # Review-Mode Hardening: Config-Change & Interaction Defects - June 2026
 
 **Created:** 2026-06-30  
-**Status:** In Progress — Post-Implementation Review complete (no blockers; routing flags false); entering Validate  
+**Status:** In Progress — Validation complete (e2e + typecheck PASS; `validation_passed = true`); entering Strategic Review  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -52,7 +52,7 @@ These are delivered as one new technique (ingest-and-rebut existing feedback) pl
 | 10 | [Test suite review](10-test-suite-review.md) | Harness coverage assessment | 10-20m | ✅ Complete |
 | 10 | [Findings classification](10-findings-classification.md) | Severity classification + fix-cycle routing | 5-10m | ✅ Complete |
 | — | [Comprehension artifact](../../comprehension/review-mode-path.md) | Review-mode path: branching, techniques, severity model, augmentation binding points (+ portfolio pedagogy/rejected-paths lenses & synthesis) | 20-45m | ✅ Complete |
-| — | Validation | Walk + lint + smoke verification | 15-30m | ⬚ Pending |
+| 11 | [Validation](11-validation.md) | E2E harness (lint / walk / snapshot) + typecheck verification | 15-30m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | `Completion summary` | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
 | 08 | [Workflow retrospective](workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
@@ -68,4 +68,4 @@ These are delivered as one new technique (ingest-and-rebut existing feedback) pl
 
 ---
 
-**Status:** In Progress — Post-Implementation Review complete (no blockers; `needs_code_fixes`/`needs_test_improvements`/`has_critical_blocker` all false; rationale confirmed); entering Validate
+**Status:** In Progress — Validation complete (e2e lint/walk PASS across all 6 policies, typecheck PASS, `validation_passed = true`; 6 snapshot diffs are the intended review-mode additions + pre-existing AP-43 artifact-declaration spill, baseline regen deferred to completion); entering Strategic Review

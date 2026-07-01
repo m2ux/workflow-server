@@ -190,10 +190,11 @@
           "plan-prepare",
           "assumptions-review",
           "implement",
-          "lean-coding-audit"
+          "lean-coding-audit",
+          "post-impl-review"
         ],
-        "condition": "default",
-        "currentActivity": "post-impl-review",
+        "condition": "no-blocker",
+        "currentActivity": "validate",
         "currentTechnique": "findings-classification",
         "history": [
           {
@@ -451,16 +452,26 @@
             },
             "timestamp": "2026-07-01T04:49:30.000Z",
             "type": "checkpoint_response"
+          },
+          {
+            "activity": "post-impl-review",
+            "timestamp": "2026-07-01T04:52:07.477Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate",
+            "timestamp": "2026-07-01T04:52:07.477Z",
+            "type": "activity_entered"
           }
         ],
         "schemaVersion": 1,
-        "seq": 103,
+        "seq": 105,
         "sessionIndex": "CF5LX4",
         "skippedActivities": [],
         "startedAt": "2026-06-30T15:29:46.526Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1782881431,
+        "ts": 1782881574,
         "variables": {
           "audit_confirmed": true,
           "needs_elicitation": false,
