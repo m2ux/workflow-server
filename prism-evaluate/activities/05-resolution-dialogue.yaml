@@ -1,5 +1,5 @@
 id: resolution-dialogue
-version: 1.2.0
+version: 1.2.1
 name: Resolution Dialogue
 description: Propose mitigations for each evaluation finding one-by-one.
 techniques:
@@ -26,26 +26,26 @@ steps:
           - action: set
             target: accepted_mitigations
             description: Append the finding's recorded decision.
+      - kind: checkpoint
+        id: finding-decision
+        message: "Finding {current_finding.id} ({current_finding.severity}): Here is the proposed mitigation. How would you like to proceed?"
+        options:
+          - id: accept
+            label: Accept
+            description: Accept the proposed mitigation as-is
+          - id: modify
+            label: Accept with modifications
+            description: Accept the intent but adjust the wording or approach
+          - id: skip
+            label: Skip
+            description: Skip this finding — no mitigation
+          - id: discuss
+            label: Discuss
+            description: Discuss this finding further before deciding
+        blocking: true
   - kind: technique
     id: compile-plan
     technique: resolve-findings::compile-plan
-  - kind: checkpoint
-    id: finding-decision
-    message: "Finding {current_finding.id} ({current_finding.severity}): Here is the proposed mitigation. How would you like to proceed?"
-    options:
-      - id: accept
-        label: Accept
-        description: Accept the proposed mitigation as-is
-      - id: modify
-        label: Accept with modifications
-        description: Accept the intent but adjust the wording or approach
-      - id: skip
-        label: Skip
-        description: Skip this finding — no mitigation
-      - id: discuss
-        label: Discuss
-        description: Discuss this finding further before deciding
-    blocking: true
 transitions:
   - to: apply-mitigations
     isDefault: true
