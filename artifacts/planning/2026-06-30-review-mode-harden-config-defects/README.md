@@ -1,7 +1,7 @@
 # Review-Mode Hardening: Config-Change & Interaction Defects - June 2026
 
 **Created:** 2026-06-30  
-**Status:** In Progress — Assumptions Review complete (no open/deferred); entering Implement  
+**Status:** In Progress — Post-Implementation Review complete (no blockers; routing flags false); entering Validate  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -44,11 +44,13 @@ These are delivered as one new technique (ingest-and-rebut existing feedback) pl
 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
 | 06 | [Test plan](06-test-plan.md) | E2E walk / lint / smoke coverage strategy | 15-30m | ✅ Complete |
-| — | Implementation | Technique + activity definition changes | 1-4h | ⬚ Pending |
-| 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 06 | `Code review` | Automated definition-quality review | 10-20m | ⬚ Pending |
-| 06 | [Test suite review](test-suite-review.md) | Harness coverage assessment | 10-20m | ⬚ Pending |
-| 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
+| — | Implementation | Technique + activity definition changes | 1-4h | ✅ Complete |
+| 09 | [Lean-coding audit](09-review-findings.md) · [Debt ledger](09-debt-ledger.md) | Over-engineering review + ponytail ledger | 15-30m | ✅ Complete |
+| 10 | [Change block index](10-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ✅ Complete |
+| 10 | [Code review](10-code-review.md) | Automated definition-quality review | 10-20m | ✅ Complete |
+| 10 | [Structural analysis](10-structural-analysis.md) | Conservation-law / lifecycle structural pass | 10-20m | ✅ Complete |
+| 10 | [Test suite review](10-test-suite-review.md) | Harness coverage assessment | 10-20m | ✅ Complete |
+| 10 | [Findings classification](10-findings-classification.md) | Severity classification + fix-cycle routing | 5-10m | ✅ Complete |
 | — | [Comprehension artifact](../../comprehension/review-mode-path.md) | Review-mode path: branching, techniques, severity model, augmentation binding points (+ portfolio pedagogy/rejected-paths lenses & synthesis) | 20-45m | ✅ Complete |
 | — | Validation | Walk + lint + smoke verification | 15-30m | ⬚ Pending |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
@@ -66,4 +68,4 @@ These are delivered as one new technique (ingest-and-rebut existing feedback) pl
 
 ---
 
-**Status:** In Progress — Assumptions Review complete (no open/deferred); entering Implement
+**Status:** In Progress — Post-Implementation Review complete (no blockers; `needs_code_fixes`/`needs_test_improvements`/`has_critical_blocker` all false; rationale confirmed); entering Validate
