@@ -82,6 +82,7 @@ Each prism responds to a specific analytical question. The table below shows use
 | `Design 3 alternative architectures with migration paths` | file | Architect (51) |
 | `What does my prism catalog systematically miss?` | any | Blindspot (52) |
 | `Generate an interface-first implementation with failure prediction` | file | Codegen (53) |
+| `Solve this ARC grid puzzle — infer the transformation and emit Python` | text | Arc-code (50) — spatial/ARC, Haiku |
 | `What if the opposite design choice was made?` | file | Counterfactual (54) |
 | `What emergent behaviors arise from component interactions?` | file | Emergence (55) |
 | `Is this conservation law genuine or generic?` | any | Falsify (56) |
@@ -100,13 +101,17 @@ Each prism responds to a specific analytical question. The table below shows use
 
 Scope: **file** = single source file, **module** = directory or module (multiple files), **text** = inline text, question, or proposal (no file target), **any** = works at all scopes.
 
+Every single-lens prompt above runs that lens directly in **single** mode — the plan maps the goal to the lens ([plan-analysis](techniques/plan-analysis.md)'s `goal-mapping-matrix`) and the structural pass dispatches it. A prompt naming two lenses runs **portfolio** mode.
+
+**Pipeline-internal lenses** are not invoked directly and so have no prompt above: L12 adversarial (01) and synthesis (02) run inside full-prism; behavioral synthesis (23) runs inside the behavioral pipeline; writer-critique (46) and writer-synthesis (47) are passes 2–3 of the writer pipeline — a cross-workflow-only chain (see [resources/README](./resources/README.md)). Every other catalogued lens is reachable, either as a single-lens prompt above or paired in portfolio mode.
+
 ---
 
 ## Modes
 
 | Mode | Passes | Description |
 |------|--------|-------------|
-| **Single** | 1 | L12 structural lens — conservation law, meta-law, bug table |
+| **Single** | 1 | One lens. Default L12 (conservation law, meta-law, bug table); the plan routes a concern-specific goal to the matching single lens instead — e.g. reachability, state-audit, optimize, identity, oracle, architect. |
 | **Full Prism** | 3 | Structural → adversarial → synthesis (self-correcting) |
 | **Portfolio** | 2+ | Multiple independent lenses for breadth (52+ available) |
 | **Behavioral** | 4+1 | Error resilience + optimization + evolution + API surface → synthesis. Code-only. |
@@ -161,7 +166,7 @@ graph TD
 | # | Activity | Description |
 |---|----------|-------------|
 | 00 | **Plan Analysis** (`select-mode`) | Select an analysis mode for the user's request |
-| 01 | **Structural Analysis Pass** | Run the assigned structural analysis for each analysis unit (single / full-prism / portfolio / behavioral) |
+| 01 | **Structural Analysis Pass** | Run the assigned analysis for each unit: L12 (single with lens `l12`, or full-prism's structural pass), the plan's chosen single lens (single with any other lens), a portfolio, or the behavioral pipeline |
 | 02 | **Adversarial Analysis Pass** | Run the adversarial lens against each full-prism unit's structural artifact (full-prism only) |
 | 03 | **Synthesis Pass** | Run the synthesis lens against each full-prism unit's structural + adversarial artifacts (full-prism only) |
 | 04 | **Deliver Result** | Present the final report to the user with artifact paths |
@@ -186,6 +191,7 @@ The cross-cutting `variable-binding` technique is declared once at the workflow 
 |-----------|------------|
 | `plan-analysis` | Detect scope, classify targets, plan analysis strategy |
 | `structural-analysis` | Single-pass L12 structural analysis |
+| `single-lens-analysis` | Apply one plan-selected lens (any non-L12 single lens) in a single isolated pass |
 | `portfolio-analysis` | Run 2+ complementary portfolio lenses |
 | `behavioral-pipeline` | Execute 4+1 behavioral pipeline with labeled synthesis |
 | `full-prism` | Execute one isolated pass of the Full Prism pipeline |
@@ -309,6 +315,7 @@ workflows/prism/
 │   ├── TECHNIQUE.md                         # Inherited base contract (shared by all prism techniques)
 │   ├── plan-analysis.md                     # Analysis planning (58 goal mappings)
 │   ├── structural-analysis.md               # Single-pass L12
+│   ├── single-lens-analysis.md              # Single-pass application of any non-L12 lens
 │   ├── portfolio-analysis.md                # Portfolio lenses
 │   ├── behavioral-pipeline.md               # Behavioral pipeline worker pass
 │   ├── full-prism.md                        # Full Prism worker pass

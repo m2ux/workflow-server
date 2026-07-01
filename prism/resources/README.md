@@ -172,6 +172,8 @@ Lenses for assessing the reliability and verifiability of analytical claims. Par
 
 **Pipeline structure:** `45` (standalone) → `46` (requires output of `45` + original) → `47` (requires original + `45` output + `46` output)
 
+> **Reachability:** the writer pipeline has no dedicated prism `pipeline_mode`. Writer (`45`) is reachable on its own as a single lens (single mode) via the "README rewriting" goal. The full 3-pass chain (`45`→`46`→`47`) — and therefore the pipeline-internal critique (`46`) and synthesis (`47`) passes — runs only when a caller drives it directly via cross-workflow `get_resource`; no prism mode selects it.
+
 ---
 
 ## Meta
@@ -181,6 +183,8 @@ Lenses for assessing the reliability and verifiability of analytical claims. Par
 | `48` | [Strategist](strategist.md) | ~300 | "What's the optimal analysis strategy?" | Sonnet | any |
 
 The strategist is a meta-agent that knows all prism capabilities and plans the optimal strategy to achieve any analytical goal. It selects modes, prisms, pipelines, and ordering.
+
+> **Reachability:** strategist (`48`) is reachable as a single lens (single mode) via the "analysis strategy" goal. Within the orchestrated workflow the [plan-analysis](../techniques/plan-analysis.md) technique already performs this planning role, so strategist is most useful as a standalone cross-workflow `get_resource` call.
 
 ---
 
