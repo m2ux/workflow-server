@@ -16,9 +16,6 @@ This workflow guides the complete lifecycle of a security audit:
 
 **Design principles:**
 - Fully automated sequential flow with phase gates
-- **Goal → Activity → Technique → Tools** ontology with progressive disclosure
-- Workflow-directed sub-agents that bootstrap the workflow-server, load assigned activities, and follow steps sequentially with verifiable outputs
-- Composable technique architecture — 19 single-responsibility techniques across orchestrator, analysis, and sub-agent tiers
 - Single-batch concurrent dispatch of all primary agents (A1-A7, B, D1, D2)
 - Dedicated verification sub-agent (V) validates output completeness in a fresh context window before finding merge
 - Dedicated merge sub-agent (M) performs structured merge, deduplication, severity scoring, and reconciliation in a fresh context window to prevent finding regression from orchestrator context saturation
