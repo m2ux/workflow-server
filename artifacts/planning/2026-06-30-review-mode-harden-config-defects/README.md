@@ -1,7 +1,7 @@
 # Review-Mode Hardening: Config-Change & Interaction Defects - June 2026
 
 **Created:** 2026-06-30  
-**Status:** In Progress — Strategic Review complete (scope-vs-issue fit clean; all 5 augmentations meet acceptance; motivating defect caught on two independent paths; no scope drift, no material gap; `review_passed = true`); ready for Submit-for-Review  
+**Status:** Delivered — work-package `complete` activity done (close-out written, worktree removed, main checkout clean); PR [#147](https://github.com/m2ux/workflow-server/pull/147) OPEN, awaiting merge; deferred coordinated baseline regeneration tracked  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -55,9 +55,10 @@ These are delivered as one new technique (ingest-and-rebut existing feedback) pl
 | 11 | [Validation](11-validation.md) | E2E harness (lint / walk / snapshot) + typecheck verification | 15-30m | ✅ Complete |
 | 12 | [Strategic review](12-strategic-review-1.md) | Scope-vs-issue fit; per-augmentation acceptance + motivating-defect trace | 15-30m | ✅ Complete |
 | — | [Architecture summary](architecture-summary.md) | Review-mode path structure, five augmentations, key decisions | 10-15m | ✅ Complete |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | `Completion summary` | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
-| 08 | [Workflow retrospective](workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
+| — | PR review | External review feedback cycle | 30-60m | ⏳ Awaiting merge (PR #147 open) |
+| 06 | [Test plan (finalized)](06-test-plan.md) | Source-linked cases + in-branch verification results | — | ✅ Complete |
+| 14 | [Completion summary](14-COMPLETE.md) | Deliverables, decisions, lessons learned, deferred items | 10-20m | ✅ Complete |
+| 14 | [Workflow retrospective](14-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ✅ Complete |
 
 ---
 
@@ -66,8 +67,8 @@ These are delivered as one new technique (ingest-and-rebut existing feedback) pl
 | Resource | Link |
 |----------|------|
 | Issue | [#145](https://github.com/m2ux/workflow-server/issues/145) |
-| PR | _pending_ |
+| PR | [#147](https://github.com/m2ux/workflow-server/pull/147) (open, base `workflows`) |
 
 ---
 
-**Status:** In Progress — Strategic Review complete (scope-vs-issue fit clean across all 5 augmentations; motivating config-defect caught on two independent paths — structural/severity chain and prior-feedback rating cap; no scope drift, no material gap; deferred baseline regen tracked, not silent; `review_passed = true`, `needs_strategic_fixes = false`, `needs_cleanup = false`); ready for Submit-for-Review
+**Status:** Delivered — the `work-package` workflow `complete` activity is done: [completion summary](14-COMPLETE.md) and [retrospective](14-workflow-retrospective.md) written, [test plan finalized](06-test-plan.md) with source links + in-branch verification, dedicated worktree removed (branch fully pushed; nothing lost), reference monorepo left untouched (`workflows` submodule on branch `workflows` @ `6199ca91`). PR [#147](https://github.com/m2ux/workflow-server/pull/147) is OPEN and not yet merged. **Deferred (tracked, not silent):** after #147 merges into `workflows`, a coordinated server-repo change must bump the `workflows` submodule pointer to the merged commit AND regenerate the `[review-mode]` E2E baseline (`tests/e2e/__snapshots__/snapshot.test.ts.snap` + robot manifest) together. In-branch validation confirmed definition-lint clean (`BASELINE_UNRESOLVED = []`) and all 6 `workflow-e2e` policies reaching `complete`.

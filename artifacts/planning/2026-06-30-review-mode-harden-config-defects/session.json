@@ -206,11 +206,12 @@
           "lean-coding-audit",
           "post-impl-review",
           "validate",
-          "strategic-review"
+          "strategic-review",
+          "submit-for-review"
         ],
-        "condition": "review_passed == true",
-        "currentActivity": "submit-for-review",
-        "currentTechnique": "update-pr::mark-ready",
+        "condition": "review_requires_changes != true",
+        "currentActivity": "complete",
+        "currentTechnique": "finalize-documentation::ensure-docs",
         "history": [
           {
             "timestamp": "2026-06-30T15:29:46.526Z",
@@ -536,16 +537,30 @@
             },
             "timestamp": "2026-07-01T07:15:05.000Z",
             "type": "checkpoint_response"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-07-01T07:21:14.355Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "complete",
+            "timestamp": "2026-07-01T07:21:14.355Z",
+            "type": "activity_entered"
+          },
+          {
+            "timestamp": "2026-07-01T07:21:14.355Z",
+            "type": "workflow_completed"
           }
         ],
         "schemaVersion": 1,
-        "seq": 123,
+        "seq": 133,
         "sessionIndex": "CF5LX4",
         "skippedActivities": [],
         "startedAt": "2026-06-30T15:29:46.526Z",
-        "status": "running",
+        "status": "completed",
         "triggeredWorkflows": [],
-        "ts": 1782890293,
+        "ts": 1782890547,
         "variables": {
           "audit_confirmed": true,
           "needs_elicitation": false,
