@@ -1,7 +1,7 @@
 # Review-Mode Hardening: Config-Change & Interaction Defects - June 2026
 
 **Created:** 2026-06-30  
-**Status:** In Progress — Validation complete (e2e + typecheck PASS; `validation_passed = true`); entering Strategic Review  
+**Status:** In Progress — Strategic Review complete (scope-vs-issue fit clean; all 5 augmentations meet acceptance; motivating defect caught on two independent paths; no scope drift, no material gap; `review_passed = true`); ready for Submit-for-Review  
 **Type:** Enhancement
 
 > **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
@@ -53,6 +53,8 @@ These are delivered as one new technique (ingest-and-rebut existing feedback) pl
 | 10 | [Findings classification](10-findings-classification.md) | Severity classification + fix-cycle routing | 5-10m | ✅ Complete |
 | — | [Comprehension artifact](../../comprehension/review-mode-path.md) | Review-mode path: branching, techniques, severity model, augmentation binding points (+ portfolio pedagogy/rejected-paths lenses & synthesis) | 20-45m | ✅ Complete |
 | 11 | [Validation](11-validation.md) | E2E harness (lint / walk / snapshot) + typecheck verification | 15-30m | ✅ Complete |
+| 12 | [Strategic review](12-strategic-review-1.md) | Scope-vs-issue fit; per-augmentation acceptance + motivating-defect trace | 15-30m | ✅ Complete |
+| — | [Architecture summary](architecture-summary.md) | Review-mode path structure, five augmentations, key decisions | 10-15m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | `Completion summary` | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
 | 08 | [Workflow retrospective](workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
@@ -68,4 +70,4 @@ These are delivered as one new technique (ingest-and-rebut existing feedback) pl
 
 ---
 
-**Status:** In Progress — Validation complete (e2e lint/walk PASS across all 6 policies, typecheck PASS, `validation_passed = true`; 6 snapshot diffs are the intended review-mode additions + pre-existing AP-43 artifact-declaration spill, baseline regen deferred to completion); entering Strategic Review
+**Status:** In Progress — Strategic Review complete (scope-vs-issue fit clean across all 5 augmentations; motivating config-defect caught on two independent paths — structural/severity chain and prior-feedback rating cap; no scope drift, no material gap; deferred baseline regen tracked, not silent; `review_passed = true`, `needs_strategic_fixes = false`, `needs_cleanup = false`); ready for Submit-for-Review
