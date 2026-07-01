@@ -190,6 +190,10 @@
             },
             "optionId": "acceptable",
             "respondedAt": "2026-07-01T06:58:35.000Z"
+          },
+          "submit-for-review-dco-sign-off-confirmation": {
+            "optionId": "certify",
+            "respondedAt": "2026-07-01T07:15:05.000Z"
           }
         },
         "completedActivities": [
@@ -201,11 +205,12 @@
           "implement",
           "lean-coding-audit",
           "post-impl-review",
-          "validate"
+          "validate",
+          "strategic-review"
         ],
-        "condition": "default",
-        "currentActivity": "strategic-review",
-        "currentTechnique": "findings-classification",
+        "condition": "review_passed == true",
+        "currentActivity": "submit-for-review",
+        "currentTechnique": "update-pr::mark-ready",
         "history": [
           {
             "timestamp": "2026-06-30T15:29:46.526Z",
@@ -506,16 +511,41 @@
             },
             "timestamp": "2026-07-01T06:58:35.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "timestamp": "2026-07-01T06:59:50.753Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-07-01T06:59:50.753Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "dco-sign-off-confirmation",
+            "timestamp": "2026-07-01T07:06:01.460Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "dco-sign-off-confirmation",
+            "data": {
+              "optionId": "certify"
+            },
+            "timestamp": "2026-07-01T07:15:05.000Z",
+            "type": "checkpoint_response"
           }
         ],
         "schemaVersion": 1,
-        "seq": 111,
+        "seq": 123,
         "sessionIndex": "CF5LX4",
         "skippedActivities": [],
         "startedAt": "2026-06-30T15:29:46.526Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1782889136,
+        "ts": 1782890293,
         "variables": {
           "audit_confirmed": true,
           "needs_elicitation": false,
