@@ -59,6 +59,7 @@ These are delivered as one new technique (ingest-and-rebut existing feedback) pl
 | 06 | [Test plan (finalized)](06-test-plan.md) | Source-linked cases + in-branch verification results | — | ✅ Complete |
 | 14 | [Completion summary](14-COMPLETE.md) | Deliverables, decisions, lessons learned, deferred items | 10-20m | ✅ Complete |
 | 14 | [Workflow retrospective](14-workflow-retrospective.md) | Process improvement recommendations | 10-20m | ✅ Complete |
+| 04 | [Session summary](04-session-summary.md) | Meta end-workflow close-out: outcomes verified, artifacts, follow-ups | 5-10m | ✅ Complete |
 
 ---
 
