@@ -1,11 +1,8 @@
 id: consolidate-report
-version: 1.2.0
+version: 2.0.0
 name: Consolidate Evaluation Report
-description: Consolidate prism analysis artifacts into a unified EVALUATION-REPORT.md.
+description: Consolidate the per-dimension DEFINITIVE-FINDINGS.md into a unified EVALUATION-REPORT.md.
 steps:
-  - kind: technique
-    id: locate-artifacts
-    technique: compose-evaluation-report::locate-artifacts
   - kind: technique
     id: extract-findings
     technique: compose-evaluation-report::extract-findings

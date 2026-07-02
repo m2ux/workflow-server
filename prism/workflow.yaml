@@ -1,5 +1,5 @@
 id: prism
-version: 2.0.0
+version: 2.1.0
 title: Structural Analysis Prism Workflow
 description: Apply cognitive lenses to code or text through isolated sub-agent passes. Each pass runs in a fresh context window to guarantee analytical independence. For security audit use cases, use the prism-audit workflow which triggers prism and adds audit-specific post-processing.
 author: m2ux
@@ -53,6 +53,9 @@ variables:
   - name: analysis_focus
     type: string
     description: Optional focus area to guide the analysis
+  - name: target_description
+    type: string
+    description: Short description of what is being analysed — used in the report's Executive Summary scope statement. Supplied by a triggering workflow; falls back to the target path when absent.
   - name: analysis_units
     type: array
     description: Ordered list of analysis units (for multi-unit scopes)
@@ -83,6 +86,15 @@ variables:
   - name: report_path
     type: string
     description: File path to the generated REPORT.md artifact
+  - name: definitive_findings_path
+    type: string
+    description: File path to the generated DEFINITIVE-FINDINGS.md artifact — the detailed findings contract (full per-finding field set + surviving conservation laws) that consumer workflows read instead of the raw pass artifacts
+  - name: run_manifest_path
+    type: string
+    description: File path to the generated RUN-MANIFEST.md artifact — records the run's produced artifacts and completion status; the single file a triggering workflow reads to locate results and confirm completion
+  - name: run_status
+    type: string
+    description: Completion status of the run recorded in the manifest — 'complete', 'partial', or 'error'
   - name: gitnexus_available
     type: boolean
     description: Whether GitNexus has indexed the target codebase — set during structural-pass check-gitnexus step

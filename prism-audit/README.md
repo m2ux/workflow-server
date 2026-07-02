@@ -1,21 +1,21 @@
 # Prism Audit Workflow
 
-> v1.0.0 — Security audits that generate a codebase-tailored audit prompt, drive it through the [prism](../prism/README.md) analysis engine, and finalize the results into an actionable, severity-calibrated report set.
+> v1.1.0 — Security audits that generate a codebase-tailored audit prompt, drive it through the [prism](../prism/README.md) analysis engine, and finalize prism's contract artifacts into an actionable, severity-calibrated report set.
 
 ---
 
 ## Overview
 
-The prism-audit workflow orchestrates a security audit in two halves. First it **reads the target codebase** and composes a detailed, self-contained audit prompt grounded in that codebase's actual architecture, language, and risk exposure. Then it **triggers the generic [prism](../prism/README.md) workflow** to run the analysis against that prompt, and post-processes prism's output into the security-audit deliverables.
+The prism-audit workflow orchestrates a security audit in two halves. First it **reads the target codebase** and composes a detailed, self-contained audit prompt grounded in that codebase's actual architecture, language, and risk exposure. Then it **triggers the generic [prism](../prism/README.md) workflow** to run the analysis against that prompt, and assembles prism's contract artifacts into the security-audit deliverables.
 
-All audit-specific customisation — prompt generation, domain mapping, trust-boundary analysis, finding enrichment, the report split — lives in this workflow. The prism workflow it triggers stays generic: it receives the generated prompt as its `analysis_focus` and runs its lenses without any audit-specific special-casing.
+All audit-specific customisation — prompt generation, domain mapping, trust-boundary analysis, cross-scope consolidation, the report split — lives in this workflow. Everything prism already provides is reused, not reimplemented: prism runs its lenses, enriches findings with blast radius, strips methodology, assigns finding IDs, and writes its contract artifacts (RUN-MANIFEST.md, REPORT.md, DEFINITIVE-FINDINGS.md). This workflow reads those and never re-opens prism's raw pass artifacts.
 
 **Why a dedicated audit workflow rather than prompting prism directly?**
 
 - **Evidence-based domains.** The audit prompt names only the security domains that have corresponding code in the target — a cryptographic-correctness domain appears only when there is cryptography, an API-security domain only when there is a network surface. No generic checklist.
 - **Risk calibration.** Domain risk levels reflect exposure and blast radius, not generic severity. The same primitive is `CRITICAL` when it signs transactions and `MEDIUM` when it only hashes logs.
-- **Call-graph enrichment.** When GitNexus has indexed the target, the prompt gains a real trust-boundary map (cross-community call edges, security-critical symbol blast radii) and findings are enriched with blast-radius metrics — otherwise those sections are cleanly omitted.
-- **Cross-validated deliverables.** prism's own adversarial pass challenges the structural analysis, and finalization consolidates, deduplicates, and severity-calibrates the result into a navigable report, expanded per-finding write-ups, and the design trade-offs behind the findings.
+- **Call-graph enrichment.** When GitNexus has indexed the target, the prompt gains a real trust-boundary map (cross-community call edges, security-critical symbol blast radii); prism then enriches its findings with blast-radius metrics, which the audit deliverables carry through — otherwise those sections are cleanly omitted.
+- **Cross-validated deliverables.** prism's own adversarial pass challenges the structural analysis and severity-calibrates the result; finalization consolidates findings across audit scopes into a navigable report, expanded per-finding write-ups, and the design trade-offs behind the findings.
 
 **Use this workflow when you want to:**
 - Run a security audit of a codebase and get a report you can act on, not a wall of raw analysis
@@ -55,8 +55,8 @@ The spine is linear — scope, prompt, analyse, finalize, deliver — with two b
 |---|----------|---------|
 | 00 | [**Define Audit Scope**](./activities/README.md#00-define-audit-scope) (`scope-definition`) | Collect the target, description, and output path; validate the target; index it with GitNexus when available; confirm scope |
 | 01 | [**Generate Audit Prompt**](./activities/README.md#01-generate-audit-prompt) (`prompt-generation`) | Survey the codebase, map trust boundaries and audit domains, and compose the tailored audit prompt + the scope list prism will run |
-| 02 | [**Execute Prism Analysis**](./activities/README.md#02-execute-prism-analysis) (`execute-analysis`) | Trigger the prism workflow once per audit scope and collect its outputs |
-| 03 | [**Audit Report Finalization**](./activities/README.md#03-audit-report-finalization) (`audit-finalize`) | Post-process prism's `REPORT.md` into the three audit deliverables and cross-validate them |
+| 02 | [**Execute Prism Analysis**](./activities/README.md#02-execute-prism-analysis) (`execute-analysis`) | Trigger the prism workflow once per audit scope and record each run from its `RUN-MANIFEST.md` |
+| 03 | [**Audit Report Finalization**](./activities/README.md#03-audit-report-finalization) (`audit-finalize`) | Assemble prism's `REPORT.md` + `DEFINITIVE-FINDINGS.md` into the three audit deliverables and cross-validate them |
 | 04 | [**Deliver Audit Results**](./activities/README.md#04-deliver-audit-results) (`deliver-audit`) | Present the deliverables with finding counts, the core finding, top remediations, and a full artifact index |
 
 **Detailed documentation:** See [activities/README.md](./activities/README.md) for the per-activity orientation map. The authoritative step/checkpoint/transition definitions live in each activity YAML and are served by `get_activity`.
@@ -70,9 +70,9 @@ The workflow writes all artifacts under the user-supplied `output_path`:
 | Artifact | Produced by | Contents |
 |----------|-------------|----------|
 | `audit-prompt.md` | prompt-generation | The self-contained, codebase-tailored audit prompt (also the `analysis_focus` handed to prism) |
-| `REPORT.md` + analysis artifacts | triggered prism run(s) | prism's consolidated report plus the underlying structural / adversarial / synthesis artifacts |
+| `RUN-MANIFEST.md`, `REPORT.md`, `DEFINITIVE-FINDINGS.md` + analysis artifacts | triggered prism run(s) | prism's contract artifacts (the audit's inputs) plus the underlying raw pass artifacts prism produced |
 | `AUDIT-REPORT.md` | audit-finalize | Summary report — domain tables, systemic patterns, risk assessment, prioritized remediations (with an Impact column), appendices |
-| `DETAILED-FINDINGS.md` | audit-finalize | One expanded write-up per finding (Description, Impact, Location, Recommendation, Adversarial confirmation, and Graph Evidence when GitNexus data is available) |
+| `DETAILED-FINDINGS.md` | audit-finalize | One expanded write-up per finding, taken from prism's `DEFINITIVE-FINDINGS.md` (Description, Impact, Location, Recommendation, Adversarial confirmation, and Graph Evidence carried from prism's blast-radius enrichment) |
 | `DESIGN-TRADE-OFFS.md` | audit-finalize | Falsifiable design trade-offs behind the findings, each with code-level evidence and actionable design questions |
 
 Severity labels throughout are computed from an **Impact × Feasibility** rubric, not assigned intuitively.
@@ -87,8 +87,8 @@ Each activity step binds exactly one operation via `step.technique`. The operati
 |-----------|------------|
 | [`scope-definition`](./techniques/scope-definition/TECHNIQUE.md) | Collect and validate the audit target, summarise the scope, and create the output directory |
 | [`compose-audit-prompt`](./techniques/compose-audit-prompt/TECHNIQUE.md) | Survey the codebase, scan for security characteristics, map trust boundaries and audit domains, and compose the tailored prompt + scope list |
-| [`execute-analysis`](./techniques/execute-analysis/TECHNIQUE.md) | Compose the prism trigger context for a scope and harvest the triggered run's outputs |
-| [`audit-finalize`](./techniques/audit-finalize/TECHNIQUE.md) | Post-process prism's report into the three deliverables and cross-validate them |
+| [`execute-analysis`](./techniques/execute-analysis/TECHNIQUE.md) | Compose the prism trigger context for a scope and record the triggered run from its manifest |
+| [`audit-finalize`](./techniques/audit-finalize/TECHNIQUE.md) | Assemble prism's contract artifacts into the three deliverables and cross-validate them |
 | [`deliver-audit`](./techniques/deliver-audit.md) | Present the deliverables with metrics, the core finding, top remediations, and an artifact index |
 
 Two capabilities are drawn from other workflows rather than authored here: [`gitnexus-operations::analyze`](../meta/techniques/gitnexus-operations/analyze.md) indexes the target during scope-definition, and [`workflow-engine::handle-sub-workflow`](../meta/techniques/workflow-engine/handle-sub-workflow.md) triggers the prism child workflow during execute-analysis.
@@ -111,9 +111,9 @@ Two capabilities are drawn from other workflows rather than authored here: [`git
 
 Like the other workflows in this library, prism-audit runs under the **orchestrator with disposable workers** pattern defined in the `meta` layer. The orchestrator manages transitions and triggers; workers execute activities in fresh contexts with full read/write permission and write artifacts directly to the target paths.
 
-The prism analysis is reached through the **trigger mechanism**, not called inline: `execute-analysis` uses [`workflow-engine::handle-sub-workflow`](../meta/techniques/workflow-engine/handle-sub-workflow.md) to dispatch prism as a child workflow per audit scope. Two isolation rules keep the boundary clean:
+The prism analysis is reached through the **trigger mechanism**, not called inline: `execute-analysis` uses [`workflow-engine::handle-sub-workflow`](../meta/techniques/workflow-engine/handle-sub-workflow.md) to dispatch prism as a child workflow per audit scope. Two rules keep the boundary clean:
 
-- **Trigger isolation.** The orchestrator sets prism's `analysis_focus` to the generated audit-prompt content and *never* to the literal string `"security audit"`. This prevents prism's own built-in audit-finalize path from firing — all audit-specific post-processing belongs to this workflow's `audit-finalize` activity.
+- **Contract reuse.** The orchestrator sets prism's `analysis_focus` to the generated audit-prompt content (naming the scope's security domains so prism assigns domain-prefixed finding IDs). The audit then reads only prism's contract artifacts — `RUN-MANIFEST.md`, `REPORT.md`, `DEFINITIVE-FINDINGS.md` — and never re-derives what prism already produced (finding extraction, blast-radius enrichment, methodology-stripping, within-run consolidation).
 - **Sequential execution.** Audit scopes are triggered one prism run at a time, so each run has full system resources and no cross-analysis context interference.
 
 ---
@@ -122,14 +122,14 @@ The prism analysis is reached through the **trigger mechanism**, not called inli
 
 ```
 workflows/prism-audit/
-├── workflow.yaml                              # Workflow definition (variables, rules, triggers)
+├── workflow.yaml                              # Workflow metadata, rules, and variable declarations
 ├── README.md                                  # This file
 ├── activities/
 │   ├── README.md                              # Per-activity orientation map
 │   ├── 00-scope-definition.yaml               # Collect + validate target, index, confirm scope
 │   ├── 01-prompt-generation.yaml              # Compose the tailored audit prompt + scope list
 │   ├── 02-execute-analysis.yaml               # Trigger prism per scope (forEach loop)
-│   ├── 03-audit-finalize.yaml                 # Split report into the three deliverables
+│   ├── 03-audit-finalize.yaml                 # Assemble the three deliverables from prism's contract artifacts
 │   └── 04-deliver-audit.yaml                  # Present results + artifact index
 ├── techniques/
 │   ├── README.md                              # Technique library index
@@ -152,15 +152,12 @@ workflows/prism-audit/
 │   ├── execute-analysis/                      # Prism-trigger operation-group
 │   │   ├── TECHNIQUE.md                        # Group contract
 │   │   ├── compose-trigger-context.md          # Unpack a scope into prism trigger variables
-│   │   ├── collect-prism-results.md            # Collect a prism run's report + artifacts
-│   │   └── verify-prism-completion.md          # Verify the run completed with all artifacts
+│   │   └── read-run-manifest.md                # Record a prism run from its RUN-MANIFEST.md
 │   ├── audit-finalize/                        # Finalization operation-group
 │   │   ├── TECHNIQUE.md                        # Group contract
-│   │   ├── locate-artifacts.md                 # Locate prism's REPORT.md and analysis artifacts
-│   │   ├── enrich-findings-with-graph.md       # Add blast-radius / flow evidence (GitNexus)
 │   │   ├── split-report.md                     # Split REPORT.md → AUDIT-REPORT.md
-│   │   ├── create-detailed-findings.md         # Build DETAILED-FINDINGS.md
-│   │   ├── create-trade-off-analysis.md        # Build DESIGN-TRADE-OFFS.md
+│   │   ├── create-detailed-findings.md         # Build DETAILED-FINDINGS.md from DEFINITIVE-FINDINGS.md
+│   │   ├── create-trade-off-analysis.md        # Build DESIGN-TRADE-OFFS.md from DEFINITIVE-FINDINGS.md
 │   │   ├── apply-formatting-rules.md           # Apply severity rubric + formatting rules
 │   │   └── verify-audit-consistency.md         # Cross-validate the deliverables
 │   └── deliver-audit.md                       # Standalone: present final deliverables

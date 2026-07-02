@@ -29,9 +29,7 @@ A summary of the target's scope, goals, and major content.
 
 - List the files and directories at the top level of `{target_path}`.  
   > When `{target_path}` holds no analysable files, confirm the path is correct and check whether the target lives elsewhere before continuing.
-- For `document` / `document-set` targets, inventory the documents, their topics, structure, and cross-references, and note total word or section count.
-- For `codebase` targets, identify the build system, enumerate modules and packages, count lines of code per module, and locate test directories.
-- For `mixed` targets, apply both the document and the code survey.
-- For `codebase` targets when GitNexus has indexed the target ([gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../../meta/techniques/gitnexus-operations/verify-index.md)), discover functional areas and community clusters via [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../../meta/techniques/gitnexus-operations/query.md) for module classification.
-- Read enough of the target to understand its scope, key topics, claims, and structure; for proposal documents, identify the major sections, stated goals, key claims, architectural decisions, resource assumptions, and timeline commitments.
+- For `codebase` (and the code half of `mixed`) targets, apply the structure survey defined in prism's [plan-analysis](../../../prism/techniques/plan-analysis.md) technique — build-system detection, module/package enumeration, per-module LOC, test-directory location, and the GitNexus functional-area/community-cluster survey (`gitnexus-operations::verify-index` then `query`). That method lives in plan-analysis and is not restated here, so both workflows survey code identically.
+- For `document` / `document-set` (and the document half of `mixed`) targets — which prism's code-oriented survey does not cover — inventory the documents, their topics, structure, and cross-references, and note total word or section count. For proposal documents, identify the major sections, stated goals, key claims, architectural decisions, resource assumptions, and timeline commitments.
+- Read enough of the target to understand its scope, key topics, claims, and structure.
 - Capture `{target_summary}`, `{structure_inventory}` (sections or modules with sizes), and `{key_topics}`.

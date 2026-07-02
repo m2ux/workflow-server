@@ -9,21 +9,21 @@ metadata:
 
 ## Capability
 
-Consolidate prism analysis artifacts from multiple evaluation dimensions into a unified evaluation report with cross-dimensional synthesis, then compile and present the report's metrics and deliverable index.
+Consolidate the per-dimension DEFINITIVE-FINDINGS.md contracts prism produced into a unified evaluation report — inheriting prism's findings, IDs, and severities and adding the one thing prism cannot do across sibling runs: cross-dimensional synthesis. Then compile and present the report's metrics and deliverable index. prism's raw pass artifacts are never re-read; findings are never re-extracted or re-numbered.
 
 ## Inputs
 
 ### dimension_plan
 
-The dimension-to-lens mapping, used to locate and interpret artifacts.
+The dimension-to-lens mapping, used to label and interpret each group's findings.
 
 ### completed_analyses
 
-Array of completed prism run references with output paths and status.
+Array of completed prism runs, each carrying that group's `report_path`, `definitive_findings_path`, and prism-reported `status`. DEFINITIVE-FINDINGS.md is the findings source for consolidation.
 
 ### all_artifact_paths
 
-Accumulated paths to every analysis artifact produced across the triggered prism runs.
+Accumulated paths to every analysis artifact produced across the triggered prism runs, for the deliverable index.
 
 ### evaluation_plan_path
 
@@ -63,7 +63,7 @@ Prioritised corrections and recommendations.
 
 ### methodology-stripping
 
-The report contains no references to analytical methodology: no lens names (`L12`, `claim-inversion`, `knowledge-audit`), no pipeline-mode names (`full-prism`, `portfolio`), no pass descriptions (structural pass, adversarial pass, synthesis), and no process narratives (`the analysis first examined X then challenged Y`). Methodology details remain in the raw analysis artifacts.
+The report contains no references to analytical methodology: no lens names (`L12`, `claim-inversion`, `knowledge-audit`), no pipeline-mode names (`full-prism`, `portfolio`), no pass descriptions (structural pass, adversarial pass, synthesis), and no process narratives (`the analysis first examined X then challenged Y`). prism's DEFINITIVE-FINDINGS.md is already methodology-free, so consolidation preserves that voice rather than re-stripping raw artifacts.
 
 ### standalone-report
 
@@ -71,8 +71,8 @@ The report is readable and actionable by someone who knows nothing about prism, 
 
 ### finding-id-convention
 
-Finding IDs use a 3-letter dimension prefix, a dash, and a two-digit number (`CON-01`, `VER-03`, `PLB-01`, `FEA-07`); for custom dimensions, the prefix is derived from the dimension name's first letters or a natural abbreviation.
+Finding IDs are inherited from prism's DEFINITIVE-FINDINGS.md, which assigns a 3-letter dimension prefix, a dash, and a two-digit number (`CON-01`, `VER-03`, `PLB-01`, `FEA-07`) from the dimension names passed in `analysis_focus`. Consolidation preserves these IDs and does not re-number; it only disambiguates a genuine collision between two groups by adding a group qualifier.
 
 ### severity-rubric
 
-Every severity label is computed from Impact x Feasibility: `CRITICAL` directly undermines the target's core purpose or stated goals; `HIGH` degrades significant guarantees or creates major gaps; `MEDIUM` has limited scope or requires specific conditions; `LOW` is informational or an improvement opportunity.
+Severities are inherited from DEFINITIVE-FINDINGS.md, which carries prism's post-reconciliation Impact x Feasibility assignments (`CRITICAL` undermines the target's core purpose; `HIGH` degrades significant guarantees; `MEDIUM` has limited scope; `LOW` is informational). Consolidation does not re-grade findings.

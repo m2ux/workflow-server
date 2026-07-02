@@ -9,14 +9,19 @@ metadata:
 
 ## Capability
 
-Distil the conservation laws surfaced during the prism passes into a design trade-off analysis: a trade-off catalogue, a cross-domain interaction map, and a design decision register — including only laws that survived or were refined through adversarial challenge.
+Distil the conservation laws prism recorded into a design trade-off analysis: a trade-off catalogue, a cross-domain interaction map, and a design decision register. Prism has already excluded the laws its adversarial pass rejected, so this technique reads only the surviving laws from the findings contract.
+
+## Inputs
+
+### completed_analyses
+
+The triggered prism runs, each carrying its scope's `definitive_findings_path`. The Conservation Laws & Design Trade-offs section of each DEFINITIVE-FINDINGS.md is the source of laws.
 
 ## Protocol
 
 ### 1. Create Trade-Off Analysis
 
-- Read all synthesis documents and extract each domain's Refined Conservation Law and Refined Meta-Law.
-- Include only laws that SURVIVED or were REFINED through adversarial challenge; exclude rejected laws.
+- Read the "Conservation Laws & Design Trade-offs" section from each scope's DEFINITIVE-FINDINGS.md at the `definitive_findings_path` in `{completed_analyses}` — not the raw synthesis documents. Every law recorded there survived or was refined through prism's adversarial challenge; rejected laws are already absent.
 - Write the analysis to `{trade_offs_path}` in three parts.
 - Part 1 — Trade-Off Catalogue: one entry per domain with its constraint, current operating point, shift prediction, and design questions. Each entry must have a falsifiable constraint, code-level evidence for the operating point (citing specific finding IDs), concrete shift predictions, and actionable design questions.
 - Part 2 — Cross-Domain Interactions: map which trade-offs compound.
