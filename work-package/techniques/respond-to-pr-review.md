@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 2.1.0
+  version: 2.2.0
   order: 2
   legacy_id: 2
 ---
@@ -28,14 +28,14 @@ Review comments fetched from PR
   ```
   - If the `gh` API returns an error fetching comments, check authentication and PR access, then retry.
   - If no review comments are found, verify the PR has been reviewed and check comment visibility before proceeding.
-- Filter to unresolved comments from the latest review round (avoid re-answering resolved threads): derive `{$latest_review_date}` from the review timeline, then keep only comments from reviewers (not the PR author) updated since it:
+- Filter to unresolved comments from the latest review round (avoid re-answering resolved threads): derive `{$latest_review_date}` from the review timeline, then keep only comments from reviewers (not the PR author) whose GitHub `` `updated_at` `` field is at or after `{$latest_review_date}`. Project each surviving comment to its `.id`, `.body`, `` `html_url` `` (as `url`), `.path`, and `.line`, and save the filtered set to `/tmp/unresolved.json`. Run the pipeline with the `` `updated_at` `` timestamp key and the `` `html_url` `` link key substituted for the bracketed placeholders:
   ```bash
   gh pr view {pr_number} --json reviews | jq '.reviews[] | {author: .author.login, state: .state, submittedAt: .submittedAt}' | tail -5
-  gh api repos/<owner>/<repo>/pulls/{pr_number}/comments --paginate | jq '.[] | select(.user.login != "<pr-author>" and .updated_at >= "{$latest_review_date}") | {id: .id, body: .body, html_url: .html_url, path: .path, line: .line}' > /tmp/unresolved_comments.json
+  gh api repos/<owner>/<repo>/pulls/{pr_number}/comments --paginate | jq --arg since "{$latest_review_date}" '.[] | select(.user.login != "<pr-author>" and .["<timestamp-key>"] >= $since) | {id, body, url: .["<link-key>"], path, line}' > /tmp/unresolved.json
   ```
 - Identify question-type comments:
   ```bash
-  jq -r '.body' /tmp/unresolved_comments.json | grep -i "what\|how\|why\|which" | nl
+  jq -r '.body' /tmp/unresolved.json | grep -i "what\|how\|why\|which" | nl
   ```
 - Before proceeding: total comment count confirmed; unresolved comments filtered to the latest review round; question-type comments identified; comments saved for analysis
 

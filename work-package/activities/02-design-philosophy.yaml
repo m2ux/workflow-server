@@ -1,5 +1,5 @@
 id: design-philosophy
-version: 1.8.0
+version: 1.9.0
 name: Design Philosophy
 description: Apply the design framework to classify the problem and decide the workflow path.
 required: true
@@ -15,7 +15,7 @@ steps:
     technique: determine-path
   - kind: checkpoint
     id: classification-and-path-confirmed
-    message: "Classification: {problem_type} with {problem_complexity} complexity. The recommended workflow path for this classification is the default below — auto-advancing in 30s. (simple: skip optional discovery, moderate: research only, complex: full workflow.) Pick a different path, or revise if the classification itself is wrong."
+    message: "Classification: {problem_type} with {problem_complexity} complexity. Confirm the recommended path (default below), pick a different path, or revise if the classification itself is wrong."
     blocking: false
     defaultOption: skip-optional
     autoAdvanceMs: 30000
@@ -64,7 +64,7 @@ steps:
     technique: document
     actions:
       - action: message
-        message: "Created: design-philosophy.md"
+        message: Design philosophy recorded for reference.
   - kind: technique
     id: collect-assumptions
     technique:
@@ -142,7 +142,6 @@ steps:
       - action: set
         target: needs_elicitation
         value: false
-        description: Force needs_elicitation=false in review mode.
 transitions:
   - to: codebase-comprehension
     isDefault: true
