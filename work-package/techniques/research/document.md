@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -45,3 +45,4 @@ Knowledge base and web research synthesis artifact for the work package. Written
 
 - Create the `{research_document}` artifact in `{planning_folder_path}`
 - Include `{kb_findings}`, `{web_findings}`, `{findings_synthesis}`, `{applicable_patterns}`, and risks
+- Record `{web_findings}` per the [web research findings template](../../resources/web-research.md#planning-artifact), appended after the knowledge base findings

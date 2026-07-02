@@ -1,8 +1,8 @@
 ---
 name: web-research
-description: Guidelines for conducting web research during work package planning to discover current information, documentation, and best practices from external sources.
+description: Web research findings template appended to the research document; the research protocol, depth selection, and source rules live on the research technique.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   order: 8
   legacy_id: 8
 ---
@@ -10,17 +10,7 @@ metadata:
 
 # Web Research Guide
 
-After knowledge base research, use the WebSearch tool to supplement findings with current external information: official documentation for libraries/frameworks/APIs, community best practices, recent developments (new versions, deprecations, security advisories), and alternative approaches not covered internally. KB research provides institutional knowledge; web research provides current industry context.
-
-**Full research** when using external libraries or frameworks, integrating third-party services, working with unfamiliar technology, or when KB research didn't surface sufficient guidance. **Lightweight research** acceptable when the technology is well-established and stable, KB research was comprehensive, or the change is simple with a clear implementation path.
-
-## Research Protocol
-
-1. **Identify knowledge gaps** from KB research: questions internal documentation didn't answer, technologies needing current docs, areas where external validation adds value.
-2. **Search authoritative sources** — prioritize official documentation sites, established technical blogs, GitHub repositories/discussions, Stack Overflow accepted answers. Include version numbers when relevant; add the current year for recent information; use site-specific searches for authoritative sources (e.g. `site:docs.rust-lang.org`).
-3. **Validate each finding** for recency (current? sources over ~2 years old are suspect for fast-moving tech), authority (reputable source?), relevance (applies to our context?), and consistency (aligns with other findings?).
-4. **Cross-reference with KB research** — do external sources confirm internal patterns? Note contradictions for resolution and any additional context.
-5. **Document findings** in the existing research document alongside KB findings, with source URLs.
+Format skeleton for web research findings. The research protocol and its rules — depth selection, source validation, staleness threshold, official-docs and URL-per-finding requirements — live on the producing technique: [research](../techniques/research/research.md#rules).
 
 ## Planning Artifact
 
@@ -65,9 +55,3 @@ Append web research findings to the existing research document (kb-research.md):
 |------------|----------------|-------|
 | [Pattern from KB] | Contradicted/Extended | [Details] |
 ```
-
-## Rules
-
-- Consult official documentation for every external dependency; a single source is insufficient.
-- Every finding carries a specific URL and states its application to this work package (e.g. "Server Components fetch data server-side → removes our client API routes"), not generic observations ("React is a popular framework").
-- Prioritize recent sources; flag anything older than ~2 years for fast-moving technology.
