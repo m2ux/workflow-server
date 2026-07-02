@@ -1,8 +1,8 @@
 ---
 name: workflow-retrospective
-description: Methodology and templates for analyzing work package sessions to identify workflow improvements through non-checkpoint interaction analysis.
+description: Methodology and section template for the workflow retrospective written into the COMPLETE.md close-out document.
 metadata:
-  version: 1.0.0
+  version: 2.0.0
   order: 20
   legacy_id: 20
 ---
@@ -10,184 +10,47 @@ metadata:
 
 # Workflow Retrospective Guide
 
-## Overview
+Analyze the session's **non-checkpoint** user interactions to surface workflow friction, then record the result as the `## Workflow Retrospective` section of [COMPLETE.md](complete-wp.md) — not a standalone document.
 
-This guide provides methodology and templates for analyzing work package sessions to identify workflow improvements. The retrospective examines user interactions that were NOT direct responses to checkpoint questions to surface friction points, unclear instructions, and missing guidance.
+## Signals to Scan For
 
-**When to use this guide:** After completing a work package, before marking the PR ready for review.
+| Signal | Examples | Indicates |
+|--------|----------|-----------|
+| Clarification requests | "What do you mean by X?" | Unclear instructions or missing context |
+| Corrections | "No, I meant…", "Actually…" | Ambiguous steps or wrong assumptions |
+| Frustration | "Why are you doing X?", "I already said…" | Workflow friction |
+| Process questions | "Should I do X first?" | Missing guidance or unclear sequencing |
+| Feature requests | "Can you also…" | Missing capability |
+| Skip requests | User asks to skip or abbreviate | Unnecessary ceremony |
 
----
+Priority: **high** = repeated corrections or frustration; **medium** = single clarifications or process questions; **low** = edge cases and ideas.
 
-## Analysis Methodology
-
-### What to Analyze
-
-Scan the chat history for non-checkpoint interactions that signal workflow issues:
-
-| Signal Type | Examples | Indicates |
-|-------------|----------|-----------|
-| **Clarification requests** | "What do you mean by X?", "Can you explain Y?" | Unclear instructions or missing context |
-| **Corrections** | "No, I meant...", "Actually, do this instead" | Ambiguous workflow steps or assumptions |
-| **Frustration signals** | "Why are you doing X?", "I already said..." | Workflow friction or missed requirements |
-| **Process questions** | "Should I do X first?", "What about Y?" | Missing guidance or unclear sequencing |
-| **Feature requests** | "Can you also...", "It would be helpful if..." | Missing workflow capabilities |
-| **Skipped steps** | User asks to skip or abbreviate | Unnecessary complexity or over-engineering |
-
----
-
-## Prioritization Criteria
-
-### High Priority
-
-Issues that should be addressed before the next work package:
-- Repeated corrections for the same issue
-- Frustration signals indicating significant friction
-- Missing guidance that caused incorrect implementation
-- Workflow steps that were consistently skipped
-
-### Medium Priority
-
-Issues worth addressing but not blocking:
-- Single clarification requests
-- Minor process questions
-- Suggestions for convenience improvements
-
-### Low Priority / Observations
-
-Patterns worth noting for future consideration:
-- Edge cases encountered
-- Potential optimizations
-- Ideas for new capabilities
-
----
-
-## Output Document Template
-
-
-**Template:**
+## Output Section Template
 
 ```markdown
-# Workflow Retrospective: [Work Package Name]
+## Workflow Retrospective
 
-**Date:** YYYY-MM-DD  
-**Work Package:** [Name]  
-**PR:** #[number]
+[messages: N total, M non-checkpoint]
 
----
+### Observations
 
-## Session Analysis
+<!-- One line per signal, ONLY for categories that occurred. No empty-category tables. -->
+- [correction] "[short quote]" — [activity/step] — [root cause]
+- [clarification] "[short quote]" — [what was unclear]
 
-**Total User Messages:** [count]  
-**Checkpoint Responses:** [count]  
-**Non-Checkpoint Interactions:** [count]
+### Recommendations
 
----
+<!-- Prioritized, specific, actionable. State each once — not again in a summary. -->
+1. **High:** [issue] → [specific workflow change] ([affected section])
+2. **Medium:** [issue] → [change]
 
-## Observations
-
-### Clarification Requests
-
-| # | User Message | Context | Potential Issue |
-|---|--------------|---------|-----------------|
-| 1 | "[Quote]" | [Activity/step] | [What was unclear] |
-
-### Corrections Made
-
-| # | Original Action | User Correction | Root Cause |
-|---|-----------------|-----------------|------------|
-| 1 | [What agent did] | "[User correction]" | [Why this happened] |
-
-### Process Questions
-
-| # | Question | Answer Given | Workflow Gap |
-|---|----------|--------------|--------------|
-| 1 | "[Question]" | [Response] | [Missing guidance] |
-
-### Frustration Signals
-
-| # | Signal | Context | Friction Point |
-|---|--------|---------|----------------|
-| 1 | "[Quote]" | [Situation] | [What caused friction] |
-
----
-
-## Improvement Recommendations
-
-### High Priority
-
-| # | Issue | Recommendation | Affected Section |
-|---|-------|----------------|------------------|
-| 1 | [Issue summary] | [Specific change] | [Workflow section] |
-
-### Medium Priority
-
-| # | Issue | Recommendation | Affected Section |
-|---|-------|----------------|------------------|
-| 1 | [Issue summary] | [Specific change] | [Workflow section] |
-
-### Low Priority / Observations
-
-| # | Observation | Consideration |
-|---|-------------|---------------|
-| 1 | [Pattern noticed] | [Potential improvement] |
-
----
-
-## Metrics
-
-| Metric | Value | Notes |
-|--------|-------|-------|
-| Activities completed | X/11 | [Any skipped] |
-| Checkpoints triggered | X | [Expected vs actual] |
-| User corrections | X | [Trend] |
-| Workflow deviations | X | [Types] |
-
----
-
-## Summary
-
-**Overall Session Quality:** [Smooth / Minor friction / Significant issues]
-
-**What Worked:** [What went well this session — be specific, avoid generic positive statements]
-
-**Lessons Learned:** [Lessons to carry into future sessions]
-
-**Key Takeaway:** [One sentence summary of most important finding]
-
-**Action Required:** [Yes - create issue / No - informational only]
+**Key takeaway:** [one sentence]
+**Action required:** [yes — create issue #N / no]
 ```
 
----
+## Rules
 
-## Anti-Patterns to Avoid
-
-| Don't | Why | Do Instead |
-|-------|-----|------------|
-| Ignore minor friction | Small issues compound | Document all observations |
-| Blame the user | Users reveal workflow gaps | Focus on workflow improvements |
-| Skip categorization | Loses pattern visibility | Always categorize signals |
-| Make vague recommendations | Can't be actioned | Be specific about changes |
-| Recommend too many changes | Overwhelming | Prioritize ruthlessly |
-
----
-
-## Quick Reference
-
-### Minimum Viable Retrospective
-
-For simpler sessions, at minimum capture:
-- [ ] Count of non-checkpoint interactions
-- [ ] List of any corrections made
-- [ ] One key takeaway
-- [ ] Action required: yes/no
-
-### Signal Priority
-
-| Signal | Priority | Action |
-|--------|----------|--------|
-| Frustration | High | Immediate attention |
-| Corrections | High | Root cause analysis |
-| Process questions | Medium | Add guidance |
-| Clarifications | Medium | Improve clarity |
-| Feature requests | Low | Backlog consideration |
-| Skip requests | Low | Simplification review |
+- **Exception-only:** include only signal categories with content; a smooth session's retrospective is the message counts, a takeaway, and "action required: no".
+- **State each lesson once.** No Summary/Lessons/Takeaway triple-statement — the takeaway line is the recap.
+- **Honest, specific, prioritized ruthlessly** — no generic positives, no recommendation lists longer than can be actioned.
+- Skip entirely per conduct-retrospective's `skip-if-trivial` rule.

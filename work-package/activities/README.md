@@ -439,7 +439,7 @@ graph TD
 
 ### 14. Complete
 
-The terminal activity: creates an ADR for moderate or complex work, finalizes documentation, conducts a retrospective, removes the component worktree, and selects the next work package. In review mode it skips the documentation steps and ends after the retrospective and worktree removal.
+The terminal activity: creates an ADR for moderate or complex work, finalizes documentation, conducts a retrospective (written into `COMPLETE.md` — the single terminal artifact), removes the component worktree, and selects the next work package. In review mode it skips the documentation steps and ends after the retrospective and worktree removal.
 
 Definition: [`14-complete.yaml`](./14-complete.yaml)
 
@@ -453,7 +453,7 @@ graph TD
 
     finalizeTestPlan["Finalize test plan with source links"] --> createComplete["Create COMPLETE.md"]
     createComplete --> ensureDocs["Ensure inline docs on public APIs"]
-    ensureDocs --> retrospective["Conduct retrospective (capture history, retrospective, update status)"]
+    ensureDocs --> retrospective["Conduct retrospective (written into COMPLETE.md, update status)"]
     retrospective --> removeWorktree["Remove component worktree"]
     removeWorktree --> selectNext["Select next work package"]
     selectNext --> doneNode(["End"])

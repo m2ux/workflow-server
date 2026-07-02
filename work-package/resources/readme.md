@@ -80,8 +80,7 @@ The `README.md` file serves as the entry point and executive summary for a work 
 | — | `Comprehension artifact` | Persistent codebase knowledge | 20-45m | ⬚ Pending |
 | — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | `Completion summary` | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
-| 08 | [Workflow retrospective](workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
+| 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, deferred items, lessons, retrospective | 10-20m | ⬚ Pending |
 
 ---
 

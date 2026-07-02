@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 2.0.0
+  version: 2.1.0
   order: 19
   legacy_id: 19
 ---
@@ -27,11 +27,11 @@ Path to the planning folder where the final outcome and retrospective are record
 
 ### retrospective_document
 
-Workflow [retrospective](../../resources/workflow-retrospective.md#output-document-template) with lessons learned
+Workflow [retrospective](../../resources/workflow-retrospective.md#output-section-template) with lessons learned, written as the `## Workflow Retrospective` section of the close-out document rather than a standalone artifact
 
 #### retrospective_artifact
 
-`workflow-retrospective.md`
+`COMPLETE.md`
 
 ## Rules
 

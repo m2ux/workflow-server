@@ -21,11 +21,11 @@ Path to the planning folder where the final outcome and retrospective are record
 
 ### retrospective_document
 
-Workflow [retrospective](../../resources/workflow-retrospective.md#output-document-template) with lessons learned.
+Workflow [retrospective](../../resources/workflow-retrospective.md#output-section-template) with lessons learned, written as the `## Workflow Retrospective` section of the close-out document.
 
 #### artifact
 
-`workflow-retrospective.md`
+`COMPLETE.md`
 
 ## Protocol
 
@@ -39,7 +39,7 @@ Workflow [retrospective](../../resources/workflow-retrospective.md#output-docume
 - Categorize the substantive messages by signal type and map to specific workflow sections.
 - Identify root causes and determine pattern frequency across categories.
 - Formulate prioritized recommendations: high (repeated corrections, frustration), medium (single clarifications), low (edge cases).
-- Create the `{retrospective_document}` using the [workflow-retrospective](../../resources/workflow-retrospective.md) template.
+- Write the `{retrospective_document}` as the `## Workflow Retrospective` section of `COMPLETE.md` (update in place — the close-out document is the single terminal artifact), using the [workflow-retrospective](../../resources/workflow-retrospective.md) section template. Include only the signal categories that have content; lessons already recorded elsewhere in the close-out document are referenced, not restated.
 
 ### 3. Update Status
 
