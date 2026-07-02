@@ -74,7 +74,7 @@ The strategic review document this pass populates with categorized findings — 
 ### 7. Verify Pr Body Conformance
 
 - Read the live PR body via `gh pr view {pr_number} --json body --jq .body`.
-- Run [update-pr](../update-pr.md)::protocol.verify-body against the live body.
+- Run [update-pr](../update-pr/TECHNIQUE.md)::[verify-body](../update-pr/verify-body.md) against the live body.
 - If `body_conforms == false`, record each `body_findings` entry in the `{strategic_review_doc}` under 'PR body conformance'.
 
 ## Rules

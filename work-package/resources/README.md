@@ -2,7 +2,7 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-The workflow includes 27 resources that provide templates, guidance, and reference material for techniques and activities. Each resource lives as `resources/<id>.md` and is loaded by id (e.g. `get_resource({ resource_id: "pr-description" })`). The numbering system is deprecated — resources are obtained by id only.
+The workflow includes 26 resources that provide templates, guidance, and reference material for techniques and activities. Each resource lives as `resources/<id>.md` and is loaded by id (e.g. `get_resource({ resource_id: "pr-description" })`). The numbering system is deprecated — resources are obtained by id only.
 
 | Resource ID | Title | Purpose |
 |-------------|-------|---------|

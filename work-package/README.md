@@ -30,7 +30,7 @@ This workflow guides the complete lifecycle of a single work package through 15 
 
 - **Activities:** See [activities/README.md](./activities/README.md) for per-activity orientation (purpose, role, and a flow diagram) and a link to each activity's authoritative YAML definition.
 - **Techniques:** See [techniques/](./techniques/) for the technique inventory and protocol flows.
-- **Resources:** See [resources/README.md](./resources/README.md) for the resource index (27 resources).
+- **Resources:** See [resources/README.md](./resources/README.md) for the resource index (26 resources).
 
 Each activity binds its step operations through `step.technique`. Every step carries its own `step.technique` operation binding. The cross-cutting [`variable-binding`](../meta/techniques/variable-binding.md) technique (governing how steps read and write workflow variables) is declared once at `workflow.techniques.activity` and inherited by every activity — injected into every `get_activity` — so it is never listed per-activity. An activity declares its own `techniques[]` block only for an activity-specific strategy technique such as [`scatter-gather`](../meta/techniques/scatter-gather.md) (present on activities that aggregate per-item outputs across `forEach` iteration loops). Steps reference operation techniques either by bare id (e.g. `create-test-plan`) or by namespaced id (e.g. `cargo-operations::run-suite`, `design-philosophy::classify`).
 
