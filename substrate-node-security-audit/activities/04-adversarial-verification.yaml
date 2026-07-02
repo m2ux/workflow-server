@@ -1,5 +1,5 @@
 id: adversarial-verification
-version: 2.4.0
+version: 2.5.0
 name: Adversarial Verification
 description: Adversarially verify PASS items from the primary audit.
 required: true
@@ -18,7 +18,8 @@ steps:
       - action: log
         message: Adversarial verification complete — false PASSes identified
       - action: set
-        message: adversarial_complete=true
+        target: adversarial_complete
+        value: true
 transitions:
   - to: report-generation
     isDefault: true

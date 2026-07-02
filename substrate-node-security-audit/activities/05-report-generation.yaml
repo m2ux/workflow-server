@@ -1,5 +1,5 @@
 id: report-generation
-version: 3.6.0
+version: 3.7.0
 name: Report Generation
 description: Consolidate findings into the final audit report.
 required: true
@@ -9,6 +9,37 @@ steps:
     actions:
       - action: log
         message: Starting report generation — consolidating findings from all phases
+  - kind: action
+    id: enforce-report-gates
+    actions:
+      - action: validate
+        target: dispatch_complete
+        condition:
+          type: simple
+          variable: dispatch_complete
+          operator: ==
+          value: true
+        message: Report generation is blocked until every assigned primary agent was dispatched and returned (dispatch completeness gate)
+      - action: validate
+        target: verification_complete
+        condition:
+          type: simple
+          variable: verification_complete
+          operator: ==
+          value: true
+        message: Report generation is blocked until the verification sub-agent (V) has run and set verification_complete
+      - action: validate
+        target: merge_complete
+        condition:
+          type: simple
+          variable: merge_complete
+          operator: ==
+          value: true
+        message: Report generation is blocked until the merge sub-agent (M) has run and set merge_complete
+      - action: validate
+        message: Report generation is blocked until every .rs file >200 lines in priority-1/2 crates has been read by at least one §3-applying sub-agent (coverage gate)
+      - action: validate
+        message: Report generation is blocked until the merge reconciliation table shows zero Unaccounted findings for every agent (finding-count reconciliation gate)
   - kind: technique
     id: integrate-adversarial-results
     technique:
@@ -17,18 +48,27 @@ steps:
         merge_strategy: integrate
   - kind: technique
     id: apply-severity
-    technique:
-      name: score-severity
-      inputs:
-        findings: merge_table
+    technique: score-severity
   - kind: technique
     id: coverage-gate
     technique: verify-sub-agent-output
   - kind: technique
-    id: verify-elevation-completeness
-    technique: merge-findings
-  - kind: technique
     id: write-report
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: dispatch_complete
+          operator: ==
+          value: true
+        - type: simple
+          variable: verification_complete
+          operator: ==
+          value: true
+        - type: simple
+          variable: merge_complete
+          operator: ==
+          value: true
     technique: write-report
   - kind: action
     id: finalize-activity
@@ -36,7 +76,8 @@ steps:
       - action: log
         message: Report generation complete — audit report finalized
       - action: set
-        message: report_complete=true
+        target: report_complete
+        value: true
 decisions:
   - id: next-phase
     name: Next Phase Decision
@@ -61,19 +102,6 @@ decisions:
       - id: complete
         label: Audit complete
         isDefault: true
-transitions:
-  - to: ensemble-pass
-    condition:
-      type: simple
-      variable: ensemble_enabled
-      operator: ==
-      value: true
-  - to: gap-analysis
-    condition:
-      type: simple
-      variable: has_reference_report
-      operator: ==
-      value: true
 outcome:
   - Every finding carries a defensible, cross-checked severity, so consumers can triage and prioritize remediation with confidence
   - The consumer has a single audit report whose coverage and finding-completeness are both attested — every in-scope area was reviewed and no merged finding was lost on the way in

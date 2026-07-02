@@ -8,9 +8,7 @@ metadata:
 
 # Static Analysis Pattern Catalog
 
-## Overview
-
-A catalog of grep patterns and mechanical verification checks for security auditing Rust/Substrate node codebases. Each pattern defines a search string, triage or verification criteria, and pass/fail conditions. Patterns are organized into two tiers: automated grep patterns (lead generation) and mechanical checks (verification logic beyond simple matching).
+Each pattern defines a search string, triage or verification criteria, and pass/fail conditions, organized into two tiers: automated grep patterns (lead generation) and mechanical checks (verification logic beyond simple matching).
 
 ---
 
@@ -169,8 +167,6 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **Verify:** For each call site, determine whether the timestamp is used in a context involving cross-chain data (e.g., bridge observations, mainchain events, external chain payloads).
 - **FAIL if:** The local chain's author-controlled timestamp is used for cross-chain event attribution.
 
-### Check 8: (Retired — merged into Check 3)
-
 ### Check 9: Mock Data Source Toggle
 
 - **Search:** `MOCK`, `mock.*env`, `from_env.*mock`, `use_main_chain_follower_mock`
@@ -194,8 +190,6 @@ Each check extends the grep patterns above with verification logic that goes bey
 - **Verify:** The `None` (not-found) case is distinguishable from an empty result by the caller.
 - **FAIL if:** `None` is converted to `Ok(empty)` — callers cannot distinguish missing entities from valid empty state.
 - **Note:** This is a pattern-absence bug that is invisible to callers: the function returns `Ok` in both "exists but empty" and "does not exist" cases.
-
-### Check 12: (Retired — merged into Check 3)
 
 ### Check 13: Universal File I/O Safety
 

@@ -2,6 +2,36 @@
 
 All notable changes to the substrate-node-security-audit workflow.
 
+## v4.17.0 (2026-07-02) — Compliance Remediation (workflow-design review)
+
+Structural, schema-expressiveness, rule-hygiene, and resource-hygiene remediation from a workflow-design compliance review. No phase, checkpoint, or contract break — all changes are content/structure refactors on a fully-automated workflow.
+
+**Structural gate enforcement (F-05 / F-06):** The three self-declared HARD-STOP gates are now enforced structurally rather than by rule prose. Report generation (`05-report-generation.yaml`) carries an `enforce-report-gates` action step and a `write-report` `condition`: the phase-1b dispatch, verification, and merge gates (`dispatch_complete` / `verification_complete` / `merge_complete`, set structurally at the end of `03-primary-audit.yaml`) must all be true, and the coverage gate and finding-count reconciliation (Unaccounted == 0) are asserted via `validate` actions. The FULLY-AUTOMATED rule wording was reconciled to describe this structural enforcement.
+
+**Schema expressiveness (F-07 / F-09):** The four `finalize-activity` phase-completion flags (`reconnaissance_complete`, `primary_audit_complete`, `adversarial_complete`, `report_complete`) now use `action: set` with `target` + `value` instead of a free-text `message`. The duplicate conditional `transitions[]` in `05-report-generation.yaml` and `06-ensemble-pass.yaml` were dropped in favour of the single-home `decisions[]` construct.
+
+**Variable hygiene (F-08):** The unread gate variables `agents_assigned` and `agents_dispatched` were pruned — the dispatch-completeness gate is carried by `dispatch_complete`. Variables newly wired into the F-05 condition are retained.
+
+**Technique decomposition (F-10 / F-11):** The `dispatch-sub-agents` 6-phase monolith was split into a per-phase operation group (`assign-roster`, `route-leads`, `dispatch-concurrent`, `collect-results`, `verify-output-files`); the 13 bindings across reconnaissance and primary-audit were rebound to the matching operation, preserving the sub-agent-roster exception for the distinct per-agent dispatches. Redundant same-activity re-bindings of `merge-findings` and `verify-sub-agent-output` in primary-audit (which only re-surfaced an already-produced output) were collapsed.
+
+**Binding fidelity (F-13 / F-14):** `map-vulnerability-domains` now reads `architectural_analysis.{interaction_model, privilege_map, candidate_points, emergent_domains}` via dotted path, closing the cross-sub-agent binding gap. `score-severity`'s input was canonicalized from `findings` to the producer's `merge_table`, retiring the per-call rename.
+
+**Resource decomposition (F-20):** The 117KB `audit-prompt-template.md` was thinned to its §1 Setup, §4 Reporting Format, and the §1–§5 taxonomy. The operative §2 static-analysis catalog, §3 manual-review decision criteria, and §5 execution model are addressed in their owning techniques/resources (`static-analysis-patterns`, `apply-checklist`, and the workflow's dispatch/verify structure); the §2/§3/§5 section headings are retained as taxonomy stubs so the deep anchors in `audit-template-reference.md` continue to resolve.
+
+**Resource hygiene (F-21 / F-16 / F-19 / F-24):** `severity-calibration.md` was merged into `severity-rubric.md` (retaining both the I/F scales and the 13-row calibration benchmark table, the High/Critical crosscheck, and bias correction; the divergent Impact/Feasibility labels were reconciled to the rubric's None/Local/Node/Network + Extreme/Privileged/Network/Passive set) and deleted. Orientation READMEs were added to `activities/`, `techniques/`, and `resources/`. Resources are now referenced by bare slug (`static-analysis-patterns`, not `05-static-analysis-patterns`) and the README resource table dropped its legacy `NN` index column. The two retired-check tombstones (Check 8, Check 12) in `static-analysis-patterns.md` were removed.
+
+**Rule hygiene (F-02 / F-03 / F-04 / F-12 / F-18 / F-22):** Duplicated worker constraints (`DEFENSE-IN-DEPTH VALIDATION`, `MANDATORY WEIGHTS.RS READ`) were removed from `workflow.yaml` `rules.activity`; their authoritative home is `apply-checklist.md`. The remaining rules were de-CAPS'd to plain invariant statements, the `PREREQUISITE:`/`... GATE` prefix-shaped keys were consolidated into grouped statements, and the historical rationale tails moved here:
+
+- **Node binary scope split:** the split into A3 (startup/config) and A4 (consensus/network) addresses prompt saturation that historically caused config-struct invariant validation and consensus-path panic checks to be deprioritized on the single largest agent scope.
+- **Merge agent gate:** the merge runs in a fresh context window because inline merge under context saturation was the primary cause of finding regression across runs.
+- **Verification agent gate:** a dedicated verification sub-agent runs in a fresh context window because self-certified verification under context saturation missed output-completeness gaps.
+
+Role-prescriptive prose was removed from `README.md` (expressed as workflow rules and links), the non-affirmative rule slugs `orchestrator-reads-files-not-return-values` and `enumerate-explicitly-never-summarize` were reworded to affirmative form, and the per-activity `**Artifacts:**` enumerations in `README.md` were replaced with a link to the server-synthesized artifact contract (mermaid diagrams retained).
+
+**Planning artifact:** `.engineering/artifacts/planning/2026-07-02-workflow-design-review-substrate-node-security-audit/`
+
+---
+
 ## v4.14.0 (2026-02-11) — Supplementary Vulnerability Pattern Integration (Reports 21–22)
 
 Integrates 3 new vulnerability patterns (V31–V33) and 1 pattern extension (V4) derived from analysis of 2 additional SlowMist audit reports for Substrate-based projects (Fusotao, Litentry-node). Also reinforces 3 existing patterns (V3, V15, V16) with new source evidence.

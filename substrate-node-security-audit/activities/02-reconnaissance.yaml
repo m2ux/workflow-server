@@ -1,5 +1,5 @@
 id: reconnaissance
-version: 3.2.0
+version: 3.3.0
 name: Reconnaissance
 description: Run codebase reconnaissance and security decomposition.
 required: true
@@ -11,20 +11,20 @@ steps:
         message: Starting codebase reconnaissance (§1.2) — dispatching reconnaissance sub-agent
   - kind: technique
     id: dispatch-reconnaissance-agent
-    technique: dispatch-sub-agents
+    technique: dispatch-sub-agents::dispatch-concurrent
   - kind: technique
     id: verify-reconnaissance-files
     technique:
-      name: dispatch-sub-agents
+      name: dispatch-sub-agents::verify-output-files
       inputs:
         expected_output_files: r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json
   - kind: technique
     id: dispatch-security-architecture-agent
-    technique: dispatch-sub-agents
+    technique: dispatch-sub-agents::dispatch-concurrent
   - kind: technique
     id: verify-security-architecture-file
     technique:
-      name: dispatch-sub-agents
+      name: dispatch-sub-agents::verify-output-files
       inputs:
         expected_output_files: s-architectural-analysis.json
   - kind: technique
@@ -32,17 +32,18 @@ steps:
     technique: map-vulnerability-domains
   - kind: technique
     id: assign-agent-groups
-    technique: dispatch-sub-agents
+    technique: dispatch-sub-agents::assign-roster
   - kind: technique
     id: route-reconnaissance-leads
-    technique: dispatch-sub-agents
+    technique: dispatch-sub-agents::route-leads
   - kind: action
     id: finalize-activity
     actions:
       - action: log
         message: Reconnaissance complete — architecture mapped and function registry built
       - action: set
-        message: reconnaissance_complete=true
+        target: reconnaissance_complete
+        value: true
 transitions:
   - to: primary-audit
     isDefault: true

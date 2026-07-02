@@ -1,5 +1,5 @@
 id: ensemble-pass
-version: 2.5.0
+version: 2.6.0
 name: Ensemble Pass
 description: Optional second-model audit run with merged findings.
 required: false
@@ -37,13 +37,6 @@ decisions:
       - id: complete
         label: Audit complete
         isDefault: true
-transitions:
-  - to: gap-analysis
-    condition:
-      type: simple
-      variable: has_reference_report
-      operator: ==
-      value: true
 outcome:
   - Findings that any single run would have missed non-deterministically are now captured, raising overall coverage
   - Consumers can weight each finding by agreement, knowing whether it was consensus or detected by only one run

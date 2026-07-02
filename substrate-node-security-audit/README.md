@@ -1,6 +1,6 @@
 # Security Audit Workflow
 
-> v4.16.0 — Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, concurrent multi-agent deep review with dedicated output verification, adversarial verification informed by gap analysis, severity-calibrated reporting, optional ensemble passes, and gap analysis against professional audit reports.
+> v4.17.0 — Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases. Orchestrates reconnaissance, concurrent multi-agent deep review with dedicated output verification, adversarial verification informed by gap analysis, severity-calibrated reporting, optional ensemble passes, and gap analysis against professional audit reports.
 
 ## Overview
 
@@ -14,16 +14,15 @@ This workflow guides the complete lifecycle of a security audit:
 6. **Ensemble Pass** (optional) — Second-model run on priority-1/2 components, union-merge with primary results
 7. **Gap Analysis** (optional) — Compare against a professional audit report for benchmarking
 
-**Design principles:**
-- Fully automated sequential flow with phase gates
-- Single-batch concurrent dispatch of all primary agents (A1-A7, B, D1, D2)
-- Dedicated verification sub-agent (V) validates output completeness in a fresh context window before finding merge
-- Dedicated merge sub-agent (M) performs structured merge, deduplication, severity scoring, and reconciliation in a fresh context window
-- The orchestrator coordinates and dispatches — sub-agents perform deep crate-level review
+**Design characteristics:**
+- Fully automated sequential flow whose phase gates are structurally enforced — report generation is entered only when the dispatch, verification, and merge gates are set
+- Single-batch concurrent dispatch of all primary agents (A1-A7, B, D1, D2), with fresh-context verification (V) and merge (M) sub-agents before and during finding consolidation
 - Node binary scope split (A3 startup/config + A4 consensus/network) to prevent prompt saturation on the largest single-agent scope
-- Impact × Feasibility severity scoring with target-profile-backed calibration examples
-- Contamination prevention — reference report quarantined until gap-analysis phase
+- Impact × Feasibility severity scoring with target-profile-backed calibration benchmarks
+- Contamination prevention — the reference report is quarantined until the gap-analysis phase
 - The [target profile](./resources/target-profile.md) separates target-specific configuration from core workflow rules
+
+The role split (orchestrator coordinates and dispatches; sub-agents perform deep crate-level review) and the verification/merge gates are workflow invariants — see the `rules` in [`workflow.yaml`](./workflow.yaml).
 
 ---
 
@@ -169,13 +168,11 @@ graph LR
 
 ## Activities
 
-The cross-cutting [`variable-binding`](../meta/techniques/variable-binding.md) technique governs how steps read and write workflow variables across every activity.
+The cross-cutting [`variable-binding`](../meta/techniques/variable-binding.md) technique governs how steps read and write workflow variables across every activity. Each activity's artifact contract is synthesized by `get_activity` from the outputs of the techniques its steps bind — see the [`activities/` README](./activities/README.md) and the per-activity YAML for the authoritative artifact set.
 
 ### 1. [Scope Setup](./activities/01-scope-setup.yaml)
 
 Pins the audit to a single confirmed, reproducible target at an exact commit, surfaces known-vulnerable dependencies before code review begins, and establishes the planning folder every later phase reads and writes. Any reference report is quarantined out of scope until gap analysis.
-
-**Artifacts:** `START-HERE.md`, `cargo-audit-output.txt`, `file-inventory.txt`
 
 ---
 
@@ -183,15 +180,11 @@ Pins the audit to a single confirmed, reproducible target at an exact commit, su
 
 Classifies the in-scope surface by crate priority, maps trust boundaries and consensus-critical paths, builds the function registry, and produces a security model of the system, so every in-scope area is bound to a responsible agent with complete, non-overlapping coverage.
 
-**Artifacts:** `r-crate-map.json`, `r-function-registry.json`, `r-reconnaissance-data.json`, `s-architectural-analysis.json`, `README.md` (scope and architecture summary)
-
 ---
 
 ### 3. [Primary Audit](./activities/03-primary-audit.yaml)
 
 Evaluates every priority-1/2 crate against the full [§3 checklist](./resources/audit-prompt-template.md#3-systematic-manual-review-strategies) in dedicated context windows via concurrent multi-agent dispatch, then validates output completeness with a fresh-context verification agent (V) and consolidates with a fresh-context merge agent (M) before proceeding.
-
-**Artifacts:** per-agent finding files, verification gap report, structured merge and reconciliation table
 
 ---
 
@@ -199,15 +192,11 @@ Evaluates every priority-1/2 crate against the full [§3 checklist](./resources/
 
 Re-checks every high-stakes PASS verdict at the property level to recover findings primary agents missed as false PASSes, so first-positive-signal bias can no longer hide a real finding behind a premature PASS. The agent's role is to refute, not confirm.
 
-**Artifacts:** PASS-item decomposition and CONFIRMED/REFUTED/INSUFFICIENT verdicts
-
 ---
 
 ### 5. [Report Generation](./activities/05-report-generation.yaml)
 
 Consolidates findings from primary audit and adversarial verification into a single audit report where every finding carries a defensible, cross-checked severity and both coverage and finding-completeness are attested.
-
-**Artifacts:** `01-audit-report.md`
 
 ---
 
@@ -215,15 +204,11 @@ Consolidates findings from primary audit and adversarial verification into a sin
 
 Runs the audit a second time with a different model configuration on priority-1/2 components and union-merges with primary results, so findings any single run misses non-deterministically are recovered. Runs only when an ensemble pass was requested.
 
-**Artifacts:** `second-pass-findings.md`
-
 ---
 
 ### 7. [Gap Analysis](./activities/07-gap-analysis.yaml) (Optional)
 
 Compares the finalized AI audit report against a professional reference report so its coverage and severity calibration are measurable against a benchmark, with root-cause analysis for any structural blind spots. Runs only when a reference report is supplied.
-
-**Artifacts:** `02-gap-analysis.md`
 
 ---
 
@@ -252,7 +237,7 @@ Techniques define tool orchestration, protocols, and composable capabilities.
 | Technique | Capability |
 |-----------|------------|
 | [`score-severity`](./techniques/score-severity.md) | Impact × Feasibility severity scoring with calibration examples |
-| [`dispatch-sub-agents`](./techniques/dispatch-sub-agents.md) | Compose sub-agent prompts, dispatch concurrently, verify dispatch completeness |
+| [`dispatch-sub-agents`](./techniques/dispatch-sub-agents/TECHNIQUE.md) | Per-phase group: assign roster, route leads, dispatch concurrently, collect results, verify output files |
 | [`verify-sub-agent-output`](./techniques/verify-sub-agent-output.md) | Validate structural completeness, file coverage, output tables |
 | [`merge-findings`](./techniques/merge-findings.md) | Concatenate finding lists, deduplicate by root cause, assign finding numbers |
 | [`write-report`](./techniques/write-report.md) | Structure and format the final audit report |
@@ -286,16 +271,17 @@ Techniques define tool orchestration, protocols, and composable capabilities.
 
 Resources contain detailed reference content loaded on demand by techniques.
 
-| Index | Resource | Content |
-|-------|----------|---------|
-| `00` | [`start-here.md`](./resources/start-here.md) | Quick start guide and workflow overview |
-| `01` | [`audit-template-reference.md`](./resources/audit-template-reference.md) | Audit prompt template summary |
-| `02` | [`severity-rubric.md`](./resources/severity-rubric.md) | Impact/Feasibility scales and severity mapping |
-| `03` | [`toolkit-checklist.md`](./resources/toolkit-checklist.md) | 8-item toolkit minimum checklist |
-| `04` | [`sub-agent-output-schema.md`](./resources/sub-agent-output-schema.md) | Structured output schema with per-group requirements |
-| `05` | [`static-analysis-patterns.md`](./resources/static-analysis-patterns.md) | Grep patterns, mechanical checks, storage lifecycle patterns |
-| `06` | [`target-profile.md`](./resources/target-profile.md) | Target-specific crate assignments, file paths, node agent scope split, verification agent spec, calibration data, ensemble blind-spots |
-| `07` | [`vulnerability-pattern-vocabulary.md`](./resources/vulnerability-pattern-vocabulary.md) | Known cross-project vulnerability patterns for architectural analysis |
-| `08` | [`severity-calibration.md`](./resources/severity-calibration.md) | Calibration examples for severity scoring |
-| `09` | [`audit-prompt-template.md`](./resources/audit-prompt-template.md) | Full audit prompt template — authoritative §1–§5 checklist taxonomy referenced throughout the workflow |
-| `10` | [`gap-analysis-template.md`](./resources/gap-analysis-template.md) | Document skeleton for the gap-analysis report |
+| Resource | Content |
+|----------|---------|
+| [`start-here.md`](./resources/start-here.md) | Quick start guide and workflow overview |
+| [`audit-template-reference.md`](./resources/audit-template-reference.md) | Authoritative §1–§5 section index |
+| [`audit-prompt-template.md`](./resources/audit-prompt-template.md) | §1 Setup + §4 Reporting Format in full, plus the §1–§5 taxonomy |
+| [`severity-rubric.md`](./resources/severity-rubric.md) | Impact/Feasibility scales, severity mapping, calibration benchmark table, crosscheck, bias correction |
+| [`static-analysis-patterns.md`](./resources/static-analysis-patterns.md) | Grep patterns, mechanical checks, storage lifecycle patterns |
+| [`toolkit-checklist.md`](./resources/toolkit-checklist.md) | Toolkit minimum checklist |
+| [`sub-agent-output-schema.md`](./resources/sub-agent-output-schema.md) | Structured output schema with per-group requirements |
+| [`target-profile.md`](./resources/target-profile.md) | Target-specific crate assignments, file paths, node agent scope split, verification agent spec, calibration data, ensemble blind-spots |
+| [`vulnerability-pattern-vocabulary.md`](./resources/vulnerability-pattern-vocabulary.md) | Known cross-project vulnerability patterns for architectural analysis |
+| [`gap-analysis-template.md`](./resources/gap-analysis-template.md) | Document skeleton for the gap-analysis report |
+
+Resources are addressed by bare slug via `get_resource` (e.g. `resource_id: static-analysis-patterns`); see the [`resources/` README](./resources/README.md).
