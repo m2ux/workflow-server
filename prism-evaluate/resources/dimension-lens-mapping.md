@@ -21,32 +21,21 @@ Maps evaluation dimensions to prism pipeline modes and lens configurations.
 
 ## Custom Dimension Mappings
 
-For dimensions not matching the standard patterns, use the prism plan-analysis technique's goal-mapping matrix:
-
-| Goal Pattern | Recommended Lenses |
-|--------------|-------------------|
-| Exploration / discovery | claim-inversion (07) + rejected-paths (09) |
-| Assumptions / dependencies | claim-inversion (07) + scarcity (08) |
-| Quality / correctness | L12 (00→01→02) via full-prism |
-| Degradation / decay | degradation (10) |
-| Knowledge gaps / boundaries | knowledge-boundary (41) |
+For dimensions not matching the standard patterns above, match the dimension's analytical goal against prism's authoritative goal-mapping matrix in the [plan-analysis](../../prism/techniques/plan-analysis.md) technique, rather than a copy maintained here — prism owns the goal→lens catalog, and duplicating a subset of it would drift. Take the lenses prism's matrix recommends for the closest goal (exploration, assumptions, quality, degradation, knowledge-boundary, and the rest) and, when the dimension maps to no clear goal, request a `{lens_overrides}` entry.
 
 ## Output Subdirectory Convention
 
 - Full-prism dimensions: use the dimension name lowercased as the subdirectory (e.g., `consistency/`)
 - Portfolio dimensions: group under `dimensions/`
 
-## Terminal Artifact Convention
+## Per-Dimension Findings Source
 
-Each pipeline mode produces a known set of artifacts within the dimension's output subdirectory; the terminal artifact carries the mode's authoritative findings.
-
-| Pipeline Mode | Artifacts in subdirectory | Terminal artifact |
-|---------------|---------------------------|-------------------|
-| full-prism | `structural-analysis.md`, `adversarial-analysis.md`, `synthesis.md` | `synthesis.md` (definitive classification and final severities) |
-| portfolio | one artifact per lens (e.g. `claim-inversion.md`, `knowledge-audit.md`, `rejected-paths.md`, `scarcity.md`) | each lens artifact (key findings and conservation laws) |
+Each triggered prism run writes its authoritative findings to `DEFINITIVE-FINDINGS.md` in the dimension's output subdirectory (see prism's [definitive-findings contract](../../prism/resources/definitive-findings-template.md)), alongside `REPORT.md` and `RUN-MANIFEST.md`. Consolidation reads DEFINITIVE-FINDINGS.md as the per-dimension findings source — it does not read the raw pass artifacts (`synthesis.md`, `portfolio-*.md`).
 
 ## Pipeline Mode Selection Guidance
 
-- **full-prism**: Deep 3-pass analysis (structural → adversarial → synthesis). Use for dimensions requiring rigorous internal consistency checking. Each full-prism dimension gets its own execution group.
-- **portfolio**: Breadth across complementary lenses in a single pass. Use for dimensions served by specialised lenses. Portfolio dimensions can be combined into a single execution group with merged lens sets.
-- **single**: Targeted single-lens evaluation. Use when a dimension maps cleanly to exactly one lens and deep multi-pass analysis is unnecessary.
+Pipeline-mode semantics are defined by prism (see the modes table in the [prism README](../../prism/README.md)); this workflow only decides how dimensions map onto them:
+
+- **full-prism**: each full-prism dimension gets its own execution group.
+- **portfolio**: portfolio dimensions can be combined into a single execution group with merged lens sets.
+- **single**: use when a dimension maps cleanly to exactly one lens and deep multi-pass analysis is unnecessary.

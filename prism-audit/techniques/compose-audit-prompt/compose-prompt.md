@@ -22,7 +22,7 @@ Compose the full, self-contained audit prompt document from the surveyed structu
 - Section 4: Cross-Cutting Concerns — error handling, feature flags, trust boundaries, dependencies
 - Section 5: Output Requirements — 'Produce findings with: ID, severity (using Impact x Feasibility rubric), description, location (file:line), impact, recommendation. Organise by domain and severity.'
 - The prompt must be self-contained: readable and actionable without additional context beyond the codebase path
-- Write the completed `{audit_prompt}` document into `{output_path}` under its `{audit_prompt}.artifact_filename`; record the written path as `{audit_prompt_path}`
+- Write the completed audit prompt as its declared `audit-prompt.md` artifact into `{output_path}`; record the written path as `{audit_prompt_path}`
 
 ## Outputs
 

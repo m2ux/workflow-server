@@ -25,4 +25,10 @@ Scan the codebase for security-relevant patterns — cryptography, authenticatio
 - Search for feature flags that gate security behaviour: test-only features, mock verification, debug modes, feature-gated bypass
 - Search for custom VMs or interpreters: bytecode execution, instruction dispatch, gas/cost metering
 - Record each characteristic: `{ category, location (file:line), description, severity_relevance }`
-- If no security-relevant patterns are found, the codebase may be purely presentational or data-only — report this finding and ask the user whether to proceed with a generic structural analysis instead.
+- Set `{security_characteristics_count}` to the number of characteristics found. When it is 0, the codebase appears purely presentational or data-only; record that observation.
+
+## Outputs
+
+### security_characteristics_count
+
+Count of security-relevant patterns found in the target. `0` signals a codebase with no security surface.

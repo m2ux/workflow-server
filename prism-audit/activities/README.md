@@ -26,7 +26,7 @@ Definition: [`01-prompt-generation.yaml`](01-prompt-generation.yaml). Leads to [
 
 ### 02. Execute Prism Analysis
 
-Trigger the generic [prism](../../prism/README.md) workflow once per entry in `audit_scopes`. After verifying preconditions (scopes exist; `analysis_focus` is the generated prompt, not the literal `"security audit"`), a `forEach` loop composes each scope's trigger context, dispatches prism as a child workflow via `workflow-engine::handle-sub-workflow`, collects its results, and verifies completion. Scopes run sequentially so each prism run has full resources and no cross-analysis interference. **Value:** every audit scope has a completed prism analysis whose outputs finalization can locate and consolidate.
+Trigger the generic [prism](../../prism/README.md) workflow once per entry in `audit_scopes`. After verifying the scopes exist, a `forEach` loop composes each scope's trigger context, dispatches prism as a child workflow via `workflow-engine::handle-sub-workflow`, and records the run from its `RUN-MANIFEST.md` — prism has already verified its own completion, so no re-scan or re-verification happens here. Scopes run sequentially so each prism run has full resources and no cross-analysis interference. **Value:** every audit scope has a completed prism analysis whose contract artifacts finalization can consolidate.
 
 Definition: [`02-execute-analysis.yaml`](02-execute-analysis.yaml). Leads to [Audit Report Finalization](#03-audit-report-finalization).
 
@@ -34,7 +34,7 @@ Definition: [`02-execute-analysis.yaml`](02-execute-analysis.yaml). Leads to [Au
 
 ### 03. Audit Report Finalization
 
-Post-process the prism-produced `REPORT.md` into the three audit deliverables. Locate the analysis artifacts, enrich findings with call-graph evidence (only when GitNexus is available), split the report into `AUDIT-REPORT.md`, build `DETAILED-FINDINGS.md` and `DESIGN-TRADE-OFFS.md`, apply the Impact × Feasibility severity rubric and formatting rules, then cross-validate that all three deliverables exist and agree. Multi-scope audits are consolidated: duplicate findings are deduplicated and cross-scope patterns surface as systemic findings. **Value:** the consumer gets a cross-validated, severity-calibrated audit they can act on — a navigable summary, expanded per-finding write-ups, and the design trade-offs behind the findings.
+Assemble the three audit deliverables from prism's contract artifacts (`REPORT.md` + `DEFINITIVE-FINDINGS.md`): split the report into `AUDIT-REPORT.md`, build `DETAILED-FINDINGS.md` (carrying prism's blast-radius enrichment through as Graph Evidence — the audit does not recompute it) and `DESIGN-TRADE-OFFS.md`, apply the Impact × Feasibility severity rubric and formatting rules, then cross-validate that all three deliverables exist and agree. Multi-scope audits are consolidated: duplicate findings are deduplicated and cross-scope patterns surface as systemic findings. **Value:** the consumer gets a cross-validated, severity-calibrated audit they can act on — a navigable summary, expanded per-finding write-ups, and the design trade-offs behind the findings.
 
 Definition: [`03-audit-finalize.yaml`](03-audit-finalize.yaml). Leads to [Deliver Audit Results](#04-deliver-audit-results).
 

@@ -43,7 +43,7 @@ steps:
     technique: create-output-folder
 outcome:
   - Analysis can begin against a user-confirmed, validated target with a place to land its outputs
-  - Downstream activities know whether call-graph enrichment is available, so trust-boundary mapping and finding enrichment can branch accordingly
+  - The target's GitNexus indexing status is recorded, gating the optional call-graph steps
 transitions:
   - to: prompt-generation
     isDefault: true

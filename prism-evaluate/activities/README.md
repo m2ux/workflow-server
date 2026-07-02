@@ -25,7 +25,7 @@ Steps bind their domain operation via `step.technique`; the cross-cutting `varia
 
 ### 00. Define Evaluation Scope
 
-Collect the target, evaluation description, and output path; classify the target type (document / document-set / codebase / mixed); derive or validate the evaluation dimensions; create the output directory; and summarise the assembled scope. A blocking `confirm-scope` checkpoint settles the target, dimensions, and configuration before planning — choosing *adjust* loops the activity back to re-scope. **Value:** planning starts against a confirmed, classified target with an agreed dimension set and a place to land outputs.
+Collect the target, evaluation description, and output path; classify the target type (document / document-set / codebase / mixed); derive or validate the evaluation dimensions; and summarise the assembled scope for user confirmation before planning. **Value:** planning starts against a confirmed, classified target with an agreed dimension set and a place to land outputs.
 
 Definition: [`00-scope-definition.yaml`](00-scope-definition.yaml). Leads to [Plan Dimension Analysis](#01-plan-dimension-analysis).
 
@@ -33,7 +33,7 @@ Definition: [`00-scope-definition.yaml`](00-scope-definition.yaml). Leads to [Pl
 
 ### 01. Plan Dimension Analysis
 
-Survey the target, map each dimension to prism pipeline modes and lenses (respecting any user lens overrides), group dimensions that share a pipeline mode into execution groups, and write the human-readable `evaluation-plan.md`. A blocking `confirm-plan` checkpoint settles the mapping before any prism run — choosing *adjust* loops back to re-plan. **Value:** each dimension is matched to the lenses that will surface its target-specific findings, grouped into runnable batches the analysis stage can execute directly.
+Survey the target, map each dimension to prism pipeline modes and lenses (respecting any user lens overrides), group dimensions that share a pipeline mode into execution groups, and write the human-readable `evaluation-plan.md` for user confirmation before any prism run. **Value:** each dimension is matched to the lenses that will surface its target-specific findings, grouped into runnable batches the analysis stage can execute directly.
 
 Definition: [`01-dimension-planning.yaml`](01-dimension-planning.yaml). Leads to [Execute Prism Analyses](#02-execute-prism-analyses).
 
@@ -41,7 +41,7 @@ Definition: [`01-dimension-planning.yaml`](01-dimension-planning.yaml). Leads to
 
 ### 02. Execute Prism Analyses
 
-After verifying `execution_groups` is non-empty, a `forEach` loop processes each group: set the prism trigger context (target, mapped target type, output subdir, pipeline mode, lenses, analysis focus), trigger prism as a child workflow via `workflow-engine::handle-sub-workflow`, collect its results, and verify completion. Groups run sequentially, and any failed run is recorded with an error status rather than left silent. **Value:** every planned dimension is analysed through the prism pipeline, yielding the per-dimension findings consolidation draws on, with gaps made visible.
+Trigger the generic prism workflow once per execution group and record each run from its `RUN-MANIFEST.md` — prism verifies its own completion, so a run the manifest flags `partial`/`error` is surfaced rather than dropped. **Value:** every planned dimension is analysed through the prism pipeline, yielding the per-dimension `DEFINITIVE-FINDINGS.md` consolidation draws on, with gaps made visible.
 
 Definition: [`02-execute-analysis.yaml`](02-execute-analysis.yaml). Leads to [Consolidate Evaluation Report](#03-consolidate-evaluation-report).
 
@@ -49,7 +49,7 @@ Definition: [`02-execute-analysis.yaml`](02-execute-analysis.yaml). Leads to [Co
 
 ### 03. Consolidate Evaluation Report
 
-Locate the per-dimension analysis artifacts, extract findings, identify cross-dimensional patterns, compose the unified `EVALUATION-REPORT.md`, and verify it. The report is methodology-stripped (no lens or pipeline-mode names), standalone, and severity-calibrated on an Impact × Feasibility rubric. **Value:** the consumer gets a single severity-calibrated evaluation — cross-dimensional findings and actionable recommendations to decide from.
+Read each dimension's findings from prism's `DEFINITIVE-FINDINGS.md` (inheriting prism's IDs and severities), identify cross-dimensional patterns, compose the unified `EVALUATION-REPORT.md`, and verify it. The report is methodology-stripped (no lens or pipeline-mode names), standalone, and severity-calibrated on the Impact × Feasibility rubric prism already applied. **Value:** the consumer gets a single severity-calibrated evaluation — cross-dimensional findings and actionable recommendations to decide from.
 
 Definition: [`03-consolidate-report.yaml`](03-consolidate-report.yaml). Leads to [Deliver Evaluation Results](#04-deliver-evaluation-results).
 
@@ -57,7 +57,7 @@ Definition: [`03-consolidate-report.yaml`](03-consolidate-report.yaml). Leads to
 
 ### 04. Deliver Evaluation Results
 
-Compile the delivery metrics and present the results with a complete artifact index, then a blocking `resolution-offer` checkpoint asks whether to proceed into the resolution dialogue, end with the report as the final deliverable, or end and address findings externally. **Value:** the user can see what the evaluation found and where every deliverable lives, and decides whether to move into resolving the findings or stop here.
+Compile the delivery metrics and present the results with a complete artifact index, then offer the choice to continue into the resolution dialogue or stop with the report as the final deliverable. **Value:** the user can see what the evaluation found and where every deliverable lives, and decides whether to move into resolving the findings or stop here.
 
 Definition: [`04-deliver-results.yaml`](04-deliver-results.yaml). Leads to [Resolution Dialogue](#05-resolution-dialogue) when resolution is requested; otherwise the workflow ends.
 
@@ -73,6 +73,6 @@ Definition: [`05-resolution-dialogue.yaml`](05-resolution-dialogue.yaml). Leads 
 
 ### 06. Apply Accepted Mitigations
 
-A blocking `confirm-apply` checkpoint gates the final apply (apply all accepted mitigations, or keep the plan without modifying the target); accepted changes are then applied to the target in priority order and committed via `version-control::commit-regular-files`. **Value:** the target reflects every accepted mitigation, applied in priority order and committed, with verification confirming what changed.
+After a final user confirmation, the accepted mitigations are applied to the target in priority order and committed. **Value:** the target reflects every accepted mitigation, applied in priority order and committed, with verification confirming what changed.
 
 Definition: [`06-apply-mitigations.yaml`](06-apply-mitigations.yaml). Terminal activity.

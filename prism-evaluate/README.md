@@ -1,6 +1,6 @@
 # Evaluation Workflow
 
-> v1.1.0 — Orchestrate multi-dimensional evaluations of any target by mapping evaluation dimensions to [prism](../prism/README.md) analytical lenses, then optionally resolve and apply mitigations for the findings.
+> v1.2.0 — Orchestrate multi-dimensional evaluations of any target by mapping evaluation dimensions to [prism](../prism/README.md) analytical lenses, consolidating prism's definitive-findings contract into a unified report, then optionally resolving and applying mitigations for the findings.
 
 ---
 
@@ -77,7 +77,7 @@ Each activity step binds exactly one operation via `step.technique`. The operati
 | Technique group | Capability |
 |-----------------|------------|
 | [`plan-evaluation`](./techniques/plan-evaluation/TECHNIQUE.md) | Target classification, dimension derivation, target survey, dimension-to-lens mapping, execution grouping, and plan authoring |
-| [`execute-analysis`](./techniques/execute-analysis/TECHNIQUE.md) | Prism-run result collection and completion verification |
+| [`execute-analysis`](./techniques/execute-analysis/TECHNIQUE.md) | Record a triggered prism run from its `RUN-MANIFEST.md` into the evaluation accumulators |
 | [`compose-evaluation-report`](./techniques/compose-evaluation-report/TECHNIQUE.md) | Cross-artifact extraction, cross-dimensional synthesis, report composition and verification, result presentation |
 | [`resolve-findings`](./techniques/resolve-findings/TECHNIQUE.md) | Finding tier-classification, one-by-one mitigation proposal, mitigation-plan composition, and change application |
 
@@ -131,7 +131,7 @@ sequenceDiagram
     Orch->>User: report, mitigation plan, artifact index
 ```
 
-**Trigger isolation:** the orchestrator sets prism's `analysis_focus` to the dimension-specific evaluation guidance and never to a bare audit label (`"security audit"`, `"audit"`, …), so prism's own built-in audit-finalize path never fires — all evaluation-specific post-processing belongs to this workflow's `consolidate-report` activity.
+**Contract reuse:** the orchestrator sets prism's `analysis_focus` to the dimension-specific evaluation guidance (naming the dimension so prism assigns dimension-prefixed finding IDs). The evaluation then reads only prism's contract artifacts — `RUN-MANIFEST.md`, `REPORT.md`, `DEFINITIVE-FINDINGS.md` — and never re-derives what prism already produced (finding extraction, blast-radius enrichment, methodology-stripping, ID assignment). Consolidation adds the one thing prism cannot do across sibling runs: cross-dimensional synthesis.
 
 ---
 
@@ -144,17 +144,23 @@ For a standard 4-dimension evaluation (Consistency, Veracity, Plausibility, Feas
 ├── evaluation-plan.md              (dimension-to-lens mapping)
 ├── EVALUATION-REPORT.md            (consolidated evaluation)
 ├── consistency/
-│   ├── structural-analysis.md      (from full-prism)
-│   ├── adversarial-analysis.md     (from full-prism)
-│   └── synthesis.md                (from full-prism)
+│   ├── RUN-MANIFEST.md             (prism contract — run artifacts + status)
+│   ├── REPORT.md                   (prism contract — lean report)
+│   ├── DEFINITIVE-FINDINGS.md      (prism contract — findings source consolidation reads)
+│   ├── structural-analysis.md      (prism raw pass — full-prism)
+│   ├── adversarial-analysis.md     (prism raw pass — full-prism)
+│   └── synthesis.md                (prism raw pass — full-prism)
 └── dimensions/
+    ├── RUN-MANIFEST.md             (prism contract)
+    ├── REPORT.md                   (prism contract)
+    ├── DEFINITIVE-FINDINGS.md      (prism contract — findings source)
     ├── claim-inversion.md          (Veracity — lens 07)
     ├── knowledge-audit.md          (Veracity — lens 40)
     ├── rejected-paths.md           (Plausibility — lens 09)
     └── scarcity.md                 (Feasibility — lens 08)
 ```
 
-The resolution dialogue additionally produces a `MITIGATION-PLAN.md`.
+Consolidation reads each dimension's `DEFINITIVE-FINDINGS.md` (located from its `RUN-MANIFEST.md`); the raw pass artifacts are prism's internals, not read by this workflow. The resolution dialogue additionally produces a `MITIGATION-PLAN.md`.
 
 ---
 
@@ -162,7 +168,7 @@ The resolution dialogue additionally produces a `MITIGATION-PLAN.md`.
 
 ```
 workflows/prism-evaluate/
-├── workflow.yaml                     # Workflow definition (8 rules, 23 variables)
+├── workflow.yaml                     # Workflow metadata, rules, and variable declarations
 ├── README.md                         # This file
 ├── activities/
 │   ├── README.md                     # Per-activity orientation map
@@ -177,7 +183,7 @@ workflows/prism-evaluate/
 │   ├── README.md                     # Technique library index
 │   ├── TECHNIQUE.md                  # Workflow-root base contract (inherited by all)
 │   ├── plan-evaluation/              # Target classification, dimension-to-lens mapping (one op per phase)
-│   ├── execute-analysis/             # Prism-run result collection and completion verification
+│   ├── execute-analysis/             # Record each prism run from its RUN-MANIFEST.md
 │   ├── compose-evaluation-report/    # Cross-dimensional synthesis, report composition
 │   └── resolve-findings/             # Finding tier-classification, mitigation, change application
 └── resources/

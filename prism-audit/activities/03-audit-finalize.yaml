@@ -1,19 +1,8 @@
 id: audit-finalize
-version: 1.1.0
+version: 2.0.0
 name: Audit Report Finalization
-description: Post-process the prism REPORT.md into audit deliverables.
+description: Assemble the audit deliverables from prism's REPORT.md and DEFINITIVE-FINDINGS.md.
 steps:
-  - kind: technique
-    id: locate-artifacts
-    technique: locate-artifacts
-  - kind: technique
-    id: enrich-findings-with-graph
-    technique: enrich-findings-with-graph
-    condition:
-      type: simple
-      variable: gitnexus_available
-      operator: ==
-      value: true
   - kind: technique
     id: split-report
     technique: split-report
@@ -33,14 +22,19 @@ steps:
     id: verify-outcomes
     actions:
       - action: validate
-        description: Verify all three audit deliverables exist before transitioning to delivery
-rules:
-  - "REPORT SPLIT: REPORT.md (from triggered prism workflow) is the input. AUDIT-REPORT.md is the output — a summary retaining domain tables, systemic patterns, risk assessment, remediation recommendations, and appendices, with inline detailed findings replaced by a reference to DETAILED-FINDINGS.md."
-  - "DETAILED FINDING FORMAT: Every finding in DETAILED-FINDINGS.md must have exactly 5 fields plus an optional 6th: Description, Impact, Location, Recommendation, Adversarial confirmation, Graph Evidence (if GitNexus enrichment data is available — includes blast radius metrics and execution flow participation). Source priority for extraction: (1) structural-analysis.md for original findings, (2) adversarial-analysis.md for underclaims and significant corrections, (3) portfolio documents for portfolio-source findings."
-  - "SEVERITY RUBRIC: All severity labels must be computed from the Impact x Feasibility rubric. Intuitive severity assignments are a formatting violation. Toolkit/helper code carries I<=2. Config toggles carry F=2. Unconditional defects carry F>=3."
-  - "TRADE-OFF ANALYSIS REQUIREMENTS: Each trade-off entry must have a falsifiable constraint, code-level evidence for the current operating point (citing specific finding IDs), concrete shift predictions, and actionable design questions. Conservation laws rejected by the adversarial pass must NOT appear."
-  - "REMEDIATION IMPACT COLUMN: Every priority table (P0, P1, P2, P3) in the remediation section must include an Impact column as the final column."
-  - "MULTI-SCOPE CONSOLIDATION: For multi-scope audits (multiple triggered prism runs), findings are consolidated across all runs. Duplicate findings (same issue found in multiple scopes) are deduplicated. Cross-scope patterns are surfaced as systemic findings."
+        description: All three audit deliverables exist before delivery
+        condition:
+          type: and
+          conditions:
+            - type: simple
+              variable: audit_report_path
+              operator: exists
+            - type: simple
+              variable: detailed_findings_path
+              operator: exists
+            - type: simple
+              variable: trade_offs_path
+              operator: exists
 outcome:
   - "The consumer has a cross-validated, severity-calibrated audit they can act on: a navigable summary, expanded per-finding write-ups, and the design trade-offs behind the findings"
 transitions:

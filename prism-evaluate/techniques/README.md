@@ -2,7 +2,7 @@
 
 > Part of the [Evaluation Workflow](../README.md)
 
-## Techniques (4 groups, 22 operations)
+## Techniques (4 groups, 20 operations)
 
 The technique library for the prism-evaluate workflow. Each operation is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in each operation's `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
 
@@ -11,7 +11,7 @@ The workflow-root [`TECHNIQUE.md`](TECHNIQUE.md) is the base contract inherited 
 | Technique group | Capability |
 |-----------------|------------|
 | [`plan-evaluation`](plan-evaluation/TECHNIQUE.md) | Collect the scope, classify the target, derive dimensions, survey the target, map each dimension to prism lenses and pipeline modes, group for execution, and author the evaluation plan |
-| [`execute-analysis`](execute-analysis/TECHNIQUE.md) | Harvest a triggered prism run's outputs and verify it completed with all expected artifacts |
+| [`execute-analysis`](execute-analysis/TECHNIQUE.md) | Record a triggered prism run from its `RUN-MANIFEST.md` into the evaluation accumulators |
 | [`compose-evaluation-report`](compose-evaluation-report/TECHNIQUE.md) | Consolidate the per-dimension prism artifacts into a unified, methodology-stripped evaluation report, then compile and present its metrics and deliverable index |
 | [`resolve-findings`](resolve-findings/TECHNIQUE.md) | Tier-classify findings, propose a mitigation per finding through one-by-one dialogue, compile the mitigation plan, and apply the accepted changes |
 
@@ -37,15 +37,13 @@ The workflow-root [`TECHNIQUE.md`](TECHNIQUE.md) is the base contract inherited 
 
 | Operation | Capability |
 |-----------|------------|
-| [`collect-prism-results`](execute-analysis/collect-prism-results.md) | Collect a prism run's report and analysis artifacts into the evaluation accumulators |
-| [`verify-prism-completion`](execute-analysis/verify-prism-completion.md) | Verify the run completed with all expected artifacts, flagging failures rather than leaving silent gaps |
+| [`read-run-manifest`](execute-analysis/read-run-manifest.md) | Record a prism run from its `RUN-MANIFEST.md` (report + definitive-findings paths + status) into the evaluation accumulators |
 
 ### compose-evaluation-report (Consolidate Evaluation Report + Deliver Evaluation Results)
 
 | Operation | Capability |
 |-----------|------------|
-| [`locate-artifacts`](compose-evaluation-report/locate-artifacts.md) | Locate the per-dimension prism analysis artifacts using the dimension plan |
-| [`extract-findings`](compose-evaluation-report/extract-findings.md) | Extract findings from the analysis artifacts |
+| [`extract-findings`](compose-evaluation-report/extract-findings.md) | Read each dimension's findings from prism's `DEFINITIVE-FINDINGS.md`, inheriting IDs and severities |
 | [`identify-patterns`](compose-evaluation-report/identify-patterns.md) | Identify cross-dimensional patterns across the findings |
 | [`compose-report`](compose-evaluation-report/compose-report.md) | Compose the unified, methodology-stripped `EVALUATION-REPORT.md` |
 | [`verify-report`](compose-evaluation-report/verify-report.md) | Verify the report is standalone, severity-calibrated, and free of methodology language |
@@ -65,7 +63,7 @@ The workflow-root [`TECHNIQUE.md`](TECHNIQUE.md) is the base contract inherited 
 
 ## Reference Convention
 
-The `execute-analysis` group is named after the `execute-analysis` activity, so that activity's steps bind its operations **bare** (the meta `activity-group-shorthand` rule) — `collect-prism-results` resolves to `execute-analysis::collect-prism-results`. The other three groups are not named after their consuming activities, so their operations are always bound **qualified** — `plan-evaluation::collect-scope`, `compose-evaluation-report::locate-artifacts`, `resolve-findings::load-and-classify`.
+The `execute-analysis` group is named after the `execute-analysis` activity, so that activity's steps bind its operations **bare** (the meta `activity-group-shorthand` rule) — `read-run-manifest` resolves to `execute-analysis::read-run-manifest`. The other three groups are not named after their consuming activities, so their operations are always bound **qualified** — `plan-evaluation::collect-scope`, `compose-evaluation-report::extract-findings`, `resolve-findings::load-and-classify`.
 
 ---
 

@@ -1,7 +1,7 @@
 id: execute-analysis
-version: 1.2.0
+version: 1.3.0
 name: Execute Prism Analysis
-description: Trigger the prism workflow for each audit scope.
+description: Trigger the prism workflow for each audit scope and record each run from its manifest.
 techniques:
   - scatter-gather
 triggers:
@@ -9,6 +9,7 @@ triggers:
     description: Execute prism analytical pipeline for each audit scope.
     passContext:
       - target
+      - target_description
       - output_path
       - pipeline_mode
       - analysis_focus
@@ -22,13 +23,6 @@ steps:
           type: simple
           variable: audit_scopes
           operator: exists
-      - action: validate
-        description: Verify analysis_focus does not equal 'security audit'
-        condition:
-          type: simple
-          variable: analysis_focus
-          operator: "!="
-          value: security audit
   - kind: action
     id: prepare-triggers
     actions:
@@ -56,15 +50,10 @@ steps:
           inputs:
             workflow_id: prism
       - kind: technique
-        id: collect-results
-        technique: collect-prism-results
-      - kind: technique
-        id: verify-completion
-        technique: verify-prism-completion
-rules:
-  - "SEQUENTIAL EXECUTION: Audit scopes are executed sequentially (one prism trigger at a time). This ensures each prism run has full system resources and avoids context interference between concurrent analyses."
+        id: read-run-manifest
+        technique: read-run-manifest
 outcome:
-  - Every audit scope has a completed prism analysis whose outputs finalization can locate and consolidate into deliverables
+  - Every audit scope has a completed prism analysis whose contract artifacts finalization can consolidate into deliverables
 transitions:
   - to: audit-finalize
     isDefault: true

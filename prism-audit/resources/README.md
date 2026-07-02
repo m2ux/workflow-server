@@ -2,7 +2,7 @@
 
 > Part of the [Prism Audit Workflow](../README.md)
 
-One reference file holding the shape of the workflow's central artifact — the tailored audit prompt that the `compose-audit-prompt::compose-prompt` operation assembles.
+One reference file holding the shape of the workflow's central artifact — the self-contained, codebase-tailored audit prompt.
 
 The authoritative content lives in the `.md` file and is served by `get_resource`. This file is the catalog — what the resource owns.
 

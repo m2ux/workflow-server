@@ -16,8 +16,8 @@ Four operation-groups (one per authoring activity) plus one standalone technique
 |-----------|------|------------|
 | [`scope-definition`](scope-definition/TECHNIQUE.md) | group | Establish the audit's scope: collect and validate the target, summarise the scope, and create the output directory |
 | [`compose-audit-prompt`](compose-audit-prompt/TECHNIQUE.md) | group | Analyse the codebase and compose a detailed, self-contained audit prompt tailored to its architecture and risk profile, plus the scope list prism will run |
-| [`execute-analysis`](execute-analysis/TECHNIQUE.md) | group | Compose the prism trigger context for a scope and harvest the triggered run's outputs |
-| [`audit-finalize`](audit-finalize/TECHNIQUE.md) | group | Post-process prism's analysis outputs into the three security-audit deliverables and cross-validate them |
+| [`execute-analysis`](execute-analysis/TECHNIQUE.md) | group | Compose the prism trigger context for a scope and record the triggered run from its manifest |
+| [`audit-finalize`](audit-finalize/TECHNIQUE.md) | group | Assemble prism's contract artifacts into the three security-audit deliverables and cross-validate them |
 | [`deliver-audit`](deliver-audit.md) | standalone | Present the final deliverables with metrics, the core finding, top remediations, and a full artifact index |
 
 ---
@@ -49,19 +49,16 @@ Four operation-groups (one per authoring activity) plus one standalone technique
 
 | Operation | Capability |
 |-----------|------------|
-| [`compose-trigger-context`](execute-analysis/compose-trigger-context.md) | Unpack a scope into the prism trigger variables (target, output, pipeline mode, focus) |
-| [`collect-prism-results`](execute-analysis/collect-prism-results.md) | Collect a prism run's report and analysis artifacts into the audit accumulators |
-| [`verify-prism-completion`](execute-analysis/verify-prism-completion.md) | Verify the run completed with all expected artifacts present |
+| [`compose-trigger-context`](execute-analysis/compose-trigger-context.md) | Unpack a scope into the prism trigger variables (target, description, output, pipeline mode, focus) |
+| [`read-run-manifest`](execute-analysis/read-run-manifest.md) | Record a prism run from its `RUN-MANIFEST.md` (report + definitive-findings paths + status) into the audit accumulators |
 
 ### audit-finalize (Audit Report Finalization)
 
 | Operation | Capability |
 |-----------|------------|
-| [`locate-artifacts`](audit-finalize/locate-artifacts.md) | Locate prism's `REPORT.md` and the underlying analysis artifacts |
-| [`enrich-findings-with-graph`](audit-finalize/enrich-findings-with-graph.md) | Enrich findings with blast-radius and execution-flow evidence (GitNexus only) |
-| [`split-report`](audit-finalize/split-report.md) | Split `REPORT.md` into the summary `AUDIT-REPORT.md` |
-| [`create-detailed-findings`](audit-finalize/create-detailed-findings.md) | Build `DETAILED-FINDINGS.md` — one expanded write-up per finding |
-| [`create-trade-off-analysis`](audit-finalize/create-trade-off-analysis.md) | Build `DESIGN-TRADE-OFFS.md` — the design trade-offs behind the findings |
+| [`split-report`](audit-finalize/split-report.md) | Split prism's `REPORT.md` into the summary `AUDIT-REPORT.md` |
+| [`create-detailed-findings`](audit-finalize/create-detailed-findings.md) | Build `DETAILED-FINDINGS.md` from prism's `DEFINITIVE-FINDINGS.md` — one expanded write-up per finding |
+| [`create-trade-off-analysis`](audit-finalize/create-trade-off-analysis.md) | Build `DESIGN-TRADE-OFFS.md` from the conservation laws in `DEFINITIVE-FINDINGS.md` |
 | [`apply-formatting-rules`](audit-finalize/apply-formatting-rules.md) | Apply the Impact × Feasibility severity rubric and formatting rules |
 | [`verify-audit-consistency`](audit-finalize/verify-audit-consistency.md) | Cross-validate that the three deliverables exist and agree |
 

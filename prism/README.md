@@ -1,6 +1,6 @@
 # Prism Analysis Workflow
 
-> v2.0.0 — Structured analytical prompts that find what asking a model directly misses. Ten modes, 58 lenses, isolated multi-pass pipelines, automated report generation.
+> v2.1.0 — Structured analytical prompts that find what asking a model directly misses. Ten modes, 58 lenses, isolated multi-pass pipelines, and a stable output contract (REPORT.md, DEFINITIVE-FINDINGS.md, RUN-MANIFEST.md) that consumer workflows build on.
 
 ---
 
@@ -169,9 +169,9 @@ graph TD
 | 01 | **Structural Analysis Pass** | Run the assigned analysis for each unit: L12 (single with lens `l12`, or full-prism's structural pass), the plan's chosen single lens (single with any other lens), a portfolio, or the behavioral pipeline |
 | 02 | **Adversarial Analysis Pass** | Run the adversarial lens against each full-prism unit's structural artifact (full-prism only) |
 | 03 | **Synthesis Pass** | Run the synthesis lens against each full-prism unit's structural + adversarial artifacts (full-prism only) |
-| 04 | **Deliver Result** | Present the final report to the user with artifact paths |
+| 04 | **Deliver Result** | Emit RUN-MANIFEST.md, then present the final report to the user with artifact paths |
 | 05 | **Behavioral Synthesis Pass** | Run the behavioral synthesis lens against each behavioral unit's artifacts (behavioral only) |
-| 06 | **Generate Final Report** | Produce clean REPORT.md from analysis artifacts — definitive findings only, no methodology language |
+| 06 | **Generate Final Report** | Produce the clean REPORT.md (definitive findings only, no methodology language) and the detailed DEFINITIVE-FINDINGS.md contract (full per-finding field set + surviving conservation laws) from analysis artifacts |
 | 07 | **Dispute Analysis Pass** | Run two orthogonal prisms and synthesize their disagreements (dispute only) |
 | 08 | **Subsystem Analysis Pass** | Per-region prism analysis with cross-subsystem synthesis (subsystem only) |
 | 09 | **Verified Analysis Pass** | L12 structural analysis with gap detection and re-analysis (verified only) |
@@ -201,8 +201,9 @@ The cross-cutting `variable-binding` technique is declared once at the workflow 
 | `reflect-analysis` | L12 + claim-prism meta-analysis + constraint synthesis |
 | `smart-analysis::*` | Adaptively compose the analysis pipeline |
 | `adaptive-analysis::*` | Cost-minimizing depth escalation (SDL → L12 → full-prism) |
-| `generate-report` | Produce clean final report from analysis artifacts |
-| `present-result` | Read, cross-reference-format, and present the final report |
+| `generate-report` | Produce the clean REPORT.md and the detailed DEFINITIVE-FINDINGS.md from analysis artifacts |
+| `emit-run-manifest` | Write RUN-MANIFEST.md recording produced artifacts + completion status; verify the run completed |
+| `present-result` | Cross-reference-format and present the final report with the definitive-findings and manifest paths |
 
 The four `::*` techniques are **operation-groups** — a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `<op>.md` file per operation. The rest are standalone `techniques/<slug>.md` files.
 
@@ -281,12 +282,27 @@ sequenceDiagram
     W3-->>Orch: synthesis.md
 
     Orch->>W4: spawn-agent(generate report, all artifacts)
-    W4-->>Orch: REPORT.md
+    W4-->>Orch: REPORT.md + DEFINITIVE-FINDINGS.md
+    Note over Orch: deliver-result → emit RUN-MANIFEST.md
 
-    Orch->>User: REPORT.md + all artifact paths
+    Orch->>User: REPORT.md, DEFINITIVE-FINDINGS.md, RUN-MANIFEST.md + all artifact paths
 ```
 
 Unlike the work-package workflow (which resumes a persistent worker), the prism workflow creates a **new worker for each pass**. This is the isolation guarantee — the adversarial worker has never seen the structural analysis being generated.
+
+---
+
+## Outputs (consumer contract)
+
+A prism run always produces three artifacts in `output_path`, regardless of pipeline mode:
+
+| Artifact | Purpose |
+|----------|---------|
+| `REPORT.md` | Lean, methodology-free report for the reader — findings by severity, blast radius, core finding. |
+| `DEFINITIVE-FINDINGS.md` | The detailed findings contract: every finding with its full field set (Description, Impact, Location, Recommendation, Classification, Blast radius, Adversarial confirmation) plus the surviving conservation laws / design trade-offs. |
+| `RUN-MANIFEST.md` | Records the produced artifacts, per-unit status, and overall completion status. |
+
+**Triggering workflows read these three artifacts and never re-open the raw pass artifacts** (`structural-analysis.md`, `adversarial-analysis.md`, `synthesis.md`, `portfolio-*.md`). To get domain-prefixed finding IDs (e.g. `CON-xx`, `VER-xx`), pass the dimension or domain names via `analysis_focus` — prism assigns the IDs in both reports, so consumers do not re-number findings. `prism-audit` and `prism-evaluate` are built on exactly this contract.
 
 ---
 
@@ -294,7 +310,7 @@ Unlike the work-package workflow (which resumes a persistent worker), the prism 
 
 ```
 workflows/prism/
-├── workflow.yaml                            # Workflow definition (10 modes, 27 variables, 10 rules, 13 activities)
+├── workflow.yaml                            # Workflow definition (10 modes, 31 variables, 10 rules, 13 activities)
 ├── README.md                                # This file
 ├── concept-lexicon.md                       # Analytical concept definitions (49 concepts)
 ├── activities/
@@ -302,9 +318,9 @@ workflows/prism/
 │   ├── 01-structural-pass.yaml              # L12, portfolio, or behavioral lens dispatch
 │   ├── 02-adversarial-pass.yaml             # Adversarial lens (full-prism only)
 │   ├── 03-synthesis-pass.yaml               # Synthesis lens (full-prism only)
-│   ├── 04-deliver-result.yaml               # Present final report
+│   ├── 04-deliver-result.yaml               # Emit RUN-MANIFEST.md, then present final report
 │   ├── 05-behavioral-synthesis-pass.yaml    # Behavioral synthesis (behavioral only)
-│   ├── 06-generate-report.yaml              # Generate clean REPORT.md from analysis artifacts
+│   ├── 06-generate-report.yaml              # Generate REPORT.md + DEFINITIVE-FINDINGS.md from analysis artifacts
 │   ├── 07-dispute-pass.yaml                 # Two orthogonal prisms + disagreement synthesis (dispute only)
 │   ├── 08-subsystem-pass.yaml               # Per-region prism analysis + cross-subsystem synthesis (subsystem only)
 │   ├── 09-verified-pass.yaml                # L12 + gap detection + corrected re-analysis (verified only)
@@ -321,8 +337,9 @@ workflows/prism/
 │   ├── full-prism.md                        # Full Prism worker pass
 │   ├── dispute-analysis.md                  # Dispute pipeline
 │   ├── reflect-analysis.md                  # Reflect pipeline
-│   ├── generate-report.md                   # Report generation from analysis artifacts
-│   ├── present-result.md                    # Read, format, and present the final report
+│   ├── generate-report.md                   # REPORT.md + DEFINITIVE-FINDINGS.md generation from analysis artifacts
+│   ├── emit-run-manifest.md                 # Write RUN-MANIFEST.md + verify run completion
+│   ├── present-result.md                    # Format and present the final report with artifact paths
 │   ├── subsystem-analysis/                  # Subsystem operation-group
 │   │   ├── TECHNIQUE.md                      # Group contract
 │   │   ├── decompose.md                      # AST split into subsystems

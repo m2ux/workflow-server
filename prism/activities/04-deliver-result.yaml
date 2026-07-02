@@ -1,8 +1,11 @@
 id: deliver-result
-version: 3.1.0
+version: 3.2.0
 name: Deliver Result
-description: Present the final report to the user.
+description: Emit the run manifest, then present the final report to the user.
 steps:
+  - kind: technique
+    id: emit-run-manifest
+    technique: emit-run-manifest
   - kind: technique
     id: present-result
     technique: present-result

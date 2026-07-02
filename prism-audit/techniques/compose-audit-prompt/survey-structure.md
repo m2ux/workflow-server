@@ -22,7 +22,7 @@ Survey the target codebase to produce a structural inventory: primary language a
 - Identify test directories and test file patterns
 - If GitNexus is available (check via [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../../meta/techniques/gitnexus-operations/verify-index.md)): use [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../../meta/techniques/gitnexus-operations/query.md) to discover functional areas, execution flows, and community clusters — these produce better module boundaries and dependency maps than directory layout alone
 - If GitNexus is available: use [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../../meta/techniques/gitnexus-operations/context.md) on high-risk modules to check fan-in (number of callers) — high fan-in modules have larger blast radius and should be elevated in risk classification
-- Record: language, `build_system`, modules (array of `{ name, path, line_count, purpose, fan_in (if GitNexus available) }`), `{total_loc}`, `gitnexus_available` (boolean)
+- Record: language, `build_system`, modules (array of `{ name, path, line_count, purpose, fan_in (if GitNexus available) }`), `{total_loc}`, `{gitnexus_available}` (boolean)
 - If `{target_path}` contains no analysable source files, verify the path is correct and check whether submodules need initialisation before proceeding.
 
 ## Outputs

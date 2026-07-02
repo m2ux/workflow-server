@@ -2,14 +2,14 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 1.0.0
+  version: 1.1.0
   order: 6
   legacy_id: 6
 ---
 
 ## Capability
 
-Generate a clean final report from prism analysis artifacts, stripping methodology semantics and presenting only definitive findings with unified identifiers
+Generate the final artifacts from prism analysis passes: a clean, methodology-free REPORT.md for the reader, and a detailed DEFINITIVE-FINDINGS.md carrying the full per-finding field set plus the surviving conservation laws — the stable contract consumer workflows build on without re-reading raw pass artifacts. Both are produced from a single extraction so findings and IDs stay identical across them.
 
 ## Inputs
 
@@ -19,7 +19,7 @@ The pipeline mode that produced the artifacts: 'single', 'full-prism', 'portfoli
 
 ### analysis_focus
 
-*(optional)* The analytical goal that guided the analysis. Used for dimension-based finding ID prefixes and to determine whether findings warrant a Corrections Required section.
+*(optional)* The analytical goal that guided the analysis. When it names dimensions or categories (e.g. an evaluation's "consistency, veracity" or an audit's domain names), the report and definitive findings use dimension-based finding ID prefixes derived from them — CON-xx, VER-xx, and so on (see step 6). A triggering workflow that wants domain-prefixed IDs supplies the names here rather than re-assigning IDs downstream. Also used to determine whether findings warrant a Corrections Required section.
 
 ### all_artifact_paths
 
@@ -48,12 +48,12 @@ Description of what was analysed — used in the report's Executive Summary scop
 
 ### 3. Extract Findings
 
-- From each authoritative artifact, extract every finding with: original ID, title/description, severity, classification (fixable/structural/etc), and location reference
-- For full-prism: use the Definitive Findings Table in the synthesis artifact. Severities in this table are post-reconciliation and final.
+- From each authoritative artifact, extract every finding with its full field set: original ID, title, description, severity, classification (fixable/structural/etc), location reference, **impact** (the consequence if unaddressed), and **recommendation** (the concrete corrective action). REPORT.md later carries only a subset of these fields; DEFINITIVE-FINDINGS.md carries them all — so extract the full set once, here.
+- For full-prism: use the Definitive Findings Table in the synthesis artifact. Severities in this table are post-reconciliation and final. For each finding, also capture its **adversarial confirmation** — how the adversarial pass confirmed or corrected it (e.g. "confirmed", "severity raised from Medium", "underclaim promoted") — stated as a factual outcome, not a narrative.
 - For portfolio: findings are per-lens. Extract from each lens artifact's findings or problem list.
 - For behavioral: extract from the behavioral-synthesis convergence analysis.
 - For single: extract from the L12 findings table in the structural artifact.
-- Also extract: core insights (deepest finding, conservation laws that survived challenge, convergence points) — these become the Core Finding section
+- Also extract: core insights (deepest finding, convergence points) — these become the Core Finding section — and the conservation law(s) and meta-law that **survived** the adversarial challenge. Record each surviving law as a falsifiable constraint with its current operating point and shift prediction. Laws the adversarial pass rejected are discarded, not recorded.
 - If the authoritative artifact contains no extractable findings, write a report noting that the analysis produced no findings — this is a valid outcome for clean code/text.
 
 ### 4. Enrich Blast Radius
@@ -97,6 +97,13 @@ Description of what was analysed — used in the report's Executive Summary scop
 
 - Write the complete report as `{analysis_report}` into `{output_path}`, capturing its full filesystem path as `{report_path}`
 
+### 9. Write Definitive Findings
+
+- Write the detailed [definitive findings](../resources/definitive-findings-template.md#definitive-findingsmd-template) document as `{definitive_findings}` into `{output_path}`, capturing its full filesystem path as `{definitive_findings_path}`
+- Include every finding from step 3 with its complete field set — Severity, Classification, Description, Impact, Location, Recommendation, Blast radius (where graph data exists), and Adversarial confirmation (full-prism only). Finding IDs are the same unified report IDs assigned in step 6, so DEFINITIVE-FINDINGS.md and REPORT.md agree exactly.
+- Add the Conservation Laws & Design Trade-offs section from the surviving laws captured in step 3 (present for full-prism and behavioral). Omit the section when no law survived.
+- The voice remains factual: adversarial confirmation and conservation laws are recorded as evidence and constraints, never as process narration (no "ANALYSIS 1", "the adversarial pass", scorecards, or overclaim/underclaim tables).
+
 ## Outputs
 
 ### analysis_report
@@ -119,15 +126,35 @@ Summary of the core finding (if any)
 
 Full filesystem path to `REPORT.md`
 
+### definitive_findings
+
+Detailed [definitive findings](../resources/definitive-findings-template.md#definitive-findingsmd-template) artifact carrying the full per-finding field set (Impact, Recommendation, Adversarial confirmation, and more) and the surviving conservation laws. The stable contract consumer workflows read instead of the raw pass artifacts.
+
+#### artifact
+
+`DEFINITIVE-FINDINGS.md`
+
+### definitive_findings_path
+
+Full filesystem path to `DEFINITIVE-FINDINGS.md`
+
 ## Rules
 
 ### complete-extraction
 
-Every finding in the authoritative artifact must appear in the report. Omitting findings is a report integrity violation.
+Every finding in the authoritative artifact must appear in both REPORT.md and DEFINITIVE-FINDINGS.md with the same unified report ID. Omitting a finding from either, or letting the two disagree on IDs or severities, is a report integrity violation.
 
 ### methodology-stripped
 
-The report contains no reference to the analytical process. Forbidden phrasing includes 'the structural analysis found', 'the adversarial pass identified', 'ANALYSIS 1', 'ANALYSIS 2', 'conservation law' (unless the finding itself describes a conserved property), 'meta-law', 'analysis scorecard', 'dispute resolution', 'overclaim', 'underclaim', 'wrong prediction', and 'the synthesis determined'. The reader sees only definitive conclusions.
+REPORT.md contains no reference to the analytical process. Forbidden phrasing includes 'the structural analysis found', 'the adversarial pass identified', 'ANALYSIS 1', 'ANALYSIS 2', 'conservation law' (unless the finding itself describes a conserved property), 'meta-law', 'analysis scorecard', 'dispute resolution', 'overclaim', 'underclaim', 'wrong prediction', and 'the synthesis determined'. The reader sees only definitive conclusions. (DEFINITIVE-FINDINGS.md is governed instead by `definitive-findings-factual`, which permits conservation laws and adversarial-confirmation evidence.)
+
+### definitive-findings-complete
+
+DEFINITIVE-FINDINGS.md carries every finding with its full field set — Severity, Classification, Description, Impact, Location, Recommendation, Blast radius (where graph data exists), and Adversarial confirmation (full-prism only) — plus the surviving conservation laws for full-prism and behavioral runs. A finding missing Impact or Recommendation, or a surviving law absent from the trade-offs section, is a contract violation: consumers rely on these fields and must never fall back to reading the raw pass artifacts.
+
+### definitive-findings-factual
+
+DEFINITIVE-FINDINGS.md may record conservation laws and per-finding adversarial confirmation as evidence, but still in factual voice. It states outcomes ('severity raised from Medium', 'confirmed') and constraints, never process narration — no 'ANALYSIS 1', 'the adversarial pass', scorecards, or overclaim/underclaim tables. Conservation laws the adversarial pass rejected never appear.
 
 ### core-finding-promoted
 
@@ -147,4 +174,4 @@ All findings are written in factual declarative voice. No attribution to analyti
 
 ### traceability-completeness
 
-The traceability appendix must have an entry for every finding ID in the report. Missing entries are a report integrity violation.
+The traceability appendix in each artifact (REPORT.md and DEFINITIVE-FINDINGS.md) must have an entry for every finding ID it presents. Missing entries are a report integrity violation.

@@ -35,3 +35,13 @@ Machine-readable dimension-to-lens mapping: an array of `{ dimension, pipeline_m
 - For each dimension, compose a substantive `analysis_focus` string describing what to examine within the dimension, drawing on `{structure_inventory}` and `{key_topics}`.
 - Assign each dimension an `output_subdir` per the [output subdirectory convention](../../resources/dimension-lens-mapping.md#output-subdirectory-convention).
 - Record `{dimension_plan}`: an array of `{ dimension, pipeline_mode, lenses, analysis_focus, output_subdir }`.
+
+## Rules
+
+### evidence-based-focus
+
+Every `analysis_focus` references specific target content discovered during the survey, never a generic description; a proposal's specific claims (e.g. market-size assertions) are named in the relevant dimension's `analysis_focus`.
+
+### dimension-focus
+
+Each `analysis_focus` names its evaluation dimension in descriptive language (`evaluate consistency of…`, `assess veracity of claims regarding…`, `analyse feasibility constraints for…`) so prism assigns dimension-prefixed finding IDs (CON-xx, VER-xx, FEA-xx) that the consolidation inherits unchanged.
