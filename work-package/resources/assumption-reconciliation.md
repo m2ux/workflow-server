@@ -2,7 +2,7 @@
 name: assumption-reconciliation
 description: Methodology for autonomous classify-analyze-converge resolution of assumptions through targeted codebase investigation, separating code-resolvable assumptions from those requiring stakeholder judgement.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 26
   legacy_id: 26
 ---
@@ -82,14 +82,7 @@ After reconciliation converges, the remaining open assumptions are presented to 
 
 ### What reconciliation does NOT provide
 
-The judgement augmentation step is responsible for:
-- Assembling per-assumption trade-off analysis from the raw evidence, covering relevant dimensions (implementation complexity, maintenance burden, consistency, side-effect risk, reversibility, requirements alignment, time/effort cost)
-- Ordering assumptions by decision impact for presentation
-- Presenting alternatives before the agent's position to reduce anchoring bias
-- Flagging decision reversibility (easily-reversible vs. path-committing)
-- Grouping related assumptions when presenting 5+ open items
-- Formatting the interview-style presentation
-- Framing the interaction as judgement augmentation (not triage)
+Trade-off assembly, impact ordering, anchoring-safe presentation, reversibility flagging, grouping, and interview formatting belong to the [interview](../techniques/review-assumptions/interview.md) operation — reconciliation only supplies the raw evidence.
 
 ### All-resolved case
 
@@ -117,15 +110,10 @@ The Open Questions table in the comprehension artifact is updated: questions ans
 
 ### Log structure after reconciliation
 
-Each resolved assumption includes:
-- **Finding** — what the analysis discovered
-- **Evidence** — file paths, line numbers, commit hashes
-- **Resolution** — Validated / Invalidated / Partially Validated
-- **Iteration** — which reconciliation cycle resolved it
+The log holds one table row per assumption (see the [assumptions log template](assumptions-review.md#assumptions-log-template)); reconciliation updates rows in place:
 
-Each open assumption includes:
-- **Classification rationale** — why it cannot be resolved through code analysis
-- **What would resolve it** — what external input or verification is needed
+- A **resolved** assumption's row records the finding and evidence (file paths, line numbers, commit hashes) in the Resolution column and Validated / Invalidated / Partially Validated in the Outcome column. No standalone per-assumption section is kept for resolved assumptions.
+- An **open** assumption keeps its row (Outcome `Open (<reason>)`) plus a full bold-label entry under Open Assumptions carrying the classification rationale (why code analysis cannot resolve it) and what external input would resolve it. The entry is removed when the assumption resolves.
 
 ### Markdown formatting rule
 

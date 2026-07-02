@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -34,5 +34,5 @@ Boolean gate — true iff any assumption was marked deferred (needs-discussion);
 ## Protocol
 
 1. Mark each assumption as confirmed, corrected, or needs-discussion
-2. Write outcomes and user responses back into the log, producing the `{assumptions_log}`
-3. Preserve all assumptions and their resolution status
+2. Write each outcome into the assumption's Log table row in place — `User` in the Resolution column; Confirmed / Corrected: <change> / Deferred: <follow-up> in the Outcome column — and remove its Open Assumptions entry. No separate response or outcome section is added (state-once-per-artifact).
+3. Preserve all assumption rows and their resolution status
