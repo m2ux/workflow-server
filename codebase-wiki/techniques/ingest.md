@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -39,7 +39,7 @@ The single source area to ingest — a module, package, subsystem, or file set n
 ### 3. Classify Into Typed Pages
 
 - Map what the area contains onto the four page types per the [wiki-format](../resources/wiki-format.md) taxonomy: `concept` (architectural concept, subsystem, or pattern), `entity` (a concrete code unit — module, package, class, service, endpoint), `source-summary` (a per-file or per-area digest of the raw source), `comparison` (a cross-cutting comparison of two or more units).
-- Choose a kebab-case page slug per page; place each page under the subfolder for its type.
+- Choose a kebab-case page slug (`{$page_slug}`) per page; place each page under the subfolder for its type.
 
 ### 4. Draft Cited, Confidence-Scored Claims
 
@@ -55,7 +55,7 @@ The single source area to ingest — a module, package, subsystem, or file set n
 
 ### 6. Write Pages
 
-- Write each page by delegating to [`work-package::manage-artifacts::write-artifact`](../../work-package/techniques/manage-artifacts/write-artifact.md), binding `bare_filename` to the page's `{page_slug}.md`, `artifact_content` to the page body, and `target_dir` to `{wiki_path}` (or the typed subfolder beneath it). The find-or-create behavior of `write-artifact` augments an existing page in place and creates a new one otherwise.
+- Write each page by delegating to [`work-package::manage-artifacts::write-artifact`](../../work-package/techniques/manage-artifacts/write-artifact.md), binding `bare_filename` to the page's `{$page_slug}.md`, `artifact_content` to the page body, and `target_dir` to `{wiki_path}` (or the typed subfolder beneath it). The find-or-create behavior of `write-artifact` augments an existing page in place and creates a new one otherwise.
 
 ## Outputs
 
@@ -65,7 +65,7 @@ The typed wiki pages created or updated for `{target_area}` — each with cited,
 
 #### artifact
 
-`{page_slug}.md`
+`{$page_slug}.md`
 
 #### page_slugs
 
