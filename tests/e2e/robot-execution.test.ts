@@ -111,7 +111,8 @@ describe('work-package robot execution (Layer 3c)', () => {
   // position, so there are NO orphan/unbound checkpoints — the deterministic robot reaches them all.
   // (Previously six situational checkpoints — block-interview, rationale-amendment, the three
   // start-work-package selection gates, body-non-conformant — were defined out-of-line and
-  // unreachable by the robot; the migration positioned them in the sequence.)
+  // unreachable by the robot; the migration positioned them in the sequence. rationale-amendment
+  // has since been removed entirely by the work-package 3.15.0 checkpoint consolidation.)
   const BASELINE_UNBOUND_CHECKPOINTS: string[] = [];
 
   it('surfaces no unbound checkpoints (all are inline kind:checkpoint steps)', () => {

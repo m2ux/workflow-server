@@ -1169,7 +1169,7 @@ describe('mcp-server integration', () => {
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const firstCpId = 'classification-confirmed'; // Known from the workflow
+      const firstCpId = 'classification-and-path-confirmed'; // Known from the workflow
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',
@@ -1179,7 +1179,7 @@ describe('mcp-server integration', () => {
 
       const cpResult = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_index: cpHandle, option_id: 'confirmed' }, // Assumes 'confirmed' is a valid option
+        arguments: { session_index: cpHandle, option_id: 'revise-classification' }, // Assumes 'revise-classification' is a valid option
       });
       expect(cpResult.isError).toBeFalsy();
       const response = parseToolResponse(cpResult);
@@ -1193,7 +1193,7 @@ describe('mcp-server integration', () => {
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const firstCpId = 'classification-confirmed';
+      const firstCpId = 'classification-and-path-confirmed';
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',
@@ -1258,7 +1258,7 @@ describe('mcp-server integration', () => {
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const unconditionalCpId = 'workflow-path-selected';
+      const unconditionalCpId = 'classification-and-path-confirmed';
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',
@@ -1370,13 +1370,13 @@ describe('mcp-server integration', () => {
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',
-        arguments: { session_index: tokenWithAct, checkpoint_id: 'classification-confirmed' },
+        arguments: { session_index: tokenWithAct, checkpoint_id: 'classification-and-path-confirmed' },
       });
       const cpHandle = (yieldResult._meta as Record<string, unknown>)['session_index'] as string;
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_index: cpHandle, option_id: 'confirmed', auto_advance: true },
+        arguments: { session_index: cpHandle, option_id: 'revise-classification', auto_advance: true },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
@@ -1390,7 +1390,7 @@ describe('mcp-server integration', () => {
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const firstCpId = 'classification-confirmed';
+      const firstCpId = 'classification-and-path-confirmed';
 
       await client.callTool({
         name: 'yield_checkpoint',
@@ -1414,7 +1414,7 @@ describe('mcp-server integration', () => {
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const firstCpId = 'classification-confirmed';
+      const firstCpId = 'classification-and-path-confirmed';
 
       await client.callTool({
         name: 'yield_checkpoint',
@@ -1423,7 +1423,7 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_index: tokenWithAct, option_id: 'confirmed' },
+        arguments: { session_index: tokenWithAct, option_id: 'revise-classification' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
@@ -1443,7 +1443,7 @@ describe('mcp-server integration', () => {
     it('respond_checkpoint errors when no active checkpoint is set', async () => {
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_index: sessionToken, option_id: 'confirmed' },
+        arguments: { session_index: sessionToken, option_id: 'revise-classification' },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
