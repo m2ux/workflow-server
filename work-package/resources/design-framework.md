@@ -1,75 +1,25 @@
 ---
 name: design-framework
-description: Guidelines for structuring problem-solving and solution design during work package planning, using systematic approaches to identify optimal solutions.
+description: TRIZICS solution-design methodology (conventional-first, inventive principles, synthesis) applied at plan time, and the design-philosophy artifact template. Problem definition and classification live on the design-philosophy technique operations.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   order: 9
   legacy_id: 9
 ---
 
 # Design Framework Guide
 
-Before designing a solution: define the problem clearly, classify the problem type, explore the solution space systematically (conventional before inventive), and make trade-offs with recorded rationale.
-
-## When to Apply
-
-**Full application when:**
-- Work package involves architectural decisions
-- Multiple implementation approaches are possible
-- Trade-offs or contradictions exist between requirements
-- Problem is complex or unfamiliar
-- Performance, reliability, or scalability requirements exist
-
-**Lightweight application acceptable when:**
-- Simple, well-understood change
-- Following existing established patterns
-- Minor bug fix with clear solution
-- Change can be completed in <30 minutes
+Systematic solution design: explore the solution space conventional-before-inventive and record trade-offs with rationale. Problem definition, classification, and path selection are owned by the [design-philosophy operations](../techniques/design-philosophy/TECHNIQUE.md) (define, classify, determine-path); this framework's solution-space areas are applied by plan-prepare, scoped to the assessed complexity (simple: definition + conventional + synthesis; moderate: add classification; complex: include inventive solutions).
 
 ## Design Framework: TRIZICS Approach
 
 Uses the **TRIZICS Software Design** methodology, adapted from systematic innovation principles. Five areas:
 
-1. **Identify & Define Problem** — Problem statement, system understanding, impact, constraints, root cause
-2. **Classify Problem Type** — Specific problem (cause known/unknown) vs. inventive goal (improvement/prevention)
+1. **Identify & Define Problem** — Problem statement, system understanding, impact, constraints, root cause ([define](../techniques/design-philosophy/define.md))
+2. **Classify Problem Type** — Specific problem (cause known/unknown) vs. inventive goal (improvement/prevention) ([classify](../techniques/design-philosophy/classify.md))
 3. **Conventional Solutions** — Design patterns, best practices, existing solutions, constraint analysis
 4. **Inventive Solutions** — Contradictions, inventive principles, ideal solution thinking (only if conventional solutions inadequate)
 5. **Solution Synthesis** — Architecture design, trade-offs, implementation roadmap, success metrics
-
-## Identify & Define Problem
-
-Problem definition checklist:
-
-- [ ] **Problem Statement**: Clear, specific, quantified — "The /users endpoint P95 latency exceeds 500ms under load >100 RPS", not "The API is slow"
-- [ ] **System Understanding**: Know the components, relationships, and context
-- [ ] **Impact Assessment**: Severity, frequency, and business impact
-- [ ] **Success Criteria**: Measurable outcomes that define "solved"
-- [ ] **Constraints**: Time, resources, technical limitations
-- [ ] **Root Cause**: Underlying cause vs. symptoms (if applicable)
-
-## Classify Problem Type
-
-| Specific Problem | Inventive Goal |
-|------------------|----------------|
-| Something is broken or not working | Want to improve or prevent future issues |
-| Focus: Fix or restore | Focus: Enhance or optimize |
-| Cause may be known or unknown | Proactive improvement |
-
-Decision tree:
-
-```
-Is something currently broken or failing?
-├─ YES → SPECIFIC PROBLEM
-│   ├─ Do you know the root cause?
-│   │   ├─ YES → Cause Known (direct fix)
-│   │   └─ NO → Cause Unknown (investigate first)
-│   │
-└─ NO → INVENTIVE GOAL
-    ├─ Are you improving existing capability?
-    │   └─ YES → Improvement goal
-    └─ Are you preventing future problems?
-        └─ YES → Prevention goal
-```
 
 ## Conventional Solutions
 
@@ -156,16 +106,6 @@ Design validation questions:
 - [ ] Can success be measured objectively?
 - [ ] Is the solution maintainable long-term?
 - [ ] Does it align with existing architecture and patterns?
-
-## Complexity-Based Path Selection
-
-Apply the appropriate complexity level — do not over-engineer:
-
-| Complexity | Approach |
-|------------|----------|
-| **Simple** (clear problem, known solution) | Problem definition, conventional solutions, synthesis |
-| **Moderate** (some uncertainty) | Add problem classification |
-| **Complex** (trade-offs, contradictions) | Include inventive solutions |
 
 ## Design Philosophy Artifact Template
 
