@@ -19,7 +19,6 @@ The workflow includes 27 resources that provide templates, guidance, and referen
 | `test-plan` | Test Plan | Test strategy and acceptance criteria template |
 | `pr-description` | PR Description | PR description template with required sections |
 | `assumptions-review` | Assumptions Review | Assumption collection, classification, and review protocol |
-| `task-completion-review` | Task Completion Review | Post-task review checklist |
 | `architecture-review` | Architecture Review | Architecture review criteria and checklist |
 | `rust-substrate-code-review` | Rust Substrate Code Review | Rust/Substrate-specific code review criteria |
 | `test-suite-review` | Test Suite Review | Test suite quality assessment framework |

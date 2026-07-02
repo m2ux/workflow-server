@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -63,3 +63,11 @@ Fabricating symbols is unacceptable. Documentation must reflect actual code, not
 ### stop-when-unverifiable
 
 When a symbol cannot be verified, do not proceed on the assumption that it exists. Investigate first; the symbol may not exist. Surface the uncertainty by setting `{has_uncertain_symbols}` true rather than guessing.
+
+### never-skip-review
+
+The self-review runs after every task — hidden errors and unvalidated design decisions compound across tasks; early surfacing enables course correction.
+
+### assumptions-to-the-log
+
+Assumptions surfaced during the task are collected by the implement activity's review-assumptions steps and recorded as rows in the [assumptions log](../resources/assumptions-review.md#assumptions-log-template) — including a null row when none arise, so the log shows the review ran. This review adds no per-task log sections of its own; symbol-verification failures surface through `{has_uncertain_symbols}`, not the log.
