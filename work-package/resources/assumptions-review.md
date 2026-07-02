@@ -16,16 +16,16 @@ Make implicit decisions explicit so they can be validated: after each phase or t
 
 Ask after each phase/task:
 
-- **Requirements** — What did I assume about requirements? Is the information current and valid? Did I treat a preference as a constraint (or vice versa)? What implicit requirements (error handling, logging, security boundaries) did I assume?
+- **Requirements** — What did I assume about requirements (ambiguities resolved without asking)? Is the information current and valid? Did I treat a preference as a constraint (or vice versa)? What implicit requirements (error handling, logging, security boundaries) did I assume?
 - **Design** — What alternatives did I reject, and why? Is this already solved by existing infrastructure, configuration, or an adjacent layer (check build scripts and deployment tools before proposing new code)? Is this the simplest solution? What implicit contracts (inputs, ordering, state) exist? Which edge cases did I handle or ignore?
-- **Scope** — What did I assume is out of scope? What would I do differently with more context?
+- **Scope** — What did I assume is out of scope? What would I do differently with more context (decisions I'm uncertain about)?
 - **Context-free** — Who should have been consulted? Did I solve the right problem? Am I asking the right questions?
 
 Common origins of false assumptions, to check against: missing/stale information, conditions that changed mid-implementation, requirements communicated verbally but never documented, overlooking existing solutions, and interpretation differences (observation, recall, requirement reading, ambiguous problem statements).
 
 ## Classification
 
-**Categories** (choose per phase; the bound activity's `assumption_categories` input is the authoritative list): Behavioral, Architectural, Interface, Performance, Compatibility, Scope, Implicit Requirements — plus phase-specific ones (Problem Interpretation, Complexity Assessment, Workflow Path, Requirement Interpretation, Scope Boundaries, Success Criteria Interpretation, Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment, Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding, Design Approach, Task Breakdown, Dependency, Test Strategy, Scope Decisions).
+**Categories** (choose per phase; the bound activity's `assumption_categories` input is the authoritative list): Behavioral (defaults, fallbacks, edge-case handling), Architectural (component boundaries, data flow direction, abstraction levels), Interface (function signatures, return types, error types), Performance (lazy vs eager, caching, algorithm choice), Compatibility (breaking changes, deprecation, migration paths), Scope (deferred features, intentional limitations), Implicit Requirements (unstated needs assumed present or absent) — plus phase-specific ones (Problem Interpretation, Complexity Assessment, Workflow Path, Requirement Interpretation, Scope Boundaries, Success Criteria Interpretation, Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment, Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding, Design Approach, Task Breakdown, Dependency, Test Strategy, Scope Decisions).
 
 **Risk**: **H** — affects multiple components, external interfaces, or security: validate before proceeding. **M** — affects current task scope: confirm at checkpoint. **L** — easily reversible: log for reference, batch validation acceptable.
 
