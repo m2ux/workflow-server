@@ -2,7 +2,7 @@
 name: web-research
 description: Guidelines for conducting web research during work package planning to discover current information, documentation, and best practices from external sources.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 8
   legacy_id: 8
 ---
@@ -10,103 +10,25 @@ metadata:
 
 # Web Research Guide
 
-**Purpose:** Guidelines for conducting web research during work package planning to discover current information, documentation, and best practices from external sources.
+After knowledge base research, use the WebSearch tool to supplement findings with current external information: official documentation for libraries/frameworks/APIs, community best practices, recent developments (new versions, deprecations, security advisories), and alternative approaches not covered internally. KB research provides institutional knowledge; web research provides current industry context.
 
----
+**Full research** when using external libraries or frameworks, integrating third-party services, working with unfamiliar technology, or when KB research didn't surface sufficient guidance. **Lightweight research** acceptable when the technology is well-established and stable, KB research was comprehensive, or the change is simple with a clear implementation path.
 
-## Overview
+## Research Protocol
 
-After completing knowledge base research, conduct web research to supplement findings with:
-- **Current Documentation** - Official docs for libraries, frameworks, APIs
-- **Community Best Practices** - Blog posts, tutorials, Stack Overflow answers
-- **Recent Developments** - New versions, deprecations, security advisories
-- **Alternative Approaches** - Solutions not covered in the knowledge base
-
-> **Key Insight:** Web research complements KB research by providing current, external perspectives. KB research provides institutional knowledge; web research provides broader industry context.
-
----
-
-## When to Apply This Guide
-
-**Always research when:**
-- Using external libraries or frameworks
-- Implementing integrations with third-party services
-- Work package involves unfamiliar technology
-- KB research didn't surface sufficient guidance
-
-**Lightweight research acceptable when:**
-- Technology is well-established and stable
-- KB research provided comprehensive guidance
-- Simple change with clear implementation path
-
----
-
-## Research Approach
-
-Use the WebSearch tool to query external sources, focusing on authoritative and recent content.
-
-### Step 1: Identify Knowledge Gaps
-
-From KB research findings, identify:
-- Questions not answered by internal documentation
-- Technologies or patterns needing current documentation
-- Areas where external validation would be valuable
-
-### Step 2: Search Authoritative Sources
-
-Prioritize searches that target:
-- Official documentation sites
-- Established technical blogs
-- GitHub repositories and discussions
-- Stack Overflow accepted answers
-
-**Search Tips:**
-- Include version numbers when relevant
-- Add current year for recent information
-- Use site-specific searches for authoritative sources (e.g., "site:docs.rust-lang.org")
-
-### Step 3: Validate Findings
-
-For each finding, assess:
-- **Recency** - Is the information current?
-- **Authority** - Is the source reputable?
-- **Relevance** - Does it apply to our context?
-- **Consistency** - Does it align with other findings?
-
-### Step 4: Cross-Reference with KB Research
-
-Connect web findings to KB research:
-- Do external sources confirm internal patterns?
-- Are there contradictions to resolve?
-- What additional context do external sources provide?
-
-### Step 5: Document Findings
-
-Record findings in the research document alongside KB research findings.
-
----
-
-## Research Checklist
-
-- [ ] Knowledge gaps identified from KB research
-- [ ] Authoritative sources searched
-- [ ] Official documentation consulted for external dependencies
-- [ ] Findings validated for recency and relevance
-- [ ] Cross-referenced with KB research findings
-- [ ] Contradictions or gaps noted for resolution
-- [ ] Findings documented with source URLs
-
----
+1. **Identify knowledge gaps** from KB research: questions internal documentation didn't answer, technologies needing current docs, areas where external validation adds value.
+2. **Search authoritative sources** — prioritize official documentation sites, established technical blogs, GitHub repositories/discussions, Stack Overflow accepted answers. Include version numbers when relevant; add the current year for recent information; use site-specific searches for authoritative sources (e.g. `site:docs.rust-lang.org`).
+3. **Validate each finding** for recency (current? sources over ~2 years old are suspect for fast-moving tech), authority (reputable source?), relevance (applies to our context?), and consistency (aligns with other findings?).
+4. **Cross-reference with KB research** — do external sources confirm internal patterns? Note contradictions for resolution and any additional context.
+5. **Document findings** in the existing research document alongside KB findings, with source URLs.
 
 ## Planning Artifact
 
-Add web research findings to the existing research document:
+Append web research findings to the existing research document (kb-research.md):
 
-**Template (append to kb-research.md):**
+**Template:**
 
 ```markdown
----
-
 ## Web Research Findings
 
 ### Search Queries Used
@@ -114,94 +36,38 @@ Add web research findings to the existing research document:
 | Query | Sources Consulted | Key Findings |
 |-------|-------------------|--------------|
 | [query 1] | [sources] | [summary] |
-| [query 2] | [sources] | [summary] |
-
----
 
 ### External Documentation
 
 | Source | URL | Key Insights | Relevance |
 |--------|-----|--------------|-----------|
 | [Official docs] | [URL] | [Insights] | HIGH/MEDIUM/LOW |
-| [Blog/Tutorial] | [URL] | [Insights] | HIGH/MEDIUM/LOW |
-
----
 
 ### Community Practices
+[Omit this section if none]
 
 | Practice | Source | Application |
 |----------|--------|-------------|
 | [Practice] | [URL] | [How it applies] |
 
----
-
 ### Version/Compatibility Notes
+[Omit this section if none]
 
 | Dependency | Current Version | Notes |
 |------------|-----------------|-------|
 | [Library] | [Version] | [Compatibility notes] |
 
----
-
 ### Alignment with KB Research
+
+[Exception-only: if all KB findings were confirmed, state "All N KB findings confirmed by external sources." in one line; add rows only for contradicted or extended findings]
 
 | KB Finding | Web Validation | Notes |
 |------------|----------------|-------|
-| [Pattern from KB] | Confirmed/Contradicted/Extended | [Details] |
-
----
+| [Pattern from KB] | Contradicted/Extended | [Details] |
 ```
 
----
+## Rules
 
-## Quality Indicators
-
-### Good Web Research
-
-- ✅ Official documentation consulted
-- ✅ Multiple sources cross-referenced
-- ✅ Recent sources prioritized
-- ✅ Findings include specific URLs
-- ✅ Clear connection to work package needs
-
-### Insufficient Web Research
-
-- ❌ Single source only
-- ❌ Outdated information (> 2 years for fast-moving tech)
-- ❌ No official documentation consulted
-- ❌ Generic advice without specifics
-- ❌ No URLs or citations
-
----
-
-## Examples
-
-### Good Web Research Finding
-
-```markdown
-### React Server Components Patterns
-**Source:** React Official Docs (https://react.dev/reference/rsc/server-components)  
-**Relevance:** Work package involves migrating to App Router  
-**Key Insight:** "Server Components can directly access backend resources 
-without exposing credentials to the client. Use 'use server' directive for 
-server actions that mutate data."
-
-**Application:** Our API routes can be simplified by using Server Components 
-for data fetching, reducing client bundle size by ~40% based on similar 
-migrations documented in the React blog.
-```
-
-### Poor Web Research Finding
-
-```markdown
-### React
-Found some articles about React. It's a popular framework.
-```
-
----
-
-## Related Guides
-
-- [Knowledge Base Research Guide](knowledge-base-research.md)
-- [Design Framework Guide](design-framework.md)
-- [Implementation Analysis Guide](implementation-analysis.md)
+- Consult official documentation for every external dependency; a single source is insufficient.
+- Every finding carries a specific URL and states its application to this work package (e.g. "Server Components fetch data server-side → removes our client API routes"), not generic observations ("React is a popular framework").
+- Prioritize recent sources; flag anything older than ~2 years for fast-moving technology.

@@ -1,8 +1,8 @@
 ---
 name: codebase-comprehension
-description: Resource for the codebase-comprehension activity. Provides the artifact template, comprehension techniques, and guidance for building persistent knowledge artifacts.
+description: Resource for the codebase-comprehension activity. Provides the artifact template and comprehension techniques for building persistent knowledge artifacts.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 25
   legacy_id: 25
 ---
@@ -10,144 +10,96 @@ metadata:
 
 # Codebase Comprehension Guide
 
-Resource for the `codebase-comprehension` activity. Provides the artifact template, comprehension techniques, and guidance for building persistent knowledge artifacts.
-
-## Purpose
-
-When maintaining or extending an unfamiliar codebase, there is a knowledge gap between the AI agent's ability to propose design choices and the user's ability to evaluate those choices. This activity bridges that gap by systematically building a mental model of the codebase before design decisions are made.
-
-The resulting artifacts persist in `.engineering/artifacts/comprehension/` and grow across successive work packages, forming a cumulative knowledge base.
+Systematically build a mental model of an unfamiliar codebase before design decisions are made. Artifacts persist in `.engineering/artifacts/comprehension/` and are augmented across successive work packages into a cumulative knowledge base.
 
 ## Comprehension Techniques
 
-The approach draws on established program comprehension, reverse engineering, and code forensics research from multiple disciplines.
-
 ### 1. Reverse Engineering Patterns (Demeyer, Ducasse, Nierstrasz)
 
-The *Object-Oriented Reengineering Patterns* book defines reverse engineering as "the process of analyzing a subject system to identify the system's components and their interrelationships and create representations of the system in another form or at a higher level of abstraction." Several patterns from the "Setting Direction" and "First Contact" clusters apply directly:
-
-- **Read All the Code in One Hour**: Skim the entire codebase in a time-boxed session to form initial hypotheses about structure, conventions, and complexity. Do not attempt deep understanding — the goal is orientation and pattern recognition.
-- **Skim the Documentation**: Review available documentation (README, architecture docs, API docs, comments) for stated design intent. Note where documentation diverges from code — these gaps reveal undocumented evolution.
-- **Interview During Demo**: If possible, have an expert walk through the system's behavior. In the AI-assisted context, trace execution paths through key use cases as a substitute.
-- **Do a Mock Installation**: Build and run the system to understand its operational behavior, dependencies, and configuration. Reveals assumptions not visible in static code reading.
-- **Analyze the Persistent Data**: Examine database schemas, configuration files, and data structures to understand the domain model from a data perspective. The persistent data often reveals the true domain model more reliably than code structure.
-
-The key insight from the reengineering literature: "all reengineering activity must start with some reverse engineering, since you will not be able to trust the documentation."
+- **Read All the Code in One Hour**: time-boxed skim of the entire codebase to form initial hypotheses about structure, conventions, complexity. Orientation only — no deep understanding.
+- **Skim the Documentation**: review README, architecture docs, API docs, comments for stated design intent. Note where documentation diverges from code — gaps reveal undocumented evolution. Never trust documentation without verifying against code.
+- **Interview During Demo**: absent an expert walkthrough, trace execution paths through key use cases as the substitute.
+- **Do a Mock Installation**: build and run the system to reveal operational behavior, dependencies, and configuration assumptions invisible to static reading.
+- **Analyze the Persistent Data**: database schemas, config files, and data structures often reveal the true domain model more reliably than code structure.
 
 ### 2. Code Forensics (Tornhill)
 
-*Your Code as a Crime Scene* and *Software Design X-Rays* apply forensic psychology and behavioral analysis techniques to codebases. These techniques are particularly effective for identifying where to focus comprehension effort:
+Use these to decide where to focus comprehension effort:
 
-- **Hotspot Analysis**: Identify files with high change frequency combined with high complexity. These are the areas where understanding matters most — they change often and are hard to reason about. Use `git log --format=format: --name-only | sort | uniq -c | sort -rn` to find change frequency.
-- **Temporal Coupling Analysis**: Find files that change together across commits, even if they have no direct code dependency. This reveals hidden architectural relationships that aren't visible from import/dependency analysis alone.
-- **Knowledge Maps**: Use `git blame` and commit history to identify who understands which parts of the code. Areas with departed developers or single-author ownership represent knowledge concentration risks.
-- **Complexity Trends**: Track whether specific files are growing more complex over time (rising hotspots) or stabilizing. Rising hotspots indicate areas where design drift is occurring.
-- **Change Coupling Across Boundaries**: When files in different modules consistently change together, it suggests either a missing abstraction or an architectural boundary violation. These cross-boundary couplings are prime candidates for deep-dive exploration.
-
-The forensic approach prioritizes understanding: "optimize for understanding" by focusing on the areas where the evidence (version history) shows the most activity and complexity.
+- **Hotspot Analysis**: high change frequency x high complexity = where understanding matters most. Change frequency: `git log --format=format: --name-only | sort | uniq -c | sort -rn`.
+- **Temporal Coupling**: files that change together across commits without direct code dependency reveal hidden architectural relationships.
+- **Knowledge Maps**: `git blame` and commit history to find single-author or departed-owner areas — knowledge concentration risks.
+- **Complexity Trends**: files growing more complex over time (rising hotspots) indicate design drift.
+- **Change Coupling Across Boundaries**: cross-module co-change suggests a missing abstraction or boundary violation — prime deep-dive candidates.
 
 ### 3. Legacy Code Characterization (Feathers)
 
-*Working Effectively with Legacy Code* defines legacy code as "code without tests" and provides techniques for understanding code before modification:
-
-- **Sensing Variables**: Identify the key variables and state that flow through the area under study. Understanding state flow reveals the operational semantics of the code.
-- **Seam Identification**: Find the natural points where the system can be decomposed for understanding — places where behavior can be observed or intercepted without modifying the code.
-- **Effect Sketches**: Draw informal diagrams showing how changes to one part of the code propagate effects through the system. This reveals coupling that is not obvious from static analysis.
-- **Characterization Tests**: Write tests that document the current behavior of the code (not what it should do, but what it actually does). These serve as both comprehension aids and safety nets.
+- **Sensing Variables**: identify key variables and state flowing through the area under study — state flow reveals operational semantics.
+- **Seam Identification**: find points where behavior can be observed or intercepted without modifying the code.
+- **Effect Sketches**: informal diagrams of how changes propagate effects through the system — reveals coupling not visible statically.
+- **Characterization Tests**: tests documenting what the code actually does (not what it should do); both comprehension aid and safety net.
 
 ### 4. Code Reading Strategies (Spinellis)
 
-*Code Reading: The Open Source Perspective* provides systematic strategies for reading unfamiliar code:
-
-- **Top-Down Strategy**: Start with the highest-level entry point and trace downward through the call hierarchy. Suitable when the system has clear entry points and layered architecture.
-- **Bottom-Up Strategy**: Start with the data structures and types, then understand how they are manipulated. Suitable for data-intensive systems or when the architecture is opaque.
-- **Build System as Map**: The build configuration (Cargo.toml, package.json, Makefile) reveals module boundaries, dependencies, and the intended compilation/linking structure.
-- **Naming Conventions as Signal**: Consistent naming conventions encode domain knowledge. Inconsistent naming often marks boundaries between different development eras or teams.
-- **Graph Properties**: Understand the dependency graph: is it a DAG? Are there cycles? What's the fan-in and fan-out of key modules? The shape of the dependency graph reveals architectural intent.
+- **Top-Down**: trace from the highest-level entry point down the call hierarchy — for systems with clear entry points and layered architecture.
+- **Bottom-Up**: start with data structures and types, then how they are manipulated — for data-intensive systems or opaque architecture.
+- **Build System as Map**: Cargo.toml/package.json/Makefile reveal module boundaries, dependencies, and intended structure.
+- **Naming Conventions as Signal**: consistent naming encodes domain knowledge; inconsistency marks boundaries between development eras or teams.
+- **Graph Properties**: is the dependency graph a DAG? Cycles? Fan-in/fan-out of key modules? The shape reveals architectural intent.
 
 ### 5. Hypothesis-Driven Top-Down Comprehension
 
-Start with high-level hypotheses about the codebase's structure and purpose, then verify them by examining code. This mirrors how expert developers naturally approach unfamiliar code (von Mayrhauser & Vans, 1995).
-
-- Form an initial hypothesis about the architecture from directory layout and build configuration
-- Verify by sampling key files: entry points, module roots, public APIs
-- Revise hypotheses as evidence accumulates
-- Document verified understanding and open questions
+Form an initial architecture hypothesis from directory layout and build configuration; verify by sampling entry points, module roots, public APIs; revise as evidence accumulates; document verified understanding and open questions.
 
 ### 6. Hierarchical Decomposition
 
-Break the codebase into layers of understanding, progressing from broad to specific:
-
 | Layer | Focus | Questions Answered |
 |-------|-------|--------------------|
-| **Architecture** | Project structure, module boundaries, design patterns | How is the system organized? What are the major subsystems? |
+| **Architecture** | Project structure, module boundaries, design patterns | How is the system organized? Major subsystems? |
 | **Module** | Responsibilities, dependencies, public interfaces | What does each module do? How do modules interact? |
 | **Abstraction** | Core types, traits, data structures, error handling | What are the building blocks? How is state managed? |
-| **Design Rationale** | Why patterns were chosen, trade-offs, constraints | Why was it built this way? What does this optimize for? |
-| **Domain** | Business concepts, domain terminology, use cases | What real-world problem does this solve? |
+| **Design Rationale** | Why patterns were chosen, trade-offs, constraints | Why was it built this way? What does it optimize for? |
+| **Domain** | Business concepts, terminology, use cases | What real-world problem does this solve? |
 
 ### 7. Elaboration and Connection
 
-Connect new information to existing knowledge structures. For each design choice observed, ask:
-
-- Why this approach over alternatives?
-- What constraints led to this design?
-- How does this relate to patterns I already know?
-- What are the implications for the change I need to make?
+For each observed design choice ask: why this over alternatives? What constraints led here? How does it relate to known patterns? What are the implications for the change I need to make?
 
 ### 8. Progressive Deepening
 
-Not all areas require equal depth. Use hotspot analysis and problem relevance to focus comprehension effort:
-
-- **Shallow pass**: All modules get architecture-level understanding via the "Read All the Code in One Hour" pattern
-- **Medium depth**: Modules adjacent to the change area and temporal coupling partners get abstraction-level understanding
-- **Deep dive**: Hotspots and the specific subsystem being modified get full comprehension including design rationale, effect sketches, and characterization
+- **Shallow pass**: all modules get architecture-level understanding (Read All the Code in One Hour).
+- **Medium depth**: modules adjacent to the change area and temporal-coupling partners get abstraction-level understanding.
+- **Deep dive**: hotspots and the subsystem being modified get full comprehension — design rationale, effect sketches, characterization.
 
 ### 9. Data Flow Tracing and Operational Context
 
-Structural comprehension (architecture, abstractions, design rationale) answers "what exists" but not "how data moves through the system" or "what happens when things go wrong at runtime." These gaps are particularly dangerous when the work package adds validation or guard logic — understanding only the consumer side of a data flow can lead to guards that reject legitimate data, or assertions that assume invariants the producer doesn't guarantee.
+Structural comprehension answers "what exists", not "how data moves" or "what happens at runtime when things go wrong". These gaps are most dangerous when the work package adds validation or guard logic: understanding only the consumer side can produce guards that reject legitimate data.
 
 #### Data Flow Tracing
 
-For each function or code path the work package will modify, trace the data flow end-to-end before proposing any design:
+For each function or code path the work package will modify, trace end-to-end before proposing any design:
 
-- **Upstream**: Where does the input data originate? Identify the producer — the code that constructs the values this function receives. Read the producer's implementation, not just the consumer's expectations. If the producer is in a different module, crate, or service, that is precisely where comprehension must extend.
-- **Transformations**: What happens to the data between production and consumption? Are there intermediate steps that filter, aggregate, clamp, or reformat the data?
-- **Downstream**: Where does the output go? Who reads the values this function writes? How do downstream consumers react to different output states?
-- **Invariant alignment**: What invariants does the producer guarantee? What invariants does the consumer assume? If the consumer plans to add a validation (e.g., an `ensure!` guard), verify that the producer can always satisfy it. A consumer-side assertion for an invariant the producer doesn't enforce creates a failure mode where legitimate data is rejected.
+- **Upstream**: where does input data originate? Read the producer's implementation, not just the consumer's expectations. If the producer is in a different module, crate, or service, comprehension must extend there.
+- **Transformations**: intermediate steps that filter, aggregate, clamp, or reformat between production and consumption.
+- **Downstream**: who reads the outputs, and how do consumers react to different output states?
+- **Invariant alignment**: what invariants does the producer guarantee vs. what the consumer assumes? Before adding a validation (e.g. an `ensure!` guard), verify the producer can always satisfy it. A consumer-side assertion for an invariant the producer doesn't enforce rejects legitimate data.
 
-The most common comprehension failure is staying inside the module being modified. If the work package touches function F in module M, but F's inputs come from module P, the comprehension must include P — otherwise, the agent proposes guards that are structurally correct within M but operationally wrong because P can produce values that violate them.
+The most common comprehension failure is staying inside the module being modified: if function F in module M takes inputs from module P, comprehension must include P — otherwise guards are structurally correct within M but operationally wrong.
 
 #### Operational Context and Failure Modes
 
-Static code reading reveals structure. Operational analysis reveals behavior — especially failure behavior. For the code path being modified:
+For the code path being modified:
 
-- **Execution context**: What dispatch class, thread model, or execution priority does this code run under? In Substrate, a `Mandatory` dispatch that returns an error causes the block to be rejected. In a consensus system where all nodes process the same inputs, a rejected block means every node rejects it — the network halts. Understanding the execution context determines whether an error is a local retry, a skipped item, or a system-wide halt.
-- **Error propagation**: Trace what happens when this code returns an error. Is the error caught and handled? Does it propagate to a transaction boundary with rollback? Does it surface to the user? Does it halt processing? For inherent extrinsics, check `IsFatalError` — if all variants return `true`, every error is fatal.
-- **Operational scenarios**: Consider conditions beyond the steady-state happy path:
-  - **Startup and genesis**: What are the initial values? Does the first invocation produce data that looks different from subsequent ones? A guard that assumes "previous value is meaningful" may fail on the first block after genesis when the previous value is a zero/default.
-  - **Recovery after downtime**: If the system was offline and external state advanced significantly, what happens on the first invocation after restart? A bounded-advance guard may reject the catch-up jump.
-  - **External system timing**: How frequently is this code invoked relative to external state changes it depends on? If the code runs every 6 seconds but the external system updates every 20 seconds, the same external state will be observed across multiple invocations — equal inputs are the common case, not an edge case.
-  - **Reorganization and rollback**: If an external chain (e.g., Cardano) reorganizes, what values does the data provider produce? Can the same numeric position appear with a different hash?
-- **Consensus implications**: For consensus-critical code, if every node receives the same input from the same data provider, then every node will hit the same error. A guard that rejects "invalid" data in this context doesn't protect the system — it halts it. The principle: any assertion in a consensus-critical consumer must be matched by enforcement in the producer. If the producer doesn't guarantee the invariant, the consumer must handle violations without halting.
+- **Execution context**: dispatch class, thread model, execution priority. In Substrate, a `Mandatory` dispatch returning an error rejects the block; in a consensus system where all nodes process the same inputs, that halts the network. Execution context determines whether an error is a local retry, a skipped item, or a system-wide halt.
+- **Error propagation**: trace what happens on error — caught and handled? Rolled back at a transaction boundary? Surfaced to the user? Halts processing? For inherent extrinsics, check `IsFatalError` — if all variants return `true`, every error is fatal.
+- **Operational scenarios** beyond the steady-state happy path:
+  - **Startup and genesis**: initial values; a guard assuming "previous value is meaningful" may fail on the first block after genesis when the previous value is zero/default.
+  - **Recovery after downtime**: if external state advanced significantly while offline, a bounded-advance guard may reject the catch-up jump.
+  - **External system timing**: if this code runs every 6 s but the external system updates every 20 s, equal inputs across invocations are the common case, not an edge case.
+  - **Reorganization and rollback**: if an external chain (e.g. Cardano) reorganizes, can the same numeric position appear with a different hash?
+- **Consensus implications**: if every node receives the same input, every node hits the same error — a guard that rejects "invalid" data doesn't protect the system, it halts it. Any assertion in a consensus-critical consumer must be matched by enforcement in the producer; if the producer doesn't guarantee the invariant, the consumer must handle violations without halting.
 
-#### Integrating These Techniques
-
-Data flow tracing and operational analysis are not separate activities performed at the end — they should be woven into the architecture survey and deep-dive steps. When examining a module's key abstractions, ask "where does this data come from?" When documenting design rationale, ask "what happens if this fails?" When mapping domain concepts, ask "what is the timing relationship between this system and its dependencies?"
-
-The comprehension artifact's Open Questions section should include questions in these categories. Questions like "Does the producer enforce the window bound?" or "What happens at genesis when the previous position is zero?" are exactly the kind of questions that prevent guards from becoming halt vectors.
-
-## Knowledge Base References
-
-The following sources in the knowledge base are directly relevant to this activity:
-
-| Source | Key Contributions |
-|--------|-------------------|
-| *Object-Oriented Reengineering Patterns* (Demeyer, Ducasse, Nierstrasz) | Setting Direction and First Contact pattern clusters; reverse engineering lifecycle; system understanding patterns |
-| *Your Code as a Crime Scene* (Tornhill) | Forensic code analysis; hotspot identification; temporal coupling; knowledge maps; organizational metrics |
-| *Software Design X-Rays* (Tornhill) | Behavioral code analysis; complexity trends; change coupling; fractal value analysis; architectural hotspots |
-| *Code Reading: The Open Source Perspective* (Spinellis) | Code reading strategies; program comprehension; software archaeology; build system analysis |
-| *Working Effectively with Legacy Code* (Feathers) | Seam identification; characterization tests; dependency breaking; sensing variables; effect analysis |
+Weave these into the architecture survey and deep dives, not as a separate end step: when examining key abstractions ask "where does this data come from?"; when documenting rationale ask "what happens if this fails?"; when mapping domain concepts ask "what is the timing relationship with dependencies?". The artifact's Open Questions should include questions of this kind ("Does the producer enforce the window bound?", "What happens at genesis when the previous position is zero?") — they prevent guards from becoming halt vectors.
 
 ## Artifact Template
 
@@ -156,10 +108,7 @@ Comprehension artifacts follow this structure. When augmenting an existing artif
 ```markdown
 # {Codebase Area Name} — Comprehension Artifact
 
-> **Last updated**: YYYY-MM-DD  
-> **Work packages**: [list of work package references that contributed]  
-> **Coverage**: [brief description of what this artifact covers]  
-> **Related artifacts**: [cross-references to other comprehension artifacts]
+> YYYY-MM-DD · work packages: [contributing refs] · coverage: [what this artifact covers] · related: [cross-refs to other comprehension artifacts; omit if none]
 
 ## Architecture Overview
 
@@ -167,7 +116,7 @@ Comprehension artifacts follow this structure. When augmenting an existing artif
 [Directory layout, build system, entry points]
 
 ### Module Map
-[Modules, their responsibilities, and dependency relationships]
+[Modules, responsibilities, dependency relationships]
 
 ### Design Patterns
 [Overarching architectural patterns observed: layered, event-driven, etc.]
@@ -178,7 +127,7 @@ Comprehension artifacts follow this structure. When augmenting an existing artif
 [Primary types/structs/classes and their roles]
 
 ### Traits and Interfaces
-[Key traits/interfaces, their purposes, and implementors]
+[Key traits/interfaces, purposes, implementors]
 
 ### Data Model
 [Core data structures, relationships, state management]
@@ -188,25 +137,23 @@ Comprehension artifacts follow this structure. When augmenting an existing artif
 
 ## Design Rationale
 
-### {Decision Area 1}
+### {Decision Area}
 - **Observation**: [What was observed]
 - **Hypothesized rationale**: [Why this choice was likely made]
-- **Trade-offs**: [What this optimizes for vs. what it sacrifices]
+- **Trade-offs**: [What this optimizes for vs. sacrifices]
 - **Implications for changes**: [How this affects modifications]
 
-### {Decision Area N}
-[Same structure for each significant design choice]
+[Repeat per significant design choice]
 
 ## Data Flow and Operational Context
 
 ### Data Flow Map
-[For each function the work package modifies: producer → transformations → consumer]
-[Document which module produces the input data, what invariants the producer guarantees]
+[Per function the work package modifies: producer → transformations → consumer; which module produces the input, what invariants the producer guarantees]
 
 ### Invariant Alignment
 | Invariant | Producer Enforces? | Consumer Assumes? | Gap? |
 |-----------|-------------------|-------------------|------|
-| [invariant] | [yes/no — cite code] | [yes/no] | [description of gap if any] |
+| [invariant] | [yes/no — cite code] | [yes/no] | [gap description if any] |
 
 ### Execution Context
 [Dispatch class, error propagation path, failure consequences]
@@ -229,21 +176,18 @@ Comprehension artifacts follow this structure. When augmenting an existing artif
 ### Domain Model
 [How domain concepts map to code structure]
 
+## Open Questions
+
+[Unresolved questions, including producer-guarantee and operational-scenario questions]
+
 ## Deep-Dive Sections
 
 ### {Area Name} — [YYYY-MM-DD]
 [Targeted exploration findings: data flows, implementation details, edge cases]
-
----
-*This artifact is part of a persistent knowledge base. It is augmented across
-successive work packages to build cumulative codebase understanding.*
 ```
 
 ## Cross-Referencing
 
-When creating or updating comprehension artifacts:
-
-- Check if other comprehension artifacts reference the same modules or types
-- Add cross-references in the metadata header
-- Note when understanding of one area depends on understanding of another
-- If the current work package's problem spans multiple codebase areas, create or update separate artifacts for each and note the relationship
+- Check whether other comprehension artifacts reference the same modules or types; add cross-references in the header line.
+- Note when understanding of one area depends on another.
+- If the work package's problem spans multiple codebase areas, create or update a separate artifact per area and note the relationship.

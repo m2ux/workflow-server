@@ -2,32 +2,20 @@
 name: strategic-review
 description: Ensures the final implementation is minimal and focused by identifying and removing speculative or unnecessary changes before finalizing the PR.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 18
   legacy_id: 18
 ---
 
-
 # Strategic Review Guide
 
-## Purpose
+Problem-solving commonly leaves behind speculative changes, debugging infrastructure, or exploratory code that becomes unnecessary once the root cause is understood. The strategic review finds and removes these before finalizing the PR, so PRs are clean, reviewable, and contain only intentional changes.
 
-The strategic review ensures the final implementation is minimal and focused. During problem-solving, it's common to add speculative changes, debugging infrastructure, or exploratory code that becomes unnecessary once the root cause is understood. This review identifies and removes such artifacts before finalizing the PR.
+Perform it in the Strategic Review activity, after validation and before finalization. Especially important when: the implementation involved significant investigation or debugging; multiple approaches were tried; infrastructure or tooling changes were made during development; or the final solution is simpler than initially anticipated.
 
-## When to Perform
-
-Perform a strategic review in the Strategic Review activity, after validation and before finalization. The review is especially important when:
-
-- The implementation involved significant investigation or debugging
-- Multiple approaches were tried before finding the solution
-- Infrastructure or tooling changes were made during development
-- The final solution is simpler than initially anticipated
-
-## Review Checklist
+## Review Procedure
 
 ### 1. Speculative Changes Audit
-
-Identify changes made during investigation that are no longer required:
 
 | Category | Questions to Ask |
 |----------|------------------|
@@ -39,8 +27,6 @@ Identify changes made during investigation that are no longer required:
 
 ### 2. Compare Against Baseline
 
-Compare the current branch against the parent/base branch:
-
 ```bash
 # List all files changed in this branch
 git diff --name-only <base-branch> HEAD
@@ -49,16 +35,13 @@ git diff --name-only <base-branch> HEAD
 git diff <base-branch> HEAD -- <file>
 ```
 
-**For each changed file, verify:**
-
+For each changed file, verify:
 - [ ] The change directly supports the solution (not a speculative attempt)
 - [ ] The change is minimal (no unnecessary additions)
 - [ ] The change doesn't include debugging artifacts
 - [ ] The change wasn't superseded by a simpler approach
 
 ### 3. Solution Minimality Check
-
-Ask these questions about the final implementation:
 
 | Question | If "No" |
 |----------|---------|
@@ -70,63 +53,22 @@ Ask these questions about the final implementation:
 
 ### 4. Revert Unnecessary Changes
 
-For changes identified as unnecessary:
-
 ```bash
 # Revert a specific file to match the base branch
 git checkout <base-branch> -- <file>
 
 # Or use interactive staging to selectively revert portions
 git checkout -p <base-branch> -- <file>
-```
 
-**Stage reverted changes:**
-
-```bash
+# Stage reverted changes
 git add <reverted-files>
 ```
 
-## Common Patterns to Watch For
+## Finding Categories
 
-### Investigation Artifacts
-
-Changes made while understanding the problem:
-
-- Extra logging or print statements
-- Verbose error messages for debugging
-- Temporary workarounds that were superseded
-- Test configurations that were exploratory
-
-### Over-Engineering
-
-Solutions that grew beyond what was needed:
-
-- Generic abstractions for specific problems
-- Fallback mechanisms for cases that can't occur
-- Configuration options that aren't used
-- Infrastructure for features not implemented
-
-### Orphaned Infrastructure
-
-Supporting changes that outlived their purpose:
-
-- CI job dependencies added for failed approaches
-- Environment variables for abandoned features
-- Build steps for removed functionality
-- Wait/synchronization logic that's unnecessary
-
-## Summary
-
-The strategic review prevents "solution sprawl" by:
-
-1. **Auditing** all changes against the baseline
-2. **Identifying** speculative or unnecessary modifications
-3. **Reverting** changes that don't support the final solution
-4. **Verifying** the implementation is minimal and focused
-
-This ensures PRs are clean, reviewable, and contain only intentional changes.
-
----
+- **Investigation Artifacts** — changes made while understanding the problem: extra logging or print statements, verbose error messages for debugging, temporary workarounds that were superseded, exploratory test configurations.
+- **Over-Engineering** — solutions that grew beyond what was needed: generic abstractions for specific problems, fallback mechanisms for cases that can't occur, unused configuration options, infrastructure for features not implemented.
+- **Orphaned Infrastructure** — supporting changes that outlived their purpose: CI job dependencies added for failed approaches, environment variables for abandoned features, build steps for removed functionality, unnecessary wait/synchronization logic.
 
 ## Strategic Review Artifact Template
 
@@ -135,21 +77,9 @@ Create `strategic-review-{n}.md` in the planning folder using this template (the
 ```markdown
 # Strategic Review
 
-**Work Package:** [Name]  
-**Issue:** #[number] - [Title]  
-**Date:** YYYY-MM-DD  
-**Reviewer:** [Agent/Human]
+> strategic-review · [work package] · [base-branch] → [feature-branch] · [date] · [Agent/Human]
 
----
-
-## Review Scope
-
-**Base Branch:** [main/develop]  
-**Feature Branch:** [branch-name]  
-**Files Changed:** [count]  
-**Lines Changed:** +[added] / -[removed]
-
----
+**Diff:** [count] files, +[added] / -[removed]
 
 ## Findings Summary
 
@@ -160,87 +90,61 @@ Create `strategic-review-{n}.md` in the planning folder using this template (the
 | Orphaned Infrastructure | [count] | [Remove/Keep/Partial] |
 | **Total** | **[count]** | |
 
----
-
 ## Investigation Artifacts
 
-Items added during debugging/investigation that may no longer be needed:
+[Omit this section if none found]
 
 | File | Line(s) | Description | Action | Rationale |
 |------|---------|-------------|--------|-----------|
 | [file.rs] | [10-15] | Debug logging for X | Remove | No longer needed after fix |
-| [file.rs] | [42] | Verbose error message | Keep | Useful for production debugging |
-
----
 
 ## Over-Engineering
 
-Solutions that grew beyond what was needed:
+[Omit this section if none found]
 
 | File | Description | Action | Rationale |
 |------|-------------|--------|-----------|
 | [file.rs] | Generic abstraction for specific case | Simplify | Only one use case exists |
-| [config.rs] | Unused configuration options | Remove | Not used by implementation |
-
----
 
 ## Orphaned Infrastructure
 
-Supporting changes that outlived their purpose:
+[Omit this section if none found]
 
 | File | Description | Action | Rationale |
 |------|-------------|--------|-----------|
 | [ci.yml] | Build step for abandoned approach | Remove | Approach was superseded |
-| [.env] | Environment variable for removed feature | Remove | Feature not implemented |
-
----
 
 ## Scope Assessment
 
-Assess whether the changes stay within the work package requirements, and flag any scope creep for user decision:
+[Exception-only: if every change maps to a requirement, state "All changes in scope — minimal and focused" on one line. Add rows only for scope creep, flagged for user decision.]
 
 | File / Change | In Scope? | Notes |
 |---------------|-----------|-------|
-| [file.rs] | Yes/No | [Maps to requirement / flagged as scope creep] |
-| [file.rs] | Yes/No | [Maps to requirement / flagged as scope creep] |
-
-**Overall:** [Minimal and focused / Scope creep identified — see flagged items above]
-
----
+| [file.rs] | No | [Flagged as scope creep — reason] |
 
 ## PR Body Conformance
 
-Findings from verifying the live PR body against the required format:
+[Exception-only: if the live PR body conforms to the required format, state "Body conforms — no findings" on one line. Otherwise list findings.]
 
 | Finding | Detail |
 |---------|--------|
 | [e.g. Missing section] | [Description] |
 
-*[If the PR body conforms, note "Body conforms — no findings".]*
-
----
-
 ## Minimality Assessment
+
+[Exception-only: if all five minimality-check questions pass, state "All 5 minimality checks pass" on one line. Add rows only for questions answered "No".]
 
 | Question | Answer | Notes |
 |----------|--------|-------|
-| Is every changed file necessary? | Yes/No | [Details] |
-| Is every added line necessary? | Yes/No | [Details] |
-| Are all new dependencies required? | Yes/No | [Details] |
-| Are all config changes required? | Yes/No | [Details] |
-| Is the solution as simple as possible? | Yes/No | [Details] |
-
----
+| [Failing question] | No | [Details] |
 
 ## Cleanup Actions Taken
+
+[Omit this section if no cleanup was needed]
 
 | Action | Files Affected | Commit |
 |--------|----------------|--------|
 | Removed debug logging | [file1, file2] | [hash] |
-| Reverted config changes | [config.rs] | [hash] |
-| Simplified abstraction | [file.rs] | [hash] |
-
----
 
 ## Review Result
 

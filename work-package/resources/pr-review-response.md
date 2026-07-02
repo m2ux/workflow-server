@@ -1,49 +1,25 @@
 ---
 name: pr-review-response
-description: Guidelines for analyzing review comments from a GitHub Pull Request and crafting thoughtful, professional responses. Covers comment gathering, analysis, response formulation, and implementation of approved changes.
+description: Analyze GitHub PR review comments and craft responses — comment gathering, relevance analysis, response formulation, implementation of approved changes.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 28
   legacy_id: 28
 ---
 
-
 # PR Review Analysis and Response Guide
 
-**Purpose:** Guidelines for analyzing review comments from a GitHub Pull Request and crafting thoughtful, professional responses. This guide covers comment gathering, analysis, response formulation, and implementation of approved changes.
-
----
-
-## Overview
-
-After a PR receives review feedback, this guide helps systematically:
-1. Gather and filter review comments
-2. Analyze comment relevance
-3. Craft professional responses
-4. Implement approved follow-up actions
-5. Post responses to the PR
-
----
-
-## Prerequisites
-
-- GitHub CLI (`gh`) must be installed and authenticated
-- Access to the target repository
-- **CRITICAL**: A specific PR number must be provided
-
----
+Prerequisites: GitHub CLI (`gh`) installed and authenticated; access to the target repository; **a specific PR number must be provided**.
 
 ## Step 1: Gather PR Comments
 
-### 1.1: Retrieve All PR Comments
+Retrieve all PR comments:
 
 ```bash
 gh api repos/[REPO_OWNER]/[REPO_NAME]/pulls/[PR_NUMBER]/comments --paginate
 ```
 
-### 1.2: Filter to Unresolved Comments
-
-Focus on unresolved comments to avoid redundant work:
+Filter to unresolved comments (avoid redundant work):
 
 ```bash
 # Check latest review dates
@@ -53,70 +29,45 @@ gh pr view [PR_NUMBER] --json reviews | jq '.reviews[] | {author: .author.login,
 gh api repos/[REPO_OWNER]/[REPO_NAME]/pulls/[PR_NUMBER]/comments --paginate | jq '.[] | select(.user.login != "[PR_AUTHOR]" and .updated_at >= "[LATEST_REVIEW_DATE]") | {id: .id, body: .body, html_url: .html_url, path: .path, line: .line}' > /tmp/unresolved_comments.json
 ```
 
-### 1.3: Identify Question-Type Comments
+Identify question-type comments:
 
 ```bash
 cat /tmp/unresolved_comments.json | jq -r '.body' | grep -i "what\|how\|why\|which" | nl
 ```
 
-### Verification Checklist
-
-- [ ] Total comment count confirmed
-- [ ] Unresolved comments filtered (latest review round)
-- [ ] Question-type comments identified
-- [ ] Comments saved for analysis
-
----
+Before proceeding: total comment count confirmed; unresolved comments filtered to the latest review round; question-type comments identified; comments saved for analysis.
 
 ## Step 2: Analyze Comment Relevance
 
 For each review comment:
 
-1. **Read the context**: Note line numbers, file paths, and concerns raised
-2. **Compare against current code**: Determine if comment still applies
-3. **Categorize comments**:
-   - Still applicable and needs response
-   - Already addressed in updates
-   - No longer relevant due to changes
-   - Needs clarification or discussion
-
----
+1. Read the context: line numbers, file paths, concerns raised
+2. Compare against current code: does the comment still apply?
+3. Categorize: still applicable and needs response / already addressed in updates / no longer relevant due to changes / needs clarification or discussion
 
 ## Step 3: Create Response List
 
-Generate a numbered list of applicable comments including:
-- Brief description of the concern
-- File path and line number
-- Link to the original GitHub discussion
+Numbered list of applicable comments — brief description, file path and line number, link to the original GitHub discussion:
 
-**Format:**
 ```
 1. Clarify error handling - src/handler.rs:45 [Discussion](https://github.com/repo/pull/123#discussion_r1234567890)
 ```
 
----
-
 ## Step 4: Craft Responses
 
-### Response Quality Standards
+- Measured technical language; no hyperbole or superlatives ("excellent", "amazing", "perfect")
+- Address the specific concern; concrete examples and implementation details where relevant; consider trade-offs and alternatives
+- Blockquotes (`>`) for responses so they paste directly into PR comments; include "Optional doc wording" when proposing text changes
+- Acknowledge first, then state actions explicitly; reference specific commits when relevant; be concise
 
-**Professional and Technical:**
-- Use measured, technical language
-- Avoid hyperbolic statements and superlatives
-- Focus on factual observations and technical merit
+Response patterns:
 
-**Comprehensive:**
-- Address the specific concern raised
-- Provide concrete examples where helpful
-- Include implementation details when relevant
-- Consider trade-offs and alternatives
-
-**Properly Formatted:**
-- Use blockquotes (>) for responses
-- Include "Optional doc wording" when proposing text changes
-- Structure for direct pasting into PR comments
-
----
+```
+Acknowledgment + action:  "Valid point. [Change made]. This [explains benefit]."
+Question resolution:      "Correct about [concern]. [Action taken] to address this."
+Implementation confirmed: "Implemented as suggested. [Brief description] in [location]."
+Technical explanation:    "[Direct answer]. [Implementation details] to resolve this."
+```
 
 ## Step 5: Response Format Template
 
@@ -128,78 +79,30 @@ Generate a numbered list of applicable comments including:
 **Response:**
 
 > [Detailed explanation addressing the concern]
-> 
+>
 > **Optional doc wording:**
 > "[Suggested documentation text]"
 
 **Follow-up Actions:**
 1. [Specific action item]
-2. [Another action item]
 ```
-
----
 
 ## Step 6: Create Review Document
 
-Create a comprehensive review analysis document.
+Create a review analysis document with these sections:
 
-**Required Sections:**
 1. Document Header with metadata
 2. Executive Summary
 3. Analysis Methodology
-4. Review Comments and Responses (co-located Q&A) — a categorized comment list with each comment's disposition (required change, suggestion, question, nit; and whether implemented, acknowledged, or discussed)
-5. Changes Made — a list of the changes implemented in response to the review
+4. Review Comments and Responses (co-located Q&A) — categorized comment list with each comment's disposition (required change, suggestion, question, nit; and whether implemented, acknowledged, or discussed)
+5. Changes Made — the changes implemented in response to the review
 6. Conclusion
 7. Sources and References
 
----
+## Completion Rules
 
-## Response Comment Best Practices
-
-- **Acknowledge First**: Start by acknowledging the reviewer's valid point
-- **State Actions Clearly**: Explicitly mention what was implemented
-- **Be Concise**: Keep responses focused
-- **Professional Tone**: Use collaborative language
-- **Avoid Superlatives**: No "excellent", "amazing", "perfect"
-- **Reference Implementation**: Link to specific commits when relevant
-
-### Response Templates
-
-```
-✅ Acknowledgment + Action:
-"Valid point. [Change made]. This [explains benefit]."
-
-✅ Question Resolution:
-"Correct about [concern]. [Action taken] to address this."
-
-✅ Implementation Confirmation:
-"Implemented as suggested. [Brief description] in [location]."
-
-✅ Technical Explanation:
-"[Direct answer]. [Implementation details] to resolve this."
-```
-
----
-
-## Completeness Checklist
-
-- [ ] All unresolved comments analyzed
-- [ ] Response document created
-- [ ] Follow-up actions identified for each item
-- [ ] User approved which actions to implement
-- [ ] Approved actions implemented
-- [ ] Response comments drafted
-- [ ] User approved responses
-- [ ] Responses posted to PR
-- [ ] Summary of all changes provided
-
----
-
-## Quality Requirements
-
-- **Complete Coverage**: All unresolved reviewer comments addressed
-- **Professional Tone**: Technical communication standards maintained
-- **Ready-to-Use Responses**: Blockquote format for direct copying
-- **Embedded Follow-up Actions**: Every response includes actionable items
-- **Comprehensive Citations**: Technical details properly sourced
-- **Verified Links**: All source code references tested
+- All unresolved reviewer comments analyzed and addressed; every response embeds follow-up actions
+- User approves which follow-up actions to implement, then approved actions are implemented
+- User approves the drafted responses before they are posted to the PR
+- Verify all source-code reference links; cite technical details properly
+- Finish with a summary of all changes made

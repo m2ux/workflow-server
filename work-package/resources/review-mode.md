@@ -2,7 +2,7 @@
 name: review-mode
 description: Guidelines for using the work-package workflow in review mode to conduct structured PR reviews. Covers detection, adapted workflow behavior, and output generation.
 metadata:
-  version: 1.2.0
+  version: 1.3.0
   order: 24
   legacy_id: 24
 ---
@@ -10,21 +10,7 @@ metadata:
 
 # Review Mode Guide
 
-**Purpose:** Guidelines for using the work-package workflow in review mode to conduct structured PR reviews. This guide covers detection, adapted workflow behavior, and output generation.
-
----
-
-## Overview
-
-Review mode adapts the standard work-package workflow for reviewing existing implementations rather than creating new ones. When activated, the workflow:
-
-- Skips requirements elicitation (requirements come from the ticket)
-- Analyzes the pre-change baseline state
-- Skips the implement phase (code already exists)
-- Documents findings rather than applying fixes
-- Generates structured PR review comments
-
----
+Review mode adapts the standard work-package workflow for reviewing existing implementations rather than creating new ones.
 
 ## How Review Mode Is Driven
 
@@ -51,18 +37,16 @@ Activities express review-mode behavior through standard conditions on steps, ch
 - **Review-only checkpoints** have `condition: is_review_mode == true`
 - **Review-mode transitions** are conditioned on `is_review_mode == true` and evaluated before default transitions
 
----
-
 ## Per-Activity Review Guidance
 
 ### start-work-package
 Capture PR reference and extract associated Jira ticket. Skip branch/PR creation — use existing PR from review target.
 
 ### design-philosophy
-Assess ticket completeness and determine workflow path. Always skip elicitation — requirements come solely from the ticket. Assess the ticket using Jira Issue Creation Guide checklist. Research may still be needed based on complexity assessment.
+Assess ticket completeness and determine workflow path. Always skip elicitation — requirements come solely from the ticket. Assess the ticket using the [Jira Issue Creation Guide](jira-issue-creation.md) checklist. Research may still be needed based on complexity assessment.
 
 ### implementation-analysis
-Analyze the pre-change baseline state from the base branch to establish reference for PR evaluation. Checkout base branch to analyze PRE-change state (what existed before the PR). Document what would need to change to fulfill requirements (the expected changes). This baseline becomes the reference for evaluating what the PR actually changed.
+Analyze the pre-change baseline state from the base branch: checkout the base branch to analyze what existed BEFORE the PR, document what would need to change to fulfill requirements (the expected changes). This baseline becomes the reference for evaluating what the PR actually changed.
 
 ### assumptions-review
 Skip the assumption interview and issue tracker posting. The review plan is for the reviewer's own use. Set `stakeholder_review_complete=true` and proceed directly to the next activity.
@@ -71,21 +55,19 @@ Skip the assumption interview and issue tracker posting. The review plan is for 
 Run the read-only over-engineering review, debt harvest, and gain report so findings reach the artifacts. Skip the apply path — the findings-confirmation checkpoint and the simplification-apply-cycle are gated out so no code is changed; over-engineering and leanness findings become feedback for the PR author.
 
 ### post-impl-review
-Compare PR changes against expected changes from implementation analysis. Document findings for PR author. Identify deviations — missing changes, unexpected changes, alternative approaches.
+Compare PR changes against expected changes from implementation analysis. Identify deviations — missing changes, unexpected changes, alternative approaches. Document findings for the PR author.
 
 ### validate
-Run validation checks and document failures as review findings (do not fix). Run existing tests to verify they pass as claimed by the PR. Document failures as review findings — do NOT fix them (that's the PR author's job). Failures become critical findings in the review summary.
+Run validation checks and existing tests to verify they pass as claimed by the PR. Document failures as review findings — do NOT fix them (that's the PR author's job). Failures become critical findings in the review summary.
 
 ### strategic-review
-Evaluate as though code were newly written. Document findings as feedback for PR author. Document findings as review comments, do not apply cleanup (PR author's responsibility). Focus on identifying issues for feedback, not on rework transitions.
+Evaluate as though code were newly written. Document findings as review comments for the PR author; do not apply cleanup. Focus on identifying issues for feedback, not on rework transitions.
 
 ### submit-for-review
 Generate and post consolidated PR review comments with findings from all review stages. Use structured format: Summary, Code Review, Test Review, Doc Review, Recommendations. Include severity ratings and actionable items for PR author.
 
 ### complete
-In review mode, only conduct retrospective. Skip ADR creation and documentation finalization.
-
----
+Only conduct retrospective. Skip ADR creation and documentation finalization.
 
 ## Workflow Adaptations
 
@@ -113,13 +95,9 @@ In review mode, only conduct retrospective. Skip ADR creation and documentation 
 3. **Baseline Comparison**: Implementation analysis captures what existed BEFORE the PR
 4. **Retrospective Planning**: Plan serves as reference for what SHOULD have been done
 
----
-
 ## Implementation Analysis in Review Mode
 
 ### Baseline Capture
-
-When in review mode, implementation analysis must:
 
 1. **Checkout base branch** (PR target, typically `main` or `develop`)
 2. **Analyze pre-change state**: Architecture, interfaces, existing behavior
@@ -148,8 +126,6 @@ Based on ticket [PM-XXXXX] requirements:
 - Integration test for end-to-end flow
 - Edge case coverage for [scenarios]
 ```
-
----
 
 ## Generating Review Comments
 
@@ -372,8 +348,6 @@ Findings are classified on the classification scale (Critical / Major / Minor / 
 
 A correct-but-harmful finding (one classified Major or Critical on an impact axis such as unbounded state growth, economic/spam, liveness/halt, or migration/upgrade) therefore renders at High or Critical and reaches the Action Items as a blocking item — it is not downgraded to "safe" at the render boundary.
 
----
-
 ## Posting Reviews
 
 ### GitHub CLI Commands
@@ -399,8 +373,6 @@ gh pr review {pr_number} --approve --body-file review.md
 
 The Prior Feedback Triage caps the Overall Rating: when any prior blocker-class comment is dispositioned Confirmed (valid and unaddressed), the rating cannot exceed Request Changes — it cannot be Approve or Comment Only — regardless of how light the review's own findings are. An unaddressed external blocker is never rated away.
 
----
-
 ## Artifacts in Review Mode
 
 Review mode creates the same planning artifacts as standard mode, but with review-specific content:
@@ -414,26 +386,7 @@ Review mode creates the same planning artifacts as standard mode, but with revie
 | `test-suite-review.md` | Test quality | Same format, document gaps |
 | `strategic-review.md` | Cleanup applied | Cleanup **recommendations** |
 
----
-
-## Quick Reference
-
-### Review Mode Checklist
-
-- [ ] Review mode detected and confirmed
-- [ ] PR reference captured
-- [ ] Jira ticket extracted from PR
-- [ ] Ticket completeness assessed
-- [ ] Baseline analyzed (base branch)
-- [ ] Expected changes documented
-- [ ] Code review completed
-- [ ] Test review completed
-- [ ] Validation run (tests, build, lint)
-- [ ] Strategic review completed
-- [ ] Review summary generated
-- [ ] Review posted to PR
-
-### Variable Reference
+## Variable Reference
 
 | Variable | Type | Description |
 |----------|------|-------------|
@@ -444,13 +397,3 @@ Review mode creates the same planning artifacts as standard mode, but with revie
 | `expected_changes` | string | Expected implementation per requirements |
 | `review_summary` | string | Consolidated review comment text |
 | `review_posted` | boolean | Whether review was posted to PR |
-
----
-
-## Related Resources
-
-- [Jira Issue Creation Guide](jira-issue-creation.md) - Ticket completeness criteria
-- [Rust/Substrate Code Review](rust-substrate-code-review.md) - Code review methodology
-- [Test Suite Review](test-suite-review.md) - Test quality assessment
-- [Strategic Review](strategic-review.md) - Scope and artifact review
-- [Manual Diff Review](manual-diff-review.md) - Structured diff review process

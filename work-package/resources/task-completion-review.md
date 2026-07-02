@@ -1,38 +1,23 @@
 ---
 name: task-completion-review
-description: Define the review process performed upon completing each implementation task, including verification steps, assumption surfacing, and quality checks.
+description: Per-task completion review — symbol verification, assumption surfacing, and quality checks before user confirmation.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 14
   legacy_id: 14
 ---
 
-
 # Task Completion Review Guide
 
-**Purpose:** Define the review process performed upon completing each implementation task. This guide covers the verification steps, assumption surfacing, and quality checks that ensure work is ready for user confirmation before proceeding to the next task.
+After completing each implementation task, perform this review before requesting user confirmation. Three mandatory components:
 
-**When to use:** After completing each implementation task.
-
----
-
-## Overview
-
-**After completing each task, perform a task completion review before requesting user confirmation.** This step catches errors, surfaces assumptions, and ensures all changes are grounded in the actual codebase.
-
-The task completion review has three mandatory components:
-
-1. **Symbol Verification** — Ensure all symbols have provenance in the codebase
-2. **Assumption Review** — Surface implicit design decisions for user validation
-3. **Quality Checks** — Verify code meets quality standards
-
----
+1. **Symbol Verification** — all symbols have provenance in the codebase
+2. **Assumption Review** — implicit design decisions surfaced for user validation
+3. **Quality Checks** — code, tests, docs meet standards
 
 ## 1. Symbol Verification and Quality Checks
 
-Symbol verification and quality checks are owned by the [task-completion-review](../techniques/task-completion-review.md) technique, which is bound by the `self-review` step in the implement activity. Refer to that technique for the symbol-provenance procedure (including documentation symbol verification and the stop-when-unverifiable rule) and the code, test, and documentation quality checklists.
-
----
+Owned by the [task-completion-review](../techniques/task-completion-review.md) technique (bound by the `self-review` step in the implement activity): symbol-provenance procedure (including documentation symbols and the stop-when-unverifiable rule), code/test/documentation quality checklists, and related anti-patterns.
 
 ## 2. Assumption Review
 
@@ -40,50 +25,35 @@ After symbol verification, identify assumptions made during implementation.
 
 ### Assumption Categories
 
-| Category | Description | Examples |
-|----------|-------------|----------|
-| **Behavioral** | How the system behaves in specific scenarios | Default values, fallback behavior, edge case handling |
-| **Architectural** | Structural decisions about components | Component boundaries, data flow direction, abstraction levels |
-| **Interface** | API and contract decisions | Function signatures, return types, error types |
-| **Performance** | Trade-offs affecting speed/memory | Lazy vs eager evaluation, caching strategies, algorithm choice |
-| **Compatibility** | Backward/forward compatibility | Breaking changes, deprecation handling, migration paths |
-| **Scope** | What was included/excluded | Deferred features, intentional limitations |
+| Category | Examples |
+|----------|----------|
+| Behavioral (behavior in specific scenarios) | Defaults, fallbacks, edge-case handling |
+| Architectural (structural decisions) | Component boundaries, data flow direction, abstraction levels |
+| Interface (API/contract decisions) | Function signatures, return types, error types |
+| Performance (speed/memory trade-offs) | Lazy vs eager, caching, algorithm choice |
+| Compatibility (backward/forward) | Breaking changes, deprecation, migration paths |
+| Scope (included/excluded) | Deferred features, intentional limitations |
 
 ### Self-Review Questions
 
-After completing a task, review your implementation:
-
-1. **What did I assume about requirements?** — Were there ambiguities I resolved without asking?
-2. **What alternatives did I reject?** — Why was this approach chosen over others?
-3. **What implicit contracts exist?** — Are there undocumented expectations about inputs, ordering, or state?
-4. **What edge cases did I handle (or ignore)?** — How will the code behave in unexpected situations?
-5. **What would I do differently with more context?** — Are there decisions I'm uncertain about?
-
-### Why Assumption Review Matters
-
-- Catches misunderstandings before they compound across tasks
-- Surfaces design decisions that may conflict with user intent
-- Creates opportunities for course correction early
-- Documents rationale that would otherwise be lost
-
----
+1. What did I assume about requirements? (ambiguities resolved without asking)
+2. What alternatives did I reject, and why was this approach chosen?
+3. What implicit contracts exist? (undocumented expectations about inputs, ordering, state)
+4. What edge cases did I handle or ignore?
+5. What would I do differently with more context? (decisions I'm uncertain about)
 
 ## Updating the Review Log
 
-After user confirmation, update the assumptions log artifact:
+After user confirmation, append to the assumptions log artifact:
 
 ```markdown
 ## Task N: [Task Name]
 
-**Date:** YYYY-MM-DD
-**Commit:** `abc123`
+> YYYY-MM-DD · commit `abc123`
 
 ### Symbol Verification
 
-| Symbol | Type | Provenance | Status |
-|--------|------|------------|--------|
-| `NewTypeName` | struct | `src/module.rs:42` | ✅ Verified |
-| `existing_fn` | function | Codebase | ✅ Verified |
+All [N] symbols verified. [Exception-only: add a table (Symbol | Type | Provenance | Status) only for symbols that failed verification or needed correction.]
 
 ### Assumptions Surfaced
 
@@ -91,51 +61,24 @@ After user confirmation, update the assumptions log artifact:
 |----|----------|------------|-----------|
 | N.1 | [Category] | [Assumption made] | [Why reasonable] |
 
+[If none arose, state "None surfaced" — do not omit this section; the log must show the review was performed.]
+
 ### User Response
 
-**Status:** ✅ Confirmed | 🔄 Corrected | ⏸️ Deferred
+**Status:** Confirmed | Corrected | Deferred
 
-**Feedback:**
 - [User's response]
 
 ### Outcome
 
-| ID | Original | Outcome | Changes Made |
-|----|----------|---------|--------------|
-| N.1 | [Assumption] | ✅ Confirmed | None required |
+All assumptions confirmed; no changes required. [Exception-only: add a table (ID | Original | Outcome | Changes Made) only for corrected or deferred assumptions.]
 
 ### Lessons Learned
 
-- [Insights for future tasks]
+- [Insights for future tasks. Omit this section if none.]
 ```
 
----
+## Rules
 
-## Anti-Patterns
-
-| Don't | Why |
-|-------|-----|
-| **Skip self-review after each task** | Hidden errors compound; early detection saves time |
-| **Skip the assumption review** | Surfacing design decisions early creates opportunities for course correction before they compound |
-| **Omit the phase section from the log when no assumptions arise** | The log should still show that assumption review was performed |
-
-(For symbol-verification and quality-check anti-patterns, see the [task-completion-review](../techniques/task-completion-review.md) technique.)
-
----
-
-## Quick Reference
-
-### Mandatory Self-Review Steps
-
-1. ✅ **Symbol Verification** — All symbols have provenance (see the [task-completion-review](../techniques/task-completion-review.md) technique)
-2. ✅ **Assumption Review** — Design decisions documented
-3. ✅ **Quality Checks** — Code, tests, docs meet standards (see the [task-completion-review](../techniques/task-completion-review.md) technique)
-4. ✅ **User Checkpoint** — Confirmation before proceeding
-
----
-
-## Related Guides
-
-- [Assumptions Guide](assumptions-review.md) — Detailed assumption categories and log template
-- [Work Package Workflow](../workflow.yaml) — Overall implementation workflow
-- [Architecture Review Guide](architecture-review.md) — Architecture decision records
+- Never skip the self-review or the assumption review — hidden errors and unvalidated design decisions compound across tasks; early surfacing enables course correction.
+- When no assumptions arise, still record the section (state "None surfaced") so the log shows the review ran.
