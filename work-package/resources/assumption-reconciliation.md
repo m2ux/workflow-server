@@ -2,7 +2,7 @@
 name: assumption-reconciliation
 description: Methodology for autonomous classify-analyze-converge resolution of assumptions through targeted codebase investigation, separating code-resolvable assumptions from those requiring stakeholder judgement.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   order: 26
   legacy_id: 26
 ---
@@ -117,34 +117,7 @@ The log holds one table row per assumption (see the [assumptions log template](a
 
 ### Markdown formatting rule
 
-**CRITICAL:** In standard markdown, consecutive lines that start with bold labels (e.g. `**Status:** value`) merge into a single paragraph unless each line ends with two trailing spaces. Every bold-label line MUST end with two spaces (`  `) EXCEPT the last line in its group. The trailing spaces produce a `<br>` in rendered markdown, preserving line breaks without changing the visual style.
-
-#### Correct format (trailing spaces — shown as ⎵⎵)
-
-```markdown
-### A-XX-01: Short title
-**Status:** Validated⎵⎵
-**Resolvability:** Code-analyzable⎵⎵
-**Assumption:** The system uses pattern X for feature Y.⎵⎵
-**Evidence:** Found in `src/module.rs:42-58` — the `handle()` function
-dispatches through a match statement covering all variants.⎵⎵
-**Risk if wrong:** Implementation would target the wrong abstraction.
-```
-
-#### Incorrect format (no trailing spaces)
-
-```markdown
-### A-XX-01: Short title
-**Status:** Validated
-**Resolvability:** Code-analyzable
-**Assumption:** The system uses pattern X for feature Y.
-**Evidence:** Found in `src/module.rs:42-58`.
-```
-
-The incorrect format renders as a single paragraph:
-> **Status:** Validated **Resolvability:** Code-analyzable **Assumption:** The system uses pattern X for feature Y. **Evidence:** Found in `src/module.rs:42-58`.
-
-This rule applies to ALL planning artifacts that use bold-label fields — assumptions logs, design philosophy documents, research documents, implementation analyses, and comprehension artifacts. Do NOT use bullet prefixes (`- `) for this purpose.
+Bold-label entries follow the [markdown-line-breaks](../techniques/manage-artifacts/TECHNIQUE.md#markdown-line-breaks) rule: every bold-label line except the last in its group ends with two trailing spaces (`**Status:** Validated⎵⎵`), or consecutive lines collapse into one rendered paragraph. No bullet prefixes as a substitute.
 
 ## Scorecard
 

@@ -75,7 +75,7 @@ statement) in the rationale.
 
 Full decision-space entries ONLY for currently-open stakeholder-dependent assumptions
 (bold-label format, trailing-space rule — see the
-[formatting rule](assumption-reconciliation.md#markdown-formatting-rule)). Remove each
+[markdown-line-breaks](../techniques/manage-artifacts/TECHNIQUE.md#markdown-line-breaks) rule). Remove each
 entry when it resolves — its outcome lives in its Log row. Omit the section when empty.
 
 ### PL-1: Short title
