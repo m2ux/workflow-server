@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.5.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits an existing workflow against the 14 design principles and produces a compliance report.
+> v1.5.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits an existing workflow against the 15 design principles and produces a compliance report.
 
 ---
 
@@ -96,7 +96,7 @@ The output is a severity-rated compliance report saved to `.engineering/artifact
 
 ## Design Principles
 
-This workflow encodes 14 design principles derived from analysis of 175+ historical workflow creation sessions. Each principle is backed by structural enforcement (checkpoints, conditions, validate actions) rather than relying on rule text alone.
+This workflow encodes 15 design principles derived from analysis of 175+ historical workflow creation sessions. Each principle is backed by structural enforcement (checkpoints, conditions, validate actions) rather than relying on rule text alone.
 
 | # | Principle | Enforcement |
 |---|-----------|-------------|
@@ -162,7 +162,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 
 | Order | Resource | Purpose | Used By |
 |---|----------|---------|---------|
-| 00 | [Design Principles](./resources/design-principles.md) | Condensed reference of all 14 principles | All activities |
+| 00 | [Design Principles](./resources/design-principles.md) | Condensed reference of all 15 principles | All activities |
 | 01 | [Schema Construct Inventory](./resources/schema-construct-inventory.md) | Prose-to-formal construct mapping tables | Quality Review, Scope and Draft |
 | 02 | [Anti-Patterns](./resources/anti-patterns.md) | 64 prohibited patterns by category | Quality Review, Review Mode |
 | 03 | [Update Mode Guide](./resources/update-mode-guide.md) | Content preservation and impact analysis procedures | Update mode activities |
@@ -242,7 +242,7 @@ workflows/workflow-design/
 │   └── publish-workflow-pr.md
 └── resources/
     ├── README.md                         # Resource index
-    ├── design-principles.md              # 14 principles reference
+    ├── design-principles.md              # 15 principles reference
     ├── schema-construct-inventory.md     # Construct mapping tables
     ├── anti-patterns.md                  # 64 anti-patterns
     ├── update-mode-guide.md              # Update mode guide

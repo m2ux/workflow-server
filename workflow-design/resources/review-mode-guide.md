@@ -1,6 +1,6 @@
 ---
 name: review-mode-guide
-description: Guidance for auditing existing workflows against the 14 design principles.
+description: Guidance for auditing existing workflows against the 15 design principles.
 metadata:
   order: 4
   legacy_id: 4
@@ -8,7 +8,7 @@ metadata:
 
 # Review Mode Guide
 
-Guidance for auditing existing workflows against the 14 design principles. Review mode produces a compliance report without modifying the target workflow, then offers to switch to update mode for remediation.
+Guidance for auditing existing workflows against the 15 design principles. Review mode produces a compliance report without modifying the target workflow, then offers to switch to update mode for remediation.
 
 This guide carries the **supplementary** material for review mode: activation/flow framing, the compliance report template, and the transition-to-update-mode contract. The **audit procedure itself** is canonical in the `quality-review` activity's bound `audit-*` techniques — the worker loads each via `get_technique` and executes its protocol. This file does not restate the procedure.
 

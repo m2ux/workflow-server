@@ -10,7 +10,7 @@ Ten markdown resources providing the design principles, construct inventories, a
 
 | Index | Resource | Purpose |
 |-------|----------|---------|
-| `00` | [Design Principles](design-principles.md) | Condensed reference of all 14 design principles with enforcement mechanisms |
+| `00` | [Design Principles](design-principles.md) | Condensed reference of all 15 design principles with enforcement mechanisms |
 | `01` | [Schema Construct Inventory](schema-construct-inventory.md) | Prose-to-formal construct mapping tables for activity, workflow, technique, and condition schemas |
 | `02` | [Anti-Patterns](anti-patterns.md) | 64 prohibited patterns organized by category: structural, interaction, schema expressiveness, rule hygiene, description hygiene, coupling, tool-technique-doc consistency, execution |
 | `03` | [Update Mode Guide](update-mode-guide.md) | Content preservation rules, impact analysis procedure, side-effect detection patterns |
@@ -27,7 +27,7 @@ Ten markdown resources providing the design principles, construct inventories, a
 
 ### 00 — Design Principles
 
-The 14 design principles derived from analysis of 175+ historical workflow creation sessions across two projects. Each principle entry includes the rule statement and the structural enforcement mechanism that backs it. This resource is the authoritative checklist for design-principle compliance.
+The 15 design principles derived from analysis of 175+ historical workflow creation sessions across two projects. Each principle entry includes the rule statement and the structural enforcement mechanism that backs it. This resource is the authoritative checklist for design-principle compliance.
 
 ### 01 — Schema Construct Inventory
 

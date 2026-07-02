@@ -1,6 +1,6 @@
 ---
 name: design-principles
-description: Condensed, agent-executable reference of the 14 design principles governing workflow creation and modification.
+description: Condensed, agent-executable reference of the 15 design principles governing workflow creation and modification.
 metadata:
   order: 0
   legacy_id: 0
@@ -8,7 +8,7 @@ metadata:
 
 # Design Principles Reference
 
-Condensed, agent-executable reference of the 14 design principles governing workflow creation and modification. Each principle includes the rule and the structural enforcement mechanism.
+Condensed, agent-executable reference of the 15 design principles governing workflow creation and modification. Each principle includes the rule and the structural enforcement mechanism.
 
 ---
 
@@ -97,3 +97,9 @@ Condensed, agent-executable reference of the 14 design principles governing work
 **Rule:** Every workflow must include a README.md at the root and in each subfolder (activities/, techniques/, resources/). READMEs ORIENT — they state the workflow's purpose, the at-a-glance activity sequence with its flow diagrams, the value each activity delivers, the file structure, a techniques overview, and links to the authoritative files. They do NOT transcribe the structured definition: an activity's `steps[]` (including its inline `kind: checkpoint` and `kind: loop` steps), its activity-level decisions and transitions, per-step technique bindings, the workflow's `variables`, its `rules`, and per-activity estimated times all live in the YAML files and are never restated in a README. Flow diagrams (mermaid/ASCII) are visual orientation and are kept (AP-76).
 
 **Enforcement:** `generate-readme` / `update-readme` steps in validate-and-commit. Scope manifest must include README files.
+
+## 15. Output Economy
+
+**Rule:** Design a workflow's artifact contracts and checkpoint set for the reader who must act on them — every artifact is re-read into agent context downstream, and every checkpoint stalls the pipeline on a human. Artifacts: each fact has one canonical artifact and every other appearance is a link (single-source-and-link); status tables report exceptions only; templates are the maximum shape, not the required shape; lifecycle logs are one row per item updated in place; a workflow has exactly one terminal close-out document. Resources: agent-facing operative documents (template + rules), not tutorials. Checkpoints: one decision, one checkpoint; guidance with no decision is a message; a checkpoint that run evidence shows always answered with its default option is a merge/demote candidate. (AP-77 through AP-84.)
+
+**Enforcement:** `manage-artifacts` output-discipline rules (single-source-and-link, exception-only-reporting, state-once-per-artifact, lean-header, omit-null-sections) inherited by every artifact write. Output-economy anti-patterns (AP-77–84) in the quality-review audit pass. Session-trace checkpoint evidence reviewed in the retrospective.
