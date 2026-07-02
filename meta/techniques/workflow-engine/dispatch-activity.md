@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -56,4 +56,4 @@ Workflow orchestrators NEVER call `get_activity`. The activity definition is the
 
 ### no-pre-load-techniques
 
-NEVER call `get_technique` to pre-load techniques. The worker self-bootstraps via `get_activity`, which bundles the operations the activity needs.
+NEVER call `get_technique` to pre-load techniques for the worker. `get_activity` bundles only the activity's cross-cutting operations (strategy and core-worker techniques); the worker then loads each step's bound operation on demand via `get_technique { session_index, step_id }` — progressively, one per step as it reaches it. Pre-fetching step techniques from the orchestrator duplicates that work and defeats the progressive disclosure that step-level binding exists to provide.
