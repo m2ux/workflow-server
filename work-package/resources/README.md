@@ -25,8 +25,8 @@ The workflow includes 27 resources that provide templates, guidance, and referen
 | `test-suite-review` | Test Suite Review | Test suite quality assessment framework |
 | `strategic-review` | Strategic Review | Strategic review criteria for minimal focused changes |
 | `architecture-summary` | Architecture Summary | Architecture summary template with UML diagram guidance |
-| `workflow-retrospective` | Workflow Retrospective | Retrospective template and facilitation guide |
-| `complete-wp` | Complete Work Package | Completion document template |
+| `workflow-retrospective` | Workflow Retrospective | Retrospective section template (written into COMPLETE.md) |
+| `complete-wp` | Complete Work Package | Close-out document template — the single terminal artifact |
 | `manual-diff-review` | Manual Diff Review | Manual diff review protocol with interview loop format |
 | `tdd-concepts-rust` | TDD Concepts Rust | TDD best practices for Rust: Red-Green-Refactor, FIRST principles |
 | `review-mode` | Review Mode | Complete guide for review mode behavior and PR review formats |

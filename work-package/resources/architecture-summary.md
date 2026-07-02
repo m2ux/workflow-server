@@ -2,165 +2,34 @@
 name: architecture-summary
 description: Create an architecture summary document at the end of implementation, using Mermaid diagrams to visualize how changes relate to the existing system for management-level stakeholders.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 19
   legacy_id: 19
 ---
 
-
 # Architecture Summary Guide
 
-**Purpose:** Create an architecture summary document at the end of implementation that allows management-level stakeholders with superficial system familiarity to understand the changes made. Uses Mermaid diagrams to visualize how changes relate to the existing system.
-
----
-
-## Overview
-
-The architecture summary is a high-level visual document that answers:
-
-1. **What changed?** - Summary of the implementation in non-technical terms
-2. **Where does it fit?** - How the changes relate to the broader system
-3. **Why does it matter?** - Business impact and value delivered
-4. **What's next?** - Dependencies, follow-up work, or considerations
-
-This document uses **UML-style diagrams** at a high level of abstraction—showing the system as a whole, its users, and external dependencies. This is the appropriate level for stakeholders who need to understand impact without implementation details.
-
----
-
-## Target Audience
-
-| Audience | What They Need |
-|----------|----------------|
-| Engineering Managers | Impact on team, dependencies, risks |
-| Product Managers | Feature delivery, user impact |
-| Technical Directors | Architectural direction, system evolution |
-| Non-technical Stakeholders | Business value, timeline, status |
-
-**Writing Principle:** If someone unfamiliar with the codebase can't understand the document in 5 minutes, it's too technical.
-
----
+High-level visual document for management-level stakeholders (engineering/product managers, technical directors, non-technical stakeholders) answering: what changed, where it fits, why it matters, what's next. Uses UML-style Mermaid diagrams at whole-system abstraction. Test: a reader unfamiliar with the codebase must understand it in 5 minutes.
 
 ## When to Create
 
-Create an architecture summary when:
+Create when: changes touch system boundaries or integrations, multiple components/services are affected, the change has business-visible impact, or stakeholders need to understand what was delivered.
 
-- Implementation involves changes to system boundaries or integrations
-- Multiple components or services are affected
-- The change has business-visible impact
-- Stakeholders need to understand what was delivered
+Skip for: bug fixes with no architectural impact, internal refactoring invisible to stakeholders, documentation-only changes.
 
-Skip for:
+## Diagram Selection
 
-- Bug fixes with no architectural impact
-- Internal refactoring invisible to stakeholders
-- Documentation-only changes
+| Diagram | Shows | Use when |
+|---------|-------|----------|
+| System Context (flowchart) | Actors, the system, external systems, labeled relationships | Always (required) |
+| Package (flowchart + subgraphs) | Logical module groupings and dependencies | Changes affect module organization, cross-cutting concerns, or new packages/crates |
+| Container (flowchart + subgraphs) | Runtime containers/services and interactions | Changes affect deployment topology, infrastructure, or service boundaries |
+| Sequence | Ordered interactions between components | Key flows are affected and ordering clarifies behavior |
+| Before/After (paired flowcharts) | Original vs modified state | Change modifies existing architecture/flows |
 
----
+Mermaid node shapes: `([text])` actor, `[text]` internal system, `[(text)]` database, `[[text]]` external service.
 
-## UML Diagram Types
-
-For architecture summaries, we use three primary diagram types:
-
-### Component Diagram (System Context)
-
-Shows the system at its highest level of abstraction:
-
-| Element | Description | Example |
-|---------|-------------|---------|
-| **Actor** | Users of the system | "End User", "Administrator" |
-| **Component** | The system being changed | "Midnight Node" |
-| **External System** | Systems that interact | "Cardano Mainchain", "Indexer" |
-| **Relationship** | How elements communicate | "Submits transactions", "Queries state" |
-
-### Package Diagram (Module Organization)
-
-Shows logical groupings and dependencies between subsystems or modules:
-
-| Element | Description | Example |
-|---------|-------------|---------|
-| **Package** | Logical grouping of related elements | "Runtime", "Pallets", "RPC" |
-| **Dependency** | How packages depend on each other | "Runtime uses Pallets" |
-| **Nesting** | Hierarchical organization | "Pallets contains Midnight, Governance" |
-
-Use package diagrams when:
-- Changes affect multiple subsystems or modules
-- You need to show the organizational structure of the codebase
-- Dependencies between packages are architecturally significant
-
-### Container Diagram (Deployment View)
-
-Shows runtime containers, services, and their interactions when infrastructure context is needed.
-
-**Key Principle:** Show the forest, not the trees. Management doesn't need to see individual functions or modules.
-
----
-
-## Mermaid Diagram Syntax
-
-### System Context Diagram
-
-Use a flowchart to show actors, the main system, and external systems:
-
-```mermaid
----
-title: System Context - [Feature Name]
----
-flowchart LR
-    User([👤 End User])
-    
-    Main[Main System]
-    External[(External System)]
-    
-    User -->|Uses| Main
-    Main -->|Calls API| External
-    
-    style Main fill:#e1f5fe,stroke:#01579b
-    style External fill:#f5f5f5,stroke:#9e9e9e
-```
-
-**Node shapes:**
-- `([text])` - Stadium/pill shape for actors
-- `[text]` - Rectangle for internal systems
-- `[(text)]` - Cylinder for databases
-- `[[text]]` - Subroutine for external services
-
-### Package Diagram (Module Organization)
-
-Use subgraphs to show logical groupings and dependencies between modules:
-
-```mermaid
----
-title: Package Diagram - [Feature Name]
----
-flowchart TB
-    subgraph Node [Midnight Node]
-        subgraph Runtime [Runtime]
-            Pallets[Pallets]
-            Primitives[Primitives]
-        end
-        
-        subgraph Pallets_Detail [Pallets]
-            Midnight[midnight]
-            Governance[federated-authority]
-            Observation[cnight-observation]
-        end
-        
-        RPC[RPC Layer]
-    end
-    
-    Runtime --> Pallets_Detail
-    RPC --> Runtime
-    
-    style Node fill:#fafafa,stroke:#424242
-    style Runtime fill:#e3f2fd,stroke:#1976d2
-    style Pallets_Detail fill:#e8f5e9,stroke:#2e7d32
-```
-
-**When to use:** Changes that affect module organization, cross-cutting concerns, or introduce new packages/crates.
-
-### Container Diagram (Deployment View)
-
-Use subgraphs to show runtime containers and services:
+Container diagram example (the artifact template below embeds examples for the other types):
 
 ```mermaid
 ---
@@ -182,103 +51,13 @@ flowchart LR
     style DB fill:#fff3e0,stroke:#ef6c00
 ```
 
-**When to use:** Changes that affect deployment topology, infrastructure, or service boundaries.
+## Rules
 
-### Sequence Diagram (Key Flows)
-
-Use a sequence diagram to show the interactions between components for key flows affected by the changes:
-
-```mermaid
----
-title: Sequence - [Flow Name]
----
-sequenceDiagram
-    actor User
-    participant Main as Main System
-    participant Ext as External System
-
-    User->>Main: Initiates action
-    Main->>Ext: Calls API
-    Ext-->>Main: Returns result
-    Main-->>User: Responds
-```
-
-**When to use:** Key flows affected by the changes where the ordered interaction between components clarifies behavior.
-
-### Before/After Comparison
-
-For changes that modify existing architecture, show both states:
-
-```mermaid
----
-title: "BEFORE: [Description]"
----
-flowchart LR
-    User([👤 User])
-    Sys[System<br/>Original state]
-    
-    User -->|Direct connection| Sys
-    
-    style Sys fill:#f5f5f5,stroke:#9e9e9e
-```
-
-```mermaid
----
-title: "AFTER: [Description]"
----
-flowchart LR
-    User([👤 User])
-    Sys[System<br/>Modified state]
-    New[New Component<br/>Added by this work]
-    
-    User --> Sys
-    Sys -->|Delegates to| New
-    
-    style Sys fill:#f5f5f5,stroke:#9e9e9e
-    style New fill:#c8e6c9,stroke:#2e7d32
-```
-
----
-
-## Document Structure
-
-### Required Sections
-
-1. **Executive Summary** - 2-3 sentences on what was done and why
-2. **System Context Diagram** - Visual showing where changes fit
-3. **What Changed** - Bullet points of key changes
-4. **Impact** - Who/what is affected
-
-### Optional Sections
-
-- **Package Diagram** - If changes affect module organization or dependencies
-- **Sequence Diagrams** - If key flows between components are affected
-- **Before/After Diagrams** - If the change modifies existing flows
-- **Dependencies** - Upstream/downstream systems affected
-- **Risks & Mitigations** - Key risks and how they're addressed
-- **Future Considerations** - Known follow-up work
-
----
-
-## Writing Guidelines
-
-### Do
-
-- ✅ Use business language, not code terminology
-- ✅ Keep diagrams simple (5-10 elements maximum)
-- ✅ Show relationships between systems, not internal details
-- ✅ Include a clear "why" for the changes
-- ✅ Use consistent naming across diagrams
-
-### Don't
-
-- ❌ Include file paths, function names, or code
-- ❌ Use technical jargon without explanation
-- ❌ Create overly complex diagrams
-- ❌ Focus on "how" instead of "what" and "why"
-- ❌ Assume reader knows the codebase
-
----
+- Business language only: no file paths, function names, code, or unexplained jargon. Focus on *what* and *why*, not *how*. Assume the reader does not know the codebase.
+- 5-10 elements per diagram, one concept per diagram; show relationships between systems, not internal detail (the forest, not the trees).
+- Label every arrow with the interaction type; direction shows data/control flow; avoid crossing lines.
+- Highlight new/modified elements with distinct colors; grey out unchanged context; keep names and colors consistent across diagrams.
+- Include a clear "why" for the changes.
 
 ## Architecture Summary Artifact Template
 
@@ -287,18 +66,11 @@ Create `architecture-summary-{n}.md` in the planning folder using this template 
 ```markdown
 # Architecture Summary
 
-**Work Package:** [Name]  
-**Issue:** #[number] - [Title]  
-**Date:** YYYY-MM-DD  
-**Author:** [Name/Agent]
-
----
+> architecture-summary · [work package name] · #[issue number] [title] · YYYY-MM-DD · [author/agent]
 
 ## Executive Summary
 
 [2-3 sentences describing what was implemented and why it matters. Write for someone unfamiliar with the codebase.]
-
----
 
 ## System Context
 
@@ -321,13 +93,11 @@ flowchart LR
     style Ext1 fill:#f5f5f5,stroke:#9e9e9e
 ```
 
-*[Optional: Add note explaining the diagram if needed]*
-
----
+*[Optional: note explaining the diagram if needed]*
 
 ## Package Structure
 
-*[Include this section if changes affect module organization or dependencies]*
+*[Omit this section unless changes affect module organization or dependencies. Highlight new/modified packages with distinct colors.]*
 
 ```mermaid
 ---
@@ -352,13 +122,9 @@ flowchart TB
     style Package2 fill:#c8e6c9,stroke:#2e7d32
 ```
 
-*[Highlight new or modified packages with distinct colors]*
-
----
-
 ## Key Flows
 
-*[Include this section if key flows between components are affected]*
+*[Omit this section unless key flows between components are affected]*
 
 ```mermaid
 ---
@@ -375,8 +141,6 @@ sequenceDiagram
     Main-->>User: Responds
 ```
 
----
-
 ## What Changed
 
 ### Components Added/Modified
@@ -384,19 +148,15 @@ sequenceDiagram
 | Component | Change Type | Description |
 |-----------|-------------|-------------|
 | [Name] | Added/Modified/Removed | [Brief description] |
-| [Name] | Added/Modified/Removed | [Brief description] |
 
 ### Key Changes
 
 - **[Change 1]:** [Description in business terms]
 - **[Change 2]:** [Description in business terms]
-- **[Change 3]:** [Description in business terms]
-
----
 
 ## Before & After
 
-*[Include this section if the change modifies existing architecture]*
+*[Omit this section unless the change modifies existing architecture]*
 
 ### Before
 
@@ -433,8 +193,6 @@ flowchart LR
     style NewComponent fill:#c8e6c9,stroke:#2e7d32
 ```
 
----
-
 ## Impact
 
 ### Who Is Affected
@@ -442,101 +200,28 @@ flowchart LR
 | Stakeholder | Impact | Notes |
 |-------------|--------|-------|
 | [Role/Team] | [High/Medium/Low] | [Brief description] |
-| [Role/Team] | [High/Medium/Low] | [Brief description] |
 
 ### System Dependencies
+
+*[Omit if no upstream/downstream systems are affected]*
 
 | System | Relationship | Impact |
 |--------|--------------|--------|
 | [System] | Upstream/Downstream | [Description] |
-| [System] | Upstream/Downstream | [Description] |
-
----
 
 ## Risks & Mitigations
+
+*[Omit this section if none]*
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|------------|--------|------------|
 | [Risk description] | Low/Medium/High | Low/Medium/High | [How addressed] |
 
----
-
 ## Future Considerations
 
-- [Known follow-up work or enhancements]
-- [Technical debt introduced]
-- [Potential future improvements]
-
----
+*[Omit this section if none. Known follow-up work, technical debt introduced, potential improvements.]*
 
 ## Related Documents
 
-- [Link to ADR if created]
-- [Link to work package plan]
-- [Link to relevant documentation]
+*[Omit this section if none. Link (don't copy) the ADR, work package plan, and relevant documentation.]*
 ```
-
----
-
-## Examples
-
-### Good Executive Summary
-
-> "This implementation adds payment processing support to the Order Service, enabling automatic invoice generation when orders are confirmed. This is required for the upcoming e-commerce launch where customer billing will be automated."
-
-### Good System Context Description
-
-> "The Order Service is a microservice that handles order lifecycle management and integrates with the Payment Gateway and Inventory System. This change affects the order confirmation flow and adds a new integration with the Billing Service."
-
-### Good What Changed Entry
-
-| Component | Change Type | Description |
-|-----------|-------------|-------------|
-| Order Service | Modified | Order confirmation now triggers invoice generation |
-| Billing Integration | Added | New integration with external billing provider |
-
----
-
-## Diagram Best Practices
-
-### Keep It Simple
-
-- **5-10 elements** per diagram maximum
-- **One concept** per diagram
-- **Clear labels** that don't require code knowledge
-
-### Use Color Strategically
-
-- **Highlight changes** with distinct colors
-- **Grey out** unchanged components for context
-- **Use consistent colors** across diagrams
-
-### Show Relationships Clearly
-
-- **Label all arrows** with the type of interaction
-- **Direction matters** - show data/control flow direction
-- **Avoid crossing lines** where possible
-
----
-
-## Checklist
-
-Before completing the architecture summary:
-
-- [ ] Executive summary is understandable by non-technical stakeholders
-- [ ] System context diagram shows where changes fit
-- [ ] Package diagram included if module structure is affected
-- [ ] Each diagram has ≤10 elements
-- [ ] All relationships are labeled
-- [ ] Changes are highlighted visually
-- [ ] No code, file paths, or function names
-- [ ] Impact on stakeholders is documented
-- [ ] Document can be understood in 5 minutes
-
----
-
-## Related Guides
-
-- [Architecture Review Guide](architecture-review.md) - For ADRs documenting decisions
-- [Strategic Review Guide](strategic-review.md) - For reviewing implementation focus
-- [Design Framework Guide](design-framework.md) - For design approach

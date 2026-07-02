@@ -35,7 +35,7 @@ The merged PR number, cross-referenced when recording the ADR implementation out
 
 ### completion_document
 
-[Summary](../../resources/complete-wp.md#section-guidelines) of delivered work, test coverage, and deferred items
+[Close-out summary](../../resources/complete-wp.md#template) of delivered work, test coverage, and deferred items
 
 #### completion_artifact
 

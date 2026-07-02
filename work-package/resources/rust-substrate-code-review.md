@@ -1,32 +1,17 @@
 ---
 name: rust-substrate-code-review
-description: Guidelines for conducting code reviews of Rust and Substrate codebases. Covers scope determination, review criteria, and output file generation.
+description: Guidelines for conducting code reviews of Rust and Substrate codebases. Covers scope determination, review criteria, and report generation.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 16
   legacy_id: 16
 ---
 
-
 # Rust/Substrate Code Review Guide
 
-**Purpose:** Guidelines for conducting code reviews of Rust and Substrate codebases. This guide covers scope determination, review criteria, and output file generation.
-
----
-
-## Overview
-
-Code review is a structured process for evaluating code quality, correctness, and adherence to best practices. This guide provides criteria specific to Rust language idioms and Substrate framework conventions.
-
-The code review process produces a **Code Review Report**—a structured document that captures findings, recommendations, and compliance assessment.
-
----
+Produces a **Code Review Report** capturing findings, recommendations, and compliance assessment.
 
 ## Review Scope
-
-### Scope Types
-
-Code reviews can operate at different scopes depending on context:
 
 | Scope Type | Description | When to Use |
 |------------|-------------|-------------|
@@ -35,64 +20,24 @@ Code reviews can operate at different scopes depending on context:
 | **Module** | Single module or crate | Focused module audit |
 | **Directory** | All files in a directory tree | Broader architectural review |
 
-### Determining Scope
-
-**For Implementation Reviews:**
-- Review all files modified during implementation
-- Focus on new/changed code
-- Use git diff to identify changed lines
-
-**For Module/Directory Reviews:**
-- Specify the target path explicitly
-- Consider module boundaries and dependencies
-- Include related test files
-
-### Scope Selection Checklist
-
-Before starting a review, determine:
-
-- [ ] **What triggered this review?** (Implementation completion, PR, audit request)
-- [ ] **What files are in scope?** (Changed files only, or broader)
-- [ ] **What is the review depth?** (Quick check vs comprehensive audit)
-- [ ] **Is this Substrate-specific code?** (Pallets, runtime, etc.)
-
----
+For implementation reviews: review all files modified during implementation, focus on new/changed code, use git diff to identify changed lines. For module/directory reviews: specify the target path explicitly, consider module boundaries and dependencies, include related test files.
 
 ## Output Files
 
-### When to Generate a Report File
-
-| Context | Generate Report? |
-|---------|------------------|
-| Implementation review | ⚠️ Optional |
-| PR review | ⚠️ Optional |
-| Module audit | ✅ Yes |
-
-### File Naming Convention
-
-```
-{scope-description}-review.md
-```
+Report file: optional for implementation and PR reviews; required for module audits. Naming: `{scope-description}-review.md`.
 
 ### Report Template
 
-When generating a code review report, include a reference back to this guide in the Author field. This helps readers understand the methodology used.
+The report header links back to this guide so readers know the methodology used.
 
 ```markdown
 # Code Review Report
 
-**Date:** YYYY-MM-DD  
-**Author:** [Rust/Substrate Code Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/rust-substrate-code-review.md) Agent  
-**Scope:** [Module/PR/Directory path]  
-**Files Reviewed:** [Count]
+> code-review · [Module/PR/Directory path] · YYYY-MM-DD · [N] files reviewed · methodology: [Rust/Substrate Code Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/rust-substrate-code-review.md)
 
 ## Summary
 
-**Overall Quality:** X/5 ⭐  
-**Critical Issues:** X  
-**High Issues:** X  
-**Medium Issues:** X  
-**Low Issues:** X
+**Overall Quality:** X/5 — Critical: X · High: X · Medium: X · Low: X
 
 ## Module Overview
 
@@ -100,17 +45,10 @@ When generating a code review report, include a reference back to this guide in 
 
 ## Findings
 
-### Critical Issues
-[List or "None found"]
+[One subsection per severity — Critical / High / Medium / Low. Omit severity levels with no findings; if there are no findings at all, state that in one line.]
 
-### High Priority Issues
-[List or "None found"]
-
-### Medium Priority Issues
-[List or "None found"]
-
-### Low Priority Issues
-[List or "None found"]
+### [Severity] Issues
+[List]
 
 ## Strengths
 
@@ -124,72 +62,35 @@ When generating a code review report, include a reference back to this guide in 
 
 ## Compliance
 
+[Exception-only: if all 5 categories (Rust Idioms, Substrate Framework, Architecture, Documentation, Testing) pass, state "All 5 compliance categories met." in one line. Otherwise list rows only for divergent categories:]
+
 | Category | Status | Score |
 |----------|--------|-------|
-| Rust Idioms | ✓/✗ | X% |
-| Substrate Framework | ✓/✗ | X% |
-| Architecture | ✓/✗ | X% |
-| Documentation | ✓/✗ | X% |
-| Testing | ✓/✗ | X% |
+| [Divergent category] | ✗ | X% |
 ```
-
----
 
 ## Reviewer Role & Instructions
 
-You are a **Senior Rust/Substrate Architect** with expertise in:
-- Idiomatic Rust development patterns and best practices
-- Substrate framework and Polkadot ecosystem conventions
-- Blockchain and distributed systems architecture
-- Code review methodologies and security analysis
-- Performance optimization and memory safety
+You are a **Senior Rust/Substrate Architect** with expertise in: idiomatic Rust patterns, Substrate framework and Polkadot ecosystem conventions, blockchain and distributed systems architecture, code review methodology and security analysis, performance optimization and memory safety.
 
-### Language & Tone Guidelines:
-- Use measured, technical language appropriate for professional code reviews
-- Avoid hyperbolic statements and superlatives
-- Focus on factual observations and technical merit
-- Use precise, descriptive language
-- Provide respectful, constructive feedback focused on improving code quality
+Language & tone: measured, technical, professional; no hyperbole or superlatives; factual observations and technical merit; precise, descriptive language; respectful, constructive feedback focused on improving code quality.
 
-### Review Approach:
+Review approach:
 - Understand change context, rationale, and goals
 - Review high-level design and architecture for soundness
 - Examine idiomatic Rust correctness, ownership patterns, error handling, and lifetimes
 - Review performance considerations and security implications
 - Defer style and formatting issues primarily to tooling (`rustfmt`, `clippy`)
 
-### Implementation Standards:
-When implementing review recommendations:
-- Write comments that explain **what the code does** and **why it exists**
-- Never add comments that reference the review process or historical context
-- Focus on making the code self-documenting and maintainable
-
----
+When implementing review recommendations: write comments that explain what the code does and why it exists; never add comments referencing the review process or historical context; make the code self-documenting and maintainable.
 
 ## Pre-Review Setup
 
-**CRITICAL FIRST STEPS:**
-
-1. **Determine scope type** (see Review Scope section above)
-
+1. **Determine scope type** (see Review Scope): what triggered the review, which files are in scope, review depth (quick check vs comprehensive audit), whether it is Substrate-specific code (pallets, runtime, etc.)
 2. **Get current date and time** for timestamping
-
-3. **Identify files to review:**
-   - For implementation reviews: `git diff --name-only` for changed files
-   - For PR reviews: Files in the PR diff
-   - For audits: All `.rs` files in the target path
-
-4. **Analyze the target structure:**
-   - File organization and naming patterns
-   - Public APIs and main entry points
-   - Documentation and comments
-   - Integration with parent modules
-
-5. **Determine output destination:**
-   - Implementation review → Optional report artifact
-   - Standalone review → Required report file
-
----
+3. **Identify files to review:** implementation reviews → `git diff --name-only`; PR reviews → files in the PR diff; audits → all `.rs` files in the target path
+4. **Analyze the target structure:** file organization and naming patterns, public APIs and main entry points, documentation and comments, integration with parent modules
+5. **Determine output destination:** implementation review → optional report artifact; standalone review → required report file
 
 ## Review Criteria
 
@@ -230,8 +131,6 @@ When implementing review recommendations:
 - [ ] Justify necessity of `unsafe`; prefer safe Rust alternatives
 - [ ] Verify testing and audit coverage of unsafe code paths
 
----
-
 ### 2. Substrate Framework Compliance
 
 **Pallet Structure:**
@@ -259,8 +158,6 @@ When implementing review recommendations:
 - [ ] Protection against overflow/underflow vulnerabilities
 - [ ] Checks for denial-of-service vectors
 
----
-
 ### 3. Architecture & Module Structure
 
 **File & Folder Organization:**
@@ -280,8 +177,6 @@ When implementing review recommendations:
 - [ ] Centralized constants and configuration
 - [ ] Helper functions and utilities appropriately encapsulated
 - [ ] Clear separation of integration vs unit tests
-
----
 
 ### 4. Documentation Quality & Style
 
@@ -303,8 +198,6 @@ When implementing review recommendations:
 - [ ] TODO/FIXME comments contain context and clear instructions
 - [ ] Comment density is balanced
 
----
-
 ### 5. Testing & Quality Assurance
 
 **Test Coverage:**
@@ -319,52 +212,21 @@ When implementing review recommendations:
 - [ ] Mocks and dependency isolation used appropriately
 - [ ] Tests are readable and maintainable with minimal duplication
 
----
-
 ## Review Output Format
 
-Structure your review as follows:
+**Summary:** overall assessment (1-5 stars), key strengths, primary areas for improvement, urgency level for addressing issues.
 
-### Summary
-- Overall assessment (1–5 stars)
-- Key strengths identified
-- Primary areas for improvement
-- Urgency level for addressing issues
+**Strengths:** specific examples of effective code quality, well-implemented idiomatic Rust and Substrate patterns, notable solutions, quality documentation and testing.
 
-### Detailed Findings
-
-#### ✅ Strengths
-- Specific examples of effective code quality
-- Well-implemented idiomatic Rust and Substrate patterns
-- Notable innovative or effective solutions
-- Quality documentation and testing
-
-#### ⚠️ Issues Requiring Attention
-For each issue, provide:
+**Issues requiring attention** — for each issue provide:
 - **Location:** File path and line numbers
 - **Category:** Rust Idioms / Substrate Framework / Architecture / Documentation / Testing / Security
 - **Description:** Clear technical explanation
 - **Impact:** Potential consequences (performance, security, maintainability)
 - **Recommendation:** Specific actionable fix
-- **Code Example:** Show current vs suggested improvement (if applicable)
+- **Code Example:** Current vs suggested improvement (if applicable)
 
-#### 🔧 Suggestions for Improvement
-- Opportunities for performance optimization
-- Code organization and structural improvements
-- Documentation enhancements
-- Testing coverage gaps
-
----
-
-## Compliance Checklist
-
-- [ ] Rust Idioms Compliance
-- [ ] Substrate Framework Compliance
-- [ ] Architecture & Organization
-- [ ] Documentation Quality
-- [ ] Testing Coverage
-
----
+**Suggestions for improvement:** performance optimization opportunities, code organization and structural improvements, documentation enhancements, testing coverage gaps.
 
 ## Reference Materials
 

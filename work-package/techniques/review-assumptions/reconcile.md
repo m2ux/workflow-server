@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -57,10 +57,10 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 
 ### 3. Update Assumptions
 
-- Update the `{assumptions_log}`: mark resolved assumptions with finding, evidence, and resolution status
-- Add any newly surfaced assumptions as Open with their classification (code-resolvable or not)
-- Maintain a running count of resolved assumptions by status: total, validated, invalidated, partially validated, open code-resolvable, open non-code-resolvable
-- Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See the [formatting rule](../../resources/assumption-reconciliation.md#markdown-formatting-rule) for correct vs incorrect examples.
+- Update the `{assumptions_log}` rows in place: write finding + evidence into the Resolution column and Validated / Invalidated / Partially Validated into the Outcome column; remove the Open Assumptions entry of any assumption that resolved
+- Add any newly surfaced assumptions as new rows, Outcome `Open`, with their classification (code-resolvable or not)
+- Present the scorecard (see [assumption-reconciliation](../../resources/assumption-reconciliation.md#scorecard)) in the session after each pass; do NOT persist count tables in the log — the rows are the record
+- In Open Assumptions entries, each bold-label line MUST end with two trailing spaces to produce a line break in rendered markdown (no bullet prefixes) — see the [formatting rule](../../resources/assumption-reconciliation.md#markdown-formatting-rule)
 
 ### 4. Check Convergence
 

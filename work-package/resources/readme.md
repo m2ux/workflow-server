@@ -2,67 +2,35 @@
 name: readme
 description: Guidelines for creating the README.md entry-point document for work package planning folders.
 metadata:
-  version: 3.0.0
+  version: 3.1.0
   order: 1
   legacy_id: 1
 ---
 
 # Work Package README Guide
 
-**Purpose:** Guidelines for creating the `README.md` entry-point document for work package planning folders.
-
----
-
-## Overview
-
-The `README.md` file serves as the entry point and executive summary for a work package. Git hosting platforms render it automatically when browsing the folder, making it the natural landing page. It provides:
-- Quick orientation for anyone joining the work
-- High-level status and progress tracking
-- Navigation to planning artifacts via hyperlinked progress items
-
-> **Key Insight:** This document answers "What is this work package and what's its current status?" in under 2 minutes of reading.
-
----
-
-## When to Create
-
-**Always create the README artifact when:**
-- Creating a new work package planning folder
-- Work package has multiple tasks or activities
-- Multiple people may work on or review the work
-
----
+The `README.md` is the entry point for a work package planning folder (git hosting renders it when browsing). It is an **index** — a hub of links answering "what is this work package and what's its current status?" in under 2 minutes. It never restates what a linked artifact records (single-source-and-link).
 
 ## Template
 
 ```markdown
 # [Work Package Name] - [Month Year]
 
-**Created:** [Date]  
-**Status:** [Planning/Ready/In Progress/Complete]  
-**Type:** [Feature/Bug-Fix/Enhancement/Refactor]
+> [Feature/Bug-Fix/Enhancement/Refactor] · Created [YYYY-MM-DD] · **Status:** [Planning/Ready/In Progress/Complete]
 
-> **Note on Time Estimates:** All effort estimates refer to **agentic (AI-assisted) development time** plus separate **human review time**.
-
----
+> **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
 ## 🎯 Executive Summary
 
 [2-3 sentences explaining what this work package does and why it matters]
 
----
-
 ## Problem Overview
 
 *Populated during start-work-package activity.*
 
----
-
 ## Solution Overview
 
 *Populated during plan-prepare activity.*
-
----
 
 ## 📊 Progress
 
@@ -80,10 +48,7 @@ The `README.md` file serves as the entry point and executive summary for a work 
 | — | `Comprehension artifact` | Persistent codebase knowledge | 20-45m | ⬚ Pending |
 | — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | `Completion summary` | Deliverables, decisions, lessons learned | 10-20m | ⬚ Pending |
-| 08 | [Workflow retrospective](workflow-retrospective.md) | Process improvement recommendations | 10-20m | ⬚ Pending |
-
----
+| 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, deferred items, lessons, retrospective | 10-20m | ⬚ Pending |
 
 ## 🔗 Links
 
@@ -92,97 +57,37 @@ The `README.md` file serves as the entry point and executive summary for a work 
 | Jira Ticket | [PROJ-N](https://{jira_host}/browse/PROJ-N) |
 | Parent Epic | [PROJ-N](https://{jira_host}/browse/PROJ-N) — [Epic title] |
 | PR | [#N](https://{repo_host}/{org}/{repo}/pull/N) |
-
----
-
-**Status:** Ready for implementation
 ```
 
----
+## Rules
 
-## Section Guidelines
+### Header line
 
-### Header Block
-
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Name** | Descriptive work package name | `Hybrid Search Implementation` |
-| **Month Year** | When work package was created | `December 2024` |
-| **Created** | Exact creation date | `2024-12-21` |
-| **Status** | Current state | `Planning`, `Ready`, `In Progress`, `Complete` |
-| **Type** | Category of work | `Feature`, `Bug-Fix`, `Enhancement`, `Refactor` |
-
-Add a **Revised** field when the README is updated after completion (e.g., `**Revised:** 2024-12-28 (completed)`).
+- One blockquote line: type · creation date · status (lean-header). Status values: `Planning`, `Ready`, `In Progress`, `Complete`.
+- Status appears **once**, in this line (state-once-per-artifact) — no footer status section, no closing narrative paragraph. Deferred items and outcomes live in COMPLETE.md; link it from Progress, don't copy (single-source-and-link).
+- When the README is updated after completion, append `· Revised YYYY-MM-DD`.
 
 ### Executive Summary
 
-Write 2-3 sentences that answer:
-- What does this work package deliver?
-- Why does it matter?
-- What's the key benefit?
-
-**Good:**
-```markdown
-## 🎯 Executive Summary
-
-Implement hybrid search combining vector similarity with BM25 keyword matching to improve search relevance. This addresses the current issue where exact term matches are missed by pure vector search, resulting in a 35% improvement in search precision on benchmark queries.
-```
-
-**Bad:**
-```markdown
-## 🎯 Executive Summary
-
-This work package improves search.
-```
+2-3 sentences answering: what does this deliver, why does it matter, what's the key benefit. Include the concrete problem and measurable impact where known — not a one-line restatement of the title.
 
 ### Problem Overview / Solution Overview
 
-Two plain-language sections written for non-technical stakeholders. Each is exactly two paragraphs.
+Plain-language sections for non-technical stakeholders, each exactly two paragraphs; the placeholder is replaced when the producing step executes.
 
-- **Problem Overview** is populated by the `present-problem-overview` step during `start-work-package`. Describes what the system currently does and why it's problematic, then the consequences.
-- **Solution Overview** is populated by the `present-solution-overview` step during `plan-prepare`. Describes what the fix does and how it works at a high level.
-
-Both sections are written to the README when their respective steps execute. The placeholder text is replaced with the generated content.
+- **Problem Overview** — `present-problem-overview` step (`start-work-package`): what the system currently does and why it's problematic, then the consequences.
+- **Solution Overview** — `present-solution-overview` step (`plan-prepare`): what the fix does and how it works at a high level. Links the work package plan for the task breakdown rather than re-listing the problem items.
 
 ### Progress Table
 
-The Progress table is the primary navigation for the planning folder. Each Item entry is hyperlinked to the corresponding artifact file. Items that do not produce a standalone artifact (e.g., Implementation, Validation, PR review) are plain text.
+The primary navigation for the planning folder.
 
-Use status indicators consistently:
-
-| Symbol | Meaning |
-|--------|---------|
-| ⬚ Pending | Not started |
-| ◐ In Progress | Currently working |
-| ✅ Complete | Finished |
-| ❌ Blocked | Cannot proceed |
-| ⊘ Cancelled | No longer needed |
-
-The # column contains the artifact's numbered prefix, matching the producing activity (all artifacts from the same activity share the same number). Items without a standalone artifact use "—". The Description column provides a brief (3-8 word) summary of what the artifact covers. The Estimate column gives the expected agentic time for each item — adjust the template defaults to match the specific work package's complexity.
-
-Optional activities that were skipped should be omitted from the table entirely — only list items that were or will be produced.
+- Each Item is hyperlinked to its artifact file; items with no standalone artifact (Implementation, Validation, PR review) are plain text with "—" in the # column.
+- The # column is the artifact's numbered prefix, matching the producing activity (artifacts from the same activity share the number).
+- Description: 3-8 word summary. Estimate: expected agentic time — adjust template defaults to the work package's complexity.
+- Omit skipped optional activities entirely — list only items that were or will be produced.
+- Status vocabulary: `⬚ Pending`, `◐ In Progress`, `✅ Complete`, `❌ Blocked`, `⊘ Cancelled`.
 
 ### Links Table
 
-Consolidate external references (Jira ticket, parent epic, PR) into a single Links table. Artifact links belong in the Progress table, not here.
-
----
-
-## Quality Checklist
-
-- [ ] Title includes work package name and month/year
-- [ ] Status field is current
-- [ ] Executive summary is 2-3 sentences
-- [ ] Problem Overview is populated (two paragraphs, plain language)
-- [ ] Solution Overview is populated (two paragraphs, plain language)
-- [ ] Progress table items are hyperlinked to artifacts
-- [ ] Progress table has Description and Estimate columns filled in
-- [ ] Links table has Jira ticket and PR references
-- [ ] Artifact numbers match producing activity
-
----
-
-## Related Guides
-
-- [Work Package Implementation Workflow](../../meta/README.md)
-- [Work Packages Workflow](../../work-packages/README.md)
+External references only (Jira ticket, parent epic, PR). Artifact links belong in the Progress table.

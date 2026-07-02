@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.6.0
+version: 1.7.0
 name: Submit for Review
 description: Submit the PR for review and handle reviewer feedback.
 required: true
@@ -180,34 +180,29 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
-  - kind: checkpoint
-    id: merge-strategy-reminder
-    message: |-
-      PR is ready for review. Merge strategy guidance:
-
-      **Squash merge available — use squash merge with signed commit.**
-      To get a GPG-signed + DCO-attested merge commit, merge locally:
-      ```
-      git checkout main && git pull
-      git merge --squash {branch_name}
-      git commit -s -S -m 'feat: description (#{pr_number})'
-      git push
-      ```
-      Note: GitHub web UI squash merge is not GPG-signed. Use the local flow above for a verified commit.
-
-      If squash merge is not available on this repo, branch commits land as-is — no signing required.
+  - kind: action
+    id: merge-strategy-guidance
     condition:
       type: simple
       variable: squash_merge_supported
       operator: ==
       value: true
-    blocking: false
-    defaultOption: acknowledged
-    autoAdvanceMs: 20000
-    options:
-      - id: acknowledged
-        label: Understood — will use squash merge with signed commit
-        description: Proceed to mark PR ready for review
+    actions:
+      - action: message
+        message: |-
+          PR is ready for review. Merge strategy guidance (informational — no response needed):
+
+          **Squash merge available — use squash merge with signed commit.**
+          To get a GPG-signed + DCO-attested merge commit, merge locally:
+          ```
+          git checkout main && git pull
+          git merge --squash {branch_name}
+          git commit -s -S -m 'feat: description (#{pr_number})'
+          git push
+          ```
+          Note: GitHub web UI squash merge is not GPG-signed. Use the local flow above for a verified commit.
+
+          If squash merge is not available on this repo, branch commits land as-is — no signing required.
   - kind: technique
     id: mark-ready
     technique: update-pr::mark-ready

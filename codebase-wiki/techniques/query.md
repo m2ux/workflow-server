@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Answer a question against the wiki by navigating hierarchically — search `inde
 
 ## Inputs
 
-### question
+### wiki_question
 
 The question to answer against the wiki — a natural-language query about the codebase the wiki covers.
 
@@ -27,7 +27,7 @@ The question to answer against the wiki — a natural-language query about the c
 
 ### 1. Search The Index
 
-- Read `index.md` to locate the pages whose titles, types, or covered areas match `{question}` — the catalog is the entry point, not a full-wiki scan.
+- Read `index.md` to locate the pages whose titles, types, or covered areas match `{wiki_question}` — the catalog is the entry point, not a full-wiki scan.
 - Pick the smallest set of pages that could answer the question; prefer following `[[wikilinks]]` from a matched page over re-scanning the catalog.
 
 ### 2. Read Relevant Pages
@@ -37,7 +37,7 @@ The question to answer against the wiki — a natural-language query about the c
 
 ### 3. Synthesize The Answer
 
-- Compose an answer to `{question}` from the pages' claims, attributing each part of the answer to the page it came from with a `[[wikilink]]` citation per the [citation conventions](../resources/citation-conventions.md).
+- Compose an answer to `{wiki_question}` from the pages' claims, attributing each part of the answer to the page it came from with a `[[wikilink]]` citation per the [citation conventions](../resources/citation-conventions.md).
 - Carry the confidence of the underlying claims into the answer — flag where the answer rests on `low`-confidence pages or where the wiki has no coverage.
 - Where pages disagree, surface the disagreement rather than picking a side silently — a contradiction is a lint finding, not a query decision.
 
@@ -47,9 +47,9 @@ The question to answer against the wiki — a natural-language query about the c
 
 ## Outputs
 
-### answer
+### wiki_answer
 
-The synthesized answer to `{question}`, with `[[wikilink]]` citations to the pages it rests on and the confidence carried from those pages.
+The synthesized answer to `{wiki_question}`, with `[[wikilink]]` citations to the pages it rests on and the confidence carried from those pages.
 
 #### coverage_gaps
 

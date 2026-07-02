@@ -2,67 +2,34 @@
 name: wp-plan
 description: Guidelines for creating the work package plan artifact.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   order: 10
   legacy_id: 10
 ---
 
-
 # Work Package Plan Guide
 
-**Purpose:** Guidelines for creating the work package plan artifact.
+The work package plan is the detailed implementation specification: enough detail for an implementer to begin work. Create it when the work package has 3+ distinct tasks, modifies multiple components or files, requires architectural decisions, or has performance/quality targets.
 
----
-
-## Overview
-
-The work package plan artifact serves as the detailed implementation specification for a work package. It provides:
-- Problem statement and scope definition
-- Summary of research and analysis findings
-- Proposed approach with alternatives considered
-- Task breakdown with estimates
-- Success criteria and measurement strategy
-- Testing strategy and risk assessment
-
-> **Key Insight:** This document answers "How will we implement this work package?" with enough detail for an implementer to begin work.
-
----
-
-## When to Create
-
-**Always create the work package plan when:**
-- Work package has 3+ distinct tasks
-- Multiple components or files will be modified
-- Architectural decisions are required
-- Performance or quality targets must be met
-
-
-**Template:**
+## Template
 
 ```markdown
 # [Work Package Name] - Implementation Plan
 
-**Date:** [Date]  
-**Priority:** [HIGH/MEDIUM/LOW]  
-**Status:** [Planning/Ready/In Progress/Complete]  
-**Estimated Effort:** X-Yh agentic + Zh review
-
----
+> plan · [HIGH/MEDIUM/LOW] · [Planning/Ready/In Progress/Complete] · X-Yh agentic + Zh review · [date]
 
 ## Overview
 
 ### Problem Statement
-[What problem are we solving? Why does it matter?]
+[2-4 sentences: what problem exists, why it matters, impact of not solving it. State it once here — later sections reference this statement rather than re-narrating the problem.]
 
 ### Scope
-**In Scope:** [Items]  
+**In Scope:** [Items]
 **Out of Scope:** [Items with reasons]
-
----
 
 ## Research & Analysis
 
-*See companion planning artifacts for full details:*
+*See companion planning artifacts for full details — link, don't copy:*
 - **Knowledge Base Research:** KB research artifact
 - **Implementation Analysis:** Implementation analysis artifact
 
@@ -76,8 +43,6 @@ The work package plan artifact serves as the detailed implementation specificati
 - **Baseline:** [Key metric] = [value]
 - **Gap:** [Primary gap to address]
 - **Opportunity:** [Main improvement opportunity]
-
----
 
 ## Proposed Approach
 
@@ -93,8 +58,6 @@ The work package plan artifact serves as the detailed implementation specificati
 ### Assumptions
 - [Assumption underlying the approach, e.g. expected input format, environment, prerequisite state]
 
----
-
 ## Implementation Tasks
 
 ### Task 1: [Name] (X-Y min)
@@ -104,15 +67,7 @@ The work package plan artifact serves as the detailed implementation specificati
 - `tests/...` - Test coverage
 
 ### Task 2: [Name] (X-Y min)
-**Goal:** [Objective]
-**Deliverables:**
-- `src/path/to/component` - Description
-- `tests/...` - Test coverage
-
-### Task 3: [Name] (X-Y min)
 [Continue pattern...]
-
----
 
 ## Success Criteria
 
@@ -120,12 +75,10 @@ The work package plan artifact serves as the detailed implementation specificati
 
 ### Functional Requirements
 - [ ] Requirement 1 (addresses gap: [Gap ID])
-- [ ] Requirement 2 (addresses gap: [Gap ID])
 
 ### Performance Targets
-- [ ] **[Metric 1]:** Improve from [baseline] to [target] ([X]% improvement)
-- [ ] **[Metric 2]:** Reduce from [baseline] to [target] ([X]% reduction)
-- [ ] **[Metric 3]:** Achieve [target] (new capability)
+- [ ] **[Metric]:** Improve from [baseline] to [target] ([X]% improvement)
+- [ ] **[Metric]:** Achieve [target] (new capability — no baseline)
 
 ### Quality Requirements
 - [ ] Test coverage ≥X% (baseline: Y%)
@@ -133,281 +86,41 @@ The work package plan artifact serves as the detailed implementation specificati
 - [ ] ADR written
 
 ### Measurement Strategy
-**How will we validate improvements?**
-- [Test/script/report that proves target achieved]
+- [Test/script/report that proves each target achieved]
 - [Comparison methodology for before/after]
-
----
 
 ## Testing Strategy
 
 ### Unit Tests
 - Component X: [Test scenarios]
-- Component Y: [Test scenarios]
 
-### Integration Tests (If Applicable)
-- [Scenario 1]
-- [Scenario 2]
+### Integration Tests
+[Omit this section if not applicable]
 
-### E2E Tests (If Applicable)
-- [Workflow scenario]
-
----
+### E2E Tests
+[Omit this section if not applicable]
 
 ## Dependencies & Risks
 
 ### Requires (Blockers)
+[Omit this section if none]
 - [ ] Dependency A
-- [ ] Dependency B
 
 ### Risks
 | Risk | Impact | Probability | Mitigation |
 |------|--------|-------------|------------|
 | [Risk 1] | HIGH/MEDIUM/LOW | HIGH/MEDIUM/LOW | [Strategy] |
-| [Risk 2] | HIGH/MEDIUM/LOW | HIGH/MEDIUM/LOW | [Strategy] |
-
----
 
 **Status:** Ready for implementation
 ```
 
----
-
-## Section Guidelines
-
-### Header Block
-
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Name** | Descriptive work package name | `Hybrid Search Implementation` |
-| **Date** | Creation date | `2024-12-21` |
-| **Priority** | Importance level | `HIGH`, `MEDIUM`, `LOW` |
-| **Status** | Current state | `Planning`, `Ready`, `In Progress`, `Complete` |
-| **Estimated Effort** | Time estimate | `4-6h agentic + 2h review` |
-
-### Problem Statement
-
-Write 2-4 sentences that answer:
-- What problem exists?
-- Why does it matter?
-- What's the impact of not solving it?
-
-**Good:**
-
-```markdown
-### Problem Statement
-Search queries currently use only vector similarity, which fails to match exact terms users expect. For example, searching "API rate limiting" returns results about "throttling mechanisms" but misses documents that explicitly mention "rate limiting." This leads to user frustration and reduced trust in search quality.
-```
-
-**Bad:**
-
-```markdown
-### Problem Statement
-Search needs to be better.
-```
-
-### Scope
-
-Clearly define boundaries to prevent scope creep:
-
-**Good:**
-
-```markdown
-### Scope
-**In Scope:**
-- Add BM25 keyword scoring alongside vector similarity
-- Implement configurable weighting between vector and keyword scores
-- Add search mode parameter to API (vector, keyword, hybrid)
-
-**Out of Scope:**
-- Query expansion/synonyms (future enhancement)
-- Faceted search (separate work package)
-- UI changes (frontend team responsibility)
-```
-
-### Research & Analysis
-
-Link to companion artifacts and summarize key findings. Don't duplicate the full content—just highlight what's most relevant to the implementation:
-
-```markdown
-## Research & Analysis
-
-*See companion planning artifacts for full details:*
-- **Knowledge Base Research:** KB research artifact
-- **Implementation Analysis:** Implementation analysis artifact
-
-### Key Findings Summary
-
-**From KB Research:**
-- BM25 with k1=1.2, b=0.75 is industry standard
-- Reciprocal Rank Fusion effective for combining scores
-
-**From Implementation Analysis:**
-- **Baseline:** P95 latency = 487ms, non-zero result rate = 64%
-- **Gap:** Exact term matches missed by vector-only search
-- **Opportunity:** Adding keyword scoring can improve precision by 35%
-```
-
-### Proposed Approach
-
-Describe the solution and document alternatives considered:
-
-**Good:**
-
-```markdown
-### Solution Design
-Implement hybrid search using Reciprocal Rank Fusion (RRF) to combine vector similarity and BM25 keyword scores. RRF normalizes rankings without requiring score calibration, making it robust across different query types.
-
-### Alternatives Considered
-| Option | Pros | Cons | Decision |
-|--------|------|------|----------|
-| RRF fusion | No calibration needed, robust | Fixed weighting | **Selected** |
-| Linear combination | Tunable weights | Requires calibration | Rejected |
-| Query-time selection | Simple | No fusion benefit | Rejected |
-
-### Assumptions
-- Vector index already stores per-term frequencies needed for BM25
-- Query volume stays within current capacity; no new caching tier required
-```
-
-Document the assumptions underlying the chosen approach so reviewers and implementers can validate or challenge them. Each design decision should record its rationale (the "why") alongside any assumptions it depends on.
-
-### Implementation Tasks
-
-Break down into discrete, estimable tasks. Each task should:
-- Be completable in one session
-- Have clear deliverables
-- Include test coverage
-
-**Good:**
-
-```markdown
-### Task 1: Add BM25 Scorer (45-60 min)
-**Goal:** Implement BM25 scoring function with configurable parameters
-**Deliverables:**
-- `src/search/bm25.rs` - BM25 scorer implementation
-- `tests/search/bm25_test.rs` - Unit tests (10+ cases)
-
-### Task 2: Implement RRF Fusion (30-45 min)
-**Goal:** Combine vector and BM25 scores using Reciprocal Rank Fusion
-**Deliverables:**
-- `src/search/fusion.rs` - RRF implementation
-- `tests/search/fusion_test.rs` - Unit tests (8+ cases)
-```
-
-**Bad — vague:**
-
-```markdown
-### Task 1: Implement search improvements
-- Make search better
-- Add tests
-```
-
-**Bad — verification-as-task / raw cargo (forbidden):**
-
-```markdown
-### Task 2: Verify compilation
-Run `cargo check` on the pallet to confirm the change compiles.
-
-### Task 3: Verify existing tests pass
-Run `cargo test -p pallet-foo`.
-```
-
-### Success Criteria
-
-Link criteria to baselines from analysis. Make all criteria measurable:
-
-**Good:**
-
-```markdown
-### Performance Targets
-- [ ] **P95 Latency:** Reduce from 487ms to 200ms (59% reduction)
-- [ ] **Non-zero Result Rate:** Improve from 64% to 90% (26 percentage points)
-
-### Measurement Strategy
-**How will we validate improvements?**
-- Run benchmark suite of 1000 queries before and after
-- Compare P95 latency using production logs (7-day average)
-- Measure non-zero rate using `scripts/evaluate-search.py`
-```
-
-**Bad:**
-
-```markdown
-### Success Criteria
-- [ ] Search is faster
-- [ ] Results are better
-```
-
-### Testing Strategy
-
-List specific test scenarios by category:
-
-```markdown
-## Testing Strategy
-
-### Unit Tests
-- BM25 scorer: term frequency, document frequency, edge cases
-- RRF fusion: equal scores, disjoint results, single source
-
-### Integration Tests
-- Hybrid search end-to-end with mock index
-- API parameter validation
-
-### E2E Tests
-- Full search workflow with production-like data
-```
-
-### Dependencies & Risks
-
-Document blockers and mitigation strategies:
-
-```markdown
-## Dependencies & Risks
-
-### Requires (Blockers)
-- [ ] Vector index schema supports storing term frequencies
-- [ ] API versioning strategy approved
-
-### Risks
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| BM25 increases latency | HIGH | MEDIUM | Add caching, benchmark early |
-| Score fusion reduces precision | MEDIUM | LOW | A/B test before full rollout |
-```
-
----
-
-## Quality Checklist
-
-- [ ] Problem statement clearly explains the issue and its impact
-- [ ] Scope explicitly lists in-scope and out-of-scope items
-- [ ] Research findings summarized with links to full artifacts
-- [ ] Approach includes alternatives considered
-- [ ] Tasks are discrete with clear deliverables and estimates
-- [ ] Success criteria are measurable with baselines and targets
-- [ ] Measurement strategy explains how to validate improvements
-- [ ] Testing strategy covers unit, integration, and e2e (where applicable)
-- [ ] Dependencies and risks documented with mitigations
-
----
-
-## Relationship to Other Documents
-
-| Document | Relationship |
-|----------|--------------|
-| `README.md` | High-level summary and artifact index; plan provides details |
-| `README.md` | Navigation; links to this plan |
-| KB research artifact | Source for key findings; plan summarizes |
-| Implementation analysis artifact | Source for baselines; plan summarizes |
-| ADR | Formal decision record; plan is working document |
-
----
-
-## Related Guides
-
-- `Work Package Implementation Workflow`
-- [Work Package README Guide](readme.md)
-- [Knowledge Base Research Guide](knowledge-base-research.md)
-- [Implementation Analysis Guide](implementation-analysis.md)
-- [Architecture Review Guide](architecture-review.md)
+## Rules
+
+- **Problem Statement** — 2-4 sentences answering: what problem exists, why it matters, what's the impact of not solving it. Be specific (e.g. "vector-only search misses exact term matches, eroding user trust"), never vague ("search needs to be better"). Later sections reference the Problem Statement instead of restating the problem (state-once-per-artifact).
+- **Scope** — explicit in/out boundaries to prevent scope creep; give the reason for each out-of-scope item.
+- **Research & Analysis** — link companion artifacts and summarize only the findings most relevant to implementation (single-source-and-link); do not duplicate their content.
+- **Proposed Approach** — describe the solution, document alternatives considered with pros/cons and decision, and record each design decision's rationale alongside the assumptions it depends on so reviewers and implementers can validate or challenge them.
+- **Implementation Tasks** — discrete, estimable, completable in one session, with concrete deliverable paths and test coverage. Forbidden patterns: verification-as-task (e.g. "Task: Verify compilation", "Task: Verify existing tests pass") and raw cargo invocations (`cargo check`, `cargo test`) as tasks. Vague tasks ("make search better") are also rejected.
+- **Success Criteria** — measurable, linked to baselines and gap IDs from the analysis (e.g. "P95 latency: 487ms → 200ms, 59% reduction"), never unquantified ("search is faster"). New capabilities with no baseline state the absolute target. Measurement Strategy names the specific test/script/log comparison that proves each target.
+- **Testing Strategy** — specific test scenarios per category (unit/integration/e2e), including edge cases.
+- **Dependencies & Risks** — list blockers; every risk gets impact, probability, and a mitigation strategy.

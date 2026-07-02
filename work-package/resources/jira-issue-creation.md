@@ -2,24 +2,14 @@
 name: jira-issue-creation
 description: Reference material for creating Jira issues. Provides terminology, templates, and MCP tool reference.
 metadata:
-  version: 2.0.0
+  version: 2.1.0
   order: 4
   legacy_id: 4
 ---
 
 # Jira Issue Creation Guide
 
-**Purpose:** Reference material for creating Jira issues. Provides terminology, templates, and MCP tool reference. Flow and checkpoints are defined in the activity.
-
----
-
-## Overview
-
-This guide provides reference material for Jira issue creation. For the creation flow, see the [Issue Management Activity](../activities/01-issue-management.yaml).
-
-> **Key Principle:** Issues define problems, not solutions. Describe *what* needs to be solved and *why*, leaving *how* for subsequent design work.
-
----
+Reference material for Jira issue creation. Flow and checkpoints are defined in the [Issue Management Activity](../activities/01-issue-management.yaml). Issues define problems, not solutions: describe *what* needs to be solved and *why*, leaving *how* for subsequent design work.
 
 ## Jira vs GitHub Terminology
 
@@ -36,11 +26,9 @@ This guide provides reference material for Jira issue creation. For the creation
 | Components | Labels | Categorization |
 | Labels | Labels | Tags |
 
----
-
 ## Issue Types
 
-### When to Use Each Type
+Selection order: defect in existing functionality → **Bug**; user-facing with clear user value → **Story**; technical work or internal improvement → **Task**; spans multiple deliverables → **Epic**; breakdown of a Story/Task → **Subtask**.
 
 | Type | When to Use | Example |
 |------|-------------|---------|
@@ -50,53 +38,15 @@ This guide provides reference material for Jira issue creation. For the creation
 | **Bug** | Defect in existing functionality | "Login fails with special characters" |
 | **Subtask** | Breakdown of a Story or Task | "Implement email validation" |
 
-### Issue Type Selection Guide
-
-```
-Is it a defect in existing functionality?
-    └─ Yes → Bug
-    └─ No ↓
-
-Is it user-facing with clear user value?
-    └─ Yes → Story
-    └─ No ↓
-
-Is it technical work or internal improvement?
-    └─ Yes → Task
-    └─ No ↓
-
-Does it span multiple deliverables?
-    └─ Yes → Epic
-```
-
----
-
 ## Issue Structure
 
 ### Summary (Title)
 
-The summary is the issue title. Keep it concise and problem-focused.
-
-**Good:**
-- "Users cannot search by diagram content"
-- "Login fails with special characters in password"
-- "Add support for PDF document ingestion"
-
-**Bad:**
-- "Fix the search thing"
-- "Implement new visuals table with CLIP embeddings"
-- "Bug"
-
-**Rules:**
 - 50-80 characters ideal
-- Describe the problem or capability, not the solution
+- Describe the problem or capability, not the solution ("Users cannot search by diagram content", not "Implement new visuals table with CLIP embeddings" or "Fix the search thing")
 - Use active voice when possible
 
-### Description
-
-The description uses Jira's markdown format (similar to standard markdown with some differences).
-
-**Template:**
+### Description Template
 
 ```markdown
 # [Issue Title]
@@ -109,7 +59,7 @@ The description uses Jira's markdown format (similar to standard markdown with s
 
 ### Problem Statement
 
-[Describe the gap between current and desired state. Be specific about impact.]
+[Describe the gap between current and desired state. Be specific about impact. Must be clear to a reader without context — no assumed knowledge of prior discussions or internal shorthand.]
 
 **Current state:**
 - [What happens now]
@@ -131,46 +81,36 @@ The description uses Jira's markdown format (similar to standard markdown with s
 **Out of Scope:**
 - [Related but excluded aspects, and why]
 
----
-
 ## Acceptance Criteria
 
 - [ ] [Observable, testable criterion 1]
 - [ ] [Observable, testable criterion 2]
-- [ ] [Observable, testable criterion 3]
-
----
 
 ## User Stories
 
 ### US-1: [Story Title]
 > As a [persona], I want [capability] so that [benefit].
 
-### US-2: [Story Title]
-> As a [persona], I want [capability] so that [benefit].
-
----
-
 ## Success Metrics
+
+[Omit this section if not measurable]
 
 | Metric | Target |
 |--------|--------|
 | [Metric 1] | [Target value] |
-| [Metric 2] | [Target value] |
 
 ## Constraints
 
-- Performance: [requirements]
-- Compatibility: [requirements]
-- Security: [requirements]
+[Omit this section if none: performance, compatibility, security requirements]
 
 ## References
 
-- [Relevant external documentation]
-- [Related issues or discussions]
+[Omit this section if none: relevant external documentation, related issues or discussions]
 ```
 
 ### Jira Markdown Notes
+
+The `createJiraIssue` MCP tool accepts markdown format and handles conversion. Native Jira syntax, if needed:
 
 | Element | Jira Syntax | Standard Markdown |
 |---------|-------------|-------------------|
@@ -184,8 +124,6 @@ The description uses Jira's markdown format (similar to standard markdown with s
 | Code | `{code}text{code}` | `` `text` `` |
 | Table | `||header||` / `|cell|` | `|header|` / `|cell|` |
 | Link | `[text|url]` | `[text](url)` |
-
-> **Note:** The `createJiraIssue` MCP tool accepts markdown format and handles conversion.
 
 ### Priority
 
@@ -202,9 +140,7 @@ The description uses Jira's markdown format (similar to standard markdown with s
 - **Components:** Architectural areas (e.g., "backend", "api", "search")
 - **Labels:** Cross-cutting concerns (e.g., "performance", "security", "ux")
 
----
-
-## Anti-Patterns to Avoid
+## Anti-Patterns
 
 | Anti-Pattern | Description | Solution |
 |--------------|-------------|----------|
@@ -213,25 +149,3 @@ The description uses Jira's markdown format (similar to standard markdown with s
 | **Wrong Issue Type** | Using Task for user-facing work | Use Story for user value, Task for technical work |
 | **Missing Acceptance Criteria** | No way to verify completion | Add observable, testable criteria |
 | **Implementation Details** | "Modify SearchService.ts line 42" | Describe the problem, not the fix |
-
----
-
-## Checklist
-
-Before creating a Jira issue, verify:
-
-- [ ] **Issue type** matches the nature of the work
-- [ ] **Summary** describes problem, not solution (50-80 chars)
-- [ ] **Description** follows appropriate template
-- [ ] **Problem statement** is clear to someone without context
-- [ ] **Scope** has explicit in/out boundaries
-- [ ] **Acceptance criteria** are observable and testable
-- [ ] **No implementation details** in the issue
-
----
-
-## Related Guides
-
-- [GitHub Issue Creation Guide](github-issue-creation.md) - For GitHub-hosted projects
-- [Architecture Review Guide](architecture-review.md) - For documenting design decisions
-- [PR Description Guide](pr-description.md) - For describing implementations

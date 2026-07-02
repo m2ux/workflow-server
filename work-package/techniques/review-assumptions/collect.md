@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -40,7 +40,7 @@ Boolean gate — true iff `{open_assumptions}` is non-empty; gates whether the i
 1. Identify all implicit decisions and assumptions made
 2. Classify each by a category from `{assumption_categories}`, choosing the category appropriate to the `{activity_context}` generating them
    > Use the categories supplied for the current phase.
-3. If no significant assumptions are identified, explicitly confirm with the user that no assumptions were made before proceeding
-4. Append collected assumptions to the `{assumptions_log}` (or start a fresh log if none exists), recording type, statement, rationale, and alternatives for each
+3. If no significant assumptions are identified, record a single null row in the log (`No significant assumptions ([reason])`) and proceed — do not prompt the user to confirm a null result
+4. Append collected assumptions to the `{assumptions_log}` (or start a fresh log if none exists) as one table row each — ID, phase, category, risk, statement with rationale — per the [log template](../../resources/assumptions-review.md#assumptions-log-template); record alternatives considered for architectural assumptions (they become the decision space if the assumption stays open)
 5. The file is the record of truth — do not restate assumption content outside it
-6. Each bold-label line (Status, Resolvability, Assumption, Evidence, Risk, etc.) MUST end with two trailing spaces to produce a line break in rendered markdown. Without trailing spaces, consecutive bold lines collapse into a single paragraph. Do NOT use bullet prefixes for this — use trailing spaces only. See [assumption-reconciliation](../../resources/assumption-reconciliation.md) for correct vs incorrect examples.
+6. In Open Assumptions entries, each bold-label line MUST end with two trailing spaces to produce a line break in rendered markdown (no bullet prefixes) — see the [formatting rule](../../resources/assumption-reconciliation.md#markdown-formatting-rule)

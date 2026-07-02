@@ -2,33 +2,18 @@
 name: design-framework
 description: Guidelines for structuring problem-solving and solution design during work package planning, using systematic approaches to identify optimal solutions.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 9
   legacy_id: 9
 ---
 
-
 # Design Framework Guide
 
-**Purpose:** Guidelines for structuring problem-solving and solution design during work package planning, using systematic approaches to identify optimal solutions.
+Before designing a solution: define the problem clearly, classify the problem type, explore the solution space systematically (conventional before inventive), and make trade-offs with recorded rationale.
 
----
+## When to Apply
 
-## Overview
-
-Before designing a solution, apply a structured design framework to:
-- **Define the problem clearly** - Ensure the problem is well-understood before jumping to solutions
-- **Classify the problem type** - Different problem types require different approaches
-- **Explore solution space systematically** - Consider conventional and innovative solutions
-- **Make informed trade-offs** - Balance competing constraints with clear rationale
-
-> **Key Insight:** Rushing to implementation without structured problem analysis leads to suboptimal solutions, scope creep, and rework. A small upfront investment in structured thinking pays dividends throughout implementation.
-
----
-
-## When to Apply This Guide
-
-**Always apply when:**
+**Full application when:**
 - Work package involves architectural decisions
 - Multiple implementation approaches are possible
 - Trade-offs or contradictions exist between requirements
@@ -41,15 +26,9 @@ Before designing a solution, apply a structured design framework to:
 - Minor bug fix with clear solution
 - Change can be completed in <30 minutes
 
----
-
 ## Design Framework: TRIZICS Approach
 
-This guide uses the **TRIZICS Software Design** methodology, adapted from systematic innovation principles.
-
-### Design Considerations
-
-The framework addresses five key areas:
+Uses the **TRIZICS Software Design** methodology, adapted from systematic innovation principles. Five areas:
 
 1. **Identify & Define Problem** — Problem statement, system understanding, impact, constraints, root cause
 2. **Classify Problem Type** — Specific problem (cause known/unknown) vs. inventive goal (improvement/prevention)
@@ -57,32 +36,18 @@ The framework addresses five key areas:
 4. **Inventive Solutions** — Contradictions, inventive principles, ideal solution thinking (only if conventional solutions inadequate)
 5. **Solution Synthesis** — Architecture design, trade-offs, implementation roadmap, success metrics
 
----
-
 ## Identify & Define Problem
 
-### Problem Definition Checklist
+Problem definition checklist:
 
-- [ ] **Problem Statement**: Clear, specific description of the issue
+- [ ] **Problem Statement**: Clear, specific, quantified — "The /users endpoint P95 latency exceeds 500ms under load >100 RPS", not "The API is slow"
 - [ ] **System Understanding**: Know the components, relationships, and context
 - [ ] **Impact Assessment**: Severity, frequency, and business impact
 - [ ] **Success Criteria**: Measurable outcomes that define "solved"
 - [ ] **Constraints**: Time, resources, technical limitations
 - [ ] **Root Cause**: Underlying cause vs. symptoms (if applicable)
 
-### Effective Problem Statements
-
-| ❌ Poor | ✅ Better |
-|---------|-----------|
-| "The API is slow" | "The /users endpoint P95 latency exceeds 500ms under load >100 RPS" |
-| "Users are confused" | "30% of users fail to complete onboarding within 5 minutes" |
-| "The code is messy" | "Adding new payment providers requires modifying 5+ files and takes 3+ days" |
-
----
-
 ## Classify Problem Type
-
-### Specific Problem vs. Inventive Goal
 
 | Specific Problem | Inventive Goal |
 |------------------|----------------|
@@ -90,7 +55,7 @@ The framework addresses five key areas:
 | Focus: Fix or restore | Focus: Enhance or optimize |
 | Cause may be known or unknown | Proactive improvement |
 
-### Problem Type Decision Tree
+Decision tree:
 
 ```
 Is something currently broken or failing?
@@ -106,35 +71,22 @@ Is something currently broken or failing?
         └─ YES → Prevention goal
 ```
 
----
-
 ## Conventional Solutions
 
 **Always start here.** Most problems have known solutions.
 
-### Solution Sources to Check
+Sources to check: design patterns, industry best practices, similar solutions in the codebase, the knowledge base, framework/library documentation.
 
-1. **Design Patterns** - Established architectural patterns
-2. **Best Practices** - Industry-standard approaches
-3. **Existing Code** - Similar solutions in the codebase
-4. **Knowledge Base** - Documented patterns and decisions
-5. **Documentation** - Framework/library solutions
-
-### Questions to Answer
-
+Questions to answer:
 - Has this been solved before in our codebase?
 - What do established design patterns suggest?
 - What do the framework/library docs recommend?
 - What constraints limit conventional approaches?
 
-### When to Consider Inventive Solutions
-
 Move to inventive solutions only if:
 - Conventional solutions don't meet requirements
 - Trade-offs of conventional solutions are unacceptable
 - Contradictions exist that conventional solutions can't resolve
-
----
 
 ## Inventive Solutions
 
@@ -167,15 +119,11 @@ A contradiction exists when improving one parameter degrades another:
 
 ### Ideal Solution Thinking
 
-Ask: "What would the ideal solution look like if there were no constraints?"
-
-Then work backward to find practical approximations.
-
----
+Ask: "What would the ideal solution look like if there were no constraints?" Then work backward to find practical approximations.
 
 ## Solution Synthesis & Design
 
-### Document the Design
+Document the design:
 
 ```markdown
 ## Design Summary
@@ -201,7 +149,7 @@ Then work backward to find practical approximations.
 - [ ] [Measurable criterion 2]
 ```
 
-### Design Validation Questions
+Design validation questions:
 
 - [ ] Does the solution address the root cause, not just symptoms?
 - [ ] Are trade-offs acceptable and documented?
@@ -209,29 +157,15 @@ Then work backward to find practical approximations.
 - [ ] Is the solution maintainable long-term?
 - [ ] Does it align with existing architecture and patterns?
 
----
+## Complexity-Based Path Selection
 
-## Quick Reference
-
-### When to Use Full Framework
+Apply the appropriate complexity level — do not over-engineer:
 
 | Complexity | Approach |
 |------------|----------|
 | **Simple** (clear problem, known solution) | Problem definition, conventional solutions, synthesis |
 | **Moderate** (some uncertainty) | Add problem classification |
 | **Complex** (trade-offs, contradictions) | Include inventive solutions |
-
-### Common Pitfalls
-
-| Pitfall | Remedy |
-|---------|--------|
-| Jumping to solutions | Complete problem definition first |
-| Only considering one approach | Explore conventional alternatives |
-| Ignoring contradictions | Apply inventive principles |
-| Vague success criteria | Define measurable outcomes |
-| Over-engineering | Apply appropriate complexity level |
-
----
 
 ## Design Philosophy Artifact Template
 
@@ -240,11 +174,7 @@ Create `design-philosophy.md` in the planning folder using this template:
 ```markdown
 # Design Philosophy
 
-**Work Package:** [Name]  
-**Issue:** #[number] - [Title]  
-**Created:** YYYY-MM-DD
-
----
+> design-philosophy · [Work Package Name] · #[issue-number] [issue title] · YYYY-MM-DD
 
 ## Problem Statement
 
@@ -262,13 +192,11 @@ Create `design-philosophy.md` in the planning folder using this template:
 | Scope | [Users/components affected] |
 | Business Impact | [What happens if not addressed] |
 
----
-
 ## Problem Classification
 
 **Type:** [Specific Problem / Inventive Goal]
 
-**Subtype:** 
+**Subtype:**
 - [ ] Cause Known (direct fix)
 - [ ] Cause Unknown (investigate first)
 - [ ] Improvement goal
@@ -277,8 +205,6 @@ Create `design-philosophy.md` in the planning folder using this template:
 **Complexity:** [Simple / Moderate / Complex]
 
 **Rationale:** [Why this classification]
-
----
 
 ## Workflow Path Decision
 
@@ -292,8 +218,6 @@ Create `design-philosophy.md` in the planning folder using this template:
 
 **Rationale:** [Why this path was chosen]
 
----
-
 ## Constraints
 
 | Constraint Type | Description |
@@ -303,33 +227,21 @@ Create `design-philosophy.md` in the planning folder using this template:
 | Dependencies | [External dependencies] |
 | Resources | [Resource constraints] |
 
----
-
 ## Success Criteria
 
 | Criterion | Measurement | Target |
 |-----------|-------------|--------|
 | [What success looks like] | [How to measure] | [Specific target] |
 
----
-
 ## Design Decisions (if applicable at this stage)
+
+[Omit this section if none yet]
 
 | Decision | Options Considered | Chosen | Rationale |
 |----------|-------------------|--------|-----------|
 | [Decision point] | [Option A, Option B] | [Chosen option] | [Why] |
 
----
-
 ## Notes
 
-[Any additional context, open questions, or considerations for subsequent phases]
+[Omit this section if none. Additional context, open questions, or considerations for subsequent phases]
 ```
-
----
-
-## Related Guides
-
-- [Knowledge Base Research Guide](knowledge-base-research.md) — Research before design
-- [Implementation Analysis Guide](implementation-analysis.md) — Understand existing state
-- [Work Package Plan](wp-plan.md) — Document the design
