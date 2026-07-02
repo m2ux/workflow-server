@@ -82,12 +82,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       ],
       "checkpoints": [
         {
-          "id": "classification-confirmed",
-          "option": "confirmed",
-          "setVariable": undefined,
-        },
-        {
-          "id": "workflow-path-selected",
+          "id": "classification-and-path-confirmed",
           "option": "skip-optional",
           "setVariable": {
             "needs_elicitation": false,
@@ -299,13 +294,6 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         {
           "id": "file-index-table",
           "option": "rationale-confirmed",
-          "setVariable": {
-            "rationale_confirmed": true,
-          },
-        },
-        {
-          "id": "rationale-amendment",
-          "option": "all-accurate",
           "setVariable": undefined,
         },
       ],
@@ -432,12 +420,10 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "artifacts": [
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
-        "workflow-retrospective.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
-        "14-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -542,12 +528,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       ],
       "checkpoints": [
         {
-          "id": "classification-confirmed",
-          "option": "confirmed",
-          "setVariable": undefined,
-        },
-        {
-          "id": "workflow-path-selected",
+          "id": "classification-and-path-confirmed",
           "option": "elicitation-only",
           "setVariable": {
             "needs_elicitation": true,
@@ -832,13 +813,6 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         {
           "id": "file-index-table",
           "option": "rationale-confirmed",
-          "setVariable": {
-            "rationale_confirmed": true,
-          },
-        },
-        {
-          "id": "rationale-amendment",
-          "option": "all-accurate",
           "setVariable": undefined,
         },
       ],
@@ -965,12 +939,10 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "artifacts": [
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
-        "workflow-retrospective.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
-        "14-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -1078,12 +1050,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       ],
       "checkpoints": [
         {
-          "id": "classification-confirmed",
-          "option": "confirmed",
-          "setVariable": undefined,
-        },
-        {
-          "id": "workflow-path-selected",
+          "id": "classification-and-path-confirmed",
           "option": "full-workflow",
           "setVariable": {
             "needs_elicitation": true,
@@ -1410,13 +1377,6 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         {
           "id": "file-index-table",
           "option": "rationale-confirmed",
-          "setVariable": {
-            "rationale_confirmed": true,
-          },
-        },
-        {
-          "id": "rationale-amendment",
-          "option": "all-accurate",
           "setVariable": undefined,
         },
       ],
@@ -1543,12 +1503,10 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "artifacts": [
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
-        "workflow-retrospective.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
-        "14-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -1655,12 +1613,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       ],
       "checkpoints": [
         {
-          "id": "classification-confirmed",
-          "option": "confirmed",
-          "setVariable": undefined,
-        },
-        {
-          "id": "workflow-path-selected",
+          "id": "classification-and-path-confirmed",
           "option": "research-only",
           "setVariable": {
             "needs_elicitation": false,
@@ -1947,13 +1900,6 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         {
           "id": "file-index-table",
           "option": "rationale-confirmed",
-          "setVariable": {
-            "rationale_confirmed": true,
-          },
-        },
-        {
-          "id": "rationale-amendment",
-          "option": "all-accurate",
           "setVariable": undefined,
         },
       ],
@@ -2080,12 +2026,10 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "artifacts": [
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
-        "workflow-retrospective.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
-        "14-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -2204,12 +2148,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       ],
       "checkpoints": [
         {
-          "id": "classification-confirmed",
-          "option": "confirmed",
-          "setVariable": undefined,
-        },
-        {
-          "id": "workflow-path-selected",
+          "id": "classification-and-path-confirmed",
           "option": "skip-optional",
           "setVariable": {
             "needs_elicitation": false,
@@ -2414,13 +2353,6 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         {
           "id": "file-index-table",
           "option": "rationale-confirmed",
-          "setVariable": {
-            "rationale_confirmed": true,
-          },
-        },
-        {
-          "id": "rationale-amendment",
-          "option": "all-accurate",
           "setVariable": undefined,
         },
       ],
@@ -2557,12 +2489,10 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "artifacts": [
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
-        "workflow-retrospective.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
-        "14-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -2662,12 +2592,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       ],
       "checkpoints": [
         {
-          "id": "classification-confirmed",
-          "option": "confirmed",
-          "setVariable": undefined,
-        },
-        {
-          "id": "workflow-path-selected",
+          "id": "classification-and-path-confirmed",
           "option": "skip-optional",
           "setVariable": {
             "needs_elicitation": false,
@@ -2879,13 +2804,6 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         {
           "id": "file-index-table",
           "option": "rationale-confirmed",
-          "setVariable": {
-            "rationale_confirmed": true,
-          },
-        },
-        {
-          "id": "rationale-amendment",
-          "option": "all-accurate",
           "setVariable": undefined,
         },
       ],
@@ -3012,12 +2930,10 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "artifacts": [
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
-        "workflow-retrospective.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
-        "14-workflow-retrospective.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",

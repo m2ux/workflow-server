@@ -61,30 +61,30 @@ export const defaultPolicy: Policy = makePolicy({ name: 'default' });
 /** Direct path: skip optional discovery activities (elicitation, research, analysis). */
 export const skipOptionalPolicy: Policy = makePolicy({
   name: 'skip-optional',
-  choices: { 'workflow-path-selected': 'skip-optional' },
+  choices: { 'classification-and-path-confirmed': 'skip-optional' },
 });
 
 /** Full path: requirements elicitation + research + implementation analysis. */
 export const fullWorkflowPolicy: Policy = makePolicy({
   name: 'full-workflow',
-  choices: { 'workflow-path-selected': 'full-workflow' },
+  choices: { 'classification-and-path-confirmed': 'full-workflow' },
 });
 
 /** Research-only path: skip elicitation, keep research. */
 export const researchOnlyPolicy: Policy = makePolicy({
   name: 'research-only',
-  choices: { 'workflow-path-selected': 'research-only' },
+  choices: { 'classification-and-path-confirmed': 'research-only' },
 });
 
 /** Elicitation-only path: keep elicitation, skip research. */
 export const elicitationOnlyPolicy: Policy = makePolicy({
   name: 'elicitation-only',
-  choices: { 'workflow-path-selected': 'elicitation-only' },
+  choices: { 'classification-and-path-confirmed': 'elicitation-only' },
 });
 
 /** Review mode: review an existing PR rather than implement. */
 export const reviewModePolicy: Policy = makePolicy({
   name: 'review-mode',
   initialVariables: { is_review_mode: true },
-  choices: { 'workflow-path-selected': 'skip-optional' },
+  choices: { 'classification-and-path-confirmed': 'skip-optional' },
 });
