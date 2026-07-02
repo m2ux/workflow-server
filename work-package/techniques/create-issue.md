@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 3.0.0
+  version: 3.1.0
   order: 3
   legacy_id: 3
 ---
@@ -24,6 +24,10 @@ Type of issue (feature, bug, task, enhancement, epic)
 ### target_submodule
 
 Target submodule for the work package (e.g., midnight-node, midnight-ledger)
+
+### jira_project
+
+*(optional)* Jira project chosen at the `jira-project-selection` gate — the project the new Jira issue is created in. Absent for GitHub issues.
 
 ## Protocol
 
@@ -48,7 +52,7 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 
 - Runs when `{issue_platform}` is jira and `{needs_issue_creation}` is true. Use attached [jira-issue-creation](../resources/jira-issue-creation.md) for guidance.
 - Obtain Atlassian cloud ID via `getAccessibleAtlassianResources` and preserve as `{jira_cloud_id}`. This MUST be the first Jira tool call.
-- List available projects via `getVisibleJiraProjects`, then obtain the user's project selection. Resolve available issue types for the selected project.
+- Create the issue in the `{jira_project}` chosen at the `jira-project-selection` gate; if it is unset, list available projects via `getVisibleJiraProjects` and obtain the user's project selection. Resolve available issue types for the selected project.
 - Gather summary, description, and acceptance criteria, scoping the issue to the `{target_submodule}` the work package targets. Resolve assignee account ID if specified.
 - Create the issue with mapped type using the issue-type mapping below — the resulting issue is the `{created_issue}`. Capture `{issue_number}` and `{issue_url}`.
 - Jira issue type mapping: `feature->Story`, `bug->Bug`, `task->Task`, `enhancement->Story`, `epic->Epic`

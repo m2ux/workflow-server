@@ -1,5 +1,5 @@
 id: lean-coding-audit
-version: 1.0.0
+version: 1.1.0
 name: Lean-Coding Audit
 description: Apply the ponytail lean-coding lens to the just-implemented change.
 required: true
@@ -21,7 +21,7 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
-    message: "Lean-coding audit complete. The over-engineering findings under each taxonomy bucket (delete / stdlib / native / yagni / shrink) with the net-lines scoreboard are in review-findings.md, and the harvested ponytail-marker debt ledger with its honesty-bounded gain scoreboard is in debt-ledger.md — all judged against the safety floor. Accept the audit as-is, apply the recommended simplifications, or flag the findings for correction?"
+    message: "Lean-coding audit complete. Accept the audit as-is, apply the recommended simplifications, or flag the findings for correction?"
     blocking: true
     options:
       - id: audit-accepted

@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 2.1.3
+  version: 2.2.0
   order: 10
   legacy_id: 10
 ---
@@ -21,18 +21,23 @@ A single atomic task to implement (description, affected files, dependencies)
 
 *(optional)* Test [plan](../resources/test-plan.md#test-plan-structure) with strategy and acceptance criteria for guidance
 
+### target_symbol
+
+The primary edit target — the function, class, or method this task changes — derived from `{current_task}` in Protocol §1 and read by the impact/context checks in §2.
+
 ## Protocol
 
 ### 1. Understand Context
 
 - Read the `{current_task}` description and requirements from the plan
 - Identify affected files, dependencies, and related code
+- Determine the primary edit target `{target_symbol}` — the function, class, or method this task changes — from `{current_task}`
 - Review the `{test_plan}` for acceptance criteria relevant to this task
 - If the task description is ambiguous or missing context, review the plan document and ask the user for clarification before proceeding
 
 ### 2. Pre Edit Impact Check
 
-- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)(target: `{$target_symbol}`, direction: `upstream`) before any edit
+- Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)(target: `{target_symbol}`, direction: `upstream`) before any edit
 - Read the resulting `impact_report`; if HIGH or CRITICAL risk, surface it to the user before proceeding
 - Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md)(name: `{target_symbol}`) to understand callers/callees of the symbol
 

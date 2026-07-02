@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.14.0
+version: 1.15.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 required: true
@@ -108,14 +108,9 @@ steps:
           - action: set
             target: needs_code_fixes
             value: false
-            message: Reset code-fix flag before re-review.
           - action: set
             target: needs_test_improvements
             value: false
-            message: Reset test-improvement flag before re-review.
-      - kind: technique
-        id: regenerate-index
-        technique: review-diff
       - kind: technique
         id: re-manual-diff-review
         technique: review-diff

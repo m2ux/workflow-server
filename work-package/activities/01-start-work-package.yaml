@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.10.0
+version: 3.11.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 required: true
@@ -95,13 +95,12 @@ steps:
       - action: set
         target: gitnexus_indexed
         value: true
-        description: Set gitnexus_indexed=true on successful index.
   - kind: action
     id: verify-signing-precondition
     actions:
       - action: validate
         target: signing.configured == true
-        message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing in your environment via your preferred scope (system, global, or local) before re-running. The workflow does not modify your git configuration.
+        message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing in your environment via your preferred scope (system, global, or local) before re-running.
   - kind: technique
     id: detect-merge-strategy
     technique: manage-git::detect-merge-strategy
@@ -238,9 +237,15 @@ steps:
       - id: select
         label: Select from list
         description: Choose from available projects
+        effect:
+          setVariable:
+            jira_project: selected
       - id: specify
         label: Specify project key
         description: Provide a specific project key
+        effect:
+          setVariable:
+            jira_project: specified
   - kind: checkpoint
     id: issue-type-selection
     condition:
@@ -401,7 +406,7 @@ steps:
     actions:
       - action: set
         target: planning_folder_path
-        message: Server-resolved canonical absolute planning folder from the get_workflow summary (under the server's workspace .engineering root). Write location for ALL of this work package's artifacts. Never anchored to target_path or any CWD.
+        message: Server-resolved canonical absolute planning folder from the get_workflow summary. Write location for ALL of this work package's artifacts.
   - kind: technique
     id: initialize-planning-folder
     technique: manage-artifacts::create-readme

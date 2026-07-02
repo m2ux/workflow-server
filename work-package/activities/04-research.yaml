@@ -1,5 +1,5 @@
 id: research
-version: 2.6.0
+version: 2.7.0
 name: Research
 description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
 required: false
@@ -81,16 +81,10 @@ steps:
     technique: review-assumptions::interview
     actions:
       - action: message
-        message: "**Resolved Assumptions** — the following assumptions were resolved through code analysis during this phase."
-  - kind: action
-    id: declare-context-scope
-    actions:
-      - action: set
-        target: context_scope
-        description: repo-only | web-retrieval | mixed based on research sources used
+        message: "**Resolved Assumptions** — the following assumptions were resolved through code analysis."
   - kind: checkpoint
     id: context-scope-declaration
-    message: Did research use external web sources (web search, documentation URLs, external references)? This determines the provenance scope recorded in commit trailers and the provenance log.
+    message: Did research use external web sources (web search, documentation URLs, external references)?
     blocking: false
     defaultOption: repo-only
     autoAdvanceMs: 15000

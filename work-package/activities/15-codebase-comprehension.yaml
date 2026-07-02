@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.7.0
+version: 1.8.0
 name: Codebase Comprehension
 description: Build or augment a mental model of the codebase.
 required: false
@@ -12,7 +12,7 @@ steps:
     technique: manage-artifacts::write-artifact
     actions:
       - action: message
-        message: "Created/Updated: [comprehension artifact](.engineering/artifacts/comprehension/{artifact_name}). Proceeding to mandatory initial deep-dive — comprehension-sufficient checkpoint surfaces only when unresolved questions remain after investigation."
+        message: Comprehension artifact recorded for reference.
   - kind: technique
     id: initial-deep-dive
     technique: deep-dive
