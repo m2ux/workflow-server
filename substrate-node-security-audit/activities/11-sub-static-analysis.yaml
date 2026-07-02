@@ -1,5 +1,5 @@
 id: sub-static-analysis
-version: 1.7.0
+version: 1.8.0
 name: "Sub-Agent: Static Analysis and Mechanical Checks"
 description: Structured static analysis with zero-hit audit and finding aggregation.
 required: false
@@ -9,7 +9,7 @@ steps:
     technique:
       name: search-pattern-catalog
       inputs:
-        resource_id: 05-static-analysis-patterns
+        resource_id: static-analysis-patterns
         catalog_section: Grep Patterns
         output_format: "| Category | Pattern | File:Line | Hit | Triage |"
   - kind: technique
@@ -17,7 +17,7 @@ steps:
     technique:
       name: search-pattern-catalog
       inputs:
-        resource_id: 05-static-analysis-patterns
+        resource_id: static-analysis-patterns
         catalog_section: Mechanical Checks
         output_format: "| Check | Pattern | File:Line | PASS/FAIL | Evidence |"
   - kind: technique

@@ -83,9 +83,9 @@ forward and backward traces for priority-1 paths
 
 ## Rules
 
-### enumerate-explicitly-never-summarize
+### enumerate-every-component-explicitly
 
-Every pallet and primitive crate is listed explicitly by name and classified by architectural category; components are never summarized or grouped.
+Every pallet and primitive crate is listed explicitly by name and classified by architectural category; each component stands on its own line rather than being summarized or grouped.
 
 ### consensus-config-gaps-recorded-as-leads
 

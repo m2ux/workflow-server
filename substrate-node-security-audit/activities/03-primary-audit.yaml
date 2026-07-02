@@ -1,5 +1,5 @@
 id: primary-audit
-version: 4.18.0
+version: 4.19.0
 name: Primary Audit
 description: Multi-agent primary audit via concurrent dispatch with verification and merge.
 required: true
@@ -11,7 +11,7 @@ steps:
         message: Starting primary audit — concurrent multi-agent dispatch
   - kind: technique
     id: dispatch-all-agents
-    technique: dispatch-sub-agents
+    technique: dispatch-sub-agents::dispatch-concurrent
   - kind: technique
     id: verify-checklist-prompt-coverage
     technique: verify-sub-agent-output
@@ -20,44 +20,42 @@ steps:
     technique: verify-sub-agent-output
   - kind: technique
     id: collect-all
-    technique: dispatch-sub-agents
+    technique: dispatch-sub-agents::collect-results
   - kind: technique
     id: verify-agent-output-files
     technique:
-      name: dispatch-sub-agents
+      name: dispatch-sub-agents::verify-output-files
       inputs:
         expected_output_files: a1-nto.json, a2-midnight-ledger.json, a3-node-startup.json, a4-node-consensus.json, a5-runtime.json, a6-primitives.json, a7-governance.json, b-static-analysis.json, d1-ledger-helpers.json, d2-toolkit.json
   - kind: technique
     id: dispatch-verification-agent
-    technique: dispatch-sub-agents
+    technique: dispatch-sub-agents::dispatch-concurrent
   - kind: technique
     id: act-on-gap-report
-    technique: dispatch-sub-agents
-  - kind: technique
-    id: extract-table-derived-findings
-    technique: merge-findings
+    technique: dispatch-sub-agents::dispatch-concurrent
   - kind: technique
     id: dispatch-merge-agent
-    technique: dispatch-sub-agents
-  - kind: technique
-    id: validate-reconciliation
-    technique: verify-sub-agent-output
-  - kind: technique
-    id: verify-checklist-completeness
-    technique: verify-sub-agent-output
+    technique: dispatch-sub-agents::dispatch-concurrent
   - kind: technique
     id: preserve-verification-report
-    technique: dispatch-sub-agents
-  - kind: technique
-    id: preserve-merge-output
-    technique: merge-findings
+    technique: dispatch-sub-agents::verify-output-files
   - kind: action
     id: finalize-activity
     actions:
       - action: log
         message: Primary audit complete — findings collected from all agent groups
       - action: set
-        message: primary_audit_complete=true
+        target: dispatch_complete
+        value: true
+      - action: set
+        target: verification_complete
+        value: true
+      - action: set
+        target: merge_complete
+        value: true
+      - action: set
+        target: primary_audit_complete
+        value: true
 transitions:
   - to: adversarial-verification
     isDefault: true
