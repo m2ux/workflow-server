@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 3.1.0
+  version: 3.2.0
   order: 14
   legacy_id: 14
 ---
@@ -34,6 +34,22 @@ Open an artifact with a single context line (work package · activity · date), 
 ### omit-null-sections
 
 Omit template sections whose content would be "None", "N/A", or a restatement that the section does not apply. A template defines the maximum shape of an artifact, not its required shape. Content the user explicitly requested is exempt — requested detail is given in full.
+
+### markdown-line-breaks
+
+In a group of consecutive bold-label lines (`**Status:** value`), every line except the last MUST end with two trailing spaces — without them the lines collapse into a single rendered paragraph. Do NOT use bullet prefixes as a substitute. Applies to all planning artifacts that use bold-label fields (assumptions logs, design philosophy documents, research documents, analyses, comprehension artifacts).
+
+### hyperlink-conventions
+
+Symbol and test references hyperlink to their definition line (`path#L<line>` — the definition, not the first usage or assertion); same-repo links use relative paths, external references use full URLs. Verify every link resolves before committing the artifact.
+
+### no-process-attribution
+
+Artifacts describe the work, not the process that produced it: no "per user request", "AI suggested", "as discussed", or reviewer/agent attribution in artifact content.
+
+### plain-technical-language
+
+Specific, plain technical language: no vague descriptions ("various improvements", "might be better"), no unquantified claims where a number is known, no hidden negative consequences.
 
 ### artifact-prefix
 

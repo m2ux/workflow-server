@@ -1,23 +1,17 @@
 ---
 name: manual-diff-review
-description: Human review of code changes via an external side-by-side diff tool — file index generation, user reporting protocol, interview-based finding collection.
+description: Index-table, header, and report forms for the manual diff review; the review procedure and rules live on the review-diff technique.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   order: 22
   legacy_id: 22
 ---
 
-# Manual Diff Review Guide
+# Manual Diff Review Forms
 
-Human review of implementation changes before automated analysis: the user reviews the diff in their own side-by-side tool (VS Code, Meld, etc.) and reports findings by reference number. Outputs: **File Index Table** (`change-block-index.md`) and **Manual Diff Review Report** (`manual-diff-review.md`).
+Forms consumed by [review-diff](../techniques/review-diff.md), which owns the procedure (branch sync, diff parsing, index generation, the row-number reporting protocol, the interview loop) and the rationale-quality and review-conduct rules. Outputs: **File Index Table** (`change-block-index.md`) and **Manual Diff Review Report** (`manual-diff-review.md`).
 
 ## File Index Generation
-
-Pre-generation steps:
-
-1. Ensure the branch is current: `git pull`
-2. Identify the base branch: typically `main`/`master` — the branch the PR will merge into
-3. Generate the diff: `git diff <base-branch>...HEAD`
 
 ### Table Format
 
@@ -30,10 +24,6 @@ One row per changed file, sorted alphabetically by path. Each row number is a ma
 | [2](#block-2) | src/api/ | routes.rs |
 | [3](#block-3) | src/core/ | processor.rs |
 ```
-
-- **Row**: sequential number hyperlinked to its Block Rationale section (e.g., `[1](#block-1)`)
-- **Path**: directory path (without filename)
-- **File**: filename only
 
 ### Header Information
 
@@ -51,15 +41,7 @@ Click any row number to jump to its rationale paragraph for context on why the c
 Report row numbers for files with issues (e.g., "3, 7, 12") or "none" if all looks good.
 ```
 
-### Review Time Estimation
-
-- Rate: 30 seconds per change (hunk); formula: `total_hunks × 0.5 minutes`
-- Round to nearest minute; display as "~X minutes" or "~Xh Ym" for longer reviews
-- Count hunks: `git diff <base-branch>...HEAD | grep -c "^@@"`
-
-### Block Rationale Sections
-
-Below the index table, generate a **Block Rationale** section — one subsection per block, giving reviewers meaningful context before they inspect the raw diff:
+### Block Rationale Form
 
 ```markdown
 ## Block Rationale
@@ -68,39 +50,6 @@ Below the index table, generate a **Block Rationale** section — one subsection
 
 [Descriptive paragraph explaining what the change does and why.]
 ```
-
-Rationale rules:
-
-- Each paragraph is 3–5 sentences covering intent, context, and any non-obvious design choices
-- Focus on *why* the change exists, not just *what* it does — reviewers see the *what* in the diff
-- Mention relevant prior state, trade-offs, or constraints that informed the approach
-- Plain technical language; no vague descriptions like "various improvements"
-
-Review conduct: work systematically (top-to-bottom or by logical grouping); reference surrounding code when describing an issue; be specific — include line numbers or code snippets in finding descriptions.
-
-## User Reporting Protocol
-
-Users report findings using **row numbers only**:
-
-| Format | Meaning |
-|--------|---------|
-| `3, 7, 12` | Files at rows 3, 7, and 12 have issues |
-| `none` | No issues found, proceed with automated reviews |
-
-### Interview Loop
-
-For each reported row number:
-
-1. **Display context:** show the full diff content for that file, including filename and path
-2. **Prompt for issue:** "What's the issue with this change?"
-3. **Record response:** capture the user's description verbatim; note severity if mentioned (critical, minor, etc.)
-4. **Continue:** move to the next reported row until all flagged items are addressed
-
-Special cases:
-
-- **Single row number:** review all changes in that file
-- **Row with line reference (e.g., "3-L42"):** focus on the specific line within the file's changes
-- **"none" response:** skip the interview loop, proceed to automated reviews
 
 ## Report Generation
 

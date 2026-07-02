@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -28,7 +28,18 @@ A commit on `{branch_name}` carrying the applied cleanup (identified artifacts r
 ### 1. Apply Cleanup
 
 - Apply cleanup (removing identified artifacts) when user approves
-- Use edit tool for cleanup modifications
+- Use edit tool for targeted cleanup modifications; revert whole files or hunks with git:
+
+  ```bash
+  # Revert a specific file to match the base branch
+  git checkout <base-branch> -- <file>
+
+  # Or use interactive staging to selectively revert portions
+  git checkout -p <base-branch> -- <file>
+
+  # Stage reverted changes
+  git add <reverted-files>
+  ```
 
 ### 2. Commit Changes
 

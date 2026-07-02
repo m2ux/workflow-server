@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -26,5 +26,5 @@ The work package's [test plan](../../resources/test-plan.md#test-plan-structure)
 ## Protocol
 
 1. Load the `{test_plan}`. If it is not found at the expected path, check `{planning_folder_path}` for alternative names.
-2. Add hyperlinks to actual test source file locations.
-3. Ensure each test case references its source file and line.
+2. Add hyperlinks to actual test source file locations per [create-test-plan](../create-test-plan.md#test-id-format)'s test-id-format rule (definition line, `**`-suffixed disabled tests) and [manage-artifacts](../manage-artifacts/TECHNIQUE.md#hyperlink-conventions).
+3. Ensure each test case references its source file and line; verify every link resolves.

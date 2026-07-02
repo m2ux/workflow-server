@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 2.0.0
+  version: 2.1.0
   order: 18
   legacy_id: 18
 ---
@@ -59,6 +59,13 @@ List of `{ rule_id, detail }` entries, one per failed conformance rule; empty wh
 
 - review-mode-template: In review mode, use attached [review-mode](../../resources/review-mode.md) for the consolidated PR review comment template. The review comment structure (sections, tables, Finding Details dropdowns, linked headings, reviewer agents) is defined there.
 - initial-template: When `{pr_template_variant}` is `initial` (creating a PR before implementation, ADR-only), use the Initial template from [pr-description](../../resources/pr-description.md). When `{pr_template_variant}` is `final` (updating after implementation), use the Final template.
+
+### body-composition
+
+- motivation-user-perspective: Motivation explains the problem from the user's perspective and the consequences of not addressing it; 1-2 paragraphs.
+- link-not-inline: tickets, ADRs, test plans, and planning artifacts are linked, never inlined (manage-artifacts single-source-and-link); no process attribution and no vague language (manage-artifacts no-process-attribution, plain-technical-language).
+- no-relocated-content: never include a commit list (git log / the PR Commits tab owns it) or line-by-line explanations (inline PR comments own them) — complements no-files-changed-list and no-code-in-changes below.
+- todo-tracks-premerge: the TODO-before-merging section tracks remaining pre-merge items beyond "Ready for review" (e.g. address reviewer feedback, squash if needed); items are checked off as they complete.
 
 ### pr-body-conformance
 

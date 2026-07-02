@@ -2,7 +2,7 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-The workflow includes 27 resources that provide templates, guidance, and reference material for techniques and activities. Each resource lives as `resources/<id>.md` and is loaded by id (e.g. `get_resource({ resource_id: "pr-description" })`). The numbering system is deprecated — resources are obtained by id only.
+The workflow includes 26 resources that provide templates, guidance, and reference material for techniques and activities. Each resource lives as `resources/<id>.md` and is loaded by id (e.g. `get_resource({ resource_id: "pr-description" })`). The numbering system is deprecated — resources are obtained by id only.
 
 | Resource ID | Title | Purpose |
 |-------------|-------|---------|
@@ -13,23 +13,22 @@ The workflow includes 27 resources that provide templates, guidance, and referen
 | `requirements-elicitation` | Requirements Elicitation | Question domains and elicitation output template |
 | `implementation-analysis` | Implementation Analysis | Analysis framework and document template |
 | `knowledge-base-research` | Knowledge Base Research | Research methodology and concept-rag usage guide |
-| `web-research` | Web Research | Web research methodology and synthesis template |
-| `design-framework` | Design Framework | Structured design framework for problem classification |
+| `web-research` | Web Research | Web-research findings template (protocol and rules live on research::research) |
+| `design-framework` | Design Framework | TRIZICS solution-design methodology applied at plan time, plus the design-philosophy artifact template |
 | `wp-plan` | Work Package Plan | Plan document template with task breakdown format |
-| `test-plan` | Test Plan | Test strategy and acceptance criteria template |
-| `pr-description` | PR Description | PR description template with required sections |
+| `test-plan` | Test Plan | Test plan templates and test-design principles (authoring rules live on create-test-plan) |
+| `pr-description` | PR Description | PR description templates and link-row rendering forms (rules live on update-pr) |
 | `assumptions-review` | Assumptions Review | Assumption collection, classification, and review protocol |
-| `task-completion-review` | Task Completion Review | Post-task review checklist |
 | `architecture-review` | Architecture Review | Architecture review criteria and checklist |
 | `rust-substrate-code-review` | Rust Substrate Code Review | Rust/Substrate-specific code review criteria |
 | `test-suite-review` | Test Suite Review | Test suite quality assessment framework |
-| `strategic-review` | Strategic Review | Strategic review criteria for minimal focused changes |
+| `strategic-review` | Strategic Review | Strategic review artifact template (procedure and rules live on the strategic-review ops) |
 | `architecture-summary` | Architecture Summary | Architecture summary template with UML diagram guidance |
 | `workflow-retrospective` | Workflow Retrospective | Retrospective section template (written into COMPLETE.md) |
 | `complete-wp` | Complete Work Package | Close-out document template — the single terminal artifact |
-| `manual-diff-review` | Manual Diff Review | Manual diff review protocol with interview loop format |
+| `manual-diff-review` | Manual Diff Review | Index-table, header, and report forms (procedure and rules live on review-diff) |
 | `tdd-concepts-rust` | TDD Concepts Rust | TDD best practices for Rust: Red-Green-Refactor, FIRST principles |
 | `review-mode` | Review Mode | Complete guide for review mode behavior and PR review formats |
 | `codebase-comprehension` | Codebase Comprehension | Comprehension techniques, artifact template, and deep-dive guidance from reverse engineering and code forensics literature |
-| `assumption-reconciliation` | Assumption Reconciliation | Methodology for iterative assumption resolution through targeted code analysis |
-| `pr-review-response` | PR Review Response | Guide for analyzing and responding to PR review comments |
+| `assumption-reconciliation` | Assumption Reconciliation | Assumptions-log integration and scorecard formats (classification and convergence rules live on review-assumptions::reconcile) |
+| `pr-review-response` | PR Review Response | Response-format and review-document templates (protocol and rules live on respond-to-pr-review) |

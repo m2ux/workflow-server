@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -31,7 +31,7 @@ Best practices, documentation, and resources gathered from web research, each ca
 
 ### 1. Load Resources
 
-- Use attached [knowledge-base-research](../../resources/knowledge-base-research.md) and [web-research](../../resources/web-research.md) for guidance
+- Use attached [knowledge-base-research](../../resources/knowledge-base-research.md) for guidance; capture web findings so they can fill the [web research findings template](../../resources/web-research.md#planning-artifact)
 - Review `{requirements}` and `{problem_statement}` for research focus
 
 ### 2. Search Knowledge Base
@@ -45,7 +45,30 @@ Best practices, documentation, and resources gathered from web research, each ca
 
 ### 3. Perform Web Research
 
-- Use `WebSearch` for current information and documentation
-- Cross-reference multiple sources for robustness
-- Note publication dates and source freshness
-- Web results may be outdated; cross-reference multiple sources and note dates in the artifact
+- Identify knowledge gaps from the knowledge base pass: questions internal documentation didn't answer, technologies needing current docs, areas where external validation adds value
+- Use `WebSearch` to fill the gaps with current external information: official documentation for libraries/frameworks/APIs, community best practices, recent developments (new versions, deprecations, security advisories), and alternative approaches not covered internally — knowledge base research provides institutional knowledge; web research provides current industry context
+- Search authoritative sources first: official documentation sites, established technical blogs, GitHub repositories/discussions, Stack Overflow accepted answers; include version numbers when relevant, add the current year for recent information, and use site-specific searches (e.g. `site:docs.rust-lang.org`)
+- Validate each finding per [source-validation](#source-validation) before it enters `{web_findings}`
+- Cross-reference `{web_findings}` with `{kb_findings}`: do external sources confirm internal patterns? Note contradictions for resolution, any additional context, and each source's publication date and freshness
+
+## Rules
+
+### research-depth
+
+Full web research when using external libraries or frameworks, integrating third-party services, working with unfamiliar technology, or when knowledge base research didn't surface sufficient guidance. Lightweight research is acceptable when the technology is well-established and stable, knowledge base research was comprehensive, or the change is simple with a clear implementation path.
+
+### source-validation
+
+Validate every web finding on four axes: recency (current for the technology's pace of change — see [staleness-threshold](#staleness-threshold)), authority (reputable source?), relevance (applies to our context?), and consistency (aligns with other findings?).
+
+### staleness-threshold
+
+Prioritize recent sources; flag anything older than ~2 years as suspect for fast-moving technology.
+
+### official-docs-per-dependency
+
+Consult official documentation for every external dependency; community sources supplement it but never substitute (the group multiple-sources rule applies — a single source is insufficient).
+
+### url-per-finding
+
+Every finding carries a specific URL and states its application to this work package (e.g. "Server Components fetch data server-side → removes our client API routes"), not generic observations ("React is a popular framework").

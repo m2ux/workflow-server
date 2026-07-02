@@ -1,8 +1,8 @@
 ---
 name: test-plan
-description: Guidelines for creating well-structured test plans that document test cases, traceability, and validation criteria for work packages.
+description: Test plan templates and test-design principles; authoring rules live on the create-test-plan technique.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   order: 11
   legacy_id: 11
 ---
@@ -107,35 +107,4 @@ pytest -k "test_name"       # Python
 
 ## Test Plan Structure
 
-Required sections, in order: header link line (ADR, Ticket, PR), Overview, Test Cases, Acceptance Criteria Matrix (when requirements exist), Running Tests.
-
-## Rules
-
-Header and Overview:
-- Header is a single blockquote line (lean-header) with ADR, Ticket, and PR links; use relative paths for ADR links (same repo).
-- Overview lists only symbols central to the change (not every modified function), one line each, hyperlinked to their definition via relative path with `#L<line>` anchor.
-
-Test Cases table:
-- Single unified table for all test types — never split by type.
-- Fixed column widths via `<div style="width:...px">`: Test ID 120px, Objective 350px, Steps 400px, Expected Result 350px, Type 50px.
-- Test ID format `PR<number>-TC-<sequence>` (01, 02, ...), hyperlinked to the test function definition line (`#L<line>`, not the first assertion); verify links before committing.
-- Objectives start with "Verify..." — never vague ("test the feature").
-- Steps are numbered, atomic, and verifiable, separated with `  <br>` (two trailing spaces + `<br>` for cross-renderer compatibility).
-- Type is one of: Unit (isolated single function/method behavior), Integration (component interactions), E2E (complete user workflows), Performance (load/latency validation), Manual.
-- Manual tests (RPC endpoints, network behavior, UI verification) use plain-text non-hyperlinked Test IDs — no source to link.
-- Temporarily disabled tests stay in the same table with a `**` suffix after the Test ID (suffix, not prefix, to keep the link working), plus a `> [!NOTE]` below the table stating the reason and the specific re-enablement condition. No separate table for ignored tests.
-
-Acceptance Criteria Matrix:
-- One row per requirement (or per acceptance criterion when a requirement has several); reference tests by their `PR###-TC-##` IDs.
-- Every requirement maps to at least one test case; flag any gaps.
-
-Content boundaries:
-- Don't duplicate ADR content or implementation details — the plan covers validation only.
-- No References section (links are inline); don't inline planning-artifact content or validation results — link the source artifact instead (single-source-and-link).
-- Running Tests commands must be copy-pasteable, covering all-tests, module, and specific-test scopes; include build verification if relevant.
-
-## Naming and Storage
-
-- File name: `test-plan-<kebab-case-name>.md`, matching the ADR name when possible (e.g. `test-plan-user-authentication.md`).
-- Store alongside the corresponding ADR or in a dedicated tests documentation folder.
-- The PR description links to the test plan on its artifact link line.
+Required sections, in order: header link line (ADR, Ticket, PR), Overview, Test Cases, Acceptance Criteria Matrix (when requirements exist), Running Tests. The authoring rules governing every section — table format, test-ID linking, content boundaries, naming — live on the producing technique: [create-test-plan](../techniques/create-test-plan.md#rules).

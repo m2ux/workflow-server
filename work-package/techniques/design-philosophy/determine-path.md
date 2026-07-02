@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -40,6 +40,7 @@ The documented rationale for the selected workflow path (full, elicitation-only,
 ### 1. Determine Path
 
 - Map complexity to workflow path (full, elicitation-only, research-only, or skip optional discovery work): simple, clearly-scoped problems take the lighter paths; moderate and complex problems take the full path
+- The complexity also scopes how much of the [design framework](../../resources/design-framework.md#design-framework-trizics-approach) plan-prepare later applies — simple: problem definition, conventional solutions, synthesis; moderate: add problem classification; complex: include inventive solutions. Do not over-engineer the process for the problem size.
 - Document path rationale
 - Set needs-elicitation, needs-research, skip-optional-activities accordingly
 - Set needs-comprehension to true — codebase comprehension is mandatory before planning, on every path
