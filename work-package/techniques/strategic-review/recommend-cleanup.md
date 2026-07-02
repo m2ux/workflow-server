@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -23,5 +23,5 @@ The same strategic review document, extended with a cleanup recommendation per i
 
 ### 1. Recommend Cleanup
 
-- For each identified artifact (investigation artifacts, over-engineering, orphaned infrastructure), record the specific cleanup action it warrants as a recommendation in the `{strategic_review_doc}`.
+- For each identified artifact (investigation artifacts, over-engineering, orphaned infrastructure), record the specific cleanup action it warrants as a recommendation in the `{strategic_review_doc}`; for failing minimality checks, the action follows the "If No" column of [review-scope](./review-scope.md#minimality-check).
 - Do NOT edit the source in review mode — the recommendations are for the reviewer to act on.

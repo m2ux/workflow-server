@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -17,7 +17,7 @@ Folder where the strategic review document is written.
 
 ### strategic_review_doc
 
-The strategic review [document](../../resources/strategic-review.md#strategic-review-artifact-template), written under `{planning_folder_path}` as `strategic-review-{n}.md`, with every finding categorized by type (investigation artifacts, over-engineering, orphaned infrastructure) — or a clean review result when all changes are justified.
+The strategic review [document](../../resources/strategic-review.md#strategic-review-artifact-template), written under `{planning_folder_path}` as `strategic-review-{n}.md` (the activity's `artifactPrefix` is prepended at write time; n increments on successive reviews), with every finding categorized by type (investigation artifacts, over-engineering, orphaned infrastructure) — or a clean review result when all changes are justified.
 
 #### artifact
 
@@ -28,5 +28,5 @@ The strategic review [document](../../resources/strategic-review.md#strategic-re
 ### 1. Document Findings
 
 - Document all findings in the `{strategic_review_doc}`, written under `{planning_folder_path}`
-- Categorize by type: investigation artifacts, over-engineering, orphaned infrastructure
+- Categorize each finding per the group's [finding-categories](./TECHNIQUE.md#finding-categories)
 - If all changes are justified and no cleanup is needed, document a clean review result

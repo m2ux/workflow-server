@@ -1,8 +1,8 @@
 ---
 name: strategic-review
-description: Ensures the final implementation is minimal and focused by identifying and removing speculative or unnecessary changes before finalizing the PR.
+description: Strategic review artifact template; the review procedure, finding classification, and cleanup rules live on the strategic-review technique group.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   order: 18
   legacy_id: 18
 ---
@@ -11,68 +11,9 @@ metadata:
 
 Problem-solving commonly leaves behind speculative changes, debugging infrastructure, or exploratory code that becomes unnecessary once the root cause is understood. The strategic review finds and removes these before finalizing the PR, so PRs are clean, reviewable, and contain only intentional changes.
 
-Perform it in the Strategic Review activity, after validation and before finalization. Especially important when: the implementation involved significant investigation or debugging; multiple approaches were tried; infrastructure or tooling changes were made during development; or the final solution is simpler than initially anticipated.
-
-## Review Procedure
-
-### 1. Speculative Changes Audit
-
-| Category | Questions to Ask |
-|----------|------------------|
-| **Infrastructure** | Were CI/CD changes, build configuration, or environment setup modified speculatively? Are they still needed for the final solution? |
-| **Dependencies** | Were dependencies added, removed, or modified that aren't required by the final implementation? |
-| **Debug Code** | Are there debug statements, verbose logging, or diagnostic outputs that should be removed? |
-| **Fallback Logic** | Were fallback mechanisms added that are unnecessary given the final approach? |
-| **Configuration** | Were configuration files modified beyond what the final solution requires? |
-
-### 2. Compare Against Baseline
-
-```bash
-# List all files changed in this branch
-git diff --name-only <base-branch> HEAD
-
-# For each file, ask: Is this change necessary for the solution?
-git diff <base-branch> HEAD -- <file>
-```
-
-For each changed file, verify:
-- [ ] The change directly supports the solution (not a speculative attempt)
-- [ ] The change is minimal (no unnecessary additions)
-- [ ] The change doesn't include debugging artifacts
-- [ ] The change wasn't superseded by a simpler approach
-
-### 3. Solution Minimality Check
-
-| Question | If "No" |
-|----------|---------|
-| Is every changed file necessary for the fix? | Revert unnecessary file changes |
-| Is every added line of code necessary? | Remove speculative or debug code |
-| Are all new dependencies required? | Remove unused dependencies |
-| Are all configuration changes required? | Revert unnecessary config changes |
-| Is the solution as simple as it could be? | Consider simplification |
-
-### 4. Revert Unnecessary Changes
-
-```bash
-# Revert a specific file to match the base branch
-git checkout <base-branch> -- <file>
-
-# Or use interactive staging to selectively revert portions
-git checkout -p <base-branch> -- <file>
-
-# Stage reverted changes
-git add <reverted-files>
-```
-
-## Finding Categories
-
-- **Investigation Artifacts** — changes made while understanding the problem: extra logging or print statements, verbose error messages for debugging, temporary workarounds that were superseded, exploratory test configurations.
-- **Over-Engineering** — solutions that grew beyond what was needed: generic abstractions for specific problems, fallback mechanisms for cases that can't occur, unused configuration options, infrastructure for features not implemented.
-- **Orphaned Infrastructure** — supporting changes that outlived their purpose: CI job dependencies added for failed approaches, environment variables for abandoned features, build steps for removed functionality, unnecessary wait/synchronization logic.
+The review procedure and its rules — speculative-changes audit, per-file necessity, minimality checks, finding classification, revert mechanics — live on the [strategic-review](../techniques/strategic-review/TECHNIQUE.md#rules) technique group and its ops [review-scope](../techniques/strategic-review/review-scope.md#rules) and [apply-cleanup](../techniques/strategic-review/apply-cleanup.md).
 
 ## Strategic Review Artifact Template
-
-Create `strategic-review-{n}.md` in the planning folder using this template (the activity's `artifactPrefix` is prepended at write time; n increments on successive reviews):
 
 ```markdown
 # Strategic Review
