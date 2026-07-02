@@ -1,5 +1,5 @@
 id: design-philosophy
-version: 1.7.0
+version: 1.8.0
 name: Design Philosophy
 description: Apply the design framework to classify the problem and decide the workflow path.
 required: true
@@ -10,29 +10,19 @@ steps:
   - kind: technique
     id: classify-problem
     technique: classify
-  - kind: checkpoint
-    id: classification-confirmed
-    message: Based on my analysis, this appears to be a {problem_type} with {problem_complexity} complexity. Confirming in 30s unless you intervene.
-    blocking: false
-    defaultOption: confirmed
-    autoAdvanceMs: 30000
-    options:
-      - id: confirmed
-        label: Classification confirmed
-        description: The problem type and complexity assessment are correct
-      - id: revise
-        label: Revise classification
-        description: The problem classification needs adjustment
   - kind: technique
     id: determine-path
     technique: determine-path
   - kind: checkpoint
-    id: workflow-path-selected
-    message: "Given the {problem_complexity} classification, the recommended path is shown as default. Auto-advancing in 30s. For simple: skip optional, moderate: research only, complex: full workflow."
+    id: classification-and-path-confirmed
+    message: "Classification: {problem_type} with {problem_complexity} complexity. The recommended workflow path for this classification is the default below — auto-advancing in 30s. (simple: skip optional discovery, moderate: research only, complex: full workflow.) Pick a different path, or revise if the classification itself is wrong."
     blocking: false
     defaultOption: skip-optional
     autoAdvanceMs: 30000
     options:
+      - id: revise-classification
+        label: Revise classification
+        description: The problem type or complexity assessment needs adjustment before a path is chosen
       - id: full-workflow
         label: Full workflow (elicitation + research)
         description: Complex feature requiring requirements discovery and research

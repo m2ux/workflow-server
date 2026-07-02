@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.14.0
+version: 3.15.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
@@ -209,10 +209,6 @@ variables:
     type: boolean
     description: Whether user flagged any change blocks during manual diff review
     defaultValue: false
-  - name: rationale_confirmed
-    type: boolean
-    description: True when the user picked rationale-confirmed or rationale-confirmed-with-issues on the file-index-table checkpoint. Drives the rationale-amendment checkpoint condition so users who want to amend rationale paragraphs land at the amendment prompt regardless of whether they also flagged block issues.
-    defaultValue: false
   - name: has_critical_blocker
     type: boolean
     description: Whether any flagged block is a critical blocker
@@ -364,7 +360,7 @@ variables:
     defaultValue: false
   - name: path_gating_complexity
     type: string
-    description: Path-gating mirror of problem_complexity. Used by design-philosophy's workflow-path-selected.skip-optional effect.
+    description: Path-gating mirror of problem_complexity. Used by design-philosophy's classification-and-path-confirmed.skip-optional effect.
     defaultValue: ""
   - name: gitnexus_indexed
     type: boolean
@@ -372,7 +368,7 @@ variables:
     defaultValue: false
   - name: problem_type
     type: string
-    description: Problem or inventive-goal classification set during design-philosophy (e.g. defect, inventive-improvement). Interpolated into the classification-confirmed checkpoint message.
+    description: Problem or inventive-goal classification set during design-philosophy (e.g. defect, inventive-improvement). Interpolated into the classification-and-path-confirmed checkpoint message.
   - name: pr_url
     type: string
     description: URL of the pull request created during start-work-package. Captured alongside pr_number and recorded on the linked issue.

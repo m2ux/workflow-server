@@ -68,12 +68,10 @@ Definition: [`02-design-philosophy.yaml`](./02-design-philosophy.yaml)
 graph TD
     entryNode(["Entry"]) --> defineProblem["Define problem statement"]
     defineProblem --> classifyProblem["Classify problem type and complexity"]
-    classifyProblem --> cpClassified{"classification-confirmed checkpoint"}
-    cpClassified -->|"confirmed"| determinePath["Determine workflow path"]
-    cpClassified -->|"revise"| classifyProblem
-
-    determinePath --> cpPath{"workflow-path-selected checkpoint"}
-    cpPath --> docPhilosophy["Document design philosophy"]
+    classifyProblem --> determinePath["Determine workflow path"]
+    determinePath --> cpClassPath{"classification-and-path-confirmed checkpoint"}
+    cpClassPath -->|"revise-classification"| classifyProblem
+    cpClassPath -->|"path chosen"| docPhilosophy["Document design philosophy"]
     docPhilosophy --> collectAssumptions["Collect assumptions"]
     collectAssumptions --> createLog["Create assumptions log"]
     createLog --> reconcile["Reconcile assumptions"]
@@ -329,8 +327,7 @@ graph TD
     entryNode(["Entry"]) --> preflight["GitNexus detect-changes preflight"]
     preflight --> manualDiff["Manual diff review"]
     manualDiff --> cpFileIndex{"file-index-table checkpoint"}
-    cpFileIndex --> cpRationale{"rationale-amendment checkpoint"}
-    cpRationale --> interviewLoop{"Next flagged block?"}
+    cpFileIndex --> interviewLoop{"Next flagged block?"}
     interviewLoop -->|"yes"| cpInterview{"block-interview checkpoint"}
     cpInterview --> interviewLoop
     interviewLoop -->|"all done"| codeReview["Code review"]
@@ -421,8 +418,8 @@ graph TD
     reviewMode -->|"no"| cpDco{"dco-sign-off checkpoint"}
     cpDco --> pushCommits["Push all commits"]
     pushCommits --> updateDesc["Update PR description"]
-    updateDesc --> cpMerge{"merge-strategy-reminder checkpoint"}
-    cpMerge --> markReady["Mark PR ready for review"]
+    updateDesc --> mergeGuidance["Merge-strategy guidance (informational message)"]
+    mergeGuidance --> markReady["Mark PR ready for review"]
     markReady --> awaitReview["Await manual review"]
 
     awaitReview --> cpReceived{"review-received checkpoint"}
