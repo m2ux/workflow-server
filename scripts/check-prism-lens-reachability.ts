@@ -46,6 +46,7 @@ const PIPELINE_INTERNAL = new Set([
   'writer-critique', // writer pipeline pass 2 (cross-workflow-only chain)
   'writer-synthesis', // writer pipeline pass 3 (cross-workflow-only chain)
   'final-output-template', // REPORT.md skeleton — a template, not a lens
+  'definitive-findings-template', // DEFINITIVE-FINDINGS.md skeleton — a template, not a lens
 ]);
 
 export interface LensReachabilityViolation {
