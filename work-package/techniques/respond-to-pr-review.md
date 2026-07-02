@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 2.0.0
+  version: 2.1.0
   order: 2
   legacy_id: 2
 ---
@@ -21,16 +21,32 @@ Review comments fetched from PR
 
 ### 1. Fetch Comments
 
-- Use attached [pr-review-response](../resources/pr-review-response.md) for full response guidance
-- Fetch the `{review_comments}` from the PR identified by `{pr_number}` using the `gh` API
+- Take the response format and review-document shapes from the [pr-review-response templates](../resources/pr-review-response.md); the rules below govern response content
+- Fetch the `{review_comments}` from the PR identified by `{pr_number}` using the `gh` API:
+  ```bash
+  gh api repos/<owner>/<repo>/pulls/{pr_number}/comments --paginate
+  ```
   - If the `gh` API returns an error fetching comments, check authentication and PR access, then retry.
   - If no review comments are found, verify the PR has been reviewed and check comment visibility before proceeding.
+- Filter to unresolved comments from the latest review round (avoid re-answering resolved threads): derive `{$latest_review_date}` from the review timeline, then keep only comments from reviewers (not the PR author) updated since it:
+  ```bash
+  gh pr view {pr_number} --json reviews | jq '.reviews[] | {author: .author.login, state: .state, submittedAt: .submittedAt}' | tail -5
+  gh api repos/<owner>/<repo>/pulls/{pr_number}/comments --paginate | jq '.[] | select(.user.login != "<pr-author>" and .updated_at >= "{$latest_review_date}") | {id: .id, body: .body, html_url: .html_url, path: .path, line: .line}' > /tmp/unresolved_comments.json
+  ```
+- Identify question-type comments:
+  ```bash
+  jq -r '.body' /tmp/unresolved_comments.json | grep -i "what\|how\|why\|which" | nl
+  ```
+- Before proceeding: total comment count confirmed; unresolved comments filtered to the latest review round; question-type comments identified; comments saved for analysis
 
 ### 2. Categorize
 
-- Categorize each of the `{review_comments}` by type (required change, suggestion, question, nit)
+- For each of the `{review_comments}`, read its context (file path, line number, concern raised) and compare against the current code: does the comment still apply, or has it been addressed or obsoleted by later changes?
+- Assign each comment a disposition: still applicable and needs response / already addressed in updates / no longer relevant due to changes / needs clarification or discussion
+- Categorize each comment by type (required change, suggestion, question, nit)
 - Identify actionable items vs discussion points
 - Prioritize by reviewer authority and impact
+- Compile a numbered response list of the applicable comments — brief description, `path:line`, and a link to the original GitHub discussion, e.g. `1. Clarify error handling - src/handler.rs:45 [Discussion](https://github.com/repo/pull/123#discussion_r1234567890)`
 
 ### 3. Address Comments
 
@@ -42,6 +58,7 @@ Review comments fetched from PR
 
 ### 4. Post Responses
 
+- Draft each response per the [response format template](../resources/pr-review-response.md#response-format-template) and the response-crafting rules below
 - Present drafted PR responses for user approval before posting
 - Post approved responses to the PR comment thread
 - If disagreeing with a reviewer, explain reasoning explicitly
@@ -49,7 +66,7 @@ Review comments fetched from PR
 ### 5. Update Pr
 
 - Push all fix commits to the PR branch
-- Post response summary to PR
+- Post response summary to PR, finishing with a summary of all changes made
 
 ### 6. Assess Outcome
 
@@ -61,7 +78,7 @@ Review comments fetched from PR
 
 ### review_analysis
 
-PR review [analysis](../resources/pr-review-response.md#step-6-create-review-document) document
+PR review [analysis](../resources/pr-review-response.md#review-document-template) document
 
 #### artifact
 
@@ -75,8 +92,35 @@ Whether the changes are significant enough to require substantial rework
 
 ### respond-to-all
 
-Every review comment must receive a response — acknowledged, implemented, or discussed
+Every review comment must receive a response — acknowledged, implemented, or discussed — and every response embeds its follow-up actions
 
 ### prioritize-required
 
 Address required changes before suggestions and nits
+
+### measured-response-language
+
+Measured technical language per [manage-artifacts](./manage-artifacts/TECHNIQUE.md#plain-technical-language) — no hyperbole or superlatives ("excellent", "amazing", "perfect"). Address the specific concern raised, with concrete examples and implementation details where relevant; consider trade-offs and alternatives.
+
+### blockquote-paste-format
+
+Format each response as a blockquote (`>`) so it pastes directly into the PR comment; include an "**Optional doc wording:**" block when proposing documentation text changes.
+
+### acknowledge-then-act
+
+Acknowledge the reviewer's point first, then state the actions taken explicitly; reference specific commits when relevant; be concise.
+
+### response-patterns
+
+Standard response shapes:
+
+```
+Acknowledgment + action:  "Valid point. [Change made]. This [explains benefit]."
+Question resolution:      "Correct about [concern]. [Action taken] to address this."
+Implementation confirmed: "Implemented as suggested. [Brief description] in [location]."
+Technical explanation:    "[Direct answer]. [Implementation details] to resolve this."
+```
+
+### verify-reference-links
+
+Verify every source-code reference link in responses and the review document resolves; cite technical details properly.
