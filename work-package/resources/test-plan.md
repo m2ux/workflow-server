@@ -121,7 +121,7 @@ Test Cases table:
 - Test ID format `PR<number>-TC-<sequence>` (01, 02, ...), hyperlinked to the test function definition line (`#L<line>`, not the first assertion); verify links before committing.
 - Objectives start with "Verify..." — never vague ("test the feature").
 - Steps are numbered, atomic, and verifiable, separated with `  <br>` (two trailing spaces + `<br>` for cross-renderer compatibility).
-- Type is one of: Unit, Integration, E2E, Performance, Manual.
+- Type is one of: Unit (isolated single function/method behavior), Integration (component interactions), E2E (complete user workflows), Performance (load/latency validation), Manual.
 - Manual tests (RPC endpoints, network behavior, UI verification) use plain-text non-hyperlinked Test IDs — no source to link.
 - Temporarily disabled tests stay in the same table with a `**` suffix after the Test ID (suffix, not prefix, to keep the link working), plus a `> [!NOTE]` below the table stating the reason and the specific re-enablement condition. No separate table for ignored tests.
 
@@ -132,7 +132,7 @@ Acceptance Criteria Matrix:
 Content boundaries:
 - Don't duplicate ADR content or implementation details — the plan covers validation only.
 - No References section (links are inline); don't inline planning-artifact content or validation results — link the source artifact instead (single-source-and-link).
-- Running Tests commands must be copy-pasteable, covering all-tests and specific-test scopes; include build verification if relevant.
+- Running Tests commands must be copy-pasteable, covering all-tests, module, and specific-test scopes; include build verification if relevant.
 
 ## Naming and Storage
 

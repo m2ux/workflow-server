@@ -25,7 +25,7 @@ Common origins of false assumptions, to check against: missing/stale information
 
 ## Classification
 
-**Categories** (choose per phase, from `assumption_categories`): Behavioral, Architectural, Interface, Performance, Compatibility, Scope, Implicit Requirements — plus phase-specific ones (Problem Interpretation, Complexity Assessment, Workflow Path, Requirement Interpretation, Scope Boundaries, Pattern Applicability, Current Behavior, Gap Identification, Design Approach, Task Breakdown, Dependency).
+**Categories** (choose per phase; the bound activity's `assumption_categories` input is the authoritative list): Behavioral, Architectural, Interface, Performance, Compatibility, Scope, Implicit Requirements — plus phase-specific ones (Problem Interpretation, Complexity Assessment, Workflow Path, Requirement Interpretation, Scope Boundaries, Success Criteria Interpretation, Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment, Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding, Design Approach, Task Breakdown, Dependency, Test Strategy, Scope Decisions).
 
 **Risk**: **H** — affects multiple components, external interfaces, or security: validate before proceeding. **M** — affects current task scope: confirm at checkpoint. **L** — easily reversible: log for reference, batch validation acceptable.
 
@@ -64,9 +64,12 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 | 1.1 | Task 1 | Behavioral | L | [Statement] — [why] | — | Open ([why stakeholder-dependent]) |
 
 Resolution: how it was settled — `Code:` with file:line evidence, `User` (checkpoint or
-interview), or `—` while open. Outcome: Validated / Invalidated / Partially Validated
+interview), or `—` while open; implementation-task rows append the commit hash for
+assumption-to-commit traceability. Outcome: Validated / Invalidated / Partially Validated
 (code-resolved) · Confirmed / Corrected: <change> / Deferred: <follow-up> (user-resolved)
-· Open (<reason>).
+· Open (<reason>). When an interpretation difference contributed to an assumption, name
+the ambiguity source (observation, recall, requirement reading, ambiguous problem
+statement) in the rationale.
 
 ## Open Assumptions
 

@@ -76,6 +76,8 @@ Rationale rules:
 - Mention relevant prior state, trade-offs, or constraints that informed the approach
 - Plain technical language; no vague descriptions like "various improvements"
 
+Review conduct: work systematically (top-to-bottom or by logical grouping); reference surrounding code when describing an issue; be specific — include line numbers or code snippets in finding descriptions.
+
 ## User Reporting Protocol
 
 Users report findings using **row numbers only**:

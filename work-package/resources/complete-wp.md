@@ -38,7 +38,8 @@ Link the [implementation plan](NN-work-package-plan.md) — do not restate its t
 - Files changed: see [change-block index](NN-change-block-index.md).
 - Design decisions: recorded in the [plan](NN-work-package-plan.md#proposed-approach) and
   [assumptions log](NN-assumptions-log.md). [List here ONLY decisions made during
-  implementation that are recorded nowhere else.]
+  implementation that are recorded nowhere else, each in the form
+  Context / Decision / Rationale / Alternatives considered.]
 
 ## Deferred Items
 

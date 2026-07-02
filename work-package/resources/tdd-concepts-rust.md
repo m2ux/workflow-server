@@ -62,7 +62,7 @@ mod tests {
 Test doubles replace production dependencies (hardware, OS, other modules) so the test + doubles form a fixture around the Code Under Test (CUT), driving inputs and checking outputs. Keep doubles much simpler than what they replace.
 
 - **Dummy**: satisfies a trait bound / linker; never actually called.
-- **Stub**: returns canned answers (e.g. a `TimeService` that always returns a fixed `DateTime`); no verification.
+- **Stub**: returns canned answers (e.g. a `TimeService` that always returns a fixed `DateTime`); no verification. A time fake may also expose a mutation method (`advance(&mut self, duration)`) so the test scripts time passage — schedule/timeout behavior is tested by advancing the fake, not by sleeping.
 - **Spy**: records calls (method, args, order) for the test to inspect afterward. Rust idiom: `RefCell<Vec<...>>` inside the spy so it can record through `&self`.
 - **Mock**: pre-programmed expectations on calls, args, order, and return values; verifies automatically. Use the `mockall` crate:
 
@@ -201,7 +201,7 @@ Run on every push/PR: `cargo test --all-features`, `cargo clippy -- -D warnings`
 ## Conclusion and Best Practices
 
 1. Use the built-in cargo test framework; traits (not function pointers) for abstraction; `mockall` for mocks; `proptest` for properties; `tests/` for integration; feature flags / `#[cfg]` for platform switches.
-2. Leverage Rust's type system: ownership, `Option`/`Result`, and no-UB-in-safe-code eliminate whole test categories — TDD + types is stronger than either alone.
+2. Leverage Rust's type system: ownership, `Option`/`Result`, and no-UB-in-safe-code eliminate whole test categories — TDD + types is stronger than either alone. Benchmarking is built into the toolchain (`cargo bench`) when performance validation is needed.
 3. Test both `Ok` and `Err`; test boundaries; follow 0-1-N.
 4. For legacy code, apply the crash-to-pass, seam, and characterization strategies above.
 5. The mindset: write test → watch it fail → make it pass → refactor → repeat. **Red → Green → Refactor**.

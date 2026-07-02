@@ -59,7 +59,7 @@ Selection order: defect in existing functionality → **Bug**; user-facing with 
 
 ### Problem Statement
 
-[Describe the gap between current and desired state. Be specific about impact.]
+[Describe the gap between current and desired state. Be specific about impact. Must be clear to a reader without context — no assumed knowledge of prior discussions or internal shorthand.]
 
 **Current state:**
 - [What happens now]

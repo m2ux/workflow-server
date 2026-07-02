@@ -78,6 +78,7 @@ The work package plan is the detailed implementation specification: enough detai
 
 ### Performance Targets
 - [ ] **[Metric]:** Improve from [baseline] to [target] ([X]% improvement)
+- [ ] **[Metric]:** Achieve [target] (new capability — no baseline)
 
 ### Quality Requirements
 - [ ] Test coverage ≥X% (baseline: Y%)
@@ -120,6 +121,6 @@ The work package plan is the detailed implementation specification: enough detai
 - **Research & Analysis** — link companion artifacts and summarize only the findings most relevant to implementation (single-source-and-link); do not duplicate their content.
 - **Proposed Approach** — describe the solution, document alternatives considered with pros/cons and decision, and record each design decision's rationale alongside the assumptions it depends on so reviewers and implementers can validate or challenge them.
 - **Implementation Tasks** — discrete, estimable, completable in one session, with concrete deliverable paths and test coverage. Forbidden patterns: verification-as-task (e.g. "Task: Verify compilation", "Task: Verify existing tests pass") and raw cargo invocations (`cargo check`, `cargo test`) as tasks. Vague tasks ("make search better") are also rejected.
-- **Success Criteria** — measurable, linked to baselines and gap IDs from the analysis (e.g. "P95 latency: 487ms → 200ms, 59% reduction"), never unquantified ("search is faster"). Measurement Strategy names the specific test/script/log comparison that proves each target.
+- **Success Criteria** — measurable, linked to baselines and gap IDs from the analysis (e.g. "P95 latency: 487ms → 200ms, 59% reduction"), never unquantified ("search is faster"). New capabilities with no baseline state the absolute target. Measurement Strategy names the specific test/script/log comparison that proves each target.
 - **Testing Strategy** — specific test scenarios per category (unit/integration/e2e), including edge cases.
 - **Dependencies & Risks** — list blockers; every risk gets impact, probability, and a mitigation strategy.

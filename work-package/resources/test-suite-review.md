@@ -49,12 +49,14 @@ Low-value patterns to flag (each can only fail if the language/framework is brok
 2. **Type name self-equality** — assert `type_name::<T>() == type_name::<T>()`; always true.
 3. **Always-true assertions** — `assert!(true)` or equivalent placeholder.
 4. **Default config hardcoded validation** — assert `Config::default()` fields equal the hardcoded defaults.
-5. **Mock-only passthrough** — set a mock response, call the mock, assert the mock returned it; no real logic exercised.
-6. **Manual business logic in tests** — test reimplements the production calculation instead of calling the actual client method.
-7. **Validation Theater** — both success and failure branches accepted as valid; test always passes.
-8. **Language/type system guarantee tests** — e.g., asserting a mutex is not poisoned after an error return when Rust ownership guarantees the guard dropped cleanly.
-9. **Derive macro output tests** — e.g., asserting thiserror `Display` strings or serde output; tests the macro, not app logic.
-10. **Misleading happy-path tests** — name promises more than the assertions verify.
+5. **Empty collection validation** — assert a freshly created collection is empty; always true.
+6. **Pure mock interaction tests** — assert only that a mock was invoked or configured; exercises the mock framework, not the code.
+7. **Mock-only passthrough** — set a mock response, call the mock, assert the mock returned it; no real logic exercised.
+8. **Manual business logic in tests** — test reimplements the production calculation instead of calling the actual client method.
+9. **Validation Theater** — both success and failure branches accepted as valid; test always passes.
+10. **Language/type system guarantee tests** — e.g., asserting a mutex is not poisoned after an error return when Rust ownership guarantees the guard dropped cleanly.
+11. **Derive macro output tests** — e.g., asserting thiserror `Display` strings or serde output; tests the macro, not app logic.
+12. **Misleading happy-path tests** — name promises more than the assertions verify.
 
 High-value patterns to encourage: protocol compliance (calculated values vs protocol specification), business rule enforcement (invalid input rejected with error), error boundary testing (timeouts, failure handling), state transition validation, real client logic (actual conversion/validation methods, not mocks).
 
@@ -118,7 +120,7 @@ Total tests analyzed: [X] · with anti-patterns: [Y] · clean: [X-Y] · rate: [Y
 
 ### Test Pyramid Assessment
 
-[Exception-only: state "Pyramid OK (unit [x%] / integration [x%] / e2e [x%])" on one line; table rows only for INVERTED layers.]
+[Exception-only: state "Pyramid OK (unit [x%] / integration [x%] / e2e [x%])" on one line; table rows only for INVERTED layers. Expected bands: unit 70-80%, integration 15-25%, e2e 5-10%.]
 
 | Test Type | Count | Expected Ratio | Actual Ratio | Status |
 |-----------|-------|----------------|--------------|--------|

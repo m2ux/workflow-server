@@ -139,6 +139,8 @@ Optional sections (add when applicable): `## Migration Notes` (required steps fo
 
 **Style** — lead with outcomes; clear technical language; scannable headers and bullets; link to artifacts (tickets, ADRs, test plans) instead of inlining their content; no process attribution ("per user request", "AI suggested").
 
+**TODO before merging** — tracks remaining pre-merge items beyond "Ready for review" (e.g. address reviewer feedback, squash commits if needed); check items off as they complete.
+
 **What NOT to include** (single-source-and-link):
 
 | Do NOT Include | Where It Lives Instead |
