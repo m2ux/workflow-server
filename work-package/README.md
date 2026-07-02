@@ -15,7 +15,7 @@ This workflow guides the complete lifecycle of a single work package through 15 
 | 15 | [**Codebase Comprehension**](./activities/README.md#codebase-comprehension-optional) | no | Build/augment mental model of codebase via persistent knowledge artifacts |
 | 03 | [**Requirements Elicitation**](./activities/README.md#03-requirements-elicitation-optional) | optional | Clarify requirements through stakeholder conversation |
 | 04 | [**Research**](./activities/README.md#04-research-optional) | optional | Gather best practices from knowledge base and web |
-| 05 | [**Implementation Analysis**](./activities/README.md#05-implementation-analysis) | conditional | Understand current state, establish baselines |
+| 05 | [**Implementation Analysis**](./activities/README.md#05-implementation-analysis-optional) | conditional | Understand current state, establish baselines |
 | 06 | [**Plan & Prepare**](./activities/README.md#06-plan--prepare) | yes | Create implementation and test plans |
 | 07 | [**Assumptions Review**](./activities/README.md#07-assumptions-review) | yes | Post plan summary and assumptions to issue tracker for stakeholder review |
 | 08 | [**Implement**](./activities/README.md#08-implement) | yes | Execute tasks with implement-test-commit cycles |
@@ -94,7 +94,7 @@ Under the bound-step model each step carries its own `step.technique` binding, s
 | 15 | [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) | — | — |
 | 03 | [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) | — | `03` |
 | 04 | [Research](./activities/README.md#04-research-optional) | — | `04` |
-| 05 | [Implementation Analysis](./activities/README.md#05-implementation-analysis) | `scatter-gather` | `05` |
+| 05 | [Implementation Analysis](./activities/README.md#05-implementation-analysis-optional) | `scatter-gather` | `05` |
 | 06 | [Plan & Prepare](./activities/README.md#06-plan--prepare) | — | `06` |
 | 07 | [Assumptions Review](./activities/README.md#07-assumptions-review) | `scatter-gather` | `07` |
 | 08 | [Implement](./activities/README.md#08-implement) | `scatter-gather` | `08` |
@@ -173,7 +173,7 @@ This workflow supports **review mode** for reviewing existing PRs rather than im
 |----------|----------|
 | [Start Work Package](./activities/README.md#01-start-work-package) (01) | Skip branch/PR creation; capture existing PR reference and Jira ticket |
 | [Design Philosophy](./activities/README.md#02-design-philosophy) (02) | Assess ticket completeness; always skip elicitation |
-| [Implementation Analysis](./activities/README.md#05-implementation-analysis) (05) | Checkout base branch to analyze pre-change state; document expected changes |
+| [Implementation Analysis](./activities/README.md#05-implementation-analysis-optional) (05) | Checkout base branch to analyze pre-change state; document expected changes |
 | [Lean-Coding Audit](./activities/README.md#09-lean-coding-audit) (09) | Run the audit read-only — document over-engineering findings and the debt ledger; skip the apply checkpoint and simplification cycle (no code changes) |
 | [Post-Implementation Review](./activities/README.md#10-post-implementation-review) (10) | Compare PR changes against expected changes from analysis |
 | [Validate](./activities/README.md#11-validate) (11) | Document failures as findings; do not fix |
