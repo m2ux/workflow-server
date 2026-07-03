@@ -19,9 +19,11 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, resolve, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { resolveWorkflowsRoot } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = resolve(join(DIR, '..', 'workflows'));
+// Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree (issue #160 #1).
+const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
 
 export interface BrokenAnchor {
   /** File containing the link, relative to the workflows root. */
