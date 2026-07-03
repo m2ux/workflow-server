@@ -82,7 +82,7 @@ steps:
         id: present-assumption
         technique: work-package::review-assumptions::interview
       - kind: checkpoint
-        id: assumption-decision
+        id: assumption-decision#{current_assumption.id}
         message: "Assumption {current_assumption.id}: {current_assumption.statement}"
         blocking: true
         options:
