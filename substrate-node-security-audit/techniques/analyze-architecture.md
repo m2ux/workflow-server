@@ -23,6 +23,10 @@ Trust boundaries, consensus paths, pallet hooks, config structs, data flows, and
 
 Source files sorted by line count.
 
+### gitnexus_available
+
+*(optional)* Whether the target is GitNexus-indexed (set at scope-setup). When true, the interaction model and candidate ranking are sourced from the call graph; when false or absent, the read-driven path below is used unchanged.
+
 ## Outputs
 
 ### architectural_analysis
@@ -55,6 +59,8 @@ Vulnerability domains derived from the architecture that fall outside any §3 ch
 
 - For each pair of interacting components (crates, modules, or subsystems), document the data that flows between them and its direction, the trust assumptions at the boundary, and the security property that must hold for the interaction to be safe, into `{architectural_analysis.interaction_model}`. Focus on cross-crate interactions; intra-crate interactions are covered elsewhere.
 
+> When `{gitnexus_available}`, derive the component-pair interaction set from cross-community call edges via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) (read the graph schema first) and satisfy `interactions-cite-code` with the resolved call edges from [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md), rather than inferring interactions from a manual read.
+
 ### 2. Build Privilege Map
 
 - For each state-modifying operation category (block production, inherent injection, extrinsic dispatch, genesis construction, configuration loading, external data ingestion), document the required authority, where it is verified in code, and what happens if verification is absent, bypassable, or inconsistent, into `{architectural_analysis.privilege_map}`. Flag operations that appear to require authority but are unrestricted.
@@ -63,6 +69,8 @@ Vulnerability domains derived from the architecture that fall outside any §3 ch
 ### 3. Identify Candidate Points
 
 - Identify code locations where complexity concentrates and bugs cluster (multiple lock acquisitions, nested match on external/deserialized data, unsafe blocks, error-handling switch points, codec deserialization sites, architectural-layer bridges) and rank them by security relevance into `{architectural_analysis.candidate_points}`; a candidate point at a trust boundary outranks one in internal logic.
+
+> When `{gitnexus_available}`, inform the ranking with objective blast-radius signal: [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) for fan-in (a high-fan-in symbol at a boundary outranks a low-fan-in one) and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md) for the reachable blast radius of a candidate symbol.
 
 ### 4. Identify Emergent Domains
 
@@ -77,3 +85,7 @@ The top 5 files by line count are read before architectural reasoning begins; an
 ### interactions-cite-code
 
 Every component interaction cites at least one code-level observation — a function call, type dependency, or shared resource; an interaction inferred from naming conventions alone is insufficient.
+
+### graph-first-when-indexed
+
+When `{gitnexus_available}`, the interaction model and candidate-point ranking are sourced from the call graph via the `gitnexus-operations` group before manual reasoning, per `meta.gitnexus-operations.must-use-operations`; reading the top files (`largest-files-read-first`) remains the comprehension layer the graph does not replace.

@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 4.17.0
+version: 4.18.0
 title: Security Audit Workflow
 description: Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases.
 author: m2ux
@@ -16,6 +16,7 @@ rules:
     - "Prerequisites before the workflow begins: agents read and follow AGENTS.md; a target submodule is specified; the target-profile resource is loaded during scope-setup for its target-specific crate assignments, file paths, calibration data, and ensemble blind-spot items."
     - The workflow runs to completion without user checkpoints; each phase gate is a boolean variable a completion step sets structurally, and report generation is entered only when the phase-1b dispatch, verification, and merge gates are all true.
     - The audit prompt template defines the checklist; the workflow defines the execution phases.
+    - "Structural codebase analysis — symbol/function enumeration, call relationships, reachability, cross-function comparison, architecture/community mapping, and blast radius — routes through the gitnexus-operations meta group when gitnexus_available is true (indexed during scope-setup); grep and full-file reads are the fallback when the index is absent or stale. grep stays the instrument for pattern-presence lead generation and full-file reading for pattern-absence findings; the graph replaces manual enumeration and relational tracing, never code comprehension."
     - A reference report is never loaded or discussed before the gap-analysis phase; its path is recorded at scope-setup and loading is deferred.
     - Per-function toolkit findings have low single-pass detection rates; enable ensemble_enabled=true for reliable detection.
     - "Report generation is gated on three hard stops enforced structurally, not on prose compliance: (1) coverage — every .rs file >200 lines in priority-1/2 crates has been read by at least one §3-applying sub-agent; (2) dispatch completeness — every assigned primary agent (A1-A7, B, D1, D2), dispatched simultaneously in a single batch, was dispatched and returned, with reconnaissance data not substituting for a §3-applying sub-agent; (3) finding-count reconciliation — the merge agent's reconciliation table shows zero Unaccounted findings for every agent."
@@ -70,6 +71,10 @@ variables:
   - name: cargo_audit_available
     type: boolean
     description: Whether cargo audit ran successfully during setup
+    defaultValue: false
+  - name: gitnexus_available
+    type: boolean
+    description: Whether the target codebase is GitNexus-indexed; gates graph-based structural analysis (enumeration, call graph, reachability, blast radius), with grep and full-file reads as the fallback when false
     defaultValue: false
   - name: reconnaissance_complete
     type: boolean

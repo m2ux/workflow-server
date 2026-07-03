@@ -2,6 +2,22 @@
 
 All notable changes to the substrate-node-security-audit workflow.
 
+## v4.18.0 (2026-07-03) — GitNexus adoption (workflow-design review)
+
+Additive, availability-gated adoption of the meta [`gitnexus-operations`](../meta/techniques/gitnexus-operations/TECHNIQUE.md) capability for the workflow's codebase scanning and structural analysis, from a focused workflow-design review against three goals: effective prism-technique reuse / no duplication, effective GitNexus use, and GitNexus preferred over grep where appropriate. No phase, checkpoint, activity, or contract break — every change is a `gitnexus_available`-gated addition beside the retained grep/manual method.
+
+**GitNexus indexing (scope-setup):** `01-scope-setup.yaml` gains an `index-codebase` step binding `gitnexus-operations::analyze`, setting the new `gitnexus_available` gate variable. A new `workflow.yaml` rule routes structural analysis (symbol/function enumeration, call relationships, reachability, cross-function comparison, architecture/community mapping, blast radius) through the group when indexed, with grep/full-file reads as the fallback — mirroring `meta.gitnexus-operations.must-use-operations`.
+
+**Reconnaissance & architecture (F3):** `map-codebase` and `analyze-architecture` gain gated graph enrichment — `read-cluster`/`diagram-source-select` for community structure, `query`/`read-process` for functional areas and execution flows, `cypher` for cross-community (trust-boundary) edges, `context` for fan-in, `impact` for candidate-point blast radius.
+
+**Function registry & coverage (F4/F5):** `build-function-registry` seeds enumeration from the symbol graph (`cypher`) when indexed; `apply-checklist`'s function-count cross-check prefers the exact graph count over `grep 'fn '`; `verify-sub-agent-output` takes the coverage-gate denominator from the GitNexus inventory. Reading full function bodies and the >200-line coverage gate are unchanged.
+
+**Static-analysis structural checks (F6/F7):** `scan-storage-lifecycle` resolves insert/remove caller pairing and cross-function enumeration via `context`/`cypher`; `search-pattern-catalog` routes STRUCTURAL verification steps through the group; `static-analysis-patterns.md` gains a grep↔GitNexus boundary preamble and classifies the structural checks (1, 3, 5, 15, 16, 17, 29, 31, 32). grep stays the instrument for pattern-presence lead generation.
+
+**Documentation (F1/F8):** `README.md` records the deliberate divergence from `prism-audit` (two different-philosophy audits sharing the Impact × Feasibility model and now `gitnexus-operations`, but not an analysis spine — this workflow is not rebuilt on prism, by design) and names the reused group. `audit-prompt-template.md` gains a three-instruments stance line (grep = presence, full reads = comprehension, graph = structure/relationships) that preserves the read-EVERY-file philosophy.
+
+*Design-review note:* goal 1 (prism reuse) was assessed as a pass — the apparent overlaps with the prism family are structural/orchestration, not content; the Substrate-specific payloads (§3 checklist, multi-agent roster, calibrated rubric) have no prism equivalent, so no prism-family technique was adopted and no wholesale rebuild was undertaken.
+
 ## v4.17.0 (2026-07-02) — Compliance Remediation (workflow-design review)
 
 Structural, schema-expressiveness, rule-hygiene, and resource-hygiene remediation from a workflow-design compliance review. No phase, checkpoint, or contract break — all changes are content/structure refactors on a fully-automated workflow.

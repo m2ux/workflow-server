@@ -21,8 +21,11 @@ This workflow guides the complete lifecycle of a security audit:
 - Impact × Feasibility severity scoring with target-profile-backed calibration benchmarks
 - Contamination prevention — the reference report is quarantined until the gap-analysis phase
 - The [target profile](./resources/target-profile.md) separates target-specific configuration from core workflow rules
+- Graph-backed structural analysis — when the target is GitNexus-indexed (recorded at scope-setup), reconnaissance, function-registry, architecture, and the structural static-analysis checks source enumeration and call-graph structure from the reused [`gitnexus-operations`](../meta/techniques/gitnexus-operations/TECHNIQUE.md) meta group; grep and full-file reads are the fallback
 
 The role split (orchestrator coordinates and dispatches; sub-agents perform deep crate-level review) and the verification/merge gates are workflow invariants — see the `rules` in [`workflow.yaml`](./workflow.yaml).
+
+**Relationship to `prism-audit`.** This workflow and [`prism-audit`](../prism-audit/README.md) are two deliberately different-philosophy security audits. `prism-audit` composes a codebase-tailored prompt and triggers the generic [`prism`](../prism/README.md) lens engine, reusing prism's analysis, adversarial pass, and report contract. This workflow is a bespoke deep multi-agent review tuned to Substrate node internals — a fixed §3 checklist, per-crate concurrent context windows, a coverage gate, and merge/reconciliation — none of which prism packages. The two share the Impact × Feasibility severity model and (now) the `gitnexus-operations` capability, but not an analysis spine; this workflow does not build on prism by design.
 
 ---
 
@@ -230,7 +233,7 @@ These activities are dispatched by the orchestrator during reconnaissance or pri
 
 ## Techniques
 
-Techniques define tool orchestration, protocols, and composable capabilities.
+Techniques define tool orchestration, protocols, and composable capabilities. The codebase-analysis techniques (`map-codebase`, `analyze-architecture`, `build-function-registry`, `scan-storage-lifecycle`, and the static-analysis structural checks) reuse the meta [`gitnexus-operations`](../meta/techniques/gitnexus-operations/TECHNIQUE.md) group for graph-backed enumeration and call-graph structure when the target is indexed, falling back to grep and full-file reads otherwise.
 
 ### Orchestrator Techniques
 

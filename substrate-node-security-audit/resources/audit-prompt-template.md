@@ -90,6 +90,8 @@ These agents must rely on the function registry (§1.2 step 8), grep-led explora
 The §2 static-analysis catalog — its grep patterns, `cargo audit`/`cargo deny`/`cargo geiger` procedures, and mechanical checks — is executed by the [search-pattern-catalog](../techniques/search-pattern-catalog.md) technique against the [static-analysis-patterns](./static-analysis-patterns.md) resource. The subsection headings below are the taxonomy the rest of the workflow cites; each entry's operative body lives in that resource.
 
 > **Grep is a lead generator, not the analysis.** Grep finds pattern-*presence* bugs; the majority of real findings are pattern-*absence* bugs discoverable only by reading function bodies and reasoning about invariants (see §3).
+>
+> **Three instruments, three jobs.** Use grep for pattern-*presence* leads; full-file reading for pattern-*absence* comprehension (the mandatory ingestion in §1 and the §3 function-level review are unchanged); and — when the target is GitNexus-indexed (`gitnexus_available`) — the `gitnexus-operations` graph for *structure and relationships*: symbol enumeration, call graph, reachability, cross-function comparison, and blast radius. The graph replaces manual enumeration and relational tracing; it never replaces reading a function body.
 
 ### 2.1 Panic Path Detection
 `unwrap`/`expect`/`panic!`/indexing sweep. Operative body: [static-analysis-patterns](./static-analysis-patterns.md#grep-patterns).

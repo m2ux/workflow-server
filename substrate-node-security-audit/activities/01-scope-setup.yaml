@@ -12,6 +12,16 @@ steps:
   - kind: technique
     id: setup-target
     technique: setup-audit-target
+  - kind: technique
+    id: index-codebase
+    technique:
+      name: gitnexus-operations::analyze
+      inputs:
+        repo_path: target_submodule
+    actions:
+      - action: set
+        target: gitnexus_available
+        description: true when GitNexus indexing of the target succeeds, false otherwise — gates the graph-based structural analysis in reconnaissance, function-registry, and the static-analysis structural checks
   - kind: action
     id: announce-completion
     actions:
@@ -26,3 +36,4 @@ outcome:
   - Known-vulnerable dependencies are surfaced (or their absence explicitly noted) before code review begins
   - A reviewed file inventory establishes the in-scope surface every agent must cover
   - A working artifact home exists where every phase reads and writes shared state
+  - The target's GitNexus index status is established, so downstream phases can prefer graph-based structural analysis over manual enumeration and grep tracing wherever the index is available
