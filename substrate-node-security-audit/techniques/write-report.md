@@ -2,7 +2,7 @@
 metadata:
   ontology: workflow-canonical
   kind: technique
-  version: 1.2.0
+  version: 1.3.0
   order: 15
   legacy_id: 15
 ---
@@ -52,7 +52,7 @@ Table of all in-scope crates with classification, priority, and reviewing agent
 
 #### findings
 
-All numbered findings. Each: title, severity (I and F with one-sentence justifications), category, affected files with line numbers, description, suggested remediation
+All numbered findings, ordered by severity (Critical, High, Medium, Low, Informational, Undetermined). EVERY finding — at every severity — opens with a brief explanatory paragraph (1–3 sentences, plain prose) placed immediately after the header and before `**Impact:**`. The fields then follow in order: severity (I and F with one-sentence justifications), category, affected files as hyperlinks to the audited source (see `affected_files_hyperlink`), and suggested remediation. Per-finding adversarial-disposition prose is NOT included here (see the `adversarial-disposition-is-auxiliary` rule).
 
 #### severity_distribution
 
@@ -74,6 +74,8 @@ Count of table-derived findings auto-elevated, adversarial refutations integrate
 
 ### Issue `{number}`: `{title}`
 
+`{description}`
+
 **Impact:** `{impact}` — `{justification}`
 
 **Feasibility:** `{feasibility}` — `{justification}`
@@ -82,16 +84,34 @@ Count of table-derived findings auto-elevated, adversarial refutations integrate
 
 **Category:** `{category}`
 
-**Affected Files:** `{file}`#`{lines}`
+**Affected Files:** [`` `{file}`#L{start}-L{end} ``](`{source_blob_base}`/`{file}`#L`{start}`-L`{end}`)
 
-`{description}`
+**Suggested Remediation:** `{remediation}`
+
+The explanatory paragraph (`{description}`) is FIRST — immediately after the header, before `**Impact:**`. When a finding cites multiple files or extra line ranges, hyperlink each `` `{file}`#L… `` reference the same way; trailing bare line numbers after the first range may stay plain text. A single line renders as `#L{n}` (no range).
 
 #### finding_block_note
 
 Each field MUST be separated by a blank line (double newline) so that markdown renders them as distinct paragraphs. Single newlines between fields will collapse into a single paragraph.
+
+#### affected_files_hyperlink
+
+Every source reference in `**Affected Files:**` MUST be a markdown hyperlink to the exact file and line range in the target repository at the audited commit, so a reviewer is one click from the reviewed code. Construct `{source_blob_base}` as `https://github.com/{org}/{repo}/blob/{target_commit}`, where `{org}/{repo}` is the target submodule's GitHub remote (from `git remote get-url origin` in `{target_path}`, normalised from SSH/HTTPS to `github.com/{org}/{repo}`) and `{target_commit}` is the audited revision recorded at scope-setup. Pin the links to `{target_commit}` — never to a mutable branch — so they always resolve to the reviewed source.
 
 ## Rules
 
 ### reconciliation-table-included
 
 The final report includes the finding-count reconciliation table as an appendix or methodology section, providing auditable evidence that every agent finding is accounted for.
+
+### every-finding-has-explanatory-paragraph
+
+Every finding — at every severity, including Informational and Undetermined — MUST open with a brief explanatory paragraph (1–3 sentences) immediately after the `### Issue` header and before `**Impact:**`. The paragraph states what the issue is; it is never placed after `**Affected Files:**`.
+
+### affected-files-are-hyperlinks
+
+Every `**Affected Files:**` reference MUST hyperlink to the file and line range in the target repository at the audited commit, per `affected_files_hyperlink`. Plain `` `path`#lines `` text (no link) is not acceptable, and the link target must be the audited commit, not a branch.
+
+### adversarial-disposition-is-auxiliary
+
+Per-finding adversarial-disposition detail (the confirmed / downgraded / refuted rationale from the adversarial-verification phase) is auxiliary and MUST NOT appear inline in the report's finding blocks — it is noise at the point of the finding. It is recorded in the adversarial-verification artifact (`04-adversarial-verification.md`). The report integrates adversarial outcomes into the final severities and MAY carry a single concise adversarial-summary section, but MUST NOT repeat per-finding disposition prose inside each finding.
