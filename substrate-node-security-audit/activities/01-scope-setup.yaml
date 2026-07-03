@@ -21,7 +21,8 @@ steps:
     actions:
       - action: set
         target: gitnexus_available
-        description: true when GitNexus indexing of the target succeeds, false otherwise — gates the graph-based structural analysis in reconnaissance, function-registry, and the static-analysis structural checks
+        value: true
+        description: Reaching this action implies indexing succeeded (analyze failure fails the step); the variable's defaultValue false covers the un-run or failed path. Gates the graph-based structural analysis in reconnaissance, function-registry, and the static-analysis structural checks.
   - kind: action
     id: announce-completion
     actions:

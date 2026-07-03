@@ -23,10 +23,6 @@ Trust boundaries, consensus paths, pallet hooks, config structs, data flows, and
 
 Source files sorted by line count.
 
-### gitnexus_available
-
-*(optional)* Whether the target is GitNexus-indexed (set at scope-setup). When true, the interaction model and candidate ranking are sourced from the call graph; when false or absent, the read-driven path below is used unchanged.
-
 ## Outputs
 
 ### architectural_analysis

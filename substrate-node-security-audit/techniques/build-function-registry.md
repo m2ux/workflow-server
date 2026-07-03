@@ -25,10 +25,6 @@ List of `.rs` files to enumerate (a crate, a set of crates, or a full scope)
 
 true
 
-### gitnexus_available
-
-*(optional)* Whether the target is GitNexus-indexed (set at scope-setup). When true, the graph seeds the function enumeration; when false or absent, the full-read enumeration below is used unchanged.
-
 ## Protocol
 
 ### 1. Read And Enumerate

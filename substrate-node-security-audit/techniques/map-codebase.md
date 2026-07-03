@@ -25,10 +25,6 @@ Paths to include in the analysis
 
 *(optional)* Paths to exclude
 
-### gitnexus_available
-
-*(optional)* Whether the target is GitNexus-indexed (set at scope-setup). When true, the graph is the authoritative source for enumeration and relational structure; when false or absent, the manual/grep path below is used unchanged.
-
 ## Protocol
 
 ### 1. Enumerate Components

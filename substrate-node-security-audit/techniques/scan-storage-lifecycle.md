@@ -29,10 +29,6 @@ false
 
 *(optional)* The table shape the pairing results are rendered in.
 
-### gitnexus_available
-
-*(optional)* Whether the target is GitNexus-indexed (set at scope-setup). When true, the relational pairing and cross-function steps are resolved from the call graph; the site-sweep in step 2 stays a grep-appropriate presence search either way.
-
 ## Protocol
 
 ### 1. Find Storage Declarations

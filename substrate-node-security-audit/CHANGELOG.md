@@ -8,7 +8,7 @@ Additive, availability-gated adoption of the meta [`gitnexus-operations`](../met
 
 **GitNexus indexing (scope-setup):** `01-scope-setup.yaml` gains an `index-codebase` step binding `gitnexus-operations::analyze`, setting the new `gitnexus_available` gate variable. A new `workflow.yaml` rule routes structural analysis (symbol/function enumeration, call relationships, reachability, cross-function comparison, architecture/community mapping, blast radius) through the group when indexed, with grep/full-file reads as the fallback — mirroring `meta.gitnexus-operations.must-use-operations`.
 
-**Reconnaissance & architecture (F3):** `map-codebase` and `analyze-architecture` gain gated graph enrichment — `read-cluster`/`diagram-source-select` for community structure, `query`/`read-process` for functional areas and execution flows, `cypher` for cross-community (trust-boundary) edges, `context` for fan-in, `impact` for candidate-point blast radius.
+**Reconnaissance & architecture (F3):** `map-codebase` and `analyze-architecture` gain gated graph enrichment — `read-cluster` for community structure, `query`/`read-process` for functional areas and execution flows, `cypher` for cross-community (trust-boundary) edges, `context` for fan-in, `impact` for candidate-point blast radius.
 
 **Function registry & coverage (F4/F5):** `build-function-registry` seeds enumeration from the symbol graph (`cypher`) when indexed; `apply-checklist`'s function-count cross-check prefers the exact graph count over `grep 'fn '`; `verify-sub-agent-output` takes the coverage-gate denominator from the GitNexus inventory. Reading full function bodies and the >200-line coverage gate are unchanged.
 
