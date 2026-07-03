@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { resolve } from 'node:path';
 import { resolveWorkflowsRoot } from '../scripts/workflows-root.js';
 
@@ -9,9 +9,17 @@ import { resolveWorkflowsRoot } from '../scripts/workflows-root.js';
  */
 describe('resolveWorkflowsRoot', () => {
   const DEFAULT = '/repo/workflows';
+  const savedEnv = process.env.WORKFLOWS_DIR;
+
+  // Isolate from any ambient WORKFLOWS_DIR (e.g. when the guard test suites are run with it set to
+  // point at a real corpus) so the default/precedence assertions are hermetic.
+  beforeEach(() => {
+    delete process.env.WORKFLOWS_DIR;
+  });
 
   afterEach(() => {
-    delete process.env.WORKFLOWS_DIR;
+    if (savedEnv === undefined) delete process.env.WORKFLOWS_DIR;
+    else process.env.WORKFLOWS_DIR = savedEnv;
   });
 
   it('returns the default when no override is given', () => {

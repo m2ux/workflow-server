@@ -31,9 +31,11 @@ import { readFileSync, readdirSync, existsSync, statSync, writeFileSync } from '
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
+import { resolveWorkflowsRoot } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = join(DIR, '..', 'workflows');
+// Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree (issue #160 #1).
+const ROOT = resolveWorkflowsRoot(join(DIR, '..', 'workflows'));
 
 /** A single word: lowercase, alphanumeric, no separator (`_` or `-`). */
 const isSingleWord = (id: string): boolean => /^[a-z][a-z0-9]*$/.test(id);
