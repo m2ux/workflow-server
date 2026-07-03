@@ -6,12 +6,16 @@
  * work-package Layer 2 lint to the whole repo.
  *
  *   npx tsx scripts/check-all-refs.ts
+ *   npx tsx scripts/check-all-refs.ts --root /path/to/worktree/workflows
  */
 import { resolve } from 'node:path';
 import { listWorkflows, loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { resolveTechniques } from '../src/loaders/technique-loader.js';
+import { resolveWorkflowsRoot } from './workflows-root.js';
 
-const WF_DIR = resolve(import.meta.dirname, '../workflows');
+// Defaults to the repo's own ../workflows; pass `--root <path>` or set WORKFLOWS_DIR to
+// validate a dedicated worktree's workflows instead (issue #160 follow-up #1).
+const WF_DIR = resolveWorkflowsRoot(resolve(import.meta.dirname, '../workflows'));
 
 interface ActivityLike { id: string; techniques?: string[] }
 

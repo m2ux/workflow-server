@@ -27,16 +27,25 @@
  * Plain run (used by CI / the workflow-design validation step):
  *
  *   npx tsx scripts/check-binding-fidelity.ts
+ *
+ * To check a dedicated worktree's workflows instead of the repo's own ../workflows, pass
+ * `--root <path>` (or set WORKFLOWS_DIR) — issue #160 follow-up #1:
+ *
+ *   npx tsx scripts/check-binding-fidelity.ts --root /path/to/worktree/workflows
  */
 import { readFileSync, readdirSync, existsSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
+import { resolveWorkflowsRoot } from './workflows-root.js';
 
 // Resolve paths from this file's own URL (reliable under both tsx CLI and the vitest runner,
 // where import.meta.dirname is not populated).
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = join(DIR, '..', 'workflows');
+// Corpus root defaults to the repo's own ../workflows; pass `--root <path>` or set WORKFLOWS_DIR
+// to check a dedicated worktree's workflows instead (issue #160 follow-up #1). The baseline stays
+// resolved against this script's own directory — it snapshots corpus content regardless of root.
+const ROOT = resolveWorkflowsRoot(join(DIR, '..', 'workflows'));
 const BASELINE = join(DIR, 'binding-fidelity-baseline.json');
 const META = 'meta';
 
