@@ -258,11 +258,40 @@ export function getActivity(workflow: Workflow, activityId: string): Activity | 
   return workflow.activities?.find(a => a.id === activityId);
 }
 
-/** Get a checkpoint from an activity (the inline kind:checkpoint step). */
+/**
+ * The separator between a loop-body checkpoint's base id and its per-iteration instance
+ * discriminator. A checkpoint inside a forEach/while loop is defined once but reached N times;
+ * yielding it as `<baseId>#<instance>` (e.g. `assumption-decision#RE-1`) gives each iteration a
+ * distinct checkpoint id — so the response key (`<activity>-<checkpoint>`) no longer collides and
+ * iterations 2..N are recorded/prompted distinctly instead of replaying iteration 1's response
+ * (issue #160 follow-up #2). The base is what matches the single checkpoint definition.
+ */
+export const CHECKPOINT_INSTANCE_SEPARATOR = '#';
+
+/** The base checkpoint id — the portion before the per-iteration instance discriminator, if any. */
+export function checkpointBaseId(checkpointId: string): string {
+  const i = checkpointId.indexOf(CHECKPOINT_INSTANCE_SEPARATOR);
+  return i === -1 ? checkpointId : checkpointId.slice(0, i);
+}
+
+/**
+ * Get a checkpoint from an activity (the inline kind:checkpoint step). An exact id match wins;
+ * otherwise an instance-qualified id (`<baseId>#<instance>`) resolves to its base definition, so a
+ * loop-body checkpoint yielded once per iteration shares one definition while recording a distinct
+ * response per instance. The definition's own id may itself be a plain base (`assumption-decision`)
+ * or a template (`assumption-decision#{current_assumption.id}`); both compare on their base.
+ */
 export function getCheckpoint(workflow: Workflow, activityId: string, checkpointId: string) {
   const activity = getActivity(workflow, activityId);
   if (!activity) return undefined;
-  return activityCheckpoints(activity).find(c => c.id === checkpointId);
+  const defs = activityCheckpoints(activity);
+  const exact = defs.find(c => c.id === checkpointId);
+  if (exact) return exact;
+  // No exact match: compare on base ids, so an instance-qualified query resolves to its base
+  // definition (and a plain base query resolves to a templated definition). A base that matches no
+  // definition still returns undefined — base equality is on the full pre-`#` segment, not a prefix.
+  const base = checkpointBaseId(checkpointId);
+  return defs.find(c => checkpointBaseId(c.id) === base);
 }
 
 /** Get all valid transitions from an activity */
