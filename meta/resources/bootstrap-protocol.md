@@ -7,10 +7,10 @@ description: The mandatory session-bootstrap sequence executed by every agent at
 
 IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
 
-1. Fetch:
+1. Read this MCP resource via your client's resource-fetch mechanism (it is an MCP resource URI, *not* an argument to the `get_resource` tool):
    - `workflow-server://schemas/workflow`
-   - `workflow-server://schemas/technique`
-   - `workflow-server://schemas/activity`
+
+   The orchestrator drives the workflow-level loop (activities, `initialActivity`, transitions) and never calls `get_activity` or `get_technique`, so it needs only the workflow schema. The activity and technique schemas are the worker's domain and are loaded there on demand.
 
 2. `start_session { workflow_id: "meta", agent_id: "orchestrator" }`. Save the returned `session_index` (6-character base32). The server creates or rebinds `session.json` + `.session-token` (seal) under the planning folder on this call; no agent-side state writes are required.
 
