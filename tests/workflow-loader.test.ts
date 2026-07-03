@@ -6,6 +6,7 @@ import {
   getCheckpoint,
   getValidTransitions,
   getTransitionList,
+  checkpointBaseId,
 } from '../src/loaders/workflow-loader.js';
 import type { Workflow } from '../src/schema/workflow.schema.js';
 import { resolve } from 'node:path';
@@ -112,6 +113,58 @@ describe('workflow-loader', () => {
     it('should return undefined for a non-existent checkpoint', async () => {
       const workflow = await loadMetaWorkflow();
       expect(getCheckpoint(workflow, 'discover-session', 'no-such-checkpoint')).toBeUndefined();
+    });
+  });
+
+  // Loop-body checkpoint instance ids (issue #160 follow-up #2): a checkpoint inside a forEach
+  // loop is defined once but reached N times. Yielding it as `<baseId>#<instance>` gives each
+  // iteration a distinct id (and thus a distinct `<activity>-<checkpoint>` response key, so
+  // iterations 2..N no longer replay iteration 1's response) while resolving to the one definition.
+  describe('getCheckpoint — loop-body instance ids', () => {
+    // Minimal fixture: a requirements-refinement-shaped activity whose assumption-interview loop
+    // holds one templated-id checkpoint, mirroring the workflows-side 03 edit.
+    const wf = {
+      id: 'wd', version: '1.0.0', title: 'WD',
+      activities: [{
+        id: 'requirements-refinement', version: '1.0.0', name: 'RR',
+        steps: [{
+          kind: 'loop', id: 'assumption-interview-loop', loopType: 'forEach',
+          variable: 'current_assumption', over: 'open_assumptions',
+          steps: [{
+            kind: 'checkpoint', id: 'assumption-decision#{current_assumption.id}',
+            message: 'Assumption {current_assumption.id}: decide.',
+            options: [{ id: 'accept', label: 'Accept' }, { id: 'reject', label: 'Reject' }],
+          }],
+        }],
+      }],
+    } as unknown as Workflow;
+
+    it('checkpointBaseId strips the per-iteration instance discriminator', () => {
+      expect(checkpointBaseId('assumption-decision#RE-1')).toBe('assumption-decision');
+      expect(checkpointBaseId('assumption-decision#{current_assumption.id}')).toBe('assumption-decision');
+      expect(checkpointBaseId('enforcement-confirmed')).toBe('enforcement-confirmed');
+    });
+
+    it('resolves an instance-qualified id to the single base definition', () => {
+      const c1 = getCheckpoint(wf, 'requirements-refinement', 'assumption-decision#RE-1');
+      const c2 = getCheckpoint(wf, 'requirements-refinement', 'assumption-decision#RE-2');
+      expect(c1?.id).toBe('assumption-decision#{current_assumption.id}');
+      expect(c2?.id).toBe(c1?.id); // both instances share one definition
+      expect(c1?.options.map(o => o.id)).toEqual(['accept', 'reject']);
+    });
+
+    it('matches the definition on its base id even when queried with the bare base', () => {
+      expect(getCheckpoint(wf, 'requirements-refinement', 'assumption-decision')?.id)
+        .toBe('assumption-decision#{current_assumption.id}');
+    });
+
+    it('does not resolve an instance id whose base has no definition', () => {
+      expect(getCheckpoint(wf, 'requirements-refinement', 'no-such#RE-1')).toBeUndefined();
+    });
+
+    it('still resolves a plain non-loop checkpoint by exact id (no regression)', async () => {
+      const workflow = await loadMetaWorkflow();
+      expect(getCheckpoint(workflow, 'discover-session', 'resume-session')?.id).toBe('resume-session');
     });
   });
 
