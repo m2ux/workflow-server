@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.4.0
+version: 1.5.0
 name: Quality Review
 description: Quality review of drafted workflow content.
 required: true
@@ -7,6 +7,7 @@ rules:
   - Each review pass is independent — complete one pass fully before starting the next
   - Flag every instance of prose that maps to a formal schema construct
   - Flag every rule that can be violated by ignoring it and lacks structural enforcement
+  - High findings must be independently verified before they drive remediation
 steps:
   - kind: technique
     id: load-all-workflow-files
@@ -193,17 +194,28 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
-    message: Rule-to-structure audit complete. {enforcement_finding_count} text-only rules found. Accepting in 30s unless you intervene.
+    message: Rule-to-structure audit complete. {enforcement_finding_count} text-only rules found. Adding structural enforcement in 30s unless you elect to keep them as text-only guidance.
     blocking: false
-    defaultOption: accept-text-only
+    defaultOption: add-enforcement
     autoAdvanceMs: 30000
     options:
       - id: add-enforcement
         label: Add structural enforcement
-        description: Add checkpoints, conditions, or validate actions for flagged rules
+        description: Ship checkpoints, conditions, or validate actions for the flagged rules — the fix cycle applies the structural change and records enforcement as added (default — auto-accepts after 30s)
+        effect:
+          setVariable:
+            needs_audit_fixes: true
       - id: accept-text-only
-        label: Accept text-only rules
-        description: These rules are acceptable as text-only guidance (default — auto-accepts after 30s)
+        label: Accept text-only rules — no structural change
+        description: Ship no structural change; the flagged rules stay as text-only guidance and are recorded as accepted text-only
+  - kind: technique
+    id: verify-high-findings
+    technique: verify-high-findings
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - kind: action
     id: classify-audit-findings
     condition:
@@ -214,10 +226,10 @@ steps:
     actions:
       - action: set
         target: needs_audit_fixes
-        message: Set true iff any of the four audit passes surfaced findings the user elected to fix (fix-all / selective / add-enforcement / revise); false when every pass was accepted as-is.
+        message: Set true iff the verified findings (verified_findings, recalibrated by verify-high-findings) include findings the user elected to fix (fix-all / selective / revise); the enforcement-confirmed checkpoint's add-enforcement option sets this separately via its own effect. False when every pass was accepted as-is.
       - action: set
         target: has_critical_finding
-        message: Set true iff any audit finding is Critical severity — a schema-invalid or structurally broken construct that must not be committed.
+        message: Set true iff any verified finding (verified_findings) is Critical severity — a schema-invalid or structurally broken construct that must not be committed.
   - kind: loop
     id: audit-fix-cycle
     name: Audit Fix Cycle
