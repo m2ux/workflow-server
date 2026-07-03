@@ -10,6 +10,8 @@ metadata:
 
 Each pattern defines a search string, triage or verification criteria, and pass/fail conditions, organized into two tiers: automated grep patterns (lead generation) and mechanical checks (verification logic beyond simple matching).
 
+**grep ↔ GitNexus boundary.** grep is the instrument for pattern-*presence* lead generation — matching a literal/regex to surface candidate sites (every entry under Grep Patterns). Where a check's *verification* step is structural — symbol/definition enumeration, call graph, caller/callee, reachability, or cross-function comparison — grep still generates the leads, but the verification routes through the `gitnexus-operations` group when the target is GitNexus-indexed (`gitnexus_available`), per `meta.gitnexus-operations.query-not-grep`; the [search-pattern-catalog](../techniques/search-pattern-catalog.md) technique dispatches that routing. When the index is absent or stale, the manual verification procedure stands. Reading full function bodies remains the instrument for pattern-*absence* findings — the graph does not replace it.
+
 ---
 
 ## Grep Patterns
@@ -116,7 +118,7 @@ map_or(Ok(Vec::new()  |  map_or(Ok(Default::default()  |  unwrap_or(Ok(Vec  |  u
 
 ## Mechanical Checks
 
-Each check extends the grep patterns above with verification logic that goes beyond simple matching.
+Each check extends the grep patterns above with verification logic that goes beyond simple matching. Each check's **Search** step is a grep presence sweep (lead generation). Checks whose **Verify** step is STRUCTURAL — enumerate all definitions, trace callers/callees, test reachability, or compare across functions — route that verification through the `gitnexus-operations` group when `gitnexus_available` (see the grep↔GitNexus boundary above): **Check 1** (enumerate all `Ord`/`PartialOrd` impls), **Check 3** (backward/forward call-chain to pair size and serialize functions), **Check 5** (enumerate all genesis-construction sites), **Check 15** (trace the builder chain to `.connect()`), **Check 16** (compare feature-gated definitions used in executor construction), **Check 17** (reachability from a user-callable extrinsic), **Check 29** (trace callers to distinguish extrinsic vs hook), **Check 31** (emission ordering along the call path), and **Check 32** (helpers reachable only from inherent entry points). The remaining checks are grep-lead + local-read verification.
 
 ### Check 1: Ord/PartialOrd Field Coverage
 
