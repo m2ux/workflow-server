@@ -233,6 +233,7 @@ workflows/workflow-design/
 │   ├── audit-conformance.md
 │   ├── audit-rule-hygiene.md
 │   ├── audit-rule-enforcement.md
+│   ├── verify-high-findings.md
 │   ├── review-draft-yaml.md
 │   ├── apply-audit-fixes.md
 │   ├── scope-audit.md
