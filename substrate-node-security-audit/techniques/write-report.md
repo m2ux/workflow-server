@@ -88,7 +88,7 @@ Count of table-derived findings auto-elevated, adversarial refutations integrate
 
 **Suggested Remediation:** `{remediation}`
 
-The explanatory paragraph (`{description}`) is FIRST — immediately after the header, before `**Impact:**`. When a finding cites multiple files or extra line ranges, hyperlink each `` `{file}`#L… `` reference the same way; trailing bare line numbers after the first range may stay plain text. A single line renders as `#L{n}` (no range).
+The explanatory paragraph (`{description}`) is FIRST — immediately after the header, before `**Impact:**`; derive `{$remediation}` as the concrete suggested fix for the finding. When a finding cites multiple files or extra line ranges, hyperlink each `` `{file}`#L… `` reference the same way, deriving `{$start}`/`{$end}` as the cited range's first and last line; trailing bare line numbers after the first range may stay plain text. A single line renders as `#L{n}` (no range).
 
 #### finding_block_note
 
@@ -96,7 +96,7 @@ Each field MUST be separated by a blank line (double newline) so that markdown r
 
 #### affected_files_hyperlink
 
-Every source reference in `**Affected Files:**` MUST be a markdown hyperlink to the exact file and line range in the target repository at the audited commit, so a reviewer is one click from the reviewed code. Construct `{source_blob_base}` as `https://github.com/{org}/{repo}/blob/{target_commit}`, where `{org}/{repo}` is the target submodule's GitHub remote (from `git remote get-url origin` in `{target_path}`, normalised from SSH/HTTPS to `github.com/{org}/{repo}`) and `{target_commit}` is the audited revision recorded at scope-setup. Pin the links to `{target_commit}` — never to a mutable branch — so they always resolve to the reviewed source.
+Every source reference in `**Affected Files:**` MUST be a markdown hyperlink to the exact file and line range in the target repository at the audited commit, so a reviewer is one click from the reviewed code. Construct `{$source_blob_base}` as `https://github.com/{$org}/{$repo}/blob/{target_commit}`, where `{org}/{repo}` is the target submodule's GitHub remote (from `git remote get-url origin` in `{target_path}`, normalised from SSH/HTTPS to `github.com/{org}/{repo}`) and `{target_commit}` is the audited revision recorded at scope-setup. Pin the links to `{target_commit}` — never to a mutable branch — so they always resolve to the reviewed source.
 
 ## Rules
 
