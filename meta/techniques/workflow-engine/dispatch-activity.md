@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -57,3 +57,7 @@ Workflow orchestrators NEVER call `get_activity`. The activity definition is the
 ### no-pre-load-techniques
 
 NEVER call `get_technique` to pre-load techniques for the worker. `get_activity` bundles only the activity's cross-cutting operations (strategy and core-worker techniques); the worker then loads each step's bound operation on demand via `get_technique { session_index, step_id }` — progressively, one per step as it reaches it. Pre-fetching step techniques from the orchestrator duplicates that work and defeats the progressive disclosure that step-level binding exists to provide.
+
+### workers-need-full-delivery
+
+Dispatched workers are fresh contexts with no prior deliveries. Leave a worker-dispatched session in its default (`fresh`) delivery mode — never set `context_mode: "persistent"` on it, and never instruct a worker to pass `bundle: "reference"`: an unchanged-reference points at content the new worker has never received. Reference delivery is reserved for the solo topology where one agent context executes every activity itself.
