@@ -325,16 +325,10 @@ function parseInputsSection(section: Section | undefined): IndexParse['inputs'] 
   const result: NonNullable<IndexParse['inputs']> = [];
   for (const item of items) {
     const { description, components, reserved } = parseEntrySubsections(item.body, 'default');
-    const entry: { id: string; description?: string; required?: boolean; components?: Record<string, string>; default?: string } = { id: item.title };
-    let desc = description;
-    if (desc) {
-      const optionalMatch = desc.match(/^\*?\(?\s*optional\s*\)?\*?\s*/i);
-      if (optionalMatch) {
-        entry.required = false;
-        desc = desc.slice(optionalMatch[0].length).trim() || undefined;
-      }
-    }
-    if (desc) entry.description = desc;
+    const entry: { id: string; description?: string; components?: Record<string, string>; default?: string } = { id: item.title };
+    // A leading "(optional)" stays in the description prose — optionality is conveyed at the
+    // point of use, not synthesized into a flag (the retired `required` field was never enforced).
+    if (description) entry.description = description;
     if (components) entry.components = components;
     if (reserved !== undefined) entry.default = reserved;
     result.push(entry);
