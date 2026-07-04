@@ -18,6 +18,8 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
 
    Omit `planning_folder` for the meta bootstrap when the slug isn't known yet: the server mints a transitional slug from a UUID and parks the session in `os.tmpdir()`, and `dispatch_child` later supplies the real slug and promotes the session to its workspace folder.
 
+   `context_mode` declares the session's delivery context model, decided by execution topology. The default (omit, or `"fresh"`) delivers full content on every call and is correct whenever activities are dispatched to spawned workers ([dispatch-activity](../techniques/workflow-engine/dispatch-activity.md)) — each worker is a fresh context that relies on the repeated delivery. Pass `context_mode: "persistent"` only when this same agent context executes every activity itself (no worker spawning): bundle and technique content already delivered to this session then arrives as `{ unchanged: true, content_hash }` references instead of being repeated, and `get_activity { bundle: "full" }` / `get_technique { full: true }` re-fetch anything this context no longer holds. `dispatch_child` accepts the same parameter for a child session, under the same test applied to the child's activities.
+
 3. `get_workflow { session_index }`. The response carries the workflow's resolved operations bundle ahead of the workflow definition (separated by `\n\n---\n\n`). Follow the operations and rules in the bundle to drive execution.
 
 Pass `session_index` on every subsequent authenticated tool call. The index is stable across the entire session — there is no token rotation, adoption, or recovery protocol for the agent to manage.
