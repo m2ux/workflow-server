@@ -56,7 +56,7 @@ variables:
     defaultValue: false
   - name: planning_folder_path
     type: string
-    description: Canonical absolute path to the client workflow's planning folder, as resolved by the server under its own workspace .engineering root. Returned by create-session/dispatch_child (and start_session on resume); the single artifact location, never composed by the agent or anchored to target_path/CWD
+    description: Canonical absolute path to the client workflow's planning folder, as resolved by the server under its own workspace .engineering root. Returned by create-session/dispatch_child (and start_session on resume); the single location for planning artifacts, never composed by the agent or anchored to target_path/CWD
   - name: client_session_index
     type: string
     description: 6-character base32 session_index for the dispatched client workflow (returned by start_session when initialize-session creates or resumes the session)
