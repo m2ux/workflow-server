@@ -8,6 +8,7 @@ import { readResourceRaw } from '../loaders/resource-loader.js';
 import { injectResolvedStepIds, techniqueName } from '../schema/activity.schema.js';
 import { withAuditLog } from '../logging.js';
 import { stringifyForResponse } from '../utils/serialization.js';
+import { contentHash, deliveredHash, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import {
   sessionIndexParam,
   assertNoActiveCheckpoint,
@@ -335,11 +336,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('get_activity', 'Load the complete activity definition for the current activity in the session. This is the worker\'s tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, rules, and technique references — everything needed to execute the activity. The activity is determined from the session state on disk, so no activity_id parameter is needed.',
+  server.tool('get_activity', 'Load the complete activity definition for the current activity in the session. This is the worker\'s tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, rules, and technique references — everything needed to execute the activity. The activity is determined from the session state on disk, so no activity_id parameter is needed. When reference delivery is active (session context_mode "persistent" or bundle: "reference"), inherited techniques/rules content already delivered to this session+agent arrives as short { unchanged: true, content_hash } markers instead of being repeated; bundle: "full" forces full delivery.',
     {
       ...sessionIndexParam,
+      bundle: z.enum(['reference', 'full']).optional().describe('Optional delivery-mode override for the inherited techniques/rules bundle. "reference" replaces bundle content already delivered to this session+agent with short { unchanged: true, content_hash } markers — only correct when THIS calling context received the earlier deliveries. "full" forces full delivery. Defaults from the session\'s context_mode ("persistent" → reference, otherwise full).'),
     },
-    withAuditLog('get_activity', withSessionStoreErrors(async ({ session_index }) => {
+    withAuditLog('get_activity', withSessionStoreErrors(async ({ session_index, bundle }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
       const { state } = loaded;
       assertNoActiveCheckpoint(state);
@@ -354,14 +356,20 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (!rawResult.success) throw new Error(`Activity not found: ${activity_id}`);
       const activityBody = injectResolvedStepIds(rawResult.value);
 
-      const next = advanceSession(state);
-      await saveSessionForTool(loaded, next);
-
       const view = sessionView(state);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       const validation = buildValidation(
         result.success ? validateWorkflowVersion(view, result.value) : null,
       );
+
+      // Reference-not-repeat delivery: active via per-call opt-in or the session's declared
+      // context mode. Full delivery stays the default — in disposable-worker topologies each
+      // call lands in a fresh context and the repeated bundle is load-bearing.
+      const referenceMode = (bundle ?? (state.contextMode === 'persistent' ? 'reference' : 'full')) === 'reference';
+      // Hashes of content delivered in full by THIS call, recorded to the session's delivery
+      // ledger. Recorded in every mode so a later per-call reference opt-in can refer back to
+      // content that was delivered under the default full mode.
+      const newDeliveries: Record<string, string> = {};
 
       // Bundle the techniques the activity references (delivered as full protocols), deduped with
       // the workflow-level techniques inherited by every activity (`techniques.activity`, injected
@@ -371,7 +379,45 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const inheritedTechRefs = result.success ? ((result.value as { techniques?: { activity?: string[] } }).techniques?.activity ?? []) : [];
       const workerTechniques = Array.from(new Set([...inheritedTechRefs, ...ownTechRefs, ...CORE_WORKER_TECHNIQUES]));
       const resolvedWorker = await resolveTechniques(workerTechniques, config.workflowDir, workflow_id);
-      const opsSection = stringifyForResponse(formatTechniqueBundle(resolvedWorker)) + '\n\n---\n\n';
+      const bundleData = formatTechniqueBundle(resolvedWorker);
+
+      // Per-technique dedup: each composed technique in the bundle is hashed individually, so an
+      // activity that introduces one new technique still receives that one in full while the
+      // inherited rest collapse to markers.
+      const bundleTechniques = bundleData['techniques'] as Record<string, unknown> | undefined;
+      if (bundleTechniques) {
+        for (const [key, body] of Object.entries(bundleTechniques)) {
+          const hash = contentHash(stringifyForResponse(body));
+          const ledgerKey = `bundle:${key}`;
+          if (referenceMode && deliveredHash(state, ledgerKey) === hash) {
+            bundleTechniques[key] = unchangedMarker(hash);
+          } else {
+            newDeliveries[ledgerKey] = hash;
+          }
+        }
+      }
+      // The rules bundle varies with the activity's own techniques, and activities alternate
+      // between rule sets across a walk — so rules entries are keyed by CONTENT (set semantics,
+      // `bundle:rules:<hash>`): any rule set this session+agent has ever received collapses,
+      // not just the most recently delivered one.
+      if (bundleData['rules'] !== undefined) {
+        const rulesHash = contentHash(stringifyForResponse(bundleData['rules']));
+        const rulesKey = `bundle:rules:${rulesHash}`;
+        if (referenceMode && deliveredHash(state, rulesKey) === rulesHash) {
+          bundleData['rules'] = unchangedMarker(rulesHash);
+        } else {
+          newDeliveries[rulesKey] = rulesHash;
+        }
+      }
+
+      const opsData = referenceMode
+        ? {
+            bundle_mode: 'reference',
+            bundle_note: 'Entries marked { unchanged: true } are byte-identical to content already delivered in this session for this agent — reuse them from your context. Re-fetch a step-bound technique with get_technique { step_id, full: true }; for inherited/core bundle entries and rules, call get_activity with bundle: "full" to re-deliver the whole bundle.',
+            ...bundleData,
+          }
+        : bundleData;
+      const opsSection = stringifyForResponse(opsData) + '\n\n---\n\n';
 
       // artifactPrefix is server-computed from the activity filename and is NOT in
       // the raw activity definition, so surface it in the header (and _meta) — the worker
@@ -397,7 +443,27 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // plus the dual-audience `rules.universal`. (`rules.workflow` are orchestrator-only.)
       const wfRules = result.success ? (result.value as { rules?: { activity?: string[]; universal?: string[] } }).rules : undefined;
       const inheritedRules = [...(wfRules?.activity ?? []), ...(wfRules?.universal ?? [])];
-      const activityRulesBlock = inheritedRules.length ? `${stringifyForResponse({ activity_rules: inheritedRules })}\n\n` : '';
+      let activityRulesBlock = '';
+      if (inheritedRules.length) {
+        const inheritedRulesHash = contentHash(stringifyForResponse(inheritedRules));
+        const inheritedRulesKey = `activity_rules:${inheritedRulesHash}`;
+        if (referenceMode && deliveredHash(state, inheritedRulesKey) === inheritedRulesHash) {
+          activityRulesBlock = `${stringifyForResponse({ activity_rules: unchangedMarker(inheritedRulesHash) })}\n\n`;
+        } else {
+          newDeliveries[inheritedRulesKey] = inheritedRulesHash;
+          activityRulesBlock = `${stringifyForResponse({ activity_rules: inheritedRules })}\n\n`;
+        }
+      }
+
+      // Persist against a FRESH load, not the snapshot captured before composition: the session
+      // store is last-writer-wins over the whole file, and composition awaits dozens of FS reads —
+      // saving the pre-composition snapshot would silently revert any concurrent write (sibling
+      // worker save, orchestrator checkpoint resolution) that landed in that window.
+      const reloaded = await loadSessionForTool(config.workspaceDir, session_index);
+      const next = advanceSession(reloaded.state, (draft) => {
+        recordDeliveries(draft, reloaded.state.agentId, newDeliveries);
+      });
+      await saveSessionForTool(reloaded, next);
 
       return {
         content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${activityRulesBlock}${activityBodyWithArtifacts}` }],

@@ -41,6 +41,8 @@ import {
 } from '../schema/session.schema.js';
 import { techniqueName, flattenActivitySteps } from '../schema/activity.schema.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
+import { stringifyForResponse } from '../utils/serialization.js';
+import { contentHash, deliveredHash, recordDeliveries } from '../utils/delivery.js';
 import { createTraceEvent } from '../trace.js';
 import { randomUUID } from 'node:crypto';
 import { basename, isAbsolute, resolve } from 'node:path';
@@ -151,10 +153,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           workflow_id: z.string().optional().describe('Optional. Target workflow ID for a fresh top-level session (e.g., "work-package"). Defaults to "meta". Ignored when the slug already resolves to an existing `session.json` (the workflow is taken from the resumed state).'),
           planning_folder: z.string().optional().describe('Optional. Absolute path whose basename is treated as the planning slug. The path part is informational — the slug is resolved against the SERVER\'s own workspace planning root, not the path you pass. Bare slugs and relative paths are rejected. When omitted, the server mints a transitional UUID slug and registers it for the meta bootstrap session.'),
           agent_id: z.string().default('orchestrator').describe('Sets the agentId field inside the session state. Distinguishes agents sharing a session in the trace. Defaults to "orchestrator" if omitted.'),
+          context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. Declares the delivery context model for the session. "persistent" opts into reference-not-repeat delivery: get_activity replaces bundle content already delivered to this session+agent with short { unchanged: true, content_hash } markers, and get_technique answers a byte-identical refetch with an unchanged-reference (full: true re-fetches). Use ONLY when a single agent context runs the whole session and retains earlier payloads in its own context. Omit (or pass "fresh") for disposable-worker topologies — every call then receives full content. On resume, a supplied value overwrites the recorded mode.'),
         })
         .strict(),
     },
-    withAuditLog('start_session', async ({ workflow_id, planning_folder, agent_id }) => {
+    withAuditLog('start_session', async ({ workflow_id, planning_folder, agent_id, context_mode }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
 
       // start_session is top-level only — it either opens an existing
@@ -266,15 +269,17 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         sessionIndex = state.sessionIndex;
         // Silently re-stamp planningFolderPath if it is missing or stale (the
         // folder was moved/renamed within the planning root since the last
-        // recorded value), and update agentId if it differs. One persist if
-        // either changed.
+        // recorded value), update agentId if it differs, and adopt a supplied
+        // context_mode. One persist if any changed.
         const pathDrift = canonicalFolder !== undefined && state.planningFolderPath !== canonicalFolder;
         const agentDrift = state.agentId !== agent_id;
-        if (pathDrift || agentDrift) {
+        const modeDrift = context_mode !== undefined && state.contextMode !== context_mode;
+        if (pathDrift || agentDrift || modeDrift) {
           state = {
             ...state,
             ...(agentDrift ? { agentId: agent_id } : {}),
             ...(pathDrift ? { planningFolderPath: canonicalFolder } : {}),
+            ...(modeDrift ? { contextMode: context_mode } : {}),
           };
           await writeSessionFile(folder, state);
         }
@@ -288,6 +293,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           workflowVersion: effectiveWorkflowVersion,
           agentId: agent_id,
           ...(canonicalFolder ? { planningFolderPath: canonicalFolder } : {}),
+          ...(context_mode ? { contextMode: context_mode } : {}),
         });
         state = newState;
         await writeSessionFile(folder, state);
@@ -346,6 +352,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         planning_slug: slug,
       };
       if (state.planningFolderPath) response['planning_folder_path'] = state.planningFolderPath;
+      if (state.contextMode) response['context_mode'] = state.contextMode;
       if (migrationResult.migrated) {
         response['migrated'] = true;
       }
@@ -370,9 +377,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         workflow_id: z.string().describe('Workflow id for the child (e.g. "work-package"). Must resolve to a workflow definition in the workflows directory.'),
         agent_id: z.string().default('worker').describe('agent_id stored on the child SessionFile. Defaults to "worker".'),
         planning_slug: z.string().optional().describe('Optional. When the parent is a transient orchestrator-bootstrap session, the slug used for the promoted workspace folder. Takes precedence over any slug registered at start_session. Ignored when the parent is already persistent (the persistent parent owns the slug).'),
+        context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. Delivery context model stored on the child SessionFile (see start_session). "persistent" activates reference-not-repeat delivery for calls against the child session; use ONLY when a single agent context executes the whole child workflow.'),
       }).strict(),
     },
-    withAuditLog('dispatch_child', withSessionStoreErrors(async ({ session_index, workflow_id, agent_id, planning_slug }) => {
+    withAuditLog('dispatch_child', withSessionStoreErrors(async ({ session_index, workflow_id, agent_id, planning_slug, context_mode }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
       const parentFolder = loaded.folderAbsPath;
       const parentIsTransient = isTransientFolder(parentFolder);
@@ -420,6 +428,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           workflowId: workflow_id,
           workflowVersion: effectiveWorkflowVersion,
           agentId: agent_id,
+          ...(context_mode ? { contextMode: context_mode } : {}),
         });
         const parentNext = advanceSession(loaded.state, (draft) => {
           draft.triggeredWorkflows.push({
@@ -459,6 +468,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         workflowId: workflow_id,
         workflowVersion: effectiveWorkflowVersion,
         agentId: agent_id,
+        ...(context_mode ? { contextMode: context_mode } : {}),
       });
       const parentNext = advanceSession(loaded.state, (draft) => {
         draft.triggeredWorkflows.push({
@@ -488,12 +498,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_technique',
-    'Load a single composed technique within the current workflow or activity. If called before next_activity (no current activity), it loads the workflow\'s first declared technique. During an activity, it resolves the technique reference from the activity definition; with step_id, it loads the technique assigned to that step; without step_id, the activity\'s first declared technique. The returned technique is fully COMPOSED: it inherits its workflow-root `techniques/TECHNIQUE.md` base contract recursively (inputs/outputs/rules merged; ancestor Initial/Final protocol blocks wrap the descendant protocol and the server renumbers) — never the meta root for a non-meta workflow. Techniques are loaded one at a time.',
+    'Load a single composed technique within the current workflow or activity. If called before next_activity (no current activity), it loads the workflow\'s first declared technique. During an activity, it resolves the technique reference from the activity definition; with step_id, it loads the technique assigned to that step; without step_id, the activity\'s first declared technique. The returned technique is fully COMPOSED: it inherits its workflow-root `techniques/TECHNIQUE.md` base contract recursively (inputs/outputs/rules merged; ancestor Initial/Final protocol blocks wrap the descendant protocol and the server renumbers) — never the meta root for a non-meta workflow. Techniques are loaded one at a time. In a session with context_mode "persistent", a refetch whose composed content is byte-identical to what this session+agent already received returns a short unchanged-reference ({ delivery: unchanged, content_hash }) instead of the full payload; pass full: true to force full content.',
     {
       ...sessionIndexParam,
       step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the activity\'s first declared technique, or the workflow\'s first declared technique if no activity is active.'),
+      full: z.boolean().optional().describe('Optional. Set true to force full content delivery even when the session\'s persistent context mode would answer a byte-identical refetch with an unchanged-reference. Use when your context no longer holds the earlier delivery (e.g. it was summarized away).'),
     },
-    withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, step_id }) => {
+    withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, step_id, full }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
       const { state } = loaded;
       const workflow_id = state.workflowId;
@@ -565,8 +576,34 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(view, wfResult.value),
       );
 
+      // Delta delivery for persistent-context sessions: a refetch whose composed
+      // content is byte-identical to what this session+agent already received
+      // returns a short unchanged-reference instead of the full payload. The
+      // ledger is keyed per agent and per technique id; `full: true` is the
+      // escape for a context that no longer holds the earlier delivery.
+      const ledgerKey = `technique:${techniqueId}`;
+      const hash = contentHash(text);
+      if (state.contextMode === 'persistent' && full !== true && deliveredHash(state, ledgerKey) === hash) {
+        const next = advanceSession(state, (draft) => {
+          draft.currentTechnique = techniqueId as string;
+        });
+        await saveSessionForTool(loaded, next);
+
+        const stub = stringifyForResponse({
+          id: techniqueId,
+          delivery: 'unchanged',
+          content_hash: hash,
+          note: 'Byte-identical to the composed technique already delivered in this session — reuse it from your context. Pass full: true to re-fetch the full content.',
+        });
+        return {
+          content: [{ type: 'text' as const, text: `session_index: ${session_index}\n\n${stub}` }],
+          _meta: { session_index, validation, delivery: 'unchanged' },
+        };
+      }
+
       const next = advanceSession(state, (draft) => {
         draft.currentTechnique = techniqueId as string;
+        recordDeliveries(draft, state.agentId, { [ledgerKey]: hash });
       });
       await saveSessionForTool(loaded, next);
 
