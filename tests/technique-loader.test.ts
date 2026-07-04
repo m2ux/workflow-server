@@ -309,6 +309,25 @@ describe('technique-loader', () => {
       }
     });
 
+    it('preserves "(optional)" description prose and emits no required flag', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(dir, 'opt.md'),
+        [...FM('opt'), '## Capability', '', 'Cap.', '', '## Inputs', '', '### maybe_input', '', '(optional) Provided only on resume.', '', '### firm_input', '', 'Always needed.', ''].join('\n'),
+        'utf-8',
+      );
+      const result = await readTechnique('opt', tempDir);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const [maybe, firm] = result.value.inputs ?? [];
+        expect(maybe?.description).toMatch(/^\(optional\) Provided only on resume/);
+        expect(maybe && 'required' in maybe).toBe(false);
+        expect(firm && 'required' in firm).toBe(false);
+        expect(projectTechniqueToYaml(result.value)).not.toContain('required:');
+      }
+    });
+
     it('rewrites technique-relative resource links to get_resource refs; leaves technique links', async () => {
       const dir = join(tempDir, 'meta', 'techniques');
       await mkdir(join(dir, 'grp'), { recursive: true });
@@ -457,17 +476,99 @@ describe('technique-loader', () => {
       const result = await composeTechnique('work', tempDir, 'wp');
       expect(result.success).toBe(true);
       if (result.success) {
-        const inputIds = result.value.inputs?.map(i => i.id) ?? [];
-        expect(inputIds).toContain('root-input');  // inherited from root
-        expect(inputIds).toContain('own-input');   // technique-local
-        expect(inputIds).toContain('shared-id');   // present exactly once
-        expect(inputIds.filter(id => id === 'shared-id').length).toBe(1);
-        // Technique-local description wins on id conflict.
+        // Technique-own entries — including the override of a root-declared id — stay under `inputs`.
+        expect(result.value.inputs?.map(i => i.id).sort()).toEqual(['own-input', 'shared-id']);
         const shared = result.value.inputs?.find(i => i.id === 'shared-id');
         expect(shared?.description).toMatch(/Technique override wins/);
-        // Outputs inherited from root (technique declares none).
-        expect(result.value.outputs?.map(o => o.id)).toContain('result');
+        // Root-contract entries arrive under the marked inherited block, with the scope note.
+        expect(result.value.inherited_inputs?.items.map(i => i.id)).toEqual(['root-input']);
+        expect(result.value.inherited_inputs?.note).toMatch(/workflow or group contract/);
+        // Outputs partition the same way: the technique declares none of its own.
+        expect(result.value.outputs).toBeUndefined();
+        expect(result.value.inherited_outputs?.items.map(o => o.id)).toEqual(['result']);
+        expect(result.value.inherited_outputs?.note).toMatch(/workflow or group contract/);
       }
+    });
+
+    it('projectTechniqueToYaml renders inherited blocks adjacent to their own sections', async () => {
+      const dir = join(tempDir, 'wp', 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(dir, 'TECHNIQUE.md'),
+        [
+          ...FM('TECHNIQUE'),
+          '## Capability', '', 'Root.', '',
+          '## Inputs', '',
+          '### root-input', '', 'Provided by the root contract.', '',
+          '## Outputs', '',
+          '### result', '', 'The outcome.', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'work.md'),
+        [
+          ...FM('work'),
+          '## Capability', '', 'Do work.', '',
+          '## Inputs', '',
+          '### own-input', '', 'Technique-local input.', '',
+          '## Protocol', '', '1. Work', '',
+          '## Outputs', '',
+          '### own-result', '', 'Own outcome.', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      const result = await composeTechnique('work', tempDir, 'wp');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const yaml = projectTechniqueToYaml(result.value);
+        const at = (key: string) => yaml.indexOf(`\n${key}:`);
+        expect(at('inputs')).toBeGreaterThan(-1);
+        expect(at('inputs')).toBeLessThan(at('inherited_inputs'));
+        expect(at('inherited_inputs')).toBeLessThan(at('protocol'));
+        expect(at('outputs')).toBeLessThan(at('inherited_outputs'));
+        expect(yaml).toContain('not specific to this technique');
+      }
+    });
+
+    it('resolveTechniques delivers group-contract inputs under inherited_inputs in the op body', async () => {
+      const dir = join(tempDir, 'wp', 'techniques');
+      await mkdir(join(dir, 'grp'), { recursive: true });
+      await writeFile(
+        join(dir, 'TECHNIQUE.md'),
+        [...FM('TECHNIQUE'), '## Capability', '', 'Root.', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'grp', 'TECHNIQUE.md'),
+        [
+          ...FM('grp'),
+          '## Capability', '', 'Group.', '',
+          '## Inputs', '',
+          '### grp-shared', '', 'Shared across the group.', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'grp', 'op.md'),
+        [
+          ...FM('op'),
+          '## Capability', '', 'An op.', '',
+          '## Inputs', '',
+          '### own-input', '', 'Op-local input.', '',
+          '## Protocol', '', '1. Work', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      const resolved = await resolveTechniques(['grp::op'], tempDir, 'wp');
+      const op = resolved.find((r) => r.type === 'technique' && r.name === 'op');
+      const body = op!.body as {
+        inputs?: Array<{ id: string }>;
+        inherited_inputs?: { note: string; items: Array<{ id: string }> };
+      };
+      expect(body.inputs?.map((i) => i.id)).toEqual(['own-input']);
+      expect(body.inherited_inputs?.items.map((i) => i.id)).toEqual(['grp-shared']);
+      expect(body.inherited_inputs?.note).toMatch(/workflow or group contract/);
     });
 
     it('composeTechnique with :: path resolves and fully composes a nested op', async () => {

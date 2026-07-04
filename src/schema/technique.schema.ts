@@ -3,8 +3,7 @@ import { SemanticVersionSchema } from './common.js';
 
 export const InputItemDefinitionSchema = z.object({
   id: z.string().describe('Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining techniques.'),
-  description: z.string().optional().describe('Human-readable description of this input'),
-  required: z.boolean().default(true).describe('Whether this input must be supplied. Defaults to true — only set to false for optional inputs.'),
+  description: z.string().optional().describe('Human-readable description of this input. Optional inputs say so in prose (a leading "(optional)"); necessity is otherwise implied by protocol use — there is no engine-enforced required flag.'),
   default: z.unknown().optional().describe('Default value when not supplied'),
   components: z.record(z.string()).optional().describe('Named sub-members of a composite input (authored as `####` sub-sections under the input). Mirrors output components.'),
 });
@@ -60,6 +59,23 @@ export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;
 export const OutputsDefinitionSchema = z.array(OutputItemDefinitionSchema).describe('What the technique produces: one or more outputs, each with required id (hyphen-delimited) and optional description and components');
 export type OutputsDefinition = z.infer<typeof OutputsDefinitionSchema>;
 
+// Delivery-only blocks, populated by the server at composition time: entries whose winning
+// definition comes from an ancestor contract (workflow-root or group TECHNIQUE.md) are delivered
+// here, partitioned out of `inputs`/`outputs`. Never authored — the markdown loader maps only the
+// canonical `## Inputs`/`## Outputs` headings, so these cannot originate from a technique file.
+
+export const InheritedInputsSchema = z.object({
+  note: z.string().describe('One-line scope note: why these inputs are shared contract context rather than specific to this technique.'),
+  items: InputsDefinitionSchema,
+}).describe('Inputs inherited from the workflow-root/group contract, delivered under a marked block distinct from the technique\'s own inputs.');
+export type InheritedInputs = z.infer<typeof InheritedInputsSchema>;
+
+export const InheritedOutputsSchema = z.object({
+  note: z.string().describe('One-line scope note: why these outputs are shared contract obligations rather than specific to this technique.'),
+  items: OutputsDefinitionSchema,
+}).describe('Outputs inherited from the workflow-root/group contract, delivered under a marked block distinct from the technique\'s own outputs.');
+export type InheritedOutputs = z.infer<typeof InheritedOutputsSchema>;
+
 // A nested technique (`<sub>.md`) validates against the same TechniqueSchema below: the markdown
 // loader parses it into the technique shape and the server delivers it like any technique.
 
@@ -69,8 +85,10 @@ export const TechniqueSchema = z.object({
   capability: z.string(),
   rules: RulesDefinitionSchema.optional(),
   inputs: InputsDefinitionSchema.optional(),
+  inherited_inputs: InheritedInputsSchema.optional(),
   protocol: ProtocolDefinitionSchema.optional(),
   outputs: OutputsDefinitionSchema.optional(),
+  inherited_outputs: InheritedOutputsSchema.optional(),
 }).strict();
 export type Technique = z.infer<typeof TechniqueSchema>;
 

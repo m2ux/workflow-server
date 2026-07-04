@@ -34,8 +34,10 @@ export function projectTechniqueToYaml(technique: Technique): string {
   ordered['version'] = technique.version;
   ordered['capability'] = technique.capability;
   if (technique.inputs !== undefined) ordered['inputs'] = technique.inputs;
+  if (technique.inherited_inputs !== undefined) ordered['inherited_inputs'] = technique.inherited_inputs;
   if (technique.protocol !== undefined) ordered['protocol'] = technique.protocol;
   if (technique.outputs !== undefined) ordered['outputs'] = technique.outputs;
+  if (technique.inherited_outputs !== undefined) ordered['inherited_outputs'] = technique.inherited_outputs;
   if (technique.rules !== undefined) ordered['rules'] = technique.rules;
   // Trail with the catch-all extension surface — anything an authoring path adds that the canonical
   // ordering above does not cover is still emitted, just at the end.
@@ -189,8 +191,10 @@ function projectTechniqueBody(t: Technique): Record<string, unknown> {
   const body: Record<string, unknown> = {};
   if (t.capability) body['capability'] = t.capability;
   if (t.inputs) body['inputs'] = t.inputs;
+  if (t.inherited_inputs) body['inherited_inputs'] = t.inherited_inputs;
   if (t.protocol) body['protocol'] = t.protocol;
   if (t.outputs) body['outputs'] = t.outputs;
+  if (t.inherited_outputs) body['inherited_outputs'] = t.inherited_outputs;
   return body;
 }
 
@@ -390,6 +394,12 @@ export async function resolveTechniques(
  *  addressable technique. */
 const ROOT_INDEX_ID = 'TECHNIQUE';
 
+/** Scope note delivered with `inherited_inputs`/`inherited_outputs`. Claims only what is always
+ *  true of contract-inherited entries — a group-contract input may still be a prior step's
+ *  output (e.g. a shared artifact), so how each value resolves is deliberately not stated here. */
+const INHERITED_SCOPE_NOTE =
+  'Declared by the workflow or group contract and shared by every technique in its scope — not specific to this technique.';
+
 /** Union two id-keyed arrays (inputs/outputs); child entries override parent entries by `id`. */
 function mergeById<T extends { id: string }>(parent: T[] | undefined, child: T[] | undefined): T[] | undefined {
   if (!parent?.length && !child?.length) return undefined;
@@ -467,6 +477,9 @@ async function loadWorkflowRoot(workflowDir: string, workflowId: string): Promis
  *   - Merges inputs/outputs/rules: ancestor provides the base, closer ancestors override,
  *     the technique itself wins (outermost-first merge, reversed so each mergeById call
  *     treats the ancestor as "parent" and the accumulated value as "child").
+ *   - Partitions the merged inputs/outputs by winning-definition provenance: the technique's
+ *     own entries stay under `inputs`/`outputs`; ancestor-contract entries are delivered under
+ *     `inherited_inputs`/`inherited_outputs` with a scope note (B2, #166).
  *   - Wraps the protocol with every ancestor's `Initial`/`Final` blocks via
  *     `wrapProtocolWithAncestors` (same full-chain order as the bundle path).
  *
@@ -512,9 +525,23 @@ async function composeLoaded(
 
   const protocol = await wrapProtocolWithAncestors(techniquesDir, pathSegments, technique.protocol);
 
+  // Partition the merged interface by winning-definition provenance (B2, #166): entries the
+  // technique declares itself (including overrides of an ancestor id) stay under
+  // `inputs`/`outputs`; entries whose winning definition came from an ancestor contract are
+  // delivered under a marked `inherited_*` block so a consumer can tell shared contract scope
+  // from the technique's own interface. Merge precedence is unchanged.
+  const ownInputIds = new Set((technique.inputs ?? []).map((i) => i.id));
+  const ownOutputIds = new Set((technique.outputs ?? []).map((o) => o.id));
+  const ownInputs = (inputs ?? []).filter((i) => ownInputIds.has(i.id));
+  const inheritedInputs = (inputs ?? []).filter((i) => !ownInputIds.has(i.id));
+  const ownOutputs = (outputs ?? []).filter((o) => ownOutputIds.has(o.id));
+  const inheritedOutputs = (outputs ?? []).filter((o) => !ownOutputIds.has(o.id));
+
   const composed: Record<string, unknown> = { ...technique };
-  if (inputs) composed['inputs'] = inputs; else delete composed['inputs'];
-  if (outputs) composed['outputs'] = outputs; else delete composed['outputs'];
+  if (ownInputs.length) composed['inputs'] = ownInputs; else delete composed['inputs'];
+  if (inheritedInputs.length) composed['inherited_inputs'] = { note: INHERITED_SCOPE_NOTE, items: inheritedInputs };
+  if (ownOutputs.length) composed['outputs'] = ownOutputs; else delete composed['outputs'];
+  if (inheritedOutputs.length) composed['inherited_outputs'] = { note: INHERITED_SCOPE_NOTE, items: inheritedOutputs };
   if (rules) composed['rules'] = rules; else delete composed['rules'];
   if (protocol) composed['protocol'] = protocol; else delete composed['protocol'];
 
