@@ -288,6 +288,22 @@
         "planningFolderPath": {
           "type": "string"
         },
+        "contextMode": {
+          "type": "string",
+          "enum": [
+            "persistent",
+            "fresh"
+          ]
+        },
+        "deliveredContent": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
         "parentSession": {}
       },
       "required": [
