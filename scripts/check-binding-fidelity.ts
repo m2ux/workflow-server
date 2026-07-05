@@ -54,7 +54,10 @@ import { readFileSync, readdirSync, existsSync, statSync, writeFileSync } from '
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { AMBIENT_CONTEXT_IDS } from '../src/utils/binding-provenance.js';
+// Convention building blocks shared with the server's provenance annotation (binding-provenance
+// is their single source of truth), so guard and server cannot drift apart on what counts as an
+// identifier, an optional input, or an ambient id.
+import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../src/utils/binding-provenance.js';
 import { resolveWorkflowsRoot } from './workflows-root.js';
 
 // Resolve paths from this file's own URL (reliable under both tsx CLI and the vitest runner,
@@ -121,9 +124,7 @@ function fileSigDetailed(p: string): DetailedSig {
     }
     if (awaitingProse && line.trim().length > 0) {
       awaitingProse = false;
-      // The corpus convention marks optionality at the head of the description, usually
-      // emphasis-wrapped: `*(optional)* ...`.
-      if (section === 'inputs' && /^[*_]{0,2}\(optional\)/i.test(line.trim())) det.inputs.get(entry)!.optional = true;
+      if (section === 'inputs' && OPTIONAL_INPUT_RE.test(line.trim())) det.inputs.get(entry)!.optional = true;
     }
   }
   return det;
@@ -285,16 +286,16 @@ type Read = { rel: string; line: number; full: string; head: string; kind: 'tech
 const reads: Read[] = [];
 function collectReads(rel: string, content: string, kind: 'technique' | 'activity'): void {
   const locals = new Set<string>();
-  // Identifier grammar admits camelCase alongside snake_case — declared ids like `issueKey` are
-  // read as `{issueKey}` and must count as reads/consumption, not fall through the collector.
-  const reIntro = /\{\$([a-zA-Z_][a-zA-Z0-9_]*)\}/g; let mi: RegExpExecArray | null;
-  while ((mi = reIntro.exec(content))) locals.add(mi[1]);
+  const reIntro = new RegExp(`\\{\\$(${IDENTIFIER_PATTERN})\\}`, 'g'); let mi: RegExpExecArray | null;
+  while ((mi = reIntro.exec(content))) locals.add(mi[1]!);
   fileLocals.set(rel, locals);
+  const reToken = new RegExp(`\\{(\\$?)(${IDENTIFIER_PATTERN}(?:\\.[a-zA-Z0-9_]+)*)\\}`, 'g');
+  const reCondVar = new RegExp(`^\\s*variable:\\s*"?(${IDENTIFIER_PATTERN}(?:\\.[a-zA-Z0-9_]+)*)"?`);
   content.split('\n').forEach((line, i) => {
-    const re = /\{(\$?)([a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z0-9_]+)*)\}/g; let m: RegExpExecArray | null;
+    const re = new RegExp(reToken.source, 'g'); let m: RegExpExecArray | null;
     while ((m = re.exec(line))) { if (m[1] === '$') continue; reads.push({ rel, line: i + 1, full: m[2], head: m[2].split('.')[0], kind }); }
     if (kind === 'activity') {
-      const cv = /^\s*variable:\s*"?([a-zA-Z_][a-zA-Z0-9_.]*)"?/.exec(line);
+      const cv = reCondVar.exec(line);
       if (cv) reads.push({ rel, line: i + 1, full: cv[1], head: cv[1].split('.')[0], kind });
     }
   });
@@ -330,8 +331,8 @@ for (const wf of allWf) {
 }
 
 /* ----------------------------- scope assembly ----------------------------- */
-const BARE_NAME_RE = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
-const VALUE_TOKEN_RE = /\{([a-zA-Z_][a-zA-Z0-9_]*)\}/g;
+const BARE_NAME_RE = new RegExp(`^${IDENTIFIER_PATTERN}$`);
+const VALUE_TOKEN_RE = new RegExp(`\\{(${IDENTIFIER_PATTERN})\\}`, 'g');
 
 /**
  * The bag names a step actually produces: its binding's remap targets, plus the bound op's own

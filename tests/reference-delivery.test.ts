@@ -480,15 +480,14 @@ describe('reference-not-repeat delivery (B1)', () => {
       return step!.id!;
     }
 
-    it('a step-bound fetch annotates every declared input with a source and carries the note', async () => {
+    it('a step-bound fetch annotates own inputs, noteworthy inherited ones, and warns on UNRESOLVED', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'codebase-comprehension');
-      const stepId = await findTechniqueStepId(idx);
+      await enterActivity(idx, 'design-philosophy');
 
       const result = await client.callTool({
         name: 'get_technique',
-        arguments: { session_index: idx, step_id: stepId },
+        arguments: { session_index: idx, step_id: 'define-problem' },
       });
       expect(result.isError).toBeFalsy();
       const text = responseText(result);
@@ -498,11 +497,27 @@ describe('reference-not-repeat delivery (B1)', () => {
         inherited_inputs?: { items: Array<{ id: string; source?: string }> };
       };
       expect(technique.provenance_note).toBeDefined();
-      const annotated = [...(technique.inputs ?? []), ...(technique.inherited_inputs?.items ?? [])];
-      expect(annotated.length).toBeGreaterThan(0);
-      for (const input of annotated) {
-        expect(input.source, `expected a source on input '${input.id}'`).toBeDefined();
+      // Own inputs are always annotated; the documented seam case resolves as authored.
+      for (const input of technique.inputs ?? []) {
+        expect(input.source, `expected a source on own input '${input.id}'`).toBeDefined();
       }
+      const own = new Map((technique.inputs ?? []).map((i) => [i.id, i.source]));
+      expect(own.get('issue_details')).toMatch(/^UNRESOLVED/);
+      expect(own.get('problem_context')).toContain('optional input');
+      // Inherited entries carry a source only where it says something the block note does not
+      // (e.g. a later-positioned producer); settled ambient constants stay bare.
+      const inherited = technique.inherited_inputs?.items ?? [];
+      expect(inherited.length).toBeGreaterThan(0);
+      expect(inherited.some((i) => i.source === undefined)).toBe(true);
+      for (const item of inherited) {
+        if (item.source !== undefined) {
+          expect(item.source).toMatch(/produced later in the workflow|step-binding/);
+        }
+      }
+      // The UNRESOLVED own input surfaces as a warn-only validation entry.
+      const validation = (result._meta as Record<string, unknown>)['validation'] as { status: string; warnings: string[] };
+      expect(validation.status).toBe('warning');
+      expect(validation.warnings.some((w) => w.includes("'issue_details'"))).toBe(true);
     });
 
     it('a fetch without step context carries no provenance', async () => {

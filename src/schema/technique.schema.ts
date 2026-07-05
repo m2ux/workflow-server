@@ -85,7 +85,7 @@ export const TechniqueSchema = z.object({
   id: z.string(),
   version: SemanticVersionSchema,
   capability: z.string(),
-  provenance_note: z.string().optional().describe('Delivery-only, populated by the server on a step-bound get_technique: explains the per-input `source:` / per-output `destination:` annotations and the output delivery mechanics. Never authored in technique files.'),
+  provenance_note: z.string().optional().describe('Delivery-only, populated by the server on a step-bound get_technique: states the output delivery mechanics that the `source:`/`destination:` annotations rely on. Never authored in technique files.'),
   rules: RulesDefinitionSchema.optional(),
   inputs: InputsDefinitionSchema.optional(),
   inherited_inputs: InheritedInputsSchema.optional(),

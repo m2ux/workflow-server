@@ -499,7 +499,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_technique',
-    'Load a single composed technique within the current workflow or activity. If called before next_activity (no current activity), it loads the workflow\'s first declared technique. During an activity, it resolves the technique reference from the activity definition; with step_id, it loads the technique assigned to that step; without step_id, the activity\'s first declared technique. The returned technique is fully COMPOSED: it inherits its workflow-root `techniques/TECHNIQUE.md` base contract recursively — never the meta root for a non-meta workflow. Contract-inherited inputs/outputs are delivered under marked `inherited_inputs`/`inherited_outputs` blocks (each with a scope note) distinct from the technique\'s own `inputs`/`outputs`; rules are merged; ancestor Initial/Final protocol blocks wrap the descendant protocol and the server renumbers. A step-bound fetch also annotates the binding seam: each declared input carries a `source:` (step-binding value, workflow variable, prior step output, declared default, or UNRESOLVED — the latter also a warn-only validation warning), each remapped output a `destination:`, and a `provenance_note` states the vocabulary and output delivery mechanics. Techniques are loaded one at a time. In a session with context_mode "persistent", a refetch whose composed content is byte-identical to what this session+agent already received returns a short unchanged-reference ({ delivery: unchanged, content_hash }) instead of the full payload; pass full: true to force full content.',
+    'Load a single composed technique within the current workflow or activity. If called before next_activity (no current activity), it loads the workflow\'s first declared technique. During an activity, it resolves the technique reference from the activity definition; with step_id, it loads the technique assigned to that step; without step_id, the activity\'s first declared technique. The returned technique is fully COMPOSED: it inherits its workflow-root `techniques/TECHNIQUE.md` base contract recursively — never the meta root for a non-meta workflow. Contract-inherited inputs/outputs are delivered under marked `inherited_inputs`/`inherited_outputs` blocks (each with a scope note) distinct from the technique\'s own `inputs`/`outputs`; rules are merged; ancestor Initial/Final protocol blocks wrap the descendant protocol and the server renumbers. A step-bound fetch also annotates the binding seam: each of the technique\'s own inputs carries a `source:` (step-binding value, workflow variable, prior step output, declared default, or UNRESOLVED — the latter also a warn-only validation warning), inherited entries carry one only where it adds to their scope note (step-binding override or a producer positioned later in the workflow), each remapped output carries a `destination:`, and a `provenance_note` states the output delivery mechanics. Annotations are static — resolved from declarations and document order — so payloads are deterministic per corpus and step. Techniques are loaded one at a time. In a session with context_mode "persistent", a refetch whose composed content is byte-identical to what this session+agent already received returns a short unchanged-reference ({ delivery: unchanged, content_hash }) instead of the full payload; pass full: true to force full content.',
     {
       ...sessionIndexParam,
       step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the activity\'s first declared technique, or the workflow\'s first declared technique if no activity is active.'),
@@ -573,11 +573,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       }
       if (!composed.success) throw composed.error;
 
-      // Binding-seam provenance (#166 B3): a step-bound fetch annotates each declared input with
-      // its resolution under the name-match convention and each remapped output with its landing
-      // name; UNRESOLVED own inputs surface as warn-only validation entries. Computed fresh per
-      // fetch (document order + the live session bag), so the annotation participates in the
-      // delivery hash below: a refetch whose provenance changed re-delivers in full.
+      // Binding-seam provenance (#166 B3): a step-bound fetch annotates its own inputs (and the
+      // noteworthy inherited ones) with their resolution under the name-match convention, and
+      // each remapped output with its landing name; UNRESOLVED own inputs surface as warn-only
+      // validation entries. Classification is static — declarations and document order — so the
+      // annotated payload is deterministic per (corpus, step) and byte-identical refetches keep
+      // collapsing under reference delivery.
       let technique = composed.value;
       const provenanceWarnings: string[] = [];
       if (boundStep?.id && state.currentActivity) {
@@ -586,7 +587,6 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           workflowDir: config.workflowDir,
           currentActivityId: state.currentActivity,
           currentStepId: boundStep.id,
-          sessionVariables: state.variables ?? {},
         });
         if (ctx) {
           const binding = typeof boundStep.technique === 'object' ? boundStep.technique : undefined;

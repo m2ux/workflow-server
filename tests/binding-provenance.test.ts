@@ -19,7 +19,6 @@ import type { TechniqueBinding } from '../src/schema/activity.schema.js';
 function makeCtx(overrides?: Partial<ProvenanceContext>): ProvenanceContext {
   return {
     declaredVariables: new Set(['target_path', 'branch_name']),
-    sessionVariables: { target_path: '/repo' },
     producers: [
       { name: 'analysis_report', via: 'output', stepId: 'gather', activityId: 'alpha', ordinal: 0 },
       { name: 'approved', via: 'checkpoint', stepId: 'confirm', activityId: 'alpha', ordinal: 1 },
@@ -35,52 +34,67 @@ const REQUIRED = { hasDefault: false, optional: false, inherited: false };
 describe('resolveInputSource', () => {
   const ctx = makeCtx();
 
-  it('resolves a set workflow variable with its live state', () => {
-    const r = resolveInputSource('target_path', ctx, undefined, REQUIRED);
-    expect(r).toEqual({ source: "workflow variable 'target_path' (set in session)", unresolved: false });
-  });
-
-  it('resolves a declared-but-unset workflow variable', () => {
-    const r = resolveInputSource('branch_name', ctx, undefined, REQUIRED);
-    expect(r).toEqual({ source: "workflow variable 'branch_name' (declared, not yet set in session)", unresolved: false });
+  it('resolves a declared workflow variable statically (no session-state claims)', () => {
+    for (const name of ['target_path', 'branch_name']) {
+      const r = resolveInputSource(name, ctx, undefined, REQUIRED);
+      expect(r.source).toBe(`workflow variable '${name}' (declared)`);
+      expect(r.unresolved).toBe(false);
+      expect(r.kind).toBe('declared');
+    }
   });
 
   it('resolves a prior step output', () => {
     const r = resolveInputSource('analysis_report', ctx, undefined, REQUIRED);
-    expect(r).toEqual({ source: "output of step 'gather' (activity 'alpha')", unresolved: false });
+    expect(r.source).toBe("output of step 'gather' (activity 'alpha')");
+    expect(r.kind).toBe('prior');
   });
 
   it('resolves a checkpoint-set variable', () => {
     const r = resolveInputSource('approved', ctx, undefined, REQUIRED);
-    expect(r).toEqual({ source: "set by checkpoint 'confirm' (activity 'alpha')", unresolved: false });
+    expect(r.source).toBe("set by checkpoint 'confirm' (activity 'alpha')");
+    expect(r.kind).toBe('prior');
   });
 
   it('reports a producer positioned after the current step as not yet available', () => {
     const r = resolveInputSource('late_value', ctx, undefined, REQUIRED);
     expect(r.unresolved).toBe(false);
+    expect(r.kind).toBe('later');
+    expect(r.source).toContain('produced later in the workflow');
+  });
+
+  it('combines a declared variable with its later producer', () => {
+    const declaredLater = makeCtx({ declaredVariables: new Set(['late_value']) });
+    const r = resolveInputSource('late_value', declaredLater, undefined, REQUIRED);
+    expect(r.kind).toBe('declared-later');
+    expect(r.source).toContain("workflow variable 'late_value' (declared;");
     expect(r.source).toContain('produced later in the workflow');
   });
 
   it('flags a required own input with no source as UNRESOLVED', () => {
     const r = resolveInputSource('nonexistent', ctx, undefined, REQUIRED);
     expect(r.unresolved).toBe(true);
+    expect(r.kind).toBe('unresolved');
     expect(r.source).toMatch(/^UNRESOLVED/);
   });
 
   it('falls back to a declared default without warning', () => {
     const r = resolveInputSource('nonexistent', ctx, undefined, { ...REQUIRED, hasDefault: true });
-    expect(r).toEqual({ source: 'declared default on the input (no session producer)', unresolved: false });
+    expect(r.source).toBe('declared default on the input (no session producer)');
+    expect(r.unresolved).toBe(false);
+    expect(r.kind).toBe('default');
   });
 
   it('treats an "(optional)" input without producer as supplied from working context', () => {
     const r = resolveInputSource('nonexistent', ctx, undefined, { ...REQUIRED, optional: true });
     expect(r.unresolved).toBe(false);
+    expect(r.kind).toBe('optional');
     expect(r.source).toContain('optional input');
   });
 
   it('treats an inherited input without producer as ambient session context', () => {
     const r = resolveInputSource('nonexistent', ctx, undefined, { ...REQUIRED, inherited: true });
     expect(r.unresolved).toBe(false);
+    expect(r.kind).toBe('inherited-ambient');
     expect(r.source).toContain('ambient session context');
   });
 
@@ -88,6 +102,7 @@ describe('resolveInputSource', () => {
     for (const id of AMBIENT_CONTEXT_IDS) {
       const r = resolveInputSource(id, ctx, undefined, REQUIRED);
       expect(r.unresolved).toBe(false);
+      expect(r.kind).toBe('ambient');
       expect(r.source).toContain('ambient context');
     }
   });
@@ -97,12 +112,15 @@ describe('resolveInputSource', () => {
       const binding: TechniqueBinding = { name: 'op', inputs: { count: 3, flag: true } };
       expect(resolveInputSource('count', ctx, binding, REQUIRED).source).toBe('step-binding literal 3');
       expect(resolveInputSource('flag', ctx, binding, REQUIRED).source).toBe('step-binding literal true');
+      expect(resolveInputSource('count', ctx, binding, REQUIRED).kind).toBe('binding');
     });
 
     it('resolves an exact {token} through the bag', () => {
       const binding: TechniqueBinding = { name: 'op', inputs: { notes: '{analysis_report}' } };
       const r = resolveInputSource('notes', ctx, binding, REQUIRED);
-      expect(r).toEqual({ source: "step-binding: output of step 'gather' (activity 'alpha')", unresolved: false });
+      expect(r.source).toBe("step-binding: output of step 'gather' (activity 'alpha')");
+      expect(r.unresolved).toBe(false);
+      expect(r.kind).toBe('binding');
     });
 
     it('flags an exact {token} with no producer', () => {
@@ -124,13 +142,14 @@ describe('resolveInputSource', () => {
     it('resolves a bare value that names a bag entry as a rename', () => {
       const binding: TechniqueBinding = { name: 'op', inputs: { notes: 'analysis_report' } };
       const r = resolveInputSource('notes', ctx, binding, REQUIRED);
-      expect(r).toEqual({ source: "step-binding: output of step 'gather' (activity 'alpha')", unresolved: false });
+      expect(r.source).toBe("step-binding: output of step 'gather' (activity 'alpha')");
     });
 
     it('reports an unmatched bare value as the literal it most likely is', () => {
       const binding: TechniqueBinding = { name: 'op', inputs: { mode: 'server-only' } };
       const r = resolveInputSource('mode', ctx, binding, REQUIRED);
-      expect(r).toEqual({ source: 'step-binding literal "server-only"', unresolved: false });
+      expect(r.source).toBe('step-binding literal "server-only"');
+      expect(r.unresolved).toBe(false);
     });
   });
 });
@@ -156,13 +175,17 @@ describe('decorateTechniqueProvenance', () => {
     ],
     inherited_inputs: {
       note: 'shared contract',
-      items: [{ id: 'unproduced_contract_input', description: 'Ambient.' }],
+      items: [
+        { id: 'unproduced_contract_input', description: 'Ambient.' },
+        { id: 'analysis_report', description: 'Settled prior producer.' },
+        { id: 'late_value', description: 'Produced later.' },
+      ],
     },
     outputs: [{ id: 'record_log', description: 'The log.' }, { id: 'record_summary' }],
   };
   const binding: TechniqueBinding = { name: 'record', outputs: { record_log: 'final_log' } };
 
-  it('annotates inputs/outputs, warns only for required own UNRESOLVED inputs, and keeps the original untouched', () => {
+  it('annotates own inputs always, inherited only where noteworthy, and warns only on own UNRESOLVED', () => {
     const ctx = makeCtx();
     const { technique: decorated, warnings } = decorateTechniqueProvenance(technique, ctx, binding, 'beta::record', 'record');
 
@@ -170,7 +193,11 @@ describe('decorateTechniqueProvenance', () => {
     expect(decorated.inputs?.[0]?.source).toBe("output of step 'gather' (activity 'alpha')");
     expect(decorated.inputs?.[1]?.source).toMatch(/^UNRESOLVED/);
     expect(decorated.inputs?.[2]?.source).toContain('optional input');
-    expect(decorated.inherited_inputs?.items[0]?.source).toContain('ambient session context');
+    // Inherited: ambient fallback and settled prior producer stay bare (the block note covers
+    // them); only the later-produced entry says something the note does not.
+    expect(decorated.inherited_inputs?.items[0]?.source).toBeUndefined();
+    expect(decorated.inherited_inputs?.items[1]?.source).toBeUndefined();
+    expect(decorated.inherited_inputs?.items[2]?.source).toContain('produced later in the workflow');
     expect(decorated.outputs?.[0]?.destination).toBe("lands as session variable 'final_log' (step-binding remap)");
     expect(decorated.outputs?.[1]?.destination).toBeUndefined();
 
@@ -239,7 +266,6 @@ describe('buildProvenanceContext', () => {
       workflowDir,
       currentActivityId: 'work',
       currentStepId: 'record',
-      sessionVariables: {},
     });
     expect(ctx).not.toBeNull();
     expect(ctx!.position).toBe(3);
@@ -263,7 +289,6 @@ describe('buildProvenanceContext', () => {
       workflowDir,
       currentActivityId: 'work',
       currentStepId: 'no-such-step',
-      sessionVariables: {},
     });
     expect(ctx).toBeNull();
   });
@@ -274,10 +299,10 @@ describe('buildProvenanceContext', () => {
       workflowDir,
       currentActivityId: 'work',
       currentStepId: 'record',
-      sessionVariables: {},
     });
     const binding: TechniqueBinding = { name: 'record', inputs: { analysis_report: '{analysis_report}' } };
     const r = resolveInputSource('analysis_report', ctx!, binding, REQUIRED);
-    expect(r).toEqual({ source: "step-binding: output of step 'gather' (activity 'work')", unresolved: false });
+    expect(r.source).toBe("step-binding: output of step 'gather' (activity 'work')");
+    expect(r.unresolved).toBe(false);
   });
 });
