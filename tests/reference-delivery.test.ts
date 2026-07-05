@@ -471,6 +471,71 @@ describe('reference-not-repeat delivery (B1)', () => {
     });
   });
 
+  describe('binding-seam provenance (B3)', () => {
+    async function findTechniqueStepId(idx: string): Promise<string> {
+      const parsed = splitActivityResponse(await getActivity(idx, { bundle: 'full' }));
+      const body = parse(parsed.bodyText) as { steps?: Array<{ id?: string; technique?: unknown }> };
+      const step = (body.steps ?? []).find(s => typeof s.technique === 'string' && s.id);
+      expect(step, 'expected a technique-bound step').toBeTruthy();
+      return step!.id!;
+    }
+
+    it('a step-bound fetch annotates own inputs, noteworthy inherited ones, and warns on UNRESOLVED', async () => {
+      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
+      const idx = session['session_index'] as string;
+      await enterActivity(idx, 'design-philosophy');
+
+      const result = await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx, step_id: 'define-problem' },
+      });
+      expect(result.isError).toBeFalsy();
+      const text = responseText(result);
+      const technique = parse(text.substring(text.indexOf('\n\n') + 2)) as {
+        provenance_note?: string;
+        inputs?: Array<{ id: string; source?: string }>;
+        inherited_inputs?: { items: Array<{ id: string; source?: string }> };
+      };
+      expect(technique.provenance_note).toBeDefined();
+      // Own inputs are always annotated; the documented seam case resolves as authored.
+      for (const input of technique.inputs ?? []) {
+        expect(input.source, `expected a source on own input '${input.id}'`).toBeDefined();
+      }
+      const own = new Map((technique.inputs ?? []).map((i) => [i.id, i.source]));
+      expect(own.get('issue_details')).toMatch(/^UNRESOLVED/);
+      expect(own.get('problem_context')).toContain('optional input');
+      // Inherited entries carry a source only where it says something the block note does not
+      // (e.g. a later-positioned producer); settled ambient constants stay bare.
+      const inherited = technique.inherited_inputs?.items ?? [];
+      expect(inherited.length).toBeGreaterThan(0);
+      expect(inherited.some((i) => i.source === undefined)).toBe(true);
+      for (const item of inherited) {
+        if (item.source !== undefined) {
+          expect(item.source).toMatch(/produced later in the workflow|step-binding/);
+        }
+      }
+      // The UNRESOLVED own input surfaces as a warn-only validation entry.
+      const validation = (result._meta as Record<string, unknown>)['validation'] as { status: string; warnings: string[] };
+      expect(validation.status).toBe('warning');
+      expect(validation.warnings.some((w) => w.includes("'issue_details'"))).toBe(true);
+    });
+
+    it('a fetch without step context carries no provenance', async () => {
+      // Pre-activity fetch of the default (meta) workflow's first declared technique —
+      // no step binding to resolve against.
+      const session = await startSession({ agent_id: 'w1' });
+      const idx = session['session_index'] as string;
+
+      const result = await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx },
+      });
+      expect(result.isError).toBeFalsy();
+      expect(responseText(result)).toContain('capability:');
+      expect(responseText(result)).not.toContain('provenance_note:');
+    });
+  });
+
   describe('context_mode on resume', () => {
     it('resuming with context_mode: "fresh" downgrades a persistent session to full delivery', async () => {
       const slug = '2026-07-03-resume-downgrade';

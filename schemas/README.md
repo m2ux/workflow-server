@@ -1262,6 +1262,8 @@ The technique schema (`technique.schema.json`) defines agent capabilities for wo
 
 A technique has `id`, `capability`, `protocol`, `rules`, and optional `inputs` and `output`. Nested techniques are individual `<sub>.md` files addressed by `::` path and are themselves techniques.
 
+Delivered techniques carry additional server-populated (never authored) fields. Composition partitions contract-inherited entries into `inherited_inputs`/`inherited_outputs` blocks (each `{ note, items }`), distinct from the technique's own `inputs`/`outputs`. A step-bound `get_technique` adds binding-seam provenance, resolved statically from declarations and document order: a `source` on each own input item stating where its value comes from under the name-match convention (step-binding value, workflow variable, prior step output, declared default, or `UNRESOLVED`), a `source` on an inherited item only where it adds to the block's scope note (a step-binding override or a later-positioned producer), a `destination` on each output item the step binding remaps (the session-bag name it lands under), and a top-level `provenance_note` stating the output delivery mechanics.
+
 ### Protocol
 
 Protocol is a single ordered list of step blocks (rendered from `## Protocol` in the markdown). Each block carries optional `title` and an ordered `steps` array. An ancestor's `Initial` protocol blocks are placed before, and its `Final` blocks after, a descendant's own protocol; the server renumbers for display. Failure handling is inline in the steps.

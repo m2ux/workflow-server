@@ -6,6 +6,7 @@ export const InputItemDefinitionSchema = z.object({
   description: z.string().optional().describe('Human-readable description of this input. Optional inputs say so in prose (a leading "(optional)"); necessity is otherwise implied by protocol use — there is no engine-enforced required flag.'),
   default: z.unknown().optional().describe('Default value when not supplied'),
   components: z.record(z.string()).optional().describe('Named sub-members of a composite input (authored as `####` sub-sections under the input). Mirrors output components.'),
+  source: z.string().optional().describe('Delivery-only, populated by the server on a step-bound get_technique: where this input\'s value comes from under the name-match convention (step-binding value, workflow variable, prior step output, declared default) or UNRESOLVED. Never authored in technique files.'),
 });
 export type InputItemDefinition = z.infer<typeof InputItemDefinitionSchema>;
 
@@ -53,6 +54,7 @@ export const OutputItemDefinitionSchema = z.object({
   description: z.string().optional().describe('Human-readable description of this output'),
   components: OutputComponentsDefinitionSchema.optional(),
   artifact: OutputArtifactSchema.optional().describe('Optional. When populated, specifies the artifact name to create when persisting this output.'),
+  destination: z.string().optional().describe('Delivery-only, populated by the server on a step-bound get_technique: the session-bag name this output lands under when the step binding remaps it. Absent otherwise — an unremapped output lands under its own id. Never authored in technique files.'),
 });
 export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;
 
@@ -83,6 +85,7 @@ export const TechniqueSchema = z.object({
   id: z.string(),
   version: SemanticVersionSchema,
   capability: z.string(),
+  provenance_note: z.string().optional().describe('Delivery-only, populated by the server on a step-bound get_technique: states the output delivery mechanics that the `source:`/`destination:` annotations rely on. Never authored in technique files.'),
   rules: RulesDefinitionSchema.optional(),
   inputs: InputsDefinitionSchema.optional(),
   inherited_inputs: InheritedInputsSchema.optional(),

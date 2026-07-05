@@ -33,6 +33,8 @@ export function projectTechniqueToYaml(technique: Technique): string {
   ordered['id'] = technique.id;
   ordered['version'] = technique.version;
   ordered['capability'] = technique.capability;
+  // Provenance note ahead of the interface it annotates, so a reader meets the vocabulary first.
+  if (technique.provenance_note !== undefined) ordered['provenance_note'] = technique.provenance_note;
   if (technique.inputs !== undefined) ordered['inputs'] = technique.inputs;
   if (technique.inherited_inputs !== undefined) ordered['inherited_inputs'] = technique.inherited_inputs;
   if (technique.protocol !== undefined) ordered['protocol'] = technique.protocol;
