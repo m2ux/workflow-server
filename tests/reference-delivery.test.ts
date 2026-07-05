@@ -471,6 +471,56 @@ describe('reference-not-repeat delivery (B1)', () => {
     });
   });
 
+  describe('binding-seam provenance (B3)', () => {
+    async function findTechniqueStepId(idx: string): Promise<string> {
+      const parsed = splitActivityResponse(await getActivity(idx, { bundle: 'full' }));
+      const body = parse(parsed.bodyText) as { steps?: Array<{ id?: string; technique?: unknown }> };
+      const step = (body.steps ?? []).find(s => typeof s.technique === 'string' && s.id);
+      expect(step, 'expected a technique-bound step').toBeTruthy();
+      return step!.id!;
+    }
+
+    it('a step-bound fetch annotates every declared input with a source and carries the note', async () => {
+      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
+      const idx = session['session_index'] as string;
+      await enterActivity(idx, 'codebase-comprehension');
+      const stepId = await findTechniqueStepId(idx);
+
+      const result = await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx, step_id: stepId },
+      });
+      expect(result.isError).toBeFalsy();
+      const text = responseText(result);
+      const technique = parse(text.substring(text.indexOf('\n\n') + 2)) as {
+        provenance_note?: string;
+        inputs?: Array<{ id: string; source?: string }>;
+        inherited_inputs?: { items: Array<{ id: string; source?: string }> };
+      };
+      expect(technique.provenance_note).toBeDefined();
+      const annotated = [...(technique.inputs ?? []), ...(technique.inherited_inputs?.items ?? [])];
+      expect(annotated.length).toBeGreaterThan(0);
+      for (const input of annotated) {
+        expect(input.source, `expected a source on input '${input.id}'`).toBeDefined();
+      }
+    });
+
+    it('a fetch without step context carries no provenance', async () => {
+      // Pre-activity fetch of the default (meta) workflow's first declared technique —
+      // no step binding to resolve against.
+      const session = await startSession({ agent_id: 'w1' });
+      const idx = session['session_index'] as string;
+
+      const result = await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx },
+      });
+      expect(result.isError).toBeFalsy();
+      expect(responseText(result)).toContain('capability:');
+      expect(responseText(result)).not.toContain('provenance_note:');
+    });
+  });
+
   describe('context_mode on resume', () => {
     it('resuming with context_mode: "fresh" downgrades a persistent session to full delivery', async () => {
       const slug = '2026-07-03-resume-downgrade';

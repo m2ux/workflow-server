@@ -1,5 +1,1110 @@
 [
   {
+    "check": "dead-output",
+    "site": "codebase-wiki/techniques/collect-scope.md",
+    "detail": "output 'ingest_scope' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "codebase-wiki/techniques/cross-link.md",
+    "detail": "output 'linked_pages' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "codebase-wiki/techniques/lint.md",
+    "detail": "output 'lint_findings' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "codebase-wiki/techniques/query.md",
+    "detail": "output 'wiki_answer' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/atlassian-operations/create-jira-issue.md",
+    "detail": "output 'issueKey' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/cargo-operations/build-dev.md",
+    "detail": "output 'build_artifacts' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/cargo-operations/build-release.md",
+    "detail": "output 'release_artifacts' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/cargo-operations/doc.md",
+    "detail": "output 'doc_artifacts' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/cargo-operations/fmt-fix.md",
+    "detail": "output 'formatted_sources' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/gitnexus-operations/complexity-signal.md",
+    "detail": "output 'complexity_signal' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/gitnexus-operations/context.md",
+    "detail": "output 'context_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/gitnexus-operations/cypher.md",
+    "detail": "output 'result_rows' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/gitnexus-operations/detect-changes.md",
+    "detail": "output 'change_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/gitnexus-operations/diagram-source-select.md",
+    "detail": "output 'diagram_source' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/gitnexus-operations/diff-coverage-map.md",
+    "detail": "output 'coverage_gaps' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/gitnexus-operations/diff-coverage-map.md",
+    "detail": "output 'update_candidates' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/gitnexus-operations/impact.md",
+    "detail": "output 'impact_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/gitnexus-operations/orphan-scan.md",
+    "detail": "output 'orphan_candidates' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/gitnexus-operations/public-api-enum.md",
+    "detail": "output 'public_api_symbols' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/gitnexus-operations/query.md",
+    "detail": "output 'query_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/gitnexus-operations/rename.md",
+    "detail": "output 'changes' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/gitnexus-operations/reversibility-signal.md",
+    "detail": "output 'reversibility_class' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/gitnexus-operations/scope-discipline-check.md",
+    "detail": "output 'scope_findings' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/gitnexus-operations/verify-index.md",
+    "detail": "output 'index_stale' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/harness-compat/spawn-concurrent.md",
+    "detail": "output 'results' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/knowledge-base-search/load-domain-index.md",
+    "detail": "output 'domain_index' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/version-control/identify-path-type.md",
+    "detail": "output 'kind' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/version-control/list-submodules.md",
+    "detail": "output 'submodules' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/workflow-engine/dispatch-activity.md",
+    "detail": "output 'trace_token' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/workflow-engine/dispatch-activity.md",
+    "detail": "output 'worker_result' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/workflow-engine/finalize-activity.md",
+    "detail": "output 'activity_result' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/workflow-engine/generate-summary.md",
+    "detail": "output 'completion_summary' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/workflow-engine/handle-sub-workflow.md",
+    "detail": "output 'child_session_index' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/workflow-engine/match-target-workflow.md",
+    "detail": "output 'match_ambiguous' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/workflow-engine/verify-outcomes.md",
+    "detail": "output 'gaps' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/workflow-engine/yield-checkpoint.md",
+    "detail": "output 'yielded_checkpoint' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "ponytail/techniques/harvest-debt.md",
+    "detail": "output 'has_debt_markers' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "ponytail/techniques/report-gain.md",
+    "detail": "output 'gain_scoreboard' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "prism-audit/techniques/compose-audit-prompt/compose-prompt.md",
+    "detail": "output 'audit_prompt_path' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "prism-evaluate/techniques/compose-evaluation-report/compile-and-present.md",
+    "detail": "output 'evaluation_metrics' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "prism-evaluate/techniques/resolve-findings/present-and-collect-per-finding.md",
+    "detail": "output 'finding_decision' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "prism-update/techniques/submit-update.md",
+    "detail": "output 'pull_request_url' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "prism/techniques/emit-run-manifest.md",
+    "detail": "output 'run_status' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "prism/techniques/subsystem-analysis/calibrate.md",
+    "detail": "output 'subsystem_assignments' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "prism/techniques/subsystem-analysis/execute.md",
+    "detail": "output 'subsystem_outputs' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "remediate-vuln/techniques/secure-submit/push-secure-commits.md",
+    "detail": "output 'pushed_branch' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "remediate-vuln/techniques/secure-submit/verify-commit-signatures.md",
+    "detail": "output 'commits_signed' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "remediate-vuln/techniques/secure-submit/verify-security-remote.md",
+    "detail": "output 'security_remote_verified' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "remediate-vuln/techniques/security-setup/configure-security-remote.md",
+    "detail": "output 'security_remote_configured' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "remediate-vuln/techniques/security-setup/present-security-overview.md",
+    "detail": "output 'security_overview' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "remediate-vuln/techniques/security-setup/verify-origin-untracked.md",
+    "detail": "output 'origin_untracked' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "remediate-vuln/techniques/strategic-review/apply-cleanup.md",
+    "detail": "output 'cleanup_commit' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "remediate-vuln/techniques/strategic-review/verify-fragment.md",
+    "detail": "output 'changes_fragment' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "requirements-refinement/techniques/validate-specification.md",
+    "detail": "output 'source_coverage_complete' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "substrate-node-security-audit/techniques/apply-checklist.md",
+    "detail": "output 'verdict_matrix' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "substrate-node-security-audit/techniques/decompose-safety-claims.md",
+    "detail": "output 'decomposition_results' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "substrate-node-security-audit/techniques/dispatch-sub-agents/collect-results.md",
+    "detail": "output 'dispatch_results' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "substrate-node-security-audit/techniques/extract-invariants.md",
+    "detail": "output 'invariant_table' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "substrate-node-security-audit/techniques/map-vulnerability-domains.md",
+    "detail": "output 'domain_map' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "substrate-node-security-audit/techniques/merge-findings.md",
+    "detail": "output 'calibration_crosscheck' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "substrate-node-security-audit/techniques/merge-findings.md",
+    "detail": "output 'observation_dispositions' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "substrate-node-security-audit/techniques/merge-findings.md",
+    "detail": "output 'reconciliation_table' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "substrate-node-security-audit/techniques/scan-storage-lifecycle.md",
+    "detail": "output 'storage_lifecycle' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "substrate-node-security-audit/techniques/search-pattern-catalog.md",
+    "detail": "output 'pattern_results' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "substrate-node-security-audit/techniques/setup-audit-target.md",
+    "detail": "output 'audit_target' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/apply-review-fixes.md",
+    "detail": "output 'applied_fixes' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/assess-ticket-completeness.md",
+    "detail": "output 'ticket_gaps_documented' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/assess-ticket-completeness.md",
+    "detail": "output 'ticket_refactor_needed' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/codebase-comprehension/revise-questions.md",
+    "detail": "output 'open_questions' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/codebase-comprehension/survey.md",
+    "detail": "output 'architecture_overview' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/codebase-comprehension/survey.md",
+    "detail": "output 'design_rationale' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/codebase-comprehension/survey.md",
+    "detail": "output 'domain_glossary' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/codebase-comprehension/survey.md",
+    "detail": "output 'key_abstractions' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/conduct-retrospective/select-next.md",
+    "detail": "output 'next_work_package_context' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/create-issue.md",
+    "detail": "output 'created_issue' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/design-philosophy/classify.md",
+    "detail": "output 'classification_rationale' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/finalize-documentation/ensure-docs.md",
+    "detail": "output 'documented_apis' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/finalize-documentation/finalize-test-plan.md",
+    "detail": "output 'finalized_test_plan' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/finalize-documentation/update-adr.md",
+    "detail": "output 'finalized_adr' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/findings-classification.md",
+    "detail": "output 'classified_findings' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/issue-reference-detection.md",
+    "detail": "output 'issue_present' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/manage-artifacts/create-readme.md",
+    "detail": "output 'created_readme' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md",
+    "detail": "output 'readme_conformance' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/manage-artifacts/write-artifact.md",
+    "detail": "output 'written_artifact' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/manage-git/artifact-commits.md",
+    "detail": "output 'artifact_commit' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/manage-git/instruct-merge-strategy.md",
+    "detail": "output 'presented_merge_guidance' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/manage-git/push-commits.md",
+    "detail": "output 'pushed_branch' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/manage-git/squash-merge.md",
+    "detail": "output 'squash_merge_commit' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/manage-git/sync-branch.md",
+    "detail": "output 'synced_branch' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/manage-git/update-reference-submodules.md",
+    "detail": "output 'refreshed_submodules' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/manage-git/verify-feature-branch.md",
+    "detail": "output 'on_feature_branch' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/plan-prepare/create-todos.md",
+    "detail": "output 'todo_tasks' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/requirements-elicitation/ask-question.md",
+    "detail": "output 'elicitation_log' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/requirements-elicitation/discuss.md",
+    "detail": "output 'has_stakeholder_input' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/requirements-elicitation/elicit.md",
+    "detail": "output 'elicitation_log' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/research/synthesize.md",
+    "detail": "output 'synthesis_assumptions' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/review-assumptions/interview.md",
+    "detail": "output 'assumption_review_presentation' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/review-baseline-state.md",
+    "detail": "output 'base_pr_diff' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/review-baseline-state.md",
+    "detail": "output 'base_sha' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/review-baseline-state.md",
+    "detail": "output 'expected_changes' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/review-mode-detection.md",
+    "detail": "output 'review_ticket_ref' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/review-summary.md",
+    "detail": "output 'review_summary' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/stakeholder-overview.md",
+    "detail": "output 'stakeholder_overview' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/strategic-review/changes-folder.md",
+    "detail": "output 'changes_fragment' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/strategic-review/verify-fragment.md",
+    "detail": "output 'fragment_references_issue' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/update-pr/mark-ready.md",
+    "detail": "output 'updated_pr' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/update-pr/push-commits.md",
+    "detail": "output 'pushed_branch' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/validate-build/analyze-failure.md",
+    "detail": "output 'root_cause' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/validate-build/apply-fix.md",
+    "detail": "output 'fix_applied' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-packages/techniques/analyze-initiative-context.md",
+    "detail": "output 'key_findings' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-packages/techniques/analyze-initiative-context.md",
+    "detail": "output 'planning_recommendation' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-packages/techniques/assess-initiative-scope.md",
+    "detail": "output 'package_count' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-packages/techniques/assess-initiative-scope.md",
+    "detail": "output 'work_packages' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-packages/techniques/document-roadmap.md",
+    "detail": "output 'timeline_estimate' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-packages/techniques/orchestrate-package-execution/execute-package.md",
+    "detail": "output 'package_planning_paths' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-packages/techniques/plan-work-package-scope/plan-package.md",
+    "detail": "output 'package_name' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-packages/techniques/prioritize-packages.md",
+    "detail": "output 'dependency_graph' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-packages/techniques/prioritize-packages.md",
+    "detail": "output 'prioritization_rationale' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "workflow-design/techniques/apply-audit-fixes.md",
+    "detail": "output 'fixes_applied' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "workflow-design/techniques/review-draft-yaml.md",
+    "detail": "output 'draft_attestation' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "workflow-design/techniques/review-draft-yaml.md",
+    "detail": "output 'reviewed_blocks' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "workflow-design/techniques/scope-audit.md",
+    "detail": "output 'scope_drift_findings' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "workflow-design/techniques/verify-high-findings.md",
+    "detail": "output 'verified_findings' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "workflow-design/techniques/yaml-authoring.md",
+    "detail": "output 'yaml_file' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "codebase-wiki :: work-package::manage-artifacts::write-artifact",
+    "detail": "own input 'artifact_prefix' has no producer in workflow 'codebase-wiki' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "meta :: version-control::initialize-folder",
+    "detail": "own input 'initiative_name' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "meta :: workflow-engine::evaluate-transition",
+    "detail": "own input 'transition_override' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "meta :: workflow-engine::extract-identifying-context",
+    "detail": "own input 'user_request' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "meta :: workflow-engine::match-target-workflow",
+    "detail": "own input 'user_request' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "prism :: meta::gitnexus-operations::verify-index",
+    "detail": "own input 'repo_name' has no producer in workflow 'prism' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "prism-audit :: meta::gitnexus-operations::analyze",
+    "detail": "own input 'force_rebuild' has no producer in workflow 'prism-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "prism-audit :: meta::workflow-engine::handle-sub-workflow",
+    "detail": "own input 'parent_session_index' has no producer in workflow 'prism-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "prism-evaluate :: meta::workflow-engine::handle-sub-workflow",
+    "detail": "own input 'parent_session_index' has no producer in workflow 'prism-evaluate' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: analyze-architecture",
+    "detail": "own input 'crate_map' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: analyze-architecture",
+    "detail": "own input 'file_inventory' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: analyze-architecture",
+    "detail": "own input 'reconnaissance_data' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: apply-checklist",
+    "detail": "own input 'checklist_source' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: apply-checklist",
+    "detail": "own input 'items' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: apply-checklist",
+    "detail": "own input 'scope_files' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: build-function-registry",
+    "detail": "own input 'source_files' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: decompose-safety-claims",
+    "detail": "own input 'pass_items' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: decompose-safety-claims",
+    "detail": "own input 'source_files' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: dispatch-sub-agents::verify-output-files",
+    "detail": "own input 'expected_output_files' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: execute-ensemble-pass",
+    "detail": "own input 'blind_spot_items' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: execute-ensemble-pass",
+    "detail": "own input 'ensemble_supplementary_files' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: extract-invariants",
+    "detail": "own input 'source_files' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: map-codebase",
+    "detail": "own input 'workspace_root' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: map-vulnerability-domains",
+    "detail": "own input 'crate_map' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: merge-findings",
+    "detail": "own input 'finding_sources' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: merge-findings",
+    "detail": "own input 'merge_strategy' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: meta::gitnexus-operations::analyze",
+    "detail": "own input 'force_rebuild' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: scan-storage-lifecycle",
+    "detail": "own input 'scan_scope' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: search-pattern-catalog",
+    "detail": "own input 'search_scope' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: setup-audit-target",
+    "detail": "own input 'user_request' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: setup-audit-target",
+    "detail": "own input 'workspace_root' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: verify-sub-agent-output",
+    "detail": "own input 'agent_results' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "substrate-node-security-audit :: verify-sub-agent-output",
+    "detail": "own input 'expected_outputs' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: assess-ticket-completeness",
+    "detail": "own input 'ticket_details' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: codebase-comprehension::deep-dive",
+    "detail": "own input 'comprehension_dir' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: codebase-comprehension::survey",
+    "detail": "own input 'comprehension_dir' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: create-issue",
+    "detail": "own input 'target_submodule' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: create-test-plan",
+    "detail": "own input 'plan_tasks' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: dco-provenance::append-task-row",
+    "detail": "own input 'task_description' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: dco-provenance::append-task-row",
+    "detail": "own input 'task_id' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: dco-provenance::record-attestation",
+    "detail": "own input 'certifier_email' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: dco-provenance::record-attestation",
+    "detail": "own input 'certifier_name' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: dco-provenance::record-attestation",
+    "detail": "own input 'legal_review_note' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: design-philosophy::classify",
+    "detail": "own input 'issue_details' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: design-philosophy::define",
+    "detail": "own input 'issue_details' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: finalize-documentation::ensure-docs",
+    "detail": "own input 'changed_files' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: finalize-documentation::finalize-test-plan",
+    "detail": "own input 'test_plan' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: findings-classification",
+    "detail": "own input 'findings_to_classify' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: implementation-analysis::analyze",
+    "detail": "own input 'target_submodule' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: issue-reference-detection",
+    "detail": "own input 'issue_request' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: manage-artifacts::create-readme",
+    "detail": "own input 'entity_context' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: manage-artifacts::write-artifact",
+    "detail": "own input 'artifact_content' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: manage-artifacts::write-artifact",
+    "detail": "own input 'artifact_prefix' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: manage-artifacts::write-artifact",
+    "detail": "own input 'bare_filename' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: manage-artifacts::write-artifact",
+    "detail": "own input 'target_dir' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: manage-git::artifact-commits",
+    "detail": "own input 'activity_name' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: manage-git::artifact-commits",
+    "detail": "own input 'branch' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: manage-git::artifact-commits",
+    "detail": "own input 'files' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: manage-git::artifact-commits",
+    "detail": "own input 'issue_key' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: manage-git::create-worktree",
+    "detail": "own input 'create_branch' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: manage-git::sync-branch",
+    "detail": "own input 'default_branch' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: meta::atlassian-operations::comment-jira-issue",
+    "detail": "own input 'commentBody' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: meta::atlassian-operations::comment-jira-issue",
+    "detail": "own input 'issueIdOrKey' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: meta::atlassian-operations::transition-jira-issue",
+    "detail": "own input 'status_transition' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: meta::cargo-operations::run-suite",
+    "detail": "own input 'features' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: meta::cargo-operations::test",
+    "detail": "own input 'test_filter' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: meta::github-cli-protocol::comment-issue",
+    "detail": "own input 'body' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: meta::github-cli-protocol::comment-issue",
+    "detail": "own input 'number' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: meta::gitnexus-operations::analyze",
+    "detail": "own input 'force_rebuild' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: meta::gitnexus-operations::detect-changes",
+    "detail": "own input 'diff_scope' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: plan-prepare::create-todos",
+    "detail": "own input 'tasks' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: plan-prepare::plan",
+    "detail": "own input 'design_philosophy' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: respond-to-pr-review",
+    "detail": "own input 'review_comments' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: review-assumptions::collect",
+    "detail": "own input 'activity_context' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: review-assumptions::collect",
+    "detail": "own input 'assumption_categories' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: review-assumptions::record",
+    "detail": "own input 'assumption_decisions' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: review-baseline-state",
+    "detail": "own input 'base_branch' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: review-code",
+    "detail": "own input 'changed_files' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: review-mode-detection",
+    "detail": "own input 'user_request' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: review-outcome-analysis",
+    "detail": "own input 'review_comments' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: review-summary",
+    "detail": "own input 'consolidated_findings' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: review-summary",
+    "detail": "own input 'review_mode_resource' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: review-test-suite",
+    "detail": "own input 'changed_files' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: stakeholder-overview",
+    "detail": "own input 'source_material' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: strategic-review::changes-folder",
+    "detail": "own input 'issue_url' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: strategic-review::review-scope",
+    "detail": "own input 'changed_files' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: strategic-review::verify-fragment",
+    "detail": "own input 'issue_url' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: summarize-architecture",
+    "detail": "own input 'changed_files' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-package :: update-pr::render",
+    "detail": "own input 'pr_template_variant' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "work-packages :: assess-initiative-scope",
+    "detail": "own input 'user_initiative_description' has no producer in workflow 'work-packages' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "workflow-design :: apply-audit-fixes",
+    "detail": "own input 'selected_findings' has no producer in workflow 'workflow-design' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "workflow-design :: meta::version-control::commit-regular-files",
+    "detail": "own input 'branch' has no producer in workflow 'workflow-design' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "workflow-design :: meta::version-control::commit-regular-files",
+    "detail": "own input 'commit_message' has no producer in workflow 'workflow-design' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "workflow-design :: meta::version-control::commit-regular-files",
+    "detail": "own input 'paths' has no producer in workflow 'workflow-design' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "workflow-design :: review-draft-yaml",
+    "detail": "own input 'drafted_files' has no producer in workflow 'workflow-design' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "workflow-design :: work-package::review-assumptions::record",
+    "detail": "own input 'assumption_decisions' has no producer in workflow 'workflow-design' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "workflow-design :: yaml-authoring",
+    "detail": "own input 'schema_type' has no producer in workflow 'workflow-design' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
     "check": "read-resolution",
     "site": "meta/techniques/cargo-operations/run-suite.md:59",
     "detail": "{failed_checks} has no producer (declared id / $-local / workflow var / set-target)"
@@ -28,6 +1133,26 @@
     "check": "read-resolution",
     "site": "meta/techniques/cargo-operations/run-suite.md:60",
     "detail": "{first_failure} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "meta/techniques/cargo-operations/run-suite.md:60",
+    "detail": "{validation_passed} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "meta/techniques/variable-binding.md:31",
+    "detail": "{current_task.crate} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "meta/techniques/variable-binding.md:21",
+    "detail": "{O} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "meta/techniques/variable-binding.md:21",
+    "detail": "{O} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
@@ -203,5 +1328,10 @@
     "check": "read-resolution",
     "site": "workflow-design/activities/09-validate-and-commit.yaml:72",
     "detail": "{total_count} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "workflow-design/techniques/audit-anti-patterns.md:23",
+    "detail": "{VAR} has no producer (declared id / $-local / workflow var / set-target)"
   }
 ]
