@@ -34,340 +34,409 @@
         "steps": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "description": "Identifier for this step within the activity. Optional only for a kind:technique step (the loader derives it from the last `::` segment of the technique name); every other kind must declare an explicit id."
-              },
-              "description": {
-                "type": "string",
-                "description": "Detailed guidance for executing this step. The canonical per-step binding is the `technique` field."
-              },
-              "technique": {
-                "anyOf": [
-                  {
-                    "type": "string"
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "const": "technique",
+                    "description": "Step-kind discriminator."
                   },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "name": {
-                        "type": "string",
-                        "description": "The `group::operation` (or bare op / `workflow::group::op`) technique reference this step invokes."
-                      },
-                      "inputs": {
-                        "type": "object",
-                        "additionalProperties": {
-                          "type": [
-                            "string",
-                            "number",
-                            "boolean"
-                          ]
-                        },
-                        "description": "Input deviations: op input id → source expression (rename of a bag variable, literal, or `{template}`). Only what differs from same-name binding or a declared default."
-                      },
-                      "outputs": {
-                        "type": "object",
-                        "additionalProperties": {
-                          "type": "string"
-                        },
-                        "description": "Output remaps: op output id → the workflow variable name its produced value lands under, when it differs from the output id."
-                      }
-                    },
-                    "required": [
-                      "name"
-                    ],
-                    "additionalProperties": false
-                  }
-                ],
-                "description": "Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps."
-              },
-              "required": {
-                "type": "boolean",
-                "default": true
-              },
-              "when": {
-                "type": "string",
-                "description": "Inline boolean expression that gates this step. Examples: \"has_saved_state == true\", \"is_monorepo == true\", \"client_workflow_completed == false\". Evaluated against current variable state at runtime."
-              },
-              "condition": {
-                "anyOf": [
-                  {
-                    "type": "object",
-                    "properties": {
-                      "type": {
-                        "type": "string",
-                        "const": "simple"
-                      },
-                      "variable": {
+                  "id": {
+                    "type": "string",
+                    "description": "Identifier for this step within the activity. Optional: the loader derives it from the last `::` segment of the technique name."
+                  },
+                  "technique": {
+                    "anyOf": [
+                      {
                         "type": "string"
                       },
-                      "operator": {
-                        "type": "string",
-                        "enum": [
-                          "==",
-                          "!=",
-                          ">",
-                          "<",
-                          ">=",
-                          "<=",
-                          "exists",
-                          "notExists"
-                        ]
-                      },
-                      "value": {
-                        "type": [
-                          "string",
-                          "number",
-                          "boolean",
-                          "null"
-                        ]
-                      }
-                    },
-                    "required": [
-                      "type",
-                      "variable",
-                      "operator"
-                    ],
-                    "additionalProperties": false
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "type": {
-                        "type": "string",
-                        "const": "and"
-                      },
-                      "conditions": {
-                        "type": "array",
-                        "items": {
-                          "$ref": "#/definitions/activity/properties/steps/items/properties/condition"
+                      {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "The `group::operation` (or bare op / `workflow::group::op`) technique reference this step invokes."
+                          },
+                          "inputs": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": [
+                                "string",
+                                "number",
+                                "boolean"
+                              ]
+                            },
+                            "description": "Input deviations: op input id → source expression (rename of a bag variable, literal, or `{template}`). Only what differs from same-name binding or a declared default."
+                          },
+                          "outputs": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "Output remaps: op output id → the workflow variable name its produced value lands under, when it differs from the output id."
+                          }
                         },
-                        "minItems": 2
+                        "required": [
+                          "name"
+                        ],
+                        "additionalProperties": false
                       }
-                    },
-                    "required": [
-                      "type",
-                      "conditions"
                     ],
-                    "additionalProperties": false
+                    "description": "Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps."
                   },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "type": {
-                        "type": "string",
-                        "const": "or"
-                      },
-                      "conditions": {
-                        "type": "array",
-                        "items": {
-                          "$ref": "#/definitions/activity/properties/steps/items/properties/condition"
-                        },
-                        "minItems": 2
-                      }
-                    },
-                    "required": [
-                      "type",
-                      "conditions"
-                    ],
-                    "additionalProperties": false
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "type": {
-                        "type": "string",
-                        "const": "not"
-                      },
-                      "condition": {
-                        "$ref": "#/definitions/activity/properties/steps/items/properties/condition"
-                      }
-                    },
-                    "required": [
-                      "type",
-                      "condition"
-                    ],
-                    "additionalProperties": false
-                  }
-                ],
-                "description": "LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons."
-              },
-              "actions": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "action": {
-                      "type": "string",
-                      "enum": [
-                        "log",
-                        "validate",
-                        "set",
-                        "emit",
-                        "message"
-                      ]
-                    },
-                    "target": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "value": {},
-                    "description": {
-                      "type": "string",
-                      "description": "Human-readable description of what this action does"
-                    },
-                    "condition": {
-                      "$ref": "#/definitions/activity/properties/steps/items/properties/condition",
-                      "description": "Condition that must be true for this action to execute"
-                    }
-                  },
-                  "required": [
-                    "action"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "triggers": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "workflow": {
-                      "type": "string",
-                      "description": "ID of the workflow to trigger"
-                    },
-                    "description": {
-                      "type": "string",
-                      "description": "Description of when/why this workflow is triggered"
-                    },
-                    "passContext": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "description": "Context variables to pass to the triggered workflow"
-                    }
-                  },
-                  "required": [
-                    "workflow"
-                  ],
-                  "additionalProperties": false
-                },
-                "description": "Workflows to trigger from this step"
-              },
-              "kind": {
-                "type": "string",
-                "enum": [
-                  "technique",
-                  "action",
-                  "checkpoint",
-                  "loop"
-                ],
-                "description": "Step-kind discriminator for the unified ordered-steps model. Required on every step."
-              },
-              "message": {
-                "type": "string",
-                "description": "kind:checkpoint — message presented to the user."
-              },
-              "options": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "label": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "type": "string"
-                    },
-                    "effect": {
+                  "actions": {
+                    "type": "array",
+                    "items": {
                       "type": "object",
                       "properties": {
-                        "setVariable": {
-                          "type": "object",
-                          "additionalProperties": {}
-                        },
-                        "transitionTo": {
+                        "action": {
                           "type": "string",
-                          "description": "Activity ID to transition to"
+                          "enum": [
+                            "log",
+                            "validate",
+                            "set",
+                            "emit",
+                            "message"
+                          ]
                         },
-                        "skipActivities": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "description": "Activity IDs to skip"
+                        "target": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "value": {},
+                        "description": {
+                          "type": "string",
+                          "description": "Human-readable description of what this action does"
+                        },
+                        "condition": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "const": "simple"
+                                },
+                                "variable": {
+                                  "type": "string"
+                                },
+                                "operator": {
+                                  "type": "string",
+                                  "enum": [
+                                    "==",
+                                    "!=",
+                                    ">",
+                                    "<",
+                                    ">=",
+                                    "<=",
+                                    "exists",
+                                    "notExists"
+                                  ]
+                                },
+                                "value": {
+                                  "type": [
+                                    "string",
+                                    "number",
+                                    "boolean",
+                                    "null"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "type",
+                                "variable",
+                                "operator"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "const": "and"
+                                },
+                                "conditions": {
+                                  "type": "array",
+                                  "items": {
+                                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                  },
+                                  "minItems": 2
+                                }
+                              },
+                              "required": [
+                                "type",
+                                "conditions"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "const": "or"
+                                },
+                                "conditions": {
+                                  "type": "array",
+                                  "items": {
+                                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                  },
+                                  "minItems": 2
+                                }
+                              },
+                              "required": [
+                                "type",
+                                "conditions"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "const": "not"
+                                },
+                                "condition": {
+                                  "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                }
+                              },
+                              "required": [
+                                "type",
+                                "condition"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ],
+                          "description": "Condition that must be true for this action to execute"
                         }
                       },
+                      "required": [
+                        "action"
+                      ],
                       "additionalProperties": false
                     }
                   },
-                  "required": [
-                    "id",
-                    "label"
-                  ],
-                  "additionalProperties": false
+                  "when": {
+                    "type": "string",
+                    "description": "Inline boolean expression that gates this step. Examples: \"has_saved_state == true\", \"is_monorepo == true\", \"client_workflow_completed == false\". Evaluated against current variable state at runtime."
+                  },
+                  "condition": {
+                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
+                    "description": "LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons."
+                  },
+                  "required": {
+                    "type": "boolean",
+                    "const": false,
+                    "description": "Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64)."
+                  }
                 },
-                "description": "kind:checkpoint — decision options with effects."
-              },
-              "defaultOption": {
-                "type": "string",
-                "description": "kind:checkpoint — option auto-selected when autoAdvanceMs elapses."
-              },
-              "autoAdvanceMs": {
-                "type": "integer",
-                "exclusiveMinimum": 0,
-                "description": "kind:checkpoint — ms before auto-selecting defaultOption."
-              },
-              "blocking": {
-                "type": "boolean",
-                "description": "kind:checkpoint — true requires explicit user selection (no auto-advance)."
-              },
-              "loopType": {
-                "type": "string",
-                "enum": [
-                  "forEach",
-                  "while",
-                  "doWhile"
+                "required": [
+                  "kind",
+                  "technique"
                 ],
-                "description": "kind:loop — iteration type."
+                "additionalProperties": false
               },
-              "variable": {
-                "type": "string",
-                "description": "kind:loop — current-item variable bound each iteration."
-              },
-              "over": {
-                "type": "string",
-                "description": "kind:loop — collection expression iterated by a forEach loop."
-              },
-              "breakCondition": {
-                "$ref": "#/definitions/activity/properties/steps/items/properties/condition",
-                "description": "kind:loop — early-exit condition evaluated each iteration."
-              },
-              "maxIterations": {
-                "type": "integer",
-                "exclusiveMinimum": 0,
-                "description": "kind:loop — safety bound on iteration count."
-              },
-              "steps": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/activity/properties/steps/items"
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "const": "action",
+                    "description": "Step-kind discriminator."
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "Identifier for this step within the activity."
+                  },
+                  "actions": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items"
+                    },
+                    "description": "Control actions; may be empty for marker steps."
+                  },
+                  "when": {
+                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/when"
+                  },
+                  "condition": {
+                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/condition"
+                  },
+                  "required": {
+                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/required"
+                  }
                 },
-                "description": "kind:loop — the loop body, a nested ordered list of steps."
+                "required": [
+                  "kind",
+                  "id"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "const": "checkpoint",
+                    "description": "Step-kind discriminator."
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "Identifier for this step within the activity; the stable checkpoint-response replay key."
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Message presented to the user."
+                  },
+                  "options": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "effect": {
+                          "type": "object",
+                          "properties": {
+                            "setVariable": {
+                              "type": "object",
+                              "additionalProperties": {}
+                            },
+                            "transitionTo": {
+                              "type": "string",
+                              "description": "Activity ID to transition to"
+                            },
+                            "skipActivities": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "description": "Activity IDs to skip"
+                            }
+                          },
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "label"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 1,
+                    "description": "Decision options with effects."
+                  },
+                  "defaultOption": {
+                    "type": "string",
+                    "description": "Option auto-selected when autoAdvanceMs elapses."
+                  },
+                  "autoAdvanceMs": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "description": "Ms before auto-selecting defaultOption."
+                  },
+                  "blocking": {
+                    "type": "boolean",
+                    "description": "True requires explicit user selection (no auto-advance)."
+                  },
+                  "when": {
+                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/when"
+                  },
+                  "condition": {
+                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/condition"
+                  },
+                  "required": {
+                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/required"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "id",
+                  "message",
+                  "options"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "const": "loop",
+                    "description": "Step-kind discriminator."
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "Identifier for this step within the activity."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Structural label for the iteration (the one step kind that carries a name)."
+                  },
+                  "loopType": {
+                    "type": "string",
+                    "enum": [
+                      "forEach",
+                      "while",
+                      "doWhile"
+                    ],
+                    "description": "Iteration type."
+                  },
+                  "variable": {
+                    "type": "string",
+                    "description": "Current-item variable bound each iteration."
+                  },
+                  "over": {
+                    "type": "string",
+                    "description": "Collection expression iterated by a forEach loop."
+                  },
+                  "breakCondition": {
+                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
+                    "description": "Early-exit condition evaluated each iteration."
+                  },
+                  "maxIterations": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "description": "Safety bound on iteration count."
+                  },
+                  "steps": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/activity/properties/steps/items"
+                    },
+                    "description": "The loop body, a nested ordered list of steps."
+                  },
+                  "when": {
+                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/when"
+                  },
+                  "condition": {
+                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/condition"
+                  },
+                  "required": {
+                    "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/required"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "id",
+                  "loopType",
+                  "steps"
+                ],
+                "additionalProperties": false
               }
-            },
-            "required": [
-              "kind"
-            ],
-            "additionalProperties": false
+            ]
           },
           "description": "Ordered, kind-tagged execution steps for this activity"
         },
@@ -397,7 +466,7 @@
                       "type": "string"
                     },
                     "condition": {
-                      "$ref": "#/definitions/activity/properties/steps/items/properties/condition"
+                      "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
                     },
                     "transitionTo": {
                       "type": "string",
@@ -436,7 +505,7 @@
                 "description": "Activity ID to transition to"
               },
               "condition": {
-                "$ref": "#/definitions/activity/properties/steps/items/properties/condition"
+                "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
               },
               "isDefault": {
                 "type": "boolean",
@@ -453,7 +522,28 @@
         "triggers": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/activity/properties/steps/items/properties/triggers/items"
+            "type": "object",
+            "properties": {
+              "workflow": {
+                "type": "string",
+                "description": "ID of the workflow to trigger"
+              },
+              "description": {
+                "type": "string",
+                "description": "Description of when/why this workflow is triggered"
+              },
+              "passContext": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Context variables to pass to the triggered workflow"
+              }
+            },
+            "required": [
+              "workflow"
+            ],
+            "additionalProperties": false
           },
           "description": "Workflows to trigger from this activity"
         },
@@ -479,28 +569,6 @@
         "artifactPrefix": {
           "type": "string",
           "description": "Numeric prefix for artifact filenames, inferred from the activity filename (e.g., \"02\" from 02-design-philosophy.yaml). Server-computed — do not set in definition files."
-        },
-        "artifacts": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "description": "Identifier of the artifact (the producing technique output id)."
-              },
-              "name": {
-                "type": "string",
-                "description": "Filename or template (supports {variable} substitution), from the technique output."
-              }
-            },
-            "required": [
-              "id",
-              "name"
-            ],
-            "additionalProperties": false
-          },
-          "description": "SERVER-COMPUTED — do NOT author. The activity's artifact contract, synthesized by get_activity from the `## Outputs` of the techniques its steps bind (the technique outputs own artifact identity, AP-43). Bare filenames are prefixed with artifactPrefix at write time."
         }
       },
       "required": [
