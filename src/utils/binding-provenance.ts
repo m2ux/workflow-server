@@ -119,23 +119,25 @@ export async function buildProvenanceContext(args: {
   for (const activity of workflow.activities ?? []) {
     for (const step of flattenActivitySteps(activity)) {
       const at = ordinal++;
-      const stepId = step.id ?? techniqueName(step.technique) ?? '?';
+      const stepId = step.id ?? (step.kind === 'technique' ? techniqueName(step.technique) : undefined) ?? '?';
       if (activity.id === currentActivityId && step.id === currentStepId) position = at;
 
       const push = (name: string, via: ProducerSite['via'], origOutputId?: string): void => {
         producers.push({ name, via, origOutputId, stepId, activityId: activity.id, ordinal: at });
       };
 
-      const binding: TechniqueBinding | undefined =
-        step.technique && typeof step.technique === 'object' ? step.technique : undefined;
-      const ref = techniqueName(step.technique);
-      if (step.kind === 'technique' && ref) {
-        const remapped = new Set(Object.keys(binding?.outputs ?? {}));
-        for (const [outputId, bagName] of Object.entries(binding?.outputs ?? {})) {
-          push(bagName, 'remap', outputId);
-        }
-        for (const outputId of await ownOutputsOf(ref, activity.id)) {
-          if (!remapped.has(outputId)) push(outputId, 'output');
+      if (step.kind === 'technique') {
+        const binding: TechniqueBinding | undefined =
+          typeof step.technique === 'object' ? step.technique : undefined;
+        const ref = techniqueName(step.technique);
+        if (ref) {
+          const remapped = new Set(Object.keys(binding?.outputs ?? {}));
+          for (const [outputId, bagName] of Object.entries(binding?.outputs ?? {})) {
+            push(bagName, 'remap', outputId);
+          }
+          for (const outputId of await ownOutputsOf(ref, activity.id)) {
+            if (!remapped.has(outputId)) push(outputId, 'output');
+          }
         }
       }
       if (step.kind === 'checkpoint') {
@@ -143,8 +145,10 @@ export async function buildProvenanceContext(args: {
           for (const name of Object.keys(option.effect?.setVariable ?? {})) push(name, 'checkpoint');
         }
       }
-      for (const action of step.actions ?? []) {
-        if (action.action === 'set' && action.target) push(action.target, 'action');
+      if (step.kind === 'technique' || step.kind === 'action') {
+        for (const action of step.actions ?? []) {
+          if (action.action === 'set' && action.target) push(action.target, 'action');
+        }
       }
       if (step.kind === 'loop' && step.variable) push(step.variable, 'loop');
     }

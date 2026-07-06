@@ -1,9 +1,17 @@
 import { z } from 'zod';
 import { ActivitySchema } from './activity.schema.js';
 import { SemanticVersionSchema } from './common.js';
+import { EXEMPT_DATA_IDS, QUALIFIED_DATA_ID_PATTERN } from './identifiers.js';
+
+// A variable name is a qualified snake_case noun phrase (AP-60: >=2 words, e.g.
+// `analysis_target`, never bare `target`), or one of the enumerated bare-word exemptions.
+export const VariableNameSchema = z.union([
+  z.string().regex(QUALIFIED_DATA_ID_PATTERN, 'a variable name is a qualified snake_case noun phrase (>=2 words, AP-60), e.g. `analysis_target`'),
+  z.enum(EXEMPT_DATA_IDS),
+]).describe('Qualified snake_case noun phrase (>=2 words, AP-60), or an enumerated bare-word exemption.');
 
 export const VariableDefinitionSchema = z.object({
-  name: z.string(),
+  name: VariableNameSchema,
   type: z.enum(['string', 'number', 'boolean', 'array', 'object']),
   description: z.string().optional(),
   defaultValue: z.unknown().optional(),

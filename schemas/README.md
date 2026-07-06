@@ -135,7 +135,6 @@ erDiagram
     Activity ||--o{ Decision : contains
     Activity ||--o{ Transition : contains
     Activity ||--o{ WorkflowTrigger : triggers
-    Activity ||--o{ Artifact : produces
     
     Step ||--o{ Action : "performs (technique/action kind)"
     Step |o--o| Condition : "gated by (when/condition)"
@@ -162,13 +161,6 @@ erDiagram
         string version
         string name
         boolean required
-    }
-    
-    Artifact {
-        string id PK
-        string name
-        string location
-        enum action
     }
     
     Step {
@@ -296,12 +288,13 @@ A unified activity defines workflow execution as a single ordered `steps[]` (eac
 | `outcome`         | string[]          | Expected outcomes on completion            |
 | `required`        | boolean           | Whether activity must be completed         |
 | `rules`           | string[]          | Activity-level execution rules             |
-| `artifacts`       | Artifact[]        | Artifacts produced or updated              |
 | `artifactPrefix`  | string            | Server-computed numeric prefix from filename |
+
+The activity object is closed: a field outside this set is a schema error. The activity's artifact contract is not a schema field — `get_activity` synthesizes it from the `## Outputs` of the techniques the activity's steps bind (each output's `#### artifact` filename, prefixed with `artifactPrefix` at write time).
 
 #### Step
 
-A step is one entry in the activity's single ordered `steps[]`. Every step carries a required `kind` discriminator that selects its shape:
+A step is one entry in the activity's single ordered `steps[]`. Every step carries a required `kind` discriminator that selects its shape. Each kind is a closed object — a field outside its declared set is a schema error (AP-64 bound-step purity: a step is a bound unit of work, so no step kind carries a `description`; guidance lives in the bound technique's protocol):
 
 - **`kind: technique`** — binds an operation via `technique` (a `group::operation` string, or `{ name, inputs?, outputs? }` when it has input deviations / output remaps); may also carry `actions`.
 - **`kind: action`** — a control-only step carrying `actions[]` (may be empty for a marker step).
@@ -316,7 +309,7 @@ Shared base fields on every kind:
 | `id`          | string   | Unique identifier within activity (stable; required on a checkpoint step — it is the replay key) |
 | `when`        | string   | Inline boolean gate — run this step or skip it |
 | `condition`   | Condition | Structured gate (legacy compat); if false, step is skipped |
-| `required`    | boolean  | Worker hint; only meaningful when `false` (marks an optional step) |
+| `required`    | `false`  | Worker hint, declared only when `false` (marks an optional step); an omitted `required` means the step is required |
 
 #### Checkpoint Step
 
@@ -413,7 +406,7 @@ A workflow variable definition.
 
 | Field          | Type    | Purpose                                          |
 | -------------- | ------- | ------------------------------------------------ |
-| `name`         | string  | Variable name                                    |
+| `name`         | string  | Qualified snake_case noun phrase (>=2 words, AP-60), or an enumerated bare-word exemption (see `src/schema/identifiers.ts`) |
 | `type`         | enum    | "string", "number", "boolean", "array", "object" |
 | `description`  | string  | Variable purpose                                 |
 | `defaultValue` | any     | Initial value                                    |

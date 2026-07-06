@@ -542,7 +542,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           const step = allSteps.find(s => s.id === step_id);
           if (step) {
             boundStep = step;
-            techniqueId = techniqueName(step.technique);
+            techniqueId = step.kind === 'technique' ? techniqueName(step.technique) : undefined;
           }
 
           if (!step && !techniqueId) {
@@ -589,7 +589,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           currentStepId: boundStep.id,
         });
         if (ctx) {
-          const binding = typeof boundStep.technique === 'object' ? boundStep.technique : undefined;
+          const binding = boundStep.kind === 'technique' && typeof boundStep.technique === 'object'
+            ? boundStep.technique
+            : undefined;
           const decorated = decorateTechniqueProvenance(technique, ctx, binding, techniqueId as string, boundStep.id);
           technique = decorated.technique;
           provenanceWarnings.push(...decorated.warnings);
