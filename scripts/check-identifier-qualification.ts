@@ -1,9 +1,11 @@
 /**
- * Identifier-qualification guard — AP-60 sub-rule (3).
+ * Identifier-qualification guard — AP-60 sub-rule (3), markdown surface.
  *
- * Every DATA identifier MUST be a qualified noun phrase, never a bare single word:
- *   - a workflow.yaml `variables[]` / `context[]` name, and
- *   - a technique's top-level I/O id — a `###` heading under `## Inputs` / `## Outputs`.
+ * Every technique top-level I/O id — a `###` heading under `## Inputs` / `## Outputs` — MUST be a
+ * qualified noun phrase, never a bare single word. YAML `variables[]` names are the schema's job:
+ * `VariableNameSchema` (src/schema/workflow.schema.ts) enforces the same rule with the same
+ * exemption list at validation time, so this guard covers only the ids that live in markdown
+ * headings, which no document schema can see.
  *
  * (`####` sub-field descriptors — e.g. the pervasive `#### artifact` filename convention — are a
  * separate, finer-grained AP-60 cleanup and are intentionally out of this guard's scope.)
@@ -12,55 +14,25 @@
  * the reader cannot tell which target or whose summary is meant. Qualify it with its
  * parent/concept (`analysis_target`, `completion_summary`, `audit_scope`).
  *
- * THREE exemptions stay bare (AP-60), enumerated in EXEMPT with their reason:
- *   (a) a plural item-noun collection — the plural already carries the "many of these" concept
- *       (`tasks`, `requirements`, `failures`);
- *   (b) an external-tool / MCP-param / JSON-schema-field mirror — the cross-boundary contract
- *       owns the spelling (`body`, `query`, `repo`, `number`);
- *   (c) a `_type` / `_mode` / `kind` discriminator — the suffix IS the head noun (an enum/mode
- *       discriminator), so the bare word is already qualified-by-concept.
+ * Exemptions live in src/schema/identifiers.ts (EXEMPT_DATA_IDS), shared with the schema so both
+ * surfaces apply one list.
  *
  * Scope: DATA identifiers only. Structural ids (activity / step / checkpoint-option ids) are
  * out of scope — they are not values bound through the variable bag.
  *
- * Hard-zero rule (no baseline): every flagged id is either fixed (qualified) or added to EXEMPT
- * with its reason. Run:
+ * Hard-zero rule (no baseline): every flagged id is either fixed (qualified) or added to
+ * EXEMPT_DATA_IDS with its reason. Run:
  *   npx tsx scripts/check-identifier-qualification.ts
  */
 import { readFileSync, readdirSync, existsSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { parseDefinition } from '../src/utils/serialization.js';
+import { EXEMPT_DATA_ID_SET as EXEMPT, isSingleWord } from '../src/schema/identifiers.js';
 import { resolveWorkflowsRoot } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree (issue #160 #1).
 const ROOT = resolveWorkflowsRoot(join(DIR, '..', 'workflows'));
-
-/** A single word: lowercase, alphanumeric, no separator (`_` or `-`). */
-const isSingleWord = (id: string): boolean => /^[a-z][a-z0-9]*$/.test(id);
-
-/**
- * Bare single-word data ids that stay bare, each by an AP-60 exemption. Keep grouped by reason.
- */
-const EXEMPT = new Set<string>([
-  // (a) plural item-noun collections — the plural carries the concept
-  'requirements', 'features', 'exclusions', 'dimensions', 'tasks', 'results',
-  'submodules', 'paths', 'fields', 'filters', 'stats', 'effects', 'substitutions',
-  'findings', 'assumptions', 'subsystems', 'transitions', 'options', 'branches',
-  'agents', 'changes', 'failures', 'items', 'files', 'gaps', 'outcomes',
-  // (b) external-tool / MCP-param / JSON-schema-field mirrors — the contract owns the spelling
-  'body', 'query', 'repo', 'owner', 'number', 'title', 'branch', 'diff', 'limit',
-  'name', 'sha', 'url', 'head', 'base', 'ref', 'labels', 'path', 'cursor',
-  'cql', 'jql', 'description', 'assignee', 'depth', 'direction', 'summary', 'state',
-  // (b') cross-workflow dispatch-contract names — the `passContext` handoff owns the spelling
-  // (renaming one side breaks the parent→child dispatch); treated like an external mirror.
-  'target',
-  // domain acronym carried as an artifact concept (Architecture Decision Record)
-  'adr',
-  // (c) _type / _mode / kind discriminators (the bare discriminator word)
-  'type', 'mode', 'kind',
-]);
 
 /**
  * Accepted pre-existing flagged ids, snapshotted in identifier-qualification-baseline.json. The guard
@@ -98,23 +70,8 @@ function scanTechniqueDir(dir: string, wf: string): void {
   }
 }
 
-function scanWorkflowVars(wf: string): void {
-  const wt = join(ROOT, wf, 'workflow.yaml');
-  if (!existsSync(wt)) return;
-  try {
-    const p = parseDefinition(readFileSync(wt, 'utf-8')) as {
-      variables?: Array<{ name?: string }>; context?: Array<{ name?: string }>;
-    };
-    for (const v of [...(p?.variables ?? []), ...(p?.context ?? [])]) {
-      const id = v?.name;
-      if (id && isSingleWord(id) && !EXEMPT.has(id)) hits.push({ id, where: `${wf}/workflow.yaml` });
-    }
-  } catch { /* structural errors are validate-workflow-yaml's job */ }
-}
-
 const workflows = readdirSync(ROOT).filter((d) => statSync(join(ROOT, d)).isDirectory());
 for (const wf of workflows) {
-  scanWorkflowVars(wf);
   scanTechniqueDir(join(ROOT, wf, 'techniques'), wf);
 }
 
