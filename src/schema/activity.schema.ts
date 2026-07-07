@@ -11,7 +11,7 @@ export type TechniquesReference = z.infer<typeof TechniquesReferenceSchema>;
 
 // Action schema
 export const ActionSchema = z.object({
-  action: z.enum(['log', 'validate', 'set', 'emit', 'message']).describe('Action verb, interpreted by the executing agent. The server has no action interpreter: `set` does not write the session variable bag (only a checkpoint option\'s setVariable effect does).'),
+  action: z.enum(['log', 'validate', 'set', 'emit', 'message']).describe('Action verb, interpreted by the executing agent. The server has no action interpreter: `set` does not write the session variable bag (only a checkpoint option\'s setVariable effect does) and is slated for removal at the next workflow-schema major (#166 B7/B12).'),
   target: z.string().optional(),
   message: z.string().optional(),
   value: z.unknown().optional(),
@@ -24,7 +24,7 @@ export type Action = z.infer<typeof ActionSchema>;
 export const WorkflowTriggerSchema = z.object({
   workflow: z.string().describe('ID of the workflow to trigger'),
   description: z.string().optional().describe('Description of when/why this workflow is triggered'),
-  passContext: z.array(z.string()).optional().describe('Context variable names the dispatching agent relays to the child workflow. The server does not copy them — a child session starts with an empty variable bag.'),
+  passContext: z.array(z.string()).optional().describe('Context variable names the dispatching agent relays to the child workflow. The server does not copy them — a child session\'s bag starts from the child workflow\'s own declared defaults, nothing more.'),
 });
 export type WorkflowTrigger = z.infer<typeof WorkflowTriggerSchema>;
 
@@ -34,7 +34,7 @@ export const CheckpointOptionSchema = z.object({
   label: z.string(),
   description: z.string().optional(),
   effect: z.object({
-    setVariable: z.record(z.unknown()).optional().describe('Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied effect.'),
+    setVariable: z.record(z.unknown()).optional().describe('Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied effect. Values are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation; `{name}` template passthroughs are exempt.'),
     transitionTo: z.string().optional().describe('Activity ID the orchestrator transitions to next via next_activity. Recorded and returned, not engine-applied: selecting the option does not itself move the session.'),
     skipActivities: z.array(z.string()).optional().describe('Activity IDs the orchestrator routes around. Recorded in session bookkeeping (`skippedActivities`) and returned, not engine-applied.'),
   }).optional(),

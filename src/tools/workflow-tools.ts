@@ -6,7 +6,8 @@ import { resolveTechniques, formatTechniqueBundle } from '../loaders/technique-l
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { injectResolvedStepIds, techniqueName } from '../schema/activity.schema.js';
-import { withAuditLog } from '../logging.js';
+import { withAuditLog, logWarn } from '../logging.js';
+import { jsonTypeOf, isTemplateReference } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import {
@@ -649,6 +650,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     'option_id: the user\'s selected option (works for all checkpoint types, enforces minimum response time). ' +
     'auto_advance: use the checkpoint\'s defaultOption (only for checkpoints with autoAdvanceMs; the server enforces the full timer). ' +
     'condition_not_met: dismiss a conditional checkpoint whose condition evaluated to false (only valid when the checkpoint has a condition field). ' +
+    'setVariable effects are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation. ' +
     'Reads the active checkpoint from state.activeCheckpoint — no separate checkpoint handle is needed.',
     {
       ...sessionIndexParam,
@@ -726,6 +728,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
+      // Declared variable types, for warn-only validation of setVariable
+      // effects (#166 B7). Values are stored as written either way; a
+      // mismatch is surfaced in _meta.validation and on the history event.
+      const declaredTypes = new Map((result.value.variables ?? []).map(v => [v.name, v.type]));
+      const typeWarnings: string[] = [];
+
       const next = advanceSession(state, (draft) => {
         delete draft.activeCheckpoint;
         const recordKey = `${active.activityId}-${checkpoint_id}`;
@@ -759,15 +767,26 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           checkpoint: checkpoint_id,
           data: { optionId: recordedOptionId },
         });
-        // Apply variable assignments to the rolled-up bag.
+        // Apply variable assignments to the rolled-up bag. Values are stored
+        // as written; a declared-type mismatch is warn-only (#166 B7).
+        // `{name}` template passthroughs are references resolved agent-side,
+        // so their string type is exempt from validation.
         if (variablesSet) {
           for (const [name, value] of Object.entries(variablesSet)) {
+            const declaredType = declaredTypes.get(name);
+            const valueType = jsonTypeOf(value);
+            const mismatch = declaredType !== undefined && !isTemplateReference(value) && valueType !== declaredType;
+            if (mismatch) {
+              typeWarnings.push(
+                `setVariable '${name}': value is ${valueType} but the variable is declared ${declaredType}; stored as written.`,
+              );
+            }
             draft.variables[name] = value;
             draft.history.push({
               timestamp: respondedAt,
               type: 'variable_set',
               activity: active.activityId,
-              data: { name, value },
+              data: { name, value, ...(mismatch ? { declaredType, valueType, typeMismatch: true } : {}) },
             });
           }
         }
@@ -787,9 +806,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       });
       await saveSessionForTool(loaded, next);
 
+      if (typeWarnings.length > 0) {
+        logWarn(`respond_checkpoint '${checkpoint_id}': setVariable type mismatch`, { session_index, warnings: typeWarnings });
+      }
+
       const view = sessionView(state);
       const validation = buildValidation(
         validateWorkflowVersion(view, result.value),
+        ...typeWarnings,
       );
 
       const responseData: Record<string, unknown> = {

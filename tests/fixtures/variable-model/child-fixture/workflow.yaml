@@ -1,0 +1,12 @@
+id: child-fixture
+version: 1.0.0
+title: Child Fixture
+description: Fixture child workflow — its own defaults must seed the embedded child bag.
+initialActivity: child-activity
+variables:
+  - name: child_ready
+    type: boolean
+    defaultValue: false
+  - name: child_label
+    type: string
+    defaultValue: seeded

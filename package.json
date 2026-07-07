@@ -21,7 +21,8 @@
     "check:activity-tech": "tsx scripts/check-activity-technique-overlap.ts",
     "check:prism-lenses": "tsx scripts/check-prism-lens-reachability.ts",
     "check:anchors": "tsx scripts/check-resource-anchors.ts",
-    "check:technique-template": "tsx scripts/check-technique-template.ts"
+    "check:technique-template": "tsx scripts/check-technique-template.ts",
+    "check:variable-model": "tsx scripts/check-variable-model.ts"
   },
   "license": "MIT",
   "devDependencies": {

@@ -1,0 +1,27 @@
+id: checkpoint-activity
+version: 1.0.0
+name: Checkpoint Activity
+description: Single checkpoint whose options exercise setVariable type validation.
+steps:
+  - kind: checkpoint
+    id: type-check
+    message: Pick an option to exercise the setVariable type validation paths.
+    options:
+      - id: matching-assignment
+        label: Matching assignment
+        description: Boolean value into a boolean variable — no warning.
+        effect:
+          setVariable:
+            review_needed: true
+      - id: mismatched-assignment
+        label: Mismatched assignment
+        description: String value into a boolean variable — warn-only, stored as written.
+        effect:
+          setVariable:
+            review_needed: "yes"
+      - id: template-assignment
+        label: Template assignment
+        description: Template passthrough into a string variable — exempt from validation.
+        effect:
+          setVariable:
+            mode_label: "{unset_marker}"

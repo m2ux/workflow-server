@@ -1,0 +1,4 @@
+id: child-activity
+version: 1.0.0
+name: Child Activity
+description: Placeholder activity so the child workflow loads.

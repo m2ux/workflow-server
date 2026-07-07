@@ -168,7 +168,8 @@
                   "variable_set",
                   "error",
                   "technique_fetched",
-                  "resource_fetched"
+                  "resource_fetched",
+                  "variables_seeded"
                 ]
               },
               "activity": {

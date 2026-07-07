@@ -1853,7 +1853,8 @@ describe('mcp-server integration', () => {
       const folderPath = join(workspaceDir, '.engineering/artifacts/planning', slug);
       const sessionFilePath = join(folderPath, 'session.json');
 
-      // 1. Fresh session — should seed workflow_started + status=running.
+      // 1. Fresh session — should seed workflow_started + variables_seeded
+      //    (work-package declares defaults, #166 B7) + status=running.
       const startResp = await client.callTool({
         name: 'start_session',
         arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(slug) },
@@ -1862,8 +1863,9 @@ describe('mcp-server integration', () => {
       const startIdx = parseToolResponse(startResp).session_index;
       let state = JSON.parse(await readFile(sessionFilePath, 'utf8'));
       expect(state.status).toBe('running');
-      expect(state.history).toHaveLength(1);
+      expect(state.history).toHaveLength(2);
       expect(state.history[0].type).toBe('workflow_started');
+      expect(state.history[1].type).toBe('variables_seeded');
       expect(state.completedActivities).toEqual([]);
 
       // 2. next_activity → activity_entered (plus activity_exited / completed

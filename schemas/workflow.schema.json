@@ -150,13 +150,13 @@
                   "array",
                   "object"
                 ],
-                "description": "Declared type, honored by agents. The server stores variable values as written, without coercion."
+                "description": "Declared type. The server validates checkpoint setVariable values against it, warn-only: a mismatch is stored as written and surfaced in _meta.validation and on the variable_set history event. Agents honor it for their own writes."
               },
               "description": {
                 "type": "string"
               },
               "defaultValue": {
-                "description": "Initial value agents assume for the variable. The server does not seed it into the session variable bag — a server-side read of an unset variable sees undefined."
+                "description": "Initial value the server seeds into the session variable bag at session creation (start_session fresh sessions and dispatch_child children), recorded as one variables_seeded history event. Do not gate a defaulted variable with exists/notExists — seeding makes the gate constant (check:variable-model enforces this)."
               },
               "required": {
                 "type": "boolean",
@@ -170,7 +170,7 @@
             ],
             "additionalProperties": false
           },
-          "description": "Workflow-level variable declarations, rendered in get_workflow for agents. The session variable bag starts empty; the server writes it only through checkpoint setVariable effects."
+          "description": "Workflow-level variable declarations, rendered in get_workflow for agents. The session variable bag is seeded from each declaration's defaultValue at session creation; thereafter the server writes it only through checkpoint setVariable effects."
         },
         "techniques": {
           "type": "object",
@@ -295,7 +295,7 @@
                                   "emit",
                                   "message"
                                 ],
-                                "description": "Action verb, interpreted by the executing agent. The server has no action interpreter: `set` does not write the session variable bag (only a checkpoint option's setVariable effect does)."
+                                "description": "Action verb, interpreted by the executing agent. The server has no action interpreter: `set` does not write the session variable bag (only a checkpoint option's setVariable effect does) and is slated for removal at the next workflow-schema major (#166 B7/B12)."
                               },
                               "target": {
                                 "type": "string"
@@ -509,7 +509,7 @@
                                   "setVariable": {
                                     "type": "object",
                                     "additionalProperties": {},
-                                    "description": "Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied effect."
+                                    "description": "Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied effect. Values are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation; `{name}` template passthroughs are exempt."
                                   },
                                   "transitionTo": {
                                     "type": "string",
@@ -734,7 +734,7 @@
                       "items": {
                         "type": "string"
                       },
-                      "description": "Context variable names the dispatching agent relays to the child workflow. The server does not copy them — a child session starts with an empty variable bag."
+                      "description": "Context variable names the dispatching agent relays to the child workflow. The server does not copy them — a child session's bag starts from the child workflow's own declared defaults, nothing more."
                     }
                   },
                   "required": [

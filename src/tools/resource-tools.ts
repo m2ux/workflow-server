@@ -41,6 +41,7 @@ import {
 } from '../schema/session.schema.js';
 import { techniqueName, flattenActivitySteps, type Step } from '../schema/activity.schema.js';
 import { buildProvenanceContext, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
+import { seedDefaults } from '../utils/variable-seed.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, recordDeliveries } from '../utils/delivery.js';
@@ -143,7 +144,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       description:
         'Start or resume the TOP-LEVEL workflow session. Identifies the planning folder via `planning_folder` — an absolute path whose basename is the slug (e.g., `/home/user/repo/.engineering/artifacts/planning/2026-05-28-my-slug` → slug `2026-05-28-my-slug`). Only the basename is consumed; the path part is a hint and is otherwise ignored, so a stale or off-workspace path passed by the agent is harmless. The server always resolves the slug against its own workspace planning root. ' +
         'Returns a 6-character base32 `session_index` for the root session, plus basic workflow metadata, plus the canonical server-side `planning_folder_path` (the absolute path of the folder under THIS server\'s workspace) — the agent can pick up the current location from this response without doing any path math. ' +
-        'Behaviour: if a folder for that slug already exists under the server\'s workspace planning root with `session.json`, the server resumes it (workflow_id taken from state — caller cannot rebrand a live session). Otherwise the folder is created (for non-meta workflows) or a transient tmp folder is used (for meta-bootstrap), and a fresh session is written. When `planning_folder` is omitted entirely, a fresh meta-bootstrap session is created in `os.tmpdir()` and a synthetic UUID slug is registered so subsequent `dispatch_child` calls can promote it. ' +
+        'Behaviour: if a folder for that slug already exists under the server\'s workspace planning root with `session.json`, the server resumes it (workflow_id taken from state — caller cannot rebrand a live session). Otherwise the folder is created (for non-meta workflows) or a transient tmp folder is used (for meta-bootstrap), and a fresh session is written with its variable bag seeded from the workflow\'s declared `defaultValue`s (recorded as a `variables_seeded` history event; resumes never re-seed). When `planning_folder` is omitted entirely, a fresh meta-bootstrap session is created in `os.tmpdir()` and a synthetic UUID slug is registered so subsequent `dispatch_child` calls can promote it. ' +
         'The full resolved absolute path is persisted as `planningFolderPath` inside session.json; on resume, if the folder has been renamed or moved within the planning root, the recorded value is silently overwritten with its current location. ' +
         'Other tools identify the session by `session_index` (returned here) — they do not need the path, because session.json carries it. ' +
         'Child workflows are not created through start_session — call `dispatch_child({ session_index, workflow_id })` from inside the parent session to append a child under `triggeredWorkflows[]` (embedded inline; the whole work-package tree lives in the top-level session.json). ' +
@@ -295,6 +296,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           agentId: agent_id,
           ...(canonicalFolder ? { planningFolderPath: canonicalFolder } : {}),
           ...(context_mode ? { contextMode: context_mode } : {}),
+          // B7 (#166): seed declared defaults into the fresh bag. Conditional
+          // on the pre-load succeeding — its failure is only surfaced further
+          // down, and an unseeded bag is the correct shape for that path.
+          ...(wfPreLoad.success ? { variables: seedDefaults(wfPreLoad.value.variables) } : {}),
         });
         state = newState;
         await writeSessionFile(folder, state);
@@ -370,7 +375,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     {
       description:
         'Dispatch a child workflow from the current session. Pass `session_index` of the parent (any depth) and `workflow_id` of the child workflow. ' +
-        'The server appends a child entry under the parent\'s `triggeredWorkflows[]` with the child\'s full SessionFile embedded inline (the entire work-package tree lives in the top-level session.json). ' +
+        'The server appends a child entry under the parent\'s `triggeredWorkflows[]` with the child\'s full SessionFile embedded inline (the entire work-package tree lives in the top-level session.json). The child\'s variable bag is seeded from the CHILD workflow\'s own declared `defaultValue`s; the parent\'s bag is untouched. ' +
         'Returns the child\'s `session_index`, which the agent threads to subsequent authenticated tool calls operating on the child, plus the canonical `planning_folder_path` — the absolute path of the planning folder under THIS server\'s workspace (the `.engineering` root supplied at init). All work-package artifacts are written under that absolute path; the agent never composes the location relative to its CWD or the target component repo. ' +
         'Special case: when the parent is a transient orchestrator-bootstrap session (e.g. meta), the parent\'s state is promoted onto disk under a stable workspace planning folder before the child is embedded. The slug is taken from (in order): the optional `planning_slug` argument; the slug registered at start_session; a `YYYY-MM-DD-<workflow-id>` fallback. The parent\'s tmp folder is discarded post-promotion, but the parent\'s session_index is retained — the orchestrator can keep using its original index to authenticate subsequent calls (it resolves to the promoted folder for the lifetime of this server process). The on-disk shape matches the persistent-parent case — parent at the top of the file, child under `triggeredWorkflows[0].state`.',
       inputSchema: z.object({
@@ -430,6 +435,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           workflowVersion: effectiveWorkflowVersion,
           agentId: agent_id,
           ...(context_mode ? { contextMode: context_mode } : {}),
+          variables: seedDefaults(wfResult.value.variables),
         });
         const parentNext = advanceSession(loaded.state, (draft) => {
           draft.triggeredWorkflows.push({
@@ -470,6 +476,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         workflowVersion: effectiveWorkflowVersion,
         agentId: agent_id,
         ...(context_mode ? { contextMode: context_mode } : {}),
+        variables: seedDefaults(wfResult.value.variables),
       });
       const parentNext = advanceSession(loaded.state, (draft) => {
         draft.triggeredWorkflows.push({

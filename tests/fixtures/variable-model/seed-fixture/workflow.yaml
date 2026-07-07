@@ -1,0 +1,25 @@
+id: seed-fixture
+version: 1.0.0
+title: Seed Fixture
+description: Fixture workflow exercising defaultValue seeding and setVariable type validation (#166 B7).
+initialActivity: checkpoint-activity
+variables:
+  - name: review_needed
+    type: boolean
+    description: Boolean default — must seed as false, not be dropped as falsy.
+    defaultValue: false
+  - name: reference_note
+    type: string
+    description: Empty-string default — must seed.
+    defaultValue: ""
+  - name: retry_count
+    type: number
+    description: Zero default — must seed.
+    defaultValue: 0
+  - name: mode_label
+    type: string
+    description: Non-empty string default.
+    defaultValue: standard
+  - name: unset_marker
+    type: string
+    description: No default — must stay absent from the seeded bag.
