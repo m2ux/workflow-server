@@ -215,6 +215,8 @@ When transitioning between activities via `next_activity`, agents include a `ste
 
 **Gated and loop-body steps:** a step gated by `when` or `condition` may be omitted from the manifest — the agent evaluated the gate and skipped the step. Loop-body step ids are accepted (one entry per iteration if useful) but never required, since the iteration count is agent-determined and may be zero. `step.required` is a worker hint the validator does not consult.
 
+**Technique-fetch fidelity:** the server records every `get_technique` fetch as a `technique_fetched` event in the session history (resolved technique id, bound `step_id` when supplied, agent — recorded on both delivery paths, so an unchanged-reference answer in persistent context mode still counts). `get_resource` fetches are recorded as `resource_fetched` events for observability only. When validating a `step_manifest`, a manifested technique step with no fetch recorded during the current activity visit warns — the step was reported complete but its composed technique content was never loaded, the silent-degradation signature. A step is covered by a step-bound fetch or by any in-activity fetch that resolved to the same technique operation, and a loop-back revisit needs its own fetches. Advisory, like the rest of the layer. See [Fidelity Observability](api-reference.md#fidelity-observability).
+
 ### Layer 6: Activity Manifest
 
 When transitioning between activities via `next_activity`, agents can include an `activity_manifest` — a structured summary of activities completed so far in the workflow.

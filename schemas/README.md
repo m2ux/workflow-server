@@ -1012,6 +1012,7 @@ The `history` array tracks all workflow events:
 - `decision_reached`, `decision_branch_taken`
 - `loop_started`, `loop_iteration`, `loop_completed`, `loop_break`
 - `variable_set`, `error`
+- `technique_fetched`, `resource_fetched` — content-fetch records appended by `get_technique` / `get_resource` (`data` carries `techniqueId` + optional `stepId`, or `resourceId`, plus `agentId`); `next_activity`'s manifest validation reads `technique_fetched` events for the warn-only technique-fetch fidelity check
 
 ---
 
