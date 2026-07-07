@@ -11,7 +11,7 @@ export type TechniquesReference = z.infer<typeof TechniquesReferenceSchema>;
 
 // Action schema
 export const ActionSchema = z.object({
-  action: z.enum(['log', 'validate', 'set', 'emit', 'message']),
+  action: z.enum(['log', 'validate', 'set', 'emit', 'message']).describe('Action verb, interpreted by the executing agent. The server has no action interpreter: `set` does not write the session variable bag (only a checkpoint option\'s setVariable effect does).'),
   target: z.string().optional(),
   message: z.string().optional(),
   value: z.unknown().optional(),
@@ -24,7 +24,7 @@ export type Action = z.infer<typeof ActionSchema>;
 export const WorkflowTriggerSchema = z.object({
   workflow: z.string().describe('ID of the workflow to trigger'),
   description: z.string().optional().describe('Description of when/why this workflow is triggered'),
-  passContext: z.array(z.string()).optional().describe('Context variables to pass to the triggered workflow'),
+  passContext: z.array(z.string()).optional().describe('Context variable names the dispatching agent relays to the child workflow. The server does not copy them — a child session starts with an empty variable bag.'),
 });
 export type WorkflowTrigger = z.infer<typeof WorkflowTriggerSchema>;
 
@@ -34,9 +34,9 @@ export const CheckpointOptionSchema = z.object({
   label: z.string(),
   description: z.string().optional(),
   effect: z.object({
-    setVariable: z.record(z.unknown()).optional(),
-    transitionTo: z.string().optional().describe('Activity ID to transition to'),
-    skipActivities: z.array(z.string()).optional().describe('Activity IDs to skip'),
+    setVariable: z.record(z.unknown()).optional().describe('Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied effect.'),
+    transitionTo: z.string().optional().describe('Activity ID the orchestrator transitions to next via next_activity. Recorded and returned, not engine-applied: selecting the option does not itself move the session.'),
+    skipActivities: z.array(z.string()).optional().describe('Activity IDs the orchestrator routes around. Recorded in session bookkeeping (`skippedActivities`) and returned, not engine-applied.'),
   }).optional(),
 });
 export type CheckpointOption = z.infer<typeof CheckpointOptionSchema>;
@@ -59,9 +59,9 @@ export type TechniqueBinding = z.infer<typeof TechniqueBindingSchema>;
 // lives in the bound technique's protocol (AP-64), so no step kind carries a `description`.
 // `required` is declared only when false — omitting it means the step is required (the default).
 const stepCommonFields = {
-  when: z.string().optional().describe('Inline boolean expression that gates this step. Examples: "has_saved_state == true", "is_monorepo == true", "client_workflow_completed == false". Evaluated against current variable state at runtime.'),
-  condition: ConditionSchema.optional().describe('LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons.'),
-  required: z.literal(false).optional().describe('Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64).'),
+  when: z.string().optional().describe('Inline boolean expression that gates this step. Examples: "has_saved_state == true", "is_monorepo == true", "client_workflow_completed == false". Evaluated by the executing agent against current variable state; the server never evaluates gates. On a checkpoint step, only `condition` (not `when`) enables condition_not_met dismissal.'),
+  condition: ConditionSchema.optional().describe('LEGACY: Structured condition that must be true for this step to execute, evaluated by the executing agent. Prefer the `when` inline expression for simple comparisons — except on a checkpoint step, where the `condition` field is what makes the checkpoint dismissible via respond_checkpoint condition_not_met.'),
+  required: z.literal(false).optional().describe('Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64). A worker hint — the server does not check it.'),
 };
 
 /**
@@ -95,7 +95,7 @@ export const CheckpointStepSchema = z.object({
   options: z.array(CheckpointOptionSchema).min(1).describe('Decision options with effects.'),
   defaultOption: z.string().optional().describe('Option auto-selected when autoAdvanceMs elapses.'),
   autoAdvanceMs: z.number().int().positive().optional().describe('Ms before auto-selecting defaultOption.'),
-  blocking: z.boolean().optional().describe('True requires explicit user selection (no auto-advance).'),
+  blocking: z.boolean().optional().describe('Orchestrator directive: true means present the checkpoint and wait for explicit user selection. Agent-honored — the server\'s auto-advance gate checks only defaultOption + autoAdvanceMs, not this field.'),
   ...stepCommonFields,
 }).strict();
 export type CheckpointStep = z.infer<typeof CheckpointStepSchema>;
@@ -110,8 +110,8 @@ export const LoopStepSchema = z.object({
   loopType: z.enum(['forEach', 'while', 'doWhile']).describe('Iteration type.'),
   variable: z.string().optional().describe('Current-item variable bound each iteration.'),
   over: z.string().optional().describe('Collection expression iterated by a forEach loop.'),
-  breakCondition: ConditionSchema.optional().describe('Early-exit condition evaluated each iteration.'),
-  maxIterations: z.number().int().positive().optional().describe('Safety bound on iteration count.'),
+  breakCondition: ConditionSchema.optional().describe('Early-exit condition, evaluated by the executing agent each iteration.'),
+  maxIterations: z.number().int().positive().optional().describe('Safety bound on iteration count, enforced by the executing agent.'),
   steps: z.array(z.lazy((): z.ZodTypeAny => StepSchema)).describe('The loop body, a nested ordered list of steps.'),
   ...stepCommonFields,
 }).strict();
@@ -256,12 +256,12 @@ export const ActivitySchema = z.object({
   steps: z.array(StepSchema).optional().describe('Ordered, kind-tagged execution steps for this activity'),
 
   // Activity-level routing (read by the orchestrator at the activity boundary, not part of the worker step sequence).
-  decisions: z.array(DecisionSchema).optional().describe('Conditional branching points'),
-  transitions: z.array(TransitionSchema).optional().describe('Navigation to other activities'),
-  triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows to trigger from this activity'),
+  decisions: z.array(DecisionSchema).optional().describe('Conditional branching points; branch conditions are evaluated by the orchestrator, not the server.'),
+  transitions: z.array(TransitionSchema).optional().describe('Navigation to other activities. Legality is validated warn-only at next_activity — an out-of-graph transition warns in _meta.validation but is not blocked.'),
+  triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows the orchestrator dispatches from this activity (via dispatch_child with an explicit workflow_id); the server does not act on trigger declarations.'),
 
   // Metadata (optional)
-  outcome: z.array(z.string()).optional().describe('Expected outcomes when activity completes successfully'),
+  outcome: z.array(z.string()).optional().describe('Expected outcomes when activity completes successfully. Advisory — the server does not reconcile them against activity_manifest outcomes.'),
   required: z.boolean().default(true).describe('Whether this activity is required in the workflow'),
   rules: z.array(z.string()).optional().describe('Activity-level rules and constraints that agents must follow'),
   artifactPrefix: z.string().optional().describe('Numeric prefix for artifact filenames, inferred from the activity filename (e.g., "02" from 02-design-philosophy.yaml). Server-computed — do not set in definition files.'),
