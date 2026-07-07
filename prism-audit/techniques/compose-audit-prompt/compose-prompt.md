@@ -1,15 +1,17 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
-  order: 6
-  legacy_id: 6
 ---
 
 ## Capability
 
 Compose the full, self-contained audit prompt document from the surveyed structure, mapped domains, trust-boundary map, and cross-cutting concerns — a five-section document readable and actionable from only the prompt and the codebase path.
+
+## Outputs
+
+### audit_prompt_path
+
+File path to the written audit prompt artifact
 
 ## Protocol
 
@@ -23,9 +25,3 @@ Compose the full, self-contained audit prompt document from the surveyed structu
 - Section 5: Output Requirements — 'Produce findings with: ID, severity (using Impact x Feasibility rubric), description, location (file:line), impact, recommendation. Organise by domain and severity.'
 - The prompt must be self-contained: readable and actionable without additional context beyond the codebase path
 - Write the completed audit prompt as its declared `audit-prompt.md` artifact into `{output_path}`; record the written path as `{audit_prompt_path}`
-
-## Outputs
-
-### audit_prompt_path
-
-File path to the written audit prompt artifact

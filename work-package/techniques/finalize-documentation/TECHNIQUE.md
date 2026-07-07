@@ -1,13 +1,7 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.2.1
-  order: 17
-  legacy_id: 17
 ---
-
-# Finalize Documentation
 
 ## Capability
 

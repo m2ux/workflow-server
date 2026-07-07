@@ -29,6 +29,36 @@ The ordered analysis units for this run — each carries its `pipeline_mode` and
 
 The run's pipeline mode, recorded so a caller knows which artifacts to expect.
 
+## Outputs
+
+### run_manifest
+
+Machine-readable manifest of the run's artifacts and completion status.
+
+#### artifact
+
+`RUN-MANIFEST.md`
+
+### run_manifest_path
+
+Full filesystem path to `RUN-MANIFEST.md`.
+
+### run_status
+
+Completion status of the run.
+
+#### complete
+
+Report, definitive findings, and every unit's expected artifacts are present.
+
+#### partial
+
+Reports exist but one or more units are missing expected artifacts.
+
+#### error
+
+REPORT.md or DEFINITIVE-FINDINGS.md is missing or empty.
+
 ## Protocol
 
 ### 1. Verify Completion
@@ -61,36 +91,6 @@ The run's pipeline mode, recorded so a caller knows which artifacts to expect.
 
   - [{artifact filename}]({artifact path})
   ```
-
-## Outputs
-
-### run_manifest
-
-Machine-readable manifest of the run's artifacts and completion status.
-
-#### artifact
-
-`RUN-MANIFEST.md`
-
-### run_manifest_path
-
-Full filesystem path to `RUN-MANIFEST.md`.
-
-### run_status
-
-Completion status of the run.
-
-#### complete
-
-Report, definitive findings, and every unit's expected artifacts are present.
-
-#### partial
-
-Reports exist but one or more units are missing expected artifacts.
-
-#### error
-
-REPORT.md or DEFINITIVE-FINDINGS.md is missing or empty.
 
 ## Rules
 

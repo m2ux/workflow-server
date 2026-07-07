@@ -1,13 +1,7 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 2.1.0
-  order: 19
-  legacy_id: 19
 ---
-
-# Conduct Retrospective
 
 ## Capability
 

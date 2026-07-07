@@ -1,7 +1,5 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
 ---
 
@@ -19,14 +17,14 @@ The reference checkout root holding the component's source. Detection runs here 
 
 Basename of the component within `{reference_path}`.
 
-## Protocol
-
-1. Inspect the component's source under `{reference_path}`/`{component_name}` (the component as it appears in the reference checkout).
-2. Check for a `Cargo.toml` with Substrate dependencies (`sp-*`, `frame-*`, `pallet-*`).
-3. Set `project_type` to `rust-substrate` when those Substrate dependencies are found, otherwise `other`.
-
 ## Outputs
 
 ### project_type
 
 Detected project type: `rust-substrate` when Substrate dependencies are present, otherwise `other`.
+
+## Protocol
+
+1. Inspect the component's source under `{reference_path}`/`{component_name}` (the component as it appears in the reference checkout).
+2. Check for a `Cargo.toml` with Substrate dependencies (`sp-*`, `frame-*`, `pallet-*`).
+3. Set `project_type` to `rust-substrate` when those Substrate dependencies are found, otherwise `other`.

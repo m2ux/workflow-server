@@ -1,13 +1,7 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 2.0.0
-  order: 15
-  legacy_id: 15
 ---
-
-# Manage Git
 
 ## Capability
 

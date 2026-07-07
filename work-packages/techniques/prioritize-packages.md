@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
-  order: 3
-  legacy_id: 3
 ---
 
 ## Capability
@@ -20,6 +16,24 @@ List of completed package [plan documents](../resources/package-plan-template.md
 ### dependency_map
 
 Inter-package dependency map describing which packages block or depend on which others
+
+## Outputs
+
+### priority_order
+
+Ordered list of work packages by execution priority, with prioritization rationale
+
+#### artifact
+
+`priority-ranking.md`
+
+### dependency_graph
+
+Dependency graph representation
+
+### prioritization_rationale
+
+Per-package rationale for the ordering
 
 ## Protocol
 
@@ -48,24 +62,6 @@ Inter-package dependency map describing which packages block or depend on which 
 - Present the `{dependency_graph}` (text or mermaid diagram)
 - Present the priority table with `{prioritization_rationale}` for the proposed order, forming `{priority_order}`
 - Note alternative orderings if multiple valid sequences exist
-
-## Outputs
-
-### priority_order
-
-Ordered list of work packages by execution priority, with prioritization rationale
-
-#### artifact
-
-`priority-ranking.md`
-
-### dependency_graph
-
-Dependency graph representation
-
-### prioritization_rationale
-
-Per-package rationale for the ordering
 
 ## Rules
 

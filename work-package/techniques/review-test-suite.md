@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 2.0.0
-  order: 1
-  legacy_id: 1
 ---
 
 ## Capability
@@ -24,6 +20,16 @@ Folder where the test suite review report is written
 ### prior_feedback_triage
 
 *(optional)* The triage of prior PR feedback, when present. Its entries tagged as reported runtime failures are the input to reported-failure triage — each is traced to a code path and state precondition here rather than re-read from the PR thread.
+
+## Outputs
+
+### test_suite_review_report
+
+Test suite review [report](../resources/test-suite-review.md#test-suite-review-report-template) documenting quality assessment
+
+#### artifact
+
+`test-suite-review.md`
 
 ## Protocol
 
@@ -75,16 +81,6 @@ When `{prior_feedback_triage}` is present, every entry tagged as a reported runt
 ### 6. Present Summary
 
 - Summarize coverage gaps and critical issues
-
-## Outputs
-
-### test_suite_review_report
-
-Test suite review [report](../resources/test-suite-review.md#test-suite-review-report-template) documenting quality assessment
-
-#### artifact
-
-`test-suite-review.md`
 
 ## Rules
 

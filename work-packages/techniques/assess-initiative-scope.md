@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
-  order: 0
-  legacy_id: 0
 ---
 
 ## Capability
@@ -16,6 +12,20 @@ Identify and categorize work packages from a multi-package initiative descriptio
 ### user_initiative_description
 
 Free-form description of the initiative from the user
+
+## Outputs
+
+### initiative_name
+
+Name for the overall initiative
+
+### work_packages
+
+List of identified packages with names and one-sentence descriptions
+
+### package_count
+
+Total number of identified packages
 
 ## Protocol
 
@@ -39,20 +49,6 @@ Free-form description of the initiative from the user
 - Highlight any packages that seem too large (should be split) or too small (should be merged)  
   > Packages should be 2-8 hours of agentic work. Larger packages should be split; smaller ones merged.
 - Set `{initiative_name}` based on the overall theme of the packages, per the [planning-folder-template](../resources/planning-folder-template.md#folder-location)
-
-## Outputs
-
-### initiative_name
-
-Name for the overall initiative
-
-### work_packages
-
-List of identified packages with names and one-sentence descriptions
-
-### package_count
-
-Total number of identified packages
 
 ## Rules
 

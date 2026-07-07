@@ -13,6 +13,16 @@ Compile a failure report describing the unresolved critical issues, the correcti
 
 Categorized validation findings carrying the critical or unresolved issues.
 
+## Outputs
+
+### failure_report
+
+Failure report carrying the critical issues, correction history, and manual-resolution guidance.
+
+#### artifact
+
+`failure-report.md`
+
 ## Protocol
 
 ### 1. Summarize Failure
@@ -30,16 +40,6 @@ Categorized validation findings carrying the critical or unresolved issues.
 ### 4. Present Failure Report
 
 - Present `{failure_report}` and the manual intervention it requires to the user.
-
-## Outputs
-
-### failure_report
-
-Failure report carrying the critical issues, correction history, and manual-resolution guidance.
-
-#### artifact
-
-`failure-report.md`
 
 ## Rules
 

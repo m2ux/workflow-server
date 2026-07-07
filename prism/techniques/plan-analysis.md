@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.1.0
-  order: 3
-  legacy_id: 3
 ---
 
 ## Capability
@@ -32,6 +28,52 @@ standard
 ### depth_preference
 
 *(optional)* Override for pipeline mode when scope is query or file: 'single', 'pipeline', 'portfolio', or 'behavioral'. Ignored for multi-unit scopes where mode is determined per-unit by risk classification.
+
+## Outputs
+
+### analysis_plan
+
+Human-readable analysis plan artifact
+
+#### artifact
+
+`analysis-plan.md`
+
+#### scope_type
+
+Detected scope type (query, file, module, codebase, document-set)
+
+#### strategy_summary
+
+Overall strategy description
+
+#### units_summary
+
+Per-unit plan summary: target, role, risk, pipeline-mode, lenses, rationale
+
+#### execution_order
+
+Prioritised and grouped execution sequence (multi-unit scopes only)
+
+#### parallelism_plan
+
+Which units can run concurrently (multi-unit scopes only)
+
+#### estimated_cost
+
+Total sub-agent dispatches (multi-unit scopes only)
+
+#### skipped_units
+
+Units below budget threshold with justification (multi-unit scopes only)
+
+### analysis_units
+
+Machine-readable ordered array of analysis unit objects, each specifying a target, mode, and lens selection to execute
+
+#### unit_specs
+
+Array of `{ target, target_type, pipeline_mode, lens_name, lenses, role, risk, rationale, unit_output_subdir }`
 
 ## Protocol
 
@@ -109,52 +151,6 @@ standard
 - Produce `{analysis_plan}` as structured output and expose `{analysis_units}` as the ordered execution collection
 - If `{output_path}` is provided, write the human-readable plan as `{analysis_plan}` into `{output_path}`
 - A single-unit `{analysis_units}` array runs one analysis pass; a multi-unit array runs one pass per unit in order
-
-## Outputs
-
-### analysis_plan
-
-Human-readable analysis plan artifact
-
-#### artifact
-
-`analysis-plan.md`
-
-#### scope_type
-
-Detected scope type (query, file, module, codebase, document-set)
-
-#### strategy_summary
-
-Overall strategy description
-
-#### units_summary
-
-Per-unit plan summary: target, role, risk, pipeline-mode, lenses, rationale
-
-#### execution_order
-
-Prioritised and grouped execution sequence (multi-unit scopes only)
-
-#### parallelism_plan
-
-Which units can run concurrently (multi-unit scopes only)
-
-#### estimated_cost
-
-Total sub-agent dispatches (multi-unit scopes only)
-
-#### skipped_units
-
-Units below budget threshold with justification (multi-unit scopes only)
-
-### analysis_units
-
-Machine-readable ordered array of analysis unit objects, each specifying a target, mode, and lens selection to execute
-
-#### unit_specs
-
-Array of `{ target, target_type, pipeline_mode, lens_name, lenses, role, risk, rationale, unit_output_subdir }`
 
 ## Rules
 

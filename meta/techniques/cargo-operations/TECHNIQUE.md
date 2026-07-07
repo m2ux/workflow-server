@@ -1,13 +1,7 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.2.0
-  order: 24
-  legacy_id: 24
 ---
-
-# Cargo Operations
 
 ## Capability
 

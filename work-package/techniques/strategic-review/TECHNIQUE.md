@@ -1,13 +1,7 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 2.1.0
-  order: 12
-  legacy_id: 12
 ---
-
-# Review Strategy
 
 ## Capability
 

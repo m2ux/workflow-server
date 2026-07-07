@@ -1,13 +1,7 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 2.0.0
-  order: 7
-  legacy_id: 7
 ---
-
-# Analyze Implementation
 
 ## Capability
 

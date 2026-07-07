@@ -1,14 +1,17 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
-  order: 1
 ---
 
 ## Capability
 
 Run the cheapest SDL scan on Haiku and assess signal quality to decide whether escalation is needed
+
+## Outputs
+
+### adaptive_signal_quality
+
+Signal-quality assessment at the current stage.
 
 ## Protocol
 
@@ -21,9 +24,3 @@ Run the cheapest SDL scan on Haiku and assess signal quality to decide whether e
 ### 2. Assess Signal
 
 - If all three signals are present — conservation law (regex: 'conservation law' or '= constant'), word count > 300, and a bug table — set `{adaptive_signal_quality}` to `adequate` and stop escalation. Otherwise set it to `insufficient` and continue.
-
-## Outputs
-
-### adaptive_signal_quality
-
-Signal-quality assessment at the current stage.

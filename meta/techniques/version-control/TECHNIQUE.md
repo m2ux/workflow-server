@@ -1,13 +1,7 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 5.0.0
-  order: 2
-  legacy_id: 2
 ---
-
-# Version Control
 
 ## Capability
 

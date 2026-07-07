@@ -1,7 +1,5 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
 ---
 
@@ -19,14 +17,6 @@ Full priority order for reference
 
 Completed package names; arrives populated if provided
 
-## Protocol
-
-### 1. Initialize Iteration
-
-- Derive `{remaining_packages}` from `{priority_order}` minus `{completed_packages}`
-- Count the packages in `{priority_order}` as `{$total}` and `{completed_packages}` as `{$completed}`
-- Set `{overall_progress}` to '`{completed}`/`{total}` complete'
-
 ## Outputs
 
 ### remaining_packages
@@ -36,3 +26,11 @@ Ordered list of packages not yet started
 ### overall_progress
 
 Progress indicator (e.g., '3/7 complete')
+
+## Protocol
+
+### 1. Initialize Iteration
+
+- Derive `{remaining_packages}` from `{priority_order}` minus `{completed_packages}`
+- Count the packages in `{priority_order}` as `{$total}` and `{completed_packages}` as `{$completed}`
+- Set `{overall_progress}` to '`{completed}`/`{total}` complete'

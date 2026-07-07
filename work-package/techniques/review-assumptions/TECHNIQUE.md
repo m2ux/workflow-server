@@ -1,13 +1,7 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 3.0.0
-  order: 13
-  legacy_id: 13
 ---
-
-# Review Assumptions
 
 ## Capability
 

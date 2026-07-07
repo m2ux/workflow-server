@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.4.0
-  order: 5
-  legacy_id: 5
 ---
 
 ## Capability
@@ -32,6 +28,28 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 ### agent_assignments
 
 *(optional)* Crate-to-agent-group assignments
+
+## Outputs
+
+### verification_report
+
+Verification report with gap list and re-dispatch recommendations.
+
+#### dispatch_manifest
+
+crate, assigned-group, dispatched, returned, status
+
+#### coverage_table
+
+file, lines, agent, agent-type (group-a/recon/none), COVERED/RECON-ONLY/UNREAD
+
+#### missing_tables
+
+agent-id, table-id, reason
+
+#### redispatch_recommendations
+
+agent-id, scope, specific check to perform
 
 ## Protocol
 
@@ -80,28 +98,6 @@ Per-agent list of required tables, coverage criteria, and completeness checks
 ### 11. Produce Verification Report
 
 - Emit the `{verification_report}` as a structured report listing: dispatch completeness status, all coverage gaps (files not read by §3-agents), all missing tables (agent + table ID), all structural issues, cross-chain timestamp check status, the table-derived findings, event construction site coverage status. For each gap, recommend a targeted follow-up dispatch.
-
-## Outputs
-
-### verification_report
-
-Verification report with gap list and re-dispatch recommendations.
-
-#### dispatch_manifest
-
-crate, assigned-group, dispatched, returned, status
-
-#### coverage_table
-
-file, lines, agent, agent-type (group-a/recon/none), COVERED/RECON-ONLY/UNREAD
-
-#### missing_tables
-
-agent-id, table-id, reason
-
-#### redispatch_recommendations
-
-agent-id, scope, specific check to perform
 
 ## Rules
 

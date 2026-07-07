@@ -1,7 +1,5 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
 ---
 
@@ -14,6 +12,28 @@ Select the highest-priority unstarted package, trigger its work-package workflow
 ### remaining_packages
 
 Ordered list of packages not yet started
+
+## Outputs
+
+### completed_packages
+
+List of completed package names
+
+### remaining_packages
+
+List of remaining package names
+
+### overall_progress
+
+Progress indicator (e.g., '3/7 complete'), written into the updated START-HERE.md status table
+
+#### artifact
+
+`START-HERE.md`
+
+### package_planning_paths
+
+Map of package name to the child work-package's planning-folder path, captured as each child workflow completes
 
 ## Protocol
 
@@ -38,28 +58,6 @@ Ordered list of packages not yet started
 ### 4. Check Remaining
 
 - Remove the completed package from `{remaining_packages}`, add it to `{completed_packages}`
-
-## Outputs
-
-### completed_packages
-
-List of completed package names
-
-### remaining_packages
-
-List of remaining package names
-
-### overall_progress
-
-Progress indicator (e.g., '3/7 complete'), written into the updated START-HERE.md status table
-
-#### artifact
-
-`START-HERE.md`
-
-### package_planning_paths
-
-Map of package name to the child work-package's planning-folder path, captured as each child workflow completes
 
 ## Rules
 

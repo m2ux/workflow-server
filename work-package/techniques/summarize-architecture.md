@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
-  order: 20
-  legacy_id: 20
 ---
 
 ## Capability
@@ -24,6 +20,16 @@ List of files changed in the implementation
 ### planning_folder_path
 
 Folder where the architecture summary is written
+
+## Outputs
+
+### architecture_summary
+
+Stakeholder-facing architecture [summary](../resources/architecture-summary.md#architecture-summary-artifact-template) with diagrams
+
+#### artifact
+
+`architecture-summary.md`
 
 ## Protocol
 
@@ -62,16 +68,6 @@ Folder where the architecture summary is written
 - Focus on impact, scope, and risk, drawing scope and rationale from `{design_philosophy_doc}` when it is provided
 - Follow the architecture-summary template in [architecture-summary](../resources/architecture-summary.md)
 - Write for management stakeholders — not implementation details
-
-## Outputs
-
-### architecture_summary
-
-Stakeholder-facing architecture [summary](../resources/architecture-summary.md#architecture-summary-artifact-template) with diagrams
-
-#### artifact
-
-`architecture-summary.md`
 
 ## Rules
 

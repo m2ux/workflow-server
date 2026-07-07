@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
-  order: 6
-  legacy_id: 6
 ---
 
 ## Capability
@@ -28,37 +24,6 @@ One of: structured-merge (concat + dedup), integrate (add to existing), union-me
 ### observation_sources
 
 *(optional)* Architectural and reconnaissance artifacts carrying emergent vulnerability domains and reconnaissance leads to be dispositioned during elevation.
-
-## Protocol
-
-### 1. Concatenate
-
-- Combine every list in `{finding_sources}` into a single flat table. Every agent finding becomes a row with fields: agent-id, finding-id, file, line, title, severity, checklist-item, evidence. No agent output is discarded.
-
-### 2. Deduplicate
-
-- For each row, identify whether another row describes the same root cause. Rows with the same root cause receive the same report finding number with a note: 'merged: same root cause as Finding X — [justification]'. Every row must have a mapping — unmapped rows are automatically promoted to new findings.
-
-### 3. Elevate Observations
-
-- Review every reconnaissance lead and additional observation across `{finding_sources}`, plus every emergent vulnerability domain and reconnaissance lead in `{observation_sources}`. Each must be dispositioned as captured by an existing finding, elevated to a new finding, or not-applicable with justification, recording the `{observation_dispositions}` table. Observations describing divergent code paths, missing validation, error-path state persistence, silent error consumption, or trust boundary amplification are always security-relevant and are elevated.
-
-### 4. Apply Strategy
-
-- Branch on `{merge_strategy}`. For structured-merge: assign sequential report finding numbers. For integrate: append the new rows to the `{existing_table}` and update its elevation mapping. For union-merge: classify each finding as consensus (present in both runs), single-source (one run only), or escalated (PASS in primary, FAIL in secondary).
-
-### 5. Score With Calibration
-
-- Score every finding using the [severity rubric](../resources/severity-rubric.md). For every finding (not just High/Critical), search the [calibration benchmarks](../resources/target-profile.md#severity-calibration-benchmark) for a matching pattern; flag a divergence of one level and treat a divergence of two or more levels as a floor at the benchmark severity. Record the `{calibration_crosscheck}` table.
-
-### 6. Reconcile
-
-- For each agent compute Findings Submitted, In Merge Table, Explicitly Deduplicated, Elevated from Observations, and Unaccounted, recording the `{reconciliation_table}`. Unaccounted must equal zero for every agent.
-
-### 7. Verify Completeness
-
-- Confirm every row has a report finding number. Count merged rows (with justification), promoted rows, and total findings. Emit the completed `{merge_table}` with its flat table, elevation summary, and any union-merge classification.
-- If a row still lacks a report finding number, auto-promote it to a new finding and note the promotion in the elevation summary.
 
 ## Outputs
 
@@ -93,6 +58,37 @@ Per-finding calibration comparison: our score, benchmark match, benchmark score,
 ### observation_dispositions
 
 Per-observation table: source, agent, observation, disposition, finding reference.
+
+## Protocol
+
+### 1. Concatenate
+
+- Combine every list in `{finding_sources}` into a single flat table. Every agent finding becomes a row with fields: agent-id, finding-id, file, line, title, severity, checklist-item, evidence. No agent output is discarded.
+
+### 2. Deduplicate
+
+- For each row, identify whether another row describes the same root cause. Rows with the same root cause receive the same report finding number with a note: 'merged: same root cause as Finding X — [justification]'. Every row must have a mapping — unmapped rows are automatically promoted to new findings.
+
+### 3. Elevate Observations
+
+- Review every reconnaissance lead and additional observation across `{finding_sources}`, plus every emergent vulnerability domain and reconnaissance lead in `{observation_sources}`. Each must be dispositioned as captured by an existing finding, elevated to a new finding, or not-applicable with justification, recording the `{observation_dispositions}` table. Observations describing divergent code paths, missing validation, error-path state persistence, silent error consumption, or trust boundary amplification are always security-relevant and are elevated.
+
+### 4. Apply Strategy
+
+- Branch on `{merge_strategy}`. For structured-merge: assign sequential report finding numbers. For integrate: append the new rows to the `{existing_table}` and update its elevation mapping. For union-merge: classify each finding as consensus (present in both runs), single-source (one run only), or escalated (PASS in primary, FAIL in secondary).
+
+### 5. Score With Calibration
+
+- Score every finding using the [severity rubric](../resources/severity-rubric.md). For every finding (not just High/Critical), search the [calibration benchmarks](../resources/target-profile.md#severity-calibration-benchmark) for a matching pattern; flag a divergence of one level and treat a divergence of two or more levels as a floor at the benchmark severity. Record the `{calibration_crosscheck}` table.
+
+### 6. Reconcile
+
+- For each agent compute Findings Submitted, In Merge Table, Explicitly Deduplicated, Elevated from Observations, and Unaccounted, recording the `{reconciliation_table}`. Unaccounted must equal zero for every agent.
+
+### 7. Verify Completeness
+
+- Confirm every row has a report finding number. Count merged rows (with justification), promoted rows, and total findings. Emit the completed `{merge_table}` with its flat table, elevation summary, and any union-merge classification.
+- If a row still lacks a report finding number, auto-promote it to a new finding and note the promotion in the elevation summary.
 
 ## Rules
 

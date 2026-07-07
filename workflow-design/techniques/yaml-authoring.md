@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 2.0.0
-  order: 1
-  legacy_id: 1
 ---
 
 ## Capability
@@ -20,6 +16,12 @@ Which schema applies to this file — one of: workflow (`schemas/workflow.schema
 ### reference_file
 
 *(optional)* Path to an existing valid YAML file of the same type to use as a syntax reference
+
+## Outputs
+
+### yaml_file
+
+A syntactically valid YAML file that passes schema validation
 
 ## Protocol
 
@@ -49,12 +51,6 @@ Which schema applies to this file — one of: workflow (`schemas/workflow.schema
 - Fix any validation errors and re-check
 - If the parser cannot handle the file because it uses invalid syntax, compare the failing line against the same construct in an existing valid YAML file and fix the syntax
 - If the file parses but does not conform to the schema, read the schema definition for the failing field and fix the content
-
-## Outputs
-
-### yaml_file
-
-A syntactically valid YAML file that passes schema validation
 
 ## Rules
 

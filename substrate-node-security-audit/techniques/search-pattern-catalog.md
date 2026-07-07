@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
-  order: 3
-  legacy_id: 3
 ---
 
 ## Capability
@@ -32,6 +28,20 @@ Codebase paths to search against
 ### output_format
 
 *(optional)* The table shape the results are rendered in.
+
+## Outputs
+
+### pattern_results
+
+A structured results table and zero-hit verdicts.
+
+#### results_table
+
+one row per hit, with fields determined by `{output_format}` (typically: category/check ID, pattern, file:line, hit content, triage/verdict)
+
+#### zero_hit_verdicts
+
+one row per zero-hit pattern, with fields: pattern, category, hits (0), verdict (True Negative / Flag for Follow-up), justification
 
 ## Protocol
 
@@ -62,20 +72,6 @@ Codebase paths to search against
 ### 6. Format Results
 
 - Assemble the `{pattern_results}`: a structured results table with one row per pattern hit (or per pattern for zero-hit entries), rendered in `{output_format}`. Include zero-hit verdicts as a separate section or integrated into the main table.
-
-## Outputs
-
-### pattern_results
-
-A structured results table and zero-hit verdicts.
-
-#### results_table
-
-one row per hit, with fields determined by `{output_format}` (typically: category/check ID, pattern, file:line, hit content, triage/verdict)
-
-#### zero_hit_verdicts
-
-one row per zero-hit pattern, with fields: pattern, category, hits (0), verdict (True Negative / Flag for Follow-up), justification
 
 ## Rules
 

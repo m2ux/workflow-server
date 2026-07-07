@@ -1,14 +1,17 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
-  order: 3
 ---
 
 ## Capability
 
 Compose the smart pipeline from the target characteristics and the analytical goal: decompose multi-region code into per-subsystem prisms; otherwise route the goal to a concern-specific lens or pipeline through the single canonical goal-mapping matrix, falling back to L12 when no goal is given
+
+## Outputs
+
+### smart_pipeline_steps
+
+The composed pipeline steps.
 
 ## Protocol
 
@@ -26,9 +29,3 @@ Compose the smart pipeline from the target characteristics and the analytical go
 ### 3. Record Steps
 
 - Record the resulting composed pipeline steps — including the selected lens slug for each step — as `{smart_pipeline_steps}`
-
-## Outputs
-
-### smart_pipeline_steps
-
-The composed pipeline steps.
