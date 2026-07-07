@@ -317,6 +317,14 @@ th { background: var(--bg-inset); }
 
 tbody tr:last-child td { border-bottom: none; }
 
+/* API reference pages */
+
+.tool, .schema { margin: var(--space-4) 0; }
+
+.tool + .tool { border-top: 1px solid var(--border); padding-top: var(--space-3); }
+
+.no-params { color: var(--text-muted); font-style: italic; }
+
 /* Footer */
 
 .site-footer {

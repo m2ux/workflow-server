@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schema reference — Workflow Server</title>
+<meta name="description" content="Reference for the JSON Schemas that define workflows, activities, techniques, conditions, and session state, rendered from the checked-in schema files.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="../">Workflow Server</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="./tools.html">Tools</a></li>
+        <li><a href="./schemas.html" aria-current="page">Schemas</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <h1>Schema reference</h1>
+  <p class="lede">The JSON Schemas that define workflows, activities, techniques, conditions, and session state. The Zod schemas in <code>src/schema/</code> are the source of truth; the JSON files under <code>schemas/</code> are generated from them (<code>npm run build:schemas</code>) and validate workflow definitions at authoring time.</p>
+  <p>The field tables below show each schema's top-level shape and are rendered from the checked-in schema files. For authoring guidance — how the pieces fit together when writing a workflow — read the <a href="https://github.com/m2ux/workflow-server/blob/main/schemas/README.md">schema guide</a>.</p>
+
+      <!-- BEGIN GENERATED — edit scripts/generate-site-data.ts, then run npm run build:site -->
+      <section class="schema" id="activity">
+        <h2><code>activity.schema.json</code></h2>
+        <p>Activity definition schema — unified ordered, kind-tagged steps[] (technique | action | checkpoint | loop).</p>
+        <p><a href="https://github.com/m2ux/workflow-server/blob/main/schemas/activity.schema.json">Full schema on GitHub</a></p>
+        <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+          <tr><td><code>id</code></td><td><code>string</code></td><td>yes</td><td>Unique identifier for the activity</td></tr>
+          <tr><td><code>version</code></td><td><code>string</code></td><td>yes</td><td>Semantic version of the activity</td></tr>
+          <tr><td><code>name</code></td><td><code>string</code></td><td>yes</td><td>Human-readable activity name</td></tr>
+          <tr><td><code>description</code></td><td><code>string</code></td><td>no</td><td>Detailed description of the activity</td></tr>
+          <tr><td><code>techniques</code></td><td><code>string[]</code></td><td>no</td><td>Activity-wide technique references (<code>::</code> paths); bundled into get_activity.</td></tr>
+          <tr><td><code>steps</code></td><td><code>(technique | action | checkpoint | loop)[]</code></td><td>no</td><td>Ordered, kind-tagged execution steps for this activity</td></tr>
+          <tr><td><code>decisions</code></td><td><code>object[]</code></td><td>no</td><td>Conditional branching points</td></tr>
+          <tr><td><code>decisions[].id</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>decisions[].name</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>decisions[].description</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>decisions[].branches</code></td><td><code>object[]</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>decisions[].branches[].id</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>decisions[].branches[].label</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>decisions[].branches[].condition</code></td><td><code>condition</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>decisions[].branches[].transitionTo</code></td><td><code>string</code></td><td>no</td><td>Activity ID to transition to. Omit for terminal branches (workflow ends)</td></tr>
+          <tr><td><code>decisions[].branches[].isDefault</code></td><td><code>boolean</code></td><td>no</td><td>Default: <code>false</code></td></tr>
+          <tr><td><code>transitions</code></td><td><code>object[]</code></td><td>no</td><td>Navigation to other activities</td></tr>
+          <tr><td><code>transitions[].to</code></td><td><code>string</code></td><td>yes</td><td>Activity ID to transition to</td></tr>
+          <tr><td><code>transitions[].condition</code></td><td><code>condition</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>transitions[].isDefault</code></td><td><code>boolean</code></td><td>no</td><td>Default: <code>false</code></td></tr>
+          <tr><td><code>triggers</code></td><td><code>object[]</code></td><td>no</td><td>Workflows to trigger from this activity</td></tr>
+          <tr><td><code>triggers[].workflow</code></td><td><code>string</code></td><td>yes</td><td>ID of the workflow to trigger</td></tr>
+          <tr><td><code>triggers[].description</code></td><td><code>string</code></td><td>no</td><td>Description of when/why this workflow is triggered</td></tr>
+          <tr><td><code>triggers[].passContext</code></td><td><code>string[]</code></td><td>no</td><td>Context variables to pass to the triggered workflow</td></tr>
+          <tr><td><code>outcome</code></td><td><code>string[]</code></td><td>no</td><td>Expected outcomes when activity completes successfully</td></tr>
+          <tr><td><code>required</code></td><td><code>boolean</code></td><td>no</td><td>Whether this activity is required in the workflow Default: <code>true</code></td></tr>
+          <tr><td><code>rules</code></td><td><code>string[]</code></td><td>no</td><td>Activity-level rules and constraints that agents must follow</td></tr>
+          <tr><td><code>artifactPrefix</code></td><td><code>string</code></td><td>no</td><td>Numeric prefix for artifact filenames, inferred from the activity filename (e.g., &quot;02&quot; from 02-design-philosophy.yaml). Server-computed — do not set in definition files.</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+      <section class="schema" id="condition">
+        <h2><code>condition.schema.json</code></h2>
+        <p>Condition expression schema</p>
+        <p><a href="https://github.com/m2ux/workflow-server/blob/main/schemas/condition.schema.json">Full schema on GitHub</a></p>
+        <p>One of 4 variants: <code>simple</code>, <code>and</code>, <code>or</code>, <code>not</code>.</p>
+      </section>
+      <section class="schema" id="session-file">
+        <h2><code>session-file.schema.json</code></h2>
+        <p>Server-managed session file (session.json) — canonical session state owned by the workflow server.</p>
+        <p><a href="https://github.com/m2ux/workflow-server/blob/main/schemas/session-file.schema.json">Full schema on GitHub</a></p>
+        <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+          <tr><td><code>schemaVersion</code></td><td><code>1</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>sessionIndex</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>workflowId</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>workflowVersion</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>agentId</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>seq</code></td><td><code>integer</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>ts</code></td><td><code>integer</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>startedAt</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>currentActivity</code></td><td><code>string</code></td><td>no</td><td>Default: <code>&quot;&quot;</code></td></tr>
+          <tr><td><code>currentTechnique</code></td><td><code>string</code></td><td>no</td><td>Default: <code>&quot;&quot;</code></td></tr>
+          <tr><td><code>condition</code></td><td><code>string</code></td><td>no</td><td>Default: <code>&quot;&quot;</code></td></tr>
+          <tr><td><code>activeCheckpoint</code></td><td><code>object</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>variables</code></td><td><code>object</code></td><td>no</td><td>Default: <code>{}</code></td></tr>
+          <tr><td><code>completedActivities</code></td><td><code>string[]</code></td><td>no</td><td>Default: <code>[]</code></td></tr>
+          <tr><td><code>skippedActivities</code></td><td><code>string[]</code></td><td>no</td><td>Default: <code>[]</code></td></tr>
+          <tr><td><code>checkpointResponses</code></td><td><code>object</code></td><td>no</td><td>Default: <code>{}</code></td></tr>
+          <tr><td><code>history</code></td><td><code>object[]</code></td><td>no</td><td>Default: <code>[]</code></td></tr>
+          <tr><td><code>history[].timestamp</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>history[].type</code></td><td><code>&quot;workflow_started&quot; | &quot;workflow_completed&quot; | &quot;workflow_aborted&quot; | &quot;workflow_triggered&quot; | &quot;workflow_returned&quot; | &quot;workflow_suspended&quot; | &quot;activity_entered&quot; | &quot;activity_exited&quot; | &quot;activity_skipped&quot; | &quot;step_started&quot; | &quot;step_completed&quot; | &quot;checkpoint_reached&quot; | &quot;checkpoint_response&quot; | &quot;checkpoint_replayed&quot; | &quot;decision_reached&quot; | &quot;decision_branch_taken&quot; | &quot;loop_started&quot; | &quot;loop_iteration&quot; | &quot;loop_completed&quot; | &quot;loop_break&quot; | &quot;variable_set&quot; | &quot;error&quot;</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>history[].activity</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>history[].step</code></td><td><code>integer</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>history[].checkpoint</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>history[].decision</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>history[].loop</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>history[].data</code></td><td><code>object</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>history[].error</code></td><td><code>object</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>status</code></td><td><code>&quot;running&quot; | &quot;completed&quot; | &quot;aborted&quot;</code></td><td>no</td><td>Default: <code>&quot;running&quot;</code></td></tr>
+          <tr><td><code>triggeredWorkflows</code></td><td><code>object[]</code></td><td>no</td><td>Default: <code>[]</code></td></tr>
+          <tr><td><code>triggeredWorkflows[].workflowId</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>triggeredWorkflows[].sessionIndex</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>triggeredWorkflows[].triggeredAt</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>triggeredWorkflows[].triggeredFrom</code></td><td><code>object</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>triggeredWorkflows[].status</code></td><td><code>&quot;running&quot; | &quot;completed&quot; | &quot;aborted&quot; | &quot;error&quot;</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>triggeredWorkflows[].completedAt</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>triggeredWorkflows[].returnedContext</code></td><td><code>object</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>triggeredWorkflows[].state</code></td><td><code>session-file</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>planningFolderPath</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>contextMode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>deliveredContent</code></td><td><code>object</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>parentSession</code></td><td><code>session-file</code></td><td>no</td><td>—</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+      <section class="schema" id="state">
+        <h2><code>state.schema.json</code></h2>
+        <p>Workflow state schema</p>
+        <p><a href="https://github.com/m2ux/workflow-server/blob/main/schemas/state.schema.json">Full schema on GitHub</a></p>
+        <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+          <tr><td><code>workflowId</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>workflowVersion</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>stateVersion</code></td><td><code>integer</code></td><td>no</td><td>Default: <code>1</code></td></tr>
+          <tr><td><code>startedAt</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>updatedAt</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>completedAt</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>currentActivity</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>currentStep</code></td><td><code>integer</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>completedActivities</code></td><td><code>string[]</code></td><td>no</td><td>Default: <code>[]</code></td></tr>
+          <tr><td><code>skippedActivities</code></td><td><code>string[]</code></td><td>no</td><td>Default: <code>[]</code></td></tr>
+          <tr><td><code>completedSteps</code></td><td><code>object</code></td><td>no</td><td>Default: <code>{}</code></td></tr>
+          <tr><td><code>checkpointResponses</code></td><td><code>object</code></td><td>no</td><td>Default: <code>{}</code></td></tr>
+          <tr><td><code>decisionOutcomes</code></td><td><code>object</code></td><td>no</td><td>Default: <code>{}</code></td></tr>
+          <tr><td><code>activeLoops</code></td><td><code>object[]</code></td><td>no</td><td>Default: <code>[]</code></td></tr>
+          <tr><td><code>activeLoops[].activityId</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>activeLoops[].loopId</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>activeLoops[].currentIteration</code></td><td><code>integer</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>activeLoops[].totalItems</code></td><td><code>integer</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>activeLoops[].currentItem</code></td><td><code>any</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>activeLoops[].startedAt</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>variables</code></td><td><code>object</code></td><td>no</td><td>Default: <code>{}</code></td></tr>
+          <tr><td><code>history</code></td><td><code>object[]</code></td><td>no</td><td>Default: <code>[]</code></td></tr>
+          <tr><td><code>history[].timestamp</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>history[].type</code></td><td><code>&quot;workflow_started&quot; | &quot;workflow_completed&quot; | &quot;workflow_aborted&quot; | &quot;workflow_triggered&quot; | &quot;workflow_returned&quot; | &quot;workflow_suspended&quot; | &quot;activity_entered&quot; | &quot;activity_exited&quot; | &quot;activity_skipped&quot; | &quot;step_started&quot; | &quot;step_completed&quot; | &quot;checkpoint_reached&quot; | &quot;checkpoint_response&quot; | &quot;checkpoint_replayed&quot; | &quot;decision_reached&quot; | &quot;decision_branch_taken&quot; | &quot;loop_started&quot; | &quot;loop_iteration&quot; | &quot;loop_completed&quot; | &quot;loop_break&quot; | &quot;variable_set&quot; | &quot;error&quot;</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>history[].activity</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>history[].step</code></td><td><code>integer</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>history[].checkpoint</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>history[].decision</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>history[].loop</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>history[].data</code></td><td><code>object</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>history[].error</code></td><td><code>object</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>status</code></td><td><code>&quot;running&quot; | &quot;paused&quot; | &quot;suspended&quot; | &quot;completed&quot; | &quot;aborted&quot; | &quot;error&quot;</code></td><td>no</td><td>Default: <code>&quot;running&quot;</code></td></tr>
+          <tr><td><code>parentWorkflow</code></td><td><code>object</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>triggeredWorkflows</code></td><td><code>object[]</code></td><td>no</td><td>Default: <code>[]</code></td></tr>
+          <tr><td><code>triggeredWorkflows[].workflowId</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>triggeredWorkflows[].planningSlug</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>triggeredWorkflows[].sessionIndex</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>triggeredWorkflows[].triggeredAt</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>triggeredWorkflows[].triggeredFrom</code></td><td><code>object</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>triggeredWorkflows[].status</code></td><td><code>&quot;running&quot; | &quot;completed&quot; | &quot;aborted&quot; | &quot;error&quot;</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>triggeredWorkflows[].completedAt</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>triggeredWorkflows[].returnedContext</code></td><td><code>object</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>lastError</code></td><td><code>object</code></td><td>no</td><td>—</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+      <section class="schema" id="technique">
+        <h2><code>technique.schema.json</code></h2>
+        <p>Technique definition schema for workflow-server</p>
+        <p><a href="https://github.com/m2ux/workflow-server/blob/main/schemas/technique.schema.json">Full schema on GitHub</a></p>
+        <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+          <tr><td><code>id</code></td><td><code>string</code></td><td>yes</td><td>Unique identifier for the technique</td></tr>
+          <tr><td><code>version</code></td><td><code>string</code></td><td>yes</td><td>Semantic version of the technique</td></tr>
+          <tr><td><code>capability</code></td><td><code>string</code></td><td>yes</td><td>What this technique enables agents to do</td></tr>
+          <tr><td><code>provenance_note</code></td><td><code>string</code></td><td>no</td><td>Delivery-only, server-populated on a step-bound get_technique: states the output delivery mechanics that the <code>source:</code>/<code>destination:</code> annotations rely on. Never authored in technique markdown.</td></tr>
+          <tr><td><code>rules</code></td><td><code>rulesDefinition</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>inputs</code></td><td><code>inputsDefinition</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>inherited_inputs</code></td><td><code>inheritedInputs</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>protocol</code></td><td><code>protocolDefinition</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>outputs</code></td><td><code>outputsDefinition</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>inherited_outputs</code></td><td><code>inheritedOutputs</code></td><td>no</td><td>—</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+      <section class="schema" id="workflow">
+        <h2><code>workflow.schema.json</code></h2>
+        <p>Workflow definition schema</p>
+        <p><a href="https://github.com/m2ux/workflow-server/blob/main/schemas/workflow.schema.json">Full schema on GitHub</a></p>
+        <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+          <tr><td><code>$schema</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>id</code></td><td><code>string</code></td><td>yes</td><td>Unique workflow identifier</td></tr>
+          <tr><td><code>version</code></td><td><code>string</code></td><td>yes</td><td>Semantic version</td></tr>
+          <tr><td><code>title</code></td><td><code>string</code></td><td>yes</td><td>Human-readable workflow title</td></tr>
+          <tr><td><code>description</code></td><td><code>string</code></td><td>no</td><td>Detailed workflow description</td></tr>
+          <tr><td><code>author</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>tags</code></td><td><code>string[]</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>rules</code></td><td><code>object</code></td><td>no</td><td>Workflow rules partitioned by audience: <code>workflow</code> (orchestrator-only) and <code>activity</code> (inherited by every activity, injected into get_activity).</td></tr>
+          <tr><td><code>variables</code></td><td><code>object[]</code></td><td>no</td><td>Workflow-level variables</td></tr>
+          <tr><td><code>variables[].name</code></td><td><code>string | &quot;requirements&quot; | &quot;features&quot; | &quot;exclusions&quot; | &quot;dimensions&quot; | &quot;tasks&quot; | &quot;results&quot; | &quot;submodules&quot; | &quot;paths&quot; | &quot;fields&quot; | &quot;filters&quot; | &quot;stats&quot; | &quot;effects&quot; | &quot;substitutions&quot; | &quot;findings&quot; | &quot;assumptions&quot; | &quot;subsystems&quot; | &quot;transitions&quot; | &quot;options&quot; | &quot;branches&quot; | &quot;agents&quot; | &quot;changes&quot; | &quot;failures&quot; | &quot;items&quot; | &quot;files&quot; | &quot;gaps&quot; | &quot;outcomes&quot; | &quot;body&quot; | &quot;query&quot; | &quot;repo&quot; | &quot;owner&quot; | &quot;number&quot; | &quot;title&quot; | &quot;branch&quot; | &quot;diff&quot; | &quot;limit&quot; | &quot;name&quot; | &quot;sha&quot; | &quot;url&quot; | &quot;head&quot; | &quot;base&quot; | &quot;ref&quot; | &quot;labels&quot; | &quot;path&quot; | &quot;cursor&quot; | &quot;cql&quot; | &quot;jql&quot; | &quot;description&quot; | &quot;assignee&quot; | &quot;depth&quot; | &quot;direction&quot; | &quot;summary&quot; | &quot;state&quot; | &quot;target&quot; | &quot;adr&quot; | &quot;type&quot; | &quot;mode&quot; | &quot;kind&quot;</code></td><td>yes</td><td>Qualified snake_case noun phrase (&gt;=2 words, AP-60), or an enumerated bare-word exemption.</td></tr>
+          <tr><td><code>variables[].type</code></td><td><code>&quot;string&quot; | &quot;number&quot; | &quot;boolean&quot; | &quot;array&quot; | &quot;object&quot;</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>variables[].description</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>variables[].defaultValue</code></td><td><code>any</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>variables[].required</code></td><td><code>boolean</code></td><td>no</td><td>Default: <code>false</code></td></tr>
+          <tr><td><code>techniques</code></td><td><code>object</code></td><td>no</td><td>Workflow techniques partitioned by audience: <code>workflow</code> (orchestrator, bundled into get_workflow) and <code>activity</code> (inherited by every activity, injected into get_activity).</td></tr>
+          <tr><td><code>initialActivity</code></td><td><code>string</code></td><td>no</td><td>ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points.</td></tr>
+          <tr><td><code>activities</code></td><td><code>object[]</code></td><td>no</td><td>Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points. Omitted in definition files where activities are separate files.</td></tr>
+          <tr><td><code>activities[].id</code></td><td><code>string</code></td><td>yes</td><td>Unique identifier for the activity</td></tr>
+          <tr><td><code>activities[].version</code></td><td><code>string</code></td><td>yes</td><td>Semantic version of the activity</td></tr>
+          <tr><td><code>activities[].name</code></td><td><code>string</code></td><td>yes</td><td>Human-readable activity name</td></tr>
+          <tr><td><code>activities[].description</code></td><td><code>string</code></td><td>no</td><td>Detailed description of the activity</td></tr>
+          <tr><td><code>activities[].techniques</code></td><td><code>string[]</code></td><td>no</td><td>Activity-wide technique references (<code>::</code> paths); bundled into get_activity.</td></tr>
+          <tr><td><code>activities[].steps</code></td><td><code>(technique | action | checkpoint | loop)[]</code></td><td>no</td><td>Ordered, kind-tagged execution steps for this activity</td></tr>
+          <tr><td><code>activities[].decisions</code></td><td><code>object[]</code></td><td>no</td><td>Conditional branching points</td></tr>
+          <tr><td><code>activities[].decisions[].id</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>activities[].decisions[].name</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>activities[].decisions[].description</code></td><td><code>string</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>activities[].decisions[].branches</code></td><td><code>object[]</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>activities[].decisions[].branches[].id</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>activities[].decisions[].branches[].label</code></td><td><code>string</code></td><td>yes</td><td>—</td></tr>
+          <tr><td><code>activities[].decisions[].branches[].condition</code></td><td><code>condition</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>activities[].decisions[].branches[].transitionTo</code></td><td><code>string</code></td><td>no</td><td>Activity ID to transition to. Omit for terminal branches (workflow ends)</td></tr>
+          <tr><td><code>activities[].decisions[].branches[].isDefault</code></td><td><code>boolean</code></td><td>no</td><td>Default: <code>false</code></td></tr>
+          <tr><td><code>activities[].transitions</code></td><td><code>object[]</code></td><td>no</td><td>Navigation to other activities</td></tr>
+          <tr><td><code>activities[].transitions[].to</code></td><td><code>string</code></td><td>yes</td><td>Activity ID to transition to</td></tr>
+          <tr><td><code>activities[].transitions[].condition</code></td><td><code>condition</code></td><td>no</td><td>—</td></tr>
+          <tr><td><code>activities[].transitions[].isDefault</code></td><td><code>boolean</code></td><td>no</td><td>Default: <code>false</code></td></tr>
+          <tr><td><code>activities[].triggers</code></td><td><code>object[]</code></td><td>no</td><td>Workflows to trigger from this activity</td></tr>
+          <tr><td><code>activities[].triggers[].workflow</code></td><td><code>string</code></td><td>yes</td><td>ID of the workflow to trigger</td></tr>
+          <tr><td><code>activities[].triggers[].description</code></td><td><code>string</code></td><td>no</td><td>Description of when/why this workflow is triggered</td></tr>
+          <tr><td><code>activities[].triggers[].passContext</code></td><td><code>string[]</code></td><td>no</td><td>Context variables to pass to the triggered workflow</td></tr>
+          <tr><td><code>activities[].outcome</code></td><td><code>string[]</code></td><td>no</td><td>Expected outcomes when activity completes successfully</td></tr>
+          <tr><td><code>activities[].required</code></td><td><code>boolean</code></td><td>no</td><td>Whether this activity is required in the workflow Default: <code>true</code></td></tr>
+          <tr><td><code>activities[].rules</code></td><td><code>string[]</code></td><td>no</td><td>Activity-level rules and constraints that agents must follow</td></tr>
+          <tr><td><code>activities[].artifactPrefix</code></td><td><code>string</code></td><td>no</td><td>Numeric prefix for artifact filenames, inferred from the activity filename (e.g., &quot;02&quot; from 02-design-philosophy.yaml). Server-computed — do not set in definition files.</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+      <!-- END GENERATED -->
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
+    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
