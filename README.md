@@ -9,7 +9,7 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI
 
 ---
 
-**[Quick Start](#-quick-start)** • **[Architecture](docs/architecture.md)** • **[Schemas](schemas/README.md)** • **[API](docs/api-reference.md)** • **[Workflow Fidelity](docs/workflow-fidelity.md)** • **[Development](docs/development.md)** • **[Workflows](https://github.com/m2ux/workflow-server/tree/workflows)** • **[Engineering](https://github.com/m2ux/workflow-server/tree/engineering)**
+**[Docs Site](https://m2ux.github.io/workflow-server/)** • **[Quick Start](#-quick-start)** • **[Architecture](docs/architecture.md)** • **[Schemas](schemas/README.md)** • **[API](docs/api-reference.md)** • **[Workflow Fidelity](docs/workflow-fidelity.md)** • **[Development](docs/development.md)** • **[Docs Map](docs/documentation-system.md)** • **[Workflows](https://github.com/m2ux/workflow-server/tree/workflows)** • **[Engineering](https://github.com/m2ux/workflow-server/tree/engineering)**
 
 ---
 
@@ -83,14 +83,15 @@ npm run build
       "command": "node",
       "args": ["/path/to/workflow-server/dist/index.js"],
       "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflows",
+        "WORKFLOW_WORKSPACE": "/path/to/your/project"
       }
     }
   }
 }
 ```
 
-Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs.
+`WORKFLOW_WORKSPACE` is required: it points at the project whose `.engineering/artifacts/planning/` folder holds session state (`--workspace=PATH` on the command line works too). Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs.
 
 ### Deploy to Your Project
 

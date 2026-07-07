@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkpoint model — Workflow Server</title>
+<meta name="description" content="Just-in-time checkpoints: how execution pauses bubble up from background workers to the user and resume with recorded effects.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="../">Workflow Server</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="./architecture.html">Architecture</a></li>
+        <li><a href="../api/tools.html">Tools</a></li>
+        <li><a href="../api/schemas.html">Schemas</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <h1>Just-in-time checkpoints</h1>
+  <p class="lede">Checkpoints are declarative gates inside activities that halt the workflow until an external condition is met — usually your explicit confirmation. Background workers cannot ask you questions directly, so a checkpoint "bubbles up" the agent hierarchy to the user-facing agent, and the resolution travels back down.</p>
+  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/checkpoint_model.md">docs/checkpoint_model.md</a>. For the single-agent view, see the <a href="../guide/concepts.html#checkpoints">concepts guide</a>.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 400" role="img" aria-labelledby="bub-title bub-desc">
+      <title id="bub-title">Checkpoint bubble-up and resume</title>
+      <desc id="bub-desc">The worker yields a checkpoint to the server and passes a handle up to the orchestrator, which relays it to the meta orchestrator. The meta orchestrator fetches the checkpoint details, presents the decision to you, and submits your choice to the server. The resolution then travels back down: the orchestrator wakes the worker, which calls resume underscore checkpoint and continues.</desc>
+      <defs>
+        <marker id="arrowb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="15" font-weight="600" text-anchor="middle">
+        <rect x="20" y="150" width="190" height="100" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="115" y="182" fill="var(--diagram-label)">Worker (L2)</text>
+        <text x="115" y="206" fill="var(--diagram-note)" font-size="12.5" font-weight="400">1. yield_checkpoint</text>
+        <text x="115" y="226" fill="var(--diagram-note)" font-size="12.5" font-weight="400">8. resume_checkpoint</text>
+        <rect x="260" y="150" width="190" height="100" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="355" y="182" fill="var(--diagram-label)">Orchestrator (L1)</text>
+        <text x="355" y="206" fill="var(--diagram-note)" font-size="12.5" font-weight="400">relays the yield up,</text>
+        <text x="355" y="226" fill="var(--diagram-note)" font-size="12.5" font-weight="400">wakes the worker after</text>
+        <rect x="500" y="150" width="190" height="100" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="595" y="182" fill="var(--diagram-label)">Meta (L0)</text>
+        <text x="595" y="206" fill="var(--diagram-note)" font-size="12.5" font-weight="400">4. present_checkpoint</text>
+        <text x="595" y="226" fill="var(--diagram-note)" font-size="12.5" font-weight="400">6. respond_checkpoint</text>
+        <rect x="750" y="150" width="190" height="100" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="845" y="187" fill="var(--diagram-label)">You</text>
+        <text x="845" y="211" fill="var(--diagram-note)" font-size="12.5" font-weight="400">5. decide</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
+        <path d="M 115 150 C 115 90, 355 90, 355 150" marker-end="url(#arrowb)"/>
+        <path d="M 355 150 C 355 90, 595 90, 595 150" marker-end="url(#arrowb)"/>
+        <path d="M 595 150 C 595 90, 845 90, 845 150" marker-end="url(#arrowb)"/>
+        <path d="M 845 250 C 845 310, 595 310, 595 250" marker-end="url(#arrowb)"/>
+        <path d="M 595 250 C 595 310, 355 310, 355 250" marker-end="url(#arrowb)"/>
+        <path d="M 355 250 C 355 310, 115 310, 115 250" marker-end="url(#arrowb)"/>
+      </g>
+      <g font-size="12.5" fill="var(--diagram-note)" text-anchor="middle">
+        <text x="235" y="82">2. checkpoint_yield + handle</text>
+        <text x="475" y="82">3. relayed unchanged</text>
+        <text x="720" y="82">presents options</text>
+        <text x="720" y="332">your choice</text>
+        <text x="475" y="332">7. effects passed down</text>
+        <text x="235" y="332">wake + variable updates</text>
+      </g>
+      <text x="480" y="385" font-size="13" text-anchor="middle" fill="var(--diagram-note)">top arrows: the pause bubbles up · bottom arrows: the resolution travels back down</text>
+    </svg>
+    <figcaption>Bubble-up and resume. The worker yields (1) and passes an opaque handle up through the orchestrator (2–3); the meta orchestrator fetches the details (4), you decide (5), and it submits your choice (6); effects travel back down (7) and the worker clears the gate with <code>resume_checkpoint</code> (8) before continuing.</figcaption>
+  </figure>
+
+  <h2 id="yield">Yielding</h2>
+  <p>When a worker reaches a checkpoint step it calls <a href="../api/tools.html#yield_checkpoint"><code>yield_checkpoint</code></a>. The server records the checkpoint as <code>activeCheckpoint</code> in <code>session.json</code> and mints a one-shot, HMAC-signed <code>checkpoint_handle</code>. The worker emits the handle in a <code>&lt;checkpoint_yield&gt;</code> block in its final output and stops; the orchestrator relays the block upward without interpreting it. A new checkpoint cannot be yielded while one is already active — nested yields are a hard error.</p>
+
+  <h2 id="resolve">Resolving</h2>
+  <p>The meta orchestrator calls <a href="../api/tools.html#present_checkpoint"><code>present_checkpoint</code></a> to fetch the human-readable message, options, and effects, presents the decision through the host UI, then finalizes with <a href="../api/tools.html#respond_checkpoint"><code>respond_checkpoint</code></a> in exactly one of three modes:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Mode</th><th scope="col">Meaning</th><th scope="col">Server enforcement</th></tr></thead>
+      <tbody>
+        <tr><td><code>option_id</code></td><td>You selected an option</td><td>Option validated against the definition; minimum response time (default 3s) blocks instant self-resolution</td></tr>
+        <tr><td><code>auto_advance</code></td><td>Timer elapsed, use the default option</td><td>Only for checkpoints with <code>autoAdvanceMs</code>; the full timer must have elapsed since the yield</td></tr>
+        <tr><td><code>condition_not_met</code></td><td>Conditional checkpoint's prerequisite is false</td><td>Only valid when the checkpoint defines a <code>condition</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The server clears <code>activeCheckpoint</code>, records the decision and any variable <code>effects</code> (e.g. <code>setVariable: { is_monorepo: true }</code>) in the session state, and returns the effects to the caller.</p>
+
+  <h2 id="resume">Resuming</h2>
+  <p>Agents wake in reverse order using the host's resume mechanism, with effects passed down as plain instructions. Before the worker can touch regular tools again it must call <a href="../api/tools.html#resume_checkpoint"><code>resume_checkpoint</code></a> — a hard gate that verifies the checkpoint really was resolved and hands back the recorded variable updates. In inline (single-agent) execution the wake is a no-op persona switch; the server-side gates are identical.</p>
+
+  <h2 id="why">Why this design</h2>
+  <ul>
+    <li><strong>Clean UI boundaries</strong> — hidden background agents never prompt you directly, so nothing freezes waiting on an invisible question.</li>
+    <li><strong>Stateless hand-offs</strong> — the signed handle carries the linkage; intermediate agents relay it without parsing or storing checkpoint details.</li>
+    <li><strong>Timing enforcement</strong> — minimum response times and server-enforced auto-advance timers prevent an agent from "answering" its own checkpoint instantly.</li>
+    <li><strong>Effects as data</strong> — your choice mutates workflow variables through declared effects, which is what makes <a href="./state-management.html">deterministic transitions</a> possible.</li>
+  </ul>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
+    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

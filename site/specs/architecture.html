@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architecture — Workflow Server</title>
+<meta name="description" content="The workflow-server's architecture: six models covering dispatch, checkpoints, state, artifacts, resolution, and fidelity.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="../">Workflow Server</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="./architecture.html" aria-current="page">Architecture</a></li>
+        <li><a href="../api/tools.html">Tools</a></li>
+        <li><a href="../api/schemas.html">Schemas</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <h1>Architecture</h1>
+  <p class="lede">The server is a small state machine wrapped in an MCP tool surface: agents call tools, the server enforces the workflow definition and owns the session state on disk. Six models describe how that works; this page is the map.</p>
+  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/architecture.md">docs/architecture.md</a>.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 300" role="img" aria-labelledby="arch-title arch-desc">
+      <title id="arch-title">System layers</title>
+      <desc id="arch-desc">Agents reach the server through sixteen MCP tools. Below the tool surface sit the enforcement layers, which consult workflow definitions read from the workflows directory and the session state persisted in the workspace.</desc>
+      <defs>
+        <marker id="arrowa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="15.5" font-weight="600" text-anchor="middle">
+        <rect x="280" y="15" width="400" height="50" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="480" y="46" fill="var(--diagram-label)">Agents (orchestrators and workers)</text>
+        <rect x="280" y="105" width="400" height="50" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="480" y="130" fill="var(--diagram-label)">MCP tool surface</text>
+        <text x="480" y="148" fill="var(--diagram-note)" font-size="13" font-weight="400">16 tools: session, navigation, checkpoints, techniques, trace</text>
+        <rect x="280" y="195" width="400" height="50" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="480" y="220" fill="var(--diagram-label)">Enforcement and resolution</text>
+        <text x="480" y="238" fill="var(--diagram-note)" font-size="13" font-weight="400">fidelity layers · transition validation · technique bundles</text>
+        <rect x="30" y="195" width="200" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="130" y="225" fill="var(--diagram-label)">Workflow definitions</text>
+        <text x="130" y="245" fill="var(--diagram-note)" font-size="13" font-weight="400">workflows/ (read)</text>
+        <rect x="730" y="195" width="200" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="830" y="220" fill="var(--diagram-label)">Session state</text>
+        <text x="830" y="240" fill="var(--diagram-note)" font-size="12.5" font-weight="400">session.json + .session-token</text>
+        <text x="830" y="256" fill="var(--diagram-note)" font-size="12.5" font-weight="400">in your workspace</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
+        <line x1="480" y1="65" x2="480" y2="101" marker-end="url(#arrowa)" marker-start="url(#arrowa)"/>
+        <line x1="480" y1="155" x2="480" y2="191" marker-end="url(#arrowa)"/>
+        <line x1="276" y1="225" x2="234" y2="225" marker-end="url(#arrowa)"/>
+        <line x1="684" y1="225" x2="726" y2="225" marker-end="url(#arrowa)" marker-start="url(#arrowa)"/>
+      </g>
+      <g font-size="13" fill="var(--diagram-note)" text-anchor="middle">
+        <text x="520" y="88">MCP</text>
+        <text x="255" y="213">reads</text>
+        <text x="705" y="213">owns</text>
+      </g>
+    </svg>
+    <figcaption>System layers. Agents only ever see the tool surface; the server validates every call against the workflow definition and persists canonical session state in your project's workspace. Agents never read or write state files themselves.</figcaption>
+  </figure>
+
+  <h2 id="models">The six models</h2>
+  <ul class="card-grid">
+    <li class="card">
+      <h3>1. Hierarchical dispatch</h3>
+      <p>Three agent layers — a user-facing meta orchestrator, a per-workflow orchestrator, and ephemeral activity workers — with clear boundaries between user interaction, state management, and task execution.</p>
+      <span class="card-cta"><a href="./dispatch.html">Dispatch model</a></span>
+    </li>
+    <li class="card">
+      <h3>2. Just-in-time checkpoints</h3>
+      <p>Declarative gates that pause execution for user decisions. Yields bubble up from background workers to the user-facing agent; the server enforces the pause and the response timing.</p>
+      <span class="card-cta"><a href="./checkpoints.html">Checkpoint model</a></span>
+    </li>
+    <li class="card">
+      <h3>3. State management</h3>
+      <p>Deterministic transitions: a schema-validated variable bag, mutation through checkpoint effects and worker outputs, and first-matching-condition transition evaluation — never a guess.</p>
+      <span class="card-cta"><a href="./state-management.html">State model</a></span>
+    </li>
+    <li class="card">
+      <h3>4. Artifact and workspace isolation</h3>
+      <p>Strict separation between your codebase and the orchestration workspace: a per-session planning folder holds plans, state, and traces, with predictable artifact naming.</p>
+      <span class="card-cta"><a href="./artifact-management.html">Artifact model</a></span>
+    </li>
+    <li class="card">
+      <h3>5. Technique and resource resolution</h3>
+      <p>All behaviour is composed from techniques, referenced by <code>::</code>-paths, resolved workflow-first with a shared <code>meta</code> fallback, and delivered as bundles — with reference material lazy-loaded.</p>
+      <span class="card-cta"><a href="./resource-resolution.html">Resolution model</a></span>
+    </li>
+    <li class="card">
+      <h3>6. Workflow fidelity</h3>
+      <p>Seven enforcement layers — from HMAC token integrity to the execution trace — that keep agents on the defined path and make deviations visible.</p>
+      <span class="card-cta"><a href="./workflow-fidelity.html">Fidelity model</a></span>
+    </li>
+  </ul>
+
+  <h2 id="specifications">Normative specifications</h2>
+  <p>Two documents define the system's contracts precisely; they are the reference when a model page and an edge case disagree:</p>
+  <ul>
+    <li><a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md"><strong>Technique protocol specification</strong></a> — the anatomy of a technique file (capability, inputs, outputs, protocol, rules), the <code>::</code> addressing grammar, contract inheritance, Initial/Final protocol composition, and delivery.</li>
+    <li><a href="https://github.com/m2ux/workflow-server/blob/main/docs/orchestra-specification.md"><strong>Orchestra DSL specification</strong></a> — the workflow/activity definition language: step, decision, loop, and flow primitives, the EBNF grammar, and the semantic constraints.</li>
+  </ul>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
+    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
