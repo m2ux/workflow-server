@@ -1,5 +1,5 @@
 id: prism-update
-version: 1.1.0
+version: 1.1.1
 title: Prism Update Workflow
 description: Sync the prism workflow's resources, techniques, and documentation with upstream changes from the agi-in-md project.
 author: m2ux
@@ -35,7 +35,7 @@ variables:
   - name: exclusions
     type: array
     description: Prism filenames to exclude from import (e.g., arc_code.md, codegen.md)
-    defaultValue: "[]"
+    defaultValue: []
   - name: next_index
     type: number
     description: Next available resource index, derived from highest existing index + 1

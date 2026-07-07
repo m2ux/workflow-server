@@ -1,5 +1,5 @@
 id: prism
-version: 2.1.0
+version: 2.2.0
 title: Structural Analysis Prism Workflow
 description: Apply cognitive lenses to code or text through isolated sub-agent passes. Each pass runs in a fresh context window to guarantee analytical independence. For security audit use cases, use the prism-audit workflow which triggers prism and adds audit-specific post-processing.
 author: m2ux
@@ -38,8 +38,7 @@ variables:
     defaultValue: code
   - name: pipeline_mode
     type: string
-    description: "Analysis mode: 'single' (L12), 'full-prism' (3-pass), 'portfolio' (multiple lenses), 'behavioral' (4+1 behavioral pipeline), 'dispute' (2 orthogonal prisms + disagreement synthesis), 'subsystem' (per-region prism assignment + cross-subsystem synthesis), 'verified' (L12 + gap detection + re-analysis with corrections), 'reflect' (L12 + meta-analysis + constraint synthesis), 'smart' (adaptive chain: prereq + analysis + dispute + profile), or 'adaptive' (depth escalation: SDL -> L12 -> full-prism)"
-    defaultValue: single
+    description: "Analysis mode: 'single' (L12), 'full-prism' (3-pass), 'portfolio' (multiple lenses), 'behavioral' (4+1 behavioral pipeline), 'dispute' (2 orthogonal prisms + disagreement synthesis), 'subsystem' (per-region prism assignment + cross-subsystem synthesis), 'verified' (L12 + gap detection + re-analysis with corrections), 'reflect' (L12 + meta-analysis + constraint synthesis), 'smart' (adaptive chain: prereq + analysis + dispute + profile), or 'adaptive' (depth escalation: SDL -> L12 -> full-prism). No default — absence means the caller did not preset a mode, which is what select-mode's confirm-mode checkpoint gate (notExists) tests; select-mode then resolves the mode from its recommendation or the option the user picks"
   - name: output_path
     type: string
     description: Directory to write analysis artifacts
