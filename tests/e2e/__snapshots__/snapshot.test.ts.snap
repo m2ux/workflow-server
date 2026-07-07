@@ -92,7 +92,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "codebase-comprehension",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -155,7 +155,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "assumptions-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -297,7 +297,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "validate",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -538,7 +538,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "codebase-comprehension",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -608,7 +608,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "implementation-analysis",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -816,7 +816,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "validate",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1060,7 +1060,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "codebase-comprehension",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1130,7 +1130,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "research",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1379,7 +1379,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "validate",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1622,7 +1622,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "codebase-comprehension",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1690,7 +1690,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "implementation-analysis",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1901,7 +1901,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "validate",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2163,7 +2163,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "codebase-comprehension",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2228,7 +2228,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "assumptions-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2354,7 +2354,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "validate",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2407,7 +2407,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "submit-for-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2600,7 +2600,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "codebase-comprehension",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2663,7 +2663,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "assumptions-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2805,7 +2805,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "validate",
       "orphanCheckpoints": [],
       "stepsExecuted": [

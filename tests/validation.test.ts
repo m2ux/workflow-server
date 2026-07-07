@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   validateActivityTransition,
   validateWorkflowVersion,
+  validateStepManifest,
   buildValidation,
   type SessionView,
 } from '../src/utils/validation.js';
@@ -214,6 +215,138 @@ describe('validation', () => {
       };
       expect(evaluateCondition(condition, { min: '5', max: '50' })).toBe(true);
       expect(evaluateCondition(condition, { min: '0', max: '50' })).toBe(false);
+    });
+  });
+
+  describe('validateStepManifest: gated and loop-body steps', () => {
+    function makeManifestWorkflow(): Workflow {
+      return {
+        id: 'test-wf',
+        version: '1.0.0',
+        title: 'Test Workflow',
+        activities: [
+          {
+            id: 'work',
+            version: '1.0.0',
+            name: 'Work',
+            steps: [
+              { kind: 'technique', id: 'first-step', technique: 'grp::first-step' },
+              { kind: 'technique', id: 'gated-step', technique: 'grp::gated-step', when: 'needs_gate == true' },
+              {
+                kind: 'checkpoint',
+                id: 'conditional-gate',
+                message: 'Proceed?',
+                options: [{ id: 'proceed', label: 'Proceed' }],
+                condition: { type: 'simple', variable: 'confirmation_needed', operator: '==', value: true },
+              },
+              {
+                kind: 'loop',
+                id: 'item-loop',
+                loopType: 'forEach',
+                variable: 'current_item',
+                over: 'pending_items',
+                steps: [
+                  { kind: 'technique', id: 'process-item', technique: 'grp::process-item' },
+                ],
+              },
+              { kind: 'technique', id: 'last-step', technique: 'grp::last-step' },
+            ],
+          },
+        ],
+      } as unknown as Workflow;
+    }
+
+    it('accepts a manifest that omits when-gated and condition-gated steps', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: 'done' },
+          { step_id: 'item-loop', output: 'processed 3 items' },
+          { step_id: 'last-step', output: 'done' },
+        ],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings).toEqual([]);
+    });
+
+    it('still reports ungated steps as missing', () => {
+      const warnings = validateStepManifest(
+        [{ step_id: 'first-step', output: 'done' }],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings.some(w => w.includes('Missing steps') && w.includes('last-step'))).toBe(true);
+      expect(warnings.some(w => w.includes('gated-step') || w.includes('conditional-gate'))).toBe(false);
+    });
+
+    it('accepts executed gated steps and loop-body step ids without warnings', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: 'done' },
+          { step_id: 'gated-step', output: 'gate held, executed' },
+          { step_id: 'conditional-gate', output: 'user chose proceed' },
+          { step_id: 'item-loop', output: 'iterated' },
+          { step_id: 'process-item', output: 'item 1' },
+          { step_id: 'process-item', output: 'item 2' },
+          { step_id: 'last-step', output: 'done' },
+        ],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings).toEqual([]);
+    });
+
+    it('reports unknown step ids as unexpected', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: 'done' },
+          { step_id: 'invented-step', output: 'done' },
+          { step_id: 'item-loop', output: 'done' },
+          { step_id: 'last-step', output: 'done' },
+        ],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings.some(w => w.includes('Unexpected steps') && w.includes('invented-step'))).toBe(true);
+    });
+
+    it('does not report order mismatches when gated steps are skipped', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: 'done' },
+          { step_id: 'item-loop', output: 'done' },
+          { step_id: 'last-step', output: 'done' },
+        ],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings.some(w => w.includes('order mismatch'))).toBe(false);
+    });
+
+    it('reports out-of-declaration-order top-level steps', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'last-step', output: 'done' },
+          { step_id: 'first-step', output: 'done' },
+          { step_id: 'item-loop', output: 'done' },
+        ],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings.some(w => w.includes('order mismatch'))).toBe(true);
+    });
+
+    it('warns on empty step output', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: '  ' },
+          { step_id: 'item-loop', output: 'done' },
+          { step_id: 'last-step', output: 'done' },
+        ],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings.some(w => w.includes("'first-step' has empty output"))).toBe(true);
     });
   });
 
