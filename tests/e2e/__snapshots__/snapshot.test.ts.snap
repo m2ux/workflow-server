@@ -51,7 +51,6 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "stepsExecuted": [
         "announce-start",
         "resolve-reference",
-        "update-reference-submodules",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
         "detect-merge-strategy",
@@ -497,7 +496,6 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "stepsExecuted": [
         "announce-start",
         "resolve-reference",
-        "update-reference-submodules",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
         "detect-merge-strategy",
@@ -1019,7 +1017,6 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "stepsExecuted": [
         "announce-start",
         "resolve-reference",
-        "update-reference-submodules",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
         "detect-merge-strategy",
@@ -1581,7 +1578,6 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "stepsExecuted": [
         "announce-start",
         "resolve-reference",
-        "update-reference-submodules",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
         "detect-merge-strategy",
@@ -2118,7 +2114,6 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "capture-pr-reference",
         "ingest-prior-feedback",
         "resolve-reference",
-        "update-reference-submodules",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
         "detect-merge-strategy",
@@ -2559,7 +2554,6 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "stepsExecuted": [
         "announce-start",
         "resolve-reference",
-        "update-reference-submodules",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
         "detect-merge-strategy",
