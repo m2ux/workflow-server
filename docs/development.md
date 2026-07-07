@@ -170,9 +170,15 @@ npx tsx scripts/check-all-refs.ts
 # scripts/binding-fidelity-baseline.json (re-snapshot intentional changes with
 # --update-baseline).
 npm run check:binding
+
+# Normative technique template: metadata.version-only frontmatter, no H1 title,
+# the canonical H2 set in order (Capability, Inputs, Outputs, Protocol, Rules —
+# Outputs before Protocol), snake_case entry ids (camelCase tool-parameter
+# mirrors allowed), kebab-case rule names, snake_case {$name} sigils. Hard-zero.
+npm run check:technique-template
 ```
 
-The binding-fidelity guard also runs as a Vitest test (`tests/binding-fidelity.test.ts`), so `npm test` fails on new binding drift.
+The binding-fidelity and technique-template guards also run as Vitest tests (`tests/binding-fidelity.test.ts`, `tests/technique-template.test.ts`), so `npm test` fails on new binding drift or a template deviation.
 
 ## Branch Structure
 
