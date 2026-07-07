@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artifact and workspace isolation — Workflow Server</title>
+<meta name="description" content="Strict boundaries between the user's codebase and the orchestration workspace, with predictable artifact naming.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="../">Workflow Server</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="./architecture.html">Architecture</a></li>
+        <li><a href="../api/tools.html">Tools</a></li>
+        <li><a href="../api/schemas.html">Schemas</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <h1>Artifact and workspace isolation</h1>
+  <p class="lede">Orchestration metadata and your actual code never mix. Domain work happens strictly inside your codebase; plans, state, traces, and review documents live in a per-session planning folder under <code>.engineering/</code>. Each side stays clean, diffable, and independently version-controlled.</p>
+  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/artifact_management_model.md">docs/artifact_management_model.md</a>.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 320" role="img" aria-labelledby="art-title art-desc">
+      <title id="art-title">The two directory scopes</title>
+      <desc id="art-desc">Two side-by-side scopes. The target path is the user's codebase, where code, tests, and builds happen. The engineering directory is the orchestration workspace; its planning folder for the session contains the progress README, the session state pair, the trace, and prefixed artifacts. The activity worker writes domain work to the codebase and planning artifacts to the planning folder.</desc>
+      <g font-size="15" font-weight="600">
+        <rect x="20" y="55" width="430" height="200" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="40" y="85" fill="var(--diagram-label)">target_path — your codebase</text>
+        <text x="40" y="115" fill="var(--diagram-note)" font-size="13.5" font-weight="400">src/, tests/, build config …</text>
+        <text x="40" y="140" fill="var(--diagram-note)" font-size="13.5" font-weight="400">all domain execution: writing code,</text>
+        <text x="40" y="160" fill="var(--diagram-note)" font-size="13.5" font-weight="400">running tests, refactoring, building</text>
+        <text x="40" y="195" fill="var(--diagram-note)" font-size="13.5" font-weight="400">committed to your product history</text>
+        <rect x="510" y="55" width="430" height="200" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="530" y="85" fill="var(--diagram-label)">.engineering/artifacts/planning/&lt;slug&gt;/</text>
+        <g font-size="13.5" font-weight="400" font-family="ui-monospace, Menlo, Consolas, monospace">
+          <text x="530" y="115" fill="var(--diagram-note)">README.md          — progress tracker</text>
+          <text x="530" y="137" fill="var(--diagram-note)">session.json       — server-managed state</text>
+          <text x="530" y="159" fill="var(--diagram-note)">.session-token     — HMAC seal</text>
+          <text x="530" y="181" fill="var(--diagram-note)">workflow-trace.json — semantic log</text>
+          <text x="530" y="203" fill="var(--diagram-note)">02-design-philosophy.md, 05-… — artifacts</text>
+        </g>
+        <text x="530" y="235" fill="var(--diagram-note)" font-size="13.5" font-weight="400">version-controlled on the engineering branch</text>
+      </g>
+      <text x="480" y="292" font-size="13.5" text-anchor="middle" fill="var(--diagram-note)">agents write domain work only to the left scope and planning artifacts only to the right scope — never across</text>
+    </svg>
+    <figcaption>The two directory scopes. Everything an activity worker does to your product happens in <code>target_path</code>; everything about how the workflow got there — plans, state, traces, reviews — lands in the session's planning folder under <code>.engineering/</code>.</figcaption>
+  </figure>
+
+  <h2 id="planning-folder">The planning folder</h2>
+  <p>Each session establishes one planning folder that acts as its isolated "brain": <code>README.md</code> as the central progress tracker, the server-managed <code>session.json</code> + <code>.session-token</code> state pair (see <a href="./state-management.html">state management</a>), and <code>workflow-trace.json</code> holding the semantic log of what the agents did.</p>
+  <p><strong>Progress tracking is mandatory.</strong> Before a worker may report an activity complete, its finalize protocol requires updating the planning folder's README — checking off progress-table items and keeping the artifact list accurate — so a human can always read the README and know exactly where the workflow stands without parsing logs.</p>
+
+  <h2 id="naming">Predictable artifact naming</h2>
+  <p>Every activity carries an <code>artifactPrefix</code>, inferred by the server from the activity's filename (<code>02-design-philosophy.yaml</code> → <code>02</code>). Workers prepend it to artifacts they produce — <code>design-philosophy.md</code> becomes <code>02-design-philosophy.md</code> — so a planning folder sorts into workflow order and artifacts never clash. The activity's <code>artifacts</code> array itself is a server-computed contract, synthesized by <code>get_activity</code> from the outputs of the techniques its steps bind; activities do not author the list.</p>
+
+  <h2 id="git">Git and submodule protocol</h2>
+  <p>The <code>.engineering</code> tree typically lives as a Git submodule or orphan-branch worktree, so orchestration state is version-controlled independently of your product history. When the orchestrator commits artifacts it works inside the submodule first — stage, commit, push — then commits the updated submodule reference in the parent repository. Engineering metadata never pollutes product commits.</p>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
+    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workflow fidelity — Workflow Server</title>
+<meta name="description" content="The seven enforcement layers that keep agents on the defined workflow path and make deviations visible.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="../">Workflow Server</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="./architecture.html">Architecture</a></li>
+        <li><a href="../api/tools.html">Tools</a></li>
+        <li><a href="../api/schemas.html">Schemas</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <h1>Workflow fidelity</h1>
+  <p class="lede">Agents drift: context degrades over long sessions, and without enforcement a model may skip steps, dodge checkpoints, or fabricate state. The server counters this with seven enforcement layers — some hard gates that block, some advisory checks that warn — each operating at a different granularity.</p>
+  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/workflow-fidelity.md">docs/workflow-fidelity.md</a>.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 470" role="img" aria-labelledby="fid-title fid-desc">
+      <title id="fid-title">The seven enforcement layers</title>
+      <desc id="fid-desc">A stack of seven layers. Layer one, cryptographic integrity, applies to every call and is a hard gate. Layer two, the checkpoint gate, blocks transitions and is a hard gate. Layers three to six — cross-activity validation, transition condition tracking, the step completion manifest, and the activity manifest — are advisory checks that produce warnings. Layer seven, the execution trace, records the entire session.</desc>
+      <g font-size="15" font-weight="600">
+        <rect x="60" y="12" width="660" height="52" rx="8" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="3"/>
+        <text x="80" y="34" fill="var(--diagram-label)">L1 · Cryptographic integrity (HMAC)</text>
+        <text x="80" y="54" fill="var(--diagram-note)" font-size="13" font-weight="400">session seal, checkpoint handles, trace tokens — fabrication and tampering rejected</text>
+        <rect x="60" y="74" width="660" height="52" rx="8" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="3"/>
+        <text x="80" y="96" fill="var(--diagram-label)">L2 · Checkpoint gate</text>
+        <text x="80" y="116" fill="var(--diagram-note)" font-size="13" font-weight="400">active checkpoint blocks transition tools until resolved; response timing enforced</text>
+        <rect x="60" y="136" width="660" height="52" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2" stroke-dasharray="7 4"/>
+        <text x="80" y="158" fill="var(--diagram-label)">L3 · Cross-activity validation</text>
+        <text x="80" y="178" fill="var(--diagram-note)" font-size="13" font-weight="400">workflow consistency, valid transitions, declared techniques, version drift</text>
+        <rect x="60" y="198" width="660" height="52" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2" stroke-dasharray="7 4"/>
+        <text x="80" y="220" fill="var(--diagram-label)">L4 · Transition condition tracking</text>
+        <text x="80" y="240" fill="var(--diagram-note)" font-size="13" font-weight="400">claimed condition must map to the target activity in the transition table</text>
+        <rect x="60" y="260" width="660" height="52" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2" stroke-dasharray="7 4"/>
+        <text x="80" y="282" fill="var(--diagram-label)">L5 · Step completion manifest</text>
+        <text x="80" y="302" fill="var(--diagram-note)" font-size="13" font-weight="400">per-step summary checked for presence, order, and non-empty outputs</text>
+        <rect x="60" y="322" width="660" height="52" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2" stroke-dasharray="7 4"/>
+        <text x="80" y="344" fill="var(--diagram-label)">L6 · Activity manifest</text>
+        <text x="80" y="364" fill="var(--diagram-note)" font-size="13" font-weight="400">workflow-journey summary checked against definition and conditions</text>
+        <rect x="60" y="384" width="660" height="52" rx="8" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="3"/>
+        <text x="80" y="406" fill="var(--diagram-label)">L7 · Execution trace</text>
+        <text x="80" y="426" fill="var(--diagram-note)" font-size="13" font-weight="400">every tool call recorded; signed trace tokens resolvable via get_trace</text>
+      </g>
+      <g font-size="13.5" fill="var(--diagram-note)">
+        <text x="745" y="42">every call · hard</text>
+        <text x="745" y="104">transitions · hard</text>
+        <text x="745" y="166">between activities · warns</text>
+        <text x="745" y="228">at transitions · warns</text>
+        <text x="745" y="290">within activities · warns</text>
+        <text x="745" y="352">across activities · warns</text>
+        <text x="745" y="414">whole session · records</text>
+      </g>
+    </svg>
+    <figcaption>The seven enforcement layers, from per-call cryptographic integrity to a whole-session audit trail. Solid borders mark hard gates that block execution ("hard"); dashed borders mark advisory checks that return warnings without blocking ("warns").</figcaption>
+  </figure>
+
+  <h2 id="hard">The hard gates</h2>
+  <p><strong>Integrity (L1).</strong> Everything the server hands out or persists is HMAC-signed with a server-held key: the <code>.session-token</code> seal on session state, one-shot checkpoint handles, and trace tokens. An agent cannot fabricate or tamper with any of them — a mismatch between <code>session.json</code> and its seal is a hard error on read.</p>
+  <p><strong>Checkpoint gate (L2).</strong> While a checkpoint is active, transition tools hard-fail; only <code>present_checkpoint</code> and <code>respond_checkpoint</code> are exempt. Responses are validated against the checkpoint definition, and timing is enforced — a minimum response delay for user-answered checkpoints, the full <code>autoAdvanceMs</code> timer for auto-advanced ones — so an agent cannot instantly answer its own question. Details in the <a href="./checkpoints.html">checkpoint model</a>.</p>
+
+  <h2 id="advisory">The advisory layers</h2>
+  <p>Layers 3–6 warn rather than block, on the principle that a confused agent should be able to self-correct while every violation stays visible. Warnings come back in the tool response's <code>_meta.validation</code> and are recorded in the trace:</p>
+  <ul>
+    <li><strong>Cross-activity validation (L3)</strong> — mid-session workflow switches, transitions that aren't in the graph, techniques the activity never declared, workflow definitions that changed on disk.</li>
+    <li><strong>Transition condition tracking (L4)</strong> — the condition an agent claims for a transition must actually map to the target activity; false "default" claims are flagged.</li>
+    <li><strong>Step manifest (L5)</strong> — the per-step summary submitted with <code>next_activity</code> is checked for missing steps, ordering, unexpected step ids, and empty outputs.</li>
+    <li><strong>Activity manifest (L6)</strong> — the workflow-level journey summary is checked against the definition: real activity ids, non-empty outcomes, conditions that exist.</li>
+  </ul>
+
+  <h2 id="trace">The trace (L7)</h2>
+  <p>The server mechanically records every tool call — name, timing, status, workflow/activity/agent attribution, errors, and any validation warnings. At each activity transition the events are packaged into a compact, HMAC-signed trace token returned in <code>_meta.trace_token</code>; the agent accumulates these opaque strings and can resolve them at any time with <a href="../api/tools.html#get_trace"><code>get_trace</code></a>. Agents additionally write a semantic trace (step outputs, decisions, variable changes) to the planning folder; together the two give complete post-hoc visibility.</p>
+
+  <h2 id="context">Context-pressure mitigation</h2>
+  <p>Enforcement is half the story; the server also keeps agents' context windows small so instructions stay in effective attention: lightweight <code>get_workflow</code> metadata instead of full definitions, transitions delivered with each activity, pre-resolved technique bundles, lazy resources, a self-describing bootstrap, and compressed trace tokens (see <a href="./resource-resolution.html">resolution</a>).</p>
+
+  <h2 id="limits">Honest limitations</h2>
+  <p>The enforcement is detection-oriented, not proof-oriented. The server verifies that steps were <em>reported</em>, not that the work was done; that a claimed condition maps to the target, not that it is true; that a checkpoint was <em>answered</em> after a plausible delay, not that a human saw it. The mechanical trace corroborates what tool calls actually happened, and post-hoc audit can cross-reference claims against checkpoint logs — the full list of limitations is in the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/workflow-fidelity.md">canonical document</a>.</p>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
+    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

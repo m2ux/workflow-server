@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>State management — Workflow Server</title>
+<meta name="description" content="Deterministic state machine transitions: the variable bag, mutation through effects and outputs, and server-managed persistence.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="../">Workflow Server</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="./architecture.html">Architecture</a></li>
+        <li><a href="../api/tools.html">Tools</a></li>
+        <li><a href="../api/schemas.html">Schemas</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <h1>State management and deterministic transitions</h1>
+  <p class="lede">The workflow never asks the model to guess what happens next. A schema-validated variable bag holds the state; transitions are evaluated against it in declaration order; the first condition that matches wins. Conversational context plays no part in routing.</p>
+  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/state_management_model.md">docs/state_management_model.md</a>.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 330" role="img" aria-labelledby="st-title st-desc">
+      <title id="st-title">Transition evaluation</title>
+      <desc id="st-desc">When an activity completes, the orchestrator reads the variable bag and evaluates the activity's transitions in order. The first condition that evaluates to true selects the next activity, and next underscore activity is called with that identifier. The variable bag is mutated by checkpoint effects and worker outputs, and persisted by the server in session dot json with a sealed token file.</desc>
+      <defs>
+        <marker id="arrows" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="15" font-weight="600" text-anchor="middle">
+        <rect x="15" y="40" width="180" height="60" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="105" y="75" fill="var(--diagram-label)">activity completes</text>
+        <rect x="250" y="40" width="200" height="60" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="350" y="66" fill="var(--diagram-label)">evaluate transitions</text>
+        <text x="350" y="86" fill="var(--diagram-note)" font-size="13" font-weight="400">in declaration order</text>
+        <rect x="505" y="40" width="200" height="60" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="605" y="66" fill="var(--diagram-label)">first true condition</text>
+        <text x="605" y="86" fill="var(--diagram-note)" font-size="13" font-weight="400">or the default transition</text>
+        <rect x="760" y="40" width="185" height="60" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="852" y="75" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">next_activity(id)</text>
+        <rect x="250" y="185" width="200" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="350" y="213" fill="var(--diagram-label)">variable bag</text>
+        <text x="350" y="237" fill="var(--diagram-note)" font-size="13" font-weight="400">schema-validated state</text>
+        <rect x="530" y="185" width="240" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="650" y="209" fill="var(--diagram-label)">server persistence</text>
+        <text x="650" y="231" fill="var(--diagram-note)" font-size="12.5" font-weight="400">session.json + .session-token</text>
+        <text x="650" y="248" fill="var(--diagram-note)" font-size="12.5" font-weight="400">atomic writes, seal verified</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
+        <line x1="195" y1="70" x2="246" y2="70" marker-end="url(#arrows)"/>
+        <line x1="450" y1="70" x2="501" y2="70" marker-end="url(#arrows)"/>
+        <line x1="705" y1="70" x2="756" y2="70" marker-end="url(#arrows)"/>
+        <line x1="350" y1="185" x2="350" y2="104" marker-end="url(#arrows)"/>
+        <line x1="450" y1="220" x2="526" y2="220" marker-end="url(#arrows)" marker-start="url(#arrows)"/>
+      </g>
+      <g font-size="13" fill="var(--diagram-note)" text-anchor="middle">
+        <text x="290" y="150">read</text>
+        <text x="130" y="300">mutations: checkpoint effects · worker outputs</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2" fill="none" stroke-dasharray="5 4">
+        <path d="M 130 285 C 200 285, 230 250, 262 258" marker-end="url(#arrows)"/>
+      </g>
+    </svg>
+    <figcaption>Transition evaluation. The variable bag is read when an activity completes; transitions are checked in declaration order and the first matching condition (or the default) names the next activity. Checkpoint effects and worker outputs are the only mutation paths, and the server persists every change atomically.</figcaption>
+  </figure>
+
+  <h2 id="variables">The variable bag</h2>
+  <p>Every workflow declares its variables in <code>workflow.yaml</code> — name, type (<code>string</code>, <code>number</code>, <code>boolean</code>, <code>array</code>, <code>object</code>), and optionally a default. The session's state dictionary is initialized from these definitions at bootstrap.</p>
+  <p>Two things mutate it during a run: <strong>checkpoint effects</strong> (your choice at a checkpoint carries a declared <code>setVariable</code> effect) and <strong>worker outputs</strong> (an activity worker returns variables it determined from its domain work, like <code>has_critical_bugs: true</code> after a failing test run).</p>
+
+  <h2 id="transitions">The rule of determinism</h2>
+  <p>When an activity completes, the orchestrator consults the activity's <code>transitions</code> array. Conditions are structured objects — <code>simple</code> comparisons (<code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>exists</code>, <code>notExists</code>) composable with <code>and</code>, <code>or</code>, and <code>not</code>. The orchestrator must not ask you or the model what to do next: it evaluates conditions in array order against the current variables, and the first <code>true</code> names the next activity. Transitions can also come from decision branches and checkpoint-option effects.</p>
+  <p>Path variation works through ordinary state: an <em>activation variable</em> set early (by a detection step or a checkpoint) marks a variant — review mode, monorepo handling — and conditional transitions and step gates branch on it for the rest of the run.</p>
+
+  <h2 id="persistence">Server-managed persistence</h2>
+  <p>The server owns the canonical state and writes it on every authenticated call — agents only ever pass their 6-character <code>session_index</code>. Two files live in the planning folder: <code>session.json</code>, the human-inspectable, schema-validated state (see the <a href="../api/schemas.html#session-file">session-file schema</a>), and <code>.session-token</code>, an HMAC-signed seal binding that state to the workspace and server key. Writes are atomic (write-temp, then rename) and ordered; reads verify the seal and any mismatch is a hard <code>SealMismatchError</code>.</p>
+  <p>Because state lives on disk rather than in the agent, a session can be paused, killed, or resumed at any point: resume is one <code>start_session</code> call with the planning slug, and server restarts are transparent.</p>
+
+  <h2 id="related">Related</h2>
+  <p>Checkpoint effects are defined in the <a href="./checkpoints.html">checkpoint model</a>; how the state files sit inside the planning folder is part of <a href="./artifact-management.html">artifact and workspace isolation</a>; the enforcement that keeps reported transitions honest is <a href="./workflow-fidelity.html">workflow fidelity</a>.</p>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
+    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

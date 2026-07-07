@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hierarchical dispatch — Workflow Server</title>
+<meta name="description" content="The three-layer orchestration model: meta orchestrator, workflow orchestrator, and activity workers.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="../">Workflow Server</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="./architecture.html">Architecture</a></li>
+        <li><a href="../api/tools.html">Tools</a></li>
+        <li><a href="../api/schemas.html">Schemas</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <h1>Hierarchical dispatch</h1>
+  <p class="lede">Workflows execute through multi-agent delegation: a user-facing agent dispatches a background orchestrator per workflow, which dispatches ephemeral workers per activity. Each layer has one job, and the boundaries keep user interaction, state management, and task execution from tangling.</p>
+  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/dispatch_model.md">docs/dispatch_model.md</a>.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 360" role="img" aria-labelledby="disp-title disp-desc">
+      <title id="disp-title">The three orchestration layers</title>
+      <desc id="disp-desc">Level zero, the meta orchestrator, is the user-facing agent. It dispatches level one, the workflow orchestrator, creating a child session with a new session index. The workflow orchestrator dispatches level two, an activity worker, which shares the orchestrator's session index. All three layers call the workflow server.</desc>
+      <defs>
+        <marker id="arrowd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="15.5" font-weight="600">
+        <rect x="30" y="20" width="560" height="72" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="50" y="48" fill="var(--diagram-label)">L0 · Meta orchestrator — user-facing</text>
+        <text x="50" y="72" fill="var(--diagram-note)" font-size="13" font-weight="400">discovers workflows, presents checkpoints to you, never does domain work</text>
+        <rect x="30" y="144" width="560" height="72" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="50" y="172" fill="var(--diagram-label)">L1 · Workflow orchestrator — background, persistent</text>
+        <text x="50" y="196" fill="var(--diagram-note)" font-size="13" font-weight="400">evaluates transitions, dispatches workers, relays checkpoints upward</text>
+        <rect x="30" y="268" width="560" height="72" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="50" y="296" fill="var(--diagram-label)">L2 · Activity worker — background, ephemeral</text>
+        <text x="50" y="320" fill="var(--diagram-note)" font-size="13" font-weight="400">executes one activity's steps with domain tools, yields at checkpoints</text>
+        <rect x="700" y="110" width="230" height="140" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="815" y="150" fill="var(--diagram-label)" text-anchor="middle">Workflow Server</text>
+        <text x="815" y="176" fill="var(--diagram-note)" font-size="13" font-weight="400" text-anchor="middle">one canonical session.json</text>
+        <text x="815" y="196" fill="var(--diagram-note)" font-size="13" font-weight="400" text-anchor="middle">per session_index</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
+        <line x1="130" y1="92" x2="130" y2="140" marker-end="url(#arrowd)"/>
+        <line x1="130" y1="216" x2="130" y2="264" marker-end="url(#arrowd)"/>
+        <line x1="590" y1="56" x2="785" y2="110" marker-end="url(#arrowd)"/>
+        <line x1="590" y1="180" x2="696" y2="180" marker-end="url(#arrowd)"/>
+        <line x1="590" y1="304" x2="785" y2="250" marker-end="url(#arrowd)"/>
+      </g>
+      <g font-size="13" fill="var(--diagram-note)">
+        <text x="145" y="122">dispatch child session — new session_index</text>
+        <text x="145" y="246">spawn worker — same session_index</text>
+      </g>
+    </svg>
+    <figcaption>The three orchestration layers. Dispatching a workflow (L0 → L1) creates a child session with its own <code>session_index</code>; dispatching a worker (L1 → L2) shares the orchestrator's index, so both read the same canonical <code>session.json</code> on the server. All layers talk to the same server.</figcaption>
+  </figure>
+
+  <h2 id="layers">Responsibilities per layer</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Layer</th><th scope="col">Lifetime</th><th scope="col">Key tools</th><th scope="col">Never does</th></tr></thead>
+      <tbody>
+        <tr><td><strong>L0 Meta orchestrator</strong></td><td>the conversation</td><td><code>discover</code>, <code>list_workflows</code>, <code>start_session</code>, <code>present_checkpoint</code>, <code>respond_checkpoint</code>, <code>get_workflow_status</code></td><td>domain work; detailed state tracking</td></tr>
+        <tr><td><strong>L1 Workflow orchestrator</strong></td><td>one workflow run</td><td><code>get_workflow</code>, <code>next_activity</code>, <code>get_workflow_status</code>, <code>dispatch_child</code></td><td>prompting the user directly</td></tr>
+        <tr><td><strong>L2 Activity worker</strong></td><td>one activity</td><td><code>get_activity</code>, <code>get_technique</code>, <code>get_resource</code>, <code>yield_checkpoint</code>, <code>resume_checkpoint</code></td><td>choosing the next activity</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="mechanics">Dispatch mechanics</h2>
+  <p>Each session is identified by a 6-character base32 <code>session_index</code>, deterministically derived from the planning-folder slug. Agents pass the index — never a token — on every authenticated call; the canonical state lives in the server-owned <code>session.json</code>.</p>
+  <p>The two hand-offs differ in one important way. Starting a workflow (L0 → L1) creates a <strong>child session</strong>: the server snapshots the parent's session under the child's <code>parentSession</code> field for trace correlation, and the child gets its own index. Spawning a worker (L1 → L2) <strong>shares the session</strong>: the worker uses the orchestrator's index directly, so both agents see a single canonical state. The actual spawning uses whatever sub-agent mechanism the host provides (Cursor's <code>Task</code> tool, for example); paused sub-agents are woken with the host's resume primitive.</p>
+  <p>The meta orchestrator can poll a dispatched workflow with <a href="../api/tools.html#get_workflow_status"><code>get_workflow_status</code></a>: <code>blocked</code> when a checkpoint is active, <code>completed</code> when no activities remain, <code>active</code> otherwise.</p>
+
+  <h2 id="inline">Inline fallback</h2>
+  <p>Hosts without background sub-agents run the same model <strong>inline</strong>: a single agent adopts each persona in turn within one conversation. The server's enforcement — checkpoint gates, manifests, traces — works identically; only the persona-switching mechanism changes.</p>
+
+  <h2 id="related">Related</h2>
+  <p>Checkpoints bubble up through these same layers — see the <a href="./checkpoints.html">checkpoint model</a>. Session state and the <code>session.json</code> file are covered in <a href="./state-management.html">state management</a>.</p>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
+    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

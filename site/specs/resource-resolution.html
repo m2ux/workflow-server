@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technique and resource resolution — Workflow Server</title>
+<meta name="description" content="How technique references resolve — workflow-first with a meta fallback — and how reference material lazy-loads.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="../">Workflow Server</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="./architecture.html">Architecture</a></li>
+        <li><a href="../api/tools.html">Tools</a></li>
+        <li><a href="../api/schemas.html">Schemas</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <h1>Technique and resource resolution</h1>
+  <p class="lede">Context windows are precious, so nothing loads that isn't needed. All behaviour is composed from techniques — markdown capability definitions referenced by <code>::</code>-paths — resolved workflow-first with a shared <code>meta</code> fallback, delivered as bundles, and backed by reference material that loads only on demand.</p>
+  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/resource_resolution_model.md">docs/resource_resolution_model.md</a>. The normative file anatomy is the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md">technique protocol specification</a>.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 340" role="img" aria-labelledby="res-title res-desc">
+      <title id="res-title">Reference resolution</title>
+      <desc id="res-desc">A technique reference is resolved by first looking in the current workflow's techniques folder, then falling back to the shared meta layer. The resolved technique's body is delivered with its rules auto-included, grouped into a bundle of techniques, rules, and unresolved references. Resources linked from a technique are rewritten to get-resource references and fetched lazily.</desc>
+      <defs>
+        <marker id="arrowz" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="14.5" font-weight="600" text-anchor="middle">
+        <rect x="15" y="60" width="230" height="60" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="130" y="86" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">[wf::]technique[::sub]</text>
+        <text x="130" y="106" fill="var(--diagram-note)" font-size="13" font-weight="400">a technique reference</text>
+        <rect x="310" y="20" width="240" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="430" y="44" fill="var(--diagram-label)">current workflow</text>
+        <text x="430" y="64" fill="var(--diagram-note)" font-size="13" font-weight="400">workflows/&lt;wf&gt;/techniques/</text>
+        <rect x="310" y="108" width="240" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="430" y="132" fill="var(--diagram-label)">meta shared layer</text>
+        <text x="430" y="152" fill="var(--diagram-note)" font-size="13" font-weight="400">workflows/meta/techniques/</text>
+        <rect x="640" y="60" width="300" height="64" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="790" y="86" fill="var(--diagram-label)">technique body + rules</text>
+        <text x="790" y="106" fill="var(--diagram-note)" font-size="13" font-weight="400">remaining rules auto-included</text>
+        <rect x="640" y="190" width="300" height="60" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="790" y="214" fill="var(--diagram-label)">delivery bundle</text>
+        <text x="790" y="234" fill="var(--diagram-note)" font-size="13" font-weight="400" font-family="ui-monospace, Menlo, Consolas, monospace">techniques · rules · unresolved</text>
+        <rect x="310" y="250" width="240" height="60" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="430" y="274" fill="var(--diagram-label)">resources</text>
+        <text x="430" y="294" fill="var(--diagram-note)" font-size="13" font-weight="400" font-family="ui-monospace, Menlo, Consolas, monospace">get_resource — lazy, on demand</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
+        <line x1="245" y1="78" x2="306" y2="56" marker-end="url(#arrowz)"/>
+        <path d="M 430 76 L 430 104" marker-end="url(#arrowz)" stroke-dasharray="5 4"/>
+        <line x1="550" y1="48" x2="646" y2="80" marker-end="url(#arrowz)"/>
+        <line x1="550" y1="136" x2="646" y2="104" marker-end="url(#arrowz)"/>
+        <line x1="790" y1="124" x2="790" y2="186" marker-end="url(#arrowz)"/>
+        <path d="M 646 220 C 590 220, 570 260, 554 268" marker-end="url(#arrowz)" stroke-dasharray="5 4"/>
+      </g>
+      <g font-size="13" fill="var(--diagram-note)" text-anchor="middle">
+        <text x="262" y="42">1. look here first</text>
+        <text x="472" y="94">2. fallback</text>
+        <text x="855" y="160">grouped into</text>
+        <text x="612" y="262">links rewritten to refs,</text>
+        <text x="612" y="280">fetched only when needed</text>
+      </g>
+    </svg>
+    <figcaption>Reference resolution. A reference tries the current workflow's techniques first, then the shared <code>meta</code> layer (a same-named local technique shadows the meta one). The resolved body arrives with its rules auto-included, grouped into a <code>techniques</code> / <code>rules</code> / <code>unresolved</code> bundle; resource links inside it are rewritten into <code>get_resource</code> refs and fetched lazily.</figcaption>
+  </figure>
+
+  <h2 id="techniques">One kind of technique</h2>
+  <p>A technique is a markdown file whose slug is its canonical id — standalone (<code>techniques/{slug}.md</code>) or grouped (<code>techniques/{group}/TECHNIQUE.md</code> with nested <code>{sub}.md</code> siblings; a nested technique is itself a technique). Its published shape: identity (<code>id</code>, <code>version</code>, <code>capability</code>), optional <code>inputs</code> and <code>outputs</code> (outputs may carry an <code>artifact</code> filename), an ordered <code>protocol</code> of imperative steps, and named <code>rules</code> — behavioural invariants that ride along with the technique.</p>
+
+  <h2 id="references">References</h2>
+  <p>Activities and workflows compose behaviour by listing <code>::</code>-delimited references: <code>[workflow::]technique[::nested…]</code>. A same-workflow reference omits the workflow segment; a trailing segment that matches no nested technique is matched against the technique's rule names instead (a group prefix expands to every <code>{group}-*</code> rule). Anything that matches nothing surfaces in the <code>unresolved</code> bucket — never silently dropped.</p>
+
+  <h2 id="delivery">Delivery at workflow and activity granularity</h2>
+  <p>Agents never chain resolution calls at runtime. <code>get_workflow</code> returns the orchestrator bundle — the workflow's declared references plus the core orchestrator set the server auto-includes (engine traversal, checkpoint flow, dispatch, discipline). <code>get_activity</code> returns the worker bundle — the activity's references, the workflow's inherited <code>techniques.activity</code>, plus the core worker set (yield/resume, finalize, conduct rules). When a technique is delivered, ancestor containers' <code>Initial</code>/<code>Final</code> protocol blocks wrap the technique's own protocol recursively, and the combined sequence is renumbered.</p>
+
+  <h2 id="resources">Resources: lazy by design</h2>
+  <p>Large reference material — CLI guides, templates, API notes — never rides along in bundles. A technique links a resource with an ordinary markdown hyperlink; at delivery the server rewrites those links into <code>get_resource</code>-callable refs (<code>{id}[#section]</code>, or <code>{workflow}/{id}[#section]</code> across workflows). The agent fetches one only when it actually needs it, and a <code>#section</code> anchor narrows the fetch to a single heading — a template, not the whole file.</p>
+
+  <h2 id="related">Related</h2>
+  <p>How techniques declare inputs/outputs and how binding works is the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md">technique protocol specification</a>; what the resolved bundles look like on the wire is in the <a href="../api/tools.html">tool reference</a>.</p>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
+    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
