@@ -24,9 +24,11 @@ When information lives in many unconnected places, people waste time hunting for
 
 ## Solution Overview
 
-This work gives the workflow-server's documentation a single front door and a clear map. Today the project's guides are scattered across the README, a setup file, a folder of a dozen technical documents, and a schema guide, with nothing tying them together. We add a documentation "site frame" — built with the same tooling and visual style as the existing concept-rag documentation site — that opens with a welcoming landing page of clickable cards (How It Works, Getting Started, API Reference, Architecture, Agent Guidance, Schemas) and groups every existing document into named sections so any reader can quickly find the document that answers their question. None of the current documents are moved or renamed, so every existing link keeps working.
+This work gives the workflow-server's documentation a single front door and a clear map. Today the project's guides are scattered across the README, a setup file, a folder of a dozen technical documents, and a schema guide, with nothing tying them together. We add a hand-authored static HTML documentation site (semantic HTML, one shared stylesheet, inline SVG diagrams — no site-generator toolchain) that opens with a landing page of clickable section cards and organizes the material into a user guide, technical specifications, and API usage sections, so any reader can quickly find the document that answers their question. None of the current documents are moved or renamed — markdown stays canonical and every existing link keeps working; the site is a rendered, diagram-rich layer over it.
 
-The change is purely additive and built to stay honest. We introduce a configuration file that lists exactly where each document belongs in the menu, a fresh landing page, a couple of short section "overview" pages, and a small amount of local build tooling so anyone can preview the site on their own machine. A built-in checker runs whenever the site is built and fails the build if any document is left off the menu, any internal link is broken, or any cross-reference points to a heading that no longer exists — which keeps the documentation from quietly drifting out of sync as the project grows. New pages only describe the system as it actually is, and the automated publishing step (putting the site on the web) is deliberately held back until it is explicitly approved, since it would be the project's first such automation.
+The change is purely additive and built to stay honest. The API and schema reference pages are regenerated from the server source and JSON schemas at build time, with a staleness check that fails when the committed pages drift from the code, and a link checker that fails on broken internal links or anchors. Narrative pages only describe the system as it actually is. The site publishes to GitHub Pages through a continuous-deployment workflow on every push to `main` — approved at the Layer C decision checkpoint (see the [plan revision](07-plan-revision-html-site.md)).
+
+> **Plan revision (2026-07-07):** the original MkDocs Material approach was superseded by a Claude-authored HTML site; see [07-plan-revision-html-site.md](07-plan-revision-html-site.md) for the decision, rationale, and what carries over.
 
 ---
 
@@ -39,7 +41,8 @@ The change is purely additive and built to stay honest. We introduce a configura
 | 14 | [Documentation-system comprehension](../../comprehension/documentation-system.md) | Doc-surface inventory + concept-rag reference pattern + deep-dive, lens, and Deep-Dive 2 findings (ADR/toolchain/nav-sync/inbound-links) | 20-45m | ✅ Complete |
 | 04 | [KB & web research](04-kb-research.md) | MkDocs Material patterns; de-risks nav-sync, link-preservation, ADR-surfacing, toolchain-depth decisions | 20-45m | ✅ Complete |
 | 05 | [Implementation analysis](05-implementation-analysis.md) | Current doc surface, baselines, concrete file manifest, layering; ADRs excluded from docs (Q-IMPL-1/DP-6) | 10-20m | ✅ Complete |
-| 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
+| 05 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies (approach superseded — see 07) | 20-45m | ✅ Complete |
+| 07 | [Plan revision — HTML site](07-plan-revision-html-site.md) | Supersedes the MkDocs approach with a Claude-authored HTML site; Layer C approved (GitHub Pages CD) | 15-30m | ✅ Complete |
 | 05 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
 | — | Implementation | Documentation changes per plan | 1-4h | ⬚ Pending |
 | 06 | `Code review` | Automated documentation quality review | 10-20m | ⬚ Pending |
