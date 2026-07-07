@@ -200,7 +200,9 @@
                   "loop_completed",
                   "loop_break",
                   "variable_set",
-                  "error"
+                  "error",
+                  "technique_fetched",
+                  "resource_fetched"
                 ]
               },
               "activity": {

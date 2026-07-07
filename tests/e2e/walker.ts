@@ -355,6 +355,23 @@ async function executeActivitySteps(
     });
   };
 
+  // Per-step technique fetch, mirroring the worker disclosure contract: a real
+  // agent loads each technique step's composed content via get_technique
+  // { step_id } before executing it, and the server records the fetch in the
+  // session history (#166 B8) — next_activity's manifest validation warns on
+  // manifested technique steps with no recorded fetch. Fetch once per step id
+  // per activity visit; loop bodies are walked once, so this matches.
+  const fetchedStepIds = new Set<string>();
+  const fetchTechnique = async (stepId: string): Promise<void> => {
+    if (fetchedStepIds.has(stepId)) return;
+    fetchedStepIds.add(stepId);
+    const res = await client.callTool({ name: 'get_technique', arguments: { session_index: sessionIndex, step_id: stepId } });
+    if (isError(res)) {
+      const text = (res.content?.[0] as { text?: string })?.text ?? JSON.stringify(res.content);
+      throw new Error(`get_technique(${activityId}/${stepId}) failed: ${text}`);
+    }
+  };
+
   // Walk steps in document order. A kind:checkpoint step IS the checkpoint, fired at its concrete
   // position (present-then-checkpoint is now literal adjacency). A kind:loop step's body is walked
   // once (a single deterministic pass), firing any checkpoints nested inside it. technique/action
@@ -365,6 +382,7 @@ async function executeActivitySteps(
       if (step.when && !evaluateWhen(step.when, variables)) continue;
       if (step.kind === 'checkpoint') { await fireCheckpoint(step as unknown as CheckpointDef); continue; }
       if (step.kind === 'loop') { await walk(step.steps); continue; }
+      if (step.kind === 'technique') await fetchTechnique(step.id);
       stepsExecuted.push(step.id);
       manifest.push({ step_id: step.id, output: 'done' });
       for (const a of step.actions ?? []) {
