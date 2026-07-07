@@ -1,7 +1,5 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 2.0.0
 ---
 

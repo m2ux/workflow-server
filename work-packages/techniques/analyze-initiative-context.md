@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
-  order: 1
-  legacy_id: 1
 ---
 
 ## Capability
@@ -16,6 +12,24 @@ Perform completion or context analysis for a multi-package initiative
 ### analysis_type
 
 Type of analysis to perform: 'completion' or 'context'.
+
+## Outputs
+
+### analysis_document
+
+Analysis document with findings and recommendations, persisted as [01-COMPLETION-ANALYSIS.md](../resources/completion-analysis-guide.md#4-document-findings) (completion) or [02-CONTEXT-ANALYSIS.md](../resources/context-analysis-guide.md#5-document-findings) (context)
+
+#### artifact
+
+`01-COMPLETION-ANALYSIS.md` (when `analysis_type` is completion) / `02-CONTEXT-ANALYSIS.md` (when `analysis_type` is context)
+
+### key_findings
+
+Summary of analysis findings
+
+### planning_recommendation
+
+Suggested approach for planning and prioritization
 
 ## Protocol
 
@@ -47,24 +61,6 @@ Type of analysis to perform: 'completion' or 'context'.
 ### 5. Present Findings
 
 - Summarize `{key_findings}` for user review
-
-## Outputs
-
-### analysis_document
-
-Analysis document with findings and recommendations, persisted as [01-COMPLETION-ANALYSIS.md](../resources/completion-analysis-guide.md#4-document-findings) (completion) or [02-CONTEXT-ANALYSIS.md](../resources/context-analysis-guide.md#5-document-findings) (context)
-
-#### artifact
-
-`01-COMPLETION-ANALYSIS.md` (when `analysis_type` is completion) / `02-CONTEXT-ANALYSIS.md` (when `analysis_type` is context)
-
-### key_findings
-
-Summary of analysis findings
-
-### planning_recommendation
-
-Suggested approach for planning and prioritization
 
 ## Rules
 

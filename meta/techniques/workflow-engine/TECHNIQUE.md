@@ -1,13 +1,7 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 6.1.0
-  order: 0
-  legacy_id: 0
 ---
-
-# Workflow Engine
 
 ## Capability
 

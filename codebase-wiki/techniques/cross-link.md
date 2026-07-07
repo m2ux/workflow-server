@@ -1,7 +1,5 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
 ---
 
@@ -19,6 +17,12 @@ The pages whose relationships are being maintained — the pages an ingest creat
 
 The pages the subject pages relate to — callers, callees, sibling concepts, source-summaries of the same area, and comparisons that reference them. The other end of each relationship.
 
+## Outputs
+
+### linked_pages
+
+The pages whose `[[wikilink]]` body links and `related[]` frontmatter were inserted or refreshed, in sync on both ends of each relationship.
+
 ## Protocol
 
 ### 1. Identify Relationships
@@ -34,12 +38,6 @@ The pages the subject pages relate to — callers, callees, sibling concepts, so
 
 - Update the `related[]` frontmatter on both ends to list the linked pages, so the frontmatter is a faithful summary of the body links and `query`/`lint` can rely on it.
 - Remove a `related[]` entry only when the corresponding body link is gone — frontmatter follows the body, never the reverse.
-
-## Outputs
-
-### linked_pages
-
-The pages whose `[[wikilink]]` body links and `related[]` frontmatter were inserted or refreshed, in sync on both ends of each relationship.
 
 ## Rules
 

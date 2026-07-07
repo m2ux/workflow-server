@@ -21,6 +21,16 @@ Structured analysis of the requirement changes to apply on the initial pass.
 
 `true` when the target specification already exists and its section structure is preserved; `false` when the full specification structure is instantiated from scratch.
 
+## Outputs
+
+### working_specification
+
+The complete updated specification document for this pass.
+
+#### artifact
+
+`working-spec-{correction_iteration}.md`
+
 ## Protocol
 
 ### 1. Register Correction Pass
@@ -44,13 +54,3 @@ Structured analysis of the requirement changes to apply on the initial pass.
 ### 5. Write Working Specification
 
 - Write the complete `{working_specification}` to `{planning_folder_path}`.
-
-## Outputs
-
-### working_specification
-
-The complete updated specification document for this pass.
-
-#### artifact
-
-`working-spec-{correction_iteration}.md`

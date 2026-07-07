@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.3.0
-  order: 15
-  legacy_id: 15
 ---
 
 ## Capability
@@ -16,13 +12,6 @@ Produce the final audit report artifact from the scored and elevation-verified m
 ### merge_table
 
 The canonical finding flat table with elevation mapping, with every row severity-scored and assigned a report finding number.
-
-## Protocol
-
-1. Verify every row in `{merge_table}` has a severity score and a finding number.
-2. Organize findings by severity (Critical first, then High, Medium, Low).
-3. Assemble the `{audit_report}` sections — `{audit_report.header_table}`, `{audit_report.executive_summary}`, `{audit_report.methodology_notes}`, `{audit_report.crate_inventory}`, `{audit_report.findings}`, `{audit_report.severity_distribution}`, `{audit_report.coverage_gate}`, `{audit_report.elevation_summary}`, and `{audit_report.dependency_scan}` — into the `{audit_report}` artifact.
-4. Verify the finding count in `{audit_report.executive_summary}` matches `{audit_report.findings}`.
 
 ## Outputs
 
@@ -72,21 +61,23 @@ Count of table-derived findings auto-elevated, adversarial refutations integrate
 
 #### finding_block_format
 
-### Issue `{number}`: `{title}`
+```markdown
+### Issue {number}: {title}
 
-`{description}`
+{description}
 
-**Impact:** `{impact}` — `{justification}`
+**Impact:** {impact} — {justification}
 
-**Feasibility:** `{feasibility}` — `{justification}`
+**Feasibility:** {feasibility} — {justification}
 
-**Severity:** `{level}` (I=`{impact}`, F=`{feasibility}`, avg=`{average}`)
+**Severity:** {level} (I={impact}, F={feasibility}, avg={average})
 
-**Category:** `{category}`
+**Category:** {category}
 
-**Affected Files:** [`` `{file}`#L{start}-L{end} ``](`{source_blob_base}`/`{file}`#L`{start}`-L`{end}`)
+**Affected Files:** [{file}#L{start}-L{end}]({source_blob_base}/{file}#L{start}-L{end})
 
-**Suggested Remediation:** `{remediation}`
+**Suggested Remediation:** {remediation}
+```
 
 The explanatory paragraph (`{description}`) is FIRST — immediately after the header, before `**Impact:**`; derive `{$remediation}` as the concrete suggested fix for the finding. When a finding cites multiple files or extra line ranges, hyperlink each `` `{file}`#L… `` reference the same way, deriving `{$start}`/`{$end}` as the cited range's first and last line; trailing bare line numbers after the first range may stay plain text. A single line renders as `#L{n}` (no range).
 
@@ -97,6 +88,13 @@ Each field MUST be separated by a blank line (double newline) so that markdown r
 #### affected_files_hyperlink
 
 Every source reference in `**Affected Files:**` MUST be a markdown hyperlink to the exact file and line range in the target repository at the audited commit, so a reviewer is one click from the reviewed code. Construct `{$source_blob_base}` as `https://github.com/{$org}/{$repo}/blob/{target_commit}`, where `{org}/{repo}` is the target submodule's GitHub remote (from `git remote get-url origin` in `{target_path}`, normalised from SSH/HTTPS to `github.com/{org}/{repo}`) and `{target_commit}` is the audited revision recorded at scope-setup. Pin the links to `{target_commit}` — never to a mutable branch — so they always resolve to the reviewed source.
+
+## Protocol
+
+1. Verify every row in `{merge_table}` has a severity score and a finding number.
+2. Organize findings by severity (Critical first, then High, Medium, Low).
+3. Assemble the `{audit_report}` sections — `{audit_report.header_table}`, `{audit_report.executive_summary}`, `{audit_report.methodology_notes}`, `{audit_report.crate_inventory}`, `{audit_report.findings}`, `{audit_report.severity_distribution}`, `{audit_report.coverage_gate}`, `{audit_report.elevation_summary}`, and `{audit_report.dependency_scan}` — into the `{audit_report}` artifact.
+4. Verify the finding count in `{audit_report.executive_summary}` matches `{audit_report.findings}`.
 
 ## Rules
 

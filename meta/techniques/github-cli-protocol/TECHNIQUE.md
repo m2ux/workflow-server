@@ -1,13 +1,7 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 3.0.0
-  order: 3
-  legacy_id: 3
 ---
-
-# Github CLI Protocol
 
 ## Capability
 

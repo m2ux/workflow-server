@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 2.2.0
-  order: 2
-  legacy_id: 2
 ---
 
 ## Capability
@@ -16,6 +12,20 @@ Analyze and respond to PR review comments systematically — categorizing commen
 ### review_comments
 
 Review comments fetched from PR
+
+## Outputs
+
+### review_analysis
+
+PR review [analysis](../resources/pr-review-response.md#review-document-template) document
+
+#### artifact
+
+`{YYYY-MM-DD}-pr{pr_number}-review-analysis.md`
+
+#### requires_replan
+
+Whether the changes are significant enough to require substantial rework
 
 ## Protocol
 
@@ -73,20 +83,6 @@ Review comments fetched from PR
 - After applying reviewer-requested changes, apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[detect-changes](../../meta/techniques/gitnexus-operations/detect-changes.md) to inform the 'minor fix' vs 'significant change' classification — small symbol/process deltas suggest minor; broad fan-out suggests significant.
 - Determine if re-review is needed (significant changes) or minor fixes suffice
 - Capture the categorized dispositions, changes made, and re-review decision as the `{review_analysis}` document
-
-## Outputs
-
-### review_analysis
-
-PR review [analysis](../resources/pr-review-response.md#review-document-template) document
-
-#### artifact
-
-`{YYYY-MM-DD}-pr{pr_number}-review-analysis.md`
-
-#### requires_replan
-
-Whether the changes are significant enough to require substantial rework
 
 ## Rules
 

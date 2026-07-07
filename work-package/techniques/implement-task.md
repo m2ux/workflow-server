@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 2.2.0
-  order: 10
-  legacy_id: 10
 ---
 
 ## Capability
@@ -24,6 +20,12 @@ A single atomic task to implement (description, affected files, dependencies)
 ### target_symbol
 
 The primary edit target — the function, class, or method this task changes — derived from `{current_task}` in Protocol §1 and read by the impact/context checks in §2.
+
+## Outputs
+
+### task_implementation
+
+Code changes for a single task
 
 ## Protocol
 
@@ -57,12 +59,6 @@ The primary edit target — the function, class, or method this task changes —
 
 - Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[detect-changes](../../meta/techniques/gitnexus-operations/detect-changes.md) before commit to confirm the changes affect only the expected symbols and execution flows
 - Record the `{task_implementation}` for this task, capturing the files changed and a brief summary of the approach taken
-
-## Outputs
-
-### task_implementation
-
-Code changes for a single task
 
 ## Rules
 

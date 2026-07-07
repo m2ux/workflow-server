@@ -1,13 +1,7 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 3.2.0
-  order: 14
-  legacy_id: 14
 ---
-
-# Manage Artifacts
 
 ## Capability
 

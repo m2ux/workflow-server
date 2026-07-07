@@ -1,7 +1,5 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
 ---
 
@@ -12,6 +10,16 @@ Run a single-shot integrity pass over the whole wiki, applying each check in the
 ## Inputs
 
 This technique consumes the workflow-root contract inputs (`wiki_path`, `raw_baseline_commit`) and reads the wiki tree at `{wiki_path}`; it takes no additional inputs.
+
+## Outputs
+
+### lint_findings_count
+
+The number of findings from the pass — `0` means the wiki passed every check. Drives the `lint-findings-confirmed` checkpoint and the re-ingest decision.
+
+### lint_findings
+
+The per-finding report grouped by check, each entry naming the page(s) and the specific failure.
 
 ## Protocol
 
@@ -34,16 +42,6 @@ This technique consumes the workflow-root contract inputs (`wiki_path`, `raw_bas
 
 - Compile the findings into a report grouped by check, each finding naming the offending page(s) and the specific failure, and count them.
 - Contradictions are reported as findings for the user to resolve at re-ingest; lint never reconciles them itself.
-
-## Outputs
-
-### lint_findings_count
-
-The number of findings from the pass — `0` means the wiki passed every check. Drives the `lint-findings-confirmed` checkpoint and the re-ingest decision.
-
-### lint_findings
-
-The per-finding report grouped by check, each entry naming the page(s) and the specific failure.
 
 ## Rules
 

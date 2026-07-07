@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 2.0.0
-  order: 0
-  legacy_id: 0
 ---
 
 ## Capability
@@ -24,6 +20,16 @@ List of files changed in the work package (from `git diff`)
 ### planning_folder_path
 
 Folder where the code review report is written
+
+## Outputs
+
+### code_review_report
+
+Code review [report](../resources/rust-substrate-code-review.md#report-template) documenting findings by severity
+
+#### artifact
+
+`code-review.md`
 
 ## Protocol
 
@@ -63,16 +69,6 @@ When the diff changes a `Config` impl, an associated type, or any trait-implemen
 ### 5. Present Summary
 
 - Summarize critical and high findings
-
-## Outputs
-
-### code_review_report
-
-Code review [report](../resources/rust-substrate-code-review.md#report-template) documenting findings by severity
-
-#### artifact
-
-`code-review.md`
 
 ## Rules
 

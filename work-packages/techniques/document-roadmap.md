@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
-  order: 4
-  legacy_id: 4
 ---
 
 ## Capability
@@ -20,6 +16,28 @@ Ordered list of work packages with execution priority
 ### package_plans
 
 List of completed package [plan documents](../resources/package-plan-template.md#template)
+
+## Outputs
+
+### start_here
+
+Completed [START-HERE.md](../resources/roadmap-template.md#start-heremd-final-format) with executive summary, status, timeline, and criteria
+
+#### artifact
+
+`START-HERE.md`
+
+### planning_readme
+
+Updated [README.md](../resources/roadmap-template.md#readmemd-final-format) with navigation links
+
+#### artifact
+
+`README.md`
+
+### timeline_estimate
+
+Overall timeline span for the initiative, derived from phase durations
 
 ## Protocol
 
@@ -50,25 +68,3 @@ List of completed package [plan documents](../resources/package-plan-template.md
 ### 5. Present Roadmap
 
 - Present the completed `{start_here}` roadmap to the user for final review
-
-## Outputs
-
-### start_here
-
-Completed [START-HERE.md](../resources/roadmap-template.md#start-heremd-final-format) with executive summary, status, timeline, and criteria
-
-#### artifact
-
-`START-HERE.md`
-
-### planning_readme
-
-Updated [README.md](../resources/roadmap-template.md#readmemd-final-format) with navigation links
-
-#### artifact
-
-`README.md`
-
-### timeline_estimate
-
-Overall timeline span for the initiative, derived from phase durations

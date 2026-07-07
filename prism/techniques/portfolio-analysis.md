@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.1.0
-  order: 2
-  legacy_id: 2
 ---
 
 ## Capability
@@ -20,6 +16,44 @@ Apply two or more complementary portfolio lenses to the same artifact to produce
 ### analytical_goal
 
 *(optional)* What the caller wants to understand (e.g., 'trade-off analysis', 'maintainability risks', 'hidden assumptions'). Used for lens selection when `{selected_lenses}` is not provided.
+
+## Outputs
+
+### per_lens_artifacts
+
+Individual analysis artifact per lens
+
+#### artifact
+
+`portfolio-{lens_name}.md`
+
+#### per_lens_findings
+
+Complete findings from each lens, labelled by lens name
+
+#### artifact_paths
+
+File paths to each per-lens artifact
+
+### portfolio_synthesis
+
+Cross-lens convergence/divergence synthesis
+
+#### artifact
+
+`portfolio-synthesis.md`
+
+#### convergent_findings
+
+Structural properties found by multiple lenses (high confidence)
+
+#### unique_findings
+
+Properties found by only one lens (the value-add of portfolio analysis)
+
+#### summary_table
+
+All findings with lens attribution and convergent/unique classification
 
 ## Protocol
 
@@ -60,44 +94,6 @@ Apply two or more complementary portfolio lenses to the same artifact to produce
 - Produce a summary table: finding, which lens(es) found it, convergent or unique
 - Write the synthesis as `{portfolio_synthesis}` into `{output_path}`
 
-## Outputs
-
-### per_lens_artifacts
-
-Individual analysis artifact per lens
-
-#### artifact
-
-`portfolio-{lens_name}.md`
-
-#### per_lens_findings
-
-Complete findings from each lens, labelled by lens name
-
-#### artifact_paths
-
-File paths to each per-lens artifact
-
-### portfolio_synthesis
-
-Cross-lens convergence/divergence synthesis
-
-#### artifact
-
-`portfolio-synthesis.md`
-
-#### convergent_findings
-
-Structural properties found by multiple lenses (high confidence)
-
-#### unique_findings
-
-Properties found by only one lens (the value-add of portfolio analysis)
-
-#### summary_table
-
-All findings with lens attribution and convergent/unique classification
-
 ## Rules
 
 ### code-only-lenses
@@ -107,4 +103,3 @@ The following lenses are code-specific — do not apply to non-code input: contr
 ### model-sensitivity
 
 Behavioral lenses (19-22) produce higher quality on Sonnet (+0.5-1.3 over Haiku). SDL and structural lenses are model-independent.
-

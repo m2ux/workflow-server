@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
-  order: 10
-  legacy_id: 10
 ---
 
 ## Capability
@@ -29,6 +25,20 @@ false
 
 *(optional)* The table shape the pairing results are rendered in.
 
+## Outputs
+
+### storage_lifecycle
+
+Storage lifecycle pairing table with optional invariant comparison.
+
+#### pairing_table
+
+| `StorageMap` | Crate | `insert()` Sites | `remove()` Sites | Paired? | Cap Enforced? |
+
+#### invariant_table
+
+| `StorageMap` | `insert()` Callers | `remove()` Callers | Paired? | Cross-function Consistent? | (optional)
+
 ## Protocol
 
 ### 1. Find Storage Declarations
@@ -50,17 +60,3 @@ false
 - If `{verify_invariants}` is true: for pairs of functions that operate on the same storage (e.g., `handle_create` and `handle_redemption_create`), verify they maintain the same invariants — if one inserts, the other should too under the same conditions.
 
 > When `{gitnexus_available}`, enumerate the function set operating on a given map from the graph via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) so no operating function is missed from the cross-function comparison; the invariant judgement itself is made by reading the paired bodies.
-
-## Outputs
-
-### storage_lifecycle
-
-Storage lifecycle pairing table with optional invariant comparison.
-
-#### pairing_table
-
-| `StorageMap` | Crate | `insert()` Sites | `remove()` Sites | Paired? | Cap Enforced? |
-
-#### invariant_table
-
-| `StorageMap` | `insert()` Callers | `remove()` Callers | Paired? | Cross-function Consistent? | (optional)

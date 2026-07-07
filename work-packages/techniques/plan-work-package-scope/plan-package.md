@@ -1,7 +1,5 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
 ---
 
@@ -14,6 +12,36 @@ Define scope, dependencies, effort, and success criteria for a single package wi
 ### current_package
 
 The work package currently being planned
+
+## Outputs
+
+### package_plan
+
+Work package [plan document](../../resources/package-plan-template.md#template)
+
+#### artifact
+
+`{package_name}-plan.md`
+
+#### scope_definitions
+
+In-scope and out-of-scope definitions
+
+#### dependencies
+
+Blocker and soft dependency list
+
+#### effort
+
+Effort estimate with rationale
+
+#### success_criteria
+
+Measurable success criteria with verification methods
+
+### package_name
+
+Kebab-case identifier for the work package, derived from `{current_package}`.
 
 ## Protocol
 
@@ -47,33 +75,3 @@ The work package currently being planned
 
 - Derive the kebab-case package name `{package_name}` from `{current_package}`
 - Create `{package_plan}` in `{planning_folder_path}` using the [package-plan-template](../../resources/package-plan-template.md#template)
-
-## Outputs
-
-### package_plan
-
-Work package [plan document](../../resources/package-plan-template.md#template)
-
-#### artifact
-
-`{package_name}-plan.md`
-
-#### scope_definitions
-
-In-scope and out-of-scope definitions
-
-#### dependencies
-
-Blocker and soft dependency list
-
-#### effort
-
-Effort estimate with rationale
-
-#### success_criteria
-
-Measurable success criteria with verification methods
-
-### package_name
-
-Kebab-case identifier for the work package, derived from `{current_package}`.

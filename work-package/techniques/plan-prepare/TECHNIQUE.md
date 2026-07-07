@@ -1,13 +1,7 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 2.1.0
-  order: 8
-  legacy_id: 8
 ---
-
-# Create Plan
 
 ## Capability
 

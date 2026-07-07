@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 4.1.0
-  order: 1
-  legacy_id: 1
 ---
 
 ## Capability

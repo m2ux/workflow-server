@@ -1,15 +1,17 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
-  order: 2
-  legacy_id: 2
 ---
 
 ## Capability
 
 Scan the codebase for security-relevant patterns — cryptography, authentication/authorisation, network-exposed surfaces, state management, untrusted-input deserialisation, unsafe code, WASM targets, security-gating feature flags, and custom VMs — and record each characteristic with its location and severity relevance.
+
+## Outputs
+
+### security_characteristics_count
+
+Count of security-relevant patterns found in the target. `0` signals a codebase with no security surface.
 
 ## Protocol
 
@@ -26,9 +28,3 @@ Scan the codebase for security-relevant patterns — cryptography, authenticatio
 - Search for custom VMs or interpreters: bytecode execution, instruction dispatch, gas/cost metering
 - Record each characteristic: `{ category, location (file:line), description, severity_relevance }`
 - Set `{security_characteristics_count}` to the number of characteristics found. When it is 0, the codebase appears purely presentational or data-only; record that observation.
-
-## Outputs
-
-### security_characteristics_count
-
-Count of security-relevant patterns found in the target. `0` signals a codebase with no security surface.

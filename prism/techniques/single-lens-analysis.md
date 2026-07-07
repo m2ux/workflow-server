@@ -1,9 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
-  order: 6
 ---
 
 ## Capability
@@ -19,6 +16,20 @@ The lens resource to apply, named by its slug (e.g. `reachability`, `state-audit
 ### analysis_focus
 
 *(optional)* Optional focus area to guide the analysis (e.g. 'error handling', 'state management', 'concurrency'). Noted as a framing constraint; it does not narrow the lens — the lens operations are exhaustive.
+
+## Outputs
+
+### lens_analysis
+
+The applied lens's complete output following its own operations
+
+#### artifact
+
+`{lens_name}-analysis.md`
+
+#### findings
+
+The lens's findings, in the structure the lens defines
 
 ## Protocol
 
@@ -53,20 +64,6 @@ The lens resource to apply, named by its slug (e.g. `reachability`, `state-audit
 
 - Structure `{lens_analysis}` with the section headers the lens's own operations produce — a lens defines its own output shape (a bug table, a trust map, a dead-code list, an alternative-architecture set, …). Do not force an L12 conservation-law structure onto a non-L12 lens.
 - Include file paths, line numbers, and specific names for every finding, per `evidence-required`
-
-## Outputs
-
-### lens_analysis
-
-The applied lens's complete output following its own operations
-
-#### artifact
-
-`{lens_name}-analysis.md`
-
-#### findings
-
-The lens's findings, in the structure the lens defines
 
 ## Rules
 

@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.1.0
-  order: 9
-  legacy_id: 9
 ---
 
 ## Capability
@@ -16,6 +12,16 @@ Create test strategy and test plan with cases and acceptance criteria
 ### plan_tasks
 
 Atomic task breakdown with dependencies and ordering for the work package
+
+## Outputs
+
+### test_plan_document
+
+Test [strategy](../resources/test-plan.md#test-plan-structure) and acceptance criteria
+
+#### artifact
+
+`test-plan.md`
 
 ## Protocol
 
@@ -41,16 +47,6 @@ Atomic task breakdown with dependencies and ordering for the work package
 
 - Create the `{test_plan_document}` artifact in `{planning_folder_path}`
 - Structure with strategy, test cases, and acceptance criteria matrix
-
-## Outputs
-
-### test_plan_document
-
-Test [strategy](../resources/test-plan.md#test-plan-structure) and acceptance criteria
-
-#### artifact
-
-`test-plan.md`
 
 ## Rules
 

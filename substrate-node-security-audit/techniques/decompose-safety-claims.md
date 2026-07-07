@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.2.0
-  order: 11
-  legacy_id: 11
 ---
 
 ## Capability
@@ -24,6 +20,20 @@ Code files to read for independent verification
 ### verification_report
 
 *(optional)* Gap report listing §3 categories with incomplete coverage, missing tables, or unmet target profile obligations. PASS items in flagged categories are auto-included in the adversarial queue.
+
+## Outputs
+
+### decomposition_results
+
+Decomposition table with per-instance verification results.
+
+#### decomposition_table
+
+| PASS Item | Property | Instance | Verified? | Evidence |
+
+#### verdict_summary
+
+CONFIRMED count, REFUTED count (each becomes a finding), INSUFFICIENT count
 
 ## Protocol
 
@@ -49,20 +59,6 @@ Code files to read for independent verification
 - For each decomposed property, read the cited code location in the `{source_files}` and search for the specific implementation. Output CONFIRMED (all instances verified with citations), REFUTED (any instance lacks implementation — becomes a new finding), or INSUFFICIENT (cannot determine).  
   > A PASS that says 'cursor is set correctly' must verify: is there an `ensure!(new > old)` guard? If not, the PASS is invalid regardless of whether the code 'works'.
 - CONFIRMED only when ALL decomposed properties are verified with code citations. Record each verdict in the `{decomposition_results}` table, completing the per-instance Verified? and Evidence columns.
-
-## Outputs
-
-### decomposition_results
-
-Decomposition table with per-instance verification results.
-
-#### decomposition_table
-
-| PASS Item | Property | Instance | Verified? | Evidence |
-
-#### verdict_summary
-
-CONFIRMED count, REFUTED count (each becomes a finding), INSUFFICIENT count
 
 ## Rules
 

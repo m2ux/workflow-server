@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.1.0
-  order: 6
-  legacy_id: 6
 ---
 
 ## Capability
@@ -28,6 +24,40 @@ Array of filesystem paths to the analysis artifacts available for this report.
 ### target_description
 
 Description of what was analysed — used in the report's Executive Summary scope statement
+
+## Outputs
+
+### analysis_report
+
+Clean final [report](../resources/final-output-template.md#reportmd-template) artifact
+
+#### artifact
+
+`REPORT.md`
+
+#### finding_count
+
+Total findings by severity
+
+#### core_finding
+
+Summary of the core finding (if any)
+
+### report_path
+
+Full filesystem path to `REPORT.md`
+
+### definitive_findings
+
+Detailed [definitive findings](../resources/definitive-findings-template.md#definitive-findingsmd-template) artifact carrying the full per-finding field set (Impact, Recommendation, Adversarial confirmation, and more) and the surviving conservation laws. The stable contract consumer workflows read instead of the raw pass artifacts.
+
+#### artifact
+
+`DEFINITIVE-FINDINGS.md`
+
+### definitive_findings_path
+
+Full filesystem path to `DEFINITIVE-FINDINGS.md`
 
 ## Protocol
 
@@ -103,40 +133,6 @@ Description of what was analysed — used in the report's Executive Summary scop
 - Include every finding from step 3 with its complete field set — Severity, Classification, Description, Impact, Location, Recommendation, Blast radius (where graph data exists), and Adversarial confirmation (full-prism only). Finding IDs are the same unified report IDs assigned in step 6, so DEFINITIVE-FINDINGS.md and REPORT.md agree exactly.
 - Add the Conservation Laws & Design Trade-offs section from the surviving laws captured in step 3 (present for full-prism and behavioral). Omit the section when no law survived.
 - The voice remains factual: adversarial confirmation and conservation laws are recorded as evidence and constraints, never as process narration (no "ANALYSIS 1", "the adversarial pass", scorecards, or overclaim/underclaim tables).
-
-## Outputs
-
-### analysis_report
-
-Clean final [report](../resources/final-output-template.md#reportmd-template) artifact
-
-#### artifact
-
-`REPORT.md`
-
-#### finding_count
-
-Total findings by severity
-
-#### core_finding
-
-Summary of the core finding (if any)
-
-### report_path
-
-Full filesystem path to `REPORT.md`
-
-### definitive_findings
-
-Detailed [definitive findings](../resources/definitive-findings-template.md#definitive-findingsmd-template) artifact carrying the full per-finding field set (Impact, Recommendation, Adversarial confirmation, and more) and the surviving conservation laws. The stable contract consumer workflows read instead of the raw pass artifacts.
-
-#### artifact
-
-`DEFINITIVE-FINDINGS.md`
-
-### definitive_findings_path
-
-Full filesystem path to `DEFINITIVE-FINDINGS.md`
 
 ## Rules
 

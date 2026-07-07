@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 2.3.0
-  order: 1
-  legacy_id: 1
 ---
 
 ## Capability
@@ -20,6 +16,24 @@ Which lens to apply: `adversarial` or `synthesis`. Each names the lens resource 
 ### prior_artifact_paths
 
 *(optional)* Ordered file paths to the prior-pass artifacts this pass consumes as context; empty for the first pass.
+
+## Outputs
+
+### pass_artifact
+
+Analysis artifact written to the filesystem
+
+#### artifact
+
+`adversarial-analysis.md` (`{lens_name}` `adversarial`) / `synthesis.md` (`synthesis`)
+
+#### artifact_path
+
+Full filesystem path to the written artifact
+
+#### analysis_text
+
+The full analysis output following the lens operations
 
 ## Protocol
 
@@ -59,24 +73,6 @@ Which lens to apply: `adversarial` or `synthesis`. Each names the lens resource 
 - Structure `{pass_artifact}.analysis_text` with clear section headers matching the lens operations
 - For adversarial: wrong predictions, overclaims, underclaims, revised findings table
 - For synthesis: refined conservation law, refined meta-law, definitive classification, deepest finding
-
-## Outputs
-
-### pass_artifact
-
-Analysis artifact written to the filesystem
-
-#### artifact
-
-`adversarial-analysis.md` (`{lens_name}` `adversarial`) / `synthesis.md` (`synthesis`)
-
-#### artifact_path
-
-Full filesystem path to the written artifact
-
-#### analysis_text
-
-The full analysis output following the lens operations
 
 ## Rules
 

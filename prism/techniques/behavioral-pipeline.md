@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.2.0
-  order: 5
-  legacy_id: 5
 ---
 
 ## Capability
@@ -20,6 +16,24 @@ Execute the behavioral pipeline — 4 independent behavioral lenses followed by 
 ### prior_artifact_paths
 
 *(optional)* For synthesis pass only: map of role labels to artifact file paths. Keys: ERRORS, COSTS, CHANGES, PROMISES. Empty for independent lens passes.
+
+## Outputs
+
+### behavioral_artifact
+
+Behavioral analysis artifact written to the filesystem
+
+#### artifact
+
+`behavioral-errors.md` (`error-resilience`) / `behavioral-costs.md` (`optimize`) / `behavioral-changes.md` (`evolution`) / `behavioral-promises.md` (`api-surface`) / `behavioral-synthesis.md` (`synthesis`)
+
+#### artifact_path
+
+Full filesystem path to the written artifact
+
+#### role_label
+
+The role label for this pass (ERRORS, COSTS, CHANGES, PROMISES, or SYNTHESIS)
 
 ## Protocol
 
@@ -64,24 +78,6 @@ Execute the behavioral pipeline — 4 independent behavioral lenses followed by 
 
 - Write the complete analysis as `{behavioral_artifact}` into `{output_path}`. If the write fails, verify `{output_path}` exists and is writable.
 
-## Outputs
-
-### behavioral_artifact
-
-Behavioral analysis artifact written to the filesystem
-
-#### artifact
-
-`behavioral-errors.md` (`error-resilience`) / `behavioral-costs.md` (`optimize`) / `behavioral-changes.md` (`evolution`) / `behavioral-promises.md` (`api-surface`) / `behavioral-synthesis.md` (`synthesis`)
-
-#### artifact_path
-
-Full filesystem path to the written artifact
-
-#### role_label
-
-The role label for this pass (ERRORS, COSTS, CHANGES, PROMISES, or SYNTHESIS)
-
 ## Rules
 
 ### label-mapping
@@ -95,4 +91,3 @@ The behavioral pipeline is code-only. `optimize` uses strongly code-oriented voc
 ### independent-lenses-parallel
 
 The four independent behavioral lenses (`error-resilience`, `optimize`, `evolution`, `api-surface`) share no context and may be dispatched concurrently, up to four at once. Only the `synthesis` lens depends on their outputs.
-

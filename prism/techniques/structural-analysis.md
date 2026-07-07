@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.1.0
-  order: 0
-  legacy_id: 0
 ---
 
 ## Capability
@@ -16,6 +12,36 @@ Apply L12 structural analysis lens to code for deep structural findings, conserv
 ### analysis_focus
 
 *(optional)* Optional focus area to guide the analysis (e.g., 'error handling', 'state management', 'concurrency')
+
+## Outputs
+
+### structural_analysis
+
+L12 structural analysis with conservation law, meta-law, and classified bug table
+
+#### artifact
+
+`structural-analysis.md`
+
+#### conservation_law
+
+The named conservation law between original and inverted impossibilities, carrying the producer/clearer ledger — the set-wide enumeration of every producer of each conserved resource against its clearers, with the matched/unmatched verdict per termination path
+
+#### meta_law
+
+What the conservation law itself conceals — the deeper finding
+
+#### bug_table
+
+Every concrete bug with location, severity, and fixable/structural classification — including each unmatched producer surfaced by the producer/clearer ledger
+
+#### concealment_mechanism
+
+How the code hides its real problems
+
+#### structural_invariant
+
+The property that persists through every improvement
 
 ## Protocol
 
@@ -67,36 +93,6 @@ The conservation law names a resource the code must conserve (a storage record, 
 - Render the producer/clearer ledger as a table within the Conservation Law section — one row per resource with its producers, clearers, and the matched/unmatched verdict per termination path
 - In the Bug Table, classify each finding as fixable or structural based on whether the conservation law predicts it can be resolved; every unmatched producer from the ledger appears as a Bug-Table entry
 - Include file paths, line numbers, and specific function names for every finding
-
-## Outputs
-
-### structural_analysis
-
-L12 structural analysis with conservation law, meta-law, and classified bug table
-
-#### artifact
-
-`structural-analysis.md`
-
-#### conservation_law
-
-The named conservation law between original and inverted impossibilities, carrying the producer/clearer ledger — the set-wide enumeration of every producer of each conserved resource against its clearers, with the matched/unmatched verdict per termination path
-
-#### meta_law
-
-What the conservation law itself conceals — the deeper finding
-
-#### bug_table
-
-Every concrete bug with location, severity, and fixable/structural classification — including each unmatched producer surfaced by the producer/clearer ledger
-
-#### concealment_mechanism
-
-How the code hides its real problems
-
-#### structural_invariant
-
-The property that persists through every improvement
 
 ## Rules
 

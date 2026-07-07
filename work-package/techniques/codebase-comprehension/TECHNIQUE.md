@@ -1,13 +1,7 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.1.0
-  order: 22
-  legacy_id: 22
 ---
-
-# Build Comprehension
 
 ## Capability
 

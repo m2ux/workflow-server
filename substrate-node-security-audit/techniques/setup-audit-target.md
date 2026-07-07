@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
-  order: 14
-  legacy_id: 14
 ---
 
 ## Capability
@@ -28,6 +24,36 @@ Path to the audit prompt template whose accessibility is confirmed during setup.
 ### target_submodule
 
 The target component name used to build the planning-folder name.
+
+## Outputs
+
+### audit_target
+
+Initialized target ready for analysis.
+
+#### confirmed_target
+
+Confirmed target component and revision
+
+#### dependency_scan_results
+
+Dependency scan results or fallback manifest
+
+#### file_inventory
+
+File inventory sorted by size
+
+#### reference_documents
+
+Reference document paths (if any, quarantined for later phases)
+
+### start_here
+
+Session overview with audit target, commit, methodology, and artifact index.
+
+#### artifact
+
+`START-HERE.md`
 
 ## Protocol
 
@@ -63,34 +89,3 @@ The target component name used to build the planning-folder name.
 ### 8. Load Template
 
 - Confirm the audit prompt template is accessible at `{audit_prompt_template}`. If it is not at its expected path, fail with an error showing the expected path.
-
-## Outputs
-
-### audit_target
-
-Initialized target ready for analysis.
-
-#### confirmed_target
-
-Confirmed target component and revision
-
-#### dependency_scan_results
-
-Dependency scan results or fallback manifest
-
-#### file_inventory
-
-File inventory sorted by size
-
-#### reference_documents
-
-Reference document paths (if any, quarantined for later phases)
-
-### start_here
-
-Session overview with audit target, commit, methodology, and artifact index.
-
-#### artifact
-
-`START-HERE.md`
-

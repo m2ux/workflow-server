@@ -17,20 +17,6 @@ The validation-passed specification document.
 
 The structured analysis of requirement changes, used to compose the change summary.
 
-## Protocol
-
-### 1. Assemble Final Specification
-
-- Copy the validation-passed `{working_specification}` into `{final_specification}` in `{planning_folder_path}`.
-
-### 2. Write Change Summary
-
-- Summarize the applied changes — new, updated, and deprecated requirements and added sources — from `{requirements_analysis}` into `{change_summary}` using the [change-summary](../resources/change-summary.md) structure.
-
-### 3. Present for Promotion
-
-- Present `{final_specification}` and `{change_summary}` for the user to review and promote to `{target_doc_path}`.
-
 ## Outputs
 
 ### final_specification
@@ -48,6 +34,20 @@ Human-readable summary of all applied changes and the validation status.
 #### artifact
 
 `change-summary.md`
+
+## Protocol
+
+### 1. Assemble Final Specification
+
+- Copy the validation-passed `{working_specification}` into `{final_specification}` in `{planning_folder_path}`.
+
+### 2. Write Change Summary
+
+- Summarize the applied changes — new, updated, and deprecated requirements and added sources — from `{requirements_analysis}` into `{change_summary}` using the [change-summary](../resources/change-summary.md) structure.
+
+### 3. Present for Promotion
+
+- Present `{final_specification}` and `{change_summary}` for the user to review and promote to `{target_doc_path}`.
 
 ## Rules
 

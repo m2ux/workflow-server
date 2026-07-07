@@ -1,7 +1,5 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
 ---
 
@@ -19,6 +17,16 @@ The pages created or updated in the mutation being recorded — the `page_slugs`
 
 A one-line description of the mutation for the log entry — the area ingested, the trigger (build pass or task-driven update), and the page count.
 
+## Outputs
+
+### index_log
+
+The refreshed catalog and the appended ledger for the wiki.
+
+#### artifact
+
+`index.md` and `log.md`
+
 ## Protocol
 
 ### 1. Update The Index
@@ -33,16 +41,6 @@ A one-line description of the mutation for the log entry — the area ingested, 
 ### 3. Write Both Files
 
 - Write `index.md` and `log.md` by delegating to [`work-package::manage-artifacts::write-artifact`](../../work-package/techniques/manage-artifacts/write-artifact.md), binding `bare_filename` to `index.md` / `log.md`, `artifact_content` to the composed content, and `target_dir` to `{wiki_path}`.
-
-## Outputs
-
-### index_log
-
-The refreshed catalog and the appended ledger for the wiki.
-
-#### artifact
-
-`index.md` and `log.md`
 
 ## Rules
 

@@ -1,13 +1,7 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 2.0.0
-  order: 6
-  legacy_id: 6
 ---
-
-# Research Knowledge Base
 
 ## Capability
 

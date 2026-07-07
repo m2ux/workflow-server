@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.3.0
-  order: 7
-  legacy_id: 7
 ---
 
 ## Capability
@@ -24,6 +20,24 @@ The enumerated items to evaluate against the checklist (e.g., function list, cra
 ### scope_files
 
 Source files to read for evidence gathering
+
+## Outputs
+
+### verdict_matrix
+
+Complete verdict matrix and coverage attestation.
+
+#### matrix_rows
+
+one row per item, one column per checklist entry, each cell is PASS/FAIL/NA with evidence
+
+#### required_analysis_tables
+
+any structured tables mandated by specific checklist entries
+
+#### coverage_attestation
+
+total items, total reviewed, coverage percentage, gaps list
 
 ## Protocol
 
@@ -62,21 +76,3 @@ Source files to read for evidence gathering
 ### 5. Produce Verdict Matrix
 
 - Output the `{verdict_matrix}`: the complete item x checklist matrix with its coverage attestation.
-
-## Outputs
-
-### verdict_matrix
-
-Complete verdict matrix and coverage attestation.
-
-#### matrix_rows
-
-one row per item, one column per checklist entry, each cell is PASS/FAIL/NA with evidence
-
-#### required_analysis_tables
-
-any structured tables mandated by specific checklist entries
-
-#### coverage_attestation
-
-total items, total reviewed, coverage percentage, gaps list

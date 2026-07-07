@@ -1,13 +1,7 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 2.0.0
-  order: 4
-  legacy_id: 4
 ---
-
-# Dispatch Sub-Agents
 
 ## Capability
 

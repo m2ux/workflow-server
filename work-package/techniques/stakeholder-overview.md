@@ -1,7 +1,5 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.0.0
 ---
 
@@ -23,6 +21,12 @@ The README section to write into (e.g. `## Problem Overview`, `## Solution Overv
 
 Path to the planning folder whose `README.md` holds the section.
 
+## Outputs
+
+### stakeholder_overview
+
+The two-paragraph plain-language overview written under `{readme_section_heading}` in the planning folder README.
+
 ## Protocol
 
 1. Synthesize a plain-language overview from `{source_material}`.
@@ -30,12 +34,6 @@ Path to the planning folder whose `README.md` holds the section.
 3. Frame the first paragraph as the situation or what the work does, and the second paragraph as the consequences or guarantees — what matters and why — tailoring the framing to `{readme_section_heading}` and `{source_material}`.
 4. Present the overview to the user.
 5. Write it into `{planning_folder_path}`/`README.md` by replacing the placeholder text under the `{readme_section_heading}` section.
-
-## Outputs
-
-### stakeholder_overview
-
-The two-paragraph plain-language overview written under `{readme_section_heading}` in the planning folder README.
 
 ## Rules
 

@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 3.1.0
-  order: 3
-  legacy_id: 3
 ---
 
 ## Capability
@@ -28,6 +24,28 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 ### jira_project
 
 *(optional)* Jira project chosen at the `jira-project-selection` gate — the project the new Jira issue is created in. Absent for GitHub issues.
+
+## Outputs
+
+### needs_issue_creation
+
+Boolean gate — `false` when step 1 verified an existing issue, otherwise `true` (a new issue must be created). Gates steps 2 and 3.
+
+### created_issue
+
+Issue created on the selected platform
+
+#### issue_number
+
+Issue number (GitHub #N or Jira KEY-N)
+
+#### issue_url
+
+URL to the created issue
+
+#### jira_cloud_id
+
+Atlassian cloud ID for subsequent Jira operations (Jira only)
 
 ## Protocol
 
@@ -57,28 +75,6 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 - Create the issue with mapped type using the issue-type mapping below — the resulting issue is the `{created_issue}`. Capture `{issue_number}` and `{issue_url}`.
 - Jira issue type mapping: `feature->Story`, `bug->Bug`, `task->Task`, `enhancement->Story`, `epic->Epic`
 - If any Atlassian API call fails (auth, permissions, or invalid request — including the `getJiraIssue` verification in step 1), verify the cloudId and project access, and check the Jira issue type and required fields before retrying.
-
-## Outputs
-
-### needs_issue_creation
-
-Boolean gate — `false` when step 1 verified an existing issue, otherwise `true` (a new issue must be created). Gates steps 2 and 3.
-
-### created_issue
-
-Issue created on the selected platform
-
-#### issue_number
-
-Issue number (GitHub #N or Jira KEY-N)
-
-#### issue_url
-
-URL to the created issue
-
-#### jira_cloud_id
-
-Atlassian cloud ID for subsequent Jira operations (Jira only)
 
 ## Rules
 

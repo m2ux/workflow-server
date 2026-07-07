@@ -1,10 +1,6 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.1.0
-  order: 11
-  legacy_id: 11
 ---
 
 ## Capability
@@ -20,6 +16,40 @@ Feature branch whose diff is reviewed (synced via `git pull`, parsed via `git di
 ### planning_folder_path
 
 Folder where the change block index and manual diff review report are written
+
+## Outputs
+
+### change_block_index
+
+[Index](../resources/manual-diff-review.md#file-index-generation) of changed blocks for external diff review, with per-block rationale paragraphs hyperlinked from the index table to aid manual review
+
+#### artifact
+
+`change-block-index.md`
+
+#### index_table
+
+Row (hyperlinked to rationale) | Path | File with review time estimate
+
+#### block_rationale
+
+Per-block descriptive paragraphs explaining intent, context, and non-obvious design choices
+
+### manual_diff_review_report
+
+Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-review-report-template) from user-flagged blocks
+
+#### artifact
+
+`manual-diff-review.md`
+
+#### block_findings
+
+Per-block issues with interview responses
+
+#### has_critical_blocker
+
+True if any block marked as critical blocker
 
 ## Protocol
 
@@ -75,37 +105,3 @@ Each Block Rationale paragraph is 3–5 sentences covering intent, context, and 
 ### review-conduct
 
 Work systematically (top-to-bottom or by logical grouping); reference surrounding code when describing an issue; be specific — include line numbers or code snippets in finding descriptions.
-
-## Outputs
-
-### change_block_index
-
-[Index](../resources/manual-diff-review.md#file-index-generation) of changed blocks for external diff review, with per-block rationale paragraphs hyperlinked from the index table to aid manual review
-
-#### artifact
-
-`change-block-index.md`
-
-#### index_table
-
-Row (hyperlinked to rationale) | Path | File with review time estimate
-
-#### block_rationale
-
-Per-block descriptive paragraphs explaining intent, context, and non-obvious design choices
-
-### manual_diff_review_report
-
-Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-review-report-template) from user-flagged blocks
-
-#### artifact
-
-`manual-diff-review.md`
-
-#### block_findings
-
-Per-block issues with interview responses
-
-#### has_critical_blocker
-
-True if any block marked as critical blocker

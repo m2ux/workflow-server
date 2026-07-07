@@ -1,7 +1,5 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.1.0
 ---
 
@@ -22,6 +20,20 @@ The question to answer against the wiki — a natural-language query about the c
 #### default
 
 `false`
+
+## Outputs
+
+### wiki_answer
+
+The synthesized answer to `{wiki_question}`, with `[[wikilink]]` citations to the pages it rests on and the confidence carried from those pages.
+
+#### coverage_gaps
+
+Parts of the question the wiki does not cover, surfaced so the caller can decide whether to ingest the missing area.
+
+#### answer_page
+
+*(present only when `persist_answer` is true)* The slug of the page the answer was persisted to.
 
 ## Protocol
 
@@ -44,20 +56,6 @@ The question to answer against the wiki — a natural-language query about the c
 ### 4. Persist If Requested
 
 - When `{persist_answer}` is true, write the answer as a typed page (`comparison` for a cross-cutting synthesis, `concept` for a single subject) via [`work-package::manage-artifacts::write-artifact`](../../work-package/techniques/manage-artifacts/write-artifact.md) into `{wiki_path}`, then apply [maintain-index-log](./maintain-index-log.md) so the new page enters the catalog and ledger.
-
-## Outputs
-
-### wiki_answer
-
-The synthesized answer to `{wiki_question}`, with `[[wikilink]]` citations to the pages it rests on and the confidence carried from those pages.
-
-#### coverage_gaps
-
-Parts of the question the wiki does not cover, surfaced so the caller can decide whether to ingest the missing area.
-
-#### answer_page
-
-*(present only when `persist_answer` is true)* The slug of the page the answer was persisted to.
 
 ## Rules
 

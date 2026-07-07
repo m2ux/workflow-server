@@ -1,7 +1,5 @@
 ---
 metadata:
-  ontology: workflow-canonical
-  kind: technique
   version: 1.1.0
 ---
 
@@ -22,6 +20,28 @@ The single source area to ingest — a module, package, subsystem, or file set n
 #### default
 
 `""`
+
+## Outputs
+
+### wiki_pages
+
+The typed wiki pages created or updated for `{target_area}` — each with cited, confidence-scored claims and maintained `[[wikilink]]` relationships.
+
+#### artifact
+
+`{$page_slug}.md`
+
+#### page_slugs
+
+The kebab-case slugs of every page this ingest created or updated, used by `maintain-index-log` to update the catalog and append the ledger.
+
+#### cascaded_pages
+
+The related pages whose `[[wikilinks]]` or claims were updated as a consequence of this ingest.
+
+### ingest_summary
+
+A one-line description of this ingest for the log ledger — the area covered (`{target_area}`), whether the pass was code-driven or task-driven, and the page count. Consumed by `maintain-index-log` as its `operation_summary`.
 
 ## Protocol
 
@@ -56,28 +76,6 @@ The single source area to ingest — a module, package, subsystem, or file set n
 ### 6. Write Pages
 
 - Write each page by delegating to [`work-package::manage-artifacts::write-artifact`](../../work-package/techniques/manage-artifacts/write-artifact.md), binding `bare_filename` to the page's `{$page_slug}.md`, `artifact_content` to the page body, and `target_dir` to `{wiki_path}` (or the typed subfolder beneath it). The find-or-create behavior of `write-artifact` augments an existing page in place and creates a new one otherwise.
-
-## Outputs
-
-### wiki_pages
-
-The typed wiki pages created or updated for `{target_area}` — each with cited, confidence-scored claims and maintained `[[wikilink]]` relationships.
-
-#### artifact
-
-`{$page_slug}.md`
-
-#### page_slugs
-
-The kebab-case slugs of every page this ingest created or updated, used by `maintain-index-log` to update the catalog and append the ledger.
-
-#### cascaded_pages
-
-The related pages whose `[[wikilinks]]` or claims were updated as a consequence of this ingest.
-
-### ingest_summary
-
-A one-line description of this ingest for the log ledger — the area covered (`{target_area}`), whether the pass was code-driven or task-driven, and the page count. Consumed by `maintain-index-log` as its `operation_summary`.
 
 ## Rules
 
