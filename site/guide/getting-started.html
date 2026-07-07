@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Getting started — Workflow Server</title>
+<meta name="description" content="Install the workflow-server, connect it to an MCP client, and verify the connection.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="../">Workflow Server</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="./getting-started.html" aria-current="page">Getting started</a></li>
+        <li><a href="./concepts.html">Concepts</a></li>
+        <li><a href="./running-workflows.html">Running workflows</a></li>
+        <li><a href="./ide-setup.html">IDE setup</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <h1>Getting started</h1>
+  <p class="lede">This page takes you from a fresh clone to a working setup: the server built, your MCP client talking to it, and the agent able to list workflows. You need <strong>Node.js 18+</strong> and an MCP client (Cursor, Claude Desktop, Claude Code, or any compatible client).</p>
+
+  <h2 id="pieces">The pieces</h2>
+  <p>Three things work together. Your MCP client runs the server as a local process and talks to it over the Model Context Protocol. The server reads workflow definitions from a data directory, and it reads and writes session state inside the project you are working on.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 250" role="img" aria-labelledby="topo-title topo-desc">
+      <title id="topo-title">Deployment topology</title>
+      <desc id="topo-desc">Your MCP client communicates with the workflow-server process over MCP. The server reads workflow definitions from the workflows directory and reads and writes session state under your project's engineering planning folder.</desc>
+      <defs>
+        <marker id="arrowg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="16" font-weight="600" text-anchor="middle">
+        <rect x="20" y="80" width="220" height="70" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="130" y="110" fill="var(--diagram-label)">MCP client</text>
+        <text x="130" y="132" fill="var(--diagram-note)" font-size="13" font-weight="400">Cursor · Claude Desktop · …</text>
+        <rect x="370" y="80" width="220" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="480" y="110" fill="var(--diagram-label)">workflow-server</text>
+        <text x="480" y="132" fill="var(--diagram-note)" font-size="13" font-weight="400">Node.js process</text>
+        <rect x="720" y="20" width="220" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="830" y="50" fill="var(--diagram-label)">Workflow definitions</text>
+        <text x="830" y="72" fill="var(--diagram-note)" font-size="13" font-weight="400">WORKFLOW_DIR (read)</text>
+        <rect x="720" y="140" width="220" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="830" y="170" fill="var(--diagram-label)">Your project</text>
+        <text x="830" y="192" fill="var(--diagram-note)" font-size="13" font-weight="400">session state (read/write)</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
+        <line x1="240" y1="115" x2="366" y2="115" marker-end="url(#arrowg)" marker-start="url(#arrowg)"/>
+        <line x1="590" y1="100" x2="716" y2="62" marker-end="url(#arrowg)"/>
+        <line x1="590" y1="130" x2="716" y2="168" marker-end="url(#arrowg)" marker-start="url(#arrowg)"/>
+      </g>
+      <g font-size="13" fill="var(--diagram-note)" text-anchor="middle">
+        <text x="303" y="103">MCP (stdio)</text>
+        <text x="650" y="65">reads</text>
+        <text x="650" y="165">reads / writes</text>
+      </g>
+    </svg>
+    <figcaption>The MCP client launches and talks to the workflow-server over stdio. The server reads workflow definitions from <code>WORKFLOW_DIR</code> and keeps session state under your project's <code>.engineering/artifacts/planning/</code> folder (the <em>workspace</em>).</figcaption>
+  </figure>
+
+  <h2 id="install">1. Install and build</h2>
+  <pre><code># Clone and install
+git clone https://github.com/m2ux/workflow-server.git
+cd workflow-server
+npm install
+
+# Set up workflow data (worktree for the orphan `workflows` branch)
+git worktree add ./workflows workflows
+
+# Build the server
+npm run build</code></pre>
+  <p>The workflow definitions live on a separate <code>workflows</code> branch of the same repository, checked out as a worktree — server code and workflow data evolve independently.</p>
+
+  <h2 id="configure">2. Configure your MCP client</h2>
+  <p>Register the server in your client's MCP configuration. For Cursor this is <code>~/.cursor/mcp.json</code>; for Claude Desktop it is <code>claude_desktop_config.json</code> (macOS: <code>~/Library/Application Support/Claude/</code>, Windows: <code>%APPDATA%\Claude\</code>).</p>
+  <pre><code>{
+  "mcpServers": {
+    "workflow-server": {
+      "command": "node",
+      "args": ["/path/to/workflow-server/dist/index.js"],
+      "env": {
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflows",
+        "WORKFLOW_WORKSPACE": "/path/to/your/project"
+      }
+    }
+  }
+}</code></pre>
+  <p><code>WORKFLOW_WORKSPACE</code> points at the project the server manages sessions for — the repository whose <code>.engineering/artifacts/planning/</code> folder holds session state. It is required: the server refuses to start without a workspace (you can pass <code>--workspace=PATH</code> as a command-line argument instead). Restart your MCP client after editing the configuration.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Setting</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>WORKFLOW_WORKSPACE</code> or <code>--workspace=PATH</code></td><td>required</td><td>Project the server manages sessions for; session state lives under its <code>.engineering/artifacts/planning/</code></td></tr>
+        <tr><td><code>WORKFLOW_DIR</code></td><td><code>./workflows</code></td><td>Workflow definition directories (each holds <code>workflow.yaml</code>, <code>activities/</code>, <code>techniques/</code>, <code>resources/</code>)</td></tr>
+        <tr><td><code>SCHEMAS_DIR</code></td><td><code>./schemas</code></td><td>JSON Schemas served via the <code>workflow-server://schemas</code> MCP resource</td></tr>
+        <tr><td><code>SERVER_NAME</code></td><td><code>workflow-server</code></td><td>Name reported by <code>health_check</code></td></tr>
+        <tr><td><code>SERVER_VERSION</code></td><td><code>1.0.0</code></td><td>Version reported by <code>health_check</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="verify">3. Verify</h2>
+  <p>Ask your agent:</p>
+  <pre><code>Use the workflow server to list available workflows</code></pre>
+  <p>The agent should call <a href="../api/tools.html#list_workflows"><code>list_workflows</code></a> and return the workflow inventory. If it does, the connection works.</p>
+
+  <h2 id="next">Next steps</h2>
+  <ul>
+    <li><a href="./ide-setup.html">Set up the IDE bootstrap rule</a> so natural-language workflow requests reach the server reliably.</li>
+    <li><a href="./concepts.html">Learn the concepts</a> — workflows, activities, techniques, sessions, and checkpoints.</li>
+    <li>Deploying the engineering-branch pattern into your own project (the <code>.engineering/</code> folder) is covered in <a href="https://github.com/m2ux/workflow-server/blob/main/SETUP.md">SETUP.md</a>.</li>
+  </ul>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
+    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IDE setup — Workflow Server</title>
+<meta name="description" content="Configure the always-applied IDE rule that routes workflow requests to the server's bootstrap procedure.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="../">Workflow Server</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="./getting-started.html">Getting started</a></li>
+        <li><a href="./concepts.html">Concepts</a></li>
+        <li><a href="./running-workflows.html">Running workflows</a></li>
+        <li><a href="./ide-setup.html" aria-current="page">IDE setup</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <h1>IDE setup</h1>
+  <p class="lede">One always-applied rule connects your IDE's agent to the server. It doesn't encode any protocol — it just makes the agent call <code>discover</code> first, and the server takes it from there.</p>
+
+  <h2 id="rule">The bootstrap rule</h2>
+  <p>Add this to your IDE's "always-applied" rule set (a Cursor rule, a Claude Code project rule, or the equivalent in your client):</p>
+  <pre><code>For any start workflow, create work package, or resume work package request, call the `discover` tool on the workflow-server MCP server to learn the bootstrap procedure. Complete the procedure before any other action.
+
+If the user provides a `session_token`, pass it to subsequent workflow-server calls per their instructions.</code></pre>
+  <p>The rule wires natural-language requests — "start a work package", "resume the workflow" — into the server's bootstrap procedure. Because the agent always asks the server first, the procedure stays in sync with whatever server version is running; there is no protocol copy in your IDE rules to go stale.</p>
+
+  <h2 id="discover">What <code>discover</code> returns</h2>
+  <ul>
+    <li><strong>Server name and version</strong> — confirms which workflow server the agent is talking to.</li>
+    <li><strong>The bootstrap procedure</strong> — the canonical tool-calling sequence (<code>list_workflows</code> → <code>start_session</code> → <code>get_workflow</code> → <code>next_activity</code> → <code>get_activity</code>), with checkpoint discipline layered in.</li>
+    <li><strong>Available workflows</strong> — IDs, titles, and tags the agent matches your request against.</li>
+  </ul>
+
+  <h2 id="schemas">Schema awareness (optional)</h2>
+  <p>The server exposes its JSON Schemas via the MCP resource <code>workflow-server://schemas</code>. Agents that author or validate workflow definitions can fetch it on startup — the same schemas are browsable in the <a href="../api/schemas.html">schema reference</a>.</p>
+
+  <h2 id="verify">Verifying the connection</h2>
+  <ol class="steps">
+    <li>Restart your MCP client after adding the rule.</li>
+    <li>Ask the agent to <em>list available workflows</em>. It should call <a href="../api/tools.html#list_workflows"><code>list_workflows</code></a> and return the inventory — no session needed.</li>
+    <li>Ask it to <em>start a work-package workflow</em>. It should call <code>discover</code> first, then proceed through <code>list_workflows</code>, <code>start_session</code>, and <code>get_workflow</code>.</li>
+  </ol>
+  <p>If the agent skips <code>discover</code>, the rule has not been picked up — re-check your IDE's rule configuration.</p>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
+    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Running workflows — Workflow Server</title>
+<meta name="description" content="How to start, resume, and finish workflows with natural-language requests, and what happens underneath.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="../">Workflow Server</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="./getting-started.html">Getting started</a></li>
+        <li><a href="./concepts.html">Concepts</a></li>
+        <li><a href="./running-workflows.html" aria-current="page">Running workflows</a></li>
+        <li><a href="./ide-setup.html">IDE setup</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <h1>Running workflows</h1>
+  <p class="lede">You drive workflows in natural language — no tool names, no tokens to copy. Describe what you want; the agent matches your request to a workflow, runs it phase by phase, and comes back to you at every checkpoint.</p>
+
+  <h2 id="requests">What to say</h2>
+  <p><strong>Start</strong> a workflow by naming the goal:</p>
+  <pre><code>Start a new work-package workflow for implementing user authentication</code></pre>
+  <pre><code>Begin a work-package workflow for issue #42</code></pre>
+  <p><strong>Resume</strong> one — sessions live on disk, so this works across restarts and even across chat conversations:</p>
+  <pre><code>Resume the work-package workflow we were working on</code></pre>
+  <pre><code>Continue the authentication work package from where we left off</code></pre>
+  <p><strong>Finish</strong> or wind one down:</p>
+  <pre><code>End the current work-package workflow</code></pre>
+
+  <h2 id="what-happens">What a run looks like</h2>
+  <p>A session moves through the workflow's activities in order, pausing at checkpoints for your decisions:</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 205" role="img" aria-labelledby="run-title run-desc">
+      <title id="run-title">A session timeline</title>
+      <desc id="run-desc">A timeline of five stages: the session starts, a planning activity runs, the workflow pauses at a checkpoint for your decision, an implementation activity runs, and the workflow completes.</desc>
+      <defs>
+        <marker id="arrowr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="15" font-weight="600" text-anchor="middle">
+        <rect x="10" y="60" width="150" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="85" y="93" fill="var(--diagram-label)">session starts</text>
+        <rect x="205" y="60" width="150" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="280" y="85" fill="var(--diagram-label)">activity</text>
+        <text x="280" y="105" fill="var(--diagram-note)" font-size="13" font-weight="400">e.g. plan</text>
+        <rect x="400" y="60" width="160" height="56" rx="28" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="480" y="85" fill="var(--diagram-label)">checkpoint</text>
+        <text x="480" y="105" fill="var(--diagram-note)" font-size="13" font-weight="400">your decision</text>
+        <rect x="605" y="60" width="150" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="680" y="85" fill="var(--diagram-label)">activity</text>
+        <text x="680" y="105" fill="var(--diagram-note)" font-size="13" font-weight="400">e.g. implement</text>
+        <rect x="800" y="60" width="150" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="875" y="93" fill="var(--diagram-label)">complete</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2">
+        <line x1="160" y1="88" x2="201" y2="88" marker-end="url(#arrowr)"/>
+        <line x1="355" y1="88" x2="396" y2="88" marker-end="url(#arrowr)"/>
+        <line x1="560" y1="88" x2="601" y2="88" marker-end="url(#arrowr)"/>
+        <line x1="755" y1="88" x2="796" y2="88" marker-end="url(#arrowr)"/>
+      </g>
+      <text x="480" y="155" font-size="13" text-anchor="middle" fill="var(--diagram-note)">the rounded stage is a pause — nothing advances until you answer</text>
+    </svg>
+    <figcaption>A session timeline. Activities run in sequence; checkpoints (rounded) pause the run for your decision, and your choice can change which activities follow. Real workflows have more activities and more checkpoints than this sketch.</figcaption>
+  </figure>
+
+  <p>Underneath, the agent follows the server's bootstrap procedure — <code>discover</code>, then <a href="../api/tools.html#start_session"><code>start_session</code></a>, <a href="../api/tools.html#get_workflow"><code>get_workflow</code></a>, and the <a href="../api/tools.html#next_activity"><code>next_activity</code></a> → <a href="../api/tools.html#get_activity"><code>get_activity</code></a> loop shown on the <a href="../#how-it-works">home page</a>. You never manage this sequence yourself; the <a href="./ide-setup.html">IDE bootstrap rule</a> makes sure it happens.</p>
+
+  <h2 id="checkpoint-etiquette">At a checkpoint</h2>
+  <p>When the run reaches a checkpoint, the agent presents the decision with its options and waits. Answer it like any question — pick an option, or give the custom input it asks for. The server enforces the pause: the workflow cannot advance until a response is recorded, and checkpoints with an auto-advance default still respect the server-enforced timer before proceeding.</p>
+
+  <h2 id="artifacts">Where the work lands</h2>
+  <p>Each session owns a planning folder under your project's <code>.engineering/artifacts/planning/&lt;date-slug&gt;/</code>. Workflow artifacts — plans, analyses, review notes — are written there, alongside the <code>session.json</code> the server uses to track state. The folder name is the handle for resuming: "resume the authentication work package" finds the matching slug and continues that session.</p>
+
+  <h2 id="next">Next</h2>
+  <p>If the agent isn't picking these requests up, work through <a href="./ide-setup.html">IDE setup</a> — the always-applied rule is what routes workflow requests to the server.</p>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
+    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
