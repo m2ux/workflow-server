@@ -274,15 +274,17 @@ figure.diagram figcaption {
 
 .steps > li {
   counter-increment: step;
-  display: grid;
-  grid-template-columns: 2.2rem 1fr;
-  gap: var(--space-2);
-  align-items: baseline;
+  position: relative;
+  padding-left: 2.9rem;
+  min-height: 1.8rem;
 }
 
 .steps > li::before {
   content: counter(step);
-  display: inline-grid;
+  position: absolute;
+  left: 0;
+  top: 0.05em;
+  display: grid;
   place-items: center;
   width: 1.8rem;
   height: 1.8rem;
