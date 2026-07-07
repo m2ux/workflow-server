@@ -263,8 +263,10 @@ export function createInitialSessionFile(args: {
   parentSession?: SessionFile;
   planningFolderPath?: string;
   contextMode?: 'persistent' | 'fresh';
+  variables?: Record<string, unknown>;
 }): SessionFile {
   const now = new Date();
+  const seeded = args.variables ?? {};
   const file: SessionFile = {
     schemaVersion: 1,
     sessionIndex: args.sessionIndex,
@@ -277,11 +279,19 @@ export function createInitialSessionFile(args: {
     currentActivity: '',
     currentTechnique: '',
     condition: '',
-    variables: {},
+    variables: seeded,
     completedActivities: [],
     skippedActivities: [],
     checkpointResponses: {},
-    history: [{ timestamp: now.toISOString(), type: 'workflow_started' }],
+    // Defaults seeded from the workflow's variable declarations (#166 B7) are
+    // recorded as ONE variables_seeded event carrying the whole map — they are
+    // initial state, not checkpoint writes, so no per-name variable_set events.
+    history: [
+      { timestamp: now.toISOString(), type: 'workflow_started' },
+      ...(Object.keys(seeded).length > 0
+        ? [{ timestamp: now.toISOString(), type: 'variables_seeded' as const, data: { variables: seeded } }]
+        : []),
+    ],
     status: 'running',
     triggeredWorkflows: [],
   };

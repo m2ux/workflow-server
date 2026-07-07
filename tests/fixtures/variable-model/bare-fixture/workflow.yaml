@@ -1,0 +1,10 @@
+id: bare-fixture
+version: 1.0.0
+title: Bare Fixture
+description: Fixture workflow whose variables declare no defaults — nothing seeds.
+initialActivity: bare-activity
+variables:
+  - name: free_text
+    type: string
+  - name: open_flag
+    type: boolean
