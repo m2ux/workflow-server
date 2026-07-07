@@ -19,7 +19,7 @@ import {
   describeSessionStoreError,
   SessionStoreError,
 } from '../utils/session/index.js';
-import { buildValidation, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
+import { buildValidation, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTechniqueFetches, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
 import type { StepManifestEntry, ActivityManifestEntry } from '../utils/validation.js';
 import { createTraceToken, decodeTraceToken } from '../trace.js';
 import type { TraceEvent, TraceTokenPayload } from '../trace.js';
@@ -199,7 +199,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('next_activity', 'Transition to the specified activity. This is the orchestrator\'s tool for advancing the workflow — it validates the transition, advances the session state on disk, and records the trace, but does NOT return the activity definition. After calling next_activity, the worker should call get_activity to load the complete activity definition including steps, checkpoints, transitions, and technique references. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field of the current activity\'s response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation.',
+  server.tool('next_activity', 'Transition to the specified activity. This is the orchestrator\'s tool for advancing the workflow — it validates the transition, advances the session state on disk, and records the trace, but does NOT return the activity definition. After calling next_activity, the worker should call get_activity to load the complete activity definition including steps, checkpoints, transitions, and technique references. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field of the current activity\'s response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation. Manifest validation also cross-checks fidelity (warn-only): a manifested technique step with no technique_fetched event recorded during the activity (see get_technique) draws a warning.',
     {
       ...sessionIndexParam,
       activity_id: z.string().describe('Activity ID to transition to. For the first call, use initialActivity from get_workflow. For subsequent calls, use an activity ID from the transitions field of the current activity.'),
@@ -230,6 +230,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (step_manifest && state.currentActivity) {
         const mw = validateStepManifest(step_manifest as StepManifestEntry[], result.value, state.currentActivity);
         manifestWarnings.push(...mw);
+        // Fidelity observability (#166 B8): advisory cross-check of the
+        // manifest against the technique_fetched events get_technique
+        // recorded into the session history during this activity.
+        manifestWarnings.push(...validateTechniqueFetches(step_manifest as StepManifestEntry[], result.value, state.currentActivity, state.history));
       } else if (!step_manifest && state.currentActivity) {
         manifestWarnings.push(`No step_manifest provided for previous activity '${state.currentActivity}'. Include a manifest to enable step completion validation.`);
       }

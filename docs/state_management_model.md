@@ -4,7 +4,7 @@ The Workflow Server strictly enforces **deterministic state machine transitions*
 
 ## 1. Variable Initialization
 
-Every workflow defines a set of schema-validated state variables in its `workflow.yaml` file. When a new session is bootstrapped by the Meta Orchestrator, the Workflow Orchestrator initializes its internal state dictionary using these default values.
+Every workflow defines a set of schema-validated state variables in its `workflow.yaml` file. When a new session is bootstrapped by the Meta Orchestrator, the Workflow Orchestrator initializes its internal state dictionary using these default values. The initialization is the orchestrator's job: the server-held session variable bag starts empty — the server does not seed `defaultValue`, coerce `type`, or check `required`, and writes the bag only through checkpoint `setVariable` effects.
 
 Example `workflow.yaml` variables:
 ```yaml

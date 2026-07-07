@@ -2,9 +2,12 @@ import { describe, it, expect } from 'vitest';
 import {
   validateActivityTransition,
   validateWorkflowVersion,
+  validateStepManifest,
+  validateTechniqueFetches,
   buildValidation,
   type SessionView,
 } from '../src/utils/validation.js';
+import type { HistoryEntry } from '../src/schema/state.schema.js';
 import { evaluateCondition } from '../src/schema/condition.schema.js';
 import type { Condition } from '../src/schema/condition.schema.js';
 import type { Workflow } from '../src/schema/workflow.schema.js';
@@ -214,6 +217,262 @@ describe('validation', () => {
       };
       expect(evaluateCondition(condition, { min: '5', max: '50' })).toBe(true);
       expect(evaluateCondition(condition, { min: '0', max: '50' })).toBe(false);
+    });
+  });
+
+  describe('validateStepManifest: gated and loop-body steps', () => {
+    function makeManifestWorkflow(): Workflow {
+      return {
+        id: 'test-wf',
+        version: '1.0.0',
+        title: 'Test Workflow',
+        activities: [
+          {
+            id: 'work',
+            version: '1.0.0',
+            name: 'Work',
+            steps: [
+              { kind: 'technique', id: 'first-step', technique: 'grp::first-step' },
+              { kind: 'technique', id: 'gated-step', technique: 'grp::gated-step', when: 'needs_gate == true' },
+              {
+                kind: 'checkpoint',
+                id: 'conditional-gate',
+                message: 'Proceed?',
+                options: [{ id: 'proceed', label: 'Proceed' }],
+                condition: { type: 'simple', variable: 'confirmation_needed', operator: '==', value: true },
+              },
+              {
+                kind: 'loop',
+                id: 'item-loop',
+                loopType: 'forEach',
+                variable: 'current_item',
+                over: 'pending_items',
+                steps: [
+                  { kind: 'technique', id: 'process-item', technique: 'grp::process-item' },
+                ],
+              },
+              { kind: 'technique', id: 'last-step', technique: 'grp::last-step' },
+            ],
+          },
+        ],
+      } as unknown as Workflow;
+    }
+
+    it('accepts a manifest that omits when-gated and condition-gated steps', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: 'done' },
+          { step_id: 'item-loop', output: 'processed 3 items' },
+          { step_id: 'last-step', output: 'done' },
+        ],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings).toEqual([]);
+    });
+
+    it('still reports ungated steps as missing', () => {
+      const warnings = validateStepManifest(
+        [{ step_id: 'first-step', output: 'done' }],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings.some(w => w.includes('Missing steps') && w.includes('last-step'))).toBe(true);
+      expect(warnings.some(w => w.includes('gated-step') || w.includes('conditional-gate'))).toBe(false);
+    });
+
+    it('accepts executed gated steps and loop-body step ids without warnings', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: 'done' },
+          { step_id: 'gated-step', output: 'gate held, executed' },
+          { step_id: 'conditional-gate', output: 'user chose proceed' },
+          { step_id: 'item-loop', output: 'iterated' },
+          { step_id: 'process-item', output: 'item 1' },
+          { step_id: 'process-item', output: 'item 2' },
+          { step_id: 'last-step', output: 'done' },
+        ],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings).toEqual([]);
+    });
+
+    it('reports unknown step ids as unexpected', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: 'done' },
+          { step_id: 'invented-step', output: 'done' },
+          { step_id: 'item-loop', output: 'done' },
+          { step_id: 'last-step', output: 'done' },
+        ],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings.some(w => w.includes('Unexpected steps') && w.includes('invented-step'))).toBe(true);
+    });
+
+    it('does not report order mismatches when gated steps are skipped', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: 'done' },
+          { step_id: 'item-loop', output: 'done' },
+          { step_id: 'last-step', output: 'done' },
+        ],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings.some(w => w.includes('order mismatch'))).toBe(false);
+    });
+
+    it('reports out-of-declaration-order top-level steps', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'last-step', output: 'done' },
+          { step_id: 'first-step', output: 'done' },
+          { step_id: 'item-loop', output: 'done' },
+        ],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings.some(w => w.includes('order mismatch'))).toBe(true);
+    });
+
+    it('warns on empty step output', () => {
+      const warnings = validateStepManifest(
+        [
+          { step_id: 'first-step', output: '  ' },
+          { step_id: 'item-loop', output: 'done' },
+          { step_id: 'last-step', output: 'done' },
+        ],
+        makeManifestWorkflow(),
+        'work',
+      );
+      expect(warnings.some(w => w.includes("'first-step' has empty output"))).toBe(true);
+    });
+  });
+
+  describe('validateTechniqueFetches (#166 B8 fidelity observability)', () => {
+    function makeFetchWorkflow(): Workflow {
+      return {
+        id: 'test-wf',
+        version: '1.0.0',
+        title: 'Test Workflow',
+        activities: [
+          {
+            id: 'work',
+            version: '1.0.0',
+            name: 'Work',
+            steps: [
+              { kind: 'technique', id: 'qualified-step', technique: 'grp::qualified-step' },
+              { kind: 'technique', id: 'bare-step', technique: 'bare-step' },
+              { kind: 'action', id: 'mark-progress', actions: [{ action: 'set', target: 'progress_flag', value: true }] },
+              {
+                kind: 'loop',
+                id: 'item-loop',
+                loopType: 'forEach',
+                variable: 'current_item',
+                over: 'pending_items',
+                steps: [
+                  { kind: 'technique', id: 'process-item', technique: 'grp::process-item' },
+                ],
+              },
+            ],
+          },
+        ],
+      } as unknown as Workflow;
+    }
+
+    const entered = (activity: string): HistoryEntry => ({
+      timestamp: '2026-07-07T10:00:00.000Z',
+      type: 'activity_entered',
+      activity,
+    });
+    const fetched = (activity: string, data: { techniqueId: string; stepId?: string }): HistoryEntry => ({
+      timestamp: '2026-07-07T10:01:00.000Z',
+      type: 'technique_fetched',
+      activity,
+      data: { ...data, agentId: 'worker' },
+    });
+    const fullManifest = [
+      { step_id: 'qualified-step', output: 'done' },
+      { step_id: 'bare-step', output: 'done' },
+      { step_id: 'mark-progress', output: 'done' },
+      { step_id: 'item-loop', output: 'iterated' },
+      { step_id: 'process-item', output: 'item 1' },
+    ];
+
+    it('warns for every manifested technique step when no fetches were recorded', () => {
+      const warnings = validateTechniqueFetches(fullManifest, makeFetchWorkflow(), 'work', [entered('work')]);
+      expect(warnings).toHaveLength(1);
+      expect(warnings[0]).toContain('qualified-step');
+      expect(warnings[0]).toContain('bare-step');
+      expect(warnings[0]).toContain('process-item');
+      // Action, loop, and checkpoint steps carry no technique — never flagged.
+      expect(warnings[0]).not.toContain('mark-progress');
+      expect(warnings[0]).not.toContain('item-loop');
+    });
+
+    it('passes when every technique step has a step-bound fetch', () => {
+      const history = [
+        entered('work'),
+        fetched('work', { techniqueId: 'grp::qualified-step', stepId: 'qualified-step' }),
+        fetched('work', { techniqueId: 'work::bare-step', stepId: 'bare-step' }),
+        fetched('work', { techniqueId: 'grp::process-item', stepId: 'process-item' }),
+      ];
+      expect(validateTechniqueFetches(fullManifest, makeFetchWorkflow(), 'work', history)).toEqual([]);
+    });
+
+    it('credits an unbound fetch by resolved technique id, including the activity-group shorthand form', () => {
+      const history = [
+        entered('work'),
+        // No stepId on either fetch: match must fall through to the technique id.
+        fetched('work', { techniqueId: 'grp::qualified-step' }),
+        // A bare authored ref resolves as `<activity>::<op>` under the group
+        // shorthand — the recorded id is the resolved form.
+        fetched('work', { techniqueId: 'work::bare-step' }),
+        fetched('work', { techniqueId: 'grp::process-item' }),
+      ];
+      expect(validateTechniqueFetches(fullManifest, makeFetchWorkflow(), 'work', history)).toEqual([]);
+    });
+
+    it('checks only manifested steps', () => {
+      const manifest = [{ step_id: 'qualified-step', output: 'done' }];
+      const history = [
+        entered('work'),
+        fetched('work', { techniqueId: 'grp::qualified-step', stepId: 'qualified-step' }),
+      ];
+      expect(validateTechniqueFetches(manifest, makeFetchWorkflow(), 'work', history)).toEqual([]);
+    });
+
+    it('ignores fetches recorded for a different activity', () => {
+      const manifest = [{ step_id: 'qualified-step', output: 'done' }];
+      const history = [
+        entered('work'),
+        fetched('other-activity', { techniqueId: 'grp::qualified-step', stepId: 'qualified-step' }),
+      ];
+      const warnings = validateTechniqueFetches(manifest, makeFetchWorkflow(), 'work', history);
+      expect(warnings).toHaveLength(1);
+      expect(warnings[0]).toContain('qualified-step');
+    });
+
+    it('scopes fetches to the current visit — a loop-back revisit needs fresh fetches', () => {
+      const manifest = [{ step_id: 'qualified-step', output: 'done' }];
+      const history = [
+        entered('work'),
+        fetched('work', { techniqueId: 'grp::qualified-step', stepId: 'qualified-step' }),
+        { timestamp: '2026-07-07T10:02:00.000Z', type: 'activity_exited', activity: 'work' } as HistoryEntry,
+        entered('review'),
+        entered('work'), // revisit — the earlier fetch is a previous visit's
+      ];
+      const warnings = validateTechniqueFetches(manifest, makeFetchWorkflow(), 'work', history);
+      expect(warnings).toHaveLength(1);
+      expect(warnings[0]).toContain('qualified-step');
+    });
+
+    it('returns no warning for an unknown activity or an empty manifest', () => {
+      expect(validateTechniqueFetches(fullManifest, makeFetchWorkflow(), 'missing', [])).toEqual([]);
+      expect(validateTechniqueFetches([], makeFetchWorkflow(), 'work', [entered('work')])).toEqual([]);
     });
   });
 

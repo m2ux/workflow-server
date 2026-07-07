@@ -499,7 +499,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_technique',
-    'Load a single composed technique within the current workflow or activity. If called before next_activity (no current activity), it loads the workflow\'s first declared technique. During an activity, it resolves the technique reference from the activity definition; with step_id, it loads the technique assigned to that step; without step_id, the activity\'s first declared technique. The returned technique is fully COMPOSED: it inherits its workflow-root `techniques/TECHNIQUE.md` base contract recursively — never the meta root for a non-meta workflow. Contract-inherited inputs/outputs are delivered under marked `inherited_inputs`/`inherited_outputs` blocks (each with a scope note) distinct from the technique\'s own `inputs`/`outputs`; rules are merged; ancestor Initial/Final protocol blocks wrap the descendant protocol and the server renumbers. A step-bound fetch also annotates the binding seam: each of the technique\'s own inputs carries a `source:` (step-binding value, workflow variable, prior step output, declared default, or UNRESOLVED — the latter also a warn-only validation warning), inherited entries carry one only where it adds to their scope note (step-binding override or a producer positioned later in the workflow), each remapped output carries a `destination:`, and a `provenance_note` states the output delivery mechanics. Annotations are static — resolved from declarations and document order — so payloads are deterministic per corpus and step. Techniques are loaded one at a time. In a session with context_mode "persistent", a refetch whose composed content is byte-identical to what this session+agent already received returns a short unchanged-reference ({ delivery: unchanged, content_hash }) instead of the full payload; pass full: true to force full content.',
+    'Load a single composed technique within the current workflow or activity. If called before next_activity (no current activity), it loads the workflow\'s first declared technique. During an activity, it resolves the technique reference from the activity definition; with step_id, it loads the technique assigned to that step; without step_id, the activity\'s first declared technique. The returned technique is fully COMPOSED: it inherits its workflow-root `techniques/TECHNIQUE.md` base contract recursively — never the meta root for a non-meta workflow. Contract-inherited inputs/outputs are delivered under marked `inherited_inputs`/`inherited_outputs` blocks (each with a scope note) distinct from the technique\'s own `inputs`/`outputs`; rules are merged; ancestor Initial/Final protocol blocks wrap the descendant protocol and the server renumbers. A step-bound fetch also annotates the binding seam: each of the technique\'s own inputs carries a `source:` (step-binding value, workflow variable, prior step output, declared default, or UNRESOLVED — the latter also a warn-only validation warning), inherited entries carry one only where it adds to their scope note (step-binding override or a producer positioned later in the workflow), each remapped output carries a `destination:`, and a `provenance_note` states the output delivery mechanics. Annotations are static — resolved from declarations and document order — so payloads are deterministic per corpus and step. Techniques are loaded one at a time. In a session with context_mode "persistent", a refetch whose composed content is byte-identical to what this session+agent already received returns a short unchanged-reference ({ delivery: unchanged, content_hash }) instead of the full payload; pass full: true to force full content. Every fetch (either delivery path) is recorded in the session history as a technique_fetched event (resolved technique id, bound step_id when supplied, agent); next_activity\'s manifest validation reads these events and warns — advisory only — when a manifested technique step had no fetch during the activity.',
     {
       ...sessionIndexParam,
       step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the activity\'s first declared technique, or the workflow\'s first declared technique if no activity is active.'),
@@ -605,6 +605,26 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         ...provenanceWarnings,
       );
 
+      // Fidelity observability (#166 B8): every technique fetch is recorded in
+      // the session history, keyed by resolved technique id, bound step (when
+      // step_id was supplied) and the session's agentId. next_activity's
+      // manifest validation reads these events to warn (advisory) when a
+      // manifested technique step had no fetch during the activity. Recorded
+      // on both delivery paths — an unchanged-reference answer is still a
+      // fetch.
+      const recordFetch = (draft: SessionFile): void => {
+        draft.history.push({
+          timestamp: new Date().toISOString(),
+          type: 'technique_fetched',
+          ...(state.currentActivity ? { activity: state.currentActivity } : {}),
+          data: {
+            techniqueId: techniqueId as string,
+            ...(boundStep?.id ? { stepId: boundStep.id } : {}),
+            agentId: state.agentId,
+          },
+        });
+      };
+
       // Delta delivery for persistent-context sessions: a refetch whose composed
       // content is byte-identical to what this session+agent already received
       // returns a short unchanged-reference instead of the full payload. The
@@ -615,6 +635,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       if (state.contextMode === 'persistent' && full !== true && deliveredHash(state, ledgerKey) === hash) {
         const next = advanceSession(state, (draft) => {
           draft.currentTechnique = techniqueId as string;
+          recordFetch(draft);
         });
         await saveSessionForTool(loaded, next);
 
@@ -633,6 +654,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const next = advanceSession(state, (draft) => {
         draft.currentTechnique = techniqueId as string;
         recordDeliveries(draft, state.agentId, { [ledgerKey]: hash });
+        recordFetch(draft);
       });
       await saveSessionForTool(loaded, next);
 
@@ -645,7 +667,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_resource',
-    'Load a resource by its id, optionally narrowed to a single section. Use this to fetch resources referenced in technique content (e.g. a template hyperlinked from an Input/Output). The resource_id is a text-only slug — bare (e.g., "review-mode") resolves within the session\'s workflow, or prefixed cross-workflow (e.g., "meta/bootstrap-protocol") resolves from the named workflow. Append a `#section` anchor (GitHub-style heading slug, e.g. "assumption-reconciliation#integration-with-assumptions-log") to return only that section and its body — used to fetch just the template a technique references without the whole file. Returns the resource content, id, and version.',
+    'Load a resource by its id, optionally narrowed to a single section. Use this to fetch resources referenced in technique content (e.g. a template hyperlinked from an Input/Output). The resource_id is a text-only slug — bare (e.g., "review-mode") resolves within the session\'s workflow, or prefixed cross-workflow (e.g., "meta/bootstrap-protocol") resolves from the named workflow. Append a `#section` anchor (GitHub-style heading slug, e.g. "assumption-reconciliation#integration-with-assumptions-log") to return only that section and its body — used to fetch just the template a technique references without the whole file. Returns the resource content, id, and version. Each fetch is recorded in the session history as a resource_fetched event (observability only — no validation reads it).',
     {
       ...sessionIndexParam,
       resource_id: z.string().describe('Resource ref — bare slug ("review-mode"), cross-workflow prefixed ("meta/bootstrap-protocol"), each optionally suffixed with a "#section" heading anchor to return only that section (e.g. "assumption-reconciliation#integration-with-assumptions-log")'),
@@ -676,7 +698,17 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         wfResult.success ? validateWorkflowVersion(view, wfResult.value) : null,
       );
 
-      const next = advanceSession(state);
+      // Fidelity observability (#166 B8): resource fetches are recorded in the
+      // session history for observability only — the server cannot know which
+      // resources an activity requires, so no validation reads these events.
+      const next = advanceSession(state, (draft) => {
+        draft.history.push({
+          timestamp: new Date().toISOString(),
+          type: 'resource_fetched',
+          ...(state.currentActivity ? { activity: state.currentActivity } : {}),
+          data: { resourceId: resource_id, agentId: state.agentId },
+        });
+      });
       await saveSessionForTool(loaded, next);
 
       const { content: resourceContent, ...meta } = result.value;

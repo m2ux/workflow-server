@@ -17,6 +17,26 @@ The workflow server uses six interconnected schemas:
 | `technique.schema.json` | Defines agent technique capabilities | Describing tool orchestration patterns and execution guidance |
 | `activity.schema.json` | Defines unified activities | Combining intent matching with workflow execution stages |
 
+## Enforcement Model
+
+The server enforces structure at load time plus a small runtime core; most schema semantics are carried out by the executing agents. `get_activity` delivers the raw activity YAML verbatim, so every authored field reaches the agent — the classification below states what the **server** does with each field:
+
+- **Engine-enforced** — server behavior or blocking validation depends on the field.
+- **Advisory** — rendered to agents and/or checked warn-only; compliance is never enforced.
+- **Agent-interpreted** — delivered in the payload, but no server code path reads it; the executing agent carries its semantics.
+
+| Construct | Engine-enforced | Advisory (incl. warn-only checks) | Agent-interpreted |
+|---|---|---|---|
+| Workflow | `id` (file resolution); `techniques.workflow` / `techniques.activity` (bundle composition); `activities` / `activitiesDir` (assembly) | `version` (mid-session drift warns); `title`, `description`, `tags`; `rules.*`; `variables[]` declarations (rendered in `get_workflow`); `initialActivity` (wrong first activity warns) | `author`; `variables[].type` / `defaultValue` / `required` (no coercion, no seeding, no check — the session variable bag starts empty) |
+| Activity | `id` (navigation key); `artifactPrefix` (server-computed from the filename; also orders activities); the composed artifact contract (synthesized from bound techniques' outputs); `techniques[]` (bundle) | `name`, `description`, `required`, `rules[]`; `transitions[]` (legality warns only — `next_activity` moves anywhere); `decisions[]` (stringified for warn-only transition matching) | `triggers[]` / `passContext` (`dispatch_child` takes an explicit `workflow_id`; a child session starts with an empty variable bag); `outcome[]` (never reconciled against manifests) |
+| Step (common) | `kind` (selects the per-kind closed contract); `id` (duplicate ids are a load error; the key for manifests and step-bound `get_technique`) | absence of a gated step from a `step_manifest` is accepted; ungated omissions warn | `when` / `condition` gates (the server never evaluates a condition; on a checkpoint step only `condition` enables `condition_not_met` dismissal); `required` (worker hint); `actions[]` (no verb has a server interpreter — `set` does not write the variable bag) |
+| Checkpoint step | `options[]` (`option_id` hard-validated); `effect.setVariable` (applied to the session variable bag — the one engine-applied effect); `defaultOption` + `autoAdvanceMs` (the server enforces the full timer before `auto_advance`) | `effect.transitionTo` (recorded and returned; the orchestrator enacts it via `next_activity`); `effect.skipActivities` (recorded in `skippedActivities` bookkeeping) | `blocking` (orchestrator directive; the server's auto-advance gate does not consult it) |
+| Loop step | body `steps[]` structure (id uniqueness per scope, flattened for lookups and artifact composition) | loop-body step ids are accepted in `step_manifest` but never required | `loopType` semantics, `variable` / `over`, `breakCondition`, `maxIterations` — iteration is executed and bounded entirely by the agent |
+| Technique | `id` (resolution); rule addressing (`tech::rule`, group-prefix expansion); `inputs[].id` / `outputs[].id` (composition merge keys); `outputs[].artifact.name` (drives the composed artifact contract); `Initial` / `Final` protocol titles (composition wrapping) | `version`, `capability`; `inputs[].required` / `default` (rendered; the server neither verifies a required input was supplied nor applies a default); protocol content | input-binding resolution and output remaps (the name-match convention is an agent convention; step-bound `get_technique` annotates resolution statically) |
+| Condition | — | condition text is rendered for warn-only `transition_condition` matching (exact string equality) | all evaluation — `simple` / `and` / `or` / `not`, `exists` / null semantics |
+
+The single declarative path from a workflow definition into engine-held state is a checkpoint option's `setVariable` effect. Everything else a definition "does" at runtime, an agent does.
+
 ## Schema Relationships
 
 The schemas work together to define workflows (design-time) and track their execution (runtime). The diagrams below illustrate these relationships.
@@ -261,7 +281,7 @@ A workflow is the top-level container representing a complete process definition
 | `version`         | string     | Semantic version (X.Y.Z)                                   |
 | `title`           | string     | Human-readable display name                                |
 | `description`     | string     | Detailed description                                       |
-| `author`          | string     | Creator of the workflow                                    |
+| `author`          | string     | Author metadata (not read by the server)                   |
 | `tags`            | string[]   | Categorization labels                                      |
 | `rules`           | { workflow?, activity?, universal?: string[] } | Workflow rules partitioned by audience: `workflow` (orchestrator-only, in `get_workflow`), `activity` (worker-facing, injected into every `get_activity`), and `universal` (both — surfaced in `get_workflow` AND injected into every `get_activity`) |
 | `techniques`      | { workflow?, activity?: string[] } | Workflow techniques partitioned by audience: `workflow` (orchestrator-only, bundled into `get_workflow`) and `activity` (inherited by every activity, injected into every `get_activity` technique bundle) |
@@ -285,7 +305,7 @@ A unified activity defines workflow execution as a single ordered `steps[]` (eac
 | `decisions`       | Decision[]        | Automated branching points (activity-level)|
 | `transitions`     | Transition[]      | Activity navigation rules                  |
 | `triggers`        | WorkflowTrigger[] | Workflows to trigger from this activity    |
-| `outcome`         | string[]          | Expected outcomes on completion            |
+| `outcome`         | string[]          | Expected outcomes on completion (advisory; never reconciled against manifests) |
 | `required`        | boolean           | Whether activity must be completed         |
 | `rules`           | string[]          | Activity-level execution rules             |
 | `artifactPrefix`  | string            | Server-computed numeric prefix from filename |
@@ -307,13 +327,13 @@ Shared base fields on every kind:
 | ------------- | -------- | --------------------------------- |
 | `kind`        | enum     | Required discriminator: `technique`, `action`, `checkpoint`, or `loop` |
 | `id`          | string   | Unique identifier within activity (stable; required on a checkpoint step — it is the replay key) |
-| `when`        | string   | Inline boolean gate — run this step or skip it |
-| `condition`   | Condition | Structured gate (legacy compat); if false, step is skipped |
+| `when`        | string   | Inline boolean gate — run this step or skip it. Agent-evaluated; the server never evaluates gates |
+| `condition`   | Condition | Structured gate (legacy compat); if false, step is skipped. Agent-evaluated. On a checkpoint step, `condition` (not `when`) is what enables `condition_not_met` dismissal |
 | `required`    | `false`  | Worker hint, declared only when `false` (marks an optional step); an omitted `required` means the step is required |
 
 #### Checkpoint Step
 
-A `kind: checkpoint` step is a decision point requiring user input, inlined at its concrete position in `steps[]` (replacing the old separate `checkpoints[]` array and the `step.checkpoint` reference). It blocks by default but can be non-blocking with auto-advance.
+A `kind: checkpoint` step is a decision point requiring user input, inlined at its concrete position in `steps[]` (replacing the old separate `checkpoints[]` array and the `step.checkpoint` reference). It blocks by default; declaring `defaultOption` and `autoAdvanceMs` is what makes it auto-advanceable.
 
 | Field       | Type               | Purpose                                             |
 | ----------- | ------------------ | --------------------------------------------------- |
@@ -321,13 +341,13 @@ A `kind: checkpoint` step is a decision point requiring user input, inlined at i
 | `kind`      | enum               | `checkpoint`                                        |
 | `message`   | string             | Question to present to user                         |
 | `options`   | CheckpointOption[] | Available choices                                   |
-| `blocking`  | boolean            | Whether this checkpoint blocks progress (default: true). Non-blocking checkpoints support `defaultOption` and `autoAdvanceMs` for auto-advance. |
-| `defaultOption` | string          | Option ID to auto-select when `autoAdvanceMs` elapses. Only meaningful when `blocking` is false. |
-| `autoAdvanceMs` | integer         | Milliseconds to wait before auto-selecting `defaultOption`. Only meaningful when `blocking` is false and `defaultOption` is set. |
+| `blocking`  | boolean            | Orchestrator directive: present the checkpoint and wait for explicit user selection (default: true). The server does not consult it — its auto-advance gate checks only `defaultOption` and `autoAdvanceMs`, so a checkpoint intended to block must not declare those fields. |
+| `defaultOption` | string          | Option ID to auto-select when `autoAdvanceMs` elapses. |
+| `autoAdvanceMs` | integer         | Milliseconds to wait before auto-selecting `defaultOption`; the server enforces the full timer on `respond_checkpoint { auto_advance }`. |
 
 #### Decision
 
-A decision is an automated branching point based on variable conditions.
+A decision is an automated branching point based on variable conditions. The orchestrator evaluates the branch conditions; the server stringifies them only for warn-only transition matching.
 
 | Field         | Type             | Purpose                           |
 | ------------- | ---------------- | --------------------------------- |
@@ -338,7 +358,7 @@ A decision is an automated branching point based on variable conditions.
 
 #### Transition
 
-A transition defines navigation from one activity to another.
+A transition defines navigation from one activity to another. Transition legality is validated warn-only at `next_activity` — an out-of-graph transition warns in `_meta.validation` but is not blocked.
 
 | Field       | Type      | Purpose                         |
 | ----------- | --------- | ------------------------------- |
@@ -348,13 +368,13 @@ A transition defines navigation from one activity to another.
 
 #### WorkflowTrigger
 
-A workflow trigger allows an activity to invoke another workflow. Used for composing workflows (e.g., work-packages triggering work-package for each planned package).
+A workflow trigger declares a workflow the orchestrator dispatches from this activity (via `dispatch_child` with an explicit `workflow_id`). Used for composing workflows (e.g., work-packages triggering work-package for each planned package). The declaration is advisory — the server does not act on triggers.
 
 | Field         | Type     | Purpose                                    |
 | ------------- | -------- | ------------------------------------------ |
 | `workflow`    | string   | ID of the workflow to trigger              |
 | `description` | string   | When/why this workflow is triggered        |
-| `passContext` | string[] | Context variables to pass to child workflow|
+| `passContext` | string[] | Context variable names the dispatching agent relays to the child; the server does not copy them (a child session starts with an empty variable bag) |
 
 #### Loop Step
 
@@ -369,8 +389,8 @@ A `kind: loop` step is a compound step that iterates over collections or while c
 | `variable`       | string    | Iteration variable name             |
 | `over`           | string    | Collection to iterate (forEach)     |
 | `condition`      | Condition | Continue condition (while/doWhile)  |
-| `maxIterations`  | integer   | Safety limit                        |
-| `breakCondition` | Condition | Early exit condition                |
+| `maxIterations`  | integer   | Safety limit (agent-enforced)       |
+| `breakCondition` | Condition | Early exit condition (agent-evaluated each iteration) |
 | `steps`          | Step[]    | Nested step body executed per iteration |
 
 ### Supporting Types
@@ -391,7 +411,7 @@ techniques: { workflow?: string[]; activity?: string[] }
 
 #### Action
 
-An action performed during workflow execution.
+An action performed during workflow execution. Action verbs are interpreted by the executing agent — the server has no action interpreter. In particular, `set` does not write the session variable bag; the only declarative path into server-held variables is a checkpoint option's `setVariable` effect.
 
 | Field     | Type   | Purpose                             |
 | --------- | ------ | ----------------------------------- |
@@ -402,15 +422,15 @@ An action performed during workflow execution.
 
 #### Variable
 
-A workflow variable definition.
+A workflow variable definition. Declarations are rendered to agents via `get_workflow`; the session variable bag itself starts empty and is written only by checkpoint `setVariable` effects. The server does not coerce values to `type`, seed `defaultValue` into the bag, or check `required` — agents honor all three from the declaration.
 
 | Field          | Type    | Purpose                                          |
 | -------------- | ------- | ------------------------------------------------ |
 | `name`         | string  | Qualified snake_case noun phrase (>=2 words, AP-60), or an enumerated bare-word exemption (see `src/schema/identifiers.ts`) |
-| `type`         | enum    | "string", "number", "boolean", "array", "object" |
+| `type`         | enum    | "string", "number", "boolean", "array", "object" (agent-honored; values are stored as written) |
 | `description`  | string  | Variable purpose                                 |
-| `defaultValue` | any     | Initial value                                    |
-| `required`     | boolean | Whether variable must be set                     |
+| `defaultValue` | any     | Initial value agents assume (not seeded into the session bag by the server) |
+| `required`     | boolean | Whether variable must be set (agent-honored)     |
 
 #### Condition
 
@@ -491,7 +511,7 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
 
 ### Variables
 
-Variables store state that persists across activities. Define them at the workflow level:
+Variables store state that persists across activities. Define them at the workflow level. The declaration is the agents' contract: the server delivers it via `get_workflow` but keeps the session variable bag separate — the bag starts empty, `defaultValue` is not seeded into it, and only checkpoint `setVariable` effects write it server-side.
 
 ```json
 {
@@ -607,12 +627,12 @@ A `kind: checkpoint` step pauses execution and requires user input. It sits inli
 }
 ```
 
-The `when` / `condition` gate uses the same formal condition schema shared by every step kind, transitions, and decisions (`condition.schema.json`). If omitted, the checkpoint is always presented.
+The `when` / `condition` gate uses the same formal condition schema shared by every step kind, transitions, and decisions (`condition.schema.json`). If omitted, the checkpoint is always presented. The two gate spellings differ at the dismissal seam: only a structured `condition` makes the checkpoint dismissible via `respond_checkpoint { condition_not_met }` — a `when`-gated checkpoint cannot be dismissed that way.
 
-**Checkpoint Option Effects:**
-- `setVariable` - Set workflow variables
-- `transitionTo` - Jump to a specific activity
-- `skipActivities` - Skip specified activities
+**Checkpoint Option Effects** (per-effect enforcement):
+- `setVariable` — the server applies the assignments to the session variable bag; the one engine-applied effect
+- `transitionTo` — returned to the orchestrator, which enacts the transition via `next_activity`; selecting the option does not itself move the session
+- `skipActivities` — recorded in the session's `skippedActivities` bookkeeping and returned; the orchestrator routes around the listed activities
 
 ### Decisions
 
@@ -722,7 +742,7 @@ Triggers allow an activity to invoke another workflow:
 
 ## Condition Schema
 
-The condition schema (`condition.schema.json`) defines expressions for controlling transitions, decisions, loops, and checkpoints.
+The condition schema (`condition.schema.json`) defines expressions for controlling transitions, decisions, loops, and checkpoints. Conditions are evaluated by the executing agents against the session's variable state — the server never evaluates a condition at runtime; it renders condition text only for the warn-only `transition_condition` match on `next_activity`.
 
 ### Simple Conditions
 
@@ -992,6 +1012,7 @@ The `history` array tracks all workflow events:
 - `decision_reached`, `decision_branch_taken`
 - `loop_started`, `loop_iteration`, `loop_completed`, `loop_break`
 - `variable_set`, `error`
+- `technique_fetched`, `resource_fetched` — content-fetch records appended by `get_technique` / `get_resource` (`data` carries `techniqueId` + optional `stepId`, or `resourceId`, plus `agentId`); `next_activity`'s manifest validation reads `technique_fetched` events for the warn-only technique-fetch fidelity check
 
 ---
 
