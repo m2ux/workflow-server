@@ -21,12 +21,12 @@ Selection criteria: a construct earns a place here when it is (a) INERT server-s
 | R11 | `Initial`/`Final` protocol wrapping | ENFORCED composition feature — load-bearing title matching in the technique loader (`wrapProtocolWithAncestors`), typo silently demotes the block | **0 uses corpus-wide** — no `TECHNIQUE.md` has `### Initial`/`### Final` (census §5); contract inheritance (inputs/outputs/rules merge) is the composition feature actually used | **Remove the wrapping feature** (loader code + schema/doc surface). Contract inheritance stays untouched | None — unused; delete loader path and its spec text |
 | R12 | `outputs[].artifact.action` | INERT — enum unreachable: the markdown loader emits `{name}` only, so no authored content can populate it | 0 (unreachable) | **Remove** from technique schema | None — unreachable |
 
-## Provisional entries — resolve after B7
+## Provisional entries — resolved by B7 (2026-07-07)
 
-| # | Candidate | Dependency |
+| # | Candidate | Resolution |
 |---|---|---|
-| P1 | `step.actions[].set` (and with R4, possibly the whole `actions[]` construct) | **B7 decides implement-vs-retire.** If B7 implements `set` as an engine effect, it leaves this register; if B7 retires the verb, `actions[]` survives only for `log`/`validate` — at which point the residual construct (67 uses, no interpreter, two divergent authoring dialects) should be evaluated for full retirement. Amend this row when B7 lands |
-| P2 | `variables[].type` / `defaultValue` / `required` | **Not retire candidates if B7 ships seeding** (recommended path: seed `defaultValue` at `start_session`, honor `type` on `setVariable` — 133 boolean defaults in the corpus already expect it). If B7 instead marks the variable model authoring-only, `required` (only ever `true`) joins the register |
+| P1 | `step.actions[].set` (and with R4, possibly the whole `actions[]` construct) | **B7 decided: retire.** No server-side step-execution moment exists to hook, and 35/67 corpus uses are valueless prose/`message:` encodings that aren't machine-executable. `set` stays schema-legal and documented-inert until the B12 major sweep removes it from the `action` enum; at B12, evaluate the residual `actions[]` construct (`log`/`validate` plus R4's `emit`/`message`) for full retirement |
+| P2 | `variables[].type` / `defaultValue` / `required` | **Resolved by B7 (shipped): not retire candidates.** `defaultValue` is seeded into the session bag at session creation (`start_session` + `dispatch_child`, `variables_seeded` history event) and `type` is warn-only validated on checkpoint `setVariable` — both are now engine-read and leave this register. `required` remains unchecked authoring metadata, documented as agent-honored; kept (not retired) as part of the declaration contract. Corpus coherence is enforced by `check:variable-model` (no exists/notExists gates on defaulted variables, default/setVariable literals match declared types, setVariable targets declared) |
 
 ## Non-candidates considered and kept
 
