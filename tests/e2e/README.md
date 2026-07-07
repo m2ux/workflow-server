@@ -184,7 +184,9 @@ drift, surfacing known issues without going red.
   `workspace/.engineering`. Worth investigating.
 - **`get_workflow_status` gap**: returns empty `variables` /
   `completed_activities` even though `session.json` holds them, forcing the
-  worker to infer state from artifacts.
+  worker to infer state from artifacts. (Variables side improved by #166 B7:
+  the bag is now seeded from declared defaults at session creation, so status
+  reflects real state from the first call.)
 - **Resource-layer refs also unresolved**: `classify-problem`,
   `reconcile-assumptions`, and prism lenses returned "not found" — broader than
   the op-ref set, harmless here only because step descriptions stood alone.

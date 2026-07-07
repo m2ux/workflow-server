@@ -27,15 +27,15 @@ The server enforces structure at load time plus a small runtime core; most schem
 
 | Construct | Engine-enforced | Advisory (incl. warn-only checks) | Agent-interpreted |
 |---|---|---|---|
-| Workflow | `id` (file resolution); `techniques.workflow` / `techniques.activity` (bundle composition); `activities` / `activitiesDir` (assembly) | `version` (mid-session drift warns); `title`, `description`, `tags`; `rules.*`; `variables[]` declarations (rendered in `get_workflow`); `initialActivity` (wrong first activity warns) | `author`; `variables[].type` / `defaultValue` / `required` (no coercion, no seeding, no check — the session variable bag starts empty) |
-| Activity | `id` (navigation key); `artifactPrefix` (server-computed from the filename; also orders activities); the composed artifact contract (synthesized from bound techniques' outputs); `techniques[]` (bundle) | `name`, `description`, `required`, `rules[]`; `transitions[]` (legality warns only — `next_activity` moves anywhere); `decisions[]` (stringified for warn-only transition matching) | `triggers[]` / `passContext` (`dispatch_child` takes an explicit `workflow_id`; a child session starts with an empty variable bag); `outcome[]` (never reconciled against manifests) |
-| Step (common) | `kind` (selects the per-kind closed contract); `id` (duplicate ids are a load error; the key for manifests and step-bound `get_technique`) | absence of a gated step from a `step_manifest` is accepted; ungated omissions warn | `when` / `condition` gates (the server never evaluates a condition; on a checkpoint step only `condition` enables `condition_not_met` dismissal); `required` (worker hint); `actions[]` (no verb has a server interpreter — `set` does not write the variable bag) |
+| Workflow | `id` (file resolution); `techniques.workflow` / `techniques.activity` (bundle composition); `activities` / `activitiesDir` (assembly); `variables[].defaultValue` (seeded into the session variable bag at session creation, recorded as a `variables_seeded` history event) | `version` (mid-session drift warns); `title`, `description`, `tags`; `rules.*`; `variables[]` declarations (rendered in `get_workflow`); `initialActivity` (wrong first activity warns); `variables[].type` (checkpoint `setVariable` values validated warn-only — mismatches stored as written) | `author`; `variables[].required` (never checked — authoring metadata) |
+| Activity | `id` (navigation key); `artifactPrefix` (server-computed from the filename; also orders activities); the composed artifact contract (synthesized from bound techniques' outputs); `techniques[]` (bundle) | `name`, `description`, `required`, `rules[]`; `transitions[]` (legality warns only — `next_activity` moves anywhere); `decisions[]` (stringified for warn-only transition matching) | `triggers[]` / `passContext` (`dispatch_child` takes an explicit `workflow_id`; a child session's bag starts from the child workflow's own declared defaults); `outcome[]` (never reconciled against manifests) |
+| Step (common) | `kind` (selects the per-kind closed contract); `id` (duplicate ids are a load error; the key for manifests and step-bound `get_technique`) | absence of a gated step from a `step_manifest` is accepted; ungated omissions warn | `when` / `condition` gates (the server never evaluates a condition; on a checkpoint step only `condition` enables `condition_not_met` dismissal); `required` (worker hint); `actions[]` (no verb has a server interpreter — `set` does not write the variable bag and is slated for removal at the next schema major, #166 B7/B12) |
 | Checkpoint step | `options[]` (`option_id` hard-validated); `effect.setVariable` (applied to the session variable bag — the one engine-applied effect); `defaultOption` + `autoAdvanceMs` (the server enforces the full timer before `auto_advance`) | `effect.transitionTo` (recorded and returned; the orchestrator enacts it via `next_activity`); `effect.skipActivities` (recorded in `skippedActivities` bookkeeping) | `blocking` (orchestrator directive; the server's auto-advance gate does not consult it) |
 | Loop step | body `steps[]` structure (id uniqueness per scope, flattened for lookups and artifact composition) | loop-body step ids are accepted in `step_manifest` but never required | `loopType` semantics, `variable` / `over`, `breakCondition`, `maxIterations` — iteration is executed and bounded entirely by the agent |
 | Technique | `id` (resolution); rule addressing (`tech::rule`, group-prefix expansion); `inputs[].id` / `outputs[].id` (composition merge keys); `outputs[].artifact.name` (drives the composed artifact contract); `Initial` / `Final` protocol titles (composition wrapping) | `version`, `capability`; `inputs[].required` / `default` (rendered; the server neither verifies a required input was supplied nor applies a default); protocol content | input-binding resolution and output remaps (the name-match convention is an agent convention; step-bound `get_technique` annotates resolution statically) |
 | Condition | — | condition text is rendered for warn-only `transition_condition` matching (exact string equality) | all evaluation — `simple` / `and` / `or` / `not`, `exists` / null semantics |
 
-The single declarative path from a workflow definition into engine-held state is a checkpoint option's `setVariable` effect. Everything else a definition "does" at runtime, an agent does.
+Two declarative paths lead from a workflow definition into engine-held state: `variables[].defaultValue` (seeded once, at session creation) and a checkpoint option's `setVariable` effect (the one runtime write). Everything else a definition "does" at runtime, an agent does.
 
 ## Schema Relationships
 
@@ -374,7 +374,7 @@ A workflow trigger declares a workflow the orchestrator dispatches from this act
 | ------------- | -------- | ------------------------------------------ |
 | `workflow`    | string   | ID of the workflow to trigger              |
 | `description` | string   | When/why this workflow is triggered        |
-| `passContext` | string[] | Context variable names the dispatching agent relays to the child; the server does not copy them (a child session starts with an empty variable bag) |
+| `passContext` | string[] | Context variable names the dispatching agent relays to the child; the server does not copy them (a child session's bag starts from the child workflow's own declared defaults) |
 
 #### Loop Step
 
@@ -411,7 +411,7 @@ techniques: { workflow?: string[]; activity?: string[] }
 
 #### Action
 
-An action performed during workflow execution. Action verbs are interpreted by the executing agent — the server has no action interpreter. In particular, `set` does not write the session variable bag; the only declarative path into server-held variables is a checkpoint option's `setVariable` effect.
+An action performed during workflow execution. Action verbs are interpreted by the executing agent — the server has no action interpreter. In particular, `set` does not write the session variable bag (only a checkpoint option's `setVariable` effect writes it at runtime) and is slated for removal at the next workflow-schema major (#166 B7 decided retire; B12 executes it).
 
 | Field     | Type   | Purpose                             |
 | --------- | ------ | ----------------------------------- |
@@ -422,14 +422,14 @@ An action performed during workflow execution. Action verbs are interpreted by t
 
 #### Variable
 
-A workflow variable definition. Declarations are rendered to agents via `get_workflow`; the session variable bag itself starts empty and is written only by checkpoint `setVariable` effects. The server does not coerce values to `type`, seed `defaultValue` into the bag, or check `required` — agents honor all three from the declaration.
+A workflow variable definition. Declarations are rendered to agents via `get_workflow`; the session variable bag is seeded from each declaration's `defaultValue` at session creation (recorded as one `variables_seeded` history event) and thereafter written only by checkpoint `setVariable` effects, whose values are validated against `type` warn-only (mismatches are stored as written and surfaced in `_meta.validation`). `required` is never checked — agents honor it from the declaration.
 
 | Field          | Type    | Purpose                                          |
 | -------------- | ------- | ------------------------------------------------ |
 | `name`         | string  | Qualified snake_case noun phrase (>=2 words, AP-60), or an enumerated bare-word exemption (see `src/schema/identifiers.ts`) |
-| `type`         | enum    | "string", "number", "boolean", "array", "object" (agent-honored; values are stored as written) |
+| `type`         | enum    | "string", "number", "boolean", "array", "object" (warn-only validated on checkpoint `setVariable`; mismatched values are stored as written) |
 | `description`  | string  | Variable purpose                                 |
-| `defaultValue` | any     | Initial value agents assume (not seeded into the session bag by the server) |
+| `defaultValue` | any     | Initial value, seeded into the session bag at session creation. Never combine with an `exists`/`notExists` gate on the same variable (`check:variable-model`) |
 | `required`     | boolean | Whether variable must be set (agent-honored)     |
 
 #### Condition
@@ -511,7 +511,7 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
 
 ### Variables
 
-Variables store state that persists across activities. Define them at the workflow level. The declaration is the agents' contract: the server delivers it via `get_workflow` but keeps the session variable bag separate — the bag starts empty, `defaultValue` is not seeded into it, and only checkpoint `setVariable` effects write it server-side.
+Variables store state that persists across activities. Define them at the workflow level. The declaration is the agents' contract and the server honors it: the session variable bag is seeded from every declared `defaultValue` at session creation (one `variables_seeded` history event records the map), and after that only checkpoint `setVariable` effects write it server-side, validated warn-only against the declared `type`. A variable without a default stays absent from the bag — reserve `exists`/`notExists` gates for those (`check:variable-model` rejects such gates on defaulted variables).
 
 ```json
 {

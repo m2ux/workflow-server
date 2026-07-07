@@ -4,7 +4,7 @@ The Workflow Server strictly enforces **deterministic state machine transitions*
 
 ## 1. Variable Initialization
 
-Every workflow defines a set of schema-validated state variables in its `workflow.yaml` file. When a new session is bootstrapped by the Meta Orchestrator, the Workflow Orchestrator initializes its internal state dictionary using these default values. The initialization is the orchestrator's job: the server-held session variable bag starts empty — the server does not seed `defaultValue`, coerce `type`, or check `required`, and writes the bag only through checkpoint `setVariable` effects.
+Every workflow defines a set of schema-validated state variables in its `workflow.yaml` file. The server seeds every declared `defaultValue` into the session variable bag when the session is created — `start_session` for fresh top-level sessions, `dispatch_child` for embedded children (each child's bag seeds from the child workflow's own declarations) — and records the seeded map as a single `variables_seeded` history event. The orchestrator's state dictionary and the server-held bag therefore agree from the first call: `get_workflow_status` returns the seeded values, and a variable without a default stays absent, which is what makes `exists`/`notExists` gates on it meaningful (never gate a defaulted variable that way — `check:variable-model` forbids it). `type` is validated warn-only when checkpoint `setVariable` effects write the bag; `required` remains unchecked authoring metadata. After seeding, the server writes the bag only through checkpoint `setVariable` effects.
 
 Example `workflow.yaml` variables:
 ```yaml
