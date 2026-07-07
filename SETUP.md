@@ -38,7 +38,8 @@ Edit `~/.cursor/mcp.json`:
       "command": "node",
       "args": ["/path/to/workflow-server/dist/index.js"],
       "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflows",
+        "WORKFLOW_WORKSPACE": "/path/to/your/project"
       }
     }
   }
@@ -58,7 +59,8 @@ Edit `~/.cursor/mcp.json`:
       "command": "node",
       "args": ["/path/to/workflow-server/dist/index.js"],
       "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflows",
+        "WORKFLOW_WORKSPACE": "/path/to/your/project"
       }
     }
   }
@@ -94,6 +96,7 @@ The server reads these environment variables at startup (see `src/config.ts`):
 
 | Variable | Default | Description |
 |----------|---------|-------------|
+| `WORKFLOW_WORKSPACE` | — (required) | Project the server manages sessions for; session state lives under its `.engineering/artifacts/planning/`. May also be passed as `--workspace=PATH` on the command line. The server refuses to start without a workspace |
 | `WORKFLOW_DIR` | `./workflows` | Path to workflow directories (each contains `workflow.yaml`, `activities/`, `techniques/`, `resources/`) |
 | `SCHEMAS_DIR` | `./schemas` | Path to JSON Schema definitions served via the `workflow-server://schemas` MCP resource |
 | `SERVER_NAME` | `workflow-server` | Server name reported by `health_check` |

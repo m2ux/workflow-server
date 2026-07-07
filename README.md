@@ -83,14 +83,15 @@ npm run build
       "command": "node",
       "args": ["/path/to/workflow-server/dist/index.js"],
       "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflows",
+        "WORKFLOW_WORKSPACE": "/path/to/your/project"
       }
     }
   }
 }
 ```
 
-Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs.
+`WORKFLOW_WORKSPACE` is required: it points at the project whose `.engineering/artifacts/planning/` folder holds session state (`--workspace=PATH` on the command line works too). Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs.
 
 ### Deploy to Your Project
 
