@@ -68,11 +68,10 @@
         <path d="M 646 220 C 590 220, 570 260, 554 268" marker-end="url(#arrowz)" stroke-dasharray="5 4"/>
       </g>
       <g font-size="13" fill="var(--diagram-note)" text-anchor="middle">
-        <text x="262" y="42">1. look here first</text>
+        <text x="200" y="34">1. look here first</text>
         <text x="472" y="94">2. fallback</text>
         <text x="855" y="160">grouped into</text>
-        <text x="612" y="262">links rewritten to refs,</text>
-        <text x="612" y="280">fetched only when needed</text>
+        <text x="648" y="330">links rewritten into fetchable refs</text>
       </g>
     </svg>
     <figcaption>Reference resolution. A reference tries the current workflow's techniques first, then the shared <code>meta</code> layer (a same-named local technique shadows the meta one). The resolved body arrives with its rules auto-included, grouped into a <code>techniques</code> / <code>rules</code> / <code>unresolved</code> bundle; resource links inside it are rewritten into <code>get_resource</code> refs and fetched lazily.</figcaption>
