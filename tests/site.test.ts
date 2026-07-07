@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { renderSitePages } from '../scripts/generate-site-data.js';
 import { checkSiteLinks } from '../scripts/check-site-links.js';
+import { checkSvgLayout } from '../scripts/check-svg-layout.js';
 
 const SITE_DIR = resolve(import.meta.dirname, '../site');
 
@@ -16,5 +17,9 @@ describe('documentation site', () => {
 
   it('internal links, anchors, and GitHub repo links resolve', () => {
     expect(checkSiteLinks()).toEqual([]);
+  });
+
+  it('SVG diagram text stays clear of boxes, lines, and sibling text', () => {
+    expect(checkSvgLayout()).toEqual([]);
   });
 });

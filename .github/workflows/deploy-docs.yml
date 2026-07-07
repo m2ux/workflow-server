@@ -9,6 +9,7 @@ on:
       - 'schemas/*.schema.json'
       - 'scripts/generate-site-data.ts'
       - 'scripts/check-site-links.ts'
+      - 'scripts/check-svg-layout.ts'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/deploy-docs.yml'
@@ -19,6 +20,7 @@ on:
       - 'schemas/*.schema.json'
       - 'scripts/generate-site-data.ts'
       - 'scripts/check-site-links.ts'
+      - 'scripts/check-svg-layout.ts'
       - '.github/workflows/deploy-docs.yml'
   workflow_dispatch:
 
@@ -48,6 +50,8 @@ jobs:
         run: git diff --exit-code -- site
       - name: Check site links and anchors
         run: npm run check:site
+      - name: Check SVG diagram layout
+        run: npm run check:svg
 
   deploy:
     name: Deploy to GitHub Pages

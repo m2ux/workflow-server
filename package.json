@@ -10,6 +10,7 @@
     "build:schemas": "tsx scripts/generate-schemas.ts",
     "build:site": "tsx scripts/generate-site-data.ts",
     "check:site": "tsx scripts/check-site-links.ts",
+    "check:svg": "tsx scripts/check-svg-layout.ts",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
     "test": "vitest",
