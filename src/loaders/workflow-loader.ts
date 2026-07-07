@@ -11,6 +11,20 @@ import { parseActivityFilename } from './filename-utils.js';
 
 export interface WorkflowManifestEntry { id: string; title: string; version: string; tags?: string[] | undefined; }
 
+/**
+ * A definition file that failed to load (unreadable, unparsable, or schema-invalid) and was
+ * excluded from the result. Loaders collect these instead of only logging, so `get_workflow` /
+ * `list_workflows` can surface the failure in their payloads rather than silently skipping
+ * (issue #166 B5 — a dropped activity otherwise resurfaces much later as "Activity not found").
+ */
+export interface DefinitionLoadError { file: string; activity_id?: string | undefined; error: string; }
+
+/** A loaded workflow plus the per-file activity-load failures excluded from it. */
+export interface WorkflowWithDiagnostics { workflow: Workflow; activityLoadErrors: DefinitionLoadError[]; }
+
+const formatZodIssues = (issues: Array<{ path: PropertyKey[]; message: string }>): string =>
+  issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
+
 const META_WORKFLOW_ID = 'meta';
 
 /** Raw workflow before activity loading */
@@ -27,23 +41,25 @@ interface RawWorkflow {
 /**
  * Load activities from a directory
  */
-async function loadActivitiesFromDir(activitiesPath: string): Promise<Activity[]> {
-  if (!existsSync(activitiesPath)) return [];
-  
+async function loadActivitiesFromDir(activitiesPath: string): Promise<{ activities: Activity[]; errors: DefinitionLoadError[] }> {
+  if (!existsSync(activitiesPath)) return { activities: [], errors: [] };
+
   const files = await readdir(activitiesPath);
   const activities: Activity[] = [];
-  
+  const errors: DefinitionLoadError[] = [];
+
   for (const file of files) {
     const parsed = parseActivityFilename(file);
     if (!parsed) continue;
-    
+
     try {
       const content = await readFile(join(activitiesPath, file), 'utf-8');
       const decoded = parseDefinition(content);
-      
+
       const validation = safeValidateActivity(decoded);
       if (!validation.success) {
         logWarn('Skipping invalid activity', { activityId: parsed.id, errors: validation.error.issues });
+        errors.push({ file, activity_id: parsed.id, error: formatZodIssues(validation.error.issues) });
         continue;
       }
       const activity = validation.data;
@@ -52,12 +68,14 @@ async function loadActivitiesFromDir(activitiesPath: string): Promise<Activity[]
       activities.push(activity);
     } catch (error) {
       logWarn('Failed to load activity', { file, error: error instanceof Error ? error.message : 'Unknown error' });
+      errors.push({ file, activity_id: parsed.id, error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
-  
-  return activities.sort((a, b) =>
+
+  activities.sort((a, b) =>
     (a.artifactPrefix ?? '').localeCompare(b.artifactPrefix ?? '')
   );
+  return { activities, errors };
 }
 
 /** Definition file extensions, in resolution priority. */
@@ -142,6 +160,16 @@ async function resolveActivityReference(workflowDir: string, workflowId: string,
 }
 
 export async function loadWorkflow(workflowDir: string, workflowId: string): Promise<Result<Workflow, WorkflowNotFoundError | WorkflowValidationError>> {
+  const result = await loadWorkflowWithDiagnostics(workflowDir, workflowId);
+  return result.success ? ok(result.value.workflow) : result;
+}
+
+/**
+ * Load a workflow and report the activity files that failed to load alongside it. Same contract
+ * as `loadWorkflow`, but per-file activity failures (which do not fail the workflow) are returned
+ * instead of only logged.
+ */
+export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowId: string): Promise<Result<WorkflowWithDiagnostics, WorkflowNotFoundError | WorkflowValidationError>> {
   const filePath = resolveWorkflowPath(workflowDir, workflowId);
   if (!filePath) return err(new WorkflowNotFoundError(workflowId));
   
@@ -158,7 +186,7 @@ export async function loadWorkflow(workflowDir: string, workflowId: string): Pro
     const activitiesDirName = rawWorkflow.activitiesDir ?? 'activities';
     const activitiesPath = join(workflowDirPath, activitiesDirName);
     
-    const localActivities = await loadActivitiesFromDir(activitiesPath);
+    const { activities: localActivities, errors: activityLoadErrors } = await loadActivitiesFromDir(activitiesPath);
     if (localActivities.length > 0) {
       resolvedActivities = [...localActivities];
       logInfo('Loaded local activities from directory', { workflowId, activitiesDir: activitiesDirName, count: localActivities.length });
@@ -200,9 +228,9 @@ export async function loadWorkflow(workflowDir: string, workflowId: string): Pro
     if (!result.success) {
       return err(new WorkflowValidationError(workflowId, result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`)));
     }
-    
+
     logInfo('Workflow loaded', { workflowId, version: result.data.version, activityCount: result.data.activities?.length ?? 0 });
-    return ok(result.data);
+    return ok({ workflow: result.data, activityLoadErrors });
   } catch (error) {
     logError('Failed to load workflow', error instanceof Error ? error : undefined, { workflowId });
     return err(new WorkflowValidationError(workflowId, [error instanceof Error ? error.message : 'Unknown error']));
@@ -210,11 +238,21 @@ export async function loadWorkflow(workflowDir: string, workflowId: string): Pro
 }
 
 export async function listWorkflows(workflowDir: string): Promise<WorkflowManifestEntry[]> {
-  if (!existsSync(workflowDir)) return [];
+  return (await listWorkflowsWithDiagnostics(workflowDir)).workflows;
+}
+
+/**
+ * List workflow manifests and report the definition files that failed to yield one — unreadable
+ * or unparsable `workflow.yaml`, or a manifest missing the required id/title/version fields —
+ * instead of silently skipping them.
+ */
+export async function listWorkflowsWithDiagnostics(workflowDir: string): Promise<{ workflows: WorkflowManifestEntry[]; errors: DefinitionLoadError[] }> {
+  if (!existsSync(workflowDir)) return { workflows: [], errors: [] };
+  const errors: DefinitionLoadError[] = [];
   try {
     const entries = await readdir(workflowDir);
     const manifests: WorkflowManifestEntry[] = [];
-    
+
     for (const entry of entries) {
       if (entry === META_WORKFLOW_ID) continue;
       const entryPath = join(workflowDir, entry);
@@ -239,17 +277,22 @@ export async function listWorkflows(workflowDir: string): Promise<WorkflowManife
           const raw = parseDefinition(content) as RawWorkflow;
           if (raw.id && raw.title && raw.version) {
             manifests.push({ id: raw.id, title: raw.title, version: raw.version, tags: Array.isArray(raw['tags']) ? raw['tags'] as string[] : undefined });
+          } else {
+            logWarn('Workflow manifest missing required fields', { path: defPath });
+            errors.push({ file: defPath, error: 'manifest missing required fields (id, title, version)' });
           }
         } catch (error) {
           logWarn('Failed to read workflow manifest', { path: defPath, error: error instanceof Error ? error.message : String(error) });
+          errors.push({ file: defPath, error: error instanceof Error ? error.message : String(error) });
         }
       }
     }
-    
-    return manifests;
+
+    return { workflows: manifests, errors };
   } catch (error) {
     logWarn('Failed to list workflows', { workflowDir, error: error instanceof Error ? error.message : String(error), code: error instanceof Error && 'code' in error ? (error as NodeJS.ErrnoException).code : undefined });
-    return [];
+    errors.push({ file: workflowDir, error: error instanceof Error ? error.message : String(error) });
+    return { workflows: [], errors };
   }
 }
 

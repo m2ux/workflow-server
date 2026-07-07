@@ -1,7 +1,9 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import {
   loadWorkflow,
+  loadWorkflowWithDiagnostics,
   listWorkflows,
+  listWorkflowsWithDiagnostics,
   getActivity,
   getCheckpoint,
   getValidTransitions,
@@ -9,7 +11,9 @@ import {
   checkpointBaseId,
 } from '../src/loaders/workflow-loader.js';
 import type { Workflow } from '../src/schema/workflow.schema.js';
-import { resolve } from 'node:path';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
 
 const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
 
@@ -79,6 +83,100 @@ describe('workflow-loader', () => {
     it('should return empty array for non-existent directory', async () => {
       const result = await listWorkflows('/tmp/no-such-workflow-dir-xyz');
       expect(result).toEqual([]);
+    });
+  });
+
+  describe('load diagnostics (#166 B5)', () => {
+    let fixtureDir: string;
+
+    const VALID_ACTIVITY = [
+      'id: good-activity',
+      'version: 1.0.0',
+      'name: Good Activity',
+    ].join('\n');
+
+    beforeAll(() => {
+      fixtureDir = mkdtempSync(join(tmpdir(), 'workflow-loader-diagnostics-'));
+
+      // Workflow whose activities dir holds one valid, one schema-invalid, and one unparsable file.
+      const brokenActivitiesDir = join(fixtureDir, 'broken-activities-wf', 'activities');
+      mkdirSync(brokenActivitiesDir, { recursive: true });
+      writeFileSync(join(fixtureDir, 'broken-activities-wf', 'workflow.yaml'), [
+        'id: broken-activities-wf',
+        'version: 1.0.0',
+        'title: Broken Activities Workflow',
+        'initialActivity: good-activity',
+      ].join('\n'));
+      writeFileSync(join(brokenActivitiesDir, '01-good-activity.yaml'), VALID_ACTIVITY);
+      writeFileSync(join(brokenActivitiesDir, '02-invalid-activity.yaml'), 'id: invalid-activity\n');
+      writeFileSync(join(brokenActivitiesDir, '03-unparsable-activity.yaml'), 'id: [unclosed\n  nonsense: {');
+
+      // Workflow whose definition file is unparsable YAML.
+      mkdirSync(join(fixtureDir, 'unparsable-wf'));
+      writeFileSync(join(fixtureDir, 'unparsable-wf', 'workflow.yaml'), 'id: [unclosed\n  nonsense: {');
+
+      // Workflow whose manifest lacks the required title/version fields.
+      mkdirSync(join(fixtureDir, 'missing-fields-wf'));
+      writeFileSync(join(fixtureDir, 'missing-fields-wf', 'workflow.yaml'), 'id: missing-fields-wf\n');
+    });
+
+    afterAll(() => {
+      rmSync(fixtureDir, { recursive: true, force: true });
+    });
+
+    it('loadWorkflowWithDiagnostics reports schema-invalid and unparsable activity files', async () => {
+      const result = await loadWorkflowWithDiagnostics(fixtureDir, 'broken-activities-wf');
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.workflow.activities?.map(a => a.id)).toEqual(['good-activity']);
+
+        const errors = result.value.activityLoadErrors;
+        expect(errors).toHaveLength(2);
+
+        const invalid = errors.find(e => e.file === '02-invalid-activity.yaml');
+        expect(invalid?.activity_id).toBe('invalid-activity');
+        expect(invalid?.error).toContain('version');
+
+        const unparsable = errors.find(e => e.file === '03-unparsable-activity.yaml');
+        expect(unparsable?.activity_id).toBe('unparsable-activity');
+        expect(unparsable?.error).toBeTruthy();
+      }
+    });
+
+    it('loadWorkflowWithDiagnostics returns no errors for a clean workflow', async () => {
+      const result = await loadWorkflowWithDiagnostics(WORKFLOW_DIR, 'meta');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.activityLoadErrors).toEqual([]);
+      }
+    });
+
+    it('loadWorkflow keeps its workflow-only contract', async () => {
+      const result = await loadWorkflow(fixtureDir, 'broken-activities-wf');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.id).toBe('broken-activities-wf');
+      }
+    });
+
+    it('listWorkflowsWithDiagnostics reports unparsable and incomplete manifests', async () => {
+      const { workflows, errors } = await listWorkflowsWithDiagnostics(fixtureDir);
+
+      expect(workflows.map(w => w.id)).toEqual(['broken-activities-wf']);
+      expect(errors).toHaveLength(2);
+
+      const unparsable = errors.find(e => e.file.includes('unparsable-wf'));
+      expect(unparsable?.error).toBeTruthy();
+
+      const missingFields = errors.find(e => e.file.includes('missing-fields-wf'));
+      expect(missingFields?.error).toContain('missing required fields');
+    });
+
+    it('listWorkflows still returns a plain manifest array', async () => {
+      const manifests = await listWorkflows(fixtureDir);
+      expect(Array.isArray(manifests)).toBe(true);
+      expect(manifests.map(m => m.id)).toEqual(['broken-activities-wf']);
     });
   });
 

@@ -54,7 +54,9 @@
             },
             "conditions": {
               "type": "array",
-              "items": {},
+              "items": {
+                "$ref": "#/definitions/condition"
+              },
               "minItems": 2
             }
           },
@@ -73,7 +75,9 @@
             },
             "conditions": {
               "type": "array",
-              "items": {},
+              "items": {
+                "$ref": "#/definitions/condition"
+              },
               "minItems": 2
             }
           },
@@ -90,7 +94,9 @@
               "type": "string",
               "const": "not"
             },
-            "condition": {}
+            "condition": {
+              "$ref": "#/definitions/condition"
+            }
           },
           "required": [
             "type",

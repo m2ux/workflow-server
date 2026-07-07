@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
-import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, readActivityRaw, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, readActivityRaw, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 import { resolveTechniques, formatTechniqueBundle } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
@@ -120,12 +120,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: lines.join('\n') }] };
     }));
 
-  server.tool('list_workflows', 'List all available workflow definitions with their ID, title, version, and tags. Use this when you need to discover or filter available workflows. Returns an array of workflow summaries with tag-based categorization. Does not require a session_index.', {},
-    withAuditLog('list_workflows', async () => ({
-      content: [{ type: 'text' as const, text: stringifyForResponse(await listWorkflows(config.workflowDir)) }],
-    })));
+  server.tool('list_workflows', 'List all available workflow definitions with their ID, title, version, and tags. Use this when you need to discover or filter available workflows. Returns an array of workflow summaries with tag-based categorization. If any workflow definition fails to load (unreadable file or manifest missing id/title/version), the response is instead an object with `workflows` (the loadable entries) and `load_errors` (one entry per failed file). Does not require a session_index.', {},
+    withAuditLog('list_workflows', async () => {
+      const { workflows, errors } = await listWorkflowsWithDiagnostics(config.workflowDir);
+      // Additive shape: the payload stays a plain array unless something failed to load.
+      const payload = errors.length > 0 ? { workflows, load_errors: errors } : workflows;
+      return { content: [{ type: 'text' as const, text: stringifyForResponse(payload) }] };
+    }));
 
-  server.tool('get_workflow', 'Load the workflow definition for the current session. The response begins with the resolved orchestrator technique bundle, then a `---` separator, then lightweight workflow metadata: rules, variables, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity. The response also carries `planning_folder_path`: the canonical absolute planning folder for this session under THIS server\'s workspace `.engineering` root — bind it as the single artifact location and never recompose it relative to your CWD or the target component repo.',
+  server.tool('get_workflow', 'Load the workflow definition for the current session. The response begins with the resolved orchestrator technique bundle, then a `---` separator, then lightweight workflow metadata: rules, variables, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. If any activity file failed to load (invalid or unparsable YAML), the response includes `activity_load_errors` listing each failed file with its error — those activities are absent from the activity list. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity. The response also carries `planning_folder_path`: the canonical absolute planning folder for this session under THIS server\'s workspace `.engineering` root — bind it as the single artifact location and never recompose it relative to your CWD or the target component repo.',
     {
       ...sessionIndexParam,
     },
@@ -135,9 +138,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       assertNoActiveCheckpoint(state);
       const workflow_id = state.workflowId;
 
-      const result = await loadWorkflow(config.workflowDir, workflow_id);
+      const result = await loadWorkflowWithDiagnostics(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
-      const wf = result.value;
+      const { workflow: wf, activityLoadErrors } = result.value;
 
       const view = sessionView(state);
       const validation = buildValidation(
@@ -177,6 +180,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         variables: wf.variables,
         initialActivity: wf.initialActivity,
         activities: wf.activities?.map((a: { id: string; name?: string; required?: boolean; artifactPrefix?: string | undefined }) => ({ id: a.id, name: a.name, required: a.required, artifactPrefix: a.artifactPrefix })) ?? [],
+        // Activity files that failed to load and are missing from `activities` — surfaced here
+        // instead of silently skipped, so a broken definition is visible at workflow load rather
+        // than as a later "Activity not found". Omitted when every activity loaded.
+        activity_load_errors: activityLoadErrors.length > 0 ? activityLoadErrors : undefined,
         session_index,
         // Canonical absolute planning folder for this session, resolved by the
         // server under its own workspace `.engineering` root. This is the single

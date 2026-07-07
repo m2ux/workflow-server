@@ -272,7 +272,9 @@
                 "type": "object",
                 "additionalProperties": {}
               },
-              "state": {}
+              "state": {
+                "$ref": "#/definitions/session-file"
+              }
             },
             "required": [
               "workflowId",
@@ -304,7 +306,9 @@
             }
           }
         },
-        "parentSession": {}
+        "parentSession": {
+          "$ref": "#/definitions/session-file"
+        }
       },
       "required": [
         "schemaVersion",
