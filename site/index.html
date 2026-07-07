@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workflow Server — MCP workflow orchestration for AI agents</title>
+<meta name="description" content="Documentation for Workflow Server, a Model Context Protocol server that guides AI agents through structured, fidelity-enforced workflows.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="./">Workflow Server</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="#how-it-works">How it works</a></li>
+        <li><a href="#documentation">Documentation</a></li>
+        <li><a href="#docs-map">Finding a document</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <h1>Structured workflows for AI agents</h1>
+    <p class="lede">Workflow Server is a <a href="https://modelcontextprotocol.io/">Model Context Protocol (MCP)</a> server that guides AI agents through structured, multi-step workflows. You describe a goal in natural language; the server gives the agent a defined process to follow — with checkpoints where you stay in control of the decisions that matter.</p>
+    <ul class="pill-row" aria-label="Project facts">
+      <li class="pill">MCP compatible</li>
+      <li class="pill">TypeScript · Node.js 18+</li>
+      <li class="pill">MIT license</li>
+    </ul>
+
+    <figure class="diagram">
+      <svg viewBox="0 0 960 210" role="img" aria-labelledby="model-title model-desc">
+        <title id="model-title">The workflow model</title>
+        <desc id="model-desc">A chain of five stages connected by arrows: a user goal is fulfilled by a workflow, a workflow is made of activities, activities apply techniques, and techniques invoke tools.</desc>
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+          </marker>
+        </defs>
+        <g font-size="17" font-weight="600" text-anchor="middle">
+          <rect x="7"   y="55" width="170" height="56" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+          <text x="92"  y="89" fill="var(--diagram-label)">User goal</text>
+          <rect x="201" y="55" width="170" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="286" y="89" fill="var(--diagram-label)">Workflow</text>
+          <rect x="395" y="55" width="170" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="480" y="89" fill="var(--diagram-label)">Activities</text>
+          <rect x="589" y="55" width="170" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="674" y="89" fill="var(--diagram-label)">Techniques</text>
+          <rect x="783" y="55" width="170" height="56" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+          <text x="868" y="89" fill="var(--diagram-label)">Tools</text>
+        </g>
+        <g stroke="var(--diagram-edge)" stroke-width="2">
+          <line x1="177" y1="83" x2="197" y2="83" marker-end="url(#arrow)"/>
+          <line x1="371" y1="83" x2="391" y2="83" marker-end="url(#arrow)"/>
+          <line x1="565" y1="83" x2="585" y2="83" marker-end="url(#arrow)"/>
+          <line x1="759" y1="83" x2="779" y2="83" marker-end="url(#arrow)"/>
+        </g>
+        <g font-size="13" text-anchor="middle" fill="var(--diagram-note)">
+          <text x="92"  y="140">“implement issue #42”</text>
+          <text x="286" y="140">the overall process,</text>
+          <text x="286" y="158">e.g. work-package</text>
+          <text x="480" y="140">phases: plan, implement,</text>
+          <text x="480" y="158">review, validate</text>
+          <text x="674" y="140">markdown definitions</text>
+          <text x="674" y="158">of a capability</text>
+          <text x="868" y="140">operations the</text>
+          <text x="868" y="158">agent invokes</text>
+        </g>
+      </svg>
+      <figcaption>The workflow model. A user goal is fulfilled by a workflow; the workflow is made of activities (its phases); each activity applies techniques (markdown definitions of a capability, with optional rules); and techniques invoke tools — the operations the agent performs.</figcaption>
+    </figure>
+  </section>
+
+  <section id="how-it-works" aria-labelledby="how-it-works-h">
+    <h2 id="how-it-works-h">How it works</h2>
+    <p>A single always-applied <a href="https://github.com/m2ux/workflow-server/blob/main/docs/ide-setup.md">IDE rule</a> bootstraps the agent. From there, the server handles workflow discovery, session management, and step-by-step navigation:</p>
+    <ol class="steps">
+      <li><strong>Discover.</strong> The agent calls <code>discover</code> to learn the available workflows and the bootstrap procedure.</li>
+      <li><strong>Start a session.</strong> <code>start_session</code> returns a session token, and <code>get_workflow</code> returns the workflow structure, its workflow-level techniques and rules, and the first activity.</li>
+      <li><strong>Navigate.</strong> <code>next_activity</code> advances the session; <code>get_activity</code> returns the activity's full definition — steps, checkpoints, transitions — with its bundled techniques. <code>get_resource</code> lazy-loads reference material.</li>
+      <li><strong>Execute.</strong> The agent works through the activities, pausing at checkpoints for your decisions, with transitions governing the flow between activities.</li>
+    </ol>
+
+    <figure class="diagram">
+      <svg viewBox="0 0 960 215" role="img" aria-labelledby="session-title session-desc">
+        <title id="session-title">A workflow session</title>
+        <desc id="session-desc">Six stages connected by arrows: discover, then start_session, then get_workflow, then next_activity, then get_activity, then work the activity. An arrow loops from work-the-activity back to next_activity, repeating until the final activity completes.</desc>
+        <defs>
+          <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+          </marker>
+        </defs>
+        <g font-size="14.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle">
+          <rect x="10"  y="50" width="140" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="80"  y="81" fill="var(--diagram-label)">discover</text>
+          <rect x="170" y="50" width="140" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="240" y="81" fill="var(--diagram-label)">start_session</text>
+          <rect x="330" y="50" width="140" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="400" y="81" fill="var(--diagram-label)">get_workflow</text>
+          <rect x="490" y="50" width="140" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="560" y="81" fill="var(--diagram-label)">next_activity</text>
+          <rect x="650" y="50" width="140" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="720" y="81" fill="var(--diagram-label)">get_activity</text>
+          <rect x="810" y="50" width="140" height="52" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+          <text x="880" y="75" fill="var(--diagram-label)" font-family="inherit" font-size="15">work the</text>
+          <text x="880" y="93" fill="var(--diagram-label)" font-family="inherit" font-size="15">activity</text>
+        </g>
+        <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
+          <line x1="150" y1="76" x2="166" y2="76" marker-end="url(#arrow2)"/>
+          <line x1="310" y1="76" x2="326" y2="76" marker-end="url(#arrow2)"/>
+          <line x1="470" y1="76" x2="486" y2="76" marker-end="url(#arrow2)"/>
+          <line x1="630" y1="76" x2="646" y2="76" marker-end="url(#arrow2)"/>
+          <line x1="790" y1="76" x2="806" y2="76" marker-end="url(#arrow2)"/>
+          <path d="M 880 102 L 880 140 L 560 140 L 560 106" marker-end="url(#arrow2)"/>
+        </g>
+        <text x="720" y="165" font-size="13" text-anchor="middle" fill="var(--diagram-note)">repeat for each activity until the workflow completes</text>
+      </svg>
+      <figcaption>A workflow session. After <code>discover</code>, <code>start_session</code>, and <code>get_workflow</code>, the agent loops through <code>next_activity</code> → <code>get_activity</code> → doing the work, one activity at a time, until the workflow completes.</figcaption>
+    </figure>
+  </section>
+
+  <section id="documentation" aria-labelledby="documentation-h">
+    <h2 id="documentation-h">Documentation</h2>
+    <p>The markdown files in the repository are the canonical documentation source; this site is the navigable, illustrated view over them. Three sections cover the material:</p>
+    <ul class="card-grid">
+      <li class="card">
+        <h3>User guide</h3>
+        <p>Install the server, register it with an MCP client (Cursor, Claude Desktop, and others), set up the IDE bootstrap rule, and run your first workflow with natural-language requests.</p>
+        <span class="card-cta"><a href="https://github.com/m2ux/workflow-server/blob/main/SETUP.md">Setup guide</a> · <a href="https://github.com/m2ux/workflow-server/blob/main/docs/ide-setup.md">IDE setup</a></span>
+      </li>
+      <li class="card">
+        <h3>Technical specifications</h3>
+        <p>The six architecture models — hierarchical dispatch, just-in-time checkpoints, state management and deterministic transitions, artifact and workspace isolation, technique and resource resolution, and workflow fidelity.</p>
+        <span class="card-cta"><a href="https://github.com/m2ux/workflow-server/blob/main/docs/architecture.md">Architecture overview</a></span>
+      </li>
+      <li class="card">
+        <h3>API usage</h3>
+        <p>Full signatures for the 16 MCP tools, the JSON schemas that define workflows, activities, and techniques, and the conventions for authoring workflow definitions.</p>
+        <span class="card-cta"><a href="https://github.com/m2ux/workflow-server/blob/main/docs/api-reference.md">API reference</a> · <a href="https://github.com/m2ux/workflow-server/blob/main/schemas/README.md">Schemas</a></span>
+      </li>
+    </ul>
+
+    <h3>MCP tools at a glance</h3>
+    <p>The server registers 16 MCP tools across six concerns:</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Concern</th><th scope="col">Tools</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Bootstrap (no session token)</td><td><code>discover</code>, <code>list_workflows</code>, <code>health_check</code></td></tr>
+          <tr><td>Session</td><td><code>start_session</code>, <code>get_workflow_status</code>, <code>dispatch_child</code></td></tr>
+          <tr><td>Workflow / activity navigation</td><td><code>get_workflow</code>, <code>next_activity</code>, <code>get_activity</code></td></tr>
+          <tr><td>Checkpoint flow</td><td><code>yield_checkpoint</code>, <code>resume_checkpoint</code>, <code>present_checkpoint</code>, <code>respond_checkpoint</code></td></tr>
+          <tr><td>Techniques, resources</td><td><code>get_technique</code>, <code>get_resource</code></td></tr>
+          <tr><td>Trace</td><td><code>get_trace</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="docs-map" aria-labelledby="docs-map-h">
+    <h2 id="docs-map-h">Finding a document</h2>
+    <p>Every document has a defined purpose. Start from your question:</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">Your question</th><th scope="col">Read this</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>What is this project and how do I get started?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/README.md">README</a></td></tr>
+          <tr><td>How do I install the server and wire it into my IDE or MCP client?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/SETUP.md">SETUP</a> and <a href="https://github.com/m2ux/workflow-server/blob/main/docs/ide-setup.md">IDE setup</a></td></tr>
+          <tr><td>What tools does the server expose, and with what signatures?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/api-reference.md">API reference</a></td></tr>
+          <tr><td>How do I author or validate a workflow definition?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/schemas/README.md">Schema guide</a></td></tr>
+          <tr><td>How is the system designed?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/architecture.md">Architecture overview</a>, which links each of the six model documents</td></tr>
+          <tr><td>What keeps an agent faithful to a workflow?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/workflow-fidelity.md">Workflow fidelity</a></td></tr>
+          <tr><td>How do techniques declare their protocol and bindings?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md">Technique protocol specification</a></td></tr>
+          <tr><td>How do I contribute to the server itself?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/development.md">Development guide</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
+    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
