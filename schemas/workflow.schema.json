@@ -352,7 +352,9 @@
                                       },
                                       "conditions": {
                                         "type": "array",
-                                        "items": {},
+                                        "items": {
+                                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                        },
                                         "minItems": 2
                                       }
                                     },
@@ -371,7 +373,9 @@
                                       },
                                       "conditions": {
                                         "type": "array",
-                                        "items": {},
+                                        "items": {
+                                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                        },
                                         "minItems": 2
                                       }
                                     },
@@ -388,7 +392,9 @@
                                         "type": "string",
                                         "const": "not"
                                       },
-                                      "condition": {}
+                                      "condition": {
+                                        "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                      }
                                     },
                                     "required": [
                                       "type",
@@ -411,100 +417,7 @@
                           "description": "Inline boolean expression that gates this step. Examples: \"has_saved_state == true\", \"is_monorepo == true\", \"client_workflow_completed == false\". Evaluated against current variable state at runtime."
                         },
                         "condition": {
-                          "anyOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "simple"
-                                },
-                                "variable": {
-                                  "type": "string"
-                                },
-                                "operator": {
-                                  "type": "string",
-                                  "enum": [
-                                    "==",
-                                    "!=",
-                                    ">",
-                                    "<",
-                                    ">=",
-                                    "<=",
-                                    "exists",
-                                    "notExists"
-                                  ]
-                                },
-                                "value": {
-                                  "type": [
-                                    "string",
-                                    "number",
-                                    "boolean",
-                                    "null"
-                                  ]
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "variable",
-                                "operator"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "and"
-                                },
-                                "conditions": {
-                                  "type": "array",
-                                  "items": {},
-                                  "minItems": 2
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "conditions"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "or"
-                                },
-                                "conditions": {
-                                  "type": "array",
-                                  "items": {},
-                                  "minItems": 2
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "conditions"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "not"
-                                },
-                                "condition": {}
-                              },
-                              "required": [
-                                "type",
-                                "condition"
-                              ],
-                              "additionalProperties": false
-                            }
-                          ],
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
                           "description": "LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons."
                         },
                         "required": {
@@ -534,239 +447,18 @@
                         "actions": {
                           "type": "array",
                           "items": {
-                            "type": "object",
-                            "properties": {
-                              "action": {
-                                "type": "string",
-                                "enum": [
-                                  "log",
-                                  "validate",
-                                  "set",
-                                  "emit",
-                                  "message"
-                                ]
-                              },
-                              "target": {
-                                "type": "string"
-                              },
-                              "message": {
-                                "type": "string"
-                              },
-                              "value": {},
-                              "description": {
-                                "type": "string",
-                                "description": "Human-readable description of what this action does"
-                              },
-                              "condition": {
-                                "anyOf": [
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "const": "simple"
-                                      },
-                                      "variable": {
-                                        "type": "string"
-                                      },
-                                      "operator": {
-                                        "type": "string",
-                                        "enum": [
-                                          "==",
-                                          "!=",
-                                          ">",
-                                          "<",
-                                          ">=",
-                                          "<=",
-                                          "exists",
-                                          "notExists"
-                                        ]
-                                      },
-                                      "value": {
-                                        "type": [
-                                          "string",
-                                          "number",
-                                          "boolean",
-                                          "null"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "type",
-                                      "variable",
-                                      "operator"
-                                    ],
-                                    "additionalProperties": false
-                                  },
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "const": "and"
-                                      },
-                                      "conditions": {
-                                        "type": "array",
-                                        "items": {},
-                                        "minItems": 2
-                                      }
-                                    },
-                                    "required": [
-                                      "type",
-                                      "conditions"
-                                    ],
-                                    "additionalProperties": false
-                                  },
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "const": "or"
-                                      },
-                                      "conditions": {
-                                        "type": "array",
-                                        "items": {},
-                                        "minItems": 2
-                                      }
-                                    },
-                                    "required": [
-                                      "type",
-                                      "conditions"
-                                    ],
-                                    "additionalProperties": false
-                                  },
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "const": "not"
-                                      },
-                                      "condition": {}
-                                    },
-                                    "required": [
-                                      "type",
-                                      "condition"
-                                    ],
-                                    "additionalProperties": false
-                                  }
-                                ],
-                                "description": "Condition that must be true for this action to execute"
-                              }
-                            },
-                            "required": [
-                              "action"
-                            ],
-                            "additionalProperties": false
+                            "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items"
                           },
                           "description": "Control actions; may be empty for marker steps."
                         },
                         "when": {
-                          "type": "string",
-                          "description": "Inline boolean expression that gates this step. Examples: \"has_saved_state == true\", \"is_monorepo == true\", \"client_workflow_completed == false\". Evaluated against current variable state at runtime."
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"
                         },
                         "condition": {
-                          "anyOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "simple"
-                                },
-                                "variable": {
-                                  "type": "string"
-                                },
-                                "operator": {
-                                  "type": "string",
-                                  "enum": [
-                                    "==",
-                                    "!=",
-                                    ">",
-                                    "<",
-                                    ">=",
-                                    "<=",
-                                    "exists",
-                                    "notExists"
-                                  ]
-                                },
-                                "value": {
-                                  "type": [
-                                    "string",
-                                    "number",
-                                    "boolean",
-                                    "null"
-                                  ]
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "variable",
-                                "operator"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "and"
-                                },
-                                "conditions": {
-                                  "type": "array",
-                                  "items": {},
-                                  "minItems": 2
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "conditions"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "or"
-                                },
-                                "conditions": {
-                                  "type": "array",
-                                  "items": {},
-                                  "minItems": 2
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "conditions"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "not"
-                                },
-                                "condition": {}
-                              },
-                              "required": [
-                                "type",
-                                "condition"
-                              ],
-                              "additionalProperties": false
-                            }
-                          ],
-                          "description": "LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons."
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/condition"
                         },
                         "required": {
-                          "type": "boolean",
-                          "const": false,
-                          "description": "Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64)."
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/required"
                         }
                       },
                       "required": [
@@ -850,110 +542,13 @@
                           "description": "True requires explicit user selection (no auto-advance)."
                         },
                         "when": {
-                          "type": "string",
-                          "description": "Inline boolean expression that gates this step. Examples: \"has_saved_state == true\", \"is_monorepo == true\", \"client_workflow_completed == false\". Evaluated against current variable state at runtime."
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"
                         },
                         "condition": {
-                          "anyOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "simple"
-                                },
-                                "variable": {
-                                  "type": "string"
-                                },
-                                "operator": {
-                                  "type": "string",
-                                  "enum": [
-                                    "==",
-                                    "!=",
-                                    ">",
-                                    "<",
-                                    ">=",
-                                    "<=",
-                                    "exists",
-                                    "notExists"
-                                  ]
-                                },
-                                "value": {
-                                  "type": [
-                                    "string",
-                                    "number",
-                                    "boolean",
-                                    "null"
-                                  ]
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "variable",
-                                "operator"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "and"
-                                },
-                                "conditions": {
-                                  "type": "array",
-                                  "items": {},
-                                  "minItems": 2
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "conditions"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "or"
-                                },
-                                "conditions": {
-                                  "type": "array",
-                                  "items": {},
-                                  "minItems": 2
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "conditions"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "not"
-                                },
-                                "condition": {}
-                              },
-                              "required": [
-                                "type",
-                                "condition"
-                              ],
-                              "additionalProperties": false
-                            }
-                          ],
-                          "description": "LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons."
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/condition"
                         },
                         "required": {
-                          "type": "boolean",
-                          "const": false,
-                          "description": "Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64)."
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/required"
                         }
                       },
                       "required": [
@@ -998,100 +593,7 @@
                           "description": "Collection expression iterated by a forEach loop."
                         },
                         "breakCondition": {
-                          "anyOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "simple"
-                                },
-                                "variable": {
-                                  "type": "string"
-                                },
-                                "operator": {
-                                  "type": "string",
-                                  "enum": [
-                                    "==",
-                                    "!=",
-                                    ">",
-                                    "<",
-                                    ">=",
-                                    "<=",
-                                    "exists",
-                                    "notExists"
-                                  ]
-                                },
-                                "value": {
-                                  "type": [
-                                    "string",
-                                    "number",
-                                    "boolean",
-                                    "null"
-                                  ]
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "variable",
-                                "operator"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "and"
-                                },
-                                "conditions": {
-                                  "type": "array",
-                                  "items": {},
-                                  "minItems": 2
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "conditions"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "or"
-                                },
-                                "conditions": {
-                                  "type": "array",
-                                  "items": {},
-                                  "minItems": 2
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "conditions"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "not"
-                                },
-                                "condition": {}
-                              },
-                              "required": [
-                                "type",
-                                "condition"
-                              ],
-                              "additionalProperties": false
-                            }
-                          ],
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
                           "description": "Early-exit condition evaluated each iteration."
                         },
                         "maxIterations": {
@@ -1101,114 +603,19 @@
                         },
                         "steps": {
                           "type": "array",
-                          "items": {},
+                          "items": {
+                            "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items"
+                          },
                           "description": "The loop body, a nested ordered list of steps."
                         },
                         "when": {
-                          "type": "string",
-                          "description": "Inline boolean expression that gates this step. Examples: \"has_saved_state == true\", \"is_monorepo == true\", \"client_workflow_completed == false\". Evaluated against current variable state at runtime."
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"
                         },
                         "condition": {
-                          "anyOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "simple"
-                                },
-                                "variable": {
-                                  "type": "string"
-                                },
-                                "operator": {
-                                  "type": "string",
-                                  "enum": [
-                                    "==",
-                                    "!=",
-                                    ">",
-                                    "<",
-                                    ">=",
-                                    "<=",
-                                    "exists",
-                                    "notExists"
-                                  ]
-                                },
-                                "value": {
-                                  "type": [
-                                    "string",
-                                    "number",
-                                    "boolean",
-                                    "null"
-                                  ]
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "variable",
-                                "operator"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "and"
-                                },
-                                "conditions": {
-                                  "type": "array",
-                                  "items": {},
-                                  "minItems": 2
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "conditions"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "or"
-                                },
-                                "conditions": {
-                                  "type": "array",
-                                  "items": {},
-                                  "minItems": 2
-                                }
-                              },
-                              "required": [
-                                "type",
-                                "conditions"
-                              ],
-                              "additionalProperties": false
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "type": {
-                                  "type": "string",
-                                  "const": "not"
-                                },
-                                "condition": {}
-                              },
-                              "required": [
-                                "type",
-                                "condition"
-                              ],
-                              "additionalProperties": false
-                            }
-                          ],
-                          "description": "LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons."
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/condition"
                         },
                         "required": {
-                          "type": "boolean",
-                          "const": false,
-                          "description": "Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64)."
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/required"
                         }
                       },
                       "required": [
@@ -1249,100 +656,7 @@
                             "type": "string"
                           },
                           "condition": {
-                            "anyOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "simple"
-                                  },
-                                  "variable": {
-                                    "type": "string"
-                                  },
-                                  "operator": {
-                                    "type": "string",
-                                    "enum": [
-                                      "==",
-                                      "!=",
-                                      ">",
-                                      "<",
-                                      ">=",
-                                      "<=",
-                                      "exists",
-                                      "notExists"
-                                    ]
-                                  },
-                                  "value": {
-                                    "type": [
-                                      "string",
-                                      "number",
-                                      "boolean",
-                                      "null"
-                                    ]
-                                  }
-                                },
-                                "required": [
-                                  "type",
-                                  "variable",
-                                  "operator"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "and"
-                                  },
-                                  "conditions": {
-                                    "type": "array",
-                                    "items": {},
-                                    "minItems": 2
-                                  }
-                                },
-                                "required": [
-                                  "type",
-                                  "conditions"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "or"
-                                  },
-                                  "conditions": {
-                                    "type": "array",
-                                    "items": {},
-                                    "minItems": 2
-                                  }
-                                },
-                                "required": [
-                                  "type",
-                                  "conditions"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "not"
-                                  },
-                                  "condition": {}
-                                },
-                                "required": [
-                                  "type",
-                                  "condition"
-                                ],
-                                "additionalProperties": false
-                              }
-                            ]
+                            "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
                           },
                           "transitionTo": {
                             "type": "string",
@@ -1381,100 +695,7 @@
                       "description": "Activity ID to transition to"
                     },
                     "condition": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "simple"
-                            },
-                            "variable": {
-                              "type": "string"
-                            },
-                            "operator": {
-                              "type": "string",
-                              "enum": [
-                                "==",
-                                "!=",
-                                ">",
-                                "<",
-                                ">=",
-                                "<=",
-                                "exists",
-                                "notExists"
-                              ]
-                            },
-                            "value": {
-                              "type": [
-                                "string",
-                                "number",
-                                "boolean",
-                                "null"
-                              ]
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "variable",
-                            "operator"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "and"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "or"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "not"
-                            },
-                            "condition": {}
-                          },
-                          "required": [
-                            "type",
-                            "condition"
-                          ],
-                          "additionalProperties": false
-                        }
-                      ]
+                      "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
                     },
                     "isDefault": {
                       "type": "boolean",
