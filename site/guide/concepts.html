@@ -34,7 +34,7 @@
   <p>A workflow is a directory of declarative files, not code. The manifest names the workflow and its variables; each activity file defines one phase as an ordered list of steps; techniques are markdown documents describing a capability; and resources are reference material a technique can pull in when needed.</p>
 
   <figure class="diagram">
-    <svg viewBox="0 0 960 235" role="img" aria-labelledby="anatomy-title anatomy-desc">
+    <svg viewBox="0 0 960 160" role="img" aria-labelledby="anatomy-title anatomy-desc">
       <title id="anatomy-title">Anatomy of a workflow directory</title>
       <desc id="anatomy-desc">A workflow manifest lists activities. Each activity file contains ordered steps of four kinds: technique, action, checkpoint, and loop. Steps reference technique documents, which can reference resources.</desc>
       <defs>
@@ -46,10 +46,9 @@
         <rect x="10" y="70" width="200" height="64" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="110" y="97" fill="var(--diagram-label)">workflow.yaml</text>
         <text x="110" y="118" fill="var(--diagram-note)" font-size="13" font-weight="400">manifest: variables, rules</text>
-        <rect x="255" y="55" width="230" height="94" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="370" y="82" fill="var(--diagram-label)">activities/*.yaml</text>
-        <text x="370" y="103" fill="var(--diagram-note)" font-size="13" font-weight="400">ordered steps, transitions</text>
-        <text x="370" y="130" fill="var(--diagram-note)" font-size="12.5" font-weight="400" font-family="ui-monospace, Menlo, Consolas, monospace">technique · action · checkpoint · loop</text>
+        <rect x="255" y="70" width="230" height="64" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="370" y="97" fill="var(--diagram-label)">activities/*.yaml</text>
+        <text x="370" y="118" fill="var(--diagram-note)" font-size="13" font-weight="400">ordered steps, transitions</text>
         <rect x="530" y="70" width="200" height="64" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="630" y="97" fill="var(--diagram-label)">techniques/*.md</text>
         <text x="630" y="118" fill="var(--diagram-note)" font-size="13" font-weight="400">how to do one capability</text>
@@ -65,7 +64,7 @@
       <g font-size="13" fill="var(--diagram-note)" text-anchor="middle">
         <text x="230" y="90">lists</text>
         <text x="505" y="90">bind</text>
-        <text x="750" y="90">reference</text>
+        <text x="750" y="90">links</text>
       </g>
     </svg>
     <figcaption>Anatomy of a workflow directory. The manifest lists activities; activity steps come in four kinds (<code>technique</code>, <code>action</code>, <code>checkpoint</code>, <code>loop</code>) and bind techniques; techniques reference resources that load only when needed. The exact file shapes are in the <a href="../api/schemas.html">schema reference</a>.</figcaption>
@@ -96,9 +95,9 @@
         <text x="820" y="38" fill="var(--diagram-label)">Server</text>
       </g>
       <g stroke="var(--diagram-edge)" stroke-width="1" stroke-dasharray="4 4" opacity="0.6">
-        <line x1="140" y1="54" x2="140" y2="380"/>
-        <line x1="480" y1="54" x2="480" y2="380"/>
-        <line x1="820" y1="54" x2="820" y2="380"/>
+        <line x1="140" y1="54" x2="140" y2="352"/>
+        <line x1="480" y1="54" x2="480" y2="352"/>
+        <line x1="820" y1="54" x2="820" y2="352"/>
       </g>
       <g stroke="var(--diagram-edge)" stroke-width="2">
         <line x1="480" y1="95" x2="816" y2="95" marker-end="url(#arrowp)"/>
@@ -118,7 +117,7 @@
         <text x="310" y="287">your choice</text>
         <text x="650" y="327" font-family="ui-monospace, Menlo, Consolas, monospace">respond_checkpoint → resume_checkpoint</text>
       </g>
-      <text x="480" y="372" font-size="13" text-anchor="middle" fill="var(--diagram-note)">work continues with any variable updates from your choice</text>
+      <text x="480" y="380" font-size="13" text-anchor="middle" fill="var(--diagram-note)">work continues with any variable updates from your choice</text>
     </svg>
     <figcaption>The checkpoint flow, simplified to a single agent. The agent yields at the checkpoint, fetches the message and options, presents the decision to you, submits your choice, and resumes. In multi-agent setups the yield "bubbles up" from a background worker to the user-facing agent — the full protocol is in the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/checkpoint_model.md">checkpoint model</a>.</figcaption>
   </figure>
