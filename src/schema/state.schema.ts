@@ -12,6 +12,11 @@ export const HistoryEventTypeSchema = z.enum([
   'decision_reached', 'decision_branch_taken',
   'loop_started', 'loop_iteration', 'loop_completed', 'loop_break',
   'variable_set', 'error',
+  // Fidelity observability (#166 B8): content-fetch events recorded by
+  // get_technique / get_resource. `data` carries { techniqueId, stepId?,
+  // agentId } / { resourceId, agentId }; `activity` is the activity current
+  // at fetch time (omitted before the first next_activity).
+  'technique_fetched', 'resource_fetched',
 ]);
 export type HistoryEventType = z.infer<typeof HistoryEventTypeSchema>;
 

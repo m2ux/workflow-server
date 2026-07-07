@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { Workflow } from '../schema/workflow.schema.js';
-import { flattenActivitySteps } from '../schema/activity.schema.js';
+import type { HistoryEntry } from '../schema/state.schema.js';
+import { flattenActivitySteps, techniqueName } from '../schema/activity.schema.js';
 import { getValidTransitions, getActivity, getTransitionList, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 
 /**
@@ -120,6 +121,67 @@ export function validateStepManifest(
   }
 
   return warnings;
+}
+
+/**
+ * Fidelity observability (#166 B8): warn when a manifested technique step had
+ * no technique fetch recorded during the activity. Reads the
+ * `technique_fetched` events that `get_technique` appends to the session
+ * history, scoped to the current visit (entries after the most recent
+ * `activity_entered` for this activity, so a loop-back revisit needs its own
+ * fetches). A step is covered by a step-bound fetch (`data.stepId` matches)
+ * or by a fetch whose resolved technique id matches the step's binding —
+ * either the authored ref or its `<activity>::<op>` activity-group form, the
+ * two ids `get_technique`'s shorthand resolution can record — so a technique
+ * fetched once covers every manifested step bound to the same operation.
+ * Advisory only, like the rest of manifest validation.
+ */
+export function validateTechniqueFetches(
+  manifest: StepManifestEntry[],
+  workflow: Workflow,
+  activityId: string,
+  history: HistoryEntry[],
+): string[] {
+  const activity = getActivity(workflow, activityId);
+  if (!activity) return [];
+
+  const manifestIdSet = new Set(manifest.map(m => m.step_id));
+  const claimedTechniqueSteps = flattenActivitySteps(activity)
+    .filter(s => s.kind === 'technique' && s.id !== undefined && manifestIdSet.has(s.id));
+  if (claimedTechniqueSteps.length === 0) return [];
+
+  let visitStart = 0;
+  for (let i = history.length - 1; i >= 0; i--) {
+    const entry = history[i]!;
+    if (entry.type === 'activity_entered' && entry.activity === activityId) {
+      visitStart = i + 1;
+      break;
+    }
+  }
+
+  const fetchedStepIds = new Set<string>();
+  const fetchedTechniqueIds = new Set<string>();
+  for (let i = visitStart; i < history.length; i++) {
+    const entry = history[i]!;
+    if (entry.type !== 'technique_fetched' || entry.activity !== activityId) continue;
+    const data = entry.data as { stepId?: string; techniqueId?: string } | undefined;
+    if (typeof data?.stepId === 'string') fetchedStepIds.add(data.stepId);
+    if (typeof data?.techniqueId === 'string') fetchedTechniqueIds.add(data.techniqueId);
+  }
+
+  const unfetched: string[] = [];
+  for (const step of claimedTechniqueSteps) {
+    if (fetchedStepIds.has(step.id!)) continue;
+    const ref = step.kind === 'technique' ? techniqueName(step.technique) : undefined;
+    if (ref && (fetchedTechniqueIds.has(ref) || fetchedTechniqueIds.has(`${activityId}::${ref}`))) continue;
+    unfetched.push(step.id!);
+  }
+  if (unfetched.length === 0) return [];
+
+  return [
+    `Technique steps reported complete without an in-session technique fetch: [${unfetched.join(', ')}]. ` +
+    `No get_technique call for these steps was recorded during this activity — fetch each step's technique with get_technique { step_id } before executing it, so the step runs against its composed technique content.`,
+  ];
 }
 
 export function validateTransitionCondition(view: SessionView, workflow: Workflow, activityId: string, claimedCondition: string | undefined): string | null {

@@ -3,9 +3,11 @@ import {
   validateActivityTransition,
   validateWorkflowVersion,
   validateStepManifest,
+  validateTechniqueFetches,
   buildValidation,
   type SessionView,
 } from '../src/utils/validation.js';
+import type { HistoryEntry } from '../src/schema/state.schema.js';
 import { evaluateCondition } from '../src/schema/condition.schema.js';
 import type { Condition } from '../src/schema/condition.schema.js';
 import type { Workflow } from '../src/schema/workflow.schema.js';
@@ -347,6 +349,130 @@ describe('validation', () => {
         'work',
       );
       expect(warnings.some(w => w.includes("'first-step' has empty output"))).toBe(true);
+    });
+  });
+
+  describe('validateTechniqueFetches (#166 B8 fidelity observability)', () => {
+    function makeFetchWorkflow(): Workflow {
+      return {
+        id: 'test-wf',
+        version: '1.0.0',
+        title: 'Test Workflow',
+        activities: [
+          {
+            id: 'work',
+            version: '1.0.0',
+            name: 'Work',
+            steps: [
+              { kind: 'technique', id: 'qualified-step', technique: 'grp::qualified-step' },
+              { kind: 'technique', id: 'bare-step', technique: 'bare-step' },
+              { kind: 'action', id: 'mark-progress', actions: [{ action: 'set', target: 'progress_flag', value: true }] },
+              {
+                kind: 'loop',
+                id: 'item-loop',
+                loopType: 'forEach',
+                variable: 'current_item',
+                over: 'pending_items',
+                steps: [
+                  { kind: 'technique', id: 'process-item', technique: 'grp::process-item' },
+                ],
+              },
+            ],
+          },
+        ],
+      } as unknown as Workflow;
+    }
+
+    const entered = (activity: string): HistoryEntry => ({
+      timestamp: '2026-07-07T10:00:00.000Z',
+      type: 'activity_entered',
+      activity,
+    });
+    const fetched = (activity: string, data: { techniqueId: string; stepId?: string }): HistoryEntry => ({
+      timestamp: '2026-07-07T10:01:00.000Z',
+      type: 'technique_fetched',
+      activity,
+      data: { ...data, agentId: 'worker' },
+    });
+    const fullManifest = [
+      { step_id: 'qualified-step', output: 'done' },
+      { step_id: 'bare-step', output: 'done' },
+      { step_id: 'mark-progress', output: 'done' },
+      { step_id: 'item-loop', output: 'iterated' },
+      { step_id: 'process-item', output: 'item 1' },
+    ];
+
+    it('warns for every manifested technique step when no fetches were recorded', () => {
+      const warnings = validateTechniqueFetches(fullManifest, makeFetchWorkflow(), 'work', [entered('work')]);
+      expect(warnings).toHaveLength(1);
+      expect(warnings[0]).toContain('qualified-step');
+      expect(warnings[0]).toContain('bare-step');
+      expect(warnings[0]).toContain('process-item');
+      // Action, loop, and checkpoint steps carry no technique — never flagged.
+      expect(warnings[0]).not.toContain('mark-progress');
+      expect(warnings[0]).not.toContain('item-loop');
+    });
+
+    it('passes when every technique step has a step-bound fetch', () => {
+      const history = [
+        entered('work'),
+        fetched('work', { techniqueId: 'grp::qualified-step', stepId: 'qualified-step' }),
+        fetched('work', { techniqueId: 'work::bare-step', stepId: 'bare-step' }),
+        fetched('work', { techniqueId: 'grp::process-item', stepId: 'process-item' }),
+      ];
+      expect(validateTechniqueFetches(fullManifest, makeFetchWorkflow(), 'work', history)).toEqual([]);
+    });
+
+    it('credits an unbound fetch by resolved technique id, including the activity-group shorthand form', () => {
+      const history = [
+        entered('work'),
+        // No stepId on either fetch: match must fall through to the technique id.
+        fetched('work', { techniqueId: 'grp::qualified-step' }),
+        // A bare authored ref resolves as `<activity>::<op>` under the group
+        // shorthand — the recorded id is the resolved form.
+        fetched('work', { techniqueId: 'work::bare-step' }),
+        fetched('work', { techniqueId: 'grp::process-item' }),
+      ];
+      expect(validateTechniqueFetches(fullManifest, makeFetchWorkflow(), 'work', history)).toEqual([]);
+    });
+
+    it('checks only manifested steps', () => {
+      const manifest = [{ step_id: 'qualified-step', output: 'done' }];
+      const history = [
+        entered('work'),
+        fetched('work', { techniqueId: 'grp::qualified-step', stepId: 'qualified-step' }),
+      ];
+      expect(validateTechniqueFetches(manifest, makeFetchWorkflow(), 'work', history)).toEqual([]);
+    });
+
+    it('ignores fetches recorded for a different activity', () => {
+      const manifest = [{ step_id: 'qualified-step', output: 'done' }];
+      const history = [
+        entered('work'),
+        fetched('other-activity', { techniqueId: 'grp::qualified-step', stepId: 'qualified-step' }),
+      ];
+      const warnings = validateTechniqueFetches(manifest, makeFetchWorkflow(), 'work', history);
+      expect(warnings).toHaveLength(1);
+      expect(warnings[0]).toContain('qualified-step');
+    });
+
+    it('scopes fetches to the current visit — a loop-back revisit needs fresh fetches', () => {
+      const manifest = [{ step_id: 'qualified-step', output: 'done' }];
+      const history = [
+        entered('work'),
+        fetched('work', { techniqueId: 'grp::qualified-step', stepId: 'qualified-step' }),
+        { timestamp: '2026-07-07T10:02:00.000Z', type: 'activity_exited', activity: 'work' } as HistoryEntry,
+        entered('review'),
+        entered('work'), // revisit — the earlier fetch is a previous visit's
+      ];
+      const warnings = validateTechniqueFetches(manifest, makeFetchWorkflow(), 'work', history);
+      expect(warnings).toHaveLength(1);
+      expect(warnings[0]).toContain('qualified-step');
+    });
+
+    it('returns no warning for an unknown activity or an empty manifest', () => {
+      expect(validateTechniqueFetches(fullManifest, makeFetchWorkflow(), 'missing', [])).toEqual([]);
+      expect(validateTechniqueFetches([], makeFetchWorkflow(), 'work', [entered('work')])).toEqual([]);
     });
   });
 

@@ -612,6 +612,18 @@ describe('mcp-server integration', () => {
       const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
       let tokenAfterStart = await resolveCheckpoints(client, nextToken, actResponse);
 
+      // Fetch each technique step's composed content first, as a real worker
+      // does — a manifested technique step with no recorded fetch draws a
+      // fidelity warning (#166 B8).
+      for (const s of actResponse.steps as Array<{ id: string; kind?: string }>) {
+        if (s.kind !== 'technique') continue;
+        const fetchRes = await client.callTool({
+          name: 'get_technique',
+          arguments: { session_index: tokenAfterStart, step_id: s.id },
+        });
+        expect(fetchRes.isError).toBeFalsy();
+      }
+
       const manifest = actResponse.steps.map((s: { id: string }) => ({ step_id: s.id, output: 'completed' }));
 
       const result = await client.callTool({
