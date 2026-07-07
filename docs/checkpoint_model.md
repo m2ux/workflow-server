@@ -42,15 +42,15 @@ Once the user selects an option, the Meta Orchestrator finalizes the resolution 
 ```javascript
 respond_checkpoint({ checkpoint_handle: "<opaque_handle_string>", option_id: "proceed" })
 ```
-The server clears `activeCheckpoint` from `session.json`, records the decision and any variable `effects` in the persistent session state, and returns those effects to the caller.
+The server clears `activeCheckpoint` from `session.json`, records the decision and any `effects` in the persistent session state, and returns those effects to the caller. Enforcement is per-effect: `setVariable` is applied to the session variable bag, `skipActivities` is recorded in `skippedActivities` bookkeeping, and `transitionTo` is returned for the orchestrator to enact via `next_activity` — resolving the checkpoint does not itself move the session.
 
 **Three resolution modes:**
 
 1. **`option_id`** — The user's selected option. The server validates the option against the checkpoint definition and enforces a minimum response time (default 3 seconds since the checkpoint was yielded). This prevents instant auto-resolve without user interaction.
 
-2. **`auto_advance: true`** — For non-blocking checkpoints with `autoAdvanceMs`, the server uses the `defaultOption` but only after the full timer has elapsed. The elapsed time is measured from the `yieldedAt` timestamp recorded in `session.json` when the checkpoint was yielded.
+2. **`auto_advance: true`** — For checkpoints that define both `defaultOption` and `autoAdvanceMs`, the server uses the `defaultOption` but only after the full timer has elapsed. The elapsed time is measured from the `yieldedAt` timestamp recorded in `session.json` when the checkpoint was yielded. The server checks only those two fields — `blocking` is an orchestrator directive it does not consult, so a checkpoint intended to block must not declare `defaultOption`/`autoAdvanceMs`.
 
-3. **`condition_not_met: true`** — Dismisses a conditional checkpoint whose prerequisite evaluated to false. Only valid when the checkpoint has a `condition` field. The server validates the presence of the condition field but cannot verify the condition's actual truth value.
+3. **`condition_not_met: true`** — Dismisses a conditional checkpoint whose prerequisite evaluated to false. Only valid when the checkpoint has a structured `condition` field; a checkpoint gated with the inline `when` expression is not dismissible this way. The server validates the presence of the condition field but cannot verify the condition's actual truth value — the agent evaluates it.
 
 ## The Resume Protocol
 

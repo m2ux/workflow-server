@@ -12,10 +12,10 @@ export const VariableNameSchema = z.union([
 
 export const VariableDefinitionSchema = z.object({
   name: VariableNameSchema,
-  type: z.enum(['string', 'number', 'boolean', 'array', 'object']),
+  type: z.enum(['string', 'number', 'boolean', 'array', 'object']).describe('Declared type, honored by agents. The server stores variable values as written, without coercion.'),
   description: z.string().optional(),
-  defaultValue: z.unknown().optional(),
-  required: z.boolean().default(false),
+  defaultValue: z.unknown().optional().describe('Initial value agents assume for the variable. The server does not seed it into the session variable bag — a server-side read of an unset variable sees undefined.'),
+  required: z.boolean().default(false).describe('Authoring metadata; the server does not check that the variable is ever set.'),
 });
 export type VariableDefinition = z.infer<typeof VariableDefinitionSchema>;
 
@@ -49,10 +49,10 @@ export const WorkflowSchema = z.object({
   version: SemanticVersionSchema.describe('Semantic version'),
   title: z.string().describe('Human-readable workflow title'),
   description: z.string().optional().describe('Detailed workflow description'),
-  author: z.string().optional(),
+  author: z.string().optional().describe('Author metadata; not read by the server.'),
   tags: z.array(z.string()).optional(),
   rules: WorkflowRulesSchema.optional().describe('Workflow rules partitioned by audience: `workflow` (orchestrator-only) and `activity` (inherited by every activity, injected into get_activity).'),
-  variables: z.array(VariableDefinitionSchema).optional().describe('Workflow-level variables'),
+  variables: z.array(VariableDefinitionSchema).optional().describe('Workflow-level variable declarations, rendered in get_workflow for agents. The session variable bag starts empty; the server writes it only through checkpoint setVariable effects.'),
   techniques: WorkflowTechniquesSchema.optional().describe('Workflow techniques partitioned by audience: `workflow` (orchestrator, bundled into get_workflow) and `activity` (inherited by every activity, injected into get_activity).'),
   initialActivity: z.string().optional().describe('ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points.'),
   // JSON Schema validates individual definition files where activities are separate files.

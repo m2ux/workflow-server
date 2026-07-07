@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { Workflow } from '../schema/workflow.schema.js';
+import { flattenActivitySteps } from '../schema/activity.schema.js';
 import { getValidTransitions, getActivity, getTransitionList, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 
 /**
@@ -71,24 +72,45 @@ export function validateStepManifest(
   const { steps } = activity;
   if (!steps || steps.length === 0) return [];
 
-  const expectedIds = steps.map(s => s.id).filter((id): id is string => id !== undefined);
+  const topLevelIds = steps.map(s => s.id).filter((id): id is string => id !== undefined);
+  // `when`/`condition` gates are evaluated agent-side; a gated step may be
+  // legitimately skipped, so only ungated top-level steps are required.
+  const requiredIds = steps
+    .filter(s => s.when === undefined && s.condition === undefined)
+    .map(s => s.id)
+    .filter((id): id is string => id !== undefined);
+  // Loop-body step ids are legitimate manifest entries (executed per
+  // iteration) but never required — the iteration count may be zero.
+  const knownIds = new Set(
+    flattenActivitySteps(activity).map(s => s.id).filter((id): id is string => id !== undefined),
+  );
   const manifestIds = manifest.map(m => m.step_id);
+  const manifestIdSet = new Set(manifestIds);
   const warnings: string[] = [];
 
-  const missing = expectedIds.filter(id => !manifestIds.includes(id));
+  const missing = requiredIds.filter(id => !manifestIdSet.has(id));
   if (missing.length > 0) {
     warnings.push(`Missing steps in manifest: [${missing.join(', ')}]`);
   }
 
-  const unexpected = manifestIds.filter(id => !expectedIds.includes(id));
+  const unexpected = manifestIds.filter(id => !knownIds.has(id));
   if (unexpected.length > 0) {
     warnings.push(`Unexpected steps in manifest: [${unexpected.join(', ')}]`);
   }
 
-  for (let i = 0; i < manifestIds.length && i < expectedIds.length; i++) {
-    if (manifestIds[i] !== expectedIds[i]) {
-      warnings.push(`Step order mismatch at position ${i}: expected '${expectedIds[i]}' but got '${manifestIds[i]}'`);
+  // Gated steps may be absent and loop-body ids interleave per iteration, so
+  // order is a subsequence check over top-level ids, not a positional one.
+  const declarationIndex = new Map(topLevelIds.map((id, i) => [id, i] as const));
+  let prevId: string | undefined;
+  let prevIndex = -1;
+  for (const id of manifestIds) {
+    const index = declarationIndex.get(id);
+    if (index === undefined) continue;
+    if (prevId !== undefined && index < prevIndex) {
+      warnings.push(`Step order mismatch: '${id}' reported after '${prevId}' but declared before it`);
     }
+    prevId = id;
+    prevIndex = index;
   }
 
   for (const entry of manifest) {

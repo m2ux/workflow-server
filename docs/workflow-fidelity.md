@@ -153,8 +153,8 @@ The agent must call `respond_checkpoint` for each pending checkpoint, using exac
 | Mode | When to use | Timing enforcement |
 |------|-------------|-------------------|
 | `option_id` | User selected an option | Minimum response time (default 3s since token timestamp) |
-| `auto_advance` | Non-blocking checkpoint timer elapsed | Full `autoAdvanceMs` must elapse since token timestamp |
-| `condition_not_met` | Conditional checkpoint's condition is false | None (but checkpoint must have a `condition` field) |
+| `auto_advance` | Checkpoint declares `defaultOption` + `autoAdvanceMs` and the timer elapsed | Full `autoAdvanceMs` must elapse since token timestamp |
+| `condition_not_met` | Conditional checkpoint's condition is false (agent-evaluated) | None (but checkpoint must have a structured `condition` field — a `when` gate does not qualify) |
 
 **What it enforces:**
 - Agents cannot skip checkpoints — `next_activity` throws a hard error if `bcp` is set when transitioning to a different activity
@@ -163,7 +163,7 @@ The agent must call `respond_checkpoint` for each pending checkpoint, using exac
 - Agents cannot dismiss unconditional checkpoints — `condition_not_met` is rejected unless the checkpoint has a `condition` field
 - Agents cannot tamper with `bcp` — the field is in the HMAC-signed token payload
 
-**How it works:** `yield_checkpoint` populates `bcp` on the outgoing token. The agent calls `respond_checkpoint` with the checkpoint handle (or session token), which clears `bcp` and returns effects (`setVariable`, `transitionTo`, `skipActivities`). Only when `bcp` is cleared can the agent transition to the next activity.
+**How it works:** `yield_checkpoint` populates `bcp` on the outgoing token. The agent calls `respond_checkpoint` with the checkpoint handle (or session token), which clears `bcp` and returns effects (`setVariable`, `transitionTo`, `skipActivities`). The server applies `setVariable` to the session variable bag; `transitionTo` and `skipActivities` are recorded and returned for the orchestrator to enact. Only when `bcp` is cleared can the agent transition to the next activity.
 
 **Anti-gaming:** The timing enforcement prevents the pathological case where an orchestrator calls `respond_checkpoint` immediately after `yield_checkpoint` without presenting the checkpoint to the user. In legitimate orchestrator-worker flows, worker execution naturally takes minutes, so the timing check is transparent. The token's `ts` timestamp is used to estimate elapsed time since the checkpoint was yielded.
 
@@ -207,13 +207,13 @@ When transitioning between activities via `next_activity`, agents include a `ste
 }
 ```
 
-**What it enforces:**
-- All required steps are present (missing steps produce a warning)
-- Steps are in the correct order (out-of-order steps produce a warning)
+**What it enforces (advisory — every check warns rather than blocks):**
+- Every ungated top-level step is present (missing steps produce a warning)
+- Top-level steps appear in declaration order (out-of-order steps produce a warning; the check is a relative-order comparison, so omitted gated steps do not shift it)
 - Each step has a non-empty output description (empty outputs produce a warning)
-- Unexpected steps not defined in the activity produce a warning
+- Step ids not defined in the activity produce a warning
 
-**Design constraint:** All steps within an activity are required. Optionality is handled at the activity level (via transition conditions), not at the step level. This simplifies enforcement — the validator checks for exact match against the expected step sequence.
+**Gated and loop-body steps:** a step gated by `when` or `condition` may be omitted from the manifest — the agent evaluated the gate and skipped the step. Loop-body step ids are accepted (one entry per iteration if useful) but never required, since the iteration count is agent-determined and may be zero. `step.required` is a worker hint the validator does not consult.
 
 ### Layer 6: Activity Manifest
 
