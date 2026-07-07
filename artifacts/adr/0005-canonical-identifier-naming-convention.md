@@ -1,9 +1,9 @@
 # ADR-0005: Canonical Identifier Naming Convention for Technique Inputs/Outputs and Rules
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-06-07
-**Issue:** [#128](https://github.com/m2ux/workflow-server/issues/128)
-**PRs:** [#129](https://github.com/m2ux/workflow-server/pull/129) (spec + submodule pointer, draft), [#130](https://github.com/m2ux/workflow-server/pull/130) (workflow content)
+**Issue:** [#128](https://github.com/m2ux/workflow-server/issues/128) (closed)
+**PRs:** [#129](https://github.com/m2ux/workflow-server/pull/129) (spec + submodule pointer, merged to `main` as 19a262f6), [#130](https://github.com/m2ux/workflow-server/pull/130) (workflow content, merged to `workflows` as aef81e5)
 
 ---
 
