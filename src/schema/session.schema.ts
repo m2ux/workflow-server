@@ -132,6 +132,28 @@ const SessionFileBaseSchema = z.object({
    * back-compat with older session files.
    */
   planningFolderPath: z.string().optional(),
+
+  /**
+   * Declared context model for payload delivery. `persistent` opts the
+   * session into reference-not-repeat delivery: composed bundle content and
+   * technique payloads already delivered to this session+agent are replaced
+   * by short content-hash references on subsequent calls. Absent or `fresh`
+   * means every call receives full content — the default, and the correct
+   * mode for disposable-worker topologies where each call lands in a fresh
+   * agent context that has not seen the earlier deliveries.
+   */
+  contextMode: z.enum(['persistent', 'fresh']).optional(),
+
+  /**
+   * Delivery ledger for reference-not-repeat payloads: agentId → content
+   * key → hash of the content most recently delivered in full. Content keys
+   * are namespaced by channel (`bundle:<technique-ref>`, `bundle:rules`,
+   * `activity_rules`, `technique:<technique-id>`). Always recorded so a
+   * per-call reference opt-in can follow full deliveries; consulted only
+   * when reference delivery is active (session `contextMode: 'persistent'`
+   * or a per-call opt-in).
+   */
+  deliveredContent: z.record(z.record(z.string())).optional(),
 });
 
 /**
@@ -160,6 +182,8 @@ export interface SessionFile {
   triggeredWorkflows: EmbeddedSessionRef[];
   parentSession?: SessionFile;
   planningFolderPath?: string;
+  contextMode?: 'persistent' | 'fresh';
+  deliveredContent?: Record<string, Record<string, string>>;
 }
 
 /**
@@ -238,6 +262,7 @@ export function createInitialSessionFile(args: {
   agentId: string;
   parentSession?: SessionFile;
   planningFolderPath?: string;
+  contextMode?: 'persistent' | 'fresh';
 }): SessionFile {
   const now = new Date();
   const file: SessionFile = {
@@ -262,5 +287,6 @@ export function createInitialSessionFile(args: {
   };
   if (args.parentSession) file.parentSession = args.parentSession;
   if (args.planningFolderPath) file.planningFolderPath = args.planningFolderPath;
+  if (args.contextMode) file.contextMode = args.contextMode;
   return file;
 }

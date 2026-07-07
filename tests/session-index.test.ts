@@ -127,7 +127,7 @@ describe('computeSessionIndex', () => {
 
     it('throws when the path is a file rather than a directory? — realpath resolves either, no error', async () => {
       // Documented behaviour: computeSessionIndex doesn't assert is-a-directory;
-      // it canonicalises and hashes. The caller (resolveSessionIndex) handles
+      // it canonicalises and hashes. The caller (resolveSessionLocation) handles
       // directory-vs-file filtering. We just record the current shape here.
       const file = join(root, 'tc-file');
       await writeFile(file, 'x', 'utf8');

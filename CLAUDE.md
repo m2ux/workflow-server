@@ -28,8 +28,8 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 
 ## Boundaries
 
-- Do **not** modify server source (`src/`, `schemas/`) or workflow TOON files unless the user explicitly asks.
-- When following workflows, respect workflow fidelity as defined in TOON files and the workflow-server rules: call `discover` first to learn the bootstrap procedure, then follow the returned sequence (`list_workflows` / `start_session` / `get_workflow` / `next_activity` / `get_activity`). Fetch the `workflow-server://schemas` MCP resource when you need to validate workflow definitions. See [docs/ide-setup.md](docs/ide-setup.md).
+- Do **not** modify server source (`src/`, `schemas/`) or workflow YAML files unless the user explicitly asks.
+- When following workflows, respect workflow fidelity as defined in YAML files and the workflow-server rules: call `discover` first to learn the bootstrap procedure, then follow the returned sequence (`list_workflows` / `start_session` / `get_workflow` / `next_activity` / `get_activity`). Fetch the `workflow-server://schemas` MCP resource when you need to validate workflow definitions. See [docs/ide-setup.md](docs/ide-setup.md).
 
 ## Testing and PR instructions
 
@@ -45,7 +45,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **2026-06-04-technique-e2e-harness** (7510 symbols, 9712 relationships, 234 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **workflow-server** (9480 symbols, 12333 relationships, 211 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
@@ -68,10 +68,10 @@ This project is indexed by GitNexus as **2026-06-04-technique-e2e-harness** (751
 
 | Resource | Use for |
 |----------|---------|
-| `gitnexus://repo/2026-06-04-technique-e2e-harness/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/2026-06-04-technique-e2e-harness/clusters` | All functional areas |
-| `gitnexus://repo/2026-06-04-technique-e2e-harness/processes` | All execution flows |
-| `gitnexus://repo/2026-06-04-technique-e2e-harness/process/{name}` | Step-by-step execution trace |
+| `gitnexus://repo/workflow-server/context` | Codebase overview, check index freshness |
+| `gitnexus://repo/workflow-server/clusters` | All functional areas |
+| `gitnexus://repo/workflow-server/processes` | All execution flows |
+| `gitnexus://repo/workflow-server/process/{name}` | Step-by-step execution trace |
 
 ## CLI
 

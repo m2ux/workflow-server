@@ -1,9 +1,17 @@
 import { z } from 'zod';
 import { ActivitySchema } from './activity.schema.js';
 import { SemanticVersionSchema } from './common.js';
+import { EXEMPT_DATA_IDS, QUALIFIED_DATA_ID_PATTERN } from './identifiers.js';
+
+// A variable name is a qualified snake_case noun phrase (AP-60: >=2 words, e.g.
+// `analysis_target`, never bare `target`), or one of the enumerated bare-word exemptions.
+export const VariableNameSchema = z.union([
+  z.string().regex(QUALIFIED_DATA_ID_PATTERN, 'a variable name is a qualified snake_case noun phrase (>=2 words, AP-60), e.g. `analysis_target`'),
+  z.enum(EXEMPT_DATA_IDS),
+]).describe('Qualified snake_case noun phrase (>=2 words, AP-60), or an enumerated bare-word exemption.');
 
 export const VariableDefinitionSchema = z.object({
-  name: z.string(),
+  name: VariableNameSchema,
   type: z.enum(['string', 'number', 'boolean', 'array', 'object']),
   description: z.string().optional(),
   defaultValue: z.unknown().optional(),
@@ -11,38 +19,29 @@ export const VariableDefinitionSchema = z.object({
 });
 export type VariableDefinition = z.infer<typeof VariableDefinitionSchema>;
 
-// Artifact location - accepts string shorthand (path only) or full object
-const ArtifactLocationObjectSchema = z.object({
-  path: z.string().describe('Path pattern for this location. Supports workflow variable interpolation (e.g., \'{planning_folder_path}\')'),
-  description: z.string().optional().describe('Description of what artifacts this location stores'),
-  gitignored: z.boolean().default(false).describe('Whether artifacts in this location are gitignored from the host project'),
-});
-
-const ArtifactLocationValueSchema = z.union([
-  z.string().transform((path) => ({ path, gitignored: false as boolean, description: undefined as string | undefined })),
-  ArtifactLocationObjectSchema,
-]).describe('Artifact location: path string or { path, description?, gitignored? } object');
-
-export type ArtifactLocation = z.infer<typeof ArtifactLocationObjectSchema>;
-
-// Mode schema - defines workflow execution modes that modify standard behavior
-export const ModeSchema = z.object({
-  id: z.string().describe('Unique identifier for this mode'),
-  name: z.string().describe('Human-readable mode name'),
-  description: z.string().optional().describe('Detailed description of mode behavior'),
-  activationVariable: z.string().describe('Variable name that activates this mode when true'),
-  recognition: z.array(z.string()).optional().describe('Patterns to detect mode activation from user intent'),
-  skipActivities: z.array(z.string()).optional().describe('Activity IDs to skip entirely in this mode'),
-  defaults: z.record(z.unknown()).optional().describe('Default variable values when mode is active'),
-  resource: z.string().optional().describe('Path to resource file with detailed mode guidance'),
-});
-export type Mode = z.infer<typeof ModeSchema>;
-
+// Workflow techniques, partitioned by AUDIENCE (mirrors WorkflowRulesSchema). `workflow` techniques
+// are the orchestrator's, bundled into get_workflow alongside the core orchestrator techniques.
+// `activity` techniques are inherited by EVERY activity: the server injects them into every
+// get_activity technique bundle, so a technique common to all activities (e.g. variable-binding) is
+// declared once here instead of duplicated on each activity's own `techniques[]`.
 export const WorkflowTechniquesSchema = z.object({
-  primary: z.string().optional().describe('Primary technique ID for this workflow.'),
-  supporting: z.array(z.string()).optional().describe('Supporting technique references (`::` paths) the workflow uses at the orchestrator level; bundled into get_workflow alongside the core orchestrator techniques.'),
+  workflow: z.array(z.string()).optional().describe('Orchestrator-level technique references (`::` paths); bundled into get_workflow alongside the core orchestrator techniques.'),
+  activity: z.array(z.string()).optional().describe('Technique references inherited by every activity; injected into every get_activity technique bundle.'),
 });
 export type WorkflowTechniquesReference = z.infer<typeof WorkflowTechniquesSchema>;
+
+// Workflow rules, partitioned by AUDIENCE. `workflow` rules govern orchestration (dispatch,
+// transitions, output forwarding) and are surfaced only to the orchestrator via get_workflow.
+// `activity` rules are worker-facing and inherited by EVERY activity: the server injects them into
+// every get_activity response so a worker dispatched for a single activity always receives them.
+// `universal` rules are dual-audience — the same directive both roles must follow — and reach BOTH
+// contexts (surfaced in get_workflow AND injected into every get_activity).
+export const WorkflowRulesSchema = z.object({
+  workflow: z.array(z.string()).optional().describe('Orchestrator-only rules governing workflow execution; surfaced in get_workflow.'),
+  activity: z.array(z.string()).optional().describe('Worker-facing rules inherited by every activity; injected into every get_activity response.'),
+  universal: z.array(z.string()).optional().describe('Dual-audience rules both roles must follow; surfaced in get_workflow AND injected into every get_activity.'),
+});
+export type WorkflowRules = z.infer<typeof WorkflowRulesSchema>;
 
 export const WorkflowSchema = z.object({
   $schema: z.string().optional(),
@@ -52,18 +51,16 @@ export const WorkflowSchema = z.object({
   description: z.string().optional().describe('Detailed workflow description'),
   author: z.string().optional(),
   tags: z.array(z.string()).optional(),
-  rules: z.array(z.string()).optional().describe('Rules that govern workflow execution'),
+  rules: WorkflowRulesSchema.optional().describe('Workflow rules partitioned by audience: `workflow` (orchestrator-only) and `activity` (inherited by every activity, injected into get_activity).'),
   variables: z.array(VariableDefinitionSchema).optional().describe('Workflow-level variables'),
-  modes: z.array(ModeSchema).optional().describe('Execution modes that modify standard workflow behavior'),
-  artifactLocations: z.record(ArtifactLocationValueSchema).optional().describe('Named artifact storage locations. Keys are location identifiers referenced by activity artifact definitions.'),
-  techniques: WorkflowTechniquesSchema.optional().describe('Workflow-level techniques (primary + supporting) the orchestrator uses; bundled into get_workflow.'),
+  techniques: WorkflowTechniquesSchema.optional().describe('Workflow techniques partitioned by audience: `workflow` (orchestrator, bundled into get_workflow) and `activity` (inherited by every activity, injected into get_activity).'),
   initialActivity: z.string().optional().describe('ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points.'),
-  // JSON Schema validates individual TOON files where activities are separate files.
+  // JSON Schema validates individual definition files where activities are separate files.
   // Zod validates the full assembled runtime workflow object, so activities are included here.
   // The shorthand string references are resolved into fully typed Activity objects during load,
   // but we allow strings in the intermediate raw schema before transformation.
   // However, the final Workflow type expects Activity[] to avoid type errors across the codebase.
-  activities: z.array(ActivitySchema).min(1).optional().describe('Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points. Omitted in TOON files where activities are separate files.'),
+  activities: z.array(ActivitySchema).min(1).optional().describe('Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points. Omitted in definition files where activities are separate files.'),
 });
 export type Workflow = z.infer<typeof WorkflowSchema>;
 
@@ -78,7 +75,6 @@ export {
   type CheckpointOption,
   type Decision,
   type DecisionBranch,
-  type Loop,
   type Transition,
   type Action,
   type TechniquesReference,

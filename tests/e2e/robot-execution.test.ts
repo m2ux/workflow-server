@@ -7,7 +7,7 @@ import { fullWorkflowPolicy } from './policies.js';
 
 /**
  * Source of truth for the expected numeric prefix of each activity, read from
- * the activity FILENAMES (e.g. 02-design-philosophy.toon → design-philosophy: "02").
+ * the activity FILENAMES (e.g. 02-design-philosophy.yaml → design-philosophy: "02").
  * This is independent of the server's artifactPrefix computation, so comparing
  * written artifact names against it verifies the whole chain: filename →
  * server artifactPrefix → get_workflow exposure → robot application.
@@ -16,7 +16,7 @@ function expectedActivityPrefixes(): Map<string, string> {
   const dir = resolve(import.meta.dirname, '../../workflows/work-package/activities');
   const map = new Map<string, string>();
   for (const f of readdirSync(dir)) {
-    const m = f.match(/^(\d+)-(.+)\.toon$/);
+    const m = f.match(/^(\d+)-(.+)\.yaml$/);
     if (m) map.set(m[2], m[1]);
   }
   return map;
@@ -107,17 +107,15 @@ describe('work-package robot execution (Layer 3c)', () => {
   // branching (e.g. only when creating a new issue, or when a review finds
   // gaps) — so the deterministic robot never reaches them. They mark 3c's
   // coverage boundary and are exercised only by the agent runs (3a/3b).
-  // Baseline-relative: a NEW unbound checkpoint (beyond this set) fails the gate.
-  const BASELINE_UNBOUND_CHECKPOINTS = [
-    'post-impl-review::block-interview',
-    'post-impl-review::rationale-amendment',
-    'start-work-package::issue-review',
-    'start-work-package::issue-type-selection',
-    'start-work-package::jira-project-selection',
-    'submit-for-review::body-non-conformant',
-  ].sort();
+  // In the unified step-kinds model every checkpoint is an inline kind:checkpoint step at a concrete
+  // position, so there are NO orphan/unbound checkpoints — the deterministic robot reaches them all.
+  // (Previously six situational checkpoints — block-interview, rationale-amendment, the three
+  // start-work-package selection gates, body-non-conformant — were defined out-of-line and
+  // unreachable by the robot; the migration positioned them in the sequence. rationale-amendment
+  // has since been removed entirely by the work-package 3.15.0 checkpoint consolidation.)
+  const BASELINE_UNBOUND_CHECKPOINTS: string[] = [];
 
-  it('surfaces only the known step-unbound (situational) checkpoints', () => {
+  it('surfaces no unbound checkpoints (all are inline kind:checkpoint steps)', () => {
     const unbound: string[] = [];
     for (const s of full.steps) for (const o of s.orphanCheckpoints) unbound.push(`${s.activityId}::${o}`);
     expect(unbound.sort()).toEqual(BASELINE_UNBOUND_CHECKPOINTS);

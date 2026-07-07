@@ -4,40 +4,42 @@ import { join } from 'node:path';
 import { type Result, ok, err } from '../result.js';
 import { TechniqueNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
-import { encodeToon } from '../utils/toon.js';
+import { stringifyForResponse } from '../utils/serialization.js';
 import type { Technique, ProtocolBlock } from '../schema/technique.schema.js';
 import { safeValidateTechnique } from '../schema/technique.schema.js';
 import {
   tryLoadMarkdownTechnique,
-  tryReadMarkdownTechniqueRaw,
   tryLoadNestedTechnique,
   getWorkflowTechniquesDir,
   MarkdownTechniqueParseError,
 } from './markdown-technique-loader.js';
 
 /* -------------------------------------------------------------------------- */
-/* TOON-projection delivery (B3)                                              */
+/* YAML-projection delivery (B3)                                              */
 /* -------------------------------------------------------------------------- */
 
 /**
- * Project an in-memory Technique object into its TOON wire form.
+ * Project an in-memory Technique object into its YAML wire form.
  *
- * Used by readTechniqueRaw (and indirectly by get_skill / get_skills / get_workflow's primary-technique preamble)
- * to render markdown-sourced techniques in the same shape consumers parsed pre-migration.
+ * Renders a markdown-sourced technique into its YAML wire shape — used by the get_technique raw projection.
  *
- * Field-ordering follows the canonical TechniqueSchema field declaration order — encodeToon serialises
+ * Field-ordering follows the canonical TechniqueSchema field declaration order — stringifyForResponse serialises
  * object keys in insertion order, so we construct the projection with the fields in the intended sequence
  * (id, version, capability, then the optional structured fields) instead of letting the
  * caller-built object's accidental key order leak into the wire payload.
  */
-export function projectTechniqueToToon(technique: Technique): string {
+export function projectTechniqueToYaml(technique: Technique): string {
   const ordered: Record<string, unknown> = {};
   ordered['id'] = technique.id;
   ordered['version'] = technique.version;
   ordered['capability'] = technique.capability;
+  // Provenance note ahead of the interface it annotates, so a reader meets the vocabulary first.
+  if (technique.provenance_note !== undefined) ordered['provenance_note'] = technique.provenance_note;
   if (technique.inputs !== undefined) ordered['inputs'] = technique.inputs;
+  if (technique.inherited_inputs !== undefined) ordered['inherited_inputs'] = technique.inherited_inputs;
   if (technique.protocol !== undefined) ordered['protocol'] = technique.protocol;
-  if (technique.output !== undefined) ordered['output'] = technique.output;
+  if (technique.outputs !== undefined) ordered['outputs'] = technique.outputs;
+  if (technique.inherited_outputs !== undefined) ordered['inherited_outputs'] = technique.inherited_outputs;
   if (technique.rules !== undefined) ordered['rules'] = technique.rules;
   // Trail with the catch-all extension surface — anything an authoring path adds that the canonical
   // ordering above does not cover is still emitted, just at the end.
@@ -46,7 +48,7 @@ export function projectTechniqueToToon(technique: Technique): string {
       ordered[String(key)] = technique[key];
     }
   }
-  return encodeToon(ordered);
+  return stringifyForResponse(ordered);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -56,7 +58,7 @@ export function projectTechniqueToToon(technique: Technique): string {
 /**
  * Try to load a technique from a workflow's techniques directory.
  * Accepts `workflowDir + workflowId` so this call site owns the `techniques/` path layout —
- * callers in readTechnique / readTechniqueRaw don't need to know it.
+ * callers in readTechnique don't need to know it.
  */
 async function tryLoadSkillInWorkflow(workflowDir: string, workflowId: string, techniqueId: string): Promise<Technique | null> {
   try {
@@ -67,50 +69,6 @@ async function tryLoadSkillInWorkflow(workflowDir: string, workflowId: string, t
     logWarn('Markdown technique parse error', { techniqueId, workflowId, error: error instanceof Error ? error.message : String(error) });
     return null;
   }
-}
-
-async function tryReadSkillRawInWorkflow(workflowDir: string, workflowId: string, techniqueId: string): Promise<string | null> {
-  try {
-    return await tryReadMarkdownTechniqueRaw(getWorkflowTechniquesDir(workflowDir, workflowId), techniqueId, projectTechniqueToToon);
-  } catch (error) {
-    logWarn('Markdown technique parse error', { techniqueId, workflowId, error: error instanceof Error ? error.message : String(error) });
-    return null;
-  }
-}
-
-/* -------------------------------------------------------------------------- */
-/* Listing (used by external callers — preserves the public contract)         */
-/* -------------------------------------------------------------------------- */
-
-async function listMarkdownTechniqueIds(techniquesDir: string): Promise<string[]> {
-  if (!existsSync(techniquesDir)) return [];
-  try {
-    const entries = await readdir(techniquesDir, { withFileTypes: true });
-    const result = new Set<string>();
-    for (const entry of entries) {
-      if (entry.isDirectory()) {
-        // Grouped technique: folder with a TECHNIQUE.md index.
-        if (existsSync(join(techniquesDir, entry.name, 'TECHNIQUE.md'))) {
-          result.add(entry.name);
-        }
-      } else if (entry.isFile() && entry.name.endsWith('.md')) {
-        // Standalone technique: flat <slug>.md. Exclude the workflow-root index and READMEs.
-        if (entry.name === 'TECHNIQUE.md' || entry.name === 'README.md') continue;
-        result.add(entry.name.replace(/\.md$/, ''));
-      }
-    }
-    return [...result].sort();
-  } catch (error) {
-    logWarn('Failed to list markdown techniques', { techniquesDir, error: error instanceof Error ? error.message : String(error) });
-    return [];
-  }
-}
-
-/**
- * List technique IDs available in a workflow's techniques directory.
- */
-export async function listWorkflowTechniqueIds(workflowDir: string, workflowId: string): Promise<string[]> {
-  return listMarkdownTechniqueIds(getWorkflowTechniquesDir(workflowDir, workflowId));
 }
 
 /* -------------------------------------------------------------------------- */
@@ -150,6 +108,29 @@ export async function readTechnique(
   // Handle nested :: path (group::op or deeper group::subgroup::op).
   if (techniqueId.includes('::')) {
     const segs = techniqueId.split('::');
+    // A leading segment that names a real workflow's techniques directory is a CROSS-WORKFLOW
+    // prefix (`workflow::technique` or `workflow::group::op`): resolve the remainder within THAT
+    // workflow exactly, with no meta fallback — mirroring the legacy `/` explicit-prefix form and
+    // parseTechniquePath, so the canonical `::` form resolves identically on the bundle
+    // (resolveTechniques) and standalone (composeTechnique / get_technique) paths.
+    if (segs.length >= 2 && existsSync(getWorkflowTechniquesDir(workflowDir, segs[0]!))) {
+      const targetWorkflow = segs[0]!;
+      const rest = segs.slice(1);
+      try {
+        const t = rest.length === 1
+          ? await tryLoadSkillInWorkflow(workflowDir, targetWorkflow, rest[0]!)
+          : await tryLoadNestedTechnique(getWorkflowTechniquesDir(workflowDir, targetWorkflow), rest[0]!, rest.slice(1).join('/'));
+        if (t) {
+          logInfo('Technique loaded (cross-workflow ::)', { id: techniqueId, targetWorkflow });
+          return ok(t);
+        }
+      } catch (error) {
+        if (!(error instanceof MarkdownTechniqueParseError)) throw error;
+        logWarn('Malformed nested technique file', { techniqueId, workflowId: targetWorkflow, error: error instanceof Error ? error.message : String(error) });
+      }
+      return err(new TechniqueNotFoundError(techniqueId));
+    }
+
     const group = segs[0]!;
     const opPath = segs.slice(1).join('/');
     const candidates = workflowId && workflowId !== META_WORKFLOW_ID ? [workflowId, META_WORKFLOW_ID] : [META_WORKFLOW_ID];
@@ -188,52 +169,9 @@ export async function readTechnique(
   return err(new TechniqueNotFoundError(techniqueId));
 }
 
-/**
- * Read a technique's projected TOON wire form by ID. Same precedence as readTechnique.
- *
- * The output is the projection `projectTechniqueToToon(loadedTechnique)`, which decodes back to a
- * Technique object that validates against TechniqueSchema.
- */
-export async function readTechniqueRaw(
-  techniqueId: string,
-  workflowDir: string,
-  workflowId?: string,
-): Promise<Result<string, TechniqueNotFoundError>> {
-  if (techniqueId.includes('/')) {
-    const [targetWorkflow, actualSkillId] = techniqueId.split('/', 2);
-    if (!targetWorkflow || !actualSkillId) {
-      return err(new TechniqueNotFoundError(techniqueId));
-    }
-    const raw = await tryReadSkillRawInWorkflow(workflowDir, targetWorkflow, actualSkillId);
-    if (raw !== null) {
-      logInfo('Technique loaded raw (explicit prefix)', { id: techniqueId, targetWorkflow });
-      return ok(raw);
-    }
-    return err(new TechniqueNotFoundError(techniqueId));
-  }
-
-  if (workflowId) {
-    const local = await tryReadSkillRawInWorkflow(workflowDir, workflowId, techniqueId);
-    if (local !== null) {
-      logInfo('Technique loaded raw (workflow-local)', { id: techniqueId, workflowId });
-      return ok(local);
-    }
-  }
-
-  if (workflowId !== META_WORKFLOW_ID) {
-    const shared = await tryReadSkillRawInWorkflow(workflowDir, META_WORKFLOW_ID, techniqueId);
-    if (shared !== null) {
-      logInfo('Technique loaded raw (meta shared layer)', { id: techniqueId, workflowId: workflowId ?? '(none)' });
-      return ok(shared);
-    }
-  }
-
-  return err(new TechniqueNotFoundError(techniqueId));
-}
-
 /* -------------------------------------------------------------------------- */
 /* Operations resolution (unchanged in shape — only the underlying load layer  */
-/* has flipped from TOON to markdown).                                         */
+/* loads markdown-sourced techniques).                                         */
 /* -------------------------------------------------------------------------- */
 
 export interface ResolvedTechnique {
@@ -255,8 +193,10 @@ function projectTechniqueBody(t: Technique): Record<string, unknown> {
   const body: Record<string, unknown> = {};
   if (t.capability) body['capability'] = t.capability;
   if (t.inputs) body['inputs'] = t.inputs;
+  if (t.inherited_inputs) body['inherited_inputs'] = t.inherited_inputs;
   if (t.protocol) body['protocol'] = t.protocol;
-  if (t.output) body['output'] = t.output;
+  if (t.outputs) body['outputs'] = t.outputs;
+  if (t.inherited_outputs) body['inherited_outputs'] = t.inherited_outputs;
   return body;
 }
 
@@ -453,8 +393,14 @@ export async function resolveTechniques(
 /* -------------------------------------------------------------------------- */
 
 /** Filename stem of the per-workflow root index. Loadable for its contract, but never an
- *  addressable technique (excluded from listWorkflowTechniqueIds). */
+ *  addressable technique. */
 const ROOT_INDEX_ID = 'TECHNIQUE';
+
+/** Scope note delivered with `inherited_inputs`/`inherited_outputs`. Claims only what is always
+ *  true of contract-inherited entries — a group-contract input may still be a prior step's
+ *  output (e.g. a shared artifact), so how each value resolves is deliberately not stated here. */
+const INHERITED_SCOPE_NOTE =
+  'Declared by the workflow or group contract and shared by every technique in its scope — not specific to this technique.';
 
 /** Union two id-keyed arrays (inputs/outputs); child entries override parent entries by `id`. */
 function mergeById<T extends { id: string }>(parent: T[] | undefined, child: T[] | undefined): T[] | undefined {
@@ -533,6 +479,9 @@ async function loadWorkflowRoot(workflowDir: string, workflowId: string): Promis
  *   - Merges inputs/outputs/rules: ancestor provides the base, closer ancestors override,
  *     the technique itself wins (outermost-first merge, reversed so each mergeById call
  *     treats the ancestor as "parent" and the accumulated value as "child").
+ *   - Partitions the merged inputs/outputs by winning-definition provenance: the technique's
+ *     own entries stay under `inputs`/`outputs`; ancestor-contract entries are delivered under
+ *     `inherited_inputs`/`inherited_outputs` with a scope note (B2, #166).
  *   - Wraps the protocol with every ancestor's `Initial`/`Final` blocks via
  *     `wrapProtocolWithAncestors` (same full-chain order as the bundle path).
  *
@@ -568,19 +517,33 @@ async function composeLoaded(
   // call treats the ancestor as "parent" (provides base) and acc as "child" (wins).
   // Final precedence: technique > innermost ancestor > ... > workflow root.
   let inputs = technique.inputs;
-  let output = technique.output;
+  let outputs = technique.outputs;
   let rules = technique.rules;
   for (const anc of [...ancestors].reverse()) {
     inputs = mergeById(anc.inputs, inputs);
-    output = mergeById(anc.output, output);
+    outputs = mergeById(anc.outputs, outputs);
     rules = mergeKeyed(anc.rules, rules);
   }
 
   const protocol = await wrapProtocolWithAncestors(techniquesDir, pathSegments, technique.protocol);
 
+  // Partition the merged interface by winning-definition provenance (B2, #166): entries the
+  // technique declares itself (including overrides of an ancestor id) stay under
+  // `inputs`/`outputs`; entries whose winning definition came from an ancestor contract are
+  // delivered under a marked `inherited_*` block so a consumer can tell shared contract scope
+  // from the technique's own interface. Merge precedence is unchanged.
+  const ownInputIds = new Set((technique.inputs ?? []).map((i) => i.id));
+  const ownOutputIds = new Set((technique.outputs ?? []).map((o) => o.id));
+  const ownInputs = (inputs ?? []).filter((i) => ownInputIds.has(i.id));
+  const inheritedInputs = (inputs ?? []).filter((i) => !ownInputIds.has(i.id));
+  const ownOutputs = (outputs ?? []).filter((o) => ownOutputIds.has(o.id));
+  const inheritedOutputs = (outputs ?? []).filter((o) => !ownOutputIds.has(o.id));
+
   const composed: Record<string, unknown> = { ...technique };
-  if (inputs) composed['inputs'] = inputs; else delete composed['inputs'];
-  if (output) composed['output'] = output; else delete composed['output'];
+  if (ownInputs.length) composed['inputs'] = ownInputs; else delete composed['inputs'];
+  if (inheritedInputs.length) composed['inherited_inputs'] = { note: INHERITED_SCOPE_NOTE, items: inheritedInputs };
+  if (ownOutputs.length) composed['outputs'] = ownOutputs; else delete composed['outputs'];
+  if (inheritedOutputs.length) composed['inherited_outputs'] = { note: INHERITED_SCOPE_NOTE, items: inheritedOutputs };
   if (rules) composed['rules'] = rules; else delete composed['rules'];
   if (protocol) composed['protocol'] = protocol; else delete composed['protocol'];
 

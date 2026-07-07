@@ -76,9 +76,10 @@ export async function computeSessionIndex(folderAbsPath: string): Promise<string
 }
 
 /**
- * Synchronous variant that takes a pre-loaded key. Useful for callers that
- * have already resolved the server key (e.g. `resolveSessionIndex` enumerates
- * many folders and resolves the key once).
+ * Synchronous variant that takes an explicit key rather than reading the
+ * server key. Hashing the same folder under two different keys is how the
+ * secret-binding property (an index reveals nothing without the key) is
+ * exercised.
  */
 export function computeSessionIndexSync(folderAbsPath: string, key: Buffer): string {
   const canonical = realpathSync(folderAbsPath);
@@ -129,21 +130,9 @@ export async function computeEmbeddedSessionIndex(
   return base32Truncated(digest, SESSION_INDEX_LENGTH);
 }
 
-/** Sync variant; matches `computeSessionIndexSync` when `jsonPath` is empty. */
-export function computeEmbeddedSessionIndexSync(
-  folderAbsPath: string,
-  jsonPath: SessionJsonPath,
-  key: Buffer,
-): string {
-  const canonical = realpathSync(folderAbsPath);
-  const input = jsonPath.length === 0 ? canonical : `${canonical}:${jsonPathToString(jsonPath)}`;
-  const digest = createHmac('sha256', key).update(input, 'utf8').digest();
-  return base32Truncated(digest, SESSION_INDEX_LENGTH);
-}
-
 /**
  * Regex matching a syntactically valid session index. Useful for early input
- * validation before invoking `resolveSessionIndex`.
+ * validation before invoking `resolveSessionLocation`.
  */
 export const SESSION_INDEX_REGEX = /^[A-Z2-7]{6}$/;
 

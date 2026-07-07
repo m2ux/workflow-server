@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { readTechnique, readTechniqueRaw, projectTechniqueToToon, listWorkflowTechniqueIds, composeTechnique, resolveTechniques } from '../src/loaders/technique-loader.js';
+import { readTechnique, projectTechniqueToYaml, composeTechnique, resolveTechniques } from '../src/loaders/technique-loader.js';
 import { resolve, join } from 'node:path';
 import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { decodeToonRaw } from '../src/utils/toon.js';
+import { parse as parseYaml } from 'yaml';
 import { safeValidateTechnique } from '../src/schema/technique.schema.js';
 
 const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
@@ -35,12 +35,37 @@ describe('technique-loader', () => {
       }
     });
 
+    it('resolves a cross-workflow technique via the canonical :: form (parity with the / form)', async () => {
+      // The `::` cross-workflow prefix must resolve on the standalone readTechnique path exactly as
+      // the legacy `/` form does. `prism::structural-analysis` (referenced from work-package
+      // activities) targets the prism workflow even though the current workflow is work-package.
+      const viaColons = await readTechnique('prism::structural-analysis', WORKFLOW_DIR, 'work-package');
+      const viaSlash = await readTechnique('prism/structural-analysis', WORKFLOW_DIR, 'work-package');
+      expect(viaColons.success).toBe(true);
+      expect(viaSlash.success).toBe(true);
+      if (viaColons.success && viaSlash.success) {
+        expect(viaColons.value.id).toBe('structural-analysis');
+        expect(viaColons.value.id).toBe(viaSlash.value.id);
+        expect(viaColons.value.capability).toBeDefined();
+      }
+    });
+
+    it('resolves a nested cross-workflow op via :: (workflow::group::op)', async () => {
+      // Nested cross-workflow addressing — only the `::` form handles this (the `/` form cannot
+      // express a nested op after the workflow segment).
+      const result = await readTechnique('meta::workflow-engine::dispatch-activity', WORKFLOW_DIR, 'work-package');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.id).toBe('dispatch-activity');
+        expect(result.value.capability).toBeDefined();
+      }
+    });
+
     it('returns TechniqueNotFoundError for non-existent technique', async () => {
       const result = await readTechnique('non-existent-technique', WORKFLOW_DIR);
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.name).toBe('TechniqueNotFoundError');
-        expect(result.error.code).toBe('SKILL_NOT_FOUND');
       }
     });
 
@@ -143,16 +168,16 @@ describe('technique-loader', () => {
       const result = await readTechnique('no-such-technique', FIXTURE_DIR, 'work-package');
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.code).toBe('SKILL_NOT_FOUND');
+        expect(result.error.name).toBe('TechniqueNotFoundError');
       }
     });
 
-    it('PR126-TC-08: projectTechniqueToToon round-trip preserves the Technique object', async () => {
+    it('PR126-TC-08: projectTechniqueToYaml round-trip preserves the Technique object', async () => {
       const result = await readTechnique('cargo-operations', FIXTURE_DIR, 'work-package');
       expect(result.success).toBe(true);
       if (result.success) {
-        const toon = projectTechniqueToToon(result.value);
-        const decoded = decodeToonRaw(toon);
+        const projected = projectTechniqueToYaml(result.value);
+        const decoded = parseYaml(projected);
         const parsed = safeValidateTechnique(decoded);
         expect(parsed.success).toBe(true);
         if (parsed.success) {
@@ -170,20 +195,10 @@ describe('technique-loader', () => {
       expect(source).not.toMatch(/parseActivityFilename\s+as\s+parseSkillFilename/);
       expect(source).not.toMatch(/parseSkillFilename\b/);
     });
-
-    it('readTechniqueRaw returns projected TOON (decodes back to a valid Technique)', async () => {
-      const result = await readTechniqueRaw('cargo-operations', FIXTURE_DIR, 'work-package');
-      expect(result.success).toBe(true);
-      if (result.success) {
-        const decoded = decodeToonRaw(result.value);
-        const parsed = safeValidateTechnique(decoded);
-        expect(parsed.success).toBe(true);
-      }
-    });
   });
 
   /* ------------------------------------------------------------------------ */
-  /* Tempdir parsing edge cases (markdown variant of the old TOON tests)       */
+  /* Tempdir parsing edge cases (markdown variant of the old YAML tests)       */
   /* ------------------------------------------------------------------------ */
 
   describe('markdown loader edge cases', () => {
@@ -210,6 +225,41 @@ describe('technique-loader', () => {
       await writeFile(join(tempDir, 'meta', 'techniques', 'malformed.md'), 'just a plain string', 'utf-8');
       const result = await readTechnique('malformed', tempDir);
       expect(result.success).toBe(false);
+    });
+
+    it('rejects a non-canonical singular interface header (## Output / ## Input / ## Output(s))', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(dir, { recursive: true });
+      for (const banned of ['## Output', '## Input', '## Output(s)']) {
+        await writeFile(
+          join(dir, 'singular.md'),
+          ['---', 'metadata:', '  version: 1.0.0', '---', '',
+           '## Capability', '', 'Cap.', '',
+           banned, '', '### result', '', 'The outcome.', ''].join('\n'),
+          'utf-8',
+        );
+        const result = await readTechnique('singular', tempDir);
+        expect(result.success).toBe(false);
+      }
+    });
+
+    it('loads the canonical plural interface headers (## Inputs / ## Outputs)', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(dir, 'plural.md'),
+        ['---', 'metadata:', '  version: 1.0.0', '---', '',
+         '## Capability', '', 'Cap.', '',
+         '## Inputs', '', '### in_a', '', 'An input.', '',
+         '## Outputs', '', '### out_a', '', 'An output.', ''].join('\n'),
+        'utf-8',
+      );
+      const result = await readTechnique('plural', tempDir);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.inputs?.map((i) => i.id)).toContain('in_a');
+        expect(result.value.outputs?.map((o) => o.id)).toContain('out_a');
+      }
     });
 
     it('loads a minimal flat technique with frontmatter + Capability', async () => {
@@ -259,6 +309,25 @@ describe('technique-loader', () => {
       }
     });
 
+    it('preserves "(optional)" description prose and emits no required flag', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(dir, 'opt.md'),
+        [...FM('opt'), '## Capability', '', 'Cap.', '', '## Inputs', '', '### maybe_input', '', '(optional) Provided only on resume.', '', '### firm_input', '', 'Always needed.', ''].join('\n'),
+        'utf-8',
+      );
+      const result = await readTechnique('opt', tempDir);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const [maybe, firm] = result.value.inputs ?? [];
+        expect(maybe?.description).toMatch(/^\(optional\) Provided only on resume/);
+        expect(maybe && 'required' in maybe).toBe(false);
+        expect(firm && 'required' in firm).toBe(false);
+        expect(projectTechniqueToYaml(result.value)).not.toContain('required:');
+      }
+    });
+
     it('rewrites technique-relative resource links to get_resource refs; leaves technique links', async () => {
       const dir = join(tempDir, 'meta', 'techniques');
       await mkdir(join(dir, 'grp'), { recursive: true });
@@ -281,14 +350,14 @@ describe('technique-loader', () => {
       const result = await readTechnique('reslink', tempDir);
       expect(result.success).toBe(true);
       if (result.success) {
-        const toon = projectTechniqueToToon(result.value);
+        const projected = projectTechniqueToYaml(result.value);
         // resource links: path + .md stripped, anchor kept; cross-workflow keeps the wf prefix
-        expect(toon).toContain('[log](assumption-reconciliation#integration-with-assumptions-log)');
-        expect(toon).toContain('[lens](prism/portfolio#scoring)');
-        expect(toon).toContain('[guide](guide)');
-        expect(toon).not.toContain('../resources/');
+        expect(projected).toContain('[log](assumption-reconciliation#integration-with-assumptions-log)');
+        expect(projected).toContain('[lens](prism/portfolio#scoring)');
+        expect(projected).toContain('[guide](guide)');
+        expect(projected).not.toContain('../resources/');
         // technique links are NOT rewritten
-        expect(toon).toContain('[grp](./grp/TECHNIQUE.md)');
+        expect(projected).toContain('[grp](./grp/TECHNIQUE.md)');
       }
     });
 
@@ -315,20 +384,6 @@ describe('technique-loader', () => {
       expect(resolved[0]!.type).toBe('technique');
       const op = resolved[0]!.body as { protocol?: Array<{ steps: string[] }> };
       expect(op.protocol).toEqual([{ steps: ['Stage files', 'Commit'] }]);
-    });
-
-    it('lists flat + grouped technique ids and excludes the root TECHNIQUE.md index', async () => {
-      const dir = join(tempDir, 'meta', 'techniques');
-      await mkdir(join(dir, 'grp'), { recursive: true });
-      await writeFile(join(dir, 'TECHNIQUE.md'), [...FM('TECHNIQUE'), '## Capability', '', 'Root index.', ''].join('\n'), 'utf-8');
-      await writeFile(join(dir, 'standalone.md'), [...FM('standalone'), '## Capability', '', 'Standalone.', ''].join('\n'), 'utf-8');
-      await writeFile(join(dir, 'grp', 'TECHNIQUE.md'), [...FM('grp'), '## Capability', '', 'Grouped.', ''].join('\n'), 'utf-8');
-      await writeFile(join(dir, 'grp', 'op.md'), ['an op', '', '## Protocol', '', '1. Do it', ''].join('\n'), 'utf-8');
-
-      const ids = await listWorkflowTechniqueIds(tempDir, 'meta');
-      expect(ids).toContain('standalone');
-      expect(ids).toContain('grp');
-      expect(ids).not.toContain('TECHNIQUE');
     });
 
     it('composeTechnique wraps the technique with the root Initial/Final; other root blocks are root-only', async () => {
@@ -402,7 +457,7 @@ describe('technique-loader', () => {
           '## Inputs', '',
           '### root-input', '', 'Provided by the root contract.', '',
           '### shared-id', '', 'Root version — technique should override.', '',
-          '## Output', '',
+          '## Outputs', '',
           '### result', '', 'The outcome.', '',
         ].join('\n'),
         'utf-8',
@@ -421,17 +476,99 @@ describe('technique-loader', () => {
       const result = await composeTechnique('work', tempDir, 'wp');
       expect(result.success).toBe(true);
       if (result.success) {
-        const inputIds = result.value.inputs?.map(i => i.id) ?? [];
-        expect(inputIds).toContain('root-input');  // inherited from root
-        expect(inputIds).toContain('own-input');   // technique-local
-        expect(inputIds).toContain('shared-id');   // present exactly once
-        expect(inputIds.filter(id => id === 'shared-id').length).toBe(1);
-        // Technique-local description wins on id conflict.
+        // Technique-own entries — including the override of a root-declared id — stay under `inputs`.
+        expect(result.value.inputs?.map(i => i.id).sort()).toEqual(['own-input', 'shared-id']);
         const shared = result.value.inputs?.find(i => i.id === 'shared-id');
         expect(shared?.description).toMatch(/Technique override wins/);
-        // Output inherited from root (technique declares none).
-        expect(result.value.output?.map(o => o.id)).toContain('result');
+        // Root-contract entries arrive under the marked inherited block, with the scope note.
+        expect(result.value.inherited_inputs?.items.map(i => i.id)).toEqual(['root-input']);
+        expect(result.value.inherited_inputs?.note).toMatch(/workflow or group contract/);
+        // Outputs partition the same way: the technique declares none of its own.
+        expect(result.value.outputs).toBeUndefined();
+        expect(result.value.inherited_outputs?.items.map(o => o.id)).toEqual(['result']);
+        expect(result.value.inherited_outputs?.note).toMatch(/workflow or group contract/);
       }
+    });
+
+    it('projectTechniqueToYaml renders inherited blocks adjacent to their own sections', async () => {
+      const dir = join(tempDir, 'wp', 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(dir, 'TECHNIQUE.md'),
+        [
+          ...FM('TECHNIQUE'),
+          '## Capability', '', 'Root.', '',
+          '## Inputs', '',
+          '### root-input', '', 'Provided by the root contract.', '',
+          '## Outputs', '',
+          '### result', '', 'The outcome.', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'work.md'),
+        [
+          ...FM('work'),
+          '## Capability', '', 'Do work.', '',
+          '## Inputs', '',
+          '### own-input', '', 'Technique-local input.', '',
+          '## Protocol', '', '1. Work', '',
+          '## Outputs', '',
+          '### own-result', '', 'Own outcome.', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      const result = await composeTechnique('work', tempDir, 'wp');
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const yaml = projectTechniqueToYaml(result.value);
+        const at = (key: string) => yaml.indexOf(`\n${key}:`);
+        expect(at('inputs')).toBeGreaterThan(-1);
+        expect(at('inputs')).toBeLessThan(at('inherited_inputs'));
+        expect(at('inherited_inputs')).toBeLessThan(at('protocol'));
+        expect(at('outputs')).toBeLessThan(at('inherited_outputs'));
+        expect(yaml).toContain('not specific to this technique');
+      }
+    });
+
+    it('resolveTechniques delivers group-contract inputs under inherited_inputs in the op body', async () => {
+      const dir = join(tempDir, 'wp', 'techniques');
+      await mkdir(join(dir, 'grp'), { recursive: true });
+      await writeFile(
+        join(dir, 'TECHNIQUE.md'),
+        [...FM('TECHNIQUE'), '## Capability', '', 'Root.', ''].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'grp', 'TECHNIQUE.md'),
+        [
+          ...FM('grp'),
+          '## Capability', '', 'Group.', '',
+          '## Inputs', '',
+          '### grp-shared', '', 'Shared across the group.', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      await writeFile(
+        join(dir, 'grp', 'op.md'),
+        [
+          ...FM('op'),
+          '## Capability', '', 'An op.', '',
+          '## Inputs', '',
+          '### own-input', '', 'Op-local input.', '',
+          '## Protocol', '', '1. Work', '',
+        ].join('\n'),
+        'utf-8',
+      );
+      const resolved = await resolveTechniques(['grp::op'], tempDir, 'wp');
+      const op = resolved.find((r) => r.type === 'technique' && r.name === 'op');
+      const body = op!.body as {
+        inputs?: Array<{ id: string }>;
+        inherited_inputs?: { note: string; items: Array<{ id: string }> };
+      };
+      expect(body.inputs?.map((i) => i.id)).toEqual(['own-input']);
+      expect(body.inherited_inputs?.items.map((i) => i.id)).toEqual(['grp-shared']);
+      expect(body.inherited_inputs?.note).toMatch(/workflow or group contract/);
     });
 
     it('composeTechnique with :: path resolves and fully composes a nested op', async () => {

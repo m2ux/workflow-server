@@ -538,134 +538,6 @@ export async function resolveSessionLocation(
 }
 
 /**
- * Resolve a `session_index` to the absolute path of its top-level planning
- * folder. Convenience wrapper that drops the `jsonPath` component — useful
- * when the caller only needs the folder (e.g. for `verifySeal` which always
- * operates at the top file level).
- *
- * Behaviour:
- *   - Exactly one match → returns its absolute path.
- *   - Two or more matches → throws `SessionStoreError(COLLISION)`.
- *   - Zero matches → throws `SessionStoreError(NOT_FOUND)`.
- */
-export async function resolveSessionIndex(
-  workspaceDir: string,
-  sessionIndex: string,
-): Promise<string> {
-  if (!isAbsolute(workspaceDir)) {
-    throw new SessionStoreError(
-      `resolveSessionIndex: workspaceDir must be absolute, got ${workspaceDir}`,
-      'WORKSPACE_INVALID',
-      { workspaceDir },
-    );
-  }
-  if (!/^[A-Z2-7]{6}$/.test(sessionIndex)) {
-    throw new SessionStoreError(
-      `resolveSessionIndex: session_index must be 6 uppercase RFC 4648 base32 characters (A-Z, 2-7), got '${sessionIndex}'`,
-      'INVALID_INDEX',
-      { sessionIndex },
-    );
-  }
-
-  // Check the in-memory transient registry first — bootstrap (meta)
-  // sessions live under os.tmpdir() and never appear in the workspace
-  // enumeration below.
-  const transient = transientFolderByIndex.get(sessionIndex);
-  if (transient) return transient;
-
-  const root = planningRoot(workspaceDir);
-  let entries: Array<{ name: string; isDirectory: () => boolean; isSymbolicLink: () => boolean }>;
-  try {
-    entries = await readdir(root, { withFileTypes: true });
-  } catch (err: unknown) {
-    if (err instanceof Error && 'code' in err && (err as NodeJS.ErrnoException).code === 'ENOENT') {
-      throw new SessionStoreError(
-        `resolveSessionIndex: planning root ${root} does not exist`,
-        'NOT_FOUND',
-        { workspaceDir, root, sessionIndex },
-      );
-    }
-    throw err;
-  }
-
-  const matches: string[] = [];
-
-  /**
-   * Walk every directory under the planning root recursively. A folder
-   * matches when its session.json's stored `sessionIndex` field equals the
-   * requested value. Recursion is needed because persistent children of
-   * persistent parents may nest under the parent's folder in legacy
-   * separate-folder layouts.
-   */
-  async function walk(dirPath: string): Promise<void> {
-    let dirEntries: typeof entries;
-    try {
-      dirEntries = await readdir(dirPath, { withFileTypes: true });
-    } catch {
-      // Permission denied / race deletion — best-effort, skip.
-      return;
-    }
-    for (const entry of dirEntries) {
-      if (!entry.isDirectory() && !entry.isSymbolicLink()) continue;
-      const folderPath = resolve(dirPath, entry.name);
-      try {
-        const st = await stat(folderPath);
-        if (!st.isDirectory()) continue;
-        try {
-          const { state } = await readSessionFile(folderPath);
-          const idx = (state as { sessionIndex?: unknown }).sessionIndex;
-          if (typeof idx === 'string' && idx === sessionIndex) matches.push(folderPath);
-        } catch {
-          // No session.json / unreadable — skip this folder but recurse.
-        }
-      } catch {
-        // stat failed (broken symlink, race deletion); skip.
-        continue;
-      }
-      await walk(folderPath);
-    }
-  }
-
-  // Seed the walk with the immediate planning-root entries we already read.
-  for (const entry of entries) {
-    if (!entry.isDirectory() && !entry.isSymbolicLink()) continue;
-    const folderPath = resolve(root, entry.name);
-    try {
-      const st = await stat(folderPath);
-      if (!st.isDirectory()) continue;
-      try {
-        const { state } = await readSessionFile(folderPath);
-        const idx = (state as { sessionIndex?: unknown }).sessionIndex;
-        if (typeof idx === 'string' && idx === sessionIndex) matches.push(folderPath);
-      } catch {
-        /* no session.json at this level */
-      }
-    } catch {
-      continue;
-    }
-    await walk(folderPath);
-  }
-
-  if (matches.length === 0) {
-    throw new SessionStoreError(
-      `resolveSessionIndex: no planning folder under ${root} has session_index '${sessionIndex}'`,
-      'NOT_FOUND',
-      { workspaceDir, root, sessionIndex },
-    );
-  }
-  if (matches.length > 1) {
-    // Sort for determinism in the error payload.
-    const sorted = [...matches].sort();
-    throw new SessionStoreError(
-      `resolveSessionIndex: session_index '${sessionIndex}' collides between ${sorted.length} planning folders: ${sorted.join(', ')}`,
-      'COLLISION',
-      { workspaceDir, sessionIndex, candidates: sorted },
-    );
-  }
-  return matches[0] as string;
-}
-
-/**
  * Validate a single-segment planning-folder slug. Rejects slashes,
  * backslashes, and `.` / `..` so callers can't escape the planning root.
  */
@@ -748,22 +620,6 @@ export async function ensurePlanningFolder(
 }
 
 /**
- * Create a nested planning folder at `<parentFolder>/<slug>` with mode 0700.
- * Used when dispatching a persistent child workflow from a persistent parent
- * so children live under their parent in the planning hierarchy rather than
- * adjacent to it at the workspace top level.
- */
-export async function ensureNestedPlanningFolder(
-  parentFolder: string,
-  slug: string,
-): Promise<string> {
-  assertValidSlug(slug);
-  const folder = resolve(parentFolder, slug);
-  await mkdir(folder, { recursive: true, mode: PLANNING_DIR_MODE });
-  return folder;
-}
-
-/**
  * Transient (bootstrap) session support. Orchestrator-only sessions (notably
  * the meta workflow) never need a workspace folder — their state lives only
  * long enough to dispatch a child workflow, which then snapshots them into
@@ -788,7 +644,7 @@ export async function createTransientFolder(): Promise<string> {
   return folder;
 }
 
-/** Register a transient folder so `resolveSessionIndex` and slug-lookup find it. */
+/** Register a transient folder so `resolveSessionLocation` and slug-lookup find it. */
 export function registerTransient(sessionIndex: string, folder: string, slug?: string): void {
   transientFolderByIndex.set(sessionIndex, folder);
   if (slug) transientFolderBySlug.set(slug, folder);
@@ -813,30 +669,10 @@ export function isTransientFolder(folder: string): boolean {
 }
 
 /**
- * Delete a transient folder (recursive) and remove all registry entries
- * pointing at it. Best-effort; failures are swallowed (the OS will reap
- * orphans eventually).
- */
-export async function discardTransient(folder: string): Promise<void> {
-  if (!isTransientFolder(folder)) return;
-  for (const [idx, f] of transientFolderByIndex.entries()) {
-    if (f === folder) transientFolderByIndex.delete(idx);
-  }
-  for (const [slug, f] of transientFolderBySlug.entries()) {
-    if (f === folder) transientFolderBySlug.delete(slug);
-  }
-  try {
-    await rm(folder, { recursive: true, force: true });
-  } catch {
-    /* best-effort */
-  }
-}
-
-/**
  * Used by dispatch_child after promoting a transient parent to a workspace
  * planning folder. The caller's session_index (issued at start_session
- * against the tmp folder) would otherwise be orphaned: discardTransient
- * deletes the index→folder entry, and resolveSessionLocation derives indices
+ * against the tmp folder) would otherwise be orphaned: a naive folder swap
+ * would drop the index→folder entry, and resolveSessionLocation derives indices
  * by hashing folder paths — so the workspace folder hashes to a different
  * value. Repointing the existing transientFolderByIndex entry at the new
  * workspace folder keeps the caller's index resolvable for the lifetime of
@@ -877,32 +713,6 @@ export async function sessionFileExists(folderAbsPath: string): Promise<boolean>
 
 // Re-exports for test convenience; production callers should import directly.
 export { writeAtomic as _writeAtomicForTests };
-
-/**
- * Round-trip-and-re-canonicalise a JSON value. Helper for migration code
- * that ingests legacy state and re-emits it in canonical form before sealing.
- */
-export function recanonicalise(value: unknown): string {
-  return canonicaliseJson(value);
-}
-
-/** Convenience: write an arbitrary string directly (used by migration). */
-export async function writeSessionFileRaw(
-  folderAbsPath: string,
-  canonicalJsonBytes: string,
-): Promise<{ bytes: string; seal: string }> {
-  await mkdir(folderAbsPath, { recursive: true, mode: PLANNING_DIR_MODE });
-  // Validate the bytes parse as JSON so callers can't accidentally seal garbage.
-  JSON.parse(canonicalJsonBytes);
-  const seal = await computeSeal(canonicalJsonBytes);
-  await writeAtomic(
-    sessionFilePath(folderAbsPath),
-    canonicalJsonBytes,
-    PLANNING_FILE_MODE,
-  );
-  await writeAtomic(sealFilePath(folderAbsPath), seal, PLANNING_FILE_MODE);
-  return { bytes: canonicalJsonBytes, seal };
-}
 
 /** Throwable type alias kept stable for test imports. */
 export type { SessionStoreError as SessionStoreErrorType };

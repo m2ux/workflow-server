@@ -24,24 +24,18 @@ Before an Activity Worker can yield an `activity_complete` result, its `finalize
 
 ## 3. Artifact Naming Conventions
 
-To ensure artifacts are generated predictably and don't clash, activities define an `artifactPrefix` (e.g., `08`). The server automatically infers this prefix from the activity filename (e.g., `02-design-philosophy.toon` → prefix `02`).
+To ensure artifacts are generated predictably and don't clash, activities define an `artifactPrefix` (e.g., `08`). The server automatically infers this prefix from the activity filename (e.g., `02-design-philosophy.yaml` → prefix `02`).
 
 When an Activity Worker produces an artifact (e.g., a code review document), it is instructed to prepend this prefix to the filename.
 * **Intended File:** `design-philosophy.md`
 * **Artifact Prefix:** `02`
 * **Final Written Artifact:** `02-design-philosophy.md`
 
-Activities also define `artifacts` — an array of `ArtifactSchema` objects specifying outputs with `id`, `name`, `location`, `description`, and `action` (`create` or `update`). The `action` field indicates whether the activity creates a new artifact or updates an existing one.
+Each activity also exposes an `artifacts` array — a server-computed contract synthesized by `get_activity` from the `## Outputs` of the techniques the activity's steps bind. Each entry carries the producing technique output's `id` and `name`; activities do not author this list themselves.
 
 These artifacts are written strictly into the planning folder, separating planning/review documentation from the user's actual `target_path` source code.
 
-## 4. Artifact Locations
-
-Workflows define `artifactLocations` — a record of named storage locations. Each location can be a simple path string or an object with `path`, `description`, and `gitignored` flag. These support variable interpolation (e.g., `{planning_folder_path}`).
-
-Activities reference these locations via the `location` field on their `artifacts` array entries.
-
-## 5. Git & Submodule Protocol
+## 4. Git & Submodule Protocol
 
 Because the `.engineering/workflows` directory is often maintained as a Git submodule or an orphan worktree, agents are provided with strict instructions on how to handle commits.
 

@@ -21,7 +21,7 @@ The Orchestra DSL covers four workflow primitives. Activity constraints are defi
 
 - **`grammar/`** — EBNF grammar defining the syntax these constraints operate over
 - **`schemas/`** — JSON Schema files for runtime validation of the same structures
-- **`.engineering/artifacts/planning/2026-02-10-toon-v3-schema-specification/`** — Full design specification with rationale, examples, and design decisions
+- **`.engineering/artifacts/planning/2026-02-10-yaml-v3-schema-specification/`** — Full design specification with rationale, examples, and design decisions
 
 ## Constraint Categories
 

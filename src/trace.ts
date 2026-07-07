@@ -105,10 +105,6 @@ export class TraceStore {
     return [...(this.sessions.get(sid) ?? [])];
   }
 
-  listSessions(): string[] {
-    return [...this.sessions.keys()];
-  }
-
   getSegmentAndAdvanceCursor(sid: string): { events: TraceEvent[]; fromIndex: number; toIndex: number } {
     const events = this.sessions.get(sid) ?? [];
     const from = this.cursors.get(sid) ?? 0;

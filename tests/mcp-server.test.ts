@@ -5,7 +5,7 @@ import { createServer } from '../src/server.js';
 import { resolve, join } from 'node:path';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { decode } from '@toon-format/toon';
+import { parse } from 'yaml';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseToolResponse(result: any): any {
@@ -14,9 +14,9 @@ function parseToolResponse(result: any): any {
   // Try JSON first (tier 3 tools: yield/respond/resume checkpoint, get_trace, health_check, etc.)
   try { return JSON.parse(text); } catch { /* not JSON */ }
 
-  // Try TOON decode (handles encodeToon output AND header+TOON body since
-  // TOON treats blank lines as whitespace between top-level keys)
-  try { return decode(text); } catch { /* not pure TOON */ }
+  // Try YAML decode (handles stringifyForResponse output AND header+YAML body since
+  // YAML treats blank lines as whitespace between top-level keys)
+  try { return parse(text); } catch { /* not pure YAML */ }
 
   // Fallback: split header from body on first double-newline
   const splitIdx = text.indexOf('\n\n');
@@ -28,8 +28,8 @@ function parseToolResponse(result: any): any {
       const colonIdx = line.indexOf(': ');
       if (colonIdx > 0) meta[line.substring(0, colonIdx)] = line.substring(colonIdx + 2);
     }
-    // Try decoding body as TOON
-    try { return { ...meta, ...decode(body) }; } catch { /* body is not TOON */ }
+    // Try decoding body as YAML
+    try { return { ...meta, ...parse(body) }; } catch { /* body is not YAML */ }
     return { ...meta, _body: body };
   }
 
@@ -37,7 +37,7 @@ function parseToolResponse(result: any): any {
 }
 
 /**
- * Parse a get_workflow response which may contain a primary technique section
+ * Parse a get_workflow response which begins with the technique-bundle section
  * followed by a --- separator and the workflow definition.
  * Returns the workflow portion as a parsed object.
  */
@@ -49,8 +49,8 @@ function parseWorkflowResponse(result: any): any {
   const workflowText = sepIdx >= 0 ? text.substring(sepIdx + 5) : text;
   // Try JSON first
   try { return JSON.parse(workflowText); } catch { /* not JSON */ }
-  // Try TOON decode
-  try { return decode(workflowText); } catch { /* not pure TOON */ }
+  // Try YAML decode
+  try { return parse(workflowText); } catch { /* not pure YAML */ }
   // Fallback to parseToolResponse on the workflow portion
   return parseToolResponse({ content: [{ type: 'text' as const, text: workflowText }] });
 }
@@ -344,9 +344,33 @@ describe('mcp-server integration', () => {
       expect(activity.id).toBe('start-work-package');
       expect(activity.steps).toBeDefined();
       expect(Array.isArray(activity.steps)).toBe(true);
-      expect(activity.checkpoints).toBeDefined();
+      // Unified model: checkpoints are inline kind:checkpoint steps (no separate checkpoints[] array).
+      expect(activity.steps.some((s: { kind?: string }) => s.kind === 'checkpoint')).toBe(true);
       expect(activity.transitions).toBeDefined();
       expect(activity.session_index).toBeDefined();
+    });
+
+    it('inherits the workflow techniques.activity into every activity technique bundle', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: nextToken },
+      });
+      expect(result.isError).toBeFalsy();
+
+      // The technique bundle (the activity's own techniques + the workflow's inherited
+      // techniques.activity + core worker techniques) precedes the --- separator.
+      const text = (result.content[0] as { type: 'text'; text: string }).text;
+      const sepIdx = text.indexOf('\n\n---\n\n');
+      expect(sepIdx).toBeGreaterThan(0);
+      const bundle = parse(text.substring(0, sepIdx)) as Record<string, unknown>;
+      const techniques = bundle['techniques'] as Record<string, unknown>;
+
+      // work-package declares `variable-binding` once at workflow.techniques.activity.
+      // It is neither bound by start-work-package's steps nor a core worker technique,
+      // so its presence proves the server injected the workflow's inherited activity techniques.
+      expect(Object.keys(techniques)).toContain('variable-binding');
     });
 
     it('should error when no activity in session token', async () => {
@@ -409,9 +433,9 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBe(true);
     });
 
-    it('errors when the workflow declares no primary technique', async () => {
-      // The workflow declares supporting techniques but no techniques.primary;
-      // get_technique without a step_id has no primary to compose and errors.
+    it('errors when the workflow declares no workflow-level techniques', async () => {
+      // The workflow declares no workflow-level techniques[];
+      // get_technique without a step_id has no technique to compose and errors.
       const result = await client.callTool({
         name: 'get_technique',
         arguments: { session_index: sessionToken },
@@ -439,6 +463,30 @@ describe('mcp-server integration', () => {
         arguments: { session_index: actToken, step_id: 'resolve-target' },
       });
       expect(result.isError).toBe(true);
+    });
+
+    it('resolves a bare step technique via the activity-group convention', async () => {
+      // codebase-comprehension binds its steps to bare op ids (e.g. `technique: survey`) that resolve
+      // against the same-named `codebase-comprehension` group. A bare op has no standalone <op>.md and
+      // no <op>/ group, so without the activity-group convention get_technique would error — a
+      // non-error proves the bare ref resolved to <activity-id>::<op>.
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'codebase-comprehension');
+      const actToken = await resolveCheckpoints(client, nextToken, actResponse);
+
+      const bareStep = (actResponse.steps as Array<{ id?: string; technique?: string }>).find(
+        (s) => typeof s.technique === 'string' && !s.technique.includes('::') && !s.technique.includes('/'),
+      );
+      expect(bareStep, 'expected a bare-op step in codebase-comprehension').toBeTruthy();
+
+      const result = await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: actToken, step_id: bareStep!.id },
+      });
+      expect(result.isError).toBeFalsy();
+      const text = (result.content[0] as { type: string; text: string }).text;
+      expect(text).toContain('capability:');
+      // The bare op resolved to the same-named group's op, whose projected id is the bare name.
+      expect(text).toContain(`id: ${bareStep!.technique}`);
     });
   });
 
@@ -729,13 +777,13 @@ describe('mcp-server integration', () => {
     });
   });
 
-  // ============== Workflow Summary Mode ==============
+  // ============== get_workflow ==============
 
-  describe('tool: get_workflow (summary mode)', () => {
+  describe('tool: get_workflow', () => {
     it('should include the technique bundle before the --- separator', async () => {
       const result = await client.callTool({
         name: 'get_workflow',
-        arguments: { session_index: sessionToken, summary: true },
+        arguments: { session_index: sessionToken },
       });
       expect(result.isError).toBeFalsy();
       const text = (result.content[0] as { type: 'text'; text: string }).text;
@@ -743,7 +791,7 @@ describe('mcp-server integration', () => {
       const sepIdx = text.indexOf('\n\n---\n\n');
       expect(sepIdx).toBeGreaterThan(0);
       const preamble = text.substring(0, sepIdx);
-      const decoded = decode(preamble) as Record<string, unknown>;
+      const decoded = parse(preamble) as Record<string, unknown>;
       // All techniques — standalone and nested — live in the single `techniques` bucket,
       // nested ones keyed by their `<technique>::<name>` path. There is no separate sub-technique bucket.
       expect(decoded['techniques']).toBeDefined();
@@ -751,10 +799,10 @@ describe('mcp-server integration', () => {
       expect(Array.isArray(decoded['techniques'])).toBe(false);
     });
 
-    it('should return lightweight summary by default', async () => {
+    it('returns lightweight metadata: rules, variables, and activity stubs without step detail', async () => {
       const result = await client.callTool({
         name: 'get_workflow',
-        arguments: { session_index: sessionToken, summary: true },
+        arguments: { session_index: sessionToken },
       });
       expect(result.isError).toBeFalsy();
 
@@ -769,37 +817,26 @@ describe('mcp-server integration', () => {
       expect(wf.activities[0].checkpoints).toBeUndefined();
     });
 
-    it('summary and full definition should differ in content', async () => {
-      const fullResult = await client.callTool({
-        name: 'get_workflow',
-        arguments: { session_index: sessionToken, summary: false },
-      });
-      const summaryResult = await client.callTool({
-        name: 'get_workflow',
-        arguments: { session_index: sessionToken, summary: true },
-      });
-
-      const fullText = (fullResult.content[0] as { type: 'text'; text: string }).text;
-      const summaryText = (summaryResult.content[0] as { type: 'text'; text: string }).text;
-      // Full definition includes raw workflow TOON with techniques, modes, tags etc.
-      // Summary includes activity stubs but omits raw details
-      expect(fullText).not.toBe(summaryText);
-      // Full raw TOON includes fields not in summary
-      const fullParsed = parseWorkflowResponse(fullResult);
-      expect(fullParsed.techniques).toBeDefined();
-      expect(fullParsed.modes).toBeDefined();
-    });
-
-    it('should return full definition when summary=false', async () => {
+    it('excludes worker-scoped content (rules.activity, techniques.activity) from the orchestrator response', async () => {
       const result = await client.callTool({
         name: 'get_workflow',
-        arguments: { session_index: sessionToken, summary: false },
+        arguments: { session_index: sessionToken },
       });
-      const wf = parseWorkflowResponse(result);
-      // Full raw workflow TOON includes fields like techniques, modes, tags that summary omits
-      expect(wf.techniques).toBeDefined();
-      expect(wf.modes).toBeDefined();
-      expect(wf.tags).toBeDefined();
+      expect(result.isError).toBeFalsy();
+      const text = (result.content[0] as { type: 'text'; text: string }).text;
+      const sepIdx = text.indexOf('\n\n---\n\n');
+      const preamble = parse(text.substring(0, sepIdx)) as Record<string, unknown>;
+      const body = parseWorkflowResponse(result);
+
+      // work-package declares `variable-binding` at techniques.activity (worker-inherited). It is NOT
+      // an orchestrator technique, so the orchestrator's bundle must never contain it.
+      const bundled = Object.keys(preamble['techniques'] as Record<string, unknown>);
+      expect(bundled).not.toContain('variable-binding');
+
+      // The metadata body carries the flattened orchestrator `rules` list (workflow + universal) as
+      // an array, and no `techniques` field — the worker buckets stay out of the orchestrator response.
+      expect(Array.isArray(body.rules)).toBe(true);
+      expect(body.techniques).toBeUndefined();
     });
   });
 
@@ -1132,7 +1169,7 @@ describe('mcp-server integration', () => {
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const firstCpId = 'classification-confirmed'; // Known from the workflow
+      const firstCpId = 'classification-and-path-confirmed'; // Known from the workflow
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',
@@ -1142,7 +1179,7 @@ describe('mcp-server integration', () => {
 
       const cpResult = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_index: cpHandle, option_id: 'confirmed' }, // Assumes 'confirmed' is a valid option
+        arguments: { session_index: cpHandle, option_id: 'revise-classification' }, // Assumes 'revise-classification' is a valid option
       });
       expect(cpResult.isError).toBeFalsy();
       const response = parseToolResponse(cpResult);
@@ -1156,7 +1193,7 @@ describe('mcp-server integration', () => {
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const firstCpId = 'classification-confirmed';
+      const firstCpId = 'classification-and-path-confirmed';
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',
@@ -1221,7 +1258,7 @@ describe('mcp-server integration', () => {
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const unconditionalCpId = 'workflow-path-selected';
+      const unconditionalCpId = 'classification-and-path-confirmed';
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',
@@ -1333,13 +1370,13 @@ describe('mcp-server integration', () => {
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',
-        arguments: { session_index: tokenWithAct, checkpoint_id: 'classification-confirmed' },
+        arguments: { session_index: tokenWithAct, checkpoint_id: 'classification-and-path-confirmed' },
       });
       const cpHandle = (yieldResult._meta as Record<string, unknown>)['session_index'] as string;
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_index: cpHandle, option_id: 'confirmed', auto_advance: true },
+        arguments: { session_index: cpHandle, option_id: 'revise-classification', auto_advance: true },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
@@ -1353,7 +1390,7 @@ describe('mcp-server integration', () => {
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const firstCpId = 'classification-confirmed';
+      const firstCpId = 'classification-and-path-confirmed';
 
       await client.callTool({
         name: 'yield_checkpoint',
@@ -1377,7 +1414,7 @@ describe('mcp-server integration', () => {
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const firstCpId = 'classification-confirmed';
+      const firstCpId = 'classification-and-path-confirmed';
 
       await client.callTool({
         name: 'yield_checkpoint',
@@ -1386,7 +1423,7 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_index: tokenWithAct, option_id: 'confirmed' },
+        arguments: { session_index: tokenWithAct, option_id: 'revise-classification' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
@@ -1406,7 +1443,7 @@ describe('mcp-server integration', () => {
     it('respond_checkpoint errors when no active checkpoint is set', async () => {
       const result = await client.callTool({
         name: 'respond_checkpoint',
-        arguments: { session_index: sessionToken, option_id: 'confirmed' },
+        arguments: { session_index: sessionToken, option_id: 'revise-classification' },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
@@ -1627,7 +1664,7 @@ describe('mcp-server integration', () => {
       expect(entry.state.workflowId).toBe('work-package');
       expect(entry.state.sessionIndex).toBe(childResponse.session_index);
 
-      // The original /tmp folder for the meta is gone (discardTransient ran).
+      // The original /tmp folder for the meta is gone (the redirect removed it).
       const tmpAfter = readdirSync(os.tmpdir())
         .filter((n) => n.startsWith('workflow-server-transient-'));
       // Exactly the new tmp entries created since the snapshot must be
@@ -1676,8 +1713,8 @@ describe('mcp-server integration', () => {
     });
 
     it('the parent session_index keeps resolving after dispatch_child promotes a transient meta', async () => {
-      // Regression: before the redirect, discardTransient unregistered the
-      // caller's session_index along with the tmp folder. The workspace
+      // Regression: a naive promote would drop the caller's session_index
+      // entry along with the tmp folder. The workspace
       // folder hashes to a different value, so the orchestrator was unable
       // to authenticate next_activity for subsequent meta activities.
       const meta = await client.callTool({
@@ -1699,7 +1736,7 @@ describe('mcp-server integration', () => {
       // The orchestrator's original meta index must still authenticate.
       const after = await client.callTool({
         name: 'get_workflow',
-        arguments: { session_index: metaIdx, summary: true },
+        arguments: { session_index: metaIdx },
       });
       expect(after.isError).toBeFalsy();
       const afterResponse = parseWorkflowResponse(after);
@@ -1935,7 +1972,7 @@ describe('mcp-server integration', () => {
       expect(existsSync(join(nestedChildFolder, '.session-token'))).toBe(true);
       expect(existsSync(wrongPeerFolder)).toBe(false);
 
-      // Resume by slug still finds the nested child — resolveSessionIndex
+      // Resume by slug still finds the nested child — resolveSessionLocation
       // recurses through the tree.
       const childIdx = parseToolResponse(child).session_index;
       const resumed = await client.callTool({
@@ -2049,7 +2086,7 @@ describe('mcp-server integration', () => {
       // Loading via the child's session_index returns the embedded sub-state.
       const childGet = await client.callTool({
         name: 'get_workflow',
-        arguments: { session_index: childIdx, summary: true },
+        arguments: { session_index: childIdx },
       });
       expect(childGet.isError).toBeFalsy();
       // get_workflow's _meta.session_index echoes the child index.

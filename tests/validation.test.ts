@@ -1,11 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
   validateActivityTransition,
-  validateWorkflowConsistency,
   validateWorkflowVersion,
-  validateTechniqueAssociation,
   buildValidation,
-  buildErrorValidation,
   type SessionView,
 } from '../src/utils/validation.js';
 import { evaluateCondition } from '../src/schema/condition.schema.js';
@@ -220,22 +217,7 @@ describe('validation', () => {
     });
   });
 
-  describe('validateWorkflowConsistency', () => {
-    it('returns null when workflow matches session', () => {
-      const token = makeToken({ wf: 'my-wf' });
-      expect(validateWorkflowConsistency(token, 'my-wf')).toBeNull();
-    });
-
-    it('returns warning on workflow mismatch', () => {
-      const token = makeToken({ wf: 'wf-a' });
-      const result = validateWorkflowConsistency(token, 'wf-b');
-      expect(result).not.toBeNull();
-      expect(result).toContain('wf-a');
-      expect(result).toContain('wf-b');
-    });
-  });
-
-  describe('buildValidation / buildErrorValidation', () => {
+  describe('buildValidation', () => {
     it('builds valid result with no warnings', () => {
       const result = buildValidation(null, null);
       expect(result.status).toBe('valid');
@@ -248,11 +230,5 @@ describe('validation', () => {
       expect(result.warnings).toEqual(['problem 1', 'problem 2']);
     });
 
-    it('builds error result with errors array', () => {
-      const result = buildErrorValidation('fatal', 'also a warning');
-      expect(result.status).toBe('error');
-      expect(result.errors).toEqual(['fatal']);
-      expect(result.warnings).toContain('also a warning');
-    });
   });
 });

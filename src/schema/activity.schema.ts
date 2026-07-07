@@ -2,13 +2,11 @@ import { z } from 'zod';
 import { ConditionSchema } from './condition.schema.js';
 import { SemanticVersionSchema } from './common.js';
 
-const TimeEstimateSchema = z.string().regex(/^\d+(-\d+)?\s*(m|min|h|hr|hours?|d|days?)?$/i).optional();
-
-// Techniques reference (activity-level — optional when steps declare their own techniques)
-export const TechniquesReferenceSchema = z.object({
-  primary: z.string().optional().describe('Primary technique ID for this activity. Optional when steps declare individual techniques.'),
-  supporting: z.array(z.string()).optional().describe('Supporting technique IDs'),
-});
+// Techniques reference (activity-level — optional when steps declare their own techniques).
+// A flat list of activity-wide technique references (`::` paths): the strategy/capability
+// techniques (e.g. `variable-binding`, `scatter-gather`) whose protocols apply across the
+// activity's steps. Per-step operations are bound at the step via `step.technique`, not here.
+export const TechniquesReferenceSchema = z.array(z.string()).describe('Activity-wide technique references (`::` paths); bundled into get_activity.');
 export type TechniquesReference = z.infer<typeof TechniquesReferenceSchema>;
 
 // Action schema
@@ -22,10 +20,6 @@ export const ActionSchema = z.object({
 });
 export type Action = z.infer<typeof ActionSchema>;
 
-// Forward-declare step and loop schemas for circular references
-// StepSchema references LoopSchema (via loops) and WorkflowTriggerSchema (via triggers)
-// LoopSchema references StepSchema (via steps)
-
 // Workflow trigger schema - allows an activity or step to trigger another workflow
 export const WorkflowTriggerSchema = z.object({
   workflow: z.string().describe('ID of the workflow to trigger'),
@@ -34,23 +28,7 @@ export const WorkflowTriggerSchema = z.object({
 });
 export type WorkflowTrigger = z.infer<typeof WorkflowTriggerSchema>;
 
-// Step schema
-export const StepSchema = z.object({
-  id: z.string().describe('Unique identifier for this step'),
-  name: z.string().optional().describe('LEGACY: Human-readable step name. Optional — id + description are usually sufficient.'),
-  description: z.string().optional().describe('Detailed guidance for executing this step. Carries inline operation invocations of the form `technique-id::operation-name(arg: {var}, ...)` when a step wraps a known operation.'),
-  technique: z.string().optional().describe('LEGACY: Technique ID to apply for this step. Prefer inline operation invocation in description.'),
-  checkpoint: z.string().optional().describe('Optional checkpoint ID. If present, the worker MUST yield this checkpoint to the orchestrator before executing the step.'),
-  required: z.boolean().default(true),
-  when: z.string().optional().describe('Inline boolean expression that gates this step. Examples: "has_saved_state == true", "is_monorepo == true", "client_workflow_completed == false". Evaluated against current variable state at runtime.'),
-  condition: ConditionSchema.optional().describe('LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons.'),
-  actions: z.array(ActionSchema).optional(),
-  triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows to trigger from this step'),
-  technique_args: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('LEGACY: Arguments to pass to the technique. Prefer inline operation invocation in description.'),
-});
-export type Step = z.infer<typeof StepSchema>;
-
-// Checkpoint option schema
+// Checkpoint option schema — defined before StepSchema so a kind:checkpoint step can carry its options inline.
 export const CheckpointOptionSchema = z.object({
   id: z.string(),
   label: z.string(),
@@ -63,17 +41,172 @@ export const CheckpointOptionSchema = z.object({
 });
 export type CheckpointOption = z.infer<typeof CheckpointOptionSchema>;
 
-// Checkpoint schema
-export const CheckpointSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  message: z.string().describe('Message to present to user at checkpoint'),
-  condition: ConditionSchema.optional().describe('Condition that must be true before presenting this checkpoint. If false, the checkpoint is skipped.'),
-  options: z.array(CheckpointOptionSchema).min(1),
-  defaultOption: z.string().optional().describe('Option ID to auto-select when autoAdvanceMs elapses without user intervention'),
-  autoAdvanceMs: z.number().int().positive().optional().describe('Milliseconds to wait before auto-selecting defaultOption'),
+// Step schema
+/**
+ * Structured per-step technique binding. `name` is the operation reference; `inputs` carries input
+ * deviations (op input id → source expression: rename / literal / `{template}`) and `outputs`
+ * carries output remaps (op output id → the workflow variable name its value lands under). A step
+ * with no deviations uses the bare-string form instead of this object.
+ */
+export const TechniqueBindingSchema = z.object({
+  name: z.string().describe('The `group::operation` (or bare op / `workflow::group::op`) technique reference this step invokes.'),
+  inputs: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe('Input deviations: op input id → source expression (rename of a bag variable, literal, or `{template}`). Only what differs from same-name binding or a declared default.'),
+  outputs: z.record(z.string()).optional().describe('Output remaps: op output id → the workflow variable name its produced value lands under, when it differs from the output id.'),
 });
-export type Checkpoint = z.infer<typeof CheckpointSchema>;
+export type TechniqueBinding = z.infer<typeof TechniqueBindingSchema>;
+
+// Fields carried by every step kind. A step is a bound unit of work, not a prose slot: guidance
+// lives in the bound technique's protocol (AP-64), so no step kind carries a `description`.
+// `required` is declared only when false — omitting it means the step is required (the default).
+const stepCommonFields = {
+  when: z.string().optional().describe('Inline boolean expression that gates this step. Examples: "has_saved_state == true", "is_monorepo == true", "client_workflow_completed == false". Evaluated against current variable state at runtime.'),
+  condition: ConditionSchema.optional().describe('LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons.'),
+  required: z.literal(false).optional().describe('Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64).'),
+};
+
+/**
+ * A step in an activity's ordered execution list — a `kind`-tagged unit in the unified model:
+ * `technique` (binds an operation), `action` (control-only), `checkpoint` (an inline user decision
+ * point at its concrete position in the sequence), or `loop` (a compound step whose body is the
+ * recursive `steps`). Each kind is a closed object: a field outside its declared set is a schema
+ * error (AP-64 bound-step purity).
+ */
+export const TechniqueStepSchema = z.object({
+  kind: z.literal('technique').describe('Step-kind discriminator.'),
+  id: z.string().optional().describe('Identifier for this step within the activity. Optional: the loader derives it from the last `::` segment of the technique name.'),
+  technique: z.union([z.string(), TechniqueBindingSchema]).describe('Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps.'),
+  actions: z.array(ActionSchema).optional(),
+  ...stepCommonFields,
+}).strict();
+export type TechniqueStep = z.infer<typeof TechniqueStepSchema>;
+
+export const ActionStepSchema = z.object({
+  kind: z.literal('action').describe('Step-kind discriminator.'),
+  id: z.string().describe('Identifier for this step within the activity.'),
+  actions: z.array(ActionSchema).optional().describe('Control actions; may be empty for marker steps.'),
+  ...stepCommonFields,
+}).strict();
+export type ActionStep = z.infer<typeof ActionStepSchema>;
+
+export const CheckpointStepSchema = z.object({
+  kind: z.literal('checkpoint').describe('Step-kind discriminator.'),
+  id: z.string().describe('Identifier for this step within the activity; the stable checkpoint-response replay key.'),
+  message: z.string().describe('Message presented to the user.'),
+  options: z.array(CheckpointOptionSchema).min(1).describe('Decision options with effects.'),
+  defaultOption: z.string().optional().describe('Option auto-selected when autoAdvanceMs elapses.'),
+  autoAdvanceMs: z.number().int().positive().optional().describe('Ms before auto-selecting defaultOption.'),
+  blocking: z.boolean().optional().describe('True requires explicit user selection (no auto-advance).'),
+  ...stepCommonFields,
+}).strict();
+export type CheckpointStep = z.infer<typeof CheckpointStepSchema>;
+
+// kind:loop — a compound step whose body is a nested ordered steps[] (named `loopType` to avoid
+// clashing with Condition.type). The recursion lives on the `steps` FIELD via z.lazy:
+// discriminatedUnion requires plain object members, so the union itself cannot be lazy.
+export const LoopStepSchema = z.object({
+  kind: z.literal('loop').describe('Step-kind discriminator.'),
+  id: z.string().describe('Identifier for this step within the activity.'),
+  name: z.string().optional().describe('Structural label for the iteration (the one step kind that carries a name).'),
+  loopType: z.enum(['forEach', 'while', 'doWhile']).describe('Iteration type.'),
+  variable: z.string().optional().describe('Current-item variable bound each iteration.'),
+  over: z.string().optional().describe('Collection expression iterated by a forEach loop.'),
+  breakCondition: ConditionSchema.optional().describe('Early-exit condition evaluated each iteration.'),
+  maxIterations: z.number().int().positive().optional().describe('Safety bound on iteration count.'),
+  steps: z.array(z.lazy((): z.ZodTypeAny => StepSchema)).describe('The loop body, a nested ordered list of steps.'),
+  ...stepCommonFields,
+}).strict();
+export type LoopStep = z.infer<typeof LoopStepSchema>;
+
+export const StepSchema = z.discriminatedUnion('kind', [
+  TechniqueStepSchema,
+  ActionStepSchema,
+  CheckpointStepSchema,
+  LoopStepSchema,
+]);
+export type Step = z.infer<typeof StepSchema>;
+
+/** The operation reference of a step's technique binding, whether bare-string or structured. */
+export function techniqueName(technique: TechniqueStep['technique'] | undefined): string | undefined {
+  return typeof technique === 'string' ? technique : technique?.name;
+}
+
+/** Derive the default step id from a technique ref: the last `::` segment of its name. */
+export function defaultStepId(technique: string): string {
+  const segments = technique.split('::');
+  return segments[segments.length - 1] ?? technique;
+}
+
+/**
+ * Fill each step's `id` from its `technique` when absent (the last `::` segment),
+ * mutating the steps in place so all downstream readers see a populated id.
+ * Scopes are validated independently: the activity's top-level `steps`, and each
+ * loop's `steps`. A duplicate resolved id within a scope is an error. A step with
+ * neither `id` nor `technique` is unresolvable and is an error.
+ */
+export function populateStepIds(activity: Activity): void {
+  const fillScope = (steps: Step[] | undefined, scopeLabel: string): void => {
+    if (!steps) return;
+    const seen = new Set<string>();
+    for (const step of steps) {
+      if (!step.id) {
+        // Only a kind:technique step may omit its id (every other kind declares one structurally).
+        if (step.kind !== 'technique') {
+          throw new Error(
+            `Activity '${activity.id}': ${scopeLabel} has a kind:${step.kind} step without an id; only a technique step's id is derivable.`,
+          );
+        }
+        step.id = defaultStepId(techniqueName(step.technique)!);
+      }
+      if (seen.has(step.id)) {
+        throw new Error(
+          `Activity '${activity.id}': ${scopeLabel} has duplicate resolved step id '${step.id}'` +
+            (step.kind === 'technique' ? ` (from technique '${techniqueName(step.technique)}')` : '') +
+            '; give the colliding step an explicit unique id.',
+        );
+      }
+      seen.add(step.id);
+      // A loop-kind step carries a nested body; validate it as its own independent scope.
+      if (step.kind === 'loop' && step.steps.length > 0) {
+        fillScope(step.steps as Step[], `loop '${step.id}' steps`);
+      }
+    }
+  };
+
+  // Top-level steps; fillScope recurses into each loop-kind step's nested body as its own scope.
+  fillScope(activity.steps, 'top-level steps');
+}
+
+/**
+ * Surface each step's resolved id in raw activity YAML before it is handed to a
+ * worker. A step whose id was derived from its technique begins with the
+ * `- technique:` field (the id line is absent); this inserts the derived
+ * `id:` line (the technique's last `::` segment) ahead of it, preserving the
+ * step's indentation, so a worker reading the activity sees the same id the
+ * server resolves for `get_technique` and step-manifest validation.
+ */
+export function injectResolvedStepIds(rawDefinition: string): string {
+  return rawDefinition.replace(
+    /^(\s*)- technique:[ \t]*(.+)$/gm,
+    (_match, indent: string, techniqueValue: string) => {
+      const unquoted = techniqueValue.trim().replace(/^["']|["']$/g, '');
+      const resolvedId = defaultStepId(unquoted);
+      return `${indent}- id: ${resolvedId}\n${indent}  technique: ${techniqueValue}`;
+    },
+  );
+}
+
+// Checkpoint definition. There is no standalone checkpoint Zod object — checkpoints are inline
+// kind:checkpoint steps on StepSchema. This is the shape activityCheckpoints() synthesizes from
+// them (its `id` is the stable checkpoint-response replay key).
+export interface Checkpoint {
+  id: string;
+  name: string;
+  message: string;
+  condition?: z.infer<typeof ConditionSchema> | undefined;
+  options: CheckpointOption[];
+  defaultOption?: string | undefined;
+  autoAdvanceMs?: number | undefined;
+}
 
 // Decision branch schema
 export const DecisionBranchSchema = z.object({
@@ -94,22 +227,6 @@ export const DecisionSchema = z.object({
 });
 export type Decision = z.infer<typeof DecisionSchema>;
 
-// Loop schema
-export const LoopSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  type: z.enum(['forEach', 'while', 'doWhile']),
-  variable: z.string().optional(),
-  over: z.string().optional(),
-  condition: ConditionSchema.optional(),
-  maxIterations: z.number().int().positive().default(100),
-  description: z.string().optional().describe('Human-readable description of what this loop does'),
-  breakCondition: ConditionSchema.optional(),
-  steps: z.array(StepSchema).optional(),
-  activities: z.array(z.string()).optional().describe('Activity IDs to execute in loop'),
-});
-export type Loop = z.infer<typeof LoopSchema>;
-
 // Transition schema
 export const TransitionSchema = z.object({
   to: z.string().describe('Activity ID to transition to'),
@@ -118,17 +235,9 @@ export const TransitionSchema = z.object({
 });
 export type Transition = z.infer<typeof TransitionSchema>;
 
-// Artifact schema - defines outputs produced by an activity
-export const ArtifactSchema = z.object({
-  id: z.string().describe('Unique identifier for the artifact'),
-  name: z.string().describe('Filename or template (supports {variable} substitution)'),
-  location: z.string().optional().describe('Location category (e.g., planning, docs)'),
-  description: z.string().optional().describe('Purpose of the artifact'),
-  action: z.enum(['create', 'update']).default('create').optional().describe('Whether this activity creates a new artifact or updates an existing one'),
-});
-export type Artifact = z.infer<typeof ArtifactSchema>;
-
-// Unified Activity schema
+// Unified Activity schema. Closed object: a field outside the declared set is a schema error.
+// The activity's artifact contract is not a schema field at all — `get_activity` synthesizes it
+// from the `## Outputs` of the techniques the activity's steps bind (AP-65, AP-43).
 export const ActivitySchema = z.object({
   // Identity (required)
   id: z.string().describe('Unique identifier for the activity'),
@@ -137,40 +246,63 @@ export const ActivitySchema = z.object({
   
   // Description (optional)
   description: z.string().optional().describe('Detailed description of the activity'),
-  
-  // Intent matching (optional - for entry-point activities)
-  problem: z.string().optional().describe('Description of the user problem this activity addresses'),
-  recognition: z.array(z.string()).optional().describe('Patterns to match user intent to this activity'),
-  
-  // Techniques the activity uses: a primary technique and supporting techniques, referenced by
-  // `::` path. The server bundles them into get_activity.
+
+  // Activity-wide techniques, referenced by `::` path. The server bundles them into get_activity.
   techniques: TechniquesReferenceSchema.optional(),
 
-  // Execution
-  steps: z.array(StepSchema).optional().describe('Ordered execution steps for this activity'),
-  
-  // Control flow (optional)
-  checkpoints: z.array(CheckpointSchema).optional().describe('User decision points'),
+  // Execution — the single ordered list of kind-tagged steps (technique | action | checkpoint | loop).
+  // Checkpoints are inline kind:checkpoint steps and loops are compound kind:loop steps: there are no
+  // separate checkpoints[]/loops[] arrays in the unified model.
+  steps: z.array(StepSchema).optional().describe('Ordered, kind-tagged execution steps for this activity'),
+
+  // Activity-level routing (read by the orchestrator at the activity boundary, not part of the worker step sequence).
   decisions: z.array(DecisionSchema).optional().describe('Conditional branching points'),
-  loops: z.array(LoopSchema).optional().describe('Iteration constructs'),
   transitions: z.array(TransitionSchema).optional().describe('Navigation to other activities'),
   triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows to trigger from this activity'),
-  
-  // Lifecycle (optional)
-  entryActions: z.array(ActionSchema).optional().describe('Actions to execute when entering activity'),
-  exitActions: z.array(ActionSchema).optional().describe('Actions to execute when exiting activity'),
-  
+
   // Metadata (optional)
   outcome: z.array(z.string()).optional().describe('Expected outcomes when activity completes successfully'),
-  context_to_preserve: z.array(z.string()).optional().describe('Context items to preserve across the activity'),
   required: z.boolean().default(true).describe('Whether this activity is required in the workflow'),
-  estimatedTime: TimeEstimateSchema.describe('Estimated time to complete'),
   rules: z.array(z.string()).optional().describe('Activity-level rules and constraints that agents must follow'),
-  artifactPrefix: z.string().optional().describe('Numeric prefix for artifact filenames, inferred from the activity filename (e.g., "02" from 02-design-philosophy.toon). Server-computed — do not set in TOON files.'),
-  artifacts: z.array(ArtifactSchema).optional().describe('Output artifacts produced by this activity. Bare filenames are prefixed with artifactPrefix at write time (e.g., design-philosophy.md → 02-design-philosophy.md).'),
-});
+  artifactPrefix: z.string().optional().describe('Numeric prefix for artifact filenames, inferred from the activity filename (e.g., "02" from 02-design-philosophy.yaml). Server-computed — do not set in definition files.'),
+}).strict();
 
 export type Activity = z.infer<typeof ActivitySchema>;
 
 export function validateActivity(data: unknown): Activity { return ActivitySchema.parse(data); }
 export function safeValidateActivity(data: unknown) { return ActivitySchema.safeParse(data); }
+
+/**
+ * Walk every step of an activity in document order: top-level steps and each loop-kind body
+ * (recursively). The single traversal all step/checkpoint consumers route through.
+ */
+export function flattenActivitySteps(activity: Activity): Step[] {
+  const out: Step[] = [];
+  const rec = (steps?: Step[]): void => {
+    for (const s of steps ?? []) {
+      out.push(s);
+      if (s.kind === 'loop' && s.steps.length) rec(s.steps as Step[]);
+    }
+  };
+  rec(activity.steps);
+  return out;
+}
+
+/**
+ * The activity's checkpoint definitions: the inline kind:checkpoint steps, in document order. A
+ * kind:checkpoint step carries its message/options/effects inline, so it maps directly to a
+ * checkpoint definition (its id is the stable key used for checkpoint yield/respond/replay).
+ */
+export function activityCheckpoints(activity: Activity): Checkpoint[] {
+  return flattenActivitySteps(activity)
+    .filter((s): s is CheckpointStep => s.kind === 'checkpoint')
+    .map((s) => ({
+      id: s.id,
+      name: s.id,
+      message: s.message,
+      options: s.options,
+      defaultOption: s.defaultOption,
+      autoAdvanceMs: s.autoAdvanceMs,
+      condition: s.condition,
+    }));
+}

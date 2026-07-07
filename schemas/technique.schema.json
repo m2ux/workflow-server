@@ -9,14 +9,14 @@
       "type": "object",
       "properties": {
         "id": { "type": "string", "description": "Stable identifier for this input (hyphen-delimited, matching protocol step id style). Used to bind to an output or supply from context when chaining skills." },
-        "description": { "type": "string", "description": "Human-readable description of this input" },
-        "required": { "type": "boolean", "default": true, "description": "Whether this input must be supplied. Defaults to true — only set to false for optional inputs." },
+        "description": { "type": "string", "description": "Human-readable description of this input. Optional inputs say so in prose (a leading \"(optional)\"); necessity is otherwise implied by protocol use — there is no engine-enforced required flag." },
         "default": { "description": "Default value when not supplied" },
-        "components": { "$ref": "#/definitions/outputComponentsDefinition", "description": "Named sub-members of a composite input (authored as #### sub-sections). Mirrors output components." }
+        "components": { "$ref": "#/definitions/outputComponentsDefinition", "description": "Named sub-members of a composite input (authored as #### sub-sections). Mirrors output components." },
+        "source": { "type": "string", "description": "Delivery-only, server-populated on a step-bound get_technique: where this input's value comes from under the name-match convention (step-binding value, workflow variable, prior step output, declared default) or UNRESOLVED. Never authored in technique markdown." }
       },
       "required": [ "id" ],
       "additionalProperties": false,
-      "description": "Single input entry: id (required, hyphen-delimited), optional description, required, default, and components"
+      "description": "Single input entry: id (required, hyphen-delimited), optional description, default, and components"
     },
     "inputsDefinition": {
       "type": "array",
@@ -68,16 +68,37 @@
         "id": { "type": "string", "description": "Stable generic identifier for this output (hyphen-delimited, matching protocol step id style). Used when referencing as an input or elsewhere. Not a filename." },
         "description": { "type": "string", "description": "Human-readable description of this output" },
         "components": { "$ref": "#/definitions/outputComponentsDefinition" },
-        "artifact": { "$ref": "#/definitions/outputArtifact", "description": "Optional. When populated, specifies the artifact name to create when persisting this output." }
+        "artifact": { "$ref": "#/definitions/outputArtifact", "description": "Optional. When populated, specifies the artifact name to create when persisting this output." },
+        "destination": { "type": "string", "description": "Delivery-only, server-populated on a step-bound get_technique: the session-bag name this output lands under when the step binding remaps it. Absent otherwise — an unremapped output lands under its own id. Never authored in technique markdown." }
       },
       "required": [ "id" ],
       "additionalProperties": false,
       "description": "Single output entry: id (required, generic hyphen-delimited), optional description, components, and artifact (for persistence)"
     },
-    "outputDefinition": {
+    "outputsDefinition": {
       "type": "array",
       "items": { "$ref": "#/definitions/outputItemDefinition" },
-      "description": "What the skill produces: one or more named outputs, each with optional name, description, and components"
+      "description": "What the technique produces: one or more named outputs, each with optional name, description, and components"
+    },
+    "inheritedInputs": {
+      "type": "object",
+      "properties": {
+        "note": { "type": "string", "description": "One-line scope note: why these inputs are shared contract context rather than specific to this technique." },
+        "items": { "$ref": "#/definitions/inputsDefinition" }
+      },
+      "required": ["note", "items"],
+      "additionalProperties": false,
+      "description": "Delivery-only, server-populated at composition time: inputs inherited from the workflow-root/group contract (TECHNIQUE.md), partitioned out of `inputs`. Never authored in technique markdown."
+    },
+    "inheritedOutputs": {
+      "type": "object",
+      "properties": {
+        "note": { "type": "string", "description": "One-line scope note: why these outputs are shared contract obligations rather than specific to this technique." },
+        "items": { "$ref": "#/definitions/outputsDefinition" }
+      },
+      "required": ["note", "items"],
+      "additionalProperties": false,
+      "description": "Delivery-only, server-populated at composition time: outputs inherited from the workflow-root/group contract (TECHNIQUE.md), partitioned out of `outputs`. Never authored in technique markdown."
     },
     "technique": {
       "type": "object",
@@ -95,12 +116,18 @@
           "type": "string",
           "description": "What this technique enables agents to do"
         },
+        "provenance_note": {
+          "type": "string",
+          "description": "Delivery-only, server-populated on a step-bound get_technique: states the output delivery mechanics that the `source:`/`destination:` annotations rely on. Never authored in technique markdown."
+        },
         "rules": {
           "$ref": "#/definitions/rulesDefinition"
         },
         "inputs": { "$ref": "#/definitions/inputsDefinition" },
+        "inherited_inputs": { "$ref": "#/definitions/inheritedInputs" },
         "protocol": { "$ref": "#/definitions/protocolDefinition" },
-        "output": { "$ref": "#/definitions/outputDefinition" }
+        "outputs": { "$ref": "#/definitions/outputsDefinition" },
+        "inherited_outputs": { "$ref": "#/definitions/inheritedOutputs" }
       },
       "required": ["id", "version", "capability"],
       "additionalProperties": false

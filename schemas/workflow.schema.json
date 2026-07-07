@@ -37,11 +37,32 @@
           }
         },
         "rules": {
-          "type": "array",
-          "items": {
-            "type": "string"
+          "type": "object",
+          "properties": {
+            "workflow": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Orchestrator-only rules governing workflow execution; surfaced in get_workflow."
+            },
+            "activity": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Worker-facing rules inherited by every activity; injected into every get_activity response."
+            },
+            "universal": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Dual-audience rules both roles must follow; surfaced in get_workflow AND injected into every get_activity."
+            }
           },
-          "description": "Rules that govern workflow execution"
+          "additionalProperties": false,
+          "description": "Workflow rules partitioned by audience: `workflow` (orchestrator-only) and `activity` (inherited by every activity, injected into get_activity)."
         },
         "variables": {
           "type": "array",
@@ -49,7 +70,75 @@
             "type": "object",
             "properties": {
               "name": {
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$"
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "requirements",
+                      "features",
+                      "exclusions",
+                      "dimensions",
+                      "tasks",
+                      "results",
+                      "submodules",
+                      "paths",
+                      "fields",
+                      "filters",
+                      "stats",
+                      "effects",
+                      "substitutions",
+                      "findings",
+                      "assumptions",
+                      "subsystems",
+                      "transitions",
+                      "options",
+                      "branches",
+                      "agents",
+                      "changes",
+                      "failures",
+                      "items",
+                      "files",
+                      "gaps",
+                      "outcomes",
+                      "body",
+                      "query",
+                      "repo",
+                      "owner",
+                      "number",
+                      "title",
+                      "branch",
+                      "diff",
+                      "limit",
+                      "name",
+                      "sha",
+                      "url",
+                      "head",
+                      "base",
+                      "ref",
+                      "labels",
+                      "path",
+                      "cursor",
+                      "cql",
+                      "jql",
+                      "description",
+                      "assignee",
+                      "depth",
+                      "direction",
+                      "summary",
+                      "state",
+                      "target",
+                      "adr",
+                      "type",
+                      "mode",
+                      "kind"
+                    ]
+                  }
+                ],
+                "description": "Qualified snake_case noun phrase (>=2 words, AP-60), or an enumerated bare-word exemption."
               },
               "type": {
                 "type": "string",
@@ -78,109 +167,26 @@
           },
           "description": "Workflow-level variables"
         },
-        "modes": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "description": "Unique identifier for this mode"
-              },
-              "name": {
-                "type": "string",
-                "description": "Human-readable mode name"
-              },
-              "description": {
-                "type": "string",
-                "description": "Detailed description of mode behavior"
-              },
-              "activationVariable": {
-                "type": "string",
-                "description": "Variable name that activates this mode when true"
-              },
-              "recognition": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Patterns to detect mode activation from user intent"
-              },
-              "skipActivities": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Activity IDs to skip entirely in this mode"
-              },
-              "defaults": {
-                "type": "object",
-                "additionalProperties": {},
-                "description": "Default variable values when mode is active"
-              },
-              "resource": {
-                "type": "string",
-                "description": "Path to resource file with detailed mode guidance"
-              }
-            },
-            "required": [
-              "id",
-              "name",
-              "activationVariable"
-            ],
-            "additionalProperties": false
-          },
-          "description": "Execution modes that modify standard workflow behavior"
-        },
-        "artifactLocations": {
-          "type": "object",
-          "additionalProperties": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "path": {
-                    "type": "string",
-                    "description": "Path pattern for this location. Supports workflow variable interpolation (e.g., '{planning_folder_path}')"
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "Description of what artifacts this location stores"
-                  },
-                  "gitignored": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Whether artifacts in this location are gitignored from the host project"
-                  }
-                },
-                "required": [
-                  "path"
-                ],
-                "additionalProperties": false
-              }
-            ],
-            "description": "Artifact location: path string or { path, description?, gitignored? } object"
-          },
-          "description": "Named artifact storage locations. Keys are location identifiers referenced by activity artifact definitions."
-        },
         "techniques": {
           "type": "object",
           "properties": {
-            "primary": {
-              "type": "string",
-              "description": "Primary technique ID for this workflow."
-            },
-            "supporting": {
+            "workflow": {
               "type": "array",
-              "items": { "type": "string" },
-              "description": "Supporting technique references (:: paths) the workflow uses at the orchestrator level; bundled into get_workflow alongside the core orchestrator techniques."
+              "items": {
+                "type": "string"
+              },
+              "description": "Orchestrator-level technique references (`::` paths); bundled into get_workflow alongside the core orchestrator techniques."
+            },
+            "activity": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Technique references inherited by every activity; injected into every get_activity technique bundle."
             }
           },
           "additionalProperties": false,
-          "description": "Workflow-level techniques (primary + supporting) the orchestrator uses; bundled into get_workflow."
+          "description": "Workflow techniques partitioned by audience: `workflow` (orchestrator, bundled into get_workflow) and `activity` (inherited by every activity, injected into get_activity)."
         },
         "initialActivity": {
           "type": "string",
@@ -208,516 +214,421 @@
                 "type": "string",
                 "description": "Detailed description of the activity"
               },
-              "problem": {
-                "type": "string",
-                "description": "Description of the user problem this activity addresses"
-              },
-              "recognition": {
+              "techniques": {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Patterns to match user intent to this activity"
-              },
-              "techniques": {
-                "type": "object",
-                "properties": {
-                  "primary": {
-                    "type": "string",
-                    "description": "Primary technique ID for this activity. Optional when steps declare individual techniques."
-                  },
-                  "supporting": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "description": "Supporting technique IDs"
-                  }
-                },
-                "additionalProperties": false
+                "description": "Activity-wide technique references (`::` paths); bundled into get_activity."
               },
               "steps": {
                 "type": "array",
                 "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "description": "Unique identifier for this step"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "LEGACY: Human-readable step name. Optional — id + description are usually sufficient."
-                    },
-                    "description": {
-                      "type": "string",
-                      "description": "Detailed guidance for executing this step. Carries inline operation invocations of the form `technique-id::operation-name(arg: {var}, ...)` when a step wraps a known operation."
-                    },
-                    "technique": {
-                      "type": "string",
-                      "description": "LEGACY: Technique ID to apply for this step. Prefer inline operation invocation in description."
-                    },
-                    "checkpoint": {
-                      "type": "string",
-                      "description": "Optional checkpoint ID. If present, the worker MUST yield this checkpoint to the orchestrator before executing the step."
-                    },
-                    "required": {
-                      "type": "boolean",
-                      "default": true
-                    },
-                    "when": {
-                      "type": "string",
-                      "description": "Inline boolean expression that gates this step. Examples: \"has_saved_state == true\", \"is_monorepo == true\", \"client_workflow_completed == false\". Evaluated against current variable state at runtime."
-                    },
-                    "condition": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "simple"
-                            },
-                            "variable": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "technique",
+                          "description": "Step-kind discriminator."
+                        },
+                        "id": {
+                          "type": "string",
+                          "description": "Identifier for this step within the activity. Optional: the loader derives it from the last `::` segment of the technique name."
+                        },
+                        "technique": {
+                          "anyOf": [
+                            {
                               "type": "string"
                             },
-                            "operator": {
-                              "type": "string",
-                              "enum": [
-                                "==",
-                                "!=",
-                                ">",
-                                "<",
-                                ">=",
-                                "<=",
-                                "exists",
-                                "notExists"
-                              ]
-                            },
-                            "value": {
-                              "type": [
-                                "string",
-                                "number",
-                                "boolean",
-                                "null"
-                              ]
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "variable",
-                            "operator"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "and"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "or"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "not"
-                            },
-                            "condition": {}
-                          },
-                          "required": [
-                            "type",
-                            "condition"
-                          ],
-                          "additionalProperties": false
-                        }
-                      ],
-                      "description": "LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons."
-                    },
-                    "actions": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "action": {
-                            "type": "string",
-                            "enum": [
-                              "log",
-                              "validate",
-                              "set",
-                              "emit",
-                              "message"
-                            ]
-                          },
-                          "target": {
-                            "type": "string"
-                          },
-                          "message": {
-                            "type": "string"
-                          },
-                          "value": {},
-                          "description": {
-                            "type": "string",
-                            "description": "Human-readable description of what this action does"
-                          },
-                          "condition": {
-                            "anyOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "simple"
-                                  },
-                                  "variable": {
-                                    "type": "string"
-                                  },
-                                  "operator": {
-                                    "type": "string",
-                                    "enum": [
-                                      "==",
-                                      "!=",
-                                      ">",
-                                      "<",
-                                      ">=",
-                                      "<=",
-                                      "exists",
-                                      "notExists"
-                                    ]
-                                  },
-                                  "value": {
+                            {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "description": "The `group::operation` (or bare op / `workflow::group::op`) technique reference this step invokes."
+                                },
+                                "inputs": {
+                                  "type": "object",
+                                  "additionalProperties": {
                                     "type": [
                                       "string",
                                       "number",
-                                      "boolean",
-                                      "null"
+                                      "boolean"
                                     ]
-                                  }
-                                },
-                                "required": [
-                                  "type",
-                                  "variable",
-                                  "operator"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "and"
                                   },
-                                  "conditions": {
-                                    "type": "array",
-                                    "items": {},
-                                    "minItems": 2
-                                  }
+                                  "description": "Input deviations: op input id → source expression (rename of a bag variable, literal, or `{template}`). Only what differs from same-name binding or a declared default."
                                 },
-                                "required": [
-                                  "type",
-                                  "conditions"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "or"
+                                "outputs": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "string"
                                   },
-                                  "conditions": {
-                                    "type": "array",
-                                    "items": {},
-                                    "minItems": 2
-                                  }
-                                },
-                                "required": [
-                                  "type",
-                                  "conditions"
-                                ],
-                                "additionalProperties": false
+                                  "description": "Output remaps: op output id → the workflow variable name its produced value lands under, when it differs from the output id."
+                                }
                               },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "not"
-                                  },
-                                  "condition": {}
-                                },
-                                "required": [
-                                  "type",
-                                  "condition"
-                                ],
-                                "additionalProperties": false
-                              }
-                            ],
-                            "description": "Condition that must be true for this action to execute"
-                          }
-                        },
-                        "required": [
-                          "action"
-                        ],
-                        "additionalProperties": false
-                      }
-                    },
-                    "triggers": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "workflow": {
-                            "type": "string",
-                            "description": "ID of the workflow to trigger"
-                          },
-                          "description": {
-                            "type": "string",
-                            "description": "Description of when/why this workflow is triggered"
-                          },
-                          "passContext": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "description": "Context variables to pass to the triggered workflow"
-                          }
-                        },
-                        "required": [
-                          "workflow"
-                        ],
-                        "additionalProperties": false
-                      },
-                      "description": "Workflows to trigger from this step"
-                    },
-                    "technique_args": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": [
-                          "string",
-                          "number",
-                          "boolean"
-                        ]
-                      },
-                      "description": "LEGACY: Arguments to pass to the technique. Prefer inline operation invocation in description."
-                    }
-                  },
-                  "required": [
-                    "id"
-                  ],
-                  "additionalProperties": false
-                },
-                "description": "Ordered execution steps for this activity"
-              },
-              "checkpoints": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Message to present to user at checkpoint"
-                    },
-                    "condition": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "simple"
-                            },
-                            "variable": {
-                              "type": "string"
-                            },
-                            "operator": {
-                              "type": "string",
-                              "enum": [
-                                "==",
-                                "!=",
-                                ">",
-                                "<",
-                                ">=",
-                                "<=",
-                                "exists",
-                                "notExists"
-                              ]
-                            },
-                            "value": {
-                              "type": [
-                                "string",
-                                "number",
-                                "boolean",
-                                "null"
-                              ]
+                              "required": [
+                                "name"
+                              ],
+                              "additionalProperties": false
                             }
-                          },
-                          "required": [
-                            "type",
-                            "variable",
-                            "operator"
                           ],
-                          "additionalProperties": false
+                          "description": "Canonical per-step binding: a `group::operation` reference (string) for a step with no deviations, or `{ name, inputs?, outputs? }` when the step supplies input deviations or output remaps."
                         },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "and"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "or"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "not"
-                            },
-                            "condition": {}
-                          },
-                          "required": [
-                            "type",
-                            "condition"
-                          ],
-                          "additionalProperties": false
-                        }
-                      ],
-                      "description": "Condition that must be true before presenting this checkpoint. If false, the checkpoint is skipped."
-                    },
-                    "options": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "label": {
-                            "type": "string"
-                          },
-                          "description": {
-                            "type": "string"
-                          },
-                          "effect": {
+                        "actions": {
+                          "type": "array",
+                          "items": {
                             "type": "object",
                             "properties": {
-                              "setVariable": {
-                                "type": "object",
-                                "additionalProperties": {}
-                              },
-                              "transitionTo": {
+                              "action": {
                                 "type": "string",
-                                "description": "Activity ID to transition to"
+                                "enum": [
+                                  "log",
+                                  "validate",
+                                  "set",
+                                  "emit",
+                                  "message"
+                                ]
                               },
-                              "skipActivities": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "Activity IDs to skip"
+                              "target": {
+                                "type": "string"
+                              },
+                              "message": {
+                                "type": "string"
+                              },
+                              "value": {},
+                              "description": {
+                                "type": "string",
+                                "description": "Human-readable description of what this action does"
+                              },
+                              "condition": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "simple"
+                                      },
+                                      "variable": {
+                                        "type": "string"
+                                      },
+                                      "operator": {
+                                        "type": "string",
+                                        "enum": [
+                                          "==",
+                                          "!=",
+                                          ">",
+                                          "<",
+                                          ">=",
+                                          "<=",
+                                          "exists",
+                                          "notExists"
+                                        ]
+                                      },
+                                      "value": {
+                                        "type": [
+                                          "string",
+                                          "number",
+                                          "boolean",
+                                          "null"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "variable",
+                                      "operator"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "and"
+                                      },
+                                      "conditions": {
+                                        "type": "array",
+                                        "items": {
+                                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                        },
+                                        "minItems": 2
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "conditions"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "or"
+                                      },
+                                      "conditions": {
+                                        "type": "array",
+                                        "items": {
+                                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                        },
+                                        "minItems": 2
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "conditions"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "not"
+                                      },
+                                      "condition": {
+                                        "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "condition"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                ],
+                                "description": "Condition that must be true for this action to execute"
                               }
                             },
+                            "required": [
+                              "action"
+                            ],
                             "additionalProperties": false
                           }
                         },
-                        "required": [
-                          "id",
-                          "label"
-                        ],
-                        "additionalProperties": false
+                        "when": {
+                          "type": "string",
+                          "description": "Inline boolean expression that gates this step. Examples: \"has_saved_state == true\", \"is_monorepo == true\", \"client_workflow_completed == false\". Evaluated against current variable state at runtime."
+                        },
+                        "condition": {
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
+                          "description": "LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons."
+                        },
+                        "required": {
+                          "type": "boolean",
+                          "const": false,
+                          "description": "Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64)."
+                        }
                       },
-                      "minItems": 1
+                      "required": [
+                        "kind",
+                        "technique"
+                      ],
+                      "additionalProperties": false
                     },
-                    "defaultOption": {
-                      "type": "string",
-                      "description": "Option ID to auto-select when autoAdvanceMs elapses without user intervention"
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "action",
+                          "description": "Step-kind discriminator."
+                        },
+                        "id": {
+                          "type": "string",
+                          "description": "Identifier for this step within the activity."
+                        },
+                        "actions": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items"
+                          },
+                          "description": "Control actions; may be empty for marker steps."
+                        },
+                        "when": {
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"
+                        },
+                        "condition": {
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/condition"
+                        },
+                        "required": {
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/required"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "id"
+                      ],
+                      "additionalProperties": false
                     },
-                    "autoAdvanceMs": {
-                      "type": "integer",
-                      "exclusiveMinimum": 0,
-                      "description": "Milliseconds to wait before auto-selecting defaultOption"
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "checkpoint",
+                          "description": "Step-kind discriminator."
+                        },
+                        "id": {
+                          "type": "string",
+                          "description": "Identifier for this step within the activity; the stable checkpoint-response replay key."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Message presented to the user."
+                        },
+                        "options": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "effect": {
+                                "type": "object",
+                                "properties": {
+                                  "setVariable": {
+                                    "type": "object",
+                                    "additionalProperties": {}
+                                  },
+                                  "transitionTo": {
+                                    "type": "string",
+                                    "description": "Activity ID to transition to"
+                                  },
+                                  "skipActivities": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "description": "Activity IDs to skip"
+                                  }
+                                },
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "label"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "minItems": 1,
+                          "description": "Decision options with effects."
+                        },
+                        "defaultOption": {
+                          "type": "string",
+                          "description": "Option auto-selected when autoAdvanceMs elapses."
+                        },
+                        "autoAdvanceMs": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "description": "Ms before auto-selecting defaultOption."
+                        },
+                        "blocking": {
+                          "type": "boolean",
+                          "description": "True requires explicit user selection (no auto-advance)."
+                        },
+                        "when": {
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"
+                        },
+                        "condition": {
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/condition"
+                        },
+                        "required": {
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/required"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "id",
+                        "message",
+                        "options"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "loop",
+                          "description": "Step-kind discriminator."
+                        },
+                        "id": {
+                          "type": "string",
+                          "description": "Identifier for this step within the activity."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Structural label for the iteration (the one step kind that carries a name)."
+                        },
+                        "loopType": {
+                          "type": "string",
+                          "enum": [
+                            "forEach",
+                            "while",
+                            "doWhile"
+                          ],
+                          "description": "Iteration type."
+                        },
+                        "variable": {
+                          "type": "string",
+                          "description": "Current-item variable bound each iteration."
+                        },
+                        "over": {
+                          "type": "string",
+                          "description": "Collection expression iterated by a forEach loop."
+                        },
+                        "breakCondition": {
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
+                          "description": "Early-exit condition evaluated each iteration."
+                        },
+                        "maxIterations": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "description": "Safety bound on iteration count."
+                        },
+                        "steps": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items"
+                          },
+                          "description": "The loop body, a nested ordered list of steps."
+                        },
+                        "when": {
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"
+                        },
+                        "condition": {
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/condition"
+                        },
+                        "required": {
+                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/required"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "id",
+                        "loopType",
+                        "steps"
+                      ],
+                      "additionalProperties": false
                     }
-                  },
-                  "required": [
-                    "id",
-                    "name",
-                    "message",
-                    "options"
-                  ],
-                  "additionalProperties": false
+                  ]
                 },
-                "description": "User decision points"
+                "description": "Ordered, kind-tagged execution steps for this activity"
               },
               "decisions": {
                 "type": "array",
@@ -745,100 +656,7 @@
                             "type": "string"
                           },
                           "condition": {
-                            "anyOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "simple"
-                                  },
-                                  "variable": {
-                                    "type": "string"
-                                  },
-                                  "operator": {
-                                    "type": "string",
-                                    "enum": [
-                                      "==",
-                                      "!=",
-                                      ">",
-                                      "<",
-                                      ">=",
-                                      "<=",
-                                      "exists",
-                                      "notExists"
-                                    ]
-                                  },
-                                  "value": {
-                                    "type": [
-                                      "string",
-                                      "number",
-                                      "boolean",
-                                      "null"
-                                    ]
-                                  }
-                                },
-                                "required": [
-                                  "type",
-                                  "variable",
-                                  "operator"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "and"
-                                  },
-                                  "conditions": {
-                                    "type": "array",
-                                    "items": {},
-                                    "minItems": 2
-                                  }
-                                },
-                                "required": [
-                                  "type",
-                                  "conditions"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "or"
-                                  },
-                                  "conditions": {
-                                    "type": "array",
-                                    "items": {},
-                                    "minItems": 2
-                                  }
-                                },
-                                "required": [
-                                  "type",
-                                  "conditions"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "not"
-                                  },
-                                  "condition": {}
-                                },
-                                "required": [
-                                  "type",
-                                  "condition"
-                                ],
-                                "additionalProperties": false
-                              }
-                            ]
+                            "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
                           },
                           "transitionTo": {
                             "type": "string",
@@ -867,555 +685,6 @@
                 },
                 "description": "Conditional branching points"
               },
-              "loops": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "forEach",
-                        "while",
-                        "doWhile"
-                      ]
-                    },
-                    "variable": {
-                      "type": "string"
-                    },
-                    "over": {
-                      "type": "string"
-                    },
-                    "condition": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "simple"
-                            },
-                            "variable": {
-                              "type": "string"
-                            },
-                            "operator": {
-                              "type": "string",
-                              "enum": [
-                                "==",
-                                "!=",
-                                ">",
-                                "<",
-                                ">=",
-                                "<=",
-                                "exists",
-                                "notExists"
-                              ]
-                            },
-                            "value": {
-                              "type": [
-                                "string",
-                                "number",
-                                "boolean",
-                                "null"
-                              ]
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "variable",
-                            "operator"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "and"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "or"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "not"
-                            },
-                            "condition": {}
-                          },
-                          "required": [
-                            "type",
-                            "condition"
-                          ],
-                          "additionalProperties": false
-                        }
-                      ]
-                    },
-                    "maxIterations": {
-                      "type": "integer",
-                      "exclusiveMinimum": 0,
-                      "default": 100
-                    },
-                    "description": {
-                      "type": "string",
-                      "description": "Human-readable description of what this loop does"
-                    },
-                    "breakCondition": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "simple"
-                            },
-                            "variable": {
-                              "type": "string"
-                            },
-                            "operator": {
-                              "type": "string",
-                              "enum": [
-                                "==",
-                                "!=",
-                                ">",
-                                "<",
-                                ">=",
-                                "<=",
-                                "exists",
-                                "notExists"
-                              ]
-                            },
-                            "value": {
-                              "type": [
-                                "string",
-                                "number",
-                                "boolean",
-                                "null"
-                              ]
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "variable",
-                            "operator"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "and"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "or"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "not"
-                            },
-                            "condition": {}
-                          },
-                          "required": [
-                            "type",
-                            "condition"
-                          ],
-                          "additionalProperties": false
-                        }
-                      ]
-                    },
-                    "steps": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "description": "Unique identifier for this step"
-                          },
-                          "name": {
-                            "type": "string",
-                            "description": "LEGACY: Human-readable step name. Optional — id + description are usually sufficient."
-                          },
-                          "description": {
-                            "type": "string",
-                            "description": "Detailed guidance for executing this step. Carries inline operation invocations of the form `technique-id::operation-name(arg: {var}, ...)` when a step wraps a known operation."
-                          },
-                          "technique": {
-                            "type": "string",
-                            "description": "LEGACY: Technique ID to apply for this step. Prefer inline operation invocation in description."
-                          },
-                          "checkpoint": {
-                            "type": "string",
-                            "description": "Optional checkpoint ID. If present, the worker MUST yield this checkpoint to the orchestrator before executing the step."
-                          },
-                          "required": {
-                            "type": "boolean",
-                            "default": true
-                          },
-                          "when": {
-                            "type": "string",
-                            "description": "Inline boolean expression that gates this step. Examples: \"has_saved_state == true\", \"is_monorepo == true\", \"client_workflow_completed == false\". Evaluated against current variable state at runtime."
-                          },
-                          "condition": {
-                            "anyOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "simple"
-                                  },
-                                  "variable": {
-                                    "type": "string"
-                                  },
-                                  "operator": {
-                                    "type": "string",
-                                    "enum": [
-                                      "==",
-                                      "!=",
-                                      ">",
-                                      "<",
-                                      ">=",
-                                      "<=",
-                                      "exists",
-                                      "notExists"
-                                    ]
-                                  },
-                                  "value": {
-                                    "type": [
-                                      "string",
-                                      "number",
-                                      "boolean",
-                                      "null"
-                                    ]
-                                  }
-                                },
-                                "required": [
-                                  "type",
-                                  "variable",
-                                  "operator"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "and"
-                                  },
-                                  "conditions": {
-                                    "type": "array",
-                                    "items": {},
-                                    "minItems": 2
-                                  }
-                                },
-                                "required": [
-                                  "type",
-                                  "conditions"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "or"
-                                  },
-                                  "conditions": {
-                                    "type": "array",
-                                    "items": {},
-                                    "minItems": 2
-                                  }
-                                },
-                                "required": [
-                                  "type",
-                                  "conditions"
-                                ],
-                                "additionalProperties": false
-                              },
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "type": {
-                                    "type": "string",
-                                    "const": "not"
-                                  },
-                                  "condition": {}
-                                },
-                                "required": [
-                                  "type",
-                                  "condition"
-                                ],
-                                "additionalProperties": false
-                              }
-                            ],
-                            "description": "LEGACY: Structured condition that must be true for this step to execute. Prefer the `when` inline expression for simple comparisons."
-                          },
-                          "actions": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "action": {
-                                  "type": "string",
-                                  "enum": [
-                                    "log",
-                                    "validate",
-                                    "set",
-                                    "emit",
-                                    "message"
-                                  ]
-                                },
-                                "target": {
-                                  "type": "string"
-                                },
-                                "message": {
-                                  "type": "string"
-                                },
-                                "value": {},
-                                "description": {
-                                  "type": "string",
-                                  "description": "Human-readable description of what this action does"
-                                },
-                                "condition": {
-                                  "anyOf": [
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "const": "simple"
-                                        },
-                                        "variable": {
-                                          "type": "string"
-                                        },
-                                        "operator": {
-                                          "type": "string",
-                                          "enum": [
-                                            "==",
-                                            "!=",
-                                            ">",
-                                            "<",
-                                            ">=",
-                                            "<=",
-                                            "exists",
-                                            "notExists"
-                                          ]
-                                        },
-                                        "value": {
-                                          "type": [
-                                            "string",
-                                            "number",
-                                            "boolean",
-                                            "null"
-                                          ]
-                                        }
-                                      },
-                                      "required": [
-                                        "type",
-                                        "variable",
-                                        "operator"
-                                      ],
-                                      "additionalProperties": false
-                                    },
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "const": "and"
-                                        },
-                                        "conditions": {
-                                          "type": "array",
-                                          "items": {},
-                                          "minItems": 2
-                                        }
-                                      },
-                                      "required": [
-                                        "type",
-                                        "conditions"
-                                      ],
-                                      "additionalProperties": false
-                                    },
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "const": "or"
-                                        },
-                                        "conditions": {
-                                          "type": "array",
-                                          "items": {},
-                                          "minItems": 2
-                                        }
-                                      },
-                                      "required": [
-                                        "type",
-                                        "conditions"
-                                      ],
-                                      "additionalProperties": false
-                                    },
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "const": "not"
-                                        },
-                                        "condition": {}
-                                      },
-                                      "required": [
-                                        "type",
-                                        "condition"
-                                      ],
-                                      "additionalProperties": false
-                                    }
-                                  ],
-                                  "description": "Condition that must be true for this action to execute"
-                                }
-                              },
-                              "required": [
-                                "action"
-                              ],
-                              "additionalProperties": false
-                            }
-                          },
-                          "triggers": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "workflow": {
-                                  "type": "string",
-                                  "description": "ID of the workflow to trigger"
-                                },
-                                "description": {
-                                  "type": "string",
-                                  "description": "Description of when/why this workflow is triggered"
-                                },
-                                "passContext": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string"
-                                  },
-                                  "description": "Context variables to pass to the triggered workflow"
-                                }
-                              },
-                              "required": [
-                                "workflow"
-                              ],
-                              "additionalProperties": false
-                            },
-                            "description": "Workflows to trigger from this step"
-                          },
-                          "technique_args": {
-                            "type": "object",
-                            "additionalProperties": {
-                              "type": [
-                                "string",
-                                "number",
-                                "boolean"
-                              ]
-                            },
-                            "description": "LEGACY: Arguments to pass to the technique. Prefer inline operation invocation in description."
-                          }
-                        },
-                        "required": [
-                          "id"
-                        ],
-                        "additionalProperties": false
-                      }
-                    },
-                    "activities": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "description": "Activity IDs to execute in loop"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "name",
-                    "type"
-                  ],
-                  "additionalProperties": false
-                },
-                "description": "Iteration constructs"
-              },
               "transitions": {
                 "type": "array",
                 "items": {
@@ -1426,100 +695,7 @@
                       "description": "Activity ID to transition to"
                     },
                     "condition": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "simple"
-                            },
-                            "variable": {
-                              "type": "string"
-                            },
-                            "operator": {
-                              "type": "string",
-                              "enum": [
-                                "==",
-                                "!=",
-                                ">",
-                                "<",
-                                ">=",
-                                "<=",
-                                "exists",
-                                "notExists"
-                              ]
-                            },
-                            "value": {
-                              "type": [
-                                "string",
-                                "number",
-                                "boolean",
-                                "null"
-                              ]
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "variable",
-                            "operator"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "and"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "or"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "not"
-                            },
-                            "condition": {}
-                          },
-                          "required": [
-                            "type",
-                            "condition"
-                          ],
-                          "additionalProperties": false
-                        }
-                      ]
+                      "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
                     },
                     "isDefault": {
                       "type": "boolean",
@@ -1561,268 +737,6 @@
                 },
                 "description": "Workflows to trigger from this activity"
               },
-              "entryActions": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "action": {
-                      "type": "string",
-                      "enum": [
-                        "log",
-                        "validate",
-                        "set",
-                        "emit",
-                        "message"
-                      ]
-                    },
-                    "target": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "value": {},
-                    "description": {
-                      "type": "string",
-                      "description": "Human-readable description of what this action does"
-                    },
-                    "condition": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "simple"
-                            },
-                            "variable": {
-                              "type": "string"
-                            },
-                            "operator": {
-                              "type": "string",
-                              "enum": [
-                                "==",
-                                "!=",
-                                ">",
-                                "<",
-                                ">=",
-                                "<=",
-                                "exists",
-                                "notExists"
-                              ]
-                            },
-                            "value": {
-                              "type": [
-                                "string",
-                                "number",
-                                "boolean",
-                                "null"
-                              ]
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "variable",
-                            "operator"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "and"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "or"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "not"
-                            },
-                            "condition": {}
-                          },
-                          "required": [
-                            "type",
-                            "condition"
-                          ],
-                          "additionalProperties": false
-                        }
-                      ],
-                      "description": "Condition that must be true for this action to execute"
-                    }
-                  },
-                  "required": [
-                    "action"
-                  ],
-                  "additionalProperties": false
-                },
-                "description": "Actions to execute when entering activity"
-              },
-              "exitActions": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "action": {
-                      "type": "string",
-                      "enum": [
-                        "log",
-                        "validate",
-                        "set",
-                        "emit",
-                        "message"
-                      ]
-                    },
-                    "target": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "value": {},
-                    "description": {
-                      "type": "string",
-                      "description": "Human-readable description of what this action does"
-                    },
-                    "condition": {
-                      "anyOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "simple"
-                            },
-                            "variable": {
-                              "type": "string"
-                            },
-                            "operator": {
-                              "type": "string",
-                              "enum": [
-                                "==",
-                                "!=",
-                                ">",
-                                "<",
-                                ">=",
-                                "<=",
-                                "exists",
-                                "notExists"
-                              ]
-                            },
-                            "value": {
-                              "type": [
-                                "string",
-                                "number",
-                                "boolean",
-                                "null"
-                              ]
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "variable",
-                            "operator"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "and"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "or"
-                            },
-                            "conditions": {
-                              "type": "array",
-                              "items": {},
-                              "minItems": 2
-                            }
-                          },
-                          "required": [
-                            "type",
-                            "conditions"
-                          ],
-                          "additionalProperties": false
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string",
-                              "const": "not"
-                            },
-                            "condition": {}
-                          },
-                          "required": [
-                            "type",
-                            "condition"
-                          ],
-                          "additionalProperties": false
-                        }
-                      ],
-                      "description": "Condition that must be true for this action to execute"
-                    }
-                  },
-                  "required": [
-                    "action"
-                  ],
-                  "additionalProperties": false
-                },
-                "description": "Actions to execute when exiting activity"
-              },
               "outcome": {
                 "type": "array",
                 "items": {
@@ -1830,22 +744,10 @@
                 },
                 "description": "Expected outcomes when activity completes successfully"
               },
-              "context_to_preserve": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Context items to preserve across the activity"
-              },
               "required": {
                 "type": "boolean",
                 "default": true,
                 "description": "Whether this activity is required in the workflow"
-              },
-              "estimatedTime": {
-                "type": "string",
-                "pattern": "^\\d+(-\\d+)?\\s*(m|min|h|hr|hours?|d|days?)?$",
-                "description": "Estimated time to complete"
               },
               "rules": {
                 "type": "array",
@@ -1856,46 +758,7 @@
               },
               "artifactPrefix": {
                 "type": "string",
-                "description": "Numeric prefix for artifact filenames, inferred from the activity filename (e.g., \"02\" from 02-design-philosophy.toon). Server-computed — do not set in TOON files."
-              },
-              "artifacts": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "description": "Unique identifier for the artifact"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Filename or template (supports {variable} substitution)"
-                    },
-                    "location": {
-                      "type": "string",
-                      "description": "Location category (e.g., planning, docs)"
-                    },
-                    "description": {
-                      "type": "string",
-                      "description": "Purpose of the artifact"
-                    },
-                    "action": {
-                      "type": "string",
-                      "enum": [
-                        "create",
-                        "update"
-                      ],
-                      "default": "create",
-                      "description": "Whether this activity creates a new artifact or updates an existing one"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "name"
-                  ],
-                  "additionalProperties": false
-                },
-                "description": "Output artifacts produced by this activity. Bare filenames are prefixed with artifactPrefix at write time (e.g., design-philosophy.md → 02-design-philosophy.md)."
+                "description": "Numeric prefix for artifact filenames, inferred from the activity filename (e.g., \"02\" from 02-design-philosophy.yaml). Server-computed — do not set in definition files."
               }
             },
             "required": [
@@ -1906,7 +769,7 @@
             "additionalProperties": false
           },
           "minItems": 1,
-          "description": "Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points. Omitted in TOON files where activities are separate files."
+          "description": "Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points. Omitted in definition files where activities are separate files."
         }
       },
       "required": [

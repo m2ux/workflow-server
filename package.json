@@ -12,19 +12,23 @@
     "dev": "tsx src/index.ts",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
-    "migrate-skills": "tsx scripts/migrate-skills/migrate.ts"
+    "check:binding": "tsx scripts/check-binding-fidelity.ts",
+    "check:identifiers": "tsx scripts/check-identifier-qualification.ts",
+    "check:self-input": "tsx scripts/check-self-provisioned-input.ts",
+    "check:activity-tech": "tsx scripts/check-activity-technique-overlap.ts",
+    "check:prism-lenses": "tsx scripts/check-prism-lens-reachability.ts",
+    "check:anchors": "tsx scripts/check-resource-anchors.ts"
   },
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.19.30",
-    "ajv": "^8.17.1",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "vitest": "^1.6.1"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.2",
-    "@toon-format/toon": "^2.1.0",
+    "yaml": "^2.9.0",
     "zod": "^3.22.4",
     "zod-to-json-schema": "^3.22.4"
   }

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { Workflow } from '../schema/workflow.schema.js';
-import { getValidTransitions, getActivity, getTransitionList } from '../loaders/workflow-loader.js';
+import { getValidTransitions, getActivity, getTransitionList, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 
 /**
  * Minimal view of session state required by the validation helpers. The
@@ -27,13 +27,6 @@ function emptyValidation(): ValidationResult {
   return { status: 'valid', warnings: [] };
 }
 
-export function validateWorkflowConsistency(view: SessionView, workflowId: string): string | null {
-  if (view.wf && view.wf !== workflowId) {
-    return `Workflow mismatch: session was on '${view.wf}' but call targets '${workflowId}'. Start a new session for a different workflow.`;
-  }
-  return null;
-}
-
 export function validateActivityTransition(view: SessionView, workflow: Workflow, activityId: string): string | null {
   if (!view.act) {
     if (workflow.initialActivity && activityId !== workflow.initialActivity) {
@@ -42,46 +35,15 @@ export function validateActivityTransition(view: SessionView, workflow: Workflow
     return null;
   }
   if (view.act === activityId) return null;
+  // The terminal sentinel is a valid terminal target from any activity (it may
+  // be reached via an abort/checkpoint effect rather than a declared transition).
+  if (activityId === TERMINAL_SENTINEL) return null;
 
   const valid = getValidTransitions(workflow, view.act);
   if (valid.length === 0) return null;
 
   if (!valid.includes(activityId)) {
     return `Activity '${activityId}' is not a direct transition from '${view.act}'. Valid transitions: [${valid.join(', ')}]`;
-  }
-  return null;
-}
-
-export function validateTechniqueAssociation(workflow: Workflow, activityId: string, techniqueId: string): string | null {
-  if (!activityId) return 'Technique association check skipped: no current activity in session';
-
-  const activity = getActivity(workflow, activityId);
-  if (!activity) return `Technique association check skipped: activity '${activityId}' not found in workflow`;
-
-  const declared = new Set<string>();
-
-  if (activity.techniques?.primary) declared.add(activity.techniques.primary);
-  if (activity.techniques?.supporting) activity.techniques.supporting.forEach(s => declared.add(s));
-
-  if (activity.steps) {
-    for (const step of activity.steps) {
-      if (step.technique) declared.add(step.technique);
-    }
-  }
-  if (activity.loops) {
-    for (const loop of activity.loops) {
-      if (loop.steps) {
-        for (const step of loop.steps) {
-          if (step.technique) declared.add(step.technique);
-        }
-      }
-    }
-  }
-
-  if (declared.size === 0) return null;
-
-  if (!declared.has(techniqueId)) {
-    return `Technique '${techniqueId}' is not declared by activity '${activityId}'. Declared techniques: [${[...declared].join(', ')}]`;
   }
   return null;
 }
@@ -109,7 +71,7 @@ export function validateStepManifest(
   const { steps } = activity;
   if (!steps || steps.length === 0) return [];
 
-  const expectedIds = steps.map(s => s.id);
+  const expectedIds = steps.map(s => s.id).filter((id): id is string => id !== undefined);
   const manifestIds = manifest.map(m => m.step_id);
   const warnings: string[] = [];
 
@@ -212,13 +174,6 @@ export function buildValidation(...warnings: (string | null)[]): ValidationResul
       result.status = 'warning';
     }
   }
-  return result;
-}
-
-export function buildErrorValidation(error: string, ...warnings: (string | null)[]): ValidationResult {
-  const result = buildValidation(...warnings);
-  result.status = 'error';
-  result.errors = [error];
   return result;
 }
 

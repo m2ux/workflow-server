@@ -1,12 +1,14 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
-import { listWorkflows, loadWorkflow, getActivity, getCheckpoint, readActivityRaw, readWorkflowRaw } from '../loaders/workflow-loader.js';
-import { readTechniqueRaw, resolveTechniques, formatTechniqueBundle } from '../loaders/technique-loader.js';
+import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, readActivityRaw, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { resolveTechniques, formatTechniqueBundle } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
+import { injectResolvedStepIds, techniqueName } from '../schema/activity.schema.js';
 import { withAuditLog } from '../logging.js';
-import { encodeToon } from '../utils/toon.js';
+import { stringifyForResponse } from '../utils/serialization.js';
+import { contentHash, deliveredHash, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import {
   sessionIndexParam,
   assertNoActiveCheckpoint,
@@ -53,6 +55,54 @@ function withSessionStoreErrors<T extends Record<string, unknown>, R>(
   };
 }
 
+/**
+ * Compose an activity's artifact contract from the `## Outputs` of the techniques its steps bind.
+ * Activities no longer declare `artifacts[]`; the contract IS the union of the per-step techniques'
+ * declared output artifacts — each output's `#### artifact` filename — deduped by filename in step
+ * order. The technique `## Outputs` is the single source of truth for artifact identity (AP-43/65);
+ * this synthesizes the activity-level view the worker reads, so it can never drift from the steps.
+ */
+type StepLike = { technique?: unknown; steps?: unknown[] };
+
+export async function composeActivityArtifacts(
+  activity: { steps?: Array<StepLike> } | undefined,
+  workflowDir: string,
+  workflowId: string,
+  activityId?: string,
+): Promise<Array<{ id: string; name: string }>> {
+  if (!activity) return [];
+  const refs = new Set<string>();
+  const collect = (steps?: Array<StepLike>): void => {
+    for (const s of steps ?? []) {
+      const n = techniqueName(s.technique as Parameters<typeof techniqueName>[0]);
+      if (n) refs.add(n);
+      if (Array.isArray(s.steps)) collect(s.steps as Array<StepLike>); // loop-kind nested body
+    }
+  };
+  collect(activity.steps);
+  if (refs.size === 0) return [];
+  // Resolve like get_technique: a bare op may be activity-group shorthand (`<activityId>::<op>`), so
+  // try the activity-named-group form too. resolveTechniques returns type 'not-found' for a candidate
+  // that doesn't exist, so passing both forms is safe.
+  const candidates = new Set<string>();
+  for (const r of refs) {
+    candidates.add(r);
+    if (activityId && !r.includes('::')) candidates.add(`${activityId}::${r}`);
+  }
+  const resolved = await resolveTechniques([...candidates], workflowDir, workflowId);
+  const artifacts: Array<{ id: string; name: string }> = [];
+  const seen = new Set<string>();
+  for (const t of resolved) {
+    if (t.type !== 'technique') continue;
+    const outputs = (t.body as { outputs?: Array<{ id?: string; artifact?: { name?: string } }> } | undefined)?.outputs ?? [];
+    for (const o of outputs) {
+      const name = o.artifact?.name;
+      if (name && !seen.has(name)) { seen.add(name); artifacts.push({ id: o.id ?? name, name }); }
+    }
+  }
+  return artifacts;
+}
+
 
 export function registerWorkflowTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
@@ -70,25 +120,27 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: lines.join('\n') }] };
     }));
 
-  server.tool('list_workflows', 'List all available workflow definitions with their ID, title, version, and tags. Use this when you need to discover or filter available workflows. Returns an array of workflow summaries with tag-based categorization. Does not require a session_index.', {},
-    withAuditLog('list_workflows', async () => ({
-      content: [{ type: 'text' as const, text: encodeToon(await listWorkflows(config.workflowDir)) }],
-    })));
+  server.tool('list_workflows', 'List all available workflow definitions with their ID, title, version, and tags. Use this when you need to discover or filter available workflows. Returns an array of workflow summaries with tag-based categorization. If any workflow definition fails to load (unreadable file or manifest missing id/title/version), the response is instead an object with `workflows` (the loadable entries) and `load_errors` (one entry per failed file). Does not require a session_index.', {},
+    withAuditLog('list_workflows', async () => {
+      const { workflows, errors } = await listWorkflowsWithDiagnostics(config.workflowDir);
+      // Additive shape: the payload stays a plain array unless something failed to load.
+      const payload = errors.length > 0 ? { workflows, load_errors: errors } : workflows;
+      return { content: [{ type: 'text' as const, text: stringifyForResponse(payload) }] };
+    }));
 
-  server.tool('get_workflow', 'Load the workflow definition for the current session. The response begins with the workflow\'s primary technique (raw TOON), followed by the workflow definition. Use summary=true (the default) to get lightweight metadata including rules, variables, orchestration model, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. Use summary=false for the raw workflow definition in TOON format. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity. The summary also carries `planning_folder_path`: the canonical absolute planning folder for this session under THIS server\'s workspace `.engineering` root — bind it as the single artifact location and never recompose it relative to your CWD or the target component repo.',
+  server.tool('get_workflow', 'Load the workflow definition for the current session. The response begins with the resolved orchestrator technique bundle, then a `---` separator, then lightweight workflow metadata: rules, variables, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. If any activity file failed to load (invalid or unparsable YAML), the response includes `activity_load_errors` listing each failed file with its error — those activities are absent from the activity list. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity. The response also carries `planning_folder_path`: the canonical absolute planning folder for this session under THIS server\'s workspace `.engineering` root — bind it as the single artifact location and never recompose it relative to your CWD or the target component repo.',
     {
       ...sessionIndexParam,
-      summary: z.boolean().optional().default(true).describe('Returns lightweight summary by default. Set to false for the raw workflow definition.'),
     },
-    withAuditLog('get_workflow', withSessionStoreErrors(async ({ session_index, summary }) => {
+    withAuditLog('get_workflow', withSessionStoreErrors(async ({ session_index }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
       const { state } = loaded;
       assertNoActiveCheckpoint(state);
       const workflow_id = state.workflowId;
 
-      const result = await loadWorkflow(config.workflowDir, workflow_id);
+      const result = await loadWorkflowWithDiagnostics(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
-      const wf = result.value;
+      const { workflow: wf, activityLoadErrors } = result.value;
 
       const view = sessionView(state);
       const validation = buildValidation(
@@ -99,62 +151,52 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const next = advanceSession(state);
       await saveSessionForTool(loaded, next);
 
-      const primaryTechniqueId = wf.techniques?.primary;
-      let primaryTechniqueContent = '';
-      if (primaryTechniqueId) {
-        const techniqueResult = await readTechniqueRaw(primaryTechniqueId, config.workflowDir, workflow_id);
-        if (techniqueResult.success) {
-          primaryTechniqueContent = techniqueResult.value;
-        }
-      }
-
-      // Bundle the workflow's technique refs (primary + supporting) and the core orchestrator
-      // techniques. Deduplicate by ref so a workflow that explicitly lists a core technique resolves it once.
-      const wfTech = (wf as { techniques?: { primary?: string; supporting?: string[] } }).techniques;
-      const wfTechRefs = [...(wfTech?.primary ? [wfTech.primary] : []), ...(wfTech?.supporting ?? [])];
+      // Bundle the workflow's orchestrator-level technique refs (`techniques.workflow`) and the core
+      // orchestrator techniques. Deduplicate by ref so a workflow that explicitly lists a core
+      // technique resolves it once.
+      const wfTechRefs = (wf as { techniques?: { workflow?: string[] } }).techniques?.workflow ?? [];
       const orchestratorTechniques = Array.from(new Set([...wfTechRefs, ...CORE_ORCHESTRATOR_TECHNIQUES]));
       const resolvedOrchestrator = await resolveTechniques(orchestratorTechniques, config.workflowDir, workflow_id);
-      const opsBlock = encodeToon(formatTechniqueBundle(resolvedOrchestrator));
+      const opsBlock = stringifyForResponse(formatTechniqueBundle(resolvedOrchestrator));
 
-      // Pre-separator preamble holds the legacy primary-technique body (when present)
-      // followed by the resolved-operations bundle. Tests and clients split on
-      // the first '\n\n---\n\n' to recover the workflow section, so we keep
-      // that single separator and concatenate technique + ops before it.
-      const preambleParts = [primaryTechniqueContent, opsBlock].filter(s => s.length > 0);
+      // Pre-separator preamble holds the resolved-operations bundle. Tests and clients split on
+      // the first '\n\n---\n\n' to recover the workflow section, so we keep that single separator.
+      const preambleParts = [opsBlock].filter(s => s.length > 0);
       const preamble = preambleParts.length > 0 ? preambleParts.join('\n\n') + '\n\n---\n\n' : '';
 
-      if (summary) {
-        const summaryData = {
-          id: wf.id,
-          version: wf.version,
-          title: wf.title,
-          description: wf.description,
-          rules: wf.rules,
-          variables: wf.variables,
-          initialActivity: wf.initialActivity,
-          activities: wf.activities?.map((a: { id: string; name?: string; required?: boolean; artifactPrefix?: string | undefined }) => ({ id: a.id, name: a.name, required: a.required, artifactPrefix: a.artifactPrefix })) ?? [],
-          session_index,
-          // Canonical absolute planning folder for this session, resolved by the
-          // server under its own workspace `.engineering` root. This is the single
-          // authoritative artifact location — the orchestrator binds
-          // `planning_folder_path` from here and never composes it relative to its
-          // CWD or the target component repo (which may be a submodule/worktree).
-          planning_folder_path: loaded.folderAbsPath,
-        };
+      // get_workflow returns lightweight metadata for the orchestrator: the technique bundle (above
+      // the separator) plus rules, variables, initialActivity, and activity stubs. Per-activity step
+      // detail and the worker-facing rules.activity / techniques.activity are delivered via get_activity.
+      const summaryData = {
+        id: wf.id,
+        version: wf.version,
+        title: wf.title,
+        description: wf.description,
+        rules: ((): string[] | undefined => {
+          const r = wf.rules as { workflow?: string[]; universal?: string[] } | undefined;
+          const orch = [...(r?.workflow ?? []), ...(r?.universal ?? [])];
+          return orch.length ? orch : undefined;
+        })(),
+        variables: wf.variables,
+        initialActivity: wf.initialActivity,
+        activities: wf.activities?.map((a: { id: string; name?: string; required?: boolean; artifactPrefix?: string | undefined }) => ({ id: a.id, name: a.name, required: a.required, artifactPrefix: a.artifactPrefix })) ?? [],
+        // Activity files that failed to load and are missing from `activities` — surfaced here
+        // instead of silently skipped, so a broken definition is visible at workflow load rather
+        // than as a later "Activity not found". Omitted when every activity loaded.
+        activity_load_errors: activityLoadErrors.length > 0 ? activityLoadErrors : undefined,
+        session_index,
+        // Canonical absolute planning folder for this session, resolved by the
+        // server under its own workspace `.engineering` root. This is the single
+        // authoritative artifact location — the orchestrator binds
+        // `planning_folder_path` from here and never composes it relative to its
+        // CWD or the target component repo (which may be a submodule/worktree).
+        planning_folder_path: loaded.folderAbsPath,
+      };
 
-        return {
-          content: [{ type: 'text' as const, text: preamble + encodeToon(summaryData) }],
-          _meta: { session_index, validation },
-        };
-      } else {
-        const rawResult = await readWorkflowRaw(config.workflowDir, workflow_id);
-        if (!rawResult.success) throw rawResult.error;
-
-        return {
-          content: [{ type: 'text' as const, text: preamble + `session_index: ${session_index}\n\n${rawResult.value}` }],
-          _meta: { session_index, validation },
-        };
-      }
+      return {
+        content: [{ type: 'text' as const, text: preamble + stringifyForResponse(summaryData) }],
+        _meta: { session_index, validation },
+      };
     }), traceOpts));
 
   server.tool('next_activity', 'Transition to the specified activity. This is the orchestrator\'s tool for advancing the workflow — it validates the transition, advances the session state on disk, and records the trace, but does NOT return the activity definition. After calling next_activity, the worker should call get_activity to load the complete activity definition including steps, checkpoints, transitions, and technique references. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field of the current activity\'s response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation.',
@@ -179,8 +221,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           `on activity '${state.activeCheckpoint.activityId}'. The orchestrator must resolve it by calling respond_checkpoint.`
         );
       }
+      const isTerminal = activity_id === TERMINAL_SENTINEL;
       const activity = getActivity(result.value, activity_id);
-      if (!activity) throw new Error(`Activity not found: ${activity_id}`);
+      if (!activity && !isTerminal) throw new Error(`Activity not found: ${activity_id}`);
 
       const view = sessionView(state);
       const manifestWarnings: (string | null)[] = [];
@@ -227,10 +270,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         draft.condition = transition_condition ?? '';
         delete draft.activeCheckpoint;
         draft.history.push({ timestamp: now, type: 'activity_entered', activity: activity_id });
-        // Terminal-state transition emits a workflow_completed event and
-        // flips status. The activity id 'complete' is the canonical terminal
-        // marker across the work-package, prism, and meta workflows.
-        if (activity_id === 'complete') {
+        // Terminal-state transition emits a workflow_completed event and flips
+        // status. The activity id 'complete' is the canonical terminal marker
+        // across the work-package, prism, and meta workflows; the TERMINAL_SENTINEL
+        // is the contentless terminal reached via an explicit terminal transition.
+        if (activity_id === 'complete' || isTerminal) {
           draft.history.push({ timestamp: now, type: 'workflow_completed' });
           draft.status = 'completed';
         }
@@ -241,7 +285,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // (if any) so the parent's `triggeredWorkflows[i].status` flips from
       // `running` to `completed`. Persistent-parent only — transient parents
       // were already discarded when the child captured them. Best-effort.
-      if (activity_id === 'complete' && state.parentSession?.sessionIndex) {
+      if ((activity_id === 'complete' || isTerminal) && state.parentSession?.sessionIndex) {
         const parentIdx = state.parentSession.sessionIndex;
         try {
           const parentLoaded = await loadSessionForTool(config.workspaceDir, parentIdx);
@@ -289,7 +333,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const responseData: Record<string, unknown> = {
         activity_id,
-        name: activity.name,
+        name: activity ? activity.name : 'Workflow Complete',
         session_index,
       };
 
@@ -299,11 +343,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('get_activity', 'Load the complete activity definition for the current activity in the session. This is the worker\'s tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, mode overrides, rules, and technique references — everything needed to execute the activity. The activity is determined from the session state on disk, so no activity_id parameter is needed.',
+  server.tool('get_activity', 'Load the complete activity definition for the current activity in the session. This is the worker\'s tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, rules, and technique references — everything needed to execute the activity. The activity is determined from the session state on disk, so no activity_id parameter is needed. When reference delivery is active (session context_mode "persistent" or bundle: "reference"), inherited techniques/rules content already delivered to this session+agent arrives as short { unchanged: true, content_hash } markers instead of being repeated; bundle: "full" forces full delivery.',
     {
       ...sessionIndexParam,
+      bundle: z.enum(['reference', 'full']).optional().describe('Optional delivery-mode override for the inherited techniques/rules bundle. "reference" replaces bundle content already delivered to this session+agent with short { unchanged: true, content_hash } markers — only correct when THIS calling context received the earlier deliveries. "full" forces full delivery. Defaults from the session\'s context_mode ("persistent" → reference, otherwise full).'),
     },
-    withAuditLog('get_activity', withSessionStoreErrors(async ({ session_index }) => {
+    withAuditLog('get_activity', withSessionStoreErrors(async ({ session_index, bundle }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
       const { state } = loaded;
       assertNoActiveCheckpoint(state);
@@ -316,9 +361,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const workflow_id = state.workflowId;
       const rawResult = await readActivityRaw(config.workflowDir, workflow_id, activity_id);
       if (!rawResult.success) throw new Error(`Activity not found: ${activity_id}`);
-
-      const next = advanceSession(state);
-      await saveSessionForTool(loaded, next);
+      const activityBody = injectResolvedStepIds(rawResult.value);
 
       const view = sessionView(state);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
@@ -326,26 +369,112 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         result.success ? validateWorkflowVersion(view, result.value) : null,
       );
 
-      // Bundle the techniques the activity references (primary + supporting, delivered as full
-      // protocols) and the core worker techniques, deduped.
+      // Reference-not-repeat delivery: active via per-call opt-in or the session's declared
+      // context mode. Full delivery stays the default — in disposable-worker topologies each
+      // call lands in a fresh context and the repeated bundle is load-bearing.
+      const referenceMode = (bundle ?? (state.contextMode === 'persistent' ? 'reference' : 'full')) === 'reference';
+      // Hashes of content delivered in full by THIS call, recorded to the session's delivery
+      // ledger. Recorded in every mode so a later per-call reference opt-in can refer back to
+      // content that was delivered under the default full mode.
+      const newDeliveries: Record<string, string> = {};
+
+      // Bundle the techniques the activity references (delivered as full protocols), deduped with
+      // the workflow-level techniques inherited by every activity (`techniques.activity`, injected
+      // here so a common technique is declared once on the workflow) and the core worker techniques.
       const activity = result.success ? getActivity(result.value, activity_id) : undefined;
-      const actTech = (activity as { techniques?: { primary?: string; supporting?: string[] } } | undefined)?.techniques;
-      const techRefs = [...(actTech?.primary ? [actTech.primary] : []), ...(actTech?.supporting ?? [])];
-      const workerTechniques = Array.from(new Set([...techRefs, ...CORE_WORKER_TECHNIQUES]));
+      const ownTechRefs = (activity as { techniques?: string[] } | undefined)?.techniques ?? [];
+      const inheritedTechRefs = result.success ? ((result.value as { techniques?: { activity?: string[] } }).techniques?.activity ?? []) : [];
+      const workerTechniques = Array.from(new Set([...inheritedTechRefs, ...ownTechRefs, ...CORE_WORKER_TECHNIQUES]));
       const resolvedWorker = await resolveTechniques(workerTechniques, config.workflowDir, workflow_id);
-      const opsSection = encodeToon(formatTechniqueBundle(resolvedWorker)) + '\n\n---\n\n';
+      const bundleData = formatTechniqueBundle(resolvedWorker);
+
+      // Per-technique dedup: each composed technique in the bundle is hashed individually, so an
+      // activity that introduces one new technique still receives that one in full while the
+      // inherited rest collapse to markers.
+      const bundleTechniques = bundleData['techniques'] as Record<string, unknown> | undefined;
+      if (bundleTechniques) {
+        for (const [key, body] of Object.entries(bundleTechniques)) {
+          const hash = contentHash(stringifyForResponse(body));
+          const ledgerKey = `bundle:${key}`;
+          if (referenceMode && deliveredHash(state, ledgerKey) === hash) {
+            bundleTechniques[key] = unchangedMarker(hash);
+          } else {
+            newDeliveries[ledgerKey] = hash;
+          }
+        }
+      }
+      // The rules bundle varies with the activity's own techniques, and activities alternate
+      // between rule sets across a walk — so rules entries are keyed by CONTENT (set semantics,
+      // `bundle:rules:<hash>`): any rule set this session+agent has ever received collapses,
+      // not just the most recently delivered one.
+      if (bundleData['rules'] !== undefined) {
+        const rulesHash = contentHash(stringifyForResponse(bundleData['rules']));
+        const rulesKey = `bundle:rules:${rulesHash}`;
+        if (referenceMode && deliveredHash(state, rulesKey) === rulesHash) {
+          bundleData['rules'] = unchangedMarker(rulesHash);
+        } else {
+          newDeliveries[rulesKey] = rulesHash;
+        }
+      }
+
+      const opsData = referenceMode
+        ? {
+            bundle_mode: 'reference',
+            bundle_note: 'Entries marked { unchanged: true } are byte-identical to content already delivered in this session for this agent — reuse them from your context. Re-fetch a step-bound technique with get_technique { step_id, full: true }; for inherited/core bundle entries and rules, call get_activity with bundle: "full" to re-deliver the whole bundle.',
+            ...bundleData,
+          }
+        : bundleData;
+      const opsSection = stringifyForResponse(opsData) + '\n\n---\n\n';
 
       // artifactPrefix is server-computed from the activity filename and is NOT in
-      // the raw activity TOON, so surface it in the header (and _meta) — the worker
+      // the raw activity definition, so surface it in the header (and _meta) — the worker
       // needs it to name artifacts as {artifactPrefix}-{bare_filename}.
       const artifactPrefix = (activity as { artifactPrefix?: string } | undefined)?.artifactPrefix;
       const header = artifactPrefix
         ? `session_index: ${session_index}\nartifact_prefix: ${artifactPrefix}`
         : `session_index: ${session_index}`;
 
+      // The activity's artifact contract is SYNTHESIZED from the `## Outputs` of the techniques its
+      // steps bind (activities no longer declare `artifacts[]` — the technique outputs own artifact
+      // identity, AP-43/65). Append the composed block to the activity body so the worker reads an
+      // explicit contract that can never drift from the steps.
+      const composedArtifacts = await composeActivityArtifacts(
+        activity as Parameters<typeof composeActivityArtifacts>[0], config.workflowDir, workflow_id, activity_id,
+      );
+      const activityBodyWithArtifacts = composedArtifacts.length
+        ? `${activityBody}\n${stringifyForResponse({ artifacts: composedArtifacts })}`
+        : activityBody;
+
+      // Worker-facing rules inherited by EVERY activity, injected into every get_activity so a
+      // worker dispatched for a single activity always receives them: the workflow's `rules.activity`
+      // plus the dual-audience `rules.universal`. (`rules.workflow` are orchestrator-only.)
+      const wfRules = result.success ? (result.value as { rules?: { activity?: string[]; universal?: string[] } }).rules : undefined;
+      const inheritedRules = [...(wfRules?.activity ?? []), ...(wfRules?.universal ?? [])];
+      let activityRulesBlock = '';
+      if (inheritedRules.length) {
+        const inheritedRulesHash = contentHash(stringifyForResponse(inheritedRules));
+        const inheritedRulesKey = `activity_rules:${inheritedRulesHash}`;
+        if (referenceMode && deliveredHash(state, inheritedRulesKey) === inheritedRulesHash) {
+          activityRulesBlock = `${stringifyForResponse({ activity_rules: unchangedMarker(inheritedRulesHash) })}\n\n`;
+        } else {
+          newDeliveries[inheritedRulesKey] = inheritedRulesHash;
+          activityRulesBlock = `${stringifyForResponse({ activity_rules: inheritedRules })}\n\n`;
+        }
+      }
+
+      // Persist against a FRESH load, not the snapshot captured before composition: the session
+      // store is last-writer-wins over the whole file, and composition awaits dozens of FS reads —
+      // saving the pre-composition snapshot would silently revert any concurrent write (sibling
+      // worker save, orchestrator checkpoint resolution) that landed in that window.
+      const reloaded = await loadSessionForTool(config.workspaceDir, session_index);
+      const next = advanceSession(reloaded.state, (draft) => {
+        recordDeliveries(draft, reloaded.state.agentId, newDeliveries);
+      });
+      await saveSessionForTool(reloaded, next);
+
       return {
-        content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${rawResult.value}` }],
-        _meta: { session_index, validation, artifact_prefix: artifactPrefix },
+        content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${activityRulesBlock}${activityBodyWithArtifacts}` }],
+        _meta: { session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules },
       };
     }), traceOpts));
 
@@ -384,7 +513,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const responseKey = `${activity_id}-${checkpoint_id}`;
       const priorResponse = state.checkpointResponses?.[responseKey];
       if (priorResponse) {
-        // Reconstitute the TOON-shape effect payload from the schema-shape
+        // Reconstitute the response-shape effect payload from the schema-shape
         // record (mirrors respond_checkpoint's reverse transform). The
         // variable bag has already been mutated on the original response, so
         // this payload is informational for the worker's own bookkeeping.
@@ -503,7 +632,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       );
 
       return {
-        content: [{ type: 'text' as const, text: encodeToon({ ...checkpoint, session_index }) }],
+        content: [{ type: 'text' as const, text: stringifyForResponse({ ...checkpoint, session_index }) }],
         _meta: { session_index, validation },
       };
     }), traceOpts));
@@ -601,8 +730,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // `condition_not_met` dismissals we still record the resolution with
         // a sentinel option id so the on-disk schema stays valid.
         const recordedOptionId = resolvedOptionId ?? (condition_not_met ? '__condition_not_met__' : '__unknown__');
-        // Unwrap the TOON effect into the schema-flat shape:
-        // TOON gives { setVariable: {...}, transitionTo: '...', skipActivities: [...] };
+        // Unwrap the response effect into the schema-flat shape:
+        // The encoded effect gives { setVariable: {...}, transitionTo: '...', skipActivities: [...] };
         // the schema stores variablesSet / transitionedTo / activitiesSkipped.
         const effectObj = effect as undefined | { setVariable?: Record<string, unknown>; transitionTo?: string; skipActivities?: string[] };
         const variablesSet = effectObj?.setVariable;

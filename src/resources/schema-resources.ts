@@ -3,15 +3,15 @@ import type { ServerConfig } from '../config.js';
 import { readAllSchemas, readSchema, listSchemaIds } from '../loaders/schema-loader.js';
 
 const SCHEMA_DESCRIPTIONS: Record<string, string> = {
-  workflow: 'Workflow definition schema — orchestrates activities with rules, variables, and modes',
-  activity: 'Activity definition schema — stages with steps, transitions, checkpoints, and decisions',
+  workflow: 'Workflow definition schema — orchestrates activities with rules and variables',
+  activity: 'Activity definition schema — an ordered list of kind-tagged steps (technique | action | checkpoint | loop) plus activity-level decisions and transitions',
   condition: 'Condition schema — conditional expressions for transitions, decisions, and loops',
   technique: 'Technique definition schema — reusable capabilities with protocol, tools, inputs/outputs, and rules',
   state: 'State schema — runtime execution progress tracking',
 };
 
 /**
- * Register MCP resources for TOON schema access.
+ * Register MCP resources for workflow-definition schema access.
  * Exposes each schema individually at workflow-server://schemas/{id}
  * and all schemas combined at workflow-server://schemas.
  */
@@ -22,7 +22,7 @@ export function registerSchemaResources(server: McpServer, config: ServerConfig)
       `schema-${id}`,
       `workflow-server://schemas/${id}`,
       {
-        description: SCHEMA_DESCRIPTIONS[id] ?? `TOON ${id} schema definition`,
+        description: SCHEMA_DESCRIPTIONS[id] ?? `${id} schema definition`,
         mimeType: 'application/json',
       },
       async (uri) => {
@@ -46,7 +46,7 @@ export function registerSchemaResources(server: McpServer, config: ServerConfig)
     'schemas',
     'workflow-server://schemas',
     {
-      description: 'All TOON schema definitions for workflow interpretation (workflow, activity, condition, technique, state)',
+      description: 'All schema definitions for workflow interpretation (workflow, activity, condition, technique, state)',
       mimeType: 'application/json',
     },
     async (uri) => {

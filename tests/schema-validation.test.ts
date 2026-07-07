@@ -1,20 +1,19 @@
 import { describe, it, expect } from 'vitest';
-import { resolve } from 'node:path';
+import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { join, resolve } from 'node:path';
+import { parseDefinition } from '../src/utils/serialization.js';
 import {
   WorkflowSchema,
   safeValidateWorkflow,
 } from '../src/schema/workflow.schema.js';
 import {
   ActivitySchema,
-  CheckpointSchema,
   StepSchema,
   DecisionSchema,
-  LoopSchema,
   safeValidateActivity,
 } from '../src/schema/activity.schema.js';
 import { ConditionSchema } from '../src/schema/condition.schema.js';
-import { loadWorkflow } from '../src/loaders/workflow-loader.js';
-import { readActivity } from '../src/loaders/activity-loader.js';
+import { loadWorkflow, getActivity } from '../src/loaders/workflow-loader.js';
 
 const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
 
@@ -88,70 +87,75 @@ describe('schema-validation', () => {
 
   describe('StepSchema', () => {
     it('should validate minimal step', () => {
-      const step = { id: 'step-1', name: 'Step One' };
+      const step = { kind: 'action', id: 'step-1' };
       const result = StepSchema.safeParse(step);
       expect(result.success).toBe(true);
     });
 
-    it('should validate step with description', () => {
+    it('should reject a step with a description (AP-64: guidance lives in the bound technique)', () => {
       const step = {
+        kind: 'technique',
         id: 'step-1',
-        name: 'Step One',
         description: 'Detailed guidance for this step',
         technique: 'some-technique',
       };
       const result = StepSchema.safeParse(step);
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject a technique step carrying another kind\'s field', () => {
+      const step = { kind: 'technique', id: 'step-1', technique: 'some-technique', loopType: 'forEach' };
+      expect(StepSchema.safeParse(step).success).toBe(false);
+    });
+
+    it('should reject an action step carrying checkpoint fields', () => {
+      const step = { kind: 'action', id: 'step-1', message: 'not a checkpoint' };
+      expect(StepSchema.safeParse(step).success).toBe(false);
+    });
+
+    it('should reject a checkpoint step carrying a technique binding', () => {
+      const step = {
+        kind: 'checkpoint', id: 'cp-1', message: 'OK?',
+        options: [{ id: 'yes', label: 'Yes' }], technique: 'some-technique',
+      };
+      expect(StepSchema.safeParse(step).success).toBe(false);
+    });
+
+    it('should reject a checkpoint step without options', () => {
+      const step = { kind: 'checkpoint', id: 'cp-1', message: 'OK?', options: [] };
+      expect(StepSchema.safeParse(step).success).toBe(false);
+    });
+
+    it('should reject `required: true` (redundant — required is the default) and accept `required: false`', () => {
+      const base = { kind: 'technique', id: 'step-1', technique: 'some-technique' };
+      expect(StepSchema.safeParse({ ...base, required: true }).success).toBe(false);
+      expect(StepSchema.safeParse({ ...base, required: false }).success).toBe(true);
+    });
+
+    it('should accept a loop step name and reject name on every other kind', () => {
+      const loop = {
+        kind: 'loop', id: 'loop-1', name: 'per item', loopType: 'forEach', over: 'items',
+        steps: [{ kind: 'action', id: 'inner' }],
+      };
+      expect(StepSchema.safeParse(loop).success).toBe(true);
+      expect(StepSchema.safeParse({ kind: 'action', id: 'step-1', name: 'labelled' }).success).toBe(false);
+    });
+
+    it('should validate a technique-bound step without an explicit id', () => {
+      const step = { kind: 'technique', technique: 'cargo-operations::run-suite' };
+      const result = StepSchema.safeParse(step);
       expect(result.success).toBe(true);
     });
 
-    it('should reject step without id', () => {
-      const step = { name: 'Step One' };
+    it('should reject a kind:action step with no explicit id', () => {
+      const step = { kind: 'action', description: 'a control step missing its id' };
       const result = StepSchema.safeParse(step);
       expect(result.success).toBe(false);
     });
-  });
 
-  describe('CheckpointSchema', () => {
-    it('should validate checkpoint with options', () => {
-      const checkpoint = {
-        id: 'checkpoint-1',
-        name: 'Confirm',
-        message: 'Do you want to proceed?',
-        options: [
-          { id: 'yes', label: 'Yes' },
-          { id: 'no', label: 'No' },
-        ],
-      };
-      const result = CheckpointSchema.safeParse(checkpoint);
-      expect(result.success).toBe(true);
-    });
-
-    it('should validate checkpoint with effects', () => {
-      const checkpoint = {
-        id: 'checkpoint-1',
-        name: 'Choose',
-        message: 'Select option',
-        options: [
-          {
-            id: 'option-a',
-            label: 'Option A',
-            effect: { setVariable: { selected: 'a' }, transitionTo: 'activity-2' },
-          },
-          { id: 'option-b', label: 'Option B' },
-        ],
-      };
-      const result = CheckpointSchema.safeParse(checkpoint);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject checkpoint with no options', () => {
-      const checkpoint = {
-        id: 'checkpoint-1',
-        name: 'Empty',
-        message: 'No options',
-        options: [],
-      };
-      const result = CheckpointSchema.safeParse(checkpoint);
+    it('should reject a step with no kind', () => {
+      const step = { id: 'step-1', technique: 'some-technique' };
+      const result = StepSchema.safeParse(step);
       expect(result.success).toBe(false);
     });
   });
@@ -199,39 +203,13 @@ describe('schema-validation', () => {
     });
   });
 
-  describe('LoopSchema', () => {
-    it('should validate forEach loop', () => {
-      const loop = {
-        id: 'loop-1',
-        name: 'Task Loop',
-        type: 'forEach',
-        variable: 'task',
-        over: 'tasks',
-      };
-      const result = LoopSchema.safeParse(loop);
-      expect(result.success).toBe(true);
-    });
-
-    it('should validate while loop with condition', () => {
-      const loop = {
-        id: 'loop-1',
-        name: 'Retry Loop',
-        type: 'while',
-        condition: { type: 'simple', variable: 'retries', operator: '<', value: 3 },
-        maxIterations: 5,
-      };
-      const result = LoopSchema.safeParse(loop);
-      expect(result.success).toBe(true);
-    });
-  });
-
   describe('ActivitySchema', () => {
     it('should validate minimal activity', () => {
       const activity = {
         id: 'activity-1',
         version: '1.0.0',
         name: 'Activity One',
-        techniques: { primary: 'some-technique' },
+        techniques: ['some-technique'],
       };
       const result = ActivitySchema.safeParse(activity);
       expect(result.success).toBe(true);
@@ -243,19 +221,17 @@ describe('schema-validation', () => {
         version: '1.0.0',
         name: 'Full Activity',
         description: 'An activity with everything',
-        problem: 'User needs to do something',
-        recognition: ['do something', 'perform action'],
-        techniques: { primary: 'main-technique', supporting: ['helper-technique'] },
-        estimatedTime: '1-2h',
-        entryActions: [{ action: 'log', message: 'Entering' }],
-        exitActions: [{ action: 'log', message: 'Exiting' }],
-        steps: [{ id: 'step-1', name: 'Step 1' }],
-        checkpoints: [
+        techniques: ['main-technique', 'helper-technique'],
+        // Unified model: one ordered, kind-tagged steps[] — technique, an inline checkpoint, and a compound loop.
+        steps: [
+          { kind: 'technique', id: 'step-1', technique: 'main-technique::do-it' },
+          { kind: 'checkpoint', id: 'cp-1', message: 'OK?', options: [{ id: 'yes', label: 'Yes' }] },
           {
-            id: 'cp-1',
-            name: 'Check',
-            message: 'OK?',
-            options: [{ id: 'yes', label: 'Yes' }],
+            kind: 'loop',
+            id: 'loop-1',
+            loopType: 'forEach',
+            over: 'items',
+            steps: [{ kind: 'technique', id: 'inner', technique: 'helper-technique::each' }],
           },
         ],
         transitions: [{ to: 'activity-2', isDefault: true }],
@@ -263,6 +239,88 @@ describe('schema-validation', () => {
       };
       const result = ActivitySchema.safeParse(activity);
       expect(result.success).toBe(true);
+    });
+
+    it('should reject an authored artifacts[] block (AP-65: the contract is synthesized from technique outputs)', () => {
+      const activity = {
+        id: 'activity-1',
+        version: '1.0.0',
+        name: 'Activity One',
+        techniques: ['some-technique'],
+        artifacts: [{ id: 'report', name: '01-report.md' }],
+      };
+      expect(ActivitySchema.safeParse(activity).success).toBe(false);
+    });
+
+    it('should reject a field outside the declared activity set', () => {
+      const activity = {
+        id: 'activity-1',
+        version: '1.0.0',
+        name: 'Activity One',
+        techniques: ['some-technique'],
+        checkpoints: [],
+      };
+      expect(ActivitySchema.safeParse(activity).success).toBe(false);
+    });
+  });
+
+  describe('VariableDefinitionSchema names (AP-60)', () => {
+    const workflow = (name: string) => ({
+      id: 'test-workflow',
+      version: '1.0.0',
+      title: 'Test Workflow',
+      variables: [{ name, type: 'string' }],
+      activities: [{ id: 'activity-1', version: '1.0.0', name: 'Activity One', techniques: ['some-technique'] }],
+    });
+
+    it('accepts a qualified snake_case noun phrase', () => {
+      expect(safeValidateWorkflow(workflow('analysis_target')).success).toBe(true);
+    });
+
+    it('accepts an enumerated bare-word exemption', () => {
+      expect(safeValidateWorkflow(workflow('target')).success).toBe(true);
+    });
+
+    it('rejects a bare non-exempt single word', () => {
+      expect(safeValidateWorkflow(workflow('counter')).success).toBe(false);
+    });
+  });
+
+  describe('corpus strict-parse', () => {
+    // Every definition file of every workflow must parse under the closed schemas. This is the
+    // guardrail for the loader's skip-on-validation-failure behavior: a schema tightening that
+    // breaks a corpus file must fail HERE, not silently drop an activity from the loader.
+    const workflowDirs = readdirSync(WORKFLOW_DIR).filter((d) =>
+      statSync(join(WORKFLOW_DIR, d)).isDirectory(),
+    );
+
+    it('every workflow.yaml passes WorkflowSchema', () => {
+      for (const wf of workflowDirs) {
+        const file = join(WORKFLOW_DIR, wf, 'workflow.yaml');
+        if (!existsSync(file)) continue;
+        const raw = parseDefinition(readFileSync(file, 'utf-8')) as Record<string, unknown>;
+        // A raw definition file may reference its activities as strings; the loader resolves them
+        // into Activity objects. Validate everything but that loader-resolved field.
+        delete raw.activities;
+        const result = safeValidateWorkflow(raw);
+        const issues = result.success ? '' : result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join(' | ');
+        expect(result.success, `${wf}/workflow.yaml: ${issues}`).toBe(true);
+      }
+    });
+
+    it('every activity file passes ActivitySchema', () => {
+      let files = 0;
+      for (const wf of workflowDirs) {
+        const dir = join(WORKFLOW_DIR, wf, 'activities');
+        if (!existsSync(dir)) continue;
+        for (const entry of readdirSync(dir).filter((f) => f.endsWith('.yaml'))) {
+          files++;
+          const result = safeValidateActivity(parseDefinition(readFileSync(join(dir, entry), 'utf-8')));
+          const issues = result.success ? '' : result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join(' | ');
+          expect(result.success, `${wf}/activities/${entry}: ${issues}`).toBe(true);
+        }
+      }
+      expect(files).toBeGreaterThan(0);
     });
   });
 
@@ -277,10 +335,11 @@ describe('schema-validation', () => {
     });
 
     it('loaded activity should pass ActivitySchema validation', async () => {
-      const result = await readActivity(WORKFLOW_DIR, 'discover-session', 'meta');
+      const result = await loadWorkflow(WORKFLOW_DIR, 'meta');
       expect(result.success).toBe(true);
       if (result.success) {
-        const validation = safeValidateActivity(result.value);
+        const activity = getActivity(result.value, 'discover-session');
+        const validation = safeValidateActivity(activity);
         expect(validation.success).toBe(true);
       }
     });
@@ -302,7 +361,7 @@ describe('schema-validation', () => {
       id: 'activity-1', 
       version: '1.0.0',
       name: 'Activity One',
-      techniques: { primary: 'some-technique' },
+      techniques: ['some-technique'],
     };
 
     it('should validate minimal workflow', () => {
@@ -324,8 +383,8 @@ describe('schema-validation', () => {
         title: 'Test Workflow',
         initialActivity: 'activity-1',
         variables: [
-          { name: 'counter', type: 'number', defaultValue: 0 },
-          { name: 'flag', type: 'boolean', required: true },
+          { name: 'iteration_counter', type: 'number', defaultValue: 0 },
+          { name: 'elicitation_flag', type: 'boolean', required: true },
         ],
         activities: [minimalActivity],
       };
@@ -355,18 +414,6 @@ describe('schema-validation', () => {
       };
       const result = safeValidateWorkflow(workflow);
       expect(result.success).toBe(false);
-    });
-
-    it('should accept workflow without executionModel', () => {
-      const workflow = {
-        id: 'test-workflow',
-        version: '1.0.0',
-        title: 'Test Workflow',
-        initialActivity: 'activity-1',
-        activities: [minimalActivity],
-      };
-      const result = safeValidateWorkflow(workflow);
-      expect(result.success).toBe(true);
     });
   });
 });
