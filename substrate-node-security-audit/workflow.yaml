@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 4.18.0
+version: 4.19.0
 title: Security Audit Workflow
 description: Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases.
 author: m2ux
@@ -33,7 +33,10 @@ rules:
     - "The node startup agent (A3) traces every genesis data parsing path — StorageInit construction, genesis extrinsics decoding, genesis header construction, and chain spec property parsing — verifying each independently for silent truncation, since iteration patterns that stop at the first invalid element (take_while, early-return on error, filter_map) truncate remaining data."
     - "The merge agent reviews all agent reconnaissance_leads and additional_observations, plus S-agent emergent_domains from s-architectural-analysis.json and R-agent leads from r-reconnaissance-data.json. Each emergent domain is dispositioned as captured, elevated, or not-applicable. Security-relevant observations (divergent code paths, missing validation, error-path persistence, silent errors, trust boundary amplification) are elevated to findings or explicitly mapped to existing findings."
   universal:
-    - Artifacts in 'planning' location are gitignored — never reference them in PRs or issues
+    - ref: planning-artifacts-gitignored
+fragments:
+  rules:
+    planning-artifacts-gitignored: Artifacts in 'planning' location are gitignored — never reference them in PRs or issues
 techniques:
   activity:
     - variable-binding
