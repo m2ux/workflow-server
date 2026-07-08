@@ -111,6 +111,13 @@
     <li><a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md"><strong>Technique protocol specification</strong></a> — the anatomy of a technique file (capability, inputs, outputs, protocol, rules), the <code>::</code> addressing grammar, contract inheritance, Initial/Final protocol composition, and delivery.</li>
     <li><a href="https://github.com/m2ux/workflow-server/blob/main/docs/orchestra-specification.md"><strong>Orchestra DSL specification</strong></a> — the workflow/activity definition language: step, decision, loop, and flow primitives, the EBNF grammar, and the semantic constraints.</li>
   </ul>
+
+  <h2 id="implementation">The implementation view</h2>
+  <p>The models above state the guarantees; two further sections of this site show the machinery and the reasoning behind them:</p>
+  <ul>
+    <li><a href="../internals/server-anatomy.html"><strong>Server internals</strong></a> — the code that delivers the guarantees: the <a href="../internals/server-anatomy.html">module map</a>, the <a href="../internals/request-lifecycle.html">lifecycle of one tool call</a>, the <a href="../internals/session-store.html">session store on disk</a>, and the <a href="../internals/quality-system.html">guard-and-test system</a>.</li>
+    <li><a href="../design/rationale.html"><strong>Design rationale</strong></a> — why the system is shaped this way: the forces behind each decision and the costs accepted.</li>
+  </ul>
 </main>
 
 <footer class="site-footer">

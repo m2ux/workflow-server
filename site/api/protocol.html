@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The protocol in practice — Workflow Server</title>
+<meta name="description" content="The agent-server conversation beyond tool signatures: call ordering, the error and warning taxonomy, trace tokens, reference delivery, and dispatch in practice.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="../">Workflow Server</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="./tools.html">Tools</a></li>
+        <li><a href="./schemas.html">Schemas</a></li>
+        <li><a href="./protocol.html" aria-current="page">Protocol</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <h1>The protocol in practice</h1>
+  <p class="lede">The <a href="./tools.html">tool reference</a> gives the signatures; this page gives the conversation — what order calls must come in, what errors and warnings actually mean, how the trace works, and the delivery behaviour an agent will observe on the wire.</p>
+  <p>Prose guidance per tool is in the canonical <a href="https://github.com/m2ux/workflow-server/blob/main/docs/api-reference.md">API reference</a>; the machinery behind each behaviour here is described in the <a href="../internals/server-anatomy.html">internals section</a>.</p>
+
+  <h2 id="ordering">Call order and authentication</h2>
+  <p>Three tools are callable cold — <code>discover</code>, <code>list_workflows</code>, and <code>health_check</code>. Everything else requires the <code>session_index</code> issued by <code>start_session</code>, and a few ordering rules carry the whole protocol:</p>
+  <ul>
+    <li><strong><code>get_workflow</code> is the only source of <code>initialActivity</code></strong> — the first <code>next_activity</code> call needs it, so the sequence <code>start_session → get_workflow → next_activity</code> is fixed.</li>
+    <li><strong><code>next_activity</code> moves; <code>get_activity</code> reads.</strong> The orchestrator advances the session and gets back only the new activity's id; the worker then loads the full definition. Later transitions come from the <code>transitions</code> field of the current activity, validated server-side against the definition.</li>
+    <li><strong>An active checkpoint locks the session.</strong> Between <code>yield_checkpoint</code> and <code>respond_checkpoint</code>, navigation <em>and</em> content reads (<code>next_activity</code>, <code>get_activity</code>, <code>get_technique</code>, <code>get_resource</code>, <code>get_trace</code>) are refused; only the checkpoint tools and <code>get_workflow_status</code> proceed. <code>respond_checkpoint</code> with a user choice is additionally rejected if it arrives less than three seconds after the yield — a response that fast did not involve a person.</li>
+    <li><strong>Replays are safe.</strong> Yielding a checkpoint that was already resolved returns the cached response instead of pausing again, so a worker resumed with stale context cannot double-ask.</li>
+  </ul>
+
+  <h2 id="errors">Errors: the call failed</h2>
+  <p>Errors mean the call did not take effect. The useful distinction for an agent is <em>what to do next</em>:</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th scope="col">Error</th><th scope="col">Meaning</th><th scope="col">Sensible reaction</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Parameter validation failure</td><td>The call violated the tool's schema; it never reached a handler.</td><td>Fix the call — never retry verbatim.</td></tr>
+        <tr><td><code>WorkflowNotFoundError</code>, <code>ActivityNotFoundError</code>, <code>TechniqueNotFoundError</code>, <code>ResourceNotFoundError</code></td><td>A definition referenced by id does not exist in the mounted corpus.</td><td>Re-check the reference against <code>list_workflows</code> / the activity's declared steps; a typo is far likelier than a missing file.</td></tr>
+        <tr><td><code>SessionStoreError: NOT_FOUND</code> / <code>INVALID_INDEX</code></td><td>No session behind that index, or the token isn't a session index at all.</td><td>Resume by planning-folder slug via <code>start_session</code> rather than guessing indexes.</td></tr>
+        <tr><td><code>SessionStoreError: SEAL_MISMATCH</code></td><td>The state file is not what the server last wrote — edited, corrupted, or restored.</td><td>Stop and surface to the user; the server will not act on state it cannot vouch for.</td></tr>
+        <tr><td><code>SessionStoreError: COLLISION</code> / <code>WORKSPACE_INVALID</code></td><td>Two folders derived the same index, or the workspace path is unusable.</td><td>Both are setup problems for a human, not something to retry around.</td></tr>
+        <tr><td>Checkpoint gate refusals</td><td>Navigation attempted while a checkpoint is active, or a response arrived too fast.</td><td>Resolve the checkpoint properly; the gate is the feature.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="warnings">Warnings: the call succeeded, and left evidence</h2>
+  <p>Validation that requires interpretation never blocks — it lands in <code>_meta.validation</code> as <code>{ status, warnings }</code> on the successful response, and is recorded in the trace. Warnings an orchestrator should expect to read:</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th scope="col">Warning</th><th scope="col">What it signals</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Missing / unexpected steps in manifest</td><td>The reported <code>step_manifest</code> doesn't match the activity's declared steps — work was skipped, invented, or renamed.</td></tr>
+        <tr><td>Step order mismatch, empty step output</td><td>Steps reported out of declared order, or a step claimed complete with nothing to show.</td></tr>
+        <tr><td>Technique not fetched</td><td>A manifested technique step has no <code>technique_fetched</code> event — the step was summarized from memory, not executed from its definition.</td></tr>
+        <tr><td>Workflow version drift</td><td>The definition changed on disk since <code>start_session</code>; the run continues under the new definition.</td></tr>
+        <tr><td>Parent chain depth</td><td>More than five levels of nested dispatch — usually a sign the dispatch topology has gone wrong.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Why deviations warn instead of block is a deliberate stance — see <a href="../design/rationale.html#detection">detection over prevention</a>.</p>
+
+  <h2 id="trace">The trace</h2>
+  <p>Every tool call appends an event — tool, timing, outcome, workflow, activity, agent, and any validation warnings — to an in-process, per-session buffer (up to 1,000 sessions; the oldest is evicted beyond that). Each <code>next_activity</code> response additionally carries <code>_meta.trace_token</code>: the events since the previous transition, HMAC-signed into a compact token. The tokens are the durable half of the design — an orchestrator that accumulates them can hand the set to <a href="./tools.html#get_trace"><code>get_trace</code></a> and reconstruct a tamper-evident account of the run even after the in-memory buffer is gone. Calling <code>get_trace</code> with no tokens returns the live buffer for the session.</p>
+
+  <h2 id="delivery">Reference delivery</h2>
+  <p>Sessions run in one of two delivery modes, recorded as <code>contextMode</code>. In <code>fresh</code> mode (the default) every fetch returns full content — right for disposable workers that start with empty context. In <code>persistent</code> mode the server keeps a per-agent ledger of content hashes and replaces anything already delivered with a short marker:</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 250" role="img" aria-labelledby="rd-title rd-desc">
+      <title id="rd-title">Reference delivery</title>
+      <desc id="rd-desc">A fetch through get_activity or get_technique reaches a decision: is the content hash already in the session's delivered ledger? If yes, the response is a short unchanged marker with the content hash. If no, the full content is delivered and its hash is recorded in the ledger.</desc>
+      <defs>
+        <marker id="arrowrd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="14.5" font-weight="600" text-anchor="middle">
+        <rect x="20" y="90" width="260" height="56" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="150" y="114" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13.5">get_activity / get_technique</text>
+        <text x="150" y="134" fill="var(--diagram-note)" font-size="12.5" font-weight="400">in persistent context mode</text>
+        <rect x="330" y="90" width="280" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="470" y="114" fill="var(--diagram-label)">hash already in the ledger?</text>
+        <text x="470" y="134" fill="var(--diagram-note)" font-size="12.5" font-weight="400">deliveredContent, per agent</text>
+        <rect x="670" y="30" width="270" height="64" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="805" y="56" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13">{ unchanged: true,</text>
+        <text x="805" y="76" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13">content_hash }</text>
+        <rect x="670" y="160" width="270" height="64" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="805" y="186" fill="var(--diagram-label)">full content delivered</text>
+        <text x="805" y="208" fill="var(--diagram-note)" font-size="12.5" font-weight="400">hash recorded in the ledger</text>
+      </g>
+      <g font-size="13" fill="var(--diagram-note)" text-anchor="middle">
+        <text x="655" y="52">yes</text>
+        <text x="655" y="158">no</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
+        <line x1="280" y1="118" x2="326" y2="118" marker-end="url(#arrowrd)"/>
+        <path d="M 610 106 L 640 106 L 640 62 L 666 62" marker-end="url(#arrowrd)"/>
+        <path d="M 610 130 L 640 130 L 640 192 L 666 192" marker-end="url(#arrowrd)"/>
+      </g>
+    </svg>
+    <figcaption>Reference delivery in <code>persistent</code> mode. The ledger is keyed per agent and per channel (technique bundles, rules, individual techniques), so an orchestrator and a worker on the same session have independent delivery state. An agent that has lost its context can force re-delivery with <code>get_activity { bundle: "full" }</code> or <code>get_technique { full: true }</code>.</figcaption>
+  </figure>
+
+  <p>The marker is a contract, not a hint: <code>unchanged: true</code> asserts the content is byte-identical to what this agent already received, which the server can promise because payload composition is deterministic. If your context no longer contains the earlier copy, ask for full delivery rather than proceeding from a summary.</p>
+
+  <h2 id="dispatch">Dispatch in practice</h2>
+  <p>A typical work package starts before any planning folder exists: the meta session created by <code>start_session</code> for workflow selection is <em>transient</em>, living in the system temp directory. The first <code>dispatch_child</code> that commits to real work does three things at once — promotes the transient session into <code>.engineering/artifacts/planning/&lt;slug&gt;/</code> (the slug from your request, or a dated fallback), creates the child session embedded in the parent's file, and returns the child's own <code>session_index</code> for the worker. From there:</p>
+    <ul>
+    <li><code>get_workflow_status</code> is the orchestrator's poll — position, active checkpoint, and child statuses without touching execution.</li>
+    <li>A child reaching its terminal activity flips its entry in the parent's <code>triggeredWorkflows</code> to <code>completed</code>; the parent discovers this on its next status read rather than by callback.</li>
+    <li>Because children are <a href="../internals/session-store.html#nesting">embedded, not separate files</a>, resuming the parent by folder name resumes the entire tree.</li>
+  </ul>
+
+  <h2 id="next">Next</h2>
+  <p>Signatures for every tool are on the <a href="./tools.html">tool reference</a>; the server-side mechanics of a call are in <a href="../internals/request-lifecycle.html">the request lifecycle</a>.</p>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
+    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
