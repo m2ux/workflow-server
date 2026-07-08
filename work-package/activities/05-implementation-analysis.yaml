@@ -1,5 +1,5 @@
 id: implementation-analysis
-version: 2.8.0
+version: 2.9.0
 name: Implementation Analysis
 description: Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement.
 required: false
@@ -83,26 +83,7 @@ steps:
         technique: review-assumptions::interview
       - kind: checkpoint
         id: analysis-assumption-interview
-        condition:
-          type: simple
-          variable: has_open_assumptions
-          operator: ==
-          value: true
-        message: "Assumption {current_assumption.id}: {current_assumption.statement}. Can you resolve this, or defer to stakeholders?"
-        blocking: true
-        options:
-          - id: resolve-inline
-            label: Resolve now
-            description: Provide resolution for this assumption — it will be marked as resolved in the assumptions log
-            effect:
-              setVariable:
-                assumption_resolved_inline: true
-          - id: defer-to-stakeholder
-            label: Defer to stakeholder review
-            description: Queue this assumption for stakeholder review in the issue tracker
-            effect:
-              setVariable:
-                assumption_deferred: true
+        ref: assumption-interview
       - kind: technique
         id: record-response
         technique: review-assumptions::record

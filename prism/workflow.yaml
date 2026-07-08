@@ -1,5 +1,5 @@
 id: prism
-version: 2.2.0
+version: 2.3.0
 title: Structural Analysis Prism Workflow
 description: Apply cognitive lenses to code or text through isolated sub-agent passes. Each pass runs in a fresh context window to guarantee analytical independence. For security audit use cases, use the prism-audit workflow which triggers prism and adds audit-specific post-processing.
 author: m2ux
@@ -20,10 +20,14 @@ rules:
     - "LENS HANDOFF: The orchestrator tells the worker which lens resource index to load; it does NOT load or forward the lens prompt itself."
   activity:
     - "LENS LOADING: Load the lens prompt for your pass from the prism workflow resources via get_technique (resources attached), using the resource index the orchestrator provides."
-    - "WORKER PERMISSIONS: Sub-agents dispatched in this workflow have FULL READ/WRITE permissions. Workers MUST write all artifacts directly to target paths WITHOUT asking for permission or deferring to the user."
+    - ref: worker-permissions
     - "NO PERMISSION QUESTIONS: Workers must NEVER ask 'Would you like me to save this?' or 'Can I write to this directory?' or similar permission-deferral questions. These questions create workflow stalls. Write artifacts immediately and report completion."
     - "BLOCKER SURFACING (Not Permission Deferrals): If a worker encounters a GENUINE BLOCKER (operational barrier, not permission question), it must surface immediately using format: '[BLOCKER]: [specific issue]. Requires: [resolution]. Blocking: [progress].' Genuine blockers: directory doesn't exist, file permissions system error, network unavailable. NOT genuine blockers: uncertainty about whether to write, asking permission, deferring to user."
-    - "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL). This confirms successful completion and prevents silent write failures."
+    - ref: artifact-verification
+fragments:
+  rules:
+    worker-permissions: "WORKER PERMISSIONS: Sub-agents dispatched in this workflow have FULL READ/WRITE permissions. Workers MUST write all artifacts directly to target paths WITHOUT asking for permission or deferring to the user."
+    artifact-verification: "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL). This confirms successful completion and prevents silent write failures."
 techniques:
   activity:
     - variable-binding
