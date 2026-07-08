@@ -128,7 +128,7 @@
 
   <section id="documentation" aria-labelledby="documentation-h">
     <h2 id="documentation-h">Documentation</h2>
-    <p>The markdown files in the repository are the canonical documentation source; this site is the navigable, illustrated view over them. Three sections cover the material:</p>
+    <p>The markdown files in the repository are the canonical documentation source; this site is the navigable, illustrated view over them, extended with two sections derived from the server source and the project's decision records. Five sections cover the material:</p>
     <ul class="card-grid">
       <li class="card">
         <h3>User guide</h3>
@@ -142,8 +142,18 @@
       </li>
       <li class="card">
         <h3>API usage</h3>
-        <p>Full signatures for the 16 MCP tools, the JSON schemas that define workflows, activities, and techniques, and the conventions for authoring workflow definitions.</p>
-        <span class="card-cta"><a href="api/tools.html">Tool reference</a> · <a href="api/schemas.html">Schema reference</a></span>
+        <p>Full signatures for the 16 MCP tools, the JSON schemas that define workflows, activities, and techniques, and the protocol in practice — call ordering, errors, warnings, traces, and delivery.</p>
+        <span class="card-cta"><a href="api/tools.html">Tool reference</a> · <a href="api/schemas.html">Schema reference</a> · <a href="api/protocol.html">Protocol in practice</a></span>
+      </li>
+      <li class="card">
+        <h3>Server internals</h3>
+        <p>The implementation view for contributors: how the code is organized, what happens inside one tool call, how session state stays trustworthy on disk, and the guard-and-test system the repository runs on itself.</p>
+        <span class="card-cta"><a href="internals/server-anatomy.html">Server anatomy</a> · <a href="internals/request-lifecycle.html">Request lifecycle</a> · <a href="internals/session-store.html">Session store</a> · <a href="internals/quality-system.html">Quality system</a></span>
+      </li>
+      <li class="card">
+        <h3>Design rationale</h3>
+        <p>Why the system is shaped the way it is: server-owned state, determinism over model judgment, progressive disclosure, detection over prevention — the forces behind each decision, and the costs accepted.</p>
+        <span class="card-cta"><a href="design/rationale.html">Design rationale</a></span>
       </li>
     </ul>
 
@@ -180,6 +190,9 @@
           <tr><td>What tools does the server expose, and with what signatures?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/api-reference.md">API reference</a></td></tr>
           <tr><td>How do I author or validate a workflow definition?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/schemas/README.md">Schema guide</a></td></tr>
           <tr><td>How is the system designed?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/architecture.md">Architecture overview</a>, which links each of the six model documents</td></tr>
+          <tr><td>Why is it designed this way?</td><td><a href="design/rationale.html">Design rationale</a> on this site, distilled from the project's decision records</td></tr>
+          <tr><td>How is the server implemented?</td><td>The <a href="internals/server-anatomy.html">server internals</a> section on this site, derived from the source</td></tr>
+          <tr><td>What do the server's errors and warnings mean in practice?</td><td><a href="api/protocol.html">The protocol in practice</a></td></tr>
           <tr><td>What keeps an agent faithful to a workflow?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/workflow-fidelity.md">Workflow fidelity</a></td></tr>
           <tr><td>How do techniques declare their protocol and bindings?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md">Technique protocol specification</a></td></tr>
           <tr><td>How do I contribute to the server itself?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/development.md">Development guide</a></td></tr>

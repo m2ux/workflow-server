@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Request lifecycle — Workflow Server</title>
+<meta name="description" content="What happens inside one authenticated tool call: seal verification, definition loading, fidelity validation, deterministic state advance, atomic persistence, and trace signing.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="../">Workflow Server</a>
+    <nav class="site-nav" aria-label="Site">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="./server-anatomy.html">Server anatomy</a></li>
+        <li><a href="./request-lifecycle.html" aria-current="page">Request lifecycle</a></li>
+        <li><a href="./session-store.html">Session store</a></li>
+        <li><a href="./quality-system.html">Quality system</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <h1>Request lifecycle</h1>
+  <p class="lede">Every authenticated tool call follows the same skeleton: verify the session, load the definition, validate the claim the agent is making, advance the state, reseal it, and sign the trace. This page walks that skeleton using <a href="../api/tools.html#next_activity"><code>next_activity</code></a> — the most eventful call — as the example.</p>
+  <p>The handlers live in <a href="https://github.com/m2ux/workflow-server/blob/main/src/tools/workflow-tools.ts"><code>src/tools/workflow-tools.ts</code></a>; the shared machinery each stage uses is mapped in <a href="./server-anatomy.html">server anatomy</a>.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 290" role="img" aria-labelledby="rl-title rl-desc">
+      <title id="rl-title">The seven stages of an authenticated call</title>
+      <desc id="rl-desc">Seven boxes in sequence: validate parameters, load and verify the session, load the workflow, fidelity checks, advance the state, persist and reseal, sign trace and respond.</desc>
+      <defs>
+        <marker id="arrowrl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="15" font-weight="600" text-anchor="middle">
+        <rect x="15" y="55" width="210" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="120" y="79" fill="var(--diagram-label)">Validate parameters</text>
+        <text x="120" y="99" fill="var(--diagram-note)" font-size="12.5" font-weight="400">Zod schema on the call</text>
+        <rect x="245" y="55" width="210" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="350" y="79" fill="var(--diagram-label)" font-size="14.5">Load + verify session</text>
+        <text x="350" y="99" fill="var(--diagram-note)" font-size="12.5" font-weight="400">seal check, schema parse</text>
+        <rect x="475" y="55" width="210" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="580" y="79" fill="var(--diagram-label)">Load the workflow</text>
+        <text x="580" y="99" fill="var(--diagram-note)" font-size="12.5" font-weight="400">YAML to validated model</text>
+        <rect x="705" y="55" width="210" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="810" y="79" fill="var(--diagram-label)">Fidelity checks</text>
+        <text x="810" y="99" fill="var(--diagram-note)" font-size="12.5" font-weight="400">five validators</text>
+        <rect x="125" y="205" width="230" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="240" y="229" fill="var(--diagram-label)">Advance the state</text>
+        <text x="240" y="249" fill="var(--diagram-note)" font-size="12.5" font-weight="400">seq++, history events</text>
+        <rect x="425" y="205" width="230" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="540" y="229" fill="var(--diagram-label)">Persist and reseal</text>
+        <text x="540" y="249" fill="var(--diagram-note)" font-size="12.5" font-weight="400">atomic write + HMAC</text>
+        <rect x="705" y="205" width="230" height="56" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="820" y="229" fill="var(--diagram-label)">Sign trace, respond</text>
+        <text x="820" y="249" fill="var(--diagram-note)" font-size="12.5" font-weight="400">trace token in _meta</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
+        <line x1="225" y1="83" x2="241" y2="83" marker-end="url(#arrowrl)"/>
+        <line x1="455" y1="83" x2="471" y2="83" marker-end="url(#arrowrl)"/>
+        <line x1="685" y1="83" x2="701" y2="83" marker-end="url(#arrowrl)"/>
+        <path d="M 810 111 L 810 165 L 240 165 L 240 201" marker-end="url(#arrowrl)"/>
+        <line x1="355" y1="233" x2="421" y2="233" marker-end="url(#arrowrl)"/>
+        <line x1="655" y1="233" x2="701" y2="233" marker-end="url(#arrowrl)"/>
+      </g>
+    </svg>
+    <figcaption>The seven stages of an authenticated call. Stages one and two are identical for every tool; which validators run in stage four, and what stage five mutates, depend on the tool. Read-only tools such as <code>get_activity</code> skip stages five and six unless they record fetch or delivery events.</figcaption>
+  </figure>
+
+  <h2 id="entry">1–2. Entry, and proving the state is trustworthy</h2>
+  <p>Parameters are validated by the Zod schema attached at registration, so a handler never sees a malformed call. The handler runs inside <code>withAuditLog</code>, which times it and records a trace event whatever the outcome.</p>
+  <p><code>loadSessionForTool</code> then turns the six-character <code>session_index</code> into trusted state: it resolves the planning folder (<a href="./session-store.html#index">how the index maps to a folder</a>), recomputes the HMAC of <code>session.json</code>, and compares it with the stored <code>.session-token</code> digest using a timing-safe comparison. A mismatch raises <code>SessionStoreError(SEAL_MISMATCH)</code> and the call goes no further — the server refuses to act on state it cannot vouch for. The file is finally parsed against the session schema, so downstream code works with typed state, never raw JSON.</p>
+  <p>One more gate applies after loading: if <code>state.activeCheckpoint</code> is set, the session is paused — navigation and content reads alike are refused until the checkpoint is resolved (<a href="../specs/checkpoints.html">the checkpoint model</a>).</p>
+
+  <h2 id="definition">3. Loading the definition</h2>
+  <p>The workflow named in the session is loaded fresh from the workflow directory: the manifest is parsed and validated, each activity file is validated and gets its step ids populated, and the <code>artifactPrefix</code> is derived from the activity filename's numeric prefix. Nothing is cached across calls — the definition on disk is always the definition in force, which is what lets workflow hotfixes land mid-session (with a version-drift warning rather than a failure).</p>
+
+  <h2 id="validation">4. Fidelity checks</h2>
+  <p>With trusted state and a validated definition, the server checks the claim the call is making. For <code>next_activity</code> that means five validators from <a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/validation.ts"><code>utils/validation.ts</code></a>:</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th scope="col">Validator</th><th scope="col">Checks</th><th scope="col">On failure</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>validateActivityTransition</code></td><td>The requested activity is a declared transition from the current one (the terminal sentinel is always valid).</td><td>Blocks</td></tr>
+        <tr><td><code>validateWorkflowVersion</code></td><td>The definition's version still matches the version captured at <code>start_session</code>.</td><td>Warns</td></tr>
+        <tr><td><code>validateStepManifest</code></td><td>The reported <code>step_manifest</code> covers the activity's declared steps — nothing missing, nothing invented, order preserved, no empty outputs.</td><td>Warns</td></tr>
+        <tr><td><code>validateTechniqueFetches</code></td><td>Every manifested technique step has a matching <code>technique_fetched</code> history event — the step was actually loaded, not summarized from memory.</td><td>Warns</td></tr>
+        <tr><td><code>validateTransitionCondition</code>, <code>validateActivityManifest</code></td><td>The stated transition condition exists in the definition, and the completed-activity trail is consistent with the workflow graph.</td><td>Warns</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The split is deliberate: only checks that are cheap and certain block the call; everything judgment-shaped becomes a warning in the response and the trace. <a href="../design/rationale.html#detection">Detection over prevention</a> explains why.</p>
+
+  <h2 id="advance">5. Advancing the state</h2>
+  <p><code>advanceSession</code> applies the mutation as a controlled update: the monotonic <code>seq</code> counter increments, the timestamp refreshes, and the handler's mutator appends history events — <code>activity_exited</code> for the activity being left, <code>activity_entered</code> for the new one, and <code>workflow_completed</code> when the transition is terminal. A child session reaching its terminal state also notifies its parent, flipping the child's entry in the parent's <code>triggeredWorkflows</code> to <code>completed</code> (best-effort — a moved parent is tolerated).</p>
+
+  <h2 id="persist">6. Persisting and resealing</h2>
+  <p>The updated state is written atomically — to a temporary file first, then renamed over <code>session.json</code>, with a copy-based fallback when the rename crosses filesystems. The HMAC is recomputed over the canonical JSON bytes and written to <code>.session-token</code>, and both files are kept at mode <code>0600</code>. There is no code path that writes state without resealing it.</p>
+
+  <h2 id="respond">7. Signing the trace and responding</h2>
+  <p>When tracing is enabled, the events accumulated since the last <code>next_activity</code> are packaged into a trace-token payload, HMAC-signed, and returned in <code>_meta.trace_token</code> — a tamper-evident receipt for that leg of the run, reconstructable later via <a href="../api/tools.html#get_trace"><code>get_trace</code></a>.</p>
+  <p>The response body itself stays minimal: <code>next_activity</code> returns just the new activity's id and name, because the full definition is the worker's to fetch via <code>get_activity</code>. Alongside it, <code>_meta.validation</code> carries the outcome of stage four — <code>{ status, warnings }</code> — so deviations are visible to the orchestrator on the very call that detected them. The warning taxonomy, error surfaces, and delivery markers an agent may encounter are catalogued in <a href="../api/protocol.html">the protocol in practice</a>.</p>
+
+  <h2 id="next">Next</h2>
+  <p>The state this lifecycle protects is described field-by-field in <a href="./session-store.html">the session store</a>; the checks that guard the definitions themselves are in <a href="./quality-system.html">the quality system</a>.</p>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
+    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
