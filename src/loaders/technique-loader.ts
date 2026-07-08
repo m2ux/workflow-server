@@ -19,16 +19,18 @@ import {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Project an in-memory Technique object into its YAML wire form.
+ * Project an in-memory Technique object into its ordered wire shape.
  *
- * Renders a markdown-sourced technique into its YAML wire shape — used by the get_technique raw projection.
+ * `projectTechnique` returns the ordered record (embedded as-is inside get_activity's
+ * `step_techniques` bundle map); `projectTechniqueToYaml` serialises it for the
+ * get_technique raw projection.
  *
  * Field-ordering follows the canonical TechniqueSchema field declaration order — stringifyForResponse serialises
  * object keys in insertion order, so we construct the projection with the fields in the intended sequence
  * (id, version, capability, then the optional structured fields) instead of letting the
  * caller-built object's accidental key order leak into the wire payload.
  */
-export function projectTechniqueToYaml(technique: Technique): string {
+export function projectTechnique(technique: Technique): Record<string, unknown> {
   const ordered: Record<string, unknown> = {};
   ordered['id'] = technique.id;
   ordered['version'] = technique.version;
@@ -48,7 +50,11 @@ export function projectTechniqueToYaml(technique: Technique): string {
       ordered[String(key)] = technique[key];
     }
   }
-  return stringifyForResponse(ordered);
+  return ordered;
+}
+
+export function projectTechniqueToYaml(technique: Technique): string {
+  return stringifyForResponse(projectTechnique(technique));
 }
 
 /* -------------------------------------------------------------------------- */
@@ -581,6 +587,34 @@ export async function composeTechnique(
   const techniquesDir = getWorkflowTechniquesDir(workflowDir, workflowId);
 
   return ok(await composeLoaded(base.value, pathSegments, techniquesDir));
+}
+
+/**
+ * Compose a step-bound technique reference under the activity-group convention: a bare op id
+ * (no `::`) resolves FIRST against the group named after the activity — `<activity-id>::<op>` —
+ * so a step can name its op directly (`technique: classify-source` inside the `intake` activity),
+ * and an op that shares its group's name resolves to the op, not the group base. Foreign/
+ * cross-group refs are written qualified and resolve as-authored; if no group named after the
+ * activity holds the op, the bare ref falls back to as-authored. Returns the RESOLVED id
+ * alongside the composition — the id the delivery ledger and fidelity events are keyed by.
+ * The single resolution implementation behind step-bound get_technique and get_activity's
+ * hybrid step-technique bundling, so both deliver identical composition by construction.
+ */
+export async function composeActivityTechnique(
+  techniqueRef: string,
+  workflowDir: string,
+  workflowId: string,
+  activityId?: string,
+): Promise<Result<{ techniqueId: string; technique: Technique }, TechniqueNotFoundError>> {
+  if (!techniqueRef.includes('::') && activityId) {
+    const viaGroup = await composeTechnique(`${activityId}::${techniqueRef}`, workflowDir, workflowId);
+    if (viaGroup.success) {
+      return ok({ techniqueId: `${activityId}::${techniqueRef}`, technique: viaGroup.value });
+    }
+  }
+  const composed = await composeTechnique(techniqueRef, workflowDir, workflowId);
+  if (!composed.success) return composed;
+  return ok({ techniqueId: techniqueRef, technique: composed.value });
 }
 
 /**

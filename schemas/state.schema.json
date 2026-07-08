@@ -203,6 +203,7 @@
                   "error",
                   "technique_fetched",
                   "resource_fetched",
+                  "technique_bundled",
                   "variables_seeded"
                 ]
               },

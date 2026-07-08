@@ -226,6 +226,21 @@
                 },
                 "description": "Activity-wide technique references (`::` paths); bundled into get_activity."
               },
+              "bundleTechniques": {
+                "type": "object",
+                "properties": {
+                  "maxChars": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "description": "Per-technique ceiling in characters: a step technique whose composed wire form exceeds this is not inlined and is fetched with get_technique { step_id }."
+                  }
+                },
+                "required": [
+                  "maxChars"
+                ],
+                "additionalProperties": false,
+                "description": "Opt-in hybrid bundling: get_activity inlines each ungated step technique whose composed wire form is at most maxChars; larger and gated ones remain lazy-fetched via get_technique. Bundled deliveries are recorded as technique_bundled history events and satisfy the manifest fidelity check."
+              },
               "steps": {
                 "type": "array",
                 "items": {

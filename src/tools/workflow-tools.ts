@@ -2,10 +2,11 @@ import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, readActivityRaw, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
-import { resolveTechniques, formatTechniqueBundle } from '../loaders/technique-loader.js';
+import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
-import { injectResolvedStepIds, techniqueName } from '../schema/activity.schema.js';
+import { injectResolvedStepIds, techniqueName, type Activity, type Step } from '../schema/activity.schema.js';
+import { buildProvenanceContext, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
 import { withAuditLog, logWarn } from '../logging.js';
 import { jsonTypeOf, isTemplateReference } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
@@ -200,7 +201,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('next_activity', 'Transition to the specified activity. This is the orchestrator\'s tool for advancing the workflow — it validates the transition, advances the session state on disk, and records the trace, but does NOT return the activity definition. After calling next_activity, the worker should call get_activity to load the complete activity definition including steps, checkpoints, transitions, and technique references. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field of the current activity\'s response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation. Manifest validation also cross-checks fidelity (warn-only): a manifested technique step with no technique_fetched event recorded during the activity (see get_technique) draws a warning.',
+  server.tool('next_activity', 'Transition to the specified activity. This is the orchestrator\'s tool for advancing the workflow — it validates the transition, advances the session state on disk, and records the trace, but does NOT return the activity definition. After calling next_activity, the worker should call get_activity to load the complete activity definition including steps, checkpoints, transitions, and technique references. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field of the current activity\'s response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation. Manifest validation also cross-checks fidelity (warn-only): a manifested technique step with no technique_fetched event recorded during the activity (see get_technique) — and no technique_bundled event from a bundling activity\'s get_activity — draws a warning.',
     {
       ...sessionIndexParam,
       activity_id: z.string().describe('Activity ID to transition to. For the first call, use initialActivity from get_workflow. For subsequent calls, use an activity ID from the transitions field of the current activity.'),
@@ -348,7 +349,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('get_activity', 'Load the complete activity definition for the current activity in the session. This is the worker\'s tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, rules, and technique references — everything needed to execute the activity. The activity is determined from the session state on disk, so no activity_id parameter is needed. When reference delivery is active (session context_mode "persistent" or bundle: "reference"), inherited techniques/rules content already delivered to this session+agent arrives as short { unchanged: true, content_hash } markers instead of being repeated; bundle: "full" forces full delivery.',
+  server.tool('get_activity', 'Load the complete activity definition for the current activity in the session. This is the worker\'s tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, rules, and technique references — everything needed to execute the activity. The activity is determined from the session state on disk, so no activity_id parameter is needed. When reference delivery is active (session context_mode "persistent" or bundle: "reference"), inherited techniques/rules content already delivered to this session+agent arrives as short { unchanged: true, content_hash } markers instead of being repeated; bundle: "full" forces full delivery. An activity that declares bundleTechniques additionally inlines its small, ungated step-bound techniques under a step_techniques map (keyed by step id, each entry identical to a get_technique { step_id } fetch — execute those steps without refetching); gated steps and techniques over the activity\'s maxChars ceiling stay lazy and still require get_technique. Bundled deliveries are recorded as technique_bundled history events and count as fetch coverage for next_activity\'s manifest fidelity check.',
     {
       ...sessionIndexParam,
       bundle: z.enum(['reference', 'full']).optional().describe('Optional delivery-mode override for the inherited techniques/rules bundle. "reference" replaces bundle content already delivered to this session+agent with short { unchanged: true, content_hash } markers — only correct when THIS calling context received the earlier deliveries. "full" forces full delivery. Defaults from the session\'s context_mode ("persistent" → reference, otherwise full).'),
@@ -370,9 +371,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const view = sessionView(state);
       const result = await loadWorkflow(config.workflowDir, workflow_id);
-      const validation = buildValidation(
-        result.success ? validateWorkflowVersion(view, result.value) : null,
-      );
 
       // Reference-not-repeat delivery: active via per-call opt-in or the session's declared
       // context mode. Full delivery stays the default — in disposable-worker topologies each
@@ -421,6 +419,78 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           newDeliveries[rulesKey] = rulesHash;
         }
       }
+
+      // Hybrid step-technique bundling (#166 B11): an activity that declares `bundleTechniques`
+      // opts into inline delivery of its small, ungated step-bound techniques. Each entry is the
+      // step's full get_technique composition (activity-group resolution, ancestor contract,
+      // provenance decoration), so bundled and lazy delivery are identical by construction. A
+      // step gated by `when`/`condition` (on itself or an enclosing loop) may never execute and
+      // stays lazy regardless of size; so does a technique whose composed wire form exceeds
+      // maxChars. Bundled entries share the `technique:<resolvedId>` delivery-ledger key with
+      // get_technique, so persistent-context refetches of bundled content collapse to
+      // unchanged-references in either direction.
+      const bundledStepTechniques: Record<string, unknown> = {};
+      const bundledSteps: Array<{ stepId: string; techniqueId: string }> = [];
+      const bundlingWarnings: string[] = [];
+      const bundleConfig = (activity as Activity | undefined)?.bundleTechniques;
+      if (bundleConfig && result.success && activity) {
+        const eligible: Array<Step & { kind: 'technique' }> = [];
+        const collectUngated = (steps: Step[] | undefined): void => {
+          for (const s of steps ?? []) {
+            if (s.when !== undefined || s.condition !== undefined) continue;
+            if (s.kind === 'loop') { collectUngated(s.steps as Step[]); continue; }
+            if (s.kind === 'technique' && s.id) eligible.push(s);
+          }
+        };
+        collectUngated((activity as Activity).steps);
+
+        for (const step of eligible) {
+          const ref = techniqueName(step.technique);
+          if (!ref) continue;
+          const composedStep = await composeActivityTechnique(ref, config.workflowDir, workflow_id, activity_id);
+          // An unresolvable ref is the binding guard's business; delivery skips it (the step's
+          // own get_technique fetch will surface the error to the worker).
+          if (!composedStep.success) continue;
+          const { techniqueId } = composedStep.value;
+          let technique = composedStep.value.technique;
+          let provenanceWarnings: string[] = [];
+          const ctx = await buildProvenanceContext({
+            workflow: result.value,
+            workflowDir: config.workflowDir,
+            currentActivityId: activity_id,
+            currentStepId: step.id!,
+          });
+          if (ctx) {
+            const binding = typeof step.technique === 'object' ? step.technique : undefined;
+            const decorated = decorateTechniqueProvenance(technique, ctx, binding, techniqueId, step.id!);
+            technique = decorated.technique;
+            provenanceWarnings = decorated.warnings;
+          }
+          const text = projectTechniqueToYaml(technique);
+          if (text.length > bundleConfig.maxChars) continue;
+          const ledgerKey = `technique:${techniqueId}`;
+          const hash = contentHash(text);
+          if (referenceMode && (deliveredHash(state, ledgerKey) === hash || newDeliveries[ledgerKey] === hash)) {
+            bundledStepTechniques[step.id!] = unchangedMarker(hash);
+          } else {
+            newDeliveries[ledgerKey] = hash;
+            bundledStepTechniques[step.id!] = projectTechnique(technique);
+          }
+          bundledSteps.push({ stepId: step.id!, techniqueId });
+          bundlingWarnings.push(...provenanceWarnings);
+        }
+
+        if (bundledSteps.length > 0) {
+          bundleData['step_techniques'] = bundledStepTechniques;
+          bundleData['step_techniques_note'] =
+            'This activity opts into hybrid technique bundling: each step_techniques entry is the composed technique for that step id, identical to a get_technique { step_id } fetch — execute the step against it without refetching. Technique steps absent from the map (gated, or over the activity\'s size ceiling) still require get_technique { step_id } before execution.';
+        }
+      }
+
+      const validation = buildValidation(
+        result.success ? validateWorkflowVersion(view, result.value) : null,
+        ...bundlingWarnings,
+      );
 
       const opsData = referenceMode
         ? {
@@ -474,12 +544,28 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const reloaded = await loadSessionForTool(config.workspaceDir, session_index);
       const next = advanceSession(reloaded.state, (draft) => {
         recordDeliveries(draft, reloaded.state.agentId, newDeliveries);
+        // Fidelity observability for bundled deliveries (#166 B11): one technique_bundled
+        // event per bundled step, on both delivery paths (full and unchanged-marker) — the
+        // bundle counterpart of get_technique's technique_fetched. next_activity's manifest
+        // validation accepts either event as coverage.
+        const bundledAt = new Date().toISOString();
+        for (const b of bundledSteps) {
+          draft.history.push({
+            timestamp: bundledAt,
+            type: 'technique_bundled',
+            activity: activity_id,
+            data: { techniqueId: b.techniqueId, stepId: b.stepId, agentId: reloaded.state.agentId },
+          });
+        }
       });
       await saveSessionForTool(reloaded, next);
 
       return {
         content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${activityRulesBlock}${activityBodyWithArtifacts}` }],
-        _meta: { session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules },
+        _meta: {
+          session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules,
+          ...(bundleConfig ? { bundled_steps: bundledSteps.map(b => b.stepId) } : {}),
+        },
       };
     }), traceOpts));
 
