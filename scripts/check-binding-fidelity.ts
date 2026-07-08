@@ -58,6 +58,8 @@ import { parseDefinition } from '../src/utils/serialization.js';
 // is their single source of truth), so guard and server cannot drift apart on what counts as an
 // identifier, an optional input, or an ambient id.
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../src/utils/binding-provenance.js';
+import { injectCheckpointFragmentBodies, resolveCheckpointFragment } from '../src/loaders/fragment-resolver.js';
+import { fragmentsLookupSync } from './fragments-index.js';
 import { resolveWorkflowsRoot } from './workflows-root.js';
 
 // Resolve paths from this file's own URL (reliable under both tsx CLI and the vitest runner,
@@ -313,6 +315,7 @@ for (const wf of workflows) {
   walk(join(ROOT, wf, 'techniques'));
 }
 // activities + workflow vars
+const fragmentsLookup = fragmentsLookupSync(ROOT);
 const allWf = new Set([...workflows, ...readdirSync(ROOT).filter((d) => { const p = join(ROOT, d); return statSync(p).isDirectory() && existsSync(join(p, 'activities')); })]);
 for (const wf of allWf) {
   collectWorkflowVars(wf);
@@ -320,7 +323,14 @@ for (const wf of allWf) {
   if (!existsSync(adir)) continue;
   for (const f of readdirSync(adir)) {
     if (!f.endsWith('.yaml')) continue;
-    const rel = relative(ROOT, join(adir, f)); const raw = readFileSync(join(adir, f), 'utf-8');
+    const rel = relative(ROOT, join(adir, f)); let raw = readFileSync(join(adir, f), 'utf-8');
+    // Materialize checkpoint fragment refs (#166 B10) before analysis, so fragment-declared
+    // setVariable producers and message/condition reads attribute to the referencing activity —
+    // the same view the server delivers. An unresolved ref is check:fragments' finding; the
+    // file is then analyzed as authored.
+    try {
+      raw = injectCheckpointFragmentBodies(raw, (ref) => resolveCheckpointFragment(fragmentsLookup, wf, ref));
+    } catch { /* check:fragments reports unresolved refs */ }
     collectReads(rel, raw, 'activity');
     try {
       const dec = parseDefinition(raw);

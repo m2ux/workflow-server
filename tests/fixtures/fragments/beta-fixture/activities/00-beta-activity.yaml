@@ -1,0 +1,17 @@
+id: beta-activity
+version: 1.0.0
+name: Beta Activity
+steps:
+  - kind: checkpoint
+    id: beta-confirm
+    ref: alpha-fixture::confirm-gate
+    condition:
+      type: simple
+      variable: scope_confirmed
+      operator: ==
+      value: false
+  - kind: checkpoint
+    id: beta-missing
+    ref: alpha-fixture::missing-gate
+  - ref: alpha-fixture::confirm-gate
+transitions: []

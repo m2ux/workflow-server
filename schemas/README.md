@@ -283,7 +283,8 @@ A workflow is the top-level container representing a complete process definition
 | `description`     | string     | Detailed description                                       |
 | `author`          | string     | Author metadata (not read by the server)                   |
 | `tags`            | string[]   | Categorization labels                                      |
-| `rules`           | { workflow?, activity?, universal?: string[] } | Workflow rules partitioned by audience: `workflow` (orchestrator-only, in `get_workflow`), `activity` (worker-facing, injected into every `get_activity`), and `universal` (both — surfaced in `get_workflow` AND injected into every `get_activity`) |
+| `rules`           | { workflow?, activity?, universal?: (string \| { ref })[] } | Workflow rules partitioned by audience: `workflow` (orchestrator-only, in `get_workflow`), `activity` (worker-facing, injected into every `get_activity`), and `universal` (both — surfaced in `get_workflow` AND injected into every `get_activity`). An entry is the rule text inline or a `{ ref }` import of a rule fragment |
+| `fragments`       | { rules?, checkpoints? } | Shared rule texts (string or string-list) and checkpoint bodies, declared once and imported by reference (`[workflow::]name`) from rules slots and `kind: checkpoint` steps — this workflow's or another's. Resolved at load; agents always receive materialized content |
 | `techniques`      | { workflow?, activity?: string[] } | Workflow techniques partitioned by audience: `workflow` (orchestrator-only, bundled into `get_workflow`) and `activity` (inherited by every activity, injected into every `get_activity` technique bundle) |
 | `variables`       | Variable[] | State variables                                            |
 | `initialActivity` | string     | Starting activity ID (required for sequential workflows)   |
@@ -336,12 +337,18 @@ Shared base fields on every kind:
 
 A `kind: checkpoint` step is a decision point requiring user input, inlined at its concrete position in `steps[]` (replacing the old separate `checkpoints[]` array and the `step.checkpoint` reference). It blocks by default; declaring `defaultOption` and `autoAdvanceMs` is what makes it auto-advanceable.
 
+A checkpoint step is authored in exactly one of two forms:
+
+- **Inline** — the step carries its own body (`message` + `options`, plus the optional body fields below).
+- **By reference** — the step declares `ref: [workflow::]name` naming a `fragments.checkpoints` entry, and contributes only its `id` and site gates (`when`, `required`, and `condition` — the latter only when the fragment declares none). The body fields are forbidden alongside `ref` so the fragment stays the single home for the checkpoint's content; the loader materializes the body before anything downstream reads the step, and `check:fragments` rejects an inline body that duplicates a fragment.
+
 | Field       | Type               | Purpose                                             |
 | ----------- | ------------------ | --------------------------------------------------- |
 | `id`        | string             | Stable unique identifier (the checkpoint-response replay key) |
 | `kind`      | enum               | `checkpoint`                                        |
-| `message`   | string             | Question to present to user                         |
-| `options`   | CheckpointOption[] | Available choices                                   |
+| `ref`       | string             | Checkpoint-fragment reference (`[workflow::]name` into `fragments.checkpoints`; bare names resolve against the declaring workflow, then meta). Mutually exclusive with the body fields |
+| `message`   | string             | Question to present to user (inline form)           |
+| `options`   | CheckpointOption[] | Available choices (inline form)                     |
 | `blocking`  | boolean            | Orchestrator directive: present the checkpoint and wait for explicit user selection (default: true). The server does not consult it — its auto-advance gate checks only `defaultOption` and `autoAdvanceMs`, so a checkpoint intended to block must not declare those fields. |
 | `defaultOption` | string          | Option ID to auto-select when `autoAdvanceMs` elapses. |
 | `autoAdvanceMs` | integer         | Milliseconds to wait before auto-selecting `defaultOption`; the server enforces the full timer on `respond_checkpoint { auto_advance }`. |
@@ -504,7 +511,8 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
 | `description` | string | Workflow description |
 | `author` | string | Author name |
 | `tags` | string[] | Categorization tags |
-| `rules` | { workflow?, activity?, universal?: string[] } | Orchestrator rules (`workflow`, in `get_workflow`) + worker rules inherited by every activity (`activity`, injected into every `get_activity`) + dual-audience rules (`universal`, both) |
+| `rules` | { workflow?, activity?, universal?: (string \| { ref })[] } | Orchestrator rules (`workflow`, in `get_workflow`) + worker rules inherited by every activity (`activity`, injected into every `get_activity`) + dual-audience rules (`universal`, both). Entries are rule strings or `{ ref }` fragment imports |
+| `fragments` | { rules?, checkpoints? } | Shared rule texts and checkpoint bodies importable by reference (`[workflow::]name`); resolved at load so delivered content is always materialized |
 | `techniques` | { workflow?, activity?: string[] } | Orchestrator techniques (`workflow`, bundled into `get_workflow`) + techniques inherited by every activity (`activity`, injected into every `get_activity`) |
 | `variables` | array | Variable definitions with types and defaults |
 | `initialActivity` | string | ID of first activity (required for sequential workflows) |

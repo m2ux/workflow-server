@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
-import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, readActivityRaw, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, readActivityRaw, buildFragmentsLookup, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { injectCheckpointFragmentBodies, resolveCheckpointFragment, scanCheckpointRefLines } from '../loaders/fragment-resolver.js';
 import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
@@ -367,7 +368,19 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const workflow_id = state.workflowId;
       const rawResult = await readActivityRaw(config.workflowDir, workflow_id, activity_id);
       if (!rawResult.success) throw new Error(`Activity not found: ${activity_id}`);
-      const activityBody = injectResolvedStepIds(rawResult.value);
+      const { content: rawActivity, sourceWorkflowId } = rawResult.value;
+      let activityBody = injectResolvedStepIds(rawActivity);
+
+      // Materialize checkpoint fragment refs in the delivered YAML (#166 B10): the worker reads
+      // full checkpoint bodies, never a reference. Bare refs resolve against the activity file's
+      // SOURCE workflow (which differs from workflow_id for a borrowed activity). The textual
+      // pre-scan keeps ref-free activities (the common case) off the resolution path entirely.
+      const fragmentRefs = scanCheckpointRefLines(rawActivity);
+      if (fragmentRefs.length > 0) {
+        const fragmentsLookup = await buildFragmentsLookup(config.workflowDir, [sourceWorkflowId], fragmentRefs);
+        activityBody = injectCheckpointFragmentBodies(activityBody, (ref) =>
+          resolveCheckpointFragment(fragmentsLookup, sourceWorkflowId, ref));
+      }
 
       const view = sessionView(state);
       const result = await loadWorkflow(config.workflowDir, workflow_id);

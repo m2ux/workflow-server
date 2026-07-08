@@ -1,0 +1,7 @@
+id: gamma-fixture
+version: 1.0.0
+title: Fragments guard fixture — inline duplication
+rules:
+  activity:
+    - Write every artifact to the planning folder before reporting completion status
+initialActivity: gamma-activity

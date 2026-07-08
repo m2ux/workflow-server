@@ -1,13 +1,22 @@
 import { existsSync } from 'node:fs';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
-import { type Workflow, safeValidateWorkflow } from '../schema/workflow.schema.js';
+import { type Workflow, type WorkflowFragments, WorkflowFragmentsSchema, safeValidateWorkflow } from '../schema/workflow.schema.js';
 import { type Activity, safeValidateActivity, populateStepIds, activityCheckpoints } from '../schema/activity.schema.js';
 import { type Result, ok, err } from '../result.js';
 import { WorkflowNotFoundError, WorkflowValidationError, ActivityNotFoundError } from '../errors.js';
 import { logInfo, logError, logWarn } from '../logging.js';
 import { parseDefinition } from '../utils/serialization.js';
 import { parseActivityFilename } from './filename-utils.js';
+import {
+  META_WORKFLOW_ID,
+  type FragmentsLookup,
+  parseFragmentRef,
+  collectCheckpointRefs,
+  collectRuleRefs,
+  materializeActivityFragments,
+  materializeRuleEntries,
+} from './fragment-resolver.js';
 
 export interface WorkflowManifestEntry { id: string; title: string; version: string; tags?: string[] | undefined; }
 
@@ -24,8 +33,6 @@ export interface WorkflowWithDiagnostics { workflow: Workflow; activityLoadError
 
 const formatZodIssues = (issues: Array<{ path: PropertyKey[]; message: string }>): string =>
   issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
-
-const META_WORKFLOW_ID = 'meta';
 
 /** Raw workflow before activity loading */
 interface RawWorkflow {
@@ -107,12 +114,12 @@ function resolveWorkflowPath(workflowDir: string, workflowId: string): string | 
  * Resolve a shorthand activity reference like "work-package/02-design-philosophy.yaml"
  * or local references like "01-start-work-package.yaml".
  */
-async function resolveActivityReference(workflowDir: string, workflowId: string, ref: string): Promise<Activity | null> {
+async function resolveActivityReference(workflowDir: string, workflowId: string, ref: string): Promise<{ activity: Activity; sourceWorkflowId: string } | null> {
   const parts = ref.split('/');
-  
+
   let targetWorkflowId: string;
   let filename: string;
-  
+
   if (parts.length === 1) {
     // Local reference within the same workflow (e.g., "01-start.yaml")
     targetWorkflowId = workflowId;
@@ -151,12 +158,64 @@ async function resolveActivityReference(workflowDir: string, workflowId: string,
     if (parsed) {
       activity.artifactPrefix = parsed.index;
     }
-    
-    return activity;
+
+    // The source workflow scopes the activity's bare fragment refs: a borrowed activity
+    // resolves them against the workflow it was authored in, not the borrower.
+    return { activity, sourceWorkflowId: targetWorkflowId };
   } catch (error) {
     logWarn('Failed to load referenced activity', { ref, error: error instanceof Error ? error.message : 'Unknown error' });
     return null;
   }
+}
+
+/**
+ * Read just the `fragments` block of a workflow's definition file (#166 B10). Reads the raw file
+ * rather than loading the workflow — fragment resolution must not recurse into full loads (a
+ * cross-workflow ref would otherwise re-enter loadWorkflow). Returns undefined when the workflow
+ * or its fragments block is absent; an unparsable file or invalid block also resolves to
+ * undefined (the referencing workflow then reports the unresolved ref, naming the source).
+ */
+export async function readWorkflowFragments(workflowDir: string, workflowId: string): Promise<WorkflowFragments | undefined> {
+  const filePath = resolveWorkflowPath(workflowDir, workflowId);
+  if (!filePath) return undefined;
+  try {
+    const raw = parseDefinition(await readFile(filePath, 'utf-8')) as Record<string, unknown> | null;
+    if (!raw || raw['fragments'] === undefined) return undefined;
+    const parsed = WorkflowFragmentsSchema.safeParse(raw['fragments']);
+    if (!parsed.success) {
+      logWarn('Invalid fragments block; refs into it will not resolve', { workflowId, errors: parsed.error.issues });
+      return undefined;
+    }
+    return parsed.data;
+  } catch (error) {
+    logWarn('Failed to read workflow fragments', { workflowId, error: error instanceof Error ? error.message : String(error) });
+    return undefined;
+  }
+}
+
+/**
+ * Build a synchronous FragmentsLookup covering every workflow a set of refs (plus the declaring
+ * scopes and the meta fallback) can name, pre-reading each fragments block once.
+ */
+export async function buildFragmentsLookup(
+  workflowDir: string,
+  scopeWorkflowIds: Iterable<string>,
+  refs: Iterable<string>,
+): Promise<FragmentsLookup> {
+  const wanted = new Set<string>([META_WORKFLOW_ID, ...scopeWorkflowIds]);
+  for (const ref of refs) {
+    try {
+      const { workflowId } = parseFragmentRef(ref);
+      if (workflowId) wanted.add(workflowId);
+    } catch {
+      // Malformed ref: surfaces as a resolution error at materialization, not here.
+    }
+  }
+  const fragments = new Map<string, WorkflowFragments | undefined>();
+  await Promise.all(
+    [...wanted].map(async (id) => fragments.set(id, await readWorkflowFragments(workflowDir, id))),
+  );
+  return (workflowId) => fragments.get(workflowId);
 }
 
 export async function loadWorkflow(workflowDir: string, workflowId: string): Promise<Result<Workflow, WorkflowNotFoundError | WorkflowValidationError>> {
@@ -192,6 +251,10 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
       logInfo('Loaded local activities from directory', { workflowId, activitiesDir: activitiesDirName, count: localActivities.length });
     }
 
+    // Fragment scope per activity: local activities resolve bare refs against this workflow;
+    // borrowed cross-workflow activities against their source workflow (#166 B10).
+    const activitySourceWorkflow = new Map<string, string>(resolvedActivities.map(a => [a.id, workflowId]));
+
     if (existingActivities && existingActivities.length > 0) {
       // Resolve any string shorthand references to full Activity objects
       const explicitlyReferencedActivities = await Promise.all(
@@ -201,12 +264,13 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
             if (!resolved) {
               throw new Error(`Failed to resolve activity reference: ${activityOrRef}`);
             }
-            return resolved;
+            activitySourceWorkflow.set(resolved.activity.id, resolved.sourceWorkflowId);
+            return resolved.activity;
           }
           return activityOrRef;
         })
       );
-      
+
       // Add explicitly referenced activities, avoiding duplicates based on ID
       for (const explicitActivity of explicitlyReferencedActivities) {
         if (!resolvedActivities.some(a => a.id === explicitActivity.id)) {
@@ -214,7 +278,7 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
         }
       }
     }
-    
+
     if (resolvedActivities.length > 0) {
        rawWorkflow['activities'] = resolvedActivities;
     }
@@ -223,14 +287,67 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     if (rawWorkflow.activitiesDir) {
       delete rawWorkflow.activitiesDir;
     }
-    
+
     const result = safeValidateWorkflow(rawWorkflow);
     if (!result.success) {
       return err(new WorkflowValidationError(workflowId, result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`)));
     }
+    const workflow = result.data;
 
-    logInfo('Workflow loaded', { workflowId, version: result.data.version, activityCount: result.data.activities?.length ?? 0 });
-    return ok({ workflow: result.data, activityLoadErrors });
+    // Materialize fragment references (#166 B10): rule `{ ref }` entries splice to their texts and
+    // checkpoint ref steps take their fragment's body, so every downstream reader — tool payloads,
+    // checkpoint yield/respond, guards — sees plain rules and full checkpoint steps. The lookup is
+    // scoped to what the refs can actually name: the current workflow's fragments come from the
+    // parsed object, other workflow.yaml files are read only when a qualified ref targets them or
+    // a bare ref misses locally (meta fallback) — a workflow whose refs all resolve locally costs
+    // no extra reads on the per-call load path.
+    const wanted = new Set<string>();
+    const noteRef = (ref: string, kind: 'rules' | 'checkpoints', scopeWf: string): void => {
+      try {
+        const { workflowId: qualified, name } = parseFragmentRef(ref);
+        if (qualified) { if (qualified !== workflowId) wanted.add(qualified); return; }
+        if (scopeWf !== workflowId) { wanted.add(scopeWf); wanted.add(META_WORKFLOW_ID); return; }
+        if (workflow.fragments?.[kind]?.[name] === undefined) wanted.add(META_WORKFLOW_ID);
+      } catch { /* malformed: surfaces at materialization */ }
+    };
+    for (const ref of collectRuleRefs(workflow.rules)) noteRef(ref, 'rules', workflowId);
+    for (const activity of workflow.activities ?? []) {
+      const scope = activitySourceWorkflow.get(activity.id) ?? workflowId;
+      for (const ref of collectCheckpointRefs(activity)) noteRef(ref, 'checkpoints', scope);
+    }
+    const fragmentCache = new Map<string, WorkflowFragments | undefined>([[workflowId, workflow.fragments]]);
+    await Promise.all([...wanted].map(async (id) => fragmentCache.set(id, await readWorkflowFragments(workflowDir, id))));
+    const lookup: FragmentsLookup = (id) => fragmentCache.get(id);
+    if (workflow.rules) {
+      try {
+        workflow.rules = {
+          ...(workflow.rules.workflow ? { workflow: materializeRuleEntries(workflow.rules.workflow, lookup, workflowId) } : {}),
+          ...(workflow.rules.activity ? { activity: materializeRuleEntries(workflow.rules.activity, lookup, workflowId) } : {}),
+          ...(workflow.rules.universal ? { universal: materializeRuleEntries(workflow.rules.universal, lookup, workflowId) } : {}),
+        };
+      } catch (error) {
+        return err(new WorkflowValidationError(workflowId, [error instanceof Error ? error.message : String(error)]));
+      }
+    }
+    const materialized: Activity[] = [];
+    for (const activity of workflow.activities ?? []) {
+      try {
+        // Also validates inline checkpoints (a step with neither ref nor body is rejected here,
+        // not later at yield time).
+        materializeActivityFragments(activity, lookup, activitySourceWorkflow.get(activity.id) ?? workflowId);
+        materialized.push(activity);
+      } catch (error) {
+        // Same contract as a per-file load failure: exclude the activity and surface the error
+        // (#166 B5) instead of letting an unmaterialized checkpoint fail later downstream.
+        const message = error instanceof Error ? error.message : String(error);
+        logWarn('Excluding activity with unresolvable fragments', { workflowId, activityId: activity.id, error: message });
+        activityLoadErrors.push({ file: `${activity.artifactPrefix ?? ''}${activity.artifactPrefix ? '-' : ''}${activity.id}.yaml`, activity_id: activity.id, error: message });
+      }
+    }
+    if (workflow.activities) workflow.activities = materialized;
+
+    logInfo('Workflow loaded', { workflowId, version: workflow.version, activityCount: workflow.activities?.length ?? 0 });
+    return ok({ workflow, activityLoadErrors });
   } catch (error) {
     logError('Failed to load workflow', error instanceof Error ? error : undefined, { workflowId });
     return err(new WorkflowValidationError(workflowId, [error instanceof Error ? error.message : 'Unknown error']));
@@ -421,12 +538,16 @@ function conditionToString(condition: { type: string; variable?: string; operato
  */
 export const TERMINAL_SENTINEL = '__terminal__';
 
-/** Read raw activity definition (YAML) by ID. Validates but returns the original file content. */
+/**
+ * Read raw activity definition (YAML) by ID. Validates but returns the original file content,
+ * plus the workflow the file was authored in (`sourceWorkflowId` differs from `workflowId` for a
+ * borrowed cross-workflow activity) — the scope the file's bare fragment refs resolve against.
+ */
 export async function readActivityRaw(
   workflowDir: string,
   workflowId: string,
   activityId: string,
-): Promise<Result<string, ActivityNotFoundError>> {
+): Promise<Result<{ content: string; sourceWorkflowId: string }, ActivityNotFoundError>> {
   const filePath = resolveWorkflowPath(workflowDir, workflowId);
   if (!filePath) return err(new ActivityNotFoundError(activityId, workflowId));
 
@@ -446,7 +567,7 @@ export async function readActivityRaw(
         logWarn('Activity validation failed (raw read)', { activityId, errors: validation.error.issues });
         return err(new ActivityNotFoundError(activityId, workflowId));
       }
-      return ok(content);
+      return ok({ content, sourceWorkflowId: workflowId });
     }
   } catch (error) {
     logWarn('Failed to read activity raw', { activityId, workflowId, error: error instanceof Error ? error.message : String(error) });
@@ -476,7 +597,7 @@ export async function readActivityRaw(
         logWarn('Borrowed activity validation failed (raw read)', { activityId, ref, errors: validation.error.issues });
         return err(new ActivityNotFoundError(activityId, workflowId));
       }
-      return ok(content);
+      return ok({ content, sourceWorkflowId: targetWorkflowId });
     }
   } catch (error) {
     logWarn('Failed to resolve borrowed activity (raw read)', { activityId, workflowId, error: error instanceof Error ? error.message : String(error) });

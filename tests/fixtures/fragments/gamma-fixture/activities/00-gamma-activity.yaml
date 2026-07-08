@@ -1,0 +1,27 @@
+id: gamma-activity
+version: 1.0.0
+name: Gamma Activity
+steps:
+  - kind: checkpoint
+    id: first-approval
+    message: Approve the generated artifact set before publication.
+    blocking: true
+    options:
+      - id: approve
+        label: Approve
+        description: Publish the artifacts
+      - id: reject
+        label: Reject
+        description: Regenerate the artifacts
+  - kind: checkpoint
+    id: second-approval
+    message: Approve the generated artifact set before publication.
+    blocking: true
+    options:
+      - id: approve
+        label: Approve
+        description: Publish the artifacts
+      - id: reject
+        label: Reject
+        description: Regenerate the artifacts
+transitions: []

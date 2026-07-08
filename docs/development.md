@@ -176,9 +176,15 @@ npm run check:binding
 # Outputs before Protocol), snake_case entry ids (camelCase tool-parameter
 # mirrors allowed), kebab-case rule names, snake_case {$name} sigils. Hard-zero.
 npm run check:technique-template
+
+# Shared fragments (#166 B10): every rules { ref } and checkpoint ref resolves,
+# every declared fragment is referenced somewhere, no inline copy of a fragment,
+# and no identical rule/checkpoint body authored inline at multiple sites.
+# Near-duplicates of a fragment are reported as warnings. Hard-zero.
+npm run check:fragments
 ```
 
-The binding-fidelity and technique-template guards also run as Vitest tests (`tests/binding-fidelity.test.ts`, `tests/technique-template.test.ts`), so `npm test` fails on new binding drift or a template deviation.
+The binding-fidelity, technique-template, and fragments guards also run as Vitest tests (`tests/binding-fidelity.test.ts`, `tests/technique-template.test.ts`, `tests/fragments-guard.test.ts`), so `npm test` fails on new binding drift, a template deviation, or fragment drift.
 
 ## Branch Structure
 

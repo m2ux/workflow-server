@@ -110,6 +110,8 @@ Fields:
 - `defaultOption` — Optional option ID to auto-select when `autoAdvanceMs` elapses
 - `autoAdvanceMs` — Optional milliseconds to wait before auto-selecting `defaultOption`
 
+A checkpoint reused at several sites is declared once as a **checkpoint fragment** under `fragments.checkpoints` in the owning workflow's `workflow.yaml`, and each site imports it by reference — the step carries only `kind: checkpoint`, its site-local `id`, and `ref: [workflow::]name` (plus a `condition` when the fragment declares none). The loader materializes the fragment body into the step before delivery, so the yield/present/respond flow and every consumer below see an ordinary full checkpoint; the `check:fragments` guard rejects an inline body that duplicates a fragment (issue #166 B10).
+
 ## Why this Architecture?
 
 1. **Clean UI Boundaries:** Sub-agents running in hidden background tasks never attempt to prompt the user directly, preventing frozen processes.
