@@ -86,12 +86,13 @@ body {
   line-height: 1.65;
 }
 
-/* Reading band: prose-width elements center within the wider shell, so
-   diagrams, tables, and card grids can break out to the shell's full width. */
+/* Reading band: prose-width elements are capped at --measure and left-aligned
+   to the shell edge, so they share a left margin with the diagrams, tables, and
+   card grids that break out to the shell's full width. */
 h1, h2, h3 {
   line-height: 1.25;
   letter-spacing: -0.01em;
-  margin: 0 auto var(--space-3);
+  margin: 0 0 var(--space-3);
   max-width: var(--measure);
 }
 
@@ -99,7 +100,7 @@ h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); }
 h2 { font-size: clamp(1.4rem, 3vw, 1.75rem); margin-top: var(--space-5); }
 h3 { font-size: 1.15rem; margin-top: var(--space-4); }
 
-p, ul, ol { max-width: var(--measure); margin-inline: auto; }
+p, ul, ol { max-width: var(--measure); }
 
 a {
   color: var(--link);
@@ -131,7 +132,6 @@ pre {
   padding: var(--space-3);
   overflow-x: auto;
   max-width: var(--measure);
-  margin-inline: auto;
 }
 
 pre code { background: none; border: none; padding: 0; }
@@ -210,7 +210,7 @@ main { padding-top: var(--space-4); padding-bottom: var(--space-5); }
   color: var(--text-muted);
 }
 
-.pill-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-3) auto; padding: 0; list-style: none; }
+.pill-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-3) 0; padding: 0; list-style: none; }
 
 .pill {
   font-size: 0.85rem;
@@ -239,7 +239,6 @@ figure.diagram figcaption {
   font-size: 0.9rem;
   color: var(--text-muted);
   max-width: var(--measure);
-  margin-inline: auto;
 }
 
 /* Card grid */
@@ -276,7 +275,7 @@ figure.diagram figcaption {
   counter-reset: step;
   list-style: none;
   padding: 0;
-  margin: var(--space-3) auto;
+  margin: var(--space-3) 0;
   display: grid;
   gap: var(--space-2);
   max-width: var(--measure);
