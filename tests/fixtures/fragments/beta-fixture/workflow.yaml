@@ -1,0 +1,9 @@
+id: beta-fixture
+version: 1.0.0
+title: Fragments guard fixture — referencing workflow with defects
+rules:
+  workflow:
+    - Confirm scope with the user before mutating any tracked file in the corpus
+  activity:
+    - Write every artifact to the planning folder before reporting completion status
+initialActivity: beta-activity

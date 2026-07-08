@@ -50,7 +50,9 @@ describe('work-package definition lint (Layer 2: resolution)', () => {
     ];
     walks = [];
     for (const p of policies) walks.push(await walk(h, 'work-package', p));
-  }, 60_000);
+  // 120s: six full policy walks in one hook — the corpus has outgrown the original 60s budget
+  // (the hook times out at 60s even on an unchanged main checkout on a mid-range machine).
+  }, 120_000);
   afterAll(async () => { await h.close(); });
 
   it('reports no unresolved operation refs beyond the documented baseline', () => {

@@ -43,27 +43,249 @@
             "workflow": {
               "type": "array",
               "items": {
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "ref": {
+                        "type": "string",
+                        "description": "Rule-fragment reference: `[workflow::]name`, resolved against `fragments.rules` (bare name: declaring workflow, then meta). Spliced in place at load."
+                      }
+                    },
+                    "required": [
+                      "ref"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
               },
-              "description": "Orchestrator-only rules governing workflow execution; surfaced in get_workflow."
+              "description": "Orchestrator-only rules governing workflow execution; surfaced in get_workflow. Entries are rule strings or `{ ref }` fragment references."
             },
             "activity": {
               "type": "array",
               "items": {
-                "type": "string"
+                "$ref": "#/definitions/workflow/properties/rules/properties/workflow/items"
               },
-              "description": "Worker-facing rules inherited by every activity; injected into every get_activity response."
+              "description": "Worker-facing rules inherited by every activity; injected into every get_activity response. Entries are rule strings or `{ ref }` fragment references."
             },
             "universal": {
               "type": "array",
               "items": {
-                "type": "string"
+                "$ref": "#/definitions/workflow/properties/rules/properties/workflow/items"
               },
-              "description": "Dual-audience rules both roles must follow; surfaced in get_workflow AND injected into every get_activity."
+              "description": "Dual-audience rules both roles must follow; surfaced in get_workflow AND injected into every get_activity. Entries are rule strings or `{ ref }` fragment references."
             }
           },
           "additionalProperties": false,
-          "description": "Workflow rules partitioned by audience: `workflow` (orchestrator-only) and `activity` (inherited by every activity, injected into get_activity)."
+          "description": "Workflow rules partitioned by audience: `workflow` (orchestrator-only) and `activity` (inherited by every activity, injected into get_activity). Entries are rule strings or `{ ref }` references into `fragments.rules`."
+        },
+        "fragments": {
+          "type": "object",
+          "properties": {
+            "rules": {
+              "type": "object",
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  }
+                ]
+              },
+              "description": "Named rule texts. A string value is one rule; a string-list value expands to that many rules at the referencing slot."
+            },
+            "checkpoints": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "description": "Message presented to the user."
+                  },
+                  "options": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "effect": {
+                          "type": "object",
+                          "properties": {
+                            "setVariable": {
+                              "type": "object",
+                              "additionalProperties": {},
+                              "description": "Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied effect. Values are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation; `{name}` template passthroughs are exempt."
+                            },
+                            "transitionTo": {
+                              "type": "string",
+                              "description": "Activity ID the orchestrator transitions to next via next_activity. Recorded and returned, not engine-applied: selecting the option does not itself move the session."
+                            },
+                            "skipActivities": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "description": "Activity IDs the orchestrator routes around. Recorded in session bookkeeping (`skippedActivities`) and returned, not engine-applied."
+                            }
+                          },
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "label"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 1,
+                    "description": "Decision options with effects."
+                  },
+                  "defaultOption": {
+                    "type": "string",
+                    "description": "Option auto-selected when autoAdvanceMs elapses."
+                  },
+                  "autoAdvanceMs": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "description": "Ms before auto-selecting defaultOption."
+                  },
+                  "blocking": {
+                    "type": "boolean",
+                    "description": "Orchestrator directive: true means present the checkpoint and wait for explicit user selection. Agent-honored — the server's auto-advance gate checks only defaultOption + autoAdvanceMs, not this field."
+                  },
+                  "condition": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "simple"
+                          },
+                          "variable": {
+                            "type": "string"
+                          },
+                          "operator": {
+                            "type": "string",
+                            "enum": [
+                              "==",
+                              "!=",
+                              ">",
+                              "<",
+                              ">=",
+                              "<=",
+                              "exists",
+                              "notExists"
+                            ]
+                          },
+                          "value": {
+                            "type": [
+                              "string",
+                              "number",
+                              "boolean",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "variable",
+                          "operator"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "and"
+                          },
+                          "conditions": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition"
+                            },
+                            "minItems": 2
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "conditions"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "or"
+                          },
+                          "conditions": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition"
+                            },
+                            "minItems": 2
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "conditions"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "not"
+                          },
+                          "condition": {
+                            "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "condition"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ],
+                    "description": "Condition shared by every use site. A referencing step may declare its own `condition` only when the fragment declares none."
+                  }
+                },
+                "required": [
+                  "message",
+                  "options"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Named checkpoint bodies (message/options/effects, optionally a shared condition). A kind:checkpoint step imports one via `ref`, contributing its own id."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Shared rule texts and checkpoint bodies, declared once and imported by reference (`[workflow::]name`) from rules slots and kind:checkpoint steps — this workflow's or another's. Resolved at load; agents always receive materialized content."
         },
         "variables": {
           "type": "array",
@@ -324,106 +546,7 @@
                                 "description": "Human-readable description of what this action does"
                               },
                               "condition": {
-                                "anyOf": [
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "const": "simple"
-                                      },
-                                      "variable": {
-                                        "type": "string"
-                                      },
-                                      "operator": {
-                                        "type": "string",
-                                        "enum": [
-                                          "==",
-                                          "!=",
-                                          ">",
-                                          "<",
-                                          ">=",
-                                          "<=",
-                                          "exists",
-                                          "notExists"
-                                        ]
-                                      },
-                                      "value": {
-                                        "type": [
-                                          "string",
-                                          "number",
-                                          "boolean",
-                                          "null"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "type",
-                                      "variable",
-                                      "operator"
-                                    ],
-                                    "additionalProperties": false
-                                  },
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "const": "and"
-                                      },
-                                      "conditions": {
-                                        "type": "array",
-                                        "items": {
-                                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
-                                        },
-                                        "minItems": 2
-                                      }
-                                    },
-                                    "required": [
-                                      "type",
-                                      "conditions"
-                                    ],
-                                    "additionalProperties": false
-                                  },
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "const": "or"
-                                      },
-                                      "conditions": {
-                                        "type": "array",
-                                        "items": {
-                                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
-                                        },
-                                        "minItems": 2
-                                      }
-                                    },
-                                    "required": [
-                                      "type",
-                                      "conditions"
-                                    ],
-                                    "additionalProperties": false
-                                  },
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "const": "not"
-                                      },
-                                      "condition": {
-                                        "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
-                                      }
-                                    },
-                                    "required": [
-                                      "type",
-                                      "condition"
-                                    ],
-                                    "additionalProperties": false
-                                  }
-                                ],
+                                "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition",
                                 "description": "Condition that must be true for this action to execute"
                               }
                             },
@@ -438,7 +561,7 @@
                           "description": "Inline boolean expression that gates this step. Examples: \"has_saved_state == true\", \"is_monorepo == true\", \"client_workflow_completed == false\". Evaluated by the executing agent against current variable state; the server never evaluates gates. On a checkpoint step, only `condition` (not `when`) enables condition_not_met dismissal."
                         },
                         "condition": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
+                          "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition",
                           "description": "LEGACY: Structured condition that must be true for this step to execute, evaluated by the executing agent. Prefer the `when` inline expression for simple comparisons — except on a checkpoint step, where the `condition` field is what makes the checkpoint dismissible via respond_checkpoint condition_not_met."
                         },
                         "required": {
@@ -500,55 +623,21 @@
                           "type": "string",
                           "description": "Identifier for this step within the activity; the stable checkpoint-response replay key."
                         },
+                        "ref": {
+                          "type": "string",
+                          "description": "Checkpoint-fragment reference: `[workflow::]name`, resolved against the declaring workflow's `fragments.checkpoints` (bare name: declaring workflow, then meta). Mutually exclusive with the body fields — a ref step carries only its id and, when the fragment declares none, a condition."
+                        },
                         "message": {
                           "type": "string",
-                          "description": "Message presented to the user."
+                          "description": "Message presented to the user. Required on an inline checkpoint; forbidden alongside `ref`."
                         },
                         "options": {
                           "type": "array",
                           "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string"
-                              },
-                              "label": {
-                                "type": "string"
-                              },
-                              "description": {
-                                "type": "string"
-                              },
-                              "effect": {
-                                "type": "object",
-                                "properties": {
-                                  "setVariable": {
-                                    "type": "object",
-                                    "additionalProperties": {},
-                                    "description": "Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied effect. Values are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation; `{name}` template passthroughs are exempt."
-                                  },
-                                  "transitionTo": {
-                                    "type": "string",
-                                    "description": "Activity ID the orchestrator transitions to next via next_activity. Recorded and returned, not engine-applied: selecting the option does not itself move the session."
-                                  },
-                                  "skipActivities": {
-                                    "type": "array",
-                                    "items": {
-                                      "type": "string"
-                                    },
-                                    "description": "Activity IDs the orchestrator routes around. Recorded in session bookkeeping (`skippedActivities`) and returned, not engine-applied."
-                                  }
-                                },
-                                "additionalProperties": false
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "label"
-                            ],
-                            "additionalProperties": false
+                            "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/options/items"
                           },
                           "minItems": 1,
-                          "description": "Decision options with effects."
+                          "description": "Decision options with effects. Required on an inline checkpoint; forbidden alongside `ref`."
                         },
                         "defaultOption": {
                           "type": "string",
@@ -575,9 +664,7 @@
                       },
                       "required": [
                         "kind",
-                        "id",
-                        "message",
-                        "options"
+                        "id"
                       ],
                       "additionalProperties": false
                     },
@@ -615,7 +702,7 @@
                           "description": "Collection expression iterated by a forEach loop."
                         },
                         "breakCondition": {
-                          "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition",
+                          "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition",
                           "description": "Early-exit condition, evaluated by the executing agent each iteration."
                         },
                         "maxIterations": {
@@ -678,7 +765,7 @@
                             "type": "string"
                           },
                           "condition": {
-                            "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                            "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition"
                           },
                           "transitionTo": {
                             "type": "string",
@@ -717,7 +804,7 @@
                       "description": "Activity ID to transition to"
                     },
                     "condition": {
-                      "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/actions/items/properties/condition"
+                      "$ref": "#/definitions/workflow/properties/fragments/properties/checkpoints/additionalProperties/properties/condition"
                     },
                     "isDefault": {
                       "type": "boolean",

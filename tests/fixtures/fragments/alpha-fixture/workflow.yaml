@@ -1,0 +1,35 @@
+id: alpha-fixture
+version: 1.0.0
+title: Fragments guard fixture — declaring workflow
+rules:
+  workflow:
+    - ref: shared-discipline
+fragments:
+  rules:
+    shared-discipline: Confirm scope with the user before mutating any tracked file in the corpus
+    unused-fragment-rule: This fragment is declared here and referenced nowhere in the fixture corpus
+  checkpoints:
+    confirm-gate:
+      condition:
+        type: simple
+        variable: scope_confirmed
+        operator: "!="
+        value: true
+      message: Confirm the resolved scope before the mutation pass begins.
+      blocking: true
+      options:
+        - id: proceed
+          label: Scope confirmed
+          description: Proceed with the mutation pass
+          effect:
+            setVariable:
+              scope_confirmed: true
+        - id: revise
+          label: Revise scope
+          description: Return to scoping
+variables:
+  - name: scope_confirmed
+    type: boolean
+    description: Whether the mutation scope has been confirmed
+    defaultValue: false
+initialActivity: alpha-activity

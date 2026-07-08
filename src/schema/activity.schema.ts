@@ -97,11 +97,30 @@ export const ActionStepSchema = z.object({
 }).strict();
 export type ActionStep = z.infer<typeof ActionStepSchema>;
 
+// The body of a checkpoint — everything but the step identity (`kind`, `id`) and the site-specific
+// gates (`when`, `required`). This is the shape a workflow-level checkpoint fragment declares once
+// under `fragments.checkpoints.<name>`; a `ref` step imports it (#166 B10).
+export const CheckpointFragmentBodySchema = z.object({
+  message: z.string().describe('Message presented to the user.'),
+  options: z.array(CheckpointOptionSchema).min(1).describe('Decision options with effects.'),
+  defaultOption: z.string().optional().describe('Option auto-selected when autoAdvanceMs elapses.'),
+  autoAdvanceMs: z.number().int().positive().optional().describe('Ms before auto-selecting defaultOption.'),
+  blocking: z.boolean().optional().describe('Orchestrator directive: true means present the checkpoint and wait for explicit user selection. Agent-honored — the server\'s auto-advance gate checks only defaultOption + autoAdvanceMs, not this field.'),
+  condition: ConditionSchema.optional().describe('Condition shared by every use site. A referencing step may declare its own `condition` only when the fragment declares none.'),
+}).strict();
+export type CheckpointFragmentBody = z.infer<typeof CheckpointFragmentBodySchema>;
+
+// A checkpoint step is authored in exactly one of two forms (enforced at load, not by the union —
+// the discriminated union needs a plain object per kind): inline (message + options present, no
+// `ref`) or by reference (`ref` names a `fragments.checkpoints` entry; the body fields are
+// forbidden locally so the fragment stays the single home for the checkpoint's content). The
+// loader materializes ref steps before anything downstream reads them.
 export const CheckpointStepSchema = z.object({
   kind: z.literal('checkpoint').describe('Step-kind discriminator.'),
   id: z.string().describe('Identifier for this step within the activity; the stable checkpoint-response replay key.'),
-  message: z.string().describe('Message presented to the user.'),
-  options: z.array(CheckpointOptionSchema).min(1).describe('Decision options with effects.'),
+  ref: z.string().optional().describe('Checkpoint-fragment reference: `[workflow::]name`, resolved against the declaring workflow\'s `fragments.checkpoints` (bare name: declaring workflow, then meta). Mutually exclusive with the body fields — a ref step carries only its id and, when the fragment declares none, a condition.'),
+  message: z.string().optional().describe('Message presented to the user. Required on an inline checkpoint; forbidden alongside `ref`.'),
+  options: z.array(CheckpointOptionSchema).min(1).optional().describe('Decision options with effects. Required on an inline checkpoint; forbidden alongside `ref`.'),
   defaultOption: z.string().optional().describe('Option auto-selected when autoAdvanceMs elapses.'),
   autoAdvanceMs: z.number().int().positive().optional().describe('Ms before auto-selecting defaultOption.'),
   blocking: z.boolean().optional().describe('Orchestrator directive: true means present the checkpoint and wait for explicit user selection. Agent-honored — the server\'s auto-advance gate checks only defaultOption + autoAdvanceMs, not this field.'),
@@ -304,17 +323,27 @@ export function flattenActivitySteps(activity: Activity): Step[] {
  * The activity's checkpoint definitions: the inline kind:checkpoint steps, in document order. A
  * kind:checkpoint step carries its message/options/effects inline, so it maps directly to a
  * checkpoint definition (its id is the stable key used for checkpoint yield/respond/replay).
+ * Ref-form steps must be materialized first (the loader does this); an unmaterialized ref step
+ * has no body to synthesize a definition from.
  */
 export function activityCheckpoints(activity: Activity): Checkpoint[] {
   return flattenActivitySteps(activity)
     .filter((s): s is CheckpointStep => s.kind === 'checkpoint')
-    .map((s) => ({
-      id: s.id,
-      name: s.id,
-      message: s.message,
-      options: s.options,
-      defaultOption: s.defaultOption,
-      autoAdvanceMs: s.autoAdvanceMs,
-      condition: s.condition,
-    }));
+    .map((s) => {
+      if (s.message === undefined || s.options === undefined) {
+        throw new Error(
+          `Activity '${activity.id}': checkpoint '${s.id}' has no message/options` +
+            (s.ref ? ` — fragment ref '${s.ref}' was not materialized before use.` : '.'),
+        );
+      }
+      return {
+        id: s.id,
+        name: s.id,
+        message: s.message,
+        options: s.options,
+        defaultOption: s.defaultOption,
+        autoAdvanceMs: s.autoAdvanceMs,
+        condition: s.condition,
+      };
+    });
 }
