@@ -262,13 +262,16 @@ function interpolate(template: string, variables: Record<string, unknown>): stri
   });
 }
 
-async function getActivity(client: Client, sessionIndex: string): Promise<{ def: ActivityDef; unresolved: string[] }> {
+async function getActivity(client: Client, sessionIndex: string): Promise<{ def: ActivityDef; unresolved: string[]; bundledSteps: string[] }> {
   const res = await client.callTool({ name: 'get_activity', arguments: { session_index: sessionIndex } });
   if (isError(res)) throw new Error(`get_activity failed: ${JSON.stringify(res.content)}`);
   const def = parseWorkflowResponse(res) as unknown as ActivityDef;
   const bundle = parseBundle(res);
   const unresolved = (bundle.unresolved as string[] | undefined) ?? [];
-  return { def, unresolved };
+  // Hybrid bundling (#166 B11): step ids whose techniques arrived inline in this response —
+  // the robot skips their per-step get_technique, as a real worker should.
+  const bundledSteps = ((res._meta as { bundled_steps?: string[] } | undefined)?.bundled_steps) ?? [];
+  return { def, unresolved, bundledSteps };
 }
 
 async function transition(
@@ -338,6 +341,7 @@ async function executeActivitySteps(
   act: ActivityDef,
   variables: Record<string, unknown>,
   policy: Policy,
+  bundledSteps: string[] = [],
 ): Promise<StepExecution> {
   const cpRecords: CheckpointRecord[] = [];
   const manifest: Array<{ step_id: string; output: string }> = [];
@@ -360,8 +364,10 @@ async function executeActivitySteps(
   // { step_id } before executing it, and the server records the fetch in the
   // session history (#166 B8) — next_activity's manifest validation warns on
   // manifested technique steps with no recorded fetch. Fetch once per step id
-  // per activity visit; loop bodies are walked once, so this matches.
-  const fetchedStepIds = new Set<string>();
+  // per activity visit; loop bodies are walked once, so this matches. Steps
+  // whose techniques arrived inline via hybrid bundling (#166 B11) are seeded
+  // as already delivered — get_activity recorded their technique_bundled events.
+  const fetchedStepIds = new Set<string>(bundledSteps);
   const fetchTechnique = async (stepId: string): Promise<void> => {
     if (fetchedStepIds.has(stepId)) return;
     fetchedStepIds.add(stepId);
@@ -528,8 +534,9 @@ export async function walk(
 
     let act: ActivityDef;
     let unresolved: string[];
+    let bundledSteps: string[];
     try {
-      ({ def: act, unresolved } = await getActivity(client, sessionIndex));
+      ({ def: act, unresolved, bundledSteps } = await getActivity(client, sessionIndex));
     } catch (e) {
       if (opts.autoAdvance) { loadErrors.push(`${current}: ${(e as Error).message}`); break; }
       throw e;
@@ -541,7 +548,7 @@ export async function walk(
     let artifactsWritten: string[] = [];
 
     if (mode === 'robot') {
-      const exec = await executeActivitySteps(client, sessionIndex, current, act, variables, policy);
+      const exec = await executeActivitySteps(client, sessionIndex, current, act, variables, policy, bundledSteps);
       cpRecords = exec.cpRecords;
       transitionOverride = exec.transitionOverride;
       stepsExecuted = exec.stepsExecuted;

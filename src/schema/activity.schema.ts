@@ -9,6 +9,15 @@ import { SemanticVersionSchema } from './common.js';
 export const TechniquesReferenceSchema = z.array(z.string()).describe('Activity-wide technique references (`::` paths); bundled into get_activity.');
 export type TechniquesReference = z.infer<typeof TechniquesReferenceSchema>;
 
+// Hybrid technique bundling (#166 B11) — activity-declared opt-in. When present, get_activity
+// inlines the composed content of the activity's small step-bound techniques under a
+// `step_techniques` map; large techniques (composed wire form over `maxChars`) and gated steps
+// (a `when`/`condition` on the step or an enclosing loop) stay lazy via get_technique.
+export const BundleTechniquesSchema = z.object({
+  maxChars: z.number().int().positive().describe('Per-technique ceiling in characters: a step technique whose composed wire form exceeds this is not inlined and is fetched with get_technique { step_id }.'),
+}).strict();
+export type BundleTechniques = z.infer<typeof BundleTechniquesSchema>;
+
 // Action schema
 export const ActionSchema = z.object({
   action: z.enum(['log', 'validate', 'set', 'emit', 'message']).describe('Action verb, interpreted by the executing agent. The server has no action interpreter: `set` does not write the session variable bag (only a checkpoint option\'s setVariable effect does) and is slated for removal at the next workflow-schema major (#166 B7/B12).'),
@@ -249,6 +258,9 @@ export const ActivitySchema = z.object({
 
   // Activity-wide techniques, referenced by `::` path. The server bundles them into get_activity.
   techniques: TechniquesReferenceSchema.optional(),
+
+  // Opt-in hybrid bundling of step-bound techniques into get_activity (#166 B11).
+  bundleTechniques: BundleTechniquesSchema.optional().describe('Opt-in hybrid bundling: get_activity inlines each ungated step technique whose composed wire form is at most maxChars; larger and gated ones remain lazy-fetched via get_technique. Bundled deliveries are recorded as technique_bundled history events and satisfy the manifest fidelity check.'),
 
   // Execution — the single ordered list of kind-tagged steps (technique | action | checkpoint | loop).
   // Checkpoints are inline kind:checkpoint steps and loops are compound kind:loop steps: there are no

@@ -28,7 +28,7 @@ The server enforces structure at load time plus a small runtime core; most schem
 | Construct | Engine-enforced | Advisory (incl. warn-only checks) | Agent-interpreted |
 |---|---|---|---|
 | Workflow | `id` (file resolution); `techniques.workflow` / `techniques.activity` (bundle composition); `activities` / `activitiesDir` (assembly); `variables[].defaultValue` (seeded into the session variable bag at session creation, recorded as a `variables_seeded` history event) | `version` (mid-session drift warns); `title`, `description`, `tags`; `rules.*`; `variables[]` declarations (rendered in `get_workflow`); `initialActivity` (wrong first activity warns); `variables[].type` (checkpoint `setVariable` values validated warn-only — mismatches stored as written) | `author`; `variables[].required` (never checked — authoring metadata) |
-| Activity | `id` (navigation key); `artifactPrefix` (server-computed from the filename; also orders activities); the composed artifact contract (synthesized from bound techniques' outputs); `techniques[]` (bundle) | `name`, `description`, `required`, `rules[]`; `transitions[]` (legality warns only — `next_activity` moves anywhere); `decisions[]` (stringified for warn-only transition matching) | `triggers[]` / `passContext` (`dispatch_child` takes an explicit `workflow_id`; a child session's bag starts from the child workflow's own declared defaults); `outcome[]` (never reconciled against manifests) |
+| Activity | `id` (navigation key); `artifactPrefix` (server-computed from the filename; also orders activities); the composed artifact contract (synthesized from bound techniques' outputs); `techniques[]` (bundle); `bundleTechniques` (hybrid step-technique bundling in `get_activity`) | `name`, `description`, `required`, `rules[]`; `transitions[]` (legality warns only — `next_activity` moves anywhere); `decisions[]` (stringified for warn-only transition matching) | `triggers[]` / `passContext` (`dispatch_child` takes an explicit `workflow_id`; a child session's bag starts from the child workflow's own declared defaults); `outcome[]` (never reconciled against manifests) |
 | Step (common) | `kind` (selects the per-kind closed contract); `id` (duplicate ids are a load error; the key for manifests and step-bound `get_technique`) | absence of a gated step from a `step_manifest` is accepted; ungated omissions warn | `when` / `condition` gates (the server never evaluates a condition; on a checkpoint step only `condition` enables `condition_not_met` dismissal); `required` (worker hint); `actions[]` (no verb has a server interpreter — `set` does not write the variable bag and is slated for removal at the next schema major, #166 B7/B12) |
 | Checkpoint step | `options[]` (`option_id` hard-validated); `effect.setVariable` (applied to the session variable bag — the one engine-applied effect); `defaultOption` + `autoAdvanceMs` (the server enforces the full timer before `auto_advance`) | `effect.transitionTo` (recorded and returned; the orchestrator enacts it via `next_activity`); `effect.skipActivities` (recorded in `skippedActivities` bookkeeping) | `blocking` (orchestrator directive; the server's auto-advance gate does not consult it) |
 | Loop step | body `steps[]` structure (id uniqueness per scope, flattened for lookups and artifact composition) | loop-body step ids are accepted in `step_manifest` but never required | `loopType` semantics, `variable` / `over`, `breakCondition`, `maxIterations` — iteration is executed and bounded entirely by the agent |
@@ -301,6 +301,7 @@ A unified activity defines workflow execution as a single ordered `steps[]` (eac
 | `name`            | string            | Display name                               |
 | `description`     | string            | What this activity accomplishes            |
 | `techniques`      | TechniquesReference | Activity-wide technique references (`::` paths) |
+| `bundleTechniques` | BundleTechniques | Opt-in hybrid bundling: `get_activity` inlines each ungated step technique whose composed wire form is at most `maxChars`; larger and gated ones stay lazy via `get_technique` |
 | `steps`           | Step[]            | Ordered, kind-tagged execution list (technique / action / checkpoint / loop) |
 | `decisions`       | Decision[]        | Automated branching points (activity-level)|
 | `transitions`     | Transition[]      | Activity navigation rules                  |
@@ -1013,6 +1014,7 @@ The `history` array tracks all workflow events:
 - `loop_started`, `loop_iteration`, `loop_completed`, `loop_break`
 - `variable_set`, `error`
 - `technique_fetched`, `resource_fetched` — content-fetch records appended by `get_technique` / `get_resource` (`data` carries `techniqueId` + optional `stepId`, or `resourceId`, plus `agentId`); `next_activity`'s manifest validation reads `technique_fetched` events for the warn-only technique-fetch fidelity check
+- `technique_bundled` — an inline step-technique delivery appended by `get_activity` for an activity that declares `bundleTechniques` (`data` carries `techniqueId`, `stepId`, `agentId`); counts as coverage for the technique-fetch fidelity check alongside `technique_fetched`
 
 ---
 
@@ -1187,6 +1189,7 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 | Property | Type | Description |
 |----------|------|-------------|
 | `description` | string | Detailed description |
+| `bundleTechniques` | BundleTechniques | Opt-in hybrid bundling (`{ maxChars }`): `get_activity` inlines each ungated step technique whose composed wire form is at most `maxChars` |
 | `steps` | Step[] | Ordered, kind-tagged execution list (technique / action / checkpoint / loop) |
 | `decisions` | Decision[] | Automated branching points (activity-level) |
 | `transitions` | Transition[] | Navigation to other activities |

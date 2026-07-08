@@ -474,6 +474,22 @@ describe('validation', () => {
       expect(validateTechniqueFetches(fullManifest, makeFetchWorkflow(), 'missing', [])).toEqual([]);
       expect(validateTechniqueFetches([], makeFetchWorkflow(), 'work', [entered('work')])).toEqual([]);
     });
+
+    it('credits a technique_bundled delivery from a bundling activity (#166 B11)', () => {
+      const bundled = (data: { techniqueId: string; stepId: string }): HistoryEntry => ({
+        timestamp: '2026-07-07T10:01:00.000Z',
+        type: 'technique_bundled',
+        activity: 'work',
+        data: { ...data, agentId: 'worker' },
+      });
+      const history = [
+        entered('work'),
+        bundled({ techniqueId: 'grp::qualified-step', stepId: 'qualified-step' }),
+        bundled({ techniqueId: 'work::bare-step', stepId: 'bare-step' }),
+        fetched('work', { techniqueId: 'grp::process-item', stepId: 'process-item' }),
+      ];
+      expect(validateTechniqueFetches(fullManifest, makeFetchWorkflow(), 'work', history)).toEqual([]);
+    });
   });
 
   describe('buildValidation', () => {

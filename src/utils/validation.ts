@@ -125,9 +125,11 @@ export function validateStepManifest(
 
 /**
  * Fidelity observability (#166 B8): warn when a manifested technique step had
- * no technique fetch recorded during the activity. Reads the
+ * no technique delivery recorded during the activity. Reads the
  * `technique_fetched` events that `get_technique` appends to the session
- * history, scoped to the current visit (entries after the most recent
+ * history — and the `technique_bundled` events a bundling activity's
+ * `get_activity` appends (#166 B11), an inline delivery being coverage too —
+ * scoped to the current visit (entries after the most recent
  * `activity_entered` for this activity, so a loop-back revisit needs its own
  * fetches). A step is covered by a step-bound fetch (`data.stepId` matches)
  * or by a fetch whose resolved technique id matches the step's binding —
@@ -163,7 +165,7 @@ export function validateTechniqueFetches(
   const fetchedTechniqueIds = new Set<string>();
   for (let i = visitStart; i < history.length; i++) {
     const entry = history[i]!;
-    if (entry.type !== 'technique_fetched' || entry.activity !== activityId) continue;
+    if ((entry.type !== 'technique_fetched' && entry.type !== 'technique_bundled') || entry.activity !== activityId) continue;
     const data = entry.data as { stepId?: string; techniqueId?: string } | undefined;
     if (typeof data?.stepId === 'string') fetchedStepIds.add(data.stepId);
     if (typeof data?.techniqueId === 'string') fetchedTechniqueIds.add(data.techniqueId);

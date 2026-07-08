@@ -5,7 +5,7 @@ import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
-import { composeTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
+import { composeActivityTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
 import {
   sessionIndexParam,
   assertNoActiveCheckpoint,
@@ -563,22 +563,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      // Activity-group convention: a bare op id (no `::`) on a step resolves FIRST against the group
-      // named after the current activity — `<activity-id>::<op>` — so a step can name its op directly
-      // (`technique: classify-source` inside the `intake` activity). Trying the activity-group op
-      // first (over a same-named standalone or group base) is what lets an op that shares its group's
-      // name resolve correctly (`technique: research` -> `research::research`, not the `research`
-      // group base). Foreign/cross-group ops are written qualified and resolve as-authored. If no
-      // group named after the activity holds the op, the bare ref falls back to as-authored.
-      let composed = (techniqueId && !techniqueId.includes('::') && state.currentActivity)
-        ? await composeTechnique(`${state.currentActivity}::${techniqueId}`, config.workflowDir, workflow_id)
-        : undefined;
-      if (composed?.success) {
-        techniqueId = `${state.currentActivity}::${techniqueId}`;
-      } else {
-        composed = await composeTechnique(techniqueId, config.workflowDir, workflow_id);
-      }
+      // Activity-group convention (see composeActivityTechnique): a bare op id resolves first
+      // against the group named after the current activity, falling back to as-authored.
+      const composed = await composeActivityTechnique(
+        techniqueId, config.workflowDir, workflow_id, state.currentActivity || undefined,
+      );
       if (!composed.success) throw composed.error;
+      techniqueId = composed.value.techniqueId;
 
       // Binding-seam provenance (#166 B3): a step-bound fetch annotates its own inputs (and the
       // noteworthy inherited ones) with their resolution under the name-match convention, and
@@ -586,7 +577,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // validation entries. Classification is static — declarations and document order — so the
       // annotated payload is deterministic per (corpus, step) and byte-identical refetches keep
       // collapsing under reference delivery.
-      let technique = composed.value;
+      let technique = composed.value.technique;
       const provenanceWarnings: string[] = [];
       if (boundStep?.id && state.currentActivity) {
         const ctx = await buildProvenanceContext({

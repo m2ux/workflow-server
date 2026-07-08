@@ -17,6 +17,12 @@ export const HistoryEventTypeSchema = z.enum([
   // agentId } / { resourceId, agentId }; `activity` is the activity current
   // at fetch time (omitted before the first next_activity).
   'technique_fetched', 'resource_fetched',
+  // Hybrid bundling (#166 B11): a step-bound technique delivered inline by
+  // get_activity for an activity that declares `bundleTechniques`. `data`
+  // carries { techniqueId, stepId, agentId }. Distinct from technique_fetched
+  // so the fidelity stream still separates agent-initiated fetches from
+  // server-pushed bundle deliveries; manifest validation accepts either.
+  'technique_bundled',
   // Variable-model honesty (#166 B7): declared defaults seeded into the
   // session variable bag at session creation. ONE event per session; `data`
   // carries { variables: <the seeded map> }.
