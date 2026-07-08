@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.11.0
+version: 3.12.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 required: true
@@ -113,9 +113,15 @@ steps:
   - kind: checkpoint
     id: issue-verification
     condition:
-      type: simple
-      variable: issue_number
-      operator: notExists
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: issue_number
+          operator: notExists
     message: I didn't find a GitHub or Jira issue associated with this work package. Which option would you like?
     options:
       - id: provide-existing
@@ -524,6 +530,10 @@ steps:
     condition:
       type: and
       conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
         - type: simple
           variable: issue_cancelled
           operator: "!="

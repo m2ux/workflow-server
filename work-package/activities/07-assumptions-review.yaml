@@ -1,5 +1,5 @@
 id: assumptions-review
-version: 2.1.1
+version: 2.2.0
 name: Assumptions Review
 description: Review each open assumption with the user.
 required: true
@@ -155,6 +155,12 @@ transitions:
     condition:
       type: simple
       variable: needs_further_discussion
+      operator: ==
+      value: true
+  - to: lean-coding-audit
+    condition:
+      type: simple
+      variable: is_review_mode
       operator: ==
       value: true
   - to: implement

@@ -123,14 +123,15 @@ graph TD
 
 | Activity | Mode Override |
 |----------|---------------|
-| `start-work-package` | Detect mode, capture PR reference, skip branch/PR creation |
+| `start-work-package` | Detect mode, capture PR reference; the `issue-verification` and `pr-creation` checkpoints and branch/PR-creation steps are gated `is_review_mode != true` so no issue/branch/PR is created |
 | `design-philosophy` | Assess ticket completeness, force skip elicitation |
+| `plan-prepare` | Plan the review approach; the `update-pr::render` (initial) step and `approach-confirmed` checkpoint are gated `is_review_mode != true` so the reviewed PR's body is never overwritten and no approach-confirmation is prompted |
 | `implementation-analysis` | Checkout base branch, document expected changes |
-| `implement` | **SKIPPED** — its steps and inbound transition are gated `when is_review_mode != true` |
+| `implement` | **SKIPPED** — `assumptions-review` carries a `is_review_mode == true → lean-coding-audit` transition that routes around the entire activity, so none of its steps or checkpoints (`switch-model-*`, assumption interview) are reached |
 | `lean-coding-audit` | Run the read-only over-engineering review, debt harvest, and gain report; the findings-confirmation checkpoint and simplification-apply-cycle are gated out so no code changes — findings become PR feedback |
 | `validate` | Document failures as findings, skip fix-failures |
 | `strategic-review` | Document recommendations, transition to submit-for-review |
-| `submit-for-review` | Generate review summary, post to PR, end workflow |
+| `submit-for-review` | Consolidate findings, generate the review summary, post it to the PR, then transition to `complete`; the create-mode tail (DCO attestation, PR-body render/verify, push, mark-ready, reviewer-feedback loop) is gated `is_review_mode != true` |
 | `post-impl-review` | Compare changes against expected |
 
 ---
