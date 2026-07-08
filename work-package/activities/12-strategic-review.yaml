@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.6.0
+version: 2.7.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 required: true
@@ -47,20 +47,23 @@ steps:
     technique: strategic-findings-analysis
   - kind: checkpoint
     id: review-findings
+    condition:
+      type: simple
+      variable: strategic_findings_summary
+      operator: "!="
+      value: ""
     message: |-
       Strategic review complete.
 
       Findings:
       {strategic_findings_summary}
 
-      Recommended action: {recommended_strategic_option}. Auto-advancing in 30s.
-    blocking: false
-    defaultOption: acceptable
-    autoAdvanceMs: 30000
+      Recommended action: {recommended_strategic_option}.
+    blocking: true
     options:
       - id: acceptable
         label: All acceptable
-        description: Findings noted but no changes needed (default — auto-accepts after 30s)
+        description: Findings noted but no changes needed
         effect:
           setVariable:
             review_passed: true
@@ -70,12 +73,20 @@ steps:
         effect:
           setVariable:
             needs_strategic_fixes: true
+      - id: selective-fixes
+        label: Fix selected findings
+        description: Choose which findings to fix, by priority
+        effect:
+          setVariable:
+            needs_strategic_fixes: true
+            strategic_fixes_selective: true
       - id: defer-findings
         label: Defer findings
         description: Note findings for future but proceed now
         effect:
           setVariable:
             review_passed: true
+            strategic_findings_deferred: true
       - id: more-review
         label: Need more review
         description: Additional areas need examination

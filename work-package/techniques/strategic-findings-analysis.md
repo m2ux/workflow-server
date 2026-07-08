@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -27,6 +27,10 @@ The recommended outcome based on the severity assessment: `fix-findings` when si
 
 A concise multi-line summary of the strategic-review findings — one line per finding, each a severity tag plus a one-line description. Empty string when there are no findings.
 
+### review_passed
+
+*(boolean)* Set to `true` on the finding-free / minor path — the value that signals the review may proceed. Left unset when significant findings exist, so the outcome is decided by explicit user choice rather than this recommendation.
+
 ## Protocol
 
 ### 1. Assess Severity
@@ -44,6 +48,11 @@ A concise multi-line summary of the strategic-review findings — one line per f
 - Build `{strategic_findings_summary}` as a multi-line block — a severity tag and a one-line description per finding.
 - Use an empty string when there are no findings.
 
+### 4. Signal the Finding-Free Path
+
+- Set `{review_passed}` to `true` when the review is finding-free or minor — `{strategic_findings_summary}` is empty (`""`) or `{recommended_strategic_option}` is `acceptable`.
+- Leave `{review_passed}` unset when significant findings are present, so the outcome rests on explicit user choice rather than this recommendation.
+
 ## Rules
 
 ### significant-findings-route-to-fix
@@ -53,3 +62,7 @@ Only significant scope, over-engineering, or investigation-artifact findings rec
 ### summary-stays-concise
 
 Keep `{strategic_findings_summary}` concise — one severity-tagged line per finding.
+
+### finding-free-path-signals-passed
+
+On the finding-free / minor path, emit `{review_passed}: true`. Never emit `{review_passed}: true` when significant findings are present — that outcome is an explicit user decision, not this technique's to assert.

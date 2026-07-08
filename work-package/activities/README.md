@@ -395,8 +395,8 @@ graph TD
     applyCleanup --> createArchSummary["Architecture summary"]
     createArchSummary --> analyze["Analyze strategic findings"]
     analyze --> cpFindings{"review-findings checkpoint"}
-    cpFindings -->|"review mode or passed"| exitSubmit(["submit-for-review"])
-    cpFindings -->|"fix / more review"| exitPlan(["plan-prepare"])
+    cpFindings -->|"review mode / passed / accept / defer"| exitSubmit(["submit-for-review"])
+    cpFindings -->|"fix / selective / more review"| exitPlan(["plan-prepare"])
 ```
 
 ---

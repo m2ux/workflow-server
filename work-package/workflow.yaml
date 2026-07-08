@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.19.0
+version: 3.20.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
@@ -258,6 +258,14 @@ variables:
   - name: needs_strategic_fixes
     type: boolean
     description: Whether strategic review findings require fixes
+    defaultValue: false
+  - name: strategic_fixes_selective
+    type: boolean
+    description: Whether the user chose to fix only selected strategic-review findings (by priority) rather than all of them. Set by the strategic-review review-findings checkpoint's selective-fixes option alongside needs_strategic_fixes; a structural record of the selective-fix intent for the plan-prepare re-loop.
+    defaultValue: false
+  - name: strategic_findings_deferred
+    type: boolean
+    description: Whether the user chose to defer strategic-review findings (note them for later but proceed to submission now). Set by the strategic-review review-findings checkpoint's defer-findings option alongside review_passed; differentiates a deliberate defer from a clean accept.
     defaultValue: false
   - name: needs_cleanup
     type: boolean
