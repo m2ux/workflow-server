@@ -2,7 +2,7 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-The workflow includes 26 resources that provide templates, guidance, and reference material for techniques and activities. Each resource lives as `resources/<id>.md` and is loaded by id (e.g. `get_resource({ resource_id: "pr-description" })`). The numbering system is deprecated — resources are obtained by id only.
+The workflow includes 27 resources that provide templates, guidance, and reference material for techniques and activities. Each resource lives as `resources/<id>.md` and is loaded by id (e.g. `get_resource({ resource_id: "pr-description" })`). The numbering system is deprecated — resources are obtained by id only.
 
 | Resource ID | Title | Purpose |
 |-------------|-------|---------|
@@ -31,4 +31,5 @@ The workflow includes 26 resources that provide templates, guidance, and referen
 | `review-mode` | Review Mode | Complete guide for review mode behavior and PR review formats |
 | `codebase-comprehension` | Codebase Comprehension | Comprehension techniques, artifact template, and deep-dive guidance from reverse engineering and code forensics literature |
 | `assumption-reconciliation` | Assumption Reconciliation | Assumptions-log integration and scorecard formats (classification and convergence rules live on review-assumptions::reconcile) |
+| `research-reconciliation` | Research Reconciliation | Research-candidate inventory shape, reconcilability statuses, and scorecard format (enumerate/classify/converge rules live on research::triage and research::reconcile) |
 | `pr-review-response` | PR Review Response | Response-format and review-document templates (protocol and rules live on respond-to-pr-review) |
