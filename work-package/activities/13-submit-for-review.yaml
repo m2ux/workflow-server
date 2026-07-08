@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.7.0
+version: 1.8.0
 name: Submit for Review
 description: Submit the PR for review and handle reviewer feedback.
 required: true
@@ -75,6 +75,11 @@ steps:
       value: true
   - kind: checkpoint
     id: dco-sign-off-confirmation
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
     message: |-
       Before pushing: please certify the Developer Certificate of Origin for this work package.
 
@@ -119,6 +124,7 @@ steps:
     id: verify-pr-body-rerender
     name: PR Body Verification Re-render Loop
     loopType: while
+    when: is_review_mode != true
     condition:
       type: simple
       variable: body_conforms
@@ -138,10 +144,16 @@ steps:
   - kind: checkpoint
     id: body-non-conformant
     condition:
-      type: simple
-      variable: body_conforms
-      operator: ==
-      value: false
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: body_conforms
+          operator: ==
+          value: false
     message: |-
       The PR body still fails update-pr::rules.pr-body-conformance after the verify-pr-body-rerender loop's two iterations.
 
@@ -183,10 +195,16 @@ steps:
   - kind: action
     id: merge-strategy-guidance
     condition:
-      type: simple
-      variable: squash_merge_supported
-      operator: ==
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: squash_merge_supported
+          operator: ==
+          value: true
     actions:
       - action: message
         message: |-
@@ -216,6 +234,11 @@ steps:
     actions: []
   - kind: checkpoint
     id: review-received
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
     message: Has the PR received manual review feedback?
     options:
       - id: yes-review
@@ -227,11 +250,26 @@ steps:
   - kind: technique
     id: process-review-comments
     technique: respond-to-pr-review
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - kind: technique
     id: analyze-review-outcome
     technique: review-outcome-analysis
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - kind: checkpoint
     id: review-outcome
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
     message: |-
       Review outcome analysis complete.
 
