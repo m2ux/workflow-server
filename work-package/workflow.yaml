@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.17.0
+version: 3.18.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
@@ -228,6 +228,13 @@ variables:
     type: boolean
     description: Whether code-resolvable assumptions exist that can be validated through targeted analysis. Drives the assumption reconciliation loop.
     defaultValue: false
+  - name: research_candidates
+    type: array
+    description: "Inventory of open research gaps surfaced after synthesis, each triaged as reconcilable-by-research or irreconcilable, with rationale and (for irreconcilable candidates) a handoff target. Drives the research reconciliation loop and the full-picture presentation at the research-convergence checkpoint. Sub-shape per entry: { id, statement, status (Reconcilable|Resolved|Partially Resolved|Irreconcilable), rationale, handoff (stakeholder|code-analysis|out-of-scope, irreconcilable only) }."
+  - name: has_reconcilable_research
+    type: boolean
+    description: "Whether open research-reconcilable candidates remain — gaps further knowledge-base or web research could close. Drives the research reconciliation loop: true while another research pass is warranted, false once research converges (only irreconcilable candidates, or none, remain)."
+    defaultValue: false
   - name: has_open_questions
     type: boolean
     description: Whether unresolved open questions remain after the codebase comprehension deep-dive. When false, comprehension is objectively sufficient and the sufficiency checkpoint is skipped.
@@ -285,10 +292,6 @@ variables:
   - name: prism_artifact_paths
     type: array
     description: Paths to prism structural analysis artifacts produced during post-impl-review. Single-pass produces one path; full-prism produces paths to structural, adversarial, and synthesis artifacts.
-  - name: needs_further_research
-    type: boolean
-    description: Whether additional research focus areas were identified during research activity
-    defaultValue: false
   - name: has_deferred_assumptions
     type: boolean
     description: Whether any assumptions were deferred during review (triggers issue tracker posting)

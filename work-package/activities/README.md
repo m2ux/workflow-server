@@ -157,10 +157,11 @@ Definition: [`04-research.yaml`](./04-research.yaml)
 graph TD
     entryNode(["Entry"]) --> kbResearch["Knowledge base and web research"]
     kbResearch --> synthesize["Synthesize findings"]
-    synthesize --> cpFindings{"research-findings checkpoint"}
-    cpFindings -->|"sufficient"| collectAssumptions["Collect assumptions"]
-    cpFindings -->|"further research"| cpFocus{"research-focus checkpoint"}
-    cpFocus --> collectAssumptions
+    synthesize --> triageRes["Triage research candidates (reconcilable | irreconcilable)"]
+    triageRes --> reconcileRes["Reconcile candidates (autonomous research pass)"]
+    reconcileRes --> cpConverge{"research-convergence checkpoint (fires only when converged)"}
+    cpConverge -->|"not converged / request-more"| reconcileRes
+    cpConverge -->|"accept"| collectAssumptions["Collect assumptions"]
 
     collectAssumptions --> createDoc["Create research document"]
     createDoc --> updateLog["Update assumptions log"]

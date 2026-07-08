@@ -1,5 +1,5 @@
 id: research
-version: 2.8.0
+version: 2.9.0
 name: Research
 description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
 required: false
@@ -10,50 +10,49 @@ steps:
   - kind: technique
     id: synthesize
     technique: synthesize
-  - kind: checkpoint
-    id: research-findings
-    message: Here are the combined findings from knowledge base and web research. Proceeding in 30s unless you want changes.
-    blocking: false
-    defaultOption: sufficient
-    autoAdvanceMs: 30000
-    options:
-      - id: sufficient
-        label: Findings Sufficient
-        description: Research findings are relevant and sufficient (default — auto-proceeds after 30s)
-      - id: further-research
-        label: Need Further Research
-        description: Additional research is needed — specify focus area at next checkpoint
-        effect:
-          setVariable:
-            needs_further_research: true
+  - kind: technique
+    id: triage-research-candidates
+    technique: triage
+  - kind: loop
+    id: research-reconciliation
+    name: Research Reconciliation Loop
+    loopType: doWhile
+    condition:
+      type: simple
+      variable: has_reconcilable_research
+      operator: ==
+      value: true
+    maxIterations: 10
+    steps:
+      - kind: technique
+        id: reconcile-research-candidates
+        technique: reconcile
+        when: has_reconcilable_research == true
+      - kind: checkpoint
+        id: research-convergence
+        condition:
+          type: simple
+          variable: has_reconcilable_research
+          operator: ==
+          value: false
+        message: "Research has converged. Full candidate inventory (see kb-research.md → Open Research Candidates): {research_candidates}. Every research-reconcilable candidate was resolved; only irreconcilable items — or none — remain, each with its rationale and handoff target. Proceed to planning, or direct further research on a specific item?"
+        blocking: true
+        options:
+          - id: accept-research
+            label: Accept — proceed to planning
+            description: Research is complete; remaining open candidates are irreconcilable by research and are carried to their handoff targets (stakeholder interview, assumption reconciliation, or recorded out-of-scope).
+          - id: request-more
+            label: Direct further research
+            description: Reopen the loop to research a named candidate further — provide the focus in your response; the next pass incorporates it.
+            effect:
+              setVariable:
+                has_reconcilable_research: true
   - kind: technique
     id: collect-assumptions
     technique:
       name: review-assumptions::collect
       inputs:
         assumption_categories: Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment
-  - kind: checkpoint
-    id: research-focus
-    condition:
-      type: simple
-      variable: needs_further_research
-      operator: ==
-      value: true
-    message: What additional research is needed? Describe the focus area or questions to investigate.
-    blocking: true
-    options:
-      - id: focus-provided
-        label: Focus area provided
-        description: Proceed with the specified research focus
-        effect:
-          setVariable:
-            needs_further_research: true
-      - id: cancel-further
-        label: Cancel — findings are sufficient after all
-        description: Proceed without additional research
-        effect:
-          setVariable:
-            needs_further_research: false
   - kind: technique
     id: document
     technique: document
