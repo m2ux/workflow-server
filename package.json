@@ -23,7 +23,8 @@
     "check:anchors": "tsx scripts/check-resource-anchors.ts",
     "check:technique-template": "tsx scripts/check-technique-template.ts",
     "check:variable-model": "tsx scripts/check-variable-model.ts",
-    "check:fragments": "tsx scripts/check-fragments.ts"
+    "check:fragments": "tsx scripts/check-fragments.ts",
+    "check:review-mode": "tsx scripts/check-review-mode-gating.ts"
   },
   "license": "MIT",
   "devDependencies": {

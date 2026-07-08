@@ -1,0 +1,10 @@
+[
+  "work-package::codebase-comprehension::comprehension-sufficient",
+  "work-package::design-philosophy::classification-and-path-confirmed",
+  "work-package::requirements-elicitation::elicitation-complete",
+  "work-package::research::context-scope-declaration",
+  "work-package::start-work-package::github-issue-missing",
+  "work-package::start-work-package::issue-review",
+  "work-package::strategic-review::review-findings",
+  "workflow-design::scope-and-draft::scope-and-structure-confirmed"
+]
