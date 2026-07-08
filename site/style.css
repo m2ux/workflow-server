@@ -30,9 +30,6 @@
   /* Type + spacing */
   --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-  /* Prose measure in rem, not ch: every element in the centered reading band
-     must resolve to the same width regardless of its font size. */
-  --measure: 40rem;
   --shell: 88rem;
   --radius: 10px;
   --space-1: 0.25rem;
@@ -86,21 +83,17 @@ body {
   line-height: 1.65;
 }
 
-/* Reading band: prose-width elements are capped at --measure and left-aligned
-   to the shell edge, so they share a left margin with the diagrams, tables, and
-   card grids that break out to the shell's full width. */
+/* Text and graphics both flow to the full shell width, left-aligned to the
+   shell edge, so the page uses the available screen width consistently. */
 h1, h2, h3 {
   line-height: 1.25;
   letter-spacing: -0.01em;
   margin: 0 0 var(--space-3);
-  max-width: var(--measure);
 }
 
 h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); }
 h2 { font-size: clamp(1.4rem, 3vw, 1.75rem); margin-top: var(--space-5); }
 h3 { font-size: 1.15rem; margin-top: var(--space-4); }
-
-p, ul, ol { max-width: var(--measure); }
 
 a {
   color: var(--link);
@@ -131,7 +124,6 @@ pre {
   border-radius: var(--radius);
   padding: var(--space-3);
   overflow-x: auto;
-  max-width: var(--measure);
 }
 
 pre code { background: none; border: none; padding: 0; }
@@ -238,7 +230,6 @@ figure.diagram figcaption {
   margin-top: var(--space-2);
   font-size: 0.9rem;
   color: var(--text-muted);
-  max-width: var(--measure);
 }
 
 /* Card grid */
@@ -278,7 +269,6 @@ figure.diagram figcaption {
   margin: var(--space-3) 0;
   display: grid;
   gap: var(--space-2);
-  max-width: var(--measure);
 }
 
 .steps > li {
