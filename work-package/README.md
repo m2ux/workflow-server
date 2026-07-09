@@ -184,7 +184,7 @@ This workflow supports **review mode** for reviewing existing PRs rather than im
 **Review mode flow:**
 
 ```
-start-work-package → design-philosophy → [research →] implementation-analysis → plan-prepare → assumptions-review → lean-coding-audit → post-impl-review → validate → strategic-review → submit-for-review → END
+start-work-package → design-philosophy → implementation-analysis → plan-prepare → assumptions-review → lean-coding-audit → post-impl-review → validate → strategic-review → submit-for-review → END
 ```
 
 **Headless after activation:** Once review mode is confirmed, the run is headless — every review-reachable checkpoint auto-resolves to its recommended option, is gated out, or is bypassed by an unconditional transition. The only interactive gates a review-mode run actually stops at are the two activation prompts (`review-mode-detection`, `review-pr-reference`) and the single `review-summary-approval` confirmation before the review is posted to the PR.
