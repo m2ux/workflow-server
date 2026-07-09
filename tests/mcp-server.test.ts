@@ -1266,11 +1266,11 @@ describe('mcp-server integration', () => {
     it('respond_checkpoint with condition_not_met should reject unconditional checkpoint', async () => {
       const act = await client.callTool({
         name: 'next_activity',
-        arguments: { session_index: sessionToken, activity_id: 'design-philosophy' },
+        arguments: { session_index: sessionToken, activity_id: 'implementation-analysis' },
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const unconditionalCpId = 'classification-and-path-confirmed';
+      const unconditionalCpId = 'analysis-confirmed';
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',

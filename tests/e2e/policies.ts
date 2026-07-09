@@ -23,6 +23,11 @@ export const baseSimulation: Record<string, Record<string, unknown>> = {
   'codebase-comprehension': { needs_comprehension: false, has_open_questions: false },
   'requirements-elicitation': { elicitation_complete: true },
   'assumptions-review': { needs_plan_revision: false, needs_further_discussion: false, has_deferred_assumptions: false },
+  // strategic-findings-analysis emits review_passed on the finding-free / minor
+  // path (work-package #192): with no findings the review-findings checkpoint
+  // auto-dismisses (condition_not_met) and this signal drives the transition to
+  // submit-for-review. Without it the walk loops strategic-review → plan-prepare.
+  'strategic-review': { review_passed: true },
 };
 
 export interface PolicySpec {
