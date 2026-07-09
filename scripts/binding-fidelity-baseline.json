@@ -136,11 +136,6 @@
   },
   {
     "check": "dead-output",
-    "site": "meta/techniques/version-control/list-submodules.md",
-    "detail": "output 'submodules' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
-  },
-  {
-    "check": "dead-output",
     "site": "meta/techniques/workflow-engine/dispatch-activity.md",
     "detail": "output 'trace_token' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
@@ -501,11 +496,6 @@
   },
   {
     "check": "dead-output",
-    "site": "work-package/techniques/review-summary.md",
-    "detail": "output 'review_summary' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
-  },
-  {
-    "check": "dead-output",
     "site": "work-package/techniques/stakeholder-overview.md",
     "detail": "output 'stakeholder_overview' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
@@ -523,6 +513,11 @@
     "check": "dead-output",
     "site": "work-package/techniques/update-pr/mark-ready.md",
     "detail": "output 'updated_pr' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "work-package/techniques/update-pr/post-review-comment.md",
+    "detail": "output 'review_posted' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
   {
     "check": "dead-output",
@@ -1056,6 +1051,11 @@
   },
   {
     "check": "orphan-input",
+    "site": "work-package :: update-pr::post-review-comment",
+    "detail": "own input 'review_type' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
     "site": "work-package :: update-pr::render",
     "detail": "own input 'pr_template_variant' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
   },
@@ -1278,6 +1278,16 @@
     "check": "read-resolution",
     "site": "work-package/techniques/manage-git/TECHNIQUE.md:24",
     "detail": "{email} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/review-summary.md:45",
+    "detail": "{sha} has no producer (declared id / $-local / workflow var / set-target)"
+  },
+  {
+    "check": "read-resolution",
+    "site": "work-package/techniques/review-summary.md:45",
+    "detail": "{user} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
