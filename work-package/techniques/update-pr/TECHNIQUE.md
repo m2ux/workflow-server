@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
 
-Update a PR with final implementation details and mark it ready for review, or post consolidated review comments when operating in review mode. Operations cover rendering the body from a template, verifying body conformance, pushing commits, and marking ready.
+Update a PR with final implementation details and mark it ready for review, or post consolidated review comments when operating in review mode. Operations cover rendering the body from a template, verifying body conformance, pushing commits, marking ready, and posting the review summary as a `gh pr review` comment.
 
 ## Inputs
 
@@ -73,6 +73,10 @@ List of `{ rule_id, detail }` entries, one per failed conformance rule; empty wh
 ### draft-first
 
 Create PRs as drafts initially. Convert to ready-for-review only when a later step directs it.
+
+### posting
+
+- review-comment-verbatim: The `post-review-comment` op posts the confirmed `{review_summary}` to the PR byte-for-byte via `gh pr review` — never re-rendering, paraphrasing, or summarizing it. The summary is authored to [review-mode](../../resources/review-mode.md#consolidated-review-format); posting is a transport step, not a re-authoring one. This is distinct from `render`, which PATCHes the PR *description* body from a template.
 
 ### tool-usage
 

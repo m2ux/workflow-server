@@ -2,7 +2,7 @@
 name: review-mode
 description: Guidelines for using the work-package workflow in review mode to conduct structured PR reviews. Covers detection, adapted workflow behavior, and output generation.
 metadata:
-  version: 1.3.0
+  version: 1.4.0
   order: 24
   legacy_id: 24
 ---
@@ -325,7 +325,13 @@ Disposition of every prior comment and review on the PR (human and bot), determi
 
 **Nice to Have (Optional)**:
 - [ ] Run `cargo clippy --fix` to clear warnings (VF-1)
+
+---
+
+*Posted by an automated review agent on behalf of @{user}. The recommendation reflects an independent re-verification at head `{sha}`; the maintainers retain full discretion over disposition.*
 ```
+
+The attribution footer is the last block of the rendered summary and is posted verbatim as part of the review comment. Resolve `{user}` from the `gh` authenticated account (`gh api user --jq .login`) and `{sha}` from the PR head commit at review time (`gh pr view {pr_number} --json headRefOid --jq .headRefOid`, short form). It is part of the format so it renders into `{review_summary}` and reaches the PR unaltered.
 
 ### Severity Definitions
 

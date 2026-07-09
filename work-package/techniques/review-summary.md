@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -42,5 +42,10 @@ The structured consolidated review summary text, organized per the Consolidated 
 - Populate the template from `{consolidated_findings}`: executive summary, per-category findings (code, test, documentation, validation, branch hygiene), action items, and severity definitions.
 - Render the Prior Feedback Triage section from `{prior_feedback_triage}`: one row per prior comment with its Confirmed / Refuted / Superseded disposition, and carry each Confirmed blocker-class entry into the Action Items as a blocking item.
 - Apply `{rating_cap}` to the Overall Rating: when the cap is the request-changes tier, the Overall Rating is held at or below Request Changes — never Approve or Comment Only — even if the review's own findings are light.
+- Render the attribution footer that closes the format template — resolving `{user}` and `{sha}` per the format's instruction — so `{review_summary}` carries it and the posted comment reaches the PR with it intact.
 - Produce `{review_summary}` as the rendered text.
-- Follow the loaded format exactly — do not invent a parallel structure; the review-mode resource is the authoritative owner of the format.
+- Follow the loaded format exactly — do not invent a parallel structure; the review-mode resource is the authoritative owner of the format. `{review_summary}` is the verbatim source the posting step (`update-pr::post-review-comment`) emits, so what is confirmed is exactly what reaches the PR.
+
+### 3. Present for Confirmation
+
+- Present the rendered `{review_summary}` verbatim (or a faithful excerpt when long) at the approval checkpoint — never a paraphrase or a re-described summary. The bytes shown are the bytes posted.
