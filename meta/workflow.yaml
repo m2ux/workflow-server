@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 5.2.0
+version: 5.3.0
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -71,6 +71,10 @@ variables:
     type: string
     description: Resolved target directory for git operations — '.' for regular repos, a submodule path for monorepos
     defaultValue: .
+  - name: component_selection_needed
+    type: boolean
+    description: Whether the monorepo has more than one target-component submodule (after excluding the workflows and .engineering infrastructure submodules), requiring the user to pick. Set by resolve-target's select-target-component step; gates the submodule-selection checkpoint so a single-component monorepo resolves headlessly.
+    defaultValue: false
   - name: client_workflow_completed
     type: boolean
     description: Whether the dispatched client workflow has reached workflow_complete
