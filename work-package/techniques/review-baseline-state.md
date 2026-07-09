@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -21,6 +21,10 @@ The ticket requirements used to derive what changes the PR is expected to make
 
 Path to the target checkout where the git operations run
 
+### pr_number
+
+PR identifier, used to read the authoritative changed-files list via `gh pr view`
+
 ## Outputs
 
 ### base_sha
@@ -31,9 +35,13 @@ Commit SHA of the base branch at the time of analysis
 
 Reference description of the changes that should be made to fulfil the requirements — the yardstick for evaluating the actual PR
 
+### changed_files
+
+The authored surface of the PR — GitHub's changed-files list. The canonical set every downstream review finding is scoped to.
+
 ### base_pr_diff
 
-The diff between the base branch and the PR branch, noted for later comparison
+The base↔PR diff (fresh three-dot `{base_branch}...HEAD`), noted for later comparison
 
 ## Protocol
 
@@ -47,16 +55,29 @@ The diff between the base branch and the PR branch, noted for later comparison
 - Based on `{requirements}` and the baseline analysis, document what changes SHOULD be made to fulfil the requirements.
 - Record this as `{expected_changes}` — it becomes the reference for evaluating whether the actual PR delivers what the requirements ask for.
 
-### 3. Return to PR Branch
+### 3. Capture Authored Surface
 
 - Check out the PR branch to continue the workflow.
-- Note the diff between the base branch and the PR branch and record it as `{base_pr_diff}`: `git -C {target_path} diff {base_sha}..HEAD`.
+- Record the authoritative changed-files list as `{changed_files}`: `gh pr view {pr_number} --json files --jq '.files[].path'`.
+- Note the base↔PR diff as `{base_pr_diff}` using a fresh three-dot range: `git -C {target_path} diff {base_branch}...HEAD`.
+
+### 4. Merge-In Guard
+
+- When HEAD is a merge commit or the branch contains merges of `{base_branch}`, recompute the three-dot set against a freshly resolved merge-base and **log** the merge-in.
 
 ## Rules
 
 ### review-mode-only
 
 This technique applies only when the work package is in review mode. In normal (authoring) mode there is no PR to baseline against, and the technique is skipped.
+
+### authoritative-authored-surface
+
+`{changed_files}` comes from GitHub's changed-files list (`gh pr view --json files`). This list is authoritative: it defines the PR's authored surface, and downstream scoping uses it as-is.
+
+### merge-in-guard
+
+When HEAD is a merge commit or the branch has merged `{base_branch}` in, recompute the diff with a fresh three-dot range against the merge-base and log that a merge-in was detected. The guard's sole action is to log.
 
 ### baseline-before-evaluation
 

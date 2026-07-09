@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -36,14 +36,13 @@ The strategic review document this pass populates with categorized findings — 
 ### 1. Load Guidance
 
 - Use attached [architecture-review](../../resources/architecture-review.md) for architecture guidance; the rules below govern the review findings
-- Examine all changes on the feature branch `{branch_name}` against the base branch using `git diff` and `git log`:
+- Identify the base branch (`{$base_branch}`) as the PR's target branch: `gh pr view {pr_number} --json baseRefName --jq .baseRefName`
+- Examine the authored surface `{changed_files}` on the feature branch `{branch_name}` using three-dot diffs against the base branch (`{$base_branch}`, the PR's target branch):
+  - Consume the canonical `{changed_files}` when it is established (review mode, produced by `review-baseline-state`); otherwise (create mode, no PR baseline) derive it from the local working-tree diff against `{$base_branch}`.
 
   ```bash
-  # List all files changed in this branch
-  git diff --name-only <base-branch> HEAD
-
-  # For each file, ask: Is this change necessary for the solution?
-  git diff <base-branch> HEAD -- <file>
+  # For each file in {changed_files}, ask: Is this change necessary for the solution?
+  git diff {$base_branch}...HEAD -- <file>
   ```
 
 - Assess each changed file against [per-file-necessity](#per-file-necessity)
@@ -102,3 +101,7 @@ For each changed file, verify: the change directly supports the solution (not a 
 | Are all new dependencies required? | Remove unused dependencies |
 | Are all configuration changes required? | Revert unnecessary config changes |
 | Is the solution as simple as it could be? | Consider simplification |
+
+### findings-constraint
+
+Every finding names a file within the authored surface `{changed_files}`. Findings on files in `{changed_files}` form the PR's findings; findings on other files form a separate "pre-existing" grouping.

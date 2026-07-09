@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -91,3 +91,7 @@ Assess coverage relative to the changes made, not absolute project coverage
 ### actionable-recommendations
 
 Every finding must include a concrete improvement suggestion
+
+### findings-constraint
+
+Every finding names a file within the authored surface `{changed_files}`. Findings on files in `{changed_files}` form the PR's findings; findings on other files form a separate "pre-existing" grouping.

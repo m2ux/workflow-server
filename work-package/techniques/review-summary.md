@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -25,6 +25,10 @@ The triage of prior PR feedback — each prior comment dispositioned Confirmed /
 
 The ceiling the Overall Rating may not exceed, derived from the prior-feedback triage. When set to the request-changes tier (an unaddressed external blocker), the rendered Overall Rating is held at or below Request Changes.
 
+### changed_files
+
+The authored surface — the PR's changed-files set. Used to enforce the findings-constraint at consolidation.
+
 ## Outputs
 
 ### review_summary
@@ -39,7 +43,9 @@ The structured consolidated review summary text, organized per the Consolidated 
 
 ### 2. Render the Summary
 
+- Enforce the findings-constraint: every rendered finding names a file within the authored surface `{changed_files}`. Findings on files in `{changed_files}` render as the PR's findings; findings on other files render under a separate "pre-existing" grouping.
 - Populate the template from `{consolidated_findings}`: executive summary, per-category findings (code, test, documentation, validation, branch hygiene), action items, and severity definitions.
+- Render the Reviewers field: hyperlink each contributing agent role to the workflow file that defines it, using the base URL from the Consolidated Review Format — Code Review Agent → `techniques/review-code.md`, Test Suite Review Agent → `techniques/review-test-suite.md`, Validation Agent → `activities/11-validate.yaml`, Strategic Review Agent → `activities/12-strategic-review.yaml`.
 - Render the Prior Feedback Triage section from `{prior_feedback_triage}`: one row per prior comment with its Confirmed / Refuted / Superseded disposition, and carry each Confirmed blocker-class entry into the Action Items as a blocking item.
 - Apply `{rating_cap}` to the Overall Rating: when the cap is the request-changes tier, the Overall Rating is held at or below Request Changes — never Approve or Comment Only — even if the review's own findings are light.
 - Render the attribution footer that closes the format template — resolving `{user}` and `{sha}` per the format's instruction — so `{review_summary}` carries it and the posted comment reaches the PR with it intact.

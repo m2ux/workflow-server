@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ Feature branch whose diff is reviewed (synced via `git pull`, parsed via `git di
 ### planning_folder_path
 
 Folder where the change block index and manual diff review report are written
+
+### pr_number
+
+PR identifier, used to resolve the authoritative base branch via `gh pr view`
 
 ## Outputs
 
@@ -57,7 +61,8 @@ True if any block marked as critical blocker
 
 - Run `git pull` on the `{branch_name}` feature branch to ensure it is up to date
 - Resolve merge conflicts before proceeding if any
-- Identify the base branch (`{$base_branch}`) — typically `main`/`master`, the branch the PR will merge into
+- Identify the base branch (`{$base_branch}`) as the PR's target branch: `gh pr view {pr_number} --json baseRefName --jq .baseRefName`
+- If HEAD is a merge commit or the branch has merged `{$base_branch}` in, the three-dot range against the merge-base already scopes to the authored diff; log that a merge-in was detected
 
 ### 2. Parse Diff
 

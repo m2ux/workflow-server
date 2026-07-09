@@ -2,7 +2,7 @@
 name: review-mode
 description: Guidelines for using the work-package workflow in review mode to conduct structured PR reviews. Covers detection, adapted workflow behavior, and output generation.
 metadata:
-  version: 1.4.0
+  version: 1.5.0
   order: 24
   legacy_id: 24
 ---
@@ -10,99 +10,9 @@ metadata:
 
 # Review Mode Guide
 
-Review mode adapts the standard work-package workflow for reviewing existing implementations rather than creating new ones.
-
-## How Review Mode Is Driven
-
-Review mode is not a dedicated schema construct — it is plain workflow state.
-
-### Workflow-Level State
-
-A single boolean variable, `is_review_mode` (default `false`), drives the entire mode:
-
-```
-- name: is_review_mode
-  type: boolean
-  defaultValue: false
-```
-
-The `detect-review-mode` step in `start-work-package` recognizes review intent (from requests like "start review work package", "review pr", or "review existing implementation"), confirms with the user, and sets `is_review_mode = true`. There is no `skipActivities` list and no mode `defaults` block: requirements-elicitation and implement are skipped purely because their steps and inbound transitions are gated on `is_review_mode`, and mode-specific values such as `needs_elicitation = false` are set by an ordinary control step gated the same way.
-
-### Activity-Level Behavior
-
-Activities express review-mode behavior through standard conditions on steps, checkpoints, and transitions:
-
-- **Review-only steps** have `condition: is_review_mode == true` — they only execute in review mode
-- **Create-only steps** have `condition: is_review_mode != true` — they are skipped in review mode
-- **Review-only checkpoints** have `condition: is_review_mode == true`
-- **Review-mode transitions** are conditioned on `is_review_mode == true` and evaluated before default transitions
-
-## Per-Activity Review Guidance
-
-### start-work-package
-Capture PR reference and extract associated Jira ticket. Skip branch/PR creation — use existing PR from review target.
-
-### design-philosophy
-Assess ticket completeness and determine workflow path. Always skip elicitation — requirements come solely from the ticket. Assess the ticket using the [Jira Issue Creation Guide](jira-issue-creation.md) checklist. Research may still be needed based on complexity assessment.
-
-### implementation-analysis
-Analyze the pre-change baseline state from the base branch: checkout the base branch to analyze what existed BEFORE the PR, document what would need to change to fulfill requirements (the expected changes). This baseline becomes the reference for evaluating what the PR actually changed.
-
-### assumptions-review
-Skip the assumption interview and issue tracker posting. The review plan is for the reviewer's own use. Set `stakeholder_review_complete=true` and proceed directly to the next activity.
-
-### lean-coding-audit
-Run the read-only over-engineering review, debt harvest, and gain report so findings reach the artifacts. Skip the apply path — the findings-confirmation checkpoint and the simplification-apply-cycle are gated out so no code is changed; over-engineering and leanness findings become feedback for the PR author.
-
-### post-impl-review
-Compare PR changes against expected changes from implementation analysis. Identify deviations — missing changes, unexpected changes, alternative approaches. Document findings for the PR author.
-
-### validate
-Run validation checks and existing tests to verify they pass as claimed by the PR. Document failures as review findings — do NOT fix them (that's the PR author's job). Failures become critical findings in the review summary.
-
-### strategic-review
-Evaluate as though code were newly written. Document findings as review comments for the PR author; do not apply cleanup. Focus on identifying issues for feedback, not on rework transitions.
-
-### submit-for-review
-Generate and post consolidated PR review comments with findings from all review stages. Use structured format: Summary, Code Review, Test Review, Doc Review, Recommendations. Include severity ratings and actionable items for PR author.
-
-### complete
-Only conduct retrospective. Skip ADR creation and documentation finalization.
-
-## Workflow Adaptations
-
-### Phase Differences
-
-| Phase | Standard Mode | Review Mode |
-|-------|---------------|-------------|
-| **Issue Management** | Create/verify issue, create branch + PR | Extract ticket from existing PR |
-| **Design Philosophy** | Full problem classification | Assess ticket completeness, always skip elicitation |
-| **Elicitation** | Gather requirements interactively | **SKIPPED** - requirements from ticket only |
-| **Research** | As needed per complexity | As needed per complexity (unchanged) |
-| **Implementation Analysis** | Analyze current state | Analyze **pre-change** state (base branch) |
-| **Plan & Prepare** | Plan implementation tasks | Plan as reference (retrospective analysis) |
-| **Implement** | Execute implementation | **SKIPPED** - code already exists |
-| **Lean-Coding Audit** | Audit + apply simplifications | **Document** over-engineering findings (no apply) |
-| **Post-Impl Review** | Review own implementation | Compare PR to expected changes |
-| **Validate** | Fix failures | **Document** failures as findings |
-| **Strategic Review** | Apply cleanup | **Document** cleanup recommendations |
-| **Update PR** | Push and mark ready | **Generate and post review comments** |
-
-### Key Behavioral Changes
-
-1. **No Code Changes**: Review mode documents findings but does NOT modify the codebase
-2. **Findings as Feedback**: All issues become review comments, not fixes to apply
-3. **Baseline Comparison**: Implementation analysis captures what existed BEFORE the PR
-4. **Retrospective Planning**: Plan serves as reference for what SHOULD have been done
+Review mode adapts the work-package workflow for reviewing existing implementations. The workflow mechanism that drives it — the `is_review_mode` variable and the step, checkpoint, and transition conditions that branch on it — is documented in [REVIEW-MODE.md](../REVIEW-MODE.md), which also carries the per-activity behavior summary and the phase-difference table. This resource supplies the review-specific reference content the review techniques consume: the expected-changes template, the consolidated review-comment format, severity definitions, and the review-type mapping.
 
 ## Implementation Analysis in Review Mode
-
-### Baseline Capture
-
-1. **Checkout base branch** (PR target, typically `main` or `develop`)
-2. **Analyze pre-change state**: Architecture, interfaces, existing behavior
-3. **Document expected changes**: Based on ticket requirements, what changes should be made?
-4. **Return to PR branch** for subsequent review phases
 
 ### Expected Changes Document
 
@@ -133,6 +43,8 @@ Based on ticket [PM-XXXXX] requirements:
 
 The final review comment combines findings from all review stages.
 
+**Findings constraint:** every finding names a file within the authored surface (the PR's changed-files list). Findings on files in that set form the PR's findings; findings on other files form a separate "pre-existing" grouping.
+
 **Reports list:** The header includes a `Reports` field listing the engineering artifact reports with hyperlinks. Construct links using the engineering artifacts base URL:
 
 ```
@@ -147,20 +59,13 @@ https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artif
 
 Section titles (e.g., `### Code Review Findings`) must NOT be hyperlinks — the report links live in the header instead.
 
-**Reviewers list:** The `Reviewers` field must list each agent role that contributed findings, with each name hyperlinked to the workflow `.yaml` file that defines that role. The workflow definitions live in a separate repository (submodule), so construct links using the workflow repo base URL — not the engineering repo's submodule path, which does not resolve on GitHub:
+**Reviewers list:** The `Reviewers` field lists each agent role that contributed findings, with each name hyperlinked to the workflow file that defines that role. The workflow definitions live in the workflows repository (a submodule), so reviewer links use the workflow repo base URL:
 
 ```
 https://github.com/{WORKFLOW_REPO_OWNER}/{WORKFLOW_REPO_NAME}/blob/{WORKFLOW_BRANCH}/work-package/
 ```
 
-Resolve `{WORKFLOW_REPO_OWNER}`, `{WORKFLOW_REPO_NAME}`, and `{WORKFLOW_BRANCH}` from the `.gitmodules` entry for the workflows submodule (typically `.engineering/workflows`).
-
-| Agent Role | YAML File |
-|------------|-----------|
-| Code Review Agent | `techniques/review-code.md` |
-| Test Suite Review Agent | `techniques/review-test-suite.md` |
-| Validation Agent | `activities/11-validate.yaml` |
-| Strategic Review Agent | `activities/12-strategic-review.yaml` |
+Resolve `{WORKFLOW_REPO_OWNER}`, `{WORKFLOW_REPO_NAME}`, and `{WORKFLOW_BRANCH}` from the `.gitmodules` entry for the workflows submodule (typically `.engineering/workflows`). The rendering step supplies the role-to-file mapping for the roles it links.
 
 **Table format:** All review tables only include non-passing findings — do not list passing or positive items. The `#` column value is a hyperlink to the pertinent artifact or symbol (file path and line for code review, test method for test review, document URL for documentation, CI run URL for validation, branch/commit for hygiene). Every table must include a `Severity` column. Every `#` link MUST be validated against the actual source at the referenced commit before inclusion — do not carry over line numbers from earlier analysis without verification.
 
@@ -181,7 +86,7 @@ Example: `(CR-1)` refers to Code Review finding 1, `(TR-3)` refers to Test Revie
 ## PR Review Summary
 
 **PR**: #XXX - Title  
-**Reviewers**: [Code Review Agent]({workflow_base}/techniques/review-code.md) · [Test Suite Review Agent]({workflow_base}/techniques/review-test-suite.md) · [Validation Agent]({workflow_base}/activities/11-validate.yaml) · [Strategic Review Agent]({workflow_base}/activities/12-strategic-review.yaml)  
+**Reviewers**: [each contributing agent role linked to its defining workflow file under `{workflow_base}`]  
 **Reports**: `Code Review` · `Test Suite Review`  
 **Date**: YYYY-MM-DD
 
@@ -354,30 +259,15 @@ Findings are classified on the classification scale (Critical / Major / Minor / 
 
 A correct-but-harmful finding (one classified Major or Critical on an impact axis such as unbounded state growth, economic/spam, liveness/halt, or migration/upgrade) therefore renders at High or Critical and reaches the Action Items as a blocking item — it is not downgraded to "safe" at the render boundary.
 
-## Posting Reviews
-
-### GitHub CLI Commands
-
-```bash
-# Post as a review comment
-gh pr review {pr_number} --comment --body-file review.md
-
-# Request changes (for blocking issues)
-gh pr review {pr_number} --request-changes --body-file review.md
-
-# Approve (when satisfied)
-gh pr review {pr_number} --approve --body-file review.md
-```
-
 ### Review Type Selection
 
-| Findings | Review Type |
-|----------|-------------|
-| Critical/High severity blockers | `--request-changes` |
-| Medium/Low findings only | `--comment` |
-| No significant issues | `--approve` with summary |
+The Overall Rating rendered in the summary maps to the posted review type:
 
-The Prior Feedback Triage caps the Overall Rating: when any prior blocker-class comment is dispositioned Confirmed (valid and unaddressed), the rating cannot exceed Request Changes — it cannot be Approve or Comment Only — regardless of how light the review's own findings are. An unaddressed external blocker is never rated away.
+| Overall Rating | Review Type |
+|----------------|-------------|
+| Request Changes | `request-changes` |
+| Comment Only | `comment` |
+| Approve | `approve` |
 
 ## Artifacts in Review Mode
 
