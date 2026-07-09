@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.8.0
+version: 1.9.0
 name: Submit for Review
 description: Submit the PR for review and handle reviewer feedback.
 required: true
@@ -59,7 +59,7 @@ steps:
             review_posted: false
   - kind: technique
     id: post-pr-review
-    technique: update-pr::render
+    technique: update-pr::post-review-comment
     condition:
       type: simple
       variable: is_review_mode
