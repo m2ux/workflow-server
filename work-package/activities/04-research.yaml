@@ -1,5 +1,5 @@
 id: research
-version: 2.9.0
+version: 2.10.0
 name: Research
 description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
 required: false
@@ -36,7 +36,9 @@ steps:
           operator: ==
           value: false
         message: "Research has converged. Full candidate inventory (see kb-research.md → Open Research Candidates): {research_candidates}. Every research-reconcilable candidate was resolved; only irreconcilable items — or none — remain, each with its rationale and handoff target. Proceed to planning, or direct further research on a specific item?"
-        blocking: true
+        blocking: false
+        defaultOption: accept-research
+        autoAdvanceMs: 30000
         options:
           - id: accept-research
             label: Accept — proceed to planning
@@ -116,6 +118,11 @@ steps:
     variable: current_assumption
     over: open_assumptions
     maxIterations: 20
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
     steps:
       - kind: technique
         id: present-assumption

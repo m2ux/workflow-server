@@ -1,5 +1,5 @@
 id: implementation-analysis
-version: 2.9.0
+version: 2.10.0
 name: Implementation Analysis
 description: Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement.
 required: false
@@ -77,6 +77,11 @@ steps:
     variable: current_assumption
     over: open_assumptions
     maxIterations: 20
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
     steps:
       - kind: technique
         id: present-assumption

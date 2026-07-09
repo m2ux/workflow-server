@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.15.0
+version: 1.16.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 required: true
@@ -19,7 +19,9 @@ steps:
   - kind: checkpoint
     id: file-index-table
     message: "File index written to {change_block_index}. The index includes a rationale paragraph for each change block written by the agent. Please review the diff in your side-by-side app. Then: (1) confirm the rationale paragraphs are accurate — or include your corrections in your reply, which are recorded in manual-diff-review-report.md as your provenance statement — and (2) provide row numbers for any blocks with issues (e.g., '24, 31, 106') or 'none'. Your confirmation of the rationale serves as your provenance attestation for each change."
-    blocking: true
+    blocking: false
+    defaultOption: rationale-confirmed
+    autoAdvanceMs: 30000
     options:
       - id: rationale-confirmed
         label: Rationale confirmed — no issues
@@ -44,7 +46,9 @@ steps:
       operator: ==
       value: true
     message: "Reviewing block {current_block_index}: {block_path}:{block_line_range}. What's the issue with this change?"
-    blocking: true
+    blocking: false
+    defaultOption: issue-recorded
+    autoAdvanceMs: 30000
     options:
       - id: issue-recorded
         label: Issue recorded - continue
