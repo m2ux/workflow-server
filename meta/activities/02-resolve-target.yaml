@@ -1,10 +1,11 @@
 id: resolve-target
-version: 4.1.0
+version: 4.2.0
 name: Resolve Target
-description: Detect the target repository structure (regular directory vs. submodule monorepo) and resolve target_path.
+description: Detect the target repository structure (regular directory vs. submodule monorepo) and resolve target_path — headlessly, prompting only when a monorepo has more than one target-component submodule.
 required: true
 rules:
   - target_path MUST resolve to a directory containing a working git tree
+  - The workflows and .engineering infrastructure submodules are never a target component and never classify a repo as a monorepo on their own
 steps:
   - kind: action
     id: announce-start
@@ -14,39 +15,28 @@ steps:
   - kind: technique
     id: detect-monorepo
     technique: version-control::detect-repo-type
-  - kind: checkpoint
-    id: repo-type-confirmed
-    message: Is this a regular repository or a submodule monorepo?
-    options:
-      - id: regular
-        label: Regular repository
-        description: Single-repo project; target_path will be the repository root
-        effect:
-          setVariable:
-            is_monorepo: false
-            target_path: .
-      - id: monorepo
-        label: Submodule monorepo
-        description: Parent repo with submodules; the next step will list submodules for selection
-        effect:
-          setVariable:
-            is_monorepo: true
   - kind: technique
     id: list-submodules
     technique: version-control::list-submodules
     when: is_monorepo == true
-  - kind: action
-    id: capture-submodule-target
+  - kind: technique
+    id: select-component
+    technique: version-control::select-target-component
     when: is_monorepo == true
-    actions: []
   - kind: checkpoint
     id: submodule-selection
     condition:
-      type: simple
-      variable: is_monorepo
-      operator: ==
-      value: true
-    message: Select the target submodule from the enumerated entries. target_path is set to the chosen submodule path.
+      type: and
+      conditions:
+        - type: simple
+          variable: is_monorepo
+          operator: ==
+          value: true
+        - type: simple
+          variable: component_selection_needed
+          operator: ==
+          value: true
+    message: This monorepo has more than one component submodule. Select the target submodule; target_path is set to the chosen submodule path.
     options:
       - id: submodule-chosen
         label: Submodule selected
@@ -55,5 +45,5 @@ transitions:
   - to: dispatch-client-workflow
     isDefault: true
 outcome:
-  - The orchestrator knows whether it is operating on a single repo or a submodule monorepo, and which submodule the user intends as the target
+  - The orchestrator knows whether it is operating on a single repo or a submodule monorepo, and which submodule the user intends as the target — resolved without prompting except when a monorepo has multiple target components
   - Downstream git operations have a confirmed working git tree to act on, whether the repo root or a chosen submodule
