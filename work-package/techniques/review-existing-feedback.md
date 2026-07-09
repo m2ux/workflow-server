@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -49,9 +49,9 @@ The ceiling the Overall Rating may not exceed, derived from the triage. When any
 - Set `{rating_cap}` to the request-changes tier when any blocker-class concern is dispositioned Confirmed (valid and unaddressed); leave it unset when every blocker-class concern is Refuted or Superseded.
 - An unaddressed external blocker therefore prevents an "approve" or "comment only" verdict regardless of the review's own findings.
 
-### 4. Write the Triage
+### 4. Create the Triage
 
-- Write `{prior_feedback_triage}` to `{planning_folder_path}` so the consolidated summary renders the triage section and applies the cap.
+- Create the `{prior_feedback_triage}` artifact in `{planning_folder_path}` so the consolidated summary renders the triage section and applies the cap.
 
 ## Rules
 
