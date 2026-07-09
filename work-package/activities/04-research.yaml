@@ -1,5 +1,5 @@
 id: research
-version: 2.10.0
+version: 2.11.0
 name: Research
 description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
 required: false
@@ -118,11 +118,6 @@ steps:
     variable: current_assumption
     over: open_assumptions
     maxIterations: 20
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
     steps:
       - kind: technique
         id: present-assumption
