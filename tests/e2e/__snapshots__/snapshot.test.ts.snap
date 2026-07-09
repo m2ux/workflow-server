@@ -118,7 +118,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -188,7 +188,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "implement",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -336,15 +336,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "12-strategic-review-n.md",
         "10-architecture-summary.md",
       ],
-      "checkpoints": [
-        {
-          "id": "review-findings",
-          "option": "acceptable",
-          "setVariable": {
-            "review_passed": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "warning",
       "next": "submit-for-review",
       "orphanCheckpoints": [],
@@ -395,7 +387,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "complete",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -425,7 +417,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "14-COMPLETE.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": null,
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -563,7 +555,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "requirements-elicitation",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -706,7 +698,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "implement",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -854,15 +846,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "12-strategic-review-n.md",
         "10-architecture-summary.md",
       ],
-      "checkpoints": [
-        {
-          "id": "review-findings",
-          "option": "acceptable",
-          "setVariable": {
-            "review_passed": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "warning",
       "next": "submit-for-review",
       "orphanCheckpoints": [],
@@ -913,7 +897,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "complete",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -943,7 +927,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "14-COMPLETE.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": null,
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1084,7 +1068,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "requirements-elicitation",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1153,11 +1137,6 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       ],
       "checkpoints": [
         {
-          "id": "research-findings",
-          "option": "sufficient",
-          "setVariable": undefined,
-        },
-        {
           "id": "context-scope-declaration",
           "option": "repo-only",
           "setVariable": {
@@ -1171,6 +1150,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "stepsExecuted": [
         "research-knowledge-base",
         "synthesize",
+        "triage-research-candidates",
         "collect-assumptions",
         "document",
         "update-assumptions-log",
@@ -1268,7 +1248,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "implement",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1416,15 +1396,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "12-strategic-review-n.md",
         "10-architecture-summary.md",
       ],
-      "checkpoints": [
-        {
-          "id": "review-findings",
-          "option": "acceptable",
-          "setVariable": {
-            "review_passed": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "warning",
       "next": "submit-for-review",
       "orphanCheckpoints": [],
@@ -1475,7 +1447,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "complete",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1505,7 +1477,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "14-COMPLETE.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": null,
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1645,7 +1617,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "research",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1674,11 +1646,6 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       ],
       "checkpoints": [
         {
-          "id": "research-findings",
-          "option": "sufficient",
-          "setVariable": undefined,
-        },
-        {
           "id": "context-scope-declaration",
           "option": "repo-only",
           "setVariable": {
@@ -1692,6 +1659,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "stepsExecuted": [
         "research-knowledge-base",
         "synthesize",
+        "triage-research-candidates",
         "collect-assumptions",
         "document",
         "update-assumptions-log",
@@ -1789,7 +1757,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "implement",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1937,15 +1905,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "12-strategic-review-n.md",
         "10-architecture-summary.md",
       ],
-      "checkpoints": [
-        {
-          "id": "review-findings",
-          "option": "acceptable",
-          "setVariable": {
-            "review_passed": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "warning",
       "next": "submit-for-review",
       "orphanCheckpoints": [],
@@ -1996,7 +1956,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "complete",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2026,7 +1986,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "14-COMPLETE.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": null,
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2055,6 +2015,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
     "start-work-package",
     "design-philosophy",
     "codebase-comprehension",
+    "implementation-analysis",
     "plan-prepare",
     "assumptions-review",
     "lean-coding-audit",
@@ -2126,16 +2087,6 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       ],
       "checkpoints": [
         {
-          "id": "classification-and-path-confirmed",
-          "option": "skip-optional",
-          "setVariable": {
-            "needs_elicitation": false,
-            "needs_research": false,
-            "path_gating_complexity": "simple",
-            "skip_optional_activities": true,
-          },
-        },
-        {
           "id": "ticket-completeness",
           "option": "proceed-with-gaps",
           "setVariable": {
@@ -2173,8 +2124,8 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "warning",
-      "next": "plan-prepare",
+      "manifestStatus": "valid",
+      "next": "implementation-analysis",
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "build-comprehension",
@@ -2191,6 +2142,38 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "unresolved": [],
     },
     {
+      "activity": "implementation-analysis",
+      "artifacts": [
+        "implementation-analysis.md",
+        "assumptions-log.md",
+      ],
+      "artifactsWritten": [
+        "05-implementation-analysis.md",
+        "02-assumptions-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "analysis-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
+      "manifestStatus": "valid",
+      "next": "plan-prepare",
+      "orphanCheckpoints": [],
+      "stepsExecuted": [
+        "review-baseline-state",
+        "analyze-implementation",
+        "collect-assumptions",
+        "document",
+        "update-assumptions-log",
+        "reconcile-assumptions",
+        "present-resolved-assumptions",
+        "interview-open-assumptions",
+      ],
+      "unresolved": [],
+    },
+    {
       "activity": "plan-prepare",
       "artifacts": [
         "work-package-plan.md",
@@ -2203,7 +2186,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "assumptions-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2521,7 +2504,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2591,7 +2574,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "implement",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2739,15 +2722,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "12-strategic-review-n.md",
         "10-architecture-summary.md",
       ],
-      "checkpoints": [
-        {
-          "id": "review-findings",
-          "option": "acceptable",
-          "setVariable": {
-            "review_passed": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "warning",
       "next": "submit-for-review",
       "orphanCheckpoints": [],
@@ -2798,7 +2773,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           },
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "complete",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2828,7 +2803,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "14-COMPLETE.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": null,
       "orphanCheckpoints": [],
       "stepsExecuted": [

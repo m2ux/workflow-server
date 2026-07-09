@@ -462,6 +462,20 @@ async function resolveCheckpoint(
 ): Promise<{ setVariable?: Record<string, unknown>; transitionTo?: string; skipActivities?: string[] }> {
   const y = await client.callTool({ name: 'yield_checkpoint', arguments: { session_index: sessionIndex, checkpoint_id: checkpointId } });
   if (isError(y)) throw new Error(`yield_checkpoint(${checkpointId}) failed`);
+  const yieldBody = parseToolResponse(y);
+
+  // Re-entering an activity replays its recorded checkpoint response: the server
+  // returns status:'replayed' and deliberately does NOT set an active checkpoint
+  // (the user is not prompted twice), so there is nothing to respond to. Apply
+  // the replayed effect and continue without respond/resume.
+  if (yieldBody.status === 'replayed') {
+    const effect = (yieldBody.effect ?? {}) as Record<string, unknown>;
+    return {
+      setVariable: (effect.setVariable ?? effect.variablesSet) as Record<string, unknown> | undefined,
+      transitionTo: (effect.transitionTo ?? effect.transitionedTo) as string | undefined,
+      skipActivities: (effect.skipActivities ?? effect.activitiesSkipped) as string[] | undefined,
+    };
+  }
 
   const r = await client.callTool({ name: 'respond_checkpoint', arguments: { session_index: sessionIndex, option_id: optionId } });
   if (isError(r)) throw new Error(`respond_checkpoint(${checkpointId}=${optionId}) failed`);
