@@ -41,6 +41,25 @@ Activities express review-mode behavior through standard conditions on steps, ch
 
 Per-activity review guidance is in `resources/review-mode.md`.
 
+### Headless After Activation
+
+Once review mode is active, the run is **headless**: every review-reachable checkpoint either auto-resolves to its recommended option, is gated out, or is bypassed by an unconditional transition, so a review-mode run can be dispatched and left to complete without a human at each gate. Two classes of interaction remain:
+
+- **Activation prompts** — `review-mode-detection` and `review-pr-reference` (`start-work-package`) stay interactive. They run before review mode is confirmed and identify the PR under review.
+- **The single post-to-PR confirmation** — `review-summary-approval` (`submit-for-review`) stays interactive. It is the one review-mode checkpoint whose recommended option has an outward-facing side effect (posting the consolidated review as a comment on the GitHub PR), so it confirms with the user before that action.
+
+Every other review-reachable checkpoint is headless, by one of three mechanisms:
+
+| Mechanism | Behavior | Checkpoints |
+|-----------|----------|-------------|
+| **Auto-advance** (`defaultOption` + `autoAdvanceMs: 30000`) | The checkpoint occurs but auto-selects its recommended option after the timer; the option's effect is the always-correct call in review mode | `design-philosophy :: ticket-completeness` → `proceed-with-gaps` · `research :: research-convergence` → `accept-research` · `post-impl-review :: file-index-table` → `rationale-confirmed` · `post-impl-review :: block-interview` → `issue-recorded` |
+| **Gate-out** (`condition: is_review_mode != true` on the enclosing loop) | The assumption-interview `forEach` loop does not run in review mode; assumptions are still collected, recorded, and reconciled by the surrounding non-interview steps | `research` and `implementation-analysis` assumption-interview loops |
+| **Transition bypass** | The checkpoint stays interactive as authored, but the enclosing activity's unconditional review-mode transition routes to the next activity without the checkpoint's outcome affecting the review-mode path | `strategic-review :: review-findings` |
+
+The `strategic-review :: review-findings` checkpoint is **not** made to auto-advance. The `strategic-review → submit-for-review when is_review_mode == true` transition fires at the activity boundary regardless of any finding variable, so the review-mode path leaves `strategic-review` for `submit-for-review` without the checkpoint's option changing anything. It therefore stays interactive as originally authored — auto-advancing it would be inert in review mode, and because this checkpoint is not review-gated, adding an auto-advance would also change its behavior in normal (create) mode, where it is fully live.
+
+`jira-project-selection` (`start-work-package`) is gated `issue_platform == jira` inside the issue-creation branch and never fires in review mode (which references an existing PR/issue), so it needs no review-mode treatment.
+
 ---
 
 ## Activating Review Mode
@@ -124,15 +143,16 @@ graph TD
 | Activity | Mode Override |
 |----------|---------------|
 | `start-work-package` | Detect mode, capture PR reference; the `issue-verification` and `pr-creation` checkpoints and branch/PR-creation steps are gated `is_review_mode != true` so no issue/branch/PR is created |
-| `design-philosophy` | Assess ticket completeness, force skip elicitation |
+| `design-philosophy` | Assess ticket completeness, force skip elicitation; `ticket-completeness` auto-advances to `proceed-with-gaps` |
 | `plan-prepare` | Plan the review approach; the `update-pr::render` (initial) step and `approach-confirmed` checkpoint are gated `is_review_mode != true` so the reviewed PR's body is never overwritten and no approach-confirmation is prompted |
-| `implementation-analysis` | Checkout base branch, document expected changes |
+| `research` | `research-convergence` auto-advances to `accept-research`; the assumption-interview loop is gated out |
+| `implementation-analysis` | Checkout base branch, document expected changes; the assumption-interview loop is gated out |
 | `implement` | **SKIPPED** — `assumptions-review` carries a `is_review_mode == true → lean-coding-audit` transition that routes around the entire activity, so none of its steps or checkpoints (`switch-model-*`, assumption interview) are reached |
 | `lean-coding-audit` | Run the read-only over-engineering review, debt harvest, and gain report; the findings-confirmation checkpoint and simplification-apply-cycle are gated out so no code changes — findings become PR feedback |
 | `validate` | Document failures as findings, skip fix-failures |
-| `strategic-review` | Document recommendations, transition to submit-for-review |
-| `submit-for-review` | Consolidate findings, generate the review summary, post it to the PR, then transition to `complete`; the create-mode tail (DCO attestation, PR-body render/verify, push, mark-ready, reviewer-feedback loop) is gated `is_review_mode != true` |
-| `post-impl-review` | Compare changes against expected |
+| `strategic-review` | Document recommendations, transition to submit-for-review; `review-findings` stays interactive but is bypassed — the unconditional `is_review_mode == true → submit-for-review` transition routes past it before its outcome can affect the review-mode path |
+| `submit-for-review` | Consolidate findings, generate the review summary, post it to the PR, then transition to `complete`; the create-mode tail (DCO attestation, PR-body render/verify, push, mark-ready, reviewer-feedback loop) is gated `is_review_mode != true`. `review-summary-approval` stays interactive as the single confirmation before the review is posted to the PR |
+| `post-impl-review` | Compare changes against expected; `file-index-table` auto-advances to `rationale-confirmed` and `block-interview` to `issue-recorded` |
 
 ---
 
