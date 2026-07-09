@@ -2055,6 +2055,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
     "start-work-package",
     "design-philosophy",
     "codebase-comprehension",
+    "implementation-analysis",
     "plan-prepare",
     "assumptions-review",
     "lean-coding-audit",
@@ -2126,16 +2127,6 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       ],
       "checkpoints": [
         {
-          "id": "classification-and-path-confirmed",
-          "option": "skip-optional",
-          "setVariable": {
-            "needs_elicitation": false,
-            "needs_research": false,
-            "path_gating_complexity": "simple",
-            "skip_optional_activities": true,
-          },
-        },
-        {
           "id": "ticket-completeness",
           "option": "proceed-with-gaps",
           "setVariable": {
@@ -2173,8 +2164,8 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "warning",
-      "next": "plan-prepare",
+      "manifestStatus": "valid",
+      "next": "implementation-analysis",
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "build-comprehension",
@@ -2191,6 +2182,38 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "unresolved": [],
     },
     {
+      "activity": "implementation-analysis",
+      "artifacts": [
+        "implementation-analysis.md",
+        "assumptions-log.md",
+      ],
+      "artifactsWritten": [
+        "05-implementation-analysis.md",
+        "02-assumptions-log.md",
+      ],
+      "checkpoints": [
+        {
+          "id": "analysis-confirmed",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
+      "manifestStatus": "valid",
+      "next": "plan-prepare",
+      "orphanCheckpoints": [],
+      "stepsExecuted": [
+        "review-baseline-state",
+        "analyze-implementation",
+        "collect-assumptions",
+        "document",
+        "update-assumptions-log",
+        "reconcile-assumptions",
+        "present-resolved-assumptions",
+        "interview-open-assumptions",
+      ],
+      "unresolved": [],
+    },
+    {
       "activity": "plan-prepare",
       "artifacts": [
         "work-package-plan.md",
@@ -2203,7 +2226,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "assumptions-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [

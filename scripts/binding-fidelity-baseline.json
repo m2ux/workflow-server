@@ -476,11 +476,6 @@
   },
   {
     "check": "dead-output",
-    "site": "work-package/techniques/research/synthesize.md",
-    "detail": "output 'synthesis_assumptions' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
-  },
-  {
-    "check": "dead-output",
     "site": "work-package/techniques/review-assumptions/interview.md",
     "detail": "output 'assumption_review_presentation' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
@@ -1156,72 +1151,72 @@
   },
   {
     "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:83",
+    "site": "substrate-node-security-audit/techniques/write-report.md:73",
     "detail": "{average} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:85",
+    "site": "substrate-node-security-audit/techniques/write-report.md:75",
     "detail": "{category} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:81",
+    "site": "substrate-node-security-audit/techniques/write-report.md:71",
     "detail": "{feasibility} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:83",
+    "site": "substrate-node-security-audit/techniques/write-report.md:73",
     "detail": "{feasibility} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:87",
+    "site": "substrate-node-security-audit/techniques/write-report.md:77",
     "detail": "{file} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:87",
+    "site": "substrate-node-security-audit/techniques/write-report.md:77",
     "detail": "{file} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:91",
+    "site": "substrate-node-security-audit/techniques/write-report.md:82",
     "detail": "{file} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:79",
+    "site": "substrate-node-security-audit/techniques/write-report.md:69",
     "detail": "{impact} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:83",
+    "site": "substrate-node-security-audit/techniques/write-report.md:73",
     "detail": "{impact} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:79",
+    "site": "substrate-node-security-audit/techniques/write-report.md:69",
     "detail": "{justification} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:81",
+    "site": "substrate-node-security-audit/techniques/write-report.md:71",
     "detail": "{justification} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "substrate-node-security-audit/techniques/write-report.md:83",
+    "site": "substrate-node-security-audit/techniques/write-report.md:73",
     "detail": "{level} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "work-package/techniques/create-issue.md:39",
+    "site": "work-package/techniques/create-issue.md:57",
     "detail": "{jira_cloud_id} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "work-package/techniques/create-issue.md:54",
+    "site": "work-package/techniques/create-issue.md:72",
     "detail": "{jira_cloud_id} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
@@ -1266,22 +1261,22 @@
   },
   {
     "check": "read-resolution",
-    "site": "work-package/techniques/manage-git/TECHNIQUE.md:30",
+    "site": "work-package/techniques/manage-git/TECHNIQUE.md:24",
     "detail": "{display_name} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "work-package/techniques/manage-git/TECHNIQUE.md:30",
+    "site": "work-package/techniques/manage-git/TECHNIQUE.md:24",
     "detail": "{display_name} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "work-package/techniques/manage-git/TECHNIQUE.md:30",
+    "site": "work-package/techniques/manage-git/TECHNIQUE.md:24",
     "detail": "{email} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "work-package/techniques/manage-git/TECHNIQUE.md:30",
+    "site": "work-package/techniques/manage-git/TECHNIQUE.md:24",
     "detail": "{email} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
@@ -1331,7 +1326,7 @@
   },
   {
     "check": "read-resolution",
-    "site": "workflow-design/techniques/audit-anti-patterns.md:23",
+    "site": "workflow-design/techniques/audit-anti-patterns.md:21",
     "detail": "{VAR} has no producer (declared id / $-local / workflow var / set-target)"
   }
 ]
