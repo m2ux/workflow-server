@@ -3,7 +3,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
 import { withAuditLog } from '../logging.js';
 
-import { loadWorkflow, getActivity } from '../loaders/workflow-loader.js';
+import { loadWorkflow, loadWorkflowWithDiagnostics, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import { composeActivityTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
 import {
@@ -519,8 +519,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       assertNoActiveCheckpoint(state);
 
-      const wfResult = await loadWorkflow(config.workflowDir, workflow_id);
-      if (!wfResult.success) throw wfResult.error;
+      const wfDiag = await loadWorkflowWithDiagnostics(config.workflowDir, workflow_id);
+      if (!wfDiag.success) throw wfDiag.error;
+      const wfResult = { success: true as const, value: wfDiag.value.workflow };
+      // A borrowed activity's technique refs resolve against the workflow the activity file was
+      // authored in (mirroring #166 B10 fragment scoping), not the borrowing session's workflow.
+      const techniqueScopeWorkflowId = (state.currentActivity
+        && wfDiag.value.activitySourceWorkflow.get(state.currentActivity)) || workflow_id;
 
       let techniqueId: string | undefined;
       let boundStep: Step | undefined;
@@ -564,9 +569,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       }
 
       // Activity-group convention (see composeActivityTechnique): a bare op id resolves first
-      // against the group named after the current activity, falling back to as-authored.
+      // against the group named after the current activity, falling back to as-authored — both
+      // within the activity's source-workflow scope.
       const composed = await composeActivityTechnique(
-        techniqueId, config.workflowDir, workflow_id, state.currentActivity || undefined,
+        techniqueId, config.workflowDir, techniqueScopeWorkflowId, state.currentActivity || undefined,
       );
       if (!composed.success) throw composed.error;
       techniqueId = composed.value.techniqueId;
@@ -585,6 +591,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           workflowDir: config.workflowDir,
           currentActivityId: state.currentActivity,
           currentStepId: boundStep.id,
+          activitySourceWorkflow: wfDiag.value.activitySourceWorkflow,
         });
         if (ctx) {
           const binding = boundStep.kind === 'technique' && typeof boundStep.technique === 'object'

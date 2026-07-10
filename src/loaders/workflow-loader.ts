@@ -29,7 +29,16 @@ export interface WorkflowManifestEntry { id: string; title: string; version: str
 export interface DefinitionLoadError { file: string; activity_id?: string | undefined; error: string; }
 
 /** A loaded workflow plus the per-file activity-load failures excluded from it. */
-export interface WorkflowWithDiagnostics { workflow: Workflow; activityLoadErrors: DefinitionLoadError[]; }
+export interface WorkflowWithDiagnostics {
+  workflow: Workflow;
+  activityLoadErrors: DefinitionLoadError[];
+  /**
+   * Activity id → the workflow the activity file was authored in. Differs from the loaded
+   * workflow's id only for borrowed cross-workflow activities; it scopes those activities'
+   * unqualified technique refs (and fragment refs) to their source workflow.
+   */
+  activitySourceWorkflow: Map<string, string>;
+}
 
 const formatZodIssues = (issues: Array<{ path: PropertyKey[]; message: string }>): string =>
   issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
@@ -347,7 +356,7 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     if (workflow.activities) workflow.activities = materialized;
 
     logInfo('Workflow loaded', { workflowId, version: workflow.version, activityCount: workflow.activities?.length ?? 0 });
-    return ok({ workflow, activityLoadErrors });
+    return ok({ workflow, activityLoadErrors, activitySourceWorkflow });
   } catch (error) {
     logError('Failed to load workflow', error instanceof Error ? error : undefined, { workflowId });
     return err(new WorkflowValidationError(workflowId, [error instanceof Error ? error.message : 'Unknown error']));
