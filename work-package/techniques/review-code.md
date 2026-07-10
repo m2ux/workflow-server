@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Perform comprehensive Rust/Substrate code review following established patterns,
 
 ### changed_files
 
-List of files changed in the work package (from `git diff`)
+The authored surface — the PR's changed-files set, produced canonically by `review-baseline-state`.
 
 ### project_type
 
@@ -37,8 +37,8 @@ Code review [report](../resources/rust-substrate-code-review.md#report-template)
 
 - Use attached [rust-substrate-code-review](../resources/rust-substrate-code-review.md) for full review criteria
   - If the code review resource is missing, check the resources folder for `16-rust-substrate-code-review.md`.
-- Establish the `{changed_files}` set by running `git diff` for all files changed since the work package started
-  - If no implementation changes are found, verify the correct branch and commit range.
+- Consume the canonical `{changed_files}` authored surface when it is established (review mode, produced by `review-baseline-state`). In create mode (no PR baseline), derive it from the local working-tree diff against the base branch.
+  - If `{changed_files}` is empty, verify the correct branch and commit range.
 
 ### 2. Bound Review Scope
 
@@ -79,3 +79,7 @@ Every finding must cite specific code with file path and line numbers
 ### severity-consistency
 
 Apply severity levels consistently — critical for security/data loss, high for correctness, medium for maintainability, low for style
+
+### findings-constraint
+
+Every finding names a file within the authored surface `{changed_files}`. Findings on files in `{changed_files}` form the PR's findings; findings on other files form a separate "pre-existing" grouping.
