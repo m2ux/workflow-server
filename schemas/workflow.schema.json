@@ -453,8 +453,8 @@
                 "properties": {
                   "maxChars": {
                     "type": "integer",
-                    "exclusiveMinimum": 0,
-                    "description": "Per-technique ceiling in characters: a step technique whose composed wire form exceeds this is not inlined and is fetched with get_technique { step_id }."
+                    "minimum": 0,
+                    "description": "Per-technique character cap layered on the server-derived per-activity eager-delivery budget: a step technique whose composed wire form exceeds this is not inlined and is fetched with get_technique { step_id }. Set to 0 to opt this activity out of eager step-technique bundling entirely."
                   }
                 },
                 "required": [

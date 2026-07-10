@@ -44,7 +44,7 @@ import { buildProvenanceContext, decorateTechniqueProvenance } from '../utils/bi
 import { seedDefaults } from '../utils/variable-seed.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { stringifyForResponse } from '../utils/serialization.js';
-import { contentHash, deliveredHash, recordDeliveries } from '../utils/delivery.js';
+import { contentHash, deliveredHash, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { createTraceEvent } from '../trace.js';
 import { randomUUID } from 'node:crypto';
 import { basename, isAbsolute, resolve } from 'node:path';
@@ -637,10 +637,12 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         });
         await saveSessionForTool(loaded, next);
 
+        // Canonical unchanged-marker: { delivery: 'unchanged', content_hash } —
+        // the same shape the get_activity bundle path emits (delivery.ts#unchangedMarker).
+        // The technique id and note ride alongside as sibling context.
         const stub = stringifyForResponse({
           id: techniqueId,
-          delivery: 'unchanged',
-          content_hash: hash,
+          ...unchangedMarker(hash),
           note: 'Byte-identical to the composed technique already delivered in this session — reuse it from your context. Pass full: true to re-fetch the full content.',
         });
         return {

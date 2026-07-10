@@ -9,12 +9,15 @@ import { SemanticVersionSchema } from './common.js';
 export const TechniquesReferenceSchema = z.array(z.string()).describe('Activity-wide technique references (`::` paths); bundled into get_activity.');
 export type TechniquesReference = z.infer<typeof TechniquesReferenceSchema>;
 
-// Hybrid technique bundling (#166 B11) — activity-declared opt-in. When present, get_activity
-// inlines the composed content of the activity's small step-bound techniques under a
-// `step_techniques` map; large techniques (composed wire form over `maxChars`) and gated steps
-// (a `when`/`condition` on the step or an enclosing loop) stay lazy via get_technique.
+// Hybrid technique bundling (#189 C1c) — optional per-activity override on the automatic,
+// context-derived eager bundling get_activity performs for EVERY activity. get_activity inlines
+// the composed content of the activity's small, ungated step-bound techniques under a
+// `step_techniques` map, sized to a cumulative budget derived from the caller's `context_tokens`.
+// `maxChars` is an explicit per-technique size cap layered on that budget; `maxChars: 0` opts the
+// activity out of eager bundling entirely. Gated steps (a `when`/`condition` on the step or an
+// enclosing loop) always stay lazy via get_technique.
 export const BundleTechniquesSchema = z.object({
-  maxChars: z.number().int().positive().describe('Per-technique ceiling in characters: a step technique whose composed wire form exceeds this is not inlined and is fetched with get_technique { step_id }.'),
+  maxChars: z.number().int().nonnegative().describe('Per-technique character cap layered on the server-derived per-activity eager-delivery budget: a step technique whose composed wire form exceeds this is not inlined and is fetched with get_technique { step_id }. Set to 0 to opt this activity out of eager step-technique bundling entirely.'),
 }).strict();
 export type BundleTechniques = z.infer<typeof BundleTechniquesSchema>;
 

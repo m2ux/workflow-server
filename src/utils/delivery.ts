@@ -8,10 +8,11 @@ import type { SessionFile } from '../schema/session.schema.js';
  * agentId, a map of content key → hash of the payload last delivered in
  * full. When reference delivery is active (session `contextMode:
  * 'persistent'` or a per-call opt-in), a payload whose hash matches the
- * ledger is replaced by a short `{ unchanged: true, content_hash }` marker —
- * the receiving context already holds the bytes. Full content is always
- * recoverable: `get_activity { bundle: 'full' }`, `get_technique { full:
- * true }`.
+ * ledger is replaced by a short `{ delivery: 'unchanged', content_hash }`
+ * marker — the receiving context already holds the bytes. This is the one
+ * canonical unchanged-marker shape, emitted identically by the `get_activity`
+ * bundle path and by `get_technique`. Full content is always recoverable:
+ * `get_activity { bundle: 'full' }`, `get_technique { full: true }`.
  *
  * Content keys are namespaced by delivery channel so the two composition
  * paths never cross-reference each other's payloads:
@@ -43,7 +44,11 @@ export function recordDeliveries(draft: SessionFile, agentId: string, entries: R
   draft.deliveredContent = ledger;
 }
 
-/** Marker substituted for content already delivered to this context. */
-export function unchangedMarker(hash: string): { unchanged: true; content_hash: string } {
-  return { unchanged: true, content_hash: hash };
+/**
+ * Marker substituted for content already delivered to this context. The one
+ * canonical unchanged-marker shape — the `get_activity` bundle path and
+ * `get_technique` both emit exactly this.
+ */
+export function unchangedMarker(hash: string): { delivery: 'unchanged'; content_hash: string } {
+  return { delivery: 'unchanged', content_hash: hash };
 }

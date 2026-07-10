@@ -10,13 +10,15 @@ import type { HistoryEntry } from '../src/schema/state.schema.js';
 import { safeValidateActivity } from '../src/schema/activity.schema.js';
 
 /**
- * Hybrid technique bundling (#166 B11): an activity that declares
- * `bundleTechniques: { maxChars }` opts into inline delivery of its small,
- * ungated step-bound techniques in get_activity's `step_techniques` map;
- * large and gated ones stay lazy via get_technique. Exercised over the MCP
- * wire against a fixture corpus (the real corpus has no opt-in activity).
+ * Automatic, per-agent context-derived step-technique bundling (#189 C1c):
+ * get_activity eagerly inlines every activity's small, ungated step-bound
+ * techniques in a `step_techniques` map, sized to a cumulative budget derived
+ * from the worker's declared `context_tokens`; large, over-budget, and gated
+ * ones stay lazy via get_technique. Per-activity `bundleTechniques.maxChars`
+ * is an explicit per-technique size cap (0 = opt out). Exercised over the MCP
+ * wire against a fixture corpus.
  */
-describe('hybrid technique bundling (#166 B11)', () => {
+describe('hybrid technique bundling (#189 C1c)', () => {
   let client: Client;
   let closeTransport: () => Promise<void>;
   let workflowDir: string;
@@ -169,7 +171,7 @@ describe('hybrid technique bundling (#166 B11)', () => {
   async function getActivity(sessionIndex: string, extra: Record<string, unknown> = {}): Promise<{ ops: Record<string, unknown>; meta: Record<string, unknown> }> {
     const result = await client.callTool({
       name: 'get_activity',
-      arguments: { session_index: sessionIndex, ...extra },
+      arguments: { session_index: sessionIndex, context_tokens: 200_000, ...extra },
     }) as ToolResult;
     expect(result.isError).toBeFalsy();
     const text = result.content![0]!.text;
@@ -187,8 +189,13 @@ describe('hybrid technique bundling (#166 B11)', () => {
     expect(stepTechniques).toBeDefined();
     expect(Object.keys(stepTechniques).sort()).toEqual(['classify', 'gather', 'loop-op', 'record']);
     expect(ops['step_techniques_note']).toContain('get_technique { step_id }');
+    // The note prescribes the deliberate in-order step-begin beat (#189 C1c(C)2).
+    expect(ops['step_techniques_note']).toContain('▶ step');
 
-    // Each entry is the full composed technique, resolved through the activity-group shorthand.
+    // Each entry leads with a ▼ STEP arrival marker (#189 C1c(C)1), then the full composed
+    // technique resolved through the activity-group shorthand at the same level.
+    expect(stepTechniques['classify']!['marker']).toBe('▼ STEP classify · technique work::classify');
+    expect(stepTechniques['gather']!['marker']).toBe('▼ STEP gather · technique gather');
     expect(stepTechniques['classify']!['id']).toBe('classify');
     expect(stepTechniques['classify']!['capability']).toContain('Classify');
     expect(stepTechniques['gather']!['capability']).toContain('Gather');
@@ -287,8 +294,10 @@ describe('hybrid technique bundling (#166 B11)', () => {
     // and still records their technique_bundled events.
     const second = await getActivity(idx);
     const secondGather = (second.ops['step_techniques'] as Record<string, Record<string, unknown>>)['gather']!;
-    expect(secondGather['unchanged']).toBe(true);
+    expect(secondGather['delivery']).toBe('unchanged');
     expect(typeof secondGather['content_hash']).toBe('string');
+    // Even the collapsed entry keeps its ▼ STEP arrival marker.
+    expect(secondGather['marker']).toBe('▼ STEP gather · technique gather');
     expect(second.meta['bundled_steps']).toEqual(['classify', 'gather', 'record', 'loop-op']);
     const bundledEvents = sessionHistory(slug).filter(h => h.type === 'technique_bundled');
     expect(bundledEvents).toHaveLength(8);
@@ -299,14 +308,66 @@ describe('hybrid technique bundling (#166 B11)', () => {
     expect(forcedGather['capability']).toContain('Gather');
   });
 
-  it('an activity without bundleTechniques delivers no step_techniques map', async () => {
-    const slug = 'b11-no-optin';
+  it('an activity WITHOUT bundleTechniques still bundles its ungated step techniques (auto, corpus-wide)', async () => {
+    // `wrap` declares no bundleTechniques, yet under automatic context-derived bundling its one
+    // ungated technique step (gather) is inlined — the opt-in requirement is gone (#189 C1c).
+    const slug = 'auto-no-optin';
     const idx = await startSession(slug, 'w1');
     await enterActivity(idx, 'wrap');
+    const { ops, meta } = await getActivity(idx);
+    const stepTechniques = ops['step_techniques'] as Record<string, Record<string, unknown>>;
+    expect(stepTechniques).toBeDefined();
+    expect(stepTechniques['gather']!['capability']).toContain('Gather');
+    expect(meta['bundled_steps']).toEqual(['gather']);
+    expect(sessionHistory(slug).filter(h => h.type === 'technique_bundled')).toHaveLength(1);
+  });
+
+  it('a tiny context_tokens budget bundles nothing — every step stays lazy', async () => {
+    // budget = context_tokens × 0.8 × 4 chars/token. context_tokens: 1 → ~3.2 chars, below any
+    // composed technique, so document-order inlining stops before the first entry.
+    const slug = 'tiny-budget';
+    const idx = await startSession(slug, 'w1');
+    await enterActivity(idx, 'work');
+    const { ops, meta } = await getActivity(idx, { context_tokens: 1 });
+    expect(ops['step_techniques']).toBeUndefined();
+    expect(meta['bundled_steps']).toBeUndefined();
+    expect(sessionHistory(slug).filter(h => h.type === 'technique_bundled')).toHaveLength(0);
+  });
+
+  it('bundleTechniques.maxChars: 0 opts the activity out of eager bundling entirely', async () => {
+    // A dedicated fixture activity that sets maxChars: 0 delivers no step_techniques even though
+    // the derived budget is generous.
+    const wf = join(workflowDir, 'bundlewf');
+    writeFileSync(join(wf, 'activities', '03-optout.yaml'), [
+      'id: optout',
+      'version: 1.0.0',
+      'name: Opt Out',
+      'bundleTechniques:',
+      '  maxChars: 0',
+      'steps:',
+      '  - kind: technique',
+      '    id: gather',
+      '    technique: gather',
+    ].join('\n'));
+    // Point the fixture workflow's initial-activity transition at it so next_activity accepts it.
+    const slug = 'optout';
+    const idx = await startSession(slug, 'w1');
+    await enterActivity(idx, 'optout');
     const { ops, meta } = await getActivity(idx);
     expect(ops['step_techniques']).toBeUndefined();
     expect(meta['bundled_steps']).toBeUndefined();
     expect(sessionHistory(slug).filter(h => h.type === 'technique_bundled')).toHaveLength(0);
+  });
+
+  it('rejects get_activity without the required context_tokens param', async () => {
+    const slug = 'required-param';
+    const idx = await startSession(slug, 'w1');
+    await enterActivity(idx, 'work');
+    const result = await client.callTool({
+      name: 'get_activity',
+      arguments: { session_index: idx },
+    }) as ToolResult;
+    expect(result.isError).toBe(true);
   });
 
   describe('BundleTechniquesSchema', () => {
@@ -316,8 +377,12 @@ describe('hybrid technique bundling (#166 B11)', () => {
       expect(safeValidateActivity({ ...base, bundleTechniques: { maxChars: 4000 } }).success).toBe(true);
     });
 
-    it('rejects a non-positive maxChars and unknown keys', () => {
-      expect(safeValidateActivity({ ...base, bundleTechniques: { maxChars: 0 } }).success).toBe(false);
+    it('accepts maxChars: 0 as the opt-out sentinel', () => {
+      expect(safeValidateActivity({ ...base, bundleTechniques: { maxChars: 0 } }).success).toBe(true);
+    });
+
+    it('rejects a negative maxChars, unknown keys, and an empty object', () => {
+      expect(safeValidateActivity({ ...base, bundleTechniques: { maxChars: -1 } }).success).toBe(false);
       expect(safeValidateActivity({ ...base, bundleTechniques: { maxChars: 4000, mode: 'all' } }).success).toBe(false);
       expect(safeValidateActivity({ ...base, bundleTechniques: {} }).success).toBe(false);
     });

@@ -13,6 +13,21 @@ export const sessionIndexParam = {
 };
 
 /**
+ * Zod parameter spread for the REQUIRED `context_tokens` parameter on
+ * `get_activity`. The worker declares its OWN context window on the call that
+ * delivers its activity payload; the server derives the eager step-technique
+ * bundling budget from it (availability headroom × a token→char factor, both
+ * server config). The budget is per-AGENT and per-CALL — never stored on the
+ * session, never guessed, never defaulted: a shared session serves
+ * differently-sized agents, so only the consuming agent knows its own window.
+ * Omission is a validation error rejected at the MCP boundary.
+ */
+export const contextTokensParam = {
+  context_tokens: z.number().int().positive()
+    .describe('REQUIRED. The calling worker\'s total context window in tokens. The server derives the eager step-technique bundling budget from this value (availability headroom × a token→char factor, both server config) and inlines the activity\'s ungated step-bound techniques that fit, in document order, under that budget; the remainder stay lazy via get_technique. Per-agent and per-call — never stored on the session, never defaulted. Omitting it is a validation error.'),
+};
+
+/**
  * Throws if the SessionFile has an active checkpoint. Call this in every
  * authenticated tool handler EXCEPT `respond_checkpoint` (the resolution
  * mechanism) and `present_checkpoint` (which loads the checkpoint definition

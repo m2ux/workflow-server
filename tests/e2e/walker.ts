@@ -263,7 +263,7 @@ function interpolate(template: string, variables: Record<string, unknown>): stri
 }
 
 async function getActivity(client: Client, sessionIndex: string): Promise<{ def: ActivityDef; unresolved: string[]; bundledSteps: string[] }> {
-  const res = await client.callTool({ name: 'get_activity', arguments: { session_index: sessionIndex } });
+  const res = await client.callTool({ name: 'get_activity', arguments: { session_index: sessionIndex, context_tokens: 200_000 } });
   if (isError(res)) throw new Error(`get_activity failed: ${JSON.stringify(res.content)}`);
   const def = parseWorkflowResponse(res) as unknown as ActivityDef;
   const bundle = parseBundle(res);

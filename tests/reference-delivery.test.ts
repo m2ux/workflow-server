@@ -11,13 +11,13 @@ import { createInitialSessionFile, safeValidateSessionFile } from '../src/schema
 
 /** An unchanged-reference marker as it appears in a parsed bundle. */
 interface UnchangedMarker {
-  unchanged: true;
+  delivery: 'unchanged';
   content_hash: string;
 }
 
 function isUnchangedMarker(value: unknown): value is UnchangedMarker {
   return typeof value === 'object' && value !== null
-    && (value as Record<string, unknown>)['unchanged'] === true
+    && (value as Record<string, unknown>)['delivery'] === 'unchanged'
     && typeof (value as Record<string, unknown>)['content_hash'] === 'string';
 }
 
@@ -61,7 +61,7 @@ describe('delivery ledger helpers', () => {
   });
 
   it('unchangedMarker carries the hash', () => {
-    expect(unchangedMarker('deadbeefdeadbeef')).toEqual({ unchanged: true, content_hash: 'deadbeefdeadbeef' });
+    expect(unchangedMarker('deadbeefdeadbeef')).toEqual({ delivery: 'unchanged', content_hash: 'deadbeefdeadbeef' });
   });
 });
 
@@ -160,7 +160,7 @@ describe('reference-not-repeat delivery (B1)', () => {
   async function getActivity(sessionIndex: string, extra?: Record<string, unknown>): Promise<any> {
     const result = await client.callTool({
       name: 'get_activity',
-      arguments: { session_index: sessionIndex, ...(extra ?? {}) },
+      arguments: { session_index: sessionIndex, context_tokens: 200_000, ...(extra ?? {}) },
     });
     expect(result.isError).toBeFalsy();
     return result;
@@ -392,9 +392,11 @@ describe('reference-not-repeat delivery (B1)', () => {
       await enterActivity(idx, 'codebase-comprehension');
       const stepId = await findTechniqueStepId(idx);
 
+      // Eager bundling may already have delivered this step's technique via get_activity, so
+      // establish a known-full baseline with full: true before exercising the delta collapse.
       const first = await client.callTool({
         name: 'get_technique',
-        arguments: { session_index: idx, step_id: stepId },
+        arguments: { session_index: idx, step_id: stepId, full: true },
       });
       expect(first.isError).toBeFalsy();
       expect(responseText(first)).toContain('capability:');
@@ -671,7 +673,7 @@ describe('reference-not-repeat delivery (B1)', () => {
           name: 'next_activity',
           arguments: { session_index: idx, activity_id: 'start-work-package' },
         });
-        const call1 = await client2.callTool({ name: 'get_activity', arguments: { session_index: idx } });
+        const call1 = await client2.callTool({ name: 'get_activity', arguments: { session_index: idx, context_tokens: 200_000 } });
         expect(call1.isError).toBeFalsy();
 
         // Mutate the workflow-inherited technique between calls.
@@ -683,7 +685,7 @@ describe('reference-not-repeat delivery (B1)', () => {
         // The changed technique arrives in full (new content, hash mismatch);
         // untouched techniques collapse to markers.
         const call2 = splitActivityResponse(await (async () => {
-          const r = await client2.callTool({ name: 'get_activity', arguments: { session_index: idx } });
+          const r = await client2.callTool({ name: 'get_activity', arguments: { session_index: idx, context_tokens: 200_000 } });
           expect(r.isError).toBeFalsy();
           return r;
         })());
@@ -698,7 +700,7 @@ describe('reference-not-repeat delivery (B1)', () => {
 
         // The ledger now records the new hash: a further refetch collapses again.
         const call3 = splitActivityResponse(await (async () => {
-          const r = await client2.callTool({ name: 'get_activity', arguments: { session_index: idx } });
+          const r = await client2.callTool({ name: 'get_activity', arguments: { session_index: idx, context_tokens: 200_000 } });
           expect(r.isError).toBeFalsy();
           return r;
         })());

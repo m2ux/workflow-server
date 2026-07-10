@@ -96,7 +96,7 @@ async function transitionToActivity(client: Client, sessionIndex: string, activi
   if (actResult.isError) throw new Error(`next_activity failed: ${(actResult.content[0] as { type: string; text: string }).text}`);
   const actMeta = actResult._meta as Record<string, unknown>;
 
-  const getResult = await client.callTool({ name: 'get_activity', arguments: { session_index: sessionIndex } });
+  const getResult = await client.callTool({ name: 'get_activity', arguments: { session_index: sessionIndex, context_tokens: 200_000 } });
   if (getResult.isError) throw new Error(`get_activity failed: ${(getResult.content[0] as { type: string; text: string }).text}`);
   // get_activity prepends a technique bundle separated by '\n\n---\n\n' from the activity body.
   const actResponse = parseWorkflowResponse(getResult);
@@ -337,7 +337,7 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'get_activity',
-        arguments: { session_index: nextToken },
+        arguments: { session_index: nextToken, context_tokens: 200_000 },
       });
       expect(result.isError).toBeFalsy();
       const activity = parseWorkflowResponse(result);
@@ -355,7 +355,7 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'get_activity',
-        arguments: { session_index: nextToken },
+        arguments: { session_index: nextToken, context_tokens: 200_000 },
       });
       expect(result.isError).toBeFalsy();
 
@@ -376,11 +376,20 @@ describe('mcp-server integration', () => {
     it('should error when no activity in session token', async () => {
       const result = await client.callTool({
         name: 'get_activity',
-        arguments: { session_index: sessionToken },
+        arguments: { session_index: sessionToken, context_tokens: 200_000 },
       });
       expect(result.isError).toBe(true);
       const errorText = (result.content[0] as { type: string; text: string }).text;
       expect(errorText).toContain('No current activity');
+    });
+
+    it('should error when context_tokens is omitted (required param)', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: nextToken },
+      });
+      expect(result.isError).toBe(true);
     });
 
     it('returns the stable session_index in _meta', async () => {
@@ -388,7 +397,7 @@ describe('mcp-server integration', () => {
 
       const result = await client.callTool({
         name: 'get_activity',
-        arguments: { session_index: nextToken },
+        arguments: { session_index: nextToken, context_tokens: 200_000 },
       });
       const meta = result._meta as Record<string, unknown>;
       expect(meta['session_index']).toBe(nextToken);
@@ -1015,7 +1024,7 @@ describe('mcp-server integration', () => {
       // Issue another authenticated call whose trace event we will inspect.
       const getActResult = await client.callTool({
         name: 'get_activity',
-        arguments: { session_index: sessionToken },
+        arguments: { session_index: sessionToken, context_tokens: 200_000 },
       });
       expect(getActResult.isError).toBeFalsy();
 

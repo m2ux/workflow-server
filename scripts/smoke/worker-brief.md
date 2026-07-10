@@ -16,8 +16,10 @@ real work. Fidelity of *following the workflow* matters; the target work is thro
 
 ## What to do
 
-1. Call `get_activity` with the `session_index`. Read the resolved-operations
-   bundle and the activity definition (steps, checkpoints, transitions).
+1. Call `get_activity` with the `session_index` and the REQUIRED `context_tokens`
+   (your own context window in tokens — the server sizes eager step-technique
+   bundling to it). Read the resolved-operations bundle and the activity
+   definition (steps, checkpoints, transitions).
 2. Execute the activity's steps **in order**, doing the real action against the
    sandbox where it is local and safe (create/edit files, local git, write the
    planning artifacts the activity declares).

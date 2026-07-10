@@ -168,7 +168,7 @@ async function main() {
       log(`=== activity ${count}: ${current} ===`);
       await h.client.callTool({ name: 'next_activity', arguments: { session_index: sessionIndex, activity_id: current } });
 
-      const actRes = await h.client.callTool({ name: 'get_activity', arguments: { session_index: sessionIndex } });
+      const actRes = await h.client.callTool({ name: 'get_activity', arguments: { session_index: sessionIndex, context_tokens: 200_000 } });
       const act = parseWorkflowResponse(actRes) as unknown as ActivityDef;
       const unresolved = (parseBundle(actRes).unresolved as string[] | undefined) ?? [];
       if (unresolved.length) log(`bundle unresolved (degraded for worker): ${unresolved.join(', ')}`);

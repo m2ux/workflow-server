@@ -14,6 +14,19 @@ export interface ServerConfig {
   workspaceDir: string;
   serverName: string;
   serverVersion: string;
+  /**
+   * Fraction of a worker's declared `context_tokens` treated as available for
+   * eager step-technique bundling on `get_activity` — the availability headroom
+   * that keeps bundling well inside the window. Default 0.80 (see
+   * DEFAULT_BUNDLE_HEADROOM_FRACTION). Env override: `BUNDLE_HEADROOM_FRACTION`.
+   */
+  bundleHeadroomFraction?: number;
+  /**
+   * Token→character conversion factor used to turn the headroom-adjusted token
+   * budget into a character budget for eager bundling. Default 4 (see
+   * DEFAULT_BUNDLE_CHARS_PER_TOKEN). Env override: `BUNDLE_CHARS_PER_TOKEN`.
+   */
+  bundleCharsPerToken?: number;
   /** In-process trace store for execution tracing. Created by createServer(). */
   traceStore?: TraceStore;
   /** Minimum seconds between checkpoint issuance and response. Default 3. Set to 0 for testing. */
@@ -27,9 +40,30 @@ export interface ResolvedServerConfig extends ServerConfig {
 
 const PROJECT_ROOT = resolve(import.meta.dirname, '..');
 
+/**
+ * Eager step-technique bundling budget policy. The per-activity eager-delivery
+ * budget on `get_activity` is `context_tokens × headroomFraction × charsPerToken`.
+ * These are the server-owned defaults; both are env-overridable and both have an
+ * in-code fallback so a config built without them (e.g. in tests) still bundles.
+ */
+export const DEFAULT_BUNDLE_HEADROOM_FRACTION = 0.8;
+export const DEFAULT_BUNDLE_CHARS_PER_TOKEN = 4;
+
 function envOrDefault(key: string, fallback: string): string {
   const value = process.env[key]?.trim();
   return value || fallback;
+}
+
+/**
+ * Read a positive numeric env var, falling back to `fallback` when unset,
+ * blank, or not a finite positive number. Keeps bundling-budget policy as
+ * config rather than inline constants while staying robust to bad input.
+ */
+function envNumberOrDefault(key: string, fallback: number): number {
+  const raw = process.env[key]?.trim();
+  if (!raw) return fallback;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 }
 
 /**
@@ -94,6 +128,8 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
     schemasDir: resolve(PROJECT_ROOT, envOrDefault('SCHEMAS_DIR', './schemas')),
     workspaceDir: resolveWorkspaceDir(argv),
     serverName: envOrDefault('SERVER_NAME', 'workflow-server'),
-    serverVersion: envOrDefault('SERVER_VERSION', '1.0.0'),
+    serverVersion: envOrDefault('SERVER_VERSION', '2.0.0'),
+    bundleHeadroomFraction: envNumberOrDefault('BUNDLE_HEADROOM_FRACTION', DEFAULT_BUNDLE_HEADROOM_FRACTION),
+    bundleCharsPerToken: envNumberOrDefault('BUNDLE_CHARS_PER_TOKEN', DEFAULT_BUNDLE_CHARS_PER_TOKEN),
   };
 }
