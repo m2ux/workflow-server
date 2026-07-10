@@ -1,5 +1,5 @@
 id: start
-version: 1.3.0
+version: 2.0.0
 name: Start Security Vulnerability Remediation
 description: Initialize a high-sensitivity security fix.
 required: true
@@ -13,7 +13,7 @@ steps:
     id: set-security-mode
     actions:
       - action: set
-        target: is_sec_vuln_mode
+        target: stealth_mode
         value: true
   - kind: technique
     id: collect-security-inputs
@@ -36,6 +36,21 @@ steps:
       - action: validate
         target: target_path exists
         message: Target directory not found at the supplied target_path
+  - kind: technique
+    id: resolve-reference
+    technique:
+      name: work-package::reference-resolution
+      inputs:
+        discovered_path: target_path
+  - kind: technique
+    id: detect-project-type
+    technique: work-package::project-type-detection
+  - kind: action
+    id: verify-signing-precondition
+    actions:
+      - action: validate
+        target: signing.configured == true
+        message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing in your environment via your preferred scope (system, global, or local) before re-running.
   - kind: checkpoint
     id: private-fork-url-input
     condition:

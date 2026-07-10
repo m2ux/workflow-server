@@ -2,6 +2,6 @@
 
 | ID | Version | Name | Description |
 |----|---------|------|-------------|
-| start | 1.3.0 | Start Security Vulnerability Remediation | Initialize a high-sensitivity security fix. |
-| strategic-review | 1.2.0 | Strategic Review | Review the implementation to ensure changes are minimal and focused. |
-| submit | 1.3.0 | Submit Security Vulnerability Remediation | Finalize a high-sensitivity security fix. |
+| start | 2.0.0 | Start Security Vulnerability Remediation | Initialize a high-sensitivity security fix. |
+
+All other activities (design-philosophy through complete, including strategic-review and submit-for-review) are borrowed from the [work-package workflow](../../work-package/activities/README.md) and run under `stealth_mode: true`.
