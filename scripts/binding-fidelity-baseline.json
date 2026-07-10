@@ -836,11 +836,6 @@
   },
   {
     "check": "orphan-input",
-    "site": "work-package :: finalize-documentation::ensure-docs",
-    "detail": "own input 'changed_files' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
-  },
-  {
-    "check": "orphan-input",
     "site": "work-package :: finalize-documentation::finalize-test-plan",
     "detail": "own input 'test_plan' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
   },
@@ -996,11 +991,6 @@
   },
   {
     "check": "orphan-input",
-    "site": "work-package :: review-code",
-    "detail": "own input 'changed_files' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
-  },
-  {
-    "check": "orphan-input",
     "site": "work-package :: review-mode-detection",
     "detail": "own input 'user_request' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
   },
@@ -1021,11 +1011,6 @@
   },
   {
     "check": "orphan-input",
-    "site": "work-package :: review-test-suite",
-    "detail": "own input 'changed_files' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
-  },
-  {
-    "check": "orphan-input",
     "site": "work-package :: stakeholder-overview",
     "detail": "own input 'source_material' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
   },
@@ -1036,18 +1021,8 @@
   },
   {
     "check": "orphan-input",
-    "site": "work-package :: strategic-review::review-scope",
-    "detail": "own input 'changed_files' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
-  },
-  {
-    "check": "orphan-input",
     "site": "work-package :: strategic-review::verify-fragment",
     "detail": "own input 'issue_url' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
-  },
-  {
-    "check": "orphan-input",
-    "site": "work-package :: summarize-architecture",
-    "detail": "own input 'changed_files' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)"
   },
   {
     "check": "orphan-input",
@@ -1281,12 +1256,12 @@
   },
   {
     "check": "read-resolution",
-    "site": "work-package/techniques/review-summary.md:45",
+    "site": "work-package/techniques/review-summary.md:51",
     "detail": "{sha} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "work-package/techniques/review-summary.md:45",
+    "site": "work-package/techniques/review-summary.md:51",
     "detail": "{user} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
