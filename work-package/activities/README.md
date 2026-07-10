@@ -377,14 +377,17 @@ graph TD
 
 ### 12. Strategic Review
 
-Reviews the change set to ensure it is minimal and focused — that the PR contains only what the solution requires — and produces the strategic review document and architecture summary. In review mode it documents cleanup recommendations without applying them. Leads to submit-for-review when the review passes, otherwise back to plan-prepare for rework.
+Reviews the change set to ensure it is minimal and focused — that the PR contains only what the solution requires — and produces the strategic review document and architecture summary. The scope review also scans the branch range for unsigned commits and offers a re-sign pass. In review mode it documents cleanup recommendations without applying them. In stealth mode the fragment issue-reference check is skipped. Leads to submit-for-review when the review passes, otherwise back to plan-prepare for rework.
 
 Definition: [`12-strategic-review.yaml`](./12-strategic-review.yaml)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> reviewScope["Review scope (changes and artifacts)"]
-    reviewScope --> verifyReadme["Verify README conformance"]
+    entryNode(["Entry"]) --> reviewScope["Review scope (changes, artifacts, signature scan)"]
+    reviewScope --> cpUnsigned{"unsigned-commits-prompt (when unsigned found)"}
+    cpUnsigned -->|"re-sign"| resign["Re-sign commits"]
+    cpUnsigned -->|"decline"| verifyReadme
+    resign --> verifyReadme["Verify README conformance"]
     verifyReadme --> changesFrag["Ensure changes/ fragment if repo uses it"]
     changesFrag --> verifyFragment["Verify fragment references issue"]
     verifyFragment --> documentFindings["Document findings"]
@@ -403,7 +406,7 @@ graph TD
 
 ### 13. Submit for Review
 
-Gates submission on a human DCO sign-off, then pushes the branch, finalizes the PR description, marks the PR ready, and handles reviewer feedback. In review mode it instead consolidates all findings, posts structured PR review comments, and ends the workflow. Significant requested changes loop back to plan-prepare; otherwise leads to complete.
+Gates submission on a human DCO sign-off, then pushes the branch, finalizes the PR description, marks the PR ready, and handles reviewer feedback. In review mode it instead consolidates all findings, posts structured PR review comments, and ends the workflow. In stealth mode the PR lifecycle is gated out entirely: the push is preceded by private-remote verification, a final isolation confirmation, and a commit-signature check, and the push targets the consumer's private `push_remote`. Significant requested changes loop back to plan-prepare; otherwise leads to complete.
 
 Definition: [`13-submit-for-review.yaml`](./13-submit-for-review.yaml)
 
@@ -417,8 +420,13 @@ graph TD
     postReview --> awaitReview
 
     reviewMode -->|"no"| cpDco{"dco-sign-off checkpoint"}
-    cpDco --> pushCommits["Push all commits"]
-    pushCommits --> updateDesc["Update PR description"]
+    cpDco --> stealthMode{"Stealth mode?"}
+    stealthMode -->|"yes"| verifyRemote["Verify private remote + isolation confirmation + signature check"]
+    verifyRemote --> pushCommits
+    stealthMode -->|"no"| pushCommits["Push all commits (push_remote)"]
+    pushCommits --> stealthExit{"Stealth mode?"}
+    stealthExit -->|"yes"| exitComplete
+    stealthExit -->|"no"| updateDesc["Update PR description"]
     updateDesc --> mergeGuidance["Merge-strategy guidance (informational message)"]
     mergeGuidance --> markReady["Mark PR ready for review"]
     markReady --> awaitReview["Await manual review"]

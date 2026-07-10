@@ -1,14 +1,14 @@
 id: submit-for-review
-version: 1.9.0
+version: 1.10.0
 name: Submit for Review
-description: Submit the PR for review and handle reviewer feedback.
+description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 required: true
 steps:
   - kind: action
     id: announce-start
     actions:
       - action: log
-        message: Submitting PR for review
+        message: Submitting work for review
   - kind: technique
     id: consolidate-review-findings
     technique: findings-classification
@@ -105,6 +105,54 @@ steps:
         label: I have reservations — flag for legal review
         description: Document concern in provenance-log.md before proceeding. Consider escalating to legal or OSS program review.
   - kind: technique
+    id: verify-push-remote
+    technique: manage-git::verify-remote-private
+    condition:
+      type: simple
+      variable: stealth_mode
+      operator: ==
+      value: true
+  - kind: checkpoint
+    id: private-remote-confirmation
+    condition:
+      type: simple
+      variable: stealth_mode
+      operator: ==
+      value: true
+    message: "FINAL ISOLATION CHECK: you are about to push to remote '{push_remote}' ({push_remote_url}). Is this the verified PRIVATE remote? (Never push to a public remote in stealth mode.)"
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes, push to the private remote
+        description: Proceed with the push to the verified private remote
+      - id: abort
+        label: No, abort push
+        description: Push aborted due to remote verification failure
+  - kind: technique
+    id: verify-push-signatures
+    technique: manage-git::verify-commit-signatures
+    condition:
+      type: simple
+      variable: stealth_mode
+      operator: ==
+      value: true
+  - kind: checkpoint
+    id: push-confirmation
+    condition:
+      type: simple
+      variable: stealth_mode
+      operator: ==
+      value: true
+    message: Ready to push the fix to the private remote '{push_remote}'. Confirm to proceed?
+    blocking: true
+    options:
+      - id: confirm
+        label: Confirm push
+        description: Push to the private remote
+      - id: cancel
+        label: Cancel
+        description: Do not push
+  - kind: technique
     id: push-commits
     technique: manage-git::push-commits
     condition:
@@ -116,15 +164,21 @@ steps:
     id: update-description
     technique: update-pr::render
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
   - kind: loop
     id: verify-pr-body-rerender
     name: PR Body Verification Re-render Loop
     loopType: while
-    when: is_review_mode != true
+    when: is_review_mode != true && stealth_mode != true
     condition:
       type: simple
       variable: body_conforms
@@ -148,6 +202,10 @@ steps:
       conditions:
         - type: simple
           variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
           operator: "!="
           value: true
         - type: simple
@@ -188,10 +246,16 @@ steps:
     id: instruct-merge-strategy
     technique: manage-git::instruct-merge-strategy
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
   - kind: action
     id: merge-strategy-guidance
     condition:
@@ -199,6 +263,10 @@ steps:
       conditions:
         - type: simple
           variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
           operator: "!="
           value: true
         - type: simple
@@ -225,20 +293,33 @@ steps:
     id: mark-ready
     technique: update-pr::mark-ready
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
   - kind: action
     id: await-review
+    when: stealth_mode != true
     actions: []
   - kind: checkpoint
     id: review-received
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
     message: Has the PR received manual review feedback?
     options:
       - id: yes-review
@@ -251,25 +332,43 @@ steps:
     id: process-review-comments
     technique: respond-to-pr-review
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
   - kind: technique
     id: analyze-review-outcome
     technique: review-outcome-analysis
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
   - kind: checkpoint
     id: review-outcome
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
     message: |-
       Review outcome analysis complete.
 
@@ -303,7 +402,7 @@ steps:
     id: announce-completion
     actions:
       - action: log
-        message: PR submitted and review cycle complete
+        message: Submission complete — PR review cycle finished, or (stealth mode) fix pushed to the verified private remote
 transitions:
   - to: complete
     condition:

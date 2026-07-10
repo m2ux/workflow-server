@@ -1,5 +1,5 @@
 id: plan-prepare
-version: 1.8.0
+version: 1.9.0
 name: Plan & Prepare
 description: Design the approach, create the work package plan, and prepare for implementation.
 required: true
@@ -22,6 +22,11 @@ steps:
       - action: validate
         target: gh.auth.status == 0
         message: gh CLI is not authenticated. Authenticate (or refresh an expired token) at your preferred scope before re-running.
+        condition:
+          type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
       - action: validate
         target: gpg.agent.reachable == true
         message: GPG agent is not reachable. Ensure it is running at your preferred scope before re-running.
@@ -78,10 +83,16 @@ steps:
       inputs:
         pr_template_variant: initial
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
   - kind: checkpoint
     id: approach-confirmed
     condition:
