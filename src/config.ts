@@ -128,7 +128,7 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
     schemasDir: resolve(PROJECT_ROOT, envOrDefault('SCHEMAS_DIR', './schemas')),
     workspaceDir: resolveWorkspaceDir(argv),
     serverName: envOrDefault('SERVER_NAME', 'workflow-server'),
-    serverVersion: envOrDefault('SERVER_VERSION', '2.0.0'),
+    serverVersion: envOrDefault('SERVER_VERSION', '2.1.0'),
     bundleHeadroomFraction: envNumberOrDefault('BUNDLE_HEADROOM_FRACTION', DEFAULT_BUNDLE_HEADROOM_FRACTION),
     bundleCharsPerToken: envNumberOrDefault('BUNDLE_CHARS_PER_TOKEN', DEFAULT_BUNDLE_CHARS_PER_TOKEN),
   };

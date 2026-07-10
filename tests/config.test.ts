@@ -82,8 +82,9 @@ describe('loadConfig — workspace argument', () => {
       expect(config.workflowDir).toMatch(/workflows$/);
       expect(config.schemasDir).toMatch(/schemas$/);
       expect(config.serverName).toBe('workflow-server');
-      // Breaking API change (#189 C1c: context_tokens REQUIRED on get_activity) → major bump.
-      expect(config.serverVersion).toBe('2.0.0');
+      // 2.0.0: breaking API change (#189 C1c: context_tokens REQUIRED on get_activity).
+      // 2.1.0: additive payload-rendering hints (#189 cluster 2 — C4/C5/C7).
+      expect(config.serverVersion).toBe('2.1.0');
     });
 
     it('derives the eager-bundling budget constants (env-overridable) with the policy defaults', () => {
