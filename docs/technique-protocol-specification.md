@@ -412,6 +412,21 @@ The engine binds by name: workflow state variables (a worker sets them from a te
 the entry ids a consumer references. The `####` components of an entry document its shape for the
 reader; a consumer references an entry by its id.
 
+### 7.5 Step manifest
+
+A worker reports what a step produced through the `step_manifest` entry `output` field passed to
+`next_activity` (one entry per completed step, keyed by `step_id`). The encoding scales with the
+step's declared outputs:
+
+- **One output** — a short summary string (e.g. `"is_review_mode=false"`).
+- **More than one output** — a JSON object keyed by output id (e.g.
+  `{"reference_path": "lib/x", "component_name": "x"}`). This is the canonical multi-output form; a
+  step-bound technique's `provenance_note` cites it at point of use.
+
+An output lands in the session bag under its declared id, unless the step binding remaps it — in
+which case the step-bound `get_technique` delivery annotates that output with a `destination:` line
+naming the bag variable it lands under (§7.1 delivers `destination:` only on remapped outputs).
+
 ---
 
 ## 8. Authoring rules

@@ -39,11 +39,14 @@ export const IDENTIFIER_PATTERN = '[a-zA-Z_][a-zA-Z0-9_]*';
 export const OPTIONAL_INPUT_RE = /^[*_]{0,2}\(optional\)/i;
 
 /** Note delivered alongside the annotations: the output delivery mechanics (probe class 3's
- *  "set variable X — how?"). The `source:` vocabulary is self-explanatory in situ and is
+ *  "set variable X — how?"), read by the worker at point of use — including the multi-output
+ *  manifest encoding (#189 C4). The `source:` vocabulary is self-explanatory in situ and is
  *  documented on the tool description, so it is not restated here. */
 export const PROVENANCE_NOTE =
-  'Outputs land in the session bag under their declared id (or the shown `destination:`); '
-  + 'deliver each by reporting it in your step-manifest `output`.';
+  'Deliver each output by reporting it in your step-manifest `output`: one output as a short '
+  + 'summary string; a step with more than one output as a JSON object keyed by output id. An '
+  + 'output lands in the session bag under its declared id, unless it carries a `destination:` line '
+  + '— shown only on a remapped output — in which case it lands under that name.';
 
 /** A place in the workflow that puts a value into the session bag under `name`. */
 export interface ProducerSite {
@@ -276,6 +279,16 @@ export function resolveOutputDestination(outputId: string, binding: TechniqueBin
  *  on every fetch and are left to the block's scope note. */
 const INHERITED_NOTEWORTHY: ReadonlySet<SourceKind> = new Set(['binding', 'later', 'declared-later']);
 
+/** Appended to the `inherited_inputs` scope note on a step-bound fetch, where some entries carry a
+ *  `source:` line and most do not (INHERITED_NOTEWORTHY). States the noteworthy-only annotation
+ *  policy so the ABSENCE of a `source:` is read as "ordinary contract scope", not as a missing or
+ *  ambiguous value (#189 C5, R6). */
+export const INHERITED_SOURCE_POLICY =
+  'A `source:` line is added to an entry only where its resolution departs from this scope — a '
+  + 'step-binding override, or a producer positioned later in the workflow. An entry shown without '
+  + 'one resolves from ordinary workflow context — a prior step output, a declared workflow '
+  + 'variable, or ambient caller-supplied context — as this note describes.';
+
 export interface DecoratedTechnique { technique: Technique; warnings: string[] }
 
 /**
@@ -319,8 +332,12 @@ export function decorateTechniqueProvenance(
   const decorated: Technique = { ...technique, provenance_note: PROVENANCE_NOTE };
   if (technique.inputs) decorated.inputs = technique.inputs.map((i) => annotateInput(i, false));
   if (technique.inherited_inputs) {
+    // Uniform provenance coverage (#189 C5, R6): the per-item `source:` filter is noteworthy-only,
+    // so most inherited inputs carry no line. State that policy in the block note so the absence of
+    // a `source:` is not misread as a missing or ambiguous value.
     decorated.inherited_inputs = {
       ...technique.inherited_inputs,
+      note: `${technique.inherited_inputs.note} ${INHERITED_SOURCE_POLICY}`,
       items: technique.inherited_inputs.items.map((i) => annotateInput(i, true)),
     };
   }

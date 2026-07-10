@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import {
   AMBIENT_CONTEXT_IDS,
   PROVENANCE_NOTE,
+  INHERITED_SOURCE_POLICY,
   buildProvenanceContext,
   decorateTechniqueProvenance,
   resolveInputSource,
@@ -198,6 +199,9 @@ describe('decorateTechniqueProvenance', () => {
     expect(decorated.inherited_inputs?.items[0]?.source).toBeUndefined();
     expect(decorated.inherited_inputs?.items[1]?.source).toBeUndefined();
     expect(decorated.inherited_inputs?.items[2]?.source).toContain('produced later in the workflow');
+    // C5 (R6): the noteworthy-only policy is stated on the block note, so a bare inherited entry
+    // reads as ordinary scope rather than a missing/ambiguous value.
+    expect(decorated.inherited_inputs?.note).toBe(`shared contract ${INHERITED_SOURCE_POLICY}`);
     expect(decorated.outputs?.[0]?.destination).toBe("lands as session variable 'final_log' (step-binding remap)");
     expect(decorated.outputs?.[1]?.destination).toBeUndefined();
 
@@ -209,6 +213,15 @@ describe('decorateTechniqueProvenance', () => {
     expect(technique.provenance_note).toBeUndefined();
     expect(technique.inputs?.[0]?.source).toBeUndefined();
     expect(technique.outputs?.[0]?.destination).toBeUndefined();
+    expect(technique.inherited_inputs?.note).toBe('shared contract');
+  });
+
+  it('PROVENANCE_NOTE specifies the multi-output manifest encoding and a conditional destination (C4)', () => {
+    // Multiple outputs → a JSON object keyed by output id; destination is cited only as a
+    // remapped-output condition, never as an always-present field.
+    expect(PROVENANCE_NOTE).toContain('JSON object keyed by output id');
+    expect(PROVENANCE_NOTE).toContain('step-manifest `output`');
+    expect(PROVENANCE_NOTE).toContain('shown only on a remapped output');
   });
 });
 

@@ -7,7 +7,7 @@ import { injectCheckpointFragmentBodies, resolveCheckpointFragment, scanCheckpoi
 import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
-import { injectResolvedStepIds, techniqueName, type Activity, type Step } from '../schema/activity.schema.js';
+import { injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
 import { buildProvenanceContext, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
 import { withAuditLog, logWarn } from '../logging.js';
 import { jsonTypeOf, isTemplateReference } from '../utils/variable-seed.js';
@@ -32,7 +32,7 @@ import type { TraceEvent, TraceTokenPayload } from '../trace.js';
 const stepManifestSchema = z.array(z.object({
   step_id: z.string(),
   output: z.string(),
-})).optional().describe('Array of completed-step entries from the previous activity, e.g. [{"step_id":"detect-review-mode","output":"is_review_mode=false"}]. Each entry has two string fields: step_id (the literal id from the activity\'s steps[] — note the field is step_id, not id) and output (a short summary). Omit the parameter entirely when no steps ran; do not pass an empty array or empty string.');
+})).optional().describe('Array of completed-step entries from the previous activity, e.g. [{"step_id":"detect-review-mode","output":"is_review_mode=false"}]. Each entry has two string fields: step_id (the literal id from the activity\'s steps[] — note the field is step_id, not id) and output. output is a short summary of what the step produced; for a step with more than one declared output, report a JSON object keyed by output id, e.g. {"step_id":"resolve-reference","output":"{\\"reference_path\\":\\"lib/x\\",\\"component_name\\":\\"x\\"}"}. Omit the parameter entirely when no steps ran; do not pass an empty array or empty string.');
 
 const activityManifestSchema = z.array(z.object({
   activity_id: z.string(),
@@ -576,6 +576,27 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ? `${activityBody}\n${stringifyForResponse({ artifacts: composedArtifacts })}`
         : activityBody;
 
+      // Payload-borne enforcement hints (#189 C7, R7): the enforcement model (schemas/README) lives
+      // in docs that never ride the wire, so a payload-only reader still infers the SERVER executes
+      // inert fields (guessing it applies `action: set`, unsure who owns auto-advance). Annotate, at
+      // delivery time, only the constructs this activity actually contains — an activity without
+      // them adds nothing. Delivery-side only; no schema change.
+      const enforcementNotes: Record<string, string> = {};
+      if (activity) {
+        const flatSteps = flattenActivitySteps(activity);
+        if (flatSteps.some((s) => (s.kind === 'technique' || s.kind === 'action') && (s.actions?.length ?? 0) > 0)) {
+          enforcementNotes['actions'] =
+            'Action verbs (a kind:action step, or an `actions:` list on a step) are AGENT-executed: you carry them out. The server records the step but applies no action verb and sets no session variable from one.';
+        }
+        if (flatSteps.some((s) => s.kind === 'checkpoint' && s.autoAdvanceMs !== undefined)) {
+          enforcementNotes['auto_advance'] =
+            "A checkpoint's auto-advance is SERVER-timed: the server enforces the full autoAdvanceMs timer when you call respond_checkpoint { auto_advance: true }, then applies its defaultOption. `blocking` is an advisory orchestrator directive (agent-honored), not a server gate.";
+        }
+      }
+      const enforcementBlock = Object.keys(enforcementNotes).length
+        ? `${stringifyForResponse({ enforcement_notes: enforcementNotes })}\n\n`
+        : '';
+
       // Worker-facing rules inherited by EVERY activity, injected into every get_activity so a
       // worker dispatched for a single activity always receives them: the workflow's `rules.activity`
       // plus the dual-audience `rules.universal`. (`rules.workflow` are orchestrator-only.)
@@ -617,10 +638,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       await saveSessionForTool(reloaded, next);
 
       return {
-        content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${activityRulesBlock}${activityBodyWithArtifacts}` }],
+        content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${activityRulesBlock}${enforcementBlock}${activityBodyWithArtifacts}` }],
         _meta: {
           session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules,
           ...(bundledSteps.length > 0 ? { bundled_steps: bundledSteps.map(b => b.stepId) } : {}),
+          ...(Object.keys(enforcementNotes).length > 0 ? { enforcement_notes: enforcementNotes } : {}),
         },
       };
     }), traceOpts));
