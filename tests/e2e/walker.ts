@@ -301,8 +301,12 @@ function getVar(path: string, vars: Record<string, unknown>): unknown {
   return cur;
 }
 
-/** Evaluate a step's inline `when` expression. Unparseable expressions don't gate (execute). */
+/** Evaluate a step's inline `when` expression. Compound `a == x && b != y` expressions
+ * evaluate clause-by-clause (all must pass). Unparseable expressions don't gate (execute). */
 function evaluateWhen(expr: string, vars: Record<string, unknown>): boolean {
+  if (expr.includes('&&')) {
+    return expr.split('&&').every((clause) => evaluateWhen(clause.trim(), vars));
+  }
   const m = expr.match(/^\s*([\w.]+)\s*(==|!=)\s*(.+?)\s*$/);
   if (!m) {
     // Bare variable → truthiness.

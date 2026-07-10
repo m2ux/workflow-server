@@ -88,8 +88,14 @@ export async function buildProvenanceContext(args: {
   workflowDir: string;
   currentActivityId: string;
   currentStepId: string;
+  /**
+   * Per-activity technique-resolution scope: activity id → the workflow the activity file was
+   * authored in. A borrowed cross-workflow activity resolves its bound ops against its source
+   * workflow (mirroring fragment scoping); absent entries fall back to the session workflow.
+   */
+  activitySourceWorkflow?: ReadonlyMap<string, string>;
 }): Promise<ProvenanceContext | null> {
-  const { workflow, workflowDir, currentActivityId, currentStepId } = args;
+  const { workflow, workflowDir, currentActivityId, currentStepId, activitySourceWorkflow } = args;
   const declaredVariables = new Set((workflow.variables ?? []).map((v) => v.name));
   const producers: ProducerSite[] = [];
   let position = -1;
@@ -101,17 +107,19 @@ export async function buildProvenanceContext(args: {
     const hit = ownOutputsCache.get(key);
     if (hit) return hit;
     let ids: string[] = [];
+    // A borrowed activity's bound ops resolve against the workflow the file was authored in.
+    const scopeWorkflowId = activitySourceWorkflow?.get(activityId) ?? workflow.id;
     try {
       // Mirror get_technique's activity-group shorthand: a bare op resolves first against the
       // group named after its activity, then as-authored.
       let result = (!ref.includes('::') && !ref.includes('/'))
-        ? await readTechnique(`${activityId}::${ref}`, workflowDir, workflow.id)
+        ? await readTechnique(`${activityId}::${ref}`, workflowDir, scopeWorkflowId)
         : null;
-      if (!result?.success) result = await readTechnique(ref, workflowDir, workflow.id);
+      if (!result?.success) result = await readTechnique(ref, workflowDir, scopeWorkflowId);
       if (result.success) ids = (result.value.outputs ?? []).map((o) => o.id);
     } catch (error) {
       logWarn('Provenance producer scan skipped an unreadable bound op', {
-        ref, activityId, workflowId: workflow.id,
+        ref, activityId, workflowId: scopeWorkflowId,
         error: error instanceof Error ? error.message : String(error),
       });
     }

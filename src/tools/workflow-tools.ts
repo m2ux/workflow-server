@@ -386,7 +386,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       const view = sessionView(state);
-      const result = await loadWorkflow(config.workflowDir, workflow_id);
+      const diagResult = await loadWorkflowWithDiagnostics(config.workflowDir, workflow_id);
+      const result = diagResult.success
+        ? { success: true as const, value: diagResult.value.workflow }
+        : diagResult;
+      const activitySourceWorkflow = diagResult.success
+        ? diagResult.value.activitySourceWorkflow
+        : new Map<string, string>();
 
       // Reference-not-repeat delivery: active via per-call opt-in or the session's declared
       // context mode. Full delivery stays the default — in disposable-worker topologies each
@@ -482,7 +488,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         for (const step of eligible) {
           const ref = techniqueName(step.technique);
           if (!ref) continue;
-          const composedStep = await composeActivityTechnique(ref, config.workflowDir, workflow_id, activity_id);
+          // Borrowed activities resolve their step techniques against the source workflow the
+          // activity file was authored in (mirroring #166 B10 fragment scoping).
+          const composedStep = await composeActivityTechnique(ref, config.workflowDir, sourceWorkflowId, activity_id);
           // An unresolvable ref is the binding guard's business; delivery skips it (the step's
           // own get_technique fetch will surface the error to the worker).
           if (!composedStep.success) continue;
@@ -494,6 +502,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             workflowDir: config.workflowDir,
             currentActivityId: activity_id,
             currentStepId: step.id!,
+            activitySourceWorkflow,
           });
           if (ctx) {
             const binding = typeof step.technique === 'object' ? step.technique : undefined;
