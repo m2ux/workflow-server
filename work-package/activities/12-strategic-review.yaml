@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.7.0
+version: 2.8.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 required: true
@@ -7,6 +7,36 @@ steps:
   - kind: technique
     id: review-strategy
     technique: review-scope
+  - kind: checkpoint
+    id: unsigned-commits-prompt
+    condition:
+      type: simple
+      variable: unsigned_commits_in_pr
+      operator: ==
+      value: true
+    message: "Signature scan reports one or more commits without a valid GPG signature in this branch range: {unsigned_commit_list_summary}. Re-sign all unsigned commits now? This rewrites branch history and may require force-with-lease push."
+    blocking: true
+    options:
+      - id: resign-all
+        label: Yes — re-sign all unsigned commits
+        description: Rewrites commits with GPG signatures using git rebase; confirm signing key is available
+        effect:
+          setVariable:
+            resign_unsigned_commits_requested: true
+      - id: decline-resign
+        label: No — proceed without re-signing
+        description: Keep history as-is; note unsigned commits in strategic-review documentation
+        effect:
+          setVariable:
+            resign_unsigned_commits_requested: false
+  - kind: technique
+    id: resign-unsigned-commits
+    technique: resign-commits
+    condition:
+      type: simple
+      variable: resign_unsigned_commits_requested
+      operator: ==
+      value: true
   - kind: technique
     id: verify-readme
     technique: manage-artifacts::verify-readme-conforms
@@ -20,6 +50,11 @@ steps:
       - action: validate
         target: fragment_references_issue != false
         message: "Change fragment for this work package does not reference issue_url ({issue_url}). Add a 'Closes: #{issue_number}' line (GitHub) or the full issue_url (when sibling fragments use that style) to the fragment body, commit, and re-run."
+        condition:
+          type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
   - kind: technique
     id: document-findings
     technique: document-findings

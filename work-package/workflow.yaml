@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.27.0
+version: 3.28.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
@@ -434,4 +434,28 @@ variables:
     type: boolean
     description: Whether the harvest-debt step found at least one ponytail marker in the tree. Set by lean-coding-audit's harvest-debt step (ponytail/harvest-debt output); gates the report-gain step.
     defaultValue: false
+  - name: stealth_mode
+    type: boolean
+    description: Suppresses public-disclosure side-effects (PR rendering and creation, issue-tracker posting, PR review lifecycle) when a private consumer workflow runs shared activities, and enables the private-remote isolation steps in submit-for-review. Consumer-agnostic — a borrowing workflow that must not disclose (e.g. one remediating an undisclosed vulnerability) seeds it true; work-package runs leave it false, so all gated steps behave exactly as before.
+    defaultValue: false
+  - name: push_remote
+    type: string
+    description: Git remote that manage-git::push-commits (and the stealth-mode isolation checks) target. Default 'origin'; a stealth consumer overrides its default to the private remote (e.g. 'security').
+    defaultValue: origin
+  - name: push_remote_url
+    type: string
+    description: URL the push remote resolves to, captured by manage-git::verify-remote-private and interpolated into the stealth-mode isolation confirmation.
+    defaultValue: ""
+  - name: unsigned_commits_in_pr
+    type: boolean
+    description: True when the strategic-review signature scan found any commit in the branch range without a valid GPG signature; gates the unsigned-commits-prompt checkpoint.
+    defaultValue: false
+  - name: resign_unsigned_commits_requested
+    type: boolean
+    description: User chose to re-sign unsigned commits at the strategic-review unsigned-commits-prompt checkpoint; gates the resign-unsigned-commits step.
+    defaultValue: false
+  - name: unsigned_commit_list_summary
+    type: string
+    description: Short human-readable summary of unsigned commits from the strategic-review signature scan; empty when all commits are signed.
+    defaultValue: ""
 initialActivity: start-work-package

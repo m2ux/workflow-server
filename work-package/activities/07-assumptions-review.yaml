@@ -1,5 +1,5 @@
 id: assumptions-review
-version: 2.2.0
+version: 2.3.0
 name: Assumptions Review
 description: Review each open assumption with the user.
 required: true
@@ -75,6 +75,10 @@ steps:
       type: and
       conditions:
         - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
+        - type: simple
           variable: is_review_mode
           operator: "!="
           value: true
@@ -95,6 +99,10 @@ steps:
     condition:
       type: and
       conditions:
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
         - type: simple
           variable: is_review_mode
           operator: "!="
@@ -126,6 +134,10 @@ steps:
     condition:
       type: and
       conditions:
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
         - type: simple
           variable: is_review_mode
           operator: "!="

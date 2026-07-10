@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
 
-Manage git operations — branching, worktree lifecycle, PR lifecycle, branch synchronization, and reference-repo submodule maintenance.
+Manage git operations — branching, worktree lifecycle, PR lifecycle, branch synchronization, reference-repo submodule maintenance, and pre-push verification of the configured push remote (privacy and signature checks for stealth-mode consumers).
 
 ## Inputs
 

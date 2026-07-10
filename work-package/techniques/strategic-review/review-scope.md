@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Examine all changes on the feature branch and assess them for scope discipline, orphaned symbols, investigation artifacts, over-engineering, solution minimality, and PR-body conformance — the combined diff-review and artifact-identification pass that surfaces every finding for the review document.
+Examine all changes on the feature branch and assess them for scope discipline, orphaned symbols, investigation artifacts, over-engineering, solution minimality, commit-signature hygiene, and PR-body conformance — the combined diff-review and artifact-identification pass that surfaces every finding for the review document.
 
 ## Inputs
 
@@ -23,7 +23,7 @@ List of files changed in the work package, passed to the orphan scan.
 
 ### pr_number
 
-PR identifier, used to read the live PR body for conformance verification.
+*(optional)* PR identifier, used to discover the base branch and read the live PR body for conformance verification. Absent when no PR exists (stealth mode) — base discovery and body conformance then follow their no-PR paths.
 
 ## Outputs
 
@@ -31,13 +31,21 @@ PR identifier, used to read the live PR body for conformance verification.
 
 The strategic review document this pass populates with categorized findings — scope creep, orphaned symbols, investigation artifacts, over-engineering, and PR-body conformance entries. Same artifact the group root declares; this op writes the findings into it.
 
+### unsigned_commits_in_pr
+
+Boolean — `true` when any commit in the `{$base_branch}..HEAD` range carries no valid GPG signature (`%G?` reports `N` or `B`).
+
+### unsigned_commit_list_summary
+
+Short human-readable summary of the unsigned commits (hash + subject, one per line); empty when all commits are signed.
+
 ## Protocol
 
 ### 1. Load Guidance
 
 - Use attached [architecture-review](../../resources/architecture-review.md) for architecture guidance; the rules below govern the review findings
-- Identify the base branch (`{$base_branch}`) as the PR's target branch: `gh pr view {pr_number} --json baseRefName --jq .baseRefName`
-- Examine the authored surface `{changed_files}` on the feature branch `{branch_name}` using three-dot diffs against the base branch (`{$base_branch}`, the PR's target branch):
+- Identify the base branch (`{$base_branch}`): the PR's target branch via `gh pr view {pr_number} --json baseRefName --jq .baseRefName` when `{pr_number}` is set; otherwise (no PR — stealth mode) the default branch of the configured push remote.
+- Examine the authored surface `{changed_files}` on the feature branch `{branch_name}` using three-dot diffs against the base branch (`{$base_branch}`):
   - Consume the canonical `{changed_files}` when it is established (review mode, produced by `review-baseline-state`); otherwise (create mode, no PR baseline) derive it from the local working-tree diff against `{$base_branch}`.
 
   ```bash
@@ -70,8 +78,14 @@ The strategic review document this pass populates with categorized findings — 
 
 - Answer the five [minimality-check](#minimality-check) questions; record each question answered "No" as a finding for the `{strategic_review_doc}`, with the action from the "If No" column as the cleanup it warrants
 
-### 7. Verify Pr Body Conformance
+### 7. Scan Commit Signatures
 
+- Scan the branch range for signature status: `git log --format='%h %G? %s' {$base_branch}..HEAD`.
+- Set `{unsigned_commits_in_pr}` `true` and build `{unsigned_commit_list_summary}` from the commits reporting `N` or `B`; otherwise set it `false` with an empty summary.
+
+### 8. Verify Pr Body Conformance
+
+- Skip this phase when `{pr_number}` is unset (no PR exists — stealth mode).
 - Read the live PR body via `gh pr view {pr_number} --json body --jq .body`.
 - Run [update-pr](../update-pr/TECHNIQUE.md)::[verify-body](../update-pr/verify-body.md) against the live body.
 - If `body_conforms == false`, record each `body_findings` entry in the `{strategic_review_doc}` under 'PR body conformance'.

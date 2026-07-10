@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Before pushing, check every commit on the security feature branch for a valid GPG signature and re-sign any that lack one.
+Before pushing, check every commit on the feature branch for a valid GPG signature and re-sign any that lack one.
 
 ## Outputs
 
