@@ -5,16 +5,17 @@
   "workflowVersion": "5.3.0",
   "agentId": "orchestrator",
   "sessionIndex": "G55ZNO",
-  "currentActivity": "dispatch-client-workflow",
+  "currentActivity": "end-workflow",
   "currentTechnique": "version-control::initialize-folder",
-  "condition": "isDefault",
-  "seq": 11,
-  "ts": 1783680508,
+  "condition": "current_activity == null (client workflow_complete)",
+  "seq": 13,
+  "ts": 1783688139,
   "startedAt": "2026-07-10T10:46:38.416Z",
   "completedActivities": [
     "discover-session",
     "initialize-session",
-    "resolve-target"
+    "resolve-target",
+    "dispatch-client-workflow"
   ],
   "skippedActivities": [],
   "variables": {
@@ -172,6 +173,36 @@
       "activity": "dispatch-client-workflow",
       "timestamp": "2026-07-10T10:48:20.662Z",
       "type": "activity_entered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-07-10T12:55:33.685Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-07-10T12:55:33.685Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "verify-outcomes",
+        "techniqueId": "workflow-engine::verify-outcomes"
+      },
+      "timestamp": "2026-07-10T12:55:39.562Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "generate-summary",
+        "techniqueId": "workflow-engine::generate-summary"
+      },
+      "timestamp": "2026-07-10T12:55:39.562Z",
+      "type": "technique_bundled"
     }
   ],
   "triggeredWorkflows": [
@@ -209,6 +240,13 @@
             },
             "optionId": "confirm-review-target",
             "respondedAt": "2026-07-10T10:50:08.000Z"
+          },
+          "post-update-review-post-update-disposition": {
+            "effects": {
+              "transitionedTo": "retrospective"
+            },
+            "optionId": "accept",
+            "respondedAt": "2026-07-10T12:53:47.000Z"
           },
           "quality-review-conformance-confirmed": {
             "optionId": "accept-as-is",
@@ -305,12 +343,14 @@
           "quality-review",
           "requirements-refinement",
           "impact-analysis",
-          "scope-and-draft"
+          "scope-and-draft",
+          "validate-and-commit",
+          "post-update-review"
         ],
-        "condition": "blocker-gate: no-blocker (isDefault)",
+        "condition": "checkpoint transitionTo override (post-update-disposition: accept)",
         "contextMode": "persistent",
-        "currentActivity": "validate-and-commit",
-        "currentTechnique": "work-package::manage-artifacts::create-readme",
+        "currentActivity": "retrospective",
+        "currentTechnique": "create-completion-doc",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:ff568fa749d961bb": "ff568fa749d961bb",
@@ -322,15 +362,21 @@
             "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
             "bundle:workflow-engine::yield-checkpoint": "8761bc9b631c2e5b",
             "technique:commit-verification": "0d9f5b08ed143c28",
+            "technique:conduct-retrospective": "b00d06a9fc30c22f",
             "technique:content-drafting": "bb12315131c47677",
             "technique:context-loading": "af856edc29024800",
+            "technique:create-completion-doc": "f7e293ebefe5e30d",
             "technique:elicitation": "6d1ab3c78e0f21cf",
             "technique:impact-analysis": "4cd3434c975b6c11",
             "technique:intake-classification": "4cd75d2d8c56ecc0",
+            "technique:persist-report": "085c12db39cf7f03",
             "technique:reconcile-design-assumptions": "f6befbf837235fd7",
             "technique:reload-workflow": "5da94d7ecc00cd37",
             "technique:review-draft-yaml": "a5f8f40c38c9642d",
+            "technique:run-audit-passes": "a8f78d91f36ef329",
+            "technique:scope-audit": "36dbd720c2831c6b",
             "technique:scope-definition": "86aabb5208900e19",
+            "technique:summarize-findings": "1b2fe3f3f31a1068",
             "technique:version-control::commit-regular-files": "306c955d0cecc822",
             "technique:work-package::manage-artifacts::create-readme": "2acc7b23fd083f1c",
             "technique:work-package::review-assumptions::collect": "83b7a109d3d388f4",
@@ -1084,16 +1130,121 @@
             },
             "timestamp": "2026-07-10T12:48:14.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-10T12:52:51.713Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "post-update-review",
+            "timestamp": "2026-07-10T12:52:51.713Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "reload-updated-workflow",
+              "techniqueId": "reload-workflow"
+            },
+            "timestamp": "2026-07-10T12:52:59.162Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "run-audit-passes",
+              "techniqueId": "run-audit-passes"
+            },
+            "timestamp": "2026-07-10T12:52:59.162Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "scope-audit",
+              "techniqueId": "scope-audit"
+            },
+            "timestamp": "2026-07-10T12:52:59.162Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "summarize-findings",
+              "techniqueId": "summarize-findings"
+            },
+            "timestamp": "2026-07-10T12:52:59.162Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "save-review-snapshot",
+              "techniqueId": "persist-report"
+            },
+            "timestamp": "2026-07-10T12:52:59.162Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "checkpoint": "post-update-disposition",
+            "timestamp": "2026-07-10T12:53:39.532Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "post-update-review",
+            "checkpoint": "post-update-disposition",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-07-10T12:53:47.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "post-update-review",
+            "timestamp": "2026-07-10T12:54:06.159Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "retrospective",
+            "timestamp": "2026-07-10T12:54:06.159Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "conduct-retrospective",
+              "techniqueId": "conduct-retrospective"
+            },
+            "timestamp": "2026-07-10T12:54:13.360Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-completion-doc",
+              "techniqueId": "create-completion-doc"
+            },
+            "timestamp": "2026-07-10T12:54:20.281Z",
+            "type": "technique_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 81,
+        "seq": 89,
         "sessionIndex": "IQIUUL",
         "skippedActivities": [],
         "startedAt": "2026-07-10T10:47:53.639Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1783687700,
+        "ts": 1783688060,
         "variables": {
           "all_files_validated": true,
           "approach_confirmed": true,
@@ -1139,10 +1290,12 @@
       "technique:version-control::initialize-folder": "7b61bc59f125f02a",
       "technique:workflow-engine::create-session": "a7484d2030f5e68a",
       "technique:workflow-engine::extract-identifying-context": "22bfbb043d766d8d",
+      "technique:workflow-engine::generate-summary": "74243a16c10c15cc",
       "technique:workflow-engine::list-workflows": "3d5bfe1e46b8691c",
       "technique:workflow-engine::match-saved-session": "307161227b03e3bf",
       "technique:workflow-engine::match-target-workflow": "4011f312ad057ed7",
-      "technique:workflow-engine::scan-saved-sessions": "3de0b43e6bbd5eb3"
+      "technique:workflow-engine::scan-saved-sessions": "3de0b43e6bbd5eb3",
+      "technique:workflow-engine::verify-outcomes": "2d0f303e0546f8c7"
     }
   }
 }

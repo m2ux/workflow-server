@@ -57,9 +57,9 @@ Full report: [08-compliance-review.md](08-compliance-review.md) — 14 findings.
 | 05 | Impact Analysis | Update | ✅ Complete ([05-impact-analysis.md](05-impact-analysis.md)) |
 | 06 | Scope and Draft | Update | ✅ Complete ([06-scope-and-draft.md](06-scope-and-draft.md), attested) |
 | 08 | Quality Review | All | ✅ Complete (review: [08-compliance-review.md](08-compliance-review.md); update audits: [08-quality-review.md](08-quality-review.md)) |
-| 09 | Validate and Commit | All | ◐ In Progress |
-| 10 | Post-Update Review | Update | ⬚ Pending |
-| 11 | Retrospective | All | ⬚ Pending |
+| 09 | Validate and Commit | All | ✅ Complete (PRs [#211](https://github.com/m2ux/workflow-server/pull/211) + [#212](https://github.com/m2ux/workflow-server/pull/212)) |
+| 10 | Post-Update Review | Update | ✅ Complete ([10-post-update-review.md](10-post-update-review.md), clean) |
+| 11 | Retrospective | All | ✅ Complete ([COMPLETE.md](COMPLETE.md)) |
 
 ---
 
@@ -73,4 +73,4 @@ Full report: [08-compliance-review.md](08-compliance-review.md) — 14 findings.
 
 ---
 
-**Status:** Awaiting pre-commit attestation
+**Status:** Complete — PRs open, awaiting merge (#211 first, then #212 + workflows pointer bump)
