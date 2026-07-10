@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Audit drafted content for convention conformance against reference workflows — file naming, field ordering, version format, transition patterns, checkpoint structure, technique structure — flagging each divergence and deciding whether it is justified or should be brought into conformance.
+Audit drafted content for convention conformance against reference workflows — file naming, field ordering, version format, transition patterns, checkpoint structure, technique structure, and documentation voice — flagging each divergence and deciding whether it is justified or should be brought into conformance.
 
 ## Protocol
 
@@ -14,6 +14,7 @@ Audit drafted content for convention conformance against reference workflows —
 - Compare against reference workflows for file naming (`NN-name.yaml`), field ordering, version format (`X.Y.Z`), transition patterns, checkpoint structure, and technique structure
 - Flag every divergence; for each, decide whether the divergence is justified or should be brought into conformance
 - Where drafted content uses different naming or structural patterns than existing workflows, identify the divergence against the reference workflows and align with the established conventions
+- Check documentation voice: every prose passage states what the system does, in positive declarative present tense — describing current behaviour and structure. Rewrite passages that state what the system avoids, or that compare the design to a prior or alternative one, as positive statements of current behaviour. Scan the drafted lines for these markers: `not`, `never`, `no longer`, `instead of`, `rather than`, `do not`, `— not X`. Planning artifacts under `artifacts/planning/` are exempt, since they record evolution by design.
 
 ### 2. Present Findings
 
