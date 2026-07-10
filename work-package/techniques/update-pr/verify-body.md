@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -26,5 +26,6 @@ List of `{ rule_id, detail }` entries, one per failed conformance rule, in rule-
 ## Protocol
 
 1. Render the Final-template body to `/tmp/pr-body.md`.
-2. Evaluate each rule in `pr-body-conformance` against the rendered text. For each failure append `{ rule_id, detail }` to `{body_findings}`.
-3. Set `{body_conforms}` = true when `{body_findings}` is empty after all rules are evaluated; false otherwise.
+2. Evaluate `all-mandated-sections-present` first: check that each mandated section heading for the selected template variant appears literally in the rendered text (e.g. `grep -F` each of `## Changes`, `## 🤖 AI Assistance`, `## 📌 Submission Checklist`, `## 🔱 Fork Strategy`, `## 🗹 TODO before merging`, plus the Issue/Engineering link row). Append a `{ rule_id: all-mandated-sections-present, detail }` finding naming every mandated section that is absent. Do not treat a matching `## Summary` as evidence the remaining sections exist.
+3. Evaluate each remaining rule in `pr-body-conformance` against the rendered text. For each failure append `{ rule_id, detail }` to `{body_findings}`.
+4. Set `{body_conforms}` = true when `{body_findings}` is empty after all rules are evaluated; false otherwise.
