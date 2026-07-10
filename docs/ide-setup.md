@@ -24,6 +24,14 @@ The rule wires natural-language requests ("start a work package", "resume the wo
 
 Because `discover` is the entry point, the procedure stays in sync with the server. You do not need to maintain a separate copy of the protocol in your IDE rules — the rule above only has to enforce "call `discover` first."
 
+## Delivery Context and Worker Parameters
+
+Two session-shaping choices affect how much content the server delivers and how it is sized. Both are decided by your execution topology.
+
+- **`context_mode` (on `start_session` / `dispatch_child`).** Declares the session's delivery context model. The default (omit, or `"fresh"`) delivers full content on every call and is correct whenever activities are dispatched to spawned workers — each worker is a fresh context that relies on the repeated delivery. Pass `context_mode: "persistent"` **only** when a single agent context executes the whole session itself (no worker spawning): already-delivered bundle and technique content then arrives as `{ delivery: "unchanged", content_hash }` references instead of being repeated, and `get_activity { bundle: "full" }` / `get_technique { full: true }` re-fetch anything that context no longer holds.
+- **`agent_id` (on `start_session` / `dispatch_child`).** Names the agent whose delivery ledger the server keys against. In a solo/persistent session use one canonical `agent_id` for the whole walk so reference delivery collapses correctly; resuming under a different `agent_id` starts that agent from an empty ledger (its first deliveries are full).
+- **`context_tokens` (REQUIRED on `get_activity`).** The worker declares its own context window in tokens on its activity-fetch entry call. The server derives an eager step-technique bundling budget from it (availability headroom × a token→char factor, both server config) and inlines the activity's ungated step-bound techniques that fit under that budget; the rest stay lazy via `get_technique`. It is per-agent and per-call — never stored on the session, never defaulted. **Omitting `context_tokens` on `get_activity` is a validation error.** `get_workflow` does no technique bundling and takes no `context_tokens`.
+
 ## Schema Awareness (Optional)
 
 The server also exposes the JSON Schemas for `workflow`, `activity`, `technique`, `condition`, and `state` via an MCP resource at `workflow-server://schemas`. Agents that want to author or validate workflow definitions locally can fetch this resource on startup. See [schemas/README.md](../schemas/README.md) for the schema reference.

@@ -82,7 +82,14 @@ describe('loadConfig — workspace argument', () => {
       expect(config.workflowDir).toMatch(/workflows$/);
       expect(config.schemasDir).toMatch(/schemas$/);
       expect(config.serverName).toBe('workflow-server');
-      expect(config.serverVersion).toBe('1.0.0');
+      // Breaking API change (#189 C1c: context_tokens REQUIRED on get_activity) → major bump.
+      expect(config.serverVersion).toBe('2.0.0');
+    });
+
+    it('derives the eager-bundling budget constants (env-overridable) with the policy defaults', () => {
+      const config = loadConfig(['--workspace=/tmp/ws']);
+      expect(config.bundleHeadroomFraction).toBe(0.8);
+      expect(config.bundleCharsPerToken).toBe(4);
     });
   });
 });

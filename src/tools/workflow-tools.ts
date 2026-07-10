@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
+import { DEFAULT_BUNDLE_HEADROOM_FRACTION, DEFAULT_BUNDLE_CHARS_PER_TOKEN } from '../config.js';
 import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, readActivityRaw, buildFragmentsLookup, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment, scanCheckpointRefLines } from '../loaders/fragment-resolver.js';
 import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
@@ -14,6 +15,7 @@ import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import {
   sessionIndexParam,
+  contextTokensParam,
   assertNoActiveCheckpoint,
   loadSessionForTool,
   advanceSession,
@@ -350,12 +352,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('get_activity', 'Load the complete activity definition for the current activity in the session. This is the worker\'s tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, rules, and technique references — everything needed to execute the activity. The activity is determined from the session state on disk, so no activity_id parameter is needed. When reference delivery is active (session context_mode "persistent" or bundle: "reference"), inherited techniques/rules content already delivered to this session+agent arrives as short { unchanged: true, content_hash } markers instead of being repeated; bundle: "full" forces full delivery. An activity that declares bundleTechniques additionally inlines its small, ungated step-bound techniques under a step_techniques map (keyed by step id, each entry identical to a get_technique { step_id } fetch — execute those steps without refetching); gated steps and techniques over the activity\'s maxChars ceiling stay lazy and still require get_technique. Bundled deliveries are recorded as technique_bundled history events and count as fetch coverage for next_activity\'s manifest fidelity check.',
+  server.tool('get_activity', 'Load the complete activity definition for the current activity in the session. This is the worker\'s tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, rules, and technique references — everything needed to execute the activity. The activity is determined from the session state on disk, so no activity_id parameter is needed. context_tokens is REQUIRED — the worker declares its own context window; the server derives an eager step-technique bundling budget from it (availability headroom × a token→char factor, both server config) and inlines the activity\'s ungated step-bound techniques that fit, in document order, under that budget. When reference delivery is active (session context_mode "persistent" or bundle: "reference"), inherited techniques/rules content already delivered to this session+agent arrives as short { delivery: "unchanged", content_hash } markers instead of being repeated; bundle: "full" forces full delivery. Eligible ungated step-bound techniques are inlined corpus-wide under a step_techniques map (keyed by step id, each entry a discrete ▼ STEP block identical to a get_technique { step_id } fetch — engage those steps in order without refetching); gated steps and any technique that would overflow the derived budget (or a per-activity bundleTechniques.maxChars size cap; maxChars 0 opts the activity out) stay lazy and still require get_technique. Bundled deliveries are recorded as technique_bundled history events and count as fetch coverage for next_activity\'s manifest fidelity check.',
     {
       ...sessionIndexParam,
-      bundle: z.enum(['reference', 'full']).optional().describe('Optional delivery-mode override for the inherited techniques/rules bundle. "reference" replaces bundle content already delivered to this session+agent with short { unchanged: true, content_hash } markers — only correct when THIS calling context received the earlier deliveries. "full" forces full delivery. Defaults from the session\'s context_mode ("persistent" → reference, otherwise full).'),
+      ...contextTokensParam,
+      bundle: z.enum(['reference', 'full']).optional().describe('Optional delivery-mode override for the inherited techniques/rules bundle. "reference" replaces bundle content already delivered to this session+agent with short { delivery: "unchanged", content_hash } markers — only correct when THIS calling context received the earlier deliveries. "full" forces full delivery. Defaults from the session\'s context_mode ("persistent" → reference, otherwise full).'),
     },
-    withAuditLog('get_activity', withSessionStoreErrors(async ({ session_index, bundle }) => {
+    withAuditLog('get_activity', withSessionStoreErrors(async ({ session_index, context_tokens, bundle }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
       const { state } = loaded;
       assertNoActiveCheckpoint(state);
@@ -433,20 +436,35 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      // Hybrid step-technique bundling (#166 B11): an activity that declares `bundleTechniques`
-      // opts into inline delivery of its small, ungated step-bound techniques. Each entry is the
-      // step's full get_technique composition (activity-group resolution, ancestor contract,
-      // provenance decoration), so bundled and lazy delivery are identical by construction. A
-      // step gated by `when`/`condition` (on itself or an enclosing loop) may never execute and
-      // stays lazy regardless of size; so does a technique whose composed wire form exceeds
-      // maxChars. Bundled entries share the `technique:<resolvedId>` delivery-ledger key with
-      // get_technique, so persistent-context refetches of bundled content collapse to
-      // unchanged-references in either direction.
+      // Automatic, per-agent context-derived step-technique bundling (#189 C1c): every activity
+      // eagerly inlines its small, ungated step-bound techniques — no per-activity opt-in. The
+      // eager-delivery budget is a CUMULATIVE per-activity character budget derived from the
+      // worker's declared `context_tokens` (availability headroom × a token→char factor, both
+      // server config): ungated technique steps are inlined in DOCUMENT ORDER until adding the
+      // next would overflow the budget; the remainder stay lazy via get_technique. A step gated
+      // by `when`/`condition` (on itself or an enclosing loop) may never execute and stays lazy
+      // regardless of size. A per-activity `bundleTechniques.maxChars` is retained as an explicit
+      // per-technique size cap layered on top (skip any single technique larger than it);
+      // `maxChars: 0` opts the activity out of eager bundling entirely. Each entry is the step's
+      // full get_technique composition (activity-group resolution, ancestor contract, provenance
+      // decoration) rendered as a discrete ▼ STEP block, so bundled and lazy delivery are
+      // identical by construction. Bundled entries share the `technique:<resolvedId>` delivery-
+      // ledger key with get_technique, so persistent-context refetches of bundled content collapse
+      // to unchanged-references in either direction.
       const bundledStepTechniques: Record<string, unknown> = {};
       const bundledSteps: Array<{ stepId: string; techniqueId: string }> = [];
       const bundlingWarnings: string[] = [];
       const bundleConfig = (activity as Activity | undefined)?.bundleTechniques;
-      if (bundleConfig && result.success && activity) {
+      // maxChars: 0 is the explicit opt-out sentinel; any other declared value is a per-technique
+      // size cap. Absent config means no per-technique cap (only the cumulative budget applies).
+      const optedOut = bundleConfig?.maxChars === 0;
+      const perTechniqueCap = bundleConfig && bundleConfig.maxChars > 0 ? bundleConfig.maxChars : Infinity;
+      // Cumulative eager-delivery budget in characters, derived from the caller's own window.
+      // Headroom fraction and chars-per-token are server config with in-code fallbacks.
+      const headroomFraction = config.bundleHeadroomFraction ?? DEFAULT_BUNDLE_HEADROOM_FRACTION;
+      const charsPerToken = config.bundleCharsPerToken ?? DEFAULT_BUNDLE_CHARS_PER_TOKEN;
+      const eagerBudgetChars = context_tokens * headroomFraction * charsPerToken;
+      if (!optedOut && result.success && activity) {
         const eligible: Array<Step & { kind: 'technique' }> = [];
         const collectUngated = (steps: Step[] | undefined): void => {
           for (const s of steps ?? []) {
@@ -457,6 +475,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         };
         collectUngated((activity as Activity).steps);
 
+        // Running total of full-content characters already committed to the eager bundle. An
+        // unchanged-reference marker costs effectively nothing, so it never draws down the budget;
+        // only full-content entries do.
+        let spentChars = 0;
         for (const step of eligible) {
           const ref = techniqueName(step.technique);
           if (!ref) continue;
@@ -479,15 +501,36 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             technique = decorated.technique;
             provenanceWarnings = decorated.warnings;
           }
+          // Budget accounting measures the TECHNIQUE BODY only (including its resources[] refs,
+          // but NOT the resolved content of those resources). Inlining bundles techniques, never
+          // their referenced resources: the worker still calls get_resource on demand for each
+          // ref, exactly as for a lazy get_technique fetch. Shared-resource inlining (dedup-aware)
+          // is deferred to the C2 block-level-delivery-ledger cluster; inlining resources here
+          // without that ledger would duplicate content shared across techniques.
           const text = projectTechniqueToYaml(technique);
-          if (text.length > bundleConfig.maxChars) continue;
+          // Per-technique size cap: an oversized single technique is skipped outright.
+          if (text.length > perTechniqueCap) continue;
           const ledgerKey = `technique:${techniqueId}`;
           const hash = contentHash(text);
-          if (referenceMode && (deliveredHash(state, ledgerKey) === hash || newDeliveries[ledgerKey] === hash)) {
-            bundledStepTechniques[step.id!] = unchangedMarker(hash);
+          const alreadyDelivered = referenceMode && (deliveredHash(state, ledgerKey) === hash || newDeliveries[ledgerKey] === hash);
+          // ▼ STEP arrival marker: each entry is a discrete, self-describing unit that substitutes
+          // for the intentional get_technique { step_id } call inlining removes (#189 C1c(C)1).
+          const stepMarker = `▼ STEP ${step.id!} · technique ${techniqueId}`;
+          if (alreadyDelivered) {
+            // A reference marker is near-zero cost — it does not draw down the eager budget.
+            bundledStepTechniques[step.id!] = { marker: stepMarker, ...unchangedMarker(hash) };
           } else {
+            // Full content draws down the cumulative budget. Inline ungated step techniques in
+            // document order and STOP at the first one that would overflow the remaining budget
+            // (stop-and-break) — the remainder stay lazy. This preserves the contiguous
+            // document-order prefix the spec and docs promise, rather than skipping a large
+            // technique to squeeze in a later smaller one.
+            if (spentChars + text.length > eagerBudgetChars) break;
+            spentChars += text.length;
             newDeliveries[ledgerKey] = hash;
-            bundledStepTechniques[step.id!] = projectTechnique(technique);
+            // The arrival marker leads the block; the composed technique fields follow at the same
+            // level, so a bundled entry reads exactly like a get_technique fetch with a step header.
+            bundledStepTechniques[step.id!] = { marker: stepMarker, ...projectTechnique(technique) };
           }
           bundledSteps.push({ stepId: step.id!, techniqueId });
           bundlingWarnings.push(...provenanceWarnings);
@@ -496,7 +539,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         if (bundledSteps.length > 0) {
           bundleData['step_techniques'] = bundledStepTechniques;
           bundleData['step_techniques_note'] =
-            'This activity opts into hybrid technique bundling: each step_techniques entry is the composed technique for that step id, identical to a get_technique { step_id } fetch — execute the step against it without refetching. Technique steps absent from the map (gated, or over the activity\'s size ceiling) still require get_technique { step_id } before execution.';
+            'Each step_techniques entry is a discrete ▼ STEP block whose composed technique is identical to a get_technique { step_id } fetch. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resources are NOT inlined: for any resources[] the inlined technique references, still call get_resource { resource_id } on demand, exactly as for a lazy fetch. Technique steps absent from the map (gated, or past the derived eager-delivery budget / a per-activity size cap) still require get_technique { step_id } before execution.';
         }
       }
 
@@ -508,7 +551,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const opsData = referenceMode
         ? {
             bundle_mode: 'reference',
-            bundle_note: 'Entries marked { unchanged: true } are byte-identical to content already delivered in this session for this agent — reuse them from your context. Re-fetch a step-bound technique with get_technique { step_id, full: true }; for inherited/core bundle entries and rules, call get_activity with bundle: "full" to re-deliver the whole bundle.',
+            bundle_note: 'Entries marked { delivery: "unchanged", content_hash } are byte-identical to content already delivered in this session for this agent — reuse them from your context. Re-fetch a step-bound technique with get_technique { step_id, full: true }; for inherited/core bundle entries and rules, call get_activity with bundle: "full" to re-deliver the whole bundle.',
             ...bundleData,
           }
         : bundleData;
@@ -577,7 +620,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${activityRulesBlock}${activityBodyWithArtifacts}` }],
         _meta: {
           session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules,
-          ...(bundleConfig ? { bundled_steps: bundledSteps.map(b => b.stepId) } : {}),
+          ...(bundledSteps.length > 0 ? { bundled_steps: bundledSteps.map(b => b.stepId) } : {}),
         },
       };
     }), traceOpts));

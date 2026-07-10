@@ -578,7 +578,6 @@ Activities are the execution units of a workflow. Each activity contains an orde
 | `triggers` | array | Workflows to trigger from this activity |
 | `outcome` | string[] | Expected outcomes on completion |
 | `rules` | array | Activity-level execution rules and constraints |
-| `artifacts` | array | Artifacts produced or updated by this activity |
 | `artifactPrefix` | string | Server-computed numeric prefix from activity filename (read-only) |
 
 ### Steps
@@ -1205,7 +1204,6 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 | `outcome` | string[] | Expected outcomes when activity completes |
 | `required` | boolean | Whether activity is required (default: true) |
 | `rules` | string[] | Activity-level execution rules and constraints |
-| `artifacts` | Artifact[] | Artifacts produced or updated by this activity |
 | `artifactPrefix` | string | Server-computed numeric prefix from activity filename (read-only) |
 
 ### Activity Flow
