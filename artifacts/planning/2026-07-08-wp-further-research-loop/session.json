@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "5.2.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "P3TFXM",
+  "currentActivity": "",
+  "currentTechnique": "",
+  "condition": "",
+  "seq": 2,
+  "ts": 1783503052,
+  "startedAt": "2026-07-08T09:30:09.844Z",
+  "completedActivities": [],
+  "skippedActivities": [],
+  "variables": {
+    "abort_completion": false,
+    "client_workflow_completed": false,
+    "has_saved_state": false,
+    "is_monorepo": false,
+    "is_resuming": false,
+    "target_path": ".",
+    "workflow_match_ambiguous": false
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-07-08T09:30:09.844Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "abort_completion": false,
+          "client_workflow_completed": false,
+          "has_saved_state": false,
+          "is_monorepo": false,
+          "is_resuming": false,
+          "target_path": ".",
+          "workflow_match_ambiguous": false
+        }
+      },
+      "timestamp": "2026-07-08T09:30:09.844Z",
+      "type": "variables_seeded"
+    },
+    {
+      "data": {
+        "sessionIndex": "DCHOX2",
+        "workflowId": "workflow-design"
+      },
+      "timestamp": "2026-07-08T09:30:52.556Z",
+      "type": "workflow_triggered"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "DCHOX2",
+      "state": {
+        "agentId": "worker",
+        "checkpointResponses": {},
+        "completedActivities": [],
+        "condition": "",
+        "currentActivity": "intake-and-context",
+        "currentTechnique": "",
+        "deliveredContent": {
+          "worker": {
+            "activity_rules:ff568fa749d961bb": "ff568fa749d961bb",
+            "bundle:rules:d206575b1808f8f7": "d206575b1808f8f7",
+            "bundle:variable-binding": "288fec20aaaeecf0",
+            "bundle:workflow-engine::finalize-activity": "36435fbb991b4805",
+            "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
+            "bundle:workflow-engine::yield-checkpoint": "8761bc9b631c2e5b"
+          }
+        },
+        "history": [
+          {
+            "timestamp": "2026-07-08T09:30:52.557Z",
+            "type": "workflow_started"
+          },
+          {
+            "data": {
+              "variables": {
+                "all_files_validated": false,
+                "approach_confirmed": false,
+                "format_literacy_confirmed": false,
+                "has_critical_finding": false,
+                "has_deferred_assumptions": false,
+                "has_design_context": false,
+                "has_open_assumptions": false,
+                "has_unflagged_removals": false,
+                "is_review_mode": false,
+                "is_update_mode": false,
+                "needs_audit_fixes": false,
+                "pr_number": "",
+                "pr_url": "",
+                "requirements_confirmed": false,
+                "review_findings_count": 0,
+                "review_scope_confirmed": false,
+                "schema_constructs_confirmed": false,
+                "scope_manifest_confirmed": false,
+                "user_wants_fixes": false,
+                "workflow_branch": ""
+              }
+            },
+            "timestamp": "2026-07-08T09:30:52.557Z",
+            "type": "variables_seeded"
+          },
+          {
+            "activity": "intake-and-context",
+            "timestamp": "2026-07-08T10:14:28.345Z",
+            "type": "activity_entered"
+          }
+        ],
+        "schemaVersion": 1,
+        "seq": 3,
+        "sessionIndex": "DCHOX2",
+        "skippedActivities": [],
+        "startedAt": "2026-07-08T09:30:52.557Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1783505673,
+        "variables": {
+          "all_files_validated": false,
+          "approach_confirmed": false,
+          "format_literacy_confirmed": false,
+          "has_critical_finding": false,
+          "has_deferred_assumptions": false,
+          "has_design_context": false,
+          "has_open_assumptions": false,
+          "has_unflagged_removals": false,
+          "is_review_mode": false,
+          "is_update_mode": false,
+          "needs_audit_fixes": false,
+          "pr_number": "",
+          "pr_url": "",
+          "requirements_confirmed": false,
+          "review_findings_count": 0,
+          "review_scope_confirmed": false,
+          "schema_constructs_confirmed": false,
+          "scope_manifest_confirmed": false,
+          "user_wants_fixes": false,
+          "workflow_branch": ""
+        },
+        "workflowId": "workflow-design",
+        "workflowVersion": "1.5.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-07-08T09:30:52.556Z",
+      "triggeredFrom": {
+        "activityId": ""
+      },
+      "workflowId": "workflow-design"
+    }
+  ]
+}

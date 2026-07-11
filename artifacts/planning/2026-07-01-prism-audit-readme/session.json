@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "5.1.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "HED7GX",
+  "currentActivity": "",
+  "currentTechnique": "",
+  "condition": "",
+  "seq": 3,
+  "ts": 1782901305,
+  "startedAt": "2026-07-01T09:50:48.588Z",
+  "completedActivities": [],
+  "skippedActivities": [],
+  "variables": {},
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-07-01T09:50:48.588Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "sessionIndex": "ANUXP5",
+        "workflowId": "workflow-design"
+      },
+      "timestamp": "2026-07-01T09:57:47.548Z",
+      "type": "workflow_triggered"
+    },
+    {
+      "data": {
+        "sessionIndex": "PUGJL2",
+        "workflowId": "workflow-design"
+      },
+      "timestamp": "2026-07-01T10:21:45.566Z",
+      "type": "workflow_triggered"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "ANUXP5",
+      "state": {
+        "agentId": "worker",
+        "checkpointResponses": {},
+        "completedActivities": [],
+        "condition": "",
+        "currentActivity": "intake-and-context",
+        "currentTechnique": "",
+        "history": [
+          {
+            "timestamp": "2026-07-01T09:57:47.549Z",
+            "type": "workflow_started"
+          },
+          {
+            "activity": "intake-and-context",
+            "timestamp": "2026-07-01T09:59:59.018Z",
+            "type": "activity_entered"
+          }
+        ],
+        "schemaVersion": 1,
+        "seq": 2,
+        "sessionIndex": "ANUXP5",
+        "skippedActivities": [],
+        "startedAt": "2026-07-01T09:57:47.549Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1782900003,
+        "variables": {},
+        "workflowId": "workflow-design",
+        "workflowVersion": "1.5.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-07-01T09:57:47.548Z",
+      "triggeredFrom": {
+        "activityId": ""
+      },
+      "workflowId": "workflow-design"
+    },
+    {
+      "sessionIndex": "PUGJL2",
+      "state": {
+        "agentId": "worker",
+        "checkpointResponses": {},
+        "completedActivities": [],
+        "condition": "",
+        "currentActivity": "",
+        "currentTechnique": "",
+        "history": [
+          {
+            "timestamp": "2026-07-01T10:21:45.566Z",
+            "type": "workflow_started"
+          }
+        ],
+        "schemaVersion": 1,
+        "seq": 0,
+        "sessionIndex": "PUGJL2",
+        "skippedActivities": [],
+        "startedAt": "2026-07-01T10:21:45.566Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1782901305,
+        "variables": {},
+        "workflowId": "workflow-design",
+        "workflowVersion": "1.5.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-07-01T10:21:45.566Z",
+      "triggeredFrom": {
+        "activityId": ""
+      },
+      "workflowId": "workflow-design"
+    }
+  ]
+}

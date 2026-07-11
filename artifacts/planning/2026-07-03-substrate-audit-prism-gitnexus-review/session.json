@@ -1,0 +1,383 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "5.2.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "MXB3LR",
+  "currentActivity": "initialize-session",
+  "currentTechnique": "",
+  "condition": "default",
+  "seq": 5,
+  "ts": 1783053454,
+  "startedAt": "2026-07-02T21:17:09.416Z",
+  "completedActivities": [
+    "discover-session"
+  ],
+  "skippedActivities": [],
+  "variables": {},
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-07-02T21:17:09.416Z",
+      "type": "workflow_started"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-07-02T21:17:47.593Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-07-03T04:37:31.100Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-07-03T04:37:31.100Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "sessionIndex": "TABRII",
+        "workflowId": "workflow-design"
+      },
+      "timestamp": "2026-07-03T04:37:34.404Z",
+      "type": "workflow_triggered"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "TABRII",
+      "state": {
+        "agentId": "worker",
+        "checkpointResponses": {
+          "intake-and-context-review-scope-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "review_scope_confirmed": true
+              }
+            },
+            "optionId": "confirm-review-target",
+            "respondedAt": "2026-07-03T04:42:54.000Z"
+          },
+          "post-update-review-post-update-disposition": {
+            "effects": {
+              "transitionedTo": "retrospective"
+            },
+            "optionId": "accept",
+            "respondedAt": "2026-07-03T07:27:46.000Z"
+          },
+          "quality-review-review-disposition": {
+            "effects": {
+              "transitionedTo": "intake-and-context",
+              "variablesSet": {
+                "is_review_mode": false,
+                "is_update_mode": true,
+                "user_wants_fixes": true
+              }
+            },
+            "optionId": "fix-issues",
+            "respondedAt": "2026-07-03T06:46:35.000Z"
+          },
+          "scope-and-draft-scope-and-structure-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "approach_confirmed": true,
+                "scope_manifest_confirmed": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-07-03T06:55:43.000Z"
+          },
+          "validate-and-commit-pre-commit-attestation": {
+            "effects": {
+              "variablesSet": {
+                "all_files_validated": true
+              }
+            },
+            "optionId": "approved",
+            "respondedAt": "2026-07-03T07:14:32.000Z"
+          }
+        },
+        "completedActivities": [
+          "intake-and-context",
+          "quality-review",
+          "requirements-refinement",
+          "impact-analysis",
+          "scope-and-draft",
+          "validate-and-commit",
+          "post-update-review"
+        ],
+        "condition": "post-update-disposition: accept (transitionTo retrospective)",
+        "currentActivity": "retrospective",
+        "currentTechnique": "reload-workflow",
+        "history": [
+          {
+            "timestamp": "2026-07-03T04:37:34.406Z",
+            "type": "workflow_started"
+          },
+          {
+            "activity": "intake-and-context",
+            "timestamp": "2026-07-03T04:38:41.070Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "review-scope-confirmed",
+            "timestamp": "2026-07-03T04:42:42.935Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "review-scope-confirmed",
+            "data": {
+              "optionId": "confirm-review-target"
+            },
+            "timestamp": "2026-07-03T04:42:54.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "review_scope_confirmed",
+              "value": true
+            },
+            "timestamp": "2026-07-03T04:42:54.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "timestamp": "2026-07-03T04:43:55.478Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-07-03T04:43:55.478Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "quality-review",
+            "checkpoint": "review-disposition",
+            "timestamp": "2026-07-03T04:53:41.048Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "quality-review",
+            "checkpoint": "review-disposition",
+            "data": {
+              "optionId": "fix-issues"
+            },
+            "timestamp": "2026-07-03T06:46:35.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "user_wants_fixes",
+              "value": true
+            },
+            "timestamp": "2026-07-03T06:46:35.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "is_update_mode",
+              "value": true
+            },
+            "timestamp": "2026-07-03T06:46:35.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "is_review_mode",
+              "value": false
+            },
+            "timestamp": "2026-07-03T06:46:35.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-07-03T06:47:09.329Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "intake-and-context",
+            "timestamp": "2026-07-03T06:47:09.329Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "intake-and-context",
+            "timestamp": "2026-07-03T06:48:29.602Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "requirements-refinement",
+            "timestamp": "2026-07-03T06:48:29.602Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "requirements-refinement",
+            "timestamp": "2026-07-03T06:50:11.630Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "impact-analysis",
+            "timestamp": "2026-07-03T06:50:11.630Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "impact-analysis",
+            "timestamp": "2026-07-03T06:51:49.180Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-07-03T06:51:49.180Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-and-structure-confirmed",
+            "timestamp": "2026-07-03T06:53:53.895Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-and-structure-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-03T06:55:43.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "value": true
+            },
+            "timestamp": "2026-07-03T06:55:43.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "approach_confirmed",
+              "value": true
+            },
+            "timestamp": "2026-07-03T06:55:43.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-07-03T07:07:56.620Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-07-03T07:07:56.620Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-07-03T07:09:40.425Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-03T07:09:40.425Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "pre-commit-attestation",
+            "timestamp": "2026-07-03T07:12:09.498Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "pre-commit-attestation",
+            "data": {
+              "optionId": "approved"
+            },
+            "timestamp": "2026-07-03T07:14:32.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "all_files_validated",
+              "value": true
+            },
+            "timestamp": "2026-07-03T07:14:32.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-03T07:16:57.345Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "post-update-review",
+            "timestamp": "2026-07-03T07:16:57.345Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "post-update-review",
+            "checkpoint": "post-update-disposition",
+            "timestamp": "2026-07-03T07:27:24.780Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "post-update-review",
+            "checkpoint": "post-update-disposition",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-07-03T07:27:46.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "post-update-review",
+            "timestamp": "2026-07-03T07:32:17.931Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "retrospective",
+            "timestamp": "2026-07-03T07:32:17.931Z",
+            "type": "activity_entered"
+          }
+        ],
+        "schemaVersion": 1,
+        "seq": 45,
+        "sessionIndex": "TABRII",
+        "skippedActivities": [],
+        "startedAt": "2026-07-03T04:37:34.406Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1783063941,
+        "variables": {
+          "all_files_validated": true,
+          "approach_confirmed": true,
+          "is_review_mode": false,
+          "is_update_mode": true,
+          "review_scope_confirmed": true,
+          "scope_manifest_confirmed": true,
+          "user_wants_fixes": true
+        },
+        "workflowId": "workflow-design",
+        "workflowVersion": "1.5.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-07-03T04:37:34.404Z",
+      "triggeredFrom": {
+        "activityId": "initialize-session"
+      },
+      "workflowId": "workflow-design"
+    }
+  ]
+}

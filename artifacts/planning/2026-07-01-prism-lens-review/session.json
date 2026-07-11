@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "workflow-design",
+  "workflowVersion": "1.5.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "OYGFOT",
+  "planningFolderPath": "/home/mike1/projects/main/workflow-server/.engineering/artifacts/planning/2026-07-01-prism-lens-review",
+  "currentActivity": "quality-review",
+  "currentTechnique": "compile-report",
+  "condition": "review_scope_confirmed == true (review mode)",
+  "seq": 22,
+  "ts": 1782909971,
+  "startedAt": "2026-07-01T12:27:58.731Z",
+  "completedActivities": [
+    "intake-and-context"
+  ],
+  "skippedActivities": [],
+  "variables": {
+    "is_review_mode": false,
+    "is_update_mode": true,
+    "review_scope_confirmed": true,
+    "user_wants_fixes": true
+  },
+  "checkpointResponses": {
+    "intake-and-context-review-scope-confirmed": {
+      "effects": {
+        "variablesSet": {
+          "review_scope_confirmed": true
+        }
+      },
+      "optionId": "confirm-review-target",
+      "respondedAt": "2026-07-01T12:33:02.000Z"
+    },
+    "quality-review-review-disposition": {
+      "effects": {
+        "transitionedTo": "intake-and-context",
+        "variablesSet": {
+          "is_review_mode": false,
+          "is_update_mode": true,
+          "user_wants_fixes": true
+        }
+      },
+      "optionId": "selective-fixes",
+      "respondedAt": "2026-07-01T12:46:11.000Z"
+    }
+  },
+  "history": [
+    {
+      "timestamp": "2026-07-01T12:27:58.731Z",
+      "type": "workflow_started"
+    },
+    {
+      "activity": "intake-and-context",
+      "timestamp": "2026-07-01T12:29:42.761Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "intake-and-context",
+      "checkpoint": "review-scope-confirmed",
+      "timestamp": "2026-07-01T12:32:29.026Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "intake-and-context",
+      "checkpoint": "review-scope-confirmed",
+      "data": {
+        "optionId": "confirm-review-target"
+      },
+      "timestamp": "2026-07-01T12:33:02.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "intake-and-context",
+      "data": {
+        "name": "review_scope_confirmed",
+        "value": true
+      },
+      "timestamp": "2026-07-01T12:33:02.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "intake-and-context",
+      "timestamp": "2026-07-01T12:34:33.789Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "quality-review",
+      "timestamp": "2026-07-01T12:34:33.789Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "quality-review",
+      "checkpoint": "review-disposition",
+      "timestamp": "2026-07-01T12:39:05.712Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "quality-review",
+      "checkpoint": "review-disposition",
+      "data": {
+        "optionId": "selective-fixes"
+      },
+      "timestamp": "2026-07-01T12:46:11.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "quality-review",
+      "data": {
+        "name": "user_wants_fixes",
+        "value": true
+      },
+      "timestamp": "2026-07-01T12:46:11.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "quality-review",
+      "data": {
+        "name": "is_update_mode",
+        "value": true
+      },
+      "timestamp": "2026-07-01T12:46:11.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "quality-review",
+      "data": {
+        "name": "is_review_mode",
+        "value": false
+      },
+      "timestamp": "2026-07-01T12:46:11.000Z",
+      "type": "variable_set"
+    }
+  ],
+  "triggeredWorkflows": []
+}

@@ -278,10 +278,11 @@
         },
         "completedActivities": [
           "intake-and-context",
-          "quality-review"
+          "quality-review",
+          "requirements-refinement"
         ],
-        "condition": "default (format_literacy_confirmed AND schema_constructs_confirmed)",
-        "currentActivity": "requirements-refinement",
+        "condition": "is_update_mode == true",
+        "currentActivity": "impact-analysis",
         "currentTechnique": "work-package::manage-artifacts::create-readme",
         "deliveredContent": {
           "orchestrator": {
@@ -300,6 +301,7 @@
             "technique:compile-report": "cf840702f11de2ac",
             "technique:context-loading": "58a8788275e783f0",
             "technique:elicitation": "258245d9a6d61cb4",
+            "technique:impact-analysis": "7cfa0a47bd7f1e92",
             "technique:intake-classification": "e77def43c9e04bd6",
             "technique:reconcile-design-assumptions": "67bd1a7254b2c405",
             "technique:reload-workflow": "c621bb5f3074d295",
@@ -798,16 +800,36 @@
             },
             "timestamp": "2026-07-11T21:52:16.353Z",
             "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "requirements-refinement",
+            "timestamp": "2026-07-11T21:54:03.519Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "impact-analysis",
+            "timestamp": "2026-07-11T21:54:03.519Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "impact-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "impact-analysis",
+              "techniqueId": "impact-analysis"
+            },
+            "timestamp": "2026-07-11T21:54:36.859Z",
+            "type": "technique_bundled"
           }
         ],
         "schemaVersion": 1,
-        "seq": 47,
+        "seq": 49,
         "sessionIndex": "RPKOLJ",
         "skippedActivities": [],
         "startedAt": "2026-07-10T13:51:19.883Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1783806736,
+        "ts": 1783806876,
         "variables": {
           "all_files_validated": false,
           "approach_confirmed": false,
