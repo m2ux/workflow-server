@@ -126,13 +126,16 @@
   <h2 id="honesty">How the project keeps itself honest</h2>
 
   <h3 id="detection">Detection over prevention</h3>
-  <p>Of the seven <a href="../specs/workflow-fidelity.html">fidelity layers</a>, only the cheap-and-certain ones block: seal verification and the checkpoint gate. Everything that requires interpretation — manifest completeness, version drift, fetch coverage — warns instead. The stance is deliberate humility about what a server can know: it cannot verify that work was done well, only that the observable record is consistent. Hard-blocking on heuristics would teach agents to game the heuristic; surfacing warnings in <code>_meta</code> and the trace gives the orchestrator and the human the evidence and leaves judgment where it belongs. The fidelity page's "honest limitations" section is part of the design, not an apology.</p>
+  <p class="takeaway">Only cheap-and-certain checks block; interpretive ones warn.</p>
+  <p class="prose">Of the seven <a href="../specs/workflow-fidelity.html">fidelity layers</a>, seal verification and the checkpoint gate hard-block. Manifest completeness, version drift, and fetch coverage surface warnings in <code>_meta</code> and the trace instead. See <a href="../specs/workflow-fidelity.html">workflow fidelity</a> for what each layer does and its honest limitations.</p>
 
   <h3 id="guards">Guards, anti-patterns, baselines</h3>
-  <p>Recurring authoring mistakes get codified three ways: a named anti-pattern in the engineering catalogue, a mechanical guard that detects it, and a baseline that ratchets existing violations toward zero (<a href="../internals/quality-system.html">the quality system</a>). The insight is that in a system whose "code" is largely YAML and markdown, convention enforcement cannot live in reviewer vigilance — reviewers tire, agents don't reread style guides, but a failing check is unarguable. The same move recurs at every level of the project: turn a lesson into a machine that remembers it.</p>
+  <p class="takeaway">Turn recurring authoring mistakes into mechanical checks.</p>
+  <p class="prose">Named anti-patterns, guards, and baselines ratchet violations toward zero — see <a href="../internals/quality-system.html">the quality system</a>. In a YAML-and-markdown codebase, convention enforcement cannot live in reviewer vigilance alone.</p>
 
   <h3 id="docs-site">A hand-authored documentation site</h3>
-  <p>This site replaced a static-site-generator pipeline with plain HTML, one stylesheet, and inline SVG. For a documentation set this size, the toolchain cost more than it gave: themes fought the content, and nothing guaranteed the rendered site matched the source of truth. The current arrangement inverts that — markdown in the repository stays canonical, pages that mirror the code are <a href="../internals/quality-system.html#pipelines">generated and drift-tested</a>, and link and diagram integrity are enforced by the same guard suite as everything else. The docs are treated like the workflows: content with executable invariants.</p>
+  <p class="takeaway">Plain HTML with generated pages where the code is the source of truth.</p>
+  <p class="prose">This site replaced a static-site-generator pipeline with hand-authored pages, one stylesheet, and inline SVG. API and schema pages are <a href="../internals/quality-system.html#pipelines">generated and drift-tested</a>; link and diagram integrity ride the same guard suite as everything else.</p>
 
   <h2 id="next">Next</h2>
   <p>See these decisions as running code in the <a href="../internals/server-anatomy.html">internals section</a>, or as guarantees in the <a href="../specs/architecture.html">architecture models</a>.</p>

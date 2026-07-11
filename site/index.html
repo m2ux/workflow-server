@@ -131,32 +131,6 @@
     </figure>
   </section>
 
-  <section id="start-here" aria-labelledby="start-here-h">
-    <h2 id="start-here-h">Start here</h2>
-    <p class="prose">Pick the path that matches what you need. Every link below goes to a page on this site.</p>
-    <ul class="card-grid card-grid--personas">
-      <li class="card">
-        <p class="audience-badge">Use workflows</p>
-        <h3>Run work in your IDE</h3>
-        <p>Install the server, wire up your MCP client, and drive workflows in natural language.</p>
-        <span class="card-cta"><a href="guide/getting-started.html">Getting started</a> · <a href="guide/ide-setup.html">IDE setup</a> · <a href="guide/running-workflows.html">Running workflows</a></span>
-      </li>
-      <li class="card">
-        <p class="audience-badge">Understand the system</p>
-        <h3>Learn how it works</h3>
-        <p>Core concepts, architecture models, API reference, and design rationale.</p>
-        <span class="card-cta"><a href="guide/concepts.html">Concepts</a> · <a href="specs/workflows.html">Workflows</a> · <a href="specs/architecture.html">Architecture</a> · <a href="api/tools.html">Tools</a> · <a href="guide/rationale.html">Design rationale</a></span>
-      </li>
-      <li class="card">
-        <p class="audience-badge">Contribute</p>
-        <h3>Work on the server</h3>
-        <p>Module map, request lifecycle, session store, and the guard-and-test system.</p>
-        <span class="card-cta"><a href="internals/server-anatomy.html">Server anatomy</a> · <a href="internals/quality-system.html">Quality system</a> · <a href="https://github.com/m2ux/workflow-server/blob/main/docs/development.md">Development guide</a></span>
-      </li>
-    </ul>
-    <p class="prose note">Recommended guide order: <a href="guide/getting-started.html">Getting started</a> → <a href="guide/ide-setup.html">IDE setup</a> → <a href="guide/concepts.html">Concepts</a> → <a href="guide/running-workflows.html">Running workflows</a> → <a href="guide/rationale.html">Design rationale</a>. For workflow file structure, see <a href="specs/workflows.html">Architecture → Workflows</a>.</p>
-  </section>
-
   <section id="how-it-works" aria-labelledby="how-it-works-h">
     <h2 id="how-it-works-h">How it works</h2>
 
@@ -170,108 +144,22 @@
     </ol>
 
     <details class="implementer-panel">
-      <summary>For agent implementers: the tool loop</summary>
-      <p class="prose">Under the hood, the agent follows a bootstrap procedure returned by <code>discover</code>. You do not call these tools yourself; the IDE rule routes workflow requests here.</p>
-      <ol class="steps">
-        <li><strong>Discover.</strong> <code>discover</code> returns available workflows and the bootstrap sequence.</li>
-        <li><strong>Start a session.</strong> <code>start_session</code> and <code>get_workflow</code> open a run and load the workflow structure.</li>
-        <li><strong>Navigate.</strong> <code>next_activity</code> and <code>get_activity</code> advance through phases. <code>get_resource</code> loads reference material on demand.</li>
-        <li><strong>Execute.</strong> The agent works each activity, yielding at checkpoints until the workflow completes.</li>
-      </ol>
-      <p class="prose">Full signatures: <a href="api/tools.html">MCP tool reference</a>. Call ordering and errors: <a href="api/protocol.html">Protocol guide</a>.</p>
+      <summary>For agent implementers</summary>
+      <p class="prose">The agent follows a bootstrap procedure returned by <code>discover</code> — you do not call MCP tools yourself; the IDE rule routes workflow requests here.</p>
+      <p class="prose"><a href="api/tools.html">Tool reference</a> (16 tools, generated from source). <a href="api/protocol.html">Protocol guide</a> for call order, checkpoints, errors, and reference delivery. <a href="specs/workflows.html#runtime">Workflows</a> for orchestrator vs worker roles.</p>
     </details>
-
-    <figure class="diagram">
-      <svg viewBox="0 0 960 215" role="img" aria-labelledby="session-title session-desc">
-        <title id="session-title">A workflow session</title>
-        <desc id="session-desc">Six stages connected by arrows: discover, then start_session, then get_workflow, then next_activity, then get_activity, then work the activity. An arrow loops from work-the-activity back to next_activity, repeating until the final activity completes.</desc>
-        <defs>
-          <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
-          </marker>
-        </defs>
-        <g font-size="14.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" text-anchor="middle">
-          <rect x="10"  y="50" width="140" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-          <text x="80"  y="81" fill="var(--diagram-label)">discover</text>
-          <rect x="170" y="50" width="140" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-          <text x="240" y="81" fill="var(--diagram-label)">start_session</text>
-          <rect x="330" y="50" width="140" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-          <text x="400" y="81" fill="var(--diagram-label)">get_workflow</text>
-          <rect x="490" y="50" width="140" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-          <text x="560" y="81" fill="var(--diagram-label)">next_activity</text>
-          <rect x="650" y="50" width="140" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-          <text x="720" y="81" fill="var(--diagram-label)">get_activity</text>
-          <rect x="810" y="50" width="140" height="52" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
-          <text x="880" y="75" fill="var(--diagram-label)" font-family="inherit" font-size="15">work the</text>
-          <text x="880" y="93" fill="var(--diagram-label)" font-family="inherit" font-size="15">activity</text>
-        </g>
-        <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
-          <line x1="150" y1="76" x2="166" y2="76" marker-end="url(#arrow2)"/>
-          <line x1="310" y1="76" x2="326" y2="76" marker-end="url(#arrow2)"/>
-          <line x1="470" y1="76" x2="486" y2="76" marker-end="url(#arrow2)"/>
-          <line x1="630" y1="76" x2="646" y2="76" marker-end="url(#arrow2)"/>
-          <line x1="790" y1="76" x2="806" y2="76" marker-end="url(#arrow2)"/>
-          <path d="M 880 102 L 880 140 L 560 140 L 560 106" marker-end="url(#arrow2)"/>
-        </g>
-        <text x="720" y="165" font-size="13" text-anchor="middle" fill="var(--diagram-note)">repeat for each activity until the workflow completes</text>
-      </svg>
-      <figcaption>A workflow session. After <code>discover</code>, <code>start_session</code>, and <code>get_workflow</code>, the agent loops through <code>next_activity</code> → <code>get_activity</code> → doing the work, one activity at a time, until the workflow completes.</figcaption>
-    </figure>
-  </section>
-
-  <section id="documentation" aria-labelledby="documentation-h">
-    <h2 id="documentation-h">All documentation</h2>
-    <p class="prose">This site is the browsable, illustrated view. Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is what you edit when you change the docs.</p>
-    <ul class="card-grid">
-      <li class="card">
-        <h3>User guide</h3>
-        <p>Install, configure, and run workflows.</p>
-        <span class="card-cta"><a href="guide/getting-started.html">Getting started</a> · <a href="guide/ide-setup.html">IDE setup</a> · <a href="guide/concepts.html">Concepts</a> · <a href="guide/running-workflows.html">Running workflows</a> · <a href="guide/rationale.html">Design rationale</a></span>
-      </li>
-      <li class="card">
-        <h3>Architecture</h3>
-        <p>Six models that describe how the server enforces workflows.</p>
-        <span class="card-cta"><a href="specs/architecture.html">Overview</a> · <a href="specs/dispatch.html">Dispatch</a> · <a href="specs/checkpoints.html">Checkpoints</a> · <a href="specs/state-management.html">State</a> · <a href="specs/artifact-management.html">Artifacts</a> · <a href="specs/resource-resolution.html">Resolution</a> · <a href="specs/workflow-fidelity.html">Fidelity</a></span>
-      </li>
-      <li class="card">
-        <h3>API</h3>
-        <p>Tool signatures, JSON schemas, and protocol guidance.</p>
-        <span class="card-cta"><a href="api/tools.html">Tools</a> · <a href="api/schemas.html">Schemas</a> · <a href="api/protocol.html">Protocol guide</a></span>
-      </li>
-      <li class="card">
-        <h3>Server internals</h3>
-        <p>Implementation view for contributors.</p>
-        <span class="card-cta"><a href="internals/server-anatomy.html">Server anatomy</a> · <a href="internals/request-lifecycle.html">Request lifecycle</a> · <a href="internals/session-store.html">Session store</a> · <a href="internals/quality-system.html">Quality system</a></span>
-      </li>
-    </ul>
-
-    <h3>MCP tools at a glance</h3>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th scope="col">Concern</th><th scope="col">Tools</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Bootstrap (no session token)</td><td><code>discover</code>, <code>list_workflows</code>, <code>health_check</code></td></tr>
-          <tr><td>Session</td><td><code>start_session</code>, <code>get_workflow_status</code>, <code>dispatch_child</code></td></tr>
-          <tr><td>Workflow / activity navigation</td><td><code>get_workflow</code>, <code>next_activity</code>, <code>get_activity</code></td></tr>
-          <tr><td>Checkpoint flow</td><td><code>yield_checkpoint</code>, <code>resume_checkpoint</code>, <code>present_checkpoint</code>, <code>respond_checkpoint</code></td></tr>
-          <tr><td>Techniques, resources</td><td><code>get_technique</code>, <code>get_resource</code></td></tr>
-          <tr><td>Trace</td><td><code>get_trace</code></td></tr>
-        </tbody>
-      </table>
-    </div>
   </section>
 
   <section id="docs-map" aria-labelledby="docs-map-h">
     <h2 id="docs-map-h">Where to start</h2>
-    <p class="prose">Match your question to a page. Site links are for reading; GitHub links are for editing source or docs with no HTML mirror.</p>
+    <p class="prose">Match your question to a page. This site is the browsable view; markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is what you edit when you change the docs.</p>
     <div class="table-wrap">
       <table>
         <thead>
           <tr><th scope="col">Your question</th><th scope="col">Read this</th></tr>
         </thead>
         <tbody>
+          <tr><td>I am new — where do I begin?</td><td><a href="guide/getting-started.html">Getting started</a> → <a href="guide/ide-setup.html">IDE setup</a> → <a href="guide/concepts.html">Concepts</a> → <a href="guide/running-workflows.html">Running workflows</a></td></tr>
           <tr><td>What is this project?</td><td><a href="guide/getting-started.html">Getting started</a> or <a href="https://github.com/m2ux/workflow-server/blob/main/README.md">README (source)</a></td></tr>
           <tr><td>How do I install and connect the server?</td><td><a href="guide/getting-started.html">Getting started</a> and <a href="https://github.com/m2ux/workflow-server/blob/main/SETUP.md">SETUP (source)</a></td></tr>
           <tr><td>How do I wire the IDE bootstrap rule?</td><td><a href="guide/ide-setup.html">IDE setup</a></td></tr>

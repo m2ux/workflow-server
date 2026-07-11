@@ -104,11 +104,8 @@ If the user provides a `session_token`, pass it to subsequent workflow-server ca
   <p>The server exposes its JSON Schemas via the MCP resource <code>workflow-server://schemas</code>. Agents that author or validate workflow definitions can fetch it on startup — the same schemas are browsable in the <a href="../api/schemas.html">schema reference</a>.</p>
 
   <h2 id="verify">Verifying the connection</h2>
-  <ol class="steps">
-    <li>Restart your MCP client after adding the rule.</li>
-    <li>Ask the agent to <em>list available workflows</em>. It should call <a href="../api/tools.html#list_workflows"><code>list_workflows</code></a> and return the inventory — no session needed.</li>
-    <li>Ask it to <em>start a work-package workflow</em>. It should call <code>discover</code> first, then proceed through <code>list_workflows</code>, <code>start_session</code>, and <code>get_workflow</code>.</li>
-  </ol>
+  <p class="prose">After restarting your MCP client, confirm the basic connection in <a href="./getting-started.html#verify">Getting started → Verify</a> (list workflows).</p>
+  <p>Then test the IDE rule — ask the agent to <em>start a work-package workflow</em>. It should call <code>discover</code> first, then proceed through <code>list_workflows</code>, <code>start_session</code>, and <code>get_workflow</code>.</p>
   <p>If the agent skips <code>discover</code>, the rule has not been picked up — re-check your IDE's rule configuration.</p>
 </main>
 
