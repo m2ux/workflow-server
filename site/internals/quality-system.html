@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Quality system — Workflow Server</title>
-<meta name="description" content="How the repository defends its invariants: the guard-script suite, baseline ratchets, the test architecture, and the generated-then-guarded documentation pipelines.">
+<meta name="description" content="How the repository defends its invariants: the guard-script suite, the test architecture, and the generated-then-guarded documentation pipelines.">
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -103,7 +103,7 @@
       <tbody>
         <tr><td><code>validate-workflow-yaml</code>, <code>validate-activities</code></td><td>Every workflow manifest and activity file parses and satisfies the schemas — a dry run of the server's own loaders.</td></tr>
         <tr><td><code>check-all-refs</code></td><td>Every technique reference resolves to a real technique; no misspellings, no dangling paths.</td></tr>
-        <tr><td><code>check-binding-fidelity</code></td><td>Step bindings are coherent end to end: arguments conform to declared inputs, reads resolve to a producer, outputs are consumed, and inputs have a source.</td></tr>
+        <tr><td><code>check-binding-fidelity</code></td><td>Step bindings are coherent end to end: arguments conform to declared inputs, reads resolve to a producer, outputs are consumed, and inputs have a source. Only <em>new</em> findings fail — known ones are listed in <a href="https://github.com/m2ux/workflow-server/blob/main/scripts/binding-fidelity-baseline.json"><code>binding-fidelity-baseline.json</code></a>.</td></tr>
         <tr><td><code>check-identifier-qualification</code></td><td>Technique input and output ids are qualified noun phrases (<code>completion_summary</code>, never a bare <code>summary</code>).</td></tr>
         <tr><td><code>check-technique-template</code></td><td>Technique markdown follows the normative structure of the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md">technique protocol</a>.</td></tr>
         <tr><td><code>check-resource-anchors</code></td><td>Every <code>#section</code> anchor a technique uses to reference a resource exists in that resource.</td></tr>
@@ -112,9 +112,6 @@
       </tbody>
     </table>
   </div>
-
-  <h2 id="baselines">Baselines: the ratchet</h2>
-  <p>Guards that arrived after the corpus grew would have failed on hundreds of pre-existing findings, so those guards carry a checked-in baseline (for example <a href="https://github.com/m2ux/workflow-server/blob/main/scripts/binding-fidelity-baseline.json"><code>binding-fidelity-baseline.json</code></a>): known findings are tolerated, <em>new</em> ones fail the check, and burning down the baseline is ordinary, visible work. A guard whose baseline is empty — identifier qualification is one — has been ratcheted all the way: the rule now holds everywhere. The pattern turns "we should clean this up eventually" into a number that can only go down.</p>
 
   <h2 id="tests">The test architecture</h2>
   <p>The Vitest suite (thirty-plus files) is organized around what could break:</p>
