@@ -13,25 +13,87 @@
 <header class="site-header">
   <div class="site-header__inner">
     <a class="site-title" href="../">Workflow Server</a>
-    <nav class="site-nav" aria-label="Site">
-      <ul>
+    <!-- BEGIN GENERATED NAV -->
+    <nav class="site-nav" aria-label="Documentation">
+      <ul class="site-nav__primary">
         <li><a href="../">Home</a></li>
-        <li><a href="./getting-started.html" aria-current="page">Getting started</a></li>
-        <li><a href="./concepts.html">Concepts</a></li>
-        <li><a href="./running-workflows.html">Running workflows</a></li>
-        <li><a href="./ide-setup.html">IDE setup</a></li>
+        <li>
+          <details class="site-nav__group" open>
+            <summary>Guide</summary>
+            <ul>
+              <li><a href="./getting-started.html" aria-current="page">Getting started</a></li>
+              <li><a href="./ide-setup.html">IDE setup</a></li>
+              <li><a href="./concepts.html">Concepts</a></li>
+              <li><a href="./running-workflows.html">Running workflows</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Architecture</summary>
+            <ul>
+              <li><a href="../specs/architecture.html">Overview</a></li>
+              <li><a href="../specs/dispatch.html">Dispatch</a></li>
+              <li><a href="../specs/checkpoints.html">Checkpoints</a></li>
+              <li><a href="../specs/state-management.html">State</a></li>
+              <li><a href="../specs/artifact-management.html">Artifacts</a></li>
+              <li><a href="../specs/resource-resolution.html">Resolution</a></li>
+              <li><a href="../specs/workflow-fidelity.html">Fidelity</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>API</summary>
+            <ul>
+              <li><a href="../api/tools.html">Tools</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
+              <li><a href="../api/protocol.html">Protocol guide</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Internals</summary>
+            <ul>
+              <li><a href="../internals/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="../internals/session-store.html">Session store</a></li>
+              <li><a href="../internals/quality-system.html">Quality system</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Design</summary>
+            <ul>
+              <li><a href="../design/rationale.html">Design rationale</a></li>
+            </ul>
+          </details>
+        </li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
+<!-- END GENERATED NAV -->
   </div>
 </header>
 
+
+<!-- BEGIN GENERATED BREADCRUMB -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li>Guide</li>
+      <li aria-current="page">Getting started</li>
+    </ol>
+  </nav>
+<!-- END GENERATED BREADCRUMB -->
+
 <main id="main">
   <h1>Getting started</h1>
-  <p class="lede">This page takes you from a fresh clone to a working setup: the server built, your MCP client talking to it, and the agent able to list workflows. You need <strong>Node.js 18+</strong> and an MCP client (Cursor, Claude Desktop, Claude Code, or any compatible client).</p>
+  <p class="lede prose">Install the server, connect your MCP client, and verify the agent can list workflows. You need <strong>Node.js 18+</strong> and an MCP client (Cursor, Claude Desktop, Claude Code, or similar).</p>
 
   <h2 id="pieces">The pieces</h2>
-  <p>Three things work together. Your MCP client runs the server as a local process and talks to it over the Model Context Protocol. The server reads workflow definitions from a data directory, and it reads and writes session state inside the project you are working on.</p>
+  <p class="prose">Three parts work together: your MCP client, the workflow-server process, and your project's planning workspace.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 250" role="img" aria-labelledby="topo-title topo-desc">
@@ -81,7 +143,16 @@ git worktree add ./workflows workflows
 
 # Build the server
 npm run build</code></pre>
-  <p>The workflow definitions live on a separate <code>workflows</code> branch of the same repository, checked out as a worktree — server code and workflow data evolve independently.</p>
+  <p class="prose">The workflow definitions live on a separate <code>workflows</code> branch, checked out as a <strong>worktree</strong> (a second folder from the same repo). Server code and workflow data can evolve independently.</p>
+
+  <aside class="note prose" id="layout">
+    <strong>Repository layout (quick primer).</strong>
+    <ul>
+      <li><strong>Product repo</strong> - server code, docs, and schemas (what you cloned).</li>
+      <li><strong><code>workflows/</code> worktree</strong> - workflow definitions the server reads (<code>WORKFLOW_DIR</code>).</li>
+      <li><strong><code>.engineering/</code> in your project</strong> - planning folders and <code>session.json</code> for active runs.</li>
+    </ul>
+  </aside>
 
   <h2 id="configure">2. Configure your MCP client</h2>
   <p>Register the server in your client's MCP configuration. For Cursor this is <code>~/.cursor/mcp.json</code>; for Claude Desktop it is <code>claude_desktop_config.json</code> (macOS: <code>~/Library/Application Support/Claude/</code>, Windows: <code>%APPDATA%\Claude\</code>).</p>
@@ -118,17 +189,25 @@ npm run build</code></pre>
   <p>The agent should call <a href="../api/tools.html#list_workflows"><code>list_workflows</code></a> and return the workflow inventory. If it does, the connection works.</p>
 
   <h2 id="next">Next steps</h2>
-  <ul>
-    <li><a href="./ide-setup.html">Set up the IDE bootstrap rule</a> so natural-language workflow requests reach the server reliably.</li>
-    <li><a href="./concepts.html">Learn the concepts</a> — workflows, activities, techniques, sessions, and checkpoints.</li>
-    <li>Deploying the engineering-branch pattern into your own project (the <code>.engineering/</code> folder) is covered in <a href="https://github.com/m2ux/workflow-server/blob/main/SETUP.md">SETUP.md</a>.</li>
+  <ul class="prose">
+    <li><a href="./ide-setup.html">Set up the IDE bootstrap rule</a> so workflow requests reach the server reliably.</li>
+    <li><a href="./concepts.html">Learn the concepts</a>: workflows, activities, techniques, sessions, and checkpoints.</li>
+    <li><a href="./running-workflows.html">Run your first workflow</a> with natural-language requests.</li>
+    <li>Deploying the <code>.engineering/</code> pattern into your own project is covered in <a href="https://github.com/m2ux/workflow-server/blob/main/SETUP.md">SETUP.md (source)</a>.</li>
   </ul>
 </main>
 
+
+<!-- BEGIN GENERATED PAGINATION -->
+  <nav class="page-pagination" aria-label="Page sequence">
+    <span></span>
+    <a class="page-pagination__next" href="./ide-setup.html">IDE setup →</a>
+  </nav>
+<!-- END GENERATED PAGINATION -->
+
 <footer class="site-footer">
   <div class="site-footer__inner">
-    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
-    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+    <span>Source on <a href="https://github.com/m2ux/workflow-server">GitHub</a> · <a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
   </div>
 </footer>
 

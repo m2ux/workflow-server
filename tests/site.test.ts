@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { renderSitePages } from '../scripts/generate-site-data.js';
+import { renderSitePages, checkSiteNavigation } from '../scripts/generate-site-data.js';
 import { checkSiteLinks } from '../scripts/check-site-links.js';
 import { checkSvgLayout } from '../scripts/check-svg-layout.js';
 
@@ -13,6 +13,10 @@ describe('documentation site', () => {
       const committed = readFileSync(join(SITE_DIR, relPath), 'utf-8');
       expect(committed, `site/${relPath} is stale — run npm run build:site and commit the result`).toBe(content);
     }
+  });
+
+  it('every page has global navigation linking all registered routes', () => {
+    expect(checkSiteNavigation()).toEqual([]);
   });
 
   it('internal links, anchors, and GitHub repo links resolve', () => {

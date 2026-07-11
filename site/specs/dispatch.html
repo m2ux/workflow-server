@@ -13,21 +13,85 @@
 <header class="site-header">
   <div class="site-header__inner">
     <a class="site-title" href="../">Workflow Server</a>
-    <nav class="site-nav" aria-label="Site">
-      <ul>
+    <!-- BEGIN GENERATED NAV -->
+    <nav class="site-nav" aria-label="Documentation">
+      <ul class="site-nav__primary">
         <li><a href="../">Home</a></li>
-        <li><a href="./architecture.html">Architecture</a></li>
-        <li><a href="../api/tools.html">Tools</a></li>
-        <li><a href="../api/schemas.html">Schemas</a></li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Guide</summary>
+            <ul>
+              <li><a href="../guide/getting-started.html">Getting started</a></li>
+              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
+              <li><a href="../guide/concepts.html">Concepts</a></li>
+              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group" open>
+            <summary>Architecture</summary>
+            <ul>
+              <li><a href="./architecture.html">Overview</a></li>
+              <li><a href="./dispatch.html" aria-current="page">Dispatch</a></li>
+              <li><a href="./checkpoints.html">Checkpoints</a></li>
+              <li><a href="./state-management.html">State</a></li>
+              <li><a href="./artifact-management.html">Artifacts</a></li>
+              <li><a href="./resource-resolution.html">Resolution</a></li>
+              <li><a href="./workflow-fidelity.html">Fidelity</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>API</summary>
+            <ul>
+              <li><a href="../api/tools.html">Tools</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
+              <li><a href="../api/protocol.html">Protocol guide</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Internals</summary>
+            <ul>
+              <li><a href="../internals/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="../internals/session-store.html">Session store</a></li>
+              <li><a href="../internals/quality-system.html">Quality system</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Design</summary>
+            <ul>
+              <li><a href="../design/rationale.html">Design rationale</a></li>
+            </ul>
+          </details>
+        </li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
+<!-- END GENERATED NAV -->
   </div>
 </header>
 
+
+<!-- BEGIN GENERATED BREADCRUMB -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="./architecture.html">Architecture</a></li>
+      <li aria-current="page">Dispatch</li>
+    </ol>
+  </nav>
+<!-- END GENERATED BREADCRUMB -->
+
 <main id="main">
   <h1>Hierarchical dispatch</h1>
-  <p class="lede">Workflows execute through multi-agent delegation: a user-facing agent dispatches a background orchestrator per workflow, which dispatches ephemeral workers per activity. Each layer has one job, and the boundaries keep user interaction, state management, and task execution from tangling.</p>
+  <p class="lede prose">Workflows run through three agent layers: user-facing orchestrator, background workflow orchestrator, and ephemeral activity workers.</p>
+  <p class="prose note"><strong>Layer key:</strong> L0 = user-facing meta orchestrator · L1 = workflow orchestrator (state owner) · L2 = activity worker (task executor).</p>
   <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/dispatch_model.md">docs/dispatch_model.md</a>.</p>
 
   <figure class="diagram">
@@ -92,6 +156,14 @@
   <h2 id="related">Related</h2>
   <p>Checkpoints bubble up through these same layers — see the <a href="./checkpoints.html">checkpoint model</a>. Session state and the <code>session.json</code> file are covered in <a href="./state-management.html">state management</a>.</p>
 </main>
+
+
+<!-- BEGIN GENERATED PAGINATION -->
+  <nav class="page-pagination" aria-label="Page sequence">
+    <span></span>
+    <a class="page-pagination__next" href="./checkpoints.html">Checkpoints →</a>
+  </nav>
+<!-- END GENERATED PAGINATION -->
 
 <footer class="site-footer">
   <div class="site-footer__inner">

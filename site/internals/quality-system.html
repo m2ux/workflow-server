@@ -13,26 +13,88 @@
 <header class="site-header">
   <div class="site-header__inner">
     <a class="site-title" href="../">Workflow Server</a>
-    <nav class="site-nav" aria-label="Site">
-      <ul>
+    <!-- BEGIN GENERATED NAV -->
+    <nav class="site-nav" aria-label="Documentation">
+      <ul class="site-nav__primary">
         <li><a href="../">Home</a></li>
-        <li><a href="./server-anatomy.html">Server anatomy</a></li>
-        <li><a href="./request-lifecycle.html">Request lifecycle</a></li>
-        <li><a href="./session-store.html">Session store</a></li>
-        <li><a href="./quality-system.html" aria-current="page">Quality system</a></li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Guide</summary>
+            <ul>
+              <li><a href="../guide/getting-started.html">Getting started</a></li>
+              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
+              <li><a href="../guide/concepts.html">Concepts</a></li>
+              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Architecture</summary>
+            <ul>
+              <li><a href="../specs/architecture.html">Overview</a></li>
+              <li><a href="../specs/dispatch.html">Dispatch</a></li>
+              <li><a href="../specs/checkpoints.html">Checkpoints</a></li>
+              <li><a href="../specs/state-management.html">State</a></li>
+              <li><a href="../specs/artifact-management.html">Artifacts</a></li>
+              <li><a href="../specs/resource-resolution.html">Resolution</a></li>
+              <li><a href="../specs/workflow-fidelity.html">Fidelity</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>API</summary>
+            <ul>
+              <li><a href="../api/tools.html">Tools</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
+              <li><a href="../api/protocol.html">Protocol guide</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group" open>
+            <summary>Internals</summary>
+            <ul>
+              <li><a href="./server-anatomy.html">Server anatomy</a></li>
+              <li><a href="./request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="./session-store.html">Session store</a></li>
+              <li><a href="./quality-system.html" aria-current="page">Quality system</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Design</summary>
+            <ul>
+              <li><a href="../design/rationale.html">Design rationale</a></li>
+            </ul>
+          </details>
+        </li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
+<!-- END GENERATED NAV -->
   </div>
 </header>
 
+
+<!-- BEGIN GENERATED BREADCRUMB -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li>Internals</li>
+      <li aria-current="page">Quality system</li>
+    </ol>
+  </nav>
+<!-- END GENERATED BREADCRUMB -->
+
 <main id="main">
   <h1>Quality system</h1>
-  <p class="lede">The server enforces workflow fidelity at runtime; the repository applies the same philosophy to itself. Every convention that matters — reference integrity, naming rules, schema truthfulness, even the geometry of this site's diagrams — is encoded as an executable guard, so a violation is a failing check, not a review comment.</p>
-  <p>The guards live in <a href="https://github.com/m2ux/workflow-server/tree/main/scripts"><code>scripts/</code></a> and run as <code>npm run check:*</code>; the tests live in <a href="https://github.com/m2ux/workflow-server/tree/main/tests"><code>tests/</code></a> under Vitest.</p>
+  <p class="lede prose">Executable guards encode conventions that matter: reference integrity, naming rules, schema truthfulness, and site link integrity.</p>
+  <p class="prose contributor-note">For contributors. Guards live in <a href="https://github.com/m2ux/workflow-server/tree/main/scripts"><code>scripts/</code></a> as <code>npm run check:*</code>; tests run under Vitest in <a href="https://github.com/m2ux/workflow-server/tree/main/tests"><code>tests/</code></a>.</p>
 
   <h2 id="guards">The guard suite</h2>
-  <p>Most guards audit the workflow corpus — the YAML and markdown definitions the server executes — because that content is data, not code, and the type checker cannot see into it:</p>
+  <p class="prose">Most guards audit the workflow corpus (YAML and markdown). A summary by category:</p>
   <div class="table-wrap">
     <table>
       <thead>
@@ -119,6 +181,13 @@
   <h2 id="next">Next</h2>
   <p>Why the project invests in mechanical guardrails rather than review vigilance is part of <a href="../design/rationale.html#guards">the design rationale</a>; the runtime half of the same philosophy is <a href="../specs/workflow-fidelity.html">workflow fidelity</a>.</p>
 </main>
+
+
+<!-- BEGIN GENERATED PAGINATION -->
+  <nav class="page-pagination" aria-label="Page sequence">
+    <a class="page-pagination__prev" href="./session-store.html">← Session store</a>
+  </nav>
+<!-- END GENERATED PAGINATION -->
 
 <footer class="site-footer">
   <div class="site-footer__inner">

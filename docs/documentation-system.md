@@ -6,7 +6,9 @@ How this repository's documentation is organized: what each source is for, who i
 
 **Markdown is canonical.** Every fact about the system lives in a markdown file in this repository, and those files are the source of truth.
 
-**The HTML site renders it.** [`site/`](../site/) is a hand-authored static documentation site — semantic HTML, one shared stylesheet, inline SVG diagrams, no site-generator toolchain — that presents the same material as a navigable, illustrated view. Site pages link back to their canonical markdown sources. Two site pages contain machine-generated regions derived from the server source and the JSON schemas (`npm run build:site` regenerates them); `tests/site.test.ts` fails when those regions drift from the code, and `npm run check:site` verifies every internal link and anchor.
+**The HTML site renders it.** [`site/`](../site/) is a hand-authored static documentation site — semantic HTML, one shared stylesheet, inline SVG diagrams, no client-side JavaScript — that presents the same material as a navigable, illustrated view. **Prefer on-site HTML links for reading**; link to markdown on GitHub for editing or for documents with no HTML mirror.
+
+[`scripts/generate-site-data.ts`](../scripts/generate-site-data.ts) maintains a route registry (`SITE_ROUTES`) and regenerates global navigation, breadcrumbs, pagination, and the API reference bodies (`npm run build:site`). `tests/site.test.ts` fails when generated regions drift; `npm run check:site` verifies internal links and anchors.
 
 Two site sections have no markdown counterpart because their canonical source is not markdown: `site/internals/` documents the server implementation (canonical source: the code in `src/`, `scripts/`, and `tests/`, which every page links to), and `site/design/` records design rationale distilled from the decision records on the engineering branch. When the implementation or a recorded decision changes, those pages are updated in the same change.
 
@@ -45,4 +47,4 @@ Workflow definitions themselves (the `workflows` branch, checked out as a worktr
 
 - **Describe the system as it is.** Documentation states current behaviour in plain present tense; evolution narratives belong in `.engineering/` planning artifacts. Rationale is the one exception: the standing reasons behind current decisions are product documentation, kept on the site's design-rationale page — still present tense, never a changelog.
 - **Filenames are stable.** Documents are heavily cross-linked (from this repository and beyond), so structure changes are expressed through linking and navigation, never by renaming or moving existing files.
-- **Everything is reachable.** Every document is linked from an entry point — the README's navigation strip, the [`docs/architecture.md`](architecture.md) hub, or the site's landing page — so no document depends on full-text search to be found.
+- **Everything is reachable.** Every HTML page is listed in `SITE_ROUTES` and linked from the generated global navigation. The home page "Where to start" table and section hubs provide additional entry points. No document should depend on full-text search alone.
