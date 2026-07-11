@@ -23,8 +23,8 @@ The consequences are wasted time and avoidable risk. Every improvised read inter
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
 | — | [Proposal](proposal.md) | Problem evidence, tool proposal, alternatives | — | ✅ Complete |
-| 01 | `Design philosophy` | Problem classification, design rationale, workflow path | 15-30m | ⬚ Pending |
-| 01 | `Assumptions log` | Tracked assumptions across all activities | 10-15m | ⬚ Pending |
+| 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
+| 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
 | 05 | `Test plan` | Test cases, coverage strategy | 15-30m | ⬚ Pending |
 | — | Implementation | `inspect_session` tool + close-out technique updates | 1-3h | ⬚ Pending |
