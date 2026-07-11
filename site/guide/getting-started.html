@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Getting started — Workflow Server</title>
-<meta name="description" content="Install the workflow-server, connect it to an MCP client, and verify the connection.">
+<meta name="description" content="Install the workflow-server, connect an MCP client, add the bootstrap rule, and run your first workflow.">
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -12,27 +12,19 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-title" href="../">Workflow Server</a>
+    <a class="site-title" href="../index.html">Workflow Server</a>
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../">Home</a></li>
-        <li>
-          <details class="site-nav__group" open>
-            <summary>Guide</summary>
-            <ul>
-              <li><a href="./getting-started.html" aria-current="page">Getting started</a></li>
-              <li><a href="./ide-setup.html">IDE setup</a></li>
-              <li><a href="./concepts.html">Concepts</a></li>
-              <li><a href="./running-workflows.html">Running workflows</a></li>
-            </ul>
-          </details>
-        </li>
+        <li><a href="./getting-started.html" aria-current="page">Getting started</a></li>
+        <li><a href="./definitions.html">Definitions</a></li>
+        <li><a href="../api/tools.html">API</a></li>
         <li>
           <details class="site-nav__group">
             <summary>Architecture</summary>
             <ul>
               <li><a href="../specs/architecture.html">Overview</a></li>
+              <li><a href="../specs/workflows.html">Workflows</a></li>
               <li><a href="../specs/dispatch.html">Dispatch</a></li>
               <li><a href="../specs/checkpoints.html">Checkpoints</a></li>
               <li><a href="../specs/state-management.html">State</a></li>
@@ -44,33 +36,19 @@
         </li>
         <li>
           <details class="site-nav__group">
-            <summary>API</summary>
-            <ul>
-              <li><a href="../api/tools.html">Tools</a></li>
-              <li><a href="../api/schemas.html">Schemas</a></li>
-              <li><a href="../api/protocol.html">Protocol guide</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Internals</summary>
-            <ul>
-              <li><a href="../internals/server-anatomy.html">Server anatomy</a></li>
-              <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
-              <li><a href="../internals/session-store.html">Session store</a></li>
-              <li><a href="../internals/quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
             <summary>Design</summary>
             <ul>
-              <li><a href="../design/rationale.html">Design rationale</a></li>
+              <li><a href="../design/overview.html">Overview</a></li>
+              <li><a href="../design/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="../design/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="../design/protocol.html">Protocol</a></li>
+              <li><a href="../design/session-store.html">Session store</a></li>
+              <li><a href="../design/quality-system.html">Quality system</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
             </ul>
           </details>
         </li>
+        <li><a href="../specifications.html">Specifications</a></li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
@@ -82,7 +60,6 @@
 <!-- BEGIN GENERATED BREADCRUMB -->
   <nav class="breadcrumb" aria-label="Breadcrumb">
     <ol>
-      <li>Guide</li>
       <li aria-current="page">Getting started</li>
     </ol>
   </nav>
@@ -90,47 +67,7 @@
 
 <main id="main">
   <h1>Getting started</h1>
-  <p class="lede prose">Install the server, connect your MCP client, and verify the agent can list workflows. You need <strong>Node.js 18+</strong> and an MCP client (Cursor, Claude Desktop, Claude Code, or similar).</p>
-
-  <h2 id="pieces">The pieces</h2>
-  <p class="prose">Three parts work together: your MCP client, the workflow-server process, and your project's planning workspace.</p>
-
-  <figure class="diagram">
-    <svg viewBox="0 0 960 250" role="img" aria-labelledby="topo-title topo-desc">
-      <title id="topo-title">Deployment topology</title>
-      <desc id="topo-desc">Your MCP client communicates with the workflow-server process over MCP. The server reads workflow definitions from the workflows directory and reads and writes session state under your project's engineering planning folder.</desc>
-      <defs>
-        <marker id="arrowg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
-        </marker>
-      </defs>
-      <g font-size="16" font-weight="600" text-anchor="middle">
-        <rect x="20" y="80" width="220" height="70" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
-        <text x="130" y="110" fill="var(--diagram-label)">MCP client</text>
-        <text x="130" y="132" fill="var(--diagram-note)" font-size="13" font-weight="400">Cursor · Claude Desktop · …</text>
-        <rect x="370" y="80" width="220" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="480" y="110" fill="var(--diagram-label)">workflow-server</text>
-        <text x="480" y="132" fill="var(--diagram-note)" font-size="13" font-weight="400">Node.js process</text>
-        <rect x="720" y="20" width="220" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="830" y="50" fill="var(--diagram-label)">Workflow definitions</text>
-        <text x="830" y="72" fill="var(--diagram-note)" font-size="13" font-weight="400">WORKFLOW_DIR (read)</text>
-        <rect x="720" y="140" width="220" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="830" y="170" fill="var(--diagram-label)">Your project</text>
-        <text x="830" y="192" fill="var(--diagram-note)" font-size="13" font-weight="400">session state (read/write)</text>
-      </g>
-      <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
-        <line x1="240" y1="115" x2="366" y2="115" marker-end="url(#arrowg)" marker-start="url(#arrowg)"/>
-        <line x1="590" y1="100" x2="716" y2="62" marker-end="url(#arrowg)"/>
-        <line x1="590" y1="130" x2="716" y2="168" marker-end="url(#arrowg)" marker-start="url(#arrowg)"/>
-      </g>
-      <g font-size="13" fill="var(--diagram-note)" text-anchor="middle">
-        <text x="303" y="103">MCP (stdio)</text>
-        <text x="650" y="65">reads</text>
-        <text x="650" y="165">reads / writes</text>
-      </g>
-    </svg>
-    <figcaption>The MCP client launches and talks to the workflow-server over stdio. The server reads workflow definitions from <code>WORKFLOW_DIR</code> and keeps session state under your project's <code>.engineering/artifacts/planning/</code> folder (the <em>workspace</em>).</figcaption>
-  </figure>
+  <p class="lede prose">Install the server, connect your MCP client, add the bootstrap rule, and run workflows in natural language. You need <strong>Node.js 18+</strong> and an MCP client (Cursor, Claude Desktop, Claude Code, or similar). For how the client, server, and workspace fit together, see <a href="../index.html#pieces">The pieces</a> on the home page.</p>
 
   <h2 id="install">1. Install and build</h2>
   <pre><code># Clone and install
@@ -143,7 +80,7 @@ git worktree add ./workflows workflows
 
 # Build the server
 npm run build</code></pre>
-  <p class="prose">The workflow definitions live on a separate <code>workflows</code> branch, checked out as a <strong>worktree</strong> (a second folder from the same repo). Server code and workflow data can evolve independently.</p>
+  <p class="prose">The workflow definitions live on a separate <code>workflows</code> branch — an orphan branch with no shared history with <code>main</code> — checked out as a <strong>worktree</strong> beside the server code. Server releases and workflow edits change on different cadences; separate histories let you pin each side independently and keep content pull requests out of server review.</p>
 
   <aside class="note prose" id="layout">
     <strong>Repository layout (quick primer).</strong>
@@ -183,16 +120,33 @@ npm run build</code></pre>
     </table>
   </div>
 
-  <h2 id="verify">3. Verify</h2>
+  <h2 id="bootstrap-rule">3. Add the bootstrap rule</h2>
+  <p>Add this to your IDE's always-applied rule set (a Cursor rule, a Claude Code project rule, or the equivalent in your client):</p>
+  <pre><code>For any start workflow, create work package, or resume work package request, call the `discover` tool on the workflow-server MCP server to learn the bootstrap procedure. Complete the procedure before any other action.
+
+If the user provides a `session_token`, pass it to subsequent workflow-server calls per their instructions.</code></pre>
+  <p class="prose">Restart your MCP client after adding the rule.</p>
+
+  <h2 id="verify">4. Verify</h2>
   <p>Ask your agent:</p>
   <pre><code>Use the workflow server to list available workflows</code></pre>
-  <p>The agent should call <a href="../api/tools.html#list_workflows"><code>list_workflows</code></a> and return the workflow inventory. If it does, the connection works.</p>
+  <p>The agent should call <a href="../api/tools.html#list_workflows"><code>list_workflows</code></a> and return the workflow inventory.</p>
+  <p>Then ask it to <em>start a work-package workflow</em>. It should call <code>discover</code> first, then proceed through <code>list_workflows</code>, <code>start_session</code>, and <code>get_workflow</code>. If it skips <code>discover</code>, the rule is not applied — recheck your IDE rule configuration.</p>
+
+  <h2 id="run">5. Run and resume</h2>
+  <p class="prose">Drive workflows in natural language — no tool names, no tokens to copy. A <strong>work package</strong> is the bundled workflow for planning and implementing one unit of work (for example a feature or issue).</p>
+  <p><strong>Start</strong> a workflow by naming the goal:</p>
+  <pre><code>Start a new work-package workflow for implementing user authentication</code></pre>
+  <pre><code>Begin a work-package workflow for issue #42</code></pre>
+  <p><strong>Resume</strong> one — sessions live on disk, so this works across restarts and even across chat conversations:</p>
+  <pre><code>Resume the work-package workflow we were working on</code></pre>
+  <pre><code>Continue the authentication work package from where we left off</code></pre>
+  <p><strong>Finish</strong> or wind one down:</p>
+  <pre><code>End the current work-package workflow</code></pre>
 
   <h2 id="next">Next steps</h2>
   <ul class="prose">
-    <li><a href="./ide-setup.html">Set up the IDE bootstrap rule</a> so workflow requests reach the server reliably.</li>
-    <li><a href="./concepts.html">Learn the concepts</a>: workflows, activities, techniques, sessions, and checkpoints.</li>
-    <li><a href="./running-workflows.html">Run your first workflow</a> with natural-language requests.</li>
+    <li><a href="./definitions.html">Browse the definitions</a> — a glossary of terms you will encounter across the docs and in workflow runs.</li>
     <li>Deploying the <code>.engineering/</code> pattern into your own project is covered in <a href="https://github.com/m2ux/workflow-server/blob/main/SETUP.md">SETUP.md (source)</a>.</li>
   </ul>
 </main>
@@ -201,7 +155,7 @@ npm run build</code></pre>
 <!-- BEGIN GENERATED PAGINATION -->
   <nav class="page-pagination" aria-label="Page sequence">
     <span></span>
-    <a class="page-pagination__next" href="./ide-setup.html">IDE setup →</a>
+    <a class="page-pagination__next" href="./definitions.html">Definitions →</a>
   </nav>
 <!-- END GENERATED PAGINATION -->
 
@@ -211,5 +165,6 @@ npm run build</code></pre>
   </div>
 </footer>
 
+<script src="../nav.js" defer></script>
 </body>
 </html>

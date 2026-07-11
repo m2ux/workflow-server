@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workflow architecture — Workflow Server</title>
+<meta name="description" content="How workflows are structured: workflows, activities, step kinds, techniques, resources, variable binding, and what the agent loads at runtime.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="../index.html">Workflow Server</a>
+    <!-- BEGIN GENERATED NAV -->
+    <nav class="site-nav" aria-label="Documentation">
+      <ul class="site-nav__primary">
+        <li><a href="../guide/getting-started.html">Getting started</a></li>
+        <li><a href="../guide/definitions.html">Definitions</a></li>
+        <li><a href="../api/tools.html">API</a></li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Architecture</summary>
+            <ul>
+              <li><a href="./architecture.html">Overview</a></li>
+              <li><a href="./workflows.html" aria-current="page">Workflows</a></li>
+              <li><a href="./dispatch.html">Dispatch</a></li>
+              <li><a href="./checkpoints.html">Checkpoints</a></li>
+              <li><a href="./state-management.html">State</a></li>
+              <li><a href="./artifact-management.html">Artifacts</a></li>
+              <li><a href="./resource-resolution.html">Resolution</a></li>
+              <li><a href="./workflow-fidelity.html">Fidelity</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Design</summary>
+            <ul>
+              <li><a href="../design/overview.html">Overview</a></li>
+              <li><a href="../design/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="../design/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="../design/protocol.html">Protocol</a></li>
+              <li><a href="../design/session-store.html">Session store</a></li>
+              <li><a href="../design/quality-system.html">Quality system</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
+            </ul>
+          </details>
+        </li>
+        <li><a href="../specifications.html">Specifications</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+<!-- END GENERATED NAV -->
+  </div>
+</header>
+
+
+<!-- BEGIN GENERATED BREADCRUMB -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="./architecture.html">Architecture</a></li>
+      <li aria-current="page">Workflows</li>
+    </ol>
+  </nav>
+<!-- END GENERATED BREADCRUMB -->
+
+<main id="main">
+  <h1>Workflow architecture</h1>
+  <p class="lede prose">Workflows are declarative files, not code. This page explains what each file type means, how the pieces connect, and what the server delivers to the agent as work progresses.</p>
+  <p class="prose">For server enforcement (checkpoints, dispatch, fidelity), see <a href="./architecture.html">architecture overview</a>. For file shapes, see the <a href="../api/schemas.html">schema reference</a>.</p>
+
+  <h2 id="overview">Overview</h2>
+  <p class="prose">Think in two layers:</p>
+  <ul class="prose">
+    <li><strong>On disk</strong> — a workflow is a folder of YAML and markdown. Nothing in it is executable code; the files describe a process the agent follows step by step.</li>
+    <li><strong>At runtime</strong> — the agent does not open those files. It calls MCP tools, and the server returns one piece at a time so context stays on the work in front of it — workflow overview, then the current activity, then each technique as the worker reaches it (<a href="./resource-resolution.html#why-disclosure">Resolution</a>).</li>
+  </ul>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 200" role="img" aria-labelledby="layers-title layers-desc">
+      <title id="layers-title">Content model on disk</title>
+      <desc id="layers-desc">A workflow directory contains a manifest, activity files, technique markdown files, and resource markdown files. Activities list ordered steps; technique steps point at techniques; techniques link to resources.</desc>
+      <defs>
+        <marker id="arrowwa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="15" font-weight="600" text-anchor="middle">
+        <rect x="10" y="68" width="185" height="64" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="102" y="95" fill="var(--diagram-label)">workflow.yaml</text>
+        <text x="102" y="116" fill="var(--diagram-note)" font-size="13" font-weight="400">manifest</text>
+        <rect x="240" y="68" width="210" height="64" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="345" y="95" fill="var(--diagram-label)">activities/*.yaml</text>
+        <text x="345" y="116" fill="var(--diagram-note)" font-size="13" font-weight="400">phases + steps</text>
+        <rect x="495" y="68" width="200" height="64" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="595" y="95" fill="var(--diagram-label)">techniques/*.md</text>
+        <text x="595" y="116" fill="var(--diagram-note)" font-size="13" font-weight="400">capabilities</text>
+        <rect x="740" y="68" width="210" height="64" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="845" y="95" fill="var(--diagram-label)">resources/*.md</text>
+        <text x="845" y="116" fill="var(--diagram-note)" font-size="13" font-weight="400">reference</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2">
+        <line x1="195" y1="100" x2="236" y2="100" marker-end="url(#arrowwa)"/>
+        <line x1="450" y1="100" x2="491" y2="100" marker-end="url(#arrowwa)"/>
+        <line x1="695" y1="100" x2="736" y2="100" marker-end="url(#arrowwa)"/>
+      </g>
+      <g font-size="13" fill="var(--diagram-note)" text-anchor="middle">
+        <text x="218" y="58">lists</text>
+        <text x="472" y="58">bind</text>
+        <text x="718" y="58">refs</text>
+      </g>
+      <text x="480" y="168" font-size="13" text-anchor="middle" fill="var(--diagram-note)">Everything under workflows/&lt;workflow-id&gt;/ in the workflows branch</text>
+    </svg>
+    <figcaption>The four file types in a workflow directory and how they reference each other.</figcaption>
+  </figure>
+
+  <h2 id="workflows">Workflows</h2>
+  <p class="prose">A <strong>workflow</strong> is the whole process from start to finish. The <code>work-package</code> workflow, for instance, takes you from opening an issue through planning, implementation, validation, and merge.</p>
+  <p class="prose">The workflow is defined by a single manifest file, <code>workflow.yaml</code>. That file holds:</p>
+  <ul class="prose">
+    <li><strong>Identity</strong> — <code>id</code>, <code>name</code>, <code>version</code></li>
+    <li><strong>Variables</strong> — named slots in session state, with optional defaults seeded at session start</li>
+    <li><strong>Activities</strong> — the phases the orchestrator can move between</li>
+    <li><strong>Initial activity</strong> — where a new session begins</li>
+    <li><strong>Rules and orchestrator techniques</strong> — behaviour that applies across the whole run</li>
+  </ul>
+  <p class="prose">When a session starts, the server reads this manifest. The first <a href="../api/tools.html#get_workflow"><code>get_workflow</code></a> call returns:</p>
+  <ul class="prose">
+    <li>orchestrator techniques and rules</li>
+    <li>variable definitions</li>
+    <li><code>initialActivity</code> — the id of the activity where work begins</li>
+  </ul>
+  <p class="prose">The orchestrator uses <code>initialActivity</code> for its first <code>next_activity</code> call. After that, workflows describe structure only: the agent follows steps, and the server enforces:</p>
+  <ul class="prose">
+    <li>which activity is current</li>
+    <li>whether a checkpoint is blocking progress</li>
+    <li>what values sit in the variable bag</li>
+  </ul>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 200" role="img" aria-labelledby="wf-title wf-desc">
+      <title id="wf-title">Workflow manifest contents</title>
+      <desc id="wf-desc">workflow.yaml connects to variables, activities, rules, and orchestrator techniques.</desc>
+      <defs>
+        <marker id="arrowwf" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="14.5" font-weight="600" text-anchor="middle">
+        <rect x="310" y="24" width="340" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="480" y="48" fill="var(--diagram-label)">workflow.yaml</text>
+        <text x="480" y="68" fill="var(--diagram-note)" font-size="12.5" font-weight="400">id · name · version · initialActivity</text>
+        <rect x="30" y="110" width="200" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="130" y="134" fill="var(--diagram-label)">variables[]</text>
+        <text x="130" y="154" fill="var(--diagram-note)" font-size="12.5" font-weight="400">named session slots</text>
+        <rect x="255" y="110" width="200" height="56" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="355" y="134" fill="var(--diagram-label)">activities[]</text>
+        <text x="355" y="154" fill="var(--diagram-note)" font-size="12.5" font-weight="400">phase file refs</text>
+        <rect x="480" y="110" width="200" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="580" y="134" fill="var(--diagram-label)">rules</text>
+        <text x="580" y="154" fill="var(--diagram-note)" font-size="12.5" font-weight="400">workflow + activity</text>
+        <rect x="705" y="110" width="225" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="817" y="134" fill="var(--diagram-label)">techniques[]</text>
+        <text x="817" y="154" fill="var(--diagram-note)" font-size="12.5" font-weight="400">orchestrator bundle</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2">
+        <line x1="400" y1="80" x2="130" y2="106" marker-end="url(#arrowwf)"/>
+        <line x1="450" y1="80" x2="355" y2="106" marker-end="url(#arrowwf)"/>
+        <line x1="510" y1="80" x2="580" y2="106" marker-end="url(#arrowwf)"/>
+        <line x1="560" y1="80" x2="817" y2="106" marker-end="url(#arrowwf)"/>
+      </g>
+    </svg>
+    <figcaption>What the workflow manifest holds. Variables and rules span the entire run; the activity list is the set of phases the orchestrator can move between.</figcaption>
+  </figure>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 120" role="img" aria-labelledby="wf-ex-title wf-ex-desc">
+      <title id="wf-ex-title">Example: work-package activity path</title>
+      <desc id="wf-ex-desc">A sequence of work-package activities from start through complete.</desc>
+      <defs>
+        <marker id="arrowwfex" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="13" font-weight="600" text-anchor="middle">
+        <rect x="30" y="36" width="155" height="48" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="107" y="58" fill="var(--diagram-label)" font-size="12.5">start-wp</text>
+        <text x="107" y="74" fill="var(--diagram-note)" font-size="11.5" font-weight="400">initial</text>
+        <rect x="210" y="36" width="155" height="48" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="287" y="58" fill="var(--diagram-label)" font-size="12.5">plan-prepare</text>
+        <rect x="390" y="36" width="155" height="48" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="467" y="58" fill="var(--diagram-label)" font-size="12.5">implement</text>
+        <rect x="570" y="36" width="155" height="48" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="647" y="58" fill="var(--diagram-label)" font-size="12.5">validate</text>
+        <rect x="750" y="36" width="155" height="48" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="827" y="58" fill="var(--diagram-label)" font-size="12.5">complete</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2">
+        <line x1="185" y1="60" x2="206" y2="60" marker-end="url(#arrowwfex)"/>
+        <line x1="365" y1="60" x2="386" y2="60" marker-end="url(#arrowwfex)"/>
+        <line x1="545" y1="60" x2="566" y2="60" marker-end="url(#arrowwfex)"/>
+        <line x1="725" y1="60" x2="746" y2="60" marker-end="url(#arrowwfex)"/>
+      </g>
+      <text x="480" y="108" font-size="12.5" text-anchor="middle" fill="var(--diagram-note)">Transitions choose which box comes next — not always this straight line</text>
+    </svg>
+    <figcaption><strong>Example:</strong> the <code>work-package</code> workflow moves through these activities. <code>start-wp</code> is the <code>initialActivity</code>; later phases depend on variables set along the way.</figcaption>
+  </figure>
+
+  <h2 id="activities">Activities</h2>
+  <p class="prose">An <strong>activity</strong> is one phase of a workflow — a stretch of work with a clear goal. Plan &amp; Prepare, Implement, and Validate are activities inside <code>work-package</code>.</p>
+  <p class="prose">Each activity lives in its own YAML file under <code>activities/</code>. That file has two main parts:</p>
+  <ul class="prose">
+    <li><code>steps[]</code> — the ordered list the worker runs from top to bottom</li>
+    <li><code>transitions</code> — rules for which activity to enter next once the phase is done</li>
+  </ul>
+  <p class="prose">Only one activity is current at a time. Two roles split the work:</p>
+  <ul class="prose">
+    <li><strong>Orchestrator</strong> — calls <a href="../api/tools.html#next_activity"><code>next_activity</code></a> to move between phases</li>
+    <li><strong>Worker</strong> — calls <a href="../api/tools.html#get_activity"><code>get_activity</code></a> to load the step list (and may receive bundled techniques up front)</li>
+  </ul>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 260" role="img" aria-labelledby="act-title act-desc">
+      <title id="act-title">Activity file structure</title>
+      <desc id="act-desc">An activity file contains ordered steps and transitions to other activities.</desc>
+      <defs>
+        <marker id="arrowact" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="14" font-weight="600" text-anchor="middle">
+        <rect x="60" y="24" width="360" height="200" rx="12" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="240" y="50" fill="var(--diagram-label)">activity file</text>
+        <text x="240" y="70" fill="var(--diagram-note)" font-size="12.5" font-weight="400">id · name · steps[] · transitions</text>
+        <rect x="90" y="88" width="300" height="30" rx="8" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/>
+        <text x="240" y="108" fill="var(--diagram-label)" font-size="12.5">step 1</text>
+        <rect x="90" y="124" width="300" height="30" rx="8" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/>
+        <text x="240" y="144" fill="var(--diagram-label)" font-size="12.5">step 2</text>
+        <rect x="90" y="160" width="300" height="30" rx="8" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/>
+        <text x="240" y="180" fill="var(--diagram-label)" font-size="12.5">step 3</text>
+        <rect x="90" y="196" width="300" height="30" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="1.5"/>
+        <text x="240" y="216" fill="var(--diagram-label)" font-size="12.5">loop (optional)</text>
+        <rect x="500" y="88" width="400" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="700" y="112" fill="var(--diagram-label)">transition A</text>
+        <text x="700" y="132" fill="var(--diagram-note)" font-size="12.5" font-weight="400">when condition → activity X</text>
+        <rect x="500" y="168" width="400" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="700" y="192" fill="var(--diagram-label)">transition B</text>
+        <text x="700" y="212" fill="var(--diagram-note)" font-size="12.5" font-weight="400">else → activity Y</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2">
+        <line x1="420" y1="116" x2="496" y2="116" marker-end="url(#arrowact)"/>
+        <line x1="420" y1="196" x2="496" y2="196" marker-end="url(#arrowact)"/>
+      </g>
+      <text x="700" y="248" font-size="12.5" text-anchor="middle" fill="var(--diagram-note)">Worker runs steps; orchestrator picks a transition when the phase ends</text>
+    </svg>
+    <figcaption>How an activity file is organised. Steps are the work inside the phase; transitions are the exit routes to other activities.</figcaption>
+  </figure>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 280" role="img" aria-labelledby="act-ex-title act-ex-desc">
+      <title id="act-ex-title">Example: plan-prepare activity</title>
+      <desc id="act-ex-desc">Concrete steps from the work-package plan-prepare activity.</desc>
+      <defs>
+        <marker id="arrowactex" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="14" font-weight="600" text-anchor="middle">
+        <rect x="80" y="20" width="400" height="210" rx="12" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="280" y="46" fill="var(--diagram-label)">plan-prepare.yaml</text>
+        <rect x="110" y="62" width="340" height="32" rx="8" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/>
+        <text x="280" y="84" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11.5">action — env-prerequisites</text>
+        <rect x="110" y="100" width="340" height="32" rx="8" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/>
+        <text x="280" y="122" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11.5">technique — create-plan</text>
+        <rect x="110" y="138" width="340" height="32" rx="8" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/>
+        <text x="280" y="160" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11.5">technique — collect-assumptions</text>
+        <rect x="110" y="176" width="340" height="32" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="1.5"/>
+        <text x="280" y="198" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11.5">loop — assumption rounds</text>
+        <rect x="540" y="80" width="340" height="48" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="710" y="102" fill="var(--diagram-label)" font-size="12.5">→ assumptions-review</text>
+        <rect x="540" y="148" width="340" height="48" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="710" y="170" fill="var(--diagram-label)" font-size="12.5">→ strategic-review</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2">
+        <line x1="480" y1="104" x2="536" y2="104" marker-end="url(#arrowactex)"/>
+        <line x1="480" y1="172" x2="536" y2="172" marker-end="url(#arrowactex)"/>
+      </g>
+      <text x="480" y="258" font-size="12.5" text-anchor="middle" fill="var(--diagram-note)">First an action checks the environment, then techniques build the plan and gather assumptions</text>
+    </svg>
+    <figcaption><strong>Example:</strong> the <code>plan-prepare</code> activity checks prerequisites, runs planning techniques, loops over open assumptions, then transitions onward based on review mode.</figcaption>
+  </figure>
+
+  <h2 id="step-kinds">Step kinds</h2>
+  <p class="prose">Every entry in <code>steps[]</code> has a <code>kind</code> that tells the agent what sort of work it is. Four kinds are in use today. They run in file order unless a loop repeats a block or a transition sends the run to another activity.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 220" role="img" aria-labelledby="steps-title steps-desc">
+      <title id="steps-title">The four step kinds</title>
+      <desc id="steps-desc">Four boxes for technique, action, checkpoint, and loop steps, showing what each one does at a high level.</desc>
+      <g font-size="14.5" font-weight="600" text-anchor="middle">
+        <rect x="20" y="30" width="210" height="72" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="125" y="58" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">kind: technique</text>
+        <text x="125" y="80" fill="var(--diagram-note)" font-size="12.5" font-weight="400">bind a capability;</text>
+        <text x="125" y="96" fill="var(--diagram-note)" font-size="12.5" font-weight="400">fetch via get_technique</text>
+        <rect x="255" y="30" width="210" height="72" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="360" y="58" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">kind: action</text>
+        <text x="360" y="80" fill="var(--diagram-note)" font-size="12.5" font-weight="400">inline instructions</text>
+        <text x="360" y="96" fill="var(--diagram-note)" font-size="12.5" font-weight="400">validate, message, …</text>
+        <rect x="490" y="30" width="210" height="72" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="595" y="58" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">kind: checkpoint</text>
+        <text x="595" y="80" fill="var(--diagram-note)" font-size="12.5" font-weight="400">pause for user</text>
+        <text x="595" y="96" fill="var(--diagram-note)" font-size="12.5" font-weight="400">decision; see Checkpoints</text>
+        <rect x="725" y="30" width="210" height="72" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="830" y="58" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">kind: loop</text>
+        <text x="830" y="80" fill="var(--diagram-note)" font-size="12.5" font-weight="400">repeat nested steps</text>
+        <text x="830" y="96" fill="var(--diagram-note)" font-size="12.5" font-weight="400">while a condition holds</text>
+      </g>
+      <text x="480" y="145" font-size="13" text-anchor="middle" fill="var(--diagram-note)">Steps run in file order unless a loop or transition sends execution elsewhere</text>
+    </svg>
+    <figcaption>The four step kinds and what each one asks the agent to do.</figcaption>
+  </figure>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Kind</th><th scope="col">What it is</th><th scope="col">Agent behaviour</th></tr></thead>
+      <tbody>
+        <tr><td><code>technique</code></td><td>Reference to a capability by <code>::</code> path, with optional input bindings</td><td>Call <code>get_technique</code> for the step (or use content already bundled in <code>get_activity</code>), follow the protocol, record outputs</td></tr>
+        <tr><td><code>action</code></td><td>One or more inline actions (<code>validate</code>, <code>message</code>, …)</td><td>Execute the listed actions against current variables; the server does not interpret action verbs</td></tr>
+        <tr><td><code>checkpoint</code></td><td>A declared pause with options and effects</td><td>Call <code>yield_checkpoint</code>; orchestrator presents and <code>respond_checkpoint</code>; worker <code>resume_checkpoint</code> — see <a href="./checkpoints.html">Checkpoints</a></td></tr>
+        <tr><td><code>loop</code></td><td>A nested step list with an exit condition</td><td>Repeat the nested steps until the condition is satisfied or the loop declares completion</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="techniques">Techniques</h2>
+  <p class="prose">A <strong>technique</strong> is a markdown file with a fixed shape — capability, inputs, outputs, protocol, and rules — not an ambient agent <em>skill</em> that loads when a description matches. Activity steps name techniques by <code>::</code> path; the server composes, binds, and delivers them per step. The agent never reads technique files from the repository directly. Path resolution and bundling are on <a href="./resource-resolution.html">Resolution</a>.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 270" role="img" aria-labelledby="tech-anatomy-title tech-anatomy-desc">
+      <title id="tech-anatomy-title">Technique file sections</title>
+      <desc id="tech-anatomy-desc">Standard markdown sections in a technique file.</desc>
+      <g font-size="14" font-weight="600" text-anchor="middle">
+        <rect x="330" y="20" width="300" height="218" rx="12" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="480" y="46" fill="var(--diagram-label)">techniques/&lt;name&gt;.md</text>
+        <rect x="355" y="58" width="250" height="28" rx="6" fill="var(--bg)" stroke="var(--border)"/>
+        <text x="480" y="77" fill="var(--diagram-label)" font-size="12.5">Capability</text>
+        <rect x="355" y="92" width="250" height="28" rx="6" fill="var(--bg)" stroke="var(--border)"/>
+        <text x="480" y="111" fill="var(--diagram-label)" font-size="12.5">Inputs</text>
+        <rect x="355" y="126" width="250" height="28" rx="6" fill="var(--bg)" stroke="var(--border)"/>
+        <text x="480" y="145" fill="var(--diagram-label)" font-size="12.5">Outputs</text>
+        <rect x="355" y="160" width="250" height="28" rx="6" fill="var(--bg)" stroke="var(--border)"/>
+        <text x="480" y="179" fill="var(--diagram-label)" font-size="12.5">Protocol</text>
+        <rect x="355" y="194" width="250" height="28" rx="6" fill="var(--bg)" stroke="var(--border)"/>
+        <text x="480" y="213" fill="var(--diagram-label)" font-size="12.5">Rules</text>
+      </g>
+      <text x="480" y="258" font-size="12.5" text-anchor="middle" fill="var(--diagram-note)">The protocol is the step-by-step instructions the agent follows</text>
+    </svg>
+    <figcaption>The standard sections in a technique file. Full rules are in the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md">technique protocol specification (source)</a>.</figcaption>
+  </figure>
+
+  <h3 id="techniques-not-skills">Compared to agent skills</h3>
+  <p class="prose">Skills suit opt-in guidance: a short description and instructions the model loads when a request seems to match. Orchestrated workflows need a contract the server can schema-check, merge with ancestor protocols, and deliver step by step. Bulky templates and API guides stay in <code>resources/</code> and load via <code>get_resource</code> only when a running technique links to them — the <strong>protocol</strong> states what to execute; reference material is separate (<a href="#resources">Resources</a>).</p>
+
+  <h2 id="resources">Resources</h2>
+  <p class="prose">A <strong>resource</strong> is long-form reference material — templates, checklists, tables — stored as markdown under <code>resources/</code>. Techniques link to resources instead of inlining them; the agent calls <a href="../api/tools.html#get_resource"><code>get_resource</code></a> only when a running technique needs the linked material.</p>
+  <p class="prose">Resolution rules, section anchors, and cross-workflow prefixes are on <a href="./resource-resolution.html">Resolution</a>.</p>
+
+  <h2 id="binding">Variables and binding</h2>
+  <p class="prose"><strong>Workflow variables</strong> are named values stored in <code>session.json</code> — things like <code>target_path</code>, <code>issue_number</code>, or flags set by checkpoint choices. The server fills in defaults when a session starts; steps and checkpoints update them as the run proceeds.</p>
+  <p class="prose">When a technique step runs, each input must come from somewhere:</p>
+  <ul class="prose">
+    <li>a workflow variable</li>
+    <li>a value written on the step itself</li>
+    <li>an output from an earlier step</li>
+    <li>a default declared in the technique</li>
+  </ul>
+  <p class="prose">The server records where each value comes from and where each output should go. If something cannot be resolved, the delivered technique says so plainly.</p>
+  <p class="prose">The same variables drive <strong>transitions</strong>. When an activity ends, the orchestrator checks transition conditions against the current variable bag to decide which activity comes next.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 160" role="img" aria-labelledby="bind-title bind-desc">
+      <title id="bind-title">Variable flow through a technique step</title>
+      <desc id="bind-desc">Variables and prior outputs feed technique inputs; outputs write back to variables.</desc>
+      <defs>
+        <marker id="arrowbind" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="14" font-weight="600" text-anchor="middle">
+        <rect x="40" y="50" width="200" height="60" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="140" y="76" fill="var(--diagram-label)">variables</text>
+        <text x="140" y="96" fill="var(--diagram-note)" font-size="12.5" font-weight="400">session.json bag</text>
+        <rect x="380" y="50" width="200" height="60" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="480" y="76" fill="var(--diagram-label)">technique step</text>
+        <text x="480" y="96" fill="var(--diagram-note)" font-size="12.5" font-weight="400">inputs → outputs</text>
+        <rect x="720" y="50" width="200" height="60" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="820" y="76" fill="var(--diagram-label)">transitions</text>
+        <text x="820" y="96" fill="var(--diagram-note)" font-size="12.5" font-weight="400">pick next activity</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2">
+        <line x1="240" y1="80" x2="376" y2="80" marker-end="url(#arrowbind)"/>
+        <line x1="580" y1="80" x2="716" y2="80" marker-end="url(#arrowbind)"/>
+        <path d="M 480 110 L 480 130 L 140 130 L 140 112" fill="none" marker-end="url(#arrowbind)"/>
+      </g>
+      <text x="480" y="148" font-size="12.5" text-anchor="middle" fill="var(--diagram-note)">Outputs from a step can update variables that later steps and transitions read</text>
+    </svg>
+    <figcaption>How data moves through a run. Variables feed technique inputs; technique outputs and checkpoint choices write back to the bag; transitions read the bag to choose the next activity.</figcaption>
+  </figure>
+
+  <h2 id="runtime">Runtime delivery</h2>
+  <p class="prose">The agent never opens the <code>workflows/</code> folder directly. Every piece of content arrives through MCP tool calls, and the server decides how much to send based on where the run is.</p>
+  <p class="prose">The orchestrator and worker play different roles:</p>
+  <ul class="prose">
+    <li><strong>Orchestrator</strong> — calls <code>get_workflow</code> once at the start, then <code>next_activity</code> each time the run should move to a new phase</li>
+    <li><strong>Worker</strong> — calls <code>get_activity</code> to load the current step list, then <code>get_technique</code> for each technique step (unless the activity response already bundled it)</li>
+  </ul>
+  <p class="prose">Two patterns interrupt that rhythm:</p>
+  <ul class="prose">
+    <li><strong>Checkpoints</strong> — the worker yields, the orchestrator presents your choice, and the worker resumes before continuing</li>
+    <li><strong>Resources</strong> — load only when a technique the worker is executing links to one</li>
+  </ul>
+  <p class="prose">Tool call order, bundling, and errors are in <a href="../design/protocol.html">Protocol</a>. Technique and resource resolution are on <a href="./resource-resolution.html">Resolution</a>.</p>
+
+  <h2 id="specs">Normative references</h2>
+  <p class="prose">JSON shapes: <a href="../api/schemas.html">schema reference</a>. Authoritative prose specs: <a href="../specifications.html">Specifications</a>.</p>
+
+  <h2 id="next">Next</h2>
+  <p class="prose"><a href="../guide/definitions.html">Definitions</a> covers sessions from a user perspective. <a href="./checkpoints.html">Checkpoints</a> explains deliberate pauses and your choices. <a href="./dispatch.html">Dispatch</a> explains how orchestrators and workers run those workflows.</p>
+</main>
+
+
+<!-- BEGIN GENERATED PAGINATION -->
+  <nav class="page-pagination" aria-label="Page sequence">
+    <span></span>
+    <a class="page-pagination__next" href="./dispatch.html">Dispatch →</a>
+  </nav>
+<!-- END GENERATED PAGINATION -->
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Source on <a href="https://github.com/m2ux/workflow-server">GitHub</a> · <a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+<script src="../nav.js" defer></script>
+</body>
+</html>

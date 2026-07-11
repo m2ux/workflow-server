@@ -12,27 +12,19 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-title" href="../">Workflow Server</a>
+    <a class="site-title" href="../index.html">Workflow Server</a>
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../">Home</a></li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Guide</summary>
-            <ul>
-              <li><a href="../guide/getting-started.html">Getting started</a></li>
-              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
-              <li><a href="../guide/concepts.html">Concepts</a></li>
-              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
-            </ul>
-          </details>
-        </li>
+        <li><a href="../guide/getting-started.html">Getting started</a></li>
+        <li><a href="../guide/definitions.html">Definitions</a></li>
+        <li><a href="./tools.html" aria-current="page">API</a></li>
         <li>
           <details class="site-nav__group">
             <summary>Architecture</summary>
             <ul>
               <li><a href="../specs/architecture.html">Overview</a></li>
+              <li><a href="../specs/workflows.html">Workflows</a></li>
               <li><a href="../specs/dispatch.html">Dispatch</a></li>
               <li><a href="../specs/checkpoints.html">Checkpoints</a></li>
               <li><a href="../specs/state-management.html">State</a></li>
@@ -43,34 +35,20 @@
           </details>
         </li>
         <li>
-          <details class="site-nav__group" open>
-            <summary>API</summary>
-            <ul>
-              <li><a href="./tools.html" aria-current="page">Tools</a></li>
-              <li><a href="./schemas.html">Schemas</a></li>
-              <li><a href="./protocol.html">Protocol guide</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Internals</summary>
-            <ul>
-              <li><a href="../internals/server-anatomy.html">Server anatomy</a></li>
-              <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
-              <li><a href="../internals/session-store.html">Session store</a></li>
-              <li><a href="../internals/quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
           <details class="site-nav__group">
             <summary>Design</summary>
             <ul>
-              <li><a href="../design/rationale.html">Design rationale</a></li>
+              <li><a href="../design/overview.html">Overview</a></li>
+              <li><a href="../design/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="../design/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="../design/protocol.html">Protocol</a></li>
+              <li><a href="../design/session-store.html">Session store</a></li>
+              <li><a href="../design/quality-system.html">Quality system</a></li>
+              <li><a href="./schemas.html">Schemas</a></li>
             </ul>
           </details>
         </li>
+        <li><a href="../specifications.html">Specifications</a></li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
@@ -82,8 +60,7 @@
 <!-- BEGIN GENERATED BREADCRUMB -->
   <nav class="breadcrumb" aria-label="Breadcrumb">
     <ol>
-      <li>API</li>
-      <li aria-current="page">Tools</li>
+      <li aria-current="page">API</li>
     </ol>
   </nav>
 <!-- END GENERATED BREADCRUMB -->
@@ -112,7 +89,8 @@
         <p class="tool-summary">Entry point for this server.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Entry point for this server. Call this before any other tool to learn the bootstrap procedure for starting a session. Returns the server name, version, and the bootstrap guide explaining the full tool-calling sequence. Use list_workflows to discover available workflows. No parameters required and no session_index needed.</p>
+          <p>Call this first. Returns the server name, version, and the bootstrap steps for starting a workflow.</p>
+          <p>No session required. Use <code>list_workflows</code> to see what you can run.</p>
         </details>
         <p class="no-params">No parameters.</p>
       </section>
@@ -121,7 +99,8 @@
         <p class="tool-summary">List all available workflow definitions with their ID, title, version, and tags.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>List all available workflow definitions with their ID, title, version, and tags. Use this when you need to discover or filter available workflows. Returns an array of workflow summaries with tag-based categorization. If any workflow definition fails to load (unreadable file or manifest missing id/title/version), the response is instead an object with <code>workflows</code> (the loadable entries) and <code>load_errors</code> (one entry per failed file). Does not require a session_index.</p>
+          <p>Lists every workflow the server can run, with id, title, version, and tags.</p>
+          <p>If some workflow files cannot be loaded, you still get the working entries plus a <code>load_errors</code> list for the failures.</p>
         </details>
         <p class="no-params">No parameters.</p>
       </section>
@@ -130,7 +109,8 @@
         <p class="tool-summary">Check server health and availability.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Check server health and availability. Returns server status, name, version, number of available workflows, and uptime in seconds. Does not require a session_index. Use this to verify the server is running before starting a workflow.</p>
+          <p>Quick ping to confirm the server is up. Returns status, name, version, workflow count, and uptime.</p>
+          <p>No session required.</p>
         </details>
         <p class="no-params">No parameters.</p>
       </section>
@@ -138,19 +118,24 @@
       <p>Create, inspect, and extend workflow sessions.</p>
       <section class="tool" id="start_session">
         <h3><code>start_session</code></h3>
-        <p class="tool-summary">Start or resume the TOP-LEVEL workflow session.</p>
+        <p class="tool-summary">Start or resume a workflow session.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Start or resume the TOP-LEVEL workflow session. Identifies the planning folder via <code>planning_folder</code> — an absolute path whose basename is the slug (e.g., <code>/home/user/repo/.engineering/artifacts/planning/2026-05-28-my-slug</code> → slug <code>2026-05-28-my-slug</code>). Only the basename is consumed; the path part is a hint and is otherwise ignored, so a stale or off-workspace path passed by the agent is harmless. The server always resolves the slug against its own workspace planning root. Returns a 6-character base32 <code>session_index</code> for the root session, plus basic workflow metadata, plus the canonical server-side <code>planning_folder_path</code> (the absolute path of the folder under THIS server's workspace) — the agent can pick up the current location from this response without doing any path math. Behaviour: if a folder for that slug already exists under the server's workspace planning root with <code>session.json</code>, the server resumes it (workflow_id taken from state — caller cannot rebrand a live session). Otherwise the folder is created (for non-meta workflows) or a transient tmp folder is used (for meta-bootstrap), and a fresh session is written with its variable bag seeded from the workflow's declared <code>defaultValue</code>s (recorded as a <code>variables_seeded</code> history event; resumes never re-seed). When <code>planning_folder</code> is omitted entirely, a fresh meta-bootstrap session is created in <code>os.tmpdir()</code> and a synthetic UUID slug is registered so subsequent <code>dispatch_child</code> calls can promote it. The full resolved absolute path is persisted as <code>planningFolderPath</code> inside session.json; on resume, if the folder has been renamed or moved within the planning root, the recorded value is silently overwritten with its current location. Other tools identify the session by <code>session_index</code> (returned here) — they do not need the path, because session.json carries it. Child workflows are not created through start_session — call <code>dispatch_child({ session_index, workflow_id })</code> from inside the parent session to append a child under <code>triggeredWorkflows[]</code> (embedded inline; the whole work-package tree lives in the top-level session.json). If the resolved folder contains legacy <code>workflow-state.json</code> + <code>.session-token</code> artefacts, the server migrates them in place. The agent_id parameter is stored on <code>session.json#agentId</code>, distinguishing orchestrator from worker calls in the trace.</p>
+          <p>Opens a new workflow session or resumes an existing one.</p>
+          <p>Returns a <code>session_index</code> (six characters), basic workflow metadata, and <code>planning_folder_path</code> — the absolute path where the server stores session artifacts.</p>
+          <p>Pass <code>planning_folder</code> as any absolute path whose basename is your planning slug (for example, <code>.../planning/2026-05-28-my-slug</code>). Only the slug is used; the server resolves it under its own workspace. A stale or wrong path prefix is harmless.</p>
+          <p>If that slug already has <code>session.json</code>, the session resumes and <code>workflow_id</code> is ignored. Otherwise the server creates a fresh session and seeds variables from the workflow defaults.</p>
+          <p>Omit <code>planning_folder</code> to start a meta bootstrap session in a temp folder. Use <code>dispatch_child</code> later to promote it to a real planning folder.</p>
+          <p>Child workflows are started with <code>dispatch_child</code>, not <code>start_session</code>.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>no</td><td>Optional. Target workflow ID for a fresh top-level session (e.g., &quot;work-package&quot;). Defaults to &quot;meta&quot;. Ignored when the slug already resolves to an existing <code>session.json</code> (the workflow is taken from the resumed state).</td></tr>
-          <tr><td><code>planning_folder</code></td><td><code>string</code></td><td>no</td><td>Optional. Absolute path whose basename is treated as the planning slug. The path part is informational — the slug is resolved against the SERVER's own workspace planning root, not the path you pass. Bare slugs and relative paths are rejected. When omitted, the server mints a transitional UUID slug and registers it for the meta bootstrap session.</td></tr>
-          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Sets the agentId field inside the session state. Distinguishes agents sharing a session in the trace. Defaults to &quot;orchestrator&quot; if omitted. Default: <code>&quot;orchestrator&quot;</code></td></tr>
-          <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td>Optional. Declares the delivery context model for the session. &quot;persistent&quot; opts into reference-not-repeat delivery: get_activity replaces bundle content already delivered to this session+agent with short { unchanged: true, content_hash } markers, and get_technique answers a byte-identical refetch with an unchanged-reference (full: true re-fetches). Use ONLY when a single agent context runs the whole session and retains earlier payloads in its own context. Omit (or pass &quot;fresh&quot;) for disposable-worker topologies — every call then receives full content. On resume, a supplied value overwrites the recorded mode.</td></tr>
+          <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>no</td><td>Workflow id to run or dispatch (for example, <code>work-package</code>).</td></tr>
+          <tr><td><code>planning_folder</code></td><td><code>string</code></td><td>no</td><td>Absolute path whose basename is the planning slug. The server resolves the slug under its own workspace — the directory prefix is only a hint.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace. Default: <code>&quot;orchestrator&quot;</code></td></tr>
+          <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td><code>persistent</code>: reuse earlier deliveries when one agent keeps full context. <code>fresh</code> (default): always return full content.</td></tr>
           </tbody>
         </table>
         </div>
@@ -160,33 +145,37 @@
         <p class="tool-summary">Check the status of a workflow session.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Check the status of a workflow session. Returns the session status (active/blocked/completed), current activity, completed activities trace, last checkpoint info, and parent context if nested. Requires a session_index.</p>
+          <p>Returns whether the session is active, blocked at a checkpoint, or completed, plus the current activity and completed steps.</p>
+          <p>If the session is nested under a parent, parent context is included too.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>REQUIRED. The 6-character session_index returned by start_session. The server resolves this index to a planning folder under .engineering/artifacts/planning/ and reads/writes session.json there. The index is stable across all tool calls in the session — there is no rotation discipline.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           </tbody>
         </table>
         </div>
       </section>
       <section class="tool" id="dispatch_child">
         <h3><code>dispatch_child</code></h3>
-        <p class="tool-summary">Dispatch a child workflow from the current session.</p>
+        <p class="tool-summary">Start a child workflow inside the current session.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Dispatch a child workflow from the current session. Pass <code>session_index</code> of the parent (any depth) and <code>workflow_id</code> of the child workflow. The server appends a child entry under the parent's <code>triggeredWorkflows[]</code> with the child's full SessionFile embedded inline (the entire work-package tree lives in the top-level session.json). The child's variable bag is seeded from the CHILD workflow's own declared <code>defaultValue</code>s; the parent's bag is untouched. Returns the child's <code>session_index</code>, which the agent threads to subsequent authenticated tool calls operating on the child, plus the canonical <code>planning_folder_path</code> — the absolute path of the planning folder under THIS server's workspace (the <code>.engineering</code> root supplied at init). All work-package artifacts are written under that absolute path; the agent never composes the location relative to its CWD or the target component repo. Special case: when the parent is a transient orchestrator-bootstrap session (e.g. meta), the parent's state is promoted onto disk under a stable workspace planning folder before the child is embedded. The slug is taken from (in order): the optional <code>planning_slug</code> argument; the slug registered at start_session; a <code>YYYY-MM-DD-&lt;workflow-id&gt;</code> fallback. The parent's tmp folder is discarded post-promotion, but the parent's session_index is retained — the orchestrator can keep using its original index to authenticate subsequent calls (it resolves to the promoted folder for the lifetime of this server process). The on-disk shape matches the persistent-parent case — parent at the top of the file, child under <code>triggeredWorkflows[0].state</code>.</p>
+          <p>Starts a child workflow inside the parent session you are already in.</p>
+          <p>Returns the child's <code>session_index</code> and <code>planning_folder_path</code>. The child's variables are seeded from the child workflow's defaults; the parent is unchanged.</p>
+          <p>The child state is stored inside the parent's <code>session.json</code> under <code>triggeredWorkflows</code>.</p>
+          <p>When the parent is a temporary meta-bootstrap session, the server first promotes it to a real planning folder on disk, then embeds the child. You can keep using the parent's original <code>session_index</code>.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>REQUIRED. The 6-character session_index returned by start_session. The server resolves this index to a planning folder under .engineering/artifacts/planning/ and reads/writes session.json there. The index is stable across all tool calls in the session — there is no rotation discipline.</td></tr>
-          <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>yes</td><td>Workflow id for the child (e.g. &quot;work-package&quot;). Must resolve to a workflow definition in the workflows directory.</td></tr>
-          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>agent_id stored on the child SessionFile. Defaults to &quot;worker&quot;. Default: <code>&quot;worker&quot;</code></td></tr>
-          <tr><td><code>planning_slug</code></td><td><code>string</code></td><td>no</td><td>Optional. When the parent is a transient orchestrator-bootstrap session, the slug used for the promoted workspace folder. Takes precedence over any slug registered at start_session. Ignored when the parent is already persistent (the persistent parent owns the slug).</td></tr>
-          <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td>Optional. Delivery context model stored on the child SessionFile (see start_session). &quot;persistent&quot; activates reference-not-repeat delivery for calls against the child session; use ONLY when a single agent context executes the whole child workflow.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>yes</td><td>Workflow id to run or dispatch (for example, <code>work-package</code>).</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace. Default: <code>&quot;worker&quot;</code></td></tr>
+          <tr><td><code>planning_slug</code></td><td><code>string</code></td><td>no</td><td>Slug for the promoted planning folder when dispatching from a meta bootstrap session. Ignored if the parent already has a persistent folder.</td></tr>
+          <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td><code>persistent</code>: reuse earlier deliveries when one agent keeps full context. <code>fresh</code> (default): always return full content.</td></tr>
           </tbody>
         </table>
         </div>
@@ -198,13 +187,17 @@
         <p class="tool-summary">Load the workflow definition for the current session.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Load the workflow definition for the current session. The response begins with the resolved orchestrator technique bundle, then a <code>---</code> separator, then lightweight workflow metadata: rules, variables, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. If any activity file failed to load (invalid or unparsable YAML), the response includes <code>activity_load_errors</code> listing each failed file with its error — those activities are absent from the activity list. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity. The response also carries <code>planning_folder_path</code>: the canonical absolute planning folder for this session under THIS server's workspace <code>.engineering</code> root — bind it as the single artifact location and never recompose it relative to your CWD or the target component repo.</p>
+          <p>Loads the workflow definition for the current session.</p>
+          <p>The response starts with the orchestrator technique, then a separator, then metadata: rules, variables, <code>initialActivity</code> (the first activity to run), and a short list of all activities.</p>
+          <p>Use <code>initialActivity</code> for your first <code>next_activity</code> call — this is the only tool that returns it.</p>
+          <p>Also returns <code>planning_folder_path</code>. Treat this as the one true artifact location; do not build paths relative to your own working directory.</p>
+          <p>If some activity files failed to load, <code>activity_load_errors</code> lists them and those activities are omitted from the list.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>REQUIRED. The 6-character session_index returned by start_session. The server resolves this index to a planning folder under .engineering/artifacts/planning/ and reads/writes session.json there. The index is stable across all tool calls in the session — there is no rotation discipline.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           </tbody>
         </table>
         </div>
@@ -214,36 +207,35 @@
         <p class="tool-summary">Transition to the specified activity.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Transition to the specified activity. This is the orchestrator's tool for advancing the workflow — it validates the transition, advances the session state on disk, and records the trace, but does NOT return the activity definition. After calling next_activity, the worker should call get_activity to load the complete activity definition including steps, checkpoints, transitions, and technique references. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field of the current activity's response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation. Manifest validation also cross-checks fidelity (warn-only): a manifested technique step with no technique_fetched event recorded during the activity (see get_technique) — and no technique_bundled event from a bundling activity's get_activity — draws a warning.</p>
+          <p>Moves the session to a new activity. This is the orchestrator's advance call — it updates state and records the trace but does not return the activity body.</p>
+          <p>After <code>next_activity</code>, the worker should call <code>get_activity</code> to load steps, checkpoints, transitions, and technique references.</p>
+          <p>For the first transition, use <code>initialActivity</code> from <code>get_workflow</code>. After that, use ids from the current activity's <code>transitions</code>.</p>
+          <p>Optional <code>step_manifest</code> and <code>transition_condition</code> help the server validate what you completed. Manifest checks are advisory — mismatches produce warnings, not hard errors.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>REQUIRED. The 6-character session_index returned by start_session. The server resolves this index to a planning folder under .engineering/artifacts/planning/ and reads/writes session.json there. The index is stable across all tool calls in the session — there is no rotation discipline.</td></tr>
-          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>yes</td><td>Activity ID to transition to. For the first call, use initialActivity from get_workflow. For subsequent calls, use an activity ID from the transitions field of the current activity.</td></tr>
-          <tr><td><code>transition_condition</code></td><td><code>string</code></td><td>no</td><td>The transition condition that led to this activity (from the transitions field of the previous activity). Enables server-side validation of condition-activity consistency.</td></tr>
-          <tr><td><code>step_manifest</code></td><td><code>object[]</code></td><td>no</td><td>Array of completed-step entries from the previous activity, e.g. [{&quot;step_id&quot;:&quot;detect-review-mode&quot;,&quot;output&quot;:&quot;is_review_mode=false&quot;}]. Each entry has two string fields: step_id (the literal id from the activity's steps[] — note the field is step_id, not id) and output. output is a short summary of what the step produced; for a step with more than one declared output, report a JSON object keyed by output id, e.g. {&quot;step_id&quot;:&quot;resolve-reference&quot;,&quot;output&quot;:&quot;{\&quot;reference_path\&quot;:\&quot;lib/x\&quot;,\&quot;component_name\&quot;:\&quot;x\&quot;}&quot;}. Omit the parameter entirely when no steps ran; do not pass an empty array or empty string.</td></tr>
-          <tr><td><code>activity_manifest</code></td><td><code>object[]</code></td><td>no</td><td>Activity completion manifest from the orchestrator. Reports the sequence of activities completed so far with outcomes and transition conditions.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>yes</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: use an id from <code>transitions</code>.</td></tr>
+          <tr><td><code>transition_condition</code></td><td><code>string</code></td><td>no</td><td>The condition name that led to this transition, from the previous activity.</td></tr>
+          <tr><td><code>step_manifest</code></td><td><code>object[]</code></td><td>no</td><td>Steps completed in the previous activity, for example <code>[{ &quot;step_id&quot;: &quot;detect-review-mode&quot;, &quot;output&quot;: &quot;is_review_mode=false&quot; }]</code>. Omit if no steps ran.</td></tr>
+          <tr><td><code>activity_manifest</code></td><td><code>object[]</code></td><td>no</td><td>History of completed activities with outcomes and transition conditions.</td></tr>
           </tbody>
         </table>
         </div>
         <details class="tool-details">
-          <summary>All parameters</summary>
+          <summary>Nested fields</summary>
+          <p class="table-caption">Each item in these arrays is an object with the fields below.</p>
         <div class="table-wrap">
-        <table>
-          <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+        <table class="param-table param-table--nested">
+          <thead><tr><th scope="col">In</th><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>REQUIRED. The 6-character session_index returned by start_session. The server resolves this index to a planning folder under .engineering/artifacts/planning/ and reads/writes session.json there. The index is stable across all tool calls in the session — there is no rotation discipline.</td></tr>
-          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>yes</td><td>Activity ID to transition to. For the first call, use initialActivity from get_workflow. For subsequent calls, use an activity ID from the transitions field of the current activity.</td></tr>
-          <tr><td><code>transition_condition</code></td><td><code>string</code></td><td>no</td><td>The transition condition that led to this activity (from the transitions field of the previous activity). Enables server-side validation of condition-activity consistency.</td></tr>
-          <tr><td><code>step_manifest</code></td><td><code>object[]</code></td><td>no</td><td>Array of completed-step entries from the previous activity, e.g. [{&quot;step_id&quot;:&quot;detect-review-mode&quot;,&quot;output&quot;:&quot;is_review_mode=false&quot;}]. Each entry has two string fields: step_id (the literal id from the activity's steps[] — note the field is step_id, not id) and output. output is a short summary of what the step produced; for a step with more than one declared output, report a JSON object keyed by output id, e.g. {&quot;step_id&quot;:&quot;resolve-reference&quot;,&quot;output&quot;:&quot;{\&quot;reference_path\&quot;:\&quot;lib/x\&quot;,\&quot;component_name\&quot;:\&quot;x\&quot;}&quot;}. Omit the parameter entirely when no steps ran; do not pass an empty array or empty string.</td></tr>
-          <tr><td><code>step_manifest[].step_id</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>step_manifest[].output</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>activity_manifest</code></td><td><code>object[]</code></td><td>no</td><td>Activity completion manifest from the orchestrator. Reports the sequence of activities completed so far with outcomes and transition conditions.</td></tr>
-          <tr><td><code>activity_manifest[].activity_id</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>activity_manifest[].outcome</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
-          <tr><td><code>activity_manifest[].transition_condition</code></td><td><code>string</code></td><td>no</td><td>-</td></tr>
+          <tr class="param-row--nested"><td class="param-scope" rowspan="2"><code>step_manifest[]</code></td><td><code>step_id</code></td><td><code>string</code></td><td>yes</td><td>Step id from the activity definition (field name is <code>step_id</code>, not <code>id</code>).</td></tr>
+          <tr class="param-row--nested"><td><code>output</code></td><td><code>string</code></td><td>yes</td><td>Short summary of what the step produced. Use a JSON object when the step has multiple outputs.</td></tr>
+          <tr class="param-row--nested param-row--group-start"><td class="param-scope" rowspan="3"><code>activity_manifest[]</code></td><td><code>activity_id</code></td><td><code>string</code></td><td>yes</td><td>Completed activity id.</td></tr>
+          <tr class="param-row--nested"><td><code>outcome</code></td><td><code>string</code></td><td>yes</td><td>Short outcome summary for that activity.</td></tr>
+          <tr class="param-row--nested"><td><code>transition_condition</code></td><td><code>string</code></td><td>no</td><td>Condition that led out of that activity, if any.</td></tr>
           </tbody>
         </table>
         </div>
@@ -251,18 +243,21 @@
       </section>
       <section class="tool" id="get_activity">
         <h3><code>get_activity</code></h3>
-        <p class="tool-summary">Load the complete activity definition for the current activity in the session.</p>
+        <p class="tool-summary">Load the current activity definition, including steps and transitions.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Load the complete activity definition for the current activity in the session. This is the worker's tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, rules, and technique references — everything needed to execute the activity. The activity is determined from the session state on disk, so no activity_id parameter is needed. context_tokens is REQUIRED — the worker declares its own context window; the server derives an eager step-technique bundling budget from it (availability headroom × a token→char factor, both server config) and inlines the activity's ungated step-bound techniques that fit, in document order, under that budget. When reference delivery is active (session context_mode &quot;persistent&quot; or bundle: &quot;reference&quot;), inherited techniques/rules content already delivered to this session+agent arrives as short { delivery: &quot;unchanged&quot;, content_hash } markers instead of being repeated; bundle: &quot;full&quot; forces full delivery. Eligible ungated step-bound techniques are inlined corpus-wide under a step_techniques map (keyed by step id, each entry a discrete ▼ STEP block identical to a get_technique { step_id } fetch — engage those steps in order without refetching); gated steps and any technique that would overflow the derived budget (or a per-activity bundleTechniques.maxChars size cap; maxChars 0 opts the activity out) stay lazy and still require get_technique. Bundled deliveries are recorded as technique_bundled history events and count as fetch coverage for next_activity's manifest fidelity check.</p>
+          <p>Loads the full definition for whatever activity the session is currently on. No <code>activity_id</code> parameter — the server reads it from session state.</p>
+          <p>You must pass <code>context_tokens</code>: your worker's context window size in tokens. The server uses this to decide how many step techniques to bundle inline.</p>
+          <p>Ungated techniques that fit the budget are included in the response under <code>step_techniques</code> — the same content you would get from <code>get_technique</code> for that step. Gated steps and overflow techniques still need a separate <code>get_technique</code> call.</p>
+          <p>If the session uses persistent context mode (or you pass <code>bundle: &quot;reference&quot;</code>), content you already received may come back as short unchanged markers instead of full text. Pass <code>bundle: &quot;full&quot;</code> to force full delivery.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>REQUIRED. The 6-character session_index returned by start_session. The server resolves this index to a planning folder under .engineering/artifacts/planning/ and reads/writes session.json there. The index is stable across all tool calls in the session — there is no rotation discipline.</td></tr>
-          <tr><td><code>context_tokens</code></td><td><code>integer</code></td><td>yes</td><td>REQUIRED. The calling worker's total context window in tokens. The server derives the eager step-technique bundling budget from this value (availability headroom × a token→char factor, both server config) and inlines the activity's ungated step-bound techniques that fit, in document order, under that budget; the remainder stay lazy via get_technique. Per-agent and per-call — never stored on the session, never defaulted. Omitting it is a validation error.</td></tr>
-          <tr><td><code>bundle</code></td><td><code>&quot;reference&quot; | &quot;full&quot;</code></td><td>no</td><td>Optional delivery-mode override for the inherited techniques/rules bundle. &quot;reference&quot; replaces bundle content already delivered to this session+agent with short { delivery: &quot;unchanged&quot;, content_hash } markers — only correct when THIS calling context received the earlier deliveries. &quot;full&quot; forces full delivery. Defaults from the session's context_mode (&quot;persistent&quot; → reference, otherwise full).</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>context_tokens</code></td><td><code>integer</code></td><td>yes</td><td>Your worker context window in tokens. Required so the server can size inline technique bundling.</td></tr>
+          <tr><td><code>bundle</code></td><td><code>&quot;reference&quot; | &quot;full&quot;</code></td><td>no</td><td><code>reference</code>: return unchanged markers for content already delivered. <code>full</code>: always return complete text.</td></tr>
           </tbody>
         </table>
         </div>
@@ -274,14 +269,15 @@
         <p class="tool-summary">Yield execution to the orchestrator at a checkpoint.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Yield execution to the orchestrator at a checkpoint. Call this tool when you encounter a checkpoint step during activity execution. It records the checkpoint as active in the session state and returns the session_index, which the worker yields back to the orchestrator via a &lt;checkpoint_yield&gt; block.</p>
+          <p>Call when a checkpoint step tells you to stop and hand control to the orchestrator.</p>
+          <p>Records the checkpoint as active and returns the <code>session_index</code> for a <code>&lt;checkpoint_yield&gt;</code> block in your output.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>REQUIRED. The 6-character session_index returned by start_session. The server resolves this index to a planning folder under .engineering/artifacts/planning/ and reads/writes session.json there. The index is stable across all tool calls in the session — there is no rotation discipline.</td></tr>
-          <tr><td><code>checkpoint_id</code></td><td><code>string</code></td><td>yes</td><td>The ID of the checkpoint being yielded.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>checkpoint_id</code></td><td><code>string</code></td><td>yes</td><td>Id of the checkpoint step you are yielding.</td></tr>
           </tbody>
         </table>
         </div>
@@ -291,13 +287,14 @@
         <p class="tool-summary">Resume execution after the orchestrator resolves a checkpoint.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Resume execution after the orchestrator resolves a checkpoint. Call this tool when the orchestrator resumes you with a checkpoint response. It verifies the checkpoint was resolved (no activeCheckpoint in state) and returns any variable updates you need to apply to your state.</p>
+          <p>Call after the orchestrator resolves a checkpoint and resumes you.</p>
+          <p>Verifies the checkpoint is cleared and returns any variable updates to apply before continuing the activity.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>REQUIRED. The 6-character session_index returned by start_session. The server resolves this index to a planning folder under .engineering/artifacts/planning/ and reads/writes session.json there. The index is stable across all tool calls in the session — there is no rotation discipline.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           </tbody>
         </table>
         </div>
@@ -307,13 +304,14 @@
         <p class="tool-summary">Load the full details of the currently-active checkpoint for the session.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Load the full details of the currently-active checkpoint for the session. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any auto-advance configuration. Use this when you need to present a checkpoint interaction to the user based on a worker's yield. Reads the active checkpoint from state.activeCheckpoint — no separate checkpoint handle is needed.</p>
+          <p>Loads the active checkpoint's message, options, and effects so you can show it to the user.</p>
+          <p>Reads from <code>state.activeCheckpoint</code> — no separate checkpoint handle is needed.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>REQUIRED. The 6-character session_index returned by start_session. The server resolves this index to a planning folder under .engineering/artifacts/planning/ and reads/writes session.json there. The index is stable across all tool calls in the session — there is no rotation discipline.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           </tbody>
         </table>
         </div>
@@ -323,16 +321,19 @@
         <p class="tool-summary">Submit a checkpoint response to clear the active-checkpoint gate.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Submit a checkpoint response to clear the active-checkpoint gate. *MUST* present the checkpoint to the user and wait for their input. Exactly one of option_id, auto_advance, or condition_not_met must be provided. option_id: the user's selected option (works for all checkpoint types, enforces minimum response time). auto_advance: use the checkpoint's defaultOption (only for checkpoints with autoAdvanceMs; the server enforces the full timer). condition_not_met: dismiss a conditional checkpoint whose condition evaluated to false (only valid when the checkpoint has a condition field). setVariable effects are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation. Reads the active checkpoint from state.activeCheckpoint — no separate checkpoint handle is needed.</p>
+          <p>Submits the user's checkpoint decision and clears the active checkpoint.</p>
+          <p>Present the checkpoint to the user and wait for input before calling this.</p>
+          <p>Provide exactly one of: <code>option_id</code> (user picked an option), <code>auto_advance</code> (timer elapsed on a checkpoint with a default), or <code>condition_not_met</code> (conditional checkpoint whose condition was false).</p>
+          <p>Variable effects from the chosen option are applied; type mismatches produce warnings in <code>_meta.validation</code> but do not block the response.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>REQUIRED. The 6-character session_index returned by start_session. The server resolves this index to a planning folder under .engineering/artifacts/planning/ and reads/writes session.json there. The index is stable across all tool calls in the session — there is no rotation discipline.</td></tr>
-          <tr><td><code>option_id</code></td><td><code>string</code></td><td>no</td><td>The option ID selected by the user. Must match one of the checkpoint's defined options.</td></tr>
-          <tr><td><code>auto_advance</code></td><td><code>boolean</code></td><td>no</td><td>Set to true to auto-advance a checkpoint using its defaultOption. Only valid for checkpoints with defaultOption and autoAdvanceMs. The server enforces the autoAdvanceMs timer. If you use auto_advance, present a message to the user that you are proceeding with the default option because no input was provided.</td></tr>
-          <tr><td><code>condition_not_met</code></td><td><code>boolean</code></td><td>no</td><td>Set to true to dismiss a conditional checkpoint whose condition was not met. Only valid for checkpoints that have a condition field.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>option_id</code></td><td><code>string</code></td><td>no</td><td>Option the user selected. Must match one of the checkpoint's defined options.</td></tr>
+          <tr><td><code>auto_advance</code></td><td><code>boolean</code></td><td>no</td><td>Set <code>true</code> to use the checkpoint's default option after its timer elapses.</td></tr>
+          <tr><td><code>condition_not_met</code></td><td><code>boolean</code></td><td>no</td><td>Set <code>true</code> to dismiss a conditional checkpoint whose condition evaluated to false.</td></tr>
           </tbody>
         </table>
         </div>
@@ -344,15 +345,19 @@
         <p class="tool-summary">Load a single composed technique within the current workflow or activity.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Load a single composed technique within the current workflow or activity. If called before next_activity (no current activity), it loads the workflow's first declared technique. During an activity, it resolves the technique reference from the activity definition; with step_id, it loads the technique assigned to that step; without step_id, the activity's first declared technique. The returned technique is fully COMPOSED: it inherits its workflow-root <code>techniques/TECHNIQUE.md</code> base contract recursively — never the meta root for a non-meta workflow. Contract-inherited inputs/outputs are delivered under marked <code>inherited_inputs</code>/<code>inherited_outputs</code> blocks (each with a scope note) distinct from the technique's own <code>inputs</code>/<code>outputs</code>; rules are merged; ancestor Initial/Final protocol blocks wrap the descendant protocol and the server renumbers. A step-bound fetch also annotates the binding seam: each of the technique's own inputs carries a <code>source:</code> (step-binding value, workflow variable, prior step output, declared default, or UNRESOLVED — the latter also a warn-only validation warning), inherited entries carry one only where it adds to their scope note (step-binding override or a producer positioned later in the workflow), each remapped output carries a <code>destination:</code>, and a <code>provenance_note</code> states the output delivery mechanics. Annotations are static — resolved from declarations and document order — so payloads are deterministic per corpus and step. Techniques are loaded one at a time. In a session with context_mode &quot;persistent&quot;, a refetch whose composed content is byte-identical to what this session+agent already received returns a short unchanged-reference ({ delivery: unchanged, content_hash }) instead of the full payload; pass full: true to force full content. Every fetch (either delivery path) is recorded in the session history as a technique_fetched event (resolved technique id, bound step_id when supplied, agent); next_activity's manifest validation reads these events and warns — advisory only — when a manifested technique step had no fetch during the activity.</p>
+          <p>Fetches one technique for the current workflow or activity.</p>
+          <p>Before any activity is active, returns the workflow's first technique. During an activity, use <code>step_id</code> to fetch a specific step's technique, or omit <code>step_id</code> for the activity's first technique.</p>
+          <p>The response is fully composed: inherited inputs/outputs and merged rules from ancestor techniques, plus binding annotations when fetched via a step.</p>
+          <p>Techniques load one at a time. In persistent context mode, an identical refetch may return a short unchanged marker; pass <code>full: true</code> to get the full payload again.</p>
+          <p>Every fetch is recorded for trace and advisory manifest checks on the next <code>next_activity</code> call.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>REQUIRED. The 6-character session_index returned by start_session. The server resolves this index to a planning folder under .engineering/artifacts/planning/ and reads/writes session.json there. The index is stable across all tool calls in the session — there is no rotation discipline.</td></tr>
-          <tr><td><code>step_id</code></td><td><code>string</code></td><td>no</td><td>Optional. Step ID within the current activity (e.g., &quot;define-problem&quot;). If omitted, returns the activity's first declared technique, or the workflow's first declared technique if no activity is active.</td></tr>
-          <tr><td><code>full</code></td><td><code>boolean</code></td><td>no</td><td>Optional. Set true to force full content delivery even when the session's persistent context mode would answer a byte-identical refetch with an unchanged-reference. Use when your context no longer holds the earlier delivery (e.g. it was summarized away).</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>step_id</code></td><td><code>string</code></td><td>no</td><td>Step within the current activity. Omit to get the first technique for the activity or workflow.</td></tr>
+          <tr><td><code>full</code></td><td><code>boolean</code></td><td>no</td><td>Force full technique content even when persistent mode would return an unchanged marker.</td></tr>
           </tbody>
         </table>
         </div>
@@ -362,14 +367,17 @@
         <p class="tool-summary">Load a resource by its id, optionally narrowed to a single section.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Load a resource by its id, optionally narrowed to a single section. Use this to fetch resources referenced in technique content (e.g. a template hyperlinked from an Input/Output). The resource_id is a text-only slug — bare (e.g., &quot;review-mode&quot;) resolves within the session's workflow, or prefixed cross-workflow (e.g., &quot;meta/bootstrap-protocol&quot;) resolves from the named workflow. Append a <code>#section</code> anchor (GitHub-style heading slug, e.g. &quot;assumption-reconciliation#integration-with-assumptions-log&quot;) to return only that section and its body — used to fetch just the template a technique references without the whole file. Returns the resource content, id, and version. Each fetch is recorded in the session history as a resource_fetched event (observability only — no validation reads it).</p>
+          <p>Loads reference material by id — templates, guides, or other markdown resources linked from techniques.</p>
+          <p>Bare ids (<code>review-mode</code>) resolve within the current workflow. Prefixed ids (<code>meta/bootstrap-protocol</code>) load from another workflow.</p>
+          <p>Add <code>#section</code> to fetch one heading slice instead of the whole file.</p>
+          <p>Each fetch is logged for observability only; nothing validates that you called it.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>REQUIRED. The 6-character session_index returned by start_session. The server resolves this index to a planning folder under .engineering/artifacts/planning/ and reads/writes session.json there. The index is stable across all tool calls in the session — there is no rotation discipline.</td></tr>
-          <tr><td><code>resource_id</code></td><td><code>string</code></td><td>yes</td><td>Resource ref — bare slug (&quot;review-mode&quot;), cross-workflow prefixed (&quot;meta/bootstrap-protocol&quot;), each optionally suffixed with a &quot;#section&quot; heading anchor to return only that section (e.g. &quot;assumption-reconciliation#integration-with-assumptions-log&quot;)</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>resource_id</code></td><td><code>string</code></td><td>yes</td><td>Resource slug, optionally workflow-prefixed (<code>meta/bootstrap-protocol</code>), optionally with <code>#section</code> anchor.</td></tr>
           </tbody>
         </table>
         </div>
@@ -381,14 +389,15 @@
         <p class="tool-summary">Retrieve the execution trace for the current workflow session.</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Retrieve the execution trace for the current workflow session. Accepts an optional array of trace_tokens accumulated from next_activity _meta.trace_token responses to reconstruct a specific trace segment. If no trace_tokens are provided, returns the full in-memory trace for the current session (requires server-side tracing to be enabled). Use this for debugging, auditing, or reviewing the sequence of tool calls made during the session.</p>
+          <p>Returns the tool-call history for debugging or audit.</p>
+          <p>Pass accumulated <code>trace_tokens</code> from <code>next_activity</code> responses to reconstruct a specific segment. Omit them to read the live in-memory trace for the session.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>REQUIRED. The 6-character session_index returned by start_session. The server resolves this index to a planning folder under .engineering/artifacts/planning/ and reads/writes session.json there. The index is stable across all tool calls in the session — there is no rotation discipline.</td></tr>
-          <tr><td><code>trace_tokens</code></td><td><code>string[]</code></td><td>no</td><td>Accumulated trace tokens from next_activity _meta.trace_token responses. If not provided, returns the full in-memory trace for the current session.</td></tr>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>trace_tokens</code></td><td><code>string[]</code></td><td>no</td><td>Tokens collected from <code>next_activity</code> <code>_meta.trace_token</code> responses.</td></tr>
           </tbody>
         </table>
         </div>
@@ -398,10 +407,7 @@
 
 
 <!-- BEGIN GENERATED PAGINATION -->
-  <nav class="page-pagination" aria-label="Page sequence">
-    <span></span>
-    <a class="page-pagination__next" href="./schemas.html">Schemas →</a>
-  </nav>
+
 <!-- END GENERATED PAGINATION -->
 
 <footer class="site-footer">
@@ -411,5 +417,6 @@
   </div>
 </footer>
 
+<script src="../nav.js" defer></script>
 </body>
 </html>

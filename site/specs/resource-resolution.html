@@ -12,27 +12,19 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-title" href="../">Workflow Server</a>
+    <a class="site-title" href="../index.html">Workflow Server</a>
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../">Home</a></li>
+        <li><a href="../guide/getting-started.html">Getting started</a></li>
+        <li><a href="../guide/definitions.html">Definitions</a></li>
+        <li><a href="../api/tools.html">API</a></li>
         <li>
           <details class="site-nav__group">
-            <summary>Guide</summary>
-            <ul>
-              <li><a href="../guide/getting-started.html">Getting started</a></li>
-              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
-              <li><a href="../guide/concepts.html">Concepts</a></li>
-              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group" open>
             <summary>Architecture</summary>
             <ul>
               <li><a href="./architecture.html">Overview</a></li>
+              <li><a href="./workflows.html">Workflows</a></li>
               <li><a href="./dispatch.html">Dispatch</a></li>
               <li><a href="./checkpoints.html">Checkpoints</a></li>
               <li><a href="./state-management.html">State</a></li>
@@ -44,33 +36,19 @@
         </li>
         <li>
           <details class="site-nav__group">
-            <summary>API</summary>
-            <ul>
-              <li><a href="../api/tools.html">Tools</a></li>
-              <li><a href="../api/schemas.html">Schemas</a></li>
-              <li><a href="../api/protocol.html">Protocol guide</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Internals</summary>
-            <ul>
-              <li><a href="../internals/server-anatomy.html">Server anatomy</a></li>
-              <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
-              <li><a href="../internals/session-store.html">Session store</a></li>
-              <li><a href="../internals/quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
             <summary>Design</summary>
             <ul>
-              <li><a href="../design/rationale.html">Design rationale</a></li>
+              <li><a href="../design/overview.html">Overview</a></li>
+              <li><a href="../design/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="../design/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="../design/protocol.html">Protocol</a></li>
+              <li><a href="../design/session-store.html">Session store</a></li>
+              <li><a href="../design/quality-system.html">Quality system</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
             </ul>
           </details>
         </li>
+        <li><a href="../specifications.html">Specifications</a></li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
@@ -90,7 +68,7 @@
 
 <main id="main">
   <h1>Technique and resource resolution</h1>
-  <p class="lede">Context windows are precious, so nothing loads that isn't needed. All behaviour is composed from techniques — markdown capability definitions referenced by <code>::</code>-paths — resolved workflow-first with a shared <code>meta</code> fallback, delivered as bundles, and backed by reference material that loads only on demand.</p>
+  <p class="lede" id="why-disclosure">Context windows are precious, so definitions arrive at the granularity of need — workflow metadata at <code>get_workflow</code>, one activity at <code>get_activity</code>, one technique per step at <code>get_technique</code>, resources only when a technique cites them. All behaviour is composed from techniques (markdown capability definitions referenced by <code>::</code>-paths), resolved workflow-first with a shared <code>meta</code> fallback, delivered as bundles, and backed by reference material that loads only on demand.</p>
   <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/resource_resolution_model.md">docs/resource_resolution_model.md</a>. The normative file anatomy is the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md">technique protocol specification</a>.</p>
 
   <figure class="diagram">
@@ -130,27 +108,223 @@
         <line x1="790" y1="124" x2="790" y2="186" marker-end="url(#arrowz)"/>
         <path d="M 646 220 C 590 220, 570 260, 554 268" marker-end="url(#arrowz)" stroke-dasharray="5 4"/>
       </g>
-      <g font-size="13" fill="var(--diagram-note)" text-anchor="middle">
-        <text x="200" y="34">1. look here first</text>
-        <text x="472" y="94">2. fallback</text>
-        <text x="855" y="160">grouped into</text>
-        <text x="648" y="330">links rewritten into fetchable refs</text>
+      <g font-size="13" fill="var(--diagram-note)">
+        <text x="560" y="48" text-anchor="start">1. look here first</text>
+        <text x="560" y="94" text-anchor="start">2. fallback</text>
+        <text x="855" y="160" text-anchor="middle">grouped into</text>
+        <text x="648" y="330" text-anchor="middle">links rewritten into fetchable refs</text>
       </g>
     </svg>
     <figcaption>Reference resolution. A reference tries the current workflow's techniques first, then the shared <code>meta</code> layer (a same-named local technique shadows the meta one). The resolved body arrives with its rules auto-included, grouped into a <code>techniques</code> / <code>rules</code> / <code>unresolved</code> bundle; resource links inside it are rewritten into <code>get_resource</code> refs and fetched lazily.</figcaption>
   </figure>
 
   <h2 id="techniques">One kind of technique</h2>
-  <p>A technique is a markdown file whose slug is its canonical id — standalone (<code>techniques/{slug}.md</code>) or grouped (<code>techniques/{group}/TECHNIQUE.md</code> with nested <code>{sub}.md</code> siblings; a nested technique is itself a technique). Its published shape: identity (<code>id</code>, <code>version</code>, <code>capability</code>), optional <code>inputs</code> and <code>outputs</code> (outputs may carry an <code>artifact</code> filename), an ordered <code>protocol</code> of imperative steps, and named <code>rules</code> — behavioural invariants that ride along with the technique.</p>
+  <p class="prose">A technique is a markdown file whose slug is its canonical id. There is one kind of technique — standalone files and grouped folders use the same published shape on the wire.</p>
+  <ul class="prose">
+    <li><strong>Identity</strong> — <code>id</code>, <code>version</code>, <code>capability</code></li>
+    <li><strong>Inputs / outputs</strong> — optional typed slots; outputs may name an <code>artifact</code> filename</li>
+    <li><strong>Protocol</strong> — ordered imperative steps the agent follows</li>
+    <li><strong>Rules</strong> — named behavioural invariants bundled with the technique</li>
+  </ul>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 210" role="img" aria-labelledby="tech-files-title tech-files-desc">
+      <title id="tech-files-title">Technique file layouts</title>
+      <desc id="tech-files-desc">A standalone technique is a single markdown file. A grouped technique is a folder with TECHNIQUE.md and nested sub-technique files.</desc>
+      <g font-size="14" font-weight="600" text-anchor="middle">
+        <rect x="60" y="30" width="360" height="150" rx="12" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="240" y="58" fill="var(--diagram-label)">standalone</text>
+        <rect x="90" y="78" width="300" height="44" rx="8" fill="var(--bg)" stroke="var(--border)"/>
+        <text x="240" y="106" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13">techniques/plan.md</text>
+        <text x="240" y="158" fill="var(--diagram-note)" font-size="12.5" font-weight="400">slug = filename</text>
+        <rect x="540" y="30" width="360" height="150" rx="12" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="720" y="58" fill="var(--diagram-label)">grouped</text>
+        <rect x="570" y="72" width="300" height="32" rx="6" fill="var(--bg)" stroke="var(--border)"/>
+        <text x="720" y="93" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">review-assumptions/TECHNIQUE.md</text>
+        <rect x="570" y="112" width="300" height="32" rx="6" fill="var(--bg)" stroke="var(--border)"/>
+        <text x="720" y="133" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">review-assumptions/collect.md</text>
+        <text x="720" y="168" fill="var(--diagram-note)" font-size="12.5" font-weight="400">nested ref: review-assumptions::collect</text>
+      </g>
+    </svg>
+    <figcaption>Two on-disk layouts, one delivery model. A nested <code>{sub}.md</code> is a full technique in its own right — not a fragment of the parent file.</figcaption>
+  </figure>
 
   <h2 id="references">References</h2>
-  <p>Activities and workflows compose behaviour by listing <code>::</code>-delimited references: <code>[workflow::]technique[::nested…]</code>. A same-workflow reference omits the workflow segment; a trailing segment that matches no nested technique is matched against the technique's rule names instead (a group prefix expands to every <code>{group}-*</code> rule). Anything that matches nothing surfaces in the <code>unresolved</code> bucket — never silently dropped.</p>
+  <p class="prose">Activities and workflows compose behaviour by listing <code>::</code>-delimited references. The path has up to three parts:</p>
+  <ul class="prose">
+    <li><strong>Workflow</strong> (optional) — omit for the current workflow; prefix to reach another workflow</li>
+    <li><strong>Technique</strong> — standalone slug or group folder name</li>
+    <li><strong>Nested segment</strong> (optional) — sub-technique inside a group, or a rule name if no sub-technique matches</li>
+  </ul>
+  <p class="prose">A group prefix like <code>agent-conduct</code> can expand to every <code>agent-conduct-*</code> rule. Anything that matches nothing lands in the <code>unresolved</code> bucket — never silently dropped.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 110" role="img" aria-labelledby="ref-anatomy-title ref-anatomy-desc">
+      <title id="ref-anatomy-title">Reference path anatomy</title>
+      <desc id="ref-anatomy-desc">Optional workflow prefix, technique name, optional nested or rule segment, separated by double colons.</desc>
+      <g font-size="14" font-weight="600" text-anchor="middle">
+        <rect x="80" y="36" width="170" height="48" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="165" y="66" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12.5">[workflow::]</text>
+        <text x="280" y="66" fill="var(--diagram-note)" font-size="18" font-weight="400">::</text>
+        <rect x="300" y="36" width="200" height="48" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="400" y="66" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12.5">technique</text>
+        <text x="520" y="66" fill="var(--diagram-note)" font-size="18" font-weight="400">::</text>
+        <rect x="540" y="36" width="200" height="48" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="640" y="66" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12.5">[nested…]</text>
+        <text x="165" y="104" fill="var(--diagram-note)" font-size="12" font-weight="400">cross-workflow</text>
+        <text x="400" y="104" fill="var(--diagram-note)" font-size="12" font-weight="400">required</text>
+        <text x="640" y="104" fill="var(--diagram-note)" font-size="12" font-weight="400">sub-technique or rule</text>
+      </g>
+    </svg>
+    <figcaption>The general reference form. Slashes in a path are normalised to <code>::</code> at resolution time.</figcaption>
+  </figure>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 130" role="img" aria-labelledby="ref-ex-title ref-ex-desc">
+      <title id="ref-ex-title">Example technique references</title>
+      <desc id="ref-ex-desc">Three example references: bare name, nested sub-technique, and cross-workflow prefixed path.</desc>
+      <g font-size="13" font-weight="600" text-anchor="middle">
+        <rect x="60" y="28" width="260" height="40" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="190" y="54" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12.5">plan</text>
+        <rect x="350" y="28" width="260" height="40" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="480" y="54" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11.5">review-assumptions::collect</text>
+        <rect x="640" y="28" width="260" height="40" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="770" y="54" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11">meta::agent-conduct::file-sensitivity</text>
+        <text x="190" y="88" font-size="12" fill="var(--diagram-note)" font-weight="400">same workflow</text>
+        <text x="480" y="88" font-size="12" fill="var(--diagram-note)" font-weight="400">nested sub-technique</text>
+        <text x="770" y="88" font-size="12" fill="var(--diagram-note)" font-weight="400">explicit workflow prefix</text>
+        <text x="480" y="118" font-size="12.5" fill="var(--diagram-note)">Inline invocations in step text resolve to the same bodies</text>
+      </g>
+    </svg>
+    <figcaption><strong>Example:</strong> bare names resolve workflow-first with a <code>meta</code> fallback; nested segments address sub-techniques; a leading workflow segment reaches shared layers explicitly.</figcaption>
+  </figure>
 
   <h2 id="delivery">Delivery at workflow and activity granularity</h2>
-  <p>Agents never chain resolution calls at runtime. <code>get_workflow</code> returns the orchestrator bundle — the workflow's declared references plus the core orchestrator set the server auto-includes (engine traversal, checkpoint flow, dispatch, discipline). <code>get_activity</code> returns the worker bundle — the activity's references, the workflow's inherited <code>techniques.activity</code>, plus the core worker set (yield/resume, finalize, conduct rules). When a technique is delivered, ancestor containers' <code>Initial</code>/<code>Final</code> protocol blocks wrap the technique's own protocol recursively, and the combined sequence is renumbered.</p>
+  <p class="prose">Agents never chain resolution calls at runtime. The server pre-resolves reference lists into bundles when you call:</p>
+  <ul class="prose">
+    <li><code>get_workflow</code> — orchestrator bundle: workflow-declared refs plus core orchestrator techniques (engine traversal, checkpoints, dispatch, discipline)</li>
+    <li><code>get_activity</code> — worker bundle: activity refs, inherited <code>techniques.activity</code> from the workflow, plus core worker techniques (yield/resume, finalize, conduct rules)</li>
+  </ul>
+  <p class="prose">Each bundle groups resolved content into three buckets. When a single technique is delivered, ancestor <code>Initial</code> / <code>Final</code> protocol blocks wrap the technique body recursively and the server renumbers the combined sequence. In persistent-context mode, reference-not-repeat delivery replaces already-delivered content with <code>unchanged</code> hash markers; fetch recording warns when a manifested step was never loaded.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 170" role="img" aria-labelledby="bundle-title bundle-desc">
+      <title id="bundle-title">Delivery bundle buckets</title>
+      <desc id="bundle-desc">Resolved references are grouped into techniques, rules, and unresolved buckets.</desc>
+      <g font-size="14.5" font-weight="600" text-anchor="middle">
+        <rect x="80" y="40" width="240" height="72" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="200" y="68" fill="var(--diagram-label)">techniques</text>
+        <text x="200" y="90" fill="var(--diagram-note)" font-size="12.5" font-weight="400">path → composed body</text>
+        <rect x="360" y="40" width="240" height="72" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="480" y="68" fill="var(--diagram-label)">rules</text>
+        <text x="480" y="90" fill="var(--diagram-note)" font-size="12.5" font-weight="400">auto-included invariants</text>
+        <rect x="640" y="40" width="240" height="72" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="760" y="68" fill="var(--diagram-label)">unresolved</text>
+        <text x="760" y="90" fill="var(--diagram-note)" font-size="12.5" font-weight="400">explicit misses</text>
+      </g>
+      <text x="480" y="140" font-size="12.5" text-anchor="middle" fill="var(--diagram-note)">Empty buckets are omitted from the wire response</text>
+    </svg>
+    <figcaption>What a resolved bundle contains. Technique bodies arrive composed; remaining rules ride along; unresolved refs are surfaced plainly.</figcaption>
+  </figure>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 240" role="img" aria-labelledby="del-src-title del-src-desc">
+      <title id="del-src-title">Where each bundle comes from</title>
+      <desc id="del-src-desc">get_workflow and get_activity each union declared references with a core auto-included set, then resolve into the same three buckets.</desc>
+      <defs>
+        <marker id="arrowdel" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="14" font-weight="600" text-anchor="middle">
+        <rect x="40" y="24" width="300" height="44" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="190" y="52" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13">get_workflow</text>
+        <rect x="70" y="88" width="240" height="44" rx="8" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="190" y="116" fill="var(--diagram-label)" font-size="12.5">workflow techniques.workflow</text>
+        <rect x="70" y="142" width="240" height="44" rx="8" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="190" y="170" fill="var(--diagram-label)" font-size="12.5">core orchestrator set</text>
+        <rect x="620" y="24" width="300" height="44" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="770" y="52" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13">get_activity</text>
+        <rect x="650" y="88" width="240" height="44" rx="8" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="770" y="116" fill="var(--diagram-label)" font-size="12.5">activity techniques[]</text>
+        <rect x="650" y="142" width="240" height="44" rx="8" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="770" y="170" fill="var(--diagram-label)" font-size="12.5">workflow techniques.activity</text>
+        <rect x="650" y="196" width="240" height="44" rx="8" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="770" y="224" fill="var(--diagram-label)" font-size="12.5">core worker set</text>
+        <rect x="360" y="108" width="240" height="64" rx="12" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="480" y="136" fill="var(--diagram-label)">resolved bundle</text>
+        <text x="480" y="158" fill="var(--diagram-note)" font-size="12" font-weight="400" font-family="ui-monospace, Menlo, Consolas, monospace">techniques · rules · unresolved</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
+        <line x1="190" y1="68" x2="190" y2="84" marker-end="url(#arrowdel)"/>
+        <line x1="190" y1="132" x2="190" y2="138" marker-end="url(#arrowdel)"/>
+        <path d="M 310 160 C 360 160, 380 140, 404 140" marker-end="url(#arrowdel)"/>
+        <line x1="770" y1="68" x2="770" y2="84" marker-end="url(#arrowdel)"/>
+        <line x1="770" y1="132" x2="770" y2="138" marker-end="url(#arrowdel)"/>
+        <line x1="770" y1="186" x2="770" y2="192" marker-end="url(#arrowdel)"/>
+        <path d="M 650 210 C 600 210, 560 170, 556 140" marker-end="url(#arrowdel)"/>
+      </g>
+    </svg>
+    <figcaption>Two entry points, one bundle shape. Orchestrator and worker each receive the union of what their YAML declares and what the server always includes for that role. Duplicates are deduplicated before resolution.</figcaption>
+  </figure>
 
   <h2 id="resources">Resources: lazy by design</h2>
-  <p>Large reference material — CLI guides, templates, API notes — never rides along in bundles. A technique links a resource with an ordinary markdown hyperlink; at delivery the server rewrites those links into <code>get_resource</code>-callable refs (<code>{id}[#section]</code>, or <code>{workflow}/{id}[#section]</code> across workflows). The agent fetches one only when it actually needs it, and a <code>#section</code> anchor narrows the fetch to a single heading — a template, not the whole file.</p>
+  <p class="prose">Large reference material — CLI guides, templates, API notes — never rides along in technique bundles. At delivery time the server rewrites markdown hyperlinks inside a technique into fetchable <code>get_resource</code> refs. The agent calls <code>get_resource</code> only when the running technique actually needs the linked material.</p>
+  <p class="prose">Resource ids support:</p>
+  <ul class="prose">
+    <li><strong>Bare slug</strong> — resolved in the session's current workflow</li>
+    <li><strong>Workflow prefix</strong> — <code>meta/activity-worker-prompt</code> pulls from another workflow's <code>resources/</code> folder</li>
+    <li><strong>Section anchor</strong> — <code>#heading-slug</code> returns one heading block, not the whole file</li>
+  </ul>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 200" role="img" aria-labelledby="res-link-title res-link-desc">
+      <title id="res-link-title">From markdown link to fetchable ref</title>
+      <desc id="res-link-desc">A technique contains a markdown hyperlink; delivery rewrites it; the agent calls get_resource when needed.</desc>
+      <defs>
+        <marker id="arrowrr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="14" font-weight="600" text-anchor="middle">
+        <rect x="40" y="50" width="200" height="60" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="140" y="76" fill="var(--diagram-label)">technique body</text>
+        <text x="140" y="96" fill="var(--diagram-note)" font-size="12" font-weight="400">markdown hyperlink</text>
+        <rect x="300" y="50" width="220" height="60" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="410" y="76" fill="var(--diagram-label)">delivery rewrite</text>
+        <text x="410" y="96" fill="var(--diagram-note)" font-size="12" font-weight="400">callable resource ref</text>
+        <rect x="580" y="50" width="160" height="60" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="660" y="76" fill="var(--diagram-label)">agent</text>
+        <text x="660" y="96" fill="var(--diagram-note)" font-size="12" font-weight="400">needs content</text>
+        <rect x="800" y="50" width="120" height="60" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="860" y="84" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">get_resource</text>
+        <rect x="300" y="140" width="360" height="44" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="480" y="168" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">workflows/&lt;wf&gt;/resources/&lt;slug&gt;.md</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
+        <line x1="240" y1="80" x2="296" y2="80" marker-end="url(#arrowrr)"/>
+        <path d="M 520 80 L 576 80" marker-end="url(#arrowrr)" stroke-dasharray="6 4"/>
+        <line x1="740" y1="80" x2="796" y2="80" marker-end="url(#arrowrr)"/>
+        <line x1="660" y1="110" x2="660" y2="126" marker-end="url(#arrowrr)"/>
+        <path d="M 660 126 L 480 136" marker-end="url(#arrowrr)"/>
+      </g>
+      <text x="480" y="128" font-size="12" text-anchor="middle" fill="var(--diagram-note)">on demand</text>
+    </svg>
+    <figcaption>Resources stay out of bundles. The technique carries a ref; the agent fetches the markdown file when execution reaches the link.</figcaption>
+  </figure>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 100" role="img" aria-labelledby="res-fetch-title res-fetch-desc">
+      <title id="res-fetch-title">Example resource fetch</title>
+      <desc id="res-fetch-desc">A cross-workflow resource id with an optional section anchor.</desc>
+      <g font-size="13" font-weight="600" text-anchor="middle">
+        <rect x="140" y="24" width="680" height="44" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="480" y="52" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12">meta/activity-worker-prompt#worker-brief</text>
+      </g>
+      <text x="480" y="88" font-size="12" text-anchor="middle" fill="var(--diagram-note)">Loads from meta/resources/ and returns only the worker-brief section</text>
+    </svg>
+    <figcaption><strong>Example:</strong> prefixed ids reach shared libraries; <code>#section</code> narrows a large resource to the template the technique actually needs.</figcaption>
+  </figure>
 
   <h2 id="related">Related</h2>
   <p>How techniques declare inputs/outputs and how binding works is the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md">technique protocol specification</a>; what the resolved bundles look like on the wire is in the <a href="../api/tools.html">tool reference</a>.</p>
@@ -171,5 +345,6 @@
   </div>
 </footer>
 
+<script src="../nav.js" defer></script>
 </body>
 </html>

@@ -83,33 +83,6 @@ body {
   line-height: 1.65;
 }
 
-/* Readable prose measure; tables and diagrams stay full shell width */
-.prose,
-.hero .lede,
-main > p,
-main > ul:not(.card-grid):not(.pill-row):not(.steps),
-main > ol:not(.steps),
-.card p,
-.tool-summary,
-.schema-summary,
-.note {
-  max-width: 65ch;
-}
-
-main > h1,
-main > h2,
-main > h3,
-.breadcrumb,
-.page-pagination,
-.audience-badge,
-.implementer-panel,
-figure.diagram,
-.table-wrap,
-.card-grid,
-.steps {
-  max-width: var(--shell);
-}
-
 /* Text and graphics both flow to the full shell width, left-aligned to the
    shell edge, so the page uses the available screen width consistently. */
 h1, h2, h3 {
@@ -342,7 +315,6 @@ main,
   background: var(--bg-inset);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  max-width: 65ch;
 }
 
 .implementer-panel > summary,
@@ -360,9 +332,13 @@ main,
 }
 
 .takeaway {
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: var(--space-2);
+  margin: 0 0 var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-inset);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
 }
 
 .contributor-note {
@@ -372,7 +348,6 @@ main,
   border-radius: 0 var(--radius) var(--radius) 0;
   font-size: 0.95rem;
   color: var(--text-muted);
-  max-width: 65ch;
 }
 
 .card-grid--personas {
@@ -513,6 +488,22 @@ tbody tr:last-child td { border-bottom: none; }
 .tool + .tool { border-top: 1px solid var(--border); padding-top: var(--space-3); }
 
 .tool-summary { color: var(--text-muted); }
+
+.param-table .param-scope {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  white-space: nowrap;
+  vertical-align: top;
+  border-right: 1px solid var(--border);
+}
+
+.param-table--nested tbody tr.param-row--nested td {
+  border-top: 1px solid var(--border);
+}
+
+.param-table--nested tbody tr.param-row--group-start td {
+  border-top-width: 2px;
+}
 
 .no-params { color: var(--text-muted); font-style: italic; }
 

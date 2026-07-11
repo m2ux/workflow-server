@@ -23,7 +23,7 @@ const GITHUB_BLOB = 'https://github.com/m2ux/workflow-server/blob/main';
 // ---------------------------------------------------------------------------
 // Site route registry
 
-export type SiteSection = 'home' | 'guide' | 'specs' | 'api' | 'internals' | 'design';
+export type SiteSection = 'home' | 'guide' | 'specs' | 'api' | 'design' | 'specifications';
 
 export interface SiteRoute {
   relPath: string;
@@ -40,33 +40,42 @@ export interface SiteRoute {
 export const SITE_ROUTES: SiteRoute[] = [
   { relPath: 'index.html', section: 'home', title: 'Home', navLabel: 'Home' },
   { relPath: 'guide/getting-started.html', section: 'guide', title: 'Getting started', navLabel: 'Getting started', sequence: 1 },
-  { relPath: 'guide/ide-setup.html', section: 'guide', title: 'IDE setup', navLabel: 'IDE setup', sequence: 2 },
-  { relPath: 'guide/concepts.html', section: 'guide', title: 'Concepts', navLabel: 'Concepts', sequence: 3 },
-  { relPath: 'guide/running-workflows.html', section: 'guide', title: 'Running workflows', navLabel: 'Running workflows', sequence: 4 },
+  { relPath: 'guide/definitions.html', section: 'guide', title: 'Definitions', navLabel: 'Definitions', sequence: 2 },
+  { relPath: 'specifications.html', section: 'specifications', title: 'Specifications', navLabel: 'Specifications', sequence: 1 },
   { relPath: 'specs/architecture.html', section: 'specs', title: 'Architecture overview', navLabel: 'Overview', sequence: 0, breadcrumbLabel: 'Architecture' },
-  { relPath: 'specs/dispatch.html', section: 'specs', title: 'Hierarchical dispatch', navLabel: 'Dispatch', sequence: 1, parent: 'specs/architecture.html', breadcrumbLabel: 'Dispatch' },
-  { relPath: 'specs/checkpoints.html', section: 'specs', title: 'Just-in-time checkpoints', navLabel: 'Checkpoints', sequence: 2, parent: 'specs/architecture.html', breadcrumbLabel: 'Checkpoints' },
-  { relPath: 'specs/state-management.html', section: 'specs', title: 'State management', navLabel: 'State', sequence: 3, parent: 'specs/architecture.html', breadcrumbLabel: 'State' },
-  { relPath: 'specs/artifact-management.html', section: 'specs', title: 'Artifact management', navLabel: 'Artifacts', sequence: 4, parent: 'specs/architecture.html', breadcrumbLabel: 'Artifacts' },
-  { relPath: 'specs/resource-resolution.html', section: 'specs', title: 'Resource resolution', navLabel: 'Resolution', sequence: 5, parent: 'specs/architecture.html', breadcrumbLabel: 'Resolution' },
-  { relPath: 'specs/workflow-fidelity.html', section: 'specs', title: 'Workflow fidelity', navLabel: 'Fidelity', sequence: 6, parent: 'specs/architecture.html', breadcrumbLabel: 'Fidelity' },
-  { relPath: 'api/tools.html', section: 'api', title: 'MCP tool reference', navLabel: 'Tools', sequence: 1 },
-  { relPath: 'api/schemas.html', section: 'api', title: 'Schema reference', navLabel: 'Schemas', sequence: 2 },
-  { relPath: 'api/protocol.html', section: 'api', title: 'Protocol in practice', navLabel: 'Protocol guide', sequence: 3 },
-  { relPath: 'internals/server-anatomy.html', section: 'internals', title: 'Server anatomy', navLabel: 'Server anatomy', sequence: 1 },
-  { relPath: 'internals/request-lifecycle.html', section: 'internals', title: 'Request lifecycle', navLabel: 'Request lifecycle', sequence: 2 },
-  { relPath: 'internals/session-store.html', section: 'internals', title: 'Session store', navLabel: 'Session store', sequence: 3 },
-  { relPath: 'internals/quality-system.html', section: 'internals', title: 'Quality system', navLabel: 'Quality system', sequence: 4 },
-  { relPath: 'design/rationale.html', section: 'design', title: 'Design rationale', navLabel: 'Design rationale', sequence: 1 },
+  { relPath: 'specs/workflows.html', section: 'specs', title: 'Workflow architecture', navLabel: 'Workflows', sequence: 1, parent: 'specs/architecture.html', breadcrumbLabel: 'Workflows' },
+  { relPath: 'specs/dispatch.html', section: 'specs', title: 'Hierarchical dispatch', navLabel: 'Dispatch', sequence: 2, parent: 'specs/architecture.html', breadcrumbLabel: 'Dispatch' },
+  { relPath: 'specs/checkpoints.html', section: 'specs', title: 'Just-in-time checkpoints', navLabel: 'Checkpoints', sequence: 3, parent: 'specs/architecture.html', breadcrumbLabel: 'Checkpoints' },
+  { relPath: 'specs/state-management.html', section: 'specs', title: 'State management', navLabel: 'State', sequence: 4, parent: 'specs/architecture.html', breadcrumbLabel: 'State' },
+  { relPath: 'specs/artifact-management.html', section: 'specs', title: 'Artifact management', navLabel: 'Artifacts', sequence: 5, parent: 'specs/architecture.html', breadcrumbLabel: 'Artifacts' },
+  { relPath: 'specs/resource-resolution.html', section: 'specs', title: 'Resource resolution', navLabel: 'Resolution', sequence: 6, parent: 'specs/architecture.html', breadcrumbLabel: 'Resolution' },
+  { relPath: 'specs/workflow-fidelity.html', section: 'specs', title: 'Workflow fidelity', navLabel: 'Fidelity', sequence: 7, parent: 'specs/architecture.html', breadcrumbLabel: 'Fidelity' },
+  { relPath: 'api/tools.html', section: 'api', title: 'MCP tool reference', navLabel: 'API', sequence: 1 },
+  { relPath: 'design/overview.html', section: 'design', title: 'Design overview', navLabel: 'Overview', sequence: 0, breadcrumbLabel: 'Design' },
+  { relPath: 'design/server-anatomy.html', section: 'design', title: 'Server anatomy', navLabel: 'Server anatomy', sequence: 1, parent: 'design/overview.html', breadcrumbLabel: 'Server anatomy' },
+  { relPath: 'design/request-lifecycle.html', section: 'design', title: 'Request lifecycle', navLabel: 'Request lifecycle', sequence: 2, parent: 'design/overview.html', breadcrumbLabel: 'Request lifecycle' },
+  { relPath: 'design/protocol.html', section: 'design', title: 'Protocol', navLabel: 'Protocol', sequence: 3, parent: 'design/overview.html', breadcrumbLabel: 'Protocol' },
+  { relPath: 'design/session-store.html', section: 'design', title: 'Session store', navLabel: 'Session store', sequence: 4, parent: 'design/overview.html', breadcrumbLabel: 'Session store' },
+  { relPath: 'design/quality-system.html', section: 'design', title: 'Quality system', navLabel: 'Quality system', sequence: 5, parent: 'design/overview.html', breadcrumbLabel: 'Quality system' },
+  { relPath: 'api/schemas.html', section: 'design', title: 'Schema reference', navLabel: 'Schemas', sequence: 6, parent: 'design/overview.html', breadcrumbLabel: 'Schemas' },
 ];
 
 const ROUTE_BY_PATH = new Map(SITE_ROUTES.map(r => [r.relPath, r]));
 
-const NAV_SECTIONS: Array<{ id: SiteSection; label: string }> = [
-  { id: 'guide', label: 'Guide' },
+const SECTION_LABELS: Record<SiteSection, string> = {
+  home: 'Home',
+  guide: 'Guide',
+  specs: 'Architecture',
+  design: 'Design',
+  api: 'API',
+  specifications: 'Specifications',
+};
+
+/** Sections rendered as direct nav links before dropdowns. */
+const NAV_TOP_LEVEL_SECTIONS: SiteSection[] = ['guide', 'api'];
+
+const NAV_DROPDOWN_SECTIONS: Array<{ id: SiteSection; label: string }> = [
   { id: 'specs', label: 'Architecture' },
-  { id: 'api', label: 'API' },
-  { id: 'internals', label: 'Internals' },
   { id: 'design', label: 'Design' },
 ];
 
@@ -75,10 +84,15 @@ function routePrefix(relPath: string): string {
   return depth === 0 ? '' : '../'.repeat(depth);
 }
 
+function navScriptHref(pageRelPath: string): string {
+  const prefix = routePrefix(pageRelPath);
+  return `${prefix}nav.js`;
+}
+
 function hrefFrom(pageRelPath: string, targetRelPath: string): string {
   if (targetRelPath === 'index.html') {
     const depth = pageRelPath.split('/').length - 1;
-    return depth === 0 ? './' : '../'.repeat(depth);
+    return depth === 0 ? './index.html' : `${'../'.repeat(depth)}index.html`;
   }
   const fromDir = dirname(join(SITE_DIR, pageRelPath));
   const target = join(SITE_DIR, targetRelPath);
@@ -93,18 +107,22 @@ function routesInSection(section: SiteSection): SiteRoute[] {
 }
 
 export function renderSiteNav(pageRelPath: string): string {
-  const current = ROUTE_BY_PATH.get(pageRelPath);
-  const homeHref = hrefFrom(pageRelPath, 'index.html');
   const lines: string[] = [];
   lines.push('    <nav class="site-nav" aria-label="Documentation">');
   lines.push('      <ul class="site-nav__primary">');
-  lines.push(`        <li><a href="${homeHref}"${current?.section === 'home' ? ' aria-current="page"' : ''}>Home</a></li>`);
 
-  for (const { id, label } of NAV_SECTIONS) {
+  for (const section of NAV_TOP_LEVEL_SECTIONS) {
+    for (const item of routesInSection(section)) {
+      const href = hrefFrom(pageRelPath, item.relPath);
+      const isCurrent = pageRelPath === item.relPath;
+      lines.push(`        <li><a href="${href}"${isCurrent ? ' aria-current="page"' : ''}>${escapeHtml(item.navLabel)}</a></li>`);
+    }
+  }
+
+  for (const { id, label } of NAV_DROPDOWN_SECTIONS) {
     const items = routesInSection(id);
-    const inSection = current?.section === id;
     lines.push('        <li>');
-    lines.push(`          <details class="site-nav__group"${inSection ? ' open' : ''}>`);
+    lines.push('          <details class="site-nav__group">');
     lines.push(`            <summary>${escapeHtml(label)}</summary>`);
     lines.push('            <ul>');
     for (const item of items) {
@@ -117,6 +135,12 @@ export function renderSiteNav(pageRelPath: string): string {
     lines.push('        </li>');
   }
 
+  for (const item of routesInSection('specifications')) {
+    const href = hrefFrom(pageRelPath, item.relPath);
+    const isCurrent = pageRelPath === item.relPath;
+    lines.push(`        <li><a href="${href}"${isCurrent ? ' aria-current="page"' : ''}>${escapeHtml(item.navLabel)}</a></li>`);
+  }
+
   lines.push('        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>');
   lines.push('      </ul>');
   lines.push('    </nav>');
@@ -127,14 +151,21 @@ export function renderBreadcrumb(pageRelPath: string): string {
   const route = ROUTE_BY_PATH.get(pageRelPath);
   if (!route || route.section === 'home') return '';
 
+  if (route.section === 'guide' || route.section === 'api' || route.section === 'specifications') {
+    return [
+      '  <nav class="breadcrumb" aria-label="Breadcrumb">',
+      '    <ol>',
+      `      <li aria-current="page">${escapeHtml(route.navLabel)}</li>`,
+      '    </ol>',
+      '  </nav>',
+    ].join('\n');
+  }
+
   const crumbs: Array<{ label: string; href?: string }> = [];
-  const sectionLabel = NAV_SECTIONS.find(s => s.id === route.section)?.label ?? route.section;
+  const sectionLabel = SECTION_LABELS[route.section];
   const hub = routesInSection(route.section).find(r => r.sequence === 0);
 
-  if (route.section === 'design') {
-    crumbs.push({ label: 'Design' });
-    crumbs.push({ label: route.navLabel });
-  } else if (hub && route.parent === hub.relPath) {
+  if (hub && route.parent === hub.relPath) {
     crumbs.push({ label: sectionLabel, href: hrefFrom(pageRelPath, hub.relPath) });
     crumbs.push({ label: route.breadcrumbLabel ?? route.navLabel });
   } else if (hub && route.relPath === hub.relPath) {
@@ -283,6 +314,130 @@ const TOOL_GROUPS: Array<{ title: string; note: string; tools: string[] }> = [
   { title: 'Trace', note: 'Execution history for debugging and audit.', tools: ['get_trace'] },
 ];
 
+/** Plain-language one-line summaries for the site (source descriptions stay authoritative for MCP). */
+const SITE_TOOL_SUMMARIES: Partial<Record<string, string>> = {
+  start_session: 'Start or resume a workflow session.',
+  dispatch_child: 'Start a child workflow inside the current session.',
+  get_activity: 'Load the current activity definition, including steps and transitions.',
+};
+
+/** Readable full descriptions for the site. Parameter tables still come from source schemas. */
+const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
+  discover: [
+    'Call this first. Returns the server name, version, and the bootstrap steps for starting a workflow.',
+    'No session required. Use `list_workflows` to see what you can run.',
+  ],
+  list_workflows: [
+    'Lists every workflow the server can run, with id, title, version, and tags.',
+    'If some workflow files cannot be loaded, you still get the working entries plus a `load_errors` list for the failures.',
+  ],
+  health_check: [
+    'Quick ping to confirm the server is up. Returns status, name, version, workflow count, and uptime.',
+    'No session required.',
+  ],
+  start_session: [
+    'Opens a new workflow session or resumes an existing one.',
+    'Returns a `session_index` (six characters), basic workflow metadata, and `planning_folder_path` — the absolute path where the server stores session artifacts.',
+    'Pass `planning_folder` as any absolute path whose basename is your planning slug (for example, `.../planning/2026-05-28-my-slug`). Only the slug is used; the server resolves it under its own workspace. A stale or wrong path prefix is harmless.',
+    'If that slug already has `session.json`, the session resumes and `workflow_id` is ignored. Otherwise the server creates a fresh session and seeds variables from the workflow defaults.',
+    'Omit `planning_folder` to start a meta bootstrap session in a temp folder. Use `dispatch_child` later to promote it to a real planning folder.',
+    'Child workflows are started with `dispatch_child`, not `start_session`.',
+  ],
+  get_workflow_status: [
+    'Returns whether the session is active, blocked at a checkpoint, or completed, plus the current activity and completed steps.',
+    'If the session is nested under a parent, parent context is included too.',
+  ],
+  dispatch_child: [
+    'Starts a child workflow inside the parent session you are already in.',
+    'Returns the child\'s `session_index` and `planning_folder_path`. The child\'s variables are seeded from the child workflow\'s defaults; the parent is unchanged.',
+    'The child state is stored inside the parent\'s `session.json` under `triggeredWorkflows`.',
+    'When the parent is a temporary meta-bootstrap session, the server first promotes it to a real planning folder on disk, then embeds the child. You can keep using the parent\'s original `session_index`.',
+  ],
+  get_workflow: [
+    'Loads the workflow definition for the current session.',
+    'The response starts with the orchestrator technique, then a separator, then metadata: rules, variables, `initialActivity` (the first activity to run), and a short list of all activities.',
+    'Use `initialActivity` for your first `next_activity` call — this is the only tool that returns it.',
+    'Also returns `planning_folder_path`. Treat this as the one true artifact location; do not build paths relative to your own working directory.',
+    'If some activity files failed to load, `activity_load_errors` lists them and those activities are omitted from the list.',
+  ],
+  next_activity: [
+    'Moves the session to a new activity. This is the orchestrator\'s advance call — it updates state and records the trace but does not return the activity body.',
+    'After `next_activity`, the worker should call `get_activity` to load steps, checkpoints, transitions, and technique references.',
+    'For the first transition, use `initialActivity` from `get_workflow`. After that, use ids from the current activity\'s `transitions`.',
+    'Optional `step_manifest` and `transition_condition` help the server validate what you completed. Manifest checks are advisory — mismatches produce warnings, not hard errors.',
+  ],
+  get_activity: [
+    'Loads the full definition for whatever activity the session is currently on. No `activity_id` parameter — the server reads it from session state.',
+    'You must pass `context_tokens`: your worker\'s context window size in tokens. The server uses this to decide how many step techniques to bundle inline.',
+    'Ungated techniques that fit the budget are included in the response under `step_techniques` — the same content you would get from `get_technique` for that step. Gated steps and overflow techniques still need a separate `get_technique` call.',
+    'If the session uses persistent context mode (or you pass `bundle: "reference"`), content you already received may come back as short unchanged markers instead of full text. Pass `bundle: "full"` to force full delivery.',
+  ],
+  yield_checkpoint: [
+    'Call when a checkpoint step tells you to stop and hand control to the orchestrator.',
+    'Records the checkpoint as active and returns the `session_index` for a `<checkpoint_yield>` block in your output.',
+  ],
+  resume_checkpoint: [
+    'Call after the orchestrator resolves a checkpoint and resumes you.',
+    'Verifies the checkpoint is cleared and returns any variable updates to apply before continuing the activity.',
+  ],
+  present_checkpoint: [
+    'Loads the active checkpoint\'s message, options, and effects so you can show it to the user.',
+    'Reads from `state.activeCheckpoint` — no separate checkpoint handle is needed.',
+  ],
+  respond_checkpoint: [
+    'Submits the user\'s checkpoint decision and clears the active checkpoint.',
+    'Present the checkpoint to the user and wait for input before calling this.',
+    'Provide exactly one of: `option_id` (user picked an option), `auto_advance` (timer elapsed on a checkpoint with a default), or `condition_not_met` (conditional checkpoint whose condition was false).',
+    'Variable effects from the chosen option are applied; type mismatches produce warnings in `_meta.validation` but do not block the response.',
+  ],
+  get_technique: [
+    'Fetches one technique for the current workflow or activity.',
+    'Before any activity is active, returns the workflow\'s first technique. During an activity, use `step_id` to fetch a specific step\'s technique, or omit `step_id` for the activity\'s first technique.',
+    'The response is fully composed: inherited inputs/outputs and merged rules from ancestor techniques, plus binding annotations when fetched via a step.',
+    'Techniques load one at a time. In persistent context mode, an identical refetch may return a short unchanged marker; pass `full: true` to get the full payload again.',
+    'Every fetch is recorded for trace and advisory manifest checks on the next `next_activity` call.',
+  ],
+  get_resource: [
+    'Loads reference material by id — templates, guides, or other markdown resources linked from techniques.',
+    'Bare ids (`review-mode`) resolve within the current workflow. Prefixed ids (`meta/bootstrap-protocol`) load from another workflow.',
+    'Add `#section` to fetch one heading slice instead of the whole file.',
+    'Each fetch is logged for observability only; nothing validates that you called it.',
+  ],
+  get_trace: [
+    'Returns the tool-call history for debugging or audit.',
+    'Pass accumulated `trace_tokens` from `next_activity` responses to reconstruct a specific segment. Omit them to read the live in-memory trace for the session.',
+  ],
+};
+
+/** Shorter parameter descriptions for the site tables (schemas in source stay authoritative). */
+const SITE_PARAM_HINTS: Record<string, string> = {
+  session_index: 'Six-character token from `start_session`. Use the same value for every call in this session.',
+  workflow_id: 'Workflow id to run or dispatch (for example, `work-package`).',
+  planning_folder: 'Absolute path whose basename is the planning slug. The server resolves the slug under its own workspace — the directory prefix is only a hint.',
+  agent_id: 'Label for this agent in the session trace.',
+  context_mode: '`persistent`: reuse earlier deliveries when one agent keeps full context. `fresh` (default): always return full content.',
+  planning_slug: 'Slug for the promoted planning folder when dispatching from a meta bootstrap session. Ignored if the parent already has a persistent folder.',
+  activity_id: 'Activity to move to. First call: use `initialActivity` from `get_workflow`. Later: use an id from `transitions`.',
+  transition_condition: 'The condition name that led to this transition, from the previous activity.',
+  step_manifest: 'Steps completed in the previous activity, for example `[{ "step_id": "detect-review-mode", "output": "is_review_mode=false" }]`. Omit if no steps ran.',
+  'step_manifest[].step_id': 'Step id from the activity definition (field name is `step_id`, not `id`).',
+  'step_manifest[].output': 'Short summary of what the step produced. Use a JSON object when the step has multiple outputs.',
+  activity_manifest: 'History of completed activities with outcomes and transition conditions.',
+  'activity_manifest[].activity_id': 'Completed activity id.',
+  'activity_manifest[].outcome': 'Short outcome summary for that activity.',
+  'activity_manifest[].transition_condition': 'Condition that led out of that activity, if any.',
+  context_tokens: 'Your worker context window in tokens. Required so the server can size inline technique bundling.',
+  bundle: '`reference`: return unchanged markers for content already delivered. `full`: always return complete text.',
+  checkpoint_id: 'Id of the checkpoint step you are yielding.',
+  option_id: 'Option the user selected. Must match one of the checkpoint\'s defined options.',
+  auto_advance: 'Set `true` to use the checkpoint\'s default option after its timer elapses.',
+  condition_not_met: 'Set `true` to dismiss a conditional checkpoint whose condition evaluated to false.',
+  step_id: 'Step within the current activity. Omit to get the first technique for the activity or workflow.',
+  full: 'Force full technique content even when persistent mode would return an unchanged marker.',
+  resource_id: 'Resource slug, optionally workflow-prefixed (`meta/bootstrap-protocol`), optionally with `#section` anchor.',
+  trace_tokens: 'Tokens collected from `next_activity` `_meta.trace_token` responses.',
+};
+
 // ---------------------------------------------------------------------------
 // HTML rendering
 
@@ -299,6 +454,17 @@ function firstSentence(text: string): string {
   const match = trimmed.match(/^[^.!?]+[.!?]/);
   if (match) return match[0];
   return trimmed.length > 160 ? `${trimmed.slice(0, 157)}…` : trimmed;
+}
+
+function siteParamDescription(label: string, fallback?: string): string {
+  if (SITE_PARAM_HINTS[label]) return SITE_PARAM_HINTS[label];
+  const base = label.split('.').pop() ?? label;
+  if (SITE_PARAM_HINTS[base]) return SITE_PARAM_HINTS[base];
+  return fallback ?? '-';
+}
+
+function renderGuideParagraphs(paragraphs: string[]): string {
+  return paragraphs.map(p => `          <p>${richText(p)}</p>`).join('\n');
 }
 
 function typeLabel(prop: JsonSchemaNode): string {
@@ -326,15 +492,47 @@ function paramRows(schema: JsonSchemaNode, prefix = '', topLevelOnly = false): s
     const label = `${prefix}${name}`;
     if (topLevelOnly && prefix !== '') continue;
     const notes: string[] = [];
-    if (prop.description) notes.push(richText(prop.description));
+    const hint = siteParamDescription(label, prop.description);
+    if (hint !== '-') notes.push(richText(hint));
     if (prop.default !== undefined) notes.push(`Default: <code>${escapeHtml(JSON.stringify(prop.default))}</code>`);
     rows.push(
       `          <tr><td><code>${escapeHtml(label)}</code></td><td><code>${escapeHtml(typeLabel(prop))}</code></td>` +
       `<td>${required.has(name) ? 'yes' : 'no'}</td><td>${notes.join(' ') || '-'}</td></tr>`,
     );
-    if (prop.type === 'array' && prop.items?.properties) {
+    if (!topLevelOnly && prop.type === 'array' && prop.items?.properties) {
       rows.push(...paramRows(prop.items, `${label}[].`, topLevelOnly));
     }
+  }
+  return rows;
+}
+
+function nestedParamRows(schema: JsonSchemaNode): string[] {
+  const rows: string[] = [];
+  let groupIndex = 0;
+  for (const [name, prop] of Object.entries(schema.properties ?? {})) {
+    if (prop.type !== 'array' || !prop.items?.properties) continue;
+    const scope = `${name}[]`;
+    const fields = Object.entries(prop.items.properties);
+    const itemRequired = new Set(prop.items.required ?? []);
+    fields.forEach(([field, fieldProp], index) => {
+      const fullLabel = `${name}[].${field}`;
+      const notes: string[] = [];
+      const hint = siteParamDescription(fullLabel, fieldProp.description);
+      if (hint !== '-') notes.push(richText(hint));
+      if (fieldProp.default !== undefined) {
+        notes.push(`Default: <code>${escapeHtml(JSON.stringify(fieldProp.default))}</code>`);
+      }
+      const groupClass = index === 0 && groupIndex > 0 ? ' param-row--group-start' : '';
+      const scopeCell = index === 0
+        ? `<td class="param-scope" rowspan="${fields.length}"><code>${escapeHtml(scope)}</code></td>`
+        : '';
+      rows.push(
+        `          <tr class="param-row--nested${groupClass}">${scopeCell}<td><code>${escapeHtml(field)}</code></td>` +
+        `<td><code>${escapeHtml(typeLabel(fieldProp))}</code></td>` +
+        `<td>${itemRequired.has(field) ? 'yes' : 'no'}</td><td>${notes.join(' ') || '-'}</td></tr>`,
+      );
+    });
+    groupIndex += 1;
   }
   return rows;
 }
@@ -344,8 +542,23 @@ function renderParamTable(schema: JsonSchemaNode, topLevelOnly: boolean): string
   if (rows.length === 0) return '';
   return [
     '        <div class="table-wrap">',
-    '        <table>',
+    '        <table class="param-table">',
     '          <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>',
+    '          <tbody>',
+    ...rows,
+    '          </tbody>',
+    '        </table>',
+    '        </div>',
+  ].join('\n');
+}
+
+function renderNestedParamTable(schema: JsonSchemaNode): string {
+  const rows = nestedParamRows(schema);
+  if (rows.length === 0) return '';
+  return [
+    '        <div class="table-wrap">',
+    '        <table class="param-table param-table--nested">',
+    '          <thead><tr><th scope="col">In</th><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>',
     '          <tbody>',
     ...rows,
     '          </tbody>',
@@ -356,29 +569,42 @@ function renderParamTable(schema: JsonSchemaNode, topLevelOnly: boolean): string
 
 function renderTool(tool: CapturedTool): string {
   const lines: string[] = [];
-  const summary = firstSentence(tool.description);
-  const hasLongDescription = tool.description.length > summary.length + 20;
+  const siteGuide = SITE_TOOL_GUIDES[tool.name];
+  const summary = SITE_TOOL_SUMMARIES[tool.name] ?? firstSentence(tool.description);
+  const hasSiteGuide = siteGuide !== undefined && siteGuide.length > 0;
+  const hasLongSource = tool.description.length > summary.length + 20;
 
   lines.push(`      <section class="tool" id="${escapeHtml(tool.name)}">`);
   lines.push(`        <h3><code>${escapeHtml(tool.name)}</code></h3>`);
   lines.push(`        <p class="tool-summary">${richText(summary)}</p>`);
-  if (hasLongDescription) {
+  if (hasSiteGuide || hasLongSource) {
     lines.push('        <details class="tool-details">');
     lines.push('          <summary>Full description</summary>');
-    lines.push(`          <p>${richText(tool.description)}</p>`);
+    if (hasSiteGuide) {
+      lines.push(renderGuideParagraphs(siteGuide));
+    } else {
+      lines.push(`          <p>${richText(tool.description)}</p>`);
+    }
     lines.push('        </details>');
   } else if (tool.description !== summary) {
     lines.push(`        <p>${richText(tool.description)}</p>`);
   }
 
   if (tool.params) {
-    const allRows = paramRows(tool.params);
     const topRows = paramRows(tool.params, '', true);
-    const hasNested = allRows.length > topRows.length;
+    const nestedRows = nestedParamRows(tool.params);
+    const hasNested = nestedRows.length > 0;
+    const allRows = paramRows(tool.params);
     if (topRows.length > 0) {
-      lines.push(renderParamTable(tool.params, true).replace('Parameter', 'Parameter').replace(/^        /gm, '        '));
+      lines.push(renderParamTable(tool.params, true));
     }
-    if (hasNested || allRows.length > 6) {
+    if (hasNested) {
+      lines.push('        <details class="tool-details">');
+      lines.push('          <summary>Nested fields</summary>');
+      lines.push('          <p class="table-caption">Each item in these arrays is an object with the fields below.</p>');
+      lines.push(renderNestedParamTable(tool.params));
+      lines.push('        </details>');
+    } else if (allRows.length > 6) {
       lines.push('        <details class="tool-details">');
       lines.push('          <summary>All parameters</summary>');
       lines.push(renderParamTable(tool.params, false));
@@ -558,10 +784,25 @@ export function renderSitePages(): Array<{ relPath: string; content: string }> {
     content = injectRegion(content, renderBreadcrumb(relPath), 'BREADCRUMB');
     content = injectRegion(content, renderPagination(relPath), 'PAGINATION');
 
+    const homeHref = hrefFrom(relPath, 'index.html');
+    const siteTitle = relPath === 'index.html'
+      ? `<a class="site-title" href="${homeHref}" aria-current="page">Workflow Server</a>`
+      : `<a class="site-title" href="${homeHref}">Workflow Server</a>`;
+    content = content.replace(
+      /<a class="site-title" href="[^"]*"(?: aria-current="page")?>Workflow Server<\/a>/,
+      siteTitle,
+    );
+
     const body = renderContentRegion(relPath);
     if (body !== null) {
       content = injectRegion(content, body, 'CONTENT');
     }
+
+    const navScript = `<script src="${navScriptHref(relPath)}" defer></script>`;
+    if (!content.includes('nav.js')) {
+      content = content.replace('</body>', `${navScript}\n</body>`);
+    }
+
     results.push({ relPath, content });
   }
   return results;

@@ -12,27 +12,19 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-title" href="../">Workflow Server</a>
+    <a class="site-title" href="../index.html">Workflow Server</a>
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../">Home</a></li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Guide</summary>
-            <ul>
-              <li><a href="../guide/getting-started.html">Getting started</a></li>
-              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
-              <li><a href="../guide/concepts.html">Concepts</a></li>
-              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
-            </ul>
-          </details>
-        </li>
+        <li><a href="../guide/getting-started.html">Getting started</a></li>
+        <li><a href="../guide/definitions.html">Definitions</a></li>
+        <li><a href="../api/tools.html">API</a></li>
         <li>
           <details class="site-nav__group">
             <summary>Architecture</summary>
             <ul>
               <li><a href="../specs/architecture.html">Overview</a></li>
+              <li><a href="../specs/workflows.html">Workflows</a></li>
               <li><a href="../specs/dispatch.html">Dispatch</a></li>
               <li><a href="../specs/checkpoints.html">Checkpoints</a></li>
               <li><a href="../specs/state-management.html">State</a></li>
@@ -44,33 +36,19 @@
         </li>
         <li>
           <details class="site-nav__group">
-            <summary>API</summary>
-            <ul>
-              <li><a href="../api/tools.html">Tools</a></li>
-              <li><a href="../api/schemas.html">Schemas</a></li>
-              <li><a href="../api/protocol.html">Protocol guide</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group" open>
-            <summary>Internals</summary>
-            <ul>
-              <li><a href="./server-anatomy.html" aria-current="page">Server anatomy</a></li>
-              <li><a href="./request-lifecycle.html">Request lifecycle</a></li>
-              <li><a href="./session-store.html">Session store</a></li>
-              <li><a href="./quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
             <summary>Design</summary>
             <ul>
-              <li><a href="../design/rationale.html">Design rationale</a></li>
+              <li><a href="./overview.html">Overview</a></li>
+              <li><a href="./server-anatomy.html" aria-current="page">Server anatomy</a></li>
+              <li><a href="./request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="./protocol.html">Protocol</a></li>
+              <li><a href="./session-store.html">Session store</a></li>
+              <li><a href="./quality-system.html">Quality system</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
             </ul>
           </details>
         </li>
+        <li><a href="../specifications.html">Specifications</a></li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
@@ -82,7 +60,7 @@
 <!-- BEGIN GENERATED BREADCRUMB -->
   <nav class="breadcrumb" aria-label="Breadcrumb">
     <ol>
-      <li>Internals</li>
+      <li><a href="./overview.html">Design</a></li>
       <li aria-current="page">Server anatomy</li>
     </ol>
   </nav>
@@ -90,7 +68,7 @@
 
 <main id="main">
   <h1>Server anatomy</h1>
-  <p class="lede prose">The <a href="../specs/architecture.html">architecture models</a> describe guarantees; this page maps them to code in <a href="https://github.com/m2ux/workflow-server/tree/main/src"><code>src/</code></a>.</p>
+  <p class="lede prose">The workflow-server codebase in <a href="https://github.com/m2ux/workflow-server/tree/main/src"><code>src/</code></a>: entry point, tool registrars, loaders, session machinery, and validators.</p>
   <p class="prose contributor-note">For contributors. Build and test instructions: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/development.md">Development guide (source)</a>.</p>
 
   <h2 id="shape">The shape of the codebase</h2>
@@ -174,11 +152,11 @@
   </div>
 
   <h2 id="cross-cutting">The layer every call passes through</h2>
-  <p>Three functions form a choke point that every authenticated tool call traverses, which is what makes the server's observability and integrity guarantees uniform rather than per-tool:</p>
+  <p class="prose">There is no central router — each tool is a closure registered at startup — but session-bound handlers follow the same skeleton so logging, seal checks, and persistence are uniform. Every handler is wrapped in <code>withAuditLog</code>. Tools that take a <code>session_index</code> call <code>loadSessionForTool</code> before touching state and <code>saveSessionForTool</code> after any mutation. Bootstrap entry points — <code>discover</code>, <code>list_workflows</code>, <code>health_check</code>, and <code>start_session</code> — get audit logging only. The worked example is <a href="./request-lifecycle.html">request lifecycle</a>.</p>
   <ol class="steps">
-    <li><strong><code>withAuditLog</code></strong> (<a href="https://github.com/m2ux/workflow-server/blob/main/src/logging.ts"><code>logging.ts</code></a>) wraps each handler — it times the call, emits a structured audit event to stderr, and appends a trace event to the session's <code>TraceStore</code> buffer.</li>
-    <li><strong><code>loadSessionForTool</code></strong> (<a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/resolver.ts"><code>session/resolver.ts</code></a>) resolves the <code>session_index</code> to a planning folder, verifies the HMAC seal, and validates <code>session.json</code> against the session schema before the handler sees any state.</li>
-    <li><strong><code>saveSessionForTool</code></strong> persists the updated state atomically and recomputes the seal, so no code path can write state without resealing it.</li>
+    <li><strong><code>withAuditLog</code></strong> (<a href="https://github.com/m2ux/workflow-server/blob/main/src/logging.ts"><code>logging.ts</code></a>) — outermost wrapper on every registered handler. It times the call, emits a structured audit event to stderr, and — when the parameters include a <code>session_index</code> — appends a trace event to the session's in-process <code>TraceStore</code> buffer. This runs on success and on thrown errors alike, so a failed seal check or validation still leaves an audit and trace record.</li>
+    <li><strong><code>loadSessionForTool</code></strong> (<a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/resolver.ts"><code>session/resolver.ts</code></a>) — resolves the six-character <code>session_index</code> to a planning folder (<a href="./session-store.html#index">how the index maps to disk</a>), verifies the HMAC seal on <code>session.json</code> against <code>.session-token</code>, and parses the file into typed <code>SessionFile</code> state. Child sessions dispatched via <code>dispatch_child</code> live inside the parent's <code>session.json</code>; the loader navigates to the embedded sub-state the index addresses. If the seal does not match or the file fails schema validation, the call stops here — the handler never runs on state the server cannot vouch for.</li>
+    <li><strong><code>advanceSession</code></strong> and <strong><code>saveSessionForTool</code></strong> (<a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/resolver.ts"><code>session/resolver.ts</code></a>) — the write path. Handlers that change state build the next snapshot with <code>advanceSession</code> (increments <code>seq</code>, refreshes <code>ts</code>, applies a mutator callback), then pass it to <code>saveSessionForTool</code>, which merges embedded child updates back into the top-level file, canonicalises the JSON, recomputes the HMAC, and atomically writes <code>session.json</code> and <code>.session-token</code>. Read-only tools such as <code>get_activity</code> may still call save when they record delivery or fetch events in history.</li>
   </ol>
   <p>Everything cryptographic — session seals, session indexes, trace tokens — funnels to a single 32-byte server key created lazily at <code>~/.workflow-server/secret</code> (file mode <code>0600</code>) by <a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/crypto.ts"><code>session/crypto.ts</code></a>. One key, three uses, one place to reason about it.</p>
 
@@ -197,11 +175,11 @@
       </tbody>
     </table>
   </div>
-  <p>How these surface to a calling agent — and how they differ from non-blocking validation warnings — is covered in <a href="../api/protocol.html">the protocol in practice</a>.</p>
+  <p>How these surface to a calling agent — and how they differ from non-blocking validation warnings — is covered in <a href="../design/protocol.html">Protocol</a>.</p>
 
   <h2 id="disk">Where things live on disk</h2>
   <ul>
-    <li><strong>Workflow definitions</strong> are read from the configured workflow directory — in this repository, the <code>workflows/</code> worktree of the orphan <code>workflows</code> branch (<a href="../design/rationale.html#orphan-branch">why an orphan branch</a>).</li>
+    <li><strong>Workflow definitions</strong> are read from the configured workflow directory — in this repository, the <code>workflows/</code> worktree of the orphan <code>workflows</code> branch (<a href="../guide/getting-started.html#install">why an orphan branch</a>).</li>
     <li><strong>Session state</strong> is written under <code>&lt;workspace&gt;/.engineering/artifacts/planning/&lt;slug&gt;/</code> — the <a href="./session-store.html">session store</a> page covers the folder's contents.</li>
     <li><strong>The server key</strong> lives at <code>~/.workflow-server/secret</code>, per user, outside any repository.</li>
   </ul>
@@ -225,5 +203,6 @@
   </div>
 </footer>
 
+<script src="../nav.js" defer></script>
 </body>
 </html>

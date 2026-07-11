@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Quality system — Workflow Server</title>
-<meta name="description" content="How the repository defends its invariants: the guard-script suite, baseline ratchets, the test architecture, and the generated-then-guarded documentation pipelines.">
+<meta name="description" content="How the repository defends its invariants: the guard-script suite, the test architecture, and the generated-then-guarded documentation pipelines.">
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -12,27 +12,19 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-title" href="../">Workflow Server</a>
+    <a class="site-title" href="../index.html">Workflow Server</a>
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../">Home</a></li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Guide</summary>
-            <ul>
-              <li><a href="../guide/getting-started.html">Getting started</a></li>
-              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
-              <li><a href="../guide/concepts.html">Concepts</a></li>
-              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
-            </ul>
-          </details>
-        </li>
+        <li><a href="../guide/getting-started.html">Getting started</a></li>
+        <li><a href="../guide/definitions.html">Definitions</a></li>
+        <li><a href="../api/tools.html">API</a></li>
         <li>
           <details class="site-nav__group">
             <summary>Architecture</summary>
             <ul>
               <li><a href="../specs/architecture.html">Overview</a></li>
+              <li><a href="../specs/workflows.html">Workflows</a></li>
               <li><a href="../specs/dispatch.html">Dispatch</a></li>
               <li><a href="../specs/checkpoints.html">Checkpoints</a></li>
               <li><a href="../specs/state-management.html">State</a></li>
@@ -44,33 +36,19 @@
         </li>
         <li>
           <details class="site-nav__group">
-            <summary>API</summary>
-            <ul>
-              <li><a href="../api/tools.html">Tools</a></li>
-              <li><a href="../api/schemas.html">Schemas</a></li>
-              <li><a href="../api/protocol.html">Protocol guide</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group" open>
-            <summary>Internals</summary>
-            <ul>
-              <li><a href="./server-anatomy.html">Server anatomy</a></li>
-              <li><a href="./request-lifecycle.html">Request lifecycle</a></li>
-              <li><a href="./session-store.html">Session store</a></li>
-              <li><a href="./quality-system.html" aria-current="page">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
             <summary>Design</summary>
             <ul>
-              <li><a href="../design/rationale.html">Design rationale</a></li>
+              <li><a href="./overview.html">Overview</a></li>
+              <li><a href="./server-anatomy.html">Server anatomy</a></li>
+              <li><a href="./request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="./protocol.html">Protocol</a></li>
+              <li><a href="./session-store.html">Session store</a></li>
+              <li><a href="./quality-system.html" aria-current="page">Quality system</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
             </ul>
           </details>
         </li>
+        <li><a href="../specifications.html">Specifications</a></li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
@@ -82,7 +60,7 @@
 <!-- BEGIN GENERATED BREADCRUMB -->
   <nav class="breadcrumb" aria-label="Breadcrumb">
     <ol>
-      <li>Internals</li>
+      <li><a href="./overview.html">Design</a></li>
       <li aria-current="page">Quality system</li>
     </ol>
   </nav>
@@ -90,7 +68,7 @@
 
 <main id="main">
   <h1>Quality system</h1>
-  <p class="lede prose">Executable guards encode conventions that matter: reference integrity, naming rules, schema truthfulness, and site link integrity.</p>
+  <p class="lede prose">Executable guards encode conventions that matter: reference integrity, naming rules, schema truthfulness, and site link integrity. Recurring authoring mistakes become named anti-patterns, mechanical guards, and baselines that ratchet toward zero.</p>
   <p class="prose contributor-note">For contributors. Guards live in <a href="https://github.com/m2ux/workflow-server/tree/main/scripts"><code>scripts/</code></a> as <code>npm run check:*</code>; tests run under Vitest in <a href="https://github.com/m2ux/workflow-server/tree/main/tests"><code>tests/</code></a>.</p>
 
   <h2 id="guards">The guard suite</h2>
@@ -103,7 +81,7 @@
       <tbody>
         <tr><td><code>validate-workflow-yaml</code>, <code>validate-activities</code></td><td>Every workflow manifest and activity file parses and satisfies the schemas — a dry run of the server's own loaders.</td></tr>
         <tr><td><code>check-all-refs</code></td><td>Every technique reference resolves to a real technique; no misspellings, no dangling paths.</td></tr>
-        <tr><td><code>check-binding-fidelity</code></td><td>Step bindings are coherent end to end: arguments conform to declared inputs, reads resolve to a producer, outputs are consumed, and inputs have a source.</td></tr>
+        <tr><td><code>check-binding-fidelity</code></td><td>Step bindings are coherent end to end: arguments conform to declared inputs, reads resolve to a producer, outputs are consumed, and inputs have a source. Only <em>new</em> findings fail — known ones are listed in <a href="https://github.com/m2ux/workflow-server/blob/main/scripts/binding-fidelity-baseline.json"><code>binding-fidelity-baseline.json</code></a>.</td></tr>
         <tr><td><code>check-identifier-qualification</code></td><td>Technique input and output ids are qualified noun phrases (<code>completion_summary</code>, never a bare <code>summary</code>).</td></tr>
         <tr><td><code>check-technique-template</code></td><td>Technique markdown follows the normative structure of the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md">technique protocol</a>.</td></tr>
         <tr><td><code>check-resource-anchors</code></td><td>Every <code>#section</code> anchor a technique uses to reference a resource exists in that resource.</td></tr>
@@ -112,9 +90,6 @@
       </tbody>
     </table>
   </div>
-
-  <h2 id="baselines">Baselines: the ratchet</h2>
-  <p>Guards that arrived after the corpus grew would have failed on hundreds of pre-existing findings, so those guards carry a checked-in baseline (for example <a href="https://github.com/m2ux/workflow-server/blob/main/scripts/binding-fidelity-baseline.json"><code>binding-fidelity-baseline.json</code></a>): known findings are tolerated, <em>new</em> ones fail the check, and burning down the baseline is ordinary, visible work. A guard whose baseline is empty — identifier qualification is one — has been ratcheted all the way: the rule now holds everywhere. The pattern turns "we should clean this up eventually" into a number that can only go down.</p>
 
   <h2 id="tests">The test architecture</h2>
   <p>The Vitest suite (thirty-plus files) is organized around what could break:</p>
@@ -127,7 +102,7 @@
   </ul>
 
   <h2 id="pipelines">Generated, then guarded</h2>
-  <p>Two artifacts are machine-derived from the source, and both are guarded against drift rather than trusted to stay fresh:</p>
+  <p>Two artifacts are machine-derived from the source, and both are guarded against drift rather than trusted to stay fresh. The documentation site itself follows the same pattern — hand-authored pages with generated API regions — and <code>check-site-links</code> / <code>check-svg-layout</code> keep links and diagrams honest:</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 240" role="img" aria-labelledby="qp-title qp-desc">
@@ -179,13 +154,14 @@
   <p>The same discipline extends to deployment: the GitHub Pages workflow re-runs the site guards before publishing, so the deployed site is exactly the checked, committed one.</p>
 
   <h2 id="next">Next</h2>
-  <p>Why the project invests in mechanical guardrails rather than review vigilance is part of <a href="../design/rationale.html#guards">the design rationale</a>; the runtime half of the same philosophy is <a href="../specs/workflow-fidelity.html">workflow fidelity</a>.</p>
+  <p>Where this machinery lives in the server is <a href="./server-anatomy.html">server anatomy</a>; how runs are kept on-script at runtime is <a href="../specs/workflow-fidelity.html">workflow fidelity</a>.</p>
 </main>
 
 
 <!-- BEGIN GENERATED PAGINATION -->
   <nav class="page-pagination" aria-label="Page sequence">
     <a class="page-pagination__prev" href="./session-store.html">← Session store</a>
+    <a class="page-pagination__next" href="../api/schemas.html">Schemas →</a>
   </nav>
 <!-- END GENERATED PAGINATION -->
 
@@ -196,5 +172,6 @@
   </div>
 </footer>
 
+<script src="../nav.js" defer></script>
 </body>
 </html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Architecture — Workflow Server</title>
-<meta name="description" content="The workflow-server's architecture: six models covering dispatch, checkpoints, state, artifacts, resolution, and fidelity.">
+<meta name="description" content="The workflow-server's architecture: models covering dispatch, checkpoints, state, artifacts, resolution, and fidelity.">
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -12,27 +12,19 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-title" href="../">Workflow Server</a>
+    <a class="site-title" href="../index.html">Workflow Server</a>
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../">Home</a></li>
+        <li><a href="../guide/getting-started.html">Getting started</a></li>
+        <li><a href="../guide/definitions.html">Definitions</a></li>
+        <li><a href="../api/tools.html">API</a></li>
         <li>
           <details class="site-nav__group">
-            <summary>Guide</summary>
-            <ul>
-              <li><a href="../guide/getting-started.html">Getting started</a></li>
-              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
-              <li><a href="../guide/concepts.html">Concepts</a></li>
-              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group" open>
             <summary>Architecture</summary>
             <ul>
               <li><a href="./architecture.html" aria-current="page">Overview</a></li>
+              <li><a href="./workflows.html">Workflows</a></li>
               <li><a href="./dispatch.html">Dispatch</a></li>
               <li><a href="./checkpoints.html">Checkpoints</a></li>
               <li><a href="./state-management.html">State</a></li>
@@ -44,33 +36,19 @@
         </li>
         <li>
           <details class="site-nav__group">
-            <summary>API</summary>
-            <ul>
-              <li><a href="../api/tools.html">Tools</a></li>
-              <li><a href="../api/schemas.html">Schemas</a></li>
-              <li><a href="../api/protocol.html">Protocol guide</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Internals</summary>
-            <ul>
-              <li><a href="../internals/server-anatomy.html">Server anatomy</a></li>
-              <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
-              <li><a href="../internals/session-store.html">Session store</a></li>
-              <li><a href="../internals/quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
             <summary>Design</summary>
             <ul>
-              <li><a href="../design/rationale.html">Design rationale</a></li>
+              <li><a href="../design/overview.html">Overview</a></li>
+              <li><a href="../design/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="../design/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="../design/protocol.html">Protocol</a></li>
+              <li><a href="../design/session-store.html">Session store</a></li>
+              <li><a href="../design/quality-system.html">Quality system</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
             </ul>
           </details>
         </li>
+        <li><a href="../specifications.html">Specifications</a></li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
@@ -90,51 +68,9 @@
 
 <main id="main">
   <h1>Architecture</h1>
-  <p class="lede prose">A small state machine wrapped in an MCP tool surface: agents call tools, the server enforces the workflow definition and owns session state on disk.</p>
-  <p class="prose">Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/architecture.md">docs/architecture.md (edit)</a>.</p>
+  <p class="lede prose">The workflow-server is a small state machine wrapped in an MCP tool surface. Agents call tools; the server validates every request against the workflow definition, composes techniques and resources just in time, and persists canonical session state on disk in your project's workspace. The architecture is organized as models — dispatch, checkpoints, state, artifacts, resolution, and fidelity — so long-running, multi-agent runs stay bounded, pauses reach the user-facing agent, and transitions never depend on guesswork.</p>
 
-  <figure class="diagram">
-    <svg viewBox="0 0 960 300" role="img" aria-labelledby="arch-title arch-desc">
-      <title id="arch-title">System layers</title>
-      <desc id="arch-desc">Agents reach the server through sixteen MCP tools. Below the tool surface sit the enforcement layers, which consult workflow definitions read from the workflows directory and the session state persisted in the workspace.</desc>
-      <defs>
-        <marker id="arrowa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
-        </marker>
-      </defs>
-      <g font-size="15.5" font-weight="600" text-anchor="middle">
-        <rect x="280" y="15" width="400" height="50" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
-        <text x="480" y="46" fill="var(--diagram-label)">Agents (orchestrators and workers)</text>
-        <rect x="280" y="105" width="400" height="50" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="480" y="130" fill="var(--diagram-label)">MCP tool surface</text>
-        <text x="480" y="148" fill="var(--diagram-note)" font-size="13" font-weight="400">16 tools across six concerns</text>
-        <rect x="280" y="195" width="400" height="50" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="480" y="220" fill="var(--diagram-label)">Enforcement and resolution</text>
-        <text x="480" y="238" fill="var(--diagram-note)" font-size="13" font-weight="400">fidelity layers · technique bundles</text>
-        <rect x="30" y="195" width="200" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="130" y="225" fill="var(--diagram-label)">Workflow definitions</text>
-        <text x="130" y="245" fill="var(--diagram-note)" font-size="13" font-weight="400">workflows/ (read)</text>
-        <rect x="730" y="195" width="200" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="830" y="220" fill="var(--diagram-label)">Session state</text>
-        <text x="830" y="240" fill="var(--diagram-note)" font-size="12.5" font-weight="400">session.json + .session-token</text>
-        <text x="830" y="256" fill="var(--diagram-note)" font-size="12.5" font-weight="400">in your workspace</text>
-      </g>
-      <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
-        <line x1="480" y1="65" x2="480" y2="101" marker-end="url(#arrowa)" marker-start="url(#arrowa)"/>
-        <line x1="480" y1="155" x2="480" y2="191" marker-end="url(#arrowa)"/>
-        <line x1="276" y1="225" x2="234" y2="225" marker-end="url(#arrowa)"/>
-        <line x1="684" y1="225" x2="726" y2="225" marker-end="url(#arrowa)" marker-start="url(#arrowa)"/>
-      </g>
-      <g font-size="13" fill="var(--diagram-note)" text-anchor="middle">
-        <text x="520" y="88">MCP</text>
-        <text x="255" y="213">reads</text>
-        <text x="705" y="213">owns</text>
-      </g>
-    </svg>
-    <figcaption>System layers. Agents only ever see the tool surface; the server validates every call against the workflow definition and persists canonical session state in your project's workspace. Agents never read or write state files themselves.</figcaption>
-  </figure>
-
-  <h2 id="models">The six models</h2>
+  <h2 id="models">Models</h2>
   <ul class="card-grid">
     <li class="card">
       <h3>1. Hierarchical dispatch</h3>
@@ -167,20 +103,6 @@
       <span class="card-cta"><a href="./workflow-fidelity.html">Fidelity model</a></span>
     </li>
   </ul>
-
-  <h2 id="specifications">Normative specifications</h2>
-  <p>Two documents define the system's contracts precisely; they are the reference when a model page and an edge case disagree:</p>
-  <ul>
-    <li><a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md"><strong>Technique protocol specification</strong></a> — the anatomy of a technique file (capability, inputs, outputs, protocol, rules), the <code>::</code> addressing grammar, contract inheritance, Initial/Final protocol composition, and delivery.</li>
-    <li><a href="https://github.com/m2ux/workflow-server/blob/main/docs/orchestra-specification.md"><strong>Orchestra DSL specification</strong></a> — the workflow/activity definition language: step, decision, loop, and flow primitives, the EBNF grammar, and the semantic constraints.</li>
-  </ul>
-
-  <h2 id="implementation">The implementation view</h2>
-  <p>The models above state the guarantees; two further sections of this site show the machinery and the reasoning behind them:</p>
-  <ul>
-    <li><a href="../internals/server-anatomy.html"><strong>Server internals</strong></a> — the code that delivers the guarantees: the <a href="../internals/server-anatomy.html">module map</a>, the <a href="../internals/request-lifecycle.html">lifecycle of one tool call</a>, the <a href="../internals/session-store.html">session store on disk</a>, and the <a href="../internals/quality-system.html">guard-and-test system</a>.</li>
-    <li><a href="../design/rationale.html"><strong>Design rationale</strong></a> — why the system is shaped this way: the forces behind each decision and the costs accepted.</li>
-  </ul>
 </main>
 
 
@@ -195,5 +117,6 @@
   </div>
 </footer>
 
+<script src="../nav.js" defer></script>
 </body>
 </html>

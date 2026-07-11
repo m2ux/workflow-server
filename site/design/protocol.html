@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The protocol in practice — Workflow Server</title>
+<title>Protocol — Workflow Server</title>
 <meta name="description" content="The agent-server conversation beyond tool signatures: call ordering, the error and warning taxonomy, trace tokens, reference delivery, and dispatch in practice.">
 <link rel="stylesheet" href="../style.css">
 </head>
@@ -12,27 +12,19 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-title" href="../">Workflow Server</a>
+    <a class="site-title" href="../index.html">Workflow Server</a>
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../">Home</a></li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Guide</summary>
-            <ul>
-              <li><a href="../guide/getting-started.html">Getting started</a></li>
-              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
-              <li><a href="../guide/concepts.html">Concepts</a></li>
-              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
-            </ul>
-          </details>
-        </li>
+        <li><a href="../guide/getting-started.html">Getting started</a></li>
+        <li><a href="../guide/definitions.html">Definitions</a></li>
+        <li><a href="../api/tools.html">API</a></li>
         <li>
           <details class="site-nav__group">
             <summary>Architecture</summary>
             <ul>
               <li><a href="../specs/architecture.html">Overview</a></li>
+              <li><a href="../specs/workflows.html">Workflows</a></li>
               <li><a href="../specs/dispatch.html">Dispatch</a></li>
               <li><a href="../specs/checkpoints.html">Checkpoints</a></li>
               <li><a href="../specs/state-management.html">State</a></li>
@@ -43,34 +35,20 @@
           </details>
         </li>
         <li>
-          <details class="site-nav__group" open>
-            <summary>API</summary>
-            <ul>
-              <li><a href="./tools.html">Tools</a></li>
-              <li><a href="./schemas.html">Schemas</a></li>
-              <li><a href="./protocol.html" aria-current="page">Protocol guide</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Internals</summary>
-            <ul>
-              <li><a href="../internals/server-anatomy.html">Server anatomy</a></li>
-              <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
-              <li><a href="../internals/session-store.html">Session store</a></li>
-              <li><a href="../internals/quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
           <details class="site-nav__group">
             <summary>Design</summary>
             <ul>
-              <li><a href="../design/rationale.html">Design rationale</a></li>
+              <li><a href="./overview.html">Overview</a></li>
+              <li><a href="./server-anatomy.html">Server anatomy</a></li>
+              <li><a href="./request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="./protocol.html" aria-current="page">Protocol</a></li>
+              <li><a href="./session-store.html">Session store</a></li>
+              <li><a href="./quality-system.html">Quality system</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
             </ul>
           </details>
         </li>
+        <li><a href="../specifications.html">Specifications</a></li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
@@ -82,16 +60,15 @@
 <!-- BEGIN GENERATED BREADCRUMB -->
   <nav class="breadcrumb" aria-label="Breadcrumb">
     <ol>
-      <li>API</li>
-      <li aria-current="page">Protocol guide</li>
+      <li><a href="./overview.html">Design</a></li>
+      <li aria-current="page">Protocol</li>
     </ol>
   </nav>
 <!-- END GENERATED BREADCRUMB -->
 
 <main id="main">
-  <h1>The protocol in practice</h1>
-  <p class="lede">The <a href="./tools.html">tool reference</a> gives the signatures; this page gives the conversation — what order calls must come in, what errors and warnings actually mean, how the trace works, and the delivery behaviour an agent will observe on the wire.</p>
-  <p>Prose guidance per tool is in the canonical <a href="https://github.com/m2ux/workflow-server/blob/main/docs/api-reference.md">API reference</a>; the machinery behind each behaviour here is described in the <a href="../internals/server-anatomy.html">internals section</a>.</p>
+  <h1>Protocol</h1>
+  <p class="lede">The <a href="../api/tools.html">tool reference</a> gives the signatures; this page covers call order, errors and warnings, trace tokens, reference delivery, and dispatch on the wire.</p>
 
   <h2 id="ordering">Call order and authentication</h2>
   <p>Three tools are callable cold — <code>discover</code>, <code>list_workflows</code>, and <code>health_check</code>. Everything else requires the <code>session_index</code> issued by <code>start_session</code>, and a few ordering rules carry the whole protocol:</p>
@@ -136,10 +113,10 @@
       </tbody>
     </table>
   </div>
-  <p>Why deviations warn instead of block is a deliberate stance — see <a href="../design/rationale.html#detection">detection over prevention</a>.</p>
+  <p>Why deviations warn instead of block follows the same rule — see <a href="../specs/workflow-fidelity.html#why-detection">the advisory layers</a> on the fidelity page.</p>
 
   <h2 id="trace">The trace</h2>
-  <p>Every tool call appends an event — tool, timing, outcome, workflow, activity, agent, and any validation warnings — to an in-process, per-session buffer (up to 1,000 sessions; the oldest is evicted beyond that). Each <code>next_activity</code> response additionally carries <code>_meta.trace_token</code>: the events since the previous transition, HMAC-signed into a compact token. The tokens are the durable half of the design — an orchestrator that accumulates them can hand the set to <a href="./tools.html#get_trace"><code>get_trace</code></a> and reconstruct a tamper-evident account of the run even after the in-memory buffer is gone. Calling <code>get_trace</code> with no tokens returns the live buffer for the session.</p>
+  <p>Every tool call appends an event — tool, timing, outcome, workflow, activity, agent, and any validation warnings — to an in-process, per-session buffer (up to 1,000 sessions; the oldest is evicted beyond that). Each <code>next_activity</code> response additionally carries <code>_meta.trace_token</code>: the events since the previous transition, HMAC-signed into a compact token. The tokens are the durable half of the design — an orchestrator that accumulates them can hand the set to <a href="../api/tools.html#get_trace"><code>get_trace</code></a> and reconstruct a tamper-evident account of the run even after the in-memory buffer is gone. Calling <code>get_trace</code> with no tokens returns the live buffer for the session.</p>
 
   <h2 id="delivery">Reference delivery</h2>
   <p>Sessions run in one of two delivery modes, recorded as <code>contextMode</code>. In <code>fresh</code> mode (the default) every fetch returns full content — right for disposable workers that start with empty context. In <code>persistent</code> mode the server keeps a per-agent ledger of content hashes and replaces anything already delivered with a short marker:</p>
@@ -187,17 +164,18 @@
     <ul>
     <li><code>get_workflow_status</code> is the orchestrator's poll — position, active checkpoint, and child statuses without touching execution.</li>
     <li>A child reaching its terminal activity flips its entry in the parent's <code>triggeredWorkflows</code> to <code>completed</code>; the parent discovers this on its next status read rather than by callback.</li>
-    <li>Because children are <a href="../internals/session-store.html#nesting">embedded, not separate files</a>, resuming the parent by folder name resumes the entire tree.</li>
+    <li>Because children are <a href="../design/session-store.html#nesting">embedded, not separate files</a>, resuming the parent by folder name resumes the entire tree.</li>
   </ul>
 
   <h2 id="next">Next</h2>
-  <p>Signatures for every tool are on the <a href="./tools.html">tool reference</a>; the server-side mechanics of a call are in <a href="../internals/request-lifecycle.html">the request lifecycle</a>.</p>
+  <p>Signatures for every tool are on the <a href="../api/tools.html">tool reference</a>; server-side mechanics are in <a href="./request-lifecycle.html">request lifecycle</a>.</p>
 </main>
 
 
 <!-- BEGIN GENERATED PAGINATION -->
   <nav class="page-pagination" aria-label="Page sequence">
-    <a class="page-pagination__prev" href="./schemas.html">← Schemas</a>
+    <a class="page-pagination__prev" href="./request-lifecycle.html">← Request lifecycle</a>
+    <a class="page-pagination__next" href="./session-store.html">Session store →</a>
   </nav>
 <!-- END GENERATED PAGINATION -->
 
@@ -208,5 +186,6 @@
   </div>
 </footer>
 
+<script src="../nav.js" defer></script>
 </body>
 </html>
