@@ -233,6 +233,19 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "intake-and-context-change-request-confirmed": {
+            "optionId": "confirmed",
+            "respondedAt": "2026-07-11T15:00:10.000Z"
+          },
+          "intake-and-context-mode-confirmation": {
+            "effects": {
+              "variablesSet": {
+                "is_update_mode": true
+              }
+            },
+            "optionId": "confirm-update",
+            "respondedAt": "2026-07-11T07:55:39.000Z"
+          },
           "intake-and-context-review-scope-confirmed": {
             "effects": {
               "variablesSet": {
@@ -256,11 +269,12 @@
           }
         },
         "completedActivities": [
-          "intake-and-context"
+          "intake-and-context",
+          "quality-review"
         ],
-        "condition": "is_review_mode == true AND review_scope_confirmed == true",
-        "currentActivity": "quality-review",
-        "currentTechnique": "compile-report",
+        "condition": "review-disposition checkpoint effect transitionTo: intake-and-context (fix-issues)",
+        "currentActivity": "intake-and-context",
+        "currentTechnique": "work-package::manage-artifacts::create-readme",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:ff568fa749d961bb": "ff568fa749d961bb",
@@ -276,7 +290,8 @@
             "technique:compile-report": "cf840702f11de2ac",
             "technique:context-loading": "58a8788275e783f0",
             "technique:intake-classification": "e77def43c9e04bd6",
-            "technique:reload-workflow": "c621bb5f3074d295"
+            "technique:reload-workflow": "c621bb5f3074d295",
+            "technique:work-package::manage-artifacts::create-readme": "5ee6adddca4ad0ee"
           }
         },
         "history": [
@@ -490,16 +505,104 @@
             },
             "timestamp": "2026-07-11T07:44:18.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-07-11T07:48:25.336Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "intake-and-context",
+            "timestamp": "2026-07-11T07:48:25.336Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "intake-classification",
+              "techniqueId": "intake-classification"
+            },
+            "timestamp": "2026-07-11T07:49:03.657Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "context-loading",
+              "techniqueId": "context-loading"
+            },
+            "timestamp": "2026-07-11T07:49:03.657Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "mode-confirmation",
+            "timestamp": "2026-07-11T07:50:19.110Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "mode-confirmation",
+            "data": {
+              "optionId": "confirm-update"
+            },
+            "timestamp": "2026-07-11T07:55:39.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "is_update_mode",
+              "value": true
+            },
+            "timestamp": "2026-07-11T07:55:39.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "initialize-planning-folder",
+              "techniqueId": "work-package::manage-artifacts::create-readme"
+            },
+            "timestamp": "2026-07-11T07:57:42.126Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/design-context-readme"
+            },
+            "timestamp": "2026-07-11T14:54:41.411Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "change-request-confirmed",
+            "timestamp": "2026-07-11T14:55:24.145Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "intake-and-context",
+            "checkpoint": "change-request-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-11T15:00:10.000Z",
+            "type": "checkpoint_response"
           }
         ],
         "schemaVersion": 1,
-        "seq": 19,
+        "seq": 29,
         "sessionIndex": "RPKOLJ",
         "skippedActivities": [],
         "startedAt": "2026-07-10T13:51:19.883Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1783755879,
+        "ts": 1783782026,
         "variables": {
           "all_files_validated": false,
           "approach_confirmed": false,
