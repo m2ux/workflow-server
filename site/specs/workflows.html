@@ -16,21 +16,11 @@
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../index.html">Home</a></li>
+        <li><a href="../guide/getting-started.html">Getting started</a></li>
+        <li><a href="../guide/definitions.html">Definitions</a></li>
+        <li><a href="../api/tools.html">API</a></li>
         <li>
           <details class="site-nav__group">
-            <summary>Guide</summary>
-            <ul>
-              <li><a href="../guide/getting-started.html">Getting started</a></li>
-              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
-              <li><a href="../guide/concepts.html">Concepts</a></li>
-              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
-              <li><a href="../guide/rationale.html">Design rationale</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group" open>
             <summary>Architecture</summary>
             <ul>
               <li><a href="./architecture.html">Overview</a></li>
@@ -46,25 +36,19 @@
         </li>
         <li>
           <details class="site-nav__group">
-            <summary>API</summary>
+            <summary>Design</summary>
             <ul>
-              <li><a href="../api/tools.html">Tools</a></li>
+              <li><a href="../design/overview.html">Overview</a></li>
+              <li><a href="../design/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="../design/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="../design/protocol.html">Protocol</a></li>
+              <li><a href="../design/session-store.html">Session store</a></li>
+              <li><a href="../design/quality-system.html">Quality system</a></li>
               <li><a href="../api/schemas.html">Schemas</a></li>
-              <li><a href="../api/protocol.html">Protocol guide</a></li>
             </ul>
           </details>
         </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Internals</summary>
-            <ul>
-              <li><a href="../internals/server-anatomy.html">Server anatomy</a></li>
-              <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
-              <li><a href="../internals/session-store.html">Session store</a></li>
-              <li><a href="../internals/quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
+        <li><a href="../specifications.html">Specifications</a></li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
@@ -87,26 +71,12 @@
   <p class="lede prose">Workflows are declarative files, not code. This page explains what each file type means, how the pieces connect, and what the server delivers to the agent as work progresses.</p>
   <p class="prose">For server enforcement (checkpoints, dispatch, fidelity), see <a href="./architecture.html">architecture overview</a>. For file shapes, see the <a href="../api/schemas.html">schema reference</a>.</p>
 
-  <nav aria-label="On this page" class="note">
-    <ul>
-      <li><a href="#overview">Overview</a></li>
-      <li><a href="#workflows">Workflows</a></li>
-      <li><a href="#activities">Activities</a></li>
-      <li><a href="#step-kinds">Step kinds</a></li>
-      <li><a href="#techniques">Techniques</a></li>
-      <li><a href="#resources">Resources</a></li>
-      <li><a href="#binding">Variables and binding</a></li>
-      <li><a href="#runtime">Runtime delivery</a></li>
-    </ul>
-  </nav>
-
   <h2 id="overview">Overview</h2>
   <p class="prose">Think in two layers:</p>
   <ul class="prose">
     <li><strong>On disk</strong> — a workflow is a folder of YAML and markdown. Nothing in it is executable code; the files describe a process the agent follows step by step.</li>
-    <li><strong>At runtime</strong> — the agent does not open those files. It calls MCP tools, and the server returns one piece at a time: the workflow overview, then the current activity, then each technique as the worker reaches it.</li>
+    <li><strong>At runtime</strong> — the agent does not open those files. It calls MCP tools, and the server returns one piece at a time so context stays on the work in front of it — workflow overview, then the current activity, then each technique as the worker reaches it (<a href="./resource-resolution.html#why-disclosure">Resolution</a>).</li>
   </ul>
-  <p class="prose">Delivering content in small pieces keeps the agent's context focused on the work in front of it. See <a href="../guide/rationale.html#disclosure">progressive disclosure</a> in Design rationale for why.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 200" role="img" aria-labelledby="layers-title layers-desc">
@@ -341,7 +311,7 @@
         <rect x="490" y="30" width="210" height="72" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
         <text x="595" y="58" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">kind: checkpoint</text>
         <text x="595" y="80" fill="var(--diagram-note)" font-size="12.5" font-weight="400">pause for user</text>
-        <text x="595" y="96" fill="var(--diagram-note)" font-size="12.5" font-weight="400">decision; see Concepts</text>
+        <text x="595" y="96" fill="var(--diagram-note)" font-size="12.5" font-weight="400">decision; see Checkpoints</text>
         <rect x="725" y="30" width="210" height="72" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="830" y="58" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">kind: loop</text>
         <text x="830" y="80" fill="var(--diagram-note)" font-size="12.5" font-weight="400">repeat nested steps</text>
@@ -358,15 +328,14 @@
       <tbody>
         <tr><td><code>technique</code></td><td>Reference to a capability by <code>::</code> path, with optional input bindings</td><td>Call <code>get_technique</code> for the step (or use content already bundled in <code>get_activity</code>), follow the protocol, record outputs</td></tr>
         <tr><td><code>action</code></td><td>One or more inline actions (<code>validate</code>, <code>message</code>, …)</td><td>Execute the listed actions against current variables; the server does not interpret action verbs</td></tr>
-        <tr><td><code>checkpoint</code></td><td>A declared pause with options and effects</td><td>Call <code>yield_checkpoint</code>; orchestrator presents and <code>respond_checkpoint</code>; worker <code>resume_checkpoint</code> — see <a href="../guide/concepts.html#checkpoints">checkpoints in Concepts</a></td></tr>
+        <tr><td><code>checkpoint</code></td><td>A declared pause with options and effects</td><td>Call <code>yield_checkpoint</code>; orchestrator presents and <code>respond_checkpoint</code>; worker <code>resume_checkpoint</code> — see <a href="./checkpoints.html">Checkpoints</a></td></tr>
         <tr><td><code>loop</code></td><td>A nested step list with an exit condition</td><td>Repeat the nested steps until the condition is satisfied or the loop declares completion</td></tr>
       </tbody>
     </table>
   </div>
 
   <h2 id="techniques">Techniques</h2>
-  <p class="prose">A <strong>technique</strong> is a markdown file that explains how to do one job — capability, inputs, outputs, protocol, and rules. Activity steps refer to techniques by path; the agent never reads those files from the repository directly.</p>
-  <p class="prose">Path resolution, composition, and delivery are on <a href="./resource-resolution.html">Resolution</a>. This page covers on-disk layout only.</p>
+  <p class="prose">A <strong>technique</strong> is a markdown file with a fixed shape — capability, inputs, outputs, protocol, and rules — not an ambient agent <em>skill</em> that loads when a description matches. Activity steps name techniques by <code>::</code> path; the server composes, binds, and delivers them per step. The agent never reads technique files from the repository directly. Path resolution and bundling are on <a href="./resource-resolution.html">Resolution</a>.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 270" role="img" aria-labelledby="tech-anatomy-title tech-anatomy-desc">
@@ -390,6 +359,9 @@
     </svg>
     <figcaption>The standard sections in a technique file. Full rules are in the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md">technique protocol specification (source)</a>.</figcaption>
   </figure>
+
+  <h3 id="techniques-not-skills">Compared to agent skills</h3>
+  <p class="prose">Skills suit opt-in guidance: a short description and instructions the model loads when a request seems to match. Orchestrated workflows need a contract the server can schema-check, merge with ancestor protocols, and deliver step by step. Bulky templates and API guides stay in <code>resources/</code> and load via <code>get_resource</code> only when a running technique links to them — the <strong>protocol</strong> states what to execute; reference material is separate (<a href="#resources">Resources</a>).</p>
 
   <h2 id="resources">Resources</h2>
   <p class="prose">A <strong>resource</strong> is long-form reference material — templates, checklists, tables — stored as markdown under <code>resources/</code>. Techniques link to resources instead of inlining them; the agent calls <a href="../api/tools.html#get_resource"><code>get_resource</code></a> only when a running technique needs the linked material.</p>
@@ -449,13 +421,13 @@
     <li><strong>Checkpoints</strong> — the worker yields, the orchestrator presents your choice, and the worker resumes before continuing</li>
     <li><strong>Resources</strong> — load only when a technique the worker is executing links to one</li>
   </ul>
-  <p class="prose">Tool call order, bundling, and errors are in the <a href="../api/protocol.html">protocol guide</a>. Technique and resource resolution are on <a href="./resource-resolution.html">Resolution</a>.</p>
+  <p class="prose">Tool call order, bundling, and errors are in <a href="../design/protocol.html">Protocol</a>. Technique and resource resolution are on <a href="./resource-resolution.html">Resolution</a>.</p>
 
   <h2 id="specs">Normative references</h2>
-  <p class="prose">JSON shapes: <a href="../api/schemas.html">schema reference</a>. Authoritative prose specs: <a href="./architecture.html#specifications">architecture overview → Normative specifications</a>.</p>
+  <p class="prose">JSON shapes: <a href="../api/schemas.html">schema reference</a>. Authoritative prose specs: <a href="../specifications.html">Specifications</a>.</p>
 
   <h2 id="next">Next</h2>
-  <p class="prose"><a href="../guide/concepts.html">Concepts</a> covers sessions and checkpoints from a user perspective. <a href="./dispatch.html">Dispatch</a> explains how orchestrators and workers run those workflows.</p>
+  <p class="prose"><a href="../guide/definitions.html">Definitions</a> covers sessions from a user perspective. <a href="./checkpoints.html">Checkpoints</a> explains deliberate pauses and your choices. <a href="./dispatch.html">Dispatch</a> explains how orchestrators and workers run those workflows.</p>
 </main>
 
 
@@ -472,5 +444,6 @@
   </div>
 </footer>
 
+<script src="../nav.js" defer></script>
 </body>
 </html>

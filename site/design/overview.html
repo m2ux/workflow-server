@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design — Workflow Server</title>
+<meta name="description" content="How the server implements the architecture models: TypeScript machinery, on-disk session state, request handling, and repository quality gates.">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="../index.html">Workflow Server</a>
+    <!-- BEGIN GENERATED NAV -->
+    <nav class="site-nav" aria-label="Documentation">
+      <ul class="site-nav__primary">
+        <li><a href="../guide/getting-started.html">Getting started</a></li>
+        <li><a href="../guide/definitions.html">Definitions</a></li>
+        <li><a href="../api/tools.html">API</a></li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Architecture</summary>
+            <ul>
+              <li><a href="../specs/architecture.html">Overview</a></li>
+              <li><a href="../specs/workflows.html">Workflows</a></li>
+              <li><a href="../specs/dispatch.html">Dispatch</a></li>
+              <li><a href="../specs/checkpoints.html">Checkpoints</a></li>
+              <li><a href="../specs/state-management.html">State</a></li>
+              <li><a href="../specs/artifact-management.html">Artifacts</a></li>
+              <li><a href="../specs/resource-resolution.html">Resolution</a></li>
+              <li><a href="../specs/workflow-fidelity.html">Fidelity</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Design</summary>
+            <ul>
+              <li><a href="./overview.html" aria-current="page">Overview</a></li>
+              <li><a href="./server-anatomy.html">Server anatomy</a></li>
+              <li><a href="./request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="./protocol.html">Protocol</a></li>
+              <li><a href="./session-store.html">Session store</a></li>
+              <li><a href="./quality-system.html">Quality system</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
+            </ul>
+          </details>
+        </li>
+        <li><a href="../specifications.html">Specifications</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+<!-- END GENERATED NAV -->
+  </div>
+</header>
+
+
+<!-- BEGIN GENERATED BREADCRUMB -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li>Design</li>
+      <li aria-current="page">Overview</li>
+    </ol>
+  </nav>
+<!-- END GENERATED BREADCRUMB -->
+
+<main id="main">
+  <h1>Design</h1>
+  <p class="lede prose">The TypeScript server, the on-disk session store, the path every authenticated tool call follows, the MCP protocol on the wire, and the guards and tests that keep workflow definitions valid.</p>
+
+  <ul class="card-grid">
+    <li class="card">
+      <h3>Server anatomy</h3>
+      <p>Startup, tool registration, the module map, and the cross-cutting layer every handler passes through.</p>
+      <span class="card-cta"><a href="./server-anatomy.html">Server anatomy</a></span>
+    </li>
+    <li class="card">
+      <h3>Request lifecycle</h3>
+      <p>Seven stages inside one authenticated tool call — seal verification through trace signing — using <code>next_activity</code> as the worked example.</p>
+      <span class="card-cta"><a href="./request-lifecycle.html">Request lifecycle</a></span>
+    </li>
+    <li class="card">
+      <h3>Protocol</h3>
+      <p>Call order, error and warning taxonomy, trace tokens, reference delivery, and dispatch on the wire.</p>
+      <span class="card-cta"><a href="./protocol.html">Protocol</a></span>
+    </li>
+    <li class="card">
+      <h3>Session store</h3>
+      <p><code>session.json</code> on disk: the planning folder, derived <code>session_index</code>, embedded child sessions, HMAC seals, and append-only history.</p>
+      <span class="card-cta"><a href="./session-store.html">Session store</a></span>
+    </li>
+    <li class="card">
+      <h3>Quality system</h3>
+      <p>Guard scripts, Vitest suites, generated-then-guarded docs, and agent smoke runs.</p>
+      <span class="card-cta"><a href="./quality-system.html">Quality system</a></span>
+    </li>
+  </ul>
+</main>
+
+
+<!-- BEGIN GENERATED PAGINATION -->
+
+<!-- END GENERATED PAGINATION -->
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
+    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+<script src="../nav.js" defer></script>
+</body>
+</html>

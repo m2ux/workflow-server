@@ -12,23 +12,13 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-title" href="./index.html">Workflow Server</a>
+    <a class="site-title" href="./index.html" aria-current="page">Workflow Server</a>
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="./index.html" aria-current="page">Home</a></li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Guide</summary>
-            <ul>
-              <li><a href="./guide/getting-started.html">Getting started</a></li>
-              <li><a href="./guide/ide-setup.html">IDE setup</a></li>
-              <li><a href="./guide/concepts.html">Concepts</a></li>
-              <li><a href="./guide/running-workflows.html">Running workflows</a></li>
-              <li><a href="./guide/rationale.html">Design rationale</a></li>
-            </ul>
-          </details>
-        </li>
+        <li><a href="./guide/getting-started.html">Getting started</a></li>
+        <li><a href="./guide/definitions.html">Definitions</a></li>
+        <li><a href="./api/tools.html">API</a></li>
         <li>
           <details class="site-nav__group">
             <summary>Architecture</summary>
@@ -46,25 +36,19 @@
         </li>
         <li>
           <details class="site-nav__group">
-            <summary>API</summary>
+            <summary>Design</summary>
             <ul>
-              <li><a href="./api/tools.html">Tools</a></li>
+              <li><a href="./design/overview.html">Overview</a></li>
+              <li><a href="./design/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="./design/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="./design/protocol.html">Protocol</a></li>
+              <li><a href="./design/session-store.html">Session store</a></li>
+              <li><a href="./design/quality-system.html">Quality system</a></li>
               <li><a href="./api/schemas.html">Schemas</a></li>
-              <li><a href="./api/protocol.html">Protocol guide</a></li>
             </ul>
           </details>
         </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Internals</summary>
-            <ul>
-              <li><a href="./internals/server-anatomy.html">Server anatomy</a></li>
-              <li><a href="./internals/request-lifecycle.html">Request lifecycle</a></li>
-              <li><a href="./internals/session-store.html">Session store</a></li>
-              <li><a href="./internals/quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
+        <li><a href="./specifications.html">Specifications</a></li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
@@ -137,17 +121,119 @@
     <h3>For users</h3>
     <p class="prose">You speak in natural language. The agent matches your request to a workflow, works through its phases, and stops at checkpoints when you need to decide something. You never manage tool names or session tokens yourself.</p>
     <ol class="steps">
-      <li><strong>Install and connect.</strong> Build the server and register it with your MCP client. See <a href="guide/getting-started.html">Getting started</a>.</li>
-      <li><strong>Add the IDE rule.</strong> One always-applied rule makes the agent call <code>discover</code> first. See <a href="guide/ide-setup.html">IDE setup</a>.</li>
-      <li><strong>Run or resume.</strong> Say "start a work package" or "resume the workflow." See <a href="guide/running-workflows.html">Running workflows</a>.</li>
+      <li><strong>Install and connect.</strong> Build the server and register it with your MCP client.</li>
+      <li><strong>Add the IDE rule.</strong> One always-applied rule makes the agent call <code>discover</code> first.</li>
+      <li><strong>Run or resume.</strong> Start, resume, or end a workflow in plain language.</li>
       <li><strong>Answer checkpoints.</strong> When the run pauses, pick an option. The workflow cannot advance until you respond.</li>
     </ol>
+    <p class="prose">Setup, the <a href="guide/getting-started.html#bootstrap-rule">bootstrap rule</a>, and <a href="guide/getting-started.html#run">example phrases</a> are in <a href="guide/getting-started.html">Getting started</a>.</p>
 
     <details class="implementer-panel">
       <summary>For agent implementers</summary>
       <p class="prose">The agent follows a bootstrap procedure returned by <code>discover</code> — you do not call MCP tools yourself; the IDE rule routes workflow requests here.</p>
-      <p class="prose"><a href="api/tools.html">Tool reference</a> (16 tools, generated from source). <a href="api/protocol.html">Protocol guide</a> for call order, checkpoints, errors, and reference delivery. <a href="specs/workflows.html#runtime">Workflows</a> for orchestrator vs worker roles.</p>
+      <p class="prose"><a href="api/tools.html">Tool reference</a> (16 tools, generated from source). <a href="design/protocol.html">Protocol</a> for call order, checkpoints, errors, and reference delivery. <a href="specs/workflows.html#runtime">Workflows</a> for orchestrator vs worker roles.</p>
     </details>
+  </section>
+
+  <section id="pieces" aria-labelledby="pieces-h">
+    <h2 id="pieces-h">The pieces</h2>
+    <p class="prose">Your MCP client hosts the agent. The agent reaches the workflow-server through MCP; the server reads workflow definitions and owns session state in your project's workspace.</p>
+
+    <figure class="diagram">
+      <svg viewBox="0 0 960 300" role="img" aria-labelledby="layers-title layers-desc">
+        <title id="layers-title">System layers</title>
+        <desc id="layers-desc">Agents reach the server through sixteen MCP tools. Below the tool surface sit the enforcement layers, which consult workflow definitions read from the workflows directory and the session state persisted in the workspace.</desc>
+        <defs>
+          <marker id="arrow-layers" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+          </marker>
+        </defs>
+        <g font-size="15.5" font-weight="600" text-anchor="middle">
+          <rect x="280" y="15" width="400" height="50" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+          <text x="480" y="46" fill="var(--diagram-label)">Agents (orchestrators and workers)</text>
+          <rect x="280" y="105" width="400" height="50" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="480" y="130" fill="var(--diagram-label)">MCP tool surface</text>
+          <text x="480" y="148" fill="var(--diagram-note)" font-size="13" font-weight="400">16 tools across six concerns</text>
+          <rect x="280" y="195" width="400" height="50" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="480" y="220" fill="var(--diagram-label)">Enforcement and resolution</text>
+          <text x="480" y="238" fill="var(--diagram-note)" font-size="13" font-weight="400">fidelity layers · technique bundles</text>
+          <rect x="30" y="195" width="200" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="130" y="225" fill="var(--diagram-label)">Workflow definitions</text>
+          <text x="130" y="245" fill="var(--diagram-note)" font-size="13" font-weight="400">workflows/ (read)</text>
+          <rect x="730" y="195" width="200" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="830" y="220" fill="var(--diagram-label)">Session state</text>
+          <text x="830" y="240" fill="var(--diagram-note)" font-size="12.5" font-weight="400">session.json + .session-token</text>
+          <text x="830" y="256" fill="var(--diagram-note)" font-size="12.5" font-weight="400">in your workspace</text>
+        </g>
+        <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
+          <line x1="480" y1="65" x2="480" y2="101" marker-end="url(#arrow-layers)" marker-start="url(#arrow-layers)"/>
+          <line x1="480" y1="155" x2="480" y2="191" marker-end="url(#arrow-layers)"/>
+          <line x1="276" y1="225" x2="234" y2="225" marker-end="url(#arrow-layers)"/>
+          <line x1="684" y1="225" x2="726" y2="225" marker-end="url(#arrow-layers)" marker-start="url(#arrow-layers)"/>
+        </g>
+        <g font-size="13" fill="var(--diagram-note)" text-anchor="middle">
+          <text x="520" y="88">MCP</text>
+          <text x="255" y="213">reads</text>
+          <text x="705" y="213">owns</text>
+        </g>
+      </svg>
+      <figcaption>Agents only ever see the tool surface; the server validates every call against the workflow definition and persists canonical session state under <code>.engineering/artifacts/planning/</code>. Setup steps are in <a href="guide/getting-started.html">Getting started</a>.</figcaption>
+    </figure>
+  </section>
+
+  <section id="what-a-run-looks-like" aria-labelledby="what-a-run-looks-like-h">
+    <h2 id="what-a-run-looks-like-h">What a run looks like</h2>
+    <p class="prose">A session moves through the workflow's activities in order, pausing at checkpoints for your decisions.</p>
+    <figure class="diagram">
+      <svg viewBox="0 0 960 280" role="img" aria-labelledby="run-title run-desc">
+        <title id="run-title">A session timeline</title>
+        <desc id="run-desc">A timeline of session stages. Each activity uses techniques; steps follow those techniques; techniques consult linked resources (detail shown once below the first activity). Checkpoints pause the run for your decision.</desc>
+        <defs>
+          <marker id="arrow-run" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+          </marker>
+        </defs>
+        <g font-size="15" font-weight="600" text-anchor="middle">
+          <rect x="10" y="20" width="150" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="85" y="52" fill="var(--diagram-label)">session starts</text>
+          <rect x="205" y="20" width="150" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="280" y="43" fill="var(--diagram-label)">activity</text>
+          <text x="280" y="61" fill="var(--diagram-note)" font-size="13" font-weight="400">e.g. plan</text>
+          <rect x="400" y="20" width="160" height="52" rx="26" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+          <text x="480" y="43" fill="var(--diagram-label)">checkpoint</text>
+          <text x="480" y="61" fill="var(--diagram-note)" font-size="13" font-weight="400">your decision</text>
+          <rect x="605" y="20" width="150" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="680" y="43" fill="var(--diagram-label)">activity</text>
+          <text x="680" y="61" fill="var(--diagram-note)" font-size="13" font-weight="400">e.g. implement</text>
+          <rect x="800" y="20" width="150" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+          <text x="875" y="52" fill="var(--diagram-label)">complete</text>
+          <rect x="225" y="115" width="110" height="40" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+          <text x="280" y="140" fill="var(--diagram-label)" font-size="14">technique(s)</text>
+          <rect x="400" y="115" width="95" height="40" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+          <text x="447" y="140" fill="var(--diagram-label)" font-size="14">step(s)</text>
+          <rect x="225" y="190" width="110" height="40" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+          <text x="280" y="215" fill="var(--diagram-label)" font-size="14">resource(s)</text>
+        </g>
+        <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
+          <line x1="160" y1="46" x2="201" y2="46" marker-end="url(#arrow-run)"/>
+          <line x1="355" y1="46" x2="396" y2="46" marker-end="url(#arrow-run)"/>
+          <line x1="560" y1="46" x2="601" y2="46" marker-end="url(#arrow-run)"/>
+          <line x1="755" y1="46" x2="796" y2="46" marker-end="url(#arrow-run)"/>
+          <line x1="280" y1="72" x2="280" y2="111" marker-end="url(#arrow-run)"/>
+          <line x1="337" y1="135" x2="396" y2="135" marker-end="url(#arrow-run)"/>
+          <line x1="280" y1="155" x2="280" y2="186" marker-end="url(#arrow-run)"/>
+        </g>
+        <g font-size="13" fill="var(--diagram-note)" text-anchor="end">
+          <text x="272" y="92">use(s)</text>
+          <text x="272" y="172">consults</text>
+        </g>
+        <g font-size="13" fill="var(--diagram-note)" text-anchor="middle">
+          <text x="368" y="108">follows</text>
+        </g>
+        <text x="480" y="258" font-size="13" text-anchor="middle" fill="var(--diagram-note)">the rounded stage is a pause — nothing advances until you answer</text>
+      </svg>
+      <figcaption>Activities run in sequence; each activity <strong>uses</strong> <a href="guide/definitions.html#technique">techniques</a>. <a href="guide/definitions.html#step">Step(s)</a> <strong>follow</strong> those techniques, and techniques <strong>consult</strong> linked <a href="guide/definitions.html#resource">resources</a> — shown once below the first activity. Checkpoints (rounded) pause the run for your decision. See <a href="specs/checkpoints.html">Checkpoints</a>.</figcaption>
+    </figure>
   </section>
 
   <section id="docs-map" aria-labelledby="docs-map-h">
@@ -159,21 +245,20 @@
           <tr><th scope="col">Your question</th><th scope="col">Read this</th></tr>
         </thead>
         <tbody>
-          <tr><td>I am new — where do I begin?</td><td><a href="guide/getting-started.html">Getting started</a> → <a href="guide/ide-setup.html">IDE setup</a> → <a href="guide/concepts.html">Concepts</a> → <a href="guide/running-workflows.html">Running workflows</a></td></tr>
-          <tr><td>What is this project?</td><td><a href="guide/getting-started.html">Getting started</a> or <a href="https://github.com/m2ux/workflow-server/blob/main/README.md">README (source)</a></td></tr>
+          <tr><td>I am new — where do I begin?</td><td><a href="guide/getting-started.html">Getting started</a> → <a href="guide/definitions.html">Definitions</a></td></tr>
+          <tr><td>What is this project?</td><td><a href="#pieces">The pieces</a> on this page or <a href="https://github.com/m2ux/workflow-server/blob/main/README.md">README (source)</a></td></tr>
           <tr><td>How do I install and connect the server?</td><td><a href="guide/getting-started.html">Getting started</a> and <a href="https://github.com/m2ux/workflow-server/blob/main/SETUP.md">SETUP (source)</a></td></tr>
-          <tr><td>How do I wire the IDE bootstrap rule?</td><td><a href="guide/ide-setup.html">IDE setup</a></td></tr>
-          <tr><td>How do I run or resume a workflow?</td><td><a href="guide/running-workflows.html">Running workflows</a></td></tr>
-          <tr><td>What are workflows, sessions, and checkpoints?</td><td><a href="guide/concepts.html">Concepts</a></td></tr>
+          <tr><td>How do I wire the IDE bootstrap rule?</td><td><a href="guide/getting-started.html#bootstrap-rule">Getting started</a></td></tr>
+          <tr><td>How do I run or resume a workflow?</td><td><a href="guide/getting-started.html#run">Getting started</a> — example phrases</td></tr>
+          <tr><td>What are workflows, sessions, and checkpoints?</td><td><a href="guide/definitions.html">Definitions</a> · <a href="specs/checkpoints.html">Checkpoints</a></td></tr>
           <tr><td>What tools does the server expose?</td><td><a href="api/tools.html">Tool reference</a> and <a href="https://github.com/m2ux/workflow-server/blob/main/docs/api-reference.md">API reference (source)</a></td></tr>
-          <tr><td>What do errors and warnings mean?</td><td><a href="api/protocol.html">Protocol guide</a></td></tr>
-          <tr><td>How do I author workflow definitions?</td><td><a href="api/schemas.html">Schema reference</a> and <a href="https://github.com/m2ux/workflow-server/blob/main/schemas/README.md">Schema guide (source)</a></td></tr>
-          <tr><td>How is the system designed?</td><td><a href="specs/architecture.html">Architecture overview</a> and the six model pages linked from it</td></tr>
-          <tr><td>Why is it designed this way?</td><td><a href="guide/rationale.html">Design rationale</a></td></tr>
-          <tr><td>How is the server implemented?</td><td><a href="internals/server-anatomy.html">Server internals</a></td></tr>
+          <tr><td>What do errors and warnings mean?</td><td><a href="design/protocol.html">Protocol</a></td></tr>
+          <tr><td>How do I author workflow definitions?</td><td><a href="specifications.html">Specifications</a> · <a href="api/schemas.html">Schema reference</a></td></tr>
+          <tr><td>How is the system designed?</td><td><a href="specs/architecture.html">Architecture overview</a> and the model pages linked from it</td></tr>
+          <tr><td>How is the server implemented?</td><td><a href="design/overview.html">Design overview</a> — module map, request path, session store, quality gates</td></tr>
           <tr><td>What keeps agents faithful to a workflow?</td><td><a href="specs/workflow-fidelity.html">Workflow fidelity</a></td></tr>
           <tr><td>How do techniques declare protocol and bindings?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md">Technique protocol (source)</a></td></tr>
-          <tr><td>How do I contribute to the server?</td><td><a href="internals/server-anatomy.html">Server anatomy</a> and <a href="https://github.com/m2ux/workflow-server/blob/main/docs/development.md">Development guide (source)</a></td></tr>
+          <tr><td>How do I contribute to the server?</td><td><a href="design/server-anatomy.html">Server anatomy</a> and <a href="https://github.com/m2ux/workflow-server/blob/main/docs/development.md">Development guide (source)</a></td></tr>
           <tr><td>Where does new documentation belong?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/documentation-system.md">Documentation system (source)</a></td></tr>
         </tbody>
       </table>
@@ -193,5 +278,6 @@
   </div>
 </footer>
 
+<script src="nav.js" defer></script>
 </body>
 </html>

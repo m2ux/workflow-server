@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Specifications — Workflow Server</title>
+<meta name="description" content="Index of authoritative markdown specifications for architecture models, authoring contracts, and workflow schemas.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="./index.html">Workflow Server</a>
+    <!-- BEGIN GENERATED NAV -->
+    <nav class="site-nav" aria-label="Documentation">
+      <ul class="site-nav__primary">
+        <li><a href="./guide/getting-started.html">Getting started</a></li>
+        <li><a href="./guide/definitions.html">Definitions</a></li>
+        <li><a href="./api/tools.html">API</a></li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Architecture</summary>
+            <ul>
+              <li><a href="./specs/architecture.html">Overview</a></li>
+              <li><a href="./specs/workflows.html">Workflows</a></li>
+              <li><a href="./specs/dispatch.html">Dispatch</a></li>
+              <li><a href="./specs/checkpoints.html">Checkpoints</a></li>
+              <li><a href="./specs/state-management.html">State</a></li>
+              <li><a href="./specs/artifact-management.html">Artifacts</a></li>
+              <li><a href="./specs/resource-resolution.html">Resolution</a></li>
+              <li><a href="./specs/workflow-fidelity.html">Fidelity</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Design</summary>
+            <ul>
+              <li><a href="./design/overview.html">Overview</a></li>
+              <li><a href="./design/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="./design/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="./design/protocol.html">Protocol</a></li>
+              <li><a href="./design/session-store.html">Session store</a></li>
+              <li><a href="./design/quality-system.html">Quality system</a></li>
+              <li><a href="./api/schemas.html">Schemas</a></li>
+            </ul>
+          </details>
+        </li>
+        <li><a href="./specifications.html" aria-current="page">Specifications</a></li>
+        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
+      </ul>
+    </nav>
+<!-- END GENERATED NAV -->
+  </div>
+</header>
+
+
+<!-- BEGIN GENERATED BREADCRUMB -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li aria-current="page">Specifications</li>
+    </ol>
+  </nav>
+<!-- END GENERATED BREADCRUMB -->
+
+<main id="main">
+  <h1>Specifications</h1>
+  <p class="lede prose">Authoritative markdown specifications in the repository. Prefer the illustrated site pages where they exist; open the GitHub source when you need to edit or cite the canonical text.</p>
+  <p class="prose">Workflow and activity YAML shapes are also defined by the generated <a href="api/schemas.html">schema reference</a> (from Zod sources). When a model page and a prose spec disagree on technique anatomy, the technique protocol wins.</p>
+
+  <h2 id="architecture-models">Architecture models</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Specification</th><th scope="col">Summary</th><th scope="col">On-site</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/architecture.md"><code>architecture.md</code></a></td>
+          <td>Hub for the architectural models that govern server and agent interaction.</td>
+          <td><a href="specs/architecture.html">Overview</a></td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/dispatch_model.md"><code>dispatch_model.md</code></a></td>
+          <td>Three agent layers — meta orchestrator, workflow orchestrator, and activity workers — and how work is spawned and resumed.</td>
+          <td><a href="specs/dispatch.html">Dispatch</a></td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/checkpoint_model.md"><code>checkpoint_model.md</code></a></td>
+          <td>Just-in-time checkpoints: yield bubble-up, presentation, response timing, and resume with recorded effects.</td>
+          <td><a href="specs/checkpoints.html">Checkpoints</a></td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/state_management_model.md"><code>state_management_model.md</code></a></td>
+          <td>Deterministic transitions: the variable bag, checkpoint and worker mutations, and conditional branching.</td>
+          <td><a href="specs/state-management.html">State</a></td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/artifact_management_model.md"><code>artifact_management_model.md</code></a></td>
+          <td>Workspace isolation, planning folders, artifact naming, and the server-synthesized artifacts contract.</td>
+          <td><a href="specs/artifact-management.html">Artifacts</a></td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/resource_resolution_model.md"><code>resource_resolution_model.md</code></a></td>
+          <td>Technique and resource resolution: <code>::</code> paths, bundling, lazy-loaded reference material, and the <code>meta/</code> fallback.</td>
+          <td><a href="specs/resource-resolution.html">Resolution</a></td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/workflow-fidelity.md"><code>workflow-fidelity.md</code></a></td>
+          <td>Enforcement layers — manifests, traces, seals, and schema validation — that keep agents on the defined path.</td>
+          <td><a href="specs/workflow-fidelity.html">Fidelity</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="authoring">Authoring contracts</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Specification</th><th scope="col">Summary</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md"><code>technique-protocol-specification.md</code></a></td>
+          <td>Normative contract for technique files: capability, inputs, outputs, protocol, rules, <code>::</code> addressing, contract inheritance, Initial/Final composition, and delivery.</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/orchestra-specification.md"><code>orchestra-specification.md</code></a></td>
+          <td>Grammar and semantic constraints for workflow primitives — activities, steps, decisions, and loops — in the Orchestra definition language.</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/m2ux/workflow-server/blob/main/schemas/README.md"><code>schemas/README.md</code></a></td>
+          <td>Schema guide for authoring workflow definitions: manifest shapes, activity files, conditions, and validation conventions.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+
+<!-- BEGIN GENERATED PAGINATION -->
+
+<!-- END GENERATED PAGINATION -->
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>Source on <a href="https://github.com/m2ux/workflow-server">GitHub</a> · <a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+  </div>
+</footer>
+
+<script src="nav.js" defer></script>
+</body>
+</html>

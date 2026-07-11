@@ -16,21 +16,11 @@
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../index.html">Home</a></li>
+        <li><a href="../guide/getting-started.html">Getting started</a></li>
+        <li><a href="../guide/definitions.html">Definitions</a></li>
+        <li><a href="../api/tools.html">API</a></li>
         <li>
           <details class="site-nav__group">
-            <summary>Guide</summary>
-            <ul>
-              <li><a href="../guide/getting-started.html">Getting started</a></li>
-              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
-              <li><a href="../guide/concepts.html">Concepts</a></li>
-              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
-              <li><a href="../guide/rationale.html">Design rationale</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group" open>
             <summary>Architecture</summary>
             <ul>
               <li><a href="./architecture.html">Overview</a></li>
@@ -46,25 +36,19 @@
         </li>
         <li>
           <details class="site-nav__group">
-            <summary>API</summary>
+            <summary>Design</summary>
             <ul>
-              <li><a href="../api/tools.html">Tools</a></li>
+              <li><a href="../design/overview.html">Overview</a></li>
+              <li><a href="../design/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="../design/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="../design/protocol.html">Protocol</a></li>
+              <li><a href="../design/session-store.html">Session store</a></li>
+              <li><a href="../design/quality-system.html">Quality system</a></li>
               <li><a href="../api/schemas.html">Schemas</a></li>
-              <li><a href="../api/protocol.html">Protocol guide</a></li>
             </ul>
           </details>
         </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Internals</summary>
-            <ul>
-              <li><a href="../internals/server-anatomy.html">Server anatomy</a></li>
-              <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
-              <li><a href="../internals/session-store.html">Session store</a></li>
-              <li><a href="../internals/quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
+        <li><a href="../specifications.html">Specifications</a></li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
@@ -84,7 +68,7 @@
 
 <main id="main">
   <h1>Technique and resource resolution</h1>
-  <p class="lede">Context windows are precious, so nothing loads that isn't needed. All behaviour is composed from techniques — markdown capability definitions referenced by <code>::</code>-paths — resolved workflow-first with a shared <code>meta</code> fallback, delivered as bundles, and backed by reference material that loads only on demand.</p>
+  <p class="lede" id="why-disclosure">Context windows are precious, so definitions arrive at the granularity of need — workflow metadata at <code>get_workflow</code>, one activity at <code>get_activity</code>, one technique per step at <code>get_technique</code>, resources only when a technique cites them. All behaviour is composed from techniques (markdown capability definitions referenced by <code>::</code>-paths), resolved workflow-first with a shared <code>meta</code> fallback, delivered as bundles, and backed by reference material that loads only on demand.</p>
   <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/resource_resolution_model.md">docs/resource_resolution_model.md</a>. The normative file anatomy is the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md">technique protocol specification</a>.</p>
 
   <figure class="diagram">
@@ -221,7 +205,7 @@
     <li><code>get_workflow</code> — orchestrator bundle: workflow-declared refs plus core orchestrator techniques (engine traversal, checkpoints, dispatch, discipline)</li>
     <li><code>get_activity</code> — worker bundle: activity refs, inherited <code>techniques.activity</code> from the workflow, plus core worker techniques (yield/resume, finalize, conduct rules)</li>
   </ul>
-  <p class="prose">Each bundle groups resolved content into three buckets. When a single technique is delivered, ancestor <code>Initial</code> / <code>Final</code> protocol blocks wrap the technique body recursively and the server renumbers the combined sequence.</p>
+  <p class="prose">Each bundle groups resolved content into three buckets. When a single technique is delivered, ancestor <code>Initial</code> / <code>Final</code> protocol blocks wrap the technique body recursively and the server renumbers the combined sequence. In persistent-context mode, reference-not-repeat delivery replaces already-delivered content with <code>unchanged</code> hash markers; fetch recording warns when a manifested step was never loaded.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 170" role="img" aria-labelledby="bundle-title bundle-desc">
@@ -361,5 +345,6 @@
   </div>
 </footer>
 
+<script src="../nav.js" defer></script>
 </body>
 </html>

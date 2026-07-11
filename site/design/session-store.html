@@ -16,19 +16,9 @@
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../index.html">Home</a></li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Guide</summary>
-            <ul>
-              <li><a href="../guide/getting-started.html">Getting started</a></li>
-              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
-              <li><a href="../guide/concepts.html">Concepts</a></li>
-              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
-              <li><a href="../guide/rationale.html">Design rationale</a></li>
-            </ul>
-          </details>
-        </li>
+        <li><a href="../guide/getting-started.html">Getting started</a></li>
+        <li><a href="../guide/definitions.html">Definitions</a></li>
+        <li><a href="../api/tools.html">API</a></li>
         <li>
           <details class="site-nav__group">
             <summary>Architecture</summary>
@@ -46,25 +36,19 @@
         </li>
         <li>
           <details class="site-nav__group">
-            <summary>API</summary>
+            <summary>Design</summary>
             <ul>
-              <li><a href="../api/tools.html">Tools</a></li>
-              <li><a href="../api/schemas.html">Schemas</a></li>
-              <li><a href="../api/protocol.html">Protocol guide</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group" open>
-            <summary>Internals</summary>
-            <ul>
+              <li><a href="./overview.html">Overview</a></li>
               <li><a href="./server-anatomy.html">Server anatomy</a></li>
               <li><a href="./request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="./protocol.html">Protocol</a></li>
               <li><a href="./session-store.html" aria-current="page">Session store</a></li>
               <li><a href="./quality-system.html">Quality system</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
             </ul>
           </details>
         </li>
+        <li><a href="../specifications.html">Specifications</a></li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
@@ -76,7 +60,7 @@
 <!-- BEGIN GENERATED BREADCRUMB -->
   <nav class="breadcrumb" aria-label="Breadcrumb">
     <ol>
-      <li>Internals</li>
+      <li><a href="./overview.html">Design</a></li>
       <li aria-current="page">Session store</li>
     </ol>
   </nav>
@@ -84,8 +68,8 @@
 
 <main id="main">
   <h1>Session store</h1>
-  <p class="lede">A session is a folder. Everything the server knows about a run — position, variables, history, children — lives in one sealed <code>session.json</code> inside a planning folder in your workspace, and every piece of the design follows from making that file trustworthy, resumable, and inspectable.</p>
-  <p>The implementation is <a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/store.ts"><code>src/utils/session/</code></a>; the file's exact shape is <a href="../api/schemas.html#session-file"><code>session-file.schema.json</code></a>, and the user-level view of the same folder is in <a href="../specs/artifact-management.html">artifact and workspace isolation</a>.</p>
+  <p class="lede">A session is a folder. Everything the server knows about a run — position, variables, history, children — lives in one sealed <code>session.json</code> inside a planning folder in your workspace. Agents identify a run with a derived six-character <code>session_index</code>, not a path or hand-carried token; the server holds the truth. Every piece of the design follows from making that file trustworthy, resumable, and inspectable.</p>
+  <p>The implementation is <a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/store.ts"><code>src/utils/session/</code></a>; the file's exact shape is <a href="../api/schemas.html#session-file"><code>session-file.schema.json</code></a>, and the user-level view of the same folder is in <a href="../specs/artifact-management.html">artifact and workspace isolation</a>. The server needs a workspace at launch, and every authenticated call reads or writes disk.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 320" role="img" aria-labelledby="ss-title ss-desc">
@@ -144,7 +128,7 @@
         <tr><td>Position</td><td><code>currentActivity</code>, <code>completedActivities</code>, <code>skippedActivities</code>, <code>status</code> (<code>running</code>, <code>completed</code>, <code>aborted</code>), and <code>activeCheckpoint</code> — the gate that pauses navigation while a decision is outstanding.</td></tr>
         <tr><td>Data</td><td><code>variables</code>, the schema-validated bag mutated only through declared paths (checkpoint effects and recorded outputs — see <a href="../specs/state-management.html">state management</a>), plus <code>checkpointResponses</code>, which caches each resolved checkpoint so a replayed yield returns the earlier answer instead of asking twice.</td></tr>
         <tr><td>Ordering</td><td><code>seq</code>, a monotonic counter bumped by every mutation, and <code>ts</code> — together they make "which write is newer" a comparison, not a guess.</td></tr>
-        <tr><td>Delivery</td><td><code>contextMode</code> (<code>persistent</code> or <code>fresh</code>) and <code>deliveredContent</code>, the per-agent ledger of content hashes behind <a href="../api/protocol.html#delivery">reference-not-repeat delivery</a>.</td></tr>
+        <tr><td>Delivery</td><td><code>contextMode</code> (<code>persistent</code> or <code>fresh</code>) and <code>deliveredContent</code>, the per-agent ledger of content hashes behind <a href="../design/protocol.html#delivery">reference-not-repeat delivery</a>.</td></tr>
         <tr><td>Structure</td><td><code>triggeredWorkflows</code> (embedded child sessions), <code>parentSession</code> (the back-reference), and <code>planningFolderPath</code>, re-stamped on resume so the file stays correct if the folder moves.</td></tr>
         <tr><td>History</td><td>The append-only event log described next.</td></tr>
       </tbody>
@@ -160,7 +144,7 @@
   <p>Meta-orchestration sessions that exist only to choose a workflow start <em>transient</em> — created under the system temporary directory with a synthetic slug. The first <code>dispatch_child</code> that commits to real work promotes the session into the workspace planning root, taking its slug from the request (or a dated fallback), and the temporary folder is discarded. Nothing about a browse-only conversation ever lands in your repository.</p>
 
   <h2 id="integrity">Integrity and migration</h2>
-  <p>The seal answers one question: <em>is this file exactly what the server last wrote?</em> Writes are atomic (temp file, then rename), the HMAC is computed over canonicalized JSON, and reads verify it with a timing-safe comparison before parsing. What it defends against is corruption, manual edits, restored backups, and racing writers — incoherence, not adversaries; the <a href="../guide/rationale.html#integrity">threat model is spelled out in the rationale</a>.</p>
+  <p>The seal answers one question: <em>is this file exactly what the server last wrote?</em> Writes are atomic (temp file, then rename), the HMAC is computed over canonicalized JSON, and reads verify it with a timing-safe comparison before parsing. The goal is catching corruption, hand-edits, restored backups, and racing writers — incoherence, not an adversary-proof security boundary. One server key, cheap digests, hard failure on mismatch.</p>
   <p>Older planning folders that predate the current layout are upgraded in place by <a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/migration.ts"><code>migration.ts</code></a> the first time they are touched; an upgrade that cannot complete raises <code>MigrationError</code> rather than leaving a half-converted folder.</p>
 
   <h2 id="next">Next</h2>
@@ -170,7 +154,7 @@
 
 <!-- BEGIN GENERATED PAGINATION -->
   <nav class="page-pagination" aria-label="Page sequence">
-    <a class="page-pagination__prev" href="./request-lifecycle.html">← Request lifecycle</a>
+    <a class="page-pagination__prev" href="./protocol.html">← Protocol</a>
     <a class="page-pagination__next" href="./quality-system.html">Quality system →</a>
   </nav>
 <!-- END GENERATED PAGINATION -->
@@ -182,5 +166,6 @@
   </div>
 </footer>
 
+<script src="../nav.js" defer></script>
 </body>
 </html>

@@ -16,19 +16,9 @@
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../index.html">Home</a></li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Guide</summary>
-            <ul>
-              <li><a href="../guide/getting-started.html">Getting started</a></li>
-              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
-              <li><a href="../guide/concepts.html">Concepts</a></li>
-              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
-              <li><a href="../guide/rationale.html">Design rationale</a></li>
-            </ul>
-          </details>
-        </li>
+        <li><a href="../guide/getting-started.html">Getting started</a></li>
+        <li><a href="../guide/definitions.html">Definitions</a></li>
+        <li><a href="../api/tools.html">API</a></li>
         <li>
           <details class="site-nav__group">
             <summary>Architecture</summary>
@@ -46,25 +36,19 @@
         </li>
         <li>
           <details class="site-nav__group">
-            <summary>API</summary>
+            <summary>Design</summary>
             <ul>
-              <li><a href="../api/tools.html">Tools</a></li>
-              <li><a href="../api/schemas.html">Schemas</a></li>
-              <li><a href="../api/protocol.html">Protocol guide</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group" open>
-            <summary>Internals</summary>
-            <ul>
+              <li><a href="./overview.html">Overview</a></li>
               <li><a href="./server-anatomy.html">Server anatomy</a></li>
               <li><a href="./request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="./protocol.html">Protocol</a></li>
               <li><a href="./session-store.html">Session store</a></li>
               <li><a href="./quality-system.html" aria-current="page">Quality system</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
             </ul>
           </details>
         </li>
+        <li><a href="../specifications.html">Specifications</a></li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
@@ -76,7 +60,7 @@
 <!-- BEGIN GENERATED BREADCRUMB -->
   <nav class="breadcrumb" aria-label="Breadcrumb">
     <ol>
-      <li>Internals</li>
+      <li><a href="./overview.html">Design</a></li>
       <li aria-current="page">Quality system</li>
     </ol>
   </nav>
@@ -84,7 +68,7 @@
 
 <main id="main">
   <h1>Quality system</h1>
-  <p class="lede prose">Executable guards encode conventions that matter: reference integrity, naming rules, schema truthfulness, and site link integrity.</p>
+  <p class="lede prose">Executable guards encode conventions that matter: reference integrity, naming rules, schema truthfulness, and site link integrity. Recurring authoring mistakes become named anti-patterns, mechanical guards, and baselines that ratchet toward zero.</p>
   <p class="prose contributor-note">For contributors. Guards live in <a href="https://github.com/m2ux/workflow-server/tree/main/scripts"><code>scripts/</code></a> as <code>npm run check:*</code>; tests run under Vitest in <a href="https://github.com/m2ux/workflow-server/tree/main/tests"><code>tests/</code></a>.</p>
 
   <h2 id="guards">The guard suite</h2>
@@ -118,7 +102,7 @@
   </ul>
 
   <h2 id="pipelines">Generated, then guarded</h2>
-  <p>Two artifacts are machine-derived from the source, and both are guarded against drift rather than trusted to stay fresh:</p>
+  <p>Two artifacts are machine-derived from the source, and both are guarded against drift rather than trusted to stay fresh. The documentation site itself follows the same pattern — hand-authored pages with generated API regions — and <code>check-site-links</code> / <code>check-svg-layout</code> keep links and diagrams honest:</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 240" role="img" aria-labelledby="qp-title qp-desc">
@@ -170,13 +154,14 @@
   <p>The same discipline extends to deployment: the GitHub Pages workflow re-runs the site guards before publishing, so the deployed site is exactly the checked, committed one.</p>
 
   <h2 id="next">Next</h2>
-  <p>Why the project invests in mechanical guardrails rather than review vigilance is part of <a href="../guide/rationale.html#guards">the design rationale</a>; the runtime half of the same philosophy is <a href="../specs/workflow-fidelity.html">workflow fidelity</a>.</p>
+  <p>Where this machinery lives in the server is <a href="./server-anatomy.html">server anatomy</a>; how runs are kept on-script at runtime is <a href="../specs/workflow-fidelity.html">workflow fidelity</a>.</p>
 </main>
 
 
 <!-- BEGIN GENERATED PAGINATION -->
   <nav class="page-pagination" aria-label="Page sequence">
     <a class="page-pagination__prev" href="./session-store.html">← Session store</a>
+    <a class="page-pagination__next" href="../api/schemas.html">Schemas →</a>
   </nav>
 <!-- END GENERATED PAGINATION -->
 
@@ -187,5 +172,6 @@
   </div>
 </footer>
 
+<script src="../nav.js" defer></script>
 </body>
 </html>

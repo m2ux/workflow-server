@@ -16,21 +16,11 @@
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../index.html">Home</a></li>
+        <li><a href="../guide/getting-started.html">Getting started</a></li>
+        <li><a href="../guide/definitions.html">Definitions</a></li>
+        <li><a href="../api/tools.html">API</a></li>
         <li>
           <details class="site-nav__group">
-            <summary>Guide</summary>
-            <ul>
-              <li><a href="../guide/getting-started.html">Getting started</a></li>
-              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
-              <li><a href="../guide/concepts.html">Concepts</a></li>
-              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
-              <li><a href="../guide/rationale.html">Design rationale</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group" open>
             <summary>Architecture</summary>
             <ul>
               <li><a href="./architecture.html">Overview</a></li>
@@ -46,25 +36,19 @@
         </li>
         <li>
           <details class="site-nav__group">
-            <summary>API</summary>
+            <summary>Design</summary>
             <ul>
-              <li><a href="../api/tools.html">Tools</a></li>
+              <li><a href="../design/overview.html">Overview</a></li>
+              <li><a href="../design/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="../design/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="../design/protocol.html">Protocol</a></li>
+              <li><a href="../design/session-store.html">Session store</a></li>
+              <li><a href="../design/quality-system.html">Quality system</a></li>
               <li><a href="../api/schemas.html">Schemas</a></li>
-              <li><a href="../api/protocol.html">Protocol guide</a></li>
             </ul>
           </details>
         </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Internals</summary>
-            <ul>
-              <li><a href="../internals/server-anatomy.html">Server anatomy</a></li>
-              <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
-              <li><a href="../internals/session-store.html">Session store</a></li>
-              <li><a href="../internals/quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
+        <li><a href="../specifications.html">Specifications</a></li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
@@ -84,7 +68,7 @@
 
 <main id="main">
   <h1>Hierarchical dispatch</h1>
-  <p class="lede prose">Workflows run through three agent layers: user-facing orchestrator, background workflow orchestrator, and ephemeral activity workers.</p>
+  <p class="lede prose">Workflows run through three agent layers — meta orchestrator, workflow orchestrator, and activity workers — kept apart by what they must not share: user conversation, workflow state, and task context.</p>
   <p class="prose note"><strong>Layer key:</strong> L0 = user-facing meta orchestrator · L1 = workflow orchestrator (state owner) · L2 = activity worker (task executor).</p>
   <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/dispatch_model.md">docs/dispatch_model.md</a>.</p>
 
@@ -141,11 +125,11 @@
 
   <h2 id="mechanics">Dispatch mechanics</h2>
   <p>Each session is identified by a 6-character base32 <code>session_index</code>, deterministically derived from the planning-folder slug. Agents pass the index — never a token — on every authenticated call; the canonical state lives in the server-owned <code>session.json</code>.</p>
-  <p>The two hand-offs differ in one important way. Starting a workflow (L0 → L1) creates a <strong>child session</strong>: the server snapshots the parent's session under the child's <code>parentSession</code> field for trace correlation, and the child gets its own index. Spawning a worker (L1 → L2) <strong>shares the session</strong>: the worker uses the orchestrator's index directly, so both agents see a single canonical state. The actual spawning uses whatever sub-agent mechanism the host provides (Cursor's <code>Task</code> tool, for example); paused sub-agents are woken with the host's resume primitive.</p>
+  <p>The two hand-offs differ in one important way. Starting a workflow (L0 → L1) creates a <strong>child session</strong>: the server snapshots the parent's session under the child's <code>parentSession</code> field for trace correlation, and the child gets its own index. Spawning a worker (L1 → L2) <strong>shares the session</strong>: the worker uses the orchestrator's index directly, so both agents see a single canonical state. Fresh workers per activity keep task context disposable; embedded child sessions keep the whole work package in one resumable <code>session.json</code> despite the layering. The actual spawning uses whatever sub-agent mechanism the host provides (Cursor's <code>Task</code> tool, for example); paused sub-agents are woken with the host's resume primitive.</p>
   <p>The meta orchestrator can poll a dispatched workflow with <a href="../api/tools.html#get_workflow_status"><code>get_workflow_status</code></a>: <code>blocked</code> when a checkpoint is active, <code>completed</code> when no activities remain, <code>active</code> otherwise.</p>
 
   <h2 id="inline">Inline fallback</h2>
-  <p>Hosts without background sub-agents run the same model <strong>inline</strong>: a single agent adopts each persona in turn within one conversation. The server's enforcement — checkpoint gates, manifests, traces — works identically; only the persona-switching mechanism changes.</p>
+  <p>Hosts without background sub-agents run the same model <strong>inline</strong>: a single agent adopts each persona in turn within one conversation. The server's enforcement — checkpoint gates, manifests, traces — works identically; only the persona-switching mechanism changes. Portability across MCP clients mattered more than mandating a particular execution topology.</p>
 
   <h2 id="related">Related</h2>
   <p>Checkpoints bubble up through these same layers — see the <a href="./checkpoints.html">checkpoint model</a>. Session state and the <code>session.json</code> file are covered in <a href="./state-management.html">state management</a>.</p>
@@ -166,5 +150,6 @@
   </div>
 </footer>
 
+<script src="../nav.js" defer></script>
 </body>
 </html>

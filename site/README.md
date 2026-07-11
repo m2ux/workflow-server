@@ -6,7 +6,7 @@ The markdown files in the repository (`README.md`, `SETUP.md`, `docs/`, `schemas
 
 ## Navigation
 
-Every page includes **generated global navigation** (Guide, Architecture, API, Internals, Design) produced by [`scripts/generate-site-data.ts`](../scripts/generate-site-data.ts). The route registry lives in that script as `SITE_ROUTES`. Run `npm run build:site` after adding a page or changing nav structure.
+Every page includes **generated global navigation** (Guide, Architecture, Design, API) produced by [`scripts/generate-site-data.ts`](../scripts/generate-site-data.ts). The route registry lives in that script as `SITE_ROUTES`. Run `npm run build:site` after adding a page or changing nav structure.
 
 Hand-authored regions sit outside `<!-- BEGIN GENERATED … -->` / `<!-- END GENERATED … -->` markers. Generated regions include:
 
@@ -21,7 +21,7 @@ Hand-authored regions sit outside `<!-- BEGIN GENERATED … -->` / `<!-- END GEN
 
 ## Linking policy
 
-- **Prefer on-site HTML** when a mirror page exists (`guide/`, `specs/`, `api/`, `internals/`, `design/`).
+- **Prefer on-site HTML** when a mirror page exists (`guide/`, `specs/`, `api/`, `design/`).
 - **Link to GitHub markdown** for editing source or for documents with no HTML mirror (for example `docs/development.md`, normative specifications).
 - Label GitHub targets as "(source)" or "edit source" where it helps readers choose the right destination.
 

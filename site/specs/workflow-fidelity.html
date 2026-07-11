@@ -16,21 +16,11 @@
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../index.html">Home</a></li>
+        <li><a href="../guide/getting-started.html">Getting started</a></li>
+        <li><a href="../guide/definitions.html">Definitions</a></li>
+        <li><a href="../api/tools.html">API</a></li>
         <li>
           <details class="site-nav__group">
-            <summary>Guide</summary>
-            <ul>
-              <li><a href="../guide/getting-started.html">Getting started</a></li>
-              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
-              <li><a href="../guide/concepts.html">Concepts</a></li>
-              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
-              <li><a href="../guide/rationale.html">Design rationale</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group" open>
             <summary>Architecture</summary>
             <ul>
               <li><a href="./architecture.html">Overview</a></li>
@@ -46,25 +36,19 @@
         </li>
         <li>
           <details class="site-nav__group">
-            <summary>API</summary>
+            <summary>Design</summary>
             <ul>
-              <li><a href="../api/tools.html">Tools</a></li>
+              <li><a href="../design/overview.html">Overview</a></li>
+              <li><a href="../design/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="../design/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="../design/protocol.html">Protocol</a></li>
+              <li><a href="../design/session-store.html">Session store</a></li>
+              <li><a href="../design/quality-system.html">Quality system</a></li>
               <li><a href="../api/schemas.html">Schemas</a></li>
-              <li><a href="../api/protocol.html">Protocol guide</a></li>
             </ul>
           </details>
         </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Internals</summary>
-            <ul>
-              <li><a href="../internals/server-anatomy.html">Server anatomy</a></li>
-              <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
-              <li><a href="../internals/session-store.html">Session store</a></li>
-              <li><a href="../internals/quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
+        <li><a href="../specifications.html">Specifications</a></li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
@@ -132,7 +116,7 @@
   <p><strong>Checkpoint gate (L2).</strong> While a checkpoint is active, transition tools hard-fail; only <code>present_checkpoint</code> and <code>respond_checkpoint</code> are exempt. Responses are validated against the checkpoint definition, and timing is enforced — a minimum response delay for user-answered checkpoints, the full <code>autoAdvanceMs</code> timer for auto-advanced ones — so an agent cannot instantly answer its own question. Details in the <a href="./checkpoints.html">checkpoint model</a>.</p>
 
   <h2 id="advisory">The advisory layers</h2>
-  <p class="prose">Layers 3-6 warn rather than block. Warnings appear in <code>_meta.validation</code> and the trace. See <a href="../api/protocol.html">protocol guide</a> for how to read them.</p>
+  <p class="prose" id="why-detection">Layers 3–6 warn rather than block. Only checks that are cheap and certain hard-stop execution; manifest completeness, version drift, and fetch coverage surface warnings in <code>_meta.validation</code> and the trace because the server can verify observable consistency, not that work was done well. See <a href="../design/protocol.html">Protocol</a> for how to read them.</p>
   <div class="table-wrap">
     <table>
       <thead><tr><th scope="col">Layer</th><th scope="col">When it runs</th><th scope="col">Effect</th><th scope="col">What to do</th></tr></thead>
@@ -169,5 +153,6 @@
   </div>
 </footer>
 
+<script src="../nav.js" defer></script>
 </body>
 </html>

@@ -16,19 +16,9 @@
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../index.html">Home</a></li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Guide</summary>
-            <ul>
-              <li><a href="../guide/getting-started.html">Getting started</a></li>
-              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
-              <li><a href="../guide/concepts.html">Concepts</a></li>
-              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
-              <li><a href="../guide/rationale.html">Design rationale</a></li>
-            </ul>
-          </details>
-        </li>
+        <li><a href="../guide/getting-started.html">Getting started</a></li>
+        <li><a href="../guide/definitions.html">Definitions</a></li>
+        <li><a href="../api/tools.html">API</a></li>
         <li>
           <details class="site-nav__group">
             <summary>Architecture</summary>
@@ -46,25 +36,19 @@
         </li>
         <li>
           <details class="site-nav__group">
-            <summary>API</summary>
+            <summary>Design</summary>
             <ul>
-              <li><a href="../api/tools.html">Tools</a></li>
-              <li><a href="../api/schemas.html">Schemas</a></li>
-              <li><a href="../api/protocol.html">Protocol guide</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group" open>
-            <summary>Internals</summary>
-            <ul>
+              <li><a href="./overview.html">Overview</a></li>
               <li><a href="./server-anatomy.html">Server anatomy</a></li>
               <li><a href="./request-lifecycle.html" aria-current="page">Request lifecycle</a></li>
+              <li><a href="./protocol.html">Protocol</a></li>
               <li><a href="./session-store.html">Session store</a></li>
               <li><a href="./quality-system.html">Quality system</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
             </ul>
           </details>
         </li>
+        <li><a href="../specifications.html">Specifications</a></li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
@@ -76,7 +60,7 @@
 <!-- BEGIN GENERATED BREADCRUMB -->
   <nav class="breadcrumb" aria-label="Breadcrumb">
     <ol>
-      <li>Internals</li>
+      <li><a href="./overview.html">Design</a></li>
       <li aria-current="page">Request lifecycle</li>
     </ol>
   </nav>
@@ -84,7 +68,7 @@
 
 <main id="main">
   <h1>Request lifecycle</h1>
-  <p class="lede">Every authenticated tool call follows the same skeleton: verify the session, load the definition, validate the claim the agent is making, advance the state, reseal it, and sign the trace. This page walks that skeleton using <a href="../api/tools.html#next_activity"><code>next_activity</code></a> — the most eventful call — as the example.</p>
+  <p class="lede">Every authenticated tool call follows the same skeleton: verify the session, load the definition, validate the claim the agent is making, advance the state, reseal it, and sign the trace. That uniformity is possible because the whole system crosses one boundary — sixteen MCP tools with schema-validated parameters, no side channel, no shared files as API. This page walks that skeleton using <a href="../api/tools.html#next_activity"><code>next_activity</code></a> — the most eventful call — as the example.</p>
   <p>The handlers live in <a href="https://github.com/m2ux/workflow-server/blob/main/src/tools/workflow-tools.ts"><code>src/tools/workflow-tools.ts</code></a>; the shared machinery each stage uses is mapped in <a href="./server-anatomy.html">server anatomy</a>.</p>
 
   <figure class="diagram">
@@ -155,7 +139,7 @@
       </tbody>
     </table>
   </div>
-  <p>The split is deliberate: only checks that are cheap and certain block the call; everything judgment-shaped becomes a warning in the response and the trace. <a href="../guide/rationale.html#detection">Detection over prevention</a> explains why.</p>
+  <p>The split is deliberate: only checks that are cheap and certain block the call; everything judgment-shaped becomes a warning in the response and the trace — see <a href="../specs/workflow-fidelity.html#why-detection">the advisory layers</a> on the fidelity page.</p>
 
   <h2 id="advance">5. Advancing the state</h2>
   <p><code>advanceSession</code> applies the mutation as a controlled update: the monotonic <code>seq</code> counter increments, the timestamp refreshes, and the handler's mutator appends history events — <code>activity_exited</code> for the activity being left, <code>activity_entered</code> for the new one, and <code>workflow_completed</code> when the transition is terminal. A child session reaching its terminal state also notifies its parent, flipping the child's entry in the parent's <code>triggeredWorkflows</code> to <code>completed</code> (best-effort — a moved parent is tolerated).</p>
@@ -165,7 +149,7 @@
 
   <h2 id="respond">7. Signing the trace and responding</h2>
   <p>When tracing is enabled, the events accumulated since the last <code>next_activity</code> are packaged into a trace-token payload, HMAC-signed, and returned in <code>_meta.trace_token</code> — a tamper-evident receipt for that leg of the run, reconstructable later via <a href="../api/tools.html#get_trace"><code>get_trace</code></a>.</p>
-  <p>The response body itself stays minimal: <code>next_activity</code> returns just the new activity's id and name, because the full definition is the worker's to fetch via <code>get_activity</code>. Alongside it, <code>_meta.validation</code> carries the outcome of stage four — <code>{ status, warnings }</code> — so deviations are visible to the orchestrator on the very call that detected them. The warning taxonomy, error surfaces, and delivery markers an agent may encounter are catalogued in <a href="../api/protocol.html">the protocol in practice</a>.</p>
+  <p>The response body itself stays minimal: <code>next_activity</code> returns just the new activity's id and name, because the full definition is the worker's to fetch via <code>get_activity</code>. Alongside it, <code>_meta.validation</code> carries the outcome of stage four — <code>{ status, warnings }</code> — so deviations are visible to the orchestrator on the very call that detected them. The warning taxonomy, error surfaces, and delivery markers an agent may encounter are catalogued in <a href="../design/protocol.html">Protocol</a>.</p>
 
   <h2 id="next">Next</h2>
   <p>The state this lifecycle protects is described field-by-field in <a href="./session-store.html">the session store</a>; the checks that guard the definitions themselves are in <a href="./quality-system.html">the quality system</a>.</p>
@@ -175,7 +159,7 @@
 <!-- BEGIN GENERATED PAGINATION -->
   <nav class="page-pagination" aria-label="Page sequence">
     <a class="page-pagination__prev" href="./server-anatomy.html">← Server anatomy</a>
-    <a class="page-pagination__next" href="./session-store.html">Session store →</a>
+    <a class="page-pagination__next" href="./protocol.html">Protocol →</a>
   </nav>
 <!-- END GENERATED PAGINATION -->
 
@@ -186,5 +170,6 @@
   </div>
 </footer>
 
+<script src="../nav.js" defer></script>
 </body>
 </html>

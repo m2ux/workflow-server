@@ -23,7 +23,7 @@ const GITHUB_BLOB = 'https://github.com/m2ux/workflow-server/blob/main';
 // ---------------------------------------------------------------------------
 // Site route registry
 
-export type SiteSection = 'home' | 'guide' | 'specs' | 'api' | 'internals';
+export type SiteSection = 'home' | 'guide' | 'specs' | 'api' | 'design' | 'specifications';
 
 export interface SiteRoute {
   relPath: string;
@@ -40,10 +40,8 @@ export interface SiteRoute {
 export const SITE_ROUTES: SiteRoute[] = [
   { relPath: 'index.html', section: 'home', title: 'Home', navLabel: 'Home' },
   { relPath: 'guide/getting-started.html', section: 'guide', title: 'Getting started', navLabel: 'Getting started', sequence: 1 },
-  { relPath: 'guide/ide-setup.html', section: 'guide', title: 'IDE setup', navLabel: 'IDE setup', sequence: 2 },
-  { relPath: 'guide/concepts.html', section: 'guide', title: 'Concepts', navLabel: 'Concepts', sequence: 3 },
-  { relPath: 'guide/running-workflows.html', section: 'guide', title: 'Running workflows', navLabel: 'Running workflows', sequence: 4 },
-  { relPath: 'guide/rationale.html', section: 'guide', title: 'Design rationale', navLabel: 'Design rationale', sequence: 5 },
+  { relPath: 'guide/definitions.html', section: 'guide', title: 'Definitions', navLabel: 'Definitions', sequence: 2 },
+  { relPath: 'specifications.html', section: 'specifications', title: 'Specifications', navLabel: 'Specifications', sequence: 1 },
   { relPath: 'specs/architecture.html', section: 'specs', title: 'Architecture overview', navLabel: 'Overview', sequence: 0, breadcrumbLabel: 'Architecture' },
   { relPath: 'specs/workflows.html', section: 'specs', title: 'Workflow architecture', navLabel: 'Workflows', sequence: 1, parent: 'specs/architecture.html', breadcrumbLabel: 'Workflows' },
   { relPath: 'specs/dispatch.html', section: 'specs', title: 'Hierarchical dispatch', navLabel: 'Dispatch', sequence: 2, parent: 'specs/architecture.html', breadcrumbLabel: 'Dispatch' },
@@ -52,27 +50,43 @@ export const SITE_ROUTES: SiteRoute[] = [
   { relPath: 'specs/artifact-management.html', section: 'specs', title: 'Artifact management', navLabel: 'Artifacts', sequence: 5, parent: 'specs/architecture.html', breadcrumbLabel: 'Artifacts' },
   { relPath: 'specs/resource-resolution.html', section: 'specs', title: 'Resource resolution', navLabel: 'Resolution', sequence: 6, parent: 'specs/architecture.html', breadcrumbLabel: 'Resolution' },
   { relPath: 'specs/workflow-fidelity.html', section: 'specs', title: 'Workflow fidelity', navLabel: 'Fidelity', sequence: 7, parent: 'specs/architecture.html', breadcrumbLabel: 'Fidelity' },
-  { relPath: 'api/tools.html', section: 'api', title: 'MCP tool reference', navLabel: 'Tools', sequence: 1 },
-  { relPath: 'api/schemas.html', section: 'api', title: 'Schema reference', navLabel: 'Schemas', sequence: 2 },
-  { relPath: 'api/protocol.html', section: 'api', title: 'Protocol in practice', navLabel: 'Protocol guide', sequence: 3 },
-  { relPath: 'internals/server-anatomy.html', section: 'internals', title: 'Server anatomy', navLabel: 'Server anatomy', sequence: 1 },
-  { relPath: 'internals/request-lifecycle.html', section: 'internals', title: 'Request lifecycle', navLabel: 'Request lifecycle', sequence: 2 },
-  { relPath: 'internals/session-store.html', section: 'internals', title: 'Session store', navLabel: 'Session store', sequence: 3 },
-  { relPath: 'internals/quality-system.html', section: 'internals', title: 'Quality system', navLabel: 'Quality system', sequence: 4 },
+  { relPath: 'api/tools.html', section: 'api', title: 'MCP tool reference', navLabel: 'API', sequence: 1 },
+  { relPath: 'design/overview.html', section: 'design', title: 'Design overview', navLabel: 'Overview', sequence: 0, breadcrumbLabel: 'Design' },
+  { relPath: 'design/server-anatomy.html', section: 'design', title: 'Server anatomy', navLabel: 'Server anatomy', sequence: 1, parent: 'design/overview.html', breadcrumbLabel: 'Server anatomy' },
+  { relPath: 'design/request-lifecycle.html', section: 'design', title: 'Request lifecycle', navLabel: 'Request lifecycle', sequence: 2, parent: 'design/overview.html', breadcrumbLabel: 'Request lifecycle' },
+  { relPath: 'design/protocol.html', section: 'design', title: 'Protocol', navLabel: 'Protocol', sequence: 3, parent: 'design/overview.html', breadcrumbLabel: 'Protocol' },
+  { relPath: 'design/session-store.html', section: 'design', title: 'Session store', navLabel: 'Session store', sequence: 4, parent: 'design/overview.html', breadcrumbLabel: 'Session store' },
+  { relPath: 'design/quality-system.html', section: 'design', title: 'Quality system', navLabel: 'Quality system', sequence: 5, parent: 'design/overview.html', breadcrumbLabel: 'Quality system' },
+  { relPath: 'api/schemas.html', section: 'design', title: 'Schema reference', navLabel: 'Schemas', sequence: 6, parent: 'design/overview.html', breadcrumbLabel: 'Schemas' },
 ];
 
 const ROUTE_BY_PATH = new Map(SITE_ROUTES.map(r => [r.relPath, r]));
 
-const NAV_SECTIONS: Array<{ id: SiteSection; label: string }> = [
-  { id: 'guide', label: 'Guide' },
+const SECTION_LABELS: Record<SiteSection, string> = {
+  home: 'Home',
+  guide: 'Guide',
+  specs: 'Architecture',
+  design: 'Design',
+  api: 'API',
+  specifications: 'Specifications',
+};
+
+/** Sections rendered as direct nav links before dropdowns. */
+const NAV_TOP_LEVEL_SECTIONS: SiteSection[] = ['guide', 'api'];
+
+const NAV_DROPDOWN_SECTIONS: Array<{ id: SiteSection; label: string }> = [
   { id: 'specs', label: 'Architecture' },
-  { id: 'api', label: 'API' },
-  { id: 'internals', label: 'Internals' },
+  { id: 'design', label: 'Design' },
 ];
 
 function routePrefix(relPath: string): string {
   const depth = relPath.split('/').length - 1;
   return depth === 0 ? '' : '../'.repeat(depth);
+}
+
+function navScriptHref(pageRelPath: string): string {
+  const prefix = routePrefix(pageRelPath);
+  return `${prefix}nav.js`;
 }
 
 function hrefFrom(pageRelPath: string, targetRelPath: string): string {
@@ -93,18 +107,22 @@ function routesInSection(section: SiteSection): SiteRoute[] {
 }
 
 export function renderSiteNav(pageRelPath: string): string {
-  const current = ROUTE_BY_PATH.get(pageRelPath);
-  const homeHref = hrefFrom(pageRelPath, 'index.html');
   const lines: string[] = [];
   lines.push('    <nav class="site-nav" aria-label="Documentation">');
   lines.push('      <ul class="site-nav__primary">');
-  lines.push(`        <li><a href="${homeHref}"${current?.section === 'home' ? ' aria-current="page"' : ''}>Home</a></li>`);
 
-  for (const { id, label } of NAV_SECTIONS) {
+  for (const section of NAV_TOP_LEVEL_SECTIONS) {
+    for (const item of routesInSection(section)) {
+      const href = hrefFrom(pageRelPath, item.relPath);
+      const isCurrent = pageRelPath === item.relPath;
+      lines.push(`        <li><a href="${href}"${isCurrent ? ' aria-current="page"' : ''}>${escapeHtml(item.navLabel)}</a></li>`);
+    }
+  }
+
+  for (const { id, label } of NAV_DROPDOWN_SECTIONS) {
     const items = routesInSection(id);
-    const inSection = current?.section === id;
     lines.push('        <li>');
-    lines.push(`          <details class="site-nav__group"${inSection ? ' open' : ''}>`);
+    lines.push('          <details class="site-nav__group">');
     lines.push(`            <summary>${escapeHtml(label)}</summary>`);
     lines.push('            <ul>');
     for (const item of items) {
@@ -117,6 +135,12 @@ export function renderSiteNav(pageRelPath: string): string {
     lines.push('        </li>');
   }
 
+  for (const item of routesInSection('specifications')) {
+    const href = hrefFrom(pageRelPath, item.relPath);
+    const isCurrent = pageRelPath === item.relPath;
+    lines.push(`        <li><a href="${href}"${isCurrent ? ' aria-current="page"' : ''}>${escapeHtml(item.navLabel)}</a></li>`);
+  }
+
   lines.push('        <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>');
   lines.push('      </ul>');
   lines.push('    </nav>');
@@ -127,8 +151,18 @@ export function renderBreadcrumb(pageRelPath: string): string {
   const route = ROUTE_BY_PATH.get(pageRelPath);
   if (!route || route.section === 'home') return '';
 
+  if (route.section === 'guide' || route.section === 'api' || route.section === 'specifications') {
+    return [
+      '  <nav class="breadcrumb" aria-label="Breadcrumb">',
+      '    <ol>',
+      `      <li aria-current="page">${escapeHtml(route.navLabel)}</li>`,
+      '    </ol>',
+      '  </nav>',
+    ].join('\n');
+  }
+
   const crumbs: Array<{ label: string; href?: string }> = [];
-  const sectionLabel = NAV_SECTIONS.find(s => s.id === route.section)?.label ?? route.section;
+  const sectionLabel = SECTION_LABELS[route.section];
   const hub = routesInSection(route.section).find(r => r.sequence === 0);
 
   if (hub && route.parent === hub.relPath) {
@@ -751,15 +785,24 @@ export function renderSitePages(): Array<{ relPath: string; content: string }> {
     content = injectRegion(content, renderPagination(relPath), 'PAGINATION');
 
     const homeHref = hrefFrom(relPath, 'index.html');
+    const siteTitle = relPath === 'index.html'
+      ? `<a class="site-title" href="${homeHref}" aria-current="page">Workflow Server</a>`
+      : `<a class="site-title" href="${homeHref}">Workflow Server</a>`;
     content = content.replace(
-      /<a class="site-title" href="[^"]*">Workflow Server<\/a>/,
-      `<a class="site-title" href="${homeHref}">Workflow Server</a>`,
+      /<a class="site-title" href="[^"]*"(?: aria-current="page")?>Workflow Server<\/a>/,
+      siteTitle,
     );
 
     const body = renderContentRegion(relPath);
     if (body !== null) {
       content = injectRegion(content, body, 'CONTENT');
     }
+
+    const navScript = `<script src="${navScriptHref(relPath)}" defer></script>`;
+    if (!content.includes('nav.js')) {
+      content = content.replace('</body>', `${navScript}\n</body>`);
+    }
+
     results.push({ relPath, content });
   }
   return results;
