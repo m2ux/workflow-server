@@ -13,23 +13,85 @@
 <header class="site-header">
   <div class="site-header__inner">
     <a class="site-title" href="../">Workflow Server</a>
-    <nav class="site-nav" aria-label="Site">
-      <ul>
+    <!-- BEGIN GENERATED NAV -->
+    <nav class="site-nav" aria-label="Documentation">
+      <ul class="site-nav__primary">
         <li><a href="../">Home</a></li>
-        <li><a href="./server-anatomy.html" aria-current="page">Server anatomy</a></li>
-        <li><a href="./request-lifecycle.html">Request lifecycle</a></li>
-        <li><a href="./session-store.html">Session store</a></li>
-        <li><a href="./quality-system.html">Quality system</a></li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Guide</summary>
+            <ul>
+              <li><a href="../guide/getting-started.html">Getting started</a></li>
+              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
+              <li><a href="../guide/concepts.html">Concepts</a></li>
+              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Architecture</summary>
+            <ul>
+              <li><a href="../specs/architecture.html">Overview</a></li>
+              <li><a href="../specs/dispatch.html">Dispatch</a></li>
+              <li><a href="../specs/checkpoints.html">Checkpoints</a></li>
+              <li><a href="../specs/state-management.html">State</a></li>
+              <li><a href="../specs/artifact-management.html">Artifacts</a></li>
+              <li><a href="../specs/resource-resolution.html">Resolution</a></li>
+              <li><a href="../specs/workflow-fidelity.html">Fidelity</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>API</summary>
+            <ul>
+              <li><a href="../api/tools.html">Tools</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
+              <li><a href="../api/protocol.html">Protocol guide</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group" open>
+            <summary>Internals</summary>
+            <ul>
+              <li><a href="./server-anatomy.html" aria-current="page">Server anatomy</a></li>
+              <li><a href="./request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="./session-store.html">Session store</a></li>
+              <li><a href="./quality-system.html">Quality system</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Design</summary>
+            <ul>
+              <li><a href="../design/rationale.html">Design rationale</a></li>
+            </ul>
+          </details>
+        </li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
+<!-- END GENERATED NAV -->
   </div>
 </header>
 
+
+<!-- BEGIN GENERATED BREADCRUMB -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li>Internals</li>
+      <li aria-current="page">Server anatomy</li>
+    </ol>
+  </nav>
+<!-- END GENERATED BREADCRUMB -->
+
 <main id="main">
   <h1>Server anatomy</h1>
-  <p class="lede">The <a href="../specs/architecture.html">architecture models</a> describe what the server guarantees; this page describes the code that delivers it — roughly 5,400 lines of TypeScript in <a href="https://github.com/m2ux/workflow-server/tree/main/src"><code>src/</code></a>, organized around two tool registrars, a family of loaders, and a session store. It is the map for reading the source.</p>
-  <p>This page and the rest of the internals section are derived from the server source itself; each section links to the files it describes. The contributor's build-and-test guide is <a href="https://github.com/m2ux/workflow-server/blob/main/docs/development.md">docs/development.md</a>.</p>
+  <p class="lede prose">The <a href="../specs/architecture.html">architecture models</a> describe guarantees; this page maps them to code in <a href="https://github.com/m2ux/workflow-server/tree/main/src"><code>src/</code></a>.</p>
+  <p class="prose contributor-note">For contributors. Build and test instructions: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/development.md">Development guide (source)</a>.</p>
 
   <h2 id="shape">The shape of the codebase</h2>
   <p>Startup is a short, linear path: the entry point parses configuration, a factory builds the MCP server, and two registrar functions attach all sixteen tools as closures. There is no routing layer and no dependency-injection framework — the registrars close over the <code>ServerConfig</code> and call shared machinery directly.</p>
@@ -76,22 +138,37 @@
   </figure>
 
   <h2 id="modules">Module map</h2>
-  <p>Each module owns one concern. The table lists them in the order a request touches them:</p>
+  <p class="prose">Grouped by what a request touches. Each row links to the primary source file.</p>
+  <h3>Startup</h3>
   <div class="table-wrap">
     <table>
-      <thead>
-        <tr><th scope="col">Module</th><th scope="col">Responsibility</th></tr>
-      </thead>
+      <thead><tr><th scope="col">Module</th><th scope="col">Role</th></tr></thead>
       <tbody>
-        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/index.ts"><code>index.ts</code></a>, <a href="https://github.com/m2ux/workflow-server/blob/main/src/config.ts"><code>config.ts</code></a>, <a href="https://github.com/m2ux/workflow-server/blob/main/src/server.ts"><code>server.ts</code></a></td><td>Entry point, <code>ServerConfig</code> (workflow directory, schemas directory, workspace root from <code>--workspace</code> or <code>WORKFLOW_WORKSPACE</code>), and the server factory.</td></tr>
-        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/tools/workflow-tools.ts"><code>tools/</code></a></td><td>The sixteen tool handlers. Navigation, checkpoint, and trace tools live in <code>workflow-tools.ts</code>; session creation and content fetching live in <code>resource-tools.ts</code>.</td></tr>
-        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/loaders/workflow-loader.ts"><code>loaders/</code></a></td><td>Reading definitions: workflow and activity YAML (<code>workflow-loader.ts</code>), technique resolution and composition (<code>technique-loader.ts</code>), markdown technique parsing (<code>markdown-technique-loader.ts</code>), resources (<code>resource-loader.ts</code>), and the generated JSON schemas (<code>schema-loader.ts</code>).</td></tr>
-        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/schema/workflow.schema.ts"><code>schema/</code></a></td><td>Zod definitions for every file shape the server reads or writes — workflow, activity, condition, technique, resource, session — plus identifier rules. The JSON schemas in <a href="../api/schemas.html"><code>schemas/</code></a> are generated from these sources.</td></tr>
-        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/store.ts"><code>utils/session/</code></a></td><td>The session store: planning-folder resolution, atomic <code>session.json</code> writes, HMAC sealing (<code>crypto.ts</code>), deterministic session-index derivation (<code>derivation.ts</code>), legacy-layout migration (<code>migration.ts</code>), and the load/save resolver every tool uses.</td></tr>
-        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/validation.ts"><code>utils/validation.ts</code></a></td><td>The runtime fidelity validators: activity transitions, workflow version drift, step and activity manifests, transition conditions, and technique-fetch cross-checks.</td></tr>
-        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/delivery.ts"><code>utils/delivery.ts</code></a>, <a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/binding-provenance.ts"><code>utils/binding-provenance.ts</code></a></td><td>Reference-not-repeat delivery (content hashing, the per-agent delivered ledger, <code>unchanged</code> markers) and the static provenance annotations on technique inputs and outputs.</td></tr>
-        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/trace.ts"><code>trace.ts</code></a>, <a href="https://github.com/m2ux/workflow-server/blob/main/src/logging.ts"><code>logging.ts</code></a></td><td>The in-process <code>TraceStore</code> (per-session event buffers, evicting the oldest beyond 1,000 sessions), HMAC-signed trace tokens, and the <code>withAuditLog</code> wrapper around every handler.</td></tr>
-        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/result.ts"><code>result.ts</code></a>, <a href="https://github.com/m2ux/workflow-server/blob/main/src/errors.ts"><code>errors.ts</code></a></td><td>The <code>Result&lt;T, E&gt;</code> type loaders return, and the typed domain errors (<a href="#errors">below</a>).</td></tr>
+        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/index.ts"><code>index.ts</code></a>, <a href="https://github.com/m2ux/workflow-server/blob/main/src/config.ts"><code>config.ts</code></a>, <a href="https://github.com/m2ux/workflow-server/blob/main/src/server.ts"><code>server.ts</code></a></td><td>Parse config, build MCP server, register tools.</td></tr>
+        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/tools/workflow-tools.ts"><code>tools/</code></a></td><td>Sixteen tool handlers across workflow and resource registrars.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>Definitions and validation</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Module</th><th scope="col">Role</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/loaders/workflow-loader.ts"><code>loaders/</code></a></td><td>Read workflow YAML, compose techniques, load resources and schemas.</td></tr>
+        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/schema/workflow.schema.ts"><code>schema/</code></a></td><td>Zod shapes; JSON schemas in <a href="../api/schemas.html"><code>schemas/</code></a> are generated from here.</td></tr>
+        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/validation.ts"><code>utils/validation.ts</code></a></td><td>Runtime fidelity validators for transitions and manifests.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>Persistence and delivery</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Module</th><th scope="col">Role</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/store.ts"><code>utils/session/</code></a></td><td>Planning folders, atomic writes, HMAC seals, session index derivation.</td></tr>
+        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/delivery.ts"><code>utils/delivery.ts</code></a></td><td>Reference-not-repeat delivery and content hashing.</td></tr>
+        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/trace.ts"><code>trace.ts</code></a>, <a href="https://github.com/m2ux/workflow-server/blob/main/src/logging.ts"><code>logging.ts</code></a></td><td>Trace buffers, signed tokens, audit logging.</td></tr>
+        <tr><td><a href="https://github.com/m2ux/workflow-server/blob/main/src/result.ts"><code>result.ts</code></a>, <a href="https://github.com/m2ux/workflow-server/blob/main/src/errors.ts"><code>errors.ts</code></a></td><td>Typed errors loaders return across the tool boundary.</td></tr>
       </tbody>
     </table>
   </div>
@@ -132,6 +209,14 @@
   <h2 id="next">Next</h2>
   <p>Follow one request through this structure in <a href="./request-lifecycle.html">the request lifecycle</a>, or read how state is kept honest in <a href="./session-store.html">the session store</a>.</p>
 </main>
+
+
+<!-- BEGIN GENERATED PAGINATION -->
+  <nav class="page-pagination" aria-label="Page sequence">
+    <span></span>
+    <a class="page-pagination__next" href="./request-lifecycle.html">Request lifecycle →</a>
+  </nav>
+<!-- END GENERATED PAGINATION -->
 
 <footer class="site-footer">
   <div class="site-footer__inner">

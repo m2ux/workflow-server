@@ -13,17 +13,80 @@
 <header class="site-header">
   <div class="site-header__inner">
     <a class="site-title" href="../">Workflow Server</a>
-    <nav class="site-nav" aria-label="Site">
-      <ul>
+    <!-- BEGIN GENERATED NAV -->
+    <nav class="site-nav" aria-label="Documentation">
+      <ul class="site-nav__primary">
         <li><a href="../">Home</a></li>
-        <li><a href="./architecture.html">Architecture</a></li>
-        <li><a href="../api/tools.html">Tools</a></li>
-        <li><a href="../api/schemas.html">Schemas</a></li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Guide</summary>
+            <ul>
+              <li><a href="../guide/getting-started.html">Getting started</a></li>
+              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
+              <li><a href="../guide/concepts.html">Concepts</a></li>
+              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group" open>
+            <summary>Architecture</summary>
+            <ul>
+              <li><a href="./architecture.html">Overview</a></li>
+              <li><a href="./dispatch.html">Dispatch</a></li>
+              <li><a href="./checkpoints.html">Checkpoints</a></li>
+              <li><a href="./state-management.html">State</a></li>
+              <li><a href="./artifact-management.html">Artifacts</a></li>
+              <li><a href="./resource-resolution.html">Resolution</a></li>
+              <li><a href="./workflow-fidelity.html" aria-current="page">Fidelity</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>API</summary>
+            <ul>
+              <li><a href="../api/tools.html">Tools</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
+              <li><a href="../api/protocol.html">Protocol guide</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Internals</summary>
+            <ul>
+              <li><a href="../internals/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="../internals/session-store.html">Session store</a></li>
+              <li><a href="../internals/quality-system.html">Quality system</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Design</summary>
+            <ul>
+              <li><a href="../design/rationale.html">Design rationale</a></li>
+            </ul>
+          </details>
+        </li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
+<!-- END GENERATED NAV -->
   </div>
 </header>
+
+
+<!-- BEGIN GENERATED BREADCRUMB -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="./architecture.html">Architecture</a></li>
+      <li aria-current="page">Fidelity</li>
+    </ol>
+  </nav>
+<!-- END GENERATED BREADCRUMB -->
 
 <main id="main">
   <h1>Workflow fidelity</h1>
@@ -75,13 +138,18 @@
   <p><strong>Checkpoint gate (L2).</strong> While a checkpoint is active, transition tools hard-fail; only <code>present_checkpoint</code> and <code>respond_checkpoint</code> are exempt. Responses are validated against the checkpoint definition, and timing is enforced — a minimum response delay for user-answered checkpoints, the full <code>autoAdvanceMs</code> timer for auto-advanced ones — so an agent cannot instantly answer its own question. Details in the <a href="./checkpoints.html">checkpoint model</a>.</p>
 
   <h2 id="advisory">The advisory layers</h2>
-  <p>Layers 3–6 warn rather than block, on the principle that a confused agent should be able to self-correct while every violation stays visible. Warnings come back in the tool response's <code>_meta.validation</code> and are recorded in the trace:</p>
-  <ul>
-    <li><strong>Cross-activity validation (L3)</strong> — mid-session workflow switches, transitions that aren't in the graph, techniques the activity never declared, workflow definitions that changed on disk.</li>
-    <li><strong>Transition condition tracking (L4)</strong> — the condition an agent claims for a transition must actually map to the target activity; false "default" claims are flagged.</li>
-    <li><strong>Step manifest (L5)</strong> — the per-step summary submitted with <code>next_activity</code> is checked for missing steps, ordering, unexpected step ids, and empty outputs.</li>
-    <li><strong>Activity manifest (L6)</strong> — the workflow-level journey summary is checked against the definition: real activity ids, non-empty outcomes, conditions that exist.</li>
-  </ul>
+  <p class="prose">Layers 3-6 warn rather than block. Warnings appear in <code>_meta.validation</code> and the trace. See <a href="../api/protocol.html">protocol guide</a> for how to read them.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Layer</th><th scope="col">When it runs</th><th scope="col">Effect</th><th scope="col">What to do</th></tr></thead>
+      <tbody>
+        <tr><td>L3 Cross-activity</td><td>Session navigation</td><td>Warns</td><td>Fix workflow switches, transitions, or stale definitions</td></tr>
+        <tr><td>L4 Transition condition</td><td><code>next_activity</code></td><td>Warns</td><td>Match claimed condition to a real transition</td></tr>
+        <tr><td>L5 Step manifest</td><td><code>next_activity</code></td><td>Warns</td><td>Report completed steps with valid ids and outputs</td></tr>
+        <tr><td>L6 Activity manifest</td><td><code>next_activity</code></td><td>Warns</td><td>Summarize completed activities with real outcomes</td></tr>
+      </tbody>
+    </table>
+  </div>
 
   <h2 id="trace">The trace (L7)</h2>
   <p>The server mechanically records every tool call — name, timing, status, workflow/activity/agent attribution, errors, and any validation warnings. At each activity transition the events are packaged into a compact, HMAC-signed trace token returned in <code>_meta.trace_token</code>; the agent accumulates these opaque strings and can resolve them at any time with <a href="../api/tools.html#get_trace"><code>get_trace</code></a>. Agents additionally write a semantic trace (step outputs, decisions, variable changes) to the planning folder; together the two give complete post-hoc visibility.</p>
@@ -92,6 +160,13 @@
   <h2 id="limits">Honest limitations</h2>
   <p>The enforcement is detection-oriented, not proof-oriented. The server verifies that steps were <em>reported</em>, not that the work was done; that a claimed condition maps to the target, not that it is true; that a checkpoint was <em>answered</em> after a plausible delay, not that a human saw it. The mechanical trace corroborates what tool calls actually happened, and post-hoc audit can cross-reference claims against checkpoint logs — the full list of limitations is in the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/workflow-fidelity.md">canonical document</a>.</p>
 </main>
+
+
+<!-- BEGIN GENERATED PAGINATION -->
+  <nav class="page-pagination" aria-label="Page sequence">
+    <a class="page-pagination__prev" href="./resource-resolution.html">← Resolution</a>
+  </nav>
+<!-- END GENERATED PAGINATION -->
 
 <footer class="site-footer">
   <div class="site-footer__inner">

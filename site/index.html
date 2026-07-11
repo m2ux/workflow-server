@@ -13,22 +13,81 @@
 <header class="site-header">
   <div class="site-header__inner">
     <a class="site-title" href="./">Workflow Server</a>
-    <nav class="site-nav" aria-label="Site">
-      <ul>
-        <li><a href="#how-it-works">How it works</a></li>
-        <li><a href="#documentation">Documentation</a></li>
-        <li><a href="#docs-map">Finding a document</a></li>
+    <!-- BEGIN GENERATED NAV -->
+    <nav class="site-nav" aria-label="Documentation">
+      <ul class="site-nav__primary">
+        <li><a href="./" aria-current="page">Home</a></li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Guide</summary>
+            <ul>
+              <li><a href="./guide/getting-started.html">Getting started</a></li>
+              <li><a href="./guide/ide-setup.html">IDE setup</a></li>
+              <li><a href="./guide/concepts.html">Concepts</a></li>
+              <li><a href="./guide/running-workflows.html">Running workflows</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Architecture</summary>
+            <ul>
+              <li><a href="./specs/architecture.html">Overview</a></li>
+              <li><a href="./specs/dispatch.html">Dispatch</a></li>
+              <li><a href="./specs/checkpoints.html">Checkpoints</a></li>
+              <li><a href="./specs/state-management.html">State</a></li>
+              <li><a href="./specs/artifact-management.html">Artifacts</a></li>
+              <li><a href="./specs/resource-resolution.html">Resolution</a></li>
+              <li><a href="./specs/workflow-fidelity.html">Fidelity</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>API</summary>
+            <ul>
+              <li><a href="./api/tools.html">Tools</a></li>
+              <li><a href="./api/schemas.html">Schemas</a></li>
+              <li><a href="./api/protocol.html">Protocol guide</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Internals</summary>
+            <ul>
+              <li><a href="./internals/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="./internals/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="./internals/session-store.html">Session store</a></li>
+              <li><a href="./internals/quality-system.html">Quality system</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Design</summary>
+            <ul>
+              <li><a href="./design/rationale.html">Design rationale</a></li>
+            </ul>
+          </details>
+        </li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
+<!-- END GENERATED NAV -->
   </div>
 </header>
+
+
+<!-- BEGIN GENERATED BREADCRUMB -->
+
+<!-- END GENERATED BREADCRUMB -->
 
 <main id="main">
 
   <section class="hero">
     <h1>Structured workflows for AI agents</h1>
-    <p class="lede">Workflow Server is a <a href="https://modelcontextprotocol.io/">Model Context Protocol (MCP)</a> server that guides AI agents through structured, multi-step workflows. You describe a goal in natural language; the server gives the agent a defined process to follow — with checkpoints where you stay in control of the decisions that matter.</p>
+    <p class="lede">Workflow Server is an <a href="https://modelcontextprotocol.io/">MCP</a> server that guides agents through multi-step workflows. You describe a goal in plain language; the agent follows a defined process and pauses at checkpoints when your decision matters.</p>
     <ul class="pill-row" aria-label="Project facts">
       <li class="pill">MCP compatible</li>
       <li class="pill">TypeScript · Node.js 18+</li>
@@ -78,15 +137,55 @@
     </figure>
   </section>
 
+  <section id="start-here" aria-labelledby="start-here-h">
+    <h2 id="start-here-h">Start here</h2>
+    <p class="prose">Pick the path that matches what you need. Every link below goes to a page on this site.</p>
+    <ul class="card-grid card-grid--personas">
+      <li class="card">
+        <p class="audience-badge">Use workflows</p>
+        <h3>Run work in your IDE</h3>
+        <p>Install the server, wire up your MCP client, and drive workflows in natural language.</p>
+        <span class="card-cta"><a href="guide/getting-started.html">Getting started</a> · <a href="guide/ide-setup.html">IDE setup</a> · <a href="guide/running-workflows.html">Running workflows</a></span>
+      </li>
+      <li class="card">
+        <p class="audience-badge">Understand the system</p>
+        <h3>Learn how it works</h3>
+        <p>Core concepts, architecture models, API reference, and design rationale.</p>
+        <span class="card-cta"><a href="guide/concepts.html">Concepts</a> · <a href="specs/architecture.html">Architecture</a> · <a href="api/tools.html">Tools</a></span>
+      </li>
+      <li class="card">
+        <p class="audience-badge">Contribute</p>
+        <h3>Work on the server</h3>
+        <p>Module map, request lifecycle, session store, and the guard-and-test system.</p>
+        <span class="card-cta"><a href="internals/server-anatomy.html">Server anatomy</a> · <a href="internals/quality-system.html">Quality system</a> · <a href="https://github.com/m2ux/workflow-server/blob/main/docs/development.md">Development guide</a></span>
+      </li>
+    </ul>
+    <p class="prose note">Recommended guide order: <a href="guide/getting-started.html">Getting started</a> → <a href="guide/ide-setup.html">IDE setup</a> → <a href="guide/concepts.html">Concepts</a> → <a href="guide/running-workflows.html">Running workflows</a>.</p>
+  </section>
+
   <section id="how-it-works" aria-labelledby="how-it-works-h">
     <h2 id="how-it-works-h">How it works</h2>
-    <p>A single always-applied <a href="https://github.com/m2ux/workflow-server/blob/main/docs/ide-setup.md">IDE rule</a> bootstraps the agent. From there, the server handles workflow discovery, session management, and step-by-step navigation:</p>
+
+    <h3>For users</h3>
+    <p class="prose">You speak in natural language. The agent matches your request to a workflow, works through its phases, and stops at checkpoints when you need to decide something. You never manage tool names or session tokens yourself.</p>
     <ol class="steps">
-      <li><strong>Discover.</strong> The agent calls <code>discover</code> to learn the available workflows and the bootstrap procedure.</li>
-      <li><strong>Start a session.</strong> <code>start_session</code> returns a session token, and <code>get_workflow</code> returns the workflow structure, its workflow-level techniques and rules, and the first activity.</li>
-      <li><strong>Navigate.</strong> <code>next_activity</code> advances the session; <code>get_activity</code> returns the activity's full definition — steps, checkpoints, transitions — with its bundled techniques. <code>get_resource</code> lazy-loads reference material.</li>
-      <li><strong>Execute.</strong> The agent works through the activities, pausing at checkpoints for your decisions, with transitions governing the flow between activities.</li>
+      <li><strong>Install and connect.</strong> Build the server and register it with your MCP client. See <a href="guide/getting-started.html">Getting started</a>.</li>
+      <li><strong>Add the IDE rule.</strong> One always-applied rule makes the agent call <code>discover</code> first. See <a href="guide/ide-setup.html">IDE setup</a>.</li>
+      <li><strong>Run or resume.</strong> Say "start a work package" or "resume the workflow." See <a href="guide/running-workflows.html">Running workflows</a>.</li>
+      <li><strong>Answer checkpoints.</strong> When the run pauses, pick an option. The workflow cannot advance until you respond.</li>
     </ol>
+
+    <details class="implementer-panel">
+      <summary>For agent implementers: the tool loop</summary>
+      <p class="prose">Under the hood, the agent follows a bootstrap procedure returned by <code>discover</code>. You do not call these tools yourself; the IDE rule routes workflow requests here.</p>
+      <ol class="steps">
+        <li><strong>Discover.</strong> <code>discover</code> returns available workflows and the bootstrap sequence.</li>
+        <li><strong>Start a session.</strong> <code>start_session</code> and <code>get_workflow</code> open a run and load the workflow structure.</li>
+        <li><strong>Navigate.</strong> <code>next_activity</code> and <code>get_activity</code> advance through phases. <code>get_resource</code> loads reference material on demand.</li>
+        <li><strong>Execute.</strong> The agent works each activity, yielding at checkpoints until the workflow completes.</li>
+      </ol>
+      <p class="prose">Full signatures: <a href="api/tools.html">MCP tool reference</a>. Call ordering and errors: <a href="api/protocol.html">Protocol guide</a>.</p>
+    </details>
 
     <figure class="diagram">
       <svg viewBox="0 0 960 215" role="img" aria-labelledby="session-title session-desc">
@@ -127,38 +226,38 @@
   </section>
 
   <section id="documentation" aria-labelledby="documentation-h">
-    <h2 id="documentation-h">Documentation</h2>
-    <p>The markdown files in the repository are the canonical documentation source; this site is the navigable, illustrated view over them, extended with two sections derived from the server source and the project's decision records. Five sections cover the material:</p>
+    <h2 id="documentation-h">All documentation</h2>
+    <p class="prose">This site is the browsable, illustrated view. Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is what you edit when you change the docs.</p>
     <ul class="card-grid">
       <li class="card">
         <h3>User guide</h3>
-        <p>Install the server, register it with an MCP client (Cursor, Claude Desktop, and others), set up the IDE bootstrap rule, and run your first workflow with natural-language requests.</p>
-        <span class="card-cta"><a href="guide/getting-started.html">Getting started</a> · <a href="guide/concepts.html">Concepts</a> · <a href="guide/running-workflows.html">Running workflows</a> · <a href="guide/ide-setup.html">IDE setup</a></span>
+        <p>Install, configure, and run workflows.</p>
+        <span class="card-cta"><a href="guide/getting-started.html">Getting started</a> · <a href="guide/ide-setup.html">IDE setup</a> · <a href="guide/concepts.html">Concepts</a> · <a href="guide/running-workflows.html">Running workflows</a></span>
       </li>
       <li class="card">
-        <h3>Technical specifications</h3>
-        <p>The six architecture models — hierarchical dispatch, just-in-time checkpoints, state management and deterministic transitions, artifact and workspace isolation, technique and resource resolution, and workflow fidelity.</p>
-        <span class="card-cta"><a href="specs/architecture.html">Architecture overview</a></span>
+        <h3>Architecture</h3>
+        <p>Six models that describe how the server enforces workflows.</p>
+        <span class="card-cta"><a href="specs/architecture.html">Overview</a> · <a href="specs/dispatch.html">Dispatch</a> · <a href="specs/checkpoints.html">Checkpoints</a> · <a href="specs/state-management.html">State</a> · <a href="specs/artifact-management.html">Artifacts</a> · <a href="specs/resource-resolution.html">Resolution</a> · <a href="specs/workflow-fidelity.html">Fidelity</a></span>
       </li>
       <li class="card">
-        <h3>API usage</h3>
-        <p>Full signatures for the 16 MCP tools, the JSON schemas that define workflows, activities, and techniques, and the protocol in practice — call ordering, errors, warnings, traces, and delivery.</p>
-        <span class="card-cta"><a href="api/tools.html">Tool reference</a> · <a href="api/schemas.html">Schema reference</a> · <a href="api/protocol.html">Protocol in practice</a></span>
+        <h3>API</h3>
+        <p>Tool signatures, JSON schemas, and protocol guidance.</p>
+        <span class="card-cta"><a href="api/tools.html">Tools</a> · <a href="api/schemas.html">Schemas</a> · <a href="api/protocol.html">Protocol guide</a></span>
       </li>
       <li class="card">
         <h3>Server internals</h3>
-        <p>The implementation view for contributors: how the code is organized, what happens inside one tool call, how session state stays trustworthy on disk, and the guard-and-test system the repository runs on itself.</p>
+        <p>Implementation view for contributors.</p>
         <span class="card-cta"><a href="internals/server-anatomy.html">Server anatomy</a> · <a href="internals/request-lifecycle.html">Request lifecycle</a> · <a href="internals/session-store.html">Session store</a> · <a href="internals/quality-system.html">Quality system</a></span>
       </li>
       <li class="card">
         <h3>Design rationale</h3>
-        <p>Why the system is shaped the way it is: server-owned state, determinism over model judgment, progressive disclosure, detection over prevention — the forces behind each decision, and the costs accepted.</p>
+        <p>Why the system is shaped the way it is.</p>
         <span class="card-cta"><a href="design/rationale.html">Design rationale</a></span>
       </li>
     </ul>
 
     <h3>MCP tools at a glance</h3>
-    <p>The server registers 16 MCP tools across six concerns:</p>
+    <p class="prose">Six concern groups; details in the <a href="api/tools.html">tool reference</a>.</p>
     <div class="table-wrap">
       <table>
         <thead>
@@ -177,26 +276,29 @@
   </section>
 
   <section id="docs-map" aria-labelledby="docs-map-h">
-    <h2 id="docs-map-h">Finding a document</h2>
-    <p>Every document has a defined purpose. Start from your question:</p>
+    <h2 id="docs-map-h">Where to start</h2>
+    <p class="prose">Match your question to a page. Site links are for reading; GitHub links are for editing source or docs with no HTML mirror.</p>
     <div class="table-wrap">
       <table>
         <thead>
           <tr><th scope="col">Your question</th><th scope="col">Read this</th></tr>
         </thead>
         <tbody>
-          <tr><td>What is this project and how do I get started?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/README.md">README</a></td></tr>
-          <tr><td>How do I install the server and wire it into my IDE or MCP client?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/SETUP.md">SETUP</a> and <a href="https://github.com/m2ux/workflow-server/blob/main/docs/ide-setup.md">IDE setup</a></td></tr>
-          <tr><td>What tools does the server expose, and with what signatures?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/api-reference.md">API reference</a></td></tr>
-          <tr><td>How do I author or validate a workflow definition?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/schemas/README.md">Schema guide</a></td></tr>
-          <tr><td>How is the system designed?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/architecture.md">Architecture overview</a>, which links each of the six model documents</td></tr>
-          <tr><td>Why is it designed this way?</td><td><a href="design/rationale.html">Design rationale</a> on this site, distilled from the project's decision records</td></tr>
-          <tr><td>How is the server implemented?</td><td>The <a href="internals/server-anatomy.html">server internals</a> section on this site, derived from the source</td></tr>
-          <tr><td>What do the server's errors and warnings mean in practice?</td><td><a href="api/protocol.html">The protocol in practice</a></td></tr>
-          <tr><td>What keeps an agent faithful to a workflow?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/workflow-fidelity.md">Workflow fidelity</a></td></tr>
-          <tr><td>How do techniques declare their protocol and bindings?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md">Technique protocol specification</a></td></tr>
-          <tr><td>How do I contribute to the server itself?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/development.md">Development guide</a></td></tr>
-          <tr><td>Where does new documentation belong?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/documentation-system.md">Documentation system</a></td></tr>
+          <tr><td>What is this project?</td><td><a href="guide/getting-started.html">Getting started</a> or <a href="https://github.com/m2ux/workflow-server/blob/main/README.md">README (source)</a></td></tr>
+          <tr><td>How do I install and connect the server?</td><td><a href="guide/getting-started.html">Getting started</a> and <a href="https://github.com/m2ux/workflow-server/blob/main/SETUP.md">SETUP (source)</a></td></tr>
+          <tr><td>How do I wire the IDE bootstrap rule?</td><td><a href="guide/ide-setup.html">IDE setup</a></td></tr>
+          <tr><td>How do I run or resume a workflow?</td><td><a href="guide/running-workflows.html">Running workflows</a></td></tr>
+          <tr><td>What are workflows, sessions, and checkpoints?</td><td><a href="guide/concepts.html">Concepts</a></td></tr>
+          <tr><td>What tools does the server expose?</td><td><a href="api/tools.html">Tool reference</a> and <a href="https://github.com/m2ux/workflow-server/blob/main/docs/api-reference.md">API reference (source)</a></td></tr>
+          <tr><td>What do errors and warnings mean?</td><td><a href="api/protocol.html">Protocol guide</a></td></tr>
+          <tr><td>How do I author workflow definitions?</td><td><a href="api/schemas.html">Schema reference</a> and <a href="https://github.com/m2ux/workflow-server/blob/main/schemas/README.md">Schema guide (source)</a></td></tr>
+          <tr><td>How is the system designed?</td><td><a href="specs/architecture.html">Architecture overview</a> and the six model pages linked from it</td></tr>
+          <tr><td>Why is it designed this way?</td><td><a href="design/rationale.html">Design rationale</a></td></tr>
+          <tr><td>How is the server implemented?</td><td><a href="internals/server-anatomy.html">Server internals</a></td></tr>
+          <tr><td>What keeps agents faithful to a workflow?</td><td><a href="specs/workflow-fidelity.html">Workflow fidelity</a></td></tr>
+          <tr><td>How do techniques declare protocol and bindings?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md">Technique protocol (source)</a></td></tr>
+          <tr><td>How do I contribute to the server?</td><td><a href="internals/server-anatomy.html">Server anatomy</a> and <a href="https://github.com/m2ux/workflow-server/blob/main/docs/development.md">Development guide (source)</a></td></tr>
+          <tr><td>Where does new documentation belong?</td><td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/documentation-system.md">Documentation system (source)</a></td></tr>
         </tbody>
       </table>
     </div>
@@ -204,10 +306,14 @@
 
 </main>
 
+
+<!-- BEGIN GENERATED PAGINATION -->
+
+<!-- END GENERATED PAGINATION -->
+
 <footer class="site-footer">
   <div class="site-footer__inner">
-    <span>Markdown in the <a href="https://github.com/m2ux/workflow-server">repository</a> is the canonical documentation source.</span>
-    <span><a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
+    <span>Source on <a href="https://github.com/m2ux/workflow-server">GitHub</a> · <a href="https://github.com/m2ux/workflow-server/blob/main/LICENSE">MIT License</a></span>
   </div>
 </footer>
 

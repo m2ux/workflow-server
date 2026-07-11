@@ -13,33 +13,99 @@
 <header class="site-header">
   <div class="site-header__inner">
     <a class="site-title" href="../">Workflow Server</a>
-    <nav class="site-nav" aria-label="Site">
-      <ul>
+    <!-- BEGIN GENERATED NAV -->
+    <nav class="site-nav" aria-label="Documentation">
+      <ul class="site-nav__primary">
         <li><a href="../">Home</a></li>
-        <li><a href="./rationale.html" aria-current="page">Design rationale</a></li>
-        <li><a href="../specs/architecture.html">Architecture</a></li>
-        <li><a href="../internals/server-anatomy.html">Internals</a></li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Guide</summary>
+            <ul>
+              <li><a href="../guide/getting-started.html">Getting started</a></li>
+              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
+              <li><a href="../guide/concepts.html">Concepts</a></li>
+              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Architecture</summary>
+            <ul>
+              <li><a href="../specs/architecture.html">Overview</a></li>
+              <li><a href="../specs/dispatch.html">Dispatch</a></li>
+              <li><a href="../specs/checkpoints.html">Checkpoints</a></li>
+              <li><a href="../specs/state-management.html">State</a></li>
+              <li><a href="../specs/artifact-management.html">Artifacts</a></li>
+              <li><a href="../specs/resource-resolution.html">Resolution</a></li>
+              <li><a href="../specs/workflow-fidelity.html">Fidelity</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>API</summary>
+            <ul>
+              <li><a href="../api/tools.html">Tools</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
+              <li><a href="../api/protocol.html">Protocol guide</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Internals</summary>
+            <ul>
+              <li><a href="../internals/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="../internals/session-store.html">Session store</a></li>
+              <li><a href="../internals/quality-system.html">Quality system</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group" open>
+            <summary>Design</summary>
+            <ul>
+              <li><a href="./rationale.html" aria-current="page">Design rationale</a></li>
+            </ul>
+          </details>
+        </li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
+<!-- END GENERATED NAV -->
   </div>
 </header>
 
+
+<!-- BEGIN GENERATED BREADCRUMB -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li>Design</li>
+      <li aria-current="page">Design rationale</li>
+    </ol>
+  </nav>
+<!-- END GENERATED BREADCRUMB -->
+
 <main id="main">
   <h1>Design rationale</h1>
-  <p class="lede">The <a href="../specs/architecture.html">specifications</a> describe the system as it is; this page records <em>why</em> it is that way. Every position here traces to a real force — usually a failure mode observed while running agents against earlier versions — and most accept a visible cost in exchange.</p>
-  <p>The material is distilled from the project's architecture decision records and engineering history, which live on the engineering branch alongside the code. Where a decision is implemented, the internals pages show the mechanism.</p>
+  <p class="lede prose">The <a href="../specs/architecture.html">specifications</a> describe what the system does. This page explains why it is shaped that way.</p>
+  <p class="prose contributor-note">For contributors and architects. If you only need to run workflows, start with the <a href="../guide/concepts.html">user guide</a>.</p>
 
   <h2 id="state-ownership">Who holds the truth</h2>
 
   <h3 id="state">The server owns the state, not the agent</h3>
-  <p>Early designs had agents carry session state in opaque tokens and transcribe them between calls. That failed in the mundane way everything agent-transcribed eventually fails: tokens drifted, got truncated, or were reconstructed from memory. The recorded decision (ADR-0003, server-managed session state) moves the whole record into a <a href="../internals/session-store.html">sealed <code>session.json</code></a> the server alone writes, with agents holding only a six-character index. Authority and write capability now sit in the same place as the HMAC secret; a server restart is invisible because the disk, not the process, is the memory. The accepted costs: the server must be told its workspace at launch, and every authenticated call pays filesystem I/O.</p>
+  <p class="takeaway">Session truth lives in a sealed <code>session.json</code> on disk; agents hold only a short index.</p>
+  <p class="prose">Earlier designs had agents transcribe opaque tokens between calls. Tokens drifted, truncated, or were reconstructed from memory. ADR-0003 moved the record to <a href="../internals/session-store.html">server-managed session state</a>. Cost: the server needs a workspace at launch, and every authenticated call reads or writes disk.</p>
 
   <h3 id="integrity">Integrity, not security</h3>
-  <p>The cryptography invites overreading, so the threat model is worth stating plainly: the HMAC seals exist to detect <em>incoherence</em> — a corrupted file, a hand-edit, a restored backup, two writers racing — not to resist an adversary, who could simply delete the folder. Framing it honestly keeps the mechanism proportionate: one server key, cheap digests, hard failure on mismatch, and no pretence that a workspace file is a security boundary.</p>
+  <p class="takeaway">HMAC seals detect corruption and incoherence; they are not an adversary-proof security boundary.</p>
+  <p class="prose">The seals catch corrupted files, hand-edits, restored backups, and racing writers. One server key, cheap digests, hard failure on mismatch.</p>
 
   <h3 id="determinism">Determinism over model judgment</h3>
-  <p>Wherever a choice can be resolved from the definition and the state, the system resolves it mechanically: transitions evaluate first-matching-condition, artifact contracts are synthesized from technique outputs rather than restated, binding provenance is computed statically, and identical inputs produce byte-identical payloads. The reasoning is that model judgment is the scarce, expensive, variable ingredient — spending it on plumbing wastes it and makes runs unreproducible. Given the same definition and state, any conforming agent follows the same path; creativity is confined to the work itself.</p>
+  <p class="takeaway">Resolve plumbing mechanically; reserve model judgment for the actual work.</p>
+  <p class="prose">Transitions, artifact contracts, binding provenance, and delivery payloads are computed from definitions and state. Same inputs, same path.</p>
 
   <h2 id="agent-experience">How agents experience the system</h2>
 
@@ -77,6 +143,11 @@
   <h2 id="next">Next</h2>
   <p>See these decisions as running code in the <a href="../internals/server-anatomy.html">internals section</a>, or as guarantees in the <a href="../specs/architecture.html">architecture models</a>.</p>
 </main>
+
+
+<!-- BEGIN GENERATED PAGINATION -->
+
+<!-- END GENERATED PAGINATION -->
 
 <footer class="site-footer">
   <div class="site-footer__inner">

@@ -13,22 +13,85 @@
 <header class="site-header">
   <div class="site-header__inner">
     <a class="site-title" href="../">Workflow Server</a>
-    <nav class="site-nav" aria-label="Site">
-      <ul>
+    <!-- BEGIN GENERATED NAV -->
+    <nav class="site-nav" aria-label="Documentation">
+      <ul class="site-nav__primary">
         <li><a href="../">Home</a></li>
-        <li><a href="./architecture.html" aria-current="page">Architecture</a></li>
-        <li><a href="../api/tools.html">Tools</a></li>
-        <li><a href="../api/schemas.html">Schemas</a></li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Guide</summary>
+            <ul>
+              <li><a href="../guide/getting-started.html">Getting started</a></li>
+              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
+              <li><a href="../guide/concepts.html">Concepts</a></li>
+              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group" open>
+            <summary>Architecture</summary>
+            <ul>
+              <li><a href="./architecture.html" aria-current="page">Overview</a></li>
+              <li><a href="./dispatch.html">Dispatch</a></li>
+              <li><a href="./checkpoints.html">Checkpoints</a></li>
+              <li><a href="./state-management.html">State</a></li>
+              <li><a href="./artifact-management.html">Artifacts</a></li>
+              <li><a href="./resource-resolution.html">Resolution</a></li>
+              <li><a href="./workflow-fidelity.html">Fidelity</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>API</summary>
+            <ul>
+              <li><a href="../api/tools.html">Tools</a></li>
+              <li><a href="../api/schemas.html">Schemas</a></li>
+              <li><a href="../api/protocol.html">Protocol guide</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Internals</summary>
+            <ul>
+              <li><a href="../internals/server-anatomy.html">Server anatomy</a></li>
+              <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
+              <li><a href="../internals/session-store.html">Session store</a></li>
+              <li><a href="../internals/quality-system.html">Quality system</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="site-nav__group">
+            <summary>Design</summary>
+            <ul>
+              <li><a href="../design/rationale.html">Design rationale</a></li>
+            </ul>
+          </details>
+        </li>
         <li><a href="https://github.com/m2ux/workflow-server">GitHub</a></li>
       </ul>
     </nav>
+<!-- END GENERATED NAV -->
   </div>
 </header>
 
+
+<!-- BEGIN GENERATED BREADCRUMB -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li>Architecture</li>
+      <li aria-current="page">Overview</li>
+    </ol>
+  </nav>
+<!-- END GENERATED BREADCRUMB -->
+
 <main id="main">
   <h1>Architecture</h1>
-  <p class="lede">The server is a small state machine wrapped in an MCP tool surface: agents call tools, the server enforces the workflow definition and owns the session state on disk. Six models describe how that works; this page is the map.</p>
-  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/architecture.md">docs/architecture.md</a>.</p>
+  <p class="lede prose">A small state machine wrapped in an MCP tool surface: agents call tools, the server enforces the workflow definition and owns session state on disk.</p>
+  <p class="prose">Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/architecture.md">docs/architecture.md (edit)</a>.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 300" role="img" aria-labelledby="arch-title arch-desc">
@@ -119,6 +182,11 @@
     <li><a href="../design/rationale.html"><strong>Design rationale</strong></a> — why the system is shaped this way: the forces behind each decision and the costs accepted.</li>
   </ul>
 </main>
+
+
+<!-- BEGIN GENERATED PAGINATION -->
+
+<!-- END GENERATED PAGINATION -->
 
 <footer class="site-footer">
   <div class="site-footer__inner">
