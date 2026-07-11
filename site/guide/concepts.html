@@ -24,6 +24,7 @@
               <li><a href="./getting-started.html">Getting started</a></li>
               <li><a href="./ide-setup.html">IDE setup</a></li>
               <li><a href="./concepts.html" aria-current="page">Concepts</a></li>
+              <li><a href="./workflow-architecture.html">Workflow architecture</a></li>
               <li><a href="./running-workflows.html">Running workflows</a></li>
             </ul>
           </details>
@@ -90,7 +91,7 @@
 
 <main id="main">
   <h1>Concepts</h1>
-  <p class="lede prose">Five ideas explain the system: <strong>workflows</strong>, <strong>activities</strong>, <strong>techniques</strong>, <strong>sessions</strong>, and <strong>checkpoints</strong>. The <a href="../#model">model diagram on the home page</a> shows how they chain from a user goal down to tool calls.</p>
+  <p class="lede prose">Five ideas explain the system: <strong>workflows</strong>, <strong>activities</strong>, <strong>techniques</strong>, <strong>sessions</strong>, and <strong>checkpoints</strong>. The <a href="../#model">model diagram on the home page</a> shows how they chain from a user goal down to tool calls. For file layout, step kinds, and binding, see <a href="./workflow-architecture.html">Workflow architecture</a>.</p>
 
   <h2 id="glossary">Terms at a glance</h2>
   <div class="table-wrap">
@@ -107,44 +108,7 @@
   </div>
 
   <h2 id="workflow-anatomy">What a workflow is made of</h2>
-  <p>A workflow is a directory of declarative files, not code. The manifest names the workflow and its variables; each activity file defines one phase as an ordered list of steps; techniques are markdown documents describing a capability; and resources are reference material a technique can pull in when needed.</p>
-
-  <figure class="diagram">
-    <svg viewBox="0 0 960 160" role="img" aria-labelledby="anatomy-title anatomy-desc">
-      <title id="anatomy-title">Anatomy of a workflow directory</title>
-      <desc id="anatomy-desc">A workflow manifest lists activities. Each activity file contains ordered steps of four kinds: technique, action, checkpoint, and loop. Steps reference technique documents, which can reference resources.</desc>
-      <defs>
-        <marker id="arrowc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
-        </marker>
-      </defs>
-      <g font-size="15" font-weight="600" text-anchor="middle">
-        <rect x="10" y="70" width="200" height="64" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="110" y="97" fill="var(--diagram-label)">workflow.yaml</text>
-        <text x="110" y="118" fill="var(--diagram-note)" font-size="13" font-weight="400">manifest: variables, rules</text>
-        <rect x="255" y="70" width="230" height="64" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="370" y="97" fill="var(--diagram-label)">activities/*.yaml</text>
-        <text x="370" y="118" fill="var(--diagram-note)" font-size="13" font-weight="400">ordered steps, transitions</text>
-        <rect x="530" y="70" width="200" height="64" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="630" y="97" fill="var(--diagram-label)">techniques/*.md</text>
-        <text x="630" y="118" fill="var(--diagram-note)" font-size="13" font-weight="400">how to do one capability</text>
-        <rect x="775" y="70" width="175" height="64" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
-        <text x="862" y="97" fill="var(--diagram-label)">resources/*.md</text>
-        <text x="862" y="118" fill="var(--diagram-note)" font-size="13" font-weight="400">reference, lazy-loaded</text>
-      </g>
-      <g stroke="var(--diagram-edge)" stroke-width="2">
-        <line x1="210" y1="102" x2="251" y2="102" marker-end="url(#arrowc)"/>
-        <line x1="485" y1="102" x2="526" y2="102" marker-end="url(#arrowc)"/>
-        <line x1="730" y1="102" x2="771" y2="102" marker-end="url(#arrowc)"/>
-      </g>
-      <g font-size="13" fill="var(--diagram-note)" text-anchor="middle">
-        <text x="230" y="90">lists</text>
-        <text x="505" y="90">bind</text>
-        <text x="750" y="90">links</text>
-      </g>
-    </svg>
-    <figcaption>Anatomy of a workflow directory. The manifest lists activities; activity steps come in four kinds (<code>technique</code>, <code>action</code>, <code>checkpoint</code>, <code>loop</code>) and bind techniques; techniques reference resources that load only when needed. The exact file shapes are in the <a href="../api/schemas.html">schema reference</a>.</figcaption>
-  </figure>
+  <p class="prose">A workflow is a directory of declarative files — manifest, activities, techniques, and resources — not executable code. <a href="./workflow-architecture.html">Workflow architecture</a> walks through each piece with diagrams: what lives on disk, the four step kinds, how techniques compose, and what the server delivers at runtime.</p>
 
   <h2 id="sessions">Sessions</h2>
   <p>A session is one run of a workflow. When the agent calls <a href="../api/tools.html#start_session"><code>start_session</code></a>, the server creates (or resumes) a planning folder under your project's <code>.engineering/artifacts/planning/</code> and writes a <code>session.json</code> there — the canonical record of which activity is current, which variables are set, and whether a checkpoint is active. The tool returns a short <code>session_index</code> token that identifies the session on every later call.</p>
@@ -201,21 +165,21 @@
   <p>Your choice can set workflow variables — picking "skip the audit" or "include migration" changes which activities and steps run afterwards. Some checkpoints define a default option and can auto-advance after a timeout; the server still enforces the timer.</p>
 
   <h2 id="techniques">Techniques and resources</h2>
-  <p>A technique is a markdown document that tells the agent how to perform one capability — its inputs, its protocol, its outputs. Steps bind techniques by reference, and the agent fetches each one just-in-time with <a href="../api/tools.html#get_technique"><code>get_technique</code></a> as it reaches the step, rather than receiving everything up front. When a technique points at longer reference material, the agent pulls it with <a href="../api/tools.html#get_resource"><code>get_resource</code></a> only if it actually needs it. This progressive disclosure keeps the agent's context small and focused on the current step.</p>
+  <p class="prose">A technique is a markdown document that tells the agent how to perform one capability. Steps bind techniques by reference; the agent fetches each one just-in-time with <a href="../api/tools.html#get_technique"><code>get_technique</code></a> as it reaches the step. Resources load with <a href="../api/tools.html#get_resource"><code>get_resource</code></a> only when needed. See <a href="./workflow-architecture.html#techniques">Workflow architecture</a> for paths, composition, and binding.</p>
 
   <h2 id="fidelity">Fidelity: why agents stay on script</h2>
   <p class="prose">The server enforces the workflow instead of trusting the agent to follow it. Transitions are validated, checkpoints gate advancement, and session state on disk is the single source of truth.</p>
   <p class="prose">Read <a href="../specs/workflow-fidelity.html">workflow fidelity</a> for what each layer protects against, and <a href="../specs/architecture.html">architecture overview</a> for the six models behind it.</p>
 
   <h2 id="next">Next</h2>
-  <p class="prose"><a href="./running-workflows.html">Run your first workflow</a> - what to say to the agent and what happens underneath.</p>
+  <p class="prose"><a href="./workflow-architecture.html">Workflow architecture</a> — file layout, step kinds, binding, and runtime delivery. Then <a href="./running-workflows.html">run your first workflow</a>.</p>
 </main>
 
 
 <!-- BEGIN GENERATED PAGINATION -->
   <nav class="page-pagination" aria-label="Page sequence">
     <a class="page-pagination__prev" href="./ide-setup.html">← IDE setup</a>
-    <a class="page-pagination__next" href="./running-workflows.html">Running workflows →</a>
+    <a class="page-pagination__next" href="./workflow-architecture.html">Workflow architecture →</a>
   </nav>
 <!-- END GENERATED PAGINATION -->
 
