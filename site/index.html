@@ -185,9 +185,9 @@
     <h2 id="what-a-run-looks-like-h">What a run looks like</h2>
     <p class="prose">A session moves through the workflow's activities in order, pausing at checkpoints for your decisions.</p>
     <figure class="diagram">
-      <svg viewBox="0 0 960 280" role="img" aria-labelledby="run-title run-desc">
+      <svg viewBox="0 0 960 315" role="img" aria-labelledby="run-title run-desc">
         <title id="run-title">A session timeline</title>
-        <desc id="run-desc">A timeline of session stages. Each activity uses techniques; steps follow those techniques; techniques consult linked resources (detail shown once below the first activity). Checkpoints pause the run for your decision.</desc>
+        <desc id="run-desc">A timeline of session stages. Each activity follows its steps; steps apply techniques; techniques consult linked resources (detail shown once below the first activity). Checkpoints pause the run for your decision.</desc>
         <defs>
           <marker id="arrow-run" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
@@ -207,32 +207,29 @@
           <text x="680" y="61" fill="var(--diagram-note)" font-size="13" font-weight="400">e.g. implement</text>
           <rect x="800" y="20" width="150" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
           <text x="875" y="52" fill="var(--diagram-label)">complete</text>
-          <rect x="225" y="115" width="110" height="40" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
-          <text x="280" y="140" fill="var(--diagram-label)" font-size="14">technique(s)</text>
-          <rect x="400" y="115" width="95" height="40" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
-          <text x="447" y="140" fill="var(--diagram-label)" font-size="14">step(s)</text>
-          <rect x="225" y="190" width="110" height="40" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
-          <text x="280" y="215" fill="var(--diagram-label)" font-size="14">resource(s)</text>
+          <rect x="232" y="108" width="96" height="40" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+          <text x="280" y="133" fill="var(--diagram-label)" font-size="14">step(s)</text>
+          <rect x="220" y="188" width="120" height="40" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+          <text x="280" y="213" fill="var(--diagram-label)" font-size="14">technique(s)</text>
+          <rect x="220" y="268" width="120" height="40" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+          <text x="280" y="293" fill="var(--diagram-label)" font-size="14">resource(s)</text>
         </g>
         <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
           <line x1="160" y1="46" x2="201" y2="46" marker-end="url(#arrow-run)"/>
           <line x1="355" y1="46" x2="396" y2="46" marker-end="url(#arrow-run)"/>
           <line x1="560" y1="46" x2="601" y2="46" marker-end="url(#arrow-run)"/>
           <line x1="755" y1="46" x2="796" y2="46" marker-end="url(#arrow-run)"/>
-          <line x1="280" y1="72" x2="280" y2="111" marker-end="url(#arrow-run)"/>
-          <line x1="337" y1="135" x2="396" y2="135" marker-end="url(#arrow-run)"/>
-          <line x1="280" y1="155" x2="280" y2="186" marker-end="url(#arrow-run)"/>
+          <line x1="280" y1="72" x2="280" y2="104" marker-end="url(#arrow-run)"/>
+          <line x1="280" y1="148" x2="280" y2="184" marker-end="url(#arrow-run)"/>
+          <line x1="280" y1="228" x2="280" y2="264" marker-end="url(#arrow-run)"/>
         </g>
         <g font-size="13" fill="var(--diagram-note)" text-anchor="end">
-          <text x="272" y="92">use(s)</text>
-          <text x="272" y="172">consults</text>
+          <text x="272" y="92">follows</text>
+          <text x="272" y="170">apply</text>
+          <text x="272" y="250">consult</text>
         </g>
-        <g font-size="13" fill="var(--diagram-note)" text-anchor="middle">
-          <text x="368" y="108">follows</text>
-        </g>
-        <text x="480" y="258" font-size="13" text-anchor="middle" fill="var(--diagram-note)">the rounded stage is a pause — nothing advances until you answer</text>
       </svg>
-      <figcaption>Activities run in sequence; each activity <strong>uses</strong> <a href="guide/definitions.html#technique">techniques</a>. <a href="guide/definitions.html#step">Step(s)</a> <strong>follow</strong> those techniques, and techniques <strong>consult</strong> linked <a href="guide/definitions.html#resource">resources</a> — shown once below the first activity. Checkpoints (rounded) pause the run for your decision. See <a href="specs/checkpoints.html">Checkpoints</a>.</figcaption>
+      <figcaption>Activities run in sequence; each activity <strong>follows</strong> its <a href="guide/definitions.html#step">step(s)</a>, steps <strong>apply</strong> <a href="guide/definitions.html#technique">techniques</a>, and techniques <strong>consult</strong> linked <a href="guide/definitions.html#resource">resources</a> — shown once below the first activity. Checkpoints (rounded) pause the run for your decision. See <a href="specs/checkpoints.html">Checkpoints</a>.</figcaption>
     </figure>
   </section>
 
