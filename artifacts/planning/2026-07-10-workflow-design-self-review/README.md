@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-10
 **Mode:** Update (via Review — fix-issues)
-**Status:** Planning
+**Status:** Requirements Refined
 
 ---
 
@@ -14,7 +14,14 @@ Self-audit of the workflow-design workflow (v1.6.0) against current library conv
 
 ## Design Decisions
 
-*Key design decisions and their rationale, captured as the session progresses (activity sequencing, checkpoint necessity, technique bindings, rule enforcement). Left as placeholder until requirements refinement populates it.*
+Requirements refinement (update pass) confirmed the fix-pass specification across all five update-mode dimensions, then reconciled the design assumptions autonomously via the audit techniques.
+
+- **Purpose** — remediate all 30 audit findings, bringing workflow-design into conformance with the step-binding / AP-60..85 conventions it audits others against; no schema changes; non-destructive update of a green-validating workflow.
+- **Activity list** — 9 activities unchanged (none added/removed/renamed); fixes are in-place edits concentrated in scope-and-draft (H1/H2/H3/M3), quality-review (H4/H6/M10/M13), validate-and-commit (H4/M9), plus workflow.yaml (H8/M1) and resources (P4).
+- **Checkpoints** — none added/removed; M11 templated id → static explicit id; M2 fixes the `{create/update}` message interpolation via a real `operation_type` variable.
+- **Artifacts** — no new files; declare the MISSING technique outputs (H4 counts, H5 mode flags, H3 `has_unflagged_removals`) to retire 10 baselined binding violations; M7 single-row assumptions log; M6 resource-protocol subsumption.
+- **Rules** — dissolve all 9 activity `rules:` blocks (H6, end state zero), re-bucket misfiled worker rules out of `rules.workflow` (H8), adopt `fragments` reuse where content duplicates a work-package fragment.
+- **Assumptions** — 7 surfaced (RR-1..RR-7), all Validated through audit reconciliation; none stakeholder-dependent, so no interview was required. See [assumptions log](03-assumptions-log.md).
 
 ---
 
@@ -41,7 +48,7 @@ Self-audit of the workflow-design workflow (v1.6.0) against current library conv
 | # | Activity | Mode | Status |
 |---|----------|------|--------|
 | 01 | Intake and Context | All | ✅ Complete |
-| 03 | Requirements Refinement | Create, Update | ⬚ Pending |
+| 03 | Requirements Refinement | Create, Update | ✅ Complete — [assumptions log](03-assumptions-log.md) |
 | 05 | Impact Analysis | Update | ⬚ Pending |
 | 06 | Scope and Draft | Create, Update | ⬚ Pending |
 | 08 | Quality Review | All | ✅ Complete — [compliance report](08-compliance-review.md) (review pass) |
@@ -60,4 +67,4 @@ Self-audit of the workflow-design workflow (v1.6.0) against current library conv
 
 ---
 
-**Status:** Intake complete — ready for requirements refinement (update pass)
+**Status:** Requirements refined and assumptions reconciled — ready for impact analysis (update pass)
