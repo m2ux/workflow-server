@@ -12,11 +12,11 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-title" href="../">Workflow Server</a>
+    <a class="site-title" href="../index.html">Workflow Server</a>
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../">Home</a></li>
+        <li><a href="../index.html">Home</a></li>
         <li>
           <details class="site-nav__group">
             <summary>Guide</summary>
@@ -25,6 +25,7 @@
               <li><a href="../guide/ide-setup.html">IDE setup</a></li>
               <li><a href="../guide/concepts.html">Concepts</a></li>
               <li><a href="../guide/running-workflows.html">Running workflows</a></li>
+              <li><a href="../guide/rationale.html">Design rationale</a></li>
             </ul>
           </details>
         </li>
@@ -61,14 +62,6 @@
               <li><a href="./request-lifecycle.html">Request lifecycle</a></li>
               <li><a href="./session-store.html">Session store</a></li>
               <li><a href="./quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Design</summary>
-            <ul>
-              <li><a href="../design/rationale.html">Design rationale</a></li>
             </ul>
           </details>
         </li>
@@ -202,7 +195,7 @@
 
   <h2 id="disk">Where things live on disk</h2>
   <ul>
-    <li><strong>Workflow definitions</strong> are read from the configured workflow directory — in this repository, the <code>workflows/</code> worktree of the orphan <code>workflows</code> branch (<a href="../design/rationale.html#orphan-branch">why an orphan branch</a>).</li>
+    <li><strong>Workflow definitions</strong> are read from the configured workflow directory — in this repository, the <code>workflows/</code> worktree of the orphan <code>workflows</code> branch (<a href="../guide/rationale.html#orphan-branch">why an orphan branch</a>).</li>
     <li><strong>Session state</strong> is written under <code>&lt;workspace&gt;/.engineering/artifacts/planning/&lt;slug&gt;/</code> — the <a href="./session-store.html">session store</a> page covers the folder's contents.</li>
     <li><strong>The server key</strong> lives at <code>~/.workflow-server/secret</code>, per user, outside any repository.</li>
   </ul>

@@ -12,11 +12,11 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-title" href="../">Workflow Server</a>
+    <a class="site-title" href="../index.html">Workflow Server</a>
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../">Home</a></li>
+        <li><a href="../index.html">Home</a></li>
         <li>
           <details class="site-nav__group" open>
             <summary>Guide</summary>
@@ -25,6 +25,7 @@
               <li><a href="./ide-setup.html">IDE setup</a></li>
               <li><a href="./concepts.html" aria-current="page">Concepts</a></li>
               <li><a href="./running-workflows.html">Running workflows</a></li>
+              <li><a href="./rationale.html">Design rationale</a></li>
             </ul>
           </details>
         </li>
@@ -61,14 +62,6 @@
               <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
               <li><a href="../internals/session-store.html">Session store</a></li>
               <li><a href="../internals/quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Design</summary>
-            <ul>
-              <li><a href="../design/rationale.html">Design rationale</a></li>
             </ul>
           </details>
         </li>
@@ -165,10 +158,21 @@
   <p>Your choice can set workflow variables — picking "skip the audit" or "include migration" changes which activities and steps run afterwards. Some checkpoints define a default option and can auto-advance after a timeout; the server still enforces the timer.</p>
 
   <h2 id="techniques">Techniques and resources</h2>
-  <p class="prose">A technique is a markdown document that tells the agent how to perform one capability. Steps bind techniques by reference; the agent fetches each one just-in-time with <a href="../api/tools.html#get_technique"><code>get_technique</code></a> as it reaches the step. Resources load with <a href="../api/tools.html#get_resource"><code>get_resource</code></a> only when needed. See <a href="../specs/workflows.html#techniques">Workflows</a> for paths, composition, and binding.</p>
+  <p class="prose">A technique is a markdown document that tells the agent how to perform one capability. At runtime:</p>
+  <ul class="prose">
+    <li>activity steps bind techniques by reference</li>
+    <li>the agent fetches each one just-in-time with <a href="../api/tools.html#get_technique"><code>get_technique</code></a> as it reaches the step</li>
+    <li>resources load with <a href="../api/tools.html#get_resource"><code>get_resource</code></a> only when a technique links to one</li>
+  </ul>
+  <p class="prose">See <a href="../specs/workflows.html#techniques">Workflows</a> for paths, composition, and binding.</p>
 
   <h2 id="fidelity">Fidelity: why agents stay on script</h2>
-  <p class="prose">The server enforces the workflow instead of trusting the agent to follow it. Transitions are validated, checkpoints gate advancement, and session state on disk is the single source of truth.</p>
+  <p class="prose">The server enforces the workflow instead of trusting the agent to follow it:</p>
+  <ul class="prose">
+    <li>transitions are validated</li>
+    <li>checkpoints gate advancement</li>
+    <li>session state on disk is the single source of truth</li>
+  </ul>
   <p class="prose">Read <a href="../specs/workflow-fidelity.html">workflow fidelity</a> for what each layer protects against, and <a href="../specs/architecture.html">architecture overview</a> for the six models behind it.</p>
 
   <h2 id="next">Next</h2>

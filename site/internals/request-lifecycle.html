@@ -12,11 +12,11 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-title" href="../">Workflow Server</a>
+    <a class="site-title" href="../index.html">Workflow Server</a>
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../">Home</a></li>
+        <li><a href="../index.html">Home</a></li>
         <li>
           <details class="site-nav__group">
             <summary>Guide</summary>
@@ -25,6 +25,7 @@
               <li><a href="../guide/ide-setup.html">IDE setup</a></li>
               <li><a href="../guide/concepts.html">Concepts</a></li>
               <li><a href="../guide/running-workflows.html">Running workflows</a></li>
+              <li><a href="../guide/rationale.html">Design rationale</a></li>
             </ul>
           </details>
         </li>
@@ -61,14 +62,6 @@
               <li><a href="./request-lifecycle.html" aria-current="page">Request lifecycle</a></li>
               <li><a href="./session-store.html">Session store</a></li>
               <li><a href="./quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Design</summary>
-            <ul>
-              <li><a href="../design/rationale.html">Design rationale</a></li>
             </ul>
           </details>
         </li>
@@ -162,7 +155,7 @@
       </tbody>
     </table>
   </div>
-  <p>The split is deliberate: only checks that are cheap and certain block the call; everything judgment-shaped becomes a warning in the response and the trace. <a href="../design/rationale.html#detection">Detection over prevention</a> explains why.</p>
+  <p>The split is deliberate: only checks that are cheap and certain block the call; everything judgment-shaped becomes a warning in the response and the trace. <a href="../guide/rationale.html#detection">Detection over prevention</a> explains why.</p>
 
   <h2 id="advance">5. Advancing the state</h2>
   <p><code>advanceSession</code> applies the mutation as a controlled update: the monotonic <code>seq</code> counter increments, the timestamp refreshes, and the handler's mutator appends history events — <code>activity_exited</code> for the activity being left, <code>activity_entered</code> for the new one, and <code>workflow_completed</code> when the transition is terminal. A child session reaching its terminal state also notifies its parent, flipping the child's entry in the parent's <code>triggeredWorkflows</code> to <code>completed</code> (best-effort — a moved parent is tolerated).</p>

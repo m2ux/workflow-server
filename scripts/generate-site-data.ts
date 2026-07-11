@@ -23,7 +23,7 @@ const GITHUB_BLOB = 'https://github.com/m2ux/workflow-server/blob/main';
 // ---------------------------------------------------------------------------
 // Site route registry
 
-export type SiteSection = 'home' | 'guide' | 'specs' | 'api' | 'internals' | 'design';
+export type SiteSection = 'home' | 'guide' | 'specs' | 'api' | 'internals';
 
 export interface SiteRoute {
   relPath: string;
@@ -43,6 +43,7 @@ export const SITE_ROUTES: SiteRoute[] = [
   { relPath: 'guide/ide-setup.html', section: 'guide', title: 'IDE setup', navLabel: 'IDE setup', sequence: 2 },
   { relPath: 'guide/concepts.html', section: 'guide', title: 'Concepts', navLabel: 'Concepts', sequence: 3 },
   { relPath: 'guide/running-workflows.html', section: 'guide', title: 'Running workflows', navLabel: 'Running workflows', sequence: 4 },
+  { relPath: 'guide/rationale.html', section: 'guide', title: 'Design rationale', navLabel: 'Design rationale', sequence: 5 },
   { relPath: 'specs/architecture.html', section: 'specs', title: 'Architecture overview', navLabel: 'Overview', sequence: 0, breadcrumbLabel: 'Architecture' },
   { relPath: 'specs/workflows.html', section: 'specs', title: 'Workflow architecture', navLabel: 'Workflows', sequence: 1, parent: 'specs/architecture.html', breadcrumbLabel: 'Workflows' },
   { relPath: 'specs/dispatch.html', section: 'specs', title: 'Hierarchical dispatch', navLabel: 'Dispatch', sequence: 2, parent: 'specs/architecture.html', breadcrumbLabel: 'Dispatch' },
@@ -58,7 +59,6 @@ export const SITE_ROUTES: SiteRoute[] = [
   { relPath: 'internals/request-lifecycle.html', section: 'internals', title: 'Request lifecycle', navLabel: 'Request lifecycle', sequence: 2 },
   { relPath: 'internals/session-store.html', section: 'internals', title: 'Session store', navLabel: 'Session store', sequence: 3 },
   { relPath: 'internals/quality-system.html', section: 'internals', title: 'Quality system', navLabel: 'Quality system', sequence: 4 },
-  { relPath: 'design/rationale.html', section: 'design', title: 'Design rationale', navLabel: 'Design rationale', sequence: 1 },
 ];
 
 const ROUTE_BY_PATH = new Map(SITE_ROUTES.map(r => [r.relPath, r]));
@@ -68,7 +68,6 @@ const NAV_SECTIONS: Array<{ id: SiteSection; label: string }> = [
   { id: 'specs', label: 'Architecture' },
   { id: 'api', label: 'API' },
   { id: 'internals', label: 'Internals' },
-  { id: 'design', label: 'Design' },
 ];
 
 function routePrefix(relPath: string): string {
@@ -79,7 +78,7 @@ function routePrefix(relPath: string): string {
 function hrefFrom(pageRelPath: string, targetRelPath: string): string {
   if (targetRelPath === 'index.html') {
     const depth = pageRelPath.split('/').length - 1;
-    return depth === 0 ? './' : '../'.repeat(depth);
+    return depth === 0 ? './index.html' : `${'../'.repeat(depth)}index.html`;
   }
   const fromDir = dirname(join(SITE_DIR, pageRelPath));
   const target = join(SITE_DIR, targetRelPath);
@@ -132,10 +131,7 @@ export function renderBreadcrumb(pageRelPath: string): string {
   const sectionLabel = NAV_SECTIONS.find(s => s.id === route.section)?.label ?? route.section;
   const hub = routesInSection(route.section).find(r => r.sequence === 0);
 
-  if (route.section === 'design') {
-    crumbs.push({ label: 'Design' });
-    crumbs.push({ label: route.navLabel });
-  } else if (hub && route.parent === hub.relPath) {
+  if (hub && route.parent === hub.relPath) {
     crumbs.push({ label: sectionLabel, href: hrefFrom(pageRelPath, hub.relPath) });
     crumbs.push({ label: route.breadcrumbLabel ?? route.navLabel });
   } else if (hub && route.relPath === hub.relPath) {
@@ -469,9 +465,40 @@ function paramRows(schema: JsonSchemaNode, prefix = '', topLevelOnly = false): s
       `          <tr><td><code>${escapeHtml(label)}</code></td><td><code>${escapeHtml(typeLabel(prop))}</code></td>` +
       `<td>${required.has(name) ? 'yes' : 'no'}</td><td>${notes.join(' ') || '-'}</td></tr>`,
     );
-    if (prop.type === 'array' && prop.items?.properties) {
+    if (!topLevelOnly && prop.type === 'array' && prop.items?.properties) {
       rows.push(...paramRows(prop.items, `${label}[].`, topLevelOnly));
     }
+  }
+  return rows;
+}
+
+function nestedParamRows(schema: JsonSchemaNode): string[] {
+  const rows: string[] = [];
+  let groupIndex = 0;
+  for (const [name, prop] of Object.entries(schema.properties ?? {})) {
+    if (prop.type !== 'array' || !prop.items?.properties) continue;
+    const scope = `${name}[]`;
+    const fields = Object.entries(prop.items.properties);
+    const itemRequired = new Set(prop.items.required ?? []);
+    fields.forEach(([field, fieldProp], index) => {
+      const fullLabel = `${name}[].${field}`;
+      const notes: string[] = [];
+      const hint = siteParamDescription(fullLabel, fieldProp.description);
+      if (hint !== '-') notes.push(richText(hint));
+      if (fieldProp.default !== undefined) {
+        notes.push(`Default: <code>${escapeHtml(JSON.stringify(fieldProp.default))}</code>`);
+      }
+      const groupClass = index === 0 && groupIndex > 0 ? ' param-row--group-start' : '';
+      const scopeCell = index === 0
+        ? `<td class="param-scope" rowspan="${fields.length}"><code>${escapeHtml(scope)}</code></td>`
+        : '';
+      rows.push(
+        `          <tr class="param-row--nested${groupClass}">${scopeCell}<td><code>${escapeHtml(field)}</code></td>` +
+        `<td><code>${escapeHtml(typeLabel(fieldProp))}</code></td>` +
+        `<td>${itemRequired.has(field) ? 'yes' : 'no'}</td><td>${notes.join(' ') || '-'}</td></tr>`,
+      );
+    });
+    groupIndex += 1;
   }
   return rows;
 }
@@ -481,8 +508,23 @@ function renderParamTable(schema: JsonSchemaNode, topLevelOnly: boolean): string
   if (rows.length === 0) return '';
   return [
     '        <div class="table-wrap">',
-    '        <table>',
+    '        <table class="param-table">',
     '          <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>',
+    '          <tbody>',
+    ...rows,
+    '          </tbody>',
+    '        </table>',
+    '        </div>',
+  ].join('\n');
+}
+
+function renderNestedParamTable(schema: JsonSchemaNode): string {
+  const rows = nestedParamRows(schema);
+  if (rows.length === 0) return '';
+  return [
+    '        <div class="table-wrap">',
+    '        <table class="param-table param-table--nested">',
+    '          <thead><tr><th scope="col">In</th><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>',
     '          <tbody>',
     ...rows,
     '          </tbody>',
@@ -515,13 +557,20 @@ function renderTool(tool: CapturedTool): string {
   }
 
   if (tool.params) {
-    const allRows = paramRows(tool.params);
     const topRows = paramRows(tool.params, '', true);
-    const hasNested = allRows.length > topRows.length;
+    const nestedRows = nestedParamRows(tool.params);
+    const hasNested = nestedRows.length > 0;
+    const allRows = paramRows(tool.params);
     if (topRows.length > 0) {
-      lines.push(renderParamTable(tool.params, true).replace('Parameter', 'Parameter').replace(/^        /gm, '        '));
+      lines.push(renderParamTable(tool.params, true));
     }
-    if (hasNested || allRows.length > 6) {
+    if (hasNested) {
+      lines.push('        <details class="tool-details">');
+      lines.push('          <summary>Nested fields</summary>');
+      lines.push('          <p class="table-caption">Each item in these arrays is an object with the fields below.</p>');
+      lines.push(renderNestedParamTable(tool.params));
+      lines.push('        </details>');
+    } else if (allRows.length > 6) {
       lines.push('        <details class="tool-details">');
       lines.push('          <summary>All parameters</summary>');
       lines.push(renderParamTable(tool.params, false));
@@ -700,6 +749,12 @@ export function renderSitePages(): Array<{ relPath: string; content: string }> {
     content = injectRegion(content, renderSiteNav(relPath), 'NAV');
     content = injectRegion(content, renderBreadcrumb(relPath), 'BREADCRUMB');
     content = injectRegion(content, renderPagination(relPath), 'PAGINATION');
+
+    const homeHref = hrefFrom(relPath, 'index.html');
+    content = content.replace(
+      /<a class="site-title" href="[^"]*">Workflow Server<\/a>/,
+      `<a class="site-title" href="${homeHref}">Workflow Server</a>`,
+    );
 
     const body = renderContentRegion(relPath);
     if (body !== null) {

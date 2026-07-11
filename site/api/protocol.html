@@ -12,11 +12,11 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-title" href="../">Workflow Server</a>
+    <a class="site-title" href="../index.html">Workflow Server</a>
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../">Home</a></li>
+        <li><a href="../index.html">Home</a></li>
         <li>
           <details class="site-nav__group">
             <summary>Guide</summary>
@@ -25,6 +25,7 @@
               <li><a href="../guide/ide-setup.html">IDE setup</a></li>
               <li><a href="../guide/concepts.html">Concepts</a></li>
               <li><a href="../guide/running-workflows.html">Running workflows</a></li>
+              <li><a href="../guide/rationale.html">Design rationale</a></li>
             </ul>
           </details>
         </li>
@@ -61,14 +62,6 @@
               <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
               <li><a href="../internals/session-store.html">Session store</a></li>
               <li><a href="../internals/quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Design</summary>
-            <ul>
-              <li><a href="../design/rationale.html">Design rationale</a></li>
             </ul>
           </details>
         </li>
@@ -137,7 +130,7 @@
       </tbody>
     </table>
   </div>
-  <p>Why deviations warn instead of block is a deliberate stance — see <a href="../design/rationale.html#detection">detection over prevention</a>.</p>
+  <p>Why deviations warn instead of block is a deliberate stance — see <a href="../guide/rationale.html#detection">detection over prevention</a>.</p>
 
   <h2 id="trace">The trace</h2>
   <p>Every tool call appends an event — tool, timing, outcome, workflow, activity, agent, and any validation warnings — to an in-process, per-session buffer (up to 1,000 sessions; the oldest is evicted beyond that). Each <code>next_activity</code> response additionally carries <code>_meta.trace_token</code>: the events since the previous transition, HMAC-signed into a compact token. The tokens are the durable half of the design — an orchestrator that accumulates them can hand the set to <a href="./tools.html#get_trace"><code>get_trace</code></a> and reconstruct a tamper-evident account of the run even after the in-memory buffer is gone. Calling <code>get_trace</code> with no tokens returns the live buffer for the session.</p>

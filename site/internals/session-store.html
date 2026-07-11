@@ -12,11 +12,11 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-title" href="../">Workflow Server</a>
+    <a class="site-title" href="../index.html">Workflow Server</a>
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../">Home</a></li>
+        <li><a href="../index.html">Home</a></li>
         <li>
           <details class="site-nav__group">
             <summary>Guide</summary>
@@ -25,6 +25,7 @@
               <li><a href="../guide/ide-setup.html">IDE setup</a></li>
               <li><a href="../guide/concepts.html">Concepts</a></li>
               <li><a href="../guide/running-workflows.html">Running workflows</a></li>
+              <li><a href="../guide/rationale.html">Design rationale</a></li>
             </ul>
           </details>
         </li>
@@ -61,14 +62,6 @@
               <li><a href="./request-lifecycle.html">Request lifecycle</a></li>
               <li><a href="./session-store.html" aria-current="page">Session store</a></li>
               <li><a href="./quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Design</summary>
-            <ul>
-              <li><a href="../design/rationale.html">Design rationale</a></li>
             </ul>
           </details>
         </li>
@@ -167,7 +160,7 @@
   <p>Meta-orchestration sessions that exist only to choose a workflow start <em>transient</em> — created under the system temporary directory with a synthetic slug. The first <code>dispatch_child</code> that commits to real work promotes the session into the workspace planning root, taking its slug from the request (or a dated fallback), and the temporary folder is discarded. Nothing about a browse-only conversation ever lands in your repository.</p>
 
   <h2 id="integrity">Integrity and migration</h2>
-  <p>The seal answers one question: <em>is this file exactly what the server last wrote?</em> Writes are atomic (temp file, then rename), the HMAC is computed over canonicalized JSON, and reads verify it with a timing-safe comparison before parsing. What it defends against is corruption, manual edits, restored backups, and racing writers — incoherence, not adversaries; the <a href="../design/rationale.html#integrity">threat model is spelled out in the rationale</a>.</p>
+  <p>The seal answers one question: <em>is this file exactly what the server last wrote?</em> Writes are atomic (temp file, then rename), the HMAC is computed over canonicalized JSON, and reads verify it with a timing-safe comparison before parsing. What it defends against is corruption, manual edits, restored backups, and racing writers — incoherence, not adversaries; the <a href="../guide/rationale.html#integrity">threat model is spelled out in the rationale</a>.</p>
   <p>Older planning folders that predate the current layout are upgraded in place by <a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/migration.ts"><code>migration.ts</code></a> the first time they are touched; an upgrade that cannot complete raises <code>MigrationError</code> rather than leaving a half-converted folder.</p>
 
   <h2 id="next">Next</h2>

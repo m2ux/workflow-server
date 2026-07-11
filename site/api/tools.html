@@ -12,11 +12,11 @@
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-title" href="../">Workflow Server</a>
+    <a class="site-title" href="../index.html">Workflow Server</a>
     <!-- BEGIN GENERATED NAV -->
     <nav class="site-nav" aria-label="Documentation">
       <ul class="site-nav__primary">
-        <li><a href="../">Home</a></li>
+        <li><a href="../index.html">Home</a></li>
         <li>
           <details class="site-nav__group">
             <summary>Guide</summary>
@@ -25,6 +25,7 @@
               <li><a href="../guide/ide-setup.html">IDE setup</a></li>
               <li><a href="../guide/concepts.html">Concepts</a></li>
               <li><a href="../guide/running-workflows.html">Running workflows</a></li>
+              <li><a href="../guide/rationale.html">Design rationale</a></li>
             </ul>
           </details>
         </li>
@@ -61,14 +62,6 @@
               <li><a href="../internals/request-lifecycle.html">Request lifecycle</a></li>
               <li><a href="../internals/session-store.html">Session store</a></li>
               <li><a href="../internals/quality-system.html">Quality system</a></li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <details class="site-nav__group">
-            <summary>Design</summary>
-            <ul>
-              <li><a href="../design/rationale.html">Design rationale</a></li>
             </ul>
           </details>
         </li>
@@ -153,7 +146,7 @@
           <p>Child workflows are started with <code>dispatch_child</code>, not <code>start_session</code>.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>no</td><td>Workflow id to run or dispatch (for example, <code>work-package</code>).</td></tr>
@@ -173,7 +166,7 @@
           <p>If the session is nested under a parent, parent context is included too.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
@@ -192,7 +185,7 @@
           <p>When the parent is a temporary meta-bootstrap session, the server first promotes it to a real planning folder on disk, then embeds the child. You can keep using the parent's original <code>session_index</code>.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
@@ -218,7 +211,7 @@
           <p>If some activity files failed to load, <code>activity_load_errors</code> lists them and those activities are omitted from the list.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
@@ -237,7 +230,7 @@
           <p>Optional <code>step_manifest</code> and <code>transition_condition</code> help the server validate what you completed. Manifest checks are advisory — mismatches produce warnings, not hard errors.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
@@ -249,21 +242,17 @@
         </table>
         </div>
         <details class="tool-details">
-          <summary>All parameters</summary>
+          <summary>Nested fields</summary>
+          <p class="table-caption">Each item in these arrays is an object with the fields below.</p>
         <div class="table-wrap">
-        <table>
-          <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+        <table class="param-table param-table--nested">
+          <thead><tr><th scope="col">In</th><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
-          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>yes</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: use an id from <code>transitions</code>.</td></tr>
-          <tr><td><code>transition_condition</code></td><td><code>string</code></td><td>no</td><td>The condition name that led to this transition, from the previous activity.</td></tr>
-          <tr><td><code>step_manifest</code></td><td><code>object[]</code></td><td>no</td><td>Steps completed in the previous activity, for example <code>[{ &quot;step_id&quot;: &quot;detect-review-mode&quot;, &quot;output&quot;: &quot;is_review_mode=false&quot; }]</code>. Omit if no steps ran.</td></tr>
-          <tr><td><code>step_manifest[].step_id</code></td><td><code>string</code></td><td>yes</td><td>Step id from the activity definition (field name is <code>step_id</code>, not <code>id</code>).</td></tr>
-          <tr><td><code>step_manifest[].output</code></td><td><code>string</code></td><td>yes</td><td>Short summary of what the step produced. Use a JSON object when the step has multiple outputs.</td></tr>
-          <tr><td><code>activity_manifest</code></td><td><code>object[]</code></td><td>no</td><td>History of completed activities with outcomes and transition conditions.</td></tr>
-          <tr><td><code>activity_manifest[].activity_id</code></td><td><code>string</code></td><td>yes</td><td>Completed activity id.</td></tr>
-          <tr><td><code>activity_manifest[].outcome</code></td><td><code>string</code></td><td>yes</td><td>Short outcome summary for that activity.</td></tr>
-          <tr><td><code>activity_manifest[].transition_condition</code></td><td><code>string</code></td><td>no</td><td>Condition that led out of that activity, if any.</td></tr>
+          <tr class="param-row--nested"><td class="param-scope" rowspan="2"><code>step_manifest[]</code></td><td><code>step_id</code></td><td><code>string</code></td><td>yes</td><td>Step id from the activity definition (field name is <code>step_id</code>, not <code>id</code>).</td></tr>
+          <tr class="param-row--nested"><td><code>output</code></td><td><code>string</code></td><td>yes</td><td>Short summary of what the step produced. Use a JSON object when the step has multiple outputs.</td></tr>
+          <tr class="param-row--nested param-row--group-start"><td class="param-scope" rowspan="3"><code>activity_manifest[]</code></td><td><code>activity_id</code></td><td><code>string</code></td><td>yes</td><td>Completed activity id.</td></tr>
+          <tr class="param-row--nested"><td><code>outcome</code></td><td><code>string</code></td><td>yes</td><td>Short outcome summary for that activity.</td></tr>
+          <tr class="param-row--nested"><td><code>transition_condition</code></td><td><code>string</code></td><td>no</td><td>Condition that led out of that activity, if any.</td></tr>
           </tbody>
         </table>
         </div>
@@ -280,7 +269,7 @@
           <p>If the session uses persistent context mode (or you pass <code>bundle: &quot;reference&quot;</code>), content you already received may come back as short unchanged markers instead of full text. Pass <code>bundle: &quot;full&quot;</code> to force full delivery.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
@@ -301,7 +290,7 @@
           <p>Records the checkpoint as active and returns the <code>session_index</code> for a <code>&lt;checkpoint_yield&gt;</code> block in your output.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
@@ -319,7 +308,7 @@
           <p>Verifies the checkpoint is cleared and returns any variable updates to apply before continuing the activity.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
@@ -336,7 +325,7 @@
           <p>Reads from <code>state.activeCheckpoint</code> — no separate checkpoint handle is needed.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
@@ -355,7 +344,7 @@
           <p>Variable effects from the chosen option are applied; type mismatches produce warnings in <code>_meta.validation</code> but do not block the response.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
@@ -380,7 +369,7 @@
           <p>Every fetch is recorded for trace and advisory manifest checks on the next <code>next_activity</code> call.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
@@ -401,7 +390,7 @@
           <p>Each fetch is logged for observability only; nothing validates that you called it.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
@@ -421,7 +410,7 @@
           <p>Pass accumulated <code>trace_tokens</code> from <code>next_activity</code> responses to reconstruct a specific segment. Omit them to read the live in-memory trace for the session.</p>
         </details>
         <div class="table-wrap">
-        <table>
+        <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>

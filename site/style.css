@@ -485,6 +485,22 @@ tbody tr:last-child td { border-bottom: none; }
 
 .tool-summary { color: var(--text-muted); }
 
+.param-table .param-scope {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  white-space: nowrap;
+  vertical-align: top;
+  border-right: 1px solid var(--border);
+}
+
+.param-table--nested tbody tr.param-row--nested td {
+  border-top: 1px solid var(--border);
+}
+
+.param-table--nested tbody tr.param-row--group-start td {
+  border-top-width: 2px;
+}
+
 .no-params { color: var(--text-muted); font-style: italic; }
 
 /* Footer */
