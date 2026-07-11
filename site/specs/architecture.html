@@ -24,7 +24,6 @@
               <li><a href="../guide/getting-started.html">Getting started</a></li>
               <li><a href="../guide/ide-setup.html">IDE setup</a></li>
               <li><a href="../guide/concepts.html">Concepts</a></li>
-              <li><a href="../guide/workflow-architecture.html">Workflow architecture</a></li>
               <li><a href="../guide/running-workflows.html">Running workflows</a></li>
             </ul>
           </details>
@@ -34,6 +33,7 @@
             <summary>Architecture</summary>
             <ul>
               <li><a href="./architecture.html" aria-current="page">Overview</a></li>
+              <li><a href="./workflows.html">Workflows</a></li>
               <li><a href="./dispatch.html">Dispatch</a></li>
               <li><a href="./checkpoints.html">Checkpoints</a></li>
               <li><a href="./state-management.html">State</a></li>
@@ -92,6 +92,7 @@
 <main id="main">
   <h1>Architecture</h1>
   <p class="lede prose">A small state machine wrapped in an MCP tool surface: agents call tools, the server enforces the workflow definition and owns session state on disk.</p>
+  <p class="prose">How workflow <em>content</em> is structured on disk — manifests, activities, techniques, resources — is documented in <a href="./workflows.html">Workflows</a>. The sections below cover how the <em>server</em> enforces runs.</p>
   <p class="prose">Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/architecture.md">docs/architecture.md (edit)</a>.</p>
 
   <figure class="diagram">

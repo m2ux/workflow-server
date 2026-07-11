@@ -24,7 +24,6 @@
               <li><a href="./getting-started.html">Getting started</a></li>
               <li><a href="./ide-setup.html">IDE setup</a></li>
               <li><a href="./concepts.html" aria-current="page">Concepts</a></li>
-              <li><a href="./workflow-architecture.html">Workflow architecture</a></li>
               <li><a href="./running-workflows.html">Running workflows</a></li>
             </ul>
           </details>
@@ -34,6 +33,7 @@
             <summary>Architecture</summary>
             <ul>
               <li><a href="../specs/architecture.html">Overview</a></li>
+              <li><a href="../specs/workflows.html">Workflows</a></li>
               <li><a href="../specs/dispatch.html">Dispatch</a></li>
               <li><a href="../specs/checkpoints.html">Checkpoints</a></li>
               <li><a href="../specs/state-management.html">State</a></li>
@@ -91,7 +91,7 @@
 
 <main id="main">
   <h1>Concepts</h1>
-  <p class="lede prose">Five ideas explain the system: <strong>workflows</strong>, <strong>activities</strong>, <strong>techniques</strong>, <strong>sessions</strong>, and <strong>checkpoints</strong>. The <a href="../#model">model diagram on the home page</a> shows how they chain from a user goal down to tool calls. For file layout, step kinds, and binding, see <a href="./workflow-architecture.html">Workflow architecture</a>.</p>
+  <p class="lede prose">Five ideas explain the system: <strong>workflows</strong>, <strong>activities</strong>, <strong>techniques</strong>, <strong>sessions</strong>, and <strong>checkpoints</strong>. The <a href="../#model">model diagram on the home page</a> shows how they chain from a user goal down to tool calls. For file layout, step kinds, and binding, see <a href="../specs/workflows.html">Workflows</a> under Architecture.</p>
 
   <h2 id="glossary">Terms at a glance</h2>
   <div class="table-wrap">
@@ -108,7 +108,7 @@
   </div>
 
   <h2 id="workflow-anatomy">What a workflow is made of</h2>
-  <p class="prose">A workflow is a directory of declarative files — manifest, activities, techniques, and resources — not executable code. <a href="./workflow-architecture.html">Workflow architecture</a> walks through each piece with diagrams: what lives on disk, the four step kinds, how techniques compose, and what the server delivers at runtime.</p>
+  <p class="prose">A workflow is a directory of declarative files — manifest, activities, techniques, and resources — not executable code. <a href="../specs/workflows.html">Workflows</a> walks through each piece with diagrams: what lives on disk, the four step kinds, how techniques compose, and what the server delivers at runtime.</p>
 
   <h2 id="sessions">Sessions</h2>
   <p>A session is one run of a workflow. When the agent calls <a href="../api/tools.html#start_session"><code>start_session</code></a>, the server creates (or resumes) a planning folder under your project's <code>.engineering/artifacts/planning/</code> and writes a <code>session.json</code> there — the canonical record of which activity is current, which variables are set, and whether a checkpoint is active. The tool returns a short <code>session_index</code> token that identifies the session on every later call.</p>
@@ -165,21 +165,21 @@
   <p>Your choice can set workflow variables — picking "skip the audit" or "include migration" changes which activities and steps run afterwards. Some checkpoints define a default option and can auto-advance after a timeout; the server still enforces the timer.</p>
 
   <h2 id="techniques">Techniques and resources</h2>
-  <p class="prose">A technique is a markdown document that tells the agent how to perform one capability. Steps bind techniques by reference; the agent fetches each one just-in-time with <a href="../api/tools.html#get_technique"><code>get_technique</code></a> as it reaches the step. Resources load with <a href="../api/tools.html#get_resource"><code>get_resource</code></a> only when needed. See <a href="./workflow-architecture.html#techniques">Workflow architecture</a> for paths, composition, and binding.</p>
+  <p class="prose">A technique is a markdown document that tells the agent how to perform one capability. Steps bind techniques by reference; the agent fetches each one just-in-time with <a href="../api/tools.html#get_technique"><code>get_technique</code></a> as it reaches the step. Resources load with <a href="../api/tools.html#get_resource"><code>get_resource</code></a> only when needed. See <a href="../specs/workflows.html#techniques">Workflows</a> for paths, composition, and binding.</p>
 
   <h2 id="fidelity">Fidelity: why agents stay on script</h2>
   <p class="prose">The server enforces the workflow instead of trusting the agent to follow it. Transitions are validated, checkpoints gate advancement, and session state on disk is the single source of truth.</p>
   <p class="prose">Read <a href="../specs/workflow-fidelity.html">workflow fidelity</a> for what each layer protects against, and <a href="../specs/architecture.html">architecture overview</a> for the six models behind it.</p>
 
   <h2 id="next">Next</h2>
-  <p class="prose"><a href="./workflow-architecture.html">Workflow architecture</a> — file layout, step kinds, binding, and runtime delivery. Then <a href="./running-workflows.html">run your first workflow</a>.</p>
+  <p class="prose"><a href="../specs/workflows.html">Workflows</a> — file layout, step kinds, binding, and runtime delivery. Then <a href="./running-workflows.html">run your first workflow</a>.</p>
 </main>
 
 
 <!-- BEGIN GENERATED PAGINATION -->
   <nav class="page-pagination" aria-label="Page sequence">
     <a class="page-pagination__prev" href="./ide-setup.html">← IDE setup</a>
-    <a class="page-pagination__next" href="./workflow-architecture.html">Workflow architecture →</a>
+    <a class="page-pagination__next" href="./running-workflows.html">Running workflows →</a>
   </nav>
 <!-- END GENERATED PAGINATION -->
 

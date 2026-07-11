@@ -18,28 +18,28 @@
       <ul class="site-nav__primary">
         <li><a href="../">Home</a></li>
         <li>
-          <details class="site-nav__group" open>
+          <details class="site-nav__group">
             <summary>Guide</summary>
             <ul>
-              <li><a href="./getting-started.html">Getting started</a></li>
-              <li><a href="./ide-setup.html">IDE setup</a></li>
-              <li><a href="./concepts.html">Concepts</a></li>
-              <li><a href="./workflow-architecture.html" aria-current="page">Workflow architecture</a></li>
-              <li><a href="./running-workflows.html">Running workflows</a></li>
+              <li><a href="../guide/getting-started.html">Getting started</a></li>
+              <li><a href="../guide/ide-setup.html">IDE setup</a></li>
+              <li><a href="../guide/concepts.html">Concepts</a></li>
+              <li><a href="../guide/running-workflows.html">Running workflows</a></li>
             </ul>
           </details>
         </li>
         <li>
-          <details class="site-nav__group">
+          <details class="site-nav__group" open>
             <summary>Architecture</summary>
             <ul>
-              <li><a href="../specs/architecture.html">Overview</a></li>
-              <li><a href="../specs/dispatch.html">Dispatch</a></li>
-              <li><a href="../specs/checkpoints.html">Checkpoints</a></li>
-              <li><a href="../specs/state-management.html">State</a></li>
-              <li><a href="../specs/artifact-management.html">Artifacts</a></li>
-              <li><a href="../specs/resource-resolution.html">Resolution</a></li>
-              <li><a href="../specs/workflow-fidelity.html">Fidelity</a></li>
+              <li><a href="./architecture.html">Overview</a></li>
+              <li><a href="./workflows.html" aria-current="page">Workflows</a></li>
+              <li><a href="./dispatch.html">Dispatch</a></li>
+              <li><a href="./checkpoints.html">Checkpoints</a></li>
+              <li><a href="./state-management.html">State</a></li>
+              <li><a href="./artifact-management.html">Artifacts</a></li>
+              <li><a href="./resource-resolution.html">Resolution</a></li>
+              <li><a href="./workflow-fidelity.html">Fidelity</a></li>
             </ul>
           </details>
         </li>
@@ -83,8 +83,8 @@
 <!-- BEGIN GENERATED BREADCRUMB -->
   <nav class="breadcrumb" aria-label="Breadcrumb">
     <ol>
-      <li>Guide</li>
-      <li aria-current="page">Workflow architecture</li>
+      <li><a href="./architecture.html">Architecture</a></li>
+      <li aria-current="page">Workflows</li>
     </ol>
   </nav>
 <!-- END GENERATED BREADCRUMB -->
@@ -92,7 +92,7 @@
 <main id="main">
   <h1>Workflow architecture</h1>
   <p class="lede prose">Workflows are declarative files, not code. This page explains what each file type means, how the pieces connect, and what the server delivers to the agent as work progresses.</p>
-  <p class="prose">For runtime behaviour (checkpoints, dispatch, fidelity), see <a href="../specs/architecture.html">server architecture</a>. For file shapes, see the <a href="../api/schemas.html">schema reference</a>.</p>
+  <p class="prose">For server enforcement (checkpoints, dispatch, fidelity), see <a href="./architecture.html">architecture overview</a>. For file shapes, see the <a href="../api/schemas.html">schema reference</a>.</p>
 
   <nav aria-label="On this page" class="note">
     <ul>
@@ -298,7 +298,7 @@
       <tbody>
         <tr><td><code>technique</code></td><td>Reference to a capability by <code>::</code> path, with optional input bindings</td><td>Call <code>get_technique</code> for the step (or use content already bundled in <code>get_activity</code>), follow the protocol, record outputs</td></tr>
         <tr><td><code>action</code></td><td>One or more inline actions (<code>validate</code>, <code>message</code>, …)</td><td>Execute the listed actions against current variables; the server does not interpret action verbs</td></tr>
-        <tr><td><code>checkpoint</code></td><td>A declared pause with options and effects</td><td>Call <code>yield_checkpoint</code>; orchestrator presents and <code>respond_checkpoint</code>; worker <code>resume_checkpoint</code> — see <a href="./concepts.html#checkpoints">checkpoints in Concepts</a></td></tr>
+        <tr><td><code>checkpoint</code></td><td>A declared pause with options and effects</td><td>Call <code>yield_checkpoint</code>; orchestrator presents and <code>respond_checkpoint</code>; worker <code>resume_checkpoint</code> — see <a href="../guide/concepts.html#checkpoints">checkpoints in Concepts</a></td></tr>
         <tr><td><code>loop</code></td><td>A nested step list with an exit condition</td><td>Repeat the nested steps until the condition is satisfied or the loop declares completion</td></tr>
       </tbody>
     </table>
@@ -430,14 +430,14 @@
   </ul>
 
   <h2 id="next">Next</h2>
-  <p class="prose"><a href="./concepts.html">Concepts</a> covers sessions and checkpoints from a user perspective. <a href="./running-workflows.html">Running workflows</a> shows what to say to the agent in practice.</p>
+  <p class="prose"><a href="../guide/concepts.html">Concepts</a> covers sessions and checkpoints from a user perspective. <a href="./dispatch.html">Dispatch</a> explains how orchestrators and workers run those workflows.</p>
 </main>
 
 
 <!-- BEGIN GENERATED PAGINATION -->
   <nav class="page-pagination" aria-label="Page sequence">
-    <a class="page-pagination__prev" href="./concepts.html">← Concepts</a>
-    <a class="page-pagination__next" href="./running-workflows.html">Running workflows →</a>
+    <span></span>
+    <a class="page-pagination__next" href="./dispatch.html">Dispatch →</a>
   </nav>
 <!-- END GENERATED PAGINATION -->
 
