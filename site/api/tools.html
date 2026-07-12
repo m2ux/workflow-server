@@ -71,11 +71,11 @@
   <p>Conventions: most tools identify their session with a <code>session_index</code> — the 6-character token returned by <code>start_session</code>. Tools in the Bootstrap group work without one. The prose reference with usage guidance lives in <a href="https://github.com/m2ux/workflow-server/blob/main/docs/api-reference.md">docs/api-reference.md</a>.</p>
 
       <!-- BEGIN GENERATED — edit scripts/generate-site-data.ts, then run npm run build:site -->
-      <p>The server registers 16 MCP tools. Each entry shows a short summary; expand for the full description and advanced parameters.</p>
+      <p>The server registers 17 MCP tools. Each entry shows a short summary; expand for the full description and advanced parameters.</p>
       <nav aria-label="Tools on this page">
       <ul>
         <li>Bootstrap: <a href="#discover"><code>discover</code></a>, <a href="#list_workflows"><code>list_workflows</code></a>, <a href="#health_check"><code>health_check</code></a></li>
-        <li>Session: <a href="#start_session"><code>start_session</code></a>, <a href="#get_workflow_status"><code>get_workflow_status</code></a>, <a href="#dispatch_child"><code>dispatch_child</code></a></li>
+        <li>Session: <a href="#start_session"><code>start_session</code></a>, <a href="#get_workflow_status"><code>get_workflow_status</code></a>, <a href="#inspect_session"><code>inspect_session</code></a>, <a href="#dispatch_child"><code>dispatch_child</code></a></li>
         <li>Workflow and activity navigation: <a href="#get_workflow"><code>get_workflow</code></a>, <a href="#next_activity"><code>next_activity</code></a>, <a href="#get_activity"><code>get_activity</code></a></li>
         <li>Checkpoint flow: <a href="#yield_checkpoint"><code>yield_checkpoint</code></a>, <a href="#resume_checkpoint"><code>resume_checkpoint</code></a>, <a href="#present_checkpoint"><code>present_checkpoint</code></a>, <a href="#respond_checkpoint"><code>respond_checkpoint</code></a></li>
         <li>Techniques and resources: <a href="#get_technique"><code>get_technique</code></a>, <a href="#get_resource"><code>get_resource</code></a></li>
@@ -153,6 +153,28 @@
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+      <section class="tool" id="inspect_session">
+        <h3><code>inspect_session</code></h3>
+        <p class="tool-summary">Read-only inspection of a workflow session's on-disk state.</p>
+        <details class="tool-details">
+          <summary>Full description</summary>
+          <p>Read-only look at a session's stored state. Pick a <code>view</code>: <code>summary</code> (everything), <code>identity</code>, <code>variables</code>, <code>checkpoints</code>, <code>activities</code>, <code>history</code>, or <code>children</code>.</p>
+          <p>Returns a compact, purpose-built projection — never the raw session file.</p>
+          <p>Pass <code>child_index</code> to look one level into a child session listed under <code>triggeredWorkflows</code>; pass <code>variable</code> with <code>view: variables</code> to read a single value.</p>
+          <p>It never changes anything and works even while the session is paused at a checkpoint — which is often exactly when you want to look.</p>
+        </details>
+        <div class="table-wrap">
+        <table class="param-table">
+          <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>view</code></td><td><code>&quot;summary&quot; | &quot;identity&quot; | &quot;variables&quot; | &quot;checkpoints&quot; | &quot;activities&quot; | &quot;history&quot; | &quot;children&quot;</code></td><td>no</td><td>Which projection to return. <code>summary</code> (default) is the composite of all views. <code>identity</code> = workflow/session/agent header + position; <code>variables</code> = the variable bag; <code>checkpoints</code> = checkpoint responses (option, timestamp, variables set); <code>activities</code> = completed/skipped/current; <code>history</code> = event count + per-type tally + milestone sub-sequence; <code>children</code> = one-line digest per triggeredWorkflows child. Default: <code>&quot;summary&quot;</code></td></tr>
+          <tr><td><code>child_index</code></td><td><code>integer</code></td><td>no</td><td>Optional positional index into the addressed session's <code>triggeredWorkflows</code>. When given, the tool descends one level to <code>triggeredWorkflows[child_index].state</code> and projects that child instead of the addressed session. Out of range yields the NOT_FOUND message. Deeper children are reached by passing that child's own session_index instead of stacking indices.</td></tr>
+          <tr><td><code>variable</code></td><td><code>string</code></td><td>no</td><td>Optional single variable name. Only meaningful with <code>view: variables</code> — narrows the result to that one key's value instead of the whole bag.</td></tr>
           </tbody>
         </table>
         </div>

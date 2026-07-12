@@ -307,7 +307,7 @@ export function captureTools(): CapturedTool[] {
 
 const TOOL_GROUPS: Array<{ title: string; note: string; tools: string[] }> = [
   { title: 'Bootstrap', note: 'Callable without a session_index.', tools: ['discover', 'list_workflows', 'health_check'] },
-  { title: 'Session', note: 'Create, inspect, and extend workflow sessions.', tools: ['start_session', 'get_workflow_status', 'dispatch_child'] },
+  { title: 'Session', note: 'Create, inspect, and extend workflow sessions.', tools: ['start_session', 'get_workflow_status', 'inspect_session', 'dispatch_child'] },
   { title: 'Workflow and activity navigation', note: 'Load workflow structure and advance through activities.', tools: ['get_workflow', 'next_activity', 'get_activity'] },
   { title: 'Checkpoint flow', note: 'Yield to the orchestrator, present decisions to the user, and resume.', tools: ['yield_checkpoint', 'resume_checkpoint', 'present_checkpoint', 'respond_checkpoint'] },
   { title: 'Techniques and resources', note: 'Fetch technique definitions and lazy-loaded reference material.', tools: ['get_technique', 'get_resource'] },
@@ -346,6 +346,12 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   get_workflow_status: [
     'Returns whether the session is active, blocked at a checkpoint, or completed, plus the current activity and completed steps.',
     'If the session is nested under a parent, parent context is included too.',
+  ],
+  inspect_session: [
+    'Read-only look at a session\'s stored state. Pick a `view`: `summary` (everything), `identity`, `variables`, `checkpoints`, `activities`, `history`, or `children`.',
+    'Returns a compact, purpose-built projection — never the raw session file.',
+    'Pass `child_index` to look one level into a child session listed under `triggeredWorkflows`; pass `variable` with `view: variables` to read a single value.',
+    'It never changes anything and works even while the session is paused at a checkpoint — which is often exactly when you want to look.',
   ],
   dispatch_child: [
     'Starts a child workflow inside the parent session you are already in.',
