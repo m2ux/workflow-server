@@ -26,6 +26,7 @@ Completed activities, checkpoint decisions, artifacts produced
 ## Protocol
 
 1. Draw from `{execution_trace}` to compose the summary sections: workflow id and title, start/completion timestamps, activities completed, key checkpoint decisions, artifacts with paths, outcomes satisfied vs. unmet, follow-up items. Return the assembled markdown as `{completion_summary}`.
+   > Obtain the execution trace through the `inspect_session` tool — `view: activities` for completed activities, `view: checkpoints` for checkpoint decisions, `view: history` for the event trace, or `view: summary` for all of it — rather than reading `session.json` directly.
 
 ## Rules
 
