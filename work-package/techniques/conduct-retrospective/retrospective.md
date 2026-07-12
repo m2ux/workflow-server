@@ -32,6 +32,7 @@ Workflow [retrospective](../../resources/workflow-retrospective.md#output-sectio
 ### 1. Capture History
 
 - If metadata repository exists, capture session history.
+  > Obtain session state through the `inspect_session` tool (e.g. `view: history` for the event trace, `view: summary` for the full picture) rather than reading `session.json` directly.
 
 ### 2. Conduct Retrospective
 

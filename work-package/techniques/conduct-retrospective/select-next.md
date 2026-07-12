@@ -25,3 +25,4 @@ The identified next work package (when applicable) together with the context pre
 
 - Identify next work package if applicable.
 - Prepare context for transition.
+  > When carried context depends on the session's own record (variables, completed activities, checkpoint decisions), read it through the `inspect_session` tool (`view: summary`, or a narrower view) rather than reading `session.json` directly.
