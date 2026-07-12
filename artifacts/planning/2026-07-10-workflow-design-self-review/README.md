@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-10
 **Mode:** Update (via Review — fix-issues)
-**Status:** Requirements Refined
+**Status:** Impact Analysis Complete
 
 ---
 
@@ -49,7 +49,7 @@ Requirements refinement (update pass) confirmed the fix-pass specification acros
 |---|----------|------|--------|
 | 01 | Intake and Context | All | ✅ Complete |
 | 03 | Requirements Refinement | Create, Update | ✅ Complete — [assumptions log](03-assumptions-log.md) |
-| 05 | Impact Analysis | Update | ⬚ Pending |
+| 05 | Impact Analysis | Update | ✅ Complete — [impact analysis](05-impact-analysis.md) |
 | 06 | Scope and Draft | Create, Update | ⬚ Pending |
 | 08 | Quality Review | All | ✅ Complete — [compliance report](08-compliance-review.md) (review pass) |
 | 09 | Validate and Commit | All | ⬚ Pending |
@@ -67,4 +67,4 @@ Requirements refinement (update pass) confirmed the fix-pass specification acros
 
 ---
 
-**Status:** Requirements refined and assumptions reconciled — ready for impact analysis (update pass)
+**Status:** Impact analysis complete — scope and removals confirmed; ready for scope-and-draft

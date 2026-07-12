@@ -233,6 +233,14 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "impact-analysis-impact-confirmed": {
+            "optionId": "confirmed",
+            "respondedAt": "2026-07-11T21:57:27.000Z"
+          },
+          "impact-analysis-preservation-confirmed": {
+            "optionId": "confirmed",
+            "respondedAt": "2026-07-12T05:31:58.000Z"
+          },
           "intake-and-context-change-request-confirmed": {
             "optionId": "confirmed",
             "respondedAt": "2026-07-11T15:00:10.000Z"
@@ -820,16 +828,46 @@
             },
             "timestamp": "2026-07-11T21:54:36.859Z",
             "type": "technique_bundled"
+          },
+          {
+            "activity": "impact-analysis",
+            "checkpoint": "impact-confirmed",
+            "timestamp": "2026-07-11T21:56:37.017Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "impact-analysis",
+            "checkpoint": "impact-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-11T21:57:27.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "impact-analysis",
+            "checkpoint": "preservation-confirmed",
+            "timestamp": "2026-07-11T21:57:44.430Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "impact-analysis",
+            "checkpoint": "preservation-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-12T05:31:58.000Z",
+            "type": "checkpoint_response"
           }
         ],
         "schemaVersion": 1,
-        "seq": 49,
+        "seq": 55,
         "sessionIndex": "RPKOLJ",
         "skippedActivities": [],
         "startedAt": "2026-07-10T13:51:19.883Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1783806876,
+        "ts": 1783834331,
         "variables": {
           "all_files_validated": false,
           "approach_confirmed": false,
