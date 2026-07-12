@@ -1,6 +1,6 @@
 # Session Inspection Tool - July 2026
 
-> Feature · Created 2026-07-11 · **Status:** Implemented (T1–T6) — build/typecheck/tests green; ready for review
+> Feature · Created 2026-07-11 · **Status:** Lean-coding audit accepted (net -1 line; clean debt ledger) — proceeding to review
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -31,6 +31,7 @@ The result is fewer interruptions for the person supervising a run and more depe
 | 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
 | 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | 08 | [Implementation](08-provenance-log.md) | `inspect_session` tool + close-out technique updates (T1–T6); per-task provenance log | 1-3h | ✅ Complete |
+| 09 | [Lean-coding audit](09-review-findings.md) | Over-engineering review (net -1 line; structure mirrors reference — accepted) + [debt ledger](09-debt-ledger.md) (clean) | 10-20m | ✅ Complete |
 | 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
 | 06 | `Test suite review` | Test quality and coverage assessment | 10-20m | ⬚ Pending |
