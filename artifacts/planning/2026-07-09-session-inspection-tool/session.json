@@ -235,10 +235,11 @@
           "plan-prepare",
           "assumptions-review",
           "implement",
-          "lean-coding-audit"
+          "lean-coding-audit",
+          "post-impl-review"
         ],
-        "condition": "isDefault",
-        "currentActivity": "post-impl-review",
+        "condition": "no-blocker",
+        "currentActivity": "validate",
         "currentTechnique": "update-pr::render",
         "deliveredContent": {
           "orchestrator": {
@@ -1272,16 +1273,26 @@
             },
             "timestamp": "2026-07-12T06:44:21.000Z",
             "type": "checkpoint_response"
+          },
+          {
+            "activity": "post-impl-review",
+            "timestamp": "2026-07-12T07:03:05.663Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate",
+            "timestamp": "2026-07-12T07:03:05.663Z",
+            "type": "activity_entered"
           }
         ],
         "schemaVersion": 1,
-        "seq": 48,
+        "seq": 50,
         "sessionIndex": "3QLE6N",
         "skippedActivities": [],
         "startedAt": "2026-07-10T14:01:13.519Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1783838661,
+        "ts": 1783839811,
         "variables": {
           "artifact_name": "",
           "assumption_deferred": false,
