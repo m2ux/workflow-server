@@ -1,6 +1,6 @@
 # Cluster 3 Delivery Ledger - July 2026
 
-> Enhancement · Created 2026-07-12 · **Status:** Planning
+> Enhancement · Created 2026-07-12 · **Status:** In Progress
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -42,4 +42,4 @@ This work closes both gaps. It teaches the server to compare and skip the repeat
 |----------|------|
 | Parent Epic | [#189](https://github.com/m2ux/workflow-server/issues/189) — Epic: schema/technique/disclosure review repeat-pass backlog |
 | Design spec | [2026-07-12-workflow-design-cluster3-delivery-ledger](../2026-07-12-workflow-design-cluster3-delivery-ledger/) |
-| PR | *pending* |
+| PR | [#223](https://github.com/m2ux/workflow-server/pull/223) |
