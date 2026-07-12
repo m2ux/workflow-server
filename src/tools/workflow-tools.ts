@@ -21,9 +21,11 @@ import {
   advanceSession,
   saveSessionForTool,
   sessionView,
+  navigatePath,
   describeSessionStoreError,
   SessionStoreError,
 } from '../utils/session/index.js';
+import type { SessionFile } from '../schema/session.schema.js';
 import { buildValidation, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTechniqueFetches, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
 import type { StepManifestEntry, ActivityManifestEntry } from '../utils/validation.js';
 import { createTraceToken, decodeTraceToken } from '../trace.js';
@@ -106,6 +108,147 @@ export async function composeActivityArtifacts(
     }
   }
   return artifacts;
+}
+
+
+// ─── inspect_session projections ────────────────────────────────────────────
+//
+// Pure, session-I/O-free projections of a loaded `SessionFile`, ported verbatim
+// from the reference implementation `scripts/inspect_session.py` (the normative
+// output contract). Each view returns a compact structured slice — never the raw
+// session file, which accretes unbounded `history` and `deliveredContent`. Keeping
+// these pure lets the parity test drive them directly against the reference script.
+
+/** The views `inspect_session` can project. `summary` is the default composite. */
+export const INSPECT_SESSION_VIEWS = [
+  'summary', 'identity', 'variables', 'checkpoints', 'activities', 'history', 'children',
+] as const;
+export type InspectSessionView = (typeof INSPECT_SESSION_VIEWS)[number];
+
+/**
+ * History event types surfaced as `milestones` — the six the reference script
+ * lists: activity entry/exit, checkpoint reach/response, and child
+ * triggered/completed. All other events contribute only to the `byType` tally.
+ */
+const HISTORY_MILESTONE_TYPES = new Set([
+  'activity_entered', 'activity_exited',
+  'checkpoint_reached', 'checkpoint_response',
+  'workflow_triggered', 'workflow_completed',
+]);
+
+/** Identity projection: the stable header fields identifying the session. */
+export function projectIdentity(s: SessionFile): Record<string, unknown> {
+  return {
+    workflowId: s.workflowId,
+    workflowVersion: s.workflowVersion,
+    sessionIndex: s.sessionIndex,
+    agentId: s.agentId,
+    status: s.status,
+    currentActivity: s.currentActivity,
+    currentTechnique: s.currentTechnique,
+    startedAt: s.startedAt,
+    seq: s.seq,
+  };
+}
+
+/** Checkpoint projection: each response reduced to option, timestamp, and any variables it set. */
+export function projectCheckpoints(s: SessionFile): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [cid, resp] of Object.entries(s.checkpointResponses ?? {})) {
+    out[cid] = {
+      optionId: resp.optionId,
+      respondedAt: resp.respondedAt,
+      variablesSet: resp.effects?.variablesSet ?? {},
+    };
+  }
+  return out;
+}
+
+/** Activity projection: completed / skipped lists plus the current activity. */
+export function projectActivities(s: SessionFile): Record<string, unknown> {
+  return {
+    completed: s.completedActivities ?? [],
+    skipped: s.skippedActivities ?? [],
+    current: s.currentActivity,
+  };
+}
+
+/**
+ * History projection: total event count, a per-type tally, and the milestone
+ * sub-sequence (each milestone carries only its non-empty type/activity/checkpoint
+ * keys, matching the reference script's dict comprehension).
+ */
+export function projectHistory(s: SessionFile): Record<string, unknown> {
+  const events = s.history ?? [];
+  const byType: Record<string, number> = {};
+  const milestones: Array<Record<string, unknown>> = [];
+  for (const e of events) {
+    byType[e.type] = (byType[e.type] ?? 0) + 1;
+    if (HISTORY_MILESTONE_TYPES.has(e.type)) {
+      const m: Record<string, unknown> = { type: e.type };
+      if (e.activity) m['activity'] = e.activity;
+      if (e.checkpoint) m['checkpoint'] = e.checkpoint;
+      milestones.push(m);
+    }
+  }
+  return { count: events.length, byType, milestones };
+}
+
+/**
+ * Children digest: one line per `triggeredWorkflows` entry of the addressed
+ * session. Positional `index`, the child's own identity, and the running
+ * status/activity/completed trace read from its embedded `state`.
+ */
+export function projectChildren(s: SessionFile): Array<Record<string, unknown>> {
+  return (s.triggeredWorkflows ?? []).map((c, i) => {
+    const st = c.state;
+    return {
+      index: i,
+      sessionIndex: c.sessionIndex,
+      workflowId: c.workflowId,
+      status: st?.status,
+      currentActivity: st?.currentActivity,
+      completed: st?.completedActivities ?? [],
+    };
+  });
+}
+
+/** Summary (default) view: the composite of all projections for the addressed session. */
+export function projectSummary(s: SessionFile): Record<string, unknown> {
+  return {
+    identity: projectIdentity(s),
+    activities: projectActivities(s),
+    variables: s.variables ?? {},
+    checkpoints: projectCheckpoints(s),
+    history: projectHistory(s),
+    children: projectChildren(s),
+  };
+}
+
+/**
+ * Dispatch a view against the addressed session. For `variables`, an optional
+ * `variable` narrows the bag to a single key's value (matching the reference
+ * script's `--variable KEY`); otherwise the whole bag is returned.
+ */
+export function projectSessionView(
+  s: SessionFile,
+  view: InspectSessionView,
+  variable?: string,
+): unknown {
+  switch (view) {
+    case 'identity': return projectIdentity(s);
+    case 'variables': {
+      const bag = s.variables ?? {};
+      return variable ? bag[variable] : bag;
+    }
+    case 'checkpoints': return projectCheckpoints(s);
+    case 'activities': return projectActivities(s);
+    case 'history': return projectHistory(s);
+    case 'children': return projectChildren(s);
+    case 'summary':
+    default:
+      return projectSummary(s);
+  }
 }
 
 
@@ -1137,6 +1280,47 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
+        _meta: { session_index, validation: buildValidation() },
+      };
+    }), traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
+
+  server.tool('inspect_session',
+    'Read-only inspection of a workflow session\'s on-disk state. Returns a compact structured ' +
+    'projection (never the raw session.json) of the addressed session, selected by `view`. Reads ' +
+    'through the same sealed load path as other tools, so it verifies integrity but performs no ' +
+    'mutation — safe to call at any time, including while a checkpoint is active (unlike mutating ' +
+    'tools, it is not gated). Requires a session_index.',
+    {
+      ...sessionIndexParam,
+      view: z.enum(INSPECT_SESSION_VIEWS).default('summary')
+        .describe('Which projection to return. `summary` (default) is the composite of all views. ' +
+          '`identity` = workflow/session/agent header + position; `variables` = the variable bag; ' +
+          '`checkpoints` = checkpoint responses (option, timestamp, variables set); `activities` = ' +
+          'completed/skipped/current; `history` = event count + per-type tally + milestone sub-sequence; ' +
+          '`children` = one-line digest per triggeredWorkflows child.'),
+      child_index: z.number().int().nonnegative().optional()
+        .describe('Optional positional index into the addressed session\'s `triggeredWorkflows`. When ' +
+          'given, the tool descends one level to `triggeredWorkflows[child_index].state` and projects ' +
+          'that child instead of the addressed session. Out of range yields the NOT_FOUND message. ' +
+          'Deeper children are reached by passing that child\'s own session_index instead of stacking indices.'),
+      variable: z.string().optional()
+        .describe('Optional single variable name. Only meaningful with `view: variables` — narrows the ' +
+          'result to that one key\'s value instead of the whole bag.'),
+    },
+    withAuditLog('inspect_session', withSessionStoreErrors(async ({ session_index, view, child_index, variable }) => {
+      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
+      // Positional one-level descent into the addressed session's children, matching the
+      // reference script's `--child N`. navigatePath throws SessionStoreError(NOT_FOUND) for an
+      // out-of-range index, which withSessionStoreErrors renders as an actionable message.
+      const addressed: SessionFile = child_index === undefined
+        ? loaded.state
+        : navigatePath(loaded.state, ['triggeredWorkflows', child_index, 'state']);
+
+      const projection = projectSessionView(addressed, view, variable);
+
+      // Read-only: no advanceSession / saveSessionForTool — the on-disk state stays untouched.
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify(projection, null, 2) }],
         _meta: { session_index, validation: buildValidation() },
       };
     }), traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));

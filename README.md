@@ -37,12 +37,12 @@ User Goal → Workflow → Activities → Techniques → Tools
 
 ### MCP Tools at a Glance
 
-The server registers 16 MCP tools across five concerns. See [docs/api-reference.md](docs/api-reference.md) for full signatures.
+The server registers 17 MCP tools across five concerns. See [docs/api-reference.md](docs/api-reference.md) for full signatures.
 
 | Concern | Tools |
 |---------|-------|
 | Bootstrap (no session token) | `discover`, `list_workflows`, `health_check` |
-| Session | `start_session`, `get_workflow_status`, `dispatch_child` |
+| Session | `start_session`, `get_workflow_status`, `inspect_session`, `dispatch_child` |
 | Workflow / activity navigation | `get_workflow`, `next_activity`, `get_activity` |
 | Checkpoint flow | `yield_checkpoint`, `resume_checkpoint`, `present_checkpoint`, `respond_checkpoint` |
 | Techniques, resources | `get_technique`, `get_resource` |

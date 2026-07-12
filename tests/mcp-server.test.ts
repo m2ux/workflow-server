@@ -2232,4 +2232,261 @@ describe('mcp-server integration', () => {
     });
   });
 
+  describe('tool: inspect_session', () => {
+    // Root session index and the one child's own index. Both are valid RFC 4648
+    // base32 (A-Z, 2-7). The fixture is written to disk sealed via
+    // writeSessionFile, then addressed by its stored index.
+    const ROOT_INDEX = 'INSPCT';
+    const CHILD_INDEX = 'CHILDX';
+    const fixtureSlug = 'inspect-session-fixture';
+
+    // A fully-populated fixture: variables, checkpoint responses, mixed history
+    // (milestone + non-milestone events), completed/skipped activities, an active
+    // checkpoint (so the read-while-blocked case is covered), and one embedded child.
+    const buildFixture = () => ({
+      schemaVersion: 1 as const,
+      sessionIndex: ROOT_INDEX,
+      workflowId: 'work-package',
+      workflowVersion: '3.28.0',
+      agentId: 'orchestrator',
+      seq: 7,
+      ts: 1_700_000_000,
+      startedAt: '2026-07-11T10:00:00.000Z',
+      currentActivity: 'implement',
+      currentTechnique: 'implement-task',
+      condition: '',
+      activeCheckpoint: {
+        checkpointId: 'symbol-provenance-confirmed',
+        activityId: 'implement',
+        yieldedAt: '2026-07-11T11:00:00.000Z',
+      },
+      variables: {
+        issue_number: '193',
+        pr_number: '215',
+        problem_complexity: 'simple',
+        is_review_mode: false,
+      },
+      completedActivities: ['start-work-package', 'research', 'wp-plan'],
+      skippedActivities: ['codebase-comprehension'],
+      checkpointResponses: {
+        'wp-plan-plan-approved': {
+          optionId: 'approved',
+          respondedAt: '2026-07-11T10:30:00.000Z',
+          effects: { variablesSet: { plan_approved: true } },
+        },
+        'research-context-scope-declaration': {
+          optionId: 'repo-only',
+          respondedAt: '2026-07-11T10:15:00.000Z',
+        },
+      },
+      history: [
+        { timestamp: '2026-07-11T10:00:00.000Z', type: 'workflow_started' },
+        { timestamp: '2026-07-11T10:01:00.000Z', type: 'activity_entered', activity: 'start-work-package' },
+        { timestamp: '2026-07-11T10:05:00.000Z', type: 'activity_exited', activity: 'start-work-package' },
+        { timestamp: '2026-07-11T10:06:00.000Z', type: 'activity_entered', activity: 'research' },
+        { timestamp: '2026-07-11T10:15:00.000Z', type: 'checkpoint_reached', activity: 'research', checkpoint: 'context-scope-declaration' },
+        { timestamp: '2026-07-11T10:15:30.000Z', type: 'checkpoint_response', activity: 'research', checkpoint: 'context-scope-declaration' },
+        { timestamp: '2026-07-11T10:20:00.000Z', type: 'technique_fetched', activity: 'research' },
+        { timestamp: '2026-07-11T10:40:00.000Z', type: 'workflow_triggered', activity: 'implement' },
+      ],
+      status: 'running' as const,
+      triggeredWorkflows: [
+        {
+          workflowId: 'remediate-vuln',
+          sessionIndex: CHILD_INDEX,
+          triggeredAt: '2026-07-11T10:40:00.000Z',
+          triggeredFrom: { activityId: 'implement' },
+          status: 'running' as const,
+          state: {
+            schemaVersion: 1 as const,
+            sessionIndex: CHILD_INDEX,
+            workflowId: 'remediate-vuln',
+            workflowVersion: '2.0.0',
+            agentId: 'worker',
+            seq: 2,
+            ts: 1_700_000_100,
+            startedAt: '2026-07-11T10:40:00.000Z',
+            currentActivity: 'triage',
+            currentTechnique: '',
+            condition: '',
+            variables: { severity: 'high' },
+            completedActivities: ['intake'],
+            skippedActivities: [],
+            checkpointResponses: {},
+            history: [{ timestamp: '2026-07-11T10:40:00.000Z', type: 'workflow_started' }],
+            status: 'running' as const,
+            triggeredWorkflows: [],
+          },
+        },
+      ],
+    });
+
+    // Write the sealed fixture to its own planning folder before each inspect test.
+    beforeEach(async () => {
+      const { writeSessionFile } = await import('../src/utils/session/store.js');
+      await writeSessionFile(planningFolder(fixtureSlug), buildFixture());
+    });
+
+    const callInspect = async (args: Record<string, unknown>) =>
+      client.callTool({ name: 'inspect_session', arguments: { session_index: ROOT_INDEX, ...args } });
+
+    it('PR215-TC-01: default summary view returns all sub-projections', async () => {
+      const result = await callInspect({});
+      expect(result.isError).toBeFalsy();
+      const summary = parseToolResponse(result);
+      expect(Object.keys(summary).sort()).toEqual(
+        ['activities', 'checkpoints', 'children', 'history', 'identity', 'variables'],
+      );
+      expect(summary.identity.workflowId).toBe('work-package');
+      expect(summary.identity.sessionIndex).toBe(ROOT_INDEX);
+      expect(summary.activities.completed).toContain('wp-plan');
+      expect(summary.variables.pr_number).toBe('215');
+      expect(summary.checkpoints['wp-plan-plan-approved'].optionId).toBe('approved');
+      expect(summary.history.count).toBe(8);
+      expect(summary.children).toHaveLength(1);
+      expect(summary.children[0].sessionIndex).toBe(CHILD_INDEX);
+    });
+
+    it('PR215-TC-02: each narrow view returns only its slice', async () => {
+      const identity = parseToolResponse(await callInspect({ view: 'identity' }));
+      expect(identity).toEqual({
+        workflowId: 'work-package',
+        workflowVersion: '3.28.0',
+        sessionIndex: ROOT_INDEX,
+        agentId: 'orchestrator',
+        status: 'running',
+        currentActivity: 'implement',
+        currentTechnique: 'implement-task',
+        startedAt: '2026-07-11T10:00:00.000Z',
+        seq: 7,
+      });
+
+      const activities = parseToolResponse(await callInspect({ view: 'activities' }));
+      expect(activities).toEqual({
+        completed: ['start-work-package', 'research', 'wp-plan'],
+        skipped: ['codebase-comprehension'],
+        current: 'implement',
+      });
+
+      const checkpoints = parseToolResponse(await callInspect({ view: 'checkpoints' }));
+      // A response without effects yields an empty variablesSet map.
+      expect(checkpoints['research-context-scope-declaration']).toEqual({
+        optionId: 'repo-only',
+        respondedAt: '2026-07-11T10:15:00.000Z',
+        variablesSet: {},
+      });
+
+      const history = parseToolResponse(await callInspect({ view: 'history' }));
+      expect(history.count).toBe(8);
+      expect(history.byType.activity_entered).toBe(2);
+      expect(history.byType.technique_fetched).toBe(1);
+      // technique_fetched is NOT a milestone type; six milestones remain.
+      expect(history.milestones).toHaveLength(6);
+      expect(history.milestones.every((m: { type: string }) => m.type !== 'technique_fetched')).toBe(true);
+
+      const children = parseToolResponse(await callInspect({ view: 'children' }));
+      expect(children).toEqual([{
+        index: 0,
+        sessionIndex: CHILD_INDEX,
+        workflowId: 'remediate-vuln',
+        status: 'running',
+        currentActivity: 'triage',
+        completed: ['intake'],
+      }]);
+
+      const variables = parseToolResponse(await callInspect({ view: 'variables' }));
+      expect(variables).toEqual({
+        issue_number: '193',
+        pr_number: '215',
+        problem_complexity: 'simple',
+        is_review_mode: false,
+      });
+    });
+
+    it('PR215-TC-03: variable narrows view=variables to one key', async () => {
+      const result = await callInspect({ view: 'variables', variable: 'pr_number' });
+      expect(result.isError).toBeFalsy();
+      expect(parseToolResponse(result)).toBe('215');
+    });
+
+    it('PR215-TC-04: child_index addresses triggeredWorkflows[n].state positionally', async () => {
+      const identity = parseToolResponse(await callInspect({ child_index: 0, view: 'identity' }));
+      // The child's identity, not the root's.
+      expect(identity.sessionIndex).toBe(CHILD_INDEX);
+      expect(identity.workflowId).toBe('remediate-vuln');
+      expect(identity.currentActivity).toBe('triage');
+    });
+
+    it('PR215-TC-05: out-of-range child_index returns the actionable NOT_FOUND message', async () => {
+      const result = await callInspect({ child_index: 5, view: 'identity' });
+      expect(result.isError).toBe(true);
+      const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+      // navigatePath throws SessionStoreError(NOT_FOUND); withSessionStoreErrors +
+      // describeSessionStoreError render the canonical actionable NOT_FOUND message.
+      expect(text).toContain('Call start_session to create or resume a planning folder');
+    });
+
+    it('PR215-TC-06: the tool is read-only — no session mutation', async () => {
+      const { readFileSync: rfs } = await import('node:fs');
+      const jsonPath = join(planningFolder(fixtureSlug), 'session.json');
+      const sealPath = join(planningFolder(fixtureSlug), '.session-token');
+      const bytesBefore = rfs(jsonPath, 'utf8');
+      const sealBefore = rfs(sealPath, 'utf8');
+
+      for (const view of ['summary', 'identity', 'variables', 'checkpoints', 'activities', 'history', 'children']) {
+        const r = await callInspect({ view });
+        expect(r.isError).toBeFalsy();
+      }
+
+      expect(rfs(jsonPath, 'utf8')).toBe(bytesBefore);
+      expect(rfs(sealPath, 'utf8')).toBe(sealBefore);
+      // seq is unchanged (no advanceSession).
+      const after = JSON.parse(rfs(jsonPath, 'utf8'));
+      expect(after.seq).toBe(7);
+    });
+
+    it('PR215-TC-07: the tool works while a checkpoint is active', async () => {
+      // The fixture carries an activeCheckpoint; inspect_session must not gate.
+      const result = await callInspect({ view: 'identity' });
+      expect(result.isError).toBeFalsy();
+      const identity = parseToolResponse(result);
+      expect(identity.sessionIndex).toBe(ROOT_INDEX);
+    });
+
+    it('PR215-TC-08: port fidelity against the reference script (parity)', async () => {
+      const { execFileSync } = await import('node:child_process');
+      const jsonPath = join(planningFolder(fixtureSlug), 'session.json');
+      const scriptPath = resolve(import.meta.dirname, 'fixtures/inspect-session/inspect_session.py');
+
+      // Skip gracefully if python3 is unavailable (keeps CI green where the
+      // interpreter is absent); the TS-side view assertions above still guard shape.
+      let python: string | null = 'python3';
+      try {
+        execFileSync(python, ['--version'], { stdio: 'ignore' });
+      } catch {
+        python = null;
+      }
+      if (!python) return;
+
+      const runReference = (args: string[]): unknown =>
+        JSON.parse(execFileSync(python!, [scriptPath, jsonPath, ...args], { encoding: 'utf8' }));
+
+      for (const view of ['summary', 'identity', 'variables', 'checkpoints', 'activities', 'history', 'children']) {
+        const reference = runReference([view]);
+        const ours = parseToolResponse(await callInspect({ view }));
+        expect(ours, `view '${view}' must match the reference script`).toEqual(reference);
+      }
+
+      // child_index parity: --child 0 vs the tool's child_index: 0.
+      const refChild = runReference(['identity', '--child', '0']);
+      const oursChild = parseToolResponse(await callInspect({ child_index: 0, view: 'identity' }));
+      expect(oursChild).toEqual(refChild);
+
+      // --variable narrowing parity.
+      const refVar = runReference(['variables', '--variable', 'pr_number']);
+      const oursVar = parseToolResponse(await callInspect({ view: 'variables', variable: 'pr_number' }));
+      expect(oursVar).toEqual(refVar);
+    });
+  });
+
 });
