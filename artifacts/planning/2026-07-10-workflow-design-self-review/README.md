@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-10
 **Mode:** Update (via Review — fix-issues)
-**Status:** Post-Update Review Complete (committed v1.7.0 audited clean; PR #220 open; one cross-repo binding-baseline follow-up recorded for merge)
+**Status:** Complete — v1.7.0 delivered, committed (`6417b3a0`), PR #220 open; close-out + retrospective recorded ([11-COMPLETE.md](11-COMPLETE.md)); one REQUIRED cross-repo binding-baseline fold pending post-merge in the server repo
 
 ---
 
@@ -54,7 +54,7 @@ Requirements refinement (update pass) confirmed the fix-pass specification acros
 | 08 | Quality Review | All | ✅ Complete — [compliance report](08-compliance-review.md); update-mode verification pass clean (all 8 Highs resolved, audit-fix-cycle 0 iterations, 1 expected dead-output for baseline) |
 | 09 | Validate and Commit | All | ✅ Complete — committed `6417b3a0` on `workflow/workflow-design-self-review`; [PR #220](https://github.com/m2ux/workflow-server/pull/220) opened against `workflows` |
 | 10 | Post-Update Review | Update | ✅ Complete — [post-update review](10-post-update-review.md); committed content clean (0 High/Med), 2 Low scope-manifest imprecisions, 1 server-side binding-baseline follow-up |
-| 11 | Retrospective | All | ⬚ Pending |
+| 11 | Retrospective | All | ✅ Complete — [close-out](11-COMPLETE.md); completion summary + workflow retrospective recorded, REQUIRED post-merge server-side binding-baseline fold captured |
 
 ---
 

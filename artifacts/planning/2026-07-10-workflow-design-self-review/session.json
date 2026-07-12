@@ -320,11 +320,12 @@
           "requirements-refinement",
           "impact-analysis",
           "scope-and-draft",
-          "validate-and-commit"
+          "validate-and-commit",
+          "post-update-review"
         ],
-        "condition": "is_update_mode == true",
-        "currentActivity": "post-update-review",
-        "currentTechnique": "publish-workflow-pr",
+        "condition": "post-update-disposition accept → transitionTo retrospective",
+        "currentActivity": "retrospective",
+        "currentTechnique": "create-completion-doc",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:ff568fa749d961bb": "ff568fa749d961bb",
@@ -342,8 +343,10 @@
             "technique:audit-schema-validation": "1ddfea409b9c5d3e",
             "technique:commit-verification": "92192a9c4c549adf",
             "technique:compile-report": "cf840702f11de2ac",
+            "technique:conduct-retrospective": "52c5ac61b61324a1",
             "technique:content-drafting": "3849b1e6e5b5f705",
             "technique:context-loading": "58a8788275e783f0",
+            "technique:create-completion-doc": "dda16fac211edf17",
             "technique:elicitation": "258245d9a6d61cb4",
             "technique:impact-analysis": "7cfa0a47bd7f1e92",
             "technique:intake-classification": "e77def43c9e04bd6",
@@ -1263,16 +1266,64 @@
             },
             "timestamp": "2026-07-12T07:26:54.000Z",
             "type": "checkpoint_response"
+          },
+          {
+            "activity": "post-update-review",
+            "timestamp": "2026-07-12T07:27:47.246Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "retrospective",
+            "timestamp": "2026-07-12T07:27:47.246Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "conduct-retrospective",
+              "techniqueId": "conduct-retrospective"
+            },
+            "timestamp": "2026-07-12T07:28:25.269Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-completion-doc",
+              "techniqueId": "create-completion-doc"
+            },
+            "timestamp": "2026-07-12T07:28:30.409Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "completion-artifact"
+            },
+            "timestamp": "2026-07-12T07:28:35.990Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "work-package/workflow-retrospective#output-section-template"
+            },
+            "timestamp": "2026-07-12T07:28:36.785Z",
+            "type": "resource_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 83,
+        "seq": 88,
         "sessionIndex": "RPKOLJ",
         "skippedActivities": [],
         "startedAt": "2026-07-10T13:51:19.883Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1783841233,
+        "ts": 1783841316,
         "variables": {
           "all_files_validated": true,
           "approach_confirmed": true,
