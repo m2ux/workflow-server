@@ -282,15 +282,30 @@
           "requirements-refinement-dimension-confirmed": {
             "optionId": "confirmed",
             "respondedAt": "2026-07-11T15:46:38.000Z"
+          },
+          "scope-and-draft-batch-review": {
+            "optionId": "accepted",
+            "respondedAt": "2026-07-12T06:19:58.000Z"
+          },
+          "scope-and-draft-scope-and-structure-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "approach_confirmed": true,
+                "scope_manifest_confirmed": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-07-12T05:51:28.000Z"
           }
         },
         "completedActivities": [
           "intake-and-context",
           "quality-review",
-          "requirements-refinement"
+          "requirements-refinement",
+          "impact-analysis"
         ],
-        "condition": "is_update_mode == true",
-        "currentActivity": "impact-analysis",
+        "condition": "default (from impact-analysis)",
+        "currentActivity": "scope-and-draft",
         "currentTechnique": "work-package::manage-artifacts::create-readme",
         "deliveredContent": {
           "orchestrator": {
@@ -307,16 +322,20 @@
             "technique:audit-principles": "fea53115a887e020",
             "technique:audit-schema-validation": "1ddfea409b9c5d3e",
             "technique:compile-report": "cf840702f11de2ac",
+            "technique:content-drafting": "3849b1e6e5b5f705",
             "technique:context-loading": "58a8788275e783f0",
             "technique:elicitation": "258245d9a6d61cb4",
             "technique:impact-analysis": "7cfa0a47bd7f1e92",
             "technique:intake-classification": "e77def43c9e04bd6",
             "technique:reconcile-design-assumptions": "67bd1a7254b2c405",
             "technique:reload-workflow": "c621bb5f3074d295",
+            "technique:review-draft-yaml": "b603e5875461ad5c",
+            "technique:scope-definition": "a43c8352ae907155",
             "technique:work-package::manage-artifacts::create-readme": "5ee6adddca4ad0ee",
             "technique:work-package::review-assumptions::collect": "9576a4f2e0497f92",
             "technique:work-package::review-assumptions::interview": "fecde3f4708684cd",
-            "technique:work-package::review-assumptions::record": "14b736ef03662765"
+            "technique:work-package::review-assumptions::record": "14b736ef03662765",
+            "technique:yaml-authoring": "44d26204de52936b"
           }
         },
         "history": [
@@ -858,19 +877,157 @@
             },
             "timestamp": "2026-07-12T05:31:58.000Z",
             "type": "checkpoint_response"
+          },
+          {
+            "activity": "impact-analysis",
+            "timestamp": "2026-07-12T05:35:32.991Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-07-12T05:35:32.991Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "scope-definition",
+              "techniqueId": "scope-definition"
+            },
+            "timestamp": "2026-07-12T05:36:20.096Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "present-file-approach",
+              "techniqueId": "content-drafting"
+            },
+            "timestamp": "2026-07-12T05:36:20.096Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "yaml-authoring",
+              "techniqueId": "yaml-authoring"
+            },
+            "timestamp": "2026-07-12T05:36:20.096Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "present-for-review",
+              "techniqueId": "content-drafting"
+            },
+            "timestamp": "2026-07-12T05:36:20.096Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "present-file-approach",
+              "techniqueId": "content-drafting"
+            },
+            "timestamp": "2026-07-12T05:36:20.096Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "yaml-authoring",
+              "techniqueId": "yaml-authoring"
+            },
+            "timestamp": "2026-07-12T05:36:20.096Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "present-for-review",
+              "techniqueId": "content-drafting"
+            },
+            "timestamp": "2026-07-12T05:36:20.096Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "review-draft-yaml",
+              "techniqueId": "review-draft-yaml"
+            },
+            "timestamp": "2026-07-12T05:36:20.096Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-and-structure-confirmed",
+            "timestamp": "2026-07-12T05:38:42.412Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-and-structure-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-12T05:51:28.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "value": true
+            },
+            "timestamp": "2026-07-12T05:51:28.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "approach_confirmed",
+              "value": true
+            },
+            "timestamp": "2026-07-12T05:51:28.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "batch-review",
+            "timestamp": "2026-07-12T06:18:21.703Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "batch-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-12T06:19:58.000Z",
+            "type": "checkpoint_response"
           }
         ],
         "schemaVersion": 1,
-        "seq": 55,
+        "seq": 63,
         "sessionIndex": "RPKOLJ",
         "skippedActivities": [],
         "startedAt": "2026-07-10T13:51:19.883Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1783834331,
+        "ts": 1783837212,
         "variables": {
           "all_files_validated": false,
-          "approach_confirmed": false,
+          "approach_confirmed": true,
           "format_literacy_confirmed": false,
           "has_critical_finding": false,
           "has_deferred_assumptions": false,
@@ -886,7 +1043,7 @@
           "review_findings_count": 0,
           "review_scope_confirmed": true,
           "schema_constructs_confirmed": false,
-          "scope_manifest_confirmed": false,
+          "scope_manifest_confirmed": true,
           "user_wants_fixes": true,
           "workflow_branch": ""
         },

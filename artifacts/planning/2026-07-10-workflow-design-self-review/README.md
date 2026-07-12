@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-10
 **Mode:** Update (via Review — fix-issues)
-**Status:** Impact Analysis Complete
+**Status:** Scope and Draft Complete
 
 ---
 
@@ -39,7 +39,7 @@ Requirements refinement (update pass) confirmed the fix-pass specification acros
 
 ## Scope Manifest
 
-*Files to create, modify, or remove for this workflow, confirmed during scope-and-draft. Left as placeholder until then.*
+44 files modified (no file created/removed except the M3 content-drafting split: −1 `content-drafting.md`, +2 `present-file-approach.md`/`present-for-review.md`, +1 `derive-design-dimensions.md`). Full manifest: [06-scope-manifest.md](06-scope-manifest.md).
 
 ---
 
@@ -50,7 +50,7 @@ Requirements refinement (update pass) confirmed the fix-pass specification acros
 | 01 | Intake and Context | All | ✅ Complete |
 | 03 | Requirements Refinement | Create, Update | ✅ Complete — [assumptions log](03-assumptions-log.md) |
 | 05 | Impact Analysis | Update | ✅ Complete — [impact analysis](05-impact-analysis.md) |
-| 06 | Scope and Draft | Create, Update | ⬚ Pending |
+| 06 | Scope and Draft | Create, Update | ✅ Complete — [scope manifest](06-scope-manifest.md); all 30 fixes drafted, guards green |
 | 08 | Quality Review | All | ✅ Complete — [compliance report](08-compliance-review.md) (review pass) |
 | 09 | Validate and Commit | All | ⬚ Pending |
 | 10 | Post-Update Review | Update | ⬚ Pending |
@@ -67,4 +67,4 @@ Requirements refinement (update pass) confirmed the fix-pass specification acros
 
 ---
 
-**Status:** Impact analysis complete — scope and removals confirmed; ready for scope-and-draft
+**Status:** Scope and draft complete — all 30 fixes applied to workflow-design v1.7.0 under the worktree; schema/refs/binding-fidelity/variable-model guards green (1 intentional design_dimensions dead-output pending baseline regen in validate-and-commit); ready for quality-review
