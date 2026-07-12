@@ -1,6 +1,6 @@
 # Session Inspection Tool - July 2026
 
-> Feature · Created 2026-07-11 · **Status:** Validation green (typecheck + build clean · 557 pass / 0 fail / 14 skipped · site-data drift guard satisfied) — proceeding to strategic review
+> Feature · Created 2026-07-11 · **Status:** Strategic review complete (clean — scope maps fully to #193; 1 Minor PR-body freshness nit) — awaiting review-findings disposition
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -34,7 +34,7 @@ The result is fewer interruptions for the person supervising a run and more depe
 | 09 | [Lean-coding audit](09-review-findings.md) | Over-engineering review (net -1 line; structure mirrors reference — accepted) + [debt ledger](09-debt-ledger.md) (clean) | 10-20m | ✅ Complete |
 | 10 | [Change block index](10-change-block-index.md) | Indexed diff hunks (7 files, 11 hunks) for manual review | 5-10m | ✅ Complete |
 | 10 | [Post-impl review](10-code-review.md) | Code review + structural + test-suite review; F1 (parity-oracle gap) resolved | 10-20m | ✅ Complete |
-| 07 | `Strategic review` | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
+| 12 | [Strategic review](12-strategic-review-1.md) | Scope-vs-issue fit, requirement coverage, PR/commit readiness (clean — 0 artifact findings; 1 Minor PR-body nit) + [architecture summary](12-architecture-summary.md) | 15-30m | ✅ Complete |
 | — | Validation | Build, test, lint verification (typecheck + build clean · 557 pass / 0 fail / 14 skipped · site-data drift guard satisfied) | 15-30m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | `Close-out (COMPLETE.md)` | Deliverables, deferred items, lessons, retrospective | 10-20m | ⬚ Pending |
