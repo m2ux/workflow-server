@@ -302,11 +302,12 @@
           "intake-and-context",
           "quality-review",
           "requirements-refinement",
-          "impact-analysis"
+          "impact-analysis",
+          "scope-and-draft"
         ],
-        "condition": "default (from impact-analysis)",
-        "currentActivity": "scope-and-draft",
-        "currentTechnique": "work-package::manage-artifacts::create-readme",
+        "condition": "default (from scope-and-draft, update mode)",
+        "currentActivity": "quality-review",
+        "currentTechnique": "audit-expressiveness",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:ff568fa749d961bb": "ff568fa749d961bb",
@@ -319,6 +320,7 @@
             "bundle:workflow-engine::yield-checkpoint": "8761bc9b631c2e5b",
             "technique:audit-anti-patterns": "903fe6f8db19ced5",
             "technique:audit-consistency": "24087ff160026fd7",
+            "technique:audit-expressiveness": "138792e235fe1cd7",
             "technique:audit-principles": "fea53115a887e020",
             "technique:audit-schema-validation": "1ddfea409b9c5d3e",
             "technique:compile-report": "cf840702f11de2ac",
@@ -1015,16 +1017,36 @@
             },
             "timestamp": "2026-07-12T06:19:58.000Z",
             "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-07-12T06:21:06.425Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-07-12T06:21:06.425Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-expressiveness",
+              "techniqueId": "audit-expressiveness"
+            },
+            "timestamp": "2026-07-12T06:22:26.289Z",
+            "type": "technique_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 63,
+        "seq": 66,
         "sessionIndex": "RPKOLJ",
         "skippedActivities": [],
         "startedAt": "2026-07-10T13:51:19.883Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1783837212,
+        "ts": 1783837346,
         "variables": {
           "all_files_validated": false,
           "approach_confirmed": true,

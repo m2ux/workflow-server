@@ -129,4 +129,37 @@ Note: the schema/loader tolerates H1's duplicate step ids — validation cannot 
 **Priority 4 — docs and resources:** M4 (README counts/claims), M5 (AP-44 decoupling), M6 (AP-85 subsumption), M7 (single-row log), L-series.
 
 ---
+
+## Update-Mode Verification Pass (quality-review, 2026-07-12)
+
+Second-pass audit of the DRAFTED v1.7.0 in the worktree (`workflow/workflow-design-self-review`), verifying the 30 fixes landed cleanly, introduced no new anti-pattern/schema/binding issues, and genuinely resolved the 8 Highs. **Result: clean — audit-fix-cycle ran 0 iterations; no residual, no Critical.**
+
+### Deterministic guards (against the worktree)
+
+| Check | Result |
+|-------|--------|
+| `validate-workflow-yaml.ts` | PASS — v1.7.0, 9/9 activities, 37 technique files, no unanchored refs |
+| `check-all-refs.ts` | PASS — 0 unresolved |
+| `check-binding-fidelity.ts` | **1 NEW** (`derive-design-dimensions`→`design_dimensions`, forEach `over:` the guard doesn't scan — the expected/known dead-output, to be `--update-baseline`d at validate-and-commit) + **9 baselined violations retired** by the H4 output declarations |
+| `check:variable-model` | PASS — defaults, gates, setVariable effects coherent (M1 deletions, new `operation_type`, `has_open_assumptions` wiring all consistent) |
+| `check:review-mode`, `check:identifiers`, `check:anchors`, `check:self-input`, `check:activity-tech`, `check:technique-template`, `check:fragments` | all PASS |
+
+### High findings — all verified resolved
+
+- **H1** — `06-scope-and-draft` loop rebuilt: body = approach → `file-approach-confirmed` → yaml-authoring → `present-for-review` → `file-review` → `preservation-check`, all inside `file-drafting-loop`; no duplicate top-level steps; `batch-review` moved after the loop; `advance-to-next-file` marker deleted.
+- **H2** — inverted `validate scope_manifest_confirmed` removed; loop gated `scope_manifest_confirmed == true`, produced by the preceding `scope-and-structure-confirmed` checkpoint (producer precedes consumer).
+- **H3** — `has_unflagged_removals` now produced by `present-for-review` (declared output); `preservation-check` gate reachable.
+- **H4** — every checkpoint count interpolation backed by a declared technique output: `expressiveness/conformance/rule_hygiene/enforcement_finding_count`, `pass_count`/`fail_count` (audit-schema-validation), `addressed_count`/`total_count` (scope-verification), `review_findings_count` (compile-report + summarize-findings, canonical reuse for review- and post-update-disposition).
+- **H5** — `intake-classification` v2.0.0 declares `## Outputs`: `operation_type`, `is_update_mode`, `is_review_mode`, `workflow_id`, `target_workflow_id` — mode flags land via the sanctioned `variables-changed` path.
+- **H6** — all 9 activity `rules:` blocks dissolved (grep-confirmed zero remaining).
+- **H7** — `reload-workflow` / `context-loading` / `intake-classification` re-homed onto wrapped `meta::workflow-engine::list-workflows` (target confirmed present); no worker-prohibited `get_workflow`.
+- **H8** — the 4 worker rules re-bucketed `rules.workflow` → `rules.activity`.
+
+### Medium/Low — spot-verified landed
+
+M1 (orphan vars deleted, `has_open_assumptions` wired), M2 (`{operation_type}` interpolation), M3 (`content-drafting` split into `present-file-approach`/`present-for-review`, both bindings re-pointed), M6 (impact-procedure + content-preservation subsumed into `impact-analysis`, incl. the variable-integrity 5th step; pointers left in `update-mode-guide`), M8 (no residual "the interview step"/"four passes"/"before the audit passes run" references), M9 (`stage-and-commit` gated `is_review_mode != true`), M10 (`verify-high-findings-review` on the review path), M11 (static `assumption-decision` id), M12 (`derive-design-dimensions` technique), M13 (update-mode chain re-gated on `scope_manifest_confirmed`), L1/L2/L3/L5, M4 (README → v1.7.0, "82", Output Economy, planning-folder output path, workflow-local retrospective). No new anti-pattern introduced.
+
+**Disposition:** `needs_audit_fixes=false`, `has_critical_finding=false`. Proceed to validate-and-commit (which owns the `--update-baseline` fold for the one expected dead-output).
+
+---
 *Compliance review artifact — session RPKOLJ, quality-review activity (prefix 08). Updated in place by validate-and-commit's persist-report.*
