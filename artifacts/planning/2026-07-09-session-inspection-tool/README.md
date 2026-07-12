@@ -1,6 +1,6 @@
 # Session Inspection Tool - July 2026
 
-> Feature · Created 2026-07-11 · **Status:** Strategic review complete (clean — scope maps fully to #193; 1 Minor PR-body freshness nit) — awaiting review-findings disposition
+> Feature · Created 2026-07-11 · **Status:** Close-out complete — PR [#215](https://github.com/m2ux/workflow-server/pull/215) open (ready for review, not yet merged); component worktree removed. Pending on merge: mark plan Complete + record final outcome. Companion workflows-content PR (req b) not yet opened.
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -36,12 +36,13 @@ The result is fewer interruptions for the person supervising a run and more depe
 | 10 | [Post-impl review](10-code-review.md) | Code review + structural + test-suite review; F1 (parity-oracle gap) resolved | 10-20m | ✅ Complete |
 | 12 | [Strategic review](12-strategic-review-1.md) | Scope-vs-issue fit, requirement coverage, PR/commit readiness (clean — 0 artifact findings; 1 Minor PR-body nit) + [architecture summary](12-architecture-summary.md) | 15-30m | ✅ Complete |
 | — | Validation | Build, test, lint verification (typecheck + build clean · 557 pass / 0 fail / 14 skipped · site-data drift guard satisfied) | 15-30m | ✅ Complete |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | `Close-out (COMPLETE.md)` | Deliverables, deferred items, lessons, retrospective | 10-20m | ⬚ Pending |
+| 06 | [Test plan](06-test-plan.md) (finalized) | Test cases linked to source (TC-01..08, TC-09a/b) at pushed HEAD `12fdd7a4` | — | ✅ Complete |
+| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending (PR #215 open) |
+| 14 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, deferred items, lessons, retrospective | 10-20m | ✅ Complete |
 
 ## 🔗 Links
 
 | Resource | Link |
 |----------|------|
 | GitHub Issue | [#193](https://github.com/m2ux/workflow-server/issues/193) |
-| PR | [#215](https://github.com/m2ux/workflow-server/pull/215) (draft) |
+| PR | [#215](https://github.com/m2ux/workflow-server/pull/215) (open — ready for review) |
