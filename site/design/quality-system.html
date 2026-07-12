@@ -72,37 +72,104 @@
   <p class="prose contributor-note">For contributors. Guards live in <a href="https://github.com/m2ux/workflow-server/tree/main/scripts"><code>scripts/</code></a> as <code>npm run check:*</code>; tests run under Vitest in <a href="https://github.com/m2ux/workflow-server/tree/main/tests"><code>tests/</code></a>.</p>
 
   <h2 id="guards">The guard suite</h2>
-  <p class="prose">Most guards audit the workflow corpus (YAML and markdown). A summary by category:</p>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th scope="col">Guard</th><th scope="col">What it enforces</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><code>validate-workflow-yaml</code>, <code>validate-activities</code></td><td>Every workflow manifest and activity file parses and satisfies the schemas — a dry run of the server's own loaders.</td></tr>
-        <tr><td><code>check-all-refs</code></td><td>Every technique reference resolves to a real technique; no misspellings, no dangling paths.</td></tr>
-        <tr><td><code>check-binding-fidelity</code></td><td>Step bindings are coherent end to end: arguments conform to declared inputs, reads resolve to a producer, outputs are consumed, and inputs have a source. Only <em>new</em> findings fail — known ones are listed in <a href="https://github.com/m2ux/workflow-server/blob/main/scripts/binding-fidelity-baseline.json"><code>binding-fidelity-baseline.json</code></a>.</td></tr>
-        <tr><td><code>check-identifier-qualification</code></td><td>Technique input and output ids are qualified noun phrases (<code>completion_summary</code>, never a bare <code>summary</code>).</td></tr>
-        <tr><td><code>check-technique-template</code></td><td>Technique markdown follows the normative structure of the <a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md">technique protocol</a>.</td></tr>
-        <tr><td><code>check-resource-anchors</code></td><td>Every <code>#section</code> anchor a technique uses to reference a resource exists in that resource.</td></tr>
-        <tr><td><code>check-activity-technique-overlap</code>, <code>check-self-provisioned-input</code>, <code>check-prism-lens-reachability</code></td><td>Namespace collisions between activities and techniques, inputs that circularly reference themselves, and unreachable review-lens paths.</td></tr>
-        <tr><td><code>check-site-links</code>, <code>check-svg-layout</code></td><td>This site: every internal link and anchor resolves, every GitHub link points at a real file, and no SVG diagram text collides with boxes, arrows, or sibling text.</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <p class="prose">Guards are TypeScript scripts under <a href="https://github.com/m2ux/workflow-server/tree/main/scripts"><code>scripts/</code></a> that walk the <code>workflows</code> worktree or this site's HTML and report violations. Each convention named in a <a href="../specifications.html">specification</a> or architecture page has a matching check — the spec defines the rule; the guard enforces it mechanically. Run them with <code>npm run check:&lt;name&gt;</code>; a clean tree always yields the same result.</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 320" role="img" aria-labelledby="gs-land-title gs-land-desc">
+      <title id="gs-land-title">What the guard suite scans</title>
+      <desc id="gs-land-desc">Specifications and schemas define conventions. Guard scripts scan either the workflows worktree — YAML and markdown grouped into loadability, technique shape, wiring, and workflow safety — or the documentation site for link and diagram integrity.</desc>
+      <defs>
+        <marker id="arrowgsland" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="14.5" font-weight="600" text-anchor="middle">
+        <rect x="310" y="18" width="340" height="48" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="480" y="40" fill="var(--diagram-label)">Specifications + schemas</text>
+        <text x="480" y="58" fill="var(--diagram-note)" font-size="12.5" font-weight="400">the rules guards encode</text>
+        <rect x="280" y="92" width="400" height="48" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="480" y="114" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">scripts/check-*.ts</text>
+        <text x="480" y="132" fill="var(--diagram-note)" font-size="12.5" font-weight="400">npm run check:&lt;name&gt;</text>
+        <rect x="30" y="168" width="450" height="132" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="255" y="192" fill="var(--diagram-label)">workflows worktree</text>
+        <text x="255" y="210" fill="var(--diagram-note)" font-size="12.5" font-weight="400">YAML + markdown</text>
+        <rect x="48" y="224" width="100" height="58" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="1.5"/>
+        <text x="98" y="248" fill="var(--diagram-label)" font-size="12.5">Load</text>
+        <text x="98" y="266" fill="var(--diagram-note)" font-size="11.5" font-weight="400">schema, refs</text>
+        <rect x="158" y="224" width="100" height="58" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="1.5"/>
+        <text x="208" y="248" fill="var(--diagram-label)" font-size="12.5">Techniques</text>
+        <text x="208" y="266" fill="var(--diagram-note)" font-size="11.5" font-weight="400">protocol shape</text>
+        <rect x="268" y="224" width="100" height="58" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="1.5"/>
+        <text x="318" y="248" fill="var(--diagram-label)" font-size="12.5">Wiring</text>
+        <text x="318" y="266" fill="var(--diagram-note)" font-size="11.5" font-weight="400">bindings, vars</text>
+        <rect x="378" y="224" width="88" height="58" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="1.5"/>
+        <text x="422" y="248" fill="var(--diagram-label)" font-size="12.5">Safety</text>
+        <text x="422" y="266" fill="var(--diagram-note)" font-size="11.5" font-weight="400">workflow rules</text>
+        <rect x="510" y="168" width="420" height="132" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="720" y="192" fill="var(--diagram-label)">documentation site</text>
+        <text x="720" y="210" fill="var(--diagram-note)" font-size="12.5" font-weight="400">hand-authored HTML + generated regions</text>
+        <rect x="540" y="232" width="160" height="52" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="1.5"/>
+        <text x="620" y="256" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13">check:site</text>
+        <text x="620" y="274" fill="var(--diagram-note)" font-size="11.5" font-weight="400">links, nav, anchors</text>
+        <rect x="720" y="232" width="160" height="52" rx="8" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="1.5"/>
+        <text x="800" y="256" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13">check:svg</text>
+        <text x="800" y="274" fill="var(--diagram-note)" font-size="11.5" font-weight="400">diagram layout</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
+        <line x1="480" y1="66" x2="480" y2="88" marker-end="url(#arrowgsland)"/>
+        <path d="M 480 140 L 480 152 L 255 152 L 255 164" marker-end="url(#arrowgsland)"/>
+        <path d="M 480 140 L 480 152 L 720 152 L 720 164" marker-end="url(#arrowgsland)"/>
+      </g>
+    </svg>
+    <figcaption>Guards mirror the specification model: corpus checks group around loadability, technique contracts, static wiring, and workflow-specific safety; site checks keep links and inline diagrams honest. Per-guard behaviour lives in the scripts and in the spec pages that name them — for example <a href="../specs/workflows.html">Workflows</a>, <a href="../specs/state-management.html">State</a>, <a href="../specs/resource-resolution.html">Resolution</a>, and <a href="../specs/workflow-fidelity.html">Fidelity</a>.</figcaption>
+  </figure>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 960 220" role="img" aria-labelledby="gs-run-title gs-run-desc">
+      <title id="gs-run-title">Where guards run</title>
+      <desc id="gs-run-desc">Three entry points invoke the same guard scripts: local npm run check commands during authoring, Vitest drift tests for a subset of corpus guards, and the deploy-docs GitHub Actions workflow for site changes.</desc>
+      <defs>
+        <marker id="arrowgsrun" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
+        </marker>
+      </defs>
+      <g font-size="14.5" font-weight="600" text-anchor="middle">
+        <rect x="40" y="24" width="250" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="165" y="48" fill="var(--diagram-label)">Workflow authoring</text>
+        <text x="165" y="68" fill="var(--diagram-note)" font-size="12.5" font-weight="400">npm run check:*</text>
+        <rect x="355" y="24" width="250" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="480" y="48" fill="var(--diagram-label)">npm test</text>
+        <text x="480" y="68" fill="var(--diagram-note)" font-size="12.5" font-weight="400">corpus guards as drift tests</text>
+        <rect x="670" y="24" width="250" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
+        <text x="795" y="48" fill="var(--diagram-label)">deploy-docs CI</text>
+        <text x="795" y="68" fill="var(--diagram-note)" font-size="12.5" font-weight="400">site guards + build:site</text>
+        <rect x="230" y="130" width="500" height="56" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
+        <text x="480" y="154" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="14">scripts/check-*.ts</text>
+        <text x="480" y="174" fill="var(--diagram-note)" font-size="12.5" font-weight="400">same scripts, reproducible exit codes</text>
+      </g>
+      <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
+        <path d="M 165 80 L 165 108 L 400 108 L 400 126" marker-end="url(#arrowgsrun)"/>
+        <line x1="480" y1="80" x2="480" y2="126" marker-end="url(#arrowgsrun)"/>
+        <path d="M 795 80 L 795 108 L 560 108 L 560 126" marker-end="url(#arrowgsrun)"/>
+      </g>
+    </svg>
+    <figcaption>Authors run guards locally while editing the <code>workflows</code> branch; Vitest mirrors key corpus checks so regressions fail <code>npm test</code>; the <a href="https://github.com/m2ux/workflow-server/blob/main/.github/workflows/deploy-docs.yml"><code>deploy-docs</code></a> workflow runs the site pipeline on documentation PRs.</figcaption>
+  </figure>
+
+  <p class="prose">Most guards are <strong>hard-zero</strong> — any finding fails the run. A few compare against a <strong>committed baseline</strong> of reviewed, pre-existing findings and fail only when the corpus grows beyond that snapshot; re-snapshot with <code>--update-baseline</code> after an intentional change. The full command list is in <a href="https://github.com/m2ux/workflow-server/blob/main/package.json"><code>package.json</code></a>.</p>
 
   <h2 id="tests">The test architecture</h2>
   <p>The Vitest suite (thirty-plus files) is organized around what could break:</p>
   <ul>
     <li><strong>Unit coverage of the machinery</strong> — schema validation and generation, every loader, and the session store's sharp edges: HMAC sealing, index derivation, collision handling, legacy-folder migration.</li>
-    <li><strong>Fidelity behaviour</strong> — the runtime validators, binding provenance, fetch observability, reference-not-repeat delivery, and trace-token signing, each tested as an observable contract rather than an implementation detail.</li>
+    <li><strong>Fidelity behaviour</strong> — the runtime validators, binding provenance, fetch observability (including <code>technique_bundled</code> coverage), reference-not-repeat delivery, and trace-token signing, each tested as an observable contract rather than an implementation detail.</li>
     <li><strong>End-to-end execution</strong> — <code>mcp-server.test.ts</code> drives real tool calls; a deterministic walker (<a href="https://github.com/m2ux/workflow-server/blob/main/tests/e2e/walker.ts"><code>tests/e2e/walker.ts</code></a>) enumerates every reachable path through every workflow definition and executes each one against the live server, so an unreachable activity or an impossible transition in <em>content</em> fails the <em>server's</em> test suite.</li>
     <li><strong>Documentation</strong> — <code>site.test.ts</code> runs the two site guards and the drift check described below, making stale documentation a red build.</li>
     <li><strong>Agent smoke runs</strong> — <a href="https://github.com/m2ux/workflow-server/blob/main/scripts/smoke/smoke-orchestrator.ts"><code>scripts/smoke/</code></a> drives a real agent through a workflow for the behaviour no deterministic walk can check: whether the instructions actually steer a model.</li>
   </ul>
 
   <h2 id="pipelines">Generated, then guarded</h2>
-  <p>Two artifacts are machine-derived from the source, and both are guarded against drift rather than trusted to stay fresh. The documentation site itself follows the same pattern — hand-authored pages with generated API regions — and <code>check-site-links</code> / <code>check-svg-layout</code> keep links and diagrams honest:</p>
+  <p>Two artifacts are machine-derived from the source, and both are guarded against drift rather than trusted to stay fresh. The documentation site itself follows the same pattern — hand-authored pages with generated API regions — and <code>check:site</code> / <code>check:svg</code> keep links and diagrams honest:</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 240" role="img" aria-labelledby="qp-title qp-desc">
