@@ -20,12 +20,21 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 | PL-4 | Plan & Prepare | Test Strategy | L | A parity test comparing the TS projection against `scripts/inspect_session.py` over a shared fixture is the right port-fidelity guard, and a formal test plan is warranted despite the additive-tool skip-conditions because read-only + child_index + parity need explicit coverage | Comprehension "portfolio-lens findings" names the parity test as the fidelity guard; success criteria require view-projection + read-only + gates-green evidence | Validated |
 | PL-5 | Plan & Prepare | Scope Decisions | L | Docs updates are limited to the two manual surfaces (README count/table line 40, `docs/api-reference.md`); site data auto-captures registration via `captureTools`, so no site-data edit is in scope | Verified: `README.md:40` "registers 16 MCP tools"; comprehension "Test and docs surfaces" documents `captureTools` auto-capture in `scripts/generate-site-data.ts:285` | Validated |
 | AR-1 | Assumptions Review | — | — | No significant assumptions (review pass over an already fully code-validated plan and two prior assumption batches — DP-1..DP-5, PL-1..PL-5 all validated/confirmed, none open; the review surfaces no new implicit decision) | — | Null |
+| IM-1 | Implement | Test Strategy | L | The plan's `run-tests` step binds `cargo-operations::test` (Rust), but #193 targets a TypeScript/Node project; the equivalent verification is `npm run typecheck` + `npm run build` + `npm test` | Code: `package.json` scripts (`typecheck`, `build`, `test` present; no Cargo.toml — TS project). All three ran green after implementation | Validated |
+| IM-2 | Implement | Test Strategy | L | The parity test (PR215-TC-08) may invoke `python3` at runtime; it skips gracefully when the interpreter is absent, with the TS-side per-view shape assertions (TC-01/02) as independent coverage | Code: `tests/mcp-server.test.ts` inspect_session block — `execFileSync('python3','--version')` guard returns early if unavailable; per-view `toEqual` assertions guard shape independently. Parity ran and passed locally (python3 3.13.7) | Validated |
+| IM-3 | Implement | Dependency Assumptions | L | The dedicated `workflows` worktree for T6 uses branch `workflow/193-inspect-session-notes` (off `workflows`) rather than the literal `workflows` branch, because `workflows` is already checked out in the main submodule (git permits one worktree per branch); this matches the established `workflow/<topic>` dedicated-worktree convention | Verified: `git worktree list` on the workflows submodule shows `workflows` occupied by the main checkout and all prior dedicated worktrees on `workflow/<topic>` branches; edits land in the new worktree only (4 files modified, none committed) | Validated |
+| IM-4 | Implement | Scope Decisions | M | Adding a tool requires updating the `TOOL_GROUPS` map in `scripts/generate-site-data.ts` and regenerating the committed `site/` pages — NOT auto-captured. The comprehension (T5) stated captureTools auto-captures with "no manual site-data edit needed", but a `renderToolsRegion` drift guard hard-fails `build:site` for any registered-but-ungrouped tool, and `tests/site.test.ts` asserts committed pages match | Code: `scripts/generate-site-data.ts:308` (`TOOL_GROUPS`), `:626-631` (drift guard throws on ungrouped tool); `tests/site.test.ts:12` (stale-page assertion). Resolved by adding `inspect_session` to the Session group + a guide entry and regenerating `site/api/tools.html` | Validated |
 
 ## Wrap-Up
 
-10 assumptions — all validated/confirmed, none open. The `child_index` consideration
+14 assumptions — all validated/confirmed, none open. The `child_index` consideration
 raised for plan-prepare is now settled (PL-1): `child_index` is root-relative one-level
 positional (reference-script semantics), coexisting with own-index resolution rather than
 aliasing it; the decision and its rejected alternative are recorded in
-[06-work-package-plan.md](06-work-package-plan.md). No stakeholder-dependent assumptions
-remain, so no assumption interview is required.
+[06-work-package-plan.md](06-work-package-plan.md). The four implement-phase assumptions
+(IM-1..IM-4) are all code-resolvable and validated: the Rust `run-tests` step was mapped to
+the TS `npm` equivalents, the parity test skips gracefully without python3, the T6
+dedicated worktree follows the `workflow/<topic>` convention, and adding the tool required a
+`TOOL_GROUPS` + regenerated-`site/` edit (IM-4) that the plan did not anticipate. Reconciliation converged
+immediately — no open (stakeholder-dependent) assumptions remain, so no assumption interview
+is required.
