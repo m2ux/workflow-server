@@ -199,13 +199,28 @@
     <figcaption><strong>Example:</strong> bare names resolve workflow-first with a <code>meta</code> fallback; nested segments address sub-techniques; a leading workflow segment reaches shared layers explicitly.</figcaption>
   </figure>
 
+  <h3 id="borrowed">Borrowed activities and source-workflow scoping</h3>
+  <p class="prose">A workflow may reuse an activity file authored in another workflow — a <strong>borrowed</strong> cross-workflow activity. Bare technique refs inside that activity (including activity-group shorthand like <code>activity-id::op</code>) resolve against the <strong>source workflow</strong> the activity file was authored in, not the borrowing session's workflow. Explicit <code>workflow::</code> prefixes still reach named workflows directly. The same scoping applies to checkpoint fragment refs and to binding-provenance producer scans on step-bound <code>get_technique</code> fetches. Non-borrowed activities keep source scope equal to the session workflow, so behaviour is unchanged outside the borrowed-activity case.</p>
+
+  <h2 id="fragments">Workflow fragments</h2>
+  <p class="prose">Beyond technique refs, a workflow can declare reusable content once under <code>fragments</code> in <code>workflow.yaml</code> and import it by reference:</p>
+  <ul class="prose">
+    <li><strong><code>fragments.rules</code></strong> — shared rule texts; rules slots accept either a rule string or <code>{ ref: "[workflow::]name" }</code></li>
+    <li><strong><code>fragments.checkpoints</code></strong> — shared checkpoint bodies (message, options, effects); a <code>kind:checkpoint</code> step imports one via <code>ref</code>, contributing its own site-local <code>id</code></li>
+  </ul>
+  <p class="prose">Resolution follows the same scoping as technique refs: <code>workflow::name</code> resolves only in that workflow's fragments; a bare <code>name</code> tries the declaring workflow first, then <code>meta</code>. Fragment bodies are plain content — a fragment cannot itself contain a reference. The loader materializes refs at load and delivery time, so agents always receive full content, never a ref to resolve. The <code>check:fragments</code> guard rejects inline copies that duplicate a declared fragment.</p>
+
   <h2 id="delivery">Delivery at workflow and activity granularity</h2>
   <p class="prose">Agents never chain resolution calls at runtime. The server pre-resolves reference lists into bundles when you call:</p>
   <ul class="prose">
     <li><code>get_workflow</code> — orchestrator bundle: workflow-declared refs plus core orchestrator techniques (engine traversal, checkpoints, dispatch, discipline)</li>
     <li><code>get_activity</code> — worker bundle: activity refs, inherited <code>techniques.activity</code> from the workflow, plus core worker techniques (yield/resume, finalize, conduct rules)</li>
   </ul>
-  <p class="prose">Each bundle groups resolved content into three buckets. When a single technique is delivered, ancestor <code>Initial</code> / <code>Final</code> protocol blocks wrap the technique body recursively and the server renumbers the combined sequence. In persistent-context mode, reference-not-repeat delivery replaces already-delivered content with <code>unchanged</code> hash markers; fetch recording warns when a manifested step was never loaded.</p>
+  <p class="prose">Each bundle groups resolved content into three buckets. When a single technique is delivered, ancestor <code>Initial</code> / <code>Final</code> protocol blocks wrap the technique body recursively and the server renumbers the combined sequence. In persistent-context mode, reference-not-repeat delivery replaces already-delivered content with <code>{ delivery: "unchanged", content_hash }</code> markers; fetch recording warns when a manifested step was never loaded.</p>
+
+  <h3 id="bundling">Eager step-technique bundling</h3>
+  <p class="prose">The lazy per-step model above is complemented by automatic eager bundling on every <code>get_activity</code> call. The worker passes <code>context_tokens</code> — its context window size in tokens — and the server derives a cumulative per-activity character budget:</p>
+  <p class="prose"><code>context_tokens × headroomFraction × charsPerToken</code> (defaults 0.80 × 4; env-overridable). Ungated step-bound techniques are inlined in document order under <code>step_techniques</code> until the budget would overflow; gated steps and per-activity <code>bundleTechniques.maxChars</code> oversize caps stay lazy. <code>maxChars: 0</code> opts the activity out entirely. Each inlined entry is byte-identical to a step-bound <code>get_technique</code> fetch, including provenance annotations; resources referenced inside inlined techniques are never inlined. Bundled steps are recorded as <code>technique_bundled</code> events and satisfy manifest fidelity checks. Protocol details are in <a href="../design/protocol.html#bundling">Protocol</a>.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 170" role="img" aria-labelledby="bundle-title bundle-desc">

@@ -125,6 +125,7 @@
     <li><strong>Activities</strong> — the phases the orchestrator can move between</li>
     <li><strong>Initial activity</strong> — where a new session begins</li>
     <li><strong>Rules and orchestrator techniques</strong> — behaviour that applies across the whole run</li>
+    <li><strong>Fragments</strong> — shared rule texts and checkpoint bodies, imported by <code>{ ref }</code> from rules slots and checkpoint steps (<a href="#fragments">see below</a>)</li>
   </ul>
   <p class="prose">When a session starts, the server reads this manifest. The first <a href="../api/tools.html#get_workflow"><code>get_workflow</code></a> call returns:</p>
   <ul class="prose">
@@ -218,8 +219,14 @@
   <p class="prose">Only one activity is current at a time. Two roles split the work:</p>
   <ul class="prose">
     <li><strong>Orchestrator</strong> — calls <a href="../api/tools.html#next_activity"><code>next_activity</code></a> to move between phases</li>
-    <li><strong>Worker</strong> — calls <a href="../api/tools.html#get_activity"><code>get_activity</code></a> to load the step list (and may receive bundled techniques up front)</li>
+    <li><strong>Worker</strong> — calls <a href="../api/tools.html#get_activity"><code>get_activity</code></a> with <code>context_tokens</code> to load the step list and receive eagerly bundled step techniques that fit the derived budget</li>
   </ul>
+
+  <h3 id="borrowed">Borrowed activities</h3>
+  <p class="prose">An activity file can be listed in more than one workflow — the borrowing workflow runs the phase, but the activity file's technique refs resolve against the workflow it was <strong>authored in</strong>. This mirrors fragment scoping: a borrowed activity's bare refs, checkpoint fragment refs, and binding-provenance scans all use the source workflow, not the session workflow. See <a href="./resource-resolution.html#borrowed">Resolution — borrowed activities</a>.</p>
+
+  <h3 id="fragments">Shared fragments</h3>
+  <p class="prose">Rule texts and checkpoint bodies reused at several sites are declared once under <code>fragments</code> in <code>workflow.yaml</code> and imported by <code>{ ref: "[workflow::]name" }</code>. Rules slots and <code>kind:checkpoint</code> steps carry the ref; the server materializes the body before delivery, so agents always see full content. A ref-form checkpoint step carries only its site-local <code>id</code> and, when the fragment declares none, a <code>condition</code> — body fields like <code>message</code> and <code>options</code> are forbidden locally. Details are in <a href="./resource-resolution.html#fragments">Resolution — workflow fragments</a> and <a href="./checkpoints.html#fragments">Checkpoints — shared checkpoints</a>.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 260" role="img" aria-labelledby="act-title act-desc">

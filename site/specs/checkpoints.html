@@ -192,6 +192,9 @@
   <h2 id="resume">Resuming</h2>
   <p>Agents wake in reverse order using the host's resume mechanism, with effects passed down as plain instructions. Before the worker can touch regular tools again it must call <a href="../api/tools.html#resume_checkpoint"><code>resume_checkpoint</code></a> — a hard gate that verifies the checkpoint really was resolved and hands back the recorded variable updates. In inline (single-agent) execution the wake is a no-op persona switch; the server-side gates are identical.</p>
 
+  <h2 id="fragments">Shared checkpoint fragments</h2>
+  <p class="prose">A checkpoint reused at several sites is declared once as a <strong>checkpoint fragment</strong> under <code>fragments.checkpoints</code> in the owning workflow's <code>workflow.yaml</code>. Each use site is a <code>kind:checkpoint</code> step carrying only its site-local <code>id</code> and <code>ref: [workflow::]name</code> — plus a <code>condition</code> when the fragment declares none. The loader materializes the fragment body into the step before delivery, so yield, present, respond, and every downstream consumer see an ordinary full checkpoint. The <code>check:fragments</code> guard rejects an inline body that duplicates a declared fragment.</p>
+
   <h2 id="why">Why this design</h2>
   <ul>
     <li><strong>Pause and presentation are separate</strong> — the worker records the pause with <code>yield_checkpoint</code> and steps aside; the user-facing agent later presents and responds. Nothing advances past an unresolved checkpoint, wherever it was raised.</li>
