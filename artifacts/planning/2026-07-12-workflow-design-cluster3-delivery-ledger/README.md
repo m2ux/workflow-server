@@ -55,9 +55,9 @@ Resolved under delegated authority (see [03-assumptions-log.md](03-assumptions-l
 | 05 | Impact Analysis | ✅ Complete |
 | 06 | Scope and Draft (design spec) | ✅ Complete |
 | 08 | Quality Review | ✅ Complete |
-| 09 | Validate and Commit | ◐ In Progress |
-| 10 | Post-Update Review | ⬚ Pending |
-| 11 | Retrospective | ⬚ Pending |
+| 09 | Validate and Commit | ✅ Complete |
+| 10 | Post-Update Review | ✅ Complete |
+| 11 | Retrospective | ✅ Complete |
 
 ---
 
@@ -72,4 +72,4 @@ Resolved under delegated authority (see [03-assumptions-log.md](03-assumptions-l
 
 ---
 
-**Status:** Planning
+**Status:** Complete — design spec approved & committed (`51768097`); implementation to follow as a separate server PR.
