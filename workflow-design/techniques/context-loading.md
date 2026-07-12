@@ -16,8 +16,8 @@ Internalize the schema system and YAML-format conventions before drafting: load 
 
 ### 2. Survey References
 
-- Call `list_workflows` and `get_workflow` for 2+ reference workflows of similar type as the pattern baseline
-- Read existing YAML files (workflow / activity / technique) to ground YAML syntax understanding: key-value pairs, `[N]` array suffixes, nested objects, inline `{}` shorthand
+- Refresh the workflow catalog via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) and survey 2+ reference workflows of similar type — sourcing their definitions from the workflow-server context the orchestrator supplies — as the pattern baseline (the executing worker does not call `get_workflow` directly)
+- Read existing YAML files (workflow / activity / technique) to ground YAML syntax understanding: block mappings (`key: value`), block sequences (`-`-prefixed items), nested indentation, and scalar quoting
 
 ### 3. Identify Constructs
 

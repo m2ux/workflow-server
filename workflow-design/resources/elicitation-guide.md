@@ -7,7 +7,7 @@ metadata:
 
 # Elicitation Guide
 
-**Purpose:** A question bank for the guided, one-dimension-at-a-time elicitation in requirements-refinement — the workflow-design counterpart of the work-package [requirements-elicitation](../../work-package/resources/requirements-elicitation.md) guide. The `elicitation` technique poses questions from the dimension currently being elicited; the activity confirms each dimension before moving to the next.
+**Purpose:** A question bank for the guided, one-dimension-at-a-time elicitation in requirements-refinement — the workflow-design counterpart of the work-package [requirements-elicitation](../../work-package/resources/requirements-elicitation.md) guide. Each dimension is elicited from its question bank below and confirmed before moving to the next.
 
 Conversation, not interrogation: ask what you need to capture the dimension, skip follow-ups the user's answer already settles, and present the accumulated design after each answer.
 

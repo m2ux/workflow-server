@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.5.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits an existing workflow against the 15 design principles and produces a compliance report.
+> v1.7.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits an existing workflow against the 15 design principles and produces a compliance report.
 
 ---
 
@@ -87,10 +87,10 @@ Review mode audits an existing workflow against:
 1. **Schema expressiveness** — flags prose that should be formal constructs
 2. **Convention conformance** — checks naming, structure, and field ordering
 3. **Rule-to-structure enforcement** — identifies critical rules lacking structural backing
-4. **Anti-pattern scan** — checks all 64 prohibited patterns
+4. **Anti-pattern scan** — checks all 82 prohibited patterns
 5. **Schema validation** — validates every YAML file
 
-The output is a severity-rated compliance report saved to `.engineering/artifacts/reviews/`. After review, the user can opt to fix issues (transitions to update mode) or accept the report as-is.
+The output is a severity-rated compliance report saved to the session's planning folder. After review, the user can opt to fix issues (transitions to update mode) or accept the report as-is.
 
 ---
 
@@ -114,23 +114,26 @@ This workflow encodes 15 design principles derived from analysis of 175+ histori
 | 12 | Non-destructive updates | [Scope and Draft](./activities/README.md#05-scope-and-draft) `preservation-check` checkpoint (update mode) |
 | 13 | Format literacy before content | [Intake and Context](./activities/README.md#01-intake-and-context) `format-literacy` checkpoint |
 | 14 | Complete documentation structure | [Validate and Commit](./activities/README.md#07-validate-and-commit) README generation/update |
+| 15 | Output economy | Single terminal `COMPLETE.md`; single-row logs; no vestigial marker steps |
 
 ---
 
 ## Techniques
 
-The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) shared base contract inherited by all of them. Each activity step binds exactly one operation via `step.technique`. The cross-cutting meta [`variable-binding`](../meta/techniques/variable-binding.md) strategy technique is declared once at `workflow.techniques.activity` and inherited by every activity (injected into every `get_activity`), and commits go through meta [`version-control::commit-regular-files`](../meta/techniques/version-control/commit-regular-files.md). Planning-folder artifacts are managed cross-workflow through [`work-package::manage-artifacts`](../work-package/techniques/manage-artifacts/TECHNIQUE.md) — `create-readme` (seed the planning README at intake), `write-artifact` (numbered report artifacts), and `verify-readme-conforms` (drift check before commit). The design-assumption lifecycle reuses [`work-package::review-assumptions`](../work-package/techniques/review-assumptions/TECHNIQUE.md) cross-workflow (`collect`, `interview`, `record`), with a workflow-local `reconcile-design-assumptions` (audit-backed) in place of work-package's code-analysis reconcile, and the retrospective reuses `work-package::conduct-retrospective::retrospective`.
+The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) shared base contract inherited by all of them. Each activity step binds exactly one operation via `step.technique`. The cross-cutting meta [`variable-binding`](../meta/techniques/variable-binding.md) strategy technique is declared once at `workflow.techniques.activity` and inherited by every activity (injected into every `get_activity`), and commits go through meta [`version-control::commit-regular-files`](../meta/techniques/version-control/commit-regular-files.md). Planning-folder artifacts are managed cross-workflow through [`work-package::manage-artifacts`](../work-package/techniques/manage-artifacts/TECHNIQUE.md) — `create-readme` (seed the planning README at intake), `write-artifact` (numbered report artifacts), and `verify-readme-conforms` (drift check before commit). The design-assumption lifecycle reuses [`work-package::review-assumptions`](../work-package/techniques/review-assumptions/TECHNIQUE.md) cross-workflow (`collect`, `interview`, `record`), with a workflow-local `reconcile-design-assumptions` (audit-backed) in place of work-package's code-analysis reconcile, and a workflow-local `conduct-retrospective` for the session retrospective.
 
 | Technique | Capability | Bound by |
 |-----------|------------|----------|
 | [`intake-classification`](./techniques/intake-classification.md) | Classify the request as create/update/review and set mode + target | Intake and Context |
 | [`context-loading`](./techniques/context-loading.md) | Load schemas and survey existing workflows to internalize conventions | Intake and Context |
+| [`derive-design-dimensions`](./techniques/derive-design-dimensions.md) | Derive the ordered design dimensions to elicit, per mode | Requirements Refinement |
 | [`elicitation`](./techniques/elicitation.md) | Elicit a single design dimension — the per-iteration unit of the dimension-elicitation loop | Requirements Refinement |
 | [`reconcile-design-assumptions`](./techniques/reconcile-design-assumptions.md) | Autonomously resolve audit-resolvable design assumptions, leaving only genuine judgements open | Requirements Refinement |
 | [`pattern-analysis`](./techniques/pattern-analysis.md) | Extract reusable structural and content patterns from reference workflows | Pattern Analysis |
 | [`impact-analysis`](./techniques/impact-analysis.md) | Assess change impact on files, transitions, and references | Impact Analysis |
 | [`scope-definition`](./techniques/scope-definition.md) | Enumerate the complete file manifest and structural design | Scope and Draft |
-| [`content-drafting`](./techniques/content-drafting.md) | Present per-file approach and drafted content for review | Scope and Draft |
+| [`present-file-approach`](./techniques/present-file-approach.md) | Present the per-file drafting approach before a file is written | Scope and Draft |
+| [`present-for-review`](./techniques/present-for-review.md) | Present a drafted file for review and surface any unflagged removals | Scope and Draft |
 | [`yaml-authoring`](./techniques/yaml-authoring.md) | Author syntactically valid YAML files that pass schema validation | Scope and Draft |
 | [`audit-expressiveness`](./techniques/audit-expressiveness.md) | Flag prose that maps to formal schema constructs | Quality Review |
 | [`audit-conformance`](./techniques/audit-conformance.md) | Check convention conformance against reference workflows | Quality Review |
@@ -161,18 +164,18 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 
 ## Resources
 
-| Order | Resource | Purpose | Used By |
-|---|----------|---------|---------|
-| 00 | [Design Principles](./resources/design-principles.md) | Condensed reference of all 15 principles | All activities |
-| 01 | [Schema Construct Inventory](./resources/schema-construct-inventory.md) | Prose-to-formal construct mapping tables | Quality Review, Scope and Draft |
-| 02 | [Anti-Patterns](./resources/anti-patterns.md) | 64 prohibited patterns by category | Quality Review, Review Mode |
-| 03 | [Update Mode Guide](./resources/update-mode-guide.md) | Content preservation and impact analysis procedures | Update mode activities |
-| 04 | [Review Mode Guide](./resources/review-mode-guide.md) | Compliance audit procedure and report structure | Review mode activities |
-| 05 | [Design Context README](./resources/design-context-readme.md) | Planning-folder README template seeded at intake | Intake and Context, Validate and Commit |
-| 06 | [Completion Artifact](./resources/completion-artifact.md) | `COMPLETE.md` completion-summary template | Retrospective |
-| 07 | [Design Assumptions](./resources/design-assumptions.md) | Assumption categories + log template for the design-assumption lifecycle | Requirements Refinement |
-| 08 | [Design Assumption Reconciliation](./resources/design-assumption-reconciliation.md) | How audit passes reconcile design assumptions (vs code analysis) | Requirements Refinement |
-| 09 | [Elicitation Guide](./resources/elicitation-guide.md) | Per-dimension question bank for one-dimension-at-a-time elicitation | Requirements Refinement |
+| Order | Resource | Purpose |
+|---|----------|---------|
+| 00 | [Design Principles](./resources/design-principles.md) | Condensed reference of all 15 principles |
+| 01 | [Schema Construct Inventory](./resources/schema-construct-inventory.md) | Prose-to-formal construct mapping tables |
+| 02 | [Anti-Patterns](./resources/anti-patterns.md) | 82 prohibited patterns by category |
+| 03 | [Update Mode Guide](./resources/update-mode-guide.md) | Update-mode activation and key differences from create mode |
+| 04 | [Review Mode Guide](./resources/review-mode-guide.md) | Compliance audit procedure and report structure |
+| 05 | [Design Context README](./resources/design-context-readme.md) | Planning-folder README template seeded at intake |
+| 06 | [Completion Artifact](./resources/completion-artifact.md) | `COMPLETE.md` completion-summary template |
+| 07 | [Design Assumptions](./resources/design-assumptions.md) | Assumption categories + log template for the design-assumption lifecycle |
+| 08 | [Design Assumption Reconciliation](./resources/design-assumption-reconciliation.md) | How audit passes reconcile design assumptions (vs code analysis) |
+| 09 | [Elicitation Guide](./resources/elicitation-guide.md) | Per-dimension question bank for one-dimension-at-a-time elicitation |
 
 ---
 
@@ -211,11 +214,13 @@ workflows/workflow-design/
 │   ├── TECHNIQUE.md                      # Workflow-root base contract (inherited by all techniques)
 │   ├── intake-classification.md
 │   ├── context-loading.md
+│   ├── derive-design-dimensions.md
 │   ├── elicitation.md
 │   ├── pattern-analysis.md
 │   ├── impact-analysis.md
 │   ├── scope-definition.md
-│   ├── content-drafting.md
+│   ├── present-file-approach.md
+│   ├── present-for-review.md
 │   ├── yaml-authoring.md
 │   ├── scope-verification.md
 │   ├── readme-authoring.md
@@ -246,7 +251,7 @@ workflows/workflow-design/
     ├── README.md                         # Resource index
     ├── design-principles.md              # 15 principles reference
     ├── schema-construct-inventory.md     # Construct mapping tables
-    ├── anti-patterns.md                  # 64 anti-patterns
+    ├── anti-patterns.md                  # 82 anti-patterns
     ├── update-mode-guide.md              # Update mode guide
     ├── review-mode-guide.md              # Review mode guide
     ├── design-context-readme.md          # Planning-folder README template

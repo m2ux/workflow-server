@@ -5,23 +5,43 @@ metadata:
 
 ## Capability
 
-Assess the impact of proposed changes against an existing workflow: enumerate its files, classify each file's impact, verify transition-chain and reference integrity, and flag content being removed for explicit confirmation.
+Assess the impact of proposed changes against an existing workflow: enumerate its files, classify each file's impact, verify transition-chain, reference, and variable integrity, and flag content being removed for explicit confirmation.
 
 ## Protocol
 
 ### 1. Enumerate Files
 
-- Build a full inventory of the target workflow's files (`workflow.yaml`, activities, techniques, resources, `README.md`) with paths and purposes
+- Build a full inventory of the target workflow's files with paths and purposes: `workflow.yaml` (root definition), `activities/*.yaml`, `techniques/*.md` (`<slug>.md` standalone, `<group>/TECHNIQUE.md` container base contracts, `<group>/<sub>.md` nested), `resources/*.md`, and `README.md`
 
 ### 2. Classify Impact
 
-- Classify each file as unaffected, directly modified, indirectly affected, or removed, with justification
+- Classify each file as unaffected, directly modified (the change explicitly affects it), indirectly affected (a side-effect such as a broken transition chain), or removed (the change makes it obsolete), with justification
 
-### 3. Check Integrity
+### 3. Check Transition Integrity
 
-- Verify transition-chain integrity across added/removed/reordered activities, reporting any broken `to` references
-- Verify reference integrity for technique (primary/supporting) and resource references, reporting any orphaned references
+- When activities are added, removed, or reordered: verify every `transitions[].to` references an existing activity id, verify `initialActivity` still references a valid activity, and check that no activity becomes unreachable (no incoming transitions)
 
-### 4. Flag Removals
+### 4. Check Reference Integrity
+
+- Verify all `techniques[]` references (`::`-path / slug) resolve to existing technique `.md` files
+- Verify all resource references resolve to existing resource files
+
+### 5. Check Variable Integrity
+
+- Verify all `condition.variable` references in transitions, decisions, step gates (`when`/`condition`), and `kind: loop` steps resolve to defined workflow variables
+- Verify all `effect.setVariable` keys in `kind: checkpoint` steps resolve to defined variables
+- Check for orphaned variables (defined but never referenced)
+
+### 6. Flag Removals
 
 - Inventory the material being removed across modified files (diff-based) and surface it for explicit user confirmation
+
+## Rules
+
+### content-preservation
+
+Before modifying any file, compare the planned changes against the existing content and identify material being removed. Flag every removal for explicit confirmation with a diff-style view of what changes and what is preserved — never silently remove content. Prefer additive changes; a modification that reduces a file (fewer lines, removed sections, dropped fields) requires the user to confirm each removal.
+
+### side-effect-detection
+
+Trace the side-effects each change class implies: adding an activity may need new upstream transitions, techniques, or resources; removing one breaks incoming transitions and may orphan techniques; renaming an activity id breaks all transition references and `initialActivity`; adding a checkpoint may need new variables; modifying checkpoint options may invalidate downstream conditions; adding or removing a mode affects the mode variable and every gate that branches on it; changing a variable's type affects all conditions comparing it.

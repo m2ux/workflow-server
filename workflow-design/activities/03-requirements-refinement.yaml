@@ -1,14 +1,10 @@
 id: requirements-refinement
 version: 1.4.0
 name: Requirements Refinement
-description: Guided elicitation of the workflow specification across its design dimensions, then surfacing, reconciling, and reviewing the design assumptions the specification rests on.
+description: A confirmed workflow specification across its design dimensions, with the design assumptions it rests on surfaced, reconciled, and reviewed.
 required: true
 techniques:
   - scatter-gather
-rules:
-  - One question at a time — present each checkpoint independently and wait for the response before proceeding
-  - Show what was captured so far before asking the next question
-  - Do not assume answers — if the user's description is ambiguous, ask for clarification
 steps:
   - kind: checkpoint
     id: design-context
@@ -20,18 +16,12 @@ steps:
       - id: provide-context
         label: Provide design context
         description: Capture reference workflows, integration points, and operators before elicitation.
-        effect:
-          setVariable:
-            has_design_context: true
       - id: skip-context
         label: Skip — proceed to elicitation
         description: Proceed without additional design context (default — auto-skips after 30s).
-  - kind: action
+  - kind: technique
     id: set-design-dimensions
-    actions:
-      - action: set
-        target: design_dimensions
-        message: "Set the ordered design dimensions to elicit. Create mode: purpose, activity list, activity model, checkpoints, artifacts, variables, techniques, rules. Update mode: purpose, activity list, checkpoints, artifacts, rules."
+    technique: derive-design-dimensions
   - kind: loop
     id: dimension-elicitation-loop
     name: Dimension Elicitation Loop
@@ -54,12 +44,6 @@ steps:
           - id: refine
             label: Needs changes
             description: This dimension requires additions, removals, or modifications.
-  - kind: action
-    id: confirm-requirements
-    actions:
-      - action: set
-        target: requirements_confirmed
-        value: true
   - kind: technique
     id: collect-assumptions
     technique:
@@ -77,12 +61,17 @@ steps:
     variable: current_assumption
     over: open_assumptions
     maxIterations: 20
+    condition:
+      type: simple
+      variable: has_open_assumptions
+      operator: ==
+      value: true
     steps:
       - kind: technique
         id: present-assumption
         technique: work-package::review-assumptions::interview
       - kind: checkpoint
-        id: assumption-decision#{current_assumption.id}
+        id: assumption-decision
         message: "Assumption {current_assumption.id}: {current_assumption.statement}"
         blocking: true
         options:
@@ -95,9 +84,6 @@ steps:
           - id: defer
             label: Defer
             description: Not enough information to decide now — revisit later.
-            effect:
-              setVariable:
-                has_deferred_assumptions: true
       - kind: technique
         id: record-decision
         technique: work-package::review-assumptions::record

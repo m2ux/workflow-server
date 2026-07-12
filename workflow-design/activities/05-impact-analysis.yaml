@@ -3,9 +3,6 @@ version: 1.2.0
 name: Impact Analysis
 description: Impact assessment of proposed changes against an existing workflow's files, transitions, and references.
 required: false
-rules:
-  - Every file in the existing workflow must be examined for potential impact
-  - Content being removed must be explicitly flagged and confirmed
 steps:
   - kind: action
     id: verify-preconditions

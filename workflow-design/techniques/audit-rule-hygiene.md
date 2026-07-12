@@ -7,6 +7,12 @@ metadata:
 
 Audit `rules[]` across the workflow, activities, and techniques for hygiene: protocol restatement, sibling contradictions, cross-level duplication (with the worker-visibility carve-out), flat prefix patterns, ambiguity, and single-step rules (AP-24 through AP-29).
 
+## Outputs
+
+### rule_hygiene_finding_count
+
+Count of rule-hygiene findings — each a flagged rule with its file, rule key, the hygiene class (restatement, contradiction, cross-level duplication, prefix pattern, ambiguity, single-step), and the recommended action. Interpolated into the rule-hygiene-confirmed checkpoint message.
+
 ## Protocol
 
 ### 1. Audit Rule Hygiene

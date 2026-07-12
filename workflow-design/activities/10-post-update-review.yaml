@@ -3,9 +3,6 @@ version: 1.4.0
 name: Post-Update Review
 description: Post-commit compliance audit of the updated workflow against design principles and anti-patterns.
 required: true
-rules:
-  - Load the updated workflow from the workflow-server, not from cached data — the audit must verify the committed state
-  - Produce a severity-rated findings summary; do not repeat the full compliance report structure unless findings exist
 steps:
   - kind: technique
     id: reload-updated-workflow

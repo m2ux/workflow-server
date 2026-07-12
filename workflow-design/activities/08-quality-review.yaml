@@ -3,11 +3,6 @@ version: 1.5.0
 name: Quality Review
 description: Quality review of drafted workflow content.
 required: true
-rules:
-  - Each review pass is independent — complete one pass fully before starting the next
-  - Flag every instance of prose that maps to a formal schema construct
-  - Flag every rule that can be violated by ignoring it and lacks structural enforcement
-  - High findings must be independently verified before they drive remediation
 steps:
   - kind: technique
     id: load-all-workflow-files
@@ -50,6 +45,14 @@ steps:
       operator: ==
       value: true
   - kind: technique
+    id: verify-high-findings-review
+    technique: verify-high-findings
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: ==
+      value: true
+  - kind: technique
     id: compile-report
     technique: compile-report
     condition:
@@ -57,14 +60,6 @@ steps:
       variable: is_review_mode
       operator: ==
       value: true
-  - kind: action
-    id: offer-fixes
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
-    actions: []
   - kind: checkpoint
     id: review-disposition
     condition:
@@ -79,22 +74,17 @@ steps:
         description: Switch to update mode and apply recommended fixes
         effect:
           setVariable:
-            user_wants_fixes: true
             is_update_mode: true
             is_review_mode: false
           transitionTo: intake-and-context
       - id: report-only
         label: Report only — no changes
         description: Save the compliance report without making changes
-        effect:
-          setVariable:
-            user_wants_fixes: false
       - id: selective-fixes
         label: Selective fixes
         description: Choose which findings to fix
         effect:
           setVariable:
-            user_wants_fixes: true
             is_update_mode: true
             is_review_mode: false
           transitionTo: intake-and-context
@@ -102,17 +92,29 @@ steps:
     id: audit-expressiveness
     technique: audit-expressiveness
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
   - kind: checkpoint
     id: expressiveness-confirmed
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
     message: Schema expressiveness review complete. {expressiveness_finding_count} findings. Accepting in 30s unless you intervene.
     blocking: false
     defaultOption: confirmed
@@ -128,17 +130,29 @@ steps:
     id: audit-conformance
     technique: audit-conformance
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
   - kind: checkpoint
     id: conformance-confirmed
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
     message: Convention conformance review complete. {conformance_finding_count} divergences found. Accepting in 30s unless you intervene.
     blocking: false
     defaultOption: accept-as-is
@@ -157,17 +171,29 @@ steps:
     id: audit-rule-hygiene
     technique: audit-rule-hygiene
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
   - kind: checkpoint
     id: rule-hygiene-confirmed
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
     message: Rule hygiene audit complete. {rule_hygiene_finding_count} findings (restatements, contradictions, duplications, prefix patterns). Accepting in 30s unless you intervene.
     blocking: false
     defaultOption: fix-all
@@ -183,17 +209,29 @@ steps:
     id: audit-rule-enforcement
     technique: audit-rule-enforcement
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
   - kind: checkpoint
     id: enforcement-confirmed
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
     message: Rule-to-structure audit complete. {enforcement_finding_count} text-only rules found. Adding structural enforcement in 30s unless you elect to keep them as text-only guidance.
     blocking: false
     defaultOption: add-enforcement
@@ -212,17 +250,29 @@ steps:
     id: verify-high-findings
     technique: verify-high-findings
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
   - kind: action
     id: classify-audit-findings
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
     actions:
       - action: set
         target: needs_audit_fixes

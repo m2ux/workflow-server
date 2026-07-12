@@ -1,11 +1,8 @@
 id: retrospective
 version: 1.0.0
 name: Retrospective
-description: Terminal activity — record a completion summary (create/update) and conduct a session retrospective to capture lessons before the workflow ends.
+description: A recorded completion summary (create/update) and a session retrospective capturing lessons before the workflow ends.
 required: true
-rules:
-  - Skip the retrospective for a trivial session — only prompted responses, with no clarifications, corrections, or process questions
-  - Session history is private and is never committed to the repository
 steps:
   - kind: technique
     id: create-completion-doc

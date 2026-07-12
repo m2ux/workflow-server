@@ -7,6 +7,12 @@ metadata:
 
 Compile a severity-rated summary of post-update audit findings — a clean pass when there are none, per-finding file/location/severity/fix when there are — and present pass/fail counts by severity alongside any new findings introduced by the update.
 
+## Outputs
+
+### review_findings_count
+
+Total number of findings in the post-update summary. Interpolated into the post-update-disposition checkpoint message.
+
 ## Protocol
 
 ### 1. Compile Summary

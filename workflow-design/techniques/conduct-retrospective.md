@@ -28,7 +28,7 @@ COMPLETE.md
 - Count total user messages; separate prompted checkpoint responses from substantive interactions (clarifications, corrections, process questions, frustration signals, feature requests, skip requests)
 - Categorize the substantive messages by signal type and map each to the specific workflow section it implicates
 - Identify root causes, determine pattern frequency, and formulate prioritized recommendations: high (repeated corrections, frustration), medium (single clarifications), low (edge cases)
-- Write the `{retrospective_document}` as the `## Workflow Retrospective` section of `COMPLETE.md` (update in place — the close-out document is the single terminal artifact) using the [workflow-retrospective](../../work-package/resources/workflow-retrospective.md#output-section-template) section template — omit the PR reference and report activities as a count out of the design workflow's activities — via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md). Include only the signal categories that have content.
+- Write the `{retrospective_document}` as the `## Workflow Retrospective` section of the close-out document (update in place — it is the single terminal artifact) using the [workflow-retrospective](../../work-package/resources/workflow-retrospective.md#output-section-template) section template — omit the PR reference and report activities as a count out of the design workflow's activities — via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md). Include only the signal categories that have content.
 
 ## Rules
 

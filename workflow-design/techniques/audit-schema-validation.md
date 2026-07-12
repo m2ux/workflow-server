@@ -7,6 +7,16 @@ metadata:
 
 Validate every YAML file in a workflow against its JSON schema and confirm every reference resolves through the loader, recording per-file pass/fail with the validator's message and resolving failures before proceeding.
 
+## Outputs
+
+### pass_count
+
+Count of YAML files that passed schema validation. Interpolated into the validation-passed checkpoint message.
+
+### fail_count
+
+Count of YAML files that failed schema validation. Interpolated into the validation-passed checkpoint message.
+
 ## Protocol
 
 ### 1. Run Schema Validation

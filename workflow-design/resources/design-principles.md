@@ -24,7 +24,7 @@ Condensed, agent-executable reference of the 15 design principles governing work
 
 **Rule:** Enumerate every file to create, modify, or remove before starting. Include the workflows worktree. Re-verify after completion.
 
-**Enforcement:** `scope-and-draft` activity with `scope-and-structure-confirmed` checkpoint. `scope_manifest_confirmed` variable gates the transition to content drafting.
+**Enforcement:** `scope-and-draft` activity with `scope-and-structure-confirmed` checkpoint. The `scope_manifest_confirmed` variable gates the `file-drafting-loop` (the loop runs only once the manifest is confirmed).
 
 ## 3. One Question at a Time
 

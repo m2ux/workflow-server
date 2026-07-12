@@ -33,7 +33,7 @@ One `.yaml` file per activity with steps, checkpoints, transitions
 
 #### technique_files
 
-One `.yaml` file per technique with protocol, inputs, outputs, rules
+One `.md` file per technique with capability, protocol, inputs, outputs, rules
 
 #### resource_files
 
@@ -55,4 +55,4 @@ Load each entry in a technique's referenced resources via `get_resource` after `
 
 ### tool-usage
 
-`list_workflows` requires no params and no session token
+`list_workflows` requires no params and no `session_index`

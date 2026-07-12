@@ -7,7 +7,7 @@ metadata:
 
 # Design Session README Guide
 
-**Purpose:** Guidelines for creating the `README.md` entry-point document for a workflow-design session's planning folder. It is the workflow-design counterpart of the work-package [readme](../../work-package/resources/readme.md) guide, consumed by [`work-package::manage-artifacts::create-readme`](../../work-package/techniques/manage-artifacts/create-readme.md) when this workflow seeds its planning folder.
+**Purpose:** Guidelines for creating the `README.md` entry-point document for a workflow-design session's planning folder. It is the workflow-design counterpart of the work-package [readme](../../work-package/resources/readme.md) guide.
 
 ---
 
@@ -67,6 +67,7 @@ The `README.md` is the entry point and executive summary for a workflow-design s
 | 08 | Quality Review | All | ⬚ Pending |
 | 09 | Validate and Commit | All | ⬚ Pending |
 | 10 | Post-Update Review | Update | ⬚ Pending |
+| 11 | Retrospective | Create, Update | ⬚ Pending |
 
 ---
 
@@ -105,7 +106,7 @@ Capture the non-obvious design choices and their rationale as they are confirmed
 
 ### Compliance Findings
 
-Populated by the quality-review (create/update) and post-update-review (update) activities. Use the severity ordering Critical → High → Medium → Low → Nit, one row per finding. Leave the single "None yet" row until findings exist.
+Populated by the quality-review (create/update) and post-update-review (update) activities. Use the severity ordering Critical → High → Medium → Low, one row per finding. Leave the single "None yet" row until findings exist.
 
 ### Scope Manifest
 
