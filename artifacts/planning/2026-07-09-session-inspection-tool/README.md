@@ -1,6 +1,6 @@
 # Session Inspection Tool - July 2026
 
-> Feature · Created 2026-07-11 · **Status:** Plan approved — ready for implementation
+> Feature · Created 2026-07-11 · **Status:** Assumptions reviewed (none open) — ready for implementation
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
