@@ -13,6 +13,8 @@ Usage:
           | history | children
 
 Targets the root session by default; --child N targets triggeredWorkflows[N].state.
+Under --child N, `children` follows the ADDRESSED (descended) session — it lists
+that child's own triggeredWorkflows, not the root's.
 """
 
 import argparse
@@ -80,9 +82,15 @@ def history(s):
     return {"count": len(events), "byType": dict(tally), "milestones": milestones}
 
 
-def children(doc):
+def children(s):
+    """One-line digest per triggeredWorkflows entry of the ADDRESSED session.
+
+    Operates on the resolved session `s`, so under --child N it lists that
+    child's own triggeredWorkflows — matching the tool's addressed-session
+    semantics — rather than the root document's.
+    """
     out = []
-    for i, c in enumerate(doc.get("triggeredWorkflows") or []):
+    for i, c in enumerate(s.get("triggeredWorkflows") or []):
         st = c.get("state") or {}
         out.append({
             "index": i,
@@ -95,14 +103,14 @@ def children(doc):
     return out
 
 
-def summary(doc, s):
+def summary(s):
     return {
         "identity": identity(s),
         "activities": activities(s),
         "variables": s.get("variables") or {},
         "checkpoints": checkpoints(s),
         "history": history(s),
-        "children": children(doc),
+        "children": children(s),
     }
 
 
@@ -129,9 +137,9 @@ def main():
     elif args.view == "history":
         result = history(s)
     elif args.view == "children":
-        result = children(doc)
+        result = children(s)
     elif args.view == "summary":
-        result = summary(doc, s)
+        result = summary(s)
     else:
         sys.exit(f"unknown view: {args.view}")
 

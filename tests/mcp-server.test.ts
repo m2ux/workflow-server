@@ -2315,7 +2315,39 @@ describe('mcp-server integration', () => {
             checkpointResponses: {},
             history: [{ timestamp: '2026-07-11T10:40:00.000Z', type: 'workflow_started' }],
             status: 'running' as const,
-            triggeredWorkflows: [],
+            // The child carries its OWN triggeredWorkflows (a grandchild), so a
+            // `children`/`summary` projection under child_index:0 must reflect
+            // THIS child's children — not the root's. This is what closes the
+            // root-vs-addressed parity gap (PR215-TC-09).
+            triggeredWorkflows: [
+              {
+                workflowId: 'meta',
+                sessionIndex: 'GRANDX',
+                triggeredAt: '2026-07-11T10:45:00.000Z',
+                triggeredFrom: { activityId: 'triage' },
+                status: 'running' as const,
+                state: {
+                  schemaVersion: 1 as const,
+                  sessionIndex: 'GRANDX',
+                  workflowId: 'meta',
+                  workflowVersion: '5.2.0',
+                  agentId: 'worker',
+                  seq: 1,
+                  ts: 1_700_000_200,
+                  startedAt: '2026-07-11T10:45:00.000Z',
+                  currentActivity: 'plan',
+                  currentTechnique: '',
+                  condition: '',
+                  variables: {},
+                  completedActivities: [],
+                  skippedActivities: [],
+                  checkpointResponses: {},
+                  history: [{ timestamp: '2026-07-11T10:45:00.000Z', type: 'workflow_started' }],
+                  status: 'running' as const,
+                  triggeredWorkflows: [],
+                },
+              },
+            ],
           },
         },
       ],
@@ -2477,15 +2509,40 @@ describe('mcp-server integration', () => {
         expect(ours, `view '${view}' must match the reference script`).toEqual(reference);
       }
 
-      // child_index parity: --child 0 vs the tool's child_index: 0.
-      const refChild = runReference(['identity', '--child', '0']);
-      const oursChild = parseToolResponse(await callInspect({ child_index: 0, view: 'identity' }));
-      expect(oursChild).toEqual(refChild);
+      // child_index parity: --child 0 vs the tool's child_index: 0. Cover the
+      // addressed-session views — summary and children — not just identity, so
+      // the oracle would catch any future root-vs-addressed drift (both the tool
+      // and the oracle must report the child's OWN grandchild here, not the root's).
+      for (const view of ['identity', 'summary', 'children']) {
+        const refChild = runReference([view, '--child', '0']);
+        const oursChild = parseToolResponse(await callInspect({ child_index: 0, view }));
+        expect(oursChild, `view '${view}' under child_index:0 must match the reference script`).toEqual(refChild);
+      }
 
       // --variable narrowing parity.
       const refVar = runReference(['variables', '--variable', 'pr_number']);
       const oursVar = parseToolResponse(await callInspect({ view: 'variables', variable: 'pr_number' }));
       expect(oursVar).toEqual(refVar);
+    });
+
+    it('PR215-TC-09: children/summary under child_index reflect the ADDRESSED session', async () => {
+      // Under child_index:0 the `children` projection must list the CHILD's own
+      // triggeredWorkflows (the grandchild), not the root's — addressed-session
+      // semantics matching the tool's docstring.
+      const children = parseToolResponse(await callInspect({ child_index: 0, view: 'children' }));
+      expect(children).toEqual([{
+        index: 0,
+        sessionIndex: 'GRANDX',
+        workflowId: 'meta',
+        status: 'running',
+        currentActivity: 'plan',
+        completed: [],
+      }]);
+
+      const summary = parseToolResponse(await callInspect({ child_index: 0, view: 'summary' }));
+      // summary.identity is the child; summary.children is the child's children.
+      expect(summary.identity.sessionIndex).toBe(CHILD_INDEX);
+      expect(summary.children).toEqual(children);
     });
   });
 
