@@ -1,6 +1,6 @@
 # Session Inspection Tool - July 2026
 
-> Feature · Created 2026-07-11 · **Status:** In Progress
+> Feature · Created 2026-07-11 · **Status:** Plan approved — ready for implementation
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -16,7 +16,9 @@ The consequences are wasted time and avoidable risk. Every improvised read inter
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+The fix gives workers one official, built-in way to ask the server about a session: a new read-only command called `inspect_session`. A worker names the session it wants and, optionally, which slice of the record it needs — the overall summary, just the decisions made at checkpoints, just the values carried along, the list of steps taken, the event history, or the child sessions spun off along the way. The server reads its own internal file and hands back a tidy, purpose-built answer rather than the whole raw file. Because this is a first-class server command and not an improvised program, it never triggers a security confirmation, and because the server owns it, the answer always matches the file's actual layout instead of relying on a guess.
+
+The result is fewer interruptions for the person supervising a run and more dependable close-out records. The command only reads — it can never change a session — and it works even when a session is paused waiting for a decision, which is exactly when someone tends to want to look. Alongside the new command, the four close-out steps that used to improvise their own reads are updated with a short note telling the worker to use `inspect_session` instead. Together this removes the eight improvised reads seen in a single observed run and closes the risk that a close-out summary quietly leaves something out.
 
 ## 📊 Progress
 
@@ -26,8 +28,8 @@ The consequences are wasted time and avoidable risk. Every improvised read inter
 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 15 | [Comprehension: Session State](../../comprehension/state-tools.md) | Session read path, read-only tool pattern, session-file shape, close-out surfaces; portfolio-lens findings | 30-45m | ✅ Complete |
-| 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | `Test plan` | Test cases, coverage strategy | 15-30m | ⬚ Pending |
+| 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | `inspect_session` tool + close-out technique updates | 1-3h | ⬚ Pending |
 | 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
