@@ -263,6 +263,13 @@
             "optionId": "confirm-review-target",
             "respondedAt": "2026-07-10T13:56:05.000Z"
           },
+          "post-update-review-post-update-disposition": {
+            "effects": {
+              "transitionedTo": "retrospective"
+            },
+            "optionId": "accept",
+            "respondedAt": "2026-07-12T07:26:54.000Z"
+          },
           "quality-review-review-disposition": {
             "effects": {
               "transitionedTo": "intake-and-context",
@@ -312,10 +319,11 @@
           "quality-review",
           "requirements-refinement",
           "impact-analysis",
-          "scope-and-draft"
+          "scope-and-draft",
+          "validate-and-commit"
         ],
-        "condition": "has_critical_finding == false (no-blocker) → validate-and-commit",
-        "currentActivity": "validate-and-commit",
+        "condition": "is_update_mode == true",
+        "currentActivity": "post-update-review",
         "currentTechnique": "publish-workflow-pr",
         "deliveredContent": {
           "orchestrator": {
@@ -339,14 +347,18 @@
             "technique:elicitation": "258245d9a6d61cb4",
             "technique:impact-analysis": "7cfa0a47bd7f1e92",
             "technique:intake-classification": "e77def43c9e04bd6",
+            "technique:persist-report": "f9832831b499aefc",
             "technique:prepare-workflow-branch": "b8e513cd5b3f9510",
             "technique:publish-workflow-pr": "2171250616e8717f",
             "technique:readme-authoring": "5b4fb4e049442f64",
             "technique:reconcile-design-assumptions": "67bd1a7254b2c405",
             "technique:reload-workflow": "c621bb5f3074d295",
             "technique:review-draft-yaml": "b603e5875461ad5c",
+            "technique:run-audit-passes": "3817b9060648ac91",
+            "technique:scope-audit": "8d9288a809b02f2c",
             "technique:scope-definition": "a43c8352ae907155",
             "technique:scope-verification": "c86a2df39aafece7",
+            "technique:summarize-findings": "f03a64d99cc5e9b2",
             "technique:version-control::commit-regular-files": "7d4d88f112a802cc",
             "technique:work-package::manage-artifacts::create-readme": "5ee6adddca4ad0ee",
             "technique:work-package::manage-artifacts::verify-readme-conforms": "c24ce3514ed6db9f",
@@ -1176,16 +1188,91 @@
             },
             "timestamp": "2026-07-12T07:04:18.080Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-12T07:19:48.871Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "post-update-review",
+            "timestamp": "2026-07-12T07:19:48.871Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "reload-updated-workflow",
+              "techniqueId": "reload-workflow"
+            },
+            "timestamp": "2026-07-12T07:20:18.548Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "run-audit-passes",
+              "techniqueId": "run-audit-passes"
+            },
+            "timestamp": "2026-07-12T07:20:18.548Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "scope-audit",
+              "techniqueId": "scope-audit"
+            },
+            "timestamp": "2026-07-12T07:20:18.548Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "summarize-findings",
+              "techniqueId": "summarize-findings"
+            },
+            "timestamp": "2026-07-12T07:20:18.548Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "save-review-snapshot",
+              "techniqueId": "persist-report"
+            },
+            "timestamp": "2026-07-12T07:20:18.548Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "checkpoint": "post-update-disposition",
+            "timestamp": "2026-07-12T07:24:44.657Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "post-update-review",
+            "checkpoint": "post-update-disposition",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-07-12T07:26:54.000Z",
+            "type": "checkpoint_response"
           }
         ],
         "schemaVersion": 1,
-        "seq": 78,
+        "seq": 83,
         "sessionIndex": "RPKOLJ",
         "skippedActivities": [],
         "startedAt": "2026-07-10T13:51:19.883Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1783839858,
+        "ts": 1783841233,
         "variables": {
           "all_files_validated": true,
           "approach_confirmed": true,

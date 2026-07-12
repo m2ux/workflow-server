@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-10
 **Mode:** Update (via Review — fix-issues)
-**Status:** Quality Review Complete (update-mode verification pass — drafted v1.7.0 clean, ready to validate and commit)
+**Status:** Post-Update Review Complete (committed v1.7.0 audited clean; PR #220 open; one cross-repo binding-baseline follow-up recorded for merge)
 
 ---
 
@@ -52,8 +52,8 @@ Requirements refinement (update pass) confirmed the fix-pass specification acros
 | 05 | Impact Analysis | Update | ✅ Complete — [impact analysis](05-impact-analysis.md) |
 | 06 | Scope and Draft | Create, Update | ✅ Complete — [scope manifest](06-scope-manifest.md); all 30 fixes drafted, guards green |
 | 08 | Quality Review | All | ✅ Complete — [compliance report](08-compliance-review.md); update-mode verification pass clean (all 8 Highs resolved, audit-fix-cycle 0 iterations, 1 expected dead-output for baseline) |
-| 09 | Validate and Commit | All | ⬚ Pending |
-| 10 | Post-Update Review | Update | ⬚ Pending |
+| 09 | Validate and Commit | All | ✅ Complete — committed `6417b3a0` on `workflow/workflow-design-self-review`; [PR #220](https://github.com/m2ux/workflow-server/pull/220) opened against `workflows` |
+| 10 | Post-Update Review | Update | ✅ Complete — [post-update review](10-post-update-review.md); committed content clean (0 High/Med), 2 Low scope-manifest imprecisions, 1 server-side binding-baseline follow-up |
 | 11 | Retrospective | All | ⬚ Pending |
 
 ---
@@ -67,4 +67,4 @@ Requirements refinement (update pass) confirmed the fix-pass specification acros
 
 ---
 
-**Status:** Scope and draft complete — all 30 fixes applied to workflow-design v1.7.0 under the worktree; schema/refs/binding-fidelity/variable-model guards green (1 intentional design_dimensions dead-output pending baseline regen in validate-and-commit); ready for quality-review
+**Status:** Post-update review complete — committed v1.7.0 (`6417b3a0`, PR #220) re-audited fresh and found clean across all five passes; 30 findings all resolved, no new debt introduced. Two Low scope-manifest imprecisions (file-level split/extract deltas the manifest under-stated) and one cross-repo coherence gap (server-side `binding-fidelity-baseline.json` still holds the pre-fix workflow-design entries — needs a `--update-baseline` fold in the server repo post-merge) recorded for the retrospective. Ready for retrospective.
