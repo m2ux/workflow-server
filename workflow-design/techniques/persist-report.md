@@ -7,6 +7,12 @@ metadata:
 
 Persist a workflow audit report into the planning folder as a numbered artifact via the shared [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) operation, so the report sorts with the session's other artifacts and a re-run updates it in place rather than minting a duplicate.
 
+## Inputs
+
+### is_review_mode
+
+Whether review mode is active. Selects the report filename: a compliance report in review mode, a post-update review snapshot otherwise.
+
 ## Outputs
 
 ### report_path

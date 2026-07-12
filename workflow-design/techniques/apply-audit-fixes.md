@@ -11,7 +11,7 @@ Apply the selected audit findings, editing the affected YAML files in place via 
 
 ### selected_findings
 
-The audit findings the user elected to fix this cycle — each naming the file, the construct, and the corrective action (from the expressiveness, conformance, rule-hygiene, and rule-enforcement passes).
+The audit findings the user elected to fix this cycle — each naming the file, the construct, and the corrective action.
 
 ## Outputs
 
@@ -31,4 +31,4 @@ Per-finding record of the file edited and the change made, with the post-edit sc
 
 ### no-collateral-removal
 
-Apply only the change a finding calls for. Never remove or rewrite content a finding does not name — a fix is the smallest edit that resolves the flagged issue, consistent with the workflow's non-destructive-update rule.
+Apply only the change a finding calls for. Never remove or rewrite content a finding does not name — a fix is the smallest edit that resolves the flagged issue. Content not named by a finding is preserved; any removal it would entail must be surfaced and confirmed before it stands.

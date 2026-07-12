@@ -7,6 +7,16 @@ metadata:
 
 Define the complete scope and structure before drafting: verify the workflows worktree, design the folder layout and naming scheme, enumerate every file to create/modify/remove, and present the structural design and drafting order for confirmation.
 
+## Outputs
+
+### scope_manifest
+
+The complete file manifest: one entry per file to create/modify/remove with its full path, action, type, and one-line description. Iterated by the file-drafting loop.
+
+### file_count
+
+Number of files in `{scope_manifest}`. Interpolated into the batch-review checkpoint message.
+
 ## Protocol
 
 ### 1. Verify Worktree

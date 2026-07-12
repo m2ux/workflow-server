@@ -7,6 +7,12 @@ metadata:
 
 Audit every `rules[]` entry for structural backing: distinguish text-only enforcement from rules backed by a checkpoint, condition, validate action, or decision, and flag any critical rule that relies solely on text.
 
+## Outputs
+
+### enforcement_finding_count
+
+Count of text-only rules found — each with its file, rule content, whether it is critical, and the recommended structural mechanism (checkpoint, condition, validate action, or decision). Interpolated into the enforcement-confirmed checkpoint message.
+
 ## Protocol
 
 ### 1. Audit Rule To Structure

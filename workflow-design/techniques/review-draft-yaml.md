@@ -13,6 +13,10 @@ Review the drafted workflow files as a block-indexed table — one row per draft
 
 The set of files just drafted for this workflow — the entries of `{scope_manifest}` written under the workflows worktree.
 
+### is_update_mode
+
+Whether update mode is active. In update mode each block is marked added / modified / unchanged against the committed target; in create mode every block is new.
+
 ## Outputs
 
 ### reviewed_blocks
@@ -33,4 +37,4 @@ Confirmation, recorded in the planning folder, that every drafted block has been
 ### 2. Present And Attest
 
 - Present `{reviewed_blocks}` and walk the user through each block's rationale
-- Record `{draft_attestation}` in `{planning_folder_path}` once every block is confirmed understood and intentional; flag any block the user marks for revision before the audit passes run
+- Record `{draft_attestation}` in `{planning_folder_path}` once every block is confirmed understood and intentional; flag any block the user marks for revision

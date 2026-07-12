@@ -1,26 +1,11 @@
 id: scope-and-draft
-version: 1.2.0
+version: 1.3.0
 name: Scope and Draft
-description: Complete file manifest and structural design for the target workflow, followed by a per-file drafting and review pass over every entry in the confirmed scope manifest, with schema validation on each YAML file.
+description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file.
 required: true
 techniques:
   - scatter-gather
-rules:
-  - The scope manifest must include every file to be created, modified, or removed — no implicit files
-  - Verify the workflows worktree is checked out and on the correct branch before defining paths
-  - Present the structural design compared against adopted patterns from pattern analysis
-  - Present approach for each file before drafting — what constructs will be used, what patterns followed
-  - Use formal schema constructs for every piece of structured information — no prose where a construct exists
-  - Validate each YAML file against its schema immediately after drafting
-  - In update mode, compare new content against existing content and flag any material being removed
-  - "Draft files in the confirmed order: workflow.yaml first, then activities, then techniques, then resources, then README"
 steps:
-  - kind: action
-    id: verify-preconditions
-    actions:
-      - action: validate
-        target: scope_manifest_confirmed
-        message: Cannot begin content drafting without a confirmed scope manifest
   - kind: technique
     id: scope-definition
     technique: scope-definition
@@ -37,79 +22,88 @@ steps:
         effect:
           setVariable:
             scope_manifest_confirmed: true
-            approach_confirmed: true
       - id: revise
         label: Needs revision
         description: File manifest or implementation order requires adjustment.
-  - kind: technique
-    id: present-file-approach
-    technique: content-drafting
-  - kind: checkpoint
-    id: file-approach-confirmed
+  - kind: loop
+    id: file-drafting-loop
+    name: File Drafting Loop
+    loopType: forEach
+    variable: current_file
+    over: scope_manifest
+    maxIterations: 50
     condition:
       type: simple
-      variable: is_update_mode
-      operator: "!="
+      variable: scope_manifest_confirmed
+      operator: ==
       value: true
-    message: Here is my approach for drafting '{current_file}'. Does this look right?
-    options:
-      - id: confirmed
-        label: Yes, proceed with this approach
-        description: Drafting approach for this file is approved.
-      - id: revise
-        label: Change approach
-        description: Drafting approach for this file requires revision.
-  - kind: technique
-    id: yaml-authoring
-    technique: yaml-authoring
-  - kind: technique
-    id: present-for-review
-    technique: content-drafting
-  - kind: checkpoint
-    id: file-review
-    condition:
-      type: simple
-      variable: is_update_mode
-      operator: "!="
-      value: true
-    message: Here is the drafted content for '{current_file}'. Is this acceptable?
-    options:
-      - id: accepted
-        label: Accepted
-        description: Drafted file content is accurate as presented.
-      - id: revise
-        label: Needs revision
-        description: Drafted file content requires targeted changes.
-      - id: redraft
-        label: Redraft from scratch
-        description: Drafted file content requires a fresh approach from scratch.
-  - kind: checkpoint
-    id: preservation-check
-    condition:
-      type: and
-      conditions:
-        - type: simple
+    steps:
+      - kind: technique
+        id: present-file-approach
+        technique: present-file-approach
+      - kind: checkpoint
+        id: file-approach-confirmed
+        condition:
+          type: simple
           variable: is_update_mode
-          operator: ==
+          operator: "!="
           value: true
-        - type: simple
-          variable: has_unflagged_removals
-          operator: ==
+        message: Here is my approach for drafting '{current_file}'. Does this look right?
+        options:
+          - id: confirmed
+            label: Yes, proceed with this approach
+            description: Drafting approach for this file is approved.
+          - id: revise
+            label: Change approach
+            description: Drafting approach for this file requires revision.
+      - kind: technique
+        id: yaml-authoring
+        technique: yaml-authoring
+      - kind: technique
+        id: present-for-review
+        technique: present-for-review
+      - kind: checkpoint
+        id: file-review
+        condition:
+          type: simple
+          variable: is_update_mode
+          operator: "!="
           value: true
-    message: Content removal detected that was not flagged during impact analysis. Review the diff and confirm.
-    options:
-      - id: proceed
-        label: Proceed with changes
-        description: Detected removals are intentional and the modifications stand.
-      - id: preserve-more
-        label: Preserve more content
-        description: Some content flagged for removal must be preserved.
-      - id: rewrite
-        label: Rewrite approach
-        description: File-level approach requires a different framing entirely.
-  - kind: action
-    id: advance-to-next-file
-    actions: []
+        message: Here is the drafted content for '{current_file}'. Is this acceptable?
+        options:
+          - id: accepted
+            label: Accepted
+            description: Drafted file content is accurate as presented.
+          - id: revise
+            label: Needs revision
+            description: Drafted file content requires targeted changes.
+          - id: redraft
+            label: Redraft from scratch
+            description: Drafted file content requires a fresh approach from scratch.
+      - kind: checkpoint
+        id: preservation-check
+        condition:
+          type: and
+          conditions:
+            - type: simple
+              variable: is_update_mode
+              operator: ==
+              value: true
+            - type: simple
+              variable: has_unflagged_removals
+              operator: ==
+              value: true
+        message: Content removal detected that was not flagged during impact analysis. Review the diff and confirm.
+        options:
+          - id: proceed
+            label: Proceed with changes
+            description: Detected removals are intentional and the modifications stand.
+          - id: preserve-more
+            label: Preserve more content
+            description: Some content flagged for removal must be preserved.
+          - id: rewrite
+            label: Rewrite approach
+            description: File-level approach requires a different framing entirely.
   - kind: checkpoint
     id: batch-review
     condition:
@@ -131,23 +125,6 @@ steps:
       - id: redraft-all
         label: Redraft all changes
         description: Entire drafting pass requires restart from scratch.
-  - kind: loop
-    id: file-drafting-loop
-    name: File Drafting Loop
-    loopType: forEach
-    variable: current_file
-    over: scope_manifest
-    maxIterations: 50
-    steps:
-      - kind: technique
-        id: present-file-approach
-        technique: content-drafting
-      - kind: technique
-        id: yaml-authoring
-        technique: yaml-authoring
-      - kind: technique
-        id: present-for-review
-        technique: content-drafting
   - kind: technique
     id: review-draft-yaml
     technique: review-draft-yaml

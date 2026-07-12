@@ -16,7 +16,7 @@ This guide carries the **supplementary** material for review mode: activation/fl
 
 ## Activation
 
-Review mode is activated by recognition patterns: "review workflow", "audit workflow", "check workflow compliance", "workflow review", "assess workflow quality", "evaluate workflow". The `is_review_mode` variable is set to `true`.
+`intake-classification` classifies the request as review when it matches recognition signals such as "review workflow", "audit workflow", "check workflow compliance", "workflow review", "assess workflow quality", or "evaluate workflow", and produces `operation_type` = `review` with `is_review_mode` = `true` as its declared outputs (landed via the worker's `variables-changed` channel). These signals inform the classification; the mode flag is set structurally by the technique's outputs, not by this prose.
 
 ## Activity Flow
 

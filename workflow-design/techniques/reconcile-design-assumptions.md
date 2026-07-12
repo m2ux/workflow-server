@@ -21,11 +21,11 @@ The [log](../resources/design-assumption-reconciliation.md) with audit-resolvabl
 
 ### open_assumptions
 
-The assumptions still open after reconciliation — the genuine design judgements the interview step iterates; empty when audits settled everything.
+The assumptions still open after reconciliation — the genuine design judgements that require user input; empty when audits settled everything.
 
 ### has_open_assumptions
 
-Boolean gate — true iff open design judgements remain after reconciliation; gates whether the interview step is entered.
+Boolean gate — true iff open design judgements remain after reconciliation.
 
 ## Protocol
 

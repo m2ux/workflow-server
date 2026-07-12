@@ -1,14 +1,8 @@
 id: intake-and-context
 version: 1.0.0
 name: Intake and Context
-description: "Operation-type capture followed by the schema-system and YAML-format baseline: classify the request as create, update, or review, establish the corresponding mode + target, then internalize the schema system and format conventions before drafting begins."
+description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 required: true
-rules:
-  - Do not begin drafting content during intake — this activity only captures intent
-  - For update mode, always load the existing workflow before proceeding
-  - Do not proceed to content drafting until format_literacy_confirmed and schema_constructs_confirmed are both true
-  - Read at least two existing workflows of similar type to establish pattern baseline
-  - Present the schema construct summary to the user for confirmation
 steps:
   - kind: technique
     id: intake-classification
@@ -20,7 +14,7 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
-    message: I've classified this as a {create/update} operation for workflow '{workflow_id}'. Is this correct?
+    message: I've classified this as a {operation_type} operation for workflow '{workflow_id}'. Is this correct?
     blocking: true
     options:
       - id: confirm-create

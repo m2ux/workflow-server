@@ -49,19 +49,15 @@ Classify each design assumption into one of these categories:
 
 ---
 
-## Assumptions Surfaced
+## Log
 
-| ID | Category | Risk | Resolvability | Assumption | Rationale |
-|----|----------|------|---------------|------------|-----------|
-| A-1 | [category] | H/M/L | audit / open | [statement] | [why it seemed reasonable] |
+One row per assumption, updated in place across its lifecycle — surfaced, reconciled, and resolved.
+
+| ID | Category | Risk | Resolvability | Assumption | Rationale | Outcome | Changes |
+|----|----------|------|---------------|------------|-----------|---------|---------|
+| A-1 | [category] | H/M/L | audit / open | [statement] | [why it seemed reasonable] | ✅ Confirmed / 🔄 Corrected / ⏸️ Deferred | [changes made] |
 
 Resolvability: `audit` = settleable by schema / convention checks; `open` = a genuine design judgement for the user.
-
-## Outcome
-
-| ID | Assumption | Outcome | Changes |
-|----|------------|---------|---------|
-| A-1 | [statement] | ✅ Confirmed / 🔄 Corrected / ⏸️ Deferred | [changes made] |
 ```
 
 ---

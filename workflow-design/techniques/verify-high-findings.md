@@ -40,4 +40,4 @@ A High finding is confirmed only when independently re-derived from the construc
 
 ### verify-before-remediation
 
-Verification precedes remediation. Only findings that survive this pass — confirmed Highs and confirmed Mediums — are eligible to drive fixes; the pass runs before findings are classified for the fix cycle.
+Verification precedes remediation. Only findings that survive this pass — confirmed Highs and confirmed Mediums — are eligible to drive fixes.

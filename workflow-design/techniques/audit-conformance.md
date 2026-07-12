@@ -7,6 +7,12 @@ metadata:
 
 Audit drafted content for convention conformance against reference workflows — file naming, field ordering, version format, transition patterns, checkpoint structure, technique structure, and documentation voice — flagging each divergence and deciding whether it is justified or should be brought into conformance.
 
+## Outputs
+
+### conformance_finding_count
+
+Count of conformance divergences — each a divergence with its file, the diverging construct, the reference convention, and the justified/bring-into-conformance disposition. Interpolated into the conformance-confirmed checkpoint message.
+
 ## Protocol
 
 ### 1. Audit Conformance

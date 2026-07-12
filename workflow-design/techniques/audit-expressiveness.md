@@ -7,6 +7,12 @@ metadata:
 
 Audit drafted content for schema expressiveness: cross-check every prose passage against the schema construct inventory, flagging prose that substitutes for a formal construct and rewriting it as the construct or moving it to a field that fits.
 
+## Outputs
+
+### expressiveness_finding_count
+
+Count of expressiveness findings — each a flagged instance with its file, the prose passage, the substituting construct, and the before/after rewrite. Interpolated into the expressiveness-confirmed checkpoint message.
+
 ## Protocol
 
 ### 1. Audit Expressiveness

@@ -7,6 +7,12 @@ metadata:
 
 Create the completion summary for the design session — what workflow was created or updated, the key design decisions and the alternatives rejected, the scope outcome, and known limitations — recorded in the planning folder.
 
+## Inputs
+
+### is_update_mode
+
+Whether update mode is active. In update mode the summary frames the delivery as changes to an existing workflow; in create mode as a newly created workflow.
+
 ## Outputs
 
 ### completion_document

@@ -7,7 +7,7 @@ metadata:
 
 # Design Session Close-Out Guide
 
-`COMPLETE.md` is the **single terminal artifact** of a workflow-design session — the counterpart of the work-package [complete-wp](../../work-package/resources/complete-wp.md) guide, with design-authoring sections in place of code/test sections. It answers "what was delivered, what was decided, and what is left open?" There is no separate retrospective or session-summary artifact: the retrospective is written into this document by conduct-retrospective.
+`COMPLETE.md` is the **single terminal artifact** of a workflow-design session — the counterpart of the work-package [complete-wp](../../work-package/resources/complete-wp.md) guide, with design-authoring sections in place of code/test sections. It answers "what was delivered, what was decided, and what is left open?" There is no separate retrospective or session-summary artifact: the retrospective is a section of this document.
 
 ## Template
 
@@ -53,7 +53,7 @@ outside the manifest or unaddressed items — folding in the scope-discipline au
 
 ## Workflow Retrospective
 
-[Written by conduct-retrospective — see the [retrospective section template](../../work-package/resources/workflow-retrospective.md#output-section-template). Omitted when the skip-if-trivial rule applies.]
+[Prioritized lessons for the design workflow itself — see the [retrospective section template](../../work-package/resources/workflow-retrospective.md#output-section-template). Omitted for a trivial session.]
 ```
 
 ## Rules

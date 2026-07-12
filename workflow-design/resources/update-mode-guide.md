@@ -3,18 +3,13 @@ name: update-mode-guide
 description: Guidance for modifying existing workflows.
 metadata:
   order: 3
-  legacy_id: 3
 ---
 
 # Update Mode Guide
 
-Guidance for modifying existing workflows. Update mode activates when the user references an existing workflow by name or ID with a change request.
+Guidance for modifying existing workflows. Update mode activates when the user references an existing workflow by name or ID with a change request; `intake-classification` classifies the operation and sets `operation_type` to `update` with the corresponding mode flag.
 
 ---
-
-## Activation
-
-Update mode is activated by recognition patterns: "update workflow", "modify workflow", "change workflow", "edit workflow". The `is_update_mode` variable is set to `true`.
 
 ## Key Differences from Create Mode
 
@@ -26,61 +21,13 @@ Update mode is activated by recognition patterns: "update workflow", "modify wor
 | Content drafting | Write from scratch | Modify existing content with preservation checks |
 | README | Generate new | Update existing to reflect changes |
 
-## Content Preservation Rules
+## Impact Analysis and Content Preservation
 
-1. **Before modifying any file,** compare the planned changes against the existing content. Identify material being removed.
+The impact-analysis procedure — enumerate files, classify impact, check transition / reference / variable integrity, and flag removals — and the content-preservation rules that require every removal to be surfaced and confirmed are owned by the [impact-analysis](../techniques/impact-analysis.md) technique. Follow that technique's protocol and rules; this guide does not duplicate them.
 
-2. **Flag all removals** to the user with the `preservation-check` checkpoint. Show a diff-style view of what changes and what is preserved.
+---
 
-3. **Never silently remove content.** If a modification reduces the content of a file (fewer lines, removed sections, dropped fields), the user must explicitly confirm each removal.
+## Related Guides
 
-4. **Prefer additive changes.** When possible, add new content rather than replacing existing sections. Replacement requires a checkpoint.
-
-## Impact Analysis Procedure
-
-### Step 1: Enumerate Existing Files
-
-List all files in the target workflow directory with their purpose:
-- `workflow.yaml` — root definition
-- `activities/*.yaml` — activity definitions
-- `techniques/*.md` — technique definitions (`techniques/<slug>.md` standalone, `techniques/<group>/TECHNIQUE.md` container base contracts, `techniques/<group>/<sub>.md` nested)
-- `resources/*.md` — resource files
-- `README.md` — documentation
-
-### Step 2: Classify File Impact
-
-For each file, classify as:
-- **Unaffected** — no changes needed
-- **Directly modified** — the change request explicitly affects this file
-- **Indirectly affected** — a side-effect of the change (e.g., broken transition chain)
-- **To be removed** — the change makes this file obsolete
-
-### Step 3: Check Transition Integrity
-
-If activities are being added, removed, or reordered:
-- Verify every `transitions[].to` field references an existing activity ID
-- Verify `initialActivity` still references a valid activity
-- Check that no activity becomes unreachable (no incoming transitions)
-
-### Step 4: Check Reference Integrity
-
-- Verify all `techniques[]` references (`::`-path / slug references) resolve to existing technique `.md` files
-- Verify all resource index references resolve to existing resource files
-
-### Step 5: Check Variable Integrity
-
-- Verify all `condition.variable` references in transitions, decisions, step gates (`when`/`condition`), and `kind: loop` steps resolve to defined workflow variables
-- Verify all `effect.setVariable` keys in `kind: checkpoint` steps resolve to defined variables
-- Check for orphaned variables (defined but never referenced)
-
-## Side-Effect Detection Patterns
-
-| Change Type | Potential Side-Effects |
-|---|---|
-| Add activity | May need new transitions from upstream activities. May need new techniques or resources. |
-| Remove activity | Breaks incoming transitions. May orphan techniques only used by this activity. |
-| Rename activity ID | Breaks all transition references and `initialActivity`. |
-| Add checkpoint step | May need new variables for checkpoint effects. |
-| Modify checkpoint step options | May invalidate downstream conditions that depend on set variables. |
-| Add/remove mode | Affects the mode activation variable and every `transition.condition` / step `when` gate that branches on it. |
-| Change variable type | Affects all conditions comparing that variable. |
+- [Design Principles](design-principles.md)
+- [Review Mode Guide](review-mode-guide.md)

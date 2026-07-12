@@ -3,9 +3,6 @@ version: 1.2.0
 name: Pattern Analysis
 description: Structural and content patterns extracted from comparable existing workflows for reuse in the target workflow.
 required: false
-rules:
-  - Examine at least two existing workflows of the same model type (sequential or independent)
-  - Present patterns alongside the proposed structure so the user can see how conventions are being applied
 steps:
   - kind: technique
     id: pattern-analysis

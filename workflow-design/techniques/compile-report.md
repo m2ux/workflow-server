@@ -7,6 +7,12 @@ metadata:
 
 Assemble the findings from every audit pass into a structured compliance report and present it to the user with severity-rated findings and recommended fixes.
 
+## Outputs
+
+### review_findings_count
+
+Total number of compliance findings across all review-mode audit passes. Interpolated into the review-disposition and post-update-disposition checkpoint messages.
+
 ## Protocol
 
 ### 1. Compile Report
