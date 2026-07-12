@@ -1,6 +1,6 @@
 # Session Inspection Tool - July 2026
 
-> Feature · Created 2026-07-11 · **Status:** Lean-coding audit accepted (net -1 line; clean debt ledger) — proceeding to review
+> Feature · Created 2026-07-11 · **Status:** Post-implementation review complete (1 Minor finding, resolved — test-oracle/fixture only; shipped src unchanged) — proceeding to validate
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -32,9 +32,8 @@ The result is fewer interruptions for the person supervising a run and more depe
 | 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | 08 | [Implementation](08-provenance-log.md) | `inspect_session` tool + close-out technique updates (T1–T6); per-task provenance log | 1-3h | ✅ Complete |
 | 09 | [Lean-coding audit](09-review-findings.md) | Over-engineering review (net -1 line; structure mirrors reference — accepted) + [debt ledger](09-debt-ledger.md) (clean) | 10-20m | ✅ Complete |
-| 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
-| 06 | `Test suite review` | Test quality and coverage assessment | 10-20m | ⬚ Pending |
+| 10 | [Change block index](10-change-block-index.md) | Indexed diff hunks (7 files, 11 hunks) for manual review | 5-10m | ✅ Complete |
+| 10 | [Post-impl review](10-code-review.md) | Code review + structural + test-suite review; F1 (parity-oracle gap) resolved | 10-20m | ✅ Complete |
 | 07 | `Strategic review` | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
 | — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
