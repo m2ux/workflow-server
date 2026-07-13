@@ -5,7 +5,7 @@ import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, loadWorkflowWithDiagnostics, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
-import { composeActivityTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
+import { composeActivityTechnique, projectTechnique } from '../loaders/technique-loader.js';
 import {
   sessionIndexParam,
   assertNoActiveCheckpoint,
@@ -44,7 +44,7 @@ import { buildProvenanceContext, decorateTechniqueProvenance } from '../utils/bi
 import { seedDefaults } from '../utils/variable-seed.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { stringifyForResponse } from '../utils/serialization.js';
-import { contentHash, deliveredHash, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
+import { contentHash, deliveredHash, dedupTechniqueBlocks, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { createTraceEvent } from '../trace.js';
 import { randomUUID } from 'node:crypto';
 import { basename, isAbsolute, resolve } from 'node:path';
@@ -506,7 +506,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_technique',
-    'Load a single composed technique within the current workflow or activity. If called before next_activity (no current activity), it loads the workflow\'s first declared technique. During an activity, it resolves the technique reference from the activity definition; with step_id, it loads the technique assigned to that step; without step_id, the activity\'s first declared technique. The returned technique is fully COMPOSED: it inherits its workflow-root `techniques/TECHNIQUE.md` base contract recursively — never the meta root for a non-meta workflow. Contract-inherited inputs/outputs are delivered under marked `inherited_inputs`/`inherited_outputs` blocks (each with a scope note) distinct from the technique\'s own `inputs`/`outputs`; rules are merged; ancestor Initial/Final protocol blocks wrap the descendant protocol and the server renumbers. A step-bound fetch also annotates the binding seam: each of the technique\'s own inputs carries a `source:` (step-binding value, workflow variable, prior step output, declared default, or UNRESOLVED — the latter also a warn-only validation warning), inherited entries carry one only where it adds to their scope note (step-binding override or a producer positioned later in the workflow), each remapped output carries a `destination:`, and a `provenance_note` states the output delivery mechanics. Annotations are static — resolved from declarations and document order — so payloads are deterministic per corpus and step. Techniques are loaded one at a time. In a session with context_mode "persistent", a refetch whose composed content is byte-identical to what this session+agent already received returns a short unchanged-reference ({ delivery: unchanged, content_hash }) instead of the full payload; pass full: true to force full content. Every fetch (either delivery path) is recorded in the session history as a technique_fetched event (resolved technique id, bound step_id when supplied, agent); next_activity\'s manifest validation reads these events and warns — advisory only — when a manifested technique step had no fetch during the activity.',
+    'Load one fully composed technique. With step_id, loads the technique bound to that step; without it, the activity\'s (or, before next_activity, the workflow\'s) first technique. The result inherits its workflow-root `techniques/TECHNIQUE.md` contract recursively (never the meta root for a non-meta workflow): contract inputs/outputs arrive as marked `inherited_inputs`/`inherited_outputs` blocks distinct from the technique\'s own, rules are merged, and ancestor Initial/Final protocol blocks wrap and renumber the protocol. A step-bound fetch annotates the binding seam — own inputs carry a `source:`, remapped outputs a `destination:`, plus a `provenance_note`; annotations are static per corpus and step. Under context_mode "persistent", a byte-identical refetch returns a short unchanged-reference ({ delivery: unchanged, content_hash }) instead of the payload, and on a new technique any shared inherited_inputs/inherited_outputs/rules block already delivered by a sibling is replaced with that marker while the core stays full; full: true forces full content (every block). Every fetch is recorded as a technique_fetched event that next_activity\'s manifest validation reads (advisory).',
     {
       ...sessionIndexParam,
       step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the activity\'s first declared technique, or the workflow\'s first declared technique if no activity is active.'),
@@ -602,7 +602,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           provenanceWarnings.push(...decorated.warnings);
         }
       }
-      const text = projectTechniqueToYaml(technique);
+      // Hash the whole technique over the pre-marker projected text so the whole-marker
+      // branch below still collapses an identical refetch; block dedup runs later.
+      const ordered = projectTechnique(technique);
+      const text = stringifyForResponse(ordered);
 
       const view = sessionView(state);
       const validation = buildValidation(
@@ -658,15 +661,24 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         };
       }
 
+      // Full-delivery branch. Under reference delivery, collapse any shared contract/rules
+      // block already delivered by a sibling technique to a marker while the core stays full;
+      // block hashes are recorded alongside the whole-technique key.
+      let body = text;
+      const blockDeliveries: Record<string, string> = {};
+      if (state.contextMode === 'persistent' && full !== true) {
+        const deduped = dedupTechniqueBlocks(ordered, state, blockDeliveries);
+        body = stringifyForResponse(deduped);
+      }
       const next = advanceSession(state, (draft) => {
         draft.currentTechnique = techniqueId as string;
-        recordDeliveries(draft, state.agentId, { [ledgerKey]: hash });
+        recordDeliveries(draft, state.agentId, { [ledgerKey]: hash, ...blockDeliveries });
         recordFetch(draft);
       });
       await saveSessionForTool(loaded, next);
 
       return {
-        content: [{ type: 'text' as const, text: `session_index: ${session_index}\n\n${text}` }],
+        content: [{ type: 'text' as const, text: `session_index: ${session_index}\n\n${body}` }],
         _meta: { session_index, validation },
       };
     }), traceOpts)

@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import type { SessionFile } from '../schema/session.schema.js';
+import { stringifyForResponse } from './serialization.js';
 
 /**
  * Reference-not-repeat delivery.
@@ -14,13 +15,18 @@ import type { SessionFile } from '../schema/session.schema.js';
  * bundle path and by `get_technique`. Full content is always recoverable:
  * `get_activity { bundle: 'full' }`, `get_technique { full: true }`.
  *
- * Content keys are namespaced by delivery channel so the two composition
- * paths never cross-reference each other's payloads:
- *   - `bundle:<technique-ref>` — one composed technique inside the
- *     `get_activity` techniques bundle
- *   - `bundle:rules`           — the `get_activity` rules bundle
- *   - `activity_rules`         — the inherited worker rules block
- *   - `technique:<id>`         — a full `get_technique` composed payload
+ * Content keys are namespaced by delivery channel so the composition paths
+ * never cross-reference each other's payloads:
+ *   - `bundle:<technique-ref>`   — one composed technique in the `get_activity` bundle
+ *   - `bundle:rules:<hash>`      — the `get_activity` rules bundle
+ *   - `activity_rules:<hash>`    — the inherited worker rules block
+ *   - `technique:<id>`           — a full `get_technique` composed payload
+ *   - `technique:<block>:<hash>` — one shared block (`inherited_inputs` /
+ *     `inherited_outputs` / `rules`) of a composed technique
+ *   - `workflow_bundle:<hash>`   — the `get_workflow` orchestrator ops bundle
+ *
+ * `<hash>`-suffixed keys are content-keyed — the key IS the content hash, so a
+ * changed payload gets a different key and delivers in full; no invalidation logic.
  */
 
 /** Hash used for delivery-ledger comparison: sha256, truncated for payload brevity. */
@@ -51,4 +57,41 @@ export function recordDeliveries(draft: SessionFile, agentId: string, entries: R
  */
 export function unchangedMarker(hash: string): { delivery: 'unchanged'; content_hash: string } {
   return { delivery: 'unchanged', content_hash: hash };
+}
+
+/**
+ * Projected-technique keys eligible for block-level dedup — the contract-inherited
+ * blocks shared across a workflow's techniques. These mirror `projectTechnique`'s
+ * key strings, so renaming those keys must update this list.
+ */
+export const DEDUP_BLOCKS = ['inherited_inputs', 'inherited_outputs', 'rules'] as const;
+
+/**
+ * Replace already-delivered shared blocks of a projected technique record with
+ * unchanged-markers, hashing each block over the single-key projection the reader
+ * hashes so hashes match across techniques sharing a contract. Returns a shallow
+ * copy (input not mutated); newly-delivered hashes are staged into `newDeliveries`
+ * for the caller to commit, and a block already staged there collapses too.
+ *
+ * @param projected   `projectTechnique` output.
+ * @param state       session, for the delivery-ledger lookup.
+ * @param newDeliveries accumulator of block-hashes to record.
+ */
+export function dedupTechniqueBlocks(
+  projected: Record<string, unknown>,
+  state: SessionFile,
+  newDeliveries: Record<string, string>,
+): Record<string, unknown> {
+  const out = { ...projected };
+  for (const block of DEDUP_BLOCKS) {
+    if (out[block] === undefined) continue;
+    const hash = contentHash(stringifyForResponse({ [block]: out[block] }));
+    const key = `technique:${block}:${hash}`;
+    if (deliveredHash(state, key) === hash || newDeliveries[key] === hash) {
+      out[block] = unchangedMarker(hash);
+    } else {
+      newDeliveries[key] = hash;
+    }
+  }
+  return out;
 }
