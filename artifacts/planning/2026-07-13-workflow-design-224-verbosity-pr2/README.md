@@ -49,9 +49,9 @@ Quality review (expressiveness / conformance / rule-hygiene / rule-enforcement):
 | 05 | Impact Analysis | Update | ✅ Complete |
 | 06 | Scope and Draft | Create, Update | ✅ Complete |
 | 08 | Quality Review | All | ✅ Complete |
-| 09 | Validate and Commit | All | ◐ In Progress |
-| 10 | Post-Update Review | Update | ⬚ Pending |
-| 11 | Retrospective | Create, Update | ⬚ Pending |
+| 09 | Validate and Commit | All | ✅ Complete |
+| 10 | Post-Update Review | Update | ✅ Complete |
+| 11 | Retrospective | Create, Update | ✅ Complete |
 
 ---
 
@@ -66,4 +66,4 @@ Quality review (expressiveness / conformance / rule-hygiene / rule-enforcement):
 
 ---
 
-**Status:** Validate and commit — audits clean, awaiting commit sign-off
+**Status:** Complete — PR #226 open against `workflows`; close-out: [11-COMPLETE.md](11-COMPLETE.md)
