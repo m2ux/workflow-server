@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -29,7 +29,7 @@ Path to the planning artifacts folder where the artifact is created.
 
 ### requirements_document
 
-The requirements [artifact](../../resources/requirements-elicitation.md#document-template) (`requirements-elicitation.md`) created in `{planning_folder_path}`, capturing the elicited requirements, success criteria, scope boundaries, and assumptions. This file is the record of truth for the elicited requirements.
+The requirements [artifact](../../resources/requirements-elicitation.md#document-template) (`requirements-elicitation.md`) created in `{planning_folder_path}`, capturing the elicited requirements, success criteria, scope boundaries, and assumptions. This file is the record of truth for the elicited requirements and the [canonical home](../manage-artifacts/TECHNIQUE.md#canonical-home-map) for the problem statement, scope, and success criteria — downstream artifacts link here.
 
 #### artifact
 
@@ -41,3 +41,4 @@ The requirements [artifact](../../resources/requirements-elicitation.md#document
 
 - Create the `{requirements_document}` artifact in `{planning_folder_path}`
 - Include elicited requirements, success criteria, scope boundaries, and assumptions
+- Record assumptions in the assumptions log and deferred scope items in the deferred-items register (link-only slots in this document, per its template)

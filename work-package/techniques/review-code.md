@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -25,7 +25,7 @@ Folder where the code review report is written
 
 ### code_review_report
 
-Code review [report](../resources/rust-substrate-code-review.md#report-template) documenting findings by severity
+Code review [report](../resources/rust-substrate-code-review.md#report-template) documenting findings by severity. The single [canonical home](./manage-artifacts/TECHNIQUE.md#canonical-home-map) for the change's review findings: the manual diff review ([review-diff](./review-diff.md)), structural analysis (prism), and lean-coding audit (ponytail) each write their findings into a dedicated section of this artifact.
 
 #### artifact
 
@@ -64,7 +64,7 @@ When the diff changes a `Config` impl, an associated type, or any trait-implemen
 ### 4. Document Findings
 
 - Document each finding with severity (critical, high, medium, low, informational)
-- Create the `{code_review_report}` in `{planning_folder_path}`
+- Create the `{code_review_report}` in `{planning_folder_path}` — or update it in place when an earlier review (manual diff, structural analysis, lean-coding) already created it; each contributing review owns its `##` section and this review writes the code-review sections
 
 ### 5. Present Summary
 

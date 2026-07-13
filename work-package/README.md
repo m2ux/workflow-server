@@ -209,7 +209,6 @@ Each review and documentation activity is assigned a server-computed `artifactPr
 
 | Activity | Prefix | Bare Name | Final Name |
 |----------|--------|-----------|------------|
-| [Lean-Coding Audit](./activities/README.md#09-lean-coding-audit) | `09` | `review-findings.md` | `09-review-findings.md` |
 | [Lean-Coding Audit](./activities/README.md#09-lean-coding-audit) | `09` | `debt-ledger.md` | `09-debt-ledger.md` |
 | [Post-Implementation Review](./activities/README.md#10-post-implementation-review) | `10` | `code-review.md` | `10-code-review.md` |
 | [Post-Implementation Review](./activities/README.md#10-post-implementation-review) | `10` | `test-suite-review.md` | `10-test-suite-review.md` |

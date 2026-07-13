@@ -1,15 +1,15 @@
 ---
 name: manual-diff-review
-description: Index-table, header, and report forms for the manual diff review; the review procedure and rules live on the review-diff technique.
+description: Index-table, header, and report-section forms for the manual diff review; the review procedure and rules live on the review-diff technique.
 metadata:
-  version: 1.2.0
+  version: 2.0.0
   order: 22
   legacy_id: 22
 ---
 
 # Manual Diff Review Forms
 
-Forms consumed by [review-diff](../techniques/review-diff.md), which owns the procedure (branch sync, diff parsing, index generation, the row-number reporting protocol, the interview loop) and the rationale-quality and review-conduct rules. Outputs: **File Index Table** (`change-block-index.md`) and **Manual Diff Review Report** (`manual-diff-review.md`).
+Forms consumed by [review-diff](../techniques/review-diff.md), which owns the procedure (branch sync, diff parsing, index generation, the row-number reporting protocol, the interview loop) and the rationale-quality and review-conduct rules. Outputs: **File Index Table** (`change-block-index.md`) and the **Manual Diff Review section** written into `code-review.md`.
 
 ## File Index Generation
 
@@ -53,50 +53,20 @@ Report row numbers for files with issues (e.g., "3, 7, 12") or "none" if all loo
 
 ## Report Generation
 
-### Manual Diff Review Report Template
+### Manual Diff Review Section Template
+
+Written as a `## Manual Diff Review` section of `code-review.md`, the review findings' canonical home:
 
 ```markdown
-# Manual Diff Review Report
+## Manual Diff Review
 
-> [Work Package] · [feature-branch] vs [base-branch] · YYYY-MM-DD · reviewer: [Name]
+> [feature-branch] vs [base-branch] · [X] files reviewed · reviewer: [Name] · [Issues Found / No Issues]
 
-## Review Summary
+[Omit the findings list if the user reported "none" — the header line is the whole record.]
 
-| Metric | Value |
-|--------|-------|
-| Files Reviewed | [X] |
-| Files Flagged | [Y] |
-| Critical Issues | [Z] |
-| Total Findings | [N] |
+### MD-1: [Brief Title]
 
-## Findings
-
-[Omit this section if the user reported "none".]
-
-### Finding 1: [Brief Title]
-
-**File:** `path/to/file.ext` · **Row:** [N] · **Severity:** Critical / High / Medium / Low
-
-**Issue:**
-[User's description of the issue]
-
-**Recommendation:**
-[Suggested fix or action, if provided]
-
-## Actions Required
-
-[Omit this section if none.]
-
-| # | Action | File | Priority |
-|---|--------|------|----------|
-| 1 | [Action description] | `file.ext` | High |
-
-## Review Outcome
-
-**Result:** [Issues Found / No Issues]
-
-**Next Steps:**
-- [ ] Address critical findings before proceeding
-- [ ] Proceed to automated code review
-- [ ] Proceed to test suite review
+**File:** `path/to/file.ext` · **Row:** [N] · **Severity:** Critical / High / Medium / Low  
+**Issue:** [User's description of the issue]  
+**Recommendation:** [Suggested fix or action, if provided]
 ```

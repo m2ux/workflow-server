@@ -1,12 +1,15 @@
 id: lean-coding-audit
-version: 1.1.0
+version: 1.2.0
 name: Lean-Coding Audit
 description: Apply the ponytail lean-coding lens to the just-implemented change.
 required: true
 steps:
   - kind: technique
     id: review-over-engineering
-    technique: ponytail/review-over-engineering
+    technique:
+      name: ponytail/review-over-engineering
+      inputs:
+        findings_destination: code-review.md
   - kind: technique
     id: harvest-debt
     technique: ponytail/harvest-debt
@@ -61,7 +64,10 @@ steps:
         technique: ponytail/apply-ladder
       - kind: technique
         id: re-review-over-engineering
-        technique: ponytail/review-over-engineering
+        technique:
+          name: ponytail/review-over-engineering
+          inputs:
+            findings_destination: code-review.md
       - kind: action
         id: validate-safety-floor
         actions:

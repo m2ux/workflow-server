@@ -20,29 +20,14 @@ The work package plan is the detailed implementation specification: enough detai
 
 ## Overview
 
-### Problem Statement
-[2-4 sentences: what problem exists, why it matters, impact of not solving it. State it once here — later sections reference this statement rather than re-narrating the problem.]
+### Problem & Scope
+[One line linking the canonical statement: Problem, scope, and success criteria: [requirements](requirements-elicitation.md). Do not restate them here.]
 
-### Scope
-**In Scope:** [Items]
-**Out of Scope:** [Items with reasons]
+## Inputs
 
-## Research & Analysis
-
-*See companion planning artifacts for full details — link, don't copy:*
-- **Knowledge Base Research:** KB research artifact
-- **Implementation Analysis:** Implementation analysis artifact
-
-### Key Findings Summary
-
-**From KB Research:**
-- [Key concept/pattern discovered]
-- [Applicable best practice]
-
-**From Implementation Analysis:**
-- **Baseline:** [Key metric] = [value]
-- **Gap:** [Primary gap to address]
-- **Opportunity:** [Main improvement opportunity]
+[One line per consumed artifact — link the section that shaped the approach (anchors permitted), never restate its findings:]
+- [Knowledge Base Research](kb-research.md#recommended-approach) — [what it contributed, one line]
+- [Implementation Analysis](implementation-analysis.md#gap-analysis) — [what it contributed, one line]
 
 ## Proposed Approach
 
@@ -56,7 +41,7 @@ The work package plan is the detailed implementation specification: enough detai
 | Option B | Pro 1 | Con 1 | Rejected |
 
 ### Assumptions
-- [Assumption underlying the approach, e.g. expected input format, environment, prerequisite state]
+[One line: Assumptions underlying the approach: [assumptions log](assumptions-log.md). Do not restate them here.]
 
 ## Implementation Tasks
 
@@ -71,34 +56,11 @@ The work package plan is the detailed implementation specification: enough detai
 
 ## Success Criteria
 
-*Based on baseline metrics and gap analysis above*
-
-### Functional Requirements
-- [ ] Requirement 1 (addresses gap: [Gap ID])
-
-### Performance Targets
-- [ ] **[Metric]:** Improve from [baseline] to [target] ([X]% improvement)
-- [ ] **[Metric]:** Achieve [target] (new capability — no baseline)
-
-### Quality Requirements
-- [ ] Test coverage ≥X% (baseline: Y%)
-- [ ] All tests passing
-- [ ] ADR written
-
-### Measurement Strategy
-- [Test/script/report that proves each target achieved]
-- [Comparison methodology for before/after]
+[One line: Success criteria: [requirements](requirements-elicitation.md#success-criteria); baselines and measurement: [implementation analysis](implementation-analysis.md#baseline-metrics). Add ONLY task-level acceptance items that exist nowhere else, each linked to its gap ID.]
 
 ## Testing Strategy
 
-### Unit Tests
-- Component X: [Test scenarios]
-
-### Integration Tests
-[Omit this section if not applicable]
-
-### E2E Tests
-[Omit this section if not applicable]
+[One line: Test cases and acceptance matrix: [test plan](test-plan.md). Add ONLY ordering or fixture constraints the test plan does not carry.]
 
 ## Dependencies & Risks
 
@@ -116,11 +78,9 @@ The work package plan is the detailed implementation specification: enough detai
 
 ## Rules
 
-- **Problem Statement** — 2-4 sentences answering: what problem exists, why it matters, what's the impact of not solving it. Be specific (e.g. "vector-only search misses exact term matches, eroding user trust"), never vague ("search needs to be better"). Later sections reference the Problem Statement instead of restating the problem (state-once-per-artifact).
-- **Scope** — explicit in/out boundaries to prevent scope creep; give the reason for each out-of-scope item.
-- **Research & Analysis** — link companion artifacts and summarize only the findings most relevant to implementation (single-source-and-link); do not duplicate their content.
-- **Proposed Approach** — describe the solution, document alternatives considered with pros/cons and decision, and record each design decision's rationale alongside the assumptions it depends on so reviewers and implementers can validate or challenge them.
+- **Problem & Scope, Success Criteria, Testing Strategy, Assumptions** — link-only slots: a markdown link to the canonical home plus at most one line (see the [canonical-home map](../techniques/manage-artifacts/TECHNIQUE.md#canonical-home-map)). Restating homed content in these slots is a conformance violation.
+- **Inputs** — one line per consumed artifact, linking the specific section that shaped the approach; never reproduce findings. The plan documents what it *decided*, the inputs document what was *learned*.
+- **Proposed Approach** — the plan's canonical content: describe the solution, document alternatives considered with pros/cons and decision, and record each design decision's rationale so reviewers and implementers can validate or challenge it. Design decisions home here (durable ones graduate to an ADR at completion).
 - **Implementation Tasks** — discrete, estimable, completable in one session, with concrete deliverable paths and test coverage. Forbidden patterns: verification-as-task (e.g. "Task: Verify compilation", "Task: Verify existing tests pass") and raw cargo invocations (`cargo check`, `cargo test`) as tasks. Vague tasks ("make search better") are also rejected.
-- **Success Criteria** — measurable, linked to baselines and gap IDs from the analysis (e.g. "P95 latency: 487ms → 200ms, 59% reduction"), never unquantified ("search is faster"). New capabilities with no baseline state the absolute target. Measurement Strategy names the specific test/script/log comparison that proves each target.
-- **Testing Strategy** — specific test scenarios per category (unit/integration/e2e), including edge cases.
-- **Dependencies & Risks** — list blockers; every risk gets impact, probability, and a mitigation strategy.
+- **Dependencies & Risks** — the planning risk register homes here: list blockers; every risk gets impact, probability, and a mitigation strategy.
+- **Line budget** — 150 lines. A plan over budget is restating homed content or padding; cut before committing.

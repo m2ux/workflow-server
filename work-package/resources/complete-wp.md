@@ -2,7 +2,7 @@
 name: complete-wp
 description: Template for the COMPLETE.md close-out document — the work package's single terminal artifact.
 metadata:
-  version: 2.0.0
+  version: 2.1.0
   order: 21
   legacy_id: 21
 ---
@@ -12,7 +12,7 @@ metadata:
 
 `COMPLETE.md` is the **single terminal artifact** of a work package. It answers "what was actually delivered, what remains, and what did we learn?" — and it links to canonical artifacts rather than restating them. There is no separate retrospective, session-summary, or close-out-summary document.
 
-It is the **canonical home** for exactly two things: deferred items and known limitations. Everything else it carries by link.
+It is the **canonical home** for exactly one thing: known limitations. Everything else it carries by link — deferred items live in the [deferred-items register](deferred-items.md).
 
 ## Template
 
@@ -43,8 +43,7 @@ Link the [implementation plan](NN-work-package-plan.md) — do not restate its t
 
 ## Deferred Items
 
-<!-- Canonical home. Other artifacts link here; do not duplicate this list elsewhere. -->
-- **[Item]** — [reason: deferred / out of scope / blocked by X; tracking issue if any]
+[One line, omit if no register exists: Deferred items: [register](NN-deferred-items.md) — N open, M raised as issues.]
 
 ## Known Limitations
 

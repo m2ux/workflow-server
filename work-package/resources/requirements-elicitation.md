@@ -2,7 +2,7 @@
 name: requirements-elicitation
 description: Reference material for requirements elicitation methodology, including question domains, anti-patterns, and the document template.
 metadata:
-  version: 2.1.0
+  version: 2.2.0
   order: 5
   legacy_id: 5
 ---
@@ -13,6 +13,8 @@ metadata:
 Requirements elicitation discovers **what** the user needs before planning **how** to implement it — a dialogue, not a checklist. Ask **one question at a time** and adapt based on responses; flow and question sequencing are defined in the activity. Use for new features and major enhancements only; skip for bug fixes, refactors, chores, and minor updates.
 
 Goals: discover what the user actually needs (which may differ from the initial ask), clarify ambiguities before they become implementation assumptions, establish scope boundaries, define measurable success criteria.
+
+The document this guide produces is the [canonical home](../techniques/manage-artifacts/TECHNIQUE.md#canonical-home-map) for the problem statement, scope, and success criteria — downstream artifacts (plan, philosophy, test plan, close-out) link here and never restate them.
 
 ## Question Domain Reference
 
@@ -112,8 +114,7 @@ Criteria must be SMART: Specific, Measurable, Achievable, Relevant, Time-bound.
 1. [Exclusion 1] - [Why excluded]
 
 ### Deferred
-[Omit this section if none]
-1. [Future item 1] - [When to revisit]
+[Omit this section if none. One line: Deferred scope items: [deferred-items register](deferred-items.md) — record each item there, not here.]
 
 ## Success Criteria
 
@@ -124,19 +125,7 @@ Criteria must be SMART: Specific, Measurable, Achievable, Relevant, Time-bound.
 
 ## Assumptions
 
-Assumptions identified during requirement interpretation, categorized for stakeholder review. [Omit any empty category]
-
-### Requirement Interpretation
-- [Assumption about how a requirement was interpreted]
-
-### Scope Boundaries
-- [Assumption about what is in/out of scope]
-
-### Implicit Requirements
-- [Assumption about an unstated requirement]
-
-### Success Criteria
-- [Assumption about how success is measured]
+[One line: Assumptions surfaced during elicitation: [assumptions log](assumptions-log.md) — record each there (categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria), not here.]
 
 ## Elicitation Log
 
