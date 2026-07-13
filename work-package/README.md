@@ -74,7 +74,9 @@ graph TD
     SRD -->|"yes"| SFR["13 submit-for-review"]
     SRD -->|"rework"| PP
 
-    SFR --> RVD{"review outcome?"}
+    SFR --> RCV{"review received?"}
+    RCV -->|"no, still waiting"| RCV
+    RCV -->|"yes"| RVD{"review outcome?"}
     RVD -->|"approved/minor"| COMP["14 complete"]
     RVD -->|"significant changes"| PP
 

@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.10.0
+version: 1.11.0
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 required: true
@@ -303,31 +303,47 @@ steps:
           variable: stealth_mode
           operator: "!="
           value: true
-  - kind: action
-    id: await-review
-    when: stealth_mode != true
-    actions: []
-  - kind: checkpoint
-    id: review-received
+  - kind: loop
+    id: await-review-loop
+    name: Await Review Loop
+    loopType: doWhile
     condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
-    message: Has the PR received manual review feedback?
-    options:
-      - id: yes-review
-        label: Yes, review comments received
-        description: Proceed to analyze and respond to review comments
-      - id: no-waiting
-        label: No, still waiting for review
-        description: Continue waiting for review
+      type: simple
+      variable: awaiting_review
+      operator: ==
+      value: true
+    steps:
+      - kind: action
+        id: await-review
+        when: stealth_mode != true
+        actions: []
+      - kind: checkpoint
+        id: review-received
+        condition:
+          type: and
+          conditions:
+            - type: simple
+              variable: is_review_mode
+              operator: "!="
+              value: true
+            - type: simple
+              variable: stealth_mode
+              operator: "!="
+              value: true
+        message: Has the PR received manual review feedback?
+        options:
+          - id: yes-review
+            label: Yes, review comments received
+            description: Analyze and respond to the review comments now
+            effect:
+              setVariable:
+                awaiting_review: false
+          - id: no-waiting
+            label: No, still waiting for review
+            description: Keep holding; re-presented until review arrives
+            effect:
+              setVariable:
+                awaiting_review: true
   - kind: technique
     id: process-review-comments
     technique: respond-to-pr-review
