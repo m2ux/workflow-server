@@ -67,5 +67,6 @@ Atomic tasks with explicit dependencies and ordering — each implementable, tes
 ### 4. Write Plan
 
 - Create the `{plan_document}` artifact in `{planning_folder_path}`
+- Record consumed artifacts as the template's link-only Inputs list — one line per artifact linking the section that shaped the approach
 - Include task breakdown, dependencies, ordering
-- Document design decisions and assumptions
+- Document design decisions with rationale; fill the link-only slots (problem & scope, success criteria, testing strategy, assumptions) per the template's rules

@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.8.0
+version: 2.9.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 required: true
@@ -40,6 +40,9 @@ steps:
   - kind: technique
     id: verify-readme
     technique: manage-artifacts::verify-readme-conforms
+  - kind: technique
+    id: verify-artifact-conformance
+    technique: manage-artifacts::verify-artifact-conforms
   - kind: technique
     id: ensure-changes-folder-entry
     technique: changes-folder
