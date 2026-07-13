@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.28.0
+version: 3.29.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
@@ -146,6 +146,10 @@ variables:
   - name: review_requires_changes
     type: boolean
     description: Whether PR review feedback requires returning to planning
+    defaultValue: false
+  - name: awaiting_review
+    type: boolean
+    description: Drives submit-for-review's await-review hold loop; while true the review-received checkpoint is re-presented until feedback arrives.
     defaultValue: false
   - name: needs_issue_creation
     type: boolean
