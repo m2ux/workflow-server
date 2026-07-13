@@ -853,6 +853,49 @@ describe('reference-not-repeat delivery (B1)', () => {
       const keys = Object.keys(onDisk.deliveredContent.solo as Record<string, string>);
       expect(keys.some(k => /^technique:(inherited_inputs|inherited_outputs|rules):[0-9a-f]{16}$/.test(k))).toBe(true);
     });
+
+    // The eager-bundle path is the second call site of dedupTechniqueBlocks (the cases above
+    // exercise get_technique). Within a single persistent get_activity, the bundled step
+    // techniques are projected in document order, so a later step whose shared contract/rules
+    // block matches one an earlier bundled step already delivered collapses to a marker while
+    // its own core stays full — all in one response.
+    it('collapses shared blocks inside get_activity eager step_techniques entries', async () => {
+      const session = await startSession({
+        workflow_id: 'work-package',
+        agent_id: 'solo',
+        planning_folder: planningFolder('2026-07-12-block-dedup-eager-bundle'),
+        context_mode: 'persistent',
+      });
+      const idx = session['session_index'] as string;
+      // Entry activity: no transition prerequisites, and it eager-bundles several
+      // technique steps that share the work-package contract.
+      await enterActivity(idx, 'start-work-package');
+
+      const { bundle } = splitActivityResponse(await getActivity(idx));
+      expect(bundle['bundle_mode']).toBe('reference');
+      const stq = bundle['step_techniques'] as Record<string, Record<string, unknown>>;
+      expect(stq, 'expected an eager step_techniques bundle').toBeDefined();
+      expect(Object.keys(stq).length, 'need >=2 bundled steps to dedup across siblings').toBeGreaterThanOrEqual(2);
+
+      const sharedBlocks = ['inherited_inputs', 'inherited_outputs', 'rules'] as const;
+      let fullBlockSeen = false;
+      let markerBlockSeen = false;
+      for (const entry of Object.values(stq)) {
+        // A whole-technique unchanged marker carries no block fields; skip it — we assert on
+        // otherwise-full entries whose individual blocks may be markered.
+        if (isUnchangedMarker(entry)) continue;
+        expect(entry['capability'], 'a full entry keeps its technique-specific core').toBeDefined();
+        for (const b of sharedBlocks) {
+          if (entry[b] === undefined) continue;
+          if (isUnchangedMarker(entry[b])) markerBlockSeen = true;
+          else fullBlockSeen = true;
+        }
+      }
+      // The first bundled occurrence of each shared block is delivered full; a later sibling
+      // sharing that block collapses it to a marker.
+      expect(fullBlockSeen, 'at least one shared block delivered full').toBe(true);
+      expect(markerBlockSeen, 'at least one sibling shared block collapsed to a marker').toBe(true);
+    });
   });
 
   // C12 — get_workflow orchestrator ops-bundle slimming (#189). Under persistent mode the
