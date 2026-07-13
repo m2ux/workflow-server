@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 2.0.0
 ---
 
 ## Capability
@@ -41,11 +41,7 @@ Per-block descriptive paragraphs explaining intent, context, and non-obvious des
 
 ### manual_diff_review_report
 
-Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-review-report-template) from user-flagged blocks
-
-#### artifact
-
-`manual-diff-review.md`
+Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-review-section-template) from user-flagged blocks, written as the `## Manual Diff Review` section of `code-review.md` (the review findings' [canonical home](./manage-artifacts/TECHNIQUE.md#canonical-home-map)) — created here when this review runs first, updated in place by [review-code](./review-code.md)
 
 #### block_findings
 
@@ -98,8 +94,8 @@ True if any block marked as critical blocker
 
 ### 7. Create Report
 
-- Create the `{manual_diff_review_report}` with all findings, following the [report template](../resources/manual-diff-review.md#manual-diff-review-report-template)
-- Include flagged rows, interview responses verbatim, and severity; omit the Findings section when the user reported `none`
+- Write the `{manual_diff_review_report}` as the `## Manual Diff Review` section of `code-review.md`, following the [section template](../resources/manual-diff-review.md#manual-diff-review-section-template) (creating the artifact if this review runs first)
+- Include flagged rows, interview responses verbatim, and severity; when the user reported `none`, the section is its one-line header only
 
 ## Rules
 

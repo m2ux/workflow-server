@@ -2,7 +2,7 @@
 name: architecture-summary
 description: Create an architecture summary document at the end of implementation, using Mermaid diagrams to visualize how changes relate to the existing system for management-level stakeholders.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   order: 19
   legacy_id: 19
 ---
@@ -211,15 +211,15 @@ flowchart LR
 
 ## Risks & Mitigations
 
-*[Omit this section if none]*
+*[Omit this section if none. Planning risks: [plan](work-package-plan.md#dependencies--risks) — one line. Table rows ONLY for net-new risks the implementation surfaced:]*
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|------------|--------|------------|
-| [Risk description] | Low/Medium/High | Low/Medium/High | [How addressed] |
+| [Post-implementation risk not in the plan register] | Low/Medium/High | Low/Medium/High | [How addressed] |
 
 ## Future Considerations
 
-*[Omit this section if none. Known follow-up work, technical debt introduced, potential improvements.]*
+*[Omit this section if none. One line linking follow-ups: [deferred-items register](deferred-items.md).]*
 
 ## Related Documents
 

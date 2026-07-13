@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -28,5 +28,6 @@ The strategic review [document](../../resources/strategic-review.md#strategic-re
 ### 1. Document Findings
 
 - Document all findings in the `{strategic_review_doc}`, written under `{planning_folder_path}`
-- Categorize each finding per the group's [finding-categories](./TECHNIQUE.md#finding-categories)
-- If all changes are justified and no cleanup is needed, document a clean review result
+- Categorize each finding per the group's [finding-categories](./TECHNIQUE.md#finding-categories), assigning each a stable ID (SR-1, SR-2 …) that downstream surfaces reference
+- Report exceptions only: a clean review result is one line ("all changes justified — no findings"), never a per-section template fill; findings from other reviews are referenced by ID
+- Record any deferred finding as a deferred-items register row ([deferred-items](../../resources/deferred-items.md)) linked from the finding

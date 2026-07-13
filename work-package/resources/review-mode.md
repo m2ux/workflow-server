@@ -2,7 +2,7 @@
 name: review-mode
 description: Guidelines for using the work-package workflow in review mode to conduct structured PR reviews. Covers detection, adapted workflow behavior, and output generation.
 metadata:
-  version: 1.5.0
+  version: 1.6.0
   order: 24
   legacy_id: 24
 ---
@@ -67,7 +67,9 @@ https://github.com/{WORKFLOW_REPO_OWNER}/{WORKFLOW_REPO_NAME}/blob/{WORKFLOW_BRA
 
 Resolve `{WORKFLOW_REPO_OWNER}`, `{WORKFLOW_REPO_NAME}`, and `{WORKFLOW_BRANCH}` from the `.gitmodules` entry for the workflows submodule (typically `.engineering/workflows`). The rendering step supplies the role-to-file mapping for the roles it links.
 
-**Table format:** All review tables only include non-passing findings — do not list passing or positive items. The `#` column value is a hyperlink to the pertinent artifact or symbol (file path and line for code review, test method for test review, document URL for documentation, CI run URL for validation, branch/commit for hygiene). Every table must include a `Severity` column. Every `#` link MUST be validated against the actual source at the referenced commit before inclusion — do not carry over line numbers from earlier analysis without verification.
+**Table format:** All review tables only include non-passing findings — do not list passing or positive items. The `#` column value is a hyperlink to the pertinent artifact or symbol (file path and line for code review, test method for test review, document URL for documentation, CI run URL for validation, branch/commit for hygiene). Every table must include a `Severity` and a `Disposition` column (e.g. Fix now / Deferred → register ID / Noted). Every `#` link MUST be validated against the actual source at the referenced commit before inclusion — do not carry over line numbers from earlier analysis without verification.
+
+**Reference, don't restate:** the summary references each finding by ID, one-line title, severity, and disposition ONLY. Finding descriptions, evidence, and suggestions live in the linked report artifacts (`Reports` header) — the summary never reproduces them.
 
 **Action Items:** A separate Action Items section at the end consolidates all actionable findings from every table into prioritized tiers with interactive checkboxes. Every non-passing finding from every table must appear as a checklist item. Cross-reference findings using section prefixes to avoid GitHub auto-linking `#N` as issue references:
 
@@ -104,113 +106,54 @@ Disposition of every prior comment and review on the PR (human and bot), determi
 
 | # | Prior Comment | Author | Disposition | Reasoning |
 |---|---------------|--------|-------------|-----------|
-| [1](pr-comment-url) | Storage record never cleared on close | reviewer | Confirmed | Unaddressed — clear missing on the governance-close path |
+| [1](pr-comment-url) | Storage record never cleared on close | reviewer | Confirmed — caps rating | Unaddressed — clear missing on the governance-close path |
 | [2](pr-comment-url) | Naming nit on handler | bot | Refuted | Name follows the crate convention |
-
-<details>
-<summary>Finding Details</summary>
-
-#### PF-1. Storage record never cleared on close (Confirmed — blocker)
-[Why the concern holds and remains unaddressed]
-**Disposition**: Confirmed — caps the Overall Rating
-
-</details>
 
 ---
 
 ### Code Review Findings
 
-| # | Finding | Severity |
-|---|---------|----------|
-| [1](src/file.rs#L42) | Missing null check in handler | High |
-| [2](src/handler.rs#L78) | N+1 query pattern in loop | Medium |
+Details: [code review report](code-review-report-url).
 
-<details>
-<summary>Finding Details</summary>
-
-#### CR-1. Missing null check (High)
-[Description]
-**Suggestion**: [Recommendation]
-
-#### CR-2. N+1 query pattern (Medium)
-[Description]
-**Suggestion**: [Recommendation]
-
-</details>
+| # | Finding | Severity | Disposition |
+|---|---------|----------|-------------|
+| [CR-1](src/file.rs#L42) | Missing null check in handler | High | Fix now |
+| [CR-2](src/handler.rs#L78) | N+1 query pattern in loop | Medium | Deferred → D-2 |
 
 ---
 
 ### Test Review Findings
 
-| # | Gap | Severity |
-|---|-----|----------|
-| [1](tests/module_test.rs) | Missing edge case coverage | Medium |
-| [2](tests/module_test.rs) | No error path tests | High |
+Details: [test suite review report](test-suite-review-report-url).
 
-<details>
-<summary>Finding Details</summary>
-
-#### TR-1. Missing edge case coverage (Medium)
-[Description of what is not covered]
-**Suggestion**: [Specific test to add]
-
-#### TR-2. No error path tests (High)
-[Description of missing error handling tests]
-**Suggestion**: [Specific test to add]
-
-</details>
+| # | Gap | Severity | Disposition |
+|---|-----|----------|-------------|
+| [TR-1](tests/module_test.rs) | Missing edge case coverage | Medium | Fix now |
+| [TR-2](tests/module_test.rs) | No error path tests | High | Fix now |
 
 ---
 
 ### Documentation Review
 
-| # | Gap | Severity |
-|---|-----|----------|
-| `1` | Change file missing | High |
-
-<details>
-<summary>Finding Details</summary>
-
-#### DR-1. Change file missing (High)
-[Why it is needed]
-**Suggestion**: [What to include]
-
-</details>
+| # | Gap | Severity | Disposition |
+|---|-----|----------|-------------|
+| `DR-1` | Change file missing | High | Fix now |
 
 ---
 
 ### Validation Findings
 
-| # | Check | Severity |
-|---|-------|----------|
-| [1](ci-run-url) | Lint — 3 clippy warnings | Warning |
-
-<details>
-<summary>Finding Details</summary>
-
-#### VF-1. Lint warnings (Warning)
-**Tool**: clippy  
-**Findings**: [List specific warnings]  
-**Suggestion**: [Fix command or manual resolution]
-
-</details>
+| # | Check | Severity | Disposition |
+|---|-------|----------|-------------|
+| [VF-1](ci-run-url) | Lint — 3 clippy warnings | Warning | Fix now |
 
 ---
 
 ### Branch Hygiene
 
-| # | Item | Severity |
-|---|------|----------|
-| 1 | Branch freshness — behind main | Warning |
-
-<details>
-<summary>Finding Details</summary>
-
-#### BH-1. Branch freshness (Warning)
-[Description of how far behind, conflicting deps, etc.]
-**Suggestion**: [Rebase or merge instructions]
-
-</details>
+| # | Item | Severity | Disposition |
+|---|------|----------|-------------|
+| `BH-1` | Branch freshness — behind main | Warning | Rebase before merge |
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -35,4 +35,5 @@ Boolean gate — true iff any assumption was marked deferred (needs-discussion);
 
 1. Mark each assumption as confirmed, corrected, or needs-discussion
 2. Write each outcome into the assumption's Log table row in place — `User` in the Resolution column; Confirmed / Corrected: <change> / Deferred: <follow-up> in the Outcome column — and remove its Open Assumptions entry. No separate response or outcome section is added (state-once-per-artifact).
-3. Preserve all assumption rows and their resolution status
+3. Record each deferred follow-up as a row in the deferred-items register ([deferred-items](../../resources/deferred-items.md)); the log row's Outcome cell links the register row.
+4. Preserve all assumption rows and their resolution status

@@ -2,7 +2,7 @@
 name: implementation-analysis
 description: Guidelines for analyzing the existing implementation during work package planning to establish baselines, evaluate effectiveness, and identify improvement opportunities.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   order: 6
   legacy_id: 6
 ---
@@ -104,14 +104,7 @@ Analyze the existing implementation before designing a solution: establish basel
 
 ## Success Criteria
 
-### Performance Targets
-- [ ] **[Metric 1]:** Improve from [baseline] to [target] ([X]% improvement)
-
-### Quality Targets
-- [ ] **[Metric]:** Achieve [target] (baseline: [current])
-
-### Functional Requirements
-- [ ] [Requirement addressing Gap G1]
+[One line: Success criteria: [requirements](requirements-elicitation.md#success-criteria). This document contributes baselines and gaps; add here ONLY analysis-derived targets absent from requirements, each mapped to a gap ID.]
 
 ### Measurement Strategy
 **How will we validate improvements?**

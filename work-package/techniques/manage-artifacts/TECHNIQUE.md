@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.2.0
+  version: 3.3.0
 ---
 
 ## Capability
@@ -12,6 +12,22 @@ Manage planning artifacts in `.engineering/artifacts/planning/` — create folde
 ### single-source-and-link
 
 Every fact has exactly one canonical artifact. When another artifact needs it, link to the canonical home (a markdown link to the file or section) with at most a one-line pointer — never restate the content. Validation results, findings, decisions, and deferred items are the common offenders: record each once, reference everywhere else.
+
+### canonical-home-map
+
+The canonical home for each shared fact category. Templates carry link-only slots for every category they don't home; [verify-artifact-conforms](./verify-artifact-conforms.md) enforces the map at the strategic-review boundary.
+
+| Fact category | Canonical home |
+|---|---|
+| Problem statement, scope, success criteria | `requirements-elicitation.md` |
+| Problem classification | `design-philosophy.md` (plus a 2–4 sentence ticket-derived statement — written before requirements exists, so it carries its own budgeted statement) |
+| Assumptions and their outcomes | `assumptions-log.md` |
+| Design decisions, alternatives, planning risks | `work-package-plan.md` (durable decisions graduate to an ADR at completion) |
+| Baseline metrics, gaps, measurement strategy | `implementation-analysis.md` |
+| Research findings and recommended approach | `knowledge-base-research.md` |
+| Test cases and acceptance matrix | `test-plan.md` |
+| Review findings (code, test, structural, lean-coding, manual-diff) | `code-review.md` and the reviews' own artifacts — consolidated surfaces reference findings by ID + disposition |
+| Deferred items | `deferred-items.md` (the single register — see [deferred-items](../../resources/deferred-items.md)) |
 
 ### exception-only-reporting
 

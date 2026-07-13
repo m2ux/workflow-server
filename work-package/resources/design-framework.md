@@ -2,7 +2,7 @@
 name: design-framework
 description: TRIZICS solution-design methodology (conventional-first, inventive principles, synthesis) applied at plan time, and the design-philosophy artifact template. Problem definition and classification live on the design-philosophy technique operations.
 metadata:
-  version: 1.2.0
+  version: 1.3.0
   order: 9
   legacy_id: 9
 ---
@@ -118,7 +118,7 @@ Create `design-philosophy.md` in the planning folder using this template:
 
 ## Problem Statement
 
-[Clear, specific description of the problem being solved]
+[2-4 sentences derived from the ticket: what problem exists, why it matters, impact of not solving it. Line budget — this document precedes requirements elicitation, whose document becomes the canonical refined statement; keep this to the ticket-derived essentials and do not elaborate here.]
 
 ### System Context
 
@@ -169,17 +169,7 @@ Create `design-philosophy.md` in the planning folder using this template:
 
 ## Success Criteria
 
-| Criterion | Measurement | Target |
-|-----------|-------------|--------|
-| [What success looks like] | [How to measure] | [Specific target] |
-
-## Design Decisions (if applicable at this stage)
-
-[Omit this section if none yet]
-
-| Decision | Options Considered | Chosen | Rationale |
-|----------|-------------------|--------|-----------|
-| [Decision point] | [Option A, Option B] | [Chosen option] | [Why] |
+[One line: Success criteria: [requirements](requirements-elicitation.md#success-criteria) once elicited. Only when the workflow path skips elicitation does this section carry the criteria table (Criterion | Measurement | Target).]
 
 ## Notes
 

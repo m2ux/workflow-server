@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -13,15 +13,19 @@ Review the change under the lens against the over-engineering [taxonomy](../reso
 
 *(optional)* The change under review — the diff or solution to scan for over-engineering. When absent, the change is read from `{target_path}` within the chosen `{pass_scope}`.
 
+### findings_destination
+
+*(optional)* Artifact file the findings are written into. When a caller supplies an existing review artifact (e.g. a consolidated code-review report), the findings are written as a `## Lean-Coding Audit` section of that artifact, updated in place.
+
+#### default
+
+`review-findings.md` (standalone)
+
 ## Outputs
 
 ### review_findings
 
-The tagged findings for the change — one line per finding, each carrying a [taxonomy](../resources/review-taxonomy.md#tags) tag, the location, the simpler alternative, and the lines it would save — closing with a `net: -N lines` scoreboard. Records a clean result when the change is already lean.
-
-#### artifact
-
-`review-findings.md`
+The tagged findings for the change — one line per finding, each carrying a [taxonomy](../resources/review-taxonomy.md#tags) tag, the location, the simpler alternative, and the lines it would save — closing with a `net: -N lines` scoreboard. Records a clean result when the change is already lean. Written to `{findings_destination}`.
 
 ## Protocol
 
@@ -32,7 +36,7 @@ The tagged findings for the change — one line per finding, each carrying a [ta
 
 ### 2. Record one line per finding
 
-- Write each finding as a single line in `{review_findings}`: the tag, the location, the simpler alternative, and the lines it would save.
+- Write each finding as a single line in `{review_findings}` at `{findings_destination}` (standalone by default; a section of the caller's review artifact when supplied): the tag, the location, the simpler alternative, and the lines it would save.
 - Keep to over-engineering. Do not record correctness, security, or performance findings — those belong to the [safety floor](../resources/the-ladder.md#safety-floor), not this review.
 - Never emit a `delete` finding against the lone smoke test or assert-based self-check — it is the ponytail minimum, not bloat.
 - This review reports only: it lists findings into `{review_findings}` and applies nothing. The fixes are not made here.

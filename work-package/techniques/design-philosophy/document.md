@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -45,3 +45,4 @@ The design philosophy [artifact](../../resources/design-framework.md#design-phil
 
 - Create the `{design_philosophy_doc}` artifact in `{planning_folder_path}`
 - Include problem statement, classification, complexity, workflow path rationale
+- Keep the problem statement to the template's 2–4 sentence ticket-derived budget — the canonical refined statement lands in `requirements-elicitation.md` once elicited; this document's unique content is the classification
