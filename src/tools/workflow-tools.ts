@@ -12,7 +12,7 @@ import { buildProvenanceContext, decorateTechniqueProvenance } from '../utils/bi
 import { withAuditLog, logWarn } from '../logging.js';
 import { jsonTypeOf, isTemplateReference } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
-import { contentHash, deliveredHash, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
+import { contentHash, deliveredHash, dedupTechniqueBlocks, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import {
   sessionIndexParam,
   contextTokensParam,
@@ -295,17 +295,41 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(view, wf),
       );
 
-      // Advance state (bump seq+ts) and persist before returning.
-      const next = advanceSession(state);
-      await saveSessionForTool(loaded, next);
-
       // Bundle the workflow's orchestrator-level technique refs (`techniques.workflow`) and the core
       // orchestrator techniques. Deduplicate by ref so a workflow that explicitly lists a core
       // technique resolves it once.
       const wfTechRefs = (wf as { techniques?: { workflow?: string[] } }).techniques?.workflow ?? [];
       const orchestratorTechniques = Array.from(new Set([...wfTechRefs, ...CORE_ORCHESTRATOR_TECHNIQUES]));
       const resolvedOrchestrator = await resolveTechniques(orchestratorTechniques, config.workflowDir, workflow_id);
-      const opsBlock = stringifyForResponse(formatTechniqueBundle(resolvedOrchestrator));
+      const opsText = stringifyForResponse(formatTechniqueBundle(resolvedOrchestrator));
+
+      // C12 — reference-not-repeat for the orchestrator ops bundle (#189). The bundle is
+      // rebuilt full on every session resume; under persistent mode, collapse it to a single
+      // content-keyed `workflow_bundle:<hash>` marker once this agent has received it in full.
+      // Content-keying (own channel, no cross-reference to the get_activity `bundle:*` channels)
+      // keeps the epic's channel-isolation invariant. Fresh/default sessions pay nothing.
+      // The marker must be decided BEFORE the session advances so the new ledger key commits in
+      // the same advanceSession mutator (get_workflow otherwise advances with no mutator).
+      let opsBlock = opsText;
+      const workflowBundleDeliveries: Record<string, string> = {};
+      if (state.contextMode === 'persistent') {
+        const opsHash = contentHash(opsText);
+        const opsKey = `workflow_bundle:${opsHash}`;
+        if (deliveredHash(state, opsKey) === opsHash) {
+          opsBlock = stringifyForResponse({
+            ...unchangedMarker(opsHash),
+            note: 'Orchestrator ops bundle byte-identical to the one already delivered in this session for this agent — reuse it from your context.',
+          });
+        } else {
+          workflowBundleDeliveries[opsKey] = opsHash;
+        }
+      }
+
+      // Advance state (bump seq+ts), commit any new workflow-bundle ledger entry, and persist.
+      const next = advanceSession(state, (draft) => {
+        recordDeliveries(draft, state.agentId, workflowBundleDeliveries);
+      });
+      await saveSessionForTool(loaded, next);
 
       // Pre-separator preamble holds the resolved-operations bundle. Tests and clients split on
       // the first '\n\n---\n\n' to recover the workflow section, so we keep that single separator.
@@ -495,7 +519,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('get_activity', 'Load the complete activity definition for the current activity in the session. This is the worker\'s tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, rules, and technique references — everything needed to execute the activity. The activity is determined from the session state on disk, so no activity_id parameter is needed. context_tokens is REQUIRED — the worker declares its own context window; the server derives an eager step-technique bundling budget from it (availability headroom × a token→char factor, both server config) and inlines the activity\'s ungated step-bound techniques that fit, in document order, under that budget. When reference delivery is active (session context_mode "persistent" or bundle: "reference"), inherited techniques/rules content already delivered to this session+agent arrives as short { delivery: "unchanged", content_hash } markers instead of being repeated; bundle: "full" forces full delivery. Eligible ungated step-bound techniques are inlined corpus-wide under a step_techniques map (keyed by step id, each entry a discrete ▼ STEP block identical to a get_technique { step_id } fetch — engage those steps in order without refetching); gated steps and any technique that would overflow the derived budget (or a per-activity bundleTechniques.maxChars size cap; maxChars 0 opts the activity out) stay lazy and still require get_technique. Bundled deliveries are recorded as technique_bundled history events and count as fetch coverage for next_activity\'s manifest fidelity check.',
+  server.tool('get_activity', 'Load the complete activity definition for the current activity in the session. This is the worker\'s tool for retrieving the full activity details after the orchestrator has called next_activity to transition. Returns the complete activity definition including all steps, checkpoints, transitions to subsequent activities, rules, and technique references — everything needed to execute the activity. The activity is determined from the session state on disk, so no activity_id parameter is needed. context_tokens is REQUIRED — the worker declares its own context window; the server derives an eager step-technique bundling budget from it (availability headroom × a token→char factor, both server config) and inlines the activity\'s ungated step-bound techniques that fit, in document order, under that budget. When reference delivery is active (session context_mode "persistent" or bundle: "reference"), inherited techniques/rules content already delivered to this session+agent arrives as short { delivery: "unchanged", content_hash } markers instead of being repeated; this also applies block-by-block within a full eagerly-inlined step technique, whose shared inherited_inputs/inherited_outputs/rules blocks collapse to the same marker when already delivered while its core stays full; bundle: "full" forces full delivery of every block. Eligible ungated step-bound techniques are inlined corpus-wide under a step_techniques map (keyed by step id, each entry a discrete ▼ STEP block identical to a get_technique { step_id } fetch — engage those steps in order without refetching); gated steps and any technique that would overflow the derived budget (or a per-activity bundleTechniques.maxChars size cap; maxChars 0 opts the activity out) stay lazy and still require get_technique. Bundled deliveries are recorded as technique_bundled history events and count as fetch coverage for next_activity\'s manifest fidelity check.',
     {
       ...sessionIndexParam,
       ...contextTokensParam,
@@ -682,7 +706,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             newDeliveries[ledgerKey] = hash;
             // The arrival marker leads the block; the composed technique fields follow at the same
             // level, so a bundled entry reads exactly like a get_technique fetch with a step header.
-            bundledStepTechniques[step.id!] = { marker: stepMarker, ...projectTechnique(technique) };
+            // Block-level dedup (one helper, shared with get_technique): a bundled technique whose
+            // shared contract/rules blocks were already delivered — by a sibling bundled step or an
+            // earlier get_technique fetch — collapses those blocks to markers while its core stays
+            // full. Runs on the projected record before the spread; block hashes merge into the
+            // same newDeliveries accumulator committed at recordDeliveries below.
+            const projected = referenceMode
+              ? dedupTechniqueBlocks(projectTechnique(technique), state, newDeliveries)
+              : projectTechnique(technique);
+            bundledStepTechniques[step.id!] = { marker: stepMarker, ...projected };
           }
           bundledSteps.push({ stepId: step.id!, techniqueId });
           bundlingWarnings.push(...provenanceWarnings);
@@ -703,7 +735,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const opsData = referenceMode
         ? {
             bundle_mode: 'reference',
-            bundle_note: 'Entries marked { delivery: "unchanged", content_hash } are byte-identical to content already delivered in this session for this agent — reuse them from your context. Re-fetch a step-bound technique with get_technique { step_id, full: true }; for inherited/core bundle entries and rules, call get_activity with bundle: "full" to re-deliver the whole bundle.',
+            bundle_note: 'Entries marked { delivery: "unchanged", content_hash } are byte-identical to content already delivered in this session for this agent — reuse them from your context. A marker may also appear in place of a single inherited_inputs/inherited_outputs/rules block inside an otherwise-full step_techniques entry: that shared block was already delivered by a sibling technique; reuse it while the surrounding technique-specific core is full. Re-fetch a step-bound technique with get_technique { step_id, full: true }; for inherited/core bundle entries and rules, call get_activity with bundle: "full" to re-deliver the whole bundle.',
             ...bundleData,
           }
         : bundleData;

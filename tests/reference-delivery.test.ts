@@ -713,4 +713,217 @@ describe('reference-not-repeat delivery (B1)', () => {
       }
     });
   });
+
+  // C2 — block-level delivery ledger (#189). Finer-grained than the whole-technique
+  // dedup above: a NOT-yet-seen technique whose shared contract/rules blocks were already
+  // delivered (by a sibling technique or an earlier fetch) returns those blocks as markers
+  // while its technique-specific core stays full — the case whole-payload hashing cannot
+  // catch, since the core always changes the whole hash.
+  describe('block-level delivery ledger (C2)', () => {
+    // Parse a get_technique response body into its technique record (drops the
+    // `session_index:` header line before the first blank line).
+    function parseTechniqueBody(result: { content: Array<{ text: string }> }): Record<string, unknown> {
+      const text = responseText(result as never);
+      return parse(text.substring(text.indexOf('\n\n') + 2)) as Record<string, unknown>;
+    }
+
+    // Two distinct technique-bound steps within an activity, discovered on a THROWAWAY
+    // fresh session so the probe's get_activity does not pollute the test session's
+    // ledger (eager bundling records whole-technique keys in every mode). The C2 tests
+    // then fetch these steps directly via get_technique, never calling get_activity, so a
+    // block-marker (not a whole-technique marker) is exercised on the second fetch.
+    async function findTwoTechniqueStepIds(activityId: string): Promise<[string, string]> {
+      const probe = await startSession({ workflow_id: 'work-package', agent_id: 'probe' });
+      const probeIdx = probe['session_index'] as string;
+      await enterActivity(probeIdx, activityId);
+      const parsed = splitActivityResponse(await getActivity(probeIdx, { bundle: 'full' }));
+      const body = parse(parsed.bodyText) as { steps?: Array<{ id?: string; technique?: unknown }> };
+      const flat: Array<{ id?: string; technique?: unknown }> = [];
+      const walk = (steps?: Array<{ id?: string; technique?: unknown; steps?: unknown }>): void => {
+        for (const s of steps ?? []) {
+          if (Array.isArray((s as { steps?: unknown }).steps)) walk((s as { steps?: Array<{ id?: string; technique?: unknown }> }).steps);
+          else if (typeof s.technique === 'string' && s.id) flat.push(s);
+        }
+      };
+      walk(body.steps as never);
+      const ids = flat.map(s => s.id!).filter((v, i, a) => a.indexOf(v) === i);
+      expect(ids.length, 'expected at least two technique-bound steps').toBeGreaterThanOrEqual(2);
+      return [ids[0], ids[1]];
+    }
+
+    it('collapses already-delivered contract/rules blocks to markers while the core stays full', async () => {
+      const session = await startSession({
+        workflow_id: 'work-package',
+        agent_id: 'solo',
+        planning_folder: planningFolder('2026-07-12-block-dedup-cross-technique'),
+        context_mode: 'persistent',
+      });
+      const idx = session['session_index'] as string;
+      const [stepA, stepB] = await findTwoTechniqueStepIds('implement');
+      await enterActivity(idx, 'implement');
+
+      // Technique A (persistent, no prior get_activity) delivers in full and establishes
+      // the shared contract blocks in the ledger.
+      const first = await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx, step_id: stepA },
+      });
+      expect(first.isError).toBeFalsy();
+      const bodyA = parseTechniqueBody(first as never);
+      expect(bodyA['capability']).toBeDefined();
+      // At least one shared block is present and delivered full (an object, not a marker).
+      const sharedBlocks = ['inherited_inputs', 'inherited_outputs', 'rules'] as const;
+      const presentInA = sharedBlocks.filter(b => bodyA[b] !== undefined);
+      expect(presentInA.length, 'technique A should carry at least one shared block').toBeGreaterThan(0);
+      for (const b of presentInA) expect(isUnchangedMarker(bodyA[b])).toBe(false);
+
+      // Technique B (not yet seen): its OWN core is delivered full, but any shared block
+      // whose content matches one already delivered by A collapses to a marker.
+      const second = await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx, step_id: stepB },
+      });
+      expect(second.isError).toBeFalsy();
+      const bodyB = parseTechniqueBody(second as never);
+      // B is not the same technique as A — its core (capability) is delivered full.
+      expect(bodyB['capability']).toBeDefined();
+      // The inherited contract is shared across a workflow's techniques, so at least one
+      // block collapses to a marker whose hash matches A's block projection.
+      const { stringify } = await import('yaml');
+      const collapsed = sharedBlocks.filter(b => isUnchangedMarker(bodyB[b]));
+      expect(collapsed.length, 'expected at least one shared block to collapse for technique B').toBeGreaterThan(0);
+      for (const b of collapsed) {
+        const marker = bodyB[b] as UnchangedMarker;
+        expect(marker.content_hash).toBe(contentHash(stringify({ [b]: bodyA[b] }, { lineWidth: 0 })));
+      }
+    });
+
+    it('full: true re-delivers every block full even when block-delivered', async () => {
+      const session = await startSession({
+        workflow_id: 'work-package',
+        agent_id: 'solo',
+        planning_folder: planningFolder('2026-07-12-block-dedup-full-escape'),
+        context_mode: 'persistent',
+      });
+      const idx = session['session_index'] as string;
+      const [stepA, stepB] = await findTwoTechniqueStepIds('implement');
+      await enterActivity(idx, 'implement');
+
+      await client.callTool({ name: 'get_technique', arguments: { session_index: idx, step_id: stepA } });
+      // B under reference delivery would collapse shared blocks; full: true forces full.
+      const forced = await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx, step_id: stepB, full: true },
+      });
+      expect(forced.isError).toBeFalsy();
+      const body = parseTechniqueBody(forced as never);
+      for (const b of ['inherited_inputs', 'inherited_outputs', 'rules'] as const) {
+        if (body[b] !== undefined) expect(isUnchangedMarker(body[b]), `expected full ${b} under full:true`).toBe(false);
+      }
+    });
+
+    it('fresh mode never markers blocks', async () => {
+      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
+      const idx = session['session_index'] as string;
+      const [stepA, stepB] = await findTwoTechniqueStepIds('implement');
+      await enterActivity(idx, 'implement');
+
+      await client.callTool({ name: 'get_technique', arguments: { session_index: idx, step_id: stepA } });
+      const second = await client.callTool({ name: 'get_technique', arguments: { session_index: idx, step_id: stepB } });
+      const body = parseTechniqueBody(second as never);
+      for (const b of ['inherited_inputs', 'inherited_outputs', 'rules'] as const) {
+        if (body[b] !== undefined) expect(isUnchangedMarker(body[b]), `fresh mode must not marker ${b}`).toBe(false);
+      }
+    });
+
+    it('records block hashes under the technique:<block>:<hash> channel', async () => {
+      const slug = '2026-07-12-block-dedup-ledger-keys';
+      const session = await startSession({
+        workflow_id: 'work-package',
+        agent_id: 'solo',
+        planning_folder: planningFolder(slug),
+        context_mode: 'persistent',
+      });
+      const idx = session['session_index'] as string;
+      const [stepA] = await findTwoTechniqueStepIds('implement');
+      await enterActivity(idx, 'implement');
+      await client.callTool({ name: 'get_technique', arguments: { session_index: idx, step_id: stepA } });
+
+      const onDisk = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));
+      const keys = Object.keys(onDisk.deliveredContent.solo as Record<string, string>);
+      expect(keys.some(k => /^technique:(inherited_inputs|inherited_outputs|rules):[0-9a-f]{16}$/.test(k))).toBe(true);
+    });
+  });
+
+  // C12 — get_workflow orchestrator ops-bundle slimming (#189). Under persistent mode the
+  // ops bundle (above the `---` separator) collapses to a single content-keyed
+  // workflow_bundle:<hash> marker on the second (resume) call; fresh mode always sends it full.
+  describe('get_workflow ops-bundle slimming (C12)', () => {
+    function splitWorkflowResponse(result: { content: Array<{ text: string }> }): { opsBlock: string; summary: Record<string, unknown> } {
+      const text = responseText(result as never);
+      const sepIdx = text.indexOf('\n\n---\n\n');
+      expect(sepIdx).toBeGreaterThan(0);
+      return {
+        opsBlock: text.substring(0, sepIdx),
+        summary: parse(text.substring(sepIdx + 7)) as Record<string, unknown>,
+      };
+    }
+
+    it('collapses the ops bundle on a second persistent-mode call; summary stays full', async () => {
+      const session = await startSession({
+        workflow_id: 'work-package',
+        agent_id: 'solo',
+        planning_folder: planningFolder('2026-07-12-c12-persistent'),
+        context_mode: 'persistent',
+      });
+      const idx = session['session_index'] as string;
+
+      const first = await client.callTool({ name: 'get_workflow', arguments: { session_index: idx } });
+      expect(first.isError).toBeFalsy();
+      const firstSplit = splitWorkflowResponse(first as never);
+      // First call: ops bundle delivered full (carries technique bodies, not a marker).
+      expect(firstSplit.opsBlock).toContain('capability:');
+      expect(isUnchangedMarker(parse(firstSplit.opsBlock))).toBe(false);
+
+      const second = await client.callTool({ name: 'get_workflow', arguments: { session_index: idx } });
+      expect(second.isError).toBeFalsy();
+      const secondSplit = splitWorkflowResponse(second as never);
+      // Second (resume) call: ops bundle collapses to the canonical marker; summary stays full.
+      const marker = parse(secondSplit.opsBlock) as Record<string, unknown>;
+      expect(marker['delivery']).toBe('unchanged');
+      expect(marker['content_hash']).toBe(contentHash(firstSplit.opsBlock));
+      expect(marker['note']).toBeDefined();
+      expect(secondSplit.summary['initialActivity']).toBeDefined();
+      expect(secondSplit.summary['activities']).toBeDefined();
+    });
+
+    it('never markers the ops bundle in fresh mode', async () => {
+      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
+      const idx = session['session_index'] as string;
+
+      const first = await client.callTool({ name: 'get_workflow', arguments: { session_index: idx } });
+      const second = await client.callTool({ name: 'get_workflow', arguments: { session_index: idx } });
+      expect(first.isError).toBeFalsy();
+      expect(second.isError).toBeFalsy();
+      // Ops bundle repeats in full on every call — byte-identical, never a marker.
+      expect(splitWorkflowResponse(first as never).opsBlock).toContain('capability:');
+      expect(splitWorkflowResponse(second as never).opsBlock).toBe(splitWorkflowResponse(first as never).opsBlock);
+    });
+
+    it('records the workflow_bundle:<hash> channel key on first persistent delivery', async () => {
+      const slug = '2026-07-12-c12-ledger-key';
+      const session = await startSession({
+        workflow_id: 'work-package',
+        agent_id: 'solo',
+        planning_folder: planningFolder(slug),
+        context_mode: 'persistent',
+      });
+      const idx = session['session_index'] as string;
+      await client.callTool({ name: 'get_workflow', arguments: { session_index: idx } });
+
+      const onDisk = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));
+      const keys = Object.keys(onDisk.deliveredContent.solo as Record<string, string>);
+      expect(keys.some(k => /^workflow_bundle:[0-9a-f]{16}$/.test(k))).toBe(true);
+    });
+  });
 });
