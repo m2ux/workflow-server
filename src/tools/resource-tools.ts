@@ -5,7 +5,7 @@ import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, loadWorkflowWithDiagnostics, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
-import { composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
+import { composeActivityTechnique, projectTechnique } from '../loaders/technique-loader.js';
 import {
   sessionIndexParam,
   assertNoActiveCheckpoint,
@@ -606,7 +606,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // hash is taken on the PRE-MARKER projected text (unchanged from before block dedup),
       // so the whole-marker branch below still collapses an identical whole-technique refetch.
       const ordered = projectTechnique(technique);
-      const text = projectTechniqueToYaml(technique);
+      const text = stringifyForResponse(ordered);
 
       const view = sessionView(state);
       const validation = buildValidation(
