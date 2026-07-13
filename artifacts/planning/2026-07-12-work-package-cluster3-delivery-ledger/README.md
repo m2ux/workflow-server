@@ -1,6 +1,6 @@
 # Cluster 3 Delivery Ledger - July 2026
 
-> Enhancement · Created 2026-07-12 · **Status:** In Progress
+> Enhancement · Created 2026-07-12 · Revised 2026-07-13 · **Status:** Submitted for review — DCO certified, branch pushed (`a0e35c39`), PR #223 body finalized and marked ready-for-review; awaiting review feedback
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -16,24 +16,33 @@ This work closes both gaps. It teaches the server to compare and skip the repeat
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+The fix teaches the server two new skip-when-unchanged tricks, both building on the mechanism it already uses. First, instead of only comparing each instruction payload as a whole, the server now compares the two repeating sections inside it — the shared contract and the rules — on their own. The first technique in a session sends them in full; every later technique that shares the same sections gets a tiny "you already have this" marker in their place, while the part that genuinely differs is still sent in full. Second, the large setup bundle the server sends when a workflow starts is now remembered too, so when a paused session is resumed the server can skip re-sending it and send a marker instead.
+
+The result is that an agent working through a long session receives noticeably less duplicate text, which lowers the token cost and leaves more of its limited working memory for the actual task. The change is deliberately narrow and safe: it only activates for sessions already running in the skip-when-unchanged mode, it never alters the meaning of anything the agent receives, and ordinary sessions and short-lived helper agents behave exactly as they did before. If an agent ever loses track of a section it was told to remember, it can always ask for the full content again.
 
 ## 📊 Progress
 
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
-| 01 | `Design philosophy` | Problem classification, design rationale, workflow path | 15-30m | ⬚ Pending |
-| 01 | `Assumptions log` | Tracked assumptions across all activities | 10-15m | ⬚ Pending |
-| 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
-| — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
-| 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
-| 06 | [Test suite review](test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
-| 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
-| — | `Comprehension artifact` | Persistent codebase knowledge | 20-45m | ⬚ Pending |
-| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
+| 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
+| 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
+| 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete (initial) |
+| — | Implementation | Code changes per plan (commit `1c2d379f`) | 1-4h | ✅ Complete |
+| 08 | [Provenance log](08-provenance-log.md) | Per-task DCO provenance rows | 5-10m | ✅ Complete |
+| 09 | [Review findings](09-review-findings.md) | Over-engineering audit + applied simplification (`d55cae8d`) | 10-20m | ✅ Complete |
+| 09 | [Debt ledger](09-debt-ledger.md) | Ponytail marker harvest (0 markers, clean) | 5-10m | ✅ Complete |
+| 10 | [Change block index](10-change-block-index.md) | Indexed diff hunks for manual review (5 files, 16 hunks) | 5-10m | ✅ Complete |
+| 10 | [Manual diff review](10-manual-diff-review.md) | Provenance attestation + user corrections | 5-10m | ✅ Complete |
+| 10 | [Code review](10-code-review.md) | Code quality review — 0 ≥Minor, 3 Informational | 10-20m | ✅ Complete |
+| 10 | [Structural analysis](10-structural-analysis.md) | Ledger conservation / channel-isolation walk | 10-20m | ✅ Complete |
+| 10 | [Test suite review](10-test-suite-review.md) | Coverage assessment — TEST-1 gap found + fixed | 10-20m | ✅ Complete |
+| 10 | [Architecture summary](10-architecture-summary.md) | Stakeholder overview | 10-15m | ✅ Complete |
+| — | Fix cycle | Comment/description trims + TEST-1 + site regen (commit `a0e35c39`) | 20-40m | ✅ Complete |
+| 12 | [Strategic review](12-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
+| — | [Comprehension artifact](../../comprehension/delivery-ledger.md) | Persistent codebase knowledge (delivery-ledger subsystem) | 20-45m | ✅ Complete |
+| 11 | [Validation](11-validation.md) | Build, test, lint verification — PASS; baseline drift confirmed independent | 15-30m | ✅ Complete |
+| — | PR review | External review feedback cycle | 30-60m | 🔄 In progress (PR #223 ready-for-review) |
 | 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, deferred items, lessons, retrospective | 10-20m | ⬚ Pending |
 
 ## 🔗 Links
