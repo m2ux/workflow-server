@@ -714,12 +714,12 @@ describe('reference-not-repeat delivery (B1)', () => {
     });
   });
 
-  // C2 — block-level delivery ledger (#189). Finer-grained than the whole-technique
-  // dedup above: a NOT-yet-seen technique whose shared contract/rules blocks were already
-  // delivered (by a sibling technique or an earlier fetch) returns those blocks as markers
-  // while its technique-specific core stays full — the case whole-payload hashing cannot
-  // catch, since the core always changes the whole hash.
-  describe('block-level delivery ledger (C2)', () => {
+  // Block-level delivery ledger. Finer-grained than the whole-technique dedup above:
+  // a NOT-yet-seen technique whose shared contract/rules blocks were already delivered
+  // (by a sibling technique or an earlier fetch) returns those blocks as markers while
+  // its technique-specific core stays full — the case whole-payload hashing cannot catch,
+  // since the core always changes the whole hash.
+  describe('block-level delivery ledger', () => {
     // Parse a get_technique response body into its technique record (drops the
     // `session_index:` header line before the first blank line).
     function parseTechniqueBody(result: { content: Array<{ text: string }> }): Record<string, unknown> {
@@ -729,7 +729,7 @@ describe('reference-not-repeat delivery (B1)', () => {
 
     // Two distinct technique-bound steps within an activity, discovered on a THROWAWAY
     // fresh session so the probe's get_activity does not pollute the test session's
-    // ledger (eager bundling records whole-technique keys in every mode). The C2 tests
+    // ledger (eager bundling records whole-technique keys in every mode). These tests
     // then fetch these steps directly via get_technique, never calling get_activity, so a
     // block-marker (not a whole-technique marker) is exercised on the second fetch.
     async function findTwoTechniqueStepIds(activityId: string): Promise<[string, string]> {
@@ -898,10 +898,10 @@ describe('reference-not-repeat delivery (B1)', () => {
     });
   });
 
-  // C12 — get_workflow orchestrator ops-bundle slimming (#189). Under persistent mode the
-  // ops bundle (above the `---` separator) collapses to a single content-keyed
-  // workflow_bundle:<hash> marker on the second (resume) call; fresh mode always sends it full.
-  describe('get_workflow ops-bundle slimming (C12)', () => {
+  // get_workflow orchestrator ops-bundle slimming. Under persistent mode the ops bundle
+  // (above the `---` separator) collapses to a single content-keyed workflow_bundle:<hash>
+  // marker on the second (resume) call; fresh mode always sends it full.
+  describe('get_workflow ops-bundle slimming', () => {
     function splitWorkflowResponse(result: { content: Array<{ text: string }> }): { opsBlock: string; summary: Record<string, unknown> } {
       const text = responseText(result as never);
       const sepIdx = text.indexOf('\n\n---\n\n');
@@ -916,7 +916,7 @@ describe('reference-not-repeat delivery (B1)', () => {
       const session = await startSession({
         workflow_id: 'work-package',
         agent_id: 'solo',
-        planning_folder: planningFolder('2026-07-12-c12-persistent'),
+        planning_folder: planningFolder('2026-07-12-ops-bundle-slimming-persistent'),
         context_mode: 'persistent',
       });
       const idx = session['session_index'] as string;
@@ -954,7 +954,7 @@ describe('reference-not-repeat delivery (B1)', () => {
     });
 
     it('records the workflow_bundle:<hash> channel key on first persistent delivery', async () => {
-      const slug = '2026-07-12-c12-ledger-key';
+      const slug = '2026-07-12-ops-bundle-slimming-ledger-key';
       const session = await startSession({
         workflow_id: 'work-package',
         agent_id: 'solo',
