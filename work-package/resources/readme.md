@@ -2,7 +2,7 @@
 name: readme
 description: Guidelines for creating the README.md entry-point document for work package planning folders.
 metadata:
-  version: 3.1.0
+  version: 3.2.0
   order: 1
   legacy_id: 1
 ---
@@ -48,7 +48,7 @@ The `README.md` is the entry point for a work package planning folder (git hosti
 | — | `Comprehension artifact` | Persistent codebase knowledge | 20-45m | ⬚ Pending |
 | — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, deferred items, lessons, retrospective | 10-20m | ⬚ Pending |
+| 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ⬚ Pending |
 
 ## 🔗 Links
 
@@ -64,7 +64,7 @@ The `README.md` is the entry point for a work package planning folder (git hosti
 ### Header line
 
 - One blockquote line: type · creation date · status (lean-header). Status values: `Planning`, `Ready`, `In Progress`, `Complete`.
-- Status appears **once**, in this line (state-once-per-artifact) — no footer status section, no closing narrative paragraph. Deferred items and outcomes live in COMPLETE.md; link it from Progress, don't copy (single-source-and-link).
+- Status appears **once**, in this line (state-once-per-artifact) — no footer status section, no closing narrative paragraph. Outcomes live in COMPLETE.md and deferred items in the [deferred-items register](deferred-items.md); link them from Progress, don't copy (single-source-and-link).
 - When the README is updated after completion, append `· Revised YYYY-MM-DD`.
 
 ### Executive Summary
