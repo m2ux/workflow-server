@@ -1,6 +1,6 @@
 # Audience Attribute on Technique Output Declarations - July 2026
 
-> Enhancement · Created 2026-07-13 · **Status:** Lean-coding audit complete — clean over-engineering scoreboard (`Lean already. Ship.`, net -0) and clean debt ledger (0 markers); no simplifications to apply, proceeding to post-impl-review
+> Enhancement · Created 2026-07-13 · **Status:** Post-implementation review complete — manual diff review clean (user confirmed all rationales, no flagged blocks), code review 0 findings, L12 structural analysis 2 Informational (V5-deferred) findings, test-suite review clean (14/14 new tests, no gaps), architecture impact low; full suite 579 pass / 14 skip / 0 fail; no code fixes needed, proceeding to validate
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -30,10 +30,11 @@ Because the change is purely additive, nothing a reader sees today changes when 
 | 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Spec, schema, loader, projection, lint changes | 2-4h | ✅ Complete |
 | 08 | [Provenance log](08-provenance-log.md) | Per-task DCO attribution rows | 5-10m | ✅ Complete |
-| 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 09 | [Code review](09-code-review.md) | Lean-coding audit — over-engineering scoreboard | 10-20m | ✅ Complete |
+| 10 | [Change block index](10-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ✅ Complete |
+| 09 | [Code review](09-code-review.md) | Lean-coding audit + manual diff review + code review + structural analysis (L12) | 10-20m | ✅ Complete |
 | 09 | [Debt ledger](09-debt-ledger.md) | Harvested ponytail-marker debt ledger | 5-10m | ✅ Complete |
-| 06 | [Test suite review](test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
+| 10 | [Test suite review](10-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ✅ Complete |
+| 10 | [Architecture summary](10-architecture-summary.md) | Stakeholder overview — low architectural impact | 10-20m | ✅ Complete |
 | 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
 | 15 | [Codebase comprehension](15-codebase-comprehension.md) | Six V4 surfaces · extension points · blast radius | 20-45m | ✅ Complete |
 | — | [Comprehension artifact](../../comprehension/technique-output-audience-pipeline.md) | Persistent codebase knowledge (pipeline + prism lenses) | 20-45m | ✅ Complete |
