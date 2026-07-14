@@ -34,7 +34,7 @@ rules:
     - Present approach before implementation — show what will change, how, and in what order before modifying any file
     - Corrections must persist — record corrections and verify compliance at every subsequent checkpoint
     - All YAML files must pass schema validation before commit — run validation on every produced file
-    - On completing each activity, update the planning-folder `README.md` progress tracker — mark this activity's row ✅ Complete in the 📊 Progress table and set the header Status line to the current lifecycle state (Planning/Drafting/Reviewing/Complete). (No session README exists in review mode, where the seed step is skipped.)
+    - On completing each activity, update the planning-folder `README.md` progress tracker — mark this activity's row ✅ Complete in the 📊 Progress table and set the header Status line to the current lifecycle state (Planning/Drafting/Reviewing/Complete). (The session README is present in create and update modes, where the seed step runs.)
 techniques:
   activity:
     - variable-binding

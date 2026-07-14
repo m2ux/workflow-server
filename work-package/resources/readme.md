@@ -61,10 +61,10 @@ The `README.md` is the entry point for a work package planning folder (git hosti
 
 ## Rules
 
-The shared header-line, Executive Summary, Problem/Solution Overview, Progress-table, Links-table, and layout-discipline rules (status stated once, no footer, no `---`, single-source-and-link) are defined in the canonical [Planning Folder README Guide](../../meta/resources/planning-readme.md). Work-package specifics:
+The shared header-line, Executive Summary, Problem/Solution Overview, Progress-table, and Links-table rules are defined in the canonical [Planning Folder README Guide](../../meta/resources/planning-readme.md). Work-package specifics:
 
 - **Classifier** — the work-package type: `Feature`, `Bug-Fix`, `Enhancement`, `Refactor`. Status values: `Planning`, `Ready`, `In Progress`, `Complete`.
 - **Problem Overview** — written by the `present-problem-overview` step (`start-work-package` activity).
-- **Solution Overview** — written by the `present-solution-overview` step (`plan-prepare` activity); links the work package plan rather than re-listing the problem items.
-- **Outcomes and deferred items** live in [COMPLETE.md](complete-wp.md) and the [deferred-items register](deferred-items.md); link them from Progress, don't copy.
+- **Solution Overview** — written by the `present-solution-overview` step (`plan-prepare` activity); links the work package plan for the task breakdown.
+- **Outcomes and deferred items** live in [COMPLETE.md](complete-wp.md) and the [deferred-items register](deferred-items.md), linked from Progress (single-source-and-link).
 - **Links table** — Jira ticket, parent epic, PR.
