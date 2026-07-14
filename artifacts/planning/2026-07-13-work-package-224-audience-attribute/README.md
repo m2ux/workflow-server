@@ -1,6 +1,6 @@
 # Audience Attribute on Technique Output Declarations - July 2026
 
-> Enhancement · Created 2026-07-13 · **Status:** In Progress
+> Enhancement · Created 2026-07-13 · **Status:** Design philosophy complete — proceeding to codebase comprehension
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -22,8 +22,8 @@ This work package lets each artifact declaration state its intended reader — a
 
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
-| 01 | `Design philosophy` | Problem classification, design rationale, workflow path | 15-30m | ⬚ Pending |
-| 01 | `Assumptions log` | Tracked assumptions across all activities | 10-15m | ⬚ Pending |
+| 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
+| 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | 🔄 In Progress |
 | 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
 | 05 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
 | — | Implementation | Spec, schema, loader, projection, lint changes | 2-4h | ⬚ Pending |
