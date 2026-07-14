@@ -1,6 +1,6 @@
 # Assumptions Log
 
-> Audience Attribute on Technique Output Declarations · #224 · updated 2026-07-14 (plan-prepare)
+> Audience Attribute on Technique Output Declarations · #224 · updated 2026-07-14 (assumptions-review)
 
 ## Log
 
