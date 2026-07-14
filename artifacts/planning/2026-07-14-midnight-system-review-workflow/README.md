@@ -1,6 +1,6 @@
 # midnight-system-review Workflow Creation — July 2026
 
-> Create · Created 2026-07-14 · **Status:** Reviewing — workflow committed (d15fc578) and [PR #231](https://github.com/m2ux/workflow-server/pull/231) open against `workflows`; retrospective pending
+> Create · Created 2026-07-14 · **Status:** Complete — workflow committed (d15fc578), [PR #231](https://github.com/m2ux/workflow-server/pull/231) open against `workflows`; close-out and retrospective recorded in [11-COMPLETE.md](11-COMPLETE.md)
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -100,8 +100,8 @@ Full report with dispositions and re-audit results: [08-quality-review.md](08-qu
 | 06 | Scope and Draft | Confirm scope manifest; draft the definition files | 30-90m | ✅ Complete |
 | 08 | Quality Review | Multi-lens audit vs schema, principles, anti-patterns | 20-45m | ✅ Complete |
 | 09 | Validate and Commit | Verify scope, README, build; commit | 10-20m | ✅ Complete |
-| 11 | Retrospective | Session lessons and follow-ups | 10-20m | ⬚ Pending |
-| 12 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, design decisions, limitations | 10-20m | ⬚ Pending |
+| 11 | Retrospective | Session lessons and follow-ups | 10-20m | ✅ Complete |
+| 12 | [Close-out (COMPLETE.md)](11-COMPLETE.md) | Deliverables, design decisions, limitations | 10-20m | ✅ Complete |
 
 ---
 

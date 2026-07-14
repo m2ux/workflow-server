@@ -288,20 +288,22 @@
           "requirements-refinement",
           "pattern-analysis",
           "scope-and-draft",
-          "quality-review"
+          "quality-review",
+          "validate-and-commit"
         ],
-        "condition": "has_critical_finding == false",
-        "currentActivity": "validate-and-commit",
-        "currentTechnique": "publish-workflow-pr",
+        "condition": "default",
+        "currentActivity": "retrospective",
+        "currentTechnique": "create-completion-doc",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:3bab2d4357ac160c": "3bab2d4357ac160c",
             "activity_rules:a10718b9ac992a90": "a10718b9ac992a90",
+            "activity_rules:c6d243b74aca2b16": "c6d243b74aca2b16",
             "bundle:rules:cc68b9a618a0b16a": "cc68b9a618a0b16a",
             "bundle:rules:faa1ba10d18925c6": "faa1ba10d18925c6",
             "bundle:scatter-gather": "76185929112c0474",
             "bundle:variable-binding": "a96d5ddb38355c4d",
-            "bundle:workflow-engine::finalize-activity": "893ede1a64b8006b",
+            "bundle:workflow-engine::finalize-activity": "4ee66ec52ea881f9",
             "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
             "bundle:workflow-engine::yield-checkpoint": "8761bc9b631c2e5b",
             "technique:apply-audit-fixes": "c6c15d48f07571d2",
@@ -311,7 +313,9 @@
             "technique:audit-rule-hygiene": "731c42eb16b941e9",
             "technique:audit-schema-validation": "9119cbaa568f0a2d",
             "technique:commit-verification": "e13177478dfd3475",
+            "technique:conduct-retrospective": "d5c220ea625f39ff",
             "technique:context-loading": "fd1c85691f22205c",
+            "technique:create-completion-doc": "93116c3734e0fcb5",
             "technique:derive-design-dimensions": "4c49269a43a8a13e",
             "technique:elicitation": "3bc748121f624db4",
             "technique:intake-classification": "a0f6dd4d66b57ccd",
@@ -1755,16 +1759,64 @@
             },
             "timestamp": "2026-07-14T14:43:14.441Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-14T14:46:12.438Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "retrospective",
+            "timestamp": "2026-07-14T14:46:12.438Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "conduct-retrospective",
+              "techniqueId": "conduct-retrospective"
+            },
+            "timestamp": "2026-07-14T14:46:44.397Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-completion-doc",
+              "techniqueId": "create-completion-doc"
+            },
+            "timestamp": "2026-07-14T14:46:51.535Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "completion-artifact"
+            },
+            "timestamp": "2026-07-14T14:47:07.937Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "work-package/workflow-retrospective"
+            },
+            "timestamp": "2026-07-14T14:47:08.159Z",
+            "type": "resource_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 159,
+        "seq": 164,
         "sessionIndex": "QO3RMP",
         "skippedActivities": [],
         "startedAt": "2026-07-14T08:38:57.714Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784040194,
+        "ts": 1784040428,
         "variables": {
           "format_literacy_confirmed": true,
           "has_critical_finding": false,
