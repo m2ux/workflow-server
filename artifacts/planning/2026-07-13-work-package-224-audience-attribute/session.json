@@ -234,6 +234,10 @@
             },
             "optionId": "acceptable",
             "respondedAt": "2026-07-14T05:59:20.000Z"
+          },
+          "submit-for-review-dco-sign-off-confirmation": {
+            "optionId": "certify",
+            "respondedAt": "2026-07-14T06:05:14.000Z"
           }
         },
         "completedActivities": [
@@ -245,11 +249,12 @@
           "implement",
           "lean-coding-audit",
           "post-impl-review",
-          "validate"
+          "validate",
+          "strategic-review"
         ],
-        "condition": "validation_passed == true",
-        "currentActivity": "strategic-review",
-        "currentTechnique": "strategic-review::apply-cleanup",
+        "condition": "review_passed == true",
+        "currentActivity": "submit-for-review",
+        "currentTechnique": "update-pr::mark-ready",
         "deliveredContent": {
           "workflow-orchestrator": {
             "activity_rules:89bbdae40e12504b": "89bbdae40e12504b",
@@ -266,6 +271,7 @@
             "technique:codebase-comprehension::survey": "555ed1ca46307c8e",
             "technique:create-test-plan": "f0380b57ab957c3b",
             "technique:dco-provenance::append-task-row": "9e8c07543dacaf9c",
+            "technique:dco-provenance::record-attestation": "9a3e20d2b0cdcec8",
             "technique:design-philosophy::classify": "b2bbdd2554959974",
             "technique:design-philosophy::define": "16aef98fe714c462",
             "technique:design-philosophy::determine-path": "817252cd9165c172",
@@ -283,6 +289,7 @@
             "technique:manage-git::artifact-commits": "19b361ba9207828e",
             "technique:manage-git::create-worktree": "c5aa47363f34fe66",
             "technique:manage-git::detect-merge-strategy": "810fc9074a3c3afe",
+            "technique:manage-git::push-commits": "c4e1db54f9ab65bd",
             "technique:manage-git::sync-branch": "9e0d10fdb592587b",
             "technique:manage-git::update-reference-submodules": "b928d855784b60a4",
             "technique:manage-git::verify-feature-branch": "9eadb553eb8bdc0c",
@@ -312,7 +319,9 @@
             "technique:summarize-architecture": "a363f28bcab1c00e",
             "technique:task-completion-review": "bf14b14b00293142",
             "technique:update-pr::create-pr": "8d33c4b6c475c5a2",
-            "technique:update-pr::render": "9cd43d131d0e86aa"
+            "technique:update-pr::mark-ready": "2d2e75aa99d4a83f",
+            "technique:update-pr::render": "4cfafb174b1db089",
+            "technique:update-pr::verify-body": "560a1c68fe3d2571"
           }
         },
         "history": [
@@ -1515,16 +1524,100 @@
             },
             "timestamp": "2026-07-14T05:59:20.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "timestamp": "2026-07-14T06:00:57.945Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-07-14T06:00:57.945Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "dco-sign-off",
+              "techniqueId": "dco-provenance::record-attestation"
+            },
+            "timestamp": "2026-07-14T06:01:38.208Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "update-description",
+              "techniqueId": "update-pr::render"
+            },
+            "timestamp": "2026-07-14T06:01:38.436Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "verify-body",
+              "techniqueId": "update-pr::verify-body"
+            },
+            "timestamp": "2026-07-14T06:01:43.255Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "push-commits",
+              "techniqueId": "manage-git::push-commits"
+            },
+            "timestamp": "2026-07-14T06:01:43.954Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "mark-ready",
+              "techniqueId": "update-pr::mark-ready"
+            },
+            "timestamp": "2026-07-14T06:01:44.432Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "resourceId": "pr-description"
+            },
+            "timestamp": "2026-07-14T06:01:44.802Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "dco-sign-off-confirmation",
+            "timestamp": "2026-07-14T06:03:36.016Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "dco-sign-off-confirmation",
+            "data": {
+              "optionId": "certify"
+            },
+            "timestamp": "2026-07-14T06:05:14.000Z",
+            "type": "checkpoint_response"
           }
         ],
         "schemaVersion": 1,
-        "seq": 65,
+        "seq": 76,
         "sessionIndex": "UXBZIN",
         "skippedActivities": [],
         "startedAt": "2026-07-13T17:31:30.934Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784008779,
+        "ts": 1784009143,
         "variables": {
           "artifact_name": "",
           "assumption_deferred": false,

@@ -11,3 +11,11 @@
 | 5 | claude | claude-opus-4-8 | test-writing | repo-only | Projection carry-through regression test — `audience: agent` output survives `projectTechnique`/`projectTechniqueToYaml` unchanged (no source edit to projection) |
 | 6 | claude | claude-opus-4-8 | code-generation | repo-only | Standalone corpus lint `scripts/check-audience.ts` — flags any `audience: agent` output whose `#### artifact` name is not JSON; baseline-snapshotted, wired as `check:audience` + vitest guard |
 | 7 | claude | claude-opus-4-8 | test-writing | repo-only | Tests: loader parse (human/agent/absent/invalid), schema enum accept/reject under `.strict()`, `composeActivityArtifacts` audience carry-through |
+
+## Attestation
+
+- **Timestamp:** 2026-07-14T06:05:40Z
+- **Certifier:** Mike Clay <mike.clay@shielded.io>
+- **Attestation:** certify
+
+Certified all six Developer Certificate of Origin points for this work package: reviewed the entire diff and understands each material change; has the right to submit under the project's license; included no code with unclear or incompatible provenance; can explain the solution's origin (own design plus repo context, `repo-only` scope); tests and linters have been run (579 passed, 0 failed); accepts responsibility for defects and licensing issues in this patch.

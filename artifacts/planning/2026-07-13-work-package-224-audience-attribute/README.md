@@ -1,6 +1,6 @@
 # Audience Attribute on Technique Output Declarations - July 2026
 
-> Enhancement · Created 2026-07-13 · **Status:** In Progress — strategic review complete (scope-fit exact, 1 Low finding [SR-1] accepted, both commits GPG-signed); proceeding to submit-for-review
+> Enhancement · Created 2026-07-13 · **Status:** Awaiting Review — PR #227 finalized (Final PR body rendered [SR-1 resolved], DCO certified, both commits GPG-signed) and marked ready-for-review; holding for reviewer feedback
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -39,7 +39,7 @@ Because the change is purely additive, nothing a reader sees today changes when 
 | 15 | [Codebase comprehension](15-codebase-comprehension.md) | Six V4 surfaces · extension points · blast radius | 20-45m | ✅ Complete |
 | — | [Comprehension artifact](../../comprehension/technique-output-audience-pipeline.md) | Persistent codebase knowledge (pipeline + prism lenses) | 20-45m | ✅ Complete |
 | — | Validation | Build, test, lint verification | 15-30m | ✅ Complete |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
+| — | PR review | External review feedback cycle | 30-60m | ⏳ Awaiting review — PR #227 ready |
 | 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ⬚ Pending |
 
 ## 🔗 Links
