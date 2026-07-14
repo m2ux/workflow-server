@@ -1,6 +1,6 @@
 # Audience Attribute on Technique Output Declarations - July 2026
 
-> Enhancement · Created 2026-07-13 · **Status:** Awaiting Review — PR #227 finalized (Final PR body rendered [SR-1 resolved], DCO certified, both commits GPG-signed) and marked ready-for-review; holding for reviewer feedback
+> Enhancement · Created 2026-07-13 · **Status:** Approved — PR #227 reviewed and approved clean (no changes requested); review cycle complete, proceeding to close-out
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
