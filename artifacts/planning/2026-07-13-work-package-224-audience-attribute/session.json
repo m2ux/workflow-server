@@ -259,11 +259,12 @@
           "lean-coding-audit",
           "post-impl-review",
           "validate",
-          "strategic-review"
+          "strategic-review",
+          "submit-for-review"
         ],
-        "condition": "review_passed == true",
-        "currentActivity": "submit-for-review",
-        "currentTechnique": "review-outcome-analysis",
+        "condition": "review_requires_changes == false",
+        "currentActivity": "complete",
+        "currentTechnique": "manage-git::remove-worktree",
         "deliveredContent": {
           "workflow-orchestrator": {
             "activity_rules:89bbdae40e12504b": "89bbdae40e12504b",
@@ -278,6 +279,8 @@
             "technique:codebase-comprehension::deep-dive": "7490864f1355a2d7",
             "technique:codebase-comprehension::revise-questions": "863b8a68a7408193",
             "technique:codebase-comprehension::survey": "555ed1ca46307c8e",
+            "technique:conduct-retrospective::retrospective": "5f02b618c0da590c",
+            "technique:conduct-retrospective::select-next": "ce782b63db38e3c5",
             "technique:create-test-plan": "f0380b57ab957c3b",
             "technique:dco-provenance::append-task-row": "9e8c07543dacaf9c",
             "technique:dco-provenance::record-attestation": "9a3e20d2b0cdcec8",
@@ -285,6 +288,9 @@
             "technique:design-philosophy::define": "16aef98fe714c462",
             "technique:design-philosophy::determine-path": "817252cd9165c172",
             "technique:design-philosophy::document": "9e02b34914799ade",
+            "technique:finalize-documentation::create-complete-doc": "f64198c47c9f0471",
+            "technique:finalize-documentation::ensure-docs": "f1d979c024967da3",
+            "technique:finalize-documentation::finalize-test-plan": "1b2f4fba3e39054a",
             "technique:findings-classification": "9d76ce481954a27b",
             "technique:github-cli-protocol::assign-issue": "b576e381dbd9367b",
             "technique:github-cli-protocol::view-issue": "89599a5c1079f4bc",
@@ -299,6 +305,7 @@
             "technique:manage-git::create-worktree": "c5aa47363f34fe66",
             "technique:manage-git::detect-merge-strategy": "810fc9074a3c3afe",
             "technique:manage-git::push-commits": "c4e1db54f9ab65bd",
+            "technique:manage-git::remove-worktree": "b1a120148496058a",
             "technique:manage-git::sync-branch": "9e0d10fdb592587b",
             "technique:manage-git::update-reference-submodules": "b928d855784b60a4",
             "technique:manage-git::verify-feature-branch": "9eadb553eb8bdc0c",
@@ -1663,16 +1670,108 @@
             },
             "timestamp": "2026-07-14T06:11:49.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-07-14T08:32:02.406Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "complete",
+            "timestamp": "2026-07-14T08:32:02.406Z",
+            "type": "activity_entered"
+          },
+          {
+            "timestamp": "2026-07-14T08:32:02.406Z",
+            "type": "workflow_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "conduct-retrospective",
+              "techniqueId": "conduct-retrospective::retrospective"
+            },
+            "timestamp": "2026-07-14T08:32:46.975Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "select-next",
+              "techniqueId": "conduct-retrospective::select-next"
+            },
+            "timestamp": "2026-07-14T08:32:46.975Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "finalize-test-plan",
+              "techniqueId": "finalize-documentation::finalize-test-plan"
+            },
+            "timestamp": "2026-07-14T08:33:14.769Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "create-complete-doc",
+              "techniqueId": "finalize-documentation::create-complete-doc"
+            },
+            "timestamp": "2026-07-14T08:33:21.449Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "ensure-docs",
+              "techniqueId": "finalize-documentation::ensure-docs"
+            },
+            "timestamp": "2026-07-14T08:33:21.968Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "remove-worktree",
+              "techniqueId": "manage-git::remove-worktree"
+            },
+            "timestamp": "2026-07-14T08:33:22.459Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "resourceId": "complete-wp"
+            },
+            "timestamp": "2026-07-14T08:33:27.472Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "resourceId": "workflow-retrospective"
+            },
+            "timestamp": "2026-07-14T08:36:00.419Z",
+            "type": "resource_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 81,
+        "seq": 89,
         "sessionIndex": "UXBZIN",
         "skippedActivities": [],
         "startedAt": "2026-07-13T17:31:30.934Z",
-        "status": "running",
+        "status": "completed",
         "triggeredWorkflows": [],
-        "ts": 1784009530,
+        "ts": 1784018160,
         "variables": {
           "artifact_name": "",
           "assumption_deferred": false,

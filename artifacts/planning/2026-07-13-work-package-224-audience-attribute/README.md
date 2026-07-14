@@ -1,6 +1,6 @@
 # Audience Attribute on Technique Output Declarations - July 2026
 
-> Enhancement · Created 2026-07-13 · **Status:** Approved — PR #227 reviewed and approved clean (no changes requested); review cycle complete, proceeding to close-out
+> Enhancement · Created 2026-07-13 · **Status:** Complete — work package closed out; PR [#227](https://github.com/m2ux/workflow-server/pull/227) approved clean and awaiting merge (merge is a separate human action). Close-out summary: [14-COMPLETE.md](14-COMPLETE.md).
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -39,8 +39,8 @@ Because the change is purely additive, nothing a reader sees today changes when 
 | 15 | [Codebase comprehension](15-codebase-comprehension.md) | Six V4 surfaces · extension points · blast radius | 20-45m | ✅ Complete |
 | — | [Comprehension artifact](../../comprehension/technique-output-audience-pipeline.md) | Persistent codebase knowledge (pipeline + prism lenses) | 20-45m | ✅ Complete |
 | — | Validation | Build, test, lint verification | 15-30m | ✅ Complete |
-| — | PR review | External review feedback cycle | 30-60m | ⏳ Awaiting review — PR #227 ready |
-| 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ⬚ Pending |
+| — | PR review | External review feedback cycle | 30-60m | ✅ Complete — PR #227 approved clean |
+| 14 | [Close-out (COMPLETE.md)](14-COMPLETE.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ✅ Complete |
 
 ## 🔗 Links
 
