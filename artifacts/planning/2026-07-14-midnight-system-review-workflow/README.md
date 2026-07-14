@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-14  
 **Mode:** Create  
-**Status:** Planning
+**Status:** Reviewing — quality review complete (6 findings: 3 fixed, 3 justified), ready for validate-and-commit
 
 ---
 
@@ -28,11 +28,16 @@ Confirmed workflow specification (requirements refinement, all 8 dimensions user
 
 ## Compliance Findings
 
-*Severity-rated findings from quality review, populated when that activity runs. "No findings" until then.*
+Full report with dispositions and re-audit results: [08-quality-review.md](08-quality-review.md).
 
 | Severity | Finding | Location | Fix |
 |----------|---------|----------|-----|
-| — | *None yet* | — | — |
+| Medium | EN-1 — W2 consolidation-time budget validation was text-only | `workflow.yaml` / `activities/03-evidence-probes.yaml` | Fixed — `enforce-consolidation-gate` validate step added after `consolidate-evidence` |
+| Low | CF-3 — contrastive voice in activity outcomes and 3 technique asides | 6 activity files + 3 technique files | Fixed — 14 lines rewritten to positive declarative; normative prohibitions retained |
+| Low | RH-1 — "always explicitly bound" ambiguous vs `binding-carries-only-deviations` | `workflow.yaml` rule "Rubric, not intuition" | Fixed — reworded to name `compute-verdict` as the always-present source |
+| Low | EX-1 — prose-directed scope re-resolution on `revise-scope` option | `activities/01-scope-intake.yaml` | Accepted as-is — corpus-conventional revise idiom, non-blocking checkpoint |
+| Low | CF-1 — toolchain gates emitted as outputs vs recorded S5 `set` idiom | `techniques/scope-intake/detect-toolchain.md` | Justified — S5 disposition amended to Adapt in [04-pattern-analysis.md](04-pattern-analysis.md) |
+| Info | CF-2 — conditionally-terminal transitions shape novel in corpus | `activities/05-verdict-and-report.yaml` | Justified — engine-verified terminal fall-through |
 
 ---
 
@@ -87,7 +92,7 @@ Confirmed workflow specification (requirements refinement, all 8 dimensions user
 | 03 | Requirements Refinement | Create, Update | ✅ Complete |
 | 04 | Pattern Analysis | Create | ✅ Complete |
 | 06 | Scope and Draft | Create, Update | ✅ Complete |
-| 08 | Quality Review | All | ⬚ Pending |
+| 08 | Quality Review | All | ✅ Complete |
 | 09 | Validate and Commit | All | ⬚ Pending |
 | 11 | Retrospective | Create, Update | ⬚ Pending |
 
@@ -102,6 +107,3 @@ Confirmed workflow specification (requirements refinement, all 8 dimensions user
 | Source evidence | [midnight-node PR #1849](https://github.com/midnightntwrk/midnight-node/pull/1849) |
 | System-under-test reference | `/home/mike1/projects/dev/midnight-agent-eng` |
 
----
-
-**Status:** Draft complete and attested — 34 files drafted and schema-valid in worktree `workflow/midnight-system-review` — ready for quality review
