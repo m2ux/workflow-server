@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -45,8 +45,9 @@ The structured consolidated review summary text, organized per the Consolidated 
 
 - Enforce the findings-constraint: every rendered finding names a file within the authored surface `{changed_files}`. Findings on files in `{changed_files}` render as the PR's findings; findings on other files render under a separate "pre-existing" grouping.
 - Populate the template from `{consolidated_findings}`: executive summary, per-category findings (code, test, documentation, validation, branch hygiene), action items, and severity definitions.
-- Reference, don't restate: each finding renders as its ID (linked), one-line title, severity, and disposition only — descriptions, evidence, and suggestions stay in the linked report artifacts per the format's reference-don't-restate rule.
-- Render the Reviewers field: hyperlink each contributing agent role to the workflow file that defines it, using the base URL from the Consolidated Review Format — Code Review Agent → `techniques/review-code.md`, Test Suite Review Agent → `techniques/review-test-suite.md`, Validation Agent → `activities/11-validate.yaml`, Strategic Review Agent → `activities/12-strategic-review.yaml`.
+- Reference, don't restate: each finding renders as its item designator, one-line title, `Source`, severity, and disposition only. The designator links to that finding's section in its associated report (the artifact named in the `Reports` header) when one exists, else it renders as plain text; the `Source` column links the pertinent file (with line or line range), test, document, CI run, or commit. Descriptions, evidence, and suggestions stay in the linked report artifacts per the format's reference-don't-restate rule.
+- Render the header fields in order — `PR`, then `Plan` on its own line immediately after `PR` (linking the planning folder's `README.md`, the work package's canonical home, via the same engineering-artifacts base URL as `Reports`), then `Reviewers`, `Reports`, and `Date`.
+- Render the Reviewers field: list each contributing review *activity* once and hyperlink it to its section in the activities README, using the base URL from the Consolidated Review Format — never link a reviewer to a technique file or to an activity's raw `.yaml`, and never split one activity into per-technique entries. Post-Implementation Review → `activities/README.md#10-post-implementation-review` (covers both code review and test-suite review), Validate → `activities/README.md#11-validate`, Strategic Review → `activities/README.md#12-strategic-review`.
 - Render the Prior Feedback Triage section from `{prior_feedback_triage}`: one row per prior comment with its Confirmed / Refuted / Superseded disposition, and carry each Confirmed blocker-class entry into the Action Items as a blocking item.
 - Apply `{rating_cap}` to the Overall Rating: when the cap is the request-changes tier, the Overall Rating is held at or below Request Changes — never Approve or Comment Only — even if the review's own findings are light.
 - Render the attribution footer that closes the format template — resolving `{user}` and `{sha}` per the format's instruction — so `{review_summary}` carries it and the posted comment reaches the PR with it intact.
