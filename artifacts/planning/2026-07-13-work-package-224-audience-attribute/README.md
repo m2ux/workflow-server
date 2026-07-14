@@ -1,6 +1,6 @@
 # Audience Attribute on Technique Output Declarations - July 2026
 
-> Enhancement · Created 2026-07-13 · **Status:** Codebase comprehension complete — proceeding to implementation analysis
+> Enhancement · Created 2026-07-13 · **Status:** Plan & prepare complete — approach confirmed, proceeding to assumptions review
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -16,16 +16,18 @@ This work package lets each artifact declaration state its intended reader — a
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+The plan adds one small, optional label to the place where a technique names a document it will produce: a reader tag that says whether the document is meant for a person or for the agent itself. The label is threaded through every part of the system that carries an artifact declaration — the written specification, the validation rules, the part that reads the definitions from disk, and the part that hands them to the agent doing the work — plus a new automated check that keeps the corpus honest. Crucially, the label is optional: every existing declaration that has no reader tag keeps working exactly as before, so nothing already written needs to change.
+
+Because the change is purely additive, nothing a reader sees today changes when this ships — no document looks different and no workflow behaves differently. What it delivers is the missing foundation: once each artifact can state its intended reader, the follow-on work can safely convert agent-only documents into compact structured form, which is faster to produce, cheaper, and more reliable for the agent to read back later. The work is scoped deliberately to just this foundation, with automated tests and a corpus check guarding that the new label validates correctly and that existing declarations remain untouched.
 
 ## 📊 Progress
 
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
-| 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | 🔄 In Progress |
-| 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
+| 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
+| 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Spec, schema, loader, projection, lint changes | 2-4h | ⬚ Pending |
 | 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
