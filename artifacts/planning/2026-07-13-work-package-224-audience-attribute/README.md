@@ -1,6 +1,6 @@
 # Audience Attribute on Technique Output Declarations - July 2026
 
-> Enhancement · Created 2026-07-13 · **Status:** Assumptions review complete — all assumptions resolved, proceeding to implementation
+> Enhancement · Created 2026-07-13 · **Status:** Implementation complete — all 7 tasks landed, typecheck + full test suite green (579 passed), proceeding to lean-coding-audit
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -28,7 +28,8 @@ Because the change is purely additive, nothing a reader sees today changes when 
 | 01 | [Assumptions log](01-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
 | 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
-| — | Implementation | Spec, schema, loader, projection, lint changes | 2-4h | ⬚ Pending |
+| — | Implementation | Spec, schema, loader, projection, lint changes | 2-4h | ✅ Complete |
+| 08 | [Provenance log](08-provenance-log.md) | Per-task DCO attribution rows | 5-10m | ✅ Complete |
 | 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
 | 06 | [Test suite review](test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
