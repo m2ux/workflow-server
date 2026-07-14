@@ -2,7 +2,7 @@
 name: review-mode
 description: Guidelines for using the work-package workflow in review mode to conduct structured PR reviews. Covers detection, adapted workflow behavior, and output generation.
 metadata:
-  version: 1.6.0
+  version: 1.7.0
   order: 24
   legacy_id: 24
 ---
@@ -59,15 +59,17 @@ https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artif
 
 Section titles (e.g., `### Code Review Findings`) must NOT be hyperlinks — the report links live in the header instead.
 
-**Reviewers list:** The `Reviewers` field lists each agent role that contributed findings, with each name hyperlinked to the workflow file that defines that role. The workflow definitions live in the workflows repository (a submodule), so reviewer links use the workflow repo base URL:
+**Plan link:** Immediately after the `PR` line, the header carries a `Plan` field linking the planning folder's `README.md` — the work package's canonical home — built from the same engineering-artifacts base URL as the `Reports` field, with `README.md` appended.
+
+**Reviewers list:** The `Reviewers` field lists each review *activity* that contributed findings — an activity, not a technique — with each name hyperlinked to that activity's section in the activities README. When one activity runs several review techniques (Post-Implementation Review runs both code review and test-suite review), it appears once; never split it into per-technique reviewer entries, never link a reviewer to a technique file, and link to the activity's README section rather than its raw `.yaml`. The activities README lives in the workflows repository (a submodule), so reviewer links use the workflow repo base URL:
 
 ```
-https://github.com/{WORKFLOW_REPO_OWNER}/{WORKFLOW_REPO_NAME}/blob/{WORKFLOW_BRANCH}/work-package/
+https://github.com/{WORKFLOW_REPO_OWNER}/{WORKFLOW_REPO_NAME}/blob/{WORKFLOW_BRANCH}/work-package/activities/README.md
 ```
 
-Resolve `{WORKFLOW_REPO_OWNER}`, `{WORKFLOW_REPO_NAME}`, and `{WORKFLOW_BRANCH}` from the `.gitmodules` entry for the workflows submodule (typically `.engineering/workflows`). The rendering step supplies the role-to-file mapping for the roles it links.
+Resolve `{WORKFLOW_REPO_OWNER}`, `{WORKFLOW_REPO_NAME}`, and `{WORKFLOW_BRANCH}` from the `.gitmodules` entry for the workflows submodule (typically `.engineering/workflows`). Each reviewer links to its activity's heading anchor: Post-Implementation Review → `#10-post-implementation-review` (covers both code review and test-suite review), Validate → `#11-validate`, Strategic Review → `#12-strategic-review`. The rendering step supplies the activity-to-anchor mapping for the activities it links.
 
-**Table format:** All review tables only include non-passing findings — do not list passing or positive items. The `#` column value is a hyperlink to the pertinent artifact or symbol (file path and line for code review, test method for test review, document URL for documentation, CI run URL for validation, branch/commit for hygiene). Every table must include a `Severity` and a `Disposition` column (e.g. Fix now / Deferred → register ID / Noted). Every `#` link MUST be validated against the actual source at the referenced commit before inclusion — do not carry over line numbers from earlier analysis without verification.
+**Table format:** All review tables only include non-passing findings — do not list passing or positive items. The `#` column value is the item designator (e.g. `CR-1`). When the finding has an associated report in the `Reports` header, the designator is hyperlinked to that finding's own section within its report, anchored to the finding's heading (e.g. `code-review.md#cr-1`); when it has none, the designator is rendered as plain text (e.g. `BH-1`). A separate `Source` column carries the pertinent artifact or symbol as a hyperlink whose link text is the source filename: file path and line, or line range, for code review; test method for test review; document URL for documentation; CI run URL for validation; branch/commit for hygiene. Every findings table must include `Source`, `Severity`, and `Disposition` columns (Disposition e.g. Fix now / Deferred → register ID / Noted). Every `Source` link MUST be validated against the actual source at the referenced commit before inclusion — do not carry over line numbers from earlier analysis without verification. (The Prior Feedback Triage table is the exception: its `#` links the prior comment thread, since each row is a prior comment rather than a finding with a report section.)
 
 **Reference, don't restate:** the summary references each finding by ID, one-line title, severity, and disposition ONLY. Finding descriptions, evidence, and suggestions live in the linked report artifacts (`Reports` header) — the summary never reproduces them.
 
@@ -88,7 +90,8 @@ Example: `(CR-1)` refers to Code Review finding 1, `(TR-3)` refers to Test Revie
 ## PR Review Summary
 
 **PR**: #XXX - Title  
-**Reviewers**: [each contributing agent role linked to its defining workflow file under `{workflow_base}`]  
+**Plan**: [work package README](.../planning/{PLANNING_FOLDER}/README.md)  
+**Reviewers**: [each contributing review activity linked to its section in the activities README under `{workflow_base}/activities/README.md`]  
 **Reports**: `Code Review` · `Test Suite Review`  
 **Date**: YYYY-MM-DD
 
@@ -113,47 +116,47 @@ Disposition of every prior comment and review on the PR (human and bot), determi
 
 ### Code Review Findings
 
-Details: [code review report](code-review-report-url).
+Details: [code review report](code-review.md).
 
-| # | Finding | Severity | Disposition |
-|---|---------|----------|-------------|
-| [CR-1](src/file.rs#L42) | Missing null check in handler | High | Fix now |
-| [CR-2](src/handler.rs#L78) | N+1 query pattern in loop | Medium | Deferred → D-2 |
+| # | Finding | Source | Severity | Disposition |
+|---|---------|--------|----------|-------------|
+| [CR-1](code-review.md#cr-1) | Missing null check in handler | [file.rs:42](src/file.rs#L42) | High | Fix now |
+| [CR-2](code-review.md#cr-2) | N+1 query pattern in loop | [handler.rs:78](src/handler.rs#L78) | Medium | Deferred → D-2 |
 
 ---
 
 ### Test Review Findings
 
-Details: [test suite review report](test-suite-review-report-url).
+Details: [test suite review report](test-suite-review.md).
 
-| # | Gap | Severity | Disposition |
-|---|-----|----------|-------------|
-| [TR-1](tests/module_test.rs) | Missing edge case coverage | Medium | Fix now |
-| [TR-2](tests/module_test.rs) | No error path tests | High | Fix now |
+| # | Gap | Source | Severity | Disposition |
+|---|-----|--------|----------|-------------|
+| [TR-1](test-suite-review.md#tr-1) | Missing edge case coverage | [module_test.rs:88](tests/module_test.rs#L88) | Medium | Fix now |
+| [TR-2](test-suite-review.md#tr-2) | No error path tests | [module_test.rs:210-240](tests/module_test.rs#L210-L240) | High | Fix now |
 
 ---
 
 ### Documentation Review
 
-| # | Gap | Severity | Disposition |
-|---|-----|----------|-------------|
-| `DR-1` | Change file missing | High | Fix now |
+| # | Gap | Source | Severity | Disposition |
+|---|-----|--------|----------|-------------|
+| `DR-1` | Change file missing | [CHANGELOG.md](CHANGELOG.md) | High | Fix now |
 
 ---
 
 ### Validation Findings
 
-| # | Check | Severity | Disposition |
-|---|-------|----------|-------------|
-| [VF-1](ci-run-url) | Lint — 3 clippy warnings | Warning | Fix now |
+| # | Check | Source | Severity | Disposition |
+|---|-------|--------|----------|-------------|
+| `VF-1` | Lint — 3 clippy warnings | [CI run](ci-run-url) | Warning | Fix now |
 
 ---
 
 ### Branch Hygiene
 
-| # | Item | Severity | Disposition |
-|---|------|----------|-------------|
-| `BH-1` | Branch freshness — behind main | Warning | Rebase before merge |
+| # | Item | Source | Severity | Disposition |
+|---|------|--------|----------|-------------|
+| `BH-1` | Branch freshness — behind main | [main@abc1234](commit-url) | Warning | Rebase before merge |
 
 ---
 
