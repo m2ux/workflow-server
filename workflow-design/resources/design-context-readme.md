@@ -73,12 +73,12 @@ The `README.md` is the entry point for a workflow-design session's planning fold
 
 ## Rules
 
-The shared header-line, Executive Summary, Problem/Solution Overview, Progress-table, Links-table, and layout-discipline rules (status stated once, no footer, no `---`, single-source-and-link) are defined in the canonical [Planning Folder README Guide](../../meta/resources/planning-readme.md). Design-session specifics:
+The shared header-line, Executive Summary, Problem/Solution Overview, Progress-table, and Links-table rules are defined in the canonical [Planning Folder README Guide](../../meta/resources/planning-readme.md). Design-session specifics:
 
 - **Classifier** — the session mode: `Create`, `Update`, or `Review`. Status values: `Planning`, `Drafting`, `Reviewing`, `Complete`.
 - **Problem Overview** — written by the `present-problem-overview` step (`intake-and-context` activity): what the current workflow does and why it needs changing.
-- **Solution Overview** — written by the `present-solution-overview` step (`scope-and-draft` activity): what the change does at a high level; links the scope manifest rather than re-listing it.
-- **Progress table** — lists the session's activities as Items; omit activities the active mode skips. Review mode branches straight to quality review and has no planning README.
+- **Solution Overview** — written by the `present-solution-overview` step (`scope-and-draft` activity): what the change does at a high level; links the scope manifest for the file breakdown.
+- **Progress table** — lists the activities the active mode runs, as Items. The planning README is seeded in create and update modes; review mode branches straight to quality review.
 
 ### Design Decisions
 
