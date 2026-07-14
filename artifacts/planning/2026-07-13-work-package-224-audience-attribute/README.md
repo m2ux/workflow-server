@@ -1,6 +1,6 @@
 # Audience Attribute on Technique Output Declarations - July 2026
 
-> Enhancement · Created 2026-07-13 · **Status:** Implementation complete — all 7 tasks landed, typecheck + full test suite green (579 passed), proceeding to lean-coding-audit
+> Enhancement · Created 2026-07-13 · **Status:** Lean-coding audit complete — clean over-engineering scoreboard (`Lean already. Ship.`, net -0) and clean debt ledger (0 markers); no simplifications to apply, proceeding to post-impl-review
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -31,7 +31,8 @@ Because the change is purely additive, nothing a reader sees today changes when 
 | — | Implementation | Spec, schema, loader, projection, lint changes | 2-4h | ✅ Complete |
 | 08 | [Provenance log](08-provenance-log.md) | Per-task DCO attribution rows | 5-10m | ✅ Complete |
 | 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
+| 09 | [Code review](09-code-review.md) | Lean-coding audit — over-engineering scoreboard | 10-20m | ✅ Complete |
+| 09 | [Debt ledger](09-debt-ledger.md) | Harvested ponytail-marker debt ledger | 5-10m | ✅ Complete |
 | 06 | [Test suite review](test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
 | 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
 | 15 | [Codebase comprehension](15-codebase-comprehension.md) | Six V4 surfaces · extension points · blast radius | 20-45m | ✅ Complete |
