@@ -32,5 +32,6 @@ These operations are referenced cross-workflow (resolved directly from the named
 | Reference | Used for |
 |-----------|----------|
 | [`work-package::manage-artifacts`](../../work-package/techniques/manage-artifacts/TECHNIQUE.md) | `create-readme` (seed the planning README), `write-artifact` (numbered artifacts), `verify-readme-conforms` (drift check) |
+| [`work-package::stakeholder-overview`](../../work-package/techniques/stakeholder-overview.md) | Plain-language Problem Overview (intake) and Solution Overview (scope-and-draft) sections of the planning README |
 | [`work-package::review-assumptions`](../../work-package/techniques/review-assumptions/TECHNIQUE.md) | `collect`, `interview`, `record` for the design-assumption lifecycle |
 | [`meta::version-control`](../../meta/techniques/version-control/TECHNIQUE.md) | `commit-regular-files` for committing artifacts |

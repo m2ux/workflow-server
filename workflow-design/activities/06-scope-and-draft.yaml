@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.3.0
+version: 1.4.0
 name: Scope and Draft
 description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file.
 required: true
@@ -25,6 +25,16 @@ steps:
       - id: revise
         label: Needs revision
         description: File manifest or implementation order requires adjustment.
+  - kind: technique
+    id: present-solution-overview
+    technique:
+      name: work-package::stakeholder-overview
+      inputs:
+        readme_section_heading: "## Solution Overview"
+        source_material: the confirmed scope manifest and the structural design for the target workflow
+    actions:
+      - action: message
+        message: "**Solution Overview** (plain-language summary for stakeholder reference)"
   - kind: loop
     id: file-drafting-loop
     name: File Drafting Loop

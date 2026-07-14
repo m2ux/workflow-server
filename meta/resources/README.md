@@ -2,7 +2,7 @@
 
 > Part of the [Meta Workflow](../README.md)
 
-Markdown resources providing the bootstrap navigation primer and prompt templates for sub-agent dispatch.
+Markdown resources providing the bootstrap navigation primer, prompt templates for sub-agent dispatch, and shared cross-workflow reference structures (such as the canonical planning-folder README guide).
 
 Tool reference content for Atlassian, GitNexus, and state management has moved into the corresponding capability techniques' operations — each operation declares its own `tools` block and any `prose` reference content.
 
@@ -16,6 +16,7 @@ Tool reference content for Atlassian, GitNexus, and state management has moved i
 | `activity-worker-prompt` | [Activity Worker Prompt](./activity-worker-prompt.md) | Template prompt for spawning an activity-worker sub-agent |
 | `workflow-orchestrator-prompt` | [Workflow Orchestrator Prompt](./workflow-orchestrator-prompt.md) | Template prompt for spawning a workflow-orchestrator sub-agent |
 | `session-summary-template` | [Session Summary Template](./session-summary-template.md) | Skeleton for the markdown session summary composed at workflow close |
+| `planning-readme` | [Planning Folder README Guide](./planning-readme.md) | Canonical structure + rules for the `README.md` entry-point of any workflow's planning folder; per-workflow README templates conform to it |
 
 ### Removed in v5/v6
 

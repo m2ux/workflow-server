@@ -76,7 +76,7 @@ Supplementary guide for review mode. The audit procedure itself is canonical in 
 
 ### 05 — Design Context README
 
-Template and section guidelines for the `README.md` entry-point of a workflow-design session's planning folder — the workflow-design counterpart of the work-package readme guide. Sections: header (workflow id / mode / status), Executive Summary, Design Decisions, Compliance Findings, Scope Manifest, Activity Progress table, Links.
+Template and section guidelines for the `README.md` entry-point of a workflow-design session's planning folder. Conforms to the canonical [meta planning-readme guide](../../meta/resources/planning-readme.md) — shared with the work-package readme guide — and appends the design-session sections. Sections: header (mode · created · status), Executive Summary, Problem Overview, Solution Overview, Design Decisions, Compliance Findings, Scope Manifest, Progress table, Links.
 
 ### 06 — Completion Artifact
 

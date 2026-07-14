@@ -1,5 +1,5 @@
 id: intake-and-context
-version: 1.0.0
+version: 1.1.0
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 required: true
@@ -65,8 +65,23 @@ steps:
     technique:
       name: work-package::manage-artifacts::create-readme
       inputs:
-        entity_context: "entity_title={workflow_id}; entity_type=workflow-design-session; status=Planning"
+        entity_context: "entity_title={workflow_id}; entity_type={operation_type}; status=Planning"
         readme_template: workflow-design/design-context-readme
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: technique
+    id: present-problem-overview
+    technique:
+      name: work-package::stakeholder-overview
+      inputs:
+        readme_section_heading: "## Problem Overview"
+        source_material: the requested change, the target workflow's current shape, and any context gathered during this activity
+    actions:
+      - action: message
+        message: "**Problem Overview** (plain-language summary for stakeholder reference)"
     condition:
       type: simple
       variable: is_review_mode
