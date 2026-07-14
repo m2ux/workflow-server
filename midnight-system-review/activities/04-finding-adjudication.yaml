@@ -1,0 +1,37 @@
+id: finding-adjudication
+version: 1.0.0
+name: Finding Adjudication
+description: Grade every finding candidate from the evidence log against the rubric and adjudicate each into the findings register.
+required: true
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting finding adjudication — grading evidence-backed candidates against the rubric
+  - kind: technique
+    id: grade-findings
+    technique: grade-findings
+  - kind: technique
+    id: register-findings
+    technique: register-findings
+  - kind: action
+    id: enforce-grade-tuple-gate
+    actions:
+      - action: validate
+        message: Adjudication is blocked until every registered finding carries the complete grade tuple — evidence anchor, risk/impact, evidence confidence, production likelihood, category, and validation mode (grade-tuple completeness gate)
+      - action: validate
+        message: Adjudication is blocked until every accepted finding meets the accepted-issue threshold — medium or high evidence confidence with a concrete evidence anchor; lower-confidence candidates are dispositioned as observations
+  - kind: action
+    id: finalize-activity
+    actions:
+      - action: log
+        message: Finding adjudication complete — findings register written with full grade tuples and dispositions
+transitions:
+  - to: verdict-and-report
+    isDefault: true
+outcome:
+  - Every finding is graded by one uniform rubric applied across all areas, keeping grades calibrated across the whole review
+  - Accepted findings are separated from observations by an explicit evidence-confidence threshold, so merge readiness moves only on evidence-backed findings
+  - The grade tuple is complete for every registered finding, making the verdict computation mechanical
+  - Dismissed candidates remain in the register with their disposition rationale, preserving the full adjudication trail

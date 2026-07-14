@@ -1,0 +1,45 @@
+id: publish-review
+version: 1.0.0
+name: Publish Review
+description: Post the signed-off review to the pull request and record the publication.
+required: false
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting review publication — posting the signed-off review to the pull request
+  - kind: action
+    id: verify-publish-gate
+    actions:
+      - action: validate
+        target: has_pr_surface
+        condition:
+          type: simple
+          variable: has_pr_surface
+          operator: ==
+          value: true
+        message: Publication is blocked without a pull-request surface (publish-authority gate)
+      - action: validate
+        target: publish_requested
+        condition:
+          type: simple
+          variable: publish_requested
+          operator: ==
+          value: true
+        message: Publication is blocked until the publish-decision checkpoint has approved it (publish-authority gate)
+  - kind: technique
+    id: post-review
+    technique: work-package::update-pr::post-review-comment
+  - kind: technique
+    id: record-publication
+    technique: record-publication
+  - kind: action
+    id: finalize-activity
+    actions:
+      - action: log
+        message: Review publication complete — publication record written
+outcome:
+  - The signed-off review reaches the pull request verbatim, with the review type derived from the verdict rubric
+  - Publication requires both a PR surface and explicit user approval, enforced structurally at entry
+  - A publication record ties the posted review back to the verdict, report, and findings register for full traceability

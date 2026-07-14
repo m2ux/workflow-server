@@ -1,0 +1,43 @@
+id: scope-intake
+version: 1.0.0
+name: Scope Intake
+description: Resolve the authoritative change surface for the review target, establish toolchain availability, and confirm the review scope.
+required: true
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting system review scope intake — resolving the change surface
+  - kind: technique
+    id: resolve-change-surface
+    technique: resolve-change-surface
+  - kind: technique
+    id: detect-toolchain
+    technique: detect-toolchain
+  - kind: checkpoint
+    id: scope-confirmed
+    message: "Change surface resolved for '{review_target}': the changed-file inventory and review scope are recorded in change-surface.md. Proceeding to area derivation in 30s unless you want to revise the scope."
+    blocking: false
+    defaultOption: proceed
+    autoAdvanceMs: 30000
+    options:
+      - id: proceed
+        label: Scope is correct
+        description: The resolved change surface and review scope are accurate (default — auto-accepts after 30s).
+      - id: revise-scope
+        label: Revise scope
+        description: The change surface or review scope needs adjustment — provide the correction; the surface is re-resolved before proceeding.
+  - kind: action
+    id: finalize-activity
+    actions:
+      - action: log
+        message: Scope intake complete — change surface confirmed and toolchain availability recorded
+transitions:
+  - to: area-derivation
+    isDefault: true
+outcome:
+  - The review runs against the authoritative changed surface — the GitHub-listed file set or three-dot merge-base diff of authored changes
+  - Publish eligibility is established up front, so the conditional publish tail is decided by data recorded at intake
+  - Toolchain availability gates are set structurally, letting every downstream probe degrade gracefully while the run completes
+  - A confirmed scope record exists before any investigation effort is spent

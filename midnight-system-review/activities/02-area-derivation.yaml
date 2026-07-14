@@ -1,0 +1,55 @@
+id: area-derivation
+version: 1.0.0
+name: Area Derivation
+description: Derive bounded investigation areas from the change surface and subsystem map, and secure approval of the investigation plan.
+required: true
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting area derivation — mapping the change surface onto the subsystem map
+  - kind: technique
+    id: derive-areas
+    technique: derive-areas
+  - kind: loop
+    id: plan-approval-loop
+    name: Plan Approval Loop
+    loopType: doWhile
+    condition:
+      type: simple
+      variable: plan_approved
+      operator: ==
+      value: false
+    maxIterations: 10
+    steps:
+      - kind: checkpoint
+        id: investigation-plan-approved
+        message: "Here is the investigation plan: the derived areas, their subsystem rationale, and the planned probes per area (at most {probe_budget_per_area} each) are recorded in investigation-plan.md. Approve the plan, or direct an amendment."
+        options:
+          - id: approve
+            label: Approve the investigation plan
+            description: Area coverage and planned probes are right — proceed to evidence probing.
+            effect:
+              setVariable:
+                plan_approved: true
+          - id: amend
+            label: Amend the plan
+            description: Coverage or probe selection needs adjustment — provide the amendment direction; the plan is amended and re-presented.
+      - kind: technique
+        id: amend-plan
+        technique: amend-plan
+        when: plan_approved == false
+  - kind: action
+    id: finalize-activity
+    actions:
+      - action: log
+        message: Area derivation complete — investigation plan approved
+transitions:
+  - to: evidence-probes
+    isDefault: true
+outcome:
+  - Investigation effort is directed by an explicit, user-approved coverage contract
+  - Every derived area is grounded in the subsystem map, so coverage claims trace to system knowledge
+  - Plan amendments converge inside a bounded loop, keeping the plan artifact authoritative through every revision
+  - Verdict-driven rework re-enters here, so revised coverage always flows through the same approved-plan gate
