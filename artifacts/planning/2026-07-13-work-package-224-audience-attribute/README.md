@@ -41,4 +41,4 @@ This work package lets each artifact declaration state its intended reader — a
 | Resource | Link |
 |----------|------|
 | Parent Epic | [#224](https://github.com/m2ux/workflow-server/issues/224) — Epic: work-package planning-artifact verbosity reduction |
-| PR | *Created during start-work-package activity.* |
+| PR | [#227](https://github.com/m2ux/workflow-server/pull/227) |
