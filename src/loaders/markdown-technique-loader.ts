@@ -241,7 +241,9 @@ interface IndexParse {
   capability: string;
   inputs: Array<{ id: string; description?: string; required?: boolean; components?: Record<string, string>; default?: string }> | undefined;
   protocol: ProtocolBlock[] | undefined;
-  outputs: Array<{ id: string; description?: string; artifact?: { name: string }; components?: Record<string, string> }> | undefined;
+  // `audience` is carried as an unrefined string so a mistyped value reaches OutputItemDefinitionSchema's
+  // `human`/`agent` enum and is rejected loudly at load, rather than being narrowed away here.
+  outputs: Array<{ id: string; description?: string; artifact?: { name: string }; audience?: string; components?: Record<string, string> }> | undefined;
   rules: Record<string, string | string[]> | undefined;
 }
 
@@ -285,31 +287,36 @@ function parseTechniqueIndex(raw: string, sourcePath: string, id: string): Index
   };
 }
 
+/** Reserved `####` sub-section keys per entry kind: `default` on inputs, `artifact`/`audience` on
+ *  outputs. A sub-section whose title matches one of these is entry metadata, not a component. */
+type ReservedKey = 'artifact' | 'default' | 'audience';
+
 /**
  * Split an Inputs/Output entry body into its lead description and `####` sub-sections.
- * Each sub-section names a component member of the entry; a sub-section whose title equals
- * `reserved` (case-insensitive) is pulled out as entry metadata instead of a component —
- * `artifact` for outputs (the persistence filename), `default` for inputs (the default value).
- * Returns the lead description, the component map (excluding the reserved member), and the
- * reserved member's value when present.
+ * Each sub-section names a component member of the entry; a sub-section whose title matches one of
+ * the `reserved` keys (case-insensitive) is pulled out as entry metadata instead of a component —
+ * `artifact`/`audience` for outputs (the persistence filename and intended reader), `default` for
+ * inputs (the default value). Returns the lead description, the component map (excluding reserved
+ * members), and a map of each matched reserved member's value.
  */
 function parseEntrySubsections(
   body: string,
-  reserved: 'artifact' | 'default',
-): { description?: string; components?: Record<string, string>; reserved?: string } {
+  reserved: readonly ReservedKey[],
+): { description?: string; components?: Record<string, string>; reserved: Partial<Record<ReservedKey, string>> } {
   const subs = splitSections(body, 4);
   // Lead description is everything before the first `#### ` heading.
   const firstHeading = body.search(/^####\s/m);
   const lead = firstHeading === -1 ? body : body.slice(0, firstHeading);
   const description = bodyParagraphs(lead) || undefined;
-  const out: { description?: string; components?: Record<string, string>; reserved?: string } = {};
+  const out: { description?: string; components?: Record<string, string>; reserved: Partial<Record<ReservedKey, string>> } = { reserved: {} };
   if (description) out.description = description;
   const components: Record<string, string> = {};
   for (const s of subs) {
     const value = bodyParagraphs(s.body);
-    if (s.title.toLowerCase() === reserved) {
-      // Strip surrounding inline-code backticks from a filename/default literal.
-      out.reserved = value.replace(/^`+|`+$/g, '').trim();
+    const key = reserved.find((r) => r === s.title.toLowerCase());
+    if (key) {
+      // Strip surrounding inline-code backticks from a filename/default/enum literal.
+      out.reserved[key] = value.replace(/^`+|`+$/g, '').trim();
     } else {
       components[s.title] = value;
     }
@@ -324,13 +331,13 @@ function parseInputsSection(section: Section | undefined): IndexParse['inputs'] 
   if (items.length === 0) return undefined;
   const result: NonNullable<IndexParse['inputs']> = [];
   for (const item of items) {
-    const { description, components, reserved } = parseEntrySubsections(item.body, 'default');
+    const { description, components, reserved } = parseEntrySubsections(item.body, ['default']);
     const entry: { id: string; description?: string; components?: Record<string, string>; default?: string } = { id: item.title };
     // A leading "(optional)" stays in the description prose — optionality is conveyed at the
     // point of use, not synthesized into a flag (the retired `required` field was never enforced).
     if (description) entry.description = description;
     if (components) entry.components = components;
-    if (reserved !== undefined) entry.default = reserved;
+    if (reserved.default !== undefined) entry.default = reserved.default;
     result.push(entry);
   }
   return result;
@@ -382,16 +389,21 @@ function parseOutputsSection(section: Section | undefined): IndexParse['outputs'
   if (items.length === 0) return undefined;
   const result: NonNullable<IndexParse['outputs']> = [];
   for (const item of items) {
-    const { description, components, reserved } = parseEntrySubsections(item.body, 'artifact');
+    const { description, components, reserved } = parseEntrySubsections(item.body, ['artifact', 'audience']);
     const out: {
       id: string;
       description?: string;
       artifact?: { name: string };
+      audience?: string;
       components?: Record<string, string>;
     } = { id: item.title };
     if (description) out.description = description;
     if (components) out.components = components;
-    if (reserved !== undefined) out.artifact = { name: reserved };
+    if (reserved.artifact !== undefined) out.artifact = { name: reserved.artifact };
+    // Pass the authored value through verbatim; the `human`/`agent` enum on OutputItemDefinitionSchema
+    // is the single validator, so a mistyped audience fails loudly at load (technique dropped with a
+    // logged warning) rather than being silently discarded here.
+    if (reserved.audience !== undefined) out.audience = reserved.audience;
     result.push(out);
   }
   return result;

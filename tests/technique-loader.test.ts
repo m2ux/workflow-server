@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { readTechnique, projectTechniqueToYaml, composeTechnique, resolveTechniques } from '../src/loaders/technique-loader.js';
+import { readTechnique, projectTechnique, projectTechniqueToYaml, composeTechnique, resolveTechniques } from '../src/loaders/technique-loader.js';
 import { resolve, join } from 'node:path';
 import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -678,6 +678,107 @@ describe('technique-loader', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.value.rules?.['meta-only']).toBeUndefined(); // meta root must NOT bleed in
+      }
+    });
+  });
+
+  /* ------------------------------------------------------------------------ */
+  /* audience attribute (#224 V4): loader parse + projection carry-through      */
+  /* ------------------------------------------------------------------------ */
+
+  describe('audience attribute', () => {
+    let tempDir: string;
+    const FM = ['---', 'metadata:', '  version: 1.0.0', '---', ''];
+
+    beforeEach(async () => {
+      tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'technique-audience-')));
+    });
+    afterEach(async () => {
+      await rm(tempDir, { recursive: true, force: true });
+    });
+
+    async function writeTechnique(audienceLine: string[]): Promise<void> {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(dir, 'aud.md'),
+        [...FM, '## Capability', '', 'Cap.', '',
+         '## Outputs', '', '### state_log', '', 'The output.', ...audienceLine, ''].join('\n'),
+        'utf-8',
+      );
+    }
+
+    // PR227-TC-01
+    it('parses `#### audience` = human onto the output entry', async () => {
+      await writeTechnique(['', '#### audience', '', '`human`']);
+      const result = await readTechnique('aud', tempDir);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.outputs?.find((o) => o.id === 'state_log')?.audience).toBe('human');
+      }
+    });
+
+    // PR227-TC-02
+    it('parses `#### audience` = agent onto the output entry (alongside an artifact)', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(dir, 'aud.md'),
+        [...FM, '## Capability', '', 'Cap.', '',
+         '## Outputs', '', '### state_log', '', 'The output.', '',
+         '#### artifact', '', '`assumptions-log.json`', '',
+         '#### audience', '', '`agent`', ''].join('\n'),
+        'utf-8',
+      );
+      const result = await readTechnique('aud', tempDir);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const out = result.value.outputs?.find((o) => o.id === 'state_log');
+        expect(out?.audience).toBe('agent');
+        expect(out?.artifact?.name).toBe('assumptions-log.json');
+      }
+    });
+
+    // PR227-TC-03 — backward compatibility
+    it('loads an output with no `#### audience` (audience absent)', async () => {
+      await writeTechnique([]);
+      const result = await readTechnique('aud', tempDir);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.outputs?.find((o) => o.id === 'state_log')?.audience).toBeUndefined();
+      }
+    });
+
+    // PR227-TC-05 (loader path) — an out-of-set value is passed through and rejected by .strict()
+    it('drops a technique whose `#### audience` is out of the human|agent set', async () => {
+      await writeTechnique(['', '#### audience', '', '`robot`']);
+      // A malformed field fails schema validation; the loader logs a warning and returns null,
+      // which readTechnique surfaces as a not-found/err rather than a technique carrying `robot`.
+      const result = await readTechnique('aud', tempDir);
+      expect(result.success).toBe(false);
+    });
+
+    // PR227-TC-06 — projection carry-through, no source edit to projectTechnique
+    it('projectTechnique / projectTechniqueToYaml preserve audience unchanged', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        join(dir, 'aud.md'),
+        [...FM, '## Capability', '', 'Cap.', '',
+         '## Outputs', '', '### state_log', '', 'The output.', '',
+         '#### artifact', '', '`assumptions-log.json`', '',
+         '#### audience', '', '`agent`', ''].join('\n'),
+        'utf-8',
+      );
+      const result = await readTechnique('aud', tempDir);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // Object projection preserves the field verbatim.
+        const projected = projectTechnique(result.value) as { outputs?: Array<{ id: string; audience?: string }> };
+        expect(projected.outputs?.find((o) => o.id === 'state_log')?.audience).toBe('agent');
+        // YAML projection round-trips it too.
+        const decoded = parseYaml(projectTechniqueToYaml(result.value)) as { outputs?: Array<{ id: string; audience?: string }> };
+        expect(decoded.outputs?.find((o) => o.id === 'state_log')?.audience).toBe('agent');
       }
     });
   });

@@ -25,7 +25,8 @@
     "check:variable-model": "tsx scripts/check-variable-model.ts",
     "check:fragments": "tsx scripts/check-fragments.ts",
     "check:review-mode": "tsx scripts/check-review-mode-gating.ts",
-    "check:stealth": "tsx scripts/check-stealth-isolation.ts"
+    "check:stealth": "tsx scripts/check-stealth-isolation.ts",
+    "check:audience": "tsx scripts/check-audience.ts"
   },
   "license": "MIT",
   "devDependencies": {

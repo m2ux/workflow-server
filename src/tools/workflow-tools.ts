@@ -76,7 +76,7 @@ export async function composeActivityArtifacts(
   workflowDir: string,
   workflowId: string,
   activityId?: string,
-): Promise<Array<{ id: string; name: string }>> {
+): Promise<Array<{ id: string; name: string; audience?: 'human' | 'agent' }>> {
   if (!activity) return [];
   const refs = new Set<string>();
   const collect = (steps?: Array<StepLike>): void => {
@@ -97,14 +97,16 @@ export async function composeActivityArtifacts(
     if (activityId && !r.includes('::')) candidates.add(`${activityId}::${r}`);
   }
   const resolved = await resolveTechniques([...candidates], workflowDir, workflowId);
-  const artifacts: Array<{ id: string; name: string }> = [];
+  const artifacts: Array<{ id: string; name: string; audience?: 'human' | 'agent' }> = [];
   const seen = new Set<string>();
   for (const t of resolved) {
     if (t.type !== 'technique') continue;
-    const outputs = (t.body as { outputs?: Array<{ id?: string; artifact?: { name?: string } }> } | undefined)?.outputs ?? [];
+    const outputs = (t.body as { outputs?: Array<{ id?: string; artifact?: { name?: string }; audience?: 'human' | 'agent' }> } | undefined)?.outputs ?? [];
     for (const o of outputs) {
       const name = o.artifact?.name;
-      if (name && !seen.has(name)) { seen.add(name); artifacts.push({ id: o.id ?? name, name }); }
+      // Carry `audience` onto the contract entry so the worker knows an artifact's intended reader
+      // (and thus its on-disk format) at write time; absent when the output declares none.
+      if (name && !seen.has(name)) { seen.add(name); artifacts.push({ id: o.id ?? name, name, ...(o.audience ? { audience: o.audience } : {}) }); }
     }
   }
   return artifacts;

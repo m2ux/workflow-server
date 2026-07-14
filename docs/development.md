@@ -182,9 +182,16 @@ npm run check:technique-template
 # and no identical rule/checkpoint body authored inline at multiple sites.
 # Near-duplicates of a fragment are reported as warnings. Hard-zero.
 npm run check:fragments
+
+# Audience convention: every output declared audience: agent that also carries an
+# #### artifact filename must name a JSON artifact (an agent-audience artifact is
+# serialized as JSON on disk). Fails only on NEW violations beyond
+# scripts/audience-baseline.json (re-snapshot intentional changes with
+# --update-baseline).
+npm run check:audience
 ```
 
-The binding-fidelity, technique-template, and fragments guards also run as Vitest tests (`tests/binding-fidelity.test.ts`, `tests/technique-template.test.ts`, `tests/fragments-guard.test.ts`), so `npm test` fails on new binding drift, a template deviation, or fragment drift.
+The binding-fidelity, technique-template, fragments, and audience guards also run as Vitest tests (`tests/binding-fidelity.test.ts`, `tests/technique-template.test.ts`, `tests/fragments-guard.test.ts`, `tests/audience-guard.test.ts`), so `npm test` fails on new binding drift, a template deviation, fragment drift, or a non-JSON agent-audience artifact.
 
 ## Branch Structure
 
