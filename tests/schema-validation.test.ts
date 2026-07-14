@@ -13,6 +13,10 @@ import {
   safeValidateActivity,
 } from '../src/schema/activity.schema.js';
 import { ConditionSchema } from '../src/schema/condition.schema.js';
+import {
+  OutputItemDefinitionSchema,
+  safeValidateTechnique,
+} from '../src/schema/technique.schema.js';
 import { loadWorkflow, getActivity } from '../src/loaders/workflow-loader.js';
 
 const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
@@ -283,6 +287,37 @@ describe('schema-validation', () => {
 
     it('rejects a bare non-exempt single word', () => {
       expect(safeValidateWorkflow(workflow('counter')).success).toBe(false);
+    });
+  });
+
+  describe('OutputItemDefinitionSchema audience (#224 V4)', () => {
+    // PR227-TC-04 — the enum accepts both in-set values.
+    it('accepts audience: human and audience: agent', () => {
+      expect(OutputItemDefinitionSchema.safeParse({ id: 'out', audience: 'human' }).success).toBe(true);
+      expect(OutputItemDefinitionSchema.safeParse({ id: 'out', audience: 'agent' }).success).toBe(true);
+    });
+
+    // PR227-TC-03 (schema view) — audience is optional; omitting it is valid (backward compatible).
+    it('accepts an output with no audience', () => {
+      expect(OutputItemDefinitionSchema.safeParse({ id: 'out' }).success).toBe(true);
+    });
+
+    // PR227-TC-05 — an out-of-set value is rejected.
+    it('rejects an out-of-set audience value', () => {
+      const result = OutputItemDefinitionSchema.safeParse({ id: 'out', audience: 'robot' });
+      expect(result.success).toBe(false);
+    });
+
+    // PR227-TC-05 (composed) — TechniqueSchema is `.strict()`, so an invalid audience on a nested
+    // output fails the whole technique, which is exactly what drops it at load.
+    it('rejects an invalid audience through the strict TechniqueSchema', () => {
+      const bad = {
+        id: 't', version: '1.0.0', capability: 'Cap.',
+        outputs: [{ id: 'out', audience: 'nobody' }],
+      };
+      expect(safeValidateTechnique(bad).success).toBe(false);
+      const good = { ...bad, outputs: [{ id: 'out', audience: 'agent' }] };
+      expect(safeValidateTechnique(good).success).toBe(true);
     });
   });
 

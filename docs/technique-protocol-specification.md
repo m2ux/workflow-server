@@ -68,6 +68,8 @@ metadata:
 <member description>
 #### artifact        (optional: the persistence filename)
 `<filename-or-{token}-template>`
+#### audience        (optional: the intended reader — human | agent)
+`agent`
 
 ## Protocol          (present when the technique does work)
 ### <N>. <Title>
@@ -93,11 +95,37 @@ loader rejects the singular `## Input` / `## Output` (and `## Output(s)`) varian
 - `#### <member>` is a named component of the entry (`components[member]`).
 - `#### artifact` (Outputs) is the persistence filename — a literal (`code-review.md`) or a
   `{token}`-template the worker interpolates at runtime (`{package_name}-plan.md`, the token being a snake_case symbol).
+- `#### audience` (Outputs) is the intended reader of the output/artifact — `human` or `agent`.
+  Absent means `human`. An `agent`-audience artifact is serialized as **JSON** on disk (named under
+  the same `artifactPrefix` rule as any artifact); a `human`-audience artifact is prose markdown.
 - `#### default` (Inputs) is the input's default value.
 - An entry whose description opens with `optional` (e.g. `*(optional)*`) is `required: false`.
 
 `parseEntrySubsections` splits an entry's lead description from its `####` members for both inputs
 and outputs.
+
+##### Choosing the audience
+
+`audience` makes format follow function, so pick it from who reads the artifact:
+
+- **`agent`** — an artifact written *only* for the next agent to consume as state: ID-bearing
+  tables, routing / reconciliation / index state, anything a later step reads back mechanically.
+- **`human`** — an artifact a person reads linearly: design write-ups, summaries, READMEs.
+- **absent ⇒ `human`** — the default when a declaration omits `audience`.
+
+Anti-patterns, per side:
+
+- **`agent`**: no prose narrative and no restating another artifact — reference it by ID or link and
+  keep the content structured JSON.
+- **`human`**: keep the existing state-once, single-source-and-link, and exception-only reporting
+  discipline.
+- **cross-cutting**: don't serialize agent state as prose, and don't dress a human document up as a
+  data dump.
+
+*Out of scope:* the per-artifact JSON *field schemas* for specific agent artifacts (assumptions-log,
+findings-classification, etc.) are a later increment (V5), not part of the `audience` attribute
+itself. This attribute states *who reads* an artifact and *that* an agent artifact is JSON; it does
+not fix the shape of any particular JSON payload.
 
 #### The symbol model
 

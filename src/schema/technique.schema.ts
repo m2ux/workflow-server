@@ -54,6 +54,7 @@ export const OutputItemDefinitionSchema = z.object({
   description: z.string().optional().describe('Human-readable description of this output'),
   components: OutputComponentsDefinitionSchema.optional(),
   artifact: OutputArtifactSchema.optional().describe('Optional. When populated, specifies the artifact name to create when persisting this output.'),
+  audience: z.enum(['human', 'agent']).optional().describe('Optional. The intended reader of this output/artifact — `human` (a person reads it linearly) or `agent` (the next agent consumes it as state). Absent means `human`. An `agent`-audience artifact is serialized as JSON on disk under the `artifactPrefix` rule.'),
   destination: z.string().optional().describe('Delivery-only, populated by the server on a step-bound get_technique: the session-bag name this output lands under when the step binding remaps it. Absent otherwise — an unremapped output lands under its own id. Never authored in technique files.'),
 });
 export type OutputItemDefinition = z.infer<typeof OutputItemDefinitionSchema>;

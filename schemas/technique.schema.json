@@ -69,6 +69,7 @@
         "description": { "type": "string", "description": "Human-readable description of this output" },
         "components": { "$ref": "#/definitions/outputComponentsDefinition" },
         "artifact": { "$ref": "#/definitions/outputArtifact", "description": "Optional. When populated, specifies the artifact name to create when persisting this output." },
+        "audience": { "type": "string", "enum": ["human", "agent"], "description": "Optional. The intended reader of this output/artifact — `human` (a person reads it linearly) or `agent` (the next agent consumes it as state). Absent means `human`. An `agent`-audience artifact is serialized as JSON on disk under the artifactPrefix rule." },
         "destination": { "type": "string", "description": "Delivery-only, server-populated on a step-bound get_technique: the session-bag name this output lands under when the step binding remaps it. Absent otherwise — an unremapped output lands under its own id. Never authored in technique markdown." }
       },
       "required": [ "id" ],
