@@ -227,15 +227,37 @@
           "requirements-refinement-dimension-confirmed": {
             "optionId": "confirmed",
             "respondedAt": "2026-07-14T08:56:08.000Z"
+          },
+          "scope-and-draft-draft-attestation": {
+            "optionId": "attested",
+            "respondedAt": "2026-07-14T09:52:21.000Z"
+          },
+          "scope-and-draft-file-approach-confirmed": {
+            "optionId": "confirmed",
+            "respondedAt": "2026-07-14T09:22:48.000Z"
+          },
+          "scope-and-draft-file-review": {
+            "optionId": "accepted",
+            "respondedAt": "2026-07-14T09:25:20.000Z"
+          },
+          "scope-and-draft-scope-and-structure-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "scope_manifest_confirmed": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-07-14T09:20:47.000Z"
           }
         },
         "completedActivities": [
           "intake-and-context",
-          "requirements-refinement"
+          "requirements-refinement",
+          "pattern-analysis"
         ],
         "condition": "is_update_mode == false",
-        "currentActivity": "pattern-analysis",
-        "currentTechnique": "work-package::manage-artifacts::create-readme",
+        "currentActivity": "scope-and-draft",
+        "currentTechnique": "present-for-review",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:3bab2d4357ac160c": "3bab2d4357ac160c",
@@ -251,10 +273,15 @@
             "technique:elicitation": "3bc748121f624db4",
             "technique:intake-classification": "a0f6dd4d66b57ccd",
             "technique:pattern-analysis": "53790f51e07778e4",
+            "technique:present-file-approach": "d66be92b6c48a7c5",
+            "technique:present-for-review": "8f58bb67efe596ee",
             "technique:reconcile-design-assumptions": "4822100423872f91",
+            "technique:review-draft-yaml": "738c49c144c95185",
+            "technique:scope-definition": "0548d2a34ab2069b",
             "technique:work-package::manage-artifacts::create-readme": "b183877b5425a547",
             "technique:work-package::review-assumptions::collect": "f609e95d4b12d739",
-            "technique:work-package::review-assumptions::record": "dae3a554cf5cdd20"
+            "technique:work-package::review-assumptions::record": "dae3a554cf5cdd20",
+            "technique:yaml-authoring": "afe160476c078c32"
           }
         },
         "history": [
@@ -614,16 +641,739 @@
             },
             "timestamp": "2026-07-14T09:14:08.000Z",
             "type": "checkpoint_response"
+          },
+          {
+            "activity": "pattern-analysis",
+            "timestamp": "2026-07-14T09:15:57.239Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-07-14T09:15:57.239Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "scope-definition",
+              "techniqueId": "scope-definition"
+            },
+            "timestamp": "2026-07-14T09:16:44.205Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "review-draft-yaml",
+              "techniqueId": "review-draft-yaml"
+            },
+            "timestamp": "2026-07-14T09:16:44.205Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-and-structure-confirmed",
+            "timestamp": "2026-07-14T09:20:25.187Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-and-structure-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:20:47.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "value": true
+            },
+            "timestamp": "2026-07-14T09:20:47.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "present-file-approach",
+              "techniqueId": "present-file-approach"
+            },
+            "timestamp": "2026-07-14T09:21:24.277Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "timestamp": "2026-07-14T09:22:22.831Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:22:48.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "yaml-authoring",
+              "techniqueId": "yaml-authoring"
+            },
+            "timestamp": "2026-07-14T09:23:16.026Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "present-for-review",
+              "techniqueId": "present-for-review"
+            },
+            "timestamp": "2026-07-14T09:24:47.167Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "timestamp": "2026-07-14T09:25:00.138Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:25:20.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:27:27.273Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:28:04.283Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:28:14.775Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:28:49.447Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:29:01.123Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:29:41.583Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:29:50.276Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:30:21.906Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:30:32.802Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:31:14.306Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:31:28.156Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:32:00.410Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:33:53.819Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:34:19.372Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:34:27.290Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:34:43.514Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:34:53.149Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:35:23.999Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:35:32.011Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:35:58.790Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:36:05.527Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:36:20.294Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:36:29.061Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:37:01.766Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:37:08.876Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:37:45.652Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:37:52.217Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:38:07.044Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:38:17.273Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:38:54.369Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:39:01.690Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:39:31.903Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:39:41.088Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:39:55.497Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:40:02.226Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:40:29.239Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:40:36.305Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:41:05.127Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:41:12.609Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:41:26.783Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:41:34.205Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:42:05.333Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:42:13.700Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:42:44.974Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:42:52.376Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:43:08.256Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:43:14.564Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:43:43.773Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:44:50.638Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:45:39.249Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:45:49.219Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:46:32.541Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:46:40.939Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:47:19.618Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:47:28.049Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:47:53.979Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:48:04.654Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:48:33.970Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:48:59.146Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:49:37.151Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:49:43.467Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:50:04.425Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:50:11.232Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:50:37.875Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-14T09:50:45.100Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "file-review",
+            "data": {
+              "optionId": "accepted"
+            },
+            "timestamp": "2026-07-14T09:51:07.498Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "draft-attestation",
+            "timestamp": "2026-07-14T09:51:59.880Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "draft-attestation",
+            "data": {
+              "optionId": "attested"
+            },
+            "timestamp": "2026-07-14T09:52:21.000Z",
+            "type": "checkpoint_response"
           }
         ],
         "schemaVersion": 1,
-        "seq": 35,
+        "seq": 114,
         "sessionIndex": "QO3RMP",
         "skippedActivities": [],
         "startedAt": "2026-07-14T08:38:57.714Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784020481,
+        "ts": 1784022741,
         "variables": {
           "format_literacy_confirmed": true,
           "has_critical_finding": false,
@@ -637,7 +1387,7 @@
           "review_findings_count": 0,
           "review_scope_confirmed": false,
           "schema_constructs_confirmed": true,
-          "scope_manifest_confirmed": false,
+          "scope_manifest_confirmed": true,
           "workflow_branch": ""
         },
         "workflowId": "workflow-design",
