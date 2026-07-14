@@ -211,10 +211,11 @@
           }
         },
         "completedActivities": [
-          "start-work-package"
+          "start-work-package",
+          "design-philosophy"
         ],
-        "condition": "default (isDefault)",
-        "currentActivity": "design-philosophy",
+        "condition": "default (isDefault) — needs_comprehension == true",
+        "currentActivity": "codebase-comprehension",
         "currentTechnique": "update-pr::create-pr",
         "deliveredContent": {
           "workflow-orchestrator": {
@@ -224,6 +225,9 @@
             "bundle:workflow-engine::finalize-activity": "36435fbb991b4805",
             "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
             "bundle:workflow-engine::yield-checkpoint": "8761bc9b631c2e5b",
+            "technique:codebase-comprehension::deep-dive": "7490864f1355a2d7",
+            "technique:codebase-comprehension::revise-questions": "863b8a68a7408193",
+            "technique:codebase-comprehension::survey": "555ed1ca46307c8e",
             "technique:design-philosophy::classify": "b2bbdd2554959974",
             "technique:design-philosophy::define": "16aef98fe714c462",
             "technique:design-philosophy::determine-path": "817252cd9165c172",
@@ -233,11 +237,13 @@
             "technique:gitnexus-operations::analyze": "b6527d83f8088472",
             "technique:issue-reference-detection": "0f54731a08d194e9",
             "technique:manage-artifacts::create-readme": "a1606c4a03263747",
+            "technique:manage-artifacts::write-artifact": "cc45b522103ea09c",
             "technique:manage-git::create-worktree": "c5aa47363f34fe66",
             "technique:manage-git::detect-merge-strategy": "810fc9074a3c3afe",
             "technique:manage-git::update-reference-submodules": "b928d855784b60a4",
             "technique:manage-git::verify-feature-branch": "9eadb553eb8bdc0c",
             "technique:naming-conventions": "910474f68bc4f4cf",
+            "technique:prism/portfolio-analysis": "100cd15384c1f0dd",
             "technique:project-type-detection": "335b1f7c8d05d69d",
             "technique:reference-resolution": "e62fc9c2b068c3e1",
             "technique:review-assumptions::collect": "fcb40e0ccd43a8bd",
@@ -674,16 +680,86 @@
             },
             "timestamp": "2026-07-14T04:26:28.157Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "timestamp": "2026-07-14T04:29:29.604Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "timestamp": "2026-07-14T04:29:29.604Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "build-comprehension",
+              "techniqueId": "codebase-comprehension::survey"
+            },
+            "timestamp": "2026-07-14T04:30:15.144Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "create-comprehension-artifact",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-14T04:30:15.144Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "initial-deep-dive",
+              "techniqueId": "codebase-comprehension::deep-dive"
+            },
+            "timestamp": "2026-07-14T04:30:15.144Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "initial-lens-pass",
+              "techniqueId": "prism/portfolio-analysis"
+            },
+            "timestamp": "2026-07-14T04:30:15.144Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "update-artifact-initial",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-14T04:30:15.144Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "workflow-orchestrator",
+              "stepId": "revise-initial-questions",
+              "techniqueId": "codebase-comprehension::revise-questions"
+            },
+            "timestamp": "2026-07-14T04:30:15.144Z",
+            "type": "technique_bundled"
           }
         ],
         "schemaVersion": 1,
-        "seq": 20,
+        "seq": 22,
         "sessionIndex": "UXBZIN",
         "skippedActivities": [],
         "startedAt": "2026-07-13T17:31:30.934Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784003188,
+        "ts": 1784003415,
         "variables": {
           "artifact_name": "",
           "assumption_deferred": false,
