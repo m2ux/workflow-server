@@ -14,7 +14,15 @@ This session creates `midnight-system-review`, a new workflow that recreates the
 
 ## Design Decisions
 
-*Key design decisions and their rationale, captured as the session progresses (activity sequencing, checkpoint necessity, technique bindings, rule enforcement). Left as placeholder until requirements refinement populates it.*
+Confirmed workflow specification (requirements refinement, all 8 dimensions user-confirmed via delegated checkpoints; assumptions in [03-assumptions-log.md](03-assumptions-log.md)):
+
+- **Activity spine:** `scope-intake → area-derivation → evidence-probes → finding-adjudication → verdict-and-report` (+ conditional `publish-review` tail); verdict-review checkpoint carries a `revise-investigation` rework transition back to `area-derivation`.
+- **Checkpoints (4):** `scope-confirmed` (non-blocking, 30s auto-advance), `investigation-plan-approved` (blocking, doWhile amendment), `verdict-review` (blocking, rework option), `publish-decision` (blocking, gated on `has_pr_surface`). Probing and adjudication run checkpoint-free, per Jina autonomy and substrate-audit precedent.
+- **Evidence model:** areas derived from change surface × subsystem map; 2–4 bounded probes per area (`probe_budget_per_area = 4`); toolchain degradation is structural (`gitnexus_available`/`cargo_available`/`node_binary_available` gates) with blocked validations recorded, never failing the run.
+- **Adjudication:** full grade tuple per finding (anchor, risk/impact, evidence confidence, production likelihood, category, validation mode); accepted-issue rubric at medium/high confidence; verdict 1–5 computed from accepted findings only, per rubric resource.
+- **Techniques:** meta `variable-binding` + `scatter-gather` (sequential default) as strategy layers; `gitnexus-operations` for graph probes; `work-package::update-pr::post-review-comment` as publish reuse candidate (signature fit checked at pattern-analysis); six workflow-local activity groups.
+- **Variables:** config + boolean gates only (prior-art convention); rich data flows via artifacts (`change-surface.md`, `investigation-plan.md`, `evidence-log.md`, `findings-register.md`, `review-report.md`, `publication-record.md`).
+- **Rules:** 9 cross-activity rules, 7 structurally backed (validate actions for grade-tuple completeness and accounting reconciliation, condition gates for plan/publish, fragment reuse via `substrate-node-security-audit::planning-artifacts-gitignored`).
 
 ---
 
@@ -39,7 +47,7 @@ This session creates `midnight-system-review`, a new workflow that recreates the
 | # | Activity | Mode | Status |
 |---|----------|------|--------|
 | 01 | Intake and Context | All | ✅ Complete |
-| 03 | Requirements Refinement | Create, Update | ⬚ Pending |
+| 03 | Requirements Refinement | Create, Update | ✅ Complete |
 | 04 | Pattern Analysis | Create | ⬚ Pending |
 | 06 | Scope and Draft | Create, Update | ⬚ Pending |
 | 08 | Quality Review | All | ⬚ Pending |
@@ -59,4 +67,4 @@ This session creates `midnight-system-review`, a new workflow that recreates the
 
 ---
 
-**Status:** Ready for requirements refinement
+**Status:** Requirements refined — ready for pattern analysis

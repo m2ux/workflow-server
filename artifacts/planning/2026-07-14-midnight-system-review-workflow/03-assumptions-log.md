@@ -1,0 +1,33 @@
+# Assumptions Log
+
+> midnight-system-review · workflow-design (create) · updated 2026-07-14
+
+## Log
+
+One row per assumption, updated in place. IDs: RR- = Requirements Refinement.
+
+| ID | Phase/Task | Category | Risk | Assumption — rationale | Resolution | Outcome |
+|----|------------|----------|------|------------------------|------------|---------|
+| RR-1 | Requirements Refinement | Activity Boundaries | M | Finding adjudication is a separate activity from evidence probing — uniform rubric application across areas beats per-area inline grading, which drifts; mirrors Jina's investigation/adjudication separation. Alternatives: grade inline per probe; single combined review activity | User (dimension-confirmed checkpoint, delegated) | Confirmed |
+| RR-2 | Requirements Refinement | Activity Boundaries | L | `publish-review` is a distinct conditional tail activity, not a gated step of `verdict-and-report` — publishing has distinct failure modes (GitHub API) and is absent entirely for local-diff runs. Alternative: `when`-gated tail step | User (dimension-confirmed checkpoint, delegated) | Confirmed |
+| RR-3 | Requirements Refinement | Checkpoint Necessity | M | `scope-confirmed` is non-blocking with 30s auto-advance — the manifest is deterministic from the PR ref/base ref, and the verdict rework loop is the safety net for a mis-scoped run. Alternative: blocking scope gate | User (dimension-confirmed checkpoint, delegated) | Confirmed |
+| RR-4 | Requirements Refinement | Checkpoint Necessity | L | No mid-run checkpoints in `evidence-probes` / `finding-adjudication` — Jina runs autonomously between plan and verdict; substrate-node-security-audit's convention is structural gates over mid-run interviews | User (dimension-confirmed checkpoint, delegated) | Confirmed |
+| RR-5 | Requirements Refinement | Checkpoint Necessity | L | Verdict rework routes to `area-derivation` (plan-level amendment), not directly to `evidence-probes` — a revision changes coverage, and re-derivation keeps the plan artifact authoritative | User (dimension-confirmed checkpoint, delegated) | Confirmed |
+| RR-6 | Requirements Refinement | Technique Selection | M | Probe fan-out uses meta `scatter-gather` in sequential mode by default; parallel dispatch is an optimisation, not a redesign. Alternative: substrate-audit-style concurrent sub-agent dispatch as the default | Audit (principles): meta `scatter-gather` rules `parallelism-is-optimisation` / `one-gather-contract-two-scatter-modes` — sequential is the sanctioned correctness default | Validated |
+| RR-7 | Requirements Refinement | Technique Selection | M | A work-package PR-posting operation is reusable for `post-review` (cross-workflow reuse tier before authoring a local op). Alternative: workflow-local gh-based posting op | Audit (consistency): `work-package/techniques/update-pr/post-review-comment.md` exists (plus `create-pr`, `render`); exact signature fit is checked at pattern-analysis | Partially Validated |
+| RR-8 | Requirements Refinement | Technique Selection | L | The `gitnexus-operations` meta group covers the code-graph probe class (CodeGraph-equivalent queries in the Jina run) | Audit (consistency): `meta/techniques/gitnexus-operations/` provides `query`, `context`, `impact`, `cypher`, `diff-coverage-map`, `detect-changes` et al. | Validated |
+| RR-9 | Requirements Refinement | Rule Scope | M | Accepted-issue threshold is medium/high evidence confidence — Jina's rubric line "No medium/high-confidence runtime issues were found" implies low-confidence candidates never block | User (dimension-confirmed checkpoint, delegated) | Confirmed |
+| RR-10 | Requirements Refinement | Rule Scope | M | A 1–5 verdict rubric is derivable from the three PR #1849 review samples (8 accepted incl. multiple high-risk → 1/5; zero accepted with a non-blocking observation → 5/5 "warned") and is authored as a rubric resource at drafting | User (dimension-confirmed checkpoint, delegated) | Confirmed |
+| RR-11 | Requirements Refinement | Variable State | L | Declared workflow variables are restricted to run config + boolean gates; areas/evidence/findings flow as step outputs and artifacts | Audit (conformance): `substrate-node-security-audit/workflow.yaml:43-109` — same-type prior art declares exclusively string config + boolean phase gates | Validated |
+| RR-12 | Requirements Refinement | Variable State | L | `probe_budget_per_area: number = 4` encodes the "2–4 bounded probes" brief — the upper bound is structural (budget + maxIterations), the lower bound stays guidance | User (dimension-confirmed checkpoint, delegated) | Confirmed |
+| RR-13 | Requirements Refinement | Variable State | M | Subsystem knowledge ships as a bundled `subsystem-map` resource (snapshot of midnight-agent-eng insight) with optional `insight_repo_path` enrichment — snapshot staleness is an accepted maintenance cost vs a hard dependency on a local repo path | User (dimension-confirmed checkpoint, delegated) | Confirmed |
+| RR-14 | Requirements Refinement | Schema Construct Choice | L | The needed constructs exist in the activity schema: checkpoint option `transitionTo` (verdict rework), `doWhile` (plan amendment), `forEach` (per-area probe scatter), `when` gates + transition `condition` (degradation and publish gating) | Audit (schema-validation): `schemas/activity.schema.json` declares `doWhile`/`forEach`/`while`, `transitionTo`, `setVariable`, `skipActivities`, `when`, `autoAdvanceMs`, `defaultOption` | Validated |
+| RR-15 | Requirements Refinement | Rule Scope | L | The universal fragment `planning-artifacts-gitignored` is available for reuse as the artifact-hygiene rule | Audit (conformance): fragment is defined workflow-locally in `substrate-node-security-audit/workflow.yaml:39` and consumed cross-workflow via `substrate-node-security-audit::planning-artifacts-gitignored` (`cicd-pipeline-security-audit/workflow.yaml:30`) — not universal; midnight-system-review uses the same qualified cross-workflow ref | Partially Validated |
+
+## Wrap-Up
+
+15 assumptions — 9 confirmed (delegated dimension-confirmed checkpoints), 4 validated and 2 partially validated by reconciliation audits; none open, none deferred.
+
+- RR-7 (Partially Validated): `work-package::update-pr::post-review-comment` exists; pattern-analysis verifies signature fit before ruling out a workflow-local posting op.
+- RR-15 (Partially Validated): `planning-artifacts-gitignored` is a substrate-node-security-audit-local fragment, not universal — reuse is via the qualified cross-workflow ref.
+- Takeaway: with dimension confirmation delegated, every genuine design judgement resolved at its checkpoint, leaving reconciliation a pure corpus/schema audit — no interview pass was needed.
