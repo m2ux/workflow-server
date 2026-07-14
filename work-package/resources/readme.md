@@ -2,14 +2,14 @@
 name: readme
 description: Guidelines for creating the README.md entry-point document for work package planning folders.
 metadata:
-  version: 3.2.0
+  version: 3.3.0
   order: 1
   legacy_id: 1
 ---
 
 # Work Package README Guide
 
-The `README.md` is the entry point for a work package planning folder (git hosting renders it when browsing). It is an **index** — a hub of links answering "what is this work package and what's its current status?" in under 2 minutes. It never restates what a linked artifact records (single-source-and-link).
+The `README.md` is the entry point for a work package planning folder (git hosting renders it when browsing). It follows the canonical [Planning Folder README Guide](../../meta/resources/planning-readme.md); this resource supplies the concrete work-package seed template and the work-package-specific specifics below.
 
 ## Template
 
@@ -61,33 +61,10 @@ The `README.md` is the entry point for a work package planning folder (git hosti
 
 ## Rules
 
-### Header line
+The shared header-line, Executive Summary, Problem/Solution Overview, Progress-table, Links-table, and layout-discipline rules (status stated once, no footer, no `---`, single-source-and-link) are defined in the canonical [Planning Folder README Guide](../../meta/resources/planning-readme.md). Work-package specifics:
 
-- One blockquote line: type · creation date · status (lean-header). Status values: `Planning`, `Ready`, `In Progress`, `Complete`.
-- Status appears **once**, in this line (state-once-per-artifact) — no footer status section, no closing narrative paragraph. Outcomes live in COMPLETE.md and deferred items in the [deferred-items register](deferred-items.md); link them from Progress, don't copy (single-source-and-link).
-- When the README is updated after completion, append `· Revised YYYY-MM-DD`.
-
-### Executive Summary
-
-2-3 sentences answering: what does this deliver, why does it matter, what's the key benefit. Include the concrete problem and measurable impact where known — not a one-line restatement of the title.
-
-### Problem Overview / Solution Overview
-
-Plain-language sections for non-technical stakeholders, each exactly two paragraphs; the placeholder is replaced when the producing step executes.
-
-- **Problem Overview** — `present-problem-overview` step (`start-work-package`): what the system currently does and why it's problematic, then the consequences.
-- **Solution Overview** — `present-solution-overview` step (`plan-prepare`): what the fix does and how it works at a high level. Links the work package plan for the task breakdown rather than re-listing the problem items.
-
-### Progress Table
-
-The primary navigation for the planning folder.
-
-- Each Item is hyperlinked to its artifact file; items with no standalone artifact (Implementation, Validation, PR review) are plain text with "—" in the # column.
-- The # column is the artifact's numbered prefix, matching the producing activity (artifacts from the same activity share the number).
-- Description: 3-8 word summary. Estimate: expected agentic time — adjust template defaults to the work package's complexity.
-- Omit skipped optional activities entirely — list only items that were or will be produced.
-- Status vocabulary: `⬚ Pending`, `◐ In Progress`, `✅ Complete`, `❌ Blocked`, `⊘ Cancelled`.
-
-### Links Table
-
-External references only (Jira ticket, parent epic, PR). Artifact links belong in the Progress table.
+- **Classifier** — the work-package type: `Feature`, `Bug-Fix`, `Enhancement`, `Refactor`. Status values: `Planning`, `Ready`, `In Progress`, `Complete`.
+- **Problem Overview** — written by the `present-problem-overview` step (`start-work-package` activity).
+- **Solution Overview** — written by the `present-solution-overview` step (`plan-prepare` activity); links the work package plan rather than re-listing the problem items.
+- **Outcomes and deferred items** live in [COMPLETE.md](complete-wp.md) and the [deferred-items register](deferred-items.md); link them from Progress, don't copy.
+- **Links table** — Jira ticket, parent epic, PR.
