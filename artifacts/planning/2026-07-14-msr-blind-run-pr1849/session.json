@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "midnight-system-review",
+  "workflowVersion": "1.0.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "ZE3S5P",
+  "planningFolderPath": "/home/mike1/projects/main/workflow-server/.engineering/artifacts/planning/2026-07-14-msr-blind-run-pr1849",
+  "currentActivity": "scope-intake",
+  "currentTechnique": "",
+  "condition": "",
+  "seq": 6,
+  "ts": 1784049724,
+  "startedAt": "2026-07-14T17:18:01.252Z",
+  "completedActivities": [],
+  "skippedActivities": [],
+  "variables": {
+    "base_ref": "origin/main",
+    "cargo_available": false,
+    "gitnexus_available": false,
+    "has_pr_surface": false,
+    "node_binary_available": false,
+    "plan_approved": false,
+    "probe_budget_per_area": 4,
+    "publish_requested": false
+  },
+  "checkpointResponses": {
+    "scope-intake-scope-confirmed": {
+      "optionId": "proceed",
+      "respondedAt": "2026-07-14T17:21:52.000Z"
+    }
+  },
+  "history": [
+    {
+      "timestamp": "2026-07-14T17:18:01.252Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "base_ref": "origin/main",
+          "cargo_available": false,
+          "gitnexus_available": false,
+          "has_pr_surface": false,
+          "node_binary_available": false,
+          "plan_approved": false,
+          "probe_budget_per_area": 4,
+          "publish_requested": false
+        }
+      },
+      "timestamp": "2026-07-14T17:18:01.252Z",
+      "type": "variables_seeded"
+    },
+    {
+      "activity": "scope-intake",
+      "timestamp": "2026-07-14T17:18:21.421Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "scope-intake",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "resolve-change-surface",
+        "techniqueId": "scope-intake::resolve-change-surface"
+      },
+      "timestamp": "2026-07-14T17:18:52.105Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "scope-intake",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "detect-toolchain",
+        "techniqueId": "scope-intake::detect-toolchain"
+      },
+      "timestamp": "2026-07-14T17:18:52.105Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "scope-intake",
+      "checkpoint": "scope-confirmed",
+      "timestamp": "2026-07-14T17:21:32.235Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "scope-intake",
+      "checkpoint": "scope-confirmed",
+      "data": {
+        "optionId": "proceed"
+      },
+      "timestamp": "2026-07-14T17:21:52.000Z",
+      "type": "checkpoint_response"
+    }
+  ],
+  "triggeredWorkflows": [],
+  "deliveredContent": {
+    "orchestrator": {
+      "activity_rules:714b99b5189dff93": "714b99b5189dff93",
+      "bundle:rules:f3a92b25707b1c7e": "f3a92b25707b1c7e",
+      "bundle:variable-binding": "d5ca00d159eb1c66",
+      "bundle:workflow-engine::finalize-activity": "4ee66ec52ea881f9",
+      "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
+      "bundle:workflow-engine::yield-checkpoint": "8761bc9b631c2e5b",
+      "technique:scope-intake::detect-toolchain": "927ae957aa4eb4dc",
+      "technique:scope-intake::resolve-change-surface": "28df4ffe2c573c8d"
+    }
+  }
+}
