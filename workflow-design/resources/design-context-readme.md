@@ -1,44 +1,39 @@
 ---
 name: design-context-readme
-description: Template and guidelines for the README.md entry-point of a workflow-design session's planning folder.
+description: Template and guidelines for the README.md entry-point of a workflow-design session's planning folder. Conforms to the canonical meta planning-readme guide, with design-session sections appended.
 metadata:
+  version: 1.0.0
   order: 5
 ---
 
 # Design Session README Guide
 
-**Purpose:** Guidelines for creating the `README.md` entry-point document for a workflow-design session's planning folder. It is the workflow-design counterpart of the work-package [readme](../../work-package/resources/readme.md) guide.
-
----
-
-## Overview
-
-The `README.md` is the entry point and executive summary for a workflow-design session. It answers "which workflow is being created/updated/reviewed, in what mode, and how far along is the work?" in under two minutes, and links the session's planning artifacts (compliance report, review snapshot) by phase.
-
----
+The `README.md` is the entry point for a workflow-design session's planning folder. It follows the canonical [Planning Folder README Guide](../../meta/resources/planning-readme.md); this resource supplies the concrete design-session seed template and documents the design-session-specific sections (Design Decisions, Compliance Findings, Scope Manifest) appended after Solution Overview.
 
 ## Template
 
 ```markdown
-# [Workflow ID] — Design Session
+# [Descriptive Change Name] — [Month Year]
 
-**Created:** [Date]  
-**Mode:** [Create/Update/Review]  
-**Status:** [Planning/Drafting/Reviewing/Complete]
+> [Create/Update/Review] · Created [YYYY-MM-DD] · **Status:** [Planning/Drafting/Reviewing/Complete]
 
----
+> **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
 ## 🎯 Executive Summary
 
 [2-3 sentences: what this workflow does (or what is changing), and why this session is being run]
 
----
+## Problem Overview
+
+*Populated by the present-problem-overview step (intake-and-context activity).*
+
+## Solution Overview
+
+*Populated by the present-solution-overview step (scope-and-draft activity).*
 
 ## Design Decisions
 
 *Key design decisions and their rationale, captured as the session progresses (activity sequencing, checkpoint necessity, technique bindings, rule enforcement). Left as placeholder until requirements refinement populates it.*
-
----
 
 ## Compliance Findings
 
@@ -48,28 +43,24 @@ The `README.md` is the entry point and executive summary for a workflow-design s
 |----------|---------|----------|-----|
 | — | *None yet* | — | — |
 
----
-
 ## Scope Manifest
 
 *Files to create, modify, or remove for this workflow, confirmed during scope-and-draft. Left as placeholder until then.*
 
----
+## 📊 Progress
 
-## 📊 Activity Progress
-
-| # | Activity | Mode | Status |
-|---|----------|------|--------|
-| 01 | Intake and Context | All | ⬚ Pending |
-| 03 | Requirements Refinement | Create, Update | ⬚ Pending |
-| 04 | Pattern Analysis / Impact Analysis | Create / Update | ⬚ Pending |
-| 06 | Scope and Draft | Create, Update | ⬚ Pending |
-| 08 | Quality Review | All | ⬚ Pending |
-| 09 | Validate and Commit | All | ⬚ Pending |
-| 10 | Post-Update Review | Update | ⬚ Pending |
-| 11 | Retrospective | Create, Update | ⬚ Pending |
-
----
+| # | Item | Description | Estimate | Status |
+|---|------|-------------|----------|--------|
+| 01 | Intake and Context | Classify mode; load schema + format baseline | 10-20m | ⬚ Pending |
+| 03 | Requirements Refinement | Elicit and refine the change requirements | 20-45m | ⬚ Pending |
+| 04 | Pattern Analysis | Corpus reuse survey (create mode) | 15-30m | ⬚ Pending |
+| 05 | Impact Analysis | Blast radius of the change (update mode) | 15-30m | ⬚ Pending |
+| 06 | Scope and Draft | Confirm scope manifest; draft the definition files | 30-90m | ⬚ Pending |
+| 08 | Quality Review | Multi-lens audit vs schema, principles, anti-patterns | 20-45m | ⬚ Pending |
+| 09 | Validate and Commit | Verify scope, README, build; commit | 10-20m | ⬚ Pending |
+| 10 | Post-Update Review | Update-mode regression review | 15-30m | ⬚ Pending |
+| 11 | Retrospective | Session lessons and follow-ups | 10-20m | ⬚ Pending |
+| 08 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, design decisions, limitations | 10-20m | ⬚ Pending |
 
 ## 🔗 Links
 
@@ -77,32 +68,21 @@ The `README.md` is the entry point and executive summary for a workflow-design s
 |----------|------|
 | Target workflow | `workflows/[workflow-id]/` |
 | Related workflow | [name](../../[related]/README.md) |
-
----
-
-**Status:** Ready for drafting
+| PR | [#N](https://{repo_host}/{org}/{repo}/pull/N) |
 ```
 
----
+## Rules
 
-## Section Guidelines
+The shared header-line, Executive Summary, Problem/Solution Overview, Progress-table, and Links-table rules are defined in the canonical [Planning Folder README Guide](../../meta/resources/planning-readme.md). Design-session specifics:
 
-### Header Block
-
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Workflow ID** | The workflow being created, updated, or reviewed | `incident-response` |
-| **Created** | Exact creation date | `2026-06-26` |
-| **Mode** | The operation type set at intake | `Create`, `Update`, `Review` |
-| **Status** | Current state of the session | `Planning`, `Drafting`, `Reviewing`, `Complete` |
-
-### Executive Summary
-
-Two to three sentences answering: what does this workflow do (or what is changing), and why is this session being run.
+- **Classifier** — the session mode: `Create`, `Update`, or `Review`. Status values: `Planning`, `Drafting`, `Reviewing`, `Complete`.
+- **Problem Overview** — written by the `present-problem-overview` step (`intake-and-context` activity): what the current workflow does and why it needs changing.
+- **Solution Overview** — written by the `present-solution-overview` step (`scope-and-draft` activity): what the change does at a high level; links the scope manifest for the file breakdown.
+- **Progress table** — lists the activities the active mode runs, as Items. The planning README is seeded in create and update modes; review mode branches straight to quality review.
 
 ### Design Decisions
 
-Capture the non-obvious design choices and their rationale as they are confirmed — activity boundaries, which constraints become checkpoints, technique bindings chosen, rule scope. This is the durable record of *why* the workflow is shaped the way it is.
+Capture the non-obvious design choices and their rationale as they are confirmed — activity boundaries, which constraints become checkpoints, technique bindings chosen, rule scope. This is the durable record of *why* the workflow is shaped the way it is; COMPLETE.md draws its Design Decisions from here.
 
 ### Compliance Findings
 
@@ -112,17 +92,8 @@ Populated by the quality-review (create/update) and post-update-review (update) 
 
 The complete list of files to create, modify, or remove, confirmed before drafting. Mirrors the `scope_manifest` variable.
 
-### Activity Progress
-
-The primary navigation for the planning folder. Use the status indicators ⬚ Pending, ◐ In Progress, ✅ Complete, ❌ Blocked, ⊘ Cancelled. Omit activities that the active mode skips. The # column matches the producing activity's number so artifacts sort by phase.
-
-### Links Table
-
-The target workflow's location in the `workflows/` worktree, plus any related workflows. Planning artifacts (compliance report, review snapshot) are reached from the Activity Progress rows, not here.
-
----
-
 ## Related Guides
 
-- [Work Package README Guide](../../work-package/resources/readme.md) — the work-package counterpart this template parallels
+- [Planning Folder README Guide](../../meta/resources/planning-readme.md) — the canonical structure this template conforms to
+- [Work Package README Guide](../../work-package/resources/readme.md) — the work-package counterpart, conforming to the same canonical structure
 - [Workflow Design Workflow](../README.md)

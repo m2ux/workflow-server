@@ -53,5 +53,5 @@ optional — the transition target to take instead of the default, set when a ch
 
 ## Protocol
 
-1. Update the planning folder's `README.md` Progress table with one row per entry in `{artifacts_produced}`, then refresh the footer status.
+1. Update the planning folder's `README.md` Progress table with one row per entry in `{artifacts_produced}`, then update the header Status line to the current state (see the [planning-readme](../../resources/planning-readme.md) guide).
 2. Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}`, and `{artifacts_produced}` into the `activity_complete` object; include `{transition_override}` if a checkpoint effect specified `transitionTo`. Return `{activity_result}`.
