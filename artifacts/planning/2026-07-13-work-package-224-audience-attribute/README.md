@@ -1,6 +1,6 @@
 # Audience Attribute on Technique Output Declarations - July 2026
 
-> Enhancement · Created 2026-07-13 · **Status:** Post-implementation review complete — manual diff review clean (user confirmed all rationales, no flagged blocks), code review 0 findings, L12 structural analysis 2 Informational (V5-deferred) findings, test-suite review clean (14/14 new tests, no gaps), architecture impact low; full suite 579 pass / 14 skip / 0 fail; no code fixes needed, proceeding to validate
+> Enhancement · Created 2026-07-13 · **Status:** Validation complete — typecheck clean, full suite 579 pass / 14 skip / 0 fail, all 14 corpus guards green (check:audience 0 NEW, check:binding 262 baselined / 0 NEW); no code fixes needed, proceeding to strategic-review
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -38,7 +38,7 @@ Because the change is purely additive, nothing a reader sees today changes when 
 | 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
 | 15 | [Codebase comprehension](15-codebase-comprehension.md) | Six V4 surfaces · extension points · blast radius | 20-45m | ✅ Complete |
 | — | [Comprehension artifact](../../comprehension/technique-output-audience-pipeline.md) | Persistent codebase knowledge (pipeline + prism lenses) | 20-45m | ✅ Complete |
-| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
+| — | Validation | Build, test, lint verification | 15-30m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ⬚ Pending |
 

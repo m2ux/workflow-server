@@ -234,10 +234,11 @@
           "plan-prepare",
           "assumptions-review",
           "implement",
-          "lean-coding-audit"
+          "lean-coding-audit",
+          "post-impl-review"
         ],
-        "condition": "default (isDefault)",
-        "currentActivity": "post-impl-review",
+        "condition": "no-blocker (has_critical_blocker == false)",
+        "currentActivity": "validate",
         "currentTechnique": "summarize-architecture",
         "deliveredContent": {
           "workflow-orchestrator": {
@@ -1344,16 +1345,26 @@
             },
             "timestamp": "2026-07-14T05:46:16.584Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "timestamp": "2026-07-14T05:48:31.424Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate",
+            "timestamp": "2026-07-14T05:48:31.424Z",
+            "type": "activity_entered"
           }
         ],
         "schemaVersion": 1,
-        "seq": 55,
+        "seq": 57,
         "sessionIndex": "UXBZIN",
         "skippedActivities": [],
         "startedAt": "2026-07-13T17:31:30.934Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784007976,
+        "ts": 1784008139,
         "variables": {
           "artifact_name": "",
           "assumption_deferred": false,
