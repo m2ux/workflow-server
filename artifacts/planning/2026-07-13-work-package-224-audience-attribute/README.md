@@ -1,6 +1,6 @@
 # Audience Attribute on Technique Output Declarations - July 2026
 
-> Enhancement · Created 2026-07-13 · **Status:** Validation complete — typecheck clean, full suite 579 pass / 14 skip / 0 fail, all 14 corpus guards green (check:audience 0 NEW, check:binding 262 baselined / 0 NEW); no code fixes needed, proceeding to strategic-review
+> Enhancement · Created 2026-07-13 · **Status:** In Progress — strategic review complete (scope-fit exact, 1 Low finding [SR-1] accepted, both commits GPG-signed); proceeding to submit-for-review
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -35,7 +35,7 @@ Because the change is purely additive, nothing a reader sees today changes when 
 | 09 | [Debt ledger](09-debt-ledger.md) | Harvested ponytail-marker debt ledger | 5-10m | ✅ Complete |
 | 10 | [Test suite review](10-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ✅ Complete |
 | 10 | [Architecture summary](10-architecture-summary.md) | Stakeholder overview — low architectural impact | 10-20m | ✅ Complete |
-| 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
+| 12 | [Strategic review](12-strategic-review-1.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
 | 15 | [Codebase comprehension](15-codebase-comprehension.md) | Six V4 surfaces · extension points · blast radius | 20-45m | ✅ Complete |
 | — | [Comprehension artifact](../../comprehension/technique-output-audience-pipeline.md) | Persistent codebase knowledge (pipeline + prism lenses) | 20-45m | ✅ Complete |
 | — | Validation | Build, test, lint verification | 15-30m | ✅ Complete |
