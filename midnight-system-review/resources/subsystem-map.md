@@ -16,6 +16,8 @@ Snapshot of the midnight-node system topology, distilled from the midnight-agent
 3. Note the coupled subsystems — a change rarely stays local; coupled entries are candidate co-areas.
 4. Use the probe affinities to seed planned probes from the probe-catalog.
 
+A subsystem's listed failure classes are the review's coverage contract for that subsystem: when a change puts a subsystem in scope, each of its named failure classes relevant to the change is a probe obligation (see the area-derivation failure-class obligation), not merely background reading. This extends to coupled subsystems at the coupling point — a changed API's callers own the caller-accounting and atomicity failure classes, correlation counterparts own the identifier-correlation classes, and any ABI, runtime, or event-ABI change puts the release-and-upgrade automation in scope for its failure classes even when none of its files is in the diff.
+
 ## Runtime Pallets
 
 ### pallet-midnight — `pallets/midnight/`

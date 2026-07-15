@@ -1,5 +1,5 @@
 id: evidence-probes
-version: 1.0.0
+version: 1.1.0
 name: Evidence Probes
 description: Run bounded evidence-gathering probes for each investigation area and consolidate the results into the evidence log.
 required: true
@@ -56,6 +56,8 @@ steps:
         message: Consolidation is blocked until the evidence log holds exactly one evidence record per approved investigation area, in plan order (gather completeness gate)
       - action: validate
         message: Consolidation is blocked until every area's executed-probe count is within probe_budget_per_area, with any overage recorded explicitly (bounded-probes gate)
+      - action: validate
+        message: Consolidation is blocked until every failure-class obligation carried by an area's in-scope and coupled subsystems is discharged in that area's record — confirmed, refuted with an anchor, or recorded blocked (failure-class coverage gate)
   - kind: action
     id: finalize-activity
     actions:

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -70,10 +70,12 @@ The reviewable plan document: per-area rationale, planned probes, and coverage s
 
 - Map every changed file onto subsystem-map entries (pallet, crate, boundary, or tooling surface); flag any file that maps to no known subsystem as its own candidate area.
 - Cluster the mapped files into system-level investigation areas — one area per coherent subsystem impact, not per file.
+- Pull in coupled subsystems: for each in-scope subsystem, its subsystem-map *coupled with* entries are candidate co-areas at the coupling point — a changed API's callers, its correlation counterparts, and the release-and-upgrade automation for any ABI, runtime, or event-ABI change — even when none of their files appears in the diff. The release-and-upgrade automation area is mandatory whenever the change alters an event enum, a host-boundary type, runtime metadata, or `spec_version`.
 
 ### 3. Plan Probes
 
 - For each area, select two to `{probe_budget_per_area}` probes from the [probe-catalog](../../resources/probe-catalog.md), matched to the area's subsystem class and the change kind, and note any probe whose toolchain gate is currently false (it will degrade or be recorded as blocked).
+- Discharge the failure-class obligation: enumerate the subsystem-map failure classes of every subsystem the area covers (in-scope and coupled). Each failure class relevant to this change kind maps to at least one planned probe — a correlation-contract class to a P7 probe, a caller-accounting or atomicity class to a P8 probe, an unpriced-work class to a size/weight probe, and so on — or is explicitly marked not-applicable with a one-line reason. A named failure class left unplanned is a coverage gap the plan must resolve, not a silent omission.
 
 ### 4. Write Plan
 

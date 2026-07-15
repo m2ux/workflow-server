@@ -57,6 +57,22 @@ Every planned probe comes from this catalog. A probe is one bounded evidence-gat
 - Bounding: one runtime question per probe against a locally-run node; no network-dependent assertions.
 - Evidence form: RPC/execution output.
 
+## P7 — Cross-record correlation
+
+- Validates: identifier-consistency claims across records a downstream consumer joins — e.g. an emitted event's key field against the correlated record's key field, checking both are populated from the same source on every emitting path (the state-root-vs-transaction-hash correlation class).
+- Instrument: source tracing of each join-key field back to its assignment origin, on every path that emits the paired records; grep for the field's writes.
+- Gate: none — source trace.
+- Bounding: one join-key relationship per probe; anchor the origin of each side and state whether they agree or diverge.
+- Evidence form: file:line for each record's key assignment, with the observed same-source or different-source result.
+
+## P8 — Downstream-caller failure-atomicity
+
+- Validates: caller-side integrity when a changed function's signature, return, or failure/partial semantics changed — each caller that mutates persistent state (storage writes/deletes, accounting consumption) handles the new failure or partial-success path without losing or committing state (the accounting-consumed-before-success class).
+- Instrument: enumerate callers of the changed symbol (the `gitnexus-operations` group when `gitnexus_available`, otherwise grep plus targeted reads), then trace each caller's state mutations around the fallible call — the order of consume/delete versus commit, swallowed errors, early returns.
+- Gate: `gitnexus_available` for enumeration; fallback is grep-based caller discovery plus reads (P1/P2 discipline).
+- Bounding: one caller's failure path per probe; anchor the state mutation and its ordering against the fallible call.
+- Evidence form: file:line of the caller's state mutation and the fallible call, with the observed on-failure behavior.
+
 ## Blocked-Validation Record
 
 For every probe whose gate is false, record in the area's evidence: the probe class, the claim that could not be validated, the missing instrument, and the degradation consequence (what evidence confidence caps at without it). The strict-run precedent: Rust tests, benchmarks, node execution, and RPC checks recorded as unavailable because cargo/rustc and a built node were absent — the review proceeded on P1–P4 evidence with the gaps stated.
