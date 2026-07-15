@@ -37,7 +37,8 @@ Trace token captured from `next_activity` response, appended to `trace_tokens`.
 
 ## Protocol
 
-1. Call `next_activity { session_index, activity_id, step_manifest }`; capture `_meta.trace-token`.
+1. Call `next_activity { session_index, activity_id, step_manifest, usage? }`; capture `_meta.trace-token`.
+   - **`usage` (optional):** relay the harness-reported token usage for the activity the worker just completed — the figure the orchestrator reads from the worker's completion result (e.g. subagent token counts and cache/model fields when the harness surfaces them). Pass it on this transition call, keyed to the activity being exited. When the harness does not surface per-sub-agent usage, omit the param entirely — the run still completes and nothing is fabricated.
 2. Apply [compose-prompt](./compose-prompt.md) with `{prompt_template}` substituting `{state}` values.
 3. Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await the worker's envelope and return it unchanged as `{worker_result}`.
    - If the worker does not return within the expected time, apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) if it is still running; otherwise dispatch a fresh worker for the same `{activity_id}`.
@@ -49,6 +50,10 @@ Trace token captured from `next_activity` response, appended to `trace_tokens`.
 ### step-manifest-required
 
 When calling `next_activity`, include a `step_manifest` array. Each entry is an object with two string fields: `step_id` (the literal step id from the activity definition's `steps[]`) and `output` (a short summary of what was produced). Omit `step_manifest` entirely if no steps were executed; do not pass an empty array or empty string.
+
+### relay-harness-usage
+
+When the harness surfaces per-sub-agent token usage on the worker's completion result, relay it as the optional `usage` object on the subsequent `next_activity` call — the transition off the activity the worker just finished. The worker cannot self-measure; this populate step is orchestrator-only. Omit `usage` when the figure is unavailable.
 
 ### no-get-activity-from-orchestrator
 

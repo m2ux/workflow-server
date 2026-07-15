@@ -61,6 +61,14 @@ steps:
       operator: "!="
       value: true
   - kind: technique
+    id: render-token-usage
+    technique: finalize-documentation::render-token-usage
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+  - kind: technique
     id: ensure-docs
     technique: finalize-documentation::ensure-docs
     condition:
