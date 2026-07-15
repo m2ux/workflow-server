@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -33,3 +33,8 @@ True when a runnable midnight-node binary is locatable; gates runtime and SCALE-
 ### 2. Record Availability
 
 - Append a Toolchain Availability section to the change-surface inventory in `{planning_folder_path}`: per toolchain, the probe performed, the result, and what the false gate will degrade downstream.
+
+### 3. Commit Session Gates
+
+- Land `{gitnexus_available}`, `{cargo_available}`, and `{node_binary_available}` in the session variable bag before scope-intake completes — downstream activities read these gates from session state, not from re-probing.
+- Each gate lands under its declared output name; a false gate is valid session data, not an omission.

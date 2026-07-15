@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -37,8 +37,9 @@ All candidate findings aggregated across areas in area order, each tied to its a
 
 - Verify `{area_evidence_collection}` holds exactly one record per entry in `{investigation_areas}`, in order; a missing or duplicate area record is a hard stop — re-run that area's probes before consolidating.
 - Verify every record's probe count is within `{probe_budget_per_area}`; record any overage explicitly (it signals a plan or discipline defect, not extra rigor).
+- Verify every failure-class discharge on correlation-class or atomicity-class obligations: refuted entries include a P7 join-key discharge table or a P8a/P8b per-caller path anchor; inconclusive entries are explicitly marked, not relabeled as refuted.
 
 ### 2. Consolidate
 
-- Write `{evidence_log}` to the planning folder: an accounting table (per area: probes planned, executed, blocked, candidate findings raised), followed by each area's evidence items and blocked validations with anchors.
+- Write `{evidence_log}` to the planning folder: an accounting table (per area: probes planned, executed, blocked, candidate findings raised), followed by each area's evidence items, failure-class discharge records (confirmed/refuted/inconclusive/blocked with proof artifacts where required), and blocked validations with anchors.
 - Aggregate every record's candidate findings into `{candidate_findings}`, preserving area order and anchors.

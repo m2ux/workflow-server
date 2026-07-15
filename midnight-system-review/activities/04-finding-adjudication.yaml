@@ -1,5 +1,5 @@
 id: finding-adjudication
-version: 1.0.0
+version: 1.1.0
 name: Finding Adjudication
 description: Grade every finding candidate from the evidence log against the rubric and adjudicate each into the findings register.
 required: true
@@ -22,6 +22,8 @@ steps:
         message: Adjudication is blocked until every registered finding carries the complete grade tuple — evidence anchor, risk/impact, evidence confidence, production likelihood, category, and validation mode (grade-tuple completeness gate)
       - action: validate
         message: Adjudication is blocked until every accepted finding meets the accepted-issue threshold — medium or high evidence confidence with a concrete evidence anchor; lower-confidence candidates are dispositioned as observations
+      - action: validate
+        message: Adjudication is blocked when the evidence log shows a correlation-class or atomicity-class failure obligation refuted without meeting the proof bar — join-key discharge table for P7 or caller-path anchor for P8a/P8b (weak-refutation gate)
   - kind: action
     id: finalize-activity
     actions:

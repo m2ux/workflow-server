@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -75,7 +75,7 @@ The reviewable plan document: per-area rationale, planned probes, and coverage s
 ### 3. Plan Probes
 
 - For each area, select two to `{probe_budget_per_area}` probes from the [probe-catalog](../../resources/probe-catalog.md), matched to the area's subsystem class and the change kind, and note any probe whose toolchain gate is currently false (it will degrade or be recorded as blocked).
-- Discharge the failure-class obligation: enumerate the subsystem-map failure classes of every subsystem the area covers (in-scope and coupled). Each failure class relevant to this change kind maps to at least one planned probe — a correlation-contract class to a P7 probe, a caller-accounting or atomicity class to a P8 probe, an unpriced-work class to a size/weight probe, and so on — or is explicitly marked not-applicable with a one-line reason. A named failure class left unplanned is a coverage gap the plan must resolve, not a silent omission.
+- Discharge the failure-class obligation: enumerate the subsystem-map failure classes of every subsystem the area covers (in-scope and coupled). Each failure class relevant to this change kind maps to at least one planned probe — a correlation-contract class to a P7 probe, a propagation class to a P8a probe, a caller-accounting or post-call-storage class to a P8b probe, an operational-tooling or advertised-control class to a P9 probe, an unpriced-work class to a size/weight probe, and so on — or is explicitly marked not-applicable with a one-line reason. P8a and P8b each budget one probe slot per enumerated caller for the relevant half. A named failure class left unplanned is a coverage gap the plan must resolve, not a silent omission.
 
 ### 4. Write Plan
 
