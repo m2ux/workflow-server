@@ -6,14 +6,15 @@
   "agentId": "orchestrator",
   "sessionIndex": "ZE3S5P",
   "planningFolderPath": "/home/mike1/projects/main/workflow-server/.engineering/artifacts/planning/2026-07-14-msr-blind-run-pr1849",
-  "currentActivity": "area-derivation",
+  "currentActivity": "evidence-probes",
   "currentTechnique": "",
-  "condition": "default",
-  "seq": 13,
-  "ts": 1784050189,
+  "condition": "plan_approved == true",
+  "seq": 17,
+  "ts": 1784059590,
   "startedAt": "2026-07-14T17:18:01.252Z",
   "completedActivities": [
-    "scope-intake"
+    "scope-intake",
+    "area-derivation"
   ],
   "skippedActivities": [],
   "variables": {
@@ -163,6 +164,54 @@
       },
       "timestamp": "2026-07-14T17:29:30.000Z",
       "type": "variable_set"
+    },
+    {
+      "activity": "area-derivation",
+      "timestamp": "2026-07-14T17:31:47.329Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "evidence-probes",
+      "timestamp": "2026-07-14T17:31:47.329Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "evidence-probes",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "probe-area",
+        "techniqueId": "evidence-probes::probe-area"
+      },
+      "timestamp": "2026-07-14T17:32:30.519Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "evidence-probes",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "consolidate-evidence",
+        "techniqueId": "evidence-probes::consolidate-evidence"
+      },
+      "timestamp": "2026-07-14T17:32:30.519Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "evidence-probes",
+      "data": {
+        "agentId": "orchestrator",
+        "resourceId": "probe-catalog"
+      },
+      "timestamp": "2026-07-14T20:06:30.090Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "evidence-probes",
+      "data": {
+        "agentId": "orchestrator",
+        "resourceId": "subsystem-map"
+      },
+      "timestamp": "2026-07-14T20:06:30.482Z",
+      "type": "resource_fetched"
     }
   ],
   "triggeredWorkflows": [],
@@ -170,11 +219,15 @@
     "orchestrator": {
       "activity_rules:714b99b5189dff93": "714b99b5189dff93",
       "bundle:rules:f3a92b25707b1c7e": "f3a92b25707b1c7e",
+      "bundle:rules:f8a779f81ad4a4a6": "f8a779f81ad4a4a6",
+      "bundle:scatter-gather": "f0cdd5f3717c11fc",
       "bundle:variable-binding": "d5ca00d159eb1c66",
       "bundle:workflow-engine::finalize-activity": "4ee66ec52ea881f9",
       "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
       "bundle:workflow-engine::yield-checkpoint": "8761bc9b631c2e5b",
       "technique:area-derivation::derive-areas": "285bda36bbfe3d80",
+      "technique:evidence-probes::consolidate-evidence": "3332b028e127d4d5",
+      "technique:evidence-probes::probe-area": "a185b3286ab56cce",
       "technique:scope-intake::detect-toolchain": "927ae957aa4eb4dc",
       "technique:scope-intake::resolve-change-surface": "28df4ffe2c573c8d"
     }
