@@ -1,0 +1,73 @@
+id: evidence-probes
+version: 1.1.0
+name: Evidence Probes
+description: Run bounded evidence-gathering probes for each investigation area and consolidate the results into the evidence log.
+required: true
+techniques:
+  - scatter-gather
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting evidence probes — executing the approved investigation plan area by area
+  - kind: action
+    id: verify-plan-gate
+    actions:
+      - action: validate
+        target: plan_approved
+        condition:
+          type: simple
+          variable: plan_approved
+          operator: ==
+          value: true
+        message: Evidence probing is blocked until the investigation plan is approved (plan-approval gate)
+      - action: validate
+        target: investigation_areas
+        condition:
+          type: simple
+          variable: investigation_areas
+          operator: exists
+        message: Evidence probing is blocked until derived investigation areas are present in session state
+  - kind: action
+    id: prepare-gather
+    actions:
+      - action: set
+        target: area_evidence_collection
+        value: "[]"
+  - kind: loop
+    id: area-probe-loop
+    name: Area Probe Loop
+    loopType: forEach
+    variable: current_area
+    over: investigation_areas
+    maxIterations: 12
+    steps:
+      - kind: technique
+        id: probe-area
+        technique: probe-area
+  - kind: technique
+    id: consolidate-evidence
+    technique: consolidate-evidence
+  - kind: action
+    id: enforce-consolidation-gate
+    actions:
+      - action: validate
+        message: Consolidation is blocked until the evidence log holds exactly one evidence record per approved investigation area, in plan order (gather completeness gate)
+      - action: validate
+        message: Consolidation is blocked until every area's executed-probe count is within probe_budget_per_area, with any overage recorded explicitly (bounded-probes gate)
+      - action: validate
+        message: Consolidation is blocked until every failure-class obligation carried by an area's in-scope and coupled subsystems is discharged in that area's record — confirmed, refuted with an anchor, or recorded blocked (failure-class coverage gate)
+  - kind: action
+    id: finalize-activity
+    actions:
+      - action: log
+        message: Evidence probes complete — per-area evidence consolidated with probe accounting
+transitions:
+  - to: finding-adjudication
+    isDefault: true
+outcome:
+  - Every approved investigation area receives bounded, catalog-selected probes — full coverage within a fixed effort budget
+  - Toolchain gaps degrade individual probes to fallbacks or recorded blocked validations while the run completes
+  - Per-area evidence accumulates in iteration order into one consolidated log, so adjudication reads a complete, ordered evidence base
+  - Probe accounting per area is captured at collection time, making the final report's reconciliation directly checkable

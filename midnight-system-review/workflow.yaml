@@ -1,0 +1,77 @@
+$schema: ../../schemas/workflow.schema.json
+id: midnight-system-review
+version: 1.1.0
+title: Midnight System Review Workflow
+description: Evidence-driven system-level review of a midnight-node change-set. Derives investigation areas from the changed surface and a subsystem map, runs bounded per-area evidence probes, adjudicates rubric-graded findings, and renders a 1-5 merge-readiness verdict with per-area accounting, optionally publishing the review to the pull request.
+author: m2ux
+tags:
+  - review
+  - merge-readiness
+  - evidence-driven
+  - midnight
+  - substrate
+  - system-review
+rules:
+  workflow:
+    - "Evidence-based blocking: only findings accepted under the grading rubric at medium or high evidence confidence can affect merge readiness. Every finding cites concrete evidence — file:line anchors, command output, or graph query results. Low-confidence candidates are recorded as observations and never block."
+    - "Bounded probes: each investigation area receives at most probe_budget_per_area evidence probes, selected from the probe-catalog resource; two probes per area is the guidance floor. The budget is structural — enforced inside the per-area probe operation and validated at evidence consolidation."
+    - "Graceful toolchain degradation: toolchain unavailability never fails the run. Code-graph probes route through gitnexus-operations when gitnexus_available is true, with grep and file reads as the fallback; cargo- and node-binary-dependent probes are skipped and recorded as blocked validations in the evidence log when their gates are false."
+    - "Authoritative change surface: the reviewed surface is the GitHub-listed changed-file set for PR targets — equivalently the three-dot merge-base diff of authored changes against base_ref. A two-dot diff against a potentially stale base is never the review surface."
+    - "Rubric, not intuition: finding grades come from the grading-rubric resource and the merge-readiness verdict from the verdict-rubric resource, never from intuitive assignment. The 1-5 verdict is computed from accepted findings only, and review_type derives from the verdict per the verdict-rubric mapping — compute-verdict always emits it, so the posting operation's default derivation never runs."
+  activity:
+    - "Grade-tuple completeness: every registered finding carries the complete grade tuple — evidence anchor, risk/impact, evidence confidence, production likelihood, category, and validation mode. A finding with a missing tuple element fails the adjudication validate gate."
+    - "Accounting reconciliation: the review report's per-area accounting must reconcile — every investigation area reports its probe and finding counts, every finding maps to exactly one area, and totals match the findings register — before the verdict is presented."
+    - "Plan-approval gate: evidence probing is entered only after the investigation plan is approved (plan_approved true via the investigation-plan-approved checkpoint). The approved investigation-plan artifact is the authoritative coverage contract for probing and for any verdict-driven re-derivation."
+    - "Failure-class coverage: the subsystem-map failure classes of every in-scope and coupled subsystem are probe obligations. Area derivation maps each failure class relevant to the change kind to a probe or marks it not-applicable with a reason; evidence probing discharges each as confirmed, refuted with an anchor, or recorded blocked. A change altering an event enum, host-boundary type, runtime metadata, or spec_version puts the release-and-upgrade automation subsystem in scope for its failure classes. No named failure class is silently skipped."
+    - "Publish authority: publication requires explicit approval — publish-review is entered only when has_pr_surface and publish_requested are both true; the publish-decision checkpoint is the sole source of publish_requested. Runs without a PR surface terminate at verdict-and-report."
+  universal:
+    - ref: substrate-node-security-audit::planning-artifacts-gitignored
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: review_target
+    type: string
+    description: PR reference (number or URL) or local diff spec identifying the midnight-node change-set under review
+  - name: target_repo_path
+    type: string
+    description: Path to the midnight-node checkout under review
+  - name: base_ref
+    type: string
+    description: Base ref for the three-dot merge-base change surface
+    defaultValue: origin/main
+  - name: planning_folder_path
+    type: string
+    description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{target}-system-review"
+  - name: insight_repo_path
+    type: string
+    description: Optional path to a local midnight-agent-eng insight checkout that enriches the bundled subsystem-map snapshot; the snapshot alone suffices when absent
+  - name: probe_budget_per_area
+    type: number
+    description: Maximum evidence probes per investigation area; the two-probe lower bound stays guidance
+    defaultValue: 4
+  - name: has_pr_surface
+    type: boolean
+    description: Whether review_target resolved to a pull request with a postable review surface; set during scope-intake, gates the publish-decision checkpoint and the publish-review activity
+    defaultValue: false
+  - name: gitnexus_available
+    type: boolean
+    description: Whether the target checkout is GitNexus-indexed; gates code-graph probes, with grep and file reads as the fallback when false
+    defaultValue: false
+  - name: cargo_available
+    type: boolean
+    description: Whether a working cargo toolchain is available for the target checkout; gates build and metadata probes
+    defaultValue: false
+  - name: node_binary_available
+    type: boolean
+    description: Whether a runnable midnight-node binary is available; gates runtime and SCALE-metadata probes
+    defaultValue: false
+  - name: plan_approved
+    type: boolean
+    description: Investigation-plan gate — set by the investigation-plan-approved checkpoint's approve option
+    defaultValue: false
+  - name: publish_requested
+    type: boolean
+    description: Publish gate — set by the publish-decision checkpoint's approve option
+    defaultValue: false
+initialActivity: scope-intake

@@ -1,0 +1,77 @@
+id: verdict-and-report
+version: 1.0.0
+name: Verdict and Report
+description: Compute the merge-readiness verdict from accepted findings, render the review report with per-area accounting, and secure verdict sign-off.
+required: true
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting verdict and report — computing merge readiness from the findings register
+  - kind: technique
+    id: compute-verdict
+    technique: compute-verdict
+  - kind: technique
+    id: render-review
+    technique: render-review
+  - kind: action
+    id: enforce-accounting-gate
+    actions:
+      - action: validate
+        message: Verdict presentation is blocked until the report's per-area accounting reconciles — every investigation area reports its probe and finding counts, every finding maps to exactly one area, and totals match the findings register (accounting reconciliation gate)
+  - kind: checkpoint
+    id: verdict-review
+    message: "Merge-readiness verdict: {merge_readiness_verdict}/5 ({review_type}). The full report with per-area accounting is in review-report.md. Accept the verdict, or reopen the investigation?"
+    options:
+      - id: accept-verdict
+        label: Accept verdict and report
+        description: The verdict, findings, and accounting are sound as presented.
+      - id: revise-investigation
+        label: Revise investigation
+        description: Coverage or evidence is insufficient — return to area derivation; the plan is re-derived, re-approved, and the review re-runs from there.
+        effect:
+          setVariable:
+            plan_approved: false
+          transitionTo: area-derivation
+  - kind: checkpoint
+    id: publish-decision
+    condition:
+      type: simple
+      variable: has_pr_surface
+      operator: ==
+      value: true
+    message: The target has a pull-request surface. Publish this review to the PR as a formal review comment?
+    options:
+      - id: publish
+        label: Publish review to the PR
+        description: Post the rendered review to the pull request with the verdict-derived review type.
+        effect:
+          setVariable:
+            publish_requested: true
+      - id: skip-publish
+        label: Keep the review local
+        description: The report stays in the planning folder; nothing is posted to the PR.
+  - kind: action
+    id: finalize-activity
+    actions:
+      - action: log
+        message: Verdict and report complete — review signed off
+transitions:
+  - to: publish-review
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: has_pr_surface
+          operator: ==
+          value: true
+        - type: simple
+          variable: publish_requested
+          operator: ==
+          value: true
+outcome:
+  - The merge-readiness verdict is computed from accepted findings only, per rubric, so it is reproducible and defensible
+  - The report's per-area accounting reconciles before anyone reads a verdict, closing the silent-coverage-gap failure mode
+  - An unsound verdict is caught at an explicit sign-off gate with a structural path back to plan-level rework
+  - Publishing is a deliberate, separately-authorized decision made at its own checkpoint
