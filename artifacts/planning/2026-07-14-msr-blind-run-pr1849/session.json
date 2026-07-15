@@ -6,15 +6,16 @@
   "agentId": "orchestrator",
   "sessionIndex": "ZE3S5P",
   "planningFolderPath": "/home/mike1/projects/main/workflow-server/.engineering/artifacts/planning/2026-07-14-msr-blind-run-pr1849",
-  "currentActivity": "evidence-probes",
+  "currentActivity": "finding-adjudication",
   "currentTechnique": "",
-  "condition": "plan_approved == true",
-  "seq": 17,
-  "ts": 1784059590,
+  "condition": "default",
+  "seq": 20,
+  "ts": 1784091018,
   "startedAt": "2026-07-14T17:18:01.252Z",
   "completedActivities": [
     "scope-intake",
-    "area-derivation"
+    "area-derivation",
+    "evidence-probes"
   ],
   "skippedActivities": [],
   "variables": {
@@ -212,6 +213,45 @@
       },
       "timestamp": "2026-07-14T20:06:30.482Z",
       "type": "resource_fetched"
+    },
+    {
+      "activity": "evidence-probes",
+      "timestamp": "2026-07-15T04:49:47.615Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "finding-adjudication",
+      "timestamp": "2026-07-15T04:49:47.615Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "finding-adjudication",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "grade-findings",
+        "techniqueId": "finding-adjudication::grade-findings"
+      },
+      "timestamp": "2026-07-15T04:50:13.882Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "finding-adjudication",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "register-findings",
+        "techniqueId": "finding-adjudication::register-findings"
+      },
+      "timestamp": "2026-07-15T04:50:13.882Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "finding-adjudication",
+      "data": {
+        "agentId": "orchestrator",
+        "resourceId": "grading-rubric"
+      },
+      "timestamp": "2026-07-15T04:50:18.100Z",
+      "type": "resource_fetched"
     }
   ],
   "triggeredWorkflows": [],
@@ -228,6 +268,8 @@
       "technique:area-derivation::derive-areas": "285bda36bbfe3d80",
       "technique:evidence-probes::consolidate-evidence": "3332b028e127d4d5",
       "technique:evidence-probes::probe-area": "a185b3286ab56cce",
+      "technique:finding-adjudication::grade-findings": "d9466e1d43ec35fa",
+      "technique:finding-adjudication::register-findings": "1cf2a0a98c0adb8c",
       "technique:scope-intake::detect-toolchain": "927ae957aa4eb4dc",
       "technique:scope-intake::resolve-change-surface": "28df4ffe2c573c8d"
     }
