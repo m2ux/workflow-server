@@ -6,16 +6,17 @@
   "agentId": "orchestrator",
   "sessionIndex": "ZE3S5P",
   "planningFolderPath": "/home/mike1/projects/main/workflow-server/.engineering/artifacts/planning/2026-07-14-msr-blind-run-pr1849",
-  "currentActivity": "finding-adjudication",
+  "currentActivity": "verdict-and-report",
   "currentTechnique": "",
   "condition": "default",
-  "seq": 20,
-  "ts": 1784091018,
+  "seq": 30,
+  "ts": 1784091984,
   "startedAt": "2026-07-14T17:18:01.252Z",
   "completedActivities": [
     "scope-intake",
     "area-derivation",
-    "evidence-probes"
+    "evidence-probes",
+    "finding-adjudication"
   ],
   "skippedActivities": [],
   "variables": {
@@ -41,6 +42,14 @@
     "scope-intake-scope-confirmed": {
       "optionId": "proceed",
       "respondedAt": "2026-07-14T17:21:52.000Z"
+    },
+    "verdict-and-report-publish-decision": {
+      "optionId": "skip-publish",
+      "respondedAt": "2026-07-15T05:06:10.000Z"
+    },
+    "verdict-and-report-verdict-review": {
+      "optionId": "accept-verdict",
+      "respondedAt": "2026-07-15T05:05:25.000Z"
     }
   },
   "history": [
@@ -252,6 +261,84 @@
       },
       "timestamp": "2026-07-15T04:50:18.100Z",
       "type": "resource_fetched"
+    },
+    {
+      "activity": "finding-adjudication",
+      "timestamp": "2026-07-15T05:02:15.248Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "verdict-and-report",
+      "timestamp": "2026-07-15T05:02:15.248Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "verdict-and-report",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "compute-verdict",
+        "techniqueId": "verdict-and-report::compute-verdict"
+      },
+      "timestamp": "2026-07-15T05:02:47.784Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "verdict-and-report",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "render-review",
+        "techniqueId": "verdict-and-report::render-review"
+      },
+      "timestamp": "2026-07-15T05:02:47.784Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "verdict-and-report",
+      "data": {
+        "agentId": "orchestrator",
+        "resourceId": "verdict-rubric"
+      },
+      "timestamp": "2026-07-15T05:02:52.695Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "verdict-and-report",
+      "data": {
+        "agentId": "orchestrator",
+        "resourceId": "review-format"
+      },
+      "timestamp": "2026-07-15T05:02:52.927Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "verdict-and-report",
+      "checkpoint": "verdict-review",
+      "timestamp": "2026-07-15T05:05:02.314Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "verdict-and-report",
+      "checkpoint": "verdict-review",
+      "data": {
+        "optionId": "accept-verdict"
+      },
+      "timestamp": "2026-07-15T05:05:25.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "verdict-and-report",
+      "checkpoint": "publish-decision",
+      "timestamp": "2026-07-15T05:05:56.224Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "verdict-and-report",
+      "checkpoint": "publish-decision",
+      "data": {
+        "optionId": "skip-publish"
+      },
+      "timestamp": "2026-07-15T05:06:10.000Z",
+      "type": "checkpoint_response"
     }
   ],
   "triggeredWorkflows": [],
@@ -271,7 +358,9 @@
       "technique:finding-adjudication::grade-findings": "d9466e1d43ec35fa",
       "technique:finding-adjudication::register-findings": "1cf2a0a98c0adb8c",
       "technique:scope-intake::detect-toolchain": "927ae957aa4eb4dc",
-      "technique:scope-intake::resolve-change-surface": "28df4ffe2c573c8d"
+      "technique:scope-intake::resolve-change-surface": "28df4ffe2c573c8d",
+      "technique:verdict-and-report::compute-verdict": "026cf6c55a1710cb",
+      "technique:verdict-and-report::render-review": "1efdd6f7e54cc7bb"
     }
   }
 }

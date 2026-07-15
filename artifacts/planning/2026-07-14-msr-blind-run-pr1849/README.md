@@ -1,6 +1,6 @@
 # Midnight System Review — PR #1849 (blind run)
 
-**Status:** Finding adjudication complete — 10 candidates graded against the rubric; 5 entries accepted (4 distinct defects: unversioned host-boundary decode, unbumped spec_version, doc decode-tag mismatch [dedupes A6-1≡A9-1], unanchored benchmark bound), 5 observations, 0 dismissed. Next: verdict and report.
+**Status:** Complete — verdict computed and report rendered. **Merge-readiness 1/5 ("Strongly do not merge"), review_type `request-changes`**, run status "issues found". Verdict accepted at sign-off; publication skipped (validation run — review stays local, nothing posted to PR #1849). Accounting reconciled: 9 areas, 19 probes, 4 issues found, 5 observations, 3 blocked validations.
 
 Independent first-principles review of pull request #1849 of `midnightntwrk/midnight-node` ("feat(1474): expose ledger-emitted events from the node"), pinned to head commit `61c9c3498db07e8b6457b9165d8bf0df29a2faad`.
 
