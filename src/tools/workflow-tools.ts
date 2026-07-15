@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from '../config.js';
-import { DEFAULT_BUNDLE_HEADROOM_FRACTION, DEFAULT_BUNDLE_CHARS_PER_TOKEN } from '../config.js';
+import { DEFAULT_BUNDLE_HEADROOM_FRACTION, DEFAULT_BUNDLE_CHARS_PER_TOKEN, DEFAULT_PRICE_TABLE, DEFAULT_PRICE_TABLE_VERSION } from '../config.js';
 import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, readActivityRaw, buildFragmentsLookup, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment, scanCheckpointRefLines } from '../loaders/fragment-resolver.js';
 import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
@@ -28,6 +28,7 @@ import {
 import type { SessionFile } from '../schema/session.schema.js';
 import { buildValidation, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTechniqueFetches, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
 import type { StepManifestEntry, ActivityManifestEntry } from '../utils/validation.js';
+import { finalizeUsageTree, recordActivityUsage, type UsageInput } from '../utils/usage.js';
 import { createTraceToken, decodeTraceToken } from '../trace.js';
 import type { TraceEvent, TraceTokenPayload } from '../trace.js';
 
@@ -41,6 +42,16 @@ const activityManifestSchema = z.array(z.object({
   outcome: z.string(),
   transition_condition: z.string().optional(),
 })).optional().describe('Activity completion manifest from the orchestrator. Reports the sequence of activities completed so far with outcomes and transition conditions.');
+
+const usageParamSchema = z.object({
+  input_tokens: z.number().int().nonnegative(),
+  output_tokens: z.number().int().nonnegative(),
+  total_tokens: z.number().int().nonnegative().optional(),
+  cache_read_tokens: z.number().int().nonnegative().optional(),
+  cache_write_5m_tokens: z.number().int().nonnegative().optional(),
+  cache_write_1h_tokens: z.number().int().nonnegative().optional(),
+  model: z.string().min(1).optional(),
+}).optional().describe('Native model usage for the activity being EXITED, relayed by the orchestrator/harness (the worker cannot self-measure). Omit entirely when no usage is available — the run still completes. Absent sub-figures are omitted, not fabricated.');
 
 /**
  * Wrap a tool handler so any thrown `SessionStoreError` is re-thrown with a
@@ -123,7 +134,7 @@ export async function composeActivityArtifacts(
 
 /** The views `inspect_session` can project. `summary` is the default composite. */
 export const INSPECT_SESSION_VIEWS = [
-  'summary', 'identity', 'variables', 'checkpoints', 'activities', 'history', 'children',
+  'summary', 'identity', 'variables', 'checkpoints', 'activities', 'history', 'children', 'usage',
 ] as const;
 export type InspectSessionView = (typeof INSPECT_SESSION_VIEWS)[number];
 
@@ -215,9 +226,14 @@ export function projectChildren(s: SessionFile): Array<Record<string, unknown>> 
   });
 }
 
+/** Usage projection: rolled-up per-activity and per-workflow token figures. */
+export function projectUsage(s: SessionFile): Record<string, unknown> | undefined {
+  return s.usage ? { ...s.usage } : undefined;
+}
+
 /** Summary (default) view: the composite of all projections for the addressed session. */
 export function projectSummary(s: SessionFile): Record<string, unknown> {
-  return {
+  const summary: Record<string, unknown> = {
     identity: projectIdentity(s),
     activities: projectActivities(s),
     variables: s.variables ?? {},
@@ -225,6 +241,9 @@ export function projectSummary(s: SessionFile): Record<string, unknown> {
     history: projectHistory(s),
     children: projectChildren(s),
   };
+  const usage = projectUsage(s);
+  if (usage) summary['usage'] = usage;
+  return summary;
 }
 
 /**
@@ -247,6 +266,7 @@ export function projectSessionView(
     case 'activities': return projectActivities(s);
     case 'history': return projectHistory(s);
     case 'children': return projectChildren(s);
+    case 'usage': return projectUsage(s) ?? {};
     case 'summary':
     default:
       return projectSummary(s);
@@ -377,8 +397,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       transition_condition: z.string().optional().describe('The transition condition that led to this activity (from the transitions field of the previous activity). Enables server-side validation of condition-activity consistency.'),
       step_manifest: stepManifestSchema,
       activity_manifest: activityManifestSchema,
+      usage: usageParamSchema,
     },
-    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest }) => {
+    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest, usage }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
       const { state } = loaded;
 
@@ -431,11 +452,23 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ...activityManifestWarnings,
       );
 
+      const priceTable = config.priceTable ?? DEFAULT_PRICE_TABLE;
+      const priceTableVersion = config.priceTableVersion ?? DEFAULT_PRICE_TABLE_VERSION;
+
       const next = advanceSession(state, (draft) => {
         const now = new Date().toISOString();
         // Exit-prior: any non-empty previous activity is recorded as
         // completed once we transition off it.
         if (draft.currentActivity) {
+          if (usage) {
+            recordActivityUsage(
+              draft,
+              draft.currentActivity,
+              usage as UsageInput,
+              priceTable,
+              priceTableVersion,
+            );
+          }
           draft.history.push({ timestamp: now, type: 'activity_exited', activity: draft.currentActivity });
           if (!draft.completedActivities.includes(draft.currentActivity)) {
             draft.completedActivities.push(draft.currentActivity);
@@ -450,6 +483,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // across the work-package, prism, and meta workflows; the TERMINAL_SENTINEL
         // is the contentless terminal reached via an explicit terminal transition.
         if (activity_id === 'complete' || isTerminal) {
+          finalizeUsageTree(draft);
           draft.history.push({ timestamp: now, type: 'workflow_completed' });
           draft.status = 'completed';
         }
@@ -1301,6 +1335,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           timestamp: lastCheckpoint.ts,
         };
       }
+
+      const usage = projectUsage(state);
+      if (usage) response['usage'] = usage;
 
       // get_workflow_status reads but does not advance — keep the on-disk state stable.
       response['session_index'] = session_index;

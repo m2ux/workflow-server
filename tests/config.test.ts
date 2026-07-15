@@ -92,5 +92,23 @@ describe('loadConfig — workspace argument', () => {
       expect(config.bundleHeadroomFraction).toBe(0.8);
       expect(config.bundleCharsPerToken).toBe(4);
     });
+
+    it('loads default price table and version (PR233-TC-09)', () => {
+      const config = loadConfig(['--workspace=/tmp/ws']);
+      expect(config.priceTable?.['claude-sonnet-5']).toEqual({ input: 2, output: 10 });
+      expect(config.priceTableVersion).toBe('2026-07-15');
+    });
+
+    it('applies PRICE_TABLE_VERSION env override (PR233-TC-09)', () => {
+      const prev = process.env['PRICE_TABLE_VERSION'];
+      process.env['PRICE_TABLE_VERSION'] = 'custom-version';
+      try {
+        const config = loadConfig(['--workspace=/tmp/ws']);
+        expect(config.priceTableVersion).toBe('custom-version');
+      } finally {
+        if (prev === undefined) delete process.env['PRICE_TABLE_VERSION'];
+        else process.env['PRICE_TABLE_VERSION'] = prev;
+      }
+    });
   });
 });

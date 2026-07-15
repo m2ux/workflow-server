@@ -8,6 +8,7 @@ import {
   PARENT_CHAIN_DEPTH_WARN_THRESHOLD,
   type SessionFile,
 } from '../src/schema/session.schema.js';
+import { HistoryEntrySchema } from '../src/schema/state.schema.js';
 
 const VALID_INDEX = 'ABCDEF';
 
@@ -323,6 +324,54 @@ describe('SessionFile schema', () => {
       const d = parentChainDepth(node);
       // Cap is 1024; helper must return without infinite-looping.
       expect(d).toBe(1024);
+    });
+  });
+
+  describe('usage field (PR233)', () => {
+    it('accepts SessionFile with usage present (PR233-TC-01)', () => {
+      const data = minimalSession({
+        usage: {
+          perActivity: {
+            implement: {
+              input_tokens: 1000,
+              output_tokens: 500,
+              total_tokens: 1500,
+              model: 'claude-sonnet-5',
+              cost_usd: 0.01,
+              priceTableVersion: '2026-07-15',
+            },
+          },
+          workflowTotal: {
+            input_tokens: 1000,
+            output_tokens: 500,
+            total_tokens: 1500,
+            cost_usd: 0.01,
+          },
+        },
+      });
+      expect(validateSessionFile(data).usage?.perActivity.implement.total_tokens).toBe(1500);
+    });
+
+    it('accepts SessionFile with usage absent (PR233-TC-02)', () => {
+      const data = minimalSession();
+      expect(validateSessionFile(data).usage).toBeUndefined();
+    });
+
+    it('validates usage_recorded history entry (PR233-TC-03)', () => {
+      const result = HistoryEntrySchema.safeParse({
+        timestamp: '2026-07-15T12:00:00.000Z',
+        type: 'usage_recorded',
+        activity: 'implement',
+        data: {
+          activityId: 'implement',
+          input_tokens: 100,
+          output_tokens: 50,
+          total_tokens: 150,
+          cost_usd: null,
+          priceTableVersion: '2026-07-15',
+        },
+      });
+      expect(result.success).toBe(true);
     });
   });
 });

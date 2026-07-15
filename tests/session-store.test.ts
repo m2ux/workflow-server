@@ -69,6 +69,19 @@ describe('session-store primitives', () => {
       expect(() => canonicaliseJson(Number.POSITIVE_INFINITY)).toThrow();
       expect(() => canonicaliseJson(Number.NaN)).toThrow();
     });
+
+    it('places usage before history per TOP_LEVEL_KEY_PRIORITY (PR233-TC-04)', () => {
+      const bytes = canonicaliseJson({
+        history: [],
+        usage: { perActivity: {}, workflowTotal: { input_tokens: 0, output_tokens: 0, total_tokens: 0, cost_usd: 0 } },
+        variables: {},
+        checkpointResponses: {},
+      });
+      const usageIdx = bytes.indexOf('"usage"');
+      const historyIdx = bytes.indexOf('"history"');
+      expect(usageIdx).toBeGreaterThan(-1);
+      expect(historyIdx).toBeGreaterThan(usageIdx);
+    });
   });
 
   describe('writeSessionFile atomicity', () => {

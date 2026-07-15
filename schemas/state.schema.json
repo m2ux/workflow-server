@@ -204,7 +204,8 @@
                   "technique_fetched",
                   "resource_fetched",
                   "technique_bundled",
-                  "variables_seeded"
+                  "variables_seeded",
+                  "usage_recorded"
                 ]
               },
               "activity": {

@@ -48,6 +48,36 @@ export const ActiveCheckpointSchema = z.object({
 });
 export type ActiveCheckpoint = z.infer<typeof ActiveCheckpointSchema>;
 
+/** Per-activity token usage entry with cost frozen at capture time. */
+export const ActivityUsageEntrySchema = z.object({
+  input_tokens: z.number().int().nonnegative(),
+  output_tokens: z.number().int().nonnegative(),
+  total_tokens: z.number().int().nonnegative(),
+  cache_read_tokens: z.number().int().nonnegative().optional(),
+  cache_write_5m_tokens: z.number().int().nonnegative().optional(),
+  cache_write_1h_tokens: z.number().int().nonnegative().optional(),
+  model: z.string().optional(),
+  cost_usd: z.number().nonnegative().nullable(),
+  priceTableVersion: z.string().optional(),
+});
+export type ActivityUsageEntry = z.infer<typeof ActivityUsageEntrySchema>;
+
+/** Rolled-up per-workflow token totals (child-inclusive at completion). */
+export const WorkflowUsageTotalSchema = z.object({
+  input_tokens: z.number().int().nonnegative(),
+  output_tokens: z.number().int().nonnegative(),
+  total_tokens: z.number().int().nonnegative(),
+  cost_usd: z.number().nonnegative().nullable(),
+});
+export type WorkflowUsageTotal = z.infer<typeof WorkflowUsageTotalSchema>;
+
+/** Durable usage roll-up persisted on SessionFile. */
+export const SessionUsageSchema = z.object({
+  perActivity: z.record(ActivityUsageEntrySchema).default({}),
+  workflowTotal: WorkflowUsageTotalSchema,
+});
+export type SessionUsage = z.infer<typeof SessionUsageSchema>;
+
 /**
  * Base (non-recursive) shape of `SessionFile`. Used as the building block for
  * the recursive `SessionFileSchema` below; the only structural extension is
@@ -100,6 +130,12 @@ const SessionFileBaseSchema = z.object({
    * `checkpointResponses` field on the existing workflow state schema.
    */
   checkpointResponses: z.record(CheckpointResponseSchema).default({}),
+
+  /**
+   * Rolled-up token usage and cost estimate. Absent until the first
+   * `usage_recorded` event; child-inclusive at workflow completion.
+   */
+  usage: SessionUsageSchema.optional(),
 
   /** Append-only event log for the session. */
   history: z.array(HistoryEntrySchema).default([]),
@@ -177,6 +213,7 @@ export interface SessionFile {
   completedActivities: string[];
   skippedActivities: string[];
   checkpointResponses: Record<string, CheckpointResponse>;
+  usage?: SessionUsage;
   history: HistoryEntry[];
   status: 'running' | 'completed' | 'aborted';
   triggeredWorkflows: EmbeddedSessionRef[];

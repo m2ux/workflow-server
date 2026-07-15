@@ -31,7 +31,17 @@ export interface ServerConfig {
   traceStore?: TraceStore;
   /** Minimum seconds between checkpoint issuance and response. Default 3. Set to 0 for testing. */
   minCheckpointResponseSeconds?: number;
+  /**
+   * Per-model USD-per-MTok rates ({ input, output }) for cost estimation.
+   * Cache rates are derived from base input via universal multipliers.
+   */
+  priceTable?: PriceTable;
+  /** Version string stamped on each cost estimate; env-overridable via PRICE_TABLE_VERSION. */
+  priceTableVersion?: string;
 }
+
+/** USD-per-MTok base input/output rates keyed by model id. */
+export type PriceTable = Record<string, { input: number; output: number }>;
 
 /** Config shape after startup — traceStore is guaranteed present. */
 export interface ResolvedServerConfig extends ServerConfig {
@@ -48,6 +58,19 @@ const PROJECT_ROOT = resolve(import.meta.dirname, '..');
  */
 export const DEFAULT_BUNDLE_HEADROOM_FRACTION = 0.8;
 export const DEFAULT_BUNDLE_CHARS_PER_TOKEN = 4;
+
+/**
+ * Build-time price table seeded from Anthropic pricing (2026-07-15).
+ * Re-confirm figures at build time when pricing changes.
+ */
+export const DEFAULT_PRICE_TABLE: PriceTable = {
+  'claude-opus-4-8': { input: 5, output: 25 },
+  'claude-sonnet-5': { input: 2, output: 10 },
+  'claude-haiku-4-5': { input: 1, output: 5 },
+  'claude-fable-5': { input: 10, output: 50 },
+};
+
+export const DEFAULT_PRICE_TABLE_VERSION = '2026-07-15';
 
 function envOrDefault(key: string, fallback: string): string {
   const value = process.env[key]?.trim();
@@ -131,5 +154,7 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
     serverVersion: envOrDefault('SERVER_VERSION', '2.1.0'),
     bundleHeadroomFraction: envNumberOrDefault('BUNDLE_HEADROOM_FRACTION', DEFAULT_BUNDLE_HEADROOM_FRACTION),
     bundleCharsPerToken: envNumberOrDefault('BUNDLE_CHARS_PER_TOKEN', DEFAULT_BUNDLE_CHARS_PER_TOKEN),
+    priceTable: DEFAULT_PRICE_TABLE,
+    priceTableVersion: envOrDefault('PRICE_TABLE_VERSION', DEFAULT_PRICE_TABLE_VERSION),
   };
 }

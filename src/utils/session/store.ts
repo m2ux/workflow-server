@@ -101,6 +101,7 @@ const TOP_LEVEL_KEY_PRIORITY = [
   'skippedActivities',
   'variables',
   'checkpointResponses',
+  'usage',
   'history',
   'triggeredWorkflows',
   'parentSession',

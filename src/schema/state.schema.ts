@@ -27,6 +27,10 @@ export const HistoryEventTypeSchema = z.enum([
   // session variable bag at session creation. ONE event per session; `data`
   // carries { variables: <the seeded map> }.
   'variables_seeded',
+  // Token-use tracking (#232): per-activity native usage relayed by the
+  // orchestrator at the next_activity transition seam. `data` carries the
+  // token figures, model, cost_usd (nullable), and priceTableVersion.
+  'usage_recorded',
 ]);
 export type HistoryEventType = z.infer<typeof HistoryEventTypeSchema>;
 

@@ -329,6 +329,114 @@ describe('mcp-server integration', () => {
       });
       expect(result.isError).toBe(true);
     });
+
+    it('accepts usage param and records per-activity entry (PR233-TC-10)', async () => {
+      await transitionToActivity(client, sessionToken, 'start-work-package');
+      const result = await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: sessionToken,
+          activity_id: 'codebase-comprehension',
+          usage: {
+            input_tokens: 1000,
+            output_tokens: 500,
+            model: 'claude-sonnet-5',
+          },
+        },
+      });
+      expect(result.isError).toBeFalsy();
+
+      const inspect = await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      });
+      const usageView = parseToolResponse(inspect) as { perActivity?: Record<string, unknown> };
+      expect(usageView.perActivity?.['start-work-package']).toMatchObject({
+        input_tokens: 1000,
+        output_tokens: 500,
+        total_tokens: 1500,
+        model: 'claude-sonnet-5',
+        priceTableVersion: '2026-07-15',
+      });
+      expect(usageView.perActivity?.['start-work-package'].cost_usd).not.toBeNull();
+      const historyInspect = await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'history' },
+      });
+      const historyView = parseToolResponse(historyInspect) as { byType?: Record<string, number> };
+      expect(historyView.byType?.usage_recorded).toBeGreaterThan(0);
+    });
+
+    it('completes without usage when param omitted (PR233-TC-11)', async () => {
+      await transitionToActivity(client, sessionToken, 'start-work-package');
+      const result = await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: sessionToken, activity_id: 'codebase-comprehension' },
+      });
+      expect(result.isError).toBeFalsy();
+      const inspect = await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      });
+      const usageView = parseToolResponse(inspect);
+      expect(usageView).toEqual({});
+      const historyInspect = await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'history' },
+      });
+      const historyView = parseToolResponse(historyInspect) as { byType?: Record<string, number> };
+      expect(historyView.byType?.usage_recorded ?? 0).toBe(0);
+    });
+
+    it('records cache figures when supplied (PR233-TC-12)', async () => {
+      await transitionToActivity(client, sessionToken, 'start-work-package');
+      await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: sessionToken,
+          activity_id: 'codebase-comprehension',
+          usage: {
+            input_tokens: 100,
+            output_tokens: 50,
+            cache_read_tokens: 200,
+            cache_write_5m_tokens: 300,
+            model: 'claude-sonnet-5',
+          },
+        },
+      });
+      const inspect = await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      });
+      const usageView = parseToolResponse(inspect) as { perActivity?: Record<string, unknown> };
+      expect(usageView.perActivity?.['start-work-package']).toMatchObject({
+        cache_read_tokens: 200,
+        cache_write_5m_tokens: 300,
+      });
+    });
+
+    it('records tokens with cost_usd null for unknown model (PR233-TC-15)', async () => {
+      await transitionToActivity(client, sessionToken, 'start-work-package');
+      const result = await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: sessionToken,
+          activity_id: 'codebase-comprehension',
+          usage: {
+            input_tokens: 100,
+            output_tokens: 50,
+            model: 'unknown-model-xyz',
+          },
+        },
+      });
+      expect(result.isError).toBeFalsy();
+      const inspect = await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      });
+      const usageView = parseToolResponse(inspect) as { perActivity?: Record<string, { cost_usd: null | number }> };
+      expect(usageView.perActivity?.['start-work-package'].cost_usd).toBeNull();
+    });
   });
 
   describe('tool: get_activity', () => {
