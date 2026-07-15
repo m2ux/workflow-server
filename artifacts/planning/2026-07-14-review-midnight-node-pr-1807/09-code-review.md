@@ -39,7 +39,7 @@ Authored surface (`changed_files`): `.github/workflows/fork-network.yml`, `chang
 
 ### Findings
 
-#### CR-1
+#### [CR-1](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/src/commands/run.ts#L158-L185)
 **From-genesis validator seeds never reach the keystore — the network silently never finalizes.** — **Critical** (impact axis: liveness-halt) · `local-environment/src/commands/run.ts:158-185` (`runFromGenesis`), corroborated by `local-environment/src/networks/well-known/devnet/devnet.network.yaml:34` and `node/src/command.rs:223-265`.
 
 `runFromGenesis` runs the well-known base compose detached, passing the env map through unchanged. The base compose provisions each validator's seed as an **inline phrase** env var — `SEED_PHRASE: $MIDNIGHT_NODE_01_0_SEED` (devnet, 6 validators; same shape in all 9 well-known compose files). The node consumes validator seeds **only** from file-path config fields — `aura_seed_file` / `babe_seed_file` / `grandpa_seed_file` / `cross_chain_seed_file` (`node/src/cfg/midnight_cfg/mod.rs:50-65`), each `std::fs::read_to_string`-ed into the `LocalKeystore` at `node/src/command.rs:223-265`. There is no code path — Rust, shell, Dockerfile, or entrypoint — that reads `SEED_PHRASE` and materializes a keystore entry from it (`grep -rn SEED_PHRASE` returns matches only in the 9 compose YAMLs plus `mockComposeOverride.ts`).
@@ -50,27 +50,27 @@ Authored surface (`changed_files`): `.github/workflows/fork-network.yml`, `chang
 
 This confirms prior-feedback triage rows #5b (m2ux) and #6 (Codex bot), and the portfolio convergent finding, independently re-derived here. The fix is a **design decision about where seed provisioning lives** (base-compose author wires `*_SEED_FILE` + a seed-file materialization step; or the tool provisions seeds like the fork path does; or from-genesis is documented as requiring the operator to mount seed files), not a one-line wiring change — provisioning seeds *inside* the tool trades the silent-no-finalization gap for secret-on-disk exposure and tight coupling to the node's `*_SEED_FILE` contract. Merge-blocking while unaddressed.
 
-#### CR-2
+#### [CR-2](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/README.md#L55-L74)
 **README documents a from-genesis happy path that does not finalize.** — **Minor** (maintainability / correctness-of-docs) · `local-environment/README.md:55-74` ("Starting a well-known network from genesis").
 
 The new subsection tells the operator that each validator "needs its real seed phrase (e.g. `MIDNIGHT_NODE_01_0_SEED`) … supplied via `--env-file`," framing seed provisioning as complete once that env var is set. Per CR-1 the base compose maps that value into `SEED_PHRASE`, which the node does not consume, so following the documented steps yields a network that comes up but never produces blocks. The doc should either flag the seed-wiring gap or describe the actual provisioning the node requires (seed *files*). Because it is on the authored surface and materially misleads the operator toward the CR-1 failure, it is a PR finding rather than a pure nit; it rides on CR-1's resolution.
 
-#### CR-3
+#### [CR-3](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/src/commands/run.ts#L68)
 **New `throw` line exceeds prettier printWidth 80.** — **Nit** (style) · `local-environment/src/commands/run.ts:68`.
 
 `throw new Error("--from-genesis and --from-snapshot are mutually exclusive.");` measures 82 characters; prettier 3.5.3 (the pinned formatter, default printWidth 80) would rewrap it across lines. `prettier --check` is the package's `lint` script, so `npm run lint` in `local-environment/` fails on this line. It does not fail CI (see CR-4), and the guard itself is correct and minimal — the finding is the unformatted line only.
 
-#### CR-4
+#### [CR-4](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/package.json)
 **`local-environment` TypeScript is not linted in CI.** — **Nit** (process/tooling gap, not on a source line) · `local-environment/package.json` `lint` script vs. the PR's CI check set.
 
 The package defines `"lint": "eslint . && prettier --check ."`, but no CI job runs it (the "Fomatting and Linting" check that passes on this PR is Rust `cargo fmt`/clippy). This is why CR-3 slips through green CI. Recorded as an observation about the changed package's tooling; closing it is a CI-workflow follow-up, not a change to this PR's source.
 
-#### CR-5
+#### [CR-5](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/src/commands/run.ts#L194)
 **`collectUnsetComposeVars` regex does not special-case `${VAR:-default}` or `$$VAR`.** — **Nit** (latent completeness) · `local-environment/src/commands/run.ts:194`.
 
 The regex `/\$\{?([A-Z][A-Z0-9_]*)/g` treats `${VAR:-default}` as a plain reference (would warn about a var that has a compose-level default) and does not skip `$$VAR` (compose's literal-`$` escape). Neither form appears in any current well-known compose file, so the gap is latent and unexercised. It is the leanest correct form for the values it must catch today (confirmed by the lean-coding audit); flagged only so the edge cases are on record if compose files gain defaults or `$$` escapes later.
 
-#### CR-6
+#### [CR-6](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/changes/node/added/local-env-from-genesis.md#L16-L17)
 **Changelog fragment has empty `PR:`/`Issue:` trailers.** — **Nit** (changelog hygiene) · `changes/node/added/local-env-from-genesis.md:16-17`.
 
 The added-feature entry leaves `PR:` and `Issue:` blank. If the repo's changelog convention expects these populated at merge, fill them (PR #1807 / issue #1468) before merge. Body content is otherwise accurate.
@@ -131,8 +131,8 @@ The conservation law itself conceals a concrete, testable consequence specific t
 
 | # | Location | Description | Severity | Fixable / Structural |
 |---|----------|-------------|----------|----------------------|
-| SA-1 | `run.ts:158-185` + base compose `SEED_PHRASE` + `command.rs:223-265` | Unmatched producer: from-genesis seed reaches the container via `SEED_PHRASE` but the node reads `*_SEED_FILE`; empty keystore → no finalization | Critical (liveness-halt) | **Structural** — the conservation law predicts it cannot be resolved without either completing the compose files or moving provisioning into the tool; same finding as CR-1 |
-| SA-2 | `run.ts:172-177` (`collectUnsetComposeVars` warning) | Guard measures presence, not effect; reports green for a set-but-inert seed var — false "ready" signal | Minor (concealment enabler) | Fixable — replace/augment with a seed-provisioning-contract check; sub-finding of SA-1, not double-counted in routing |
+| [SA-1](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/src/commands/run.ts#L158-L185) | `run.ts:158-185` + base compose `SEED_PHRASE` + `command.rs:223-265` | Unmatched producer: from-genesis seed reaches the container via `SEED_PHRASE` but the node reads `*_SEED_FILE`; empty keystore → no finalization | Critical (liveness-halt) | **Structural** — the conservation law predicts it cannot be resolved without either completing the compose files or moving provisioning into the tool; same finding as CR-1 |
+| [SA-2](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/src/commands/run.ts#L172-L177) | `run.ts:172-177` (`collectUnsetComposeVars` warning) | Guard measures presence, not effect; reports green for a set-but-inert seed var — false "ready" signal | Minor (concealment enabler) | Fixable — replace/augment with a seed-provisioning-contract check; sub-finding of SA-1, not double-counted in routing |
 
 The single new structural bug is SA-1, which is CR-1 reached by the conservation route (not an additional finding — same defect, corroborating evidence). SA-2 is the concealment mechanism, actionable as part of the SA-1 fix.
 

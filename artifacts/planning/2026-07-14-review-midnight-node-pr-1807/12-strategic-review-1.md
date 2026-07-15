@@ -36,7 +36,7 @@ Orphan check: no introduced-but-unreferenced symbols. `runFromGenesis`, `collect
 
 Strategic review adds no new defects beyond what the code review, structural analysis, and test-suite review already surfaced. Its distinct contribution is the **scope-fit and minimality** verdict above (clean) and the **changelog-hygiene** finding below. Code/test findings are referenced by ID, not restated — see [09-code-review.md](09-code-review.md) and [10-test-suite-review.md](10-test-suite-review.md).
 
-### SR-1 — Changelog fragment lacks a CI-conformant issue reference
+### [SR-1 — Changelog fragment lacks a CI-conformant issue reference](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/changes/node/added/local-env-from-genesis.md#L16-L17)
 
 **Nit** (changelog hygiene / CI-conformance) · [`changes/node/added/local-env-from-genesis.md:16-17`](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/changes/node/added/local-env-from-genesis.md#L16-L17)
 

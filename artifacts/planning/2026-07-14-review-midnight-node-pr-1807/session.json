@@ -5,16 +5,22 @@
   "workflowVersion": "5.4.0",
   "agentId": "orchestrator",
   "sessionIndex": "RTJ3P7",
-  "currentActivity": "dispatch-client-workflow",
+  "currentActivity": "end-workflow",
   "currentTechnique": "version-control::select-target-component",
-  "condition": "isDefault",
-  "seq": 13,
-  "ts": 1784050184,
+  "condition": "client_workflow_completed == true",
+  "activeCheckpoint": {
+    "activityId": "end-workflow",
+    "checkpointId": "completion-confirmed",
+    "yieldedAt": "2026-07-15T05:54:29.884Z"
+  },
+  "seq": 17,
+  "ts": 1784094869,
   "startedAt": "2026-07-14T17:22:59.665Z",
   "completedActivities": [
     "discover-session",
     "initialize-session",
-    "resolve-target"
+    "resolve-target",
+    "dispatch-client-workflow"
   ],
   "skippedActivities": [],
   "variables": {
@@ -201,6 +207,51 @@
       "activity": "dispatch-client-workflow",
       "timestamp": "2026-07-14T17:29:44.929Z",
       "type": "activity_entered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-07-15T05:53:13.374Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-07-15T05:53:13.374Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "verify-outcomes",
+        "techniqueId": "workflow-engine::verify-outcomes"
+      },
+      "timestamp": "2026-07-15T05:53:45.022Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "generate-summary",
+        "techniqueId": "workflow-engine::generate-summary"
+      },
+      "timestamp": "2026-07-15T05:53:45.022Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "resourceId": "session-summary-template"
+      },
+      "timestamp": "2026-07-15T05:53:57.362Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "timestamp": "2026-07-15T05:54:29.884Z",
+      "type": "checkpoint_reached"
     }
   ],
   "triggeredWorkflows": [
@@ -1723,10 +1774,12 @@
       "technique:version-control::select-target-component": "c897ea315eea3927",
       "technique:workflow-engine::create-session": "9084f8b37a57b1bd",
       "technique:workflow-engine::extract-identifying-context": "f0ffbb2e6ca5f273",
+      "technique:workflow-engine::generate-summary": "ebdfc15072e13a5c",
       "technique:workflow-engine::list-workflows": "e2c7caa29e0ddc3f",
       "technique:workflow-engine::match-saved-session": "28ad55e8d7cf474d",
       "technique:workflow-engine::match-target-workflow": "9605617e6205fe22",
-      "technique:workflow-engine::scan-saved-sessions": "a3e23262593e2daf"
+      "technique:workflow-engine::scan-saved-sessions": "a3e23262593e2daf",
+      "technique:workflow-engine::verify-outcomes": "cc5f1253698d17ba"
     }
   }
 }

@@ -31,24 +31,20 @@ Disposition of every prior comment and review on the PR (human and bot), determi
 
 ### Code Review Findings
 
-Details: [code review report](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md).
-
 | # | Finding | Severity | Disposition |
 |---|---------|----------|-------------|
-| [CR-1](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#cr-1) | [From-genesis validator seeds never reach the keystore → network never finalizes (liveness-halt)](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/src/commands/run.ts#L158-L185) | Critical | Fix now (design decision) |
-| [CR-2](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#cr-2) | [README documents a from-genesis happy path that does not finalize](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/README.md#L55-L74) | Medium | Fix now (rides on CR-1) |
-| [CR-3](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#cr-3) | [New `throw` line is 82 chars, exceeds prettier printWidth 80](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/src/commands/run.ts#L68) | Low | Noted |
-| [CR-4](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#cr-4) | [`local-environment` TypeScript is not linted in CI (why CR-3 slips green)](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/package.json) | Low | Noted (CI follow-up) |
-| [CR-5](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#cr-5) | [`collectUnsetComposeVars` regex misses `${VAR:-default}` / `$$VAR` (latent)](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/src/commands/run.ts#L194) | Low | Noted |
-| [CR-6](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#cr-6) | [Changelog fragment has empty `PR:`/`Issue:` trailers](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/changes/node/added/local-env-from-genesis.md#L16-L17) | Low | Noted (see SR-1) |
-| [SA-1](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#structural-analysis) | [Unmatched producer: seed channel (`SEED_PHRASE`) ≠ read channel (`*_SEED_FILE`) — same defect as CR-1 by the conservation route](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/src/commands/run.ts#L158-L185) | Critical | Fix now (= CR-1) |
-| [SA-2](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#structural-analysis) | [Unset-var guard checks presence, not effect → false "ready" for a set-but-inert seed](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/src/commands/run.ts#L172-L177) | Medium | Fix now (part of CR-1 fix) |
+| [CR-1](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#cr-1) | From-genesis validator seeds never reach the keystore → network never finalizes (liveness-halt) | Critical | Fix now (design decision) |
+| [CR-2](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#cr-2) | README documents a from-genesis happy path that does not finalize | Medium | Fix now (rides on CR-1) |
+| [CR-3](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#cr-3) | New `throw` line is 82 chars, exceeds prettier printWidth 80 | Low | Noted |
+| [CR-4](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#cr-4) | `local-environment` TypeScript is not linted in CI (why CR-3 slips green) | Low | Noted (CI follow-up) |
+| [CR-5](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#cr-5) | `collectUnsetComposeVars` regex misses `${VAR:-default}` / `$$VAR` (latent) | Low | Noted |
+| [CR-6](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#cr-6) | Changelog fragment has empty `PR:`/`Issue:` trailers | Low | Noted (see SR-1) |
+| [SA-1](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#structural-analysis) | Unmatched producer: seed channel (`SEED_PHRASE`) ≠ read channel (`*_SEED_FILE`) — same defect as CR-1 by the conservation route | Critical | Fix now (= CR-1) |
+| [SA-2](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/09-code-review.md#structural-analysis) | Unset-var guard checks presence, not effect → false "ready" for a set-but-inert seed | Medium | Fix now (part of CR-1 fix) |
 
 ---
 
 ### Test Review Findings
-
-Details: [test suite review report](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/10-test-suite-review.md).
 
 | # | Gap | Severity | Disposition |
 |---|-----|----------|-------------|
@@ -60,7 +56,7 @@ Details: [test suite review report](https://github.com/m2ux/workflow-server/blob
 
 ### Strategic Review
 
-Details: [strategic review report](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-07-14-review-midnight-node-pr-1807/12-strategic-review-1.md). Scope-fit is clean — all 7 changed files (+161/-9) map to issue #1468's five usability concerns; no scope creep, no over-engineering, no orphaned symbols. The only shortfall is completeness (CR-1), not scope.
+Scope-fit is clean — all 7 changed files (+161/-9) map to issue #1468's five usability concerns; no scope creep, no over-engineering, no orphaned symbols. The only shortfall is completeness (CR-1), not scope.
 
 | # | Finding | Severity | Disposition |
 |---|---------|----------|-------------|

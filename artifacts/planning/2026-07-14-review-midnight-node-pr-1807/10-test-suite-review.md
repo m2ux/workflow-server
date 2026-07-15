@@ -22,17 +22,17 @@ GitNexus `diff-coverage-map` was not run against these symbols: the index is Rus
 
 ## Findings
 
-### TR-1
+### [TR-1](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/package.json#L6)
 **The `local-environment/` package has no automated tests at all.** — **Minor** (coverage gap) · `local-environment/package.json:6`.
 
 `"test": "echo \"Error: no test specified\" && exit 1"`; there are zero `*.test.ts`/`*.spec.ts` files and no test framework (vitest/jest/mocha) in `dependencies`/`devDependencies`. Every symbol this PR adds — `runFromGenesis`, `collectUnsetComposeVars`, the mutual-exclusivity guard, the `--from-genesis` CLI wiring — ships untested. This is a pre-existing package condition, not introduced by the PR, but the PR extends the untested surface. Per the multi-instance/coverage gate this routes (≥ Minor). **Recommendation:** the highest-value, lowest-cost unit test is `collectUnsetComposeVars` — it is pure (string in, string[] out), has no Docker/filesystem dependency once the compose text is provided, and its regex edge cases (CR-5: `${VAR:-default}`, `$$VAR`) are exactly what a unit test would pin. Adding a minimal test runner plus that one test would establish the harness and lock the regex contract.
 
-### TR-2
+### [TR-2](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/src/commands/run.ts#L158-L185)
 **No test exercises the from-genesis seed-provisioning contract — the CR-1 Critical failure is invisible to the harness.** — **Minor** (coverage gap tied to a Critical defect) · `local-environment/src/commands/run.ts:158-185`.
 
 Traced reported failure (from prior-feedback triage #5b/#6, re-verified as CR-1/SA-1): the from-genesis network boots with empty consensus keystores and never finalizes. **Triggering code path:** `run(...)` → `runWellKnownNetwork(...)` with `runOptions.fromGenesis === true` → `runFromGenesis(...)` → `runDockerCompose(...)` on a base compose whose validator services set `SEED_PHRASE` but no `*_SEED_FILE`. **State precondition:** a validator service whose seed is supplied via the inline `SEED_PHRASE` channel while the node reads only `*_SEED_FILE`. No test reaches this path; the failure is a *runtime* (chain-liveness) property, not something the current package could assert even if it had unit tests, because it depends on the node container's keystore behaviour. **Recommendation:** the meaningful test is integration-level — bring up a from-genesis network and assert block height advances past 0 (not merely that RPC `/health` responds, which is the blind spot noted in SA-2). Absent an integration harness, at minimum add an assertion in `runFromGenesis` that each validator service resolves an `*_SEED_FILE` (or mounted seed file) before `docker compose up`, and unit-test *that* guard — it converts the silent runtime failure into a fast, testable precondition. This is a coverage gap; the underlying defect is rated Critical under CR-1, not re-rated here.
 
-### TR-3
+### [TR-3](https://github.com/midnightntwrk/midnight-node/blob/98dd8e11/local-environment/src/commands/run.ts#L67-L69)
 **No test pins the mutual-exclusivity guard.** — **Nit** (coverage gap) · `local-environment/src/commands/run.ts:67-69`.
 
 `--from-genesis` + `--from-snapshot` throws, correctly, but nothing asserts it. A one-line unit test (call `runWellKnownNetwork` with both flags, expect the throw) would lock the contract. Low value on its own; folds into establishing the TR-1 harness.
