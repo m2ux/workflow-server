@@ -18,3 +18,4 @@ Independent first-principles review of pull request #1849 of `midnightntwrk/midn
 | area-derivation | 02 | [investigation-plan.md](02-investigation-plan.md) | Complete — plan approved |
 | evidence-probes | 03 | [evidence-log.md](03-evidence-log.md) | Complete — 9 areas, 10 candidate findings |
 | finding-adjudication | 04 | [findings-register.md](04-findings-register.md) | Complete — 10 graded, 5 accepted / 5 observations / 0 dismissed |
+| verdict-and-report | 05 | [review-report.md](05-review-report.md) | Complete — verdict 1/5, request-changes; accepted at sign-off, publication skipped (local) |
