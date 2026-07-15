@@ -1,6 +1,6 @@
 # Token Use Tracking and Cost Estimation - July 2026
 
-> Feature · Created 2026-07-14 · **Status:** Plan & Prepare complete (pending plan-approval sign-off) — work-package plan (8 tasks: 6 server + 2 corpus), test plan (17 cases → SC-1..SC-6), and Solution Overview authored; six micro-decisions resolved; native-usage channel (declared `usage` param + config price table) carried to the plan-approval checkpoint for final sign-off. Next: implementation.
+> Feature · Created 2026-07-14 · **Status:** Approved — PR [#233](https://github.com/m2ux/workflow-server/pull/233) awaiting merge.
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -20,6 +20,8 @@ The plan adds token tracking in two coordinated parts. First, the server gains a
 
 Second, because the server never writes human-readable documents itself, the workflow instructions are updated so that the agent both supplies those token counts and, when the work finishes, writes a short usage-and-cost summary into the work package's planning records — a table showing how much each stage used, the totals, and the estimated cost. The result is that every completed work package carries its own durable record of what it consumed and what it cost, letting people review spend, spot the most expensive stages, and compare efficiency between runs. The cost figure is an estimate for guidance, not a bill, and is most meaningful for usage billed per token rather than under a flat subscription.
 
+**Token usage (this run):** No usage relayed — see [14-token-usage.md](14-token-usage.md).
+
 ## 📊 Progress
 
 | # | Item | Description | Estimate | Status |
@@ -31,19 +33,24 @@ Second, because the server never writes human-readable documents itself, the wor
 | 04 | [KB & web research](04-kb-research.md) | Native-usage channel evidence, DI-1 head-to-head, pricing table, OTEL findings | 20-45m | ✅ Complete |
 | 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
 | 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
-| — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
-| 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
-| 06 | [Test suite review](test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
-| 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
+| — | Implementation | Code changes per plan | 1-4h | ✅ Complete |
+| 10 | [Change block index](10-change-block-index.md) | Indexed diff hunks for manual review | 5-10m | ✅ Complete |
+| 09 | [Code review](09-code-review.md) | Manual diff, lean-coding, and code review findings | 10-20m | ✅ Complete |
+| 09 | [Debt ledger](09-debt-ledger.md) | Ponytail marker harvest | 5m | ✅ Complete |
+| 09 | [Lean change](09-lean-change.md) | Applied simplifications record | 5m | ✅ Complete |
+| 10 | [Test suite review](10-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ✅ Complete |
+| 10 | [Architecture summary](10-architecture-summary.md) | Stakeholder-facing architecture overview | 10-15m | ✅ Complete |
+| 12 | [Strategic review](12-strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ✅ Complete |
 | — | [Comprehension artifact](../../comprehension/token-use-tracking.md) | Persistent codebase knowledge (+ [portfolio lens analysis](../../comprehension/portfolio-token-use-tracking-synthesis.md)) | 20-45m | ✅ Complete |
-| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
-| 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ⬚ Pending |
+| — | Validation | Build, test, lint verification | 15-30m | ✅ Complete |
+| — | PR review | External review feedback cycle | 30-60m | ✅ Complete |
+| 14 | [Token usage](14-token-usage.md) | Per-activity usage and cost record (no usage relayed this run) | — | ✅ Complete |
+| 14 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ✅ Complete |
+| — | [ADR-0006](../../adr/0006-agent-relayed-token-usage-at-activity-transition.md) | Architecture decision record (Proposed until merge) | 15-30m | ✅ Complete |
 
 ## 🔗 Links
 
 | Resource | Link |
 |----------|------|
 | GitHub Issue | [#232](https://github.com/m2ux/workflow-server/issues/232) |
-| PR | [#233](https://github.com/m2ux/workflow-server/pull/233) (draft) |
+| PR | [#233](https://github.com/m2ux/workflow-server/pull/233) |
