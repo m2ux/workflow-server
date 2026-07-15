@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: midnight-system-review
-version: 1.1.0
+version: 1.2.0
 title: Midnight System Review Workflow
 description: Evidence-driven system-level review of a midnight-node change-set. Derives investigation areas from the changed surface and a subsystem map, runs bounded per-area evidence probes, adjudicates rubric-graded findings, and renders a 1-5 merge-readiness verdict with per-area accounting, optionally publishing the review to the pull request.
 author: m2ux
@@ -22,7 +22,8 @@ rules:
     - "Grade-tuple completeness: every registered finding carries the complete grade tuple — evidence anchor, risk/impact, evidence confidence, production likelihood, category, and validation mode. A finding with a missing tuple element fails the adjudication validate gate."
     - "Accounting reconciliation: the review report's per-area accounting must reconcile — every investigation area reports its probe and finding counts, every finding maps to exactly one area, and totals match the findings register — before the verdict is presented."
     - "Plan-approval gate: evidence probing is entered only after the investigation plan is approved (plan_approved true via the investigation-plan-approved checkpoint). The approved investigation-plan artifact is the authoritative coverage contract for probing and for any verdict-driven re-derivation."
-    - "Failure-class coverage: the subsystem-map failure classes of every in-scope and coupled subsystem are probe obligations. Area derivation maps each failure class relevant to the change kind to a probe or marks it not-applicable with a reason; evidence probing discharges each as confirmed, refuted with an anchor, or recorded blocked. A change altering an event enum, host-boundary type, runtime metadata, or spec_version puts the release-and-upgrade automation subsystem in scope for its failure classes. No named failure class is silently skipped."
+    - "Failure-class coverage: the subsystem-map failure classes of every in-scope and coupled subsystem are probe obligations. Area derivation maps each failure class relevant to the change kind to a probe or marks it not-applicable with a reason; evidence probing discharges each as confirmed, refuted with proof the failure mode cannot occur, inconclusive when evidence is insufficient, or recorded blocked. Refuted on correlation-class or atomicity-class obligations requires a join-key discharge table or caller-path anchor; inconclusive is never silently treated as refuted. A change altering an event enum, host-boundary type, runtime metadata, or spec_version puts the release-and-upgrade automation subsystem in scope for its failure classes. No named failure class is silently skipped."
+    - "Toolchain gate persistence: detect-toolchain outputs land in gitnexus_available, cargo_available, and node_binary_available before area-derivation; downstream probes read these session variables, not re-probed availability."
     - "Publish authority: publication requires explicit approval — publish-review is entered only when has_pr_surface and publish_requested are both true; the publish-decision checkpoint is the sole source of publish_requested. Runs without a PR surface terminate at verdict-and-report."
   universal:
     - ref: substrate-node-security-audit::planning-artifacts-gitignored

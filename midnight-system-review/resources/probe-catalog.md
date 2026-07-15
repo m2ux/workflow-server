@@ -9,6 +9,8 @@ metadata:
 
 Every planned probe comes from this catalog. A probe is one bounded evidence-gathering action with a stated validation target — never open-ended exploration. Plans select two to `probe_budget_per_area` probes per area, matched to the area's subsystem class and change kind. Where a probe's toolchain gate is false, the probe is recorded as a blocked validation — the missing instrument and the unvalidated claim — and never silently skipped.
 
+Failure-class discharge records use three-way disposition: **confirmed** (evidence supports the failure mode), **refuted** (proof the failure mode cannot occur), or **inconclusive** (evidence insufficient). Inconclusive is never silently treated as refuted. Refuted on correlation-class or atomicity-class obligations requires the proof artifacts defined for P7, P8a, or P8b below.
+
 ## P1 — Source tracing
 
 - Validates: control and data flow claims — error paths, storage mutation ordering, event emission contracts, weight derivation.
@@ -63,15 +65,31 @@ Every planned probe comes from this catalog. A probe is one bounded evidence-gat
 - Instrument: source tracing of each join-key field back to its assignment origin, on every path that emits the paired records; grep for the field's writes.
 - Gate: none — source trace.
 - Bounding: one join-key relationship per probe; anchor the origin of each side and state whether they agree or diverge.
-- Evidence form: file:line for each record's key assignment, with the observed same-source or different-source result.
+- Evidence form: a mandatory **join-key discharge table** — for each paired record type, the field name, assignment origin (file:line), and same-source vs different-source verdict — plus file:line anchors for each record's key assignment.
 
-## P8 — Downstream-caller failure-atomicity
+## P8a — Downstream-caller propagation
 
-- Validates: caller-side integrity when a changed function's signature, return, or failure/partial semantics changed — each caller that mutates persistent state (storage writes/deletes, accounting consumption) handles the new failure or partial-success path without losing or committing state (the accounting-consumed-before-success class).
-- Instrument: enumerate callers of the changed symbol (the `gitnexus-operations` group when `gitnexus_available`, otherwise grep plus targeted reads), then trace each caller's state mutations around the fallible call — the order of consume/delete versus commit, swallowed errors, early returns.
+- Validates: error propagation from a changed callee through caller control flow — whether a caller surfaces, handles, or swallows errors from the changed function when the signature, return, or failure semantics changed.
+- Instrument: enumerate callers of the changed symbol (the `gitnexus-operations` group when `gitnexus_available`, otherwise grep plus targeted reads), then trace each caller's control flow around the fallible call — early returns, error handling branches, swallowed errors.
 - Gate: `gitnexus_available` for enumeration; fallback is grep-based caller discovery plus reads (P1/P2 discipline).
-- Bounding: one caller's failure path per probe; anchor the state mutation and its ordering against the fallible call.
-- Evidence form: file:line of the caller's state mutation and the fallible call, with the observed on-failure behavior.
+- Bounding: one caller's propagation path per probe; anchor the fallible call and the observed error-handling behavior.
+- Evidence form: file:line of the caller's fallible call and error-handling path, with the observed propagation or swallowing behavior.
+
+## P8b — Downstream-caller post-call storage
+
+- Validates: caller-side persistent-state integrity after a non-propagating (swallowed-error) call — each caller that mutates persistent state (storage writes/deletes, accounting consumption) commits or rolls back correctly when the callee returns without propagating failure (the accounting-consumed-before-success class).
+- Instrument: enumerate callers of the changed symbol (the `gitnexus-operations` group when `gitnexus_available`, otherwise grep plus targeted reads), then trace each caller's state mutations **after** the fallible call — the order of consume/delete versus commit.
+- Gate: `gitnexus_available` for enumeration; fallback is grep-based caller discovery plus reads (P1/P2 discipline).
+- Bounding: one caller's post-call storage path per probe; anchor the state mutation and its ordering against the fallible call.
+- Evidence form: file:line of the caller's state mutation and the fallible call, with the observed on-failure behavior and a per-caller path anchor for refutation.
+
+## P9 — Operational tooling
+
+- Validates: subsystem-map **entrypoints** and **advertised-control** claims — CLI flags, workflow steps, and orchestration options that tooling documentation or subsystem-map metadata asserts are applied during release and upgrade flows.
+- Instrument: subsystem-map entrypoint metadata plus source/workflow tracing of the advertised control path; optional execution when toolchain gates allow.
+- Gate: none for static tracing; execution probes follow existing toolchain gates (`cargo_available`, `node_binary_available`).
+- Bounding: one entrypoint or advertised-control claim per probe; trace from the subsystem-map entrypoint to the implementation that applies or omits the control.
+- Evidence form: file:line or workflow-path anchors showing the control is wired or absent; execution output when gates permit.
 
 ## Blocked-Validation Record
 

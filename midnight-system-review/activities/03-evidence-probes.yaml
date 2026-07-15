@@ -1,5 +1,5 @@
 id: evidence-probes
-version: 1.1.0
+version: 1.2.0
 name: Evidence Probes
 description: Run bounded evidence-gathering probes for each investigation area and consolidate the results into the evidence log.
 required: true
@@ -57,7 +57,9 @@ steps:
       - action: validate
         message: Consolidation is blocked until every area's executed-probe count is within probe_budget_per_area, with any overage recorded explicitly (bounded-probes gate)
       - action: validate
-        message: Consolidation is blocked until every failure-class obligation carried by an area's in-scope and coupled subsystems is discharged in that area's record — confirmed, refuted with an anchor, or recorded blocked (failure-class coverage gate)
+        message: Consolidation is blocked until every failure-class obligation carried by an area's in-scope and coupled subsystems is discharged in that area's record — confirmed, refuted with proof, inconclusive, or recorded blocked (failure-class coverage gate)
+      - action: validate
+        message: Consolidation is blocked when any correlation-class or atomicity-class obligation is refuted without meeting the proof bar — a P7 join-key discharge table or a P8a/P8b caller-path anchor showing the failure mode cannot occur (discharge-quality gate)
   - kind: action
     id: finalize-activity
     actions:

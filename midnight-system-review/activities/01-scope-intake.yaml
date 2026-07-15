@@ -1,8 +1,10 @@
 id: scope-intake
-version: 1.0.0
+version: 1.1.0
 name: Scope Intake
 description: Resolve the authoritative change surface for the review target, establish toolchain availability, and confirm the review scope.
 required: true
+techniques:
+  - variable-binding
 steps:
   - kind: action
     id: announce-start

@@ -4,7 +4,7 @@ Evidence-driven system-level review of a midnight-node change-set, rendering a 1
 
 ## Overview
 
-Given a PR reference or local diff, the workflow derives investigation areas from the changed surface and a subsystem map, runs bounded evidence probes per area, adjudicates rubric-graded findings, and computes the verdict from accepted findings only. The methodology recreates the Jina simulation bot's system-review runs against midnight-node (PR #1849 evidence): plan-approved autonomous investigation, a six-dimension grade tuple per finding, an accepted-issue confidence threshold, and reconciled per-area accounting.
+Given a PR reference or local diff, the workflow derives investigation areas from the changed surface and a subsystem map, runs bounded evidence probes per area, adjudicates rubric-graded findings, and computes the verdict from accepted findings only. The methodology follows evidence-driven system-review runs against midnight-node: plan-approved autonomous investigation, a six-dimension grade tuple per finding, an accepted-issue confidence threshold, reconciled per-area accounting, and failure-class proof obligations (three-way discharge with join-key tables and caller-path anchors).
 
 Four user decision points bound the run — scope confirmation (non-blocking, 30s auto-advance), investigation-plan approval (blocking, with an amendment loop), verdict sign-off (blocking, with a rework path back to area derivation), and publish authorization (blocking, only when a PR surface exists). Probing and adjudication run checkpoint-free between the plan and verdict gates.
 
@@ -12,13 +12,13 @@ Declared variables are run configuration and boolean gates only (`review_target`
 
 ## Getting Started
 
-**To start a review, say:** `"run a system review of midnight-node PR #1849"` or `"system-review the changes on this branch against origin/main"`
+**To start a review, say:** `"run a system review of midnight-node PR #<number>"` or `"system-review the changes on this branch against origin/main"`
 
 ### Required Inputs
 
 | Input | Description | Example |
 |-------|-------------|---------|
-| **`review_target`** | PR reference (number or URL) or local diff spec identifying the change-set under review | `#1849` |
+| **`review_target`** | PR reference (number or URL) or local diff spec identifying the change-set under review | `#1234` |
 | **`target_repo_path`** | Path to the midnight-node checkout under review | `/path/to/midnight-node` |
 
 ### Optional Inputs
@@ -76,7 +76,7 @@ flowchart LR
 | Resource | Owns |
 |----------|------|
 | [`subsystem-map.md`](resources/subsystem-map.md) | The midnight-node subsystem topology — paths, failure classes, probe affinities — that area derivation maps changes onto |
-| [`probe-catalog.md`](resources/probe-catalog.md) | The six bounded probe classes, their instruments, toolchain gates, and blocked-validation handling |
+| [`probe-catalog.md`](resources/probe-catalog.md) | The nine bounded probe classes (P1–P9) executed by [`probe-area`](techniques/evidence-probes/probe-area.md): validation targets, instruments, toolchain gates, three-way failure-class discharge, and blocked-validation handling |
 | [`grading-rubric.md`](resources/grading-rubric.md) | The six-dimension grade tuple, the accepted-issue threshold, and calibration anchors from real findings |
 | [`verdict-rubric.md`](resources/verdict-rubric.md) | The 1-5 merge-readiness scale, run status vocabulary, and the verdict-to-review-type mapping |
 | [`review-format.md`](resources/review-format.md) | The canonical review structure and the Review Details accounting rules the reconciliation gate checks |

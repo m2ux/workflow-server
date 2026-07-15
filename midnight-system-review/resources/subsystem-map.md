@@ -93,9 +93,10 @@ Generated static SCALE metadata and its consumers: static subxt bindings (`metad
 
 Image build/publish, runtime tag derivation from `spec_version`, and the federated upgrade flows (`imageUpgrade.ts`, `federatedRuntimeUpgrade.ts`) that order binary rollout before runtime activation.
 
+- **Entrypoints:** `.github/workflows/release-image.yml` (image build/publish pipeline); `local-environment/src/commands/imageUpgrade.ts` (image upgrade orchestration); `local-environment/src/commands/federatedRuntimeUpgrade.ts` (federated runtime upgrade); CLI include/exclude filter flags documented in local-environment command help.
 - Failure classes: publishing a changed ABI under an unchanged version tag, activation without verifying every validator runs a compatible binary, advertised CLI controls (include/exclude filters) not actually applied.
 - Coupled with: runtime spec identity, ledger/host ABI compatibility.
-- Probe affinities: workflow-file tracing, execution probes of tooling paths, upgrade-ordering reasoning.
+- Probe affinities: workflow-file tracing, P9 operational-tooling probes, execution probes of tooling paths, upgrade-ordering reasoning.
 
 ### Node service and RPC — `node/`
 
