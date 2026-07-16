@@ -51,8 +51,8 @@ List of `{ rule_id, detail }` entries, one per failed conformance rule; empty wh
 
 ### template-selection
 
-- review-mode-template: In review mode, use attached [review-mode](../../resources/review-mode.md) for the consolidated PR review comment template. The review comment structure (sections, tables, Finding Details dropdowns, linked headings, reviewer agents) is defined there.
-- initial-template: When `{pr_template_variant}` is `initial` (creating a PR before implementation, ADR-only), use the Initial template from [pr-description](../../resources/pr-description.md). When `{pr_template_variant}` is `final` (updating after implementation), use the Final template.
+- review-mode-template: In review mode, use the [Consolidated Review Format](../../resources/review-mode.md#consolidated-review-format) for the consolidated PR review comment template. The review comment structure (sections, tables, Finding Details dropdowns, linked headings, reviewer agents) is defined there.
+- initial-template: When `{pr_template_variant}` is `initial` (creating a PR before implementation, ADR-only), use the [Template (Initial)](../../resources/pr-description.md#template-initial). When `{pr_template_variant}` is `final` (updating after implementation), use the [Template (Final)](../../resources/pr-description.md#template-final).
 
 ### body-composition
 
@@ -63,7 +63,7 @@ List of `{ rule_id, detail }` entries, one per failed conformance rule; empty wh
 
 ### pr-body-conformance
 
-- all-mandated-sections-present: Every section the selected [pr-description](../../resources/pr-description.md) template mandates is present in the rendered body as a literal heading. The Final template mandates Summary, the Issue/Engineering link row, Motivation, Changes, 🤖 AI Assistance, 📌 Submission Checklist, 🔱 Fork Strategy, and 🗹 TODO before merging; the Initial template mandates that set minus 🤖 AI Assistance. Optional sections (Migration Notes, Screenshots) are never required. A missing mandated section is a finding naming that section — the intra-section rules below do not substitute for this check, since a body that omits a section passes them vacuously.
+- all-mandated-sections-present: Every section the selected pr-description template ([Template (Initial)](../../resources/pr-description.md#template-initial) or [Template (Final)](../../resources/pr-description.md#template-final)) mandates is present in the rendered body as a literal heading. The Final template mandates Summary, the Issue/Engineering link row, Motivation, Changes, 🤖 AI Assistance, 📌 Submission Checklist, 🔱 Fork Strategy, and 🗹 TODO before merging; the Initial template mandates that set minus 🤖 AI Assistance. Optional sections (Migration Notes, Screenshots) are never required. A missing mandated section is a finding naming that section — the intra-section rules below do not substitute for this check, since a body that omits a section passes them vacuously.
 - summary-max-two-sentences: Summary section is 1-2 sentences, leads with the outcome, and includes measurable impact when available.
 - engineering-link-mandatory: Engineering link is present, resolved from the parent repo's `git remote get-url origin` and current `git branch --show-current`, and resolves to a committed file on the remote.
 - issue-link-or-explicit-placeholder: Issue line is present. When `issue-skipped == true`, render `🐛 _Issue: skipped_` as an explicit placeholder rather than dropping the line or fabricating a number.

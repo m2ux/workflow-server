@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 4.1.0
+  version: 4.2.0
 ---
 
 ## Capability
@@ -76,6 +76,10 @@ Domain-specific tools may ONLY be invoked from operations bundled into the curre
 ### operational-discipline-resources-via-tool
 
 Do NOT read workflow resource files directly from disk — load them via `get_resource { session_index, resource_id }` using the text-only refs declared on operations (e.g., `meta/activity-worker-prompt`). Resources are obtained by id only; the legacy numeric-index form is deprecated and no longer supported by the loader.
+
+### operational-discipline-resource-section-or-whole
+
+Choose bare vs `#section` `resource_id` by how much of the resource this agent context will need. Prefer a `#section` anchor when the current step needs a single slice of a large resource. When the same agent context will need two or more sections from the same resource in the current activity (or in the immediate next steps of that activity), call `get_resource` once with the bare resource id and reuse that content — do not issue repeated section fetches for the same file. Bare and `#section` ids are distinct delivery keys: loading sections does not populate the whole-resource key, and loading the whole file does not collapse a later section fetch under a different key. Under `context_mode: "persistent"`, a byte-identical refetch of the same exact `resource_id` may arrive as an unchanged-reference; pass `full: true` only when that content is no longer in context.
 
 ### operational-discipline-cargo-fmt-exempt
 

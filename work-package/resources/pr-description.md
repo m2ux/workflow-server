@@ -1,8 +1,8 @@
 ---
 name: pr-description
-description: PR description templates and link-row rendering forms; composition and conformance rules live on the update-pr technique.
+description: PR description templates and link-row rendering forms.
 metadata:
-  version: 1.4.0
+  version: 1.5.0
   order: 12
   legacy_id: 12
 ---
@@ -16,7 +16,7 @@ Apply this guide to all PRs that introduce features, fix bugs, refactor, make ar
 
 Optional sections (add when applicable): `## Migration Notes` (required steps for consumers, if breaking changes), `## Screenshots` (visual/UI changes).
 
-**Template (Initial):**
+### Template (Initial)
 
 ```markdown
 ## Summary
@@ -68,7 +68,7 @@ Optional sections (add when applicable): `## Migration Notes` (required steps fo
 - [ ] Ready for review
 ```
 
-**Template (Final):**
+### Template (Final)
 
 ```markdown
 ## Summary
@@ -131,15 +131,13 @@ Optional sections (add when applicable): `## Migration Notes` (required steps fo
 
 ## Link Row Forms
 
-Rendering forms consumed by [update-pr::render](../techniques/update-pr/render.md) (composition and URL-resolution rules live there and in [update-pr rules](../techniques/update-pr/TECHNIQUE.md#body-composition)):
-
 **Standard link row** (Issue = the GitHub issue in the target repo, never the Jira ticket):
 
 ```markdown
 🐛 [Issue]({TARGET_REPO_URL}/issues/{GITHUB_ISSUE_NUMBER})  📐 [Engineering]({ENG_REPO_URL}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)
 ```
 
-**Issue-skipped placeholder** (when `issue_skipped == true` — the line is rendered, italicised, no link, so reviewers can tell the omission was intentional; canonical form checked by `update-pr::rules.pr-body-conformance.issue-link-or-explicit-placeholder`):
+**Issue-skipped placeholder** (when `issue_skipped == true` — the line is rendered, italicised, no link, so reviewers can tell the omission was intentional):
 
 ```markdown
 🐛 _Issue: skipped_  📐 `Engineering`

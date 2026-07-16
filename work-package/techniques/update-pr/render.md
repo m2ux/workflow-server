@@ -15,7 +15,7 @@ Which PR body template to render — `initial` (ADR-only, before implementation)
 
 ### is_review_mode
 
-True when the body is the consolidated review-mode comment rather than an implementation update; selects the [review-mode](../../resources/review-mode.md) template.
+True when the body is the consolidated review-mode comment rather than an implementation update; selects the [Consolidated Review Format](../../resources/review-mode.md#consolidated-review-format).
 
 ### planning_folder_path
 
@@ -41,7 +41,7 @@ The PR description applied to the `{pr_number}` PR: the body composed from the s
 
 ## Protocol
 
-1. Select the template per [template-selection](./TECHNIQUE.md): the Initial template when `{pr_template_variant}` is `initial`, the Final template when `{pr_template_variant}` is `final` (from [pr-description](../../resources/pr-description.md)), or the [review-mode](../../resources/review-mode.md) template when `{is_review_mode}` is true.
+1. Select the template per [template-selection](./TECHNIQUE.md): the [Template (Initial)](../../resources/pr-description.md#template-initial) when `{pr_template_variant}` is `initial`, the [Template (Final)](../../resources/pr-description.md#template-final) when `{pr_template_variant}` is `final`, or the [Consolidated Review Format](../../resources/review-mode.md#consolidated-review-format) when `{is_review_mode}` is true.
 2. Compose the body using the implementation summary drawn from `{planning_folder_path}`, including the test coverage summary and key decisions and trade-offs.
 3. Resolve link URLs from git remotes — NEVER guess or infer repository URLs, issue numbers, or branch names:
    - `{$target_repo_url}`: `git -C {target_path} remote get-url origin`, strip the `.git` suffix, convert SSH form to HTTPS (`git@github.com:org/repo.git` → `https://github.com/org/repo`).
