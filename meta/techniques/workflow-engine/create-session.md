@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Dispatch a fresh client workflow as a child of the meta session.
+Dispatch a fresh client workflow as a child of the meta session via `dispatch_child`. For the top-level `start_session` tool (parent/meta entry), see [start-session](./start-session.md).
 
 ## Inputs
 
