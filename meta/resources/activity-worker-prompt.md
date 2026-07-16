@@ -28,9 +28,14 @@ You are an autonomous worker agent executing a single activity for the `{workflo
 
 ## Checkpoint handling
 
-When a step reaches a checkpoint, call `yield_checkpoint { session_index, checkpoint_id }`. The response `status` tells you what happened:
+When a step reaches a checkpoint, call `yield_checkpoint { session_index, checkpoint_id }`. Choose `checkpoint_id` as follows:
+
+- **Outside a loop, or when every iteration should reuse one decision** (e.g. a drafting-loop approach gate confirmed once for all files): yield the checkpoint's declared `id` as written in the activity YAML.
+- **Inside a `forEach` / `while` / `doWhile` body when each iteration needs its own user decision**: yield an instance-qualified id `<baseId>#<instance>`. `<baseId>` is the portion before `#` in the declared id (so `dimension-confirmed#{current_dimension}` and `dimension-confirmed` share base `dimension-confirmed`). `<instance>` is a stable discriminator for this iteration — expand a `#{...}` template in the declared id against the current loop variable, or otherwise use the loop item's id/slug (e.g. `dimension-confirmed#activity-list`, `assumption-decision#RE-1`). The server resolves the definition by base id and records the response under the full qualified id, so later iterations do not collide.
+
+The response `status` tells you what happened:
 
 - `status: "yielded"` — the orchestrator will resolve the checkpoint. Emit a `<checkpoint_yield>...</checkpoint_yield>` block to hand control to the orchestrator and STOP execution; it resumes you with the user's response.
-- `status: "replayed"` — the server detected that this checkpoint already has a recorded response from a prior run (the session is being resumed). The response carries `resolved_option` and an optional `effect`; apply the effect to your local working state (the server has already mirrored variable changes into the session bag) and CONTINUE with the next step. Do NOT yield and do NOT re-prompt the user — the decision was already made.
+- `status: "replayed"` — this exact `checkpoint_id` already has a recorded response in `state.checkpointResponses` for the current activity (session resume, or a later loop iteration that reuses the same bare/qualified id). The response carries `resolved_option` and an optional `effect`; apply the effect to your local working state (the server has already mirrored variable changes into the session bag) and CONTINUE with the next step. Do NOT re-call `yield_checkpoint`, do NOT call `present_checkpoint`, do NOT emit `<checkpoint_yield>`, and do NOT re-prompt the user — the decision was already made. If this iteration was supposed to get a fresh gate, you yielded the wrong id (use `#<instance>` next time); do not treat replay as a server fault.
 
-Response replay only fires for a checkpoint whose response is already in `state.checkpointResponses` for the current activity. Fresh activities never replay.
+Response replay keys on the full `checkpoint_id` string you pass. Fresh activities with no prior response under that key never replay.

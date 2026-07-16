@@ -30,7 +30,7 @@ Condensed, agent-executable reference of the 15 design principles governing work
 
 **Rule:** Each elicitation question and each checkpoint is atomic. Never combine multiple questions. Wait for the response before proceeding.
 
-**Enforcement:** `03-requirements-refinement` elicits one dimension at a time via a `forEach` over `design_dimensions`, each iteration gated by the `dimension-confirmed` checkpoint.
+**Enforcement:** `03-requirements-refinement` elicits one dimension at a time via a `forEach` over `design_dimensions`, each iteration gated by the instance-qualified `dimension-confirmed#{current_dimension}` checkpoint.
 
 ## 4. Maximize Schema Expressiveness
 
