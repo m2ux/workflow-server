@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 6.3.0
+  version: 6.4.0
 ---
 
 ## Capability
 
-Operations and rules for executing a workflow's structured flow — session lifecycle (list/match/scan/create/start), activity execution (solo [execute-activity](./execute-activity.md) or dispatch [dispatch-activity](./dispatch-activity.md)), transition evaluation, post-activity commit, and the checkpoint protocol (yield/present/respond/resume).
+Operations and rules for executing a workflow's structured flow — session lifecycle (list/match/scan/create/start), activity dispatch ([dispatch-activity](./dispatch-activity.md)), transition evaluation, post-activity commit, and the checkpoint protocol (yield/present/respond/resume).
 
 ## Rules
 
@@ -17,9 +17,9 @@ EVERY authenticated tool call (anything other than `discover`, `list_workflows`,
 
 Check `_meta.validation` in each response. Warnings are advisory but should be addressed.
 
-### solo-canonical-agent-id
+### dispatch-default-topology
 
-Under `context_mode: "persistent"`, use ONE canonical `agent_id` for the whole walk (including resume). The delivery ledger is keyed by `agent_id`; a different id starts from an empty ledger and re-delivers in full. Worker-dispatched sessions follow `workflow-engine.dispatch-activity.workers-need-full-delivery`. Meta's preferred client path is solo via [execute-activity](./execute-activity.md) + [create-session](./create-session.md) (`persistent` + `agent_id: orchestrator`).
+Client walks use per-activity disposable workers via [dispatch-activity](./dispatch-activity.md). Do not set `context_mode: "persistent"` on worker-dispatched sessions — see [dispatch-activity](./dispatch-activity.md)::workers-need-full-delivery. Same-context (solo) execution is deferred until a static workflow cost model can gate selection; it is not available as a runtime choice.
 
 ### resource-loading-via-tool
 

@@ -48,7 +48,7 @@ graph TD
 
 ## Hierarchical Orchestration Model
 
-The workflow-server implements a hierarchical orchestration model. Meta runs as the meta-orchestrator (user-facing); the client session is created as a child of the meta session with `context_mode: "persistent"`. During `dispatch-client-workflow`, the preferred path is **solo**: each client activity runs via `execute-activity` in the current agent context (no per-activity spawn). `dispatch-activity` (spawn a disposable worker) remains available when isolation requires a fresh context. The server snapshots parent context recursively under the child session's `parentSession` field on creation.
+The workflow-server implements a hierarchical orchestration model. Meta runs as the meta-orchestrator (user-facing); the client session is created as a child of the meta session. During `dispatch-client-workflow`, the meta-orchestrator drives the client workflow's activity loop **inline** — it dispatches each activity-worker directly via `dispatch-activity` using the `client_session_index`, rather than spawning a separate persistent client orchestrator. The activity-worker runs with the same `session_index` as the client session. The server snapshots parent context recursively under the child session's `parentSession` field on creation.
 
 ```mermaid
 sequenceDiagram
@@ -64,7 +64,7 @@ sequenceDiagram
 
     Note over Meta: 03 dispatch-client-workflow — prime-initial-activity, then client-activity-loop (while current_activity != null)
     loop client-activity-loop
-        Meta->>Meta: execute-activity(activity_id, client_session_index) — solo; same context
+        Meta->>Worker: dispatch-activity(activity_id, client_session_index, activity-worker-prompt)
         alt worker yielded a checkpoint
             Worker-->>Meta: checkpoint_pending
             Meta->>Meta: present-checkpoint-to-user(client_session_index)

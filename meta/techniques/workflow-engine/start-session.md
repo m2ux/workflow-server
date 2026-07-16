@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.1.0
 ---
 
 ## Capability
@@ -19,11 +19,11 @@ Optional. Absolute path whose basename is the planning slug. Omit for a transien
 
 ### agent_id
 
-Agent identity stored on the session. Use one canonical id for the whole walk under solo `persistent` delivery (`workflow-engine.solo-canonical-agent-id`).
+Agent identity stored on the session (default `orchestrator`).
 
 ### context_mode
 
-Optional. `"persistent"` only for solo (same agent context; no worker spawn). Omit or `"fresh"` for disposable workers (`workflow-engine.dispatch-activity.workers-need-full-delivery`).
+Optional. Omit or pass `"fresh"` — the supported topology is per-activity disposable workers. Do not pass `"persistent"`; same-context (solo) selection is deferred.
 
 ## Outputs
 
@@ -37,7 +37,7 @@ Canonical absolute planning folder path as resolved by the server.
 
 ## Protocol
 
-1. Call `start_session` with `{workflow_id}`, `{agent_id}`, and optional `{planning_folder}` / `{context_mode}` per `workflow-engine.solo-canonical-agent-id` and the topology table in the [bootstrap protocol](../../resources/bootstrap-protocol.md).
+1. Call `start_session` with `{workflow_id}`, `{agent_id}`, and optional `{planning_folder}` per the [bootstrap protocol](../../resources/bootstrap-protocol.md). Omit `context_mode` (or pass `"fresh"`).
 2. Save `{session_index}` and `{planning_folder_path}` from the response. Do not compose or reconcile the planning path yourself.
 3. Call `get_workflow { session_index }` and follow the returned operations bundle. After summarization, re-fetch with the escapes in `workflow-engine.force-full-after-summarization`.
 
