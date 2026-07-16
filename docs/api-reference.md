@@ -10,7 +10,7 @@ No `session_index` required.
 
 | Tool | Parameters | Returns | Description |
 |------|------------|---------|-------------|
-| `discover` | - | Server info and `discovery` instructions | Entry point for the workflow server. Returns the server name, version, and the bootstrap procedure an agent should follow. The `discovery` instructions describe how to call `list_workflows` and `start_session` to begin a session. |
+| `discover` | - | Server info and bootstrap procedure | Entry point for the workflow server. Returns the server name, version, and the pre-session bootstrap stub (schema fetch → `start_session` → `get_workflow`). Ongoing delivery policy is authoritative in techniques delivered with the `get_workflow` operations bundle. |
 | `list_workflows` | - | Array of workflow definitions (each with `id`, `title`, `version`, and `tags`) | Lists all available workflow definitions. Each entry in the returned array contains an `id` (unique workflow identifier), `title` (human-readable name), `version` (semver string), and `tags` (array of categorization strings for matching a user's goal to a workflow). |
 | `health_check` | - | Server status and stats | Returns the server health status. The response includes the server version, the number of workflows available, and the server uptime. |
 
@@ -67,10 +67,10 @@ Agents pass only the `session_index` on every authenticated tool call; they do n
 
 ### Lifecycle
 
-1. Call `discover` to learn the bootstrap procedure and available workflows
-2. Call `list_workflows` to match the user's goal to a workflow
-3. Call `start_session({ agent_id, planning_slug })` to get a `session_index` (defaults to the `meta` workflow when no `workflow_id` is provided). Resuming a session uses the same call shape with the same `planning_slug`. To start a session for a different workflow, pass `workflow_id`.
-4. Call `get_workflow({ session_index })` to load the workflow structure. The response begins with the technique bundle (`techniques`, `rules`, `unresolved`), followed by activity stubs and `initialActivity`.
+1. Call `discover` to learn the pre-session bootstrap procedure (inlined from `meta/bootstrap-protocol`)
+2. Fetch `workflow-server://schemas/workflow`, then call `start_session({ agent_id, planning_folder? })` to get a `session_index` (defaults to the `meta` workflow when no `workflow_id` is provided). Resuming a session uses the same call shape with the same planning folder. To start a session for a different workflow, pass `workflow_id`.
+3. Call `get_workflow({ session_index })` to load the workflow structure. The response begins with the technique bundle (`techniques`, `rules`, `unresolved`), followed by activity stubs and `initialActivity`. Follow the bundle for ongoing delivery policy.
+4. Optionally call `list_workflows` (no session required) when matching a user goal to a workflow id outside the meta discover-session path.
 5. Call `next_activity({ session_index, activity_id: initialActivity })` to transition to the first activity (returns `activity_id` and `name` only)
 6. Call `get_activity({ session_index })` to load the complete activity definition. The response begins with the technique bundle for the activity's `techniques[]` (`techniques`, `rules`, `unresolved`), followed by the raw activity body.
 7. Execute the steps and protocol of each technique in the bundle from step 6.
