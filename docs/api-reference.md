@@ -2,6 +2,8 @@
 
 ## MCP Tools
 
+MCP tool and parameter descriptions registered with the server are intentionally terse (call contract and footguns only). This document is the canonical deep reference for behavior, delivery modes, and response shapes; `discover` / runtime payloads remain self-describing at call time.
+
 ### Bootstrap Tools
 
 No `session_index` required.

@@ -86,7 +86,7 @@
       <p>Callable without a session_index.</p>
       <section class="tool" id="discover">
         <h3><code>discover</code></h3>
-        <p class="tool-summary">Entry point for this server.</p>
+        <p class="tool-summary">Entry point — call before other tools.</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Call this first. Returns the server name, version, and the bootstrap steps for starting a workflow.</p>
@@ -96,7 +96,7 @@
       </section>
       <section class="tool" id="list_workflows">
         <h3><code>list_workflows</code></h3>
-        <p class="tool-summary">List all available workflow definitions with their ID, title, version, and tags.</p>
+        <p class="tool-summary">List available workflows (id, title, version, tags).</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Lists every workflow the server can run, with id, title, version, and tags.</p>
@@ -106,7 +106,7 @@
       </section>
       <section class="tool" id="health_check">
         <h3><code>health_check</code></h3>
-        <p class="tool-summary">Check server health and availability.</p>
+        <p class="tool-summary">Server health: status, name, version, workflow count, uptime.</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Quick ping to confirm the server is up. Returns status, name, version, workflow count, and uptime.</p>
@@ -142,7 +142,7 @@
       </section>
       <section class="tool" id="get_workflow_status">
         <h3><code>get_workflow_status</code></h3>
-        <p class="tool-summary">Check the status of a workflow session.</p>
+        <p class="tool-summary">Session status (active/blocked/completed), current activity, completed activities, last checkpoint, and parent context if nested.</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Returns whether the session is active, blocked at a checkpoint, or completed, plus the current activity and completed steps.</p>
@@ -159,7 +159,7 @@
       </section>
       <section class="tool" id="inspect_session">
         <h3><code>inspect_session</code></h3>
-        <p class="tool-summary">Read-only inspection of a workflow session's on-disk state.</p>
+        <p class="tool-summary">Read-only compact projection of session state (never raw session.</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Read-only look at a session's stored state. Pick a <code>view</code>: <code>summary</code> (everything), <code>identity</code>, <code>variables</code>, <code>checkpoints</code>, <code>activities</code>, <code>history</code>, or <code>children</code>.</p>
@@ -172,9 +172,9 @@
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>view</code></td><td><code>&quot;summary&quot; | &quot;identity&quot; | &quot;variables&quot; | &quot;checkpoints&quot; | &quot;activities&quot; | &quot;history&quot; | &quot;children&quot;</code></td><td>no</td><td>Which projection to return. <code>summary</code> (default) is the composite of all views. <code>identity</code> = workflow/session/agent header + position; <code>variables</code> = the variable bag; <code>checkpoints</code> = checkpoint responses (option, timestamp, variables set); <code>activities</code> = completed/skipped/current; <code>history</code> = event count + per-type tally + milestone sub-sequence; <code>children</code> = one-line digest per triggeredWorkflows child. Default: <code>&quot;summary&quot;</code></td></tr>
-          <tr><td><code>child_index</code></td><td><code>integer</code></td><td>no</td><td>Optional positional index into the addressed session's <code>triggeredWorkflows</code>. When given, the tool descends one level to <code>triggeredWorkflows[child_index].state</code> and projects that child instead of the addressed session. Out of range yields the NOT_FOUND message. Deeper children are reached by passing that child's own session_index instead of stacking indices.</td></tr>
-          <tr><td><code>variable</code></td><td><code>string</code></td><td>no</td><td>Optional single variable name. Only meaningful with <code>view: variables</code> — narrows the result to that one key's value instead of the whole bag.</td></tr>
+          <tr><td><code>view</code></td><td><code>&quot;summary&quot; | &quot;identity&quot; | &quot;variables&quot; | &quot;checkpoints&quot; | &quot;activities&quot; | &quot;history&quot; | &quot;children&quot;</code></td><td>no</td><td>Projection: summary (default), identity, variables, checkpoints, activities, history, or children. Default: <code>&quot;summary&quot;</code></td></tr>
+          <tr><td><code>child_index</code></td><td><code>integer</code></td><td>no</td><td>Optional. Project triggeredWorkflows[child_index].state instead of the parent session.</td></tr>
+          <tr><td><code>variable</code></td><td><code>string</code></td><td>no</td><td>Optional. With view=variables, return a single variable by name.</td></tr>
           </tbody>
         </table>
         </div>
@@ -206,7 +206,7 @@
       <p>Load workflow structure and advance through activities.</p>
       <section class="tool" id="get_workflow">
         <h3><code>get_workflow</code></h3>
-        <p class="tool-summary">Load the workflow definition for the current session.</p>
+        <p class="tool-summary">Orchestrator tool: load the session workflow.</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Loads the workflow definition for the current session.</p>
@@ -226,7 +226,7 @@
       </section>
       <section class="tool" id="next_activity">
         <h3><code>next_activity</code></h3>
-        <p class="tool-summary">Transition to the specified activity.</p>
+        <p class="tool-summary">Orchestrator tool: transition to <code>activity_id</code> (does not return the activity body — the worker calls <code>get_activity</code>).</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Moves the session to a new activity. This is the orchestrator's advance call — it updates state and records the trace but does not return the activity body.</p>
@@ -288,7 +288,7 @@
       <p>Yield to the orchestrator, present decisions to the user, and resume.</p>
       <section class="tool" id="yield_checkpoint">
         <h3><code>yield_checkpoint</code></h3>
-        <p class="tool-summary">Yield execution to the orchestrator at a checkpoint.</p>
+        <p class="tool-summary">Worker tool: mark a checkpoint active and yield to the orchestrator (emit <code>&lt;checkpoint_yield&gt;</code> with the returned session_index).</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Call when a checkpoint step tells you to stop and hand control to the orchestrator.</p>
@@ -306,7 +306,7 @@
       </section>
       <section class="tool" id="resume_checkpoint">
         <h3><code>resume_checkpoint</code></h3>
-        <p class="tool-summary">Resume execution after the orchestrator resolves a checkpoint.</p>
+        <p class="tool-summary">Worker tool: continue after the orchestrator resolves a checkpoint.</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Call after the orchestrator resolves a checkpoint and resumes you.</p>
@@ -323,7 +323,7 @@
       </section>
       <section class="tool" id="present_checkpoint">
         <h3><code>present_checkpoint</code></h3>
-        <p class="tool-summary">Load the full details of the currently-active checkpoint for the session.</p>
+        <p class="tool-summary">Load the active checkpoint (message, options, effects, auto-advance) for presenting to the user.</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Loads the active checkpoint's message, options, and effects so you can show it to the user.</p>
@@ -340,7 +340,7 @@
       </section>
       <section class="tool" id="respond_checkpoint">
         <h3><code>respond_checkpoint</code></h3>
-        <p class="tool-summary">Submit a checkpoint response to clear the active-checkpoint gate.</p>
+        <p class="tool-summary">Clear the active-checkpoint gate.</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Submits the user's checkpoint decision and clears the active checkpoint.</p>
@@ -364,7 +364,7 @@
       <p>Fetch technique definitions and lazy-loaded reference material.</p>
       <section class="tool" id="get_technique">
         <h3><code>get_technique</code></h3>
-        <p class="tool-summary">Load one fully composed technique.</p>
+        <p class="tool-summary">Load one fully composed technique (step-bound when <code>step_id</code> is set; otherwise the activity's or workflow's first).</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Fetches one technique for the current workflow or activity.</p>
@@ -386,7 +386,7 @@
       </section>
       <section class="tool" id="get_resource">
         <h3><code>get_resource</code></h3>
-        <p class="tool-summary">Load a resource by its id, optionally narrowed to a single section.</p>
+        <p class="tool-summary">Load a resource by id (optional <code>#section</code>).</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Loads reference material by id — templates, guides, or other markdown resources linked from techniques.</p>
@@ -410,7 +410,7 @@
       <p>Execution history for debugging and audit.</p>
       <section class="tool" id="get_trace">
         <h3><code>get_trace</code></h3>
-        <p class="tool-summary">Retrieve the execution trace for the current workflow session.</p>
+        <p class="tool-summary">Retrieve the session execution trace.</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Returns the tool-call history for debugging or audit.</p>
