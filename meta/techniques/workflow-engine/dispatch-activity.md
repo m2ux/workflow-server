@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Transition the session to a target activity and spawn a worker for it.
+Transition the session to a target activity and spawn a **disposable worker** for it (dispatch topology). For the preferred solo path — same agent context, no spawn — use [execute-activity](./execute-activity.md) instead.
 
 ## Inputs
 
@@ -57,7 +57,7 @@ When the harness surfaces per-sub-agent token usage on the worker's completion r
 
 ### no-get-activity-from-orchestrator
 
-Workflow orchestrators NEVER call `get_activity`. The activity definition is the worker's domain. Orchestrators need only the `{activity_id}` (from `initialActivity` or `transitions`) to call `next_activity` and compose the worker prompt.
+Under **dispatch** topology, workflow orchestrators NEVER call `get_activity`. The activity definition is the spawned worker's domain. Orchestrators need only the `{activity_id}` to call `next_activity` and compose the worker prompt. Under **solo** topology use [execute-activity](./execute-activity.md) instead — that path does call `get_activity` in the same agent context.
 
 ### no-pre-load-techniques
 
