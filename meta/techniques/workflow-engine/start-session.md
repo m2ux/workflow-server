@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
 
-Obtain or resume the top-level workflow session via the `start_session` tool. Distinct from [create-session](./create-session.md), which dispatches a **child** session under a parent via `dispatch_child`.
+Obtain or resume the top-level workflow session via the `start_session` tool.
 
 ## Inputs
 
@@ -19,7 +19,7 @@ Optional. Absolute path whose basename is the planning slug. Omit for a transien
 
 ### agent_id
 
-Agent identity stored on the session. Use one canonical id for the whole walk under solo/`persistent` delivery (`workflow-engine.solo-canonical-agent-id`).
+Agent identity stored on the session. Use one canonical id for the whole walk under solo `persistent` delivery (`workflow-engine.solo-canonical-agent-id`).
 
 ### context_mode
 
@@ -37,7 +37,7 @@ Canonical absolute planning folder path as resolved by the server.
 
 ## Protocol
 
-1. Call `start_session` with `{workflow_id}`, `{agent_id}`, and optional `{planning_folder}` / `{context_mode}` per `workflow-engine.solo-canonical-agent-id` and the topology table in the pre-session bootstrap primer.
+1. Call `start_session` with `{workflow_id}`, `{agent_id}`, and optional `{planning_folder}` / `{context_mode}` per `workflow-engine.solo-canonical-agent-id` and the topology table in the [bootstrap protocol](../../resources/bootstrap-protocol.md).
 2. Save `{session_index}` and `{planning_folder_path}` from the response. Do not compose or reconcile the planning path yourself.
 3. Call `get_workflow { session_index }` and follow the returned operations bundle. After summarization, re-fetch with the escapes in `workflow-engine.force-full-after-summarization`.
 

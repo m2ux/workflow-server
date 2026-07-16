@@ -27,7 +27,7 @@ Variables mutate from two sources only: checkpoint option effects (`setVariable`
 
 ### solo-canonical-agent-id
 
-Under `context_mode: "persistent"`, use ONE canonical `agent_id` for the whole walk (including resume). The delivery ledger is keyed by `agent_id`; a different id starts from an empty ledger and re-delivers in full. Never set `context_mode: "persistent"` on a worker-dispatched session — see `workflow-engine.dispatch-activity.workers-need-full-delivery`.
+Under `context_mode: "persistent"`, use ONE canonical `agent_id` for the whole walk (including resume). The delivery ledger is keyed by `agent_id`; a different id starts from an empty ledger and re-delivers in full. Worker-dispatched sessions follow `workflow-engine.dispatch-activity.workers-need-full-delivery`.
 
 ### force-full-after-summarization
 
