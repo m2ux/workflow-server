@@ -17,9 +17,9 @@ EVERY authenticated tool call (anything other than `discover`, `list_workflows`,
 
 Check `_meta.validation` in each response. Warnings are advisory but should be addressed.
 
-### dispatch-default-topology
+### dispatch-topology
 
-Client walks use per-activity disposable workers via [dispatch-activity](./dispatch-activity.md). Do not set `context_mode: "persistent"` on worker-dispatched sessions — see [dispatch-activity](./dispatch-activity.md)::workers-need-full-delivery. Same-context (solo) execution is deferred until a static workflow cost model can gate selection; it is not available as a runtime choice.
+Client walks use per-activity disposable workers via [dispatch-activity](./dispatch-activity.md). Do not set `context_mode: "persistent"` on worker-dispatched sessions — see [dispatch-activity](./dispatch-activity.md)::workers-need-full-delivery.
 
 ### resource-loading-via-tool
 

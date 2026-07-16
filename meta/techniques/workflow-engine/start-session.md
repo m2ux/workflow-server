@@ -23,7 +23,7 @@ Agent identity stored on the session (default `orchestrator`).
 
 ### context_mode
 
-Optional. Omit or pass `"fresh"` — the supported topology is per-activity disposable workers. Do not pass `"persistent"`; same-context (solo) selection is deferred.
+Optional. Omit or pass `"fresh"`. Client sessions use per-activity disposable workers ([dispatch-activity](./dispatch-activity.md)::workers-need-full-delivery).
 
 ## Outputs
 
