@@ -1,5 +1,5 @@
 id: intake-and-context
-version: 1.2.0
+version: 1.3.0
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 required: true
@@ -10,10 +10,16 @@ steps:
   - kind: checkpoint
     id: mode-confirmation
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: update_seeded_from_review
+          operator: "!="
+          value: true
     message: I've classified this as a {operation_type} operation for workflow '{workflow_id}'. Is this correct?
     blocking: true
     options:
@@ -29,6 +35,16 @@ steps:
         effect:
           setVariable:
             is_update_mode: true
+  - kind: action
+    id: announce-review-seeded-update
+    condition:
+      type: simple
+      variable: update_seeded_from_review
+      operator: ==
+      value: true
+    actions:
+      - action: message
+        message: "Update seeded from compliance review — mode is update; findings in the report are the change specification. Skipping mode and change-request re-confirmation."
   - kind: checkpoint
     id: review-scope-confirmed
     condition:
@@ -90,10 +106,16 @@ steps:
   - kind: checkpoint
     id: change-request-confirmed
     condition:
-      type: simple
-      variable: is_update_mode
-      operator: ==
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_update_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: update_seeded_from_review
+          operator: "!="
+          value: true
     message: Here is the existing workflow structure and my understanding of your requested changes. Is this correct?
     blocking: true
     options:
@@ -171,6 +193,17 @@ steps:
       - id: adjust
         label: Needs adjustment
         description: Construct list requires additions or removals before proceeding.
+  - kind: action
+    id: clear-review-seed-flag
+    condition:
+      type: simple
+      variable: update_seeded_from_review
+      operator: ==
+      value: true
+    actions:
+      - action: set
+        target: update_seeded_from_review
+        value: false
 transitions:
   - to: quality-review
     condition:

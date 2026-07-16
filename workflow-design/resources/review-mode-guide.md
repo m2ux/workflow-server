@@ -94,9 +94,8 @@ The compliance report follows this structure:
 
 ## Transitioning to Update Mode
 
-If the user opts to fix identified issues, the workflow transitions to update mode:
+If the user opts to fix identified issues (`fix-issues` or `selective-fixes`), the disposition sets:
 
-1. `is_review_mode` is set to `false`
-2. `is_update_mode` is set to `true`
-3. The compliance report findings become the change specification for update mode
-4. The workflow restarts from the intake activity in update mode with the findings pre-loaded
+1. `is_review_mode` = `false`, `is_update_mode` = `true`
+2. `update_seeded_from_review` = `true` — intake skips `mode-confirmation` and `change-request-confirmed` (the compliance report is already the change spec)
+3. Transition back to `intake-and-context`, which clears `update_seeded_from_review` before leaving so a later update cycle can re-confirm normally

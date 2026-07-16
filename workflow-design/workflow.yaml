@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.9.0
+version: 1.10.0
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -56,6 +56,26 @@ variables:
   - name: review_findings_count
     type: number
     description: Total number of compliance findings identified during review
+    defaultValue: 0
+  - name: update_seeded_from_review
+    type: boolean
+    description: True when update mode was entered via quality-review disposition (fix-issues or selective-fixes). Suppresses mode-confirmation and change-request-confirmed on the subsequent intake pass; cleared at the end of that intake.
+    defaultValue: false
+  - name: expressiveness_finding_count
+    type: number
+    description: Count of expressiveness findings from audit-expressiveness. Gates the expressiveness-confirmed checkpoint (presented only when greater than zero).
+    defaultValue: 0
+  - name: conformance_finding_count
+    type: number
+    description: Count of convention-conformance divergences from audit-conformance. Gates the conformance-confirmed checkpoint (presented only when greater than zero).
+    defaultValue: 0
+  - name: rule_hygiene_finding_count
+    type: number
+    description: Count of rule-hygiene findings from audit-rule-hygiene. Gates the rule-hygiene-confirmed checkpoint (presented only when greater than zero).
+    defaultValue: 0
+  - name: enforcement_finding_count
+    type: number
+    description: Count of text-only rules from audit-rule-enforcement. Gates the enforcement-confirmed checkpoint (presented only when greater than zero).
     defaultValue: 0
   - name: review_scope_confirmed
     type: boolean
