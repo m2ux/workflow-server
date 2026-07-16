@@ -379,7 +379,7 @@
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           <tr><td><code>step_id</code></td><td><code>string</code></td><td>no</td><td>Step within the current activity. Omit to get the first technique for the activity or workflow.</td></tr>
-          <tr><td><code>full</code></td><td><code>boolean</code></td><td>no</td><td>Force full technique content even when persistent mode would return an unchanged marker.</td></tr>
+          <tr><td><code>full</code></td><td><code>boolean</code></td><td>no</td><td>Force full content even when persistent mode would return an unchanged marker (<code>get_technique</code> or <code>get_resource</code>).</td></tr>
           </tbody>
         </table>
         </div>
@@ -392,7 +392,8 @@
           <p>Loads reference material by id — templates, guides, or other markdown resources linked from techniques.</p>
           <p>Bare ids (<code>review-mode</code>) resolve within the current workflow. Prefixed ids (<code>meta/bootstrap-protocol</code>) load from another workflow.</p>
           <p>Add <code>#section</code> to fetch one heading slice instead of the whole file.</p>
-          <p>Each fetch is logged for observability only; nothing validates that you called it.</p>
+          <p>In persistent context mode, an identical refetch of the same <code>resource_id</code> (including any <code>#section</code>) may return a short unchanged marker; pass <code>full: true</code> to get the full body again.</p>
+          <p>Each fetch is logged for observability only (including when the answer is an unchanged marker); nothing validates that you called it.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">
@@ -400,6 +401,7 @@
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           <tr><td><code>resource_id</code></td><td><code>string</code></td><td>yes</td><td>Resource slug, optionally workflow-prefixed (<code>meta/bootstrap-protocol</code>), optionally with <code>#section</code> anchor.</td></tr>
+          <tr><td><code>full</code></td><td><code>boolean</code></td><td>no</td><td>Force full content even when persistent mode would return an unchanged marker (<code>get_technique</code> or <code>get_resource</code>).</td></tr>
           </tbody>
         </table>
         </div>

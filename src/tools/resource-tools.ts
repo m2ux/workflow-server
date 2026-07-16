@@ -686,12 +686,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_resource',
-    'Load a resource by its id, optionally narrowed to a single section. Use this to fetch resources referenced in technique content (e.g. a template hyperlinked from an Input/Output). The resource_id is a text-only slug — bare (e.g., "review-mode") resolves within the session\'s workflow, or prefixed cross-workflow (e.g., "meta/bootstrap-protocol") resolves from the named workflow. Append a `#section` anchor (GitHub-style heading slug, e.g. "assumption-reconciliation#integration-with-assumptions-log") to return only that section and its body — used to fetch just the template a technique references without the whole file. Returns the resource content, id, and version. Each fetch is recorded in the session history as a resource_fetched event (observability only — no validation reads it).',
+    'Load a resource by its id, optionally narrowed to a single section. Use this to fetch resources referenced in technique content (e.g. a template hyperlinked from an Input/Output). The resource_id is a text-only slug — bare (e.g., "review-mode") resolves within the session\'s workflow, or prefixed cross-workflow (e.g., "meta/bootstrap-protocol") resolves from the named workflow. Append a `#section` anchor (GitHub-style heading slug, e.g. "assumption-reconciliation#integration-with-assumptions-log") to return only that section and its body — used to fetch just the template a technique references without the whole file. Returns the resource content, id, and version. Under context_mode "persistent", a byte-identical refetch of the same resource_id (including any #section) returns a short unchanged-reference ({ delivery: unchanged, content_hash }) instead of the body; full: true forces full content. Each fetch is recorded in the session history as a resource_fetched event (observability only — no validation reads it), including when the answer is an unchanged-reference.',
     {
       ...sessionIndexParam,
       resource_id: z.string().describe('Resource ref — bare slug ("review-mode"), cross-workflow prefixed ("meta/bootstrap-protocol"), each optionally suffixed with a "#section" heading anchor to return only that section (e.g. "assumption-reconciliation#integration-with-assumptions-log")'),
+      full: z.boolean().optional().describe('Optional. Set true to force full content delivery even when the session\'s persistent context mode would answer a byte-identical refetch with an unchanged-reference. Use when your context no longer holds the earlier delivery (e.g. it was summarized away).'),
     },
-    withAuditLog('get_resource', withSessionStoreErrors(async ({ session_index, resource_id }) => {
+    withAuditLog('get_resource', withSessionStoreErrors(async ({ session_index, resource_id, full }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
       const { state } = loaded;
       assertNoActiveCheckpoint(state);
@@ -720,18 +721,18 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // Fidelity observability (#166 B8): resource fetches are recorded in the
       // session history for observability only — the server cannot know which
       // resources an activity requires, so no validation reads these events.
-      const next = advanceSession(state, (draft) => {
+      // Recorded on both delivery paths — an unchanged-reference answer is still a fetch.
+      const recordFetch = (draft: SessionFile): void => {
         draft.history.push({
           timestamp: new Date().toISOString(),
           type: 'resource_fetched',
           ...(state.currentActivity ? { activity: state.currentActivity } : {}),
           data: { resourceId: resource_id, agentId: state.agentId },
         });
-      });
-      await saveSessionForTool(loaded, next);
+      };
 
       const { content: resourceContent, ...meta } = result.value;
-      const lines = [
+      const fullLines = [
         `resource_id: ${resource_id}`,
         ...(meta.id ? [`id: ${meta.id}`] : []),
         ...(meta.version ? [`version: ${meta.version}`] : []),
@@ -739,9 +740,37 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         '',
         resourceContent,
       ];
+      const fullText = fullLines.join('\n');
+
+      // Ledger key is the exact caller resource_id (including any #section) so
+      // bare and sectioned fetches never share a slot.
+      const ledgerKey = `resource:${resource_id}`;
+      const hash = contentHash(fullText);
+      if (state.contextMode === 'persistent' && full !== true && deliveredHash(state, ledgerKey) === hash) {
+        const next = advanceSession(state, (draft) => {
+          recordFetch(draft);
+        });
+        await saveSessionForTool(loaded, next);
+
+        const stub = stringifyForResponse({
+          resource_id,
+          ...unchangedMarker(hash),
+          note: 'Byte-identical to the resource already delivered in this session — reuse it from your context. Pass full: true to re-fetch the full content.',
+        });
+        return {
+          content: [{ type: 'text' as const, text: `session_index: ${session_index}\n\n${stub}` }],
+          _meta: { session_index, validation, delivery: 'unchanged' },
+        };
+      }
+
+      const next = advanceSession(state, (draft) => {
+        recordDeliveries(draft, state.agentId, { [ledgerKey]: hash });
+        recordFetch(draft);
+      });
+      await saveSessionForTool(loaded, next);
 
       return {
-        content: [{ type: 'text' as const, text: lines.join('\n') }],
+        content: [{ type: 'text' as const, text: fullText }],
         _meta: { session_index, validation },
       };
     }), traceOpts)

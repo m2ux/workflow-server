@@ -125,7 +125,7 @@
   <figure class="diagram">
     <svg viewBox="0 0 960 250" role="img" aria-labelledby="rd-title rd-desc">
       <title id="rd-title">Reference delivery</title>
-      <desc id="rd-desc">A fetch through get_activity or get_technique reaches a decision: is the content hash already in the session's delivered ledger? If yes, the response is a short unchanged marker with the content hash. If no, the full content is delivered and its hash is recorded in the ledger.</desc>
+      <desc id="rd-desc">A fetch through get_activity, get_technique, or get_resource reaches a decision: is the content hash already in the session's delivered ledger? If yes, the response is a short unchanged marker with the content hash. If no, the full content is delivered and its hash is recorded in the ledger.</desc>
       <defs>
         <marker id="arrowrd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
@@ -133,8 +133,8 @@
       </defs>
       <g font-size="14.5" font-weight="600" text-anchor="middle">
         <rect x="20" y="90" width="260" height="56" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
-        <text x="150" y="114" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13.5">get_activity / get_technique</text>
-        <text x="150" y="134" fill="var(--diagram-note)" font-size="12.5" font-weight="400">in persistent context mode</text>
+        <text x="150" y="114" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12.5">get_activity / get_technique /</text>
+        <text x="150" y="132" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="12.5">get_resource</text>
         <rect x="330" y="90" width="280" height="56" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="470" y="114" fill="var(--diagram-label)">hash already in the ledger?</text>
         <text x="470" y="134" fill="var(--diagram-note)" font-size="12.5" font-weight="400">deliveredContent, per agent</text>
@@ -155,7 +155,7 @@
         <path d="M 610 130 L 640 130 L 640 192 L 666 192" marker-end="url(#arrowrd)"/>
       </g>
     </svg>
-    <figcaption>Reference delivery in <code>persistent</code> mode. The ledger is keyed per agent and per channel (technique bundles, rules, individual techniques), so an orchestrator and a worker on the same session have independent delivery state. An agent that has lost its context can force re-delivery with <code>get_activity { bundle: "full" }</code> or <code>get_technique { full: true }</code>.</figcaption>
+    <figcaption>Reference delivery in <code>persistent</code> mode. The ledger is keyed per agent and per channel (technique bundles, rules, individual techniques, resources), so an orchestrator and a worker on the same session have independent delivery state. An agent that has lost its context can force re-delivery with <code>get_activity { bundle: "full" }</code>, <code>get_technique { full: true }</code>, or <code>get_resource { full: true }</code>.</figcaption>
   </figure>
 
   <p>The marker is a contract, not a hint: <code>delivery: "unchanged"</code> asserts the content is byte-identical to what this agent already received, which the server can promise because payload composition is deterministic. If your context no longer contains the earlier copy, ask for full delivery rather than proceeding from a summary.</p>

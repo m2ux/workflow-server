@@ -381,6 +381,11 @@
   },
   {
     "check": "dead-output",
+    "site": "work-package/techniques/manage-artifacts/verify-artifact-conforms.md",
+    "detail": "output 'artifact_conformance' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
     "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md",
     "detail": "output 'readme_conformance' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
@@ -476,6 +481,11 @@
   },
   {
     "check": "dead-output",
+    "site": "work-package/techniques/review-diff.md",
+    "detail": "output 'manual_diff_review_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
     "site": "work-package/techniques/review-mode-detection.md",
     "detail": "output 'review_ticket_ref' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
@@ -508,11 +518,6 @@
     "check": "dead-output",
     "site": "work-package/techniques/update-pr/mark-ready.md",
     "detail": "output 'updated_pr' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
-  },
-  {
-    "check": "dead-output",
-    "site": "work-package/techniques/update-pr/post-review-comment.md",
-    "detail": "output 'review_posted' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
   {
     "check": "dead-output",
@@ -578,6 +583,11 @@
     "check": "dead-output",
     "site": "workflow-design/techniques/apply-audit-fixes.md",
     "detail": "output 'fixes_applied' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "workflow-design/techniques/derive-design-dimensions.md",
+    "detail": "output 'design_dimensions' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
   {
     "check": "dead-output",
@@ -1251,58 +1261,13 @@
   },
   {
     "check": "read-resolution",
-    "site": "work-package/techniques/review-summary.md:51",
+    "site": "work-package/techniques/review-summary.md:53",
     "detail": "{sha} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",
-    "site": "work-package/techniques/review-summary.md:51",
+    "site": "work-package/techniques/review-summary.md:53",
     "detail": "{user} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "workflow-design/activities/06-scope-and-draft.yaml:120",
-    "detail": "{file_count} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "workflow-design/activities/08-quality-review.yaml:142",
-    "detail": "{conformance_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "workflow-design/activities/08-quality-review.yaml:197",
-    "detail": "{enforcement_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "workflow-design/activities/08-quality-review.yaml:116",
-    "detail": "{expressiveness_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "workflow-design/activities/08-quality-review.yaml:171",
-    "detail": "{rule_hygiene_finding_count} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "workflow-design/activities/09-validate-and-commit.yaml:72",
-    "detail": "{addressed_count} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "workflow-design/activities/09-validate-and-commit.yaml:43",
-    "detail": "{fail_count} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "workflow-design/activities/09-validate-and-commit.yaml:43",
-    "detail": "{pass_count} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "workflow-design/activities/09-validate-and-commit.yaml:72",
-    "detail": "{total_count} has no producer (declared id / $-local / workflow var / set-target)"
   },
   {
     "check": "read-resolution",

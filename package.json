@@ -26,7 +26,8 @@
     "check:fragments": "tsx scripts/check-fragments.ts",
     "check:review-mode": "tsx scripts/check-review-mode-gating.ts",
     "check:stealth": "tsx scripts/check-stealth-isolation.ts",
-    "check:audience": "tsx scripts/check-audience.ts"
+    "check:audience": "tsx scripts/check-audience.ts",
+    "bench:token": "tsx scripts/run-token-benchmark.ts"
   },
   "license": "MIT",
   "devDependencies": {

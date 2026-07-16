@@ -291,6 +291,7 @@
     <li><strong>Workflow prefix</strong> — <code>meta/activity-worker-prompt</code> pulls from another workflow's <code>resources/</code> folder</li>
     <li><strong>Section anchor</strong> — <code>#heading-slug</code> returns one heading block, not the whole file</li>
   </ul>
+  <p class="prose">In <code>persistent</code> context mode, a byte-identical refetch of the same exact <code>resource_id</code> (bare or sectioned) collapses to an unchanged marker — see <a href="../design/protocol.html#delivery">reference delivery</a>. Pass <code>full: true</code> to force the full body. Fresh sessions always receive the full body.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 200" role="img" aria-labelledby="res-link-title res-link-desc">
