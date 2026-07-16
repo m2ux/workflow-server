@@ -969,4 +969,159 @@ describe('reference-not-repeat delivery (B1)', () => {
       expect(keys.some(k => /^workflow_bundle:[0-9a-f]{16}$/.test(k))).toBe(true);
     });
   });
+
+  describe('get_resource delta mode', () => {
+    const RESOURCE_ID = 'pr-description';
+    const SECTION_ID = 'pr-description#link-row-forms';
+
+    it('answers a byte-identical refetch with an unchanged-reference; full: true re-fetches', async () => {
+      const session = await startSession({
+        workflow_id: 'work-package',
+        agent_id: 'solo',
+        planning_folder: planningFolder('2026-07-16-resource-delta'),
+        context_mode: 'persistent',
+      });
+      const idx = session['session_index'] as string;
+
+      const first = await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: idx, resource_id: RESOURCE_ID },
+      });
+      expect(first.isError).toBeFalsy();
+      const firstText = responseText(first);
+      expect(firstText).toContain('resource_id: pr-description');
+      expect(firstText).toContain('Pull Request Description Guide');
+
+      const second = await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: idx, resource_id: RESOURCE_ID },
+      });
+      expect(second.isError).toBeFalsy();
+      const secondText = responseText(second);
+      expect(secondText).not.toContain('Pull Request Description Guide');
+      const stub = parse(secondText.substring(secondText.indexOf('\n\n') + 2)) as Record<string, unknown>;
+      expect(stub['resource_id']).toBe(RESOURCE_ID);
+      expect(stub['delivery']).toBe('unchanged');
+      expect(stub['content_hash']).toMatch(/^[0-9a-f]{16}$/);
+      expect(stub['note']).toBeDefined();
+      expect((second._meta as Record<string, unknown>)['delivery']).toBe('unchanged');
+
+      const escaped = await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: idx, resource_id: RESOURCE_ID, full: true },
+      });
+      expect(escaped.isError).toBeFalsy();
+      expect(responseText(escaped)).toBe(firstText);
+    });
+
+    it('never returns references on a default (fresh-context) session', async () => {
+      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
+      const idx = session['session_index'] as string;
+
+      const first = await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: idx, resource_id: RESOURCE_ID },
+      });
+      const second = await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: idx, resource_id: RESOURCE_ID },
+      });
+      expect(responseText(first)).toContain('Pull Request Description Guide');
+      expect(responseText(second)).toBe(responseText(first));
+      expect((second._meta as Record<string, unknown>)['delivery']).toBeUndefined();
+    });
+
+    it('does not collapse across different agentIds', async () => {
+      const slug = '2026-07-16-resource-agent-scope';
+      const session = await startSession({
+        workflow_id: 'work-package',
+        agent_id: 'solo-a',
+        planning_folder: planningFolder(slug),
+        context_mode: 'persistent',
+      });
+      const idx = session['session_index'] as string;
+      await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: idx, resource_id: RESOURCE_ID },
+      });
+
+      // Resume under a different agent_id — empty ledger for that agent.
+      const resumed = await startSession({
+        workflow_id: 'work-package',
+        agent_id: 'solo-b',
+        planning_folder: planningFolder(slug),
+        context_mode: 'persistent',
+      });
+      expect(resumed['session_index']).toBe(idx);
+      const second = await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: idx, resource_id: RESOURCE_ID },
+      });
+      expect(responseText(second)).toContain('Pull Request Description Guide');
+      expect((second._meta as Record<string, unknown>)['delivery']).toBeUndefined();
+    });
+
+    it('treats bare and #section resource_ids as independent ledger keys', async () => {
+      const session = await startSession({
+        workflow_id: 'work-package',
+        agent_id: 'solo',
+        planning_folder: planningFolder('2026-07-16-resource-section-keys'),
+        context_mode: 'persistent',
+      });
+      const idx = session['session_index'] as string;
+
+      const bare = await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: idx, resource_id: RESOURCE_ID },
+      });
+      const section = await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: idx, resource_id: SECTION_ID },
+      });
+      expect(bare.isError).toBeFalsy();
+      expect(section.isError).toBeFalsy();
+      expect(responseText(bare)).toContain('Pull Request Description Guide');
+      expect(responseText(section)).toContain('Link Row Forms');
+      // Section fetch is still full content (different key), not a marker from the bare fetch.
+      expect((section._meta as Record<string, unknown>)['delivery']).toBeUndefined();
+
+      const sectionAgain = await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: idx, resource_id: SECTION_ID },
+      });
+      expect((sectionAgain._meta as Record<string, unknown>)['delivery']).toBe('unchanged');
+
+      const onDisk = JSON.parse(readFileSync(
+        join(planningFolder('2026-07-16-resource-section-keys'), 'session.json'),
+        'utf8',
+      ));
+      const keys = Object.keys(onDisk.deliveredContent.solo as Record<string, string>);
+      expect(keys).toContain(`resource:${RESOURCE_ID}`);
+      expect(keys).toContain(`resource:${SECTION_ID}`);
+    });
+
+    it('still records resource_fetched when answering with an unchanged-reference', async () => {
+      const slug = '2026-07-16-resource-fetched-on-collapse';
+      const session = await startSession({
+        workflow_id: 'work-package',
+        agent_id: 'solo',
+        planning_folder: planningFolder(slug),
+        context_mode: 'persistent',
+      });
+      const idx = session['session_index'] as string;
+      await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: idx, resource_id: RESOURCE_ID },
+      });
+      await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: idx, resource_id: RESOURCE_ID },
+      });
+
+      const onDisk = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));
+      const fetches = (onDisk.history as Array<{ type: string; data?: { resourceId?: string } }>)
+        .filter(e => e.type === 'resource_fetched' && e.data?.resourceId === RESOURCE_ID);
+      expect(fetches.length).toBe(2);
+    });
+  });
 });

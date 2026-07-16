@@ -12,8 +12,7 @@ import { stringifyForResponse } from './serialization.js';
  * ledger is replaced by a short `{ delivery: 'unchanged', content_hash }`
  * marker — the receiving context already holds the bytes. This is the one
  * canonical unchanged-marker shape, emitted identically by the `get_activity`
- * bundle path and by `get_technique`. Full content is always recoverable:
- * `get_activity { bundle: 'full' }`, `get_technique { full: true }`.
+ * bundle path, `get_technique`, and `get_resource`.
  *
  * Content keys are namespaced by delivery channel so the composition paths
  * never cross-reference each other's payloads:
@@ -24,9 +23,14 @@ import { stringifyForResponse } from './serialization.js';
  *   - `technique:<block>:<hash>` — one shared block (`inherited_inputs` /
  *     `inherited_outputs` / `rules`) of a composed technique
  *   - `workflow_bundle:<hash>`   — the `get_workflow` orchestrator ops bundle
+ *   - `resource:<resource_id>`   — a full `get_resource` payload (exact caller
+ *     `resource_id`, including any `#section` anchor)
  *
  * `<hash>`-suffixed keys are content-keyed — the key IS the content hash, so a
  * changed payload gets a different key and delivers in full; no invalidation logic.
+ *
+ * Full content is always recoverable: `get_activity { bundle: 'full' }`,
+ * `get_technique { full: true }`, `get_resource { full: true }`.
  */
 
 /** Hash used for delivery-ledger comparison: sha256, truncated for payload brevity. */
