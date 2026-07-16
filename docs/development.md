@@ -158,19 +158,28 @@ Run `npm test -- --run` for the live count and pass/fail summary.
 
 [`scripts/run-token-benchmark.ts`](../scripts/run-token-benchmark.ts) measures payload-char and history/ledger cost for a fixed headless walk (`work-package` / e2e `skip-optional`), comparing `context_mode: fresh` vs `persistent` and resource reference delivery. It reuses the e2e harness/walker and probes `get_resource` for linked + hot templates (the robot walker does not call `get_resource` on its own).
 
-```bash
-# Baseline (full redelivery)
-npm run bench:token -- --label=A0 --context-mode=fresh
+By default each run compares against the frozen pre-optimisation reference
+[`scripts/fixtures/token-benchmark-a0-reference.json`](../scripts/fixtures/token-benchmark-a0-reference.json)
+(A0: fresh, recorded 2026-07-16). Stderr prints a compact scorecard; stdout JSON
+includes `vsReference` with absolute/percent deltas and a **deliveryCostIndex**
+(A0 = 100, lower is better — sum of activity + workflow + resource + technique chars).
 
-# Solo / persistent (reference delivery where supported)
-npm run bench:token -- --label=A1 --context-mode=persistent
+```bash
+# Optimised walk vs A0 reference (default compare). Use --silent for clean JSON on stdout.
+npm run --silent bench:token -- --label=opt --context-mode=persistent
+
+# Baseline (full redelivery) — expect deliveryCostIndex ≈ 100
+npm run --silent bench:token -- --label=A0 --context-mode=fresh
 
 # Pin a feature corpus worktree
-WORKFLOWS_DIR=/path/to/workflows npm run bench:token -- \
+WORKFLOWS_DIR=/path/to/workflows npm run --silent bench:token -- \
   --label=A3 --context-mode=persistent --server-root=$PWD
+
+# Absolute metrics only
+npm run --silent bench:token -- --label=raw --context-mode=persistent --no-compare
 ```
 
-Stdout is one JSON object (`getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals). Exit `2` if the walk does not complete. See [Reference Delivery](api-reference.md#reference-delivery) for the contract under test.
+Stderr: compact vs-A0 scorecard. Stdout: one JSON object (`getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals, optional `vsReference`). Exit `2` if the walk does not complete. See [Reference Delivery](api-reference.md#reference-delivery) for the contract under test.
 
 ## Validating Workflows
 

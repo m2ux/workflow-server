@@ -13,6 +13,8 @@ import { withAuditLog, logWarn } from '../logging.js';
 import { jsonTypeOf, isTemplateReference } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
+import { extractResourceIds } from '../utils/resource-ref.js';
+import { DEFAULT_MAX_EAGER_RESOURCE_CHARS, loadResourceDelivery } from '../utils/resource-delivery.js';
 import {
   sessionIndexParam,
   contextTokensParam,
@@ -627,6 +629,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // to unchanged-references in either direction.
       const bundledStepTechniques: Record<string, unknown> = {};
       const bundledSteps: Array<{ stepId: string; techniqueId: string }> = [];
+      const bundledResourceIds: string[] = [];
+      const linkedResourceIds = new Set<string>();
       const bundlingWarnings: string[] = [];
       const bundleConfig = (activity as Activity | undefined)?.bundleTechniques;
       // maxChars: 0 is the explicit opt-out sentinel; any other declared value is a per-technique
@@ -678,11 +682,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             technique = decorated.technique;
             provenanceWarnings = decorated.warnings;
           }
-          // Budget accounting measures the TECHNIQUE BODY only (including its resources[] refs,
-          // but NOT the resolved content of those resources). Inlining bundles techniques, never
-          // their referenced resources: the worker still calls get_resource on demand for each
-          // ref, exactly as for a lazy get_technique fetch. Inlining resources here would duplicate
-          // content shared across techniques, so resources stay lazy.
+          // Budget accounting measures the TECHNIQUE BODY only (including its resource link refs,
+          // but NOT the resolved content of those resources). Resource bodies are eager-bundled
+          // separately as a sibling `resources` map (deduped across steps) after the technique loop.
           const text = projectTechniqueToYaml(technique);
           // Per-technique size cap: an oversized single technique is skipped outright.
           if (text.length > perTechniqueCap) continue;
@@ -713,6 +715,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
               : projectTechnique(technique);
             bundledStepTechniques[step.id!] = { marker: stepMarker, ...projected };
           }
+          // Collect linked resource ids from the full composed technique text even when this
+          // delivery collapses to an unchanged-marker (markers omit link text). Only for steps
+          // actually included in the bundle (after the budget break above).
+          for (const resourceId of extractResourceIds(text)) linkedResourceIds.add(resourceId);
           bundledSteps.push({ stepId: step.id!, techniqueId });
           bundlingWarnings.push(...provenanceWarnings);
         }
@@ -720,7 +726,44 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         if (bundledSteps.length > 0) {
           bundleData['step_techniques'] = bundledStepTechniques;
           bundleData['step_techniques_note'] =
-            'Each step_techniques entry is a discrete ▼ STEP block whose composed technique is identical to a get_technique { step_id } fetch. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resources are NOT inlined: for any resources[] the inlined technique references, still call get_resource { resource_id } on demand, exactly as for a lazy fetch. Technique steps absent from the map (gated, or past the derived eager-delivery budget / a per-activity size cap) still require get_technique { step_id } before execution.';
+            'Each step_techniques entry is a discrete ▼ STEP block whose composed technique is identical to a get_technique { step_id } fetch. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Technique-linked resource bodies for these steps appear under the sibling `resources` map (keyed by exact resource_id, including #section) — reuse those bodies or unchanged markers; call get_resource only for ids absent from the map (or after summarization via full: true). Resource bodies are NOT nested inside step_techniques entries. Technique steps absent from the map (gated, or past the derived eager-delivery budget / a per-activity size cap) still require get_technique { step_id } before execution.';
+
+          // Eager resource bundling (R2): sibling map keyed by exact resource_id. Dedupes across
+          // steps; shares resource:<id> ledger keys with get_resource so persistent refetches collapse.
+          const bundledResources: Record<string, unknown> = {};
+          const maxResourceChars = DEFAULT_MAX_EAGER_RESOURCE_CHARS;
+          for (const resourceId of linkedResourceIds) {
+            const loaded = await loadResourceDelivery(
+              config.workflowDir, sourceWorkflowId, resourceId, session_index,
+            );
+            if (!loaded.success) continue;
+            const { hash, content, id, version } = loaded.value;
+            if (content.length > maxResourceChars) continue;
+            const ledgerKey = `resource:${resourceId}`;
+            const already =
+              referenceMode &&
+              (deliveredHash(state, ledgerKey) === hash || newDeliveries[ledgerKey] === hash);
+            if (already) {
+              bundledResources[resourceId] = {
+                resource_id: resourceId,
+                ...unchangedMarker(hash),
+              };
+            } else {
+              newDeliveries[ledgerKey] = hash;
+              bundledResources[resourceId] = {
+                resource_id: resourceId,
+                ...(id ? { id } : {}),
+                ...(version ? { version } : {}),
+                content,
+              };
+            }
+            bundledResourceIds.push(resourceId);
+          }
+          if (bundledResourceIds.length > 0) {
+            bundleData['resources'] = bundledResources;
+            bundleData['resources_note'] =
+              'Bodies for technique-linked resources from eagerly bundled steps, keyed by exact resource_id (including #section). Deduped across steps. Same delivery ledger as get_resource (resource:<id>). Reuse content or unchanged markers; call get_resource only for ids not listed here, or with full: true after summarization.';
+          }
         }
       }
 
@@ -815,6 +858,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             data: { techniqueId: b.techniqueId, stepId: b.stepId, agentId: reloaded.state.agentId },
           });
         }
+        // Eager resource deliveries share get_resource's resource_fetched observability channel.
+        for (const resourceId of bundledResourceIds) {
+          draft.history.push({
+            timestamp: bundledAt,
+            type: 'resource_fetched',
+            activity: activity_id,
+            data: { resourceId, agentId: reloaded.state.agentId, bundled: true },
+          });
+        }
       });
       await saveSessionForTool(reloaded, next);
 
@@ -823,6 +875,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         _meta: {
           session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules,
           ...(bundledSteps.length > 0 ? { bundled_steps: bundledSteps.map(b => b.stepId) } : {}),
+          ...(bundledResourceIds.length > 0 ? { bundled_resources: bundledResourceIds } : {}),
           ...(Object.keys(enforcementNotes).length > 0 ? { enforcement_notes: enforcementNotes } : {}),
         },
       };

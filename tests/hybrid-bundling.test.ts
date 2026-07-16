@@ -108,9 +108,27 @@ describe('hybrid technique bundling (#189 C1c)', () => {
       '    technique: gather',
     ].join('\n'));
 
+    mkdirSync(join(wf, 'resources'), { recursive: true });
+    writeFileSync(join(wf, 'resources', 'guide.md'), [
+      '---',
+      'name: guide',
+      'description: Fixture guide resource',
+      '---',
+      '',
+      '# Guide',
+      '',
+      '## Overview',
+      '',
+      'Use this guide when gathering.',
+      '',
+    ].join('\n'));
+
     const t = join(wf, 'techniques');
     writeFileSync(join(t, 'work', 'classify.md'), op('Classify.', '## Outputs\n\n### classified_intake\n\nThe classification.\n\n## Protocol\n\n### 1. Go\n\n- Classify it.\n'));
-    writeFileSync(join(t, 'gather.md'), op('Gather.', '## Outputs\n\n### analysis_report\n\nThe report.\n\n## Protocol\n\n### 1. Go\n\n- Gather it.\n'));
+    writeFileSync(join(t, 'gather.md'), op(
+      'Gather.',
+      '## Outputs\n\n### analysis_report\n\nThe report.\n\n## Protocol\n\n### 1. Go\n\n- Gather it using the [guide](../resources/guide.md#overview).\n',
+    ));
     writeFileSync(join(t, 'record.md'), op('Record.', '## Inputs\n\n### analysis_report\n\nThe report.\n\n## Outputs\n\n### record_log\n\nThe log.\n\n### record_summary\n\nThe summary.\n\n## Protocol\n\n### 1. Go\n\n- Record it.\n'));
     writeFileSync(join(t, 'optional-op.md'), op('Optional.', '## Protocol\n\n### 1. Go\n\n- Maybe do it.\n'));
     writeFileSync(join(t, 'loop-op.md'), op('Iterate.', '## Protocol\n\n### 1. Go\n\n- Handle the current item.\n'));
@@ -191,6 +209,7 @@ describe('hybrid technique bundling (#189 C1c)', () => {
     expect(ops['step_techniques_note']).toContain('get_technique { step_id }');
     // The note prescribes the deliberate in-order step-begin beat (#189 C1c(C)2).
     expect(ops['step_techniques_note']).toContain('▶ step');
+    expect(ops['step_techniques_note']).toContain('resources');
 
     // Each entry leads with a ▼ STEP arrival marker (#189 C1c(C)1), then the full composed
     // technique resolved through the activity-group shorthand at the same level.
@@ -199,9 +218,54 @@ describe('hybrid technique bundling (#189 C1c)', () => {
     expect(stepTechniques['classify']!['id']).toBe('classify');
     expect(stepTechniques['classify']!['capability']).toContain('Classify');
     expect(stepTechniques['gather']!['capability']).toContain('Gather');
+    // Resource bodies are siblings — not nested inside step_techniques entries.
+    expect(stepTechniques['gather']!['content']).toBeUndefined();
 
     // The large technique, the when-gated step, and the step inside a gated loop stay lazy.
     expect(meta['bundled_steps']).toEqual(['classify', 'gather', 'record', 'loop-op']);
+  });
+
+  it('eager-bundles technique-linked resources as a sibling resources map', async () => {
+    const slug = 'b11-resources';
+    const idx = await startSession(slug, 'w1');
+    await enterActivity(idx, 'work');
+    const { ops, meta } = await getActivity(idx);
+
+    const resources = ops['resources'] as Record<string, Record<string, unknown>>;
+    expect(resources).toBeDefined();
+    expect(resources['guide#overview']).toBeDefined();
+    expect(String(resources['guide#overview']!['content'])).toContain('Use this guide when gathering');
+    expect(ops['resources_note']).toContain('resource:');
+    expect(meta['bundled_resources']).toContain('guide#overview');
+
+    const history = sessionHistory(slug);
+    expect(history.some((h) =>
+      h.type === 'resource_fetched' &&
+      (h.data as { resourceId?: string; bundled?: boolean } | undefined)?.resourceId === 'guide#overview' &&
+      (h.data as { bundled?: boolean } | undefined)?.bundled === true,
+    )).toBe(true);
+  });
+
+  it('collapses eagerly bundled resources under persistent mode and shares the get_resource ledger', async () => {
+    const slug = 'b11-resources-persistent';
+    const idx = await startSession(slug, 'w1', 'persistent');
+    await enterActivity(idx, 'work');
+    const first = await getActivity(idx);
+    const firstRes = (first.ops['resources'] as Record<string, Record<string, unknown>>)['guide#overview']!;
+    expect(firstRes['content']).toBeDefined();
+
+    const second = await getActivity(idx);
+    const secondRes = (second.ops['resources'] as Record<string, Record<string, unknown>>)['guide#overview']!;
+    expect(secondRes['delivery']).toBe('unchanged');
+    expect(secondRes['content_hash']).toBeTruthy();
+
+    const getRes = await client.callTool({
+      name: 'get_resource',
+      arguments: { session_index: idx, resource_id: 'guide#overview' },
+    }) as ToolResult;
+    expect(getRes.isError).toBeFalsy();
+    const stub = parse(getRes.content![0]!.text.split('\n\n').slice(1).join('\n\n')) as Record<string, unknown>;
+    expect(stub['delivery']).toBe('unchanged');
   });
 
   it('decorates bundled entries with binding-seam provenance, like a step-bound get_technique', async () => {
