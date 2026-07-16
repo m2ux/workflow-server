@@ -344,7 +344,7 @@ A checkpoint step is authored in exactly one of two forms:
 
 | Field       | Type               | Purpose                                             |
 | ----------- | ------------------ | --------------------------------------------------- |
-| `id`        | string             | Stable unique identifier (the checkpoint-response replay key) |
+| `id`        | string             | Checkpoint identity. Bare ids (`confirm-proceed`) are the response-replay key as written. Loop-body checkpoints that need a distinct answer per iteration use a template form `<baseId>#{...}` (e.g. `assumption-decision#{current_assumption.id}`); workers yield the expanded `<baseId>#<instance>` and the server matches the definition on the base id while recording under the full string. |
 | `kind`      | enum               | `checkpoint`                                        |
 | `ref`       | string             | Checkpoint-fragment reference (`[workflow::]name` into `fragments.checkpoints`; bare names resolve against the declaring workflow, then meta). Mutually exclusive with the body fields |
 | `message`   | string             | Question to present to user (inline form)           |
@@ -637,6 +637,8 @@ A `kind: checkpoint` step pauses execution and requires user input. It sits inli
 
 The `when` / `condition` gate uses the same formal condition schema shared by every step kind, transitions, and decisions (`condition.schema.json`). If omitted, the checkpoint is always presented. The two gate spellings differ at the dismissal seam: only a structured `condition` makes the checkpoint dismissible via `respond_checkpoint { condition_not_met }` — a `when`-gated checkpoint cannot be dismissed that way.
 
+**Replay and instance-qualified ids.** `yield_checkpoint` stores responses under `<activityId>-<checkpoint_id>`. A later yield of the same key returns `status: "replayed"` (no new `activeCheckpoint`). Inside a loop, pass `<baseId>#<instance>` when each iteration needs its own decision; the loader resolves the definition by base id (portion before `#`). Use a bare id when one answer should cover every iteration.
+
 **Checkpoint Option Effects** (per-effect enforcement):
 - `setVariable` — the server applies the assignments to the session variable bag; the one engine-applied effect
 - `transitionTo` — returned to the orchestrator, which enacts the transition via `next_activity`; selecting the option does not itself move the session
@@ -892,7 +894,7 @@ The state schema (`state.schema.json`) tracks runtime execution of a workflow us
 | `completedActivities` | string[]                  | Completed activity IDs                                         |
 | `skippedActivities`   | string[]                  | Skipped activity IDs                                           |
 | `completedSteps`      | Record<string, integer[]> | Steps completed per activity                                   |
-| `checkpointResponses` | Record<string, Response>  | Checkpoint answers (key: "activity-checkpoint")                |
+| `checkpointResponses` | Record<string, Response>  | Checkpoint answers (key: `<activityId>-<checkpoint_id>`, including any `#instance` suffix) |
 | `decisionOutcomes`    | Record<string, Outcome>   | Decision results (key: "activity-decision")                    |
 | `activeLoops`         | LoopState[]               | Currently executing loops                                      |
 | `variables`           | Record<string, any>       | Runtime variable values                                        |
