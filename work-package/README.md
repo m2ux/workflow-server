@@ -82,33 +82,6 @@ graph TD
 
     COMP --> doneNode(["End"])
 ```
-
----
-
-## Activities Summary
-
-Under the bound-step model each step carries its own `step.technique` binding, so the only techniques an activity declares at the block level are its activity-specific strategy techniques in `techniques[]`. The cross-cutting `variable-binding` technique is declared once at `workflow.techniques.activity` and inherited by every activity, so it is not repeated per-activity. The **Strategy Technique** column therefore lists only the activity-specific strategy techniques: `scatter-gather` appears on activities that aggregate per-item outputs across `forEach` loops; activities with none show `—`. The **Prefix** column shows the server-assigned `artifactPrefix` (matching the activity number) prepended to bare artifact names at write time; activities that produce no prefixed artifacts show `—`.
-
-| # | Activity | Strategy Technique | Prefix |
-|---|----------|-------------------|--------|
-| 01 | [Start Work Package](./activities/README.md#01-start-work-package) | — | — |
-| 02 | [Design Philosophy](./activities/README.md#02-design-philosophy) | — | `02` |
-| 15 | [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) | — | — |
-| 03 | [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) | — | `03` |
-| 04 | [Research](./activities/README.md#04-research-optional) | — | `04` |
-| 05 | [Implementation Analysis](./activities/README.md#05-implementation-analysis-optional) | `scatter-gather` | `05` |
-| 06 | [Plan & Prepare](./activities/README.md#06-plan--prepare) | — | `06` |
-| 07 | [Assumptions Review](./activities/README.md#07-assumptions-review) | `scatter-gather` | `07` |
-| 08 | [Implement](./activities/README.md#08-implement) | `scatter-gather` | `08` |
-| 09 | [Lean-Coding Audit](./activities/README.md#09-lean-coding-audit) | — | `09` |
-| 10 | [Post-Impl Review](./activities/README.md#10-post-implementation-review) | — | `10` |
-| 11 | [Validate](./activities/README.md#11-validate) | — | — |
-| 12 | [Strategic Review](./activities/README.md#12-strategic-review) | — | `12` |
-| 13 | [Submit for Review](./activities/README.md#13-submit-for-review) | — | — |
-| 14 | [Complete](./activities/README.md#14-complete) | — | `14` |
-
-See [activities/README.md](./activities/README.md) for per-activity orientation and flow diagrams; each activity's full definition (steps, checkpoints, transitions) lives in its YAML, served by `get_activity`.
-
 ---
 ## Orchestration Model
 
