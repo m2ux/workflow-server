@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.4.0
+version: 1.5.0
 name: Scope and Draft
 description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file.
 required: true
@@ -114,32 +114,16 @@ steps:
           - id: rewrite
             label: Rewrite approach
             description: File-level approach requires a different framing entirely.
-  - kind: checkpoint
-    id: batch-review
-    condition:
-      type: simple
-      variable: is_update_mode
-      operator: ==
-      value: true
-    message: All {file_count} files modified. Here is the change summary. Proceeding in 30s unless you intervene.
-    blocking: false
-    defaultOption: accepted
-    autoAdvanceMs: 30000
-    options:
-      - id: accepted
-        label: All changes accepted
-        description: Full set of modifications across all files is approved.
-      - id: revise-specific
-        label: Revise a specific file
-        description: One particular file requires further modification.
-      - id: redraft-all
-        label: Redraft all changes
-        description: Entire drafting pass requires restart from scratch.
   - kind: technique
     id: review-draft-yaml
     technique: review-draft-yaml
   - kind: checkpoint
     id: draft-attestation
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "!="
+      value: true
     message: "Drafted-content review: each block's rationale is shown above. Accepting in 30s unless you flag a block to revise before the audit passes."
     blocking: false
     defaultOption: attested
@@ -151,11 +135,35 @@ steps:
       - id: revise-block
         label: Revise a flagged block
         description: One or more drafted blocks require targeted revision before the audit passes.
+  - kind: checkpoint
+    id: batch-review-attested
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: ==
+      value: true
+    message: "All {file_count} files modified; block-indexed review is shown above. Attesting the change set in 30s unless you intervene."
+    blocking: false
+    defaultOption: attested
+    autoAdvanceMs: 30000
+    options:
+      - id: attested
+        label: Attest — all changes understood and intentional
+        description: Full modification set and every drafted block are approved (default — auto-accepts after 30s).
+      - id: revise-specific
+        label: Revise a specific file
+        description: One particular file requires further modification.
+      - id: revise-block
+        label: Revise a flagged block
+        description: One or more drafted blocks require targeted revision before the audit passes.
+      - id: redraft-all
+        label: Redraft all changes
+        description: Entire drafting pass requires restart from scratch.
 transitions:
   - to: quality-review
     isDefault: true
 outcome:
   - Every file the change requires is enumerated up front, closing the most common gap — work begun against an incomplete picture of what must be touched
   - The folder structure and activity flow are agreed against established patterns, so the workflow's shape is sound before any file is written
-  - The full workflow is drafted with each file individually approved, giving the user a known-good body of content rather than an unreviewed dump
+  - The full workflow is drafted with create-mode per-file review or a single update-mode batch attestation, giving the user a known-good body of content rather than an unreviewed dump
   - Every YAML file is schema-valid, so downstream loading and validation start from clean, conformant content

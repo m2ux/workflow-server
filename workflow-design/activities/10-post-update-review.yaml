@@ -1,5 +1,5 @@
 id: post-update-review
-version: 1.4.0
+version: 1.5.0
 name: Post-Update Review
 description: Post-commit compliance audit of the updated workflow against design principles and anti-patterns.
 required: true
@@ -19,8 +19,23 @@ steps:
   - kind: technique
     id: save-review-snapshot
     technique: persist-report
+  - kind: action
+    id: post-update-clean
+    condition:
+      type: simple
+      variable: review_findings_count
+      operator: ==
+      value: 0
+    actions:
+      - action: message
+        message: Post-update review complete — 0 findings; proceeding to retrospective.
   - kind: checkpoint
     id: post-update-disposition
+    condition:
+      type: simple
+      variable: review_findings_count
+      operator: ">"
+      value: 0
     message: Post-update review complete. {review_findings_count} findings identified. The update has been committed.
     options:
       - id: accept
@@ -38,6 +53,14 @@ steps:
         description: Update commit rolled back; flow re-enters intake.
         effect:
           transitionTo: intake-and-context
+transitions:
+  - to: retrospective
+    condition:
+      type: simple
+      variable: review_findings_count
+      operator: ==
+      value: 0
+    isDefault: true
 outcome:
   - The user knows whether the committed update is clean or carries new compliance debt, with severity-rated findings to decide the next move from
   - A dated compliance snapshot of the committed state exists to compare future audits against and to show the update was checked, not assumed

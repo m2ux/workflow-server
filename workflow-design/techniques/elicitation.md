@@ -27,4 +27,4 @@ The design dimension to elicit this iteration — one of purpose, activity list,
   - variables: workflow-level state-tracking name, type, description, default, required flag
   - techniques: capability description and binding sites, reusing a meta or cross-workflow technique before authoring a workflow-local one
   - rules: workflow-level cross-activity rules with their enforcement classification — structural (checkpoint / condition / validate) or guidance-only
-- Present the accumulated design after the answer so the user can track progress before the dimension is confirmed
+- Present the accumulated design after the answer so the user can track progress; confirmation is batched once after the dimension loop at `spec-confirmed`, not per dimension

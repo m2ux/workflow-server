@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.10.0
+version: 1.11.0
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -76,6 +76,30 @@ variables:
   - name: enforcement_finding_count
     type: number
     description: Count of text-only rules from audit-rule-enforcement. Gates the enforcement-confirmed checkpoint (presented only when greater than zero).
+    defaultValue: 0
+  - name: removal_count
+    type: number
+    description: Count of content removals flagged by impact-analysis. Gates the impact-and-preservation-confirmed checkpoint (presented only when greater than zero).
+    defaultValue: 0
+  - name: pass_count
+    type: number
+    description: Count of YAML files that passed schema validation in validate-and-commit.
+    defaultValue: 0
+  - name: fail_count
+    type: number
+    description: Count of YAML files that failed schema validation. Gates the validation-passed checkpoint (presented only when greater than zero).
+    defaultValue: 0
+  - name: total_count
+    type: number
+    description: Total scope-manifest items checked by scope-verification.
+    defaultValue: 0
+  - name: addressed_count
+    type: number
+    description: Scope-manifest items confirmed addressed by scope-verification.
+    defaultValue: 0
+  - name: unaddressed_count
+    type: number
+    description: Scope-manifest items still unaddressed. Gates the scope-verified checkpoint (presented only when greater than zero).
     defaultValue: 0
   - name: review_scope_confirmed
     type: boolean

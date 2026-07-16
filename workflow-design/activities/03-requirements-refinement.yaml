@@ -1,5 +1,5 @@
 id: requirements-refinement
-version: 1.5.0
+version: 1.6.0
 name: Requirements Refinement
 description: A confirmed workflow specification across its design dimensions, with the design assumptions it rests on surfaced, reconciled, and reviewed.
 required: true
@@ -8,6 +8,11 @@ techniques:
 steps:
   - kind: checkpoint
     id: design-context
+    condition:
+      type: simple
+      variable: is_update_mode
+      operator: "!="
+      value: true
     message: "Optional: provide design context before elicitation — reference workflows to model after, integration points, or operators and triggers. Skipping in 30s; elicitation can proceed without it."
     blocking: false
     defaultOption: skip-context
@@ -33,17 +38,17 @@ steps:
       - kind: technique
         id: elicit-dimension
         technique: elicitation
-      - kind: checkpoint
-        id: dimension-confirmed#{current_dimension}
-        message: "Here is the {current_dimension} I've captured. Is it accurate and complete?"
-        blocking: true
-        options:
-          - id: confirmed
-            label: Yes, that's right
-            description: This dimension is accurately captured.
-          - id: refine
-            label: Needs changes
-            description: This dimension requires additions, removals, or modifications.
+  - kind: checkpoint
+    id: spec-confirmed
+    message: "Here is the full specification across the elicited dimensions ({design_dimensions}). Is it accurate and complete?"
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes — specification is complete
+        description: The captured specification is accurate across all elicited dimensions.
+      - id: refine
+        label: Needs changes
+        description: One or more dimensions require additions, removals, or modifications before drafting.
   - kind: technique
     id: collect-assumptions
     technique:
@@ -100,4 +105,4 @@ transitions:
   - to: pattern-analysis
     isDefault: true
 outcome:
-  - A complete workflow specification — purpose, activities, checkpoints, artifacts, variables, techniques, and rules — that the user has confirmed across every dimension, so drafting proceeds from settled requirements rather than open questions
+  - A complete workflow specification — purpose, activities, checkpoints, artifacts, variables, techniques, and rules — that the user has confirmed in one batch after elicitation, so drafting proceeds from settled requirements rather than open questions

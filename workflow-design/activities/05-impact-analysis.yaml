@@ -1,5 +1,5 @@
 id: impact-analysis
-version: 1.2.0
+version: 1.3.0
 name: Impact Analysis
 description: Impact assessment of proposed changes against an existing workflow's files, transitions, and references.
 required: false
@@ -13,25 +13,36 @@ steps:
   - kind: technique
     id: impact-analysis
     technique: impact-analysis
+  - kind: action
+    id: impact-no-removals
+    condition:
+      type: simple
+      variable: removal_count
+      operator: ==
+      value: 0
+    actions:
+      - action: message
+        message: "Impact analysis complete — no content removals flagged. Blast radius is recorded; continuing to scope (intervene at scope-and-structure if the file set looks wrong)."
   - kind: checkpoint
-    id: impact-confirmed
-    message: "Here is the impact analysis: files directly modified, files indirectly affected, and any broken references detected. Does this scope look correct?"
+    id: impact-and-preservation-confirmed
+    condition:
+      type: simple
+      variable: removal_count
+      operator: ">"
+      value: 0
+    message: "Impact analysis: files directly modified, files indirectly affected, and any broken references. {removal_count} removal(s) flagged below — confirm impact scope and that each removal is intentional. Proceeding in 30s unless you intervene."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
     options:
       - id: confirmed
-        label: Yes, impact scope is correct
-        description: Impact scope is accurate and complete.
-      - id: revise
-        label: Needs revision
+        label: Impact and removals look correct
+        description: Impact scope is accurate and every flagged removal is intentional (default — auto-accepts after 30s).
+      - id: revise-impact
+        label: Revise impact scope
         description: Impact scope is incomplete or over-inclusive.
-  - kind: checkpoint
-    id: preservation-confirmed
-    message: The following content will be removed or replaced. Please confirm each removal is intentional.
-    options:
-      - id: confirmed
-        label: All removals are intentional
-        description: Every flagged removal is intentional and approved.
       - id: preserve
-        label: Preserve some content
+        label: Preserve some flagged content
         description: Some flagged content must be preserved rather than removed.
 transitions:
   - to: scope-and-draft
@@ -39,4 +50,4 @@ transitions:
 outcome:
   - Drafting knows exactly which files the change touches and how, so the edit blast radius is bounded before any content is written
   - Transition chains and technique/resource references are known-intact, so the update won't silently orphan or break the workflow's wiring
-  - No content disappears by accident — every removal is one the user consciously approved
+  - No content disappears by accident — every flagged removal is one the user consciously approved (or there were none)

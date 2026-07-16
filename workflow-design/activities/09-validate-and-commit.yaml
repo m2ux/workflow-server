@@ -1,5 +1,5 @@
 id: validate-and-commit
-version: 1.4.0
+version: 1.5.0
 name: Validate and Commit
 description: Final validation, scope verification, and README generation/update, then commit of the workflow changes on a feature branch with a pull request opened against the workflows branch (create/update); in review mode the compliance report is committed directly.
 required: true
@@ -28,13 +28,35 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
+  - kind: action
+    id: validation-clean
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: fail_count
+          operator: ==
+          value: 0
+    actions:
+      - action: message
+        message: "Schema validation passed — {pass_count} file(s), 0 failed; continuing."
   - kind: checkpoint
     id: validation-passed
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: fail_count
+          operator: ">"
+          value: 0
     message: "Schema validation results: {pass_count} passed, {fail_count} failed. Proceeding in 30s unless you intervene."
     blocking: false
     defaultOption: proceed
@@ -54,21 +76,43 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
+  - kind: action
+    id: scope-complete
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: unaddressed_count
+          operator: ==
+          value: 0
+    actions:
+      - action: message
+        message: "Scope manifest verification complete — {addressed_count}/{total_count} items addressed; continuing."
   - kind: checkpoint
     id: scope-verified
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-    message: "Scope manifest verification: {addressed_count}/{total_count} items addressed. Proceeding in 30s unless you intervene."
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: unaddressed_count
+          operator: ">"
+          value: 0
+    message: "Scope manifest verification: {addressed_count}/{total_count} items addressed ({unaddressed_count} remaining). Proceeding in 30s unless you intervene."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:
       - id: confirmed
-        label: Scope is complete
-        description: Every scope-manifest item has been addressed (default — auto-proceeds after 30s).
+        label: Scope is complete enough
+        description: Remaining gaps are acceptable for commit (default — auto-proceeds after 30s).
       - id: fix
         label: Address remaining items
         description: Some scope-manifest items remain unaddressed and require attention.

@@ -7,6 +7,12 @@ metadata:
 
 Assess the impact of proposed changes against an existing workflow: enumerate its files, classify each file's impact, verify transition-chain, reference, and variable integrity, and flag content being removed for explicit confirmation.
 
+## Outputs
+
+### removal_count
+
+Number of content removals flagged for user confirmation (diff-based and obsolete-file removals). Gates the `impact-and-preservation-confirmed` checkpoint — presented only when greater than zero.
+
 ## Protocol
 
 ### 1. Enumerate Files
@@ -35,6 +41,7 @@ Assess the impact of proposed changes against an existing workflow: enumerate it
 ### 6. Flag Removals
 
 - Inventory the material being removed across modified files (diff-based) and surface it for explicit user confirmation
+- Set `{removal_count}` to the number of distinct flagged removals (0 when the change is additive or string-only with no material deleted)
 
 ## Rules
 

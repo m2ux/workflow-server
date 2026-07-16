@@ -20,7 +20,7 @@ Definition: [`01-intake-and-context.yaml`](./01-intake-and-context.yaml). Leads 
 
 ### 03. Requirements Refinement
 
-Guided, one-dimension-at-a-time elicitation of the workflow specification: an optional design-context checkpoint, then a `forEach` over the design dimensions (purpose, activity list, model, checkpoints, artifacts, variables, techniques, rules — the list set per mode) that elicits and confirms each in turn. It then surfaces the design assumptions the spec rests on (`work-package::review-assumptions::collect`), reconciles the audit-resolvable ones autonomously (`reconcile-design-assumptions`), and interviews the user on the genuinely open ones (`work-package::review-assumptions::interview`/`record`) — mirroring work-package's elicitation-with-assumptions structure. The value is a confirmed specification plus a vetted set of design decisions, captured incrementally.
+Guided, one-dimension-at-a-time elicitation of the workflow specification: an optional design-context checkpoint (create mode only), then a `forEach` over the design dimensions (purpose, activity list, model, checkpoints, artifacts, variables, techniques, rules — the list set per mode) that elicits each in turn, followed by one batch `spec-confirmed` gate. It then surfaces the design assumptions the spec rests on (`work-package::review-assumptions::collect`), reconciles the audit-resolvable ones autonomously (`reconcile-design-assumptions`), and interviews the user on the genuinely open ones (`work-package::review-assumptions::interview`/`record`) — mirroring work-package's elicitation-with-assumptions structure. The value is a confirmed specification plus a vetted set of design decisions, captured incrementally.
 
 Definition: [`03-requirements-refinement.yaml`](./03-requirements-refinement.yaml). Skipped in review mode; leads to [Pattern Analysis](#04-pattern-analysis) (create) or [Impact Analysis](#05-impact-analysis) (update).
 
@@ -36,7 +36,7 @@ Definition: [`04-pattern-analysis.yaml`](./04-pattern-analysis.yaml). Leads to [
 
 ### 05. Impact Analysis
 
-Assess the impact of proposed changes against an existing workflow's files, transitions, and references, and flag any content that will be removed so removals are deliberate rather than silent. Update mode only.
+Assess the impact of proposed changes against an existing workflow's files, transitions, and references, and flag any content that will be removed so removals are deliberate rather than silent. When `removal_count` is zero the activity messages and continues; otherwise one soft `impact-and-preservation-confirmed` gate covers both blast radius and removals. Update mode only.
 
 Definition: [`05-impact-analysis.yaml`](./05-impact-analysis.yaml). Leads to [Scope and Draft](#06-scope-and-draft).
 
@@ -44,7 +44,7 @@ Definition: [`05-impact-analysis.yaml`](./05-impact-analysis.yaml). Leads to [Sc
 
 ### 06. Scope and Draft
 
-Define the complete file manifest and structural design up front, then run a per-file drafting and review pass over every entry in the confirmed manifest, validating each YAML file against its schema as it is written. After drafting, a block-indexed review of the full drafted set (`review-draft-yaml`) captures a draft attestation before the audit passes run. The value is a complete, pre-approved scope and a set of drafted files that are individually reviewed, attested, and schema-valid. Carries a per-file user checkpoint in create mode and a content-preservation guard in update mode.
+Define the complete file manifest and structural design up front, then run a per-file drafting and review pass over every entry in the confirmed manifest, validating each YAML file against its schema as it is written. After drafting, a block-indexed review (`review-draft-yaml`) feeds a single attestation gate — create mode `draft-attestation`, update mode `batch-review-attested` (change summary + blocks together). The value is a complete, pre-approved scope and a set of drafted files that are reviewed, attested, and schema-valid. Carries a per-file user checkpoint in create mode and a content-preservation guard in update mode.
 
 Definition: [`06-scope-and-draft.yaml`](./06-scope-and-draft.yaml). Skipped in review mode; leads to [Quality Review](#08-quality-review).
 
@@ -60,7 +60,7 @@ Definition: [`08-quality-review.yaml`](./08-quality-review.yaml). Leads to [Vali
 
 ### 09. Validate and Commit
 
-Final schema validation, scope verification, and README generation/update, then — in create/update modes — a blocking pre-commit attestation gate, a feature branch in the workflows repo (`prepare-workflow-branch`), a commit, and a pull request opened against the `workflows` branch and marked ready (`publish-workflow-pr`); workflow changes never land straight on `workflows`. In review mode it instead saves and commits the compliance report directly. The value is a workflow that is guaranteed loadable, has nothing left undone from its scope, has a human-readable entry point, and is delivered through a reviewable pull request after a deliberate sign-off.
+Final schema validation, scope verification, and README generation/update, then — in create/update modes — a blocking pre-commit attestation gate, a feature branch in the workflows repo (`prepare-workflow-branch`), a commit, and a pull request opened against the `workflows` branch and marked ready (`publish-workflow-pr`); workflow changes never land straight on `workflows`. Validation and scope soft gates are presented only when `fail_count` or `unaddressed_count` is greater than zero. In review mode it instead saves and commits the compliance report directly. The value is a workflow that is guaranteed loadable, has nothing left undone from its scope, has a human-readable entry point, and is delivered through a reviewable pull request after a deliberate sign-off.
 
 Definition: [`09-validate-and-commit.yaml`](./09-validate-and-commit.yaml). Terminal in create and review modes; leads to [Post-Update Review](#10-post-update-review) in update mode.
 
@@ -68,9 +68,9 @@ Definition: [`09-validate-and-commit.yaml`](./09-validate-and-commit.yaml). Term
 
 ### 10. Post-Update Review
 
-Automatic post-commit compliance audit of the updated workflow against the design principles and anti-patterns. It reloads the committed state from the workflow-server (not cached data), runs a scope-discipline audit (`scope-audit`) comparing the committed change set against the scope manifest to flag drift, and produces a severity-rated findings summary persisted as a review snapshot, so update work is verified against the principles after it lands. Update mode only.
+Automatic post-commit compliance audit of the updated workflow against the design principles and anti-patterns. It reloads the committed state from the workflow-server (not cached data), runs a scope-discipline audit (`scope-audit`) comparing the committed change set against the scope manifest to flag drift, and produces a severity-rated findings summary persisted as a review snapshot, so update work is verified against the principles after it lands. When `review_findings_count` is zero it proceeds straight to the retrospective; otherwise `post-update-disposition` asks whether to accept, iterate, or revert. Update mode only.
 
-Definition: [`10-post-update-review.yaml`](./10-post-update-review.yaml). The accept disposition proceeds to the [Retrospective](#11-retrospective); the fix/revert dispositions restart the workflow at [Intake and Context](#01-intake-and-context).
+Definition: [`10-post-update-review.yaml`](./10-post-update-review.yaml). Clean runs transition to the [Retrospective](#11-retrospective); the fix/revert dispositions restart the workflow at [Intake and Context](#01-intake-and-context).
 
 ---
 

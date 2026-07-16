@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.10.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits one or more existing workflows against the 15 design principles and produces a compliance report.
+> v1.11.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits one or more existing workflows against the 15 design principles and produces a compliance report.
 
 ---
 
@@ -102,11 +102,11 @@ This workflow encodes 15 design principles derived from analysis of 175+ histori
 |---|-----------|-------------|
 | 1 | Internalize before producing | [Intake and Context](./activities/README.md#01-intake-and-context) gate checkpoints |
 | 2 | Define complete scope before execution | [Scope and Draft](./activities/README.md#06-scope-and-draft) `scope-and-structure-confirmed` checkpoint |
-| 3 | One question at a time | [Requirements Refinement](./activities/README.md#03-requirements-refinement) — per-dimension checkpoints |
+| 3 | One question at a time | [Requirements Refinement](./activities/README.md#03-requirements-refinement) — per-dimension elicitation, one batch `spec-confirmed` |
 | 4 | Maximize schema expressiveness | [Quality Review](./activities/README.md#08-quality-review) `expressiveness-confirmed` checkpoint |
 | 5 | Convention over invention | [Quality Review](./activities/README.md#08-quality-review) `conformance-confirmed` checkpoint |
 | 6 | Never modify upward | Schema validation on every YAML file |
-| 7 | Confirm before irreversible changes | [Impact Analysis](./activities/README.md#05-impact-analysis) checkpoints (update mode) |
+| 7 | Confirm before irreversible changes | [Impact Analysis](./activities/README.md#05-impact-analysis) `impact-and-preservation-confirmed` when removals are flagged (update mode) |
 | 8 | Corrections must persist | Cross-cutting: tracked throughout all activities |
 | 9 | Modular over inline | [Quality Review](./activities/README.md#08-quality-review) conformance check |
 | 10 | Encode constraints as structure | [Quality Review](./activities/README.md#08-quality-review) `enforcement-confirmed` checkpoint |

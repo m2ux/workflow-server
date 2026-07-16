@@ -17,9 +17,14 @@ Total number of items in `{scope_manifest}`. Interpolated into the scope-verifie
 
 Number of scope-manifest items confirmed addressed. Interpolated into the scope-verified checkpoint message.
 
+### unaddressed_count
+
+Number of scope-manifest items still unaddressed (`{total_count}` − `{addressed_count}`). Gates the scope-verified checkpoint — presented only when greater than zero.
+
 ## Protocol
 
 ### 1. Verify Scope Manifest
 
 - For every item in `{scope_manifest}`, check file presence, the performed action (create/modify/remove), and a content match against the reviewed draft
 - Flag any item that remains unaddressed
+- Set `{unaddressed_count}` to the count of unaddressed items (0 when the manifest is fully addressed)
