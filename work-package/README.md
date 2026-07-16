@@ -169,59 +169,6 @@ start-work-package → design-philosophy → implementation-analysis → plan-pr
 
 ---
 
-## Artifact Prefixing
-
-Each review and documentation activity is assigned a server-computed `artifactPrefix` matching its activity number. Techniques produce bare artifact names (e.g., `code-review.md`) and the prefix is prepended at write time.
-
-**Convention:**
-
-```
-{artifactPrefix}-{artifact-name}.md
-```
-
-**Examples:**
-
-| Activity | Prefix | Bare Name | Final Name |
-|----------|--------|-----------|------------|
-| [Lean-Coding Audit](./activities/README.md#09-lean-coding-audit) | `09` | `debt-ledger.md` | `09-debt-ledger.md` |
-| [Post-Implementation Review](./activities/README.md#10-post-implementation-review) | `10` | `code-review.md` | `10-code-review.md` |
-| [Post-Implementation Review](./activities/README.md#10-post-implementation-review) | `10` | `test-suite-review.md` | `10-test-suite-review.md` |
-| [Strategic Review](./activities/README.md#12-strategic-review) | `12` | `strategic-review-1.md` | `12-strategic-review-1.md` |
-| [Strategic Review](./activities/README.md#12-strategic-review) | `12` | `architecture-summary.md` | `12-architecture-summary.md` |
-| [Complete](./activities/README.md#14-complete) | `14` | `COMPLETE.md` | `14-COMPLETE.md` |
-
-This convention ensures artifacts are naturally sorted by workflow phase when listed in the planning folder.
-
----
-
-## Feedback Loops
-
-The workflow contains seven feedback loops that enable iterative quality improvement. Each loop is triggered by a checkpoint or decision gate.
-
-| From | To | Purpose |
-|------|----|---------|
-| [Assumptions Review](./activities/README.md#07-assumptions-review) (07) | [Assumptions Review](./activities/README.md#07-assumptions-review) (07) | Minor corrections — re-prepare and re-post plan and assumptions comment |
-| [Assumptions Review](./activities/README.md#07-assumptions-review) (07) | [Codebase Comprehension](./activities/README.md#codebase-comprehension-optional) (15) | Stakeholder feedback reveals codebase understanding gaps — deepen comprehension before revising plan |
-| [Assumptions Review](./activities/README.md#07-assumptions-review) (07) | [Plan & Prepare](./activities/README.md#06-plan--prepare) (06) | Stakeholder feedback requires significant approach revision |
-| [Post-Implementation Review](./activities/README.md#10-post-implementation-review) (10) | [Implement](./activities/README.md#08-implement) (08) | Critical blocker found during review requires code fix before proceeding |
-| [Strategic Review](./activities/README.md#12-strategic-review) (12) | [Plan & Prepare](./activities/README.md#06-plan--prepare) (06) | Significant rework needed — changes are not minimal or focused |
-| [Submit for Review](./activities/README.md#13-submit-for-review) (13) | [Plan & Prepare](./activities/README.md#06-plan--prepare) (06) | Reviewer requested significant changes requiring re-planning |
-| [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) (03) | [Requirements Elicitation](./activities/README.md#03-requirements-elicitation-optional) (03) | Elicitation incomplete — self-loop for further stakeholder discussion |
-
-```mermaid
-graph LR
-    assumptionsReview["07 Assumptions Review"] -->|"minor corrections"| assumptionsReview
-    assumptionsReview -->|"needs comprehension"| codebaseComprehension["15 Codebase Comprehension"]
-    assumptionsReview -->|"significant revision"| planPrepare["06 Plan and Prepare"]
-    codebaseComprehension -->|"comprehension complete"| planPrepare
-    postImplReview["10 Post-Impl Review"] -->|"critical blocker"| implement["08 Implement"]
-    strategicReview["12 Strategic Review"] -->|"rework needed"| planPrepare
-    submitReview["13 Submit for Review"] -->|"significant changes"| planPrepare
-    reqElicit["03 Requirements Elicitation"] -->|"incomplete"| reqElicit
-```
-
----
-
 ## Appendix: Artifact Locations
 
 | Location | Path | Purpose |
