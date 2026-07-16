@@ -11,7 +11,7 @@ Present DCO-compliant merge guidance for the PR, branching on whether the repo a
 
 ### squash_merge_supported
 
-Boolean — true when the repo allows squash merges (from [detect-merge-strategy](./detect-merge-strategy.md))
+Boolean — true when the repo allows squash merges
 
 ### branch_name
 

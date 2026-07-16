@@ -1,5 +1,5 @@
 id: intake-and-context
-version: 1.1.0
+version: 1.2.0
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 required: true
@@ -36,18 +36,18 @@ steps:
       variable: is_review_mode
       operator: ==
       value: true
-    message: Compliance review is scoped to workflow '{target_workflow_id}'. Is this the correct target?
+    message: "Compliance review is scoped to workflow id(s): {target_workflow_ids}. Confirm this target set?"
     blocking: true
     options:
       - id: confirm-review-target
-        label: Yes — audit this workflow
-        description: Target confirmed; flow continues with the current `target_workflow_id`.
+        label: Yes — audit this target set
+        description: Target set confirmed; review-mode quality-review iterates `target_workflow_ids` (binding each to `target_workflow_id` per iteration).
         effect:
           setVariable:
             review_scope_confirmed: true
       - id: wrong-review-target
-        label: No — wrong target
-        description: Target rejected; checkpoint remains blocking until a correct `target_workflow_id` is supplied.
+        label: No — wrong target set
+        description: Target set rejected; checkpoint remains blocking until a correct `target_workflow_ids` list is supplied.
         effect:
           setVariable:
             review_scope_confirmed: false

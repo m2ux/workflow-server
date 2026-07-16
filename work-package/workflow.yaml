@@ -58,7 +58,7 @@ techniques:
 variables:
   - name: target_path
     type: string
-    description: Path to the working directory where edits, branch creation, builds, and PR operations occur. As of work-package 3.10, this is a dedicated git worktree of the component repo at the canonical path '~/projects/work/{component_name}/{wp-slug}/' — NOT the component's checkout inside the reference monorepo. Set by start-work-package's compute-canonical-target-path step after the work-package slug is known. All downstream activities (cargo-operations, manage-git, validate, strategic-review, etc.) operate on this path.
+    description: Path to the working directory where edits, branch creation, builds, and PR operations occur. As of work-package 3.10, this is a dedicated git worktree of the component repo at the canonical path '~/projects/work/{component_name}/{wp-slug}/' — NOT the component's checkout inside the reference monorepo.
   - name: reference_path
     type: string
     description: Path to the reference checkout used for codebase comprehension, GitNexus indexing, and code-resolvable assumption analysis. When the component is a submodule of a monorepo, this is the monorepo root; when the component is a standalone repo, this equals the component's primary checkout. NOT used for edits — edits happen in target_path. Resolved by start-work-package's resolve-target step from the path the user originally pointed at. No default — absence drives the start-work-package exists gate on reference-dependent steps.
@@ -68,7 +68,7 @@ variables:
     defaultValue: ""
   - name: worktree_created
     type: boolean
-    description: "True once start-work-package's create-component-worktree step has successfully created (or reused) a worktree at target_path. Drives the remove-worktree gate in complete: only worktrees this workflow created get cleaned up."
+    description: "True when a worktree at target_path was created or reused by this workflow run (only those worktrees are eligible for cleanup)."
     defaultValue: false
   - name: planning_folder_path
     type: string
@@ -85,10 +85,10 @@ variables:
     description: Issue tracking platform (github|jira)
   - name: jira_project
     type: string
-    description: How the Jira project was resolved during issue creation ('selected' from the project list, or 'specified' directly by the user). Set by start-work-package's jira-project-selection checkpoint.
+    description: How the Jira project was resolved during issue creation ('selected' from the project list, or 'specified' directly by the user).
   - name: is_review_mode
     type: boolean
-    description: True when the work package reviews an existing PR instead of producing a new implementation. Detected agent-side by start-work-package's detect-review-mode step and confirmed via the review-mode-detection checkpoint; gates the review-mode steps across the workflow.
+    description: True when the work package reviews an existing PR instead of producing a new implementation.
   - name: pr_number
     type: string
     description: Pull request number
@@ -112,14 +112,14 @@ variables:
     defaultValue: false
   - name: needs_comprehension
     type: boolean
-    description: Whether codebase comprehension is needed. Always true after design-philosophy (comprehension is mandatory). May be re-set to true by assumptions-review if stakeholder feedback requires deeper understanding.
+    description: Whether codebase comprehension is needed (mandatory after design-philosophy; may be re-requested after stakeholder feedback).
     defaultValue: true
   - name: problem_complexity
     type: string
-    description: Problem complexity assessed during design-philosophy (simple|moderate|complex). Drives ADR creation.
+    description: Problem complexity assessed during design-philosophy (simple|moderate|complex).
   - name: project_type
     type: string
-    description: Detected project type (e.g. rust-substrate); produced by project-type-detection and gates rust-substrate-specific validation steps.
+    description: Detected project type (e.g. rust-substrate); used to gate rust-substrate-specific validation steps.
   - name: elicitation_complete
     type: boolean
     description: Whether requirements elicitation is finished
@@ -130,7 +130,7 @@ variables:
     defaultValue: false
   - name: validation_results
     type: object
-    description: Aggregate validation envelope emitted by cargo-operations::run-suite — { check_status, clippy_status, test_status, fmt_status, validation_passed }. The validate activity reads its fields by dotted path (e.g. validation_results.validation_passed) to drive the fix-revalidate loop.
+    description: Aggregate validation envelope — { check_status, clippy_status, test_status, fmt_status, validation_passed }.
   - name: review_passed
     type: boolean
     description: Whether strategic review passed
@@ -149,7 +149,7 @@ variables:
     defaultValue: false
   - name: awaiting_review
     type: boolean
-    description: Drives submit-for-review's await-review hold loop; while true the review-received checkpoint is re-presented until feedback arrives.
+    description: True while submit-for-review is waiting for reviewer feedback.
     defaultValue: false
   - name: needs_issue_creation
     type: boolean
@@ -231,14 +231,14 @@ variables:
     defaultValue: false
   - name: has_resolvable_assumptions
     type: boolean
-    description: Whether code-resolvable assumptions exist that can be validated through targeted analysis. Drives the assumption reconciliation loop.
+    description: Whether code-resolvable assumptions exist that can be validated through targeted analysis.
     defaultValue: false
   - name: research_candidates
     type: array
-    description: "Inventory of open research gaps surfaced after synthesis, each triaged as reconcilable-by-research or irreconcilable, with rationale and (for irreconcilable candidates) a handoff target. Drives the research reconciliation loop and the full-picture presentation at the research-convergence checkpoint. Sub-shape per entry: { id, statement, status (Reconcilable|Resolved|Partially Resolved|Irreconcilable), rationale, handoff (stakeholder|code-analysis|out-of-scope, irreconcilable only) }."
+    description: "Inventory of open research gaps surfaced after synthesis, each triaged as reconcilable-by-research or irreconcilable, with rationale and (for irreconcilable candidates) a handoff target. Sub-shape per entry: { id, statement, status (Reconcilable|Resolved|Partially Resolved|Irreconcilable), rationale, handoff (stakeholder|code-analysis|out-of-scope, irreconcilable only) }."
   - name: has_reconcilable_research
     type: boolean
-    description: "Whether open research-reconcilable candidates remain — gaps further knowledge-base or web research could close. Drives the research reconciliation loop: true while another research pass is warranted, false once research converges (only irreconcilable candidates, or none, remain)."
+    description: "Whether open research-reconcilable candidates remain — gaps further knowledge-base or web research could close. True while another research pass is warranted; false once research converges (only irreconcilable candidates, or none, remain)."
     defaultValue: false
   - name: has_open_questions
     type: boolean
@@ -266,11 +266,11 @@ variables:
     defaultValue: false
   - name: strategic_fixes_selective
     type: boolean
-    description: Whether the user chose to fix only selected strategic-review findings (by priority) rather than all of them. Set by the strategic-review review-findings checkpoint's selective-fixes option alongside needs_strategic_fixes; a structural record of the selective-fix intent for the plan-prepare re-loop.
+    description: Whether the user chose to fix only selected strategic-review findings (by priority) rather than all of them.
     defaultValue: false
   - name: strategic_findings_deferred
     type: boolean
-    description: Whether the user chose to defer strategic-review findings (note them for later but proceed to submission now). Set by the strategic-review review-findings checkpoint's defer-findings option alongside review_passed; differentiates a deliberate defer from a clean accept.
+    description: Whether the user chose to defer strategic-review findings (note them for later but proceed to submission now).
     defaultValue: false
   - name: needs_cleanup
     type: boolean
@@ -326,21 +326,21 @@ variables:
     defaultValue: false
   - name: recommended_strategic_option
     type: string
-    description: Agent-recommended action after strategic review analysis (fix-findings|acceptable). Set by analyze-strategic-findings step.
+    description: Agent-recommended action after strategic review analysis (fix-findings|acceptable).
   - name: squash_merge_supported
     type: boolean
-    description: "True when the target repo allows squash merges (allow_squash_merge=true from GitHub API). Detected during start-work-package. Drives DCO merge strategy: squash-merge path when true, unsigned-commit path when false."
+    description: "True when the target repo allows squash merges (allow_squash_merge=true from GitHub API). When true, DCO uses the squash-merge path; otherwise the unsigned-commit path."
     defaultValue: false
   - name: context_scope
     type: string
-    description: "Provenance scope of AI-generated code in this work package. Set during research phase. Values: repo-only (all context from repository), web-retrieval (web sources used), mixed (both). Recorded in the provenance log and PR description."
+    description: "Provenance scope of AI-generated code in this work package. Values: repo-only (all context from repository), web-retrieval (web sources used), mixed (both). Recorded in the provenance log and PR description."
     defaultValue: repo-only
   - name: recommended_outcome
     type: string
-    description: Agent-recommended PR review outcome (approved|minor-changes|significant-changes). Set by analyze-review-outcome step.
+    description: Agent-recommended PR review outcome (approved|minor-changes|significant-changes).
   - name: current_branch
     type: string
-    description: Active git branch in the target repo at the moment a step is executing. Set after manage-git checks out a branch; read by checkpoints and PR-creation steps that reference the branch by name.
+    description: Active git branch in the target repo at the moment a step is executing.
     defaultValue: ""
   - name: existing_pr_number
     type: string
@@ -352,7 +352,7 @@ variables:
     defaultValue: ""
   - name: comprehension_artifact
     type: string
-    description: Absolute path to the comprehension artifact for the current codebase area, set by create-comprehension-artifact and read by downstream activities that reference comprehension findings.
+    description: Absolute path to the comprehension artifact for the current codebase area.
     defaultValue: ""
   - name: block_path
     type: string
@@ -372,22 +372,22 @@ variables:
     defaultValue: ""
   - name: implementation_plan
     type: object
-    description: "Implementation plan produced by plan-prepare. Sub-shape: { task_count: number — count of tasks in the plan; tasks: array of { id: string, description: string, status: string } }. Fields actually interpolated in messages today: task_count, tasks[].id, tasks[].description. Additional fields are tolerated."
+    description: "Implementation plan. Sub-shape: { task_count: number; tasks: array of { id: string, description: string, status: string } }. Additional fields are tolerated."
   - name: strategic_findings_summary
     type: string
-    description: Concise multi-line summary of strategic-review findings (severity tag + one-line description per finding). Empty string when no findings. Interpolated into the strategic-review review-findings checkpoint message so the user sees findings alongside the options without an extra round-trip. Set by analyze-strategic-findings.
+    description: Concise multi-line summary of strategic-review findings (severity tag + one-line description per finding). Empty string when no findings.
     defaultValue: ""
   - name: review_comments_summary
     type: string
-    description: Concise multi-line summary of reviewer comments captured during submit-for-review (severity tag + one-line description per comment, grouped by reviewer when multiple). Empty string when no comments. Interpolated into the submit-for-review review-outcome checkpoint message so the user sees the comments alongside the options without an extra round-trip. Set by analyze-review-outcome.
+    description: Concise multi-line summary of reviewer comments captured during submit-for-review (severity tag + one-line description per comment, grouped by reviewer when multiple). Empty string when no comments.
     defaultValue: ""
   - name: has_uncertain_symbols
     type: boolean
-    description: True when the current implement task's self-review flagged one or more symbols whose provenance could not be confirmed. Drives the symbol-provenance-confirmed checkpoint condition — when false, the loop continues without prompting the user. Set by the implement task-cycle self-review step.
+    description: True when the current implement task's self-review flagged one or more symbols whose provenance could not be confirmed.
     defaultValue: false
   - name: uncertain_symbols
     type: string
-    description: "Multi-line list of symbols flagged by the implement task-cycle self-review whose provenance could not be confirmed (one per line: symbol name + file/line context). Empty string when has_uncertain_symbols is false. Interpolated into the symbol-provenance-confirmed checkpoint message."
+    description: "Multi-line list of symbols flagged by the implement task-cycle self-review whose provenance could not be confirmed (one per line: symbol name + file/line context). Empty string when has_uncertain_symbols is false."
     defaultValue: ""
   - name: body_conforms
     type: boolean
@@ -411,14 +411,14 @@ variables:
     defaultValue: ""
   - name: gitnexus_indexed
     type: boolean
-    description: Whether reference_path has a usable GitNexus index. Set by start-work-package's analyze-reference-with-gitnexus step. Gates GitNexus-dependent steps and protocol phases across the workflow (e.g., post-impl-review's gitnexus-detect-changes-preflight step, implement-task's pre-edit-impact-check / post-edit-verification phases).
+    description: Whether reference_path has a usable GitNexus index (gates GitNexus-dependent steps and protocol phases).
     defaultValue: false
   - name: problem_type
     type: string
-    description: Problem or inventive-goal classification set during design-philosophy (e.g. defect, inventive-improvement). Interpolated into the classification-and-path-confirmed checkpoint message.
+    description: Problem or inventive-goal classification (e.g. defect, inventive-improvement).
   - name: pr_url
     type: string
-    description: URL of the pull request created during start-work-package. Captured alongside pr_number and recorded on the linked issue.
+    description: URL of the pull request for this work package (alongside pr_number).
     defaultValue: ""
   - name: discovered_path
     type: string
@@ -428,15 +428,15 @@ variables:
     description: Tracker issue/ticket title; used by naming-conventions to derive the branch name.
   - name: audit_confirmed
     type: boolean
-    description: True once the user has resolved the lean-coding-audit's audit-findings-confirmed gate (accept, apply-simplifications, or dispute). Marks the audit findings as reviewed before the pipeline proceeds to post-impl-review.
+    description: True once the user has resolved the lean-coding-audit findings gate (accept, apply-simplifications, or dispute).
     defaultValue: false
   - name: needs_simplification
     type: boolean
-    description: Whether accepted simplifications remain to apply at the audit-findings-confirmed gate. Drives the simplification-apply-cycle loop in lean-coding-audit; re-assessed each iteration after the safety floor is re-validated and cleared once the re-score surfaces no further accepted simplifications.
+    description: Whether accepted simplifications remain to apply at the audit-findings-confirmed gate.
     defaultValue: false
   - name: has_debt_markers
     type: boolean
-    description: Whether the harvest-debt step found at least one ponytail marker in the tree. Set by lean-coding-audit's harvest-debt step (ponytail/harvest-debt output); gates the report-gain step.
+    description: Whether at least one ponytail debt marker was found in the tree.
     defaultValue: false
   - name: stealth_mode
     type: boolean
@@ -448,7 +448,7 @@ variables:
     defaultValue: origin
   - name: push_remote_url
     type: string
-    description: URL the push remote resolves to, captured by manage-git::verify-remote-private and interpolated into the stealth-mode isolation confirmation.
+    description: URL the push remote resolves to (used in stealth-mode isolation confirmation).
     defaultValue: ""
   - name: unsigned_commits_in_pr
     type: boolean

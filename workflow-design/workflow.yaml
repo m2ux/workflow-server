@@ -63,7 +63,10 @@ variables:
     defaultValue: false
   - name: target_workflow_id
     type: string
-    description: ID of the existing workflow to modify (update mode) or to audit (review mode)
+    description: ID of the existing workflow to modify (update mode) or the current review-mode audit target (bound per iteration when reviewing multiple workflows)
+  - name: target_workflow_ids
+    type: array
+    description: Ordered list of workflow ids to audit in review mode (one or more). Single-target review uses a one-element list; update mode leaves this unset and uses target_workflow_id.
   - name: workflow_id
     type: string
     description: The ID of the workflow being created or updated

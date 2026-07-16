@@ -11,13 +11,13 @@ Ensure public/exported APIs in the diff carry inline documentation.
 
 ### changed_files
 
-The diff's changed files, scoping which public/exported APIs are enumerated for doc-comment coverage. The applied [public-api-enum](../../../meta/techniques/gitnexus-operations/public-api-enum.md) op derives the changed-symbol set from this diff.
+The diff's changed files, scoping which public/exported APIs are enumerated for doc-comment coverage.
 
 ## Outputs
 
 ### documented_apis
 
-The public/exported APIs in the diff, each verified to carry inline documentation — missing doc comments added in place. The enumerated `public_api_symbols` from [public-api-enum](../../../meta/techniques/gitnexus-operations/public-api-enum.md) define the work list this op brings to full doc-comment coverage.
+The public/exported APIs in the diff, each verified to carry inline documentation — missing doc comments added in place. The enumerated `public_api_symbols` define the work list this op brings to full doc-comment coverage.
 
 ## Protocol
 

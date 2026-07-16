@@ -27,15 +27,20 @@ The id of the workflow being created or updated.
 
 ### target_workflow_id
 
-The id of the existing workflow to modify (update) or audit (review); unset in create mode.
+The id of the existing workflow to modify (update), or the primary/current audit target (review). In multi-target review this is the first id in `{target_workflow_ids}` at intake and is rebound per quality-review iteration; unset in create mode.
+
+### target_workflow_ids
+
+Ordered list of workflow ids to audit in review mode. One element for single-target review; two or more when the request names multiple workflows (e.g. `work-package` and `workflow-design`). Unset in create/update modes.
 
 ## Protocol
 
 ### 1. Load Baseline
 
-- For update or review mode, load the committed workflow catalog via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) and source the target's definition for `{target_workflow_id}` from the workflow-server context the orchestrator supplies — the executing worker does not call `get_workflow` directly
-- Build a structural inventory of the target: file counts and entity counts (activities, techniques, resources, checkpoints, transitions)
-- Present the loaded structure to the user as the scope-confirmation surface
+- For update or review mode, load the committed workflow catalog via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) and source each target's definition from the workflow-server context the orchestrator supplies — the executing worker does not call `get_workflow` directly
+- In review mode, resolve `{target_workflow_ids}` from the request (one or more ids) and set `{target_workflow_id}` to the first element for singular bind sites; in update mode set `{target_workflow_id}` only
+- Build a structural inventory of each target: file counts and entity counts (activities, techniques, resources, checkpoints, transitions)
+- Present the loaded structure(s) to the user as the scope-confirmation surface
 
 ### 2. Parse Change Request
 
@@ -45,4 +50,4 @@ The id of the existing workflow to modify (update) or audit (review); unset in c
 
 - Accept the `{user_description}` and summarize key design intent — purpose, domain, rough activity count, and constraints
 - Set `{operation_type}` and the corresponding `{is_update_mode}` / `{is_review_mode}` flags: an existing-workflow reference for a change signals update, for an audit signals review, otherwise create
-- Present the classification and distilled intent for confirmation
+- Present the classification, target set (`{target_workflow_ids}` in review), and distilled intent for confirmation
