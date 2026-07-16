@@ -28,6 +28,6 @@ ID of the checkpoint being yielded. Use the activity YAML `id` as written for on
 
 ## Rules
 
-### Replay is continue-not-error
+### replay-is-continue-not-error
 
 `status: "replayed"` means continue under the stored decision. It is not a fault, not a missing active checkpoint, and not a reason to stop the activity.
