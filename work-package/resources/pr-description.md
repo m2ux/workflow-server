@@ -2,7 +2,7 @@
 name: pr-description
 description: PR description templates and link-row rendering forms; composition and conformance rules live on the update-pr technique.
 metadata:
-  version: 1.4.0
+  version: 1.5.0
   order: 12
   legacy_id: 12
 ---
@@ -16,7 +16,7 @@ Apply this guide to all PRs that introduce features, fix bugs, refactor, make ar
 
 Optional sections (add when applicable): `## Migration Notes` (required steps for consumers, if breaking changes), `## Screenshots` (visual/UI changes).
 
-**Template (Initial):**
+### Template (Initial)
 
 ```markdown
 ## Summary
@@ -68,7 +68,7 @@ Optional sections (add when applicable): `## Migration Notes` (required steps fo
 - [ ] Ready for review
 ```
 
-**Template (Final):**
+### Template (Final)
 
 ```markdown
 ## Summary
