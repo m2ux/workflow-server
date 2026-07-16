@@ -18,7 +18,7 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
 
    Omit `planning_folder` for the meta bootstrap when the slug isn't known yet: the server mints a transitional slug from a UUID and parks the session in `os.tmpdir()`, and `dispatch_child` later supplies the real slug and promotes the session to its workspace folder.
 
-   `context_mode` is decided by topology at `start_session` / `dispatch_child`: **solo** (this same agent context runs every activity — no worker spawning) → pass `context_mode: "persistent"` and ONE canonical `agent_id` for the whole walk so already-delivered content collapses to unchanged-references; **dispatch** (per-activity workers) → omit or `"fresh"` — see [dispatch-activity](../techniques/workflow-engine/dispatch-activity.md#workers-need-full-delivery). Bare vs `#section` `get_resource` choice is [agent-conduct](../techniques/agent-conduct.md#operational-discipline-resource-section-or-whole) (activity-time), not bootstrap.
+   `context_mode` is decided by topology at `start_session` / `dispatch_child`: **solo** (this same agent context runs every activity — no worker spawning) → pass `context_mode: "persistent"` and ONE canonical `agent_id` for the whole walk so already-delivered content collapses to unchanged-references; **dispatch** (per-activity workers) → omit or `"fresh"`.
 
 3. `get_workflow { session_index }`. The response carries the workflow's resolved operations bundle ahead of the workflow definition (separated by `\n\n---\n\n`). Follow the operations and rules in the bundle to drive execution.
 
