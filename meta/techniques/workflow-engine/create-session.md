@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Dispatch a fresh client workflow as a child of the meta session.
+Dispatch a fresh client workflow as a child of the meta session via `dispatch_child`.
 
 ## Inputs
 
@@ -35,4 +35,4 @@ The canonical absolute path of the planning folder, as resolved by the server un
 
 1. Call `dispatch_child { session_index: {parent_session_index}, workflow_id: {workflow_id}, agent_id: 'orchestrator', context_mode: 'persistent', planning_slug: {client_planning_slug} }`; capture the returned `{session_index}` for use in all subsequent calls inside the child workflow, and the returned `{planning_folder_path}` (the server-resolved absolute folder under its workspace) as the single artifact location. The server appends the child under `parent.triggeredWorkflows[N].state` and embeds the full child SessionFile inline; the agent does not deal with separate child folders, and does not compose the folder path itself.
 
-   Meta's preferred client walk is **solo**: one agent context executes every client activity via [execute-activity](./execute-activity.md). `context_mode: "persistent"` + canonical `agent_id: 'orchestrator'` enable reference delivery across activities. Do **not** pass `persistent` if you will instead spawn disposable per-activity workers ([dispatch-activity](./dispatch-activity.md)::workers-need-full-delivery) — omit `context_mode` or pass `"fresh"` on that path.
+   Meta's preferred client walk is **solo**: one agent context executes every client activity via [execute-activity](./execute-activity.md). `context_mode: "persistent"` + canonical `agent_id: 'orchestrator'` enable reference delivery across activities. Do **not** pass `persistent` if you will instead spawn disposable per-activity workers (`workflow-engine.dispatch-activity.workers-need-full-delivery`) — omit `context_mode` or pass `"fresh"` on that path.

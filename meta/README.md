@@ -11,7 +11,7 @@ The meta workflow is the structural home for the orchestration logic that used t
 **Key characteristics:**
 
 - Excluded from `list_workflows` — not a user-facing workflow.
-- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) calls `start_session({ workflow_id: "meta", agent_id: "orchestrator" })` directly and saves the returned `session_index`. There is no separate START / RESUME branching in bootstrap — `discover-session` owns target identification and saved-session matching.
+- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: schema fetch → `start_session` → `get_workflow`. Ongoing delivery policy lives in the operations bundle (`workflow-engine::start-session` and related rules). There is no separate START / RESUME branching in bootstrap — `discover-session` owns target identification and saved-session matching.
 - Universal techniques resolve for any session via the loader's workflow-local → `meta` fallback chain.
 - State persistence is server-managed. Every authenticated tool call atomically writes `session.json` + `.session-token` (seal) into the planning folder, so there are no agent-side persist or restore steps.
 
@@ -127,7 +127,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 
 | Resource ID | Resource | Purpose |
 |-------------|----------|---------|
-| `bootstrap-protocol` | [Bootstrap Protocol](./resources/bootstrap-protocol.md) | Pre-session navigation primer — load schemas, then `start_session({ workflow_id: "meta", agent_id: "orchestrator" })`. The meta workflow does the rest. |
+| `bootstrap-protocol` | [Bootstrap Protocol](./resources/bootstrap-protocol.md) | Pre-session stub served by `discover` — schema fetch, `start_session`, `get_workflow`. Ongoing delivery policy is in the operations bundle. |
 | `activity-worker-prompt` | [Activity Worker Prompt](./resources/activity-worker-prompt.md) | Template prompt for spawning an activity-worker sub-agent (substitutes `session_index`). |
 | `workflow-orchestrator-prompt` | [Workflow Orchestrator Prompt](./resources/workflow-orchestrator-prompt.md) | Template prompt for spawning a workflow-orchestrator sub-agent (substitutes `session_index`). |
 | `session-summary-template` | [Session Summary Template](./resources/session-summary-template.md) | Skeleton for the markdown session summary composed by `generate-summary` at workflow close. |
@@ -166,7 +166,7 @@ workflows/meta/
 │   ├── scatter-gather.md                    # Strategy technique — forEach fan-out / gather
 │   ├── workflow-engine/                     # Session lifecycle, dispatch, transitions, checkpoint protocol
 │   │   ├── TECHNIQUE.md                     #   group index / base contract
-│   │   └── {op}.md                          #   one file per operation (create-session, dispatch-activity, ...)
+│   │   └── {op}.md                          #   one file per operation (start-session, create-session, dispatch-activity, ...)
 │   ├── version-control/
 │   │   ├── TECHNIQUE.md
 │   │   └── {op}.md
@@ -178,7 +178,7 @@ workflows/meta/
 │   └── harness-compat/
 └── resources/
     ├── README.md                            # Resource index
-    ├── bootstrap-protocol.md                # Pre-session navigation primer
+    ├── bootstrap-protocol.md                # Pre-session stub (discover)
     ├── activity-worker-prompt.md
     ├── workflow-orchestrator-prompt.md
     ├── session-summary-template.md

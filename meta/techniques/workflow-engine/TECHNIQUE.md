@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 6.2.0
+  version: 6.3.0
 ---
 
 ## Capability
 
-Operations and rules for executing a workflow's structured flow — session lifecycle (list/match/scan/create), activity execution (solo [execute-activity](./execute-activity.md) or dispatch [dispatch-activity](./dispatch-activity.md)), transition evaluation, post-activity commit, and the checkpoint protocol (yield/present/respond/resume).
+Operations and rules for executing a workflow's structured flow — session lifecycle (list/match/scan/create/start), activity execution (solo [execute-activity](./execute-activity.md) or dispatch [dispatch-activity](./dispatch-activity.md)), transition evaluation, post-activity commit, and the checkpoint protocol (yield/present/respond/resume).
 
 ## Rules
 
@@ -19,7 +19,7 @@ Check `_meta.validation` in each response. Warnings are advisory but should be a
 
 ### solo-canonical-agent-id
 
-Under `context_mode: "persistent"`, use ONE canonical `agent_id` for the whole walk (including resume). The delivery ledger is keyed by `agent_id`; a different id starts from an empty ledger and re-delivers in full. Never set `context_mode: "persistent"` on a worker-dispatched session — see [dispatch-activity](./dispatch-activity.md)::workers-need-full-delivery. Meta's preferred client path is solo via [execute-activity](./execute-activity.md) + [create-session](./create-session.md) (`persistent` + `agent_id: orchestrator`).
+Under `context_mode: "persistent"`, use ONE canonical `agent_id` for the whole walk (including resume). The delivery ledger is keyed by `agent_id`; a different id starts from an empty ledger and re-delivers in full. Worker-dispatched sessions follow `workflow-engine.dispatch-activity.workers-need-full-delivery`. Meta's preferred client path is solo via [execute-activity](./execute-activity.md) + [create-session](./create-session.md) (`persistent` + `agent_id: orchestrator`).
 
 ### resource-loading-via-tool
 
@@ -28,3 +28,7 @@ Resource refs returned in operation bodies (e.g., [activity-worker-prompt](../..
 ### variable-mutation-source
 
 Variables mutate from two sources only: checkpoint option effects (`setVariable`) and worker `activity_complete` results (`variables-changed`). Never mutate state through ad-hoc reasoning.
+
+### force-full-after-summarization
+
+When this agent context no longer holds previously delivered content (e.g. after summarization), force full re-delivery with `get_activity { bundle: "full" }`, `get_technique { full: true }`, or `get_resource { full: true }`. Unchanged-references are valid only for content this same agent already received.
