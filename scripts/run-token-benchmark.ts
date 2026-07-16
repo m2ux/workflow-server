@@ -29,6 +29,8 @@
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { parse as parseYaml } from 'yaml';
+import { extractResourceIds } from '../src/utils/resource-ref.js';
 
 type ContextMode = 'fresh' | 'persistent';
 
@@ -75,30 +77,15 @@ const HOT_RESOURCES = [
   'review-mode#review-type-selection',
 ] as const;
 
-/** Resource ids from markdown links (bare slug or resources/ path) and YAML resources arrays. */
-function extractResourceIds(text: string): string[] {
-  const ids = new Set<string>();
-  for (const m of text.matchAll(/\bresources\s*:\s*\[([^\]]*)\]/gi)) {
-    for (const part of m[1]!.split(/[,\n]/)) {
-      const id = part.replace(/["'\s]/g, '');
-      if (/^[a-z0-9][a-z0-9_/-]*(?:#[a-z0-9][a-z0-9_-]*)?$/i.test(id)) ids.add(id);
-    }
+/** Resource ids already delivered on get_activity's sibling `resources` map — skip re-fetch. */
+function bundledResourceIdsFromOps(text: string): Set<string> {
+  const opsYaml = text.split('\n\n---\n\n')[0] ?? '';
+  try {
+    const ops = parseYaml(opsYaml) as { resources?: Record<string, unknown> } | null;
+    return new Set(Object.keys(ops?.resources ?? {}));
+  } catch {
+    return new Set();
   }
-  for (const m of text.matchAll(/\]\(([^)]+)\)/g)) {
-    let href = m[1]!.trim();
-    if (href.startsWith('http') || href.startsWith('#') || href.includes('://')) continue;
-    href = href.replace(/\.md$/i, '');
-    const resourcesIdx = href.lastIndexOf('resources/');
-    if (resourcesIdx >= 0) {
-      ids.add(href.slice(resourcesIdx + 'resources/'.length));
-      continue;
-    }
-    // Composed techniques often emit bare workflow-local slugs: review-mode#section
-    if (/^[a-z0-9][a-z0-9_/-]*(?:#[a-z0-9][a-z0-9_-]*)?$/i.test(href) && !href.includes('::')) {
-      ids.add(href);
-    }
-  }
-  return [...ids];
 }
 
 async function main(): Promise<void> {
@@ -172,14 +159,18 @@ async function main(): Promise<void> {
       const sessionIndex = String(args.session_index ?? '');
       fetchingResources = true;
       try {
+        const alreadyBundled = name === 'get_activity' ? bundledResourceIdsFromOps(text) : new Set<string>();
         const fromContent = extractResourceIds(text);
         for (const resourceId of fromContent) {
+          if (alreadyBundled.has(resourceId)) continue;
           if (seenResource.has(resourceId)) continue;
           seenResource.add(resourceId);
           await fetchResource(sessionIndex, resourceId);
         }
         if (name === 'get_activity') {
           for (const resourceId of HOT_RESOURCES) {
+            // Hot set still probes repeat tax; skip only when this get_activity already bundled it.
+            if (alreadyBundled.has(resourceId)) continue;
             await fetchResource(sessionIndex, resourceId);
           }
         }

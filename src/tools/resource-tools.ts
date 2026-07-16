@@ -45,73 +45,13 @@ import { seedDefaults } from '../utils/variable-seed.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
+import { extractMarkdownSection, parseResourceRef } from '../utils/resource-ref.js';
 import { createTraceEvent } from '../trace.js';
 import { randomUUID } from 'node:crypto';
 import { basename, isAbsolute, resolve } from 'node:path';
-/**
- * Parse a resource reference that may include a workflow prefix.
- * Format: "workflow/id" for cross-workflow, or bare "id" for local.
- * Examples: "meta/bootstrap-protocol" → { workflowId: "meta", id: "bootstrap-protocol" }
- *           "review-mode"             → { workflowId: undefined, id: "review-mode" }
- */
-function parseResourceRef(ref: string): { workflowId: string | undefined; id: string; section: string | undefined } {
-  // Split off an optional `#section` anchor (e.g. "assumption-reconciliation#log-format").
-  let section: string | undefined;
-  let base = ref.trim();
-  const hashIdx = base.indexOf('#');
-  if (hashIdx >= 0) {
-    section = base.substring(hashIdx + 1).trim() || undefined;
-    base = base.substring(0, hashIdx);
-  }
-  // Tolerate a trailing `.md` (the projection emits bare ids, but a path-y form may arrive).
-  base = base.replace(/\.md$/, '');
-  const slashIdx = base.indexOf('/');
-  if (slashIdx > 0) {
-    return { workflowId: base.substring(0, slashIdx), id: base.substring(slashIdx + 1), section };
-  }
-  return { workflowId: undefined, id: base, section };
-}
 
-/**
- * Extract a single markdown section by its GitHub-style heading anchor: returns the heading line
- * and everything beneath it up to (not including) the next heading of the same or higher level.
- * Returns null when no heading matches the anchor.
- */
-export function extractMarkdownSection(content: string, anchor: string): string | null {
-  const slugify = (heading: string): string =>
-    heading.trim().toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
-  const lines = content.split(/\r?\n/);
-  const isFence = (l: string): boolean => /^\s*(```|~~~)/.test(l);
-
-  // Headings inside fenced code blocks (e.g. a ```markdown template skeleton) are content, not
-  // section boundaries — track fence state so they neither match the anchor nor terminate the section.
-  let startIdx = -1;
-  let startLevel = 0;
-  let inFence = false;
-  for (let i = 0; i < lines.length; i++) {
-    if (isFence(lines[i]!)) { inFence = !inFence; continue; }
-    if (inFence) continue;
-    const m = lines[i]!.match(/^(#{1,6})\s+(.+?)\s*$/);
-    if (m && slugify(m[2]!) === anchor) {
-      startIdx = i;
-      startLevel = m[1]!.length;
-      break;
-    }
-  }
-  if (startIdx < 0) return null;
-  let endIdx = lines.length;
-  inFence = false;
-  for (let i = startIdx + 1; i < lines.length; i++) {
-    if (isFence(lines[i]!)) { inFence = !inFence; continue; }
-    if (inFence) continue;
-    const m = lines[i]!.match(/^(#{1,6})\s+/);
-    if (m && m[1]!.length <= startLevel) {
-      endIdx = i;
-      break;
-    }
-  }
-  return lines.slice(startIdx, endIdx).join('\n').trim();
-}
+/** Re-export for callers/tests that imported section extraction from this module. */
+export { extractMarkdownSection } from '../utils/resource-ref.js';
 
 /**
  * Wrap a tool handler so any thrown `SessionStoreError` is re-thrown with a
