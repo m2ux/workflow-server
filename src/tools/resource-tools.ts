@@ -142,20 +142,16 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'start_session',
     {
       description:
-        'Start or resume the TOP-LEVEL workflow session. Identifies the planning folder via `planning_folder` — an absolute path whose basename is the slug (e.g., `/home/user/repo/.engineering/artifacts/planning/2026-05-28-my-slug` → slug `2026-05-28-my-slug`). Only the basename is consumed; the path part is a hint and is otherwise ignored, so a stale or off-workspace path passed by the agent is harmless. The server always resolves the slug against its own workspace planning root. ' +
-        'Returns a 6-character base32 `session_index` for the root session, plus basic workflow metadata, plus the canonical server-side `planning_folder_path` (the absolute path of the folder under THIS server\'s workspace) — the agent can pick up the current location from this response without doing any path math. ' +
-        'Behaviour: if a folder for that slug already exists under the server\'s workspace planning root with `session.json`, the server resumes it (workflow_id taken from state — caller cannot rebrand a live session). Otherwise the folder is created (for non-meta workflows) or a transient tmp folder is used (for meta-bootstrap), and a fresh session is written with its variable bag seeded from the workflow\'s declared `defaultValue`s (recorded as a `variables_seeded` history event; resumes never re-seed). When `planning_folder` is omitted entirely, a fresh meta-bootstrap session is created in `os.tmpdir()` and a synthetic UUID slug is registered so subsequent `dispatch_child` calls can promote it. ' +
-        'The full resolved absolute path is persisted as `planningFolderPath` inside session.json; on resume, if the folder has been renamed or moved within the planning root, the recorded value is silently overwritten with its current location. ' +
-        'Other tools identify the session by `session_index` (returned here) — they do not need the path, because session.json carries it. ' +
-        'Child workflows are not created through start_session — call `dispatch_child({ session_index, workflow_id })` from inside the parent session to append a child under `triggeredWorkflows[]` (embedded inline; the whole work-package tree lives in the top-level session.json). ' +
-        'If the resolved folder contains legacy `workflow-state.json` + `.session-token` artefacts, the server migrates them in place. ' +
-        'The agent_id parameter is stored on `session.json#agentId`, distinguishing orchestrator from worker calls in the trace.',
+        'Start or resume the top-level workflow session. Returns `session_index`, workflow metadata, and canonical `planning_folder_path`. ' +
+        'Pass `planning_folder` as an absolute path (basename = slug; resolved against the server planning root). Omit it for a transient meta bootstrap. ' +
+        'Children use `dispatch_child`, not this tool. ' +
+        '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for disposable workers.',
       inputSchema: z
         .object({
-          workflow_id: z.string().optional().describe('Optional. Target workflow ID for a fresh top-level session (e.g., "work-package"). Defaults to "meta". Ignored when the slug already resolves to an existing `session.json` (the workflow is taken from the resumed state).'),
-          planning_folder: z.string().optional().describe('Optional. Absolute path whose basename is treated as the planning slug. The path part is informational — the slug is resolved against the SERVER\'s own workspace planning root, not the path you pass. Bare slugs and relative paths are rejected. When omitted, the server mints a transitional UUID slug and registers it for the meta bootstrap session.'),
-          agent_id: z.string().default('orchestrator').describe('Sets the agentId field inside the session state. Distinguishes agents sharing a session in the trace. Defaults to "orchestrator" if omitted.'),
-          context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. Declares the delivery context model for the session. "persistent" opts into reference-not-repeat delivery: get_activity replaces bundle content already delivered to this session+agent with short { unchanged: true, content_hash } markers, and get_technique answers a byte-identical refetch with an unchanged-reference (full: true re-fetches). Use ONLY when a single agent context runs the whole session and retains earlier payloads in its own context. Omit (or pass "fresh") for disposable-worker topologies — every call then receives full content. On resume, a supplied value overwrites the recorded mode.'),
+          workflow_id: z.string().optional().describe('Optional. Fresh-session workflow id (default "meta"). Ignored on resume.'),
+          planning_folder: z.string().optional().describe('Optional. Absolute path; basename is the planning slug. Bare/relative paths rejected. Omit for transient meta bootstrap.'),
+          agent_id: z.string().default('orchestrator').describe('Agent identity stored on the session (default "orchestrator"). Use one canonical id for solo persistent walks.'),
+          context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. "persistent" = reference delivery; ONLY for solo (same agent retains payloads). Omit/"fresh" for disposable workers. Resume overwrites recorded mode.'),
         })
         .strict(),
     },
@@ -374,16 +370,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'dispatch_child',
     {
       description:
-        'Dispatch a child workflow from the current session. Pass `session_index` of the parent (any depth) and `workflow_id` of the child workflow. ' +
-        'The server appends a child entry under the parent\'s `triggeredWorkflows[]` with the child\'s full SessionFile embedded inline (the entire work-package tree lives in the top-level session.json). The child\'s variable bag is seeded from the CHILD workflow\'s own declared `defaultValue`s; the parent\'s bag is untouched. ' +
-        'Returns the child\'s `session_index`, which the agent threads to subsequent authenticated tool calls operating on the child, plus the canonical `planning_folder_path` — the absolute path of the planning folder under THIS server\'s workspace (the `.engineering` root supplied at init). All work-package artifacts are written under that absolute path; the agent never composes the location relative to its CWD or the target component repo. ' +
-        'Special case: when the parent is a transient orchestrator-bootstrap session (e.g. meta), the parent\'s state is promoted onto disk under a stable workspace planning folder before the child is embedded. The slug is taken from (in order): the optional `planning_slug` argument; the slug registered at start_session; a `YYYY-MM-DD-<workflow-id>` fallback. The parent\'s tmp folder is discarded post-promotion, but the parent\'s session_index is retained — the orchestrator can keep using its original index to authenticate subsequent calls (it resolves to the promoted folder for the lifetime of this server process). The on-disk shape matches the persistent-parent case — parent at the top of the file, child under `triggeredWorkflows[0].state`.',
+        'Dispatch a child workflow under the parent session. Returns the child `session_index` and canonical `planning_folder_path`. ' +
+        'Transient meta parents are promoted to a workspace planning folder first (optional `planning_slug`). ' +
+        'Never set `context_mode: "persistent"` on disposable-worker children — workers need fresh/full delivery.',
       inputSchema: z.object({
         ...sessionIndexParam,
-        workflow_id: z.string().describe('Workflow id for the child (e.g. "work-package"). Must resolve to a workflow definition in the workflows directory.'),
-        agent_id: z.string().default('worker').describe('agent_id stored on the child SessionFile. Defaults to "worker".'),
-        planning_slug: z.string().optional().describe('Optional. When the parent is a transient orchestrator-bootstrap session, the slug used for the promoted workspace folder. Takes precedence over any slug registered at start_session. Ignored when the parent is already persistent (the persistent parent owns the slug).'),
-        context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. Delivery context model stored on the child SessionFile (see start_session). "persistent" activates reference-not-repeat delivery for calls against the child session; use ONLY when a single agent context executes the whole child workflow.'),
+        workflow_id: z.string().describe('Child workflow id (e.g. "work-package").'),
+        agent_id: z.string().default('worker').describe('Child agent_id (default "worker").'),
+        planning_slug: z.string().optional().describe('Optional. Promotion slug when the parent is a transient meta bootstrap. Ignored if the parent is already persistent.'),
+        context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. Child delivery mode. "persistent" ONLY for solo child walks; omit/"fresh" for disposable workers.'),
       }).strict(),
     },
     withAuditLog('dispatch_child', withSessionStoreErrors(async ({ session_index, workflow_id, agent_id, planning_slug, context_mode }) => {
@@ -506,11 +501,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_technique',
-    'Load one fully composed technique. With step_id, loads the technique bound to that step; without it, the activity\'s (or, before next_activity, the workflow\'s) first technique. The result inherits its workflow-root `techniques/TECHNIQUE.md` contract recursively (never the meta root for a non-meta workflow): contract inputs/outputs arrive as marked `inherited_inputs`/`inherited_outputs` blocks distinct from the technique\'s own, rules are merged, and ancestor Initial/Final protocol blocks wrap and renumber the protocol. A step-bound fetch annotates the binding seam — own inputs carry a `source:`, remapped outputs a `destination:`, plus a `provenance_note`; annotations are static per corpus and step. Under context_mode "persistent", a byte-identical refetch returns a short unchanged-reference ({ delivery: unchanged, content_hash }) instead of the payload, and on a new technique any shared inherited_inputs/inherited_outputs/rules block already delivered by a sibling is replaced with that marker while the core stays full; full: true forces full content (every block). Every fetch is recorded as a technique_fetched event that next_activity\'s manifest validation reads (advisory).',
+    'Load one fully composed technique (step-bound when `step_id` is set; otherwise the activity\'s or workflow\'s first). ' +
+    'Under `context_mode: "persistent"`, a byte-identical refetch may return an unchanged-reference; pass `full: true` when earlier content was summarized away. ' +
+    'Workers in fresh contexts must not rely on reference collapse — use full delivery.',
     {
       ...sessionIndexParam,
-      step_id: z.string().optional().describe('Optional. Step ID within the current activity (e.g., "define-problem"). If omitted, returns the activity\'s first declared technique, or the workflow\'s first declared technique if no activity is active.'),
-      full: z.boolean().optional().describe('Optional. Set true to force full content delivery even when the session\'s persistent context mode would answer a byte-identical refetch with an unchanged-reference. Use when your context no longer holds the earlier delivery (e.g. it was summarized away).'),
+      step_id: z.string().optional().describe('Optional. Step id whose bound technique to load; omit for the activity/workflow first technique.'),
+      full: z.boolean().optional().describe('Optional. Force full content when persistent mode would return an unchanged-reference (e.g. after summarization).'),
     },
     withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, step_id, full }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
@@ -686,11 +683,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_resource',
-    'Load a resource by its id, optionally narrowed to a single section. Use this to fetch resources referenced in technique content (e.g. a template hyperlinked from an Input/Output). The resource_id is a text-only slug — bare (e.g., "review-mode") resolves within the session\'s workflow, or prefixed cross-workflow (e.g., "meta/bootstrap-protocol") resolves from the named workflow. Append a `#section` anchor (GitHub-style heading slug, e.g. "assumption-reconciliation#integration-with-assumptions-log") to return only that section and its body — used to fetch just the template a technique references without the whole file. Returns the resource content, id, and version. Under context_mode "persistent", a byte-identical refetch of the same resource_id (including any #section) returns a short unchanged-reference ({ delivery: unchanged, content_hash }) instead of the body; full: true forces full content. Each fetch is recorded in the session history as a resource_fetched event (observability only — no validation reads it), including when the answer is an unchanged-reference.',
+    'Load a resource by id (optional `#section`). Bare slug = session workflow; `workflow/slug` = cross-workflow. ' +
+    'Under `context_mode: "persistent"`, a byte-identical refetch may return an unchanged-reference; pass `full: true` when content was summarized away. ' +
+    'Never use persistent/`bundle: "reference"` assumptions on disposable workers — they need fresh/full delivery.',
     {
       ...sessionIndexParam,
-      resource_id: z.string().describe('Resource ref — bare slug ("review-mode"), cross-workflow prefixed ("meta/bootstrap-protocol"), each optionally suffixed with a "#section" heading anchor to return only that section (e.g. "assumption-reconciliation#integration-with-assumptions-log")'),
-      full: z.boolean().optional().describe('Optional. Set true to force full content delivery even when the session\'s persistent context mode would answer a byte-identical refetch with an unchanged-reference. Use when your context no longer holds the earlier delivery (e.g. it was summarized away).'),
+      resource_id: z.string().describe('Resource ref: bare slug, `workflow/slug`, optional `#section` anchor.'),
+      full: z.boolean().optional().describe('Optional. Force full content when persistent mode would return an unchanged-reference (e.g. after summarization).'),
     },
     withAuditLog('get_resource', withSessionStoreErrors(async ({ session_index, resource_id, full }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);

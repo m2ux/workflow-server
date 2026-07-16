@@ -34,13 +34,13 @@ import type { TraceEvent, TraceTokenPayload } from '../trace.js';
 const stepManifestSchema = z.array(z.object({
   step_id: z.string(),
   output: z.string(),
-})).optional().describe('Array of completed-step entries from the previous activity, e.g. [{"step_id":"detect-review-mode","output":"is_review_mode=false"}]. Each entry has two string fields: step_id (the literal id from the activity\'s steps[] — note the field is step_id, not id) and output. output is a short summary of what the step produced; for a step with more than one declared output, report a JSON object keyed by output id, e.g. {"step_id":"resolve-reference","output":"{\\"reference_path\\":\\"lib/x\\",\\"component_name\\":\\"x\\"}"}. Omit the parameter entirely when no steps ran; do not pass an empty array or empty string.');
+})).optional().describe('Completed steps from the previous activity: [{step_id, output}]. Use literal step ids (field is step_id, not id). Multi-output steps: JSON object keyed by output id. Omit entirely when no steps ran — not [].');
 
 const activityManifestSchema = z.array(z.object({
   activity_id: z.string(),
   outcome: z.string(),
   transition_condition: z.string().optional(),
-})).optional().describe('Activity completion manifest from the orchestrator. Reports the sequence of activities completed so far with outcomes and transition conditions.');
+})).optional().describe('Orchestrator activity-completion manifest: [{activity_id, outcome, transition_condition?}].');
 
 /**
  * Wrap a tool handler so any thrown `SessionStoreError` is re-thrown with a
@@ -257,7 +257,7 @@ export function projectSessionView(
 export function registerWorkflowTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
 
-  server.tool('discover', 'Entry point for this server. Call this before any other tool to learn the bootstrap procedure for starting a session. Returns the server name, version, and the bootstrap guide explaining the full tool-calling sequence. Use list_workflows to discover available workflows. No parameters required and no session_index needed.', {},
+  server.tool('discover', 'Entry point — call before other tools. Returns server info and the bootstrap procedure. No session_index required.', {},
     withAuditLog('discover', async () => {
       const bootstrapResult = await readResourceRaw(config.workflowDir, 'meta', 'bootstrap-protocol');
       const lines = [
@@ -270,7 +270,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: lines.join('\n') }] };
     }));
 
-  server.tool('list_workflows', 'List all available workflow definitions with their ID, title, version, and tags. Use this when you need to discover or filter available workflows. Returns an array of workflow summaries with tag-based categorization. If any workflow definition fails to load (unreadable file or manifest missing id/title/version), the response is instead an object with `workflows` (the loadable entries) and `load_errors` (one entry per failed file). Does not require a session_index.', {},
+  server.tool('list_workflows', 'List available workflows (id, title, version, tags). On load failures returns `{workflows, load_errors}`. No session_index required.', {},
     withAuditLog('list_workflows', async () => {
       const { workflows, errors } = await listWorkflowsWithDiagnostics(config.workflowDir);
       // Additive shape: the payload stays a plain array unless something failed to load.
@@ -278,7 +278,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       return { content: [{ type: 'text' as const, text: stringifyForResponse(payload) }] };
     }));
 
-  server.tool('get_workflow', 'Load the workflow definition for the current session. The response begins with the resolved orchestrator technique bundle, then a `---` separator, then lightweight workflow metadata: rules, variables, the initialActivity field (which activity to load first), and a stub list of all activities with their IDs and names. If any activity file failed to load (invalid or unparsable YAML), the response includes `activity_load_errors` listing each failed file with its error — those activities are absent from the activity list. Call this after start_session to learn the workflow structure — the initialActivity field in the response tells you which activity_id to pass to your first next_activity call. This is the only tool that provides initialActivity. The response also carries `planning_folder_path`: the canonical absolute planning folder for this session under THIS server\'s workspace `.engineering` root — bind it as the single artifact location and never recompose it relative to your CWD or the target component repo.',
+  server.tool('get_workflow', 'Orchestrator tool: load the session workflow. Response is the orchestrator technique bundle, then `---`, then metadata including `initialActivity` (use for the first next_activity) and activity stubs. Also returns canonical `planning_folder_path` — do not recompose it.',
     {
       ...sessionIndexParam,
     },
@@ -370,11 +370,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('next_activity', 'Transition to the specified activity. This is the orchestrator\'s tool for advancing the workflow — it validates the transition, advances the session state on disk, and records the trace, but does NOT return the activity definition. After calling next_activity, the worker should call get_activity to load the complete activity definition including steps, checkpoints, transitions, and technique references. For the first call, use the initialActivity value from get_workflow. For subsequent calls, use the activity IDs from the transitions field of the current activity\'s response. Optionally include a step_manifest summarizing completed steps and a transition_condition to enable server-side validation. Manifest validation also cross-checks fidelity (warn-only): a manifested technique step with no technique_fetched event recorded during the activity (see get_technique) — and no technique_bundled event from a bundling activity\'s get_activity — draws a warning.',
+  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: an id from the current activity\'s transitions. Optional manifests enable advisory validation.',
     {
       ...sessionIndexParam,
-      activity_id: z.string().describe('Activity ID to transition to. For the first call, use initialActivity from get_workflow. For subsequent calls, use an activity ID from the transitions field of the current activity.'),
-      transition_condition: z.string().optional().describe('The transition condition that led to this activity (from the transitions field of the previous activity). Enables server-side validation of condition-activity consistency.'),
+      activity_id: z.string().describe('Target activity id. First call: initialActivity from get_workflow; later: from current activity transitions.'),
+      transition_condition: z.string().optional().describe('Optional. Transition condition text from the previous activity (advisory validation).'),
       step_manifest: stepManifestSchema,
       activity_manifest: activityManifestSchema,
     },
@@ -518,11 +518,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('get_activity', 'Load the current activity\'s full definition (steps, checkpoints, transitions, rules, technique references) — everything needed to execute it. The activity is read from session state, so no activity_id is needed. context_tokens is REQUIRED: the worker declares its context window and the server derives an eager bundling budget (headroom × token→char factor, server config), inlining the activity\'s ungated step-bound techniques that fit, in document order. Eligible techniques arrive corpus-wide under a step_techniques map (keyed by step id, each a discrete ▼ STEP block identical to a get_technique { step_id } fetch — engage them in order without refetching); gated steps and any technique overflowing the budget or a per-activity bundleTechniques.maxChars cap (maxChars 0 opts out) stay lazy. Under reference delivery (context_mode "persistent" or bundle: "reference"), already-delivered inherited techniques/rules collapse to { delivery: "unchanged", content_hash } markers, including block-by-block within an otherwise-full step technique (its shared inherited_inputs/inherited_outputs/rules); bundle: "full" forces full delivery. Bundled deliveries are recorded as technique_bundled events counting as fetch coverage for next_activity\'s manifest check.',
+  server.tool('get_activity', 'Worker tool: load the current activity definition (from session state — no activity_id). `context_tokens` is REQUIRED for eager step-technique bundling. ' +
+    'Under persistent/`bundle: "reference"`, already-delivered content may collapse to unchanged markers — ONLY valid when THIS agent received the earlier payloads. ' +
+    'Use `bundle: "full"` after summarization or for disposable workers (never `bundle: "reference"` on fresh workers).',
     {
       ...sessionIndexParam,
       ...contextTokensParam,
-      bundle: z.enum(['reference', 'full']).optional().describe('Optional delivery-mode override for the inherited techniques/rules bundle. "reference" replaces bundle content already delivered to this session+agent with short { delivery: "unchanged", content_hash } markers — only correct when THIS calling context received the earlier deliveries. "full" forces full delivery. Defaults from the session\'s context_mode ("persistent" → reference, otherwise full).'),
+      bundle: z.enum(['reference', 'full']).optional().describe('Optional. "reference" collapses already-delivered bundle content (solo only). "full" forces full delivery. Defaults from context_mode.'),
     },
     withAuditLog('get_activity', withSessionStoreErrors(async ({ session_index, context_tokens, bundle }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
@@ -826,10 +828,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('yield_checkpoint', 'Yield execution to the orchestrator at a checkpoint. Call this tool when you encounter a checkpoint step during activity execution. It records the checkpoint as active in the session state and returns the session_index, which the worker yields back to the orchestrator via a <checkpoint_yield> block.',
+  server.tool('yield_checkpoint', 'Worker tool: mark a checkpoint active and yield to the orchestrator (emit `<checkpoint_yield>` with the returned session_index).',
     {
       ...sessionIndexParam,
-      checkpoint_id: z.string().describe('The ID of the checkpoint being yielded.'),
+      checkpoint_id: z.string().describe('Checkpoint id being yielded.'),
     },
     withAuditLog('yield_checkpoint', withSessionStoreErrors(async ({ session_index, checkpoint_id }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
@@ -925,7 +927,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('resume_checkpoint', 'Resume execution after the orchestrator resolves a checkpoint. Call this tool when the orchestrator resumes you with a checkpoint response. It verifies the checkpoint was resolved (no activeCheckpoint in state) and returns any variable updates you need to apply to your state.',
+  server.tool('resume_checkpoint', 'Worker tool: continue after the orchestrator resolves a checkpoint. Verifies no activeCheckpoint and returns variable updates to apply.',
     {
       ...sessionIndexParam,
     },
@@ -953,7 +955,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('present_checkpoint', 'Load the full details of the currently-active checkpoint for the session. Returns the checkpoint definition including its message, user-facing options (with labels, descriptions, and effects like variable assignments), and any auto-advance configuration. Use this when you need to present a checkpoint interaction to the user based on a worker\'s yield. Reads the active checkpoint from state.activeCheckpoint — no separate checkpoint handle is needed.',
+  server.tool('present_checkpoint', 'Load the active checkpoint (message, options, effects, auto-advance) for presenting to the user. Reads state.activeCheckpoint.',
     {
       ...sessionIndexParam,
     },
@@ -988,18 +990,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
   const MIN_RESPONSE_SECONDS = config.minCheckpointResponseSeconds ?? 3;
 
   server.tool('respond_checkpoint',
-    'Submit a checkpoint response to clear the active-checkpoint gate. *MUST* present the checkpoint to the user and wait for their input. ' +
-    'Exactly one of option_id, auto_advance, or condition_not_met must be provided. ' +
-    'option_id: the user\'s selected option (works for all checkpoint types, enforces minimum response time). ' +
-    'auto_advance: use the checkpoint\'s defaultOption (only for checkpoints with autoAdvanceMs; the server enforces the full timer). ' +
-    'condition_not_met: dismiss a conditional checkpoint whose condition evaluated to false (only valid when the checkpoint has a condition field). ' +
-    'setVariable effects are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation. ' +
-    'Reads the active checkpoint from state.activeCheckpoint — no separate checkpoint handle is needed.',
+    'Clear the active-checkpoint gate. *MUST* present the checkpoint to the user first. ' +
+    'Provide exactly one of `option_id`, `auto_advance`, or `condition_not_met`.',
     {
       ...sessionIndexParam,
-      option_id: z.string().optional().describe('The option ID selected by the user. Must match one of the checkpoint\'s defined options.'),
-      auto_advance: z.boolean().optional().describe('Set to true to auto-advance a checkpoint using its defaultOption. Only valid for checkpoints with defaultOption and autoAdvanceMs. The server enforces the autoAdvanceMs timer. If you use auto_advance, present a message to the user that you are proceeding with the default option because no input was provided.'),
-      condition_not_met: z.boolean().optional().describe('Set to true to dismiss a conditional checkpoint whose condition was not met. Only valid for checkpoints that have a condition field.'),
+      option_id: z.string().optional().describe('User-selected option id (must match a defined option).'),
+      auto_advance: z.boolean().optional().describe('Use defaultOption after autoAdvanceMs with no user input. Only valid when the checkpoint has both.'),
+      condition_not_met: z.boolean().optional().describe('Dismiss a conditional checkpoint whose condition was not met.'),
     },
     withAuditLog('respond_checkpoint', withSessionStoreErrors(async ({ session_index, option_id, auto_advance, condition_not_met }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
@@ -1174,10 +1171,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('get_trace', 'Retrieve the execution trace for the current workflow session. Accepts an optional array of trace_tokens accumulated from next_activity _meta.trace_token responses to reconstruct a specific trace segment. If no trace_tokens are provided, returns the full in-memory trace for the current session (requires server-side tracing to be enabled). Use this for debugging, auditing, or reviewing the sequence of tool calls made during the session.',
+  server.tool('get_trace', 'Retrieve the session execution trace. With `trace_tokens`, decode those segments; otherwise return the in-memory session trace (if tracing is enabled).',
     {
       ...sessionIndexParam,
-      trace_tokens: z.array(z.string()).optional().describe('Accumulated trace tokens from next_activity _meta.trace_token responses. If not provided, returns the full in-memory trace for the current session.'),
+      trace_tokens: z.array(z.string()).optional().describe('Optional. Trace tokens from next_activity `_meta.trace_token`; omit for the full in-memory session trace.'),
     },
     withAuditLog('get_trace', withSessionStoreErrors(async ({ session_index, trace_tokens }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);
@@ -1219,7 +1216,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
 
-  server.tool('health_check', 'Check server health and availability. Returns server status, name, version, number of available workflows, and uptime in seconds. Does not require a session_index. Use this to verify the server is running before starting a workflow.', {},
+  server.tool('health_check', 'Server health: status, name, version, workflow count, uptime. No session_index required.', {},
     withAuditLog('health_check', async () => {
       const workflows = await listWorkflows(config.workflowDir);
       return {
@@ -1231,8 +1228,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     }));
 
   server.tool('get_workflow_status',
-    'Check the status of a workflow session. Returns the session status (active/blocked/completed), current activity, ' +
-    'completed activities trace, last checkpoint info, and parent context if nested. Requires a session_index.',
+    'Session status (active/blocked/completed), current activity, completed activities, last checkpoint, and parent context if nested.',
     {
       ...sessionIndexParam,
     },
@@ -1312,27 +1308,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     }), traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
 
   server.tool('inspect_session',
-    'Read-only inspection of a workflow session\'s on-disk state. Returns a compact structured ' +
-    'projection (never the raw session.json) of the addressed session, selected by `view`. Reads ' +
-    'through the same sealed load path as other tools, so it verifies integrity but performs no ' +
-    'mutation — safe to call at any time, including while a checkpoint is active (unlike mutating ' +
-    'tools, it is not gated). Requires a session_index.',
+    'Read-only compact projection of session state (never raw session.json). Not gated by active checkpoints.',
     {
       ...sessionIndexParam,
       view: z.enum(INSPECT_SESSION_VIEWS).default('summary')
-        .describe('Which projection to return. `summary` (default) is the composite of all views. ' +
-          '`identity` = workflow/session/agent header + position; `variables` = the variable bag; ' +
-          '`checkpoints` = checkpoint responses (option, timestamp, variables set); `activities` = ' +
-          'completed/skipped/current; `history` = event count + per-type tally + milestone sub-sequence; ' +
-          '`children` = one-line digest per triggeredWorkflows child.'),
+        .describe('Projection: summary (default), identity, variables, checkpoints, activities, history, or children.'),
       child_index: z.number().int().nonnegative().optional()
-        .describe('Optional positional index into the addressed session\'s `triggeredWorkflows`. When ' +
-          'given, the tool descends one level to `triggeredWorkflows[child_index].state` and projects ' +
-          'that child instead of the addressed session. Out of range yields the NOT_FOUND message. ' +
-          'Deeper children are reached by passing that child\'s own session_index instead of stacking indices.'),
+        .describe('Optional. Project triggeredWorkflows[child_index].state instead of the parent session.'),
       variable: z.string().optional()
-        .describe('Optional single variable name. Only meaningful with `view: variables` — narrows the ' +
-          'result to that one key\'s value instead of the whole bag.'),
+        .describe('Optional. With view=variables, return a single variable by name.'),
     },
     withAuditLog('inspect_session', withSessionStoreErrors(async ({ session_index, view, child_index, variable }) => {
       const loaded = await loadSessionForTool(config.workspaceDir, session_index);

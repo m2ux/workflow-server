@@ -9,8 +9,9 @@ import { z } from 'zod';
 export const sessionIndexParam = {
   session_index: z.string()
     .regex(/^[A-Z2-7]{6}$/, 'session_index must be a 6-character RFC 4648 base32 string (A-Z, 2-7)')
-    .describe('REQUIRED. The 6-character session_index returned by start_session. The server resolves this index to a planning folder under .engineering/artifacts/planning/ and reads/writes session.json there. The index is stable across all tool calls in the session — there is no rotation discipline.'),
+    .describe('REQUIRED. Stable 6-character session_index from start_session; pass on every authenticated call.'),
 };
+
 
 /**
  * Zod parameter spread for the REQUIRED `context_tokens` parameter on
@@ -24,8 +25,9 @@ export const sessionIndexParam = {
  */
 export const contextTokensParam = {
   context_tokens: z.number().int().positive()
-    .describe('REQUIRED. The calling worker\'s total context window in tokens. The server derives the eager step-technique bundling budget from this value (availability headroom × a token→char factor, both server config) and inlines the activity\'s ungated step-bound techniques that fit, in document order, under that budget; the remainder stay lazy via get_technique. Per-agent and per-call — never stored on the session, never defaulted. Omitting it is a validation error.'),
+    .describe('REQUIRED. Caller\'s context window in tokens; used for eager step-technique bundling. Per-call, never defaulted — omitting it is a validation error.'),
 };
+
 
 /**
  * Throws if the SessionFile has an active checkpoint. Call this in every
