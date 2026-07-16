@@ -1,24 +1,24 @@
 # Workflow Design Workflow
 
-> v1.7.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits an existing workflow against the 15 design principles and produces a compliance report.
+> v1.9.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits one or more existing workflows against the 15 design principles and produces a compliance report.
 
 ---
 
 ## Overview
 
-This workflow manages the complete lifecycle of workflow definition authoring through nine activities, with three modes (create, update, review) that control which activities execute. All modes enforce schema expressiveness, convention conformance, and structural enforcement of critical constraints.
+This workflow manages the complete lifecycle of workflow definition authoring through nine activities, with three modes (create, update, review) that control which activities execute. All modes enforce schema expressiveness, convention conformance, and structural enforcement of critical constraints. Activity `#` columns below match on-disk `NN-` file prefixes (gaps at 02/07 are intentional).
 
 | # | Activity | Mode | Purpose |
 |---|----------|------|---------|
 | 01 | [**Intake and Context**](./activities/README.md#01-intake-and-context) | All | Classify create/update/review, set mode + target, internalize schemas and YAML format |
-| 02 | [**Requirements Refinement**](./activities/README.md#02-requirements-refinement) | Create, Update | Elicit the spec one dimension at a time (forEach over the design dimensions), then surface, reconcile, and review the design assumptions |
-| 03 | [**Pattern Analysis**](./activities/README.md#03-pattern-analysis) | Create only | Audit 2+ reference workflows for reusable patterns |
-| 04 | [**Impact Analysis**](./activities/README.md#04-impact-analysis) | Update only | Enumerate affected files, check integrity, flag removals |
-| 05 | [**Scope and Draft**](./activities/README.md#05-scope-and-draft) | Create, Update | Define file manifest, then draft and validate each file per-file |
-| 06 | [**Quality Review**](./activities/README.md#06-quality-review) | All | Expressiveness, conformance, rule-hygiene, and rule-enforcement audits, then a bounded fix-revalidate loop (max 3) with a critical-blocker gate (full compliance audit in review mode) |
-| 07 | [**Validate and Commit**](./activities/README.md#07-validate-and-commit) | All | Schema validation, then commit on a feature branch + open a PR against `workflows` (create/update) or save the compliance report (review) |
-| 08 | [**Post-Update Review**](./activities/README.md#08-post-update-review) | Update only | Automatic post-commit compliance audit of the updated workflow |
-| 09 | [**Retrospective**](./activities/README.md#09-retrospective) | All | Record a completion summary (create/update) and conduct a session retrospective |
+| 03 | [**Requirements Refinement**](./activities/README.md#03-requirements-refinement) | Create, Update | Elicit the spec one dimension at a time (forEach over the design dimensions), then surface, reconcile, and review the design assumptions |
+| 04 | [**Pattern Analysis**](./activities/README.md#04-pattern-analysis) | Create only | Audit 2+ reference workflows for reusable patterns |
+| 05 | [**Impact Analysis**](./activities/README.md#05-impact-analysis) | Update only | Enumerate affected files, check integrity, flag removals |
+| 06 | [**Scope and Draft**](./activities/README.md#06-scope-and-draft) | Create, Update | Define file manifest, then draft and validate each file per-file |
+| 08 | [**Quality Review**](./activities/README.md#08-quality-review) | All | Expressiveness, conformance, rule-hygiene, and rule-enforcement audits, then a bounded fix-revalidate loop (max 3) with a critical-blocker gate (full compliance audit in review mode; forEach over `target_workflow_ids`) |
+| 09 | [**Validate and Commit**](./activities/README.md#09-validate-and-commit) | All | Schema validation, then commit on a feature branch + open a PR against `workflows` (create/update) or save the compliance report (review) |
+| 10 | [**Post-Update Review**](./activities/README.md#10-post-update-review) | Update only | Automatic post-commit compliance audit of the updated workflow |
+| 11 | [**Retrospective**](./activities/README.md#11-retrospective) | All | Record a completion summary (create/update) and conduct a session retrospective |
 
 **Detailed documentation:**
 
@@ -45,26 +45,26 @@ graph TD
     startNode(["Start"]) --> INT["01 intake-and-context"]
 
     INT --> MODE{"mode?"}
-    MODE -->|"create"| REQ["02 requirements-refinement"]
+    MODE -->|"create"| REQ["03 requirements-refinement"]
     MODE -->|"update"| REQ
     MODE -->|"review"| QR
 
     REQ --> CREATE{"create?"}
-    CREATE -->|"yes"| PAT["03 pattern-analysis"]
-    CREATE -->|"no (update)"| IMP["04 impact-analysis"]
+    CREATE -->|"yes"| PAT["04 pattern-analysis"]
+    CREATE -->|"no (update)"| IMP["05 impact-analysis"]
 
-    PAT --> SCD["05 scope-and-draft"]
+    PAT --> SCD["06 scope-and-draft"]
     IMP --> SCD
 
-    SCD --> QR["06 quality-review"]
+    SCD --> QR["08 quality-review"]
 
     QR -->|"critical blocker"| SCD
     QR -.->|"review: fix issues"| INT
-    QR --> VAL["07 validate-and-commit"]
+    QR --> VAL["09 validate-and-commit"]
     VAL -.->|"return to drafting"| SCD
 
-    VAL -->|"create / review"| RETRO["09 retrospective"]
-    VAL -->|"update"| PUR["08 post-update-review"]
+    VAL -->|"create / review"| RETRO["11 retrospective"]
+    VAL -->|"update"| PUR["10 post-update-review"]
     PUR -->|"accept"| RETRO
     PUR -.->|"fix / revert"| INT
     RETRO --> doneNode(["End"])
@@ -82,7 +82,7 @@ The roles, the dispatch protocol, and the checkpoint protocol are defined once i
 
 ## Review Mode
 
-Review mode audits an existing workflow against:
+Review mode audits one or more existing workflows (`target_workflow_ids`, with each iteration binding `target_workflow_id`) against:
 
 1. **Schema expressiveness** — flags prose that should be formal constructs
 2. **Convention conformance** — checks naming, structure, and field ordering
@@ -101,19 +101,19 @@ This workflow encodes 15 design principles derived from analysis of 175+ histori
 | # | Principle | Enforcement |
 |---|-----------|-------------|
 | 1 | Internalize before producing | [Intake and Context](./activities/README.md#01-intake-and-context) gate checkpoints |
-| 2 | Define complete scope before execution | [Scope and Draft](./activities/README.md#05-scope-and-draft) `scope-and-structure-confirmed` checkpoint |
-| 3 | One question at a time | [Requirements Refinement](./activities/README.md#02-requirements-refinement) — per-dimension checkpoints |
-| 4 | Maximize schema expressiveness | [Quality Review](./activities/README.md#06-quality-review) `expressiveness-confirmed` checkpoint |
-| 5 | Convention over invention | [Quality Review](./activities/README.md#06-quality-review) `conformance-confirmed` checkpoint |
+| 2 | Define complete scope before execution | [Scope and Draft](./activities/README.md#06-scope-and-draft) `scope-and-structure-confirmed` checkpoint |
+| 3 | One question at a time | [Requirements Refinement](./activities/README.md#03-requirements-refinement) — per-dimension checkpoints |
+| 4 | Maximize schema expressiveness | [Quality Review](./activities/README.md#08-quality-review) `expressiveness-confirmed` checkpoint |
+| 5 | Convention over invention | [Quality Review](./activities/README.md#08-quality-review) `conformance-confirmed` checkpoint |
 | 6 | Never modify upward | Schema validation on every YAML file |
-| 7 | Confirm before irreversible changes | [Impact Analysis](./activities/README.md#04-impact-analysis) checkpoints (update mode) |
+| 7 | Confirm before irreversible changes | [Impact Analysis](./activities/README.md#05-impact-analysis) checkpoints (update mode) |
 | 8 | Corrections must persist | Cross-cutting: tracked throughout all activities |
-| 9 | Modular over inline | [Quality Review](./activities/README.md#06-quality-review) conformance check |
-| 10 | Encode constraints as structure | [Quality Review](./activities/README.md#06-quality-review) `enforcement-confirmed` checkpoint |
-| 11 | Plan before acting | [Scope and Draft](./activities/README.md#05-scope-and-draft) `file-approach-confirmed` checkpoint |
-| 12 | Non-destructive updates | [Scope and Draft](./activities/README.md#05-scope-and-draft) `preservation-check` checkpoint (update mode) |
+| 9 | Modular over inline | [Quality Review](./activities/README.md#08-quality-review) conformance check |
+| 10 | Encode constraints as structure | [Quality Review](./activities/README.md#08-quality-review) `enforcement-confirmed` checkpoint |
+| 11 | Plan before acting | [Scope and Draft](./activities/README.md#06-scope-and-draft) `file-approach-confirmed` checkpoint |
+| 12 | Non-destructive updates | [Scope and Draft](./activities/README.md#06-scope-and-draft) `preservation-check` checkpoint (update mode) |
 | 13 | Format literacy before content | [Intake and Context](./activities/README.md#01-intake-and-context) `format-literacy` checkpoint |
-| 14 | Complete documentation structure | [Validate and Commit](./activities/README.md#07-validate-and-commit) README generation/update |
+| 14 | Complete documentation structure | [Validate and Commit](./activities/README.md#09-validate-and-commit) README generation/update |
 | 15 | Output economy | Single terminal `COMPLETE.md`; single-row logs; no vestigial marker steps |
 
 ---
@@ -189,7 +189,7 @@ In create and update modes the workflow seeds and maintains a **planning folder*
 
 **Review mode:** A compliance report committed in the planning folder.
 
-Every mode ends with the [Retrospective](./activities/README.md#09-retrospective) activity, which records a session retrospective in the planning folder; create and update modes also produce a `COMPLETE.md` completion summary there.
+Every mode ends with the [Retrospective](./activities/README.md#11-retrospective) activity, which records a session retrospective in the planning folder; create and update modes also produce a `COMPLETE.md` completion summary there.
 
 ---
 

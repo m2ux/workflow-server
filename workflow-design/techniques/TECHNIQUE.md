@@ -15,7 +15,11 @@ Free-form description of the workflow the user wants to create or modify
 
 ### target_workflow_id
 
-*(optional)* Existing workflow id to modify (update mode) or to audit (review mode)
+*(optional)* Existing workflow id to modify (update mode), or the current review-mode audit target. In multi-target review, the quality-review `forEach` over `{target_workflow_ids}` binds this id once per iteration.
+
+### target_workflow_ids
+
+*(optional)* Ordered list of workflow ids to audit in review mode. Single-target review uses a one-element list. Update/create modes leave this unset and use `{target_workflow_id}` alone.
 
 ## Outputs
 

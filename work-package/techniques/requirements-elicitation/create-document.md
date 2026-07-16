@@ -11,15 +11,15 @@ Create the requirements document artifact capturing elicited requirements, succe
 
 ### requirements
 
-The captured requirements list from [elicit](./elicit.md), recorded into the artifact.
+The captured requirements list, recorded into the artifact.
 
 ### success_criteria
 
-The defined success criteria with verification methods from [elicit](./elicit.md), recorded into the artifact.
+The defined success criteria with verification methods, recorded into the artifact.
 
 ### scope_boundaries
 
-The in/out scope definitions from [elicit](./elicit.md), recorded into the artifact.
+The in/out scope definitions, recorded into the artifact.
 
 ### planning_folder_path
 

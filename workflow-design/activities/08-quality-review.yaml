@@ -1,65 +1,43 @@
 id: quality-review
-version: 1.5.0
+version: 1.6.0
 name: Quality Review
 description: Quality review of drafted workflow content.
 required: true
 steps:
-  - kind: technique
-    id: load-all-workflow-files
-    technique: reload-workflow
+  - kind: loop
+    id: multi-target-review-loop
+    name: Multi-Target Review Loop
+    loopType: forEach
+    variable: target_workflow_id
+    over: target_workflow_ids
+    maxIterations: 20
     condition:
       type: simple
       variable: is_review_mode
       operator: ==
       value: true
-  - kind: technique
-    id: principle-compliance-audit
-    technique: audit-principles
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
-  - kind: technique
-    id: anti-pattern-scan
-    technique: audit-anti-patterns
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
-  - kind: technique
-    id: schema-validation-check
-    technique: audit-schema-validation
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
-  - kind: technique
-    id: tool-technique-doc-consistency
-    technique: audit-consistency
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
-  - kind: technique
-    id: verify-high-findings-review
-    technique: verify-high-findings
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
-  - kind: technique
-    id: compile-report
-    technique: compile-report
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+    steps:
+      - kind: technique
+        id: load-all-workflow-files
+        technique: reload-workflow
+      - kind: technique
+        id: principle-compliance-audit
+        technique: audit-principles
+      - kind: technique
+        id: anti-pattern-scan
+        technique: audit-anti-patterns
+      - kind: technique
+        id: schema-validation-check
+        technique: audit-schema-validation
+      - kind: technique
+        id: tool-technique-doc-consistency
+        technique: audit-consistency
+      - kind: technique
+        id: verify-high-findings-review
+        technique: verify-high-findings
+      - kind: technique
+        id: compile-report
+        technique: compile-report
   - kind: checkpoint
     id: review-disposition
     condition:
@@ -67,7 +45,7 @@ steps:
       variable: is_review_mode
       operator: ==
       value: true
-    message: Compliance report complete. {review_findings_count} findings identified. Would you like to fix the issues?
+    message: Compliance report complete. {review_findings_count} findings identified across {target_workflow_ids}. Would you like to fix the issues?
     options:
       - id: fix-issues
         label: Fix identified issues

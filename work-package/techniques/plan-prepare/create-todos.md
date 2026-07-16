@@ -11,11 +11,11 @@ Break the work package plan into actionable, atomic TODO tasks for implementatio
 
 ### plan_document
 
-Work package plan from [plan](./plan.md); its task breakdown, dependencies, and ordering are the source for the TODO list.
+Work package plan; its task breakdown, dependencies, and ordering are the source for the TODO list.
 
 ### tasks
 
-Atomic tasks with dependencies and ordering carried on `{plan_document}` (from [plan](./plan.md)); broken out into individual TODO items.
+Atomic tasks with dependencies and ordering carried on `{plan_document}`; broken out into individual TODO items.
 
 ## Outputs
 

@@ -8,7 +8,7 @@ metadata:
 
 # Review Mode Guide
 
-Guidance for auditing existing workflows against the 15 design principles. Review mode produces a compliance report without modifying the target workflow, then offers to switch to update mode for remediation.
+Guidance for auditing existing workflows against the 15 design principles. Review mode produces a compliance report without modifying the target workflow(s), then offers to switch to update mode for remediation.
 
 This guide carries the **supplementary** material for review mode: activation/flow framing, the compliance report template, and the transition-to-update-mode contract. The **audit procedure itself** is canonical in the `quality-review` activity's bound `audit-*` techniques — the worker loads each via `get_technique` and executes its protocol. This file does not restate the procedure.
 
@@ -18,12 +18,14 @@ This guide carries the **supplementary** material for review mode: activation/fl
 
 `intake-classification` classifies the request as review when it matches recognition signals such as "review workflow", "audit workflow", "check workflow compliance", "workflow review", "assess workflow quality", or "evaluate workflow", and produces `operation_type` = `review` with `is_review_mode` = `true` as its declared outputs (landed via the worker's `variables-changed` channel). These signals inform the classification; the mode flag is set structurally by the technique's outputs, not by this prose.
 
+Multi-target review is first-class: name one or more workflow ids in the request. Intake sets `target_workflow_ids` (array) and seeds `target_workflow_id` to the first element. Single-target review is a one-element list on that array.
+
 ## Activity Flow
 
 Review mode follows a shortened activity sequence:
 
-1. **Intake and Context** — Load the target workflow, enumerate its contents, internalize the schemas as the audit baseline, then the `review-scope-confirmed` checkpoint (blocking) confirms `target_workflow_id` before continuing.
-2. **Quality Review** — Run the audit passes against the existing workflow. This is the core of review mode.
+1. **Intake and Context** — Load each target workflow in `target_workflow_ids`, enumerate contents, internalize the schemas as the audit baseline, then the `review-scope-confirmed` checkpoint (blocking) confirms the full target set before continuing.
+2. **Quality Review** — `forEach` over `target_workflow_ids`, binding each id to `target_workflow_id` and running the audit passes (reload, principles, anti-patterns, schema validation, consistency, verify-high-findings, compile-report). The `review-disposition` checkpoint runs once after all targets. This is the core of review mode.
 3. **Validate and Commit** — Save the compliance report as an artifact.
 4. **Retrospective** — Capture a session retrospective.
 
