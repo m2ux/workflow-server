@@ -407,7 +407,8 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
     'Loads reference material by id — templates, guides, or other markdown resources linked from techniques.',
     'Bare ids (`review-mode`) resolve within the current workflow. Prefixed ids (`meta/bootstrap-protocol`) load from another workflow.',
     'Add `#section` to fetch one heading slice instead of the whole file.',
-    'Each fetch is logged for observability only; nothing validates that you called it.',
+    'In persistent context mode, an identical refetch of the same `resource_id` (including any `#section`) may return a short unchanged marker; pass `full: true` to get the full body again.',
+    'Each fetch is logged for observability only (including when the answer is an unchanged marker); nothing validates that you called it.',
   ],
   get_trace: [
     'Returns the tool-call history for debugging or audit.',
@@ -439,7 +440,7 @@ const SITE_PARAM_HINTS: Record<string, string> = {
   auto_advance: 'Set `true` to use the checkpoint\'s default option after its timer elapses.',
   condition_not_met: 'Set `true` to dismiss a conditional checkpoint whose condition evaluated to false.',
   step_id: 'Step within the current activity. Omit to get the first technique for the activity or workflow.',
-  full: 'Force full technique content even when persistent mode would return an unchanged marker.',
+  full: 'Force full content even when persistent mode would return an unchanged marker (`get_technique` or `get_resource`).',
   resource_id: 'Resource slug, optionally workflow-prefixed (`meta/bootstrap-protocol`), optionally with `#section` anchor.',
   trace_tokens: 'Tokens collected from `next_activity` `_meta.trace_token` responses.',
 };
