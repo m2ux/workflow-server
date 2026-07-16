@@ -1,10 +1,11 @@
 id: dispatch-client-workflow
-version: 5.2.0
+version: 5.3.0
 name: Dispatch Client Workflow
-description: Drive the client workflow's activity loop.
+description: Drive the client workflow's activity loop (solo by default — same agent context executes each activity).
 required: true
 rules:
   - Authenticate every tool call inside the loop with client_session_index. The meta session_index is used only at activity boundaries (commit-and-persist's engineering commit) and at end-workflow.
+  - Preferred topology is solo — execute-activity runs each client activity in the current agent context. Use workflow-engine::dispatch-activity (spawn) only when an activity explicitly requires a disposable fresh worker.
 steps:
   - kind: action
     id: verify-preconditions
@@ -30,13 +31,12 @@ steps:
     maxIterations: 200
     steps:
       - kind: technique
-        id: dispatch-activity
+        id: execute-activity
         technique:
-          name: workflow-engine::dispatch-activity
+          name: workflow-engine::execute-activity
           inputs:
             activity_id: current_activity
             session_index: client_session_index
-            prompt_template: meta/activity-worker-prompt
             state: variables
       - kind: technique
         id: present-yielded-checkpoint

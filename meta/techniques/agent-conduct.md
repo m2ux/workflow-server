@@ -91,11 +91,15 @@ Most workflow artifacts — the per-activity planning documents — live under t
 
 ### orchestrator-no-domain-work
 
-The orchestrator (meta or workflow) MUST NOT execute activity steps, write code, review code, or produce artifacts. All domain work is delegated to the worker.
+Under **dispatch** topology (per-activity disposable workers), the orchestrator (meta or workflow) MUST NOT execute activity steps, write code, review code, or produce artifacts — all domain work is delegated to the worker via [dispatch-activity](./workflow-engine/dispatch-activity.md).
+
+Under **solo** topology (`context_mode: "persistent"`, one canonical `agent_id`, [execute-activity](./workflow-engine/execute-activity.md)), the same agent context **does** execute activity steps. Solo is the preferred meta client-walk path; do not spawn workers while claiming solo/persistent delivery.
 
 ### orchestrator-no-inline-on-resume
 
-On resume, the orchestrator MUST dispatch every activity through [workflow-engine](./workflow-engine/TECHNIQUE.md)::[dispatch-activity](./workflow-engine/dispatch-activity.md) (which spawns a worker sub-agent) — exactly as on a fresh start. Restored variables, a populated planning folder, prior artifacts visible in context, and a `current_activity` preserved in the session token are NOT licence to bypass dispatch and execute steps in the orchestrator's own context. Resume changes WHICH activity gets dispatched (`current_activity`, not `initialActivity`); it does not change WHETHER a worker is dispatched. The worker is responsible for detecting already-completed work from artifact presence and skipping accordingly — that discipline does not transfer to the orchestrator.
+On resume under **dispatch** topology, the orchestrator MUST run every activity through [dispatch-activity](./workflow-engine/dispatch-activity.md) (spawn a worker) — exactly as on a fresh start. Restored variables and prior artifacts are NOT licence to bypass spawn on the dispatch path.
+
+On resume under **solo** topology, continue with [execute-activity](./workflow-engine/execute-activity.md) in the same agent context — resume changes WHICH activity runs (`current_activity`), not the topology. Detect already-completed work from artifact presence and skip accordingly.
 
 ### orchestrator-target-path-scope
 
