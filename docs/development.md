@@ -87,9 +87,10 @@ workflow-server/
 │   ├── technique.schema.json
 │   ├── condition.schema.json
 │   └── state.schema.json
-├── scripts/                  # Build scripts
+├── scripts/                  # Build, corpus guards, benchmarks
 │   ├── generate-schemas.ts
-│   └── validate-workflow-yaml.ts
+│   ├── validate-workflow-yaml.ts
+│   └── run-token-benchmark.ts
 ├── tests/                    # Test suites
 ├── workflows/                # Worktree (workflows branch)
 │   ├── meta/                 # Bootstrap workflow
@@ -152,6 +153,24 @@ Run `npm test -- --run` for the live count and pass/fail summary.
 - **Framework:** [Vitest](https://vitest.dev/)
 - **MCP Testing:** Uses `InMemoryTransport` for integration tests
 - **Schema Validation:** Tests all Zod schemas with valid/invalid inputs
+
+### Token delivery benchmark
+
+[`scripts/run-token-benchmark.ts`](../scripts/run-token-benchmark.ts) measures payload-char and history/ledger cost for a fixed headless walk (`work-package` / e2e `skip-optional`), comparing `context_mode: fresh` vs `persistent` and resource reference delivery. It reuses the e2e harness/walker and probes `get_resource` for linked + hot templates (the robot walker does not call `get_resource` on its own).
+
+```bash
+# Baseline (full redelivery)
+npm run bench:token -- --label=A0 --context-mode=fresh
+
+# Solo / persistent (reference delivery where supported)
+npm run bench:token -- --label=A1 --context-mode=persistent
+
+# Pin a feature corpus worktree
+WORKFLOWS_DIR=/path/to/workflows npm run bench:token -- \
+  --label=A3 --context-mode=persistent --server-root=$PWD
+```
+
+Stdout is one JSON object (`getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals). Exit `2` if the walk does not complete. See [Reference Delivery](api-reference.md#reference-delivery) for the contract under test.
 
 ## Validating Workflows
 
