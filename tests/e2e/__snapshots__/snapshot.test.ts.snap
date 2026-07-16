@@ -181,7 +181,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       ],
       "checkpoints": [
         {
-          "id": "assumption-decision",
+          "id": "assumption-decision#{current_assumption.id}",
           "option": "accept",
           "setVariable": {
             "assumption_resolved_inline": true,
@@ -244,12 +244,10 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "review-findings.md",
         "debt-ledger.md",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-review-findings.md",
         "09-debt-ledger.md",
         "09-lean-change.md",
       ],
@@ -275,7 +273,6 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
-        "manual-diff-review.md",
         "code-review.md",
         "structural-analysis.md",
         "test-suite-review.md",
@@ -283,7 +280,6 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-manual-diff-review.md",
         "10-code-review.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
@@ -343,6 +339,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "stepsExecuted": [
         "review-strategy",
         "verify-readme",
+        "verify-artifact-conformance",
         "ensure-changes-folder-entry",
         "verify-change-fragment",
         "document-findings",
@@ -375,11 +372,6 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           },
         },
         {
-          "id": "review-received",
-          "option": "yes-review",
-          "setVariable": undefined,
-        },
-        {
           "id": "review-outcome",
           "option": "approved",
           "setVariable": {
@@ -399,7 +391,6 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "verify-body",
         "instruct-merge-strategy",
         "mark-ready",
-        "await-review",
         "process-review-comments",
         "analyze-review-outcome",
         "announce-completion",
@@ -411,10 +402,12 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "artifacts": [
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
+        "token-usage.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
+        "14-token-usage.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -423,6 +416,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "stepsExecuted": [
         "finalize-test-plan",
         "create-complete-doc",
+        "render-token-usage",
         "ensure-docs",
         "conduct-retrospective",
         "select-next",
@@ -691,7 +685,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       ],
       "checkpoints": [
         {
-          "id": "assumption-decision",
+          "id": "assumption-decision#{current_assumption.id}",
           "option": "accept",
           "setVariable": {
             "assumption_resolved_inline": true,
@@ -754,12 +748,10 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "review-findings.md",
         "debt-ledger.md",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-review-findings.md",
         "09-debt-ledger.md",
         "09-lean-change.md",
       ],
@@ -785,7 +777,6 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
-        "manual-diff-review.md",
         "code-review.md",
         "structural-analysis.md",
         "test-suite-review.md",
@@ -793,7 +784,6 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-manual-diff-review.md",
         "10-code-review.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
@@ -853,6 +843,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "stepsExecuted": [
         "review-strategy",
         "verify-readme",
+        "verify-artifact-conformance",
         "ensure-changes-folder-entry",
         "verify-change-fragment",
         "document-findings",
@@ -885,11 +876,6 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           },
         },
         {
-          "id": "review-received",
-          "option": "yes-review",
-          "setVariable": undefined,
-        },
-        {
           "id": "review-outcome",
           "option": "approved",
           "setVariable": {
@@ -909,7 +895,6 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "verify-body",
         "instruct-merge-strategy",
         "mark-ready",
-        "await-review",
         "process-review-comments",
         "analyze-review-outcome",
         "announce-completion",
@@ -921,10 +906,12 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "artifacts": [
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
+        "token-usage.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
+        "14-token-usage.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -935,6 +922,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "update-adr-status",
         "finalize-test-plan",
         "create-complete-doc",
+        "render-token-usage",
         "ensure-docs",
         "conduct-retrospective",
         "select-next",
@@ -1241,7 +1229,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       ],
       "checkpoints": [
         {
-          "id": "assumption-decision",
+          "id": "assumption-decision#{current_assumption.id}",
           "option": "accept",
           "setVariable": {
             "assumption_resolved_inline": true,
@@ -1304,12 +1292,10 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "review-findings.md",
         "debt-ledger.md",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-review-findings.md",
         "09-debt-ledger.md",
         "09-lean-change.md",
       ],
@@ -1335,7 +1321,6 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
-        "manual-diff-review.md",
         "code-review.md",
         "structural-analysis.md",
         "test-suite-review.md",
@@ -1343,7 +1328,6 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-manual-diff-review.md",
         "10-code-review.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
@@ -1403,6 +1387,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "stepsExecuted": [
         "review-strategy",
         "verify-readme",
+        "verify-artifact-conformance",
         "ensure-changes-folder-entry",
         "verify-change-fragment",
         "document-findings",
@@ -1435,11 +1420,6 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           },
         },
         {
-          "id": "review-received",
-          "option": "yes-review",
-          "setVariable": undefined,
-        },
-        {
           "id": "review-outcome",
           "option": "approved",
           "setVariable": {
@@ -1459,7 +1439,6 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "verify-body",
         "instruct-merge-strategy",
         "mark-ready",
-        "await-review",
         "process-review-comments",
         "analyze-review-outcome",
         "announce-completion",
@@ -1471,10 +1450,12 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "artifacts": [
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
+        "token-usage.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
+        "14-token-usage.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -1485,6 +1466,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "update-adr-status",
         "finalize-test-plan",
         "create-complete-doc",
+        "render-token-usage",
         "ensure-docs",
         "conduct-retrospective",
         "select-next",
@@ -1750,7 +1732,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       ],
       "checkpoints": [
         {
-          "id": "assumption-decision",
+          "id": "assumption-decision#{current_assumption.id}",
           "option": "accept",
           "setVariable": {
             "assumption_resolved_inline": true,
@@ -1813,12 +1795,10 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "review-findings.md",
         "debt-ledger.md",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-review-findings.md",
         "09-debt-ledger.md",
         "09-lean-change.md",
       ],
@@ -1844,7 +1824,6 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
-        "manual-diff-review.md",
         "code-review.md",
         "structural-analysis.md",
         "test-suite-review.md",
@@ -1852,7 +1831,6 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-manual-diff-review.md",
         "10-code-review.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
@@ -1912,6 +1890,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "stepsExecuted": [
         "review-strategy",
         "verify-readme",
+        "verify-artifact-conformance",
         "ensure-changes-folder-entry",
         "verify-change-fragment",
         "document-findings",
@@ -1944,11 +1923,6 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           },
         },
         {
-          "id": "review-received",
-          "option": "yes-review",
-          "setVariable": undefined,
-        },
-        {
           "id": "review-outcome",
           "option": "approved",
           "setVariable": {
@@ -1968,7 +1942,6 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "verify-body",
         "instruct-merge-strategy",
         "mark-ready",
-        "await-review",
         "process-review-comments",
         "analyze-review-outcome",
         "announce-completion",
@@ -1980,10 +1953,12 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "artifacts": [
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
+        "token-usage.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
+        "14-token-usage.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -1994,6 +1969,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "update-adr-status",
         "finalize-test-plan",
         "create-complete-doc",
+        "render-token-usage",
         "ensure-docs",
         "conduct-retrospective",
         "select-next",
@@ -2225,12 +2201,10 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "review-findings.md",
         "debt-ledger.md",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-review-findings.md",
         "09-debt-ledger.md",
         "09-lean-change.md",
       ],
@@ -2248,7 +2222,6 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
-        "manual-diff-review.md",
         "code-review.md",
         "structural-analysis.md",
         "test-suite-review.md",
@@ -2256,7 +2229,6 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-manual-diff-review.md",
         "10-code-review.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
@@ -2320,6 +2292,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "stepsExecuted": [
         "review-strategy",
         "verify-readme",
+        "verify-artifact-conformance",
         "ensure-changes-folder-entry",
         "verify-change-fragment",
         "document-findings",
@@ -2355,7 +2328,6 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "generate-review-summary",
         "present-summary-to-user",
         "post-pr-review",
-        "await-review",
         "announce-completion",
       ],
       "unresolved": [],
@@ -2365,10 +2337,12 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "artifacts": [
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
+        "token-usage.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
+        "14-token-usage.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -2567,7 +2541,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       ],
       "checkpoints": [
         {
-          "id": "assumption-decision",
+          "id": "assumption-decision#{current_assumption.id}",
           "option": "accept",
           "setVariable": {
             "assumption_resolved_inline": true,
@@ -2630,12 +2604,10 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "review-findings.md",
         "debt-ledger.md",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-review-findings.md",
         "09-debt-ledger.md",
         "09-lean-change.md",
       ],
@@ -2661,7 +2633,6 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "activity": "post-impl-review",
       "artifacts": [
         "change-block-index.md",
-        "manual-diff-review.md",
         "code-review.md",
         "structural-analysis.md",
         "test-suite-review.md",
@@ -2669,7 +2640,6 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
-        "10-manual-diff-review.md",
         "10-code-review.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
@@ -2729,6 +2699,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "stepsExecuted": [
         "review-strategy",
         "verify-readme",
+        "verify-artifact-conformance",
         "ensure-changes-folder-entry",
         "verify-change-fragment",
         "document-findings",
@@ -2761,11 +2732,6 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           },
         },
         {
-          "id": "review-received",
-          "option": "yes-review",
-          "setVariable": undefined,
-        },
-        {
           "id": "review-outcome",
           "option": "approved",
           "setVariable": {
@@ -2785,7 +2751,6 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "verify-body",
         "instruct-merge-strategy",
         "mark-ready",
-        "await-review",
         "process-review-comments",
         "analyze-review-outcome",
         "announce-completion",
@@ -2797,10 +2762,12 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "artifacts": [
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
+        "token-usage.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
+        "14-token-usage.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -2809,6 +2776,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "stepsExecuted": [
         "finalize-test-plan",
         "create-complete-doc",
+        "render-token-usage",
         "ensure-docs",
         "conduct-retrospective",
         "select-next",
