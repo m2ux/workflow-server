@@ -1,5 +1,5 @@
 id: requirements-refinement
-version: 1.4.0
+version: 1.5.0
 name: Requirements Refinement
 description: A confirmed workflow specification across its design dimensions, with the design assumptions it rests on surfaced, reconciled, and reviewed.
 required: true
@@ -34,7 +34,7 @@ steps:
         id: elicit-dimension
         technique: elicitation
       - kind: checkpoint
-        id: dimension-confirmed
+        id: dimension-confirmed#{current_dimension}
         message: "Here is the {current_dimension} I've captured. Is it accurate and complete?"
         blocking: true
         options:
@@ -71,7 +71,7 @@ steps:
         id: present-assumption
         technique: work-package::review-assumptions::interview
       - kind: checkpoint
-        id: assumption-decision
+        id: assumption-decision#{current_assumption.id}
         message: "Assumption {current_assumption.id}: {current_assumption.statement}"
         blocking: true
         options:
