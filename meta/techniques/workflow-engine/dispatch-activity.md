@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Transition the session to a target activity and spawn a **disposable worker** for it (dispatch topology). For the preferred solo path — same agent context, no spawn — use [execute-activity](./execute-activity.md) instead.
+Transition the session to a target activity and spawn a disposable worker for it.
 
 ## Inputs
 
@@ -57,7 +57,7 @@ When the harness surfaces per-sub-agent token usage on the worker's completion r
 
 ### no-get-activity-from-orchestrator
 
-Under **dispatch** topology, workflow orchestrators NEVER call `get_activity`. The activity definition is the spawned worker's domain. Orchestrators need only the `{activity_id}` to call `next_activity` and compose the worker prompt. Under **solo** topology use [execute-activity](./execute-activity.md) instead — that path does call `get_activity` in the same agent context.
+Workflow orchestrators NEVER call `get_activity`. The activity definition is the worker's domain. Orchestrators need only the `{activity_id}` (from `initialActivity` or `transitions`) to call `next_activity` and compose the worker prompt.
 
 ### no-pre-load-techniques
 
@@ -65,4 +65,4 @@ NEVER call `get_technique` to pre-load techniques for the worker. `get_activity`
 
 ### workers-need-full-delivery
 
-Dispatched workers are fresh contexts with no prior deliveries. Leave a worker-dispatched session in its default (`fresh`) delivery mode — never set `context_mode: "persistent"` on it, and never instruct a worker to pass `bundle: "reference"`: an unchanged-reference points at content the new worker has never received. Reference delivery is reserved for the solo topology where one agent context executes every activity itself.
+Dispatched workers are fresh contexts with no prior deliveries. Leave a worker-dispatched session in its default (`fresh`) delivery mode — never set `context_mode: "persistent"` on it, and never instruct a worker to pass `bundle: "reference"`: an unchanged-reference points at content the new worker has never received.
