@@ -1,0 +1,51 @@
+{
+  "label": "A0",
+  "description": "Pre-optimisation reference: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-07-16 (server@7aaf7e2b, workflows@a1409d5b). See .engineering/artifacts/planning/2026-07-16-token-usage-reductions/20-token-benchmark.md.",
+  "contextMode": "fresh",
+  "agentId": "bench-solo",
+  "path": [
+    "start-work-package",
+    "design-philosophy",
+    "codebase-comprehension",
+    "plan-prepare",
+    "assumptions-review",
+    "implement",
+    "lean-coding-audit",
+    "post-impl-review",
+    "validate",
+    "strategic-review",
+    "submit-for-review",
+    "complete"
+  ],
+  "finalStatus": "completed",
+  "toolCalls": {
+    "start_session": 1,
+    "get_workflow": 1,
+    "next_activity": 12,
+    "get_activity": 12,
+    "get_technique": 26,
+    "get_resource": 128,
+    "yield_checkpoint": 12,
+    "respond_checkpoint": 12,
+    "resume_checkpoint": 12
+  },
+  "chars": {
+    "get_activity": 687936,
+    "get_workflow": 59455,
+    "get_resource": 448084,
+    "get_technique": 160057
+  },
+  "history": {
+    "technique_bundled": 62,
+    "technique_fetched": 26,
+    "resource_fetched": 95
+  },
+  "deliveredContentKeys": 73,
+  "resourceLedgerKeys": 0,
+  "unchangedResourceAnswers": 0,
+  "unchangedTechniqueAnswers": 0,
+  "getActivityChars": 687936,
+  "getWorkflowChars": 59455,
+  "getResourceChars": 448084,
+  "getTechniqueChars": 160057
+}
