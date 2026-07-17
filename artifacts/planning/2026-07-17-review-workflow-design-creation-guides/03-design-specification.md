@@ -78,3 +78,27 @@ No new workflow-level rule slug.
 ## Confirmation ask
 
 Approve if the seven technique-markdown fixes plus the quality-review checkpoint removal are the full update scope before re-drafting. Needs-changes if activity boundaries, the critical-blocker gate, or additional files should be in scope.
+
+---
+
+## Return-to-draft addition — binding-fidelity dead-output / orphan-input fixes (2026-07-17)
+
+**Change request:** `validate-and-commit`'s schema-validation step ran `scripts/check-binding-fidelity.ts` against the branch and reported 21 NEW violations relative to the committed baseline — 20 `dead-output` findings (an own-file Output nothing outside that file consumes) and 1 `orphan-input` finding (an own-declared Input with no producer in the binding workflow). The user directed a content fix, not a baseline update, per the guard script's own guidance.
+
+**Source:** `check-binding-fidelity.ts` output at return-to-draft (2026-07-17); [06-scope-manifest.md §Return-to-draft](06-scope-manifest.md#return-to-draft-binding-fidelity-pass--2026-07-17) and [06-draft-attestation.md §Return-to-draft](06-draft-attestation.md#return-to-draft-binding-fidelity-pass--2026-07-17) carry the full file-by-file list.
+
+**Goal for this addition:**
+
+| Goal | Meaning |
+|------|---------|
+| Every declared Output has a real external consumer | An Output read only within its own declaring file is either given a genuine cross-file consumer or demoted to a `{$local}` |
+| Every declared Input has a producer | `synthesize-update-specification.md` inherits `user_description` from Root `TECHNIQUE.md` instead of redeclaring it with no in-workflow producer |
+| Fixes land in workflow content, not the baseline | No `--update-baseline` run this pass; the 4 previously-baselined findings that are also no longer present are a byproduct, left in the baseline (server-scripts change, out of scope) |
+
+**Update dimensions touched:**
+
+- **Techniques** — 17 technique-markdown files: 9 move an `#### artifact` marker from a `_path` Output onto its paired content Output (Pattern A); 5 demote a same-file-only Output to a `{$local}` (Pattern B, one file — `review-drafted-file.md` — shared with a Pattern A edit, so 13 unique files across A+B); `persist-report.md` gains a `report_content` Input and `compile-report.md` gains two optional satellite-path Inputs (Pattern C); `synthesize-update-specification.md` drops a redundant own Input (Pattern E); `publish-workflow-pr.md` (shared with Pattern B) and `work-package/techniques/update-pr/mark-ready.md` add explicit captures of two meta Outputs (Pattern D) — 17 unique technique files in total.
+- **Activities** — 3 activity files (`08-quality-review.yaml`, `09-validate-and-commit.yaml`, `10-post-update-review.yaml`) bind `persist-report`'s new `report_content` Input to the prior assemble product (`{compliance_report}` on the review path, `{findings_summary}` on the post-update path) at each of the technique's three call sites.
+- **No activity boundaries, checkpoints, or the critical-blocker gate change.** `workflow.yaml` stays at v1.24.4 — no root-metadata edit this pass.
+
+**Out of scope:** Resource guide rewrites; `scripts/binding-fidelity-baseline.json` shrink; any change to `review-disposition` or `blocker-gate`.

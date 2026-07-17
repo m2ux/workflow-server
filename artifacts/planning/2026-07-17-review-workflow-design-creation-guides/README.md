@@ -1,6 +1,6 @@
 # Fix workflow-design compliance findings — July 2026
 
-> Update · Created 2026-07-17 · **Status:** Drafting
+> Update · Created 2026-07-17 · **Status:** Reviewing
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -40,7 +40,7 @@ Detail: [08-compliance-review.md](08-compliance-review.md)
 
 ## Scope Manifest
 
-[06-scope-manifest.md](06-scope-manifest.md) — seven technique modifies (Output + `#template` cites) plus `activities/08-quality-review.yaml` + `activities/README.md` (quality-review auto-fix); `workflow.yaml` bump already applied (v1.24.4).
+[06-scope-manifest.md](06-scope-manifest.md) — seven technique modifies (Output + `#template` cites) plus `activities/08-quality-review.yaml` + `activities/README.md` (quality-review auto-fix); `workflow.yaml` bump already applied (v1.24.4). Return-to-draft binding-fidelity pass adds 20 more files (17 techniques, 3 activities, tracked separately) — see [06-scope-manifest.md §Return-to-draft](06-scope-manifest.md#return-to-draft-binding-fidelity-pass--2026-07-17).
 
 ## 📊 Progress
 
@@ -77,6 +77,20 @@ Detail: [08-compliance-review.md](08-compliance-review.md)
 | 06 | [Scope manifest](06-scope-manifest.md) | Refreshed — added `activities/08-quality-review.yaml` + `activities/README.md` (file_count 7 → 9) | — | ✅ Complete |
 | 06 | [Draft attestation](06-draft-attestation.md) | Refreshed — 9 new blocks for the quality-review auto-fix change | — | ✅ Complete |
 | 06 | Scope and draft (return-to-draft) | `activities/08-quality-review.yaml` (v1.12.2 → 1.12.3) + `activities/README.md` drafted, schema-validated, attested | — | ✅ Complete |
+| 08 | [Expressiveness findings](08-expressiveness-findings.md) | 4 next-step-narration findings on the new flagged-findings messages — fix-all applied (v1.12.3 → 1.12.4) | — | ✅ Complete |
+| 08 | Conformance / rule hygiene / enforcement | 0 findings each on the checkpoint-removal change; prior C-1/C-2 cite fixes unregressed | — | ✅ Complete |
+| 08 | [Verified findings](08-verified-findings.md) | Post-return-to-draft verified set; no criticals | — | ✅ Complete |
+| 08 | Quality review | Second pass — audited the checkpoint-removal change itself; fix cycle closed in 1 iteration | — | ✅ Complete |
+| 09 | Validate and commit | Schema-validation step's `check-binding-fidelity.ts` found 21 NEW violations (20 dead-output, 1 orphan-input) — returned to draft (no commit) | — | ↩ Returned to draft |
+| 03 | [Design specification](03-design-specification.md) | Refreshed — added the binding-fidelity dead-output/orphan-input fix scope | — | ✅ Complete |
+| 06 | [Scope manifest](06-scope-manifest.md) | Refreshed — 20-file binding-fidelity fix pass (`file_count` this pass: 20) | — | ✅ Complete |
+| 06 | [Draft attestation](06-draft-attestation.md) | Refreshed — 24 new blocks for the binding-fidelity fix pass | — | ✅ Complete |
+| 06 | Scope and draft (return-to-draft #2) | 17 technique files + 3 activity files drafted, schema-validated (`validate-workflow-yaml.ts`, `check-all-refs.ts`), attested | — | ✅ Complete |
+| 08 | [Expressiveness findings](08-expressiveness-findings.md) | Third quality-review pass, audits the binding-fidelity fix pass — 5 findings (3 `bind-protocol-locals` read-site defects, 2 artifact-placement gaps) — fix-all applied | — | ✅ Complete |
+| 08 | Conformance / rule hygiene / enforcement | 0 findings each on the binding-fidelity fix pass; prior fixes unregressed | — | ✅ Complete |
+| 08 | [Verified findings](08-verified-findings.md) | Post-binding-fidelity-fix verified set; no criticals; one candidate withdrawn (would have regressed a dead-output exemption) | — | ✅ Complete |
+| 08 | Quality review | Third pass — audited commit `aad982cf` itself; fix cycle closed in 1 iteration; re-verified with `check-binding-fidelity.ts` (0 NEW, 4 baseline fixes), `check-all-refs.ts`, `validate-workflow-yaml.ts` | — | ✅ Complete |
+| 09 | Validate and commit | `check-binding-fidelity.ts` re-run — 0 NEW, plus the 5 additional fixes from this pass | — | ⬚ Pending |
 | 10 | Post-update review | Confirm findings closed | — | ⬚ Pending |
 | 11 | Retrospective | Close-out | — | ⬚ Pending |
 
