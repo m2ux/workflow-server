@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Own the lean-coding capability — capture and trace the task, climb the lazy [ladder](../resources/the-ladder.md#rungs) to the minimal solution that still clears the [safety floor](../resources/the-ladder.md#safety-floor), review and audit for over-engineering, harvest the deliberate-simplification debt, and report the honest gain. Operations inherit the shared inputs and rules below.
+Own the lean-coding capability — capture and trace the task, climb the lazy [ladder](../resources/the-ladder.md#rungs) to the minimal solution that still clears the [safety floor](../resources/the-ladder.md#safety-floor), review and audit for over-engineering, harvest the deliberate-simplification debt, and report the honest gain.
 
 ## Inputs
 

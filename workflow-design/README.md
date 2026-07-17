@@ -116,12 +116,13 @@ Positive design-time framing principles — see [design-principles](./resources/
 | 22 | Close the loop |
 | 23 | Keep session interaction in activities |
 | 24 | Bind sibling operations as steps |
+| 25 | State contract contribution |
 
 ---
 
 ## Techniques
 
-The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) shared base contract inherited by all of them. Each activity step binds exactly one operation via `step.technique`. The cross-cutting meta [`variable-binding`](../meta/techniques/variable-binding.md) strategy technique is declared once at `workflow.techniques.activity` and inherited by every activity (injected into every `get_activity`), and commits go through meta [`version-control::commit-regular-files`](../meta/techniques/version-control/commit-regular-files.md). Planning-folder artifacts are managed cross-workflow through [`work-package::manage-artifacts`](../work-package/techniques/manage-artifacts/TECHNIQUE.md) — `create-readme` (seed the planning README at intake), `write-artifact` (numbered report artifacts), and `verify-readme-conforms` (drift check before commit). The design-assumption lifecycle reuses [`work-package::review-assumptions`](../work-package/techniques/review-assumptions/TECHNIQUE.md) cross-workflow (`collect`, `interview`, `record`), with a workflow-local `reconcile-design-assumptions` (audit-backed) in place of work-package's code-analysis reconcile, and a workflow-local `conduct-retrospective` for the session retrospective.
+The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) holding shared Inputs, Outputs, and Rules for every technique here. Each activity step binds exactly one operation via `step.technique`. The cross-cutting meta [`variable-binding`](../meta/techniques/variable-binding.md) strategy technique is declared once at `workflow.techniques.activity` and inherited by every activity (injected into every `get_activity`), and commits go through meta [`version-control::commit-regular-files`](../meta/techniques/version-control/commit-regular-files.md). Planning-folder artifacts are managed cross-workflow through [`work-package::manage-artifacts`](../work-package/techniques/manage-artifacts/TECHNIQUE.md) — `create-readme` (seed the planning README at intake), `write-artifact` (numbered report artifacts), and `verify-readme-conforms` (drift check before commit). The design-assumption lifecycle reuses [`work-package::review-assumptions`](../work-package/techniques/review-assumptions/TECHNIQUE.md) cross-workflow (`collect`, `interview`, `record`), with a workflow-local `reconcile-design-assumptions` (audit-backed) in place of work-package's code-analysis reconcile, and a workflow-local `conduct-retrospective` for the session retrospective.
 
 | Technique | Capability | Bound by |
 |-----------|------------|----------|
@@ -214,7 +215,7 @@ workflows/workflow-design/
 │   ├── 10-post-update-review.yaml        # Post-commit compliance audit (update mode)
 │   └── 11-retrospective.yaml             # Completion summary + session retrospective (terminal)
 ├── techniques/                           # Flat library of workflow-local standalone techniques
-│   ├── TECHNIQUE.md                      # Workflow-root base contract (inherited by all techniques)
+│   ├── TECHNIQUE.md                      # Shared Inputs/Outputs/Rules for every technique
 │   ├── intake-classification.md
 │   ├── context-loading.md
 │   ├── derive-design-dimensions.md

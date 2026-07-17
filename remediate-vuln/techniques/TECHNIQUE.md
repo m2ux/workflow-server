@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Base contract for the remediate-vuln techniques: the ambient inputs every security-remediation technique reads, and the isolation invariants they all uphold. Operations inherit the inputs and rules below.
+Ambient inputs and isolation invariants for every security-remediation technique.
 
 ## Inputs
 

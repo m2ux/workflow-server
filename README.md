@@ -17,7 +17,7 @@ workflows/                        # Worktree checkout
 │   ├── activities/               # Lifecycle activities (indexed)
 │   │   └── {NN}-{id}.yaml        # 00-discover-session, 01-initialize-session, ...
 │   ├── techniques/               # Markdown techniques (canonical source of truth)
-│   │   ├── TECHNIQUE.md          #   root base contract — inherited by every technique here
+│   │   ├── TECHNIQUE.md          #   shared Inputs/Outputs/Rules for techniques here
 │   │   ├── {slug}.md             #   standalone technique (agent-conduct, version-control, ...)
 │   │   └── {group}/              #   container technique (workflow-engine, harness-compat, ...)
 │   │       ├── TECHNIQUE.md      #     container technique / base contract
@@ -109,8 +109,8 @@ git worktree add ./workflows workflows
 **Techniques (markdown source of truth):**
 1. For a standalone technique, create `{workflow-id}/techniques/{slug}.md` (or `meta/techniques/{slug}.md` for the cross-workflow shared layer) with frontmatter (`metadata.version`), a required `## Capability` section, and optional `## Inputs` / `## Outputs` / `## Protocol` / `## Rules` sections.
 2. For a container technique (such as `gitnexus-operations`), create `{group}/TECHNIQUE.md` as the container technique/base contract plus one `{group}/{sub}.md` per nested technique. Each nested technique file carries `metadata.version` frontmatter and a `## Capability` section. Nested techniques are addressed `{group}::{sub}`.
-3. Optionally add a per-workflow root base contract at `{workflow-id}/techniques/TECHNIQUE.md` — isomorphic to a technique, carrying no technique list. Its Inputs / Outputs / Rules / Protocol are inherited by every technique in the workflow.
-4. Follow the canonical sections defined in [meta/resources/workflow-canonical.md](./meta/resources/workflow-canonical.md)
+3. Optionally add a per-workflow root `TECHNIQUE.md` at `{workflow-id}/techniques/TECHNIQUE.md` for shared Inputs / Outputs / Rules / Protocol (loader composition is defined in [meta/resources/workflow-canonical.md](./meta/resources/workflow-canonical.md)).
+4. Follow the canonical sections defined in that same resource
 5. Commit to this branch
 
 Cross-reference links between techniques and resources are file-relative and end in the target's real filename (`<slug>.md`, `<group>/TECHNIQUE.md`, or `<group>/<sub>.md`).

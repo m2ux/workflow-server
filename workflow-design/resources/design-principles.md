@@ -109,3 +109,7 @@ Techniques are session-blind: take inputs, process (including tools and composed
 ## 24. Bind Sibling Operations as Steps
 
 When work is a sequence of already-defined sibling operations (audit passes, pipeline stages, or other multi-op runs), bind each as its own activity `steps[]` entry. A technique owns one capability's produce path — it does not host a pass inventory or multi-op pipeline the activity can express as consecutive binds.
+
+## 25. State Contract Contribution
+
+Capability on a container `TECHNIQUE.md` (workflow-root or group) names what shared Inputs, Outputs, Rules, or domain invariants the contract contributes. Loader composition — inheritance merge, `Initial`/`Final` wrap, renumbering, folder-implied membership — lives in workflow-canonical and the schema construct inventory, not in the contract's Capability.

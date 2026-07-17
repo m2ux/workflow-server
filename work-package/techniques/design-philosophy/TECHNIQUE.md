@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Apply structured design framework to classify problems, assess complexity, and determine workflow path. Operations inherit the shared inputs, outputs, and rules below.
+Apply structured design framework to classify problems, assess complexity, and determine workflow path.
 
 ## Inputs
 

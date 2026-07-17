@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Base contract inherited by every prism analysis technique: the inputs each technique reads, and the isolation, evidence, and write-discipline invariants every analytical pass upholds.
+Shared inputs and isolation, evidence, and write-discipline invariants for every prism analysis technique.
 
 ## Inputs
 

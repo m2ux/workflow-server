@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Research knowledge base and external sources to discover best practices, patterns, and resources, synthesize them against the work package requirements, and document the findings. Operations inherit the shared outputs and rules below.
+Research knowledge base and external sources to discover best practices, patterns, and resources, synthesize them against the work package requirements, and document the findings.
 
 ## Outputs
 

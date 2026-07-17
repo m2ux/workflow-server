@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Design the implementation approach and create a work package plan with task breakdown, dependencies, and ordering, then break the plan into actionable TODO tasks. Operations inherit the shared inputs, outputs, and rules below.
+Design the implementation approach and create a work package plan with task breakdown, dependencies, and ordering, then break the plan into actionable TODO tasks.
 
 ## Inputs
 

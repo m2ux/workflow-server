@@ -1486,3 +1486,15 @@ A technique's Protocol is only a pass inventory — sequencing sibling operation
 **Do not flag:** A technique that *composes* one shared/meta op with caller-specific value assembly (`duplicate-shared-capability` carve-out); a single capability whose protocol phases are facets of one produce path (load → audit → persist *one* findings bag); thin walkers that name one home and apply it (`no-technique-resource-dual-home`); stage/gate locus without a multi-op inventory (`technique-stage-agnostic`).
 
 **Fix:** Delete the façade technique; bind each sibling operation as its own activity step in the order required. Keep per-pass products on the sibling techniques. See [Bind Sibling Operations as Steps](./design-principles.md#24-bind-sibling-operations-as-steps); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`.
+
+### AP-115. platform-semantics-in-capability
+
+"Shared base contract… Inputs… are inherited by every technique… Protocol here WRAPS… `Initial`/`Final`… server renumbers…"
+
+Capability (or a techniques-folder README) teaches loader composition instead of naming what the contract contributes.
+
+**Detect:** Capability on a container `TECHNIQUE.md` (workflow-root or group) — or orientation prose for that container — explains how the loader applies the contract: Inputs/Outputs/Rules/Errors inherited or merged into descendants; Protocol wrap via `Initial`/`Final` (prepend/append, renumber, recursive ancestors); technique set implied by folder contents / "do not list techniques"; standalone-vs-group placement lectures; or a trailing "Operations inherit the … below" clause that only restates inheritance. Test: if the sentence teaches *how composeLoaded works* rather than *what shared domain contract exists*, flag it.
+
+**Do not flag:** Authoritative platform homes — [schema-construct-inventory](./schema-construct-inventory.md), [workflow-canonical](../../meta/resources/workflow-canonical.md) (Base-contract inheritance), design-principles, this catalogue, or meta harness/engine resources whose domain is the platform; a one-line contribution statement (shared domain inputs/invariants) with no merge/wrap lecture; README notes that `techniques.activity` strategy techniques apply to every activity without teaching container protocol wrap rules; delivery/tool recipes (`no-delivery-mechanism-narration`, `no-tool-usage-prescription`).
+
+**Fix:** Delete composition, placement, and inherit-trailer prose. Leave a short contribution statement (what shared I/O/rules/invariants this contract holds). Loader HOW stays in workflow-canonical / the schema construct inventory. See [State Contract Contribution](./design-principles.md#25-state-contract-contribution).

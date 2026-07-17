@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Own the human-facing assumption lifecycle — collect and classify the assumptions made during the work, interview the user on the open ones, and record their decisions back into the assumptions log. Operations inherit the shared inputs, outputs, and rules below.
+Own the human-facing assumption lifecycle — collect and classify the assumptions made during the work, interview the user on the open ones, and record their decisions back into the assumptions log.
 
 ## Inputs
 

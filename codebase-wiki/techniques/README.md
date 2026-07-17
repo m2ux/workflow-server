@@ -4,9 +4,9 @@
 
 The technique library for the codebase-wiki workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in the per-technique `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
 
-[`TECHNIQUE.md`](./TECHNIQUE.md) is the workflow-root base contract inherited by every technique here. Its shared inputs (`wiki_path`, `raw_baseline_commit`), its citation and confidence requirements, and the workflow's invariants merge into each technique, and its `Initial`/`Final` protocol blocks wrap each technique's protocol. Because the wiki has a single operation cluster, the shared contract lives in this workflow-root base rather than a group `TECHNIQUE.md` — the techniques are standalone, not a group. The set is 5 reuse operations (`ingest`, `query`, `lint`, `maintain-index-log`, `cross-link`) plus 2 internal techniques (`collect-scope`, `compose-overview`) bound within `confirm-scope` and `publish`.
+[`TECHNIQUE.md`](./TECHNIQUE.md) holds shared Inputs (`wiki_path`, `raw_baseline_commit`), citation and confidence requirements, and workflow invariants for every technique here. Reuse operations: `ingest`, `query`, `lint`, `maintain-index-log`, `cross-link`. Internal: `collect-scope`, `compose-overview` (bound in `confirm-scope` and `publish`).
 
-The cross-cutting meta strategy technique [`variable-binding`](../../meta/techniques/variable-binding.md) is declared at the workflow/activity level and inherited, not bound per step.
+The cross-cutting meta strategy technique [`variable-binding`](../../meta/techniques/variable-binding.md) is declared at `workflow.techniques.activity` / activity level, not bound per step.
 
 ---
 

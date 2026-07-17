@@ -4,7 +4,7 @@
 
 The technique library for the prism-audit workflow. Each operation is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in each operation's `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
 
-The workflow-root [`TECHNIQUE.md`](TECHNIQUE.md) is the base contract inherited by every technique below: any inputs, outputs, or rules it declares are inherited, and any protocol it defines is prepended to each technique's own.
+[`TECHNIQUE.md`](TECHNIQUE.md) holds shared Inputs, Outputs, Rules, and Errors for every technique here.
 
 ---
 

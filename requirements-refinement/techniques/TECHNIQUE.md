@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Base contract for the requirements-refinement techniques: the inputs every technique reads, and the specification-fidelity invariants they all uphold.
+Shared inputs and specification-fidelity invariants for every requirements-refinement technique.
 
 ## Inputs
 

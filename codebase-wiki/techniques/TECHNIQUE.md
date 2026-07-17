@@ -5,9 +5,7 @@ metadata:
 
 ## Capability
 
-Shared base contract for the codebase-wiki techniques. Any Inputs, Outputs, or Rules defined here are inherited by every technique in this workflow. A Protocol here WRAPS each descendant's own protocol: blocks titled `Initial` are placed before, blocks titled `Final` after, and the server renumbers the combined sequence; any other protocol block here is delivered only when this contract is referenced directly. The wrap is recursive — every ancestor container contributes its `Initial`/`Final`.
-
-The wiki operations are STANDALONE top-level techniques, not a group — there is one operation cluster, so the workflow-root base carries the shared contract directly rather than a group `TECHNIQUE.md`. The technique set is implied by the folder contents; do not list techniques here. Other workflows bind these operations cross-workflow with the slash form `codebase-wiki/<op>` (for example `codebase-wiki/ingest`, `codebase-wiki/query`), exactly as a standalone technique in any other workflow is referenced. Keep this contract minimal: only genuinely cross-technique material belongs here.
+Shared Inputs, Outputs, and Rules for every codebase-wiki technique.
 
 ## Inputs
 
