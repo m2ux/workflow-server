@@ -90,8 +90,8 @@ Detail: [08-compliance-review.md](08-compliance-review.md)
 | 08 | Conformance / rule hygiene / enforcement | 0 findings each on the binding-fidelity fix pass; prior fixes unregressed | — | ✅ Complete |
 | 08 | [Verified findings](08-verified-findings.md) | Post-binding-fidelity-fix verified set; no criticals; one candidate withdrawn (would have regressed a dead-output exemption) | — | ✅ Complete |
 | 08 | Quality review | Third pass — audited commit `aad982cf` itself; fix cycle closed in 1 iteration; re-verified with `check-binding-fidelity.ts` (0 NEW, 4 baseline fixes), `check-all-refs.ts`, `validate-workflow-yaml.ts` | — | ✅ Complete |
-| 09 | Validate and commit | `check-binding-fidelity.ts` re-run — 0 NEW, plus the 5 additional fixes from this pass | — | ⬚ Pending |
-| 10 | Post-update review | Confirm findings closed | — | ⬚ Pending |
+| 09 | Validate and commit | Committed at `4e0f75df`; binding-fidelity 0 NEW; PR #254 | — | ✅ Complete |
+| 10 | [Post-update review](10-post-update-review.md) | Post-commit audit — schema/refs/binding clean; 5 Low scope-manifest drifts accepted | — | ✅ Complete |
 | 11 | Retrospective | Close-out | — | ⬚ Pending |
 
 ## 🔗 Links
