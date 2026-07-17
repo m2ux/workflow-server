@@ -1,26 +1,44 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Audit drafted content for schema expressiveness: cross-check every prose passage against the schema construct inventory, flagging prose that substitutes for a formal construct and rewriting it as the construct or moving it to a field that fits.
+Audit drafted content for schema expressiveness: walk prose against the schema construct inventory, flag substitutions for formal constructs, and persist before/after rewrites when findings exist.
 
 ## Outputs
 
+### expressiveness_findings
+
+Expressiveness findings — each a flagged instance with its file, the prose passage, the substituting construct, and the before/after rewrite.
+
 ### expressiveness_finding_count
 
-Count of expressiveness findings — each a flagged instance with its file, the prose passage, the substituting construct, and the before/after rewrite. Interpolated into the expressiveness-confirmed checkpoint message.
+Count of entries in `{expressiveness_findings}`.
+
+### expressiveness_findings_path
+
+Absolute path to the persisted findings artifact when `{expressiveness_finding_count}` is greater than zero; empty otherwise.
+
+#### artifact
+
+`expressiveness-findings.md`
 
 ## Protocol
 
-### 1. Audit Expressiveness
+### 1. Load Inventory
 
-- Walk every prose passage in `workflow.yaml`, activity files, and technique files against the construct inventory in [schema-construct-inventory](../resources/schema-construct-inventory.md)
-- Flag every instance where prose substitutes for: steps, checkpoints, decisions, loops, transitions, conditions, triggers, actions, artifacts, variables, modes, inputs, outputs, or protocol phases
-- For each flagged instance, rewrite the prose as the formal construct or move it to a field that fits
+- Load [schema-construct-inventory](../resources/schema-construct-inventory.md) — sole source of informal→formal construct mappings for this pass
+- Do not restate the inventory tables or construct lists here; apply each mapping as written
 
-### 2. Present Findings
+### 2. Audit Expressiveness
 
-- Present the expressiveness-pass results to the user: counts, affected files, replacement constructs, and a before/after for each flagged instance
+- Walk every prose passage in `workflow.yaml`, activity files, and technique files against the inventory
+- For each match where prose substitutes for a formal construct: record file, passage, target construct, and a before/after rewrite (construct in place, or move to the fitting field) into `{expressiveness_findings}`
+
+### 3. Persist Findings
+
+- Set `{expressiveness_finding_count}` to the number of findings
+- When `{expressiveness_finding_count}` is greater than zero: persist `{expressiveness_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `expressiveness-findings.md`; capture `{expressiveness_findings_path}`
+- When `{expressiveness_finding_count}` is zero: leave `{expressiveness_findings_path}` empty

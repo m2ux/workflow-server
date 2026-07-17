@@ -1,27 +1,48 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.4.0
 ---
 
 ## Capability
 
-Audit drafted content for convention conformance against reference workflows — file naming, field ordering, version format, transition patterns, checkpoint structure, technique structure, and documentation voice — flagging each divergence and deciding whether it is justified or should be brought into conformance.
+Audit drafted content for convention conformance against reference workflows — apply the convention-conformance checklist (naming, field order, structure), flag each divergence with justified/bring-into-conformance disposition, and persist findings when any exist. Definition prose voice is out of scope for this pass.
 
 ## Outputs
 
+### conformance_findings
+
+Conformance divergences — each a divergence with its file, the diverging construct, the reference convention, and the justified/bring-into-conformance disposition.
+
 ### conformance_finding_count
 
-Count of conformance divergences — each a divergence with its file, the diverging construct, the reference convention, and the justified/bring-into-conformance disposition. Interpolated into the conformance-confirmed checkpoint message.
+Count of entries in `{conformance_findings}`.
+
+### conformance_findings_path
+
+Absolute path to the persisted findings artifact when `{conformance_finding_count}` is greater than zero; empty otherwise.
+
+#### artifact
+
+`conformance-findings.md`
 
 ## Protocol
 
-### 1. Audit Conformance
+### 1. Load Conventions
 
-- Compare against reference workflows for file naming (`NN-name.yaml`), field ordering, version format (`X.Y.Z`), transition patterns, checkpoint structure, and technique structure
-- Flag every divergence; for each, decide whether the divergence is justified or should be brought into conformance
-- Where drafted content uses different naming or structural patterns than existing workflows, identify the divergence against the reference workflows and align with the established conventions
-- Check documentation voice: every prose passage states what the system does, in positive declarative present tense — describing current behaviour and structure. Rewrite passages that state what the system avoids, or that compare the design to a prior or alternative one, as positive statements of current behaviour. Scan the drafted lines for these markers: `not`, `never`, `no longer`, `instead of`, `rather than`, `do not`, `— not X`. Planning artifacts under `artifacts/planning/` are exempt, since they record evolution by design.
+- Load [convention-conformance](../resources/convention-conformance.md) — sole source of reference-convention criteria for this pass
+- Do not restate that checklist here; follow it as written
 
-### 2. Present Findings
+### 2. Survey Reference Workflows
 
-- Present the conformance-pass results to the user: conventions followed, conventions diverged, and the justification status for each divergence
+- Survey reference workflows of similar type (via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) / orchestrator-supplied definitions) as the live pattern baseline
+
+### 3. Audit Conformance
+
+- Compare drafted `workflow.yaml`, activities, techniques, resources, and READMEs against the reference baseline using every concern in convention-conformance
+- For each divergence: record file, construct, reference convention, and disposition (justified vs bring into conformance) into `{conformance_findings}`
+
+### 4. Persist Findings
+
+- Set `{conformance_finding_count}` to the number of findings
+- When `{conformance_finding_count}` is greater than zero: persist `{conformance_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `conformance-findings.md`; capture `{conformance_findings_path}`
+- When `{conformance_finding_count}` is zero: leave `{conformance_findings_path}` empty

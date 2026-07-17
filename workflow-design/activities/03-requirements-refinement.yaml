@@ -1,5 +1,5 @@
 id: requirements-refinement
-version: 1.5.0
+version: 1.9.0
 name: Requirements Refinement
 description: A confirmed workflow specification across its design dimensions, with the design assumptions it rests on surfaced, reconciled, and reviewed.
 required: true
@@ -8,7 +8,12 @@ techniques:
 steps:
   - kind: checkpoint
     id: design-context
-    message: "Optional: provide design context before elicitation — reference workflows to model after, integration points, or operators and triggers. Skipping in 30s; elicitation can proceed without it."
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "!="
+      value: update
+    message: "Optional design context — reference workflows, integration points, or operators and triggers."
     blocking: false
     defaultOption: skip-context
     autoAdvanceMs: 30000
@@ -18,10 +23,18 @@ steps:
         description: Capture reference workflows, integration points, and operators before elicitation.
       - id: skip-context
         label: Skip — proceed to elicitation
-        description: Proceed without additional design context (default — auto-skips after 30s).
+        description: Proceed without additional design context
   - kind: technique
     id: set-design-dimensions
     technique: derive-design-dimensions
+  - kind: technique
+    id: synthesize-update-specification
+    technique: synthesize-update-specification
+    condition:
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: update
   - kind: loop
     id: dimension-elicitation-loop
     name: Dimension Elicitation Loop
@@ -29,21 +42,37 @@ steps:
     variable: current_dimension
     over: design_dimensions
     maxIterations: 12
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "!="
+      value: update
     steps:
       - kind: technique
-        id: elicit-dimension
-        technique: elicitation
-      - kind: checkpoint
-        id: dimension-confirmed#{current_dimension}
-        message: "Here is the {current_dimension} I've captured. Is it accurate and complete?"
-        blocking: true
-        options:
-          - id: confirmed
-            label: Yes, that's right
-            description: This dimension is accurately captured.
-          - id: refine
-            label: Needs changes
-            description: This dimension requires additions, removals, or modifications.
+        id: prepare-dimension
+        technique: prepare-dimension
+      - kind: action
+        id: surface-dimension-questions
+        actions:
+          - action: message
+            message: "Design dimension `{current_dimension}` — elicit answers to:\n\n{dimension_questions}"
+      - kind: technique
+        id: capture-dimension
+        technique: capture-dimension
+  - kind: technique
+    id: persist-specification
+    technique: persist-design-specification
+  - kind: checkpoint
+    id: spec-confirmed
+    message: "Full specification across the design dimensions ({design_dimensions}): [design specification]({specification_path})."
+    blocking: true
+    options:
+      - id: confirmed
+        label: Yes — specification is complete
+        description: The captured specification is accurate across all elicited dimensions.
+      - id: refine
+        label: Needs changes
+        description: One or more dimensions require additions, removals, or modifications before drafting.
   - kind: technique
     id: collect-assumptions
     technique:
@@ -94,10 +123,10 @@ transitions:
   - to: impact-analysis
     condition:
       type: simple
-      variable: is_update_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: update
   - to: pattern-analysis
     isDefault: true
 outcome:
-  - A complete workflow specification — purpose, activities, checkpoints, artifacts, variables, techniques, and rules — that the user has confirmed across every dimension, so drafting proceeds from settled requirements rather than open questions
+  - A complete workflow specification — purpose, activities, checkpoints, artifacts, variables, techniques, and rules — that the user has confirmed in one batch after elicitation, so drafting proceeds from settled requirements rather than open questions

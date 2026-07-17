@@ -15,8 +15,14 @@ Severity-rated drift findings: each names a file changed outside the manifest (a
 
 ## Protocol
 
-### 1. Audit Scope Discipline
+### 1. List Changed Files
 
 - List the files actually changed for `{target_workflow_id}` in the workflows worktree (the committed diff)
+
+### 2. Compare Against Manifest
+
 - Compare that set against `{scope_manifest}`: flag each file changed outside the manifest as an unplanned change, and each manifest item with no corresponding change as unaddressed scope
+
+### 3. Compose Drift Findings
+
 - Compose `{scope_drift_findings}` with a severity and a recommended disposition per drift item

@@ -1,11 +1,21 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.2.1
 ---
 
 ## Capability
 
-Extract structural and content patterns from comparable existing workflows for reuse in the target, and present them alongside the proposed structure for comparison.
+Extract structural and content patterns from comparable existing workflows for reuse in the target, and persist the comparison alongside the proposed structure.
+
+## Outputs
+
+### pattern_analysis_path
+
+Absolute path to the written pattern-analysis artifact.
+
+#### artifact
+
+`pattern-analysis.md`
 
 ## Protocol
 
@@ -18,6 +28,11 @@ Extract structural and content patterns from comparable existing workflows for r
 - Extract structural conventions across the references: activity naming (NN-name), step/checkpoint ratios, transitions, technique assignment (primary vs supporting), artifact naming, resource organization
 - Extract content conventions across the references: rule structuring, checkpoint effects, transition conditions, artifact-location references, technique protocol/inputs/output usage
 
-### 3. Present Patterns
+### 3. Assemble Comparison
 
-- Present a comparison table of the extracted patterns alongside the proposed structure, noting alignments and divergences
+- Assemble a comparison of extracted patterns alongside the proposed structure, noting alignments and divergences
+
+### 4. Persist Pattern Analysis
+
+- Persist the comparison via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `pattern-analysis.md`
+- Capture the written location as `{pattern_analysis_path}`

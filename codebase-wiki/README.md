@@ -53,7 +53,7 @@ Five standalone operations plus the shared workflow-root base contract. Definiti
 | [`maintain-index-log`](./techniques/maintain-index-log.md) | Update `index.md` and append `log.md` on every mutation. |
 | [`cross-link`](./techniques/cross-link.md) | Maintain bidirectional `[[wikilink]]` relationships and `related[]` frontmatter. |
 
-The shared contract — the common inputs `wiki_path` and `raw_baseline_commit`, the citation and confidence rules, and the workflow's invariants — lives in [`techniques/TECHNIQUE.md`](./techniques/TECHNIQUE.md) and is inherited by every technique.
+Shared Inputs (`wiki_path`, `raw_baseline_commit`), citation and confidence rules, and workflow invariants live in [`techniques/TECHNIQUE.md`](./techniques/TECHNIQUE.md).
 
 ## Reuse by other workflows
 

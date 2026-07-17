@@ -6,7 +6,7 @@
 
 The technique library for the prism-evaluate workflow. Each operation is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in each operation's `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
 
-The workflow-root [`TECHNIQUE.md`](TECHNIQUE.md) is the base contract inherited by every group below. Each group is a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `.md` file per operation.
+[`TECHNIQUE.md`](TECHNIQUE.md) holds shared Inputs, Outputs, Rules, and Errors for every technique here. Each group is a `techniques/<group>/` directory with a group `TECHNIQUE.md` plus one `.md` file per operation.
 
 | Technique group | Capability |
 |-----------------|------------|

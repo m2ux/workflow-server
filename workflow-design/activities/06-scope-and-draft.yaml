@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.4.0
+version: 1.8.0
 name: Scope and Draft
 description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file.
 required: true
@@ -11,7 +11,7 @@ steps:
     technique: scope-definition
   - kind: checkpoint
     id: scope-and-structure-confirmed
-    message: Here is the complete file manifest and implementation order. Proceeding in 30s unless you want to revise.
+    message: "Complete file manifest, structural design, and drafting order ([scope manifest]({scope_manifest_path}))."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
@@ -34,7 +34,7 @@ steps:
         source_material: the confirmed scope manifest and the structural design for the target workflow
     actions:
       - action: message
-        message: "**Solution Overview** (plain-language summary for stakeholder reference)"
+        message: "Solution Overview for `{workflow_id}` — plain-language summary ([planning README]({planning_folder_path}/README.md#solution-overview))"
   - kind: loop
     id: file-drafting-loop
     name: File Drafting Loop
@@ -49,16 +49,19 @@ steps:
       value: true
     steps:
       - kind: technique
-        id: present-file-approach
-        technique: present-file-approach
+        id: assemble-file-approach
+        technique: assemble-file-approach
       - kind: checkpoint
         id: file-approach-confirmed
         condition:
           type: simple
-          variable: is_update_mode
+          variable: operation_type
           operator: "!="
-          value: true
-        message: Here is my approach for drafting '{current_file}'. Does this look right?
+          value: update
+        message: "Drafting approach for '{current_file}' ([drafting plan]({drafting_plan_path}))."
+        blocking: false
+        defaultOption: confirmed
+        autoAdvanceMs: 30000
         options:
           - id: confirmed
             label: Yes, proceed with this approach
@@ -70,16 +73,19 @@ steps:
         id: yaml-authoring
         technique: yaml-authoring
       - kind: technique
-        id: present-for-review
-        technique: present-for-review
+        id: review-drafted-file
+        technique: review-drafted-file
       - kind: checkpoint
         id: file-review
         condition:
           type: simple
-          variable: is_update_mode
+          variable: operation_type
           operator: "!="
-          value: true
-        message: Here is the drafted content for '{current_file}'. Is this acceptable?
+          value: update
+        message: "Drafted content for '{current_file}' ([file review note]({file_review_note_path}))."
+        blocking: false
+        defaultOption: accepted
+        autoAdvanceMs: 30000
         options:
           - id: accepted
             label: Accepted
@@ -96,14 +102,14 @@ steps:
           type: and
           conditions:
             - type: simple
-              variable: is_update_mode
+              variable: operation_type
               operator: ==
-              value: true
+              value: update
             - type: simple
               variable: has_unflagged_removals
               operator: ==
               value: true
-        message: Content removal detected that was not flagged during impact analysis. Review the diff and confirm.
+        message: "Content removal detected that was not flagged during impact analysis ([file review note]({file_review_note_path}), [impact analysis]({impact_analysis_path}))."
         options:
           - id: proceed
             label: Proceed with changes
@@ -114,48 +120,56 @@ steps:
           - id: rewrite
             label: Rewrite approach
             description: File-level approach requires a different framing entirely.
-  - kind: checkpoint
-    id: batch-review
-    condition:
-      type: simple
-      variable: is_update_mode
-      operator: ==
-      value: true
-    message: All {file_count} files modified. Here is the change summary. Proceeding in 30s unless you intervene.
-    blocking: false
-    defaultOption: accepted
-    autoAdvanceMs: 30000
-    options:
-      - id: accepted
-        label: All changes accepted
-        description: Full set of modifications across all files is approved.
-      - id: revise-specific
-        label: Revise a specific file
-        description: One particular file requires further modification.
-      - id: redraft-all
-        label: Redraft all changes
-        description: Entire drafting pass requires restart from scratch.
   - kind: technique
     id: review-draft-yaml
     technique: review-draft-yaml
   - kind: checkpoint
     id: draft-attestation
-    message: "Drafted-content review: each block's rationale is shown above. Accepting in 30s unless you flag a block to revise before the audit passes."
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "!="
+      value: update
+    message: "Drafted-content review ([draft attestation]({draft_attestation_path}))."
     blocking: false
     defaultOption: attested
     autoAdvanceMs: 30000
     options:
       - id: attested
         label: Attest — drafted content is understood and intentional
-        description: Every drafted block is reviewed and approved as presented (default — auto-accepts after 30s).
+        description: Every drafted block is reviewed and approved as presented
       - id: revise-block
         label: Revise a flagged block
         description: One or more drafted blocks require targeted revision before the audit passes.
+  - kind: checkpoint
+    id: batch-review-attested
+    condition:
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: update
+    message: "All {file_count} files modified ([draft attestation]({draft_attestation_path}))."
+    blocking: false
+    defaultOption: attested
+    autoAdvanceMs: 30000
+    options:
+      - id: attested
+        label: Attest — all changes understood and intentional
+        description: Full modification set and every drafted block are approved
+      - id: revise-specific
+        label: Revise a specific file
+        description: One particular file requires further modification.
+      - id: revise-block
+        label: Revise a flagged block
+        description: One or more drafted blocks require targeted revision before the audit passes.
+      - id: redraft-all
+        label: Redraft all changes
+        description: Entire drafting pass requires restart from scratch.
 transitions:
   - to: quality-review
     isDefault: true
 outcome:
   - Every file the change requires is enumerated up front, closing the most common gap — work begun against an incomplete picture of what must be touched
   - The folder structure and activity flow are agreed against established patterns, so the workflow's shape is sound before any file is written
-  - The full workflow is drafted with each file individually approved, giving the user a known-good body of content rather than an unreviewed dump
+  - The full workflow is drafted with create-mode per-file review or a single update-mode batch attestation, giving the user a known-good body of content rather than an unreviewed dump
   - Every YAML file is schema-valid, so downstream loading and validation start from clean, conformant content

@@ -8,7 +8,7 @@ metadata:
 
 # Schema Construct Inventory
 
-Maps informal patterns (what agents tend to write as prose) to their formal schema equivalents. Every piece of prose must be checked against this inventory — if a formal construct exists, it must be used.
+Maps informal patterns (what agents tend to write as prose) to their formal schema equivalents. Every piece of prose must be checked against this inventory — if a formal construct exists, it must be used. Schema Expressiveness anti-patterns sharpen the same concern for catalog audits.
 
 **Authoritative schema sources:**
 
@@ -30,14 +30,14 @@ An activity has a **single ordered `steps[]`** in which every step carries a req
 
 | Informal Pattern | Formal Construct | Schema Fields |
 |---|---|---|
-| "Do X, then do Y, then do Z" | **Technique step** | `steps[]` entry with `kind: technique`, `.id`, `.technique` (a `group::operation` string, or `{ name, inputs?, outputs? }` for input/output deviations), optional `.actions` |
-| "When entering/finishing, log/validate/set" | **Action step** | `steps[]` entry with `kind: action`, `.id`, `.actions[]` (`log`/`validate`/`set`/`emit`/`message`); a leading/trailing control step carries lifecycle actions at the start/end of the sequence (`actions[]` may be empty for a marker step) |
-| "Ask the user whether to proceed" | **Checkpoint step** | `steps[]` entry with `kind: checkpoint`, a stable `.id`, `.message`, `.options[]` with `.effect`, optional `.defaultOption` / `.autoAdvanceMs` / `.blocking`; its POSITION in `steps[]` is when it is presented (present-then-checkpoint: place it immediately after the step whose output it confirms) |
+| "Do X, then do Y, then do Z" | **Technique step** | `steps[]` entry with `kind: technique`, `.id`, `.technique` (a `group::operation` string, or `{ name, inputs?, outputs? }` for input/output deviations), optional `.actions` — pure binding: no `description` / `name` / `note` (`procedure-in-protocol`, `bound-step-no-description`). One operation per step; split compounds (`no-monolith-masking-steps`). |
+| "When entering/finishing, log/validate/set" | **Action step** | `steps[]` entry with `kind: action`, `.id`, `.actions[]` (`log`/`validate`/`set`/`emit`/`message`); a leading/trailing control step carries lifecycle actions at the start/end of the sequence (`actions[]` may be empty for a marker step). Pure action/control/checkpoint/loop steps need no `technique` binding. |
+| "Ask the user whether to proceed" | **Checkpoint step** | `steps[]` entry with `kind: checkpoint`, a stable `.id`, `.message` (statement of the subject — no `?` / confirm-imperative / next-step narration / caption of the prior technique; embed `[label]({path})` for any durable artifact — same link rule applies to action `message` fields; `link-named-artifacts`, `no-caption-only-message`), `.options[]` with `.effect` (the decision space), optional `.defaultOption` / `.autoAdvanceMs` / `.blocking`; its POSITION in `steps[]` is when it is presented (present-then-checkpoint: place it immediately after the step whose output it confirms). See `link-named-artifacts`, `no-next-step-narration`, `statement-not-question`, `no-caption-only-message`. |
 | "Repeat for each item" / "do until done" | **Loop step** | `steps[]` entry with `kind: loop`, `.id`, `.loopType` (forEach/while/doWhile), `.variable`, `.over`, `.condition`, `.breakCondition`, `.maxIterations`, optional `.name`; its body is a nested `.steps[]` |
 | "If X then do A, otherwise do B" (automated) | **Decision** (activity-level) | `decisions[].branches[]` with `.condition` and `.transitionTo` |
 | "Then move on to the next phase" | **Transition** (activity-level) | `transitions[].to`, `.condition`, `.isDefault` |
 | "This triggers the X workflow" | **Trigger** | `triggers.workflow`, `.description`, `.passContext` |
-| "This produces a report file" | **Technique output artifact** (activity `artifacts[]` is SERVER-COMPUTED, never authored) | declare a `#### artifact` on the producing technique's `## Outputs`; `get_activity` synthesizes the activity's artifact contract from its steps' bound techniques (AP-65) |
+| "This produces a report file" | **Technique output artifact** (activity `artifacts[]` is SERVER-COMPUTED, never authored) | declare a `#### artifact` on the producing technique's `## Outputs`; `get_activity` synthesizes the activity's artifact contract from its steps' bound techniques (`no-hand-authored-artifacts`) |
 | "The expected result is X" | **Outcome** | `outcome[]` (string array) |
 | "Only run when X is true" | **Step gate** | `steps[].when` / `steps[].condition` (references condition.schema.json) — a shared base field on every step kind |
 | "The agent must follow these constraints" | **Activity rules** | `rules[]` (string array) |
@@ -47,9 +47,9 @@ An activity has a **single ordered `steps[]`** in which every step carries a req
 | Informal Pattern | Formal Construct | Schema Fields |
 |---|---|---|
 | "Track whether the user confirmed" | **Variable** | `variables[].name`, `.type`, `.description`, `.defaultValue` |
-| "Can run in fast or thorough mode" | **Activation variable + conditional flow** | a boolean `variable` set by a detection step/checkpoint early in the workflow, with `transitions[].condition` and step `when`/`condition` gates that branch on it |
-| "The agent must always do X" | **Workflow rules** | `rules.workflow` / `rules.activity` / `rules.universal` (partitioned by audience) |
-| "Every activity needs this strategy technique" | **Inherited techniques** | `techniques.workflow` (orchestrator, bundled into `get_workflow`) / `techniques.activity` (inherited by every activity, injected into `get_activity`) |
+| "Can run in fast or thorough mode" | **Activation variable + conditional flow** | one authoritative mode `variable` (enum or boolean) set by a detection step/checkpoint early in the workflow, with `transitions[].condition` and step `when`/`condition` gates that compare it directly — no parallel derived shadow flags |
+| "The agent must always do X" (session conduct) | **Workflow rules** | `rules.workflow` / `rules.activity` / `rules.universal` (partitioned by audience). Runtime-relevant only — design-time authoring standards migrate to the workflow-design canon (`rule-audience-bucket`, `runtime-rules-only`). |
+| "Every activity needs this strategy technique" | **Inherited techniques** | `techniques.workflow` (orchestrator, bundled into `get_workflow`) / `techniques.activity` (inherited by every activity, injected into `get_activity`). Activity-local `techniques[]` is STRATEGY only — per-step ops bind via `step.technique` (`techniques-list-disjoint`). |
 | "Start with the first activity" | **Initial activity** | `initialActivity` (activity ID) |
 
 ## Technique-Level Constructs (technique.schema.json)
@@ -57,6 +57,7 @@ An activity has a **single ordered `steps[]`** in which every step carries a req
 | Informal Pattern | Formal Construct | Schema Fields |
 |---|---|---|
 | "First do A, then do B" (procedure) | **Protocol** | `protocol[]` — ordered blocks `{ title?, steps[] }`; titled blocks `Initial`/`Final` on a container wrap descendants (server renumbers) |
+| "Shared I/O/rules for every technique in the folder" | **Container TECHNIQUE.md** | Workflow-root or group `TECHNIQUE.md` — loader merges Inputs/Outputs/Rules/Errors into descendants; container `Initial`/`Final` protocol wraps (server renumbers). Capability names contribution only (`platform-semantics-in-capability`); set membership is the folder contents |
 | "Needs a checklist path as input" | **Inputs** | `inputs[].id`, `.description`, `.required`, `.default`, `.components` (composite members as `####` sub-sections) |
 | "Produces an audit report" | **Output** | `output[].id`, `.description`, `.components` (`####` sub-sections), `.artifact.name` (`#### artifact`) |
 | "Never modify the schema" | **Rules** | `rules.{rule-name}` — flat name-value pairs |

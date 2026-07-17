@@ -1,30 +1,46 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Audit `rules[]` across the workflow, activities, and techniques for hygiene: protocol restatement, sibling contradictions, cross-level duplication (with the worker-visibility carve-out), flat prefix patterns, ambiguity, and single-step rules (AP-24 through AP-29).
+Audit `rules[]` across the workflow, activities, and techniques against the Rule Hygiene section of the anti-pattern catalog, and persist findings when any exist.
 
 ## Outputs
 
+### rule_hygiene_findings
+
+Rule-hygiene findings — each a flagged rule with its file, rule key, the hygiene class (restatement, contradiction, cross-level duplication, prefix pattern, ambiguity, single-step), and the recommended action.
+
 ### rule_hygiene_finding_count
 
-Count of rule-hygiene findings — each a flagged rule with its file, rule key, the hygiene class (restatement, contradiction, cross-level duplication, prefix pattern, ambiguity, single-step), and the recommended action. Interpolated into the rule-hygiene-confirmed checkpoint message.
+Count of entries in `{rule_hygiene_findings}`.
+
+### rule_hygiene_findings_path
+
+Absolute path to the persisted findings artifact when `{rule_hygiene_finding_count}` is greater than zero; empty otherwise.
+
+#### artifact
+
+`rule-hygiene-findings.md`
 
 ## Protocol
 
-### 1. Audit Rule Hygiene
+### 1. Load Catalog Section
 
-- Protocol restatement (AP-24): does the rule verbatim copy a protocol phase in the same technique? If so, flag for removal
-- Apparent contradictions (AP-25): do sibling rules within the same technique conflict?
-- Cross-level duplication (AP-27): does the same rule appear at multiple levels (workflow / activity / technique)?
-- Worker-visibility carve-out for AP-27: workers receive `get_activity` and `get_technique` responses but never `workflow.yaml`; behavioural rules workers must follow cannot be lifted to the workflow root. Per-technique duplication of worker-directed rules is correct, not a violation. Only flag cross-level duplication when the rule is orchestrator-only (variable management, transitions, commit policy, mode handling)
-- Flat prefix patterns (AP-26): do rule keys share a common prefix (`foo-bar`, `foo-baz`)? Flag for grouped array refactoring
-- Ambiguity (AP-25): could a rule be interpreted in contradictory ways without its group context?
-- Single-step rules (AP-29): does the rule apply to only one protocol step? If so, fold into the step's description and delete the standalone rule
+- Load [anti-patterns](../resources/anti-patterns.md) — sole source of Rule Hygiene detect, exclusion, and fix criteria
+- Scope this pass to subsections under `## Rule Hygiene Anti-Patterns` only (`no-rule-protocol-restatement` through `no-one-step-rules`, including `worker-rule-reach`)
+- Do not restate, summarize, or number those entries here; follow each as written
 
-### 2. Present Findings
+### 2. Apply Rule Hygiene Entries
 
-- Present the rule-hygiene-pass results to the user: restatements, contradictions, cross-level duplications, prefix patterns, and ambiguities, with file + rule-key citations and recommended actions
+- Walk every in-scope `### AP-XX. name` against `rules[]` / technique `## Rules` on the target workflow, activities, and techniques
+- For each entry: apply its **Detect** (or equivalent prose), honor **Do not flag** / caveats, and record **Fix** when a violation is found
+- For each finding record into `{rule_hygiene_findings}`: entry **name** (primary), **AP-XX** designator, file path, rule key, offending content, recommended fix
+
+### 3. Persist Findings
+
+- Set `{rule_hygiene_finding_count}` to the number of findings
+- When `{rule_hygiene_finding_count}` is greater than zero: persist `{rule_hygiene_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `rule-hygiene-findings.md`; capture `{rule_hygiene_findings_path}`
+- When `{rule_hygiene_finding_count}` is zero: leave `{rule_hygiene_findings_path}` empty

@@ -1,24 +1,25 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.2.2
 ---
 
 ## Capability
 
-Assemble the findings from every audit pass into a structured compliance report and present it to the user with severity-rated findings and recommended fixes.
+Assemble the findings from every review-mode audit pass into a structured compliance report with severity-rated findings and recommended fixes.
 
 ## Outputs
 
+### compliance_report
+
+The structured compliance report body following the [Compliance Report Template](../resources/compliance-report.md), with severity-rated findings and recommended fixes.
+
 ### review_findings_count
 
-Total number of compliance findings across all review-mode audit passes. Interpolated into the review-disposition and post-update-disposition checkpoint messages.
+Total number of compliance findings across all review-mode audit passes.
 
 ## Protocol
 
 ### 1. Compile Report
 
-- Compile findings into a structured report following the [report template](../resources/review-mode-guide.md#compliance-report-structure): Executive Summary (pass/fail counts by severity), Schema Expressiveness Findings, Convention Conformance Findings, Rule Enforcement Findings, Anti-Pattern Findings, Schema Validation Results, Tool-Technique-Doc Consistency Findings, Recommended Fixes
-
-### 2. Present Report
-
-- Present the compliance report to the user with severity-rated findings and recommended fixes
+- Compile findings into `{compliance_report}` following the [Compliance Report Template](../resources/compliance-report.md) exactly — do not restate or invent section titles here
+- Set `{review_findings_count}` to the total finding count across all passes

@@ -1,25 +1,45 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Audit every `rules[]` entry for structural backing: distinguish text-only enforcement from rules backed by a checkpoint, condition, validate action, or decision, and flag any critical rule that relies solely on text.
+Audit every `rules[]` entry for structural backing by applying `structure-backed-constraints`, and persist text-only critical rules with recommended enforcement mechanisms when any exist.
 
 ## Outputs
 
+### enforcement_findings
+
+Text-only rules found — each with its file, rule content, whether it is critical, and the recommended structural mechanism (checkpoint, condition, validate action, or decision).
+
 ### enforcement_finding_count
 
-Count of text-only rules found — each with its file, rule content, whether it is critical, and the recommended structural mechanism (checkpoint, condition, validate action, or decision). Interpolated into the enforcement-confirmed checkpoint message.
+Count of entries in `{enforcement_findings}`.
+
+### enforcement_findings_path
+
+Absolute path to the persisted findings artifact when `{enforcement_finding_count}` is greater than zero; empty otherwise.
+
+#### artifact
+
+`enforcement-findings.md`
 
 ## Protocol
 
-### 1. Audit Rule To Structure
+### 1. Load Criterion
 
-- For every `rules[]` entry in `workflow.yaml` and activity files, ask: can this rule be violated by ignoring it? If yes, verify a structural mechanism (checkpoint, condition, validate action) backs it
-- Flag any critical rule that relies solely on text
+- Load [anti-patterns](../resources/anti-patterns.md) entry `structure-backed-constraints` — sole Detect / Do not flag / Fix source for this pass
+- [Encode Constraints as Structure](../resources/design-principles.md#8-encode-constraints-as-structure) is the framing principle; the anti-pattern is the operative criterion
 
-### 2. Present Findings
+### 2. Apply structure-backed-constraints
 
-- Present the rule-to-structure-pass results to the user: text-only rules, structurally-enforced rules, and recommendations for adding enforcement where needed
+- Walk every `rules[]` entry in `workflow.yaml` and activity files (and technique `## Rules` when the entry's scope implies)
+- Apply Detect / Do not flag / Fix from `structure-backed-constraints`
+- For each finding record into `{enforcement_findings}`: file, rule content, criticality, recommended structural mechanism
+
+### 3. Persist Findings
+
+- Set `{enforcement_finding_count}` to the number of findings
+- When `{enforcement_finding_count}` is greater than zero: persist `{enforcement_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `enforcement-findings.md`; capture `{enforcement_findings_path}`
+- When `{enforcement_finding_count}` is zero: leave `{enforcement_findings_path}` empty

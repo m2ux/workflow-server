@@ -1,5 +1,5 @@
 id: validate-and-commit
-version: 1.4.0
+version: 1.6.0
 name: Validate and Commit
 description: Final validation, scope verification, and README generation/update, then commit of the workflow changes on a feature branch with a pull request opened against the workflows branch (create/update); in review mode the compliance report is committed directly.
 required: true
@@ -9,40 +9,62 @@ steps:
     technique: persist-report
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: review
   - kind: technique
     id: commit-report
     technique: version-control::commit-regular-files
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: review
   - kind: technique
     id: run-schema-validation
     technique: audit-schema-validation
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
+  - kind: action
+    id: validation-clean
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: fail_count
+          operator: ==
+          value: 0
+    actions:
+      - action: message
+        message: "Schema validation passed — {pass_count} file(s), 0 failed."
   - kind: checkpoint
     id: validation-passed
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-    message: "Schema validation results: {pass_count} passed, {fail_count} failed. Proceeding in 30s unless you intervene."
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: fail_count
+          operator: ">"
+          value: 0
+    message: "Schema validation results: {pass_count} passed, {fail_count} failed."
     blocking: false
     defaultOption: proceed
     autoAdvanceMs: 30000
     options:
       - id: proceed
         label: Proceed to commit
-        description: Validation outcomes are acceptable for commit (default — auto-proceeds after 30s).
+        description: Validation outcomes are acceptable for commit
       - id: fix
         label: Fix failures first
         description: Validation failures must be addressed before committing.
@@ -51,24 +73,46 @@ steps:
     technique: scope-verification
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
+  - kind: action
+    id: scope-complete
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: unaddressed_count
+          operator: ==
+          value: 0
+    actions:
+      - action: message
+        message: "Scope manifest verification complete — {addressed_count}/{total_count} items addressed ([scope manifest]({scope_manifest_path}))."
   - kind: checkpoint
     id: scope-verified
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-    message: "Scope manifest verification: {addressed_count}/{total_count} items addressed. Proceeding in 30s unless you intervene."
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: unaddressed_count
+          operator: ">"
+          value: 0
+    message: "Scope manifest verification: {addressed_count}/{total_count} items addressed ({unaddressed_count} remaining) ([scope manifest]({scope_manifest_path}))."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:
       - id: confirmed
-        label: Scope is complete
-        description: Every scope-manifest item has been addressed (default — auto-proceeds after 30s).
+        label: Scope is complete enough
+        description: Remaining gaps are acceptable for commit
       - id: fix
         label: Address remaining items
         description: Some scope-manifest items remain unaddressed and require attention.
@@ -80,25 +124,25 @@ steps:
         readme_template: workflow-design/design-context-readme
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: technique
     id: readme-authoring
     technique: readme-authoring
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: checkpoint
     id: pre-commit-attestation
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
-    message: "Ready to commit workflow '{workflow_id}' to the workflows worktree. Review the staged changes and confirm sign-off."
+      value: review
+    message: "Ready to commit workflow '{workflow_id}' ([planning README]({planning_folder_path}/README.md), [draft attestation]({draft_attestation_path}))."
     blocking: true
     options:
       - id: approved
@@ -114,17 +158,17 @@ steps:
     technique: prepare-workflow-branch
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: technique
     id: stage-and-commit
     technique: version-control::commit-regular-files
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: technique
     id: verify-commit
     technique: commit-verification
@@ -133,9 +177,9 @@ steps:
     technique: publish-workflow-pr
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: action
     id: announce-completion
     actions:
@@ -145,9 +189,9 @@ transitions:
   - to: post-update-review
     condition:
       type: simple
-      variable: is_update_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: update
   - to: retrospective
     isDefault: true
 outcome:

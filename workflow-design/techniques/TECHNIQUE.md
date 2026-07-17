@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
 
-Shared base contract for a workflow's techniques. Any Inputs, Outputs, or Rules defined here are inherited by every technique in this workflow. A Protocol here WRAPS each descendant's own protocol: blocks titled `Initial` are placed before, blocks titled `Final` after, and the server renumbers the combined sequence; any other protocol block here is delivered only when this contract is referenced directly. The wrap is recursive — every ancestor container (this root and any containing group) contributes its `Initial`/`Final`. The technique set is implied by the folder contents — do not list techniques here. Keep this minimal: only genuinely cross-technique contract belongs here.
+Shared Inputs, Outputs, and Rules for every technique in this workflow.
 
 ## Inputs
 
@@ -15,7 +15,7 @@ Free-form description of the workflow the user wants to create or modify
 
 ### target_workflow_id
 
-*(optional)* Existing workflow id to modify (update mode), or the current review-mode audit target. In multi-target review, the quality-review `forEach` over `{target_workflow_ids}` binds this id once per iteration.
+*(optional)* Existing workflow id to modify (update mode), or the current review-mode audit target. When multiple targets are audited, each iteration binds this id from `{target_workflow_ids}`.
 
 ### target_workflow_ids
 
@@ -53,10 +53,10 @@ Workflow README with description, activity table, and usage
 
 Cross-cutting design invariants live in `workflow.yaml` `rules[]`. Apply those as the single source of truth; this technique does not duplicate them.
 
-### resource-loading
+### consult-referenced-resources
 
-Load each entry in a technique's referenced resources via `get_resource` after `get_technique` — refs are lightweight until loaded.
+Before relying on a referenced resource's content, load that resource. Do not restate harness tool recipes here (`no-tool-usage-prescription`).
 
-### tool-usage
+### apply-anti-patterns-when-authoring
 
-`list_workflows` requires no params and no `session_index`
+When authoring or revising workflow definition content (YAML prose fields, technique/resource markdown, README orientation), apply [anti-patterns](../resources/anti-patterns.md) as write-time constraints — especially Schema Expressiveness and Description Hygiene — rather than deferring discovery to a later audit. Do not restate entry Detect criteria here.

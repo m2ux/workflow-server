@@ -4,7 +4,7 @@
 
 The technique library for the midnight-system-review workflow. Each operation is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in each operation's `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
 
-The [`TECHNIQUE.md`](TECHNIQUE.md) base declares the cross-technique contract inherited by every technique here: the `planning_folder_path` and `target_repo_path` inputs. Groups are named after their owning activity, so steps bind their own group's operations by bare id; every foreign reference is fully qualified.
+[`TECHNIQUE.md`](TECHNIQUE.md) holds shared Inputs for every technique here: `planning_folder_path` and `target_repo_path`. Groups are named after their owning activity, so steps bind their own group's operations by bare id; every foreign reference is fully qualified.
 
 ---
 

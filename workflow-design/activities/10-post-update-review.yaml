@@ -1,15 +1,27 @@
 id: post-update-review
-version: 1.4.0
+version: 1.8.0
 name: Post-Update Review
-description: Post-commit compliance audit of the updated workflow against design principles and anti-patterns.
+description: Post-commit compliance audit of the updated workflow — expressiveness, conformance, principles, anti-patterns, and schema validation.
 required: true
 steps:
   - kind: technique
     id: reload-updated-workflow
     technique: reload-workflow
   - kind: technique
-    id: run-audit-passes
-    technique: run-audit-passes
+    id: audit-expressiveness
+    technique: audit-expressiveness
+  - kind: technique
+    id: audit-conformance
+    technique: audit-conformance
+  - kind: technique
+    id: audit-principles
+    technique: audit-principles
+  - kind: technique
+    id: audit-anti-patterns
+    technique: audit-anti-patterns
+  - kind: technique
+    id: audit-schema-validation
+    technique: audit-schema-validation
   - kind: technique
     id: scope-audit
     technique: scope-audit
@@ -19,9 +31,24 @@ steps:
   - kind: technique
     id: save-review-snapshot
     technique: persist-report
+  - kind: action
+    id: post-update-clean
+    condition:
+      type: simple
+      variable: review_findings_count
+      operator: ==
+      value: 0
+    actions:
+      - action: message
+        message: "Post-update review complete — 0 findings ([post-update review]({report_path}))."
   - kind: checkpoint
     id: post-update-disposition
-    message: Post-update review complete. {review_findings_count} findings identified. The update has been committed.
+    condition:
+      type: simple
+      variable: review_findings_count
+      operator: ">"
+      value: 0
+    message: "Post-update review complete. {review_findings_count} findings ([post-update review]({report_path}))."
     options:
       - id: accept
         label: Accept — update complete
@@ -38,6 +65,14 @@ steps:
         description: Update commit rolled back; flow re-enters intake.
         effect:
           transitionTo: intake-and-context
+transitions:
+  - to: retrospective
+    condition:
+      type: simple
+      variable: review_findings_count
+      operator: ==
+      value: 0
+    isDefault: true
 outcome:
   - The user knows whether the committed update is clean or carries new compliance debt, with severity-rated findings to decide the next move from
   - A dated compliance snapshot of the committed state exists to compare future audits against and to show the update was checked, not assumed

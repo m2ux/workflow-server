@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.9.0
+version: 1.24.1
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -13,27 +13,8 @@ tags:
   - elicitation
   - conventions
 rules:
-  workflow:
-    - Content-reducing updates require explicit user approval — flag removed material and get confirmation
-    - Define complete scope before execution — enumerate all files to create, modify, or remove before starting
-    - Non-destructive updates — compare new content against existing content and flag any material being removed
   activity:
-    - Never use prose where a formal schema construct exists — steps, checkpoints, decisions, loops, transitions, conditions, triggers, actions, artifacts, and variables must use their dedicated schema fields
-    - Never modify schemas during workflow creation — the schema is a fixed constraint; all content must conform as-is
-    - Convention over invention — search for existing naming conventions before introducing new patterns
-    - Modular over inline — workflow.yaml defines metadata and references; activities, techniques, and resources live in their own files
-    - Encode critical constraints as structure, not just text — back rules with checkpoints, conditions, and validate actions
-    - Format literacy before content — verify YAML syntax understanding by reading existing files before drafting
-    - Every workflow must include a README.md at the root and in each subfolder (activities/, techniques/, resources/) following the style established by the prism workflow.
-    - "Ordered-procedure prose is forbidden in any `description` field (activity or step) — a step's procedure lives in its bound technique's `protocol[]`, reached via the structured `step.technique` — either a bare string (`group::operation` or a bare single-file id, no deviations) or an object `{ name, inputs, outputs }` whose `inputs` map carries input deviations and `outputs` map carries output remaps. A BOUND step has NO `description` at all (omit it entirely): the step's `name` is the one-line WHAT label, and the bound technique's `capability` / `protocol` / `rules` carry ALL of the step's semantics. There is NO `step.note` field: any agent-relevant action or constraint that might read as a step caveat is, by nature, technique content — encode it IN the bound technique (as a `## Rules` entry, a protocol step, or an input), never on the step. A caveat that adds no agent value is omitted. Caveat prose never lives in a step `description` or any note."
-    - Every step must bind an operation via `step.technique`, EXCEPT a pure action/control step — one whose only effects are `set`/`log`/`emit`/`message` actions and/or a `when` gate and/or a `checkpoint`/`triggers` — which is exempt. A bound step names exactly ONE operation; compound multi-operation steps are split, one operation per step.
-    - "`techniques[]` is reserved for activity-wide STRATEGY/capability techniques (e.g. `variable-binding`, `scatter-gather`) — protocols that apply across the activity's steps. It MUST NOT list per-step operations; an operation a step invokes is bound at that step via `step.technique`."
-    - Techniques are the universal capability primitive and the FIRST-CLASS extension mechanism. New strategic operations (scatter/gather, variable binding, retry/escalation, voting, dedup, …) are authored as techniques — preferentially universal ones in `meta` — in preference to schema or engine changes. The schema stays a minimal skeleton; capability grows in the technique library as a standard library of strategy primitives.
-    - Technique input/output names, shapes, and structures are defined for the technique's INTRINSIC, GENERIC, REUSABLE semantics — never overfit to a specific caller's local variable name or a single usage instance. Resolve a step-vs-technique name mismatch by aligning the CALLER's state variable to the technique's canonical signature (or an explicit `step.technique.inputs` deviation), NOT by bending the technique to the call-site. Signatures MAY be renamed/reshaped to integrate with the binding system, but only toward a better GENERIC form.
-    - One question at a time — each elicitation question and each checkpoint is atomic; never combine multiple questions
-    - Present approach before implementation — show what will change, how, and in what order before modifying any file
     - Corrections must persist — record corrections and verify compliance at every subsequent checkpoint
-    - All YAML files must pass schema validation before commit — run validation on every produced file
     - On completing each activity, update the planning-folder `README.md` progress tracker — mark this activity's row ✅ Complete in the 📊 Progress table and set the header Status line to the current lifecycle state (Planning/Drafting/Reviewing/Complete). (The session README is present in create and update modes, where the seed step runs.)
 techniques:
   activity:
@@ -44,22 +25,134 @@ variables:
     description: Path to the unique planning folder for this workflow execution (e.g., .engineering/artifacts/planning/YYYY-MM-DD-workflow-design-{workflow_id})
   - name: operation_type
     type: string
-    description: The classified operation for the request — create, update, or review. Produced by intake-classification and interpolated into the mode-confirmation checkpoint message.
-  - name: is_update_mode
-    type: boolean
-    description: Whether update mode is active (modifying an existing workflow rather than creating a new one)
-    defaultValue: false
-  - name: is_review_mode
-    type: boolean
-    description: Whether review mode is active (auditing an existing workflow against design principles)
-    defaultValue: false
+    description: The classified operation for the request — create, update, or review. Sole mode state; gates and technique inputs compare this value directly.
   - name: review_findings_count
     type: number
     description: Total number of compliance findings identified during review
     defaultValue: 0
+  - name: update_seeded_from_review
+    type: boolean
+    description: True when update mode was entered from a review-mode fix disposition (fix-issues or selective-fixes). Suppresses intake re-confirmation on the subsequent pass; cleared at the end of that intake.
+    defaultValue: false
+  - name: expressiveness_finding_count
+    type: number
+    description: Count of expressiveness findings from audit-expressiveness.
+    defaultValue: 0
+  - name: conformance_finding_count
+    type: number
+    description: Count of convention-conformance divergences from audit-conformance.
+    defaultValue: 0
+  - name: rule_hygiene_finding_count
+    type: number
+    description: Count of rule-hygiene findings from audit-rule-hygiene.
+    defaultValue: 0
+  - name: enforcement_finding_count
+    type: number
+    description: Count of text-only rules from audit-rule-enforcement.
+    defaultValue: 0
+  - name: removal_count
+    type: number
+    description: Count of content removals inventoried by impact-analysis.
+    defaultValue: 0
+  - name: pass_count
+    type: number
+    description: Count of YAML files that passed schema validation.
+    defaultValue: 0
+  - name: fail_count
+    type: number
+    description: Count of YAML files that failed schema validation.
+    defaultValue: 0
+  - name: total_count
+    type: number
+    description: Total scope-manifest items checked by scope-verification.
+    defaultValue: 0
+  - name: addressed_count
+    type: number
+    description: Scope-manifest items confirmed addressed by scope-verification.
+    defaultValue: 0
+  - name: unaddressed_count
+    type: number
+    description: Scope-manifest items still unaddressed after scope-verification.
+    defaultValue: 0
+  - name: specification_path
+    type: string
+    description: Absolute path to the persisted design-specification artifact.
+    defaultValue: ""
+  - name: format_conventions_path
+    type: string
+    description: Absolute path to the persisted format-conventions artifact.
+    defaultValue: ""
+  - name: applicable_constructs_path
+    type: string
+    description: Absolute path to the persisted applicable-constructs artifact.
+    defaultValue: ""
+  - name: pattern_analysis_path
+    type: string
+    description: Absolute path to the persisted pattern-analysis artifact.
+    defaultValue: ""
+  - name: impact_analysis_path
+    type: string
+    description: Absolute path to the persisted impact-analysis artifact.
+    defaultValue: ""
+  - name: scope_manifest_path
+    type: string
+    description: Absolute path to the persisted scope-manifest artifact.
+    defaultValue: ""
+  - name: draft_attestation_path
+    type: string
+    description: Absolute path to the persisted draft-attestation artifact.
+    defaultValue: ""
+  - name: report_path
+    type: string
+    description: Absolute path to the persisted compliance or post-update review report.
+    defaultValue: ""
+  - name: structural_inventory_path
+    type: string
+    description: Absolute path to the persisted structural-inventory artifact (update/review).
+    defaultValue: ""
+  - name: drafting_plan_path
+    type: string
+    description: Absolute path to the persisted per-file drafting-plan artifact.
+    defaultValue: ""
+  - name: file_review_note_path
+    type: string
+    description: Absolute path to the persisted per-file review-note artifact.
+    defaultValue: ""
+  - name: expressiveness_findings_path
+    type: string
+    description: Absolute path to the persisted expressiveness-findings artifact when findings exist.
+    defaultValue: ""
+  - name: conformance_findings_path
+    type: string
+    description: Absolute path to the persisted conformance-findings artifact when findings exist.
+    defaultValue: ""
+  - name: rule_hygiene_findings_path
+    type: string
+    description: Absolute path to the persisted rule-hygiene-findings artifact when findings exist.
+    defaultValue: ""
+  - name: enforcement_findings_path
+    type: string
+    description: Absolute path to the persisted enforcement-findings artifact when findings exist.
+    defaultValue: ""
+  - name: verified_findings_path
+    type: string
+    description: Absolute path to the persisted verified-findings artifact.
+    defaultValue: ""
+  - name: principle_findings_path
+    type: string
+    description: Absolute path to the persisted principle-findings artifact (review mode).
+    defaultValue: ""
+  - name: anti_pattern_findings_path
+    type: string
+    description: Absolute path to the persisted anti-pattern-findings artifact (review mode).
+    defaultValue: ""
+  - name: dimension_questions
+    type: string
+    description: Markdown elicitation prompt for the current design dimension (from prepare-dimension).
+    defaultValue: ""
   - name: review_scope_confirmed
     type: boolean
-    description: "In review mode: whether the user confirmed the target workflow in intake — gates transition to quality-review"
+    description: "In review mode: whether the user confirmed the audit target set in intake"
     defaultValue: false
   - name: target_workflow_id
     type: string
@@ -72,15 +165,15 @@ variables:
     description: The ID of the workflow being created or updated
   - name: format_literacy_confirmed
     type: boolean
-    description: Whether the agent has demonstrated YAML format understanding — gates content drafting
+    description: Whether YAML format understanding has been demonstrated for this session
     defaultValue: false
   - name: schema_constructs_confirmed
     type: boolean
-    description: Whether applicable schema constructs have been identified and confirmed — gates content drafting
+    description: Whether applicable schema constructs have been identified and confirmed
     defaultValue: false
   - name: scope_manifest_confirmed
     type: boolean
-    description: Whether the complete file manifest has been confirmed — gates the file-drafting loop and the update-mode audit chain
+    description: Whether the complete file manifest has been confirmed
     defaultValue: false
   - name: scope_manifest
     type: array
@@ -90,32 +183,32 @@ variables:
     description: Current file being drafted during the content drafting loop
   - name: has_unflagged_removals
     type: boolean
-    description: True when content drafting detects removals not flagged during impact analysis. Gates the preservation-check checkpoint in the file-drafting loop (update mode). Produced by present-for-review.
+    description: True when content drafting detects removals not flagged during impact analysis. Produced by review-drafted-file.
     defaultValue: false
   - name: needs_audit_fixes
     type: boolean
-    description: Whether the quality-review audit passes surfaced findings the user elected to fix. Drives the bounded audit-fix-cycle loop in quality-review (apply fixes, re-run audits, re-assess); reset to false when the content is clean.
+    description: Whether audit passes surfaced findings the user elected to fix. Reset to false when the content is clean.
     defaultValue: false
   - name: has_critical_finding
     type: boolean
-    description: Whether any quality-review audit finding is Critical severity (a schema-invalid or structurally broken construct that must not be committed). Drives the blocker-gate decision that returns to scope-and-draft.
+    description: Whether any audit finding is Critical severity (a schema-invalid or structurally broken construct that must not be committed).
     defaultValue: false
   - name: assumptions_log
     type: object
     description: The design-assumptions log surfaced and reviewed during requirements-refinement — each assumption with its category, risk, resolvability, and outcome. Written via work-package::review-assumptions and reconcile-design-assumptions.
   - name: open_assumptions
     type: array
-    description: The design assumptions still open after audit reconciliation — the genuine design judgements the assumption-interview loop iterates.
+    description: The design assumptions still open after audit reconciliation — the genuine design judgements remaining for interview.
   - name: has_open_assumptions
     type: boolean
-    description: Whether open design judgements remain after reconcile-design-assumptions; gates the assumption interview loop.
+    description: Whether open design judgements remain after reconcile-design-assumptions.
     defaultValue: false
   - name: current_assumption
     type: object
-    description: "The open assumption under review in the current iteration of the assumption-interview loop (from open_assumptions). Sub-shape: { id, statement }."
+    description: "The open assumption under review from open_assumptions. Sub-shape: { id, statement }."
   - name: design_dimensions
     type: array
-    description: The ordered design dimensions to elicit in requirements-refinement, set per mode by derive-design-dimensions (create elicits all eight; update skips the already-established activity model, variables, and techniques). Iterated by the dimension-elicitation loop.
+    description: The ordered design dimensions to elicit in requirements-refinement, set per mode by derive-design-dimensions (create elicits all eight; update skips the already-established activity model, variables, and techniques).
   - name: workflow_branch
     type: string
     description: The feature branch in the workflows repo that the authored/updated workflow's changes are committed to (e.g., workflow/{workflow_id}); set by prepare-workflow-branch in create/update modes.

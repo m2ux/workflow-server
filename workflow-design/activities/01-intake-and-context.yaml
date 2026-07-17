@@ -1,20 +1,32 @@
 id: intake-and-context
-version: 1.2.0
+version: 1.7.0
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 required: true
 steps:
+  - kind: action
+    id: bind-planning-folder-path
+    actions:
+      - action: set
+        target: planning_folder_path
+        message: Server-resolved canonical absolute planning folder from the start_session / get_workflow summary (under the server's workspace .engineering planning root). Write location for ALL of this design session's planning artifacts.
   - kind: technique
     id: intake-classification
     technique: intake-classification
   - kind: checkpoint
     id: mode-confirmation
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
-    message: I've classified this as a {operation_type} operation for workflow '{workflow_id}'. Is this correct?
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: update_seeded_from_review
+          operator: "!="
+          value: true
+    message: "Classified as a {operation_type} operation for workflow '{workflow_id}'."
     blocking: true
     options:
       - id: confirm-create
@@ -22,44 +34,45 @@ steps:
         description: Create-mode classification confirmed.
         effect:
           setVariable:
-            is_update_mode: false
+            operation_type: create
       - id: confirm-update
         label: Yes, update an existing workflow
         description: Update-mode classification confirmed.
         effect:
           setVariable:
-            is_update_mode: true
+            operation_type: update
+  - kind: action
+    id: announce-review-seeded-update
+    condition:
+      type: simple
+      variable: update_seeded_from_review
+      operator: ==
+      value: true
+    actions:
+      - action: message
+        message: "Update seeded from compliance review — mode is update; findings in the [compliance report]({report_path}) are the change specification."
   - kind: checkpoint
     id: review-scope-confirmed
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: ==
-      value: true
-    message: "Compliance review is scoped to workflow id(s): {target_workflow_ids}. Confirm this target set?"
+      value: review
+    message: "Compliance review target set: {target_workflow_ids} ([structural inventory]({structural_inventory_path}))."
     blocking: true
     options:
       - id: confirm-review-target
         label: Yes — audit this target set
-        description: Target set confirmed; review-mode quality-review iterates `target_workflow_ids` (binding each to `target_workflow_id` per iteration).
+        description: Confirms the compliance review target set (`target_workflow_ids`).
         effect:
           setVariable:
             review_scope_confirmed: true
       - id: wrong-review-target
         label: No — wrong target set
-        description: Target set rejected; checkpoint remains blocking until a correct `target_workflow_ids` list is supplied.
+        description: Rejects the target set; supply a corrected `target_workflow_ids` list.
         effect:
           setVariable:
             review_scope_confirmed: false
-  - kind: technique
-    id: context-loading
-    technique: context-loading
-  - kind: action
-    id: bind-planning-folder-path
-    actions:
-      - action: set
-        target: planning_folder_path
-        message: Server-resolved canonical absolute planning folder from the start_session / get_workflow summary (under the server's workspace .engineering planning root). Write location for ALL of this design session's planning artifacts.
   - kind: technique
     id: initialize-planning-folder
     technique:
@@ -69,9 +82,12 @@ steps:
         readme_template: workflow-design/design-context-readme
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
+  - kind: technique
+    id: context-loading
+    technique: context-loading
   - kind: technique
     id: present-problem-overview
     technique:
@@ -81,20 +97,26 @@ steps:
         source_material: the requested change, the target workflow's current shape, and any context gathered during this activity
     actions:
       - action: message
-        message: "**Problem Overview** (plain-language summary for stakeholder reference)"
+        message: "Problem Overview for `{workflow_id}` — plain-language summary ([planning README]({planning_folder_path}/README.md#problem-overview))"
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: checkpoint
     id: change-request-confirmed
     condition:
-      type: simple
-      variable: is_update_mode
-      operator: ==
-      value: true
-    message: Here is the existing workflow structure and my understanding of your requested changes. Is this correct?
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: ==
+          value: update
+        - type: simple
+          variable: update_seeded_from_review
+          operator: "!="
+          value: true
+    message: "Existing workflow structure and requested changes ([structural inventory]({structural_inventory_path}), [planning README]({planning_folder_path}/README.md#problem-overview))."
     blocking: true
     options:
       - id: confirmed
@@ -102,27 +124,21 @@ steps:
         description: Change request and current structure both confirmed.
       - id: refine
         label: Needs refinement
-        description: Change request requires further clarification before continuing.
+        description: Change request requires further clarification.
       - id: cancel
         label: Cancel — create new instead
         description: Update path abandoned; mode flips back to create.
         effect:
           setVariable:
-            is_update_mode: false
+            operation_type: create
   - kind: checkpoint
     id: format-literacy
     condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_update_mode
-          operator: "!="
-          value: true
-    message: I've reviewed existing YAML files and understand the format conventions. Here is my summary of YAML syntax rules and project conventions. Does this look correct?
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: create
+    message: "YAML syntax and project conventions ([format conventions]({format_conventions_path}))."
     options:
       - id: confirmed
         label: Yes, proceed
@@ -137,9 +153,9 @@ steps:
     id: auto-confirm-literacy
     condition:
       type: simple
-      variable: is_update_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: update
     actions:
       - action: set
         target: format_literacy_confirmed
@@ -150,17 +166,11 @@ steps:
   - kind: checkpoint
     id: constructs-confirmed
     condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_update_mode
-          operator: "!="
-          value: true
-    message: Here are the schema constructs I've identified as applicable to this workflow. Does this coverage look right?
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: create
+    message: "Applicable schema constructs ([applicable constructs]({applicable_constructs_path}))."
     options:
       - id: confirmed
         label: Yes, these are the right constructs
@@ -171,15 +181,26 @@ steps:
       - id: adjust
         label: Needs adjustment
         description: Construct list requires additions or removals before proceeding.
+  - kind: action
+    id: clear-review-seed-flag
+    condition:
+      type: simple
+      variable: update_seeded_from_review
+      operator: ==
+      value: true
+    actions:
+      - action: set
+        target: update_seeded_from_review
+        value: false
 transitions:
   - to: quality-review
     condition:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: ==
-          value: true
+          value: review
         - type: simple
           variable: review_scope_confirmed
           operator: ==

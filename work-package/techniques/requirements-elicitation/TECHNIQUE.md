@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Discover and clarify requirements through structured sequential conversation. Operations inherit the shared inputs, outputs, and rules below.
+Discover and clarify requirements through structured sequential conversation.
 
 ## Inputs
 

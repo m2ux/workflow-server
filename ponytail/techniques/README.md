@@ -8,7 +8,7 @@ The technique library for the ponytail workflow. Each operation is one capabilit
 
 ## Base Contract and Standalone Techniques
 
-The workflow-root [`TECHNIQUE.md`](TECHNIQUE.md) is the base contract, inherited by every standalone technique below. It owns the shared inputs (`task_description`, `target_path`, `lazy_intensity`, `pass_scope`) and the shared rules (`output-discipline`, `take-higher-rung`, `deletion-over-addition`); each technique inherits them automatically.
+[`TECHNIQUE.md`](TECHNIQUE.md) holds shared Inputs (`task_description`, `target_path`, `lazy_intensity`, `pass_scope`) and Rules (`output-discipline`, `take-higher-rung`, `deletion-over-addition`) for every technique here.
 
 | Technique | Capability | Artifact |
 |-----------|------------|----------|

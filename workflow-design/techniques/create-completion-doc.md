@@ -9,9 +9,9 @@ Create the completion summary for the design session — what workflow was creat
 
 ## Inputs
 
-### is_update_mode
+### operation_type
 
-Whether update mode is active. In update mode the summary frames the delivery as changes to an existing workflow; in create mode as a newly created workflow.
+The classified operation. When `update`, the summary frames the delivery as changes to an existing workflow; when `create`, as a newly created workflow.
 
 ## Outputs
 
@@ -25,9 +25,18 @@ COMPLETE.md
 
 ## Protocol
 
-### 1. Create Completion Summary
+### 1. Summarize Delivery
 
 - Summarize what the session delivered: the workflow created, or the activities, techniques, and resources changed on an existing workflow
+
+### 2. Record Design Decisions
+
 - Record the key design decisions and the alternatives considered and rejected, drawing on the planning README's Design Decisions section
+
+### 3. Note Drift And Limitations
+
 - Compare the delivered files against the confirmed `{scope_manifest}` and note any drift; list known limitations and deferred follow-ups
+
+### 4. Persist Completion Document
+
 - Follow the [completion-artifact](../resources/completion-artifact.md) template and record `{completion_document}` in `{planning_folder_path}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md)

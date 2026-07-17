@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Analyze current implementation to understand effectiveness, establish quantitative baseline metrics, and identify improvement opportunities, then document the analysis. Operations inherit the shared inputs, outputs, and rules below.
+Analyze current implementation to understand effectiveness, establish quantitative baseline metrics, and identify improvement opportunities, then document the analysis.
 
 ## Inputs
 

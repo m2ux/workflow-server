@@ -45,9 +45,8 @@ Map of package name to the child work-package's planning-folder path, captured a
 ### 2. Trigger Workflow
 
 - Apply the [workflow-triggering-protocol](../../resources/workflow-triggering-protocol.md#triggering-a-work-package) triggering procedure
-- Call `get_workflow('work-package')` to load the `work-package` workflow
-- Pass context: package name, scope from plan document, dependencies, and `{planning_folder_path}`  
-  > If the `work-package` workflow cannot be loaded or started, verify it exists via `list_workflows`, then retry.
+- Load and start the `work-package` workflow with context: package name, scope from plan document, dependencies, and `{planning_folder_path}`
+  > If the `work-package` workflow cannot be loaded or started, refresh the catalog via [list-workflows](../../../meta/techniques/workflow-engine/list-workflows.md), then retry.
 
 ### 3. Update Status
 

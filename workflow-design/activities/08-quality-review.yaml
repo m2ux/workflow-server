@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.6.0
+version: 1.12.1
 name: Quality Review
 description: Quality review of drafted workflow content.
 required: true
@@ -13,9 +13,9 @@ steps:
     maxIterations: 20
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: review
     steps:
       - kind: technique
         id: load-all-workflow-files
@@ -30,30 +30,36 @@ steps:
         id: schema-validation-check
         technique: audit-schema-validation
       - kind: technique
-        id: tool-technique-doc-consistency
-        technique: audit-consistency
-      - kind: technique
         id: verify-high-findings-review
         technique: verify-high-findings
       - kind: technique
         id: compile-report
         technique: compile-report
+  - kind: technique
+    id: persist-compliance-report
+    technique: persist-report
+    condition:
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: review
   - kind: checkpoint
     id: review-disposition
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: ==
-      value: true
-    message: Compliance report complete. {review_findings_count} findings identified across {target_workflow_ids}. Would you like to fix the issues?
+      value: review
+    message: "Compliance report complete. {review_findings_count} findings across {target_workflow_ids} ([compliance report]({report_path}); [principle findings]({principle_findings_path}); [anti-pattern findings]({anti_pattern_findings_path}); [verified findings]({verified_findings_path}))."
+    blocking: true
     options:
       - id: fix-issues
         label: Fix identified issues
         description: Switch to update mode and apply recommended fixes
         effect:
           setVariable:
-            is_update_mode: true
-            is_review_mode: false
+            operation_type: update
+            update_seeded_from_review: true
           transitionTo: intake-and-context
       - id: report-only
         label: Report only — no changes
@@ -63,8 +69,8 @@ steps:
         description: Choose which findings to fix
         effect:
           setVariable:
-            is_update_mode: true
-            is_review_mode: false
+            operation_type: update
+            update_seeded_from_review: true
           transitionTo: intake-and-context
   - kind: technique
     id: audit-expressiveness
@@ -73,34 +79,58 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
           value: true
+  - kind: action
+    id: expressiveness-clean
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
+        - type: simple
+          variable: expressiveness_finding_count
+          operator: ==
+          value: 0
+    actions:
+      - action: message
+        message: Schema expressiveness review complete — 0 findings.
   - kind: checkpoint
     id: expressiveness-confirmed
     condition:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
           value: true
-    message: Schema expressiveness review complete. {expressiveness_finding_count} findings. Accepting in 30s unless you intervene.
+        - type: simple
+          variable: expressiveness_finding_count
+          operator: ">"
+          value: 0
+    message: "Schema expressiveness review complete. {expressiveness_finding_count} findings ([expressiveness findings]({expressiveness_findings_path}))."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:
       - id: confirmed
         label: Accept corrections
-        description: Apply the expressiveness corrections (default — auto-accepts after 30s)
+        description: Apply the expressiveness corrections
       - id: revise
         label: Revise corrections
         description: Change some of the corrections
@@ -111,29 +141,53 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
           value: true
+  - kind: action
+    id: conformance-clean
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
+        - type: simple
+          variable: conformance_finding_count
+          operator: ==
+          value: 0
+    actions:
+      - action: message
+        message: Convention conformance review complete — 0 divergences.
   - kind: checkpoint
     id: conformance-confirmed
     condition:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
           value: true
-    message: Convention conformance review complete. {conformance_finding_count} divergences found. Accepting in 30s unless you intervene.
+        - type: simple
+          variable: conformance_finding_count
+          operator: ">"
+          value: 0
+    message: "Convention conformance review complete. {conformance_finding_count} divergences ([conformance findings]({conformance_findings_path}))."
     blocking: false
-    defaultOption: accept-as-is
+    defaultOption: fix-all
     autoAdvanceMs: 30000
     options:
       - id: fix-all
@@ -144,7 +198,7 @@ steps:
         description: Fix some divergences, keep justified ones
       - id: accept-as-is
         label: Accept as-is
-        description: The divergences are intentional (default — auto-accepts after 30s)
+        description: The divergences are intentional
   - kind: technique
     id: audit-rule-hygiene
     technique: audit-rule-hygiene
@@ -152,34 +206,58 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
           value: true
+  - kind: action
+    id: rule-hygiene-clean
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
+        - type: simple
+          variable: rule_hygiene_finding_count
+          operator: ==
+          value: 0
+    actions:
+      - action: message
+        message: Rule hygiene audit complete — 0 findings.
   - kind: checkpoint
     id: rule-hygiene-confirmed
     condition:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
           value: true
-    message: Rule hygiene audit complete. {rule_hygiene_finding_count} findings (restatements, contradictions, duplications, prefix patterns). Accepting in 30s unless you intervene.
+        - type: simple
+          variable: rule_hygiene_finding_count
+          operator: ">"
+          value: 0
+    message: "Rule hygiene audit complete. {rule_hygiene_finding_count} findings ([rule hygiene findings]({rule_hygiene_findings_path}))."
     blocking: false
     defaultOption: fix-all
     autoAdvanceMs: 30000
     options:
       - id: fix-all
         label: Fix all findings
-        description: Remove restatements, resolve contradictions, deduplicate, regroup (default — auto-accepts after 30s)
+        description: Remove restatements, resolve contradictions, deduplicate, regroup
       - id: selective
         label: Selective fixes
         description: Choose which findings to address
@@ -190,34 +268,58 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
           value: true
+  - kind: action
+    id: enforcement-clean
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
+        - type: simple
+          variable: enforcement_finding_count
+          operator: ==
+          value: 0
+    actions:
+      - action: message
+        message: Rule-to-structure audit complete — 0 text-only rules.
   - kind: checkpoint
     id: enforcement-confirmed
     condition:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
           value: true
-    message: Rule-to-structure audit complete. {enforcement_finding_count} text-only rules found. Adding structural enforcement in 30s unless you elect to keep them as text-only guidance.
+        - type: simple
+          variable: enforcement_finding_count
+          operator: ">"
+          value: 0
+    message: "Rule-to-structure audit complete. {enforcement_finding_count} text-only rules ([enforcement findings]({enforcement_findings_path}))."
     blocking: false
     defaultOption: add-enforcement
     autoAdvanceMs: 30000
     options:
       - id: add-enforcement
         label: Add structural enforcement
-        description: Ship checkpoints, conditions, or validate actions for the flagged rules — the fix cycle applies the structural change and records enforcement as added (default — auto-accepts after 30s)
+        description: Ship checkpoints, conditions, or validate actions for the flagged rules — the fix cycle applies the structural change and records enforcement as added
         effect:
           setVariable:
             needs_audit_fixes: true
@@ -231,9 +333,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
@@ -244,9 +346,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
@@ -254,7 +356,7 @@ steps:
     actions:
       - action: set
         target: needs_audit_fixes
-        message: Set true iff the verified findings (verified_findings, recalibrated by verify-high-findings) include findings the user elected to fix (fix-all / selective / revise); the enforcement-confirmed checkpoint's add-enforcement option sets this separately via its own effect. False when every pass was accepted as-is.
+        message: Set true iff the verified findings (verified_findings, recalibrated by verify-high-findings) include findings the user elected to fix (fix-all / selective / revise), or enforcement-confirmed chose add-enforcement. False when every presented pass was accepted as-is, and when a pass was skipped because its finding count was 0 (zero-finding passes never elect fixes).
       - action: set
         target: has_critical_finding
         message: Set true iff any verified finding (verified_findings) is Critical severity — a schema-invalid or structurally broken construct that must not be committed.

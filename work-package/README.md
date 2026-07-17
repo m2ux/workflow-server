@@ -117,14 +117,14 @@ sequenceDiagram
 ```
 
 **Orchestrator** (role: `workflow-orchestrator`):
-- Loads the workflow definition via `get_workflow` (receives schema preamble with all five JSON Schemas)
+- Loads the workflow definition (including the schema preamble with all five JSON Schemas)
 - Initializes state variables (review mode is set by an early detection step that flips the `is_review_mode` variable)
 - Dispatches activities to the worker one at a time
 - Evaluates transition conditions between activities
 - Manages rework loops (transitions back to earlier activities)
 
 **Worker** (role: `activity-worker`):
-- Self-bootstraps from `next_activity` and `get_technique`
+- Self-bootstraps into the assigned activity and its bound techniques
 - Executes activity steps sequentially using the technique protocol
 - Handles all checkpoints and user interaction directly
 - Produces artifacts with `artifactPrefix` convention
