@@ -12,9 +12,6 @@ tags:
   - design-principles
   - elicitation
   - conventions
-# Design-time authoring standards live in resources/design-principles.md and
-# resources/anti-patterns.md (enforced by quality-review). rules.* hold only
-# session-runtime directives for agents executing this workflow.
 rules:
   activity:
     - Corrections must persist — record corrections and verify compliance at every subsequent checkpoint
