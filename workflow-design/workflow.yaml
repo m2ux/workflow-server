@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.13.0
+version: 1.13.1
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -100,7 +100,7 @@ variables:
     defaultValue: ""
   - name: report_path
     type: string
-    description: Absolute path to the persisted compliance or post-update review report. Linked from review-disposition and post-update gates.
+    description: Absolute path to the persisted compliance or post-update review report. Linked from review-disposition, post-update gates, and the review-seeded update announce message.
     defaultValue: ""
   - name: review_scope_confirmed
     type: boolean

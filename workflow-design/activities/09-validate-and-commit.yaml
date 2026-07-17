@@ -91,7 +91,7 @@ steps:
           value: 0
     actions:
       - action: message
-        message: "Scope manifest verification complete — {addressed_count}/{total_count} items addressed."
+        message: "Scope manifest verification complete — {addressed_count}/{total_count} items addressed ([scope manifest]({scope_manifest_path}))."
   - kind: checkpoint
     id: scope-verified
     condition:
@@ -105,7 +105,7 @@ steps:
           variable: unaddressed_count
           operator: ">"
           value: 0
-    message: "Scope manifest verification: {addressed_count}/{total_count} items addressed ({unaddressed_count} remaining)."
+    message: "Scope manifest verification: {addressed_count}/{total_count} items addressed ({unaddressed_count} remaining) ([scope manifest]({scope_manifest_path}))."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000

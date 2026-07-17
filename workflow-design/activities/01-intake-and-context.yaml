@@ -44,7 +44,7 @@ steps:
       value: true
     actions:
       - action: message
-        message: "Update seeded from compliance review — mode is update; findings in the report are the change specification."
+        message: "Update seeded from compliance review — mode is update; findings in the [compliance report]({report_path}) are the change specification."
   - kind: checkpoint
     id: review-scope-confirmed
     condition:
