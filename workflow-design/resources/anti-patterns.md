@@ -10,7 +10,9 @@ metadata:
 
 Patterns explicitly prohibited during workflow creation and modification.
 
-Each entry has a kebab-case **name** (bold, after the number). Cross-references use that name in backticks (e.g. `pure-technique-binding`) — never numeric designators (e.g. "AP-64" or "item 64"). Dense entries use **Detect** / **Do not flag** / **Fix** so an audit agent can apply them without narrative case-law. Short entries stay one sentence when that is enough. Audit techniques load this resource and apply each entry in place — they must not restate per-pattern detect/fix logic or cite entry numbers as protocol designators.
+Each entry has a kebab-case **name** (bold, after the number). Cross-references use that name in backticks (e.g. `pure-technique-binding`) — never numeric designators (e.g. "AP-64" or "item 64"). Audit techniques load this resource and apply each entry in place — they must not restate per-pattern detect/fix logic or cite entry numbers as protocol designators.
+
+**Entry prose.** Write for an audit agent scanning under scrutiny, not for case-law. Prefer **Detect** / **Do not flag** / **Fix** whenever an entry needs more than one sentence; keep short entries to a single sentence when that is enough. Keep observable Detect signals, false-positive carve-outs, and branched Fix order. Cut provenance and narrative ballast: audited counts, session-trace asides, historical supersession notes, mnemonics-as-essays, and cross-sermons that restate sibling entries. Cross-references name the sibling (`see also \`io-agnostic-contract\``) without re-teaching it. If deleting a sentence loses no Detect, carve-out, or Fix step, delete it.
 
 ---
 
