@@ -63,7 +63,7 @@ Each creation guide has a **Template** section and **Rules** for lean, decision-
 
 ### 00 — Design Principles
 
-*Prefer / before / only after* stance — broader than any one defect; avoids families of smells. No Detect triad here; specific bad instances live in the anti-pattern catalog.
+*Prefer / before / only after* stance — broader than any one defect; avoids families of smells. No Detect triad here; specific bad instances live in the anti-pattern catalog. Includes **§26 Creation Guide for Generated Documents** (every persisted planning artifact maps to a Template+Rules guide).
 
 ### 01 — Schema Construct Inventory
 

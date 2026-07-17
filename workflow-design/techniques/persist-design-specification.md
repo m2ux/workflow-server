@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.3
+  version: 1.1.4
 ---
 
 ## Capability
@@ -26,7 +26,7 @@ Absolute path to the written design-specification artifact.
 
 ### 2. Persist Specification Artifact
 
-- Persist it via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `design-specification.md` per [design-specification](../resources/design-specification.md)
+- Persist it via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `design-specification.md` per [design-specification](../resources/design-specification.md#template)
 - Capture the written location as `{specification_path}`
 
 ### 3. Mirror Decisions To README

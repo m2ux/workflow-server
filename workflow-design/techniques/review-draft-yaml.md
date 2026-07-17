@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.2
+  version: 1.1.3
 ---
 
 ## Capability
@@ -44,7 +44,7 @@ Absolute path to the written draft-attestation artifact (includes the block-inde
 
 ### 2. Persist Reviewed Blocks
 
-- Persist `{reviewed_blocks}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `draft-attestation.md` per [draft-attestation](../resources/draft-attestation.md); capture the written location as `{draft_attestation_path}`
+- Persist `{reviewed_blocks}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `draft-attestation.md` per [draft-attestation](../resources/draft-attestation.md#template); capture the written location as `{draft_attestation_path}`
 
 ### 3. Record Draft Attestation
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.4.0
+  version: 2.4.1
 ---
 
 ## Capability
@@ -66,7 +66,7 @@ Summarized key design intent from `{user_description}` — purpose, domain, roug
 
 ### 4. Persist Structural Inventory
 
-- When `{operation_type}` is `update` or `review`: persist `{structural_inventory}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `structural-inventory.md` per [structural-inventory](../resources/structural-inventory.md); capture `{structural_inventory_path}`
+- When `{operation_type}` is `update` or `review`: persist `{structural_inventory}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `structural-inventory.md` per [structural-inventory](../resources/structural-inventory.md#template); capture `{structural_inventory_path}`
 - When create mode: leave `{structural_inventory_path}` empty
 
 ### 5. Parse Change Request

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.2
+  version: 1.2.3
 ---
 
 ## Capability
@@ -8,6 +8,10 @@ metadata:
 Extract structural and content patterns from comparable existing workflows for reuse in the target, and persist a lean alignment / divergence table.
 
 ## Outputs
+
+### pattern_analysis
+
+Lean alignment / divergence table following the [Pattern Analysis Guide](../resources/pattern-analysis.md#template).
 
 ### pattern_analysis_path
 
@@ -34,5 +38,5 @@ Absolute path to the written pattern-analysis artifact.
 
 ### 4. Persist Pattern Analysis
 
-- Persist via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `pattern-analysis.md` per [pattern-analysis](../resources/pattern-analysis.md)
+- Persist via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `pattern-analysis.md` per [pattern-analysis](../resources/pattern-analysis.md#template)
 - Capture the written location as `{pattern_analysis_path}`

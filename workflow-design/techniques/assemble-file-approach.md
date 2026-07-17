@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.2
+  version: 1.2.3
 ---
 
 ## Capability
@@ -40,5 +40,5 @@ Absolute path to the persisted drafting-plan artifact for the current file.
 
 ### 2. Persist Drafting Plan
 
-- Persist `{drafting_plan}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `drafting-plan.md` (updated in place each file iteration) per [drafting-plan](../resources/drafting-plan.md)
+- Persist `{drafting_plan}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `drafting-plan.md` (updated in place each file iteration) per [drafting-plan](../resources/drafting-plan.md#template)
 - Capture the written location as `{drafting_plan_path}`
