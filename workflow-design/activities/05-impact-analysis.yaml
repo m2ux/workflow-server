@@ -22,7 +22,7 @@ steps:
       value: 0
     actions:
       - action: message
-        message: "Impact analysis complete — no content removals flagged ([impact analysis]({impact_analysis_path})). Continuing to scope."
+        message: "Impact analysis complete — no content removals flagged ([impact analysis]({impact_analysis_path}))."
   - kind: checkpoint
     id: impact-and-preservation-confirmed
     condition:
@@ -30,14 +30,14 @@ steps:
       variable: removal_count
       operator: ">"
       value: 0
-    message: "Impact analysis: {removal_count} removal(s) flagged ([impact analysis]({impact_analysis_path})). Proceeding in 30s unless you intervene."
+    message: "Impact analysis: {removal_count} removal(s) flagged ([impact analysis]({impact_analysis_path}))."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:
       - id: confirmed
         label: Impact and removals look correct
-        description: Impact scope is accurate and every flagged removal is intentional (default — auto-accepts after 30s).
+        description: Impact scope is accurate and every flagged removal is intentional
       - id: revise-impact
         label: Revise impact scope
         description: Impact scope is incomplete or over-inclusive.

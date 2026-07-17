@@ -109,7 +109,7 @@ steps:
           value: 0
     actions:
       - action: message
-        message: Schema expressiveness review complete — 0 findings; continuing.
+        message: Schema expressiveness review complete — 0 findings.
   - kind: checkpoint
     id: expressiveness-confirmed
     condition:
@@ -127,14 +127,14 @@ steps:
           variable: expressiveness_finding_count
           operator: ">"
           value: 0
-    message: Schema expressiveness review complete. {expressiveness_finding_count} findings. Accepting in 30s unless you intervene.
+    message: "Schema expressiveness review complete. {expressiveness_finding_count} findings."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:
       - id: confirmed
         label: Accept corrections
-        description: Apply the expressiveness corrections (default — auto-accepts after 30s)
+        description: Apply the expressiveness corrections
       - id: revise
         label: Revise corrections
         description: Change some of the corrections
@@ -171,7 +171,7 @@ steps:
           value: 0
     actions:
       - action: message
-        message: Convention conformance review complete — 0 divergences; continuing.
+        message: Convention conformance review complete — 0 divergences.
   - kind: checkpoint
     id: conformance-confirmed
     condition:
@@ -189,14 +189,14 @@ steps:
           variable: conformance_finding_count
           operator: ">"
           value: 0
-    message: Convention conformance review complete. {conformance_finding_count} divergences found. Accepting in 30s unless you intervene.
+    message: "Convention conformance review complete. {conformance_finding_count} divergences found."
     blocking: false
     defaultOption: fix-all
     autoAdvanceMs: 30000
     options:
       - id: fix-all
         label: Fix all divergences
-        description: Bring all content into conformance (default — auto-accepts after 30s)
+        description: Bring all content into conformance
       - id: selective
         label: Selective fixes
         description: Fix some divergences, keep justified ones
@@ -236,7 +236,7 @@ steps:
           value: 0
     actions:
       - action: message
-        message: Rule hygiene audit complete — 0 findings; continuing.
+        message: Rule hygiene audit complete — 0 findings.
   - kind: checkpoint
     id: rule-hygiene-confirmed
     condition:
@@ -254,14 +254,14 @@ steps:
           variable: rule_hygiene_finding_count
           operator: ">"
           value: 0
-    message: Rule hygiene audit complete. {rule_hygiene_finding_count} findings (restatements, contradictions, duplications, prefix patterns). Accepting in 30s unless you intervene.
+    message: "Rule hygiene audit complete. {rule_hygiene_finding_count} findings (restatements, contradictions, duplications, prefix patterns)."
     blocking: false
     defaultOption: fix-all
     autoAdvanceMs: 30000
     options:
       - id: fix-all
         label: Fix all findings
-        description: Remove restatements, resolve contradictions, deduplicate, regroup (default — auto-accepts after 30s)
+        description: Remove restatements, resolve contradictions, deduplicate, regroup
       - id: selective
         label: Selective fixes
         description: Choose which findings to address
@@ -298,7 +298,7 @@ steps:
           value: 0
     actions:
       - action: message
-        message: Rule-to-structure audit complete — 0 text-only rules; continuing without a fix cycle.
+        message: Rule-to-structure audit complete — 0 text-only rules.
   - kind: checkpoint
     id: enforcement-confirmed
     condition:
@@ -316,14 +316,14 @@ steps:
           variable: enforcement_finding_count
           operator: ">"
           value: 0
-    message: Rule-to-structure audit complete. {enforcement_finding_count} text-only rules found. Adding structural enforcement in 30s unless you elect to keep them as text-only guidance.
+    message: "Rule-to-structure audit complete. {enforcement_finding_count} text-only rules found."
     blocking: false
     defaultOption: add-enforcement
     autoAdvanceMs: 30000
     options:
       - id: add-enforcement
         label: Add structural enforcement
-        description: Ship checkpoints, conditions, or validate actions for the flagged rules — the fix cycle applies the structural change and records enforcement as added (default — auto-accepts after 30s)
+        description: Ship checkpoints, conditions, or validate actions for the flagged rules — the fix cycle applies the structural change and records enforcement as added
         effect:
           setVariable:
             needs_audit_fixes: true

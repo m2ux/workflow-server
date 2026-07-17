@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.12.0
+version: 1.12.1
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -31,6 +31,7 @@ rules:
     - Techniques are the universal capability primitive and the FIRST-CLASS extension mechanism. New strategic operations (scatter/gather, variable binding, retry/escalation, voting, dedup, …) are authored as techniques — preferentially universal ones in `meta` — in preference to schema or engine changes. The schema stays a minimal skeleton; capability grows in the technique library as a standard library of strategy primitives.
     - Technique input/output names, shapes, and structures are defined for the technique's INTRINSIC, GENERIC, REUSABLE semantics — never overfit to a specific caller's local variable name or a single usage instance. Resolve a step-vs-technique name mismatch by aligning the CALLER's state variable to the technique's canonical signature (or an explicit `step.technique.inputs` deviation), NOT by bending the technique to the call-site. Signatures MAY be renamed/reshaped to integrate with the binding system, but only toward a better GENERIC form.
     - One question at a time — each elicitation question and each checkpoint is atomic; never combine multiple questions
+    - Checkpoint and action messages state facts only — no next-step narration ("continuing to…", "proceeding in 30s", "unless you intervene"); options and `autoAdvanceMs` / transitions carry course of action
     - Checkpoint messages are statements; options carry the decision — never put a question mark or confirm-imperative in a checkpoint message
     - Checkpoint messages that reference a planning artifact embed a markdown link to that artifact's absolute path (from the producing technique's path output) so the user can open it without hunting
     - Present approach before implementation — show what will change, how, and in what order before modifying any file

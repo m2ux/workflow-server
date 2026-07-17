@@ -13,7 +13,7 @@ steps:
       variable: is_update_mode
       operator: "!="
       value: true
-    message: "Optional: provide design context before elicitation — reference workflows to model after, integration points, or operators and triggers. Skipping in 30s; elicitation can proceed without it."
+    message: "Optional design context — reference workflows, integration points, or operators and triggers."
     blocking: false
     defaultOption: skip-context
     autoAdvanceMs: 30000
@@ -23,7 +23,7 @@ steps:
         description: Capture reference workflows, integration points, and operators before elicitation.
       - id: skip-context
         label: Skip — proceed to elicitation
-        description: Proceed without additional design context (default — auto-skips after 30s).
+        description: Proceed without additional design context
   - kind: technique
     id: set-design-dimensions
     technique: derive-design-dimensions

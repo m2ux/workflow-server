@@ -11,7 +11,7 @@ steps:
     technique: scope-definition
   - kind: checkpoint
     id: scope-and-structure-confirmed
-    message: "Complete file manifest and implementation order ([scope manifest]({scope_manifest_path})). Proceeding in 30s unless you intervene."
+    message: "Complete file manifest and implementation order ([scope manifest]({scope_manifest_path}))."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
@@ -124,14 +124,14 @@ steps:
       variable: is_update_mode
       operator: "!="
       value: true
-    message: "Drafted-content review ([draft attestation]({draft_attestation_path})). Accepting in 30s unless you intervene."
+    message: "Drafted-content review ([draft attestation]({draft_attestation_path}))."
     blocking: false
     defaultOption: attested
     autoAdvanceMs: 30000
     options:
       - id: attested
         label: Attest — drafted content is understood and intentional
-        description: Every drafted block is reviewed and approved as presented (default — auto-accepts after 30s).
+        description: Every drafted block is reviewed and approved as presented
       - id: revise-block
         label: Revise a flagged block
         description: One or more drafted blocks require targeted revision before the audit passes.
@@ -142,14 +142,14 @@ steps:
       variable: is_update_mode
       operator: ==
       value: true
-    message: "All {file_count} files modified ([draft attestation]({draft_attestation_path})). Attesting in 30s unless you intervene."
+    message: "All {file_count} files modified ([draft attestation]({draft_attestation_path}))."
     blocking: false
     defaultOption: attested
     autoAdvanceMs: 30000
     options:
       - id: attested
         label: Attest — all changes understood and intentional
-        description: Full modification set and every drafted block are approved (default — auto-accepts after 30s).
+        description: Full modification set and every drafted block are approved
       - id: revise-specific
         label: Revise a specific file
         description: One particular file requires further modification.

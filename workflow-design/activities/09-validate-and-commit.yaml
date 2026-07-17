@@ -43,7 +43,7 @@ steps:
           value: 0
     actions:
       - action: message
-        message: "Schema validation passed — {pass_count} file(s), 0 failed; continuing."
+        message: "Schema validation passed — {pass_count} file(s), 0 failed."
   - kind: checkpoint
     id: validation-passed
     condition:
@@ -57,14 +57,14 @@ steps:
           variable: fail_count
           operator: ">"
           value: 0
-    message: "Schema validation results: {pass_count} passed, {fail_count} failed. Proceeding in 30s unless you intervene."
+    message: "Schema validation results: {pass_count} passed, {fail_count} failed."
     blocking: false
     defaultOption: proceed
     autoAdvanceMs: 30000
     options:
       - id: proceed
         label: Proceed to commit
-        description: Validation outcomes are acceptable for commit (default — auto-proceeds after 30s).
+        description: Validation outcomes are acceptable for commit
       - id: fix
         label: Fix failures first
         description: Validation failures must be addressed before committing.
@@ -91,7 +91,7 @@ steps:
           value: 0
     actions:
       - action: message
-        message: "Scope manifest verification complete — {addressed_count}/{total_count} items addressed; continuing."
+        message: "Scope manifest verification complete — {addressed_count}/{total_count} items addressed."
   - kind: checkpoint
     id: scope-verified
     condition:
@@ -105,14 +105,14 @@ steps:
           variable: unaddressed_count
           operator: ">"
           value: 0
-    message: "Scope manifest verification: {addressed_count}/{total_count} items addressed ({unaddressed_count} remaining). Proceeding in 30s unless you intervene."
+    message: "Scope manifest verification: {addressed_count}/{total_count} items addressed ({unaddressed_count} remaining)."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:
       - id: confirmed
         label: Scope is complete enough
-        description: Remaining gaps are acceptable for commit (default — auto-proceeds after 30s).
+        description: Remaining gaps are acceptable for commit
       - id: fix
         label: Address remaining items
         description: Some scope-manifest items remain unaddressed and require attention.

@@ -28,7 +28,7 @@ steps:
       value: 0
     actions:
       - action: message
-        message: "Post-update review complete — 0 findings ([post-update review]({report_path})); proceeding to retrospective."
+        message: "Post-update review complete — 0 findings ([post-update review]({report_path}))."
   - kind: checkpoint
     id: post-update-disposition
     condition:
@@ -36,7 +36,7 @@ steps:
       variable: review_findings_count
       operator: ">"
       value: 0
-    message: "Post-update review complete. {review_findings_count} findings ([post-update review]({report_path})). The update has been committed."
+    message: "Post-update review complete. {review_findings_count} findings ([post-update review]({report_path}))."
     options:
       - id: accept
         label: Accept — update complete

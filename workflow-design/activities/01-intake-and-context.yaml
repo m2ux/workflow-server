@@ -44,7 +44,7 @@ steps:
       value: true
     actions:
       - action: message
-        message: "Update seeded from compliance review — mode is update; findings in the report are the change specification. Skipping mode and change-request re-confirmation."
+        message: "Update seeded from compliance review — mode is update; findings in the report are the change specification."
   - kind: checkpoint
     id: review-scope-confirmed
     condition:
@@ -124,7 +124,7 @@ steps:
         description: Change request and current structure both confirmed.
       - id: refine
         label: Needs refinement
-        description: Change request requires further clarification before continuing.
+        description: Change request requires further clarification.
       - id: cancel
         label: Cancel — create new instead
         description: Update path abandoned; mode flips back to create.
