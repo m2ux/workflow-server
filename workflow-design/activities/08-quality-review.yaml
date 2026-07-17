@@ -45,7 +45,7 @@ steps:
       variable: is_review_mode
       operator: ==
       value: true
-    message: Compliance report complete. {review_findings_count} findings identified across {target_workflow_ids}. Would you like to fix the issues?
+    message: "Compliance report complete. {review_findings_count} findings identified across {target_workflow_ids}."
     options:
       - id: fix-issues
         label: Fix identified issues

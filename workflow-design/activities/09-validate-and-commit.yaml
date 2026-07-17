@@ -142,7 +142,7 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
-    message: "Ready to commit workflow '{workflow_id}' to the workflows worktree. Review the staged changes and confirm sign-off."
+    message: "Ready to commit workflow '{workflow_id}' to the workflows worktree."
     blocking: true
     options:
       - id: approved

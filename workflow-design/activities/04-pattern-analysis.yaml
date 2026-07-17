@@ -9,7 +9,7 @@ steps:
     technique: pattern-analysis
   - kind: checkpoint
     id: patterns-confirmed
-    message: Here are the structural patterns extracted from existing workflows, with my proposed structure shown alongside. Which patterns should I adopt?
+    message: Structural patterns from existing workflows, with proposed structure shown alongside.
     options:
       - id: adopt-all
         label: Adopt all patterns

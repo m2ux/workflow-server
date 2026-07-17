@@ -40,7 +40,7 @@ steps:
         technique: elicitation
   - kind: checkpoint
     id: spec-confirmed
-    message: "Here is the full specification across the elicited dimensions ({design_dimensions}). Is it accurate and complete?"
+    message: "Full specification across the elicited dimensions ({design_dimensions})."
     blocking: true
     options:
       - id: confirmed

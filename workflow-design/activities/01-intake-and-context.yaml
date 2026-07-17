@@ -20,7 +20,7 @@ steps:
           variable: update_seeded_from_review
           operator: "!="
           value: true
-    message: I've classified this as a {operation_type} operation for workflow '{workflow_id}'. Is this correct?
+    message: "Classified as a {operation_type} operation for workflow '{workflow_id}'."
     blocking: true
     options:
       - id: confirm-create
@@ -52,7 +52,7 @@ steps:
       variable: is_review_mode
       operator: ==
       value: true
-    message: "Compliance review is scoped to workflow id(s): {target_workflow_ids}. Confirm this target set?"
+    message: "Compliance review target set: {target_workflow_ids}."
     blocking: true
     options:
       - id: confirm-review-target
@@ -116,7 +116,7 @@ steps:
           variable: update_seeded_from_review
           operator: "!="
           value: true
-    message: Here is the existing workflow structure and my understanding of your requested changes. Is this correct?
+    message: Existing workflow structure and requested changes.
     blocking: true
     options:
       - id: confirmed
@@ -144,7 +144,7 @@ steps:
           variable: is_update_mode
           operator: "!="
           value: true
-    message: I've reviewed existing YAML files and understand the format conventions. Here is my summary of YAML syntax rules and project conventions. Does this look correct?
+    message: YAML syntax rules and project conventions summary.
     options:
       - id: confirmed
         label: Yes, proceed
@@ -182,7 +182,7 @@ steps:
           variable: is_update_mode
           operator: "!="
           value: true
-    message: Here are the schema constructs I've identified as applicable to this workflow. Does this coverage look right?
+    message: Schema constructs identified as applicable to this workflow.
     options:
       - id: confirmed
         label: Yes, these are the right constructs

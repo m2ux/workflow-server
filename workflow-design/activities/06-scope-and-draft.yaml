@@ -58,7 +58,7 @@ steps:
           variable: is_update_mode
           operator: "!="
           value: true
-        message: Here is my approach for drafting '{current_file}'. Does this look right?
+        message: "Drafting approach for '{current_file}'."
         options:
           - id: confirmed
             label: Yes, proceed with this approach
@@ -79,7 +79,7 @@ steps:
           variable: is_update_mode
           operator: "!="
           value: true
-        message: Here is the drafted content for '{current_file}'. Is this acceptable?
+        message: "Drafted content for '{current_file}'."
         options:
           - id: accepted
             label: Accepted
@@ -103,7 +103,7 @@ steps:
               variable: has_unflagged_removals
               operator: ==
               value: true
-        message: Content removal detected that was not flagged during impact analysis. Review the diff and confirm.
+        message: Content removal detected that was not flagged during impact analysis.
         options:
           - id: proceed
             label: Proceed with changes

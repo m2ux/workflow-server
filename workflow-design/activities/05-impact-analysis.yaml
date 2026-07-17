@@ -30,7 +30,7 @@ steps:
       variable: removal_count
       operator: ">"
       value: 0
-    message: "Impact analysis: files directly modified, files indirectly affected, and any broken references. {removal_count} removal(s) flagged below — confirm impact scope and that each removal is intentional. Proceeding in 30s unless you intervene."
+    message: "Impact analysis: files directly modified, files indirectly affected, and any broken references. {removal_count} removal(s) flagged. Proceeding in 30s unless you intervene."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
