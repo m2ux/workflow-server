@@ -20,7 +20,7 @@ This update trims the generated artifacts and the checkpoint messages that point
 
 ## Design Decisions
 
-*[Pointers + links to canonical artifacts — not full rationale restatements.]*
+Full dimension deltas (purpose, activity list, checkpoints, artifacts, rules): [design specification](03-design-specification.md).
 
 ## Compliance Findings
 
@@ -40,8 +40,8 @@ This update trims the generated artifacts and the checkpoint messages that point
 | 01 | [Format conventions](01-format-conventions.md) | YAML syntax + project conventions | 5-10m | ✅ Complete |
 | 01 | [Applicable constructs](01-applicable-constructs.md) | Schema constructs for this update | 5-10m | ✅ Complete |
 | 02 | Intake and context | Mode, literacy, problem overview | 15-25m | ✅ Complete |
-| 03 | Requirements refinement | Change request + acceptance criteria | 20-40m | ⬚ Pending |
-| 04 | Design specification | Persist-contract + gate message changes | 30-60m | ⬚ Pending |
+| 03 | [Design specification](03-design-specification.md) | Change request + acceptance criteria | 20-40m | ✅ Complete |
+| 03 | [Assumptions log](03-assumptions-log.md) | Design assumptions reconciled | 5-10m | ✅ Complete |
 | 05 | Impact analysis | Blast radius; confirm no topology change | 15-30m | ⬚ Pending |
 | 06 | Scope manifest | Confirmed file list | 10-20m | ⬚ Pending |
 | 07 | Implementation | Edit techniques/resources/checkpoint messages | 45-90m | ⬚ Pending |
@@ -58,3 +58,5 @@ This update trims the generated artifacts and the checkpoint messages that point
 | Structural inventory | [01-structural-inventory.md](01-structural-inventory.md) |
 | Format conventions | [01-format-conventions.md](01-format-conventions.md) |
 | Applicable constructs | [01-applicable-constructs.md](01-applicable-constructs.md) |
+| Design specification | [03-design-specification.md](03-design-specification.md) |
+| Assumptions log | [03-assumptions-log.md](03-assumptions-log.md) |
