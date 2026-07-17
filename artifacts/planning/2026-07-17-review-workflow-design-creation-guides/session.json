@@ -216,6 +216,11 @@
     {
       "sessionIndex": "ZEUS3I",
       "state": {
+        "activeCheckpoint": {
+          "activityId": "post-update-review",
+          "checkpointId": "post-update-disposition",
+          "yieldedAt": "2026-07-17T16:04:00.921Z"
+        },
         "agentId": "orchestrator",
         "checkpointResponses": {
           "intake-and-context-review-scope-confirmed": {
@@ -287,7 +292,7 @@
           "validate-and-commit"
         ],
         "condition": "",
-        "currentActivity": "validate-and-commit",
+        "currentActivity": "post-update-review",
         "currentTechnique": "prepare-workflow-branch",
         "deliveredContent": {
           "orchestrator": {
@@ -317,6 +322,7 @@
             "technique:audit-anti-patterns": "a0c242349ff5ce2a",
             "technique:audit-conformance": "cb209fe5e6261ff9",
             "technique:audit-expressiveness": "ca3e2a2a877cbfbb",
+            "technique:audit-principles": "8e853ccc99f1e774",
             "technique:audit-rule-enforcement": "8de6e6f03906c79d",
             "technique:audit-rule-hygiene": "305565e4bd6e8bb9",
             "technique:audit-schema-validation": "6e64b4add57b7183",
@@ -327,15 +333,17 @@
             "technique:impact-analysis": "86695b71413fcb49",
             "technique:intake-classification": "7295893db22932b1",
             "technique:persist-design-specification": "eed481f99891f5e9",
-            "technique:persist-report": "6ee69f1f095ab7f6",
+            "technique:persist-report": "55c940f95a94ea43",
             "technique:prepare-workflow-branch": "91cc388f48e09d0d",
             "technique:readme-authoring": "46b6320cca3fa3b4",
             "technique:reconcile-design-assumptions": "e23ea4140563c084",
             "technique:reload-workflow": "49228205e8be05b9",
             "technique:review-draft-yaml": "5eebe6ee44fb9ebb",
             "technique:review-drafted-file": "e6295c96843c616c",
+            "technique:scope-audit": "14ada8c35192f58b",
             "technique:scope-definition": "96d9033e16be1177",
             "technique:scope-verification": "e2dacbe36f08554a",
+            "technique:summarize-findings": "4ab5dd75eb804b0e",
             "technique:synthesize-update-specification": "d3c155933fa8388b",
             "technique:verify-high-findings": "5ac3e7a6f4ad404e",
             "technique:work-package::manage-artifacts::verify-readme-conforms": "ddb889e3993df152",
@@ -1564,16 +1572,161 @@
             },
             "timestamp": "2026-07-17T15:53:41.869Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-17T15:54:43.651Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "post-update-review",
+            "timestamp": "2026-07-17T15:54:43.651Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "reload-updated-workflow",
+              "techniqueId": "reload-workflow"
+            },
+            "timestamp": "2026-07-17T15:55:04.829Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-expressiveness",
+              "techniqueId": "audit-expressiveness"
+            },
+            "timestamp": "2026-07-17T15:55:04.829Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-conformance",
+              "techniqueId": "audit-conformance"
+            },
+            "timestamp": "2026-07-17T15:55:04.829Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-principles",
+              "techniqueId": "audit-principles"
+            },
+            "timestamp": "2026-07-17T15:55:04.829Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-anti-patterns",
+              "techniqueId": "audit-anti-patterns"
+            },
+            "timestamp": "2026-07-17T15:55:04.829Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-schema-validation",
+              "techniqueId": "audit-schema-validation"
+            },
+            "timestamp": "2026-07-17T15:55:04.829Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "scope-audit",
+              "techniqueId": "scope-audit"
+            },
+            "timestamp": "2026-07-17T15:55:04.829Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "summarize-findings",
+              "techniqueId": "summarize-findings"
+            },
+            "timestamp": "2026-07-17T15:55:04.829Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "save-review-snapshot",
+              "techniqueId": "persist-report"
+            },
+            "timestamp": "2026-07-17T15:55:04.829Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "schema-construct-inventory"
+            },
+            "timestamp": "2026-07-17T15:55:04.829Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "convention-conformance"
+            },
+            "timestamp": "2026-07-17T15:55:04.829Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "design-principles"
+            },
+            "timestamp": "2026-07-17T15:55:04.829Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "anti-patterns"
+            },
+            "timestamp": "2026-07-17T15:59:48.489Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "checkpoint": "post-update-disposition",
+            "timestamp": "2026-07-17T16:04:00.921Z",
+            "type": "checkpoint_reached"
           }
         ],
         "schemaVersion": 1,
-        "seq": 115,
+        "seq": 119,
         "sessionIndex": "ZEUS3I",
         "skippedActivities": [],
         "startedAt": "2026-07-17T13:44:03.698Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784303621,
+        "ts": 1784304240,
         "variables": {
           "addressed_count": 0,
           "anti_pattern_findings_path": "",
