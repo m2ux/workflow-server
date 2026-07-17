@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.12.3
+version: 1.12.4
 name: Quality Review
 description: Quality review of drafted workflow content.
 required: true
@@ -125,7 +125,7 @@ steps:
           value: 0
     actions:
       - action: message
-        message: "Schema expressiveness review complete. {expressiveness_finding_count} findings will be fixed in the audit fix cycle ([expressiveness findings]({expressiveness_findings_path}))."
+        message: "Schema expressiveness review complete. {expressiveness_finding_count} findings ([expressiveness findings]({expressiveness_findings_path}))."
   - kind: technique
     id: audit-conformance
     technique: audit-conformance
@@ -179,7 +179,7 @@ steps:
           value: 0
     actions:
       - action: message
-        message: "Convention conformance review complete. {conformance_finding_count} divergences will be fixed in the audit fix cycle ([conformance findings]({conformance_findings_path}))."
+        message: "Convention conformance review complete. {conformance_finding_count} divergences ([conformance findings]({conformance_findings_path}))."
   - kind: technique
     id: audit-rule-hygiene
     technique: audit-rule-hygiene
@@ -233,7 +233,7 @@ steps:
           value: 0
     actions:
       - action: message
-        message: "Rule hygiene audit complete. {rule_hygiene_finding_count} findings will be fixed in the audit fix cycle ([rule hygiene findings]({rule_hygiene_findings_path}))."
+        message: "Rule hygiene audit complete. {rule_hygiene_finding_count} findings ([rule hygiene findings]({rule_hygiene_findings_path}))."
   - kind: technique
     id: audit-rule-enforcement
     technique: audit-rule-enforcement
@@ -287,7 +287,7 @@ steps:
           value: 0
     actions:
       - action: message
-        message: "Rule-to-structure audit complete. {enforcement_finding_count} text-only rules will get structural enforcement in the audit fix cycle ([enforcement findings]({enforcement_findings_path}))."
+        message: "Rule-to-structure audit complete. {enforcement_finding_count} text-only rules ([enforcement findings]({enforcement_findings_path}))."
   - kind: technique
     id: verify-high-findings
     technique: verify-high-findings
