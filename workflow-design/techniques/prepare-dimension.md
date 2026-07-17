@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -17,7 +17,7 @@ The design dimension to elicit — one of the dimensions listed in the [elicitat
 
 ### dimension_questions
 
-Markdown prompt for `{current_dimension}`: the guide's questions for that dimension, ready for the activity to display. Includes only questions still needed (skip follow-ups the user's prior answers already settle when those answers are available in session context).
+Markdown prompt for `{current_dimension}`: the guide's questions for that dimension. Includes only questions still needed (skip follow-ups already settled by prior answers available as inputs or prior captures).
 
 ## Protocol
 
@@ -27,4 +27,4 @@ Markdown prompt for `{current_dimension}`: the guide's questions for that dimens
 
 ### 2. Assemble Questions
 
-- Assemble `{dimension_questions}` as markdown: the questions needed to capture the dimension at the guide's Capture depth; omit follow-ups already settled by prior answers in session context
+- Assemble `{dimension_questions}` as markdown: the questions needed to capture the dimension at the guide's Capture depth; omit follow-ups already settled by prior answers available as inputs or prior captures

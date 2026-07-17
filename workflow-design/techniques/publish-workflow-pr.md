@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 1.1.2
 ---
 
 ## Capability
@@ -33,7 +33,7 @@ The pull request number.
 
 ### 2. Compose PR Description
 
-- Compose `{pr_title}` and `{pr_body}` from the session's artifacts: the title names the workflow and the change (create / update); the body summarizes the change, lists the scope manifest from `{scope_manifest}`, and links the planning folder `{planning_folder_path}` (its completion summary and review artifacts)
+- Compose `{pr_title}` and `{pr_body}` from bound artifacts: the title names the workflow and the change (create / update); the body summarizes the change, lists the scope manifest from `{scope_manifest}`, and links the planning folder `{planning_folder_path}` (its completion summary and review artifacts)
 
 ### 3. Create Or Update Draft PR
 

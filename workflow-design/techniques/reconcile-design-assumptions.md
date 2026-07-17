@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
 
-Autonomously resolve the design assumptions that the schema and conventions can settle — running the audit techniques against the drafted workflow — leaving only genuine design judgements open.
+Autonomously resolve the design assumptions that the schema and conventions can settle — using audit evidence against the drafted workflow — leaving only genuine design judgements open.
 
 ## Inputs
 
@@ -51,4 +51,4 @@ Boolean — true iff open design judgements remain after reconciliation.
 
 ### no-user-interaction
 
-Reconciliation runs autonomously, without user interaction — only the converged result is presented.
+Reconciliation runs autonomously, without user interaction — emit `{assumptions_log}`, `{open_assumptions}`, and `{has_open_assumptions}` only.

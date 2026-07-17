@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
 
-Assemble the per-file drafting plan — schema constructs to use, reference patterns to follow, and intended content structure — and persist it for activity-layer review. Drafting and per-file schema validation are performed via [yaml-authoring](yaml-authoring.md).
+Assemble the per-file drafting plan — schema constructs to use, reference patterns to follow, and intended content structure — and persist it for linked review. Drafting and per-file schema validation are out of scope for this technique (see [yaml-authoring](yaml-authoring.md)).
 
 ## Inputs
 

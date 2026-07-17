@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 2.1.1
+  version: 2.1.2
 ---
 
 ## Capability
 
-Persist a workflow audit report into the planning folder as a numbered artifact via the shared [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) operation, so the report sorts with the session's other artifacts and a re-run updates it in place rather than minting a duplicate.
+Persist a workflow audit report into the planning folder as a numbered artifact via the shared [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) operation, so the report sorts with the planning folder's other artifacts and a re-run updates it in place rather than minting a duplicate.
 
 ## Inputs
 
