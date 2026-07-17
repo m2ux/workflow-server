@@ -27,6 +27,14 @@ The block-indexed review table: one row per drafted construct with its file, loc
 
 Confirmation, recorded in the planning folder, that every drafted block has been reviewed and is understood and intentional.
 
+### draft_attestation_path
+
+Absolute path to the written draft-attestation artifact (includes the block-indexed review). Interpolated into draft attestation checkpoints as a markdown link.
+
+#### artifact
+
+`draft-attestation.md`
+
 ## Protocol
 
 ### 1. Index Blocks
@@ -34,7 +42,8 @@ Confirmation, recorded in the planning folder, that every drafted block has been
 - Build a block-indexed table from `{drafted_files}`: one row per drafted construct — each activity, technique, and resource, plus the `workflow.yaml` metadata block — recording its file, location, and a one-line rationale for why it exists
 - In update mode, mark each block added / modified / unchanged by comparing against the committed `{target_workflow_id}`
 
-### 2. Present And Attest
+### 2. Persist And Present
 
-- Present `{reviewed_blocks}` and walk the user through each block's rationale
-- Record `{draft_attestation}` in `{planning_folder_path}` once every block is confirmed understood and intentional; flag any block the user marks for revision
+- Persist `{reviewed_blocks}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and bare filename `draft-attestation.md`; capture the written location as `{draft_attestation_path}`
+- Present `{reviewed_blocks}` (link the artifact; do not restate the full table in chat when the file carries it)
+- Record `{draft_attestation}` in that artifact once every block is confirmed understood and intentional; flag any block the user marks for revision

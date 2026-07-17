@@ -13,6 +13,14 @@ Assess the impact of proposed changes against an existing workflow: enumerate it
 
 Number of content removals flagged for user confirmation (diff-based and obsolete-file removals). Gates the `impact-and-preservation-confirmed` checkpoint — presented only when greater than zero.
 
+### impact_analysis_path
+
+Absolute path to the written impact-analysis artifact. Interpolated into the impact checkpoint message as a markdown link.
+
+#### artifact
+
+`impact-analysis.md`
+
 ## Protocol
 
 ### 1. Enumerate Files
@@ -42,6 +50,11 @@ Number of content removals flagged for user confirmation (diff-based and obsolet
 
 - Inventory the material being removed across modified files (diff-based) and surface it for explicit user confirmation
 - Set `{removal_count}` to the number of distinct flagged removals (0 when the change is additive or string-only with no material deleted)
+
+### 7. Persist Report
+
+- Persist the full impact classification, integrity checks, and flagged removals via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and bare filename `impact-analysis.md`
+- Capture the written location as `{impact_analysis_path}`
 
 ## Rules
 

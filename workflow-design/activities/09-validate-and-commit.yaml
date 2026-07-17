@@ -1,5 +1,5 @@
 id: validate-and-commit
-version: 1.5.0
+version: 1.6.0
 name: Validate and Commit
 description: Final validation, scope verification, and README generation/update, then commit of the workflow changes on a feature branch with a pull request opened against the workflows branch (create/update); in review mode the compliance report is committed directly.
 required: true
@@ -142,7 +142,7 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
-    message: "Ready to commit workflow '{workflow_id}' to the workflows worktree."
+    message: "Ready to commit workflow '{workflow_id}' ([planning README]({planning_folder_path}/README.md), [draft attestation]({draft_attestation_path}))."
     blocking: true
     options:
       - id: approved

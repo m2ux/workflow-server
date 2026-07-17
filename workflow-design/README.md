@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.11.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits one or more existing workflows against the 15 design principles and produces a compliance report.
+> v1.12.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits one or more existing workflows against the 15 design principles and produces a compliance report.
 
 ---
 
@@ -128,6 +128,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`context-loading`](./techniques/context-loading.md) | Load schemas and survey existing workflows to internalize conventions | Intake and Context |
 | [`derive-design-dimensions`](./techniques/derive-design-dimensions.md) | Derive the ordered design dimensions to elicit, per mode | Requirements Refinement |
 | [`elicitation`](./techniques/elicitation.md) | Elicit a single design dimension — the per-iteration unit of the dimension-elicitation loop | Requirements Refinement |
+| [`persist-design-specification`](./techniques/persist-design-specification.md) | Persist the elicited design specification for linked review at `spec-confirmed` | Requirements Refinement |
 | [`reconcile-design-assumptions`](./techniques/reconcile-design-assumptions.md) | Autonomously resolve audit-resolvable design assumptions, leaving only genuine judgements open | Requirements Refinement |
 | [`pattern-analysis`](./techniques/pattern-analysis.md) | Extract reusable structural and content patterns from reference workflows | Pattern Analysis |
 | [`impact-analysis`](./techniques/impact-analysis.md) | Assess change impact on files, transitions, and references | Impact Analysis |
@@ -151,7 +152,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`commit-verification`](./techniques/commit-verification.md) | Verify the commit landed correctly | Validate and Commit |
 | [`prepare-workflow-branch`](./techniques/prepare-workflow-branch.md) | Create/checkout the feature branch in the workflows repo before committing | Validate and Commit |
 | [`publish-workflow-pr`](./techniques/publish-workflow-pr.md) | Push the branch and open/mark-ready a PR against the `workflows` branch | Validate and Commit |
-| [`persist-report`](./techniques/persist-report.md) | Persist the compliance/review report as an artifact | Validate and Commit, Post-Update Review |
+| [`persist-report`](./techniques/persist-report.md) | Persist the compliance/review report as an artifact | Quality Review (review mode), Validate and Commit, Post-Update Review |
 | [`run-audit-passes`](./techniques/run-audit-passes.md) | Run all audit passes against the committed workflow | Post-Update Review |
 | [`summarize-findings`](./techniques/summarize-findings.md) | Produce a severity-rated findings summary | Post-Update Review |
 | [`review-draft-yaml`](./techniques/review-draft-yaml.md) | Block-indexed review of the drafted YAML, capturing a draft attestation before the audit passes | Scope and Draft |

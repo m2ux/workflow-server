@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.7.0
+version: 1.8.0
 name: Quality Review
 description: Quality review of drafted workflow content.
 required: true
@@ -38,6 +38,14 @@ steps:
       - kind: technique
         id: compile-report
         technique: compile-report
+  - kind: technique
+    id: persist-compliance-report
+    technique: persist-report
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: ==
+      value: true
   - kind: checkpoint
     id: review-disposition
     condition:
@@ -45,7 +53,7 @@ steps:
       variable: is_review_mode
       operator: ==
       value: true
-    message: "Compliance report complete. {review_findings_count} findings identified across {target_workflow_ids}."
+    message: "Compliance report complete. {review_findings_count} findings across {target_workflow_ids} ([compliance report]({report_path}))."
     options:
       - id: fix-issues
         label: Fix identified issues

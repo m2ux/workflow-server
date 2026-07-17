@@ -1,5 +1,5 @@
 id: impact-analysis
-version: 1.3.0
+version: 1.4.0
 name: Impact Analysis
 description: Impact assessment of proposed changes against an existing workflow's files, transitions, and references.
 required: false
@@ -22,7 +22,7 @@ steps:
       value: 0
     actions:
       - action: message
-        message: "Impact analysis complete — no content removals flagged. Blast radius is recorded; continuing to scope (intervene at scope-and-structure if the file set looks wrong)."
+        message: "Impact analysis complete — no content removals flagged ([impact analysis]({impact_analysis_path})). Continuing to scope."
   - kind: checkpoint
     id: impact-and-preservation-confirmed
     condition:
@@ -30,7 +30,7 @@ steps:
       variable: removal_count
       operator: ">"
       value: 0
-    message: "Impact analysis: files directly modified, files indirectly affected, and any broken references. {removal_count} removal(s) flagged. Proceeding in 30s unless you intervene."
+    message: "Impact analysis: {removal_count} removal(s) flagged ([impact analysis]({impact_analysis_path})). Proceeding in 30s unless you intervene."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000

@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.5.0
+version: 1.6.0
 name: Scope and Draft
 description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file.
 required: true
@@ -11,7 +11,7 @@ steps:
     technique: scope-definition
   - kind: checkpoint
     id: scope-and-structure-confirmed
-    message: Here is the complete file manifest and implementation order. Proceeding in 30s unless you want to revise.
+    message: "Complete file manifest and implementation order ([scope manifest]({scope_manifest_path})). Proceeding in 30s unless you intervene."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
@@ -124,7 +124,7 @@ steps:
       variable: is_update_mode
       operator: "!="
       value: true
-    message: "Drafted-content review: each block's rationale is shown above. Accepting in 30s unless you flag a block to revise before the audit passes."
+    message: "Drafted-content review ([draft attestation]({draft_attestation_path})). Accepting in 30s unless you intervene."
     blocking: false
     defaultOption: attested
     autoAdvanceMs: 30000
@@ -142,7 +142,7 @@ steps:
       variable: is_update_mode
       operator: ==
       value: true
-    message: "All {file_count} files modified; block-indexed review is shown above. Attesting the change set in 30s unless you intervene."
+    message: "All {file_count} files modified ([draft attestation]({draft_attestation_path})). Attesting in 30s unless you intervene."
     blocking: false
     defaultOption: attested
     autoAdvanceMs: 30000

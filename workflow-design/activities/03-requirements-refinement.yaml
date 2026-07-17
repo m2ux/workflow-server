@@ -1,5 +1,5 @@
 id: requirements-refinement
-version: 1.6.0
+version: 1.7.0
 name: Requirements Refinement
 description: A confirmed workflow specification across its design dimensions, with the design assumptions it rests on surfaced, reconciled, and reviewed.
 required: true
@@ -38,9 +38,12 @@ steps:
       - kind: technique
         id: elicit-dimension
         technique: elicitation
+  - kind: technique
+    id: persist-specification
+    technique: persist-design-specification
   - kind: checkpoint
     id: spec-confirmed
-    message: "Full specification across the elicited dimensions ({design_dimensions})."
+    message: "Full specification across the elicited dimensions ({design_dimensions}): [design specification]({specification_path})."
     blocking: true
     options:
       - id: confirmed
