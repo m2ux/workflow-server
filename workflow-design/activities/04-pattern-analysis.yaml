@@ -1,5 +1,5 @@
 id: pattern-analysis
-version: 1.2.0
+version: 1.3.0
 name: Pattern Analysis
 description: Structural and content patterns extracted from comparable existing workflows for reuse in the target workflow.
 required: false
@@ -9,7 +9,7 @@ steps:
     technique: pattern-analysis
   - kind: checkpoint
     id: patterns-confirmed
-    message: Structural patterns from existing workflows, with proposed structure shown alongside.
+    message: "Pattern comparison and proposed structure ([pattern analysis]({pattern_analysis_path}))."
     options:
       - id: adopt-all
         label: Adopt all patterns

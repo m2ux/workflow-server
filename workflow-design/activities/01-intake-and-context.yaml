@@ -1,5 +1,5 @@
 id: intake-and-context
-version: 1.4.0
+version: 1.5.0
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 required: true
@@ -67,9 +67,6 @@ steps:
         effect:
           setVariable:
             review_scope_confirmed: false
-  - kind: technique
-    id: context-loading
-    technique: context-loading
   - kind: action
     id: bind-planning-folder-path
     actions:
@@ -88,6 +85,9 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
+  - kind: technique
+    id: context-loading
+    technique: context-loading
   - kind: technique
     id: present-problem-overview
     technique:
@@ -144,7 +144,7 @@ steps:
           variable: is_update_mode
           operator: "!="
           value: true
-    message: YAML syntax rules and project conventions summary.
+    message: "YAML syntax and project conventions ([format conventions]({format_conventions_path}))."
     options:
       - id: confirmed
         label: Yes, proceed
@@ -182,7 +182,7 @@ steps:
           variable: is_update_mode
           operator: "!="
           value: true
-    message: Schema constructs identified as applicable to this workflow.
+    message: "Applicable schema constructs ([applicable constructs]({applicable_constructs_path}))."
     options:
       - id: confirmed
         label: Yes, these are the right constructs

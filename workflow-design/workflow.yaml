@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.13.1
+version: 1.14.0
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -85,6 +85,18 @@ variables:
   - name: specification_path
     type: string
     description: Absolute path to the persisted design-specification artifact. Linked from the spec-confirmed checkpoint.
+    defaultValue: ""
+  - name: format_conventions_path
+    type: string
+    description: Absolute path to the persisted format-conventions artifact. Linked from format-literacy.
+    defaultValue: ""
+  - name: applicable_constructs_path
+    type: string
+    description: Absolute path to the persisted applicable-constructs artifact. Linked from constructs-confirmed.
+    defaultValue: ""
+  - name: pattern_analysis_path
+    type: string
+    description: Absolute path to the persisted pattern-analysis artifact. Linked from patterns-confirmed.
     defaultValue: ""
   - name: impact_analysis_path
     type: string

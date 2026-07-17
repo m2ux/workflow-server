@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.13.1 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits one or more existing workflows against the 15 design principles and produces a compliance report.
+> v1.14.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits one or more existing workflows against the 15 design principles and produces a compliance report.
 
 ---
 
@@ -125,12 +125,12 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | Technique | Capability | Bound by |
 |-----------|------------|----------|
 | [`intake-classification`](./techniques/intake-classification.md) | Classify the request as create/update/review and set mode + target | Intake and Context |
-| [`context-loading`](./techniques/context-loading.md) | Load schemas and survey existing workflows to internalize conventions | Intake and Context |
+| [`context-loading`](./techniques/context-loading.md) | Load schemas, survey references, persist format-conventions + applicable-constructs for literacy gates | Intake and Context |
 | [`derive-design-dimensions`](./techniques/derive-design-dimensions.md) | Derive the ordered design dimensions to elicit, per mode | Requirements Refinement |
 | [`elicitation`](./techniques/elicitation.md) | Elicit a single design dimension — the per-iteration unit of the dimension-elicitation loop | Requirements Refinement |
 | [`persist-design-specification`](./techniques/persist-design-specification.md) | Persist the elicited design specification for linked review at `spec-confirmed` | Requirements Refinement |
 | [`reconcile-design-assumptions`](./techniques/reconcile-design-assumptions.md) | Autonomously resolve audit-resolvable design assumptions, leaving only genuine judgements open | Requirements Refinement |
-| [`pattern-analysis`](./techniques/pattern-analysis.md) | Extract reusable structural and content patterns from reference workflows | Pattern Analysis |
+| [`pattern-analysis`](./techniques/pattern-analysis.md) | Extract patterns from reference workflows and persist the comparison for `patterns-confirmed` | Pattern Analysis |
 | [`impact-analysis`](./techniques/impact-analysis.md) | Assess change impact on files, transitions, and references | Impact Analysis |
 | [`scope-definition`](./techniques/scope-definition.md) | Enumerate the complete file manifest and structural design | Scope and Draft |
 | [`present-file-approach`](./techniques/present-file-approach.md) | Present the per-file drafting approach before a file is written | Scope and Draft |
@@ -169,7 +169,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 |---|----------|---------|
 | 00 | [Design Principles](./resources/design-principles.md) | Condensed reference of all 15 principles |
 | 01 | [Schema Construct Inventory](./resources/schema-construct-inventory.md) | Prose-to-formal construct mapping tables |
-| 02 | [Anti-Patterns](./resources/anti-patterns.md) | 93 prohibited patterns by category |
+| 02 | [Anti-Patterns](./resources/anti-patterns.md) | 94 prohibited patterns by category |
 | 03 | [Update Mode Guide](./resources/update-mode-guide.md) | Update-mode activation and key differences from create mode |
 | 04 | [Review Mode Guide](./resources/review-mode-guide.md) | Compliance audit procedure and report structure |
 | 05 | [Design Context README](./resources/design-context-readme.md) | Planning-folder README template seeded at intake |
@@ -252,7 +252,7 @@ workflows/workflow-design/
     ├── README.md                         # Resource index
     ├── design-principles.md              # 15 principles reference
     ├── schema-construct-inventory.md     # Construct mapping tables
-    ├── anti-patterns.md                  # 93 anti-patterns
+    ├── anti-patterns.md                  # 94 anti-patterns
     ├── update-mode-guide.md              # Update mode guide
     ├── review-mode-guide.md              # Review mode guide
     ├── design-context-readme.md          # Planning-folder README template

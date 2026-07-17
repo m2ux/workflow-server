@@ -12,7 +12,7 @@ This file is an orientation map. The authoritative definition of each activity �
 
 ### 01. Intake and Context
 
-Classify the request as create, update, or review, set the corresponding mode + target (`target_workflow_id` for update; `target_workflow_ids` for review), then internalize the schema system and YAML format conventions before any drafting begins. It also binds the session's planning folder and, in create/update modes, seeds its `README.md` from the [design-context-readme](../resources/design-context-readme.md) template via `work-package::manage-artifacts::create-readme` — the entry point whose progress tracker every later activity updates. In update mode it loads the existing workflow first; when update was seeded from a review disposition (`update_seeded_from_review`), it skips mode and change-request re-confirmation. In review mode it confirms the audit target set and branches straight to quality review. This is the literacy gate: nothing downstream proceeds until the agent has the schema and format baseline.
+Classify the request as create, update, or review, set the corresponding mode + target (`target_workflow_id` for update; `target_workflow_ids` for review), bind the planning folder and seed its `README.md` (create/update), then internalize schemas/conventions via `context-loading` — which persists `format-conventions.md` and `applicable-constructs.md` that the literacy checkpoints link. In update mode it loads the existing workflow first; when update was seeded from a review disposition (`update_seeded_from_review`), it skips mode and change-request re-confirmation. In review mode it confirms the audit target set and branches straight to quality review. This is the literacy gate: nothing downstream proceeds until the agent has the schema and format baseline.
 
 Definition: [`01-intake-and-context.yaml`](./01-intake-and-context.yaml). Leads to [Requirements Refinement](#03-requirements-refinement), or directly to [Quality Review](#08-quality-review) in review mode.
 
@@ -28,7 +28,7 @@ Definition: [`03-requirements-refinement.yaml`](./03-requirements-refinement.yam
 
 ### 04. Pattern Analysis
 
-Extract structural and content patterns from comparable existing workflows so the target workflow reuses proven conventions rather than reinventing them, and present those patterns alongside the proposed structure. Create mode only.
+Extract structural and content patterns from comparable existing workflows, persist the comparison as a planning artifact, and gate adoption at `patterns-confirmed` with a link to that artifact. Create mode only.
 
 Definition: [`04-pattern-analysis.yaml`](./04-pattern-analysis.yaml). Leads to [Scope and Draft](#06-scope-and-draft).
 
