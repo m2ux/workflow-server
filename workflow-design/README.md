@@ -169,7 +169,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 |---|----------|---------|
 | 00 | [Design Principles](./resources/design-principles.md) | Condensed reference of all 15 principles |
 | 01 | [Schema Construct Inventory](./resources/schema-construct-inventory.md) | Prose-to-formal construct mapping tables |
-| 02 | [Anti-Patterns](./resources/anti-patterns.md) | 94 prohibited patterns by category |
+| 02 | [Anti-Patterns](./resources/anti-patterns.md) | 95 prohibited patterns by category |
 | 03 | [Update Mode Guide](./resources/update-mode-guide.md) | Update-mode activation and key differences from create mode |
 | 04 | [Review Mode Guide](./resources/review-mode-guide.md) | Compliance audit procedure and report structure |
 | 05 | [Design Context README](./resources/design-context-readme.md) | Planning-folder README template seeded at intake |
@@ -252,7 +252,7 @@ workflows/workflow-design/
     ├── README.md                         # Resource index
     ├── design-principles.md              # 15 principles reference
     ├── schema-construct-inventory.md     # Construct mapping tables
-    ├── anti-patterns.md                  # 94 anti-patterns
+    ├── anti-patterns.md                  # 95 anti-patterns
     ├── update-mode-guide.md              # Update mode guide
     ├── review-mode-guide.md              # Review mode guide
     ├── design-context-readme.md          # Planning-folder README template
