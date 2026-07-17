@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Persist the accumulated design specification as a decision surface per the [Design Specification Guide](../resources/design-specification.md).
+Persist the accumulated design specification as a decision surface per the [Design Specification Guide](../resources/design-specification.md#template).
 
 ## Outputs
 

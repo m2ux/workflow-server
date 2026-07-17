@@ -25,7 +25,7 @@ The block-indexed review table following the [Draft Attestation Guide](../resour
 
 ### draft_attestation
 
-Record in the planning folder that every drafted block has been reviewed and is understood and intentional (closing line of the [draft-attestation](../resources/draft-attestation.md) template).
+Record in the planning folder that every drafted block has been reviewed and is understood and intentional (closing line of the [draft-attestation](../resources/draft-attestation.md#template) template).
 
 ### draft_attestation_path
 
