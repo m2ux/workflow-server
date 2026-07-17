@@ -2,7 +2,7 @@
 
 > Part of the [Workflow Design Workflow](../README.md)
 
-Ten markdown resources providing the design principles, construct inventories, anti-pattern catalogs, mode-specific guidance, the planning-folder README and completion-summary templates, and the design-assumption and elicitation guides used by the workflow-design workflow.
+Eleven markdown resources providing the design principles, construct inventories, anti-pattern catalog, convention-conformance checklist, mode-specific guidance, the planning-folder README and completion-summary templates, and the design-assumption and elicitation guides used by the workflow-design workflow.
 
 ---
 
@@ -12,14 +12,15 @@ Ten markdown resources providing the design principles, construct inventories, a
 |-------|----------|---------|
 | `00` | [Design Principles](design-principles.md) | Condensed reference of all 15 design principles with enforcement mechanisms |
 | `01` | [Schema Construct Inventory](schema-construct-inventory.md) | Prose-to-formal construct mapping tables for activity, workflow, technique, and condition schemas |
-| `02` | [Anti-Patterns](anti-patterns.md) | Prohibited-pattern catalog (AP-XX + kebab-case name) by category: structural, interaction, schema expressiveness, rule hygiene, description hygiene, coupling, tool-technique-doc consistency, execution, output economy |
-| `03` | [Update Mode Guide](update-mode-guide.md) | Content preservation rules, impact analysis procedure, side-effect detection patterns |
-| `04` | [Review Mode Guide](review-mode-guide.md) | Supplementary guide: activation, activity flow, compliance report template, transition-to-update-mode contract. **The audit procedure itself is canonical in the quality-review activity's `audit-*` technique protocols** — this resource does not duplicate it. |
+| `02` | [Anti-Patterns](anti-patterns.md) | Prohibited-pattern catalog (AP-XX + kebab-case name) by category: structural, interaction, schema expressiveness, rule hygiene, description hygiene, coupling, tool-technique-doc consistency, execution, output economy, canon hygiene |
+| `03` | [Update Mode Guide](update-mode-guide.md) | Update-mode activation and key differences from create; impact/preservation owned by the impact-analysis technique |
+| `04` | [Review Mode Guide](review-mode-guide.md) | Supplementary guide: activation, activity flow, compliance report template, transition-to-update-mode contract. Audit procedure is canonical in quality-review / post-update bound techniques. |
 | `05` | [Design Context README](design-context-readme.md) | Template + guidelines for the planning-folder `README.md` seeded at intake; the workflow-design counterpart of the work-package [readme](../../work-package/resources/readme.md) guide. |
 | `06` | [Completion Artifact](completion-artifact.md) | Template + guidelines for the `COMPLETE.md` completion summary; the workflow-design counterpart of the work-package [complete-wp](../../work-package/resources/complete-wp.md) guide, with design-authoring sections in place of code/test sections. |
 | `07` | [Design Assumptions](design-assumptions.md) | Assumption categories and log template for surfacing and reviewing design assumptions during requirements-refinement; reuses the work-package [assumptions-review](../../work-package/resources/assumptions-review.md) methodology cross-workflow. |
-| `08` | [Design Assumption Reconciliation](design-assumption-reconciliation.md) | How workflow-design reconciles audit-resolvable assumptions via its own audit techniques, in place of work-package's code analysis. |
-| `09` | [Elicitation Guide](elicitation-guide.md) | Per-dimension question bank for the one-dimension-at-a-time elicitation; the counterpart of the work-package [requirements-elicitation](../../work-package/resources/requirements-elicitation.md) guide. |
+| `08` | [Design Assumption Reconciliation](design-assumption-reconciliation.md) | Framing for audit-resolvable assumptions; mapping owned by reconcile-design-assumptions |
+| `09` | [Elicitation Guide](elicitation-guide.md) | Mode dimension sets + per-dimension capture/question bank; counterpart of work-package requirements-elicitation |
+| `10` | [Convention Conformance](convention-conformance.md) | Reference conventions and documentation-voice criteria for `audit-conformance` |
 
 ---
 
@@ -44,7 +45,7 @@ Also includes checkpoint effect types (`setVariable`, `transitionTo`, `skipActiv
 
 ### 02 — Anti-Patterns
 
-Prohibited patterns organized into nine categories. Cite by kebab-case **name** (stable); each entry also carries a monotonic **AP-XX** list designator. Do not cite the catalog size.
+Prohibited patterns organized by category. Cite by kebab-case **name** (stable); each entry also carries a monotonic **AP-XX** list designator. Do not cite the catalog size.
 
 | Category | Examples |
 |----------|----------|
@@ -52,11 +53,12 @@ Prohibited patterns organized into nine categories. Cite by kebab-case **name** 
 | Interaction | `atomic-checkpoints`, `no-assumption-execution`, `scope-reverify-completion`, `one-question-per-message` |
 | Schema expressiveness | `checkpoint-not-prose`, `loop-not-prose`, `procedure-in-protocol`, `bound-step-no-description`, `no-monolith-masking-steps` |
 | Rule hygiene | `no-rule-protocol-restatement`–`no-one-step-rules`, `single-rule-authority`, `worker-rule-reach` |
-| Description hygiene | `no-rationale-in-description`–`role-rules-not-description`, `no-hand-authored-artifacts`, `techniques-list-disjoint`, `readme-orients-not-transcribes` |
-| Coupling | `io-agnostic-contract`, `canonical-technique-reference`, `anchored-protocol-references`, `technique-stage-agnostic`, `no-activity-prose-rules` |
+| Description hygiene | `no-rationale-in-description`–`role-rules-not-description`, `no-hand-authored-artifacts`, `techniques-list-disjoint`, `readme-orients-not-transcribes`, `documentation-voice-positive` |
+| Coupling | `io-agnostic-contract`, `no-delivery-mechanism-narration`, `no-tool-usage-prescription`, `canonical-technique-reference`, `anchored-protocol-references`, `technique-stage-agnostic`, `no-activity-prose-rules` |
 | Tool-technique-doc consistency | `no-false-resource-delivery`–`no-redundant-tools` |
 | Execution | `approach-before-impl`, `structure-backed-constraints`, `work-through-activities`, `accept-correction` |
 | Output economy | `single-closeout-artifact`–`lifecycle-row-update`, `canonical-fact-home`–`artifact-audience-declared`, `link-named-artifacts`–`no-caption-only-message`, `runtime-rules-only`, `no-technique-resource-dual-home` |
+| Canon hygiene | `cited-home-owns-claim`, `operative-criteria-need-a-home`, `no-shadow-audit-pass`, `canon-layer-cites-not-restates`, `bind-site-is-orchestration-truth` |
 
 ### 03 — Update Mode Guide
 
@@ -88,22 +90,24 @@ Assumption categories (Activity Boundaries, Checkpoint Necessity, Technique Sele
 
 ### 08 — Design Assumption Reconciliation
 
-How workflow-design reconciles audit-resolvable assumptions — mapping each kind of assumption to the audit technique that settles it (`audit-schema-validation`, `audit-conformance`, `audit-consistency`, `audit-principles`) — in place of work-package's GitNexus-backed code analysis. The audit-technique mapping is owned by the `reconcile-design-assumptions` technique protocol; this guide carries the supplementary framing.
+Supplementary framing for audit-resolvable design assumptions. The assumption→audit-technique mapping is owned by the `reconcile-design-assumptions` technique protocol; this guide does not duplicate it.
 
 ### 09 — Elicitation Guide
 
-Per-dimension question bank for the guided, one-dimension-at-a-time elicitation in requirements-refinement: goal and anchor questions per dimension (purpose, activity list, model, checkpoints, artifacts, variables, techniques, rules), plus a minimum-viable-elicitation note.
+Per-dimension question bank and mode dimension sets for one-dimension-at-a-time elicitation: Capture column + anchor questions per dimension, create vs update dimension sets, minimum-viable-elicitation note.
+
+### 10 — Convention Conformance
+
+Reference-convention checklist (naming, field order, version, transitions, checkpoints, techniques) and documentation-voice criteria for the `audit-conformance` pass. YAML drafting mechanics stay in `yaml-authoring`.
 
 ---
 
 ## Cross-Workflow Access
 
-These resources can be loaded by any workflow via:
+Other workflows may consult these by resource id (harness load mechanics live in meta tool guidance, not here):
 
-```
-get_resource({ session_index, resource_id: "workflow-design/design-principles" })            # Design principles
-get_resource({ session_index, resource_id: "workflow-design/schema-construct-inventory" })    # Construct inventory
-get_resource({ session_index, resource_id: "workflow-design/anti-patterns" })                 # Anti-patterns
-```
+- `workflow-design/design-principles` — [Design principles](./design-principles.md)
+- `workflow-design/schema-construct-inventory` — [Construct inventory](./schema-construct-inventory.md)
+- `workflow-design/anti-patterns` — [Anti-patterns](./anti-patterns.md)
 
-This is useful for workflows that want to self-audit against the design principles without running the full review mode.
+Useful for workflows that self-audit against the design principles without running full review mode.

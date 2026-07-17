@@ -10,7 +10,7 @@ metadata:
 
 Condensed, agent-executable reference of the 15 design principles governing workflow creation and modification. Each principle includes the rule and the structural enforcement mechanism.
 
-These principles — together with [anti-patterns](./anti-patterns.md) and [schema-construct-inventory](./schema-construct-inventory.md) — are the **workflow-design canon** for design-time authoring. Workflow / activity / technique `rules` (and technique `## Rules`) are runtime-relevant only; any design-time constraint found there is migrated into this canon (`runtime-rules-only`), not left as injected session prose.
+These principles — together with [anti-patterns](./anti-patterns.md) and [schema-construct-inventory](./schema-construct-inventory.md) — are the **workflow-design canon** for design-time authoring. Principles state Rule + Enforcement and cite lower layers; they do not re-embed catalog Detect (`canon-layer-cites-not-restates`). Workflow / activity / technique `rules` (and technique `## Rules`) are runtime-relevant only; any design-time constraint found there is migrated into this canon (`runtime-rules-only`), not left as injected session prose.
 
 ---
 
@@ -36,19 +36,19 @@ These principles — together with [anti-patterns](./anti-patterns.md) and [sche
 
 ## 4. Maximize Schema Expressiveness
 
-**Rule:** Every piece of structured workflow information must use the most specific formal construct the schema provides. Prose is only acceptable for the `description` and `outcome` fields. Even in those fields, prose must not (a) restate what the surrounding structure already encodes — step position, loop bounds, checkpoint effects, variable defaults; (b) narrate rationale, downstream consumers, or prior-implementation comparisons; (c) enumerate the sequence of activities, phases, or steps (the canonical declaration is `activities[]` or the on-disk directory); (d) prescribe modifications to user-owned environment state (git config, shell, GPG, GitHub account); or (e) carry behavioural rules / role-prescriptions ("The orchestrator coordinates only", "Workers MUST X"). The dedicated `rules:` section on the construct or a parent construct is the canonical home for behavioural constraints. See `no-rationale-in-description`–`role-rules-not-description`. The same placement discipline governs the resource/technique boundary: resources carry what the agent fills or consults (templates, format skeletons, template-consumed vocabularies, reference material); techniques carry what the agent does (protocol phases, named rules, decision criteria, commands) — a resource section shaped as procedure or rules is a technique in the wrong file (`resource-fills-not-does`), unguarded and unaddressable there. Operative criteria must not be dual-homed: a technique that loads a resource must not also restate that resource's detect/fix lists or vocabularies (`no-technique-resource-dual-home`).
+**Rule:** Every piece of structured workflow information must use the most specific formal construct the schema provides. Prose is only for `description` / `outcome` (and equivalent) fields that do not restate structure, narrate rationale, enumerate sequence, prescribe user-env mutation, or carry behavioural rules. Operative Detect lives in [schema-construct-inventory](./schema-construct-inventory.md) and the Schema Expressiveness / Description Hygiene anti-patterns (`checkpoint-not-prose`–`no-monolith-masking-steps`, `no-rationale-in-description`–`role-rules-not-description`, `resource-fills-not-does`, `no-technique-resource-dual-home`).
 
-**Technique binding:** Ordered procedure never lives in a step/activity `description` — it lives in the bound technique's `protocol[]`, reached via `step.technique` (bare `group::operation` / single-file id, or `{ name, inputs, outputs }` for deviations/remaps). A `kind: technique` step is pure binding: no `description`, no `name`, no `note` (`procedure-in-protocol`, `bound-step-no-description`). Every procedural step binds exactly one operation; compound multi-operation steps are split (`no-monolith-masking-steps`). Pure action/control steps (`set`/`log`/`emit`/`message`, `when`, checkpoint/triggers) are exempt from a technique binding. Activity-level `techniques[]` is reserved for cross-cutting STRATEGY/capability techniques (e.g. `variable-binding`, `scatter-gather`) — never a re-list of per-step operations (`techniques-list-disjoint`).
+**Technique binding:** Ordered procedure lives in the bound technique's protocol; bound steps are pure binding; one operation per procedural step; activity `techniques[]` is strategy-only — see `procedure-in-protocol`, `bound-step-no-description`, `no-monolith-masking-steps`, `techniques-list-disjoint`.
 
-**Technique library as extension:** Techniques are the first-class extension mechanism. New strategic operations (scatter/gather, variable binding, retry/escalation, voting, dedup, …) are authored as techniques — preferentially universal ones in `meta` — in preference to schema or engine changes. The schema stays a minimal skeleton; capability grows in the technique library. Technique input/output names and shapes express the technique's intrinsic, generic, reusable semantics — never a caller's local variable name. Resolve a step-vs-technique name mismatch by aligning the caller's state variable (or an explicit `step.technique.inputs` deviation), not by bending the technique to the call-site (`io-agnostic-contract`).
+**Technique library as extension:** Prefer techniques (especially meta) over schema/engine changes; I/O names stay call-site-agnostic (`io-agnostic-contract`).
 
-**Enforcement:** `08-quality-review` with `expressiveness-confirmed` checkpoint. Schema construct inventory ([schema-construct-inventory](./schema-construct-inventory.md)) is the reference.
+**Enforcement:** `08-quality-review` with `expressiveness-confirmed` checkpoint (`audit-expressiveness` walks the construct inventory).
 
 ## 5. Convention Over Invention
 
-**Rule:** Search for existing conventions before introducing new patterns. Use established naming (NN-name.yaml), field ordering, and structural patterns.
+**Rule:** Search for existing conventions before introducing new patterns. Use established naming, field ordering, structural patterns, and positive documentation voice — see [convention-conformance](./convention-conformance.md), `no-invented-naming`, and `documentation-voice-positive`.
 
-**Enforcement:** `08-quality-review` with `conformance-confirmed` checkpoint comparing against reference workflows.
+**Enforcement:** `08-quality-review` with `conformance-confirmed` checkpoint (`audit-conformance` applies that resource against reference workflows).
 
 ## 6. Never Modify Upward
 
@@ -76,9 +76,9 @@ These principles — together with [anti-patterns](./anti-patterns.md) and [sche
 
 ## 10. Encode Constraints as Structure
 
-**Rule:** Critical constraints must be backed by structural enforcement (checkpoints, conditions, validate actions), not just rule text. Text-based rules alone are insufficient.
+**Rule:** Critical constraints must be backed by structural enforcement (checkpoints, conditions, validate actions), not just rule text. Text-based rules alone are insufficient — see `structure-backed-constraints`.
 
-**Enforcement:** `08-quality-review` with `enforcement-confirmed` checkpoint. Rule-to-structure audit flags unenforceable rules.
+**Enforcement:** `08-quality-review` with `enforcement-confirmed` checkpoint (`audit-rule-enforcement` applies that anti-pattern).
 
 ## 11. Plan Before Acting
 
@@ -100,14 +100,12 @@ These principles — together with [anti-patterns](./anti-patterns.md) and [sche
 
 ## 14. Complete Documentation Structure
 
-**Rule:** Every workflow must include a README.md at the root and in each subfolder (activities/, techniques/, resources/). READMEs ORIENT — they state the workflow's purpose, the at-a-glance activity sequence with its flow diagrams, the value each activity delivers, the file structure, a techniques overview, and links to the authoritative files. They do NOT transcribe the structured definition: an activity's `steps[]` (including its inline `kind: checkpoint` and `kind: loop` steps), its activity-level decisions and transitions, per-step technique bindings, the workflow's `variables`, its `rules`, and per-activity estimated times all live in the YAML files and are never restated in a README. Flow diagrams (mermaid/ASCII) are visual orientation and are kept (`readme-orients-not-transcribes`).
+**Rule:** Every workflow must include a README.md at the root and in each subfolder (`activities/`, `techniques/`, `resources/`). READMEs orient (purpose, flow diagrams, value, structure, links) — they do not transcribe YAML. Operative Detect: `readme-orients-not-transcribes`.
 
 **Enforcement:** `generate-readme` / `update-readme` steps in validate-and-commit. Scope manifest must include README files.
 
 ## 15. Output Economy
 
-**Rule:** Design a workflow's artifact contracts and checkpoint set for the reader who must act on them — every artifact is re-read into agent context downstream, and every checkpoint stalls the pipeline on a human. Artifacts: each fact has one canonical artifact and every other appearance is a link (single-source-and-link); status tables report exceptions only; templates are the maximum shape, not the required shape; lifecycle logs are one row per item updated in place; a workflow has exactly one terminal close-out document. Resources: agent-facing operative documents (template + rules), not tutorials. Checkpoints: one decision, one checkpoint; guidance with no decision is a message; a checkpoint that run evidence shows always answered with its default option is a merge/demote candidate; `message` states the subject (no question mark, no confirm-imperative, no next-step narration — options / `autoAdvanceMs` / transitions carry course of action); any checkpoint or action `message` that names a durable planning artifact MUST embed a markdown link to that artifact's absolute path so the user can open it without hunting; a checkpoint after a present-then technique must not caption the prior presentation with no link and no decision-relevant fact (`single-closeout-artifact`–`lifecycle-row-update`, `link-named-artifacts`–`statement-not-question`, `no-caption-only-message`).
+**Rule:** Design artifact contracts and checkpoints for the reader who must act on them — one canonical home per fact, exception-only status, lean templates, one close-out document, one decision per checkpoint, statement-form messages with artifact links where named. Operative Detect: Output Economy anti-patterns (`single-closeout-artifact`–`lifecycle-row-update`, `link-named-artifacts`–`statement-not-question`, `no-caption-only-message`) and structural-economy entries (`canonical-fact-home`–`artifact-audience-declared`), plus `manage-artifacts` output-discipline rules.
 
-The economy must also be STRUCTURAL: templates cannot prescribe the same fact category in more than one place (canonical-home map, `canonical-fact-home`), cannot carry slots shaped for restating other artifacts (link-only inputs, `link-only-input-slots`), must back their style rules with a boundary conformance gate (`enforce-output-discipline`), and must declare each artifact's primary audience so format follows function (`artifact-audience-declared`).
-
-**Enforcement:** `manage-artifacts` output-discipline rules (single-source-and-link, exception-only-reporting, state-once-per-artifact, lean-header, omit-null-sections) inherited by every artifact write. Output-economy anti-patterns (`single-closeout-artifact`–`lifecycle-row-update`, `link-named-artifacts`–`statement-not-question`, `no-caption-only-message`) and structural-economy anti-patterns (`canonical-fact-home`–`artifact-audience-declared`) in the quality-review `audit-anti-patterns` pass. Session-trace checkpoint evidence reviewed in the retrospective.
+**Enforcement:** `manage-artifacts` discipline on every artifact write; Output Economy entries in the quality-review `audit-anti-patterns` pass. Session-trace checkpoint evidence reviewed in the retrospective.

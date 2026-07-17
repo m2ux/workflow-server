@@ -32,7 +32,7 @@ Boolean gate — true iff open design judgements remain after reconciliation.
 ### 1. Classify Resolvability
 
 - Read all open assumptions from `{assumptions_log}`
-- For each, decide whether an audit pass could settle it: schema-validity → [audit-schema-validation](./audit-schema-validation.md); convention / naming → [audit-conformance](./audit-conformance.md); tool / technique / doc consistency → [audit-consistency](./audit-consistency.md); design-principle adherence → [audit-principles](./audit-principles.md) (see [design-assumption-reconciliation](../resources/design-assumption-reconciliation.md))
+- For each, decide whether an audit pass could settle it: schema-validity → [audit-schema-validation](./audit-schema-validation.md); convention / naming → [audit-conformance](./audit-conformance.md); tool / technique / doc consistency (including Tool-Technique-Doc Consistency anti-patterns) → [audit-anti-patterns](./audit-anti-patterns.md); design-principle adherence → [audit-principles](./audit-principles.md) (see [design-assumption-reconciliation](../resources/design-assumption-reconciliation.md))
 - An assumption that is a genuine design judgement (activity boundaries, checkpoint necessity, model choice) is not audit-resolvable and stays open
 
 ### 2. Resolve Via Audits

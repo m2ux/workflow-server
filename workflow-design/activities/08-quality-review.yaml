@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.8.0
+version: 1.10.0
 name: Quality Review
 description: Quality review of drafted workflow content.
 required: true
@@ -29,9 +29,6 @@ steps:
       - kind: technique
         id: schema-validation-check
         technique: audit-schema-validation
-      - kind: technique
-        id: tool-technique-doc-consistency
-        technique: audit-consistency
       - kind: technique
         id: verify-high-findings-review
         technique: verify-high-findings

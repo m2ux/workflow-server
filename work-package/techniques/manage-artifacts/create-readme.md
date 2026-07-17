@@ -15,7 +15,7 @@ Create `README.md` in the planning folder from a template resource, populating i
 
 ### readme_template
 
-*(optional)* `get_resource` id of the README template to populate from.
+*(optional)* Resource id of the README template to populate from.
 
 #### default
 
@@ -29,7 +29,7 @@ Full path to the created `README.md`
 
 ## Protocol
 
-1. Load the README template resource named by `{readme_template}` via `get_resource`.
+1. Load the README template resource named by `{readme_template}`.
 2. Populate the header fields (name, date, status, type) from `{entity_context}`, the Executive Summary placeholder, and the Links table.
 3. Leave the remaining overview sections as placeholder text for later steps to populate.
 4. Write the populated `README.md` to `{planning_folder_path}/README.md`, and return that location as `{created_readme}`.

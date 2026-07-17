@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Audit drafted content for schema expressiveness: cross-check every prose passage against the schema construct inventory, flagging prose that substitutes for a formal construct and rewriting it as the construct or moving it to a field that fits.
+Audit drafted content for schema expressiveness: walk prose against the schema construct inventory, flag substitutions for formal constructs, and present before/after rewrites.
 
 ## Outputs
 
@@ -15,12 +15,18 @@ Count of expressiveness findings — each a flagged instance with its file, the 
 
 ## Protocol
 
-### 1. Audit Expressiveness
+### 1. Load Inventory
 
-- Walk every prose passage in `workflow.yaml`, activity files, and technique files against the construct inventory in [schema-construct-inventory](../resources/schema-construct-inventory.md)
-- Flag every instance where prose substitutes for: steps, checkpoints, decisions, loops, transitions, conditions, triggers, actions, artifacts, variables, modes, inputs, outputs, or protocol phases
-- For each flagged instance, rewrite the prose as the formal construct or move it to a field that fits
+- Load [schema-construct-inventory](../resources/schema-construct-inventory.md) — sole source of informal→formal construct mappings for this pass
+- Do not restate the inventory tables or construct lists here; apply each mapping as written
+- Schema Expressiveness anti-patterns in [anti-patterns](../resources/anti-patterns.md) sharpen the same concern for the full-catalog pass; this pass uses the inventory as its operative checklist
 
-### 2. Present Findings
+### 2. Audit Expressiveness
 
-- Present the expressiveness-pass results to the user: counts, affected files, replacement constructs, and a before/after for each flagged instance
+- Walk every prose passage in `workflow.yaml`, activity files, and technique files against the inventory
+- For each match where prose substitutes for a formal construct: record file, passage, target construct, and a before/after rewrite (construct in place, or move to the fitting field)
+
+### 3. Present Findings
+
+- Present findings: counts, affected files, replacement constructs, and before/after for each instance
+- Set `{expressiveness_finding_count}` to the number of findings

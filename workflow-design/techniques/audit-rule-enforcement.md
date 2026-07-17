@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Audit every `rules[]` entry for structural backing: distinguish text-only enforcement from rules backed by a checkpoint, condition, validate action, or decision, and flag any critical rule that relies solely on text.
+Audit every `rules[]` entry for structural backing by applying `structure-backed-constraints`, and present text-only critical rules with recommended enforcement mechanisms.
 
 ## Outputs
 
@@ -15,11 +15,19 @@ Count of text-only rules found — each with its file, rule content, whether it 
 
 ## Protocol
 
-### 1. Audit Rule To Structure
+### 1. Load Criterion
 
-- For every `rules[]` entry in `workflow.yaml` and activity files, ask: can this rule be violated by ignoring it? If yes, verify a structural mechanism (checkpoint, condition, validate action) backs it
-- Flag any critical rule that relies solely on text
+- Load [anti-patterns](../resources/anti-patterns.md) entry `structure-backed-constraints` — sole Detect / Do not flag / Fix source for this pass
+- Do not restate that entry here; follow it as written
+- Principle 10 in [design-principles](../resources/design-principles.md) is the framing rule; the anti-pattern is the operative criterion
 
-### 2. Present Findings
+### 2. Apply structure-backed-constraints
 
-- Present the rule-to-structure-pass results to the user: text-only rules, structurally-enforced rules, and recommendations for adding enforcement where needed
+- Walk every `rules[]` entry in `workflow.yaml` and activity files (and technique `## Rules` when the entry's scope implies)
+- Apply Detect / Do not flag / Fix from `structure-backed-constraints`
+- For each finding record: file, rule content, criticality, recommended structural mechanism
+
+### 3. Present Findings
+
+- Present text-only rules, structurally-enforced rules, and recommendations for adding enforcement where needed
+- Set `{enforcement_finding_count}` to the number of findings

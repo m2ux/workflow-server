@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Audit `rules[]` across the workflow, activities, and techniques for hygiene: protocol restatement, sibling contradictions, cross-level duplication, worker-rule reach, flat prefix patterns, ambiguity, and single-step rules (`no-rule-protocol-restatement`–`no-one-step-rules`, including `worker-rule-reach`).
+Audit `rules[]` across the workflow, activities, and techniques against the Rule Hygiene section of the anti-pattern catalog, and present findings with file, rule key, and recommended fix.
 
 ## Outputs
 
@@ -15,16 +15,19 @@ Count of rule-hygiene findings — each a flagged rule with its file, rule key, 
 
 ## Protocol
 
-### 1. Audit Rule Hygiene
+### 1. Load Catalog Section
 
-- Protocol restatement (`no-rule-protocol-restatement`): does the rule verbatim copy a protocol phase in the same technique? If so, flag for removal
-- Apparent contradictions (`rule-group-disambiguation`): do sibling rules within the same technique conflict?
-- Cross-level duplication (`single-rule-authority`): does the same orchestrator-only / single-home rule appear at multiple levels (workflow / activity / technique)?
-- Worker reach (`worker-rule-reach`): apply the catalog entry — do not restate its Detect/Do not flag here
-- Flat prefix patterns (`grouped-rule-keys`): do rule keys share a common prefix (`foo-bar`, `foo-baz`)? Flag for grouped array refactoring
-- Ambiguity (`rule-group-disambiguation`): could a rule be interpreted in contradictory ways without its group context?
-- Single-step rules (`no-one-step-rules`): does the rule apply to only one protocol step? If so, fold into the step's description and delete the standalone rule
+- Load [anti-patterns](../resources/anti-patterns.md) — sole source of Rule Hygiene detect, exclusion, and fix criteria
+- Scope this pass to subsections under `## Rule Hygiene Anti-Patterns` only (`no-rule-protocol-restatement` through `no-one-step-rules`, including `worker-rule-reach`)
+- Do not restate, summarize, or number those entries here; follow each as written
 
-### 2. Present Findings
+### 2. Apply Rule Hygiene Entries
 
-- Present the rule-hygiene-pass results to the user: restatements, contradictions, cross-level duplications, prefix patterns, and ambiguities, with file + rule-key citations and recommended actions
+- Walk every in-scope `### AP-XX. name` against `rules[]` / technique `## Rules` on the target workflow, activities, and techniques
+- For each entry: apply its **Detect** (or equivalent prose), honor **Do not flag** / caveats, and record **Fix** when a violation is found
+- For each finding record: entry **name** (primary), **AP-XX** designator, file path, rule key, offending content, recommended fix
+
+### 3. Present Findings
+
+- Present findings grouped by catalog entry **name** / **designator**: file, rule key, content, recommended fix
+- Set `{rule_hygiene_finding_count}` to the number of findings

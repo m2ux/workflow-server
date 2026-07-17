@@ -53,10 +53,6 @@ Workflow README with description, activity table, and usage
 
 Cross-cutting design invariants live in `workflow.yaml` `rules[]`. Apply those as the single source of truth; this technique does not duplicate them.
 
-### resource-loading
+### consult-referenced-resources
 
-Load each entry in a technique's referenced resources via `get_resource` after `get_technique` — refs are lightweight until loaded.
-
-### tool-usage
-
-`list_workflows` requires no params and no `session_index`
+Before relying on a referenced resource's content, load that resource. Do not restate harness tool recipes here (`no-tool-usage-prescription`).

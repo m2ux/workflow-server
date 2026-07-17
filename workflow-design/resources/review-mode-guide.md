@@ -10,7 +10,7 @@ metadata:
 
 Guidance for auditing existing workflows against the 15 design principles. Review mode produces a compliance report without modifying the target workflow(s), then offers to switch to update mode for remediation.
 
-This guide carries the **supplementary** material for review mode: activation/flow framing, the compliance report template, and the transition-to-update-mode contract. The **audit procedure itself** is canonical in the `quality-review` activity's bound `audit-*` techniques — the worker loads each via `get_technique` and executes its protocol. This file does not restate the procedure.
+This guide carries the **supplementary** material for review mode: activation/flow framing, the compliance report template, and the transition-to-update-mode contract. The **audit procedure itself** is canonical in the `quality-review` activity's bound `audit-*` techniques — execute each technique's protocol. This file does not restate the procedure.
 
 ---
 
@@ -25,7 +25,7 @@ Multi-target review is first-class: name one or more workflow ids in the request
 Review mode follows a shortened activity sequence:
 
 1. **Intake and Context** — Load each target workflow in `target_workflow_ids`, enumerate contents, internalize the schemas as the audit baseline, then the `review-scope-confirmed` checkpoint (blocking) confirms the full target set before continuing.
-2. **Quality Review** — `forEach` over `target_workflow_ids`, binding each id to `target_workflow_id` and running the audit passes (reload, principles, anti-patterns, schema validation, consistency, verify-high-findings, compile-report). The `review-disposition` checkpoint runs once after all targets. This is the core of review mode.
+2. **Quality Review** — `forEach` over `target_workflow_ids`, binding each id to `target_workflow_id` and running the audit passes (reload, principles, anti-patterns, schema validation, verify-high-findings, compile-report). The `review-disposition` checkpoint runs once after all targets. This is the core of review mode.
 3. **Validate and Commit** — Save the compliance report as an artifact.
 4. **Retrospective** — Capture a session retrospective.
 
@@ -33,19 +33,24 @@ Review mode follows a shortened activity sequence:
 
 ## Audit Procedure
 
-Canonical location: the `audit-*` techniques bound by the `quality-review` activity — `audit-expressiveness`, `audit-conformance`, `audit-rule-hygiene`, `audit-rule-enforcement`, `audit-principles`, `audit-anti-patterns`, `audit-schema-validation`, `audit-consistency` — plus `compile-report`.
+**Review-mode loop** (bound in `quality-review` `multi-target-review-loop`): `reload-workflow` → `audit-principles` → `audit-anti-patterns` → `audit-schema-validation` → `verify-high-findings` → `compile-report`.
 
-Each technique's protocol is the executable procedure. The `quality-review` and `post-update-review` activities bind these techniques at their steps; the worker loads each via `get_technique` and executes its protocol. This file deliberately does not duplicate the bullets — there is one canonical source.
+**Create/update drafting** (same activity, non-review path): `audit-expressiveness`, `audit-conformance`, `audit-rule-hygiene`, `audit-rule-enforcement` with per-pass checkpoints, then `verify-high-findings` and the fix cycle — criteria homes are the construct inventory, [convention-conformance](./convention-conformance.md), and the anti-pattern catalog (scoped or full).
 
-References cited by the audit techniques:
+**Post-update:** `run-audit-passes` applies expressiveness, conformance, principles, anti-patterns, and schema validation.
 
-- [design-principles](./design-principles.md) — design principles (input for `audit-principles`)
-- [schema-construct-inventory](./schema-construct-inventory.md) — schema construct inventory (input for `audit-expressiveness`)
-- [anti-patterns](./anti-patterns.md) — anti-pattern catalog (input for `audit-anti-patterns` and `audit-rule-hygiene`)
+Each bound technique's protocol is the executable procedure. This file does not duplicate those bullets.
+
+References:
+
+- [design-principles](./design-principles.md) — `audit-principles`
+- [schema-construct-inventory](./schema-construct-inventory.md) — `audit-expressiveness`
+- [convention-conformance](./convention-conformance.md) — `audit-conformance`
+- [anti-patterns](./anti-patterns.md) — `audit-anti-patterns` / `audit-rule-hygiene` / `audit-rule-enforcement`
 
 ## Compliance Report Structure
 
-The compliance report follows this structure:
+Review-mode `compile-report` follows this structure (create/update uses per-pass checkpoints instead):
 
 ```markdown
 # Compliance Review: {workflow-id}
@@ -67,26 +72,11 @@ The compliance report follows this structure:
 ## Principle Compliance Findings
 (per-principle Pass / Partial / Violation with file, field, and line references)
 
-## Schema Expressiveness Findings
-(per-file findings with before/after recommendations)
-
-## Convention Conformance Findings
-(per-convention pass/fail with details)
-
-## Rule Hygiene Findings
-(per-rule violations from `no-rule-protocol-restatement`–`no-one-step-rules` with file, rule key, recommended action)
-
-## Rule Enforcement Findings
-(per-rule text-only vs. structurally enforced)
-
 ## Anti-Pattern Findings
-(per-entry **name** matches with locations)
+(per-entry **name** matches with locations — includes Schema Expressiveness, Rule Hygiene, `structure-backed-constraints`, Tool-Technique-Doc Consistency, Output Economy, and the rest of the catalog; note harness-surface mismatches where those entries require them)
 
 ## Schema Validation Results
 (per-file pass/fail)
-
-## Tool-Technique-Doc Consistency Findings
-(per-check pass/fail with specific mismatches)
 
 ## Recommended Fixes
 (prioritized list of changes, grouped by severity)

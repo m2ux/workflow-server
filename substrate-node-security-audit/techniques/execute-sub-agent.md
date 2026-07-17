@@ -49,15 +49,13 @@ observations not formal findings but for orchestrator review (optional)
 
 ### 1. Bootstrap
 
-- Call `start_session(session_token, agent_id)` to inherit the dispatched session and obtain a session token. The workflow is derived from the token.  
-  > If these MCP tool calls fail because the workflow-server is unavailable, fall back to the prompt instructions provided by the orchestrator and note in the output that workflow-server was not available.
-- Call `next_activity({ activity_id: '<assigned-activity-id>' })` to load the activity definition with its steps.  
-  > If `next_activity` returns an error and the activity cannot be loaded, fall back to the prompt instructions provided by the orchestrator and note in the output that the activity was not loaded.
+- Inherit the dispatched session and load the assigned activity definition with its steps.
+  > If the workflow-server is unavailable or the activity cannot be loaded, fall back to the prompt instructions provided by the orchestrator and note that in the output.
 
 ### 2. Execute Steps
 
 - Read the activity's steps array in order.
-- For each step, load its bound technique via `get_technique` and read that technique's `## Capability` (what the step does) and `## Protocol` (how to do it).
+- For each step, load its bound technique and read that technique's `## Capability` (what the step does) and `## Protocol` (how to do it).
 - Produce the output the bound technique defines in its `## Output(s)` before proceeding to the next step.
 - If a step cannot be completed (e.g., no `StorageMap`s in the crate for the lifecycle scan), record an explicit N/A with justification — do not silently skip.
 - If a step requires data or context that is unavailable, record the step as completed with output 'INCOMPLETE — [reason]', continue to the next step, and flag it in the self-verification.

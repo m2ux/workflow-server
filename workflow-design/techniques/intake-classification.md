@@ -37,7 +37,7 @@ Ordered list of workflow ids to audit in review mode. One element for single-tar
 
 ### 1. Load Baseline
 
-- For update or review mode, load the committed workflow catalog via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) and source each target's definition from the workflow-server context the orchestrator supplies — the executing worker does not call `get_workflow` directly
+- For update or review mode, load the committed workflow catalog via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) and source each target's definition from the workflow-server context the orchestrator supplies — workers do not load full workflow definitions directly
 - In review mode, resolve `{target_workflow_ids}` from the request (one or more ids) and set `{target_workflow_id}` to the first element for singular bind sites; in update mode set `{target_workflow_id}` only
 - Build a structural inventory of each target: file counts and entity counts (activities, techniques, resources, checkpoints, transitions)
 - Present the loaded structure(s) to the user as the scope-confirmation surface

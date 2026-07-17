@@ -2,7 +2,7 @@
 
 > Part of the [Workflow Design Workflow](../README.md)
 
-The technique library for the workflow-design workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in the per-technique `.md` file and are served by `get_technique`. This file orients — it does not restate protocols.
+The technique library for the workflow-design workflow. Each technique is one capability an activity step binds via `step.technique`; the authoritative protocol, inputs, outputs, and rules live in the per-technique `.md` file. This file orients — it does not restate protocols.
 
 [`TECHNIQUE.md`](./TECHNIQUE.md) is the workflow-root base contract inherited by every technique here (its inputs/outputs/rules merge into each, and its `Initial`/`Final` protocol blocks wrap each technique's protocol).
 
@@ -20,7 +20,7 @@ For the full technique-to-activity table with capability summaries, see the [wor
 | **Elicitation** | `derive-design-dimensions`, `elicitation`, `reconcile-design-assumptions` |
 | **Analysis** | `pattern-analysis`, `impact-analysis` |
 | **Scope & draft** | `scope-definition`, `present-file-approach`, `present-for-review`, `yaml-authoring`, `review-draft-yaml` |
-| **Quality audits** | `audit-expressiveness`, `audit-conformance`, `audit-rule-hygiene`, `audit-rule-enforcement`, `verify-high-findings`, `audit-principles`, `audit-anti-patterns`, `audit-schema-validation`, `audit-consistency`, `apply-audit-fixes`, `scope-audit` |
+| **Quality audits** | `audit-expressiveness`, `audit-conformance`, `audit-rule-hygiene`, `audit-rule-enforcement`, `verify-high-findings`, `audit-principles`, `audit-anti-patterns`, `audit-schema-validation`, `apply-audit-fixes`, `scope-audit` |
 | **Reporting** | `compile-report`, `summarize-findings`, `persist-report`, `run-audit-passes` |
 | **Validate, commit & PR** | `scope-verification`, `readme-authoring`, `commit-verification`, `prepare-workflow-branch`, `publish-workflow-pr` |
 | **Completion** | `create-completion-doc`, `conduct-retrospective` |

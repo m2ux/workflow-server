@@ -29,12 +29,12 @@ Absolute path to the written applicable-constructs artifact. Interpolated into t
 
 ### 1. Load Schemas
 
-- Fetch the `workflow-server://schemas` MCP resource to load all five JSON schema definitions (workflow, activity, technique, condition, state) — the conformance reference for all drafted content
+- Load all five JSON schema definitions (workflow, activity, technique, condition, state) from `workflow-server://schemas` — the conformance reference for all drafted content
 - Read `schemas/README.md` for the full schema ontology, entity relationships, field tables, examples, and validation guidance
 
 ### 2. Survey References
 
-- Refresh the workflow catalog via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) and survey 2+ reference workflows of similar type — sourcing their definitions from the workflow-server context the orchestrator supplies — as the pattern baseline (the executing worker does not call `get_workflow` directly)
+- Refresh the workflow catalog via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) and survey 2+ reference workflows of similar type — sourcing their definitions from the workflow-server context the orchestrator supplies — as the pattern baseline (workers do not load full workflow definitions directly)
 - Read existing YAML files (workflow / activity / technique) to ground YAML syntax understanding: block mappings (`key: value`), block sequences (`-`-prefixed items), nested indentation, and scalar quoting
 
 ### 3. Identify Constructs
