@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 ## Capability
@@ -13,13 +13,13 @@ Audit a workflow's adherence to the design principles, classifying each principl
 
 Per-principle Pass / Partial / Violation classifications with file, field, and line citations.
 
-### principle_findings_path
-
-Absolute path to the persisted principle-findings artifact.
-
 #### artifact
 
 `principle-findings.md`
+
+### principle_findings_path
+
+Absolute path to the persisted principle-findings artifact.
 
 ## Protocol
 
@@ -35,4 +35,4 @@ Absolute path to the persisted principle-findings artifact.
 
 ### 3. Persist Findings
 
-- Persist `{principle_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `principle-findings.md`; capture `{principle_findings_path}`
+- Persist `{principle_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `principle-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{principle_findings_path}`

@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.1
+  version: 1.2.4
 ---
 
 ## Capability
 
-Assemble the per-file drafting plan — schema constructs to use, reference patterns to follow, and intended content structure — and persist it for linked review. Drafting and per-file schema validation are out of scope for this technique (see [yaml-authoring](yaml-authoring.md)).
+Assemble a lean per-file drafting plan — the delta for this file only — and persist it for linked review. Drafting and per-file schema validation are out of scope for this technique (see [yaml-authoring](yaml-authoring.md)).
 
 ## Inputs
 
@@ -21,23 +21,24 @@ The classified operation. When `update`, the approach frames the change against 
 
 ### drafting_plan
 
-The per-file drafting plan for `{current_file}`: schema constructs to use (from [schema-construct-inventory](../resources/schema-construct-inventory.md)), reference patterns to follow, and intended content structure.
-
-### drafting_plan_path
-
-Absolute path to the persisted drafting-plan artifact for the current file.
+The per-file delta for `{current_file}` following the [Drafting Plan Guide](../resources/drafting-plan.md#template).
 
 #### artifact
 
 `drafting-plan.md`
 
+### drafting_plan_path
+
+Absolute path to the persisted drafting-plan artifact for the current file.
+
 ## Protocol
 
 ### 1. Assemble Drafting Plan
 
-- Assemble `{drafting_plan}` for `{current_file}`: the schema constructs to be used, the reference patterns to be followed, and the intended content structure
+- Assemble `{drafting_plan}` for `{current_file}` following the [Drafting Plan Guide](../resources/drafting-plan.md#template)
+- When `{operation_type}` is `update`, frame against existing content
 
 ### 2. Persist Drafting Plan
 
-- Persist `{drafting_plan}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `drafting-plan.md` (updated in place each file iteration)
+- Persist `{drafting_plan}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `drafting-plan.md` (updated in place each file iteration) per [drafting-plan](../resources/drafting-plan.md#template)
 - Capture the written location as `{drafting_plan_path}`

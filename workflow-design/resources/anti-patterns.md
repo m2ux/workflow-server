@@ -1498,3 +1498,15 @@ Capability (or a techniques-folder README) teaches loader composition instead of
 **Do not flag:** Authoritative platform homes — [schema-construct-inventory](./schema-construct-inventory.md), [workflow-canonical](../../meta/resources/workflow-canonical.md) (Base-contract inheritance), design-principles, this catalogue, or meta harness/engine resources whose domain is the platform; a one-line contribution statement (shared domain inputs/invariants) with no merge/wrap lecture; README notes that `techniques.activity` strategy techniques apply to every activity without teaching container protocol wrap rules; delivery/tool recipes (`no-delivery-mechanism-narration`, `no-tool-usage-prescription`).
 
 **Fix:** Delete composition, placement, and inherit-trailer prose. Leave a short contribution statement (what shared I/O/rules/invariants this contract holds). Loader HOW stays in workflow-canonical / the schema construct inventory. See [State Contract Contribution](./design-principles.md#25-state-contract-contribution).
+
+### AP-116. no-template-creation-guide
+
+"Persist a decision-facing report: classification summary… integrity verdicts… removals inventory — via write-artifact … bare filename `impact-analysis.md`" (full layout recipe in Protocol; no creation-guide Template)
+
+A planning artifact is persisted without a creation-guide Template, or the technique invents the layout in Protocol instead of citing one.
+
+**Detect:** A technique persists a session planning artifact by bare filename and either (a) no workflow resource owns that filename with a `## Template` (or named template anchor) section, or (b) Protocol embeds a competing full section/table recipe for the file body rather than citing the guide's template. Shared satellites may share one guide; every persisted bare filename must still map to a guide.
+
+**Do not flag:** Non-planning outputs (variables, PRs, commits); citing an existing Template with short when/which bullets only; `no-guide-wrapper-ceremony` (too much wrapper around a template — opposite pole); fill content that lives correctly in the resource Template while Protocol only orders persist.
+
+**Fix:** Author or extend a creation-guide resource with `## Template` + `## Rules`; map the bare filename in the resources index; replace Protocol layout essays with a cite to `#template`. See [Creation Guide for Generated Documents](./design-principles.md#26-creation-guide-for-generated-documents); also `resource-fills-not-does`, `no-technique-resource-dual-home`.

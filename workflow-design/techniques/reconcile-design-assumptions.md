@@ -31,7 +31,7 @@ Boolean — true iff open design judgements remain after reconciliation.
 
 ### 1. Classify Resolvability
 
-- Read all open assumptions from `{assumptions_log}`
+- Read all open assumptions from `{assumptions_log}` — the artifact follows the [Design Assumptions Guide](../resources/design-assumptions.md#assumptions-log-template)
 - For each, decide whether an audit pass could settle it using the resolvability vocabulary in [design-assumption-reconciliation](../resources/design-assumption-reconciliation.md): schema-validity → [audit-schema-validation](./audit-schema-validation.md); convention / naming → [audit-conformance](./audit-conformance.md); tool / technique / doc consistency (including Tool-Technique-Doc Consistency anti-patterns) → [audit-anti-patterns](./audit-anti-patterns.md); design-principle adherence → [audit-principles](./audit-principles.md)
 - An assumption that is a genuine design judgement (activity boundaries, whether a gate is needed, model choice) is **open** and stays open
 

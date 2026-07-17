@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.1.2
+  version: 1.1.4
 ---
 
 ## Capability
 
-Persist the accumulated design specification elicited across the design dimensions into the planning folder as a durable review surface.
+Persist the accumulated design specification as a decision surface per the [Design Specification Guide](../resources/design-specification.md#template).
 
 ## Outputs
 
@@ -21,13 +21,14 @@ Absolute path to the written design-specification artifact.
 
 ### 1. Assemble Specification
 
-- Assemble the full specification from `{accumulated_design}` when bound (create elicitation or update synthesis); otherwise from the elicited dimensions (purpose, activity list, activity model when elicited, checkpoints, artifacts, variables, techniques, rules — whichever dimensions ran for this mode)
+- Assemble from `{accumulated_design}` when bound (create elicitation or update synthesis); otherwise from the elicited dimensions that ran for this mode
+- Follow the [Design Specification Guide](../resources/design-specification.md#template) — purpose + dimension deltas only
 
 ### 2. Persist Specification Artifact
 
-- Persist it via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `design-specification.md`
+- Persist it via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `design-specification.md` per [design-specification](../resources/design-specification.md#template)
 - Capture the written location as `{specification_path}`
 
 ### 3. Mirror Decisions To README
 
-- Mirror key decisions into the planning README Design Decisions section as links to this artifact (single-source-and-link — do not restate the full spec in the README)
+- Add a short pointer under the planning README Design Decisions section linking this artifact (single-source-and-link — do not restate the spec body)

@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 1.1.2
 ---
 
 ## Capability
 
-Assess the impact of proposed changes against an existing workflow: enumerate its files, classify each file's impact, verify transition-chain, reference, and variable integrity, and record a diff-style inventory of material being removed.
+Assess the impact of proposed changes against an existing workflow: classify what the change touches, verify transition/reference/variable integrity, and inventory material removals — as a decision-facing report.
 
 ## Outputs
 
@@ -29,7 +29,8 @@ Absolute path to the written impact-analysis artifact.
 
 ### 2. Classify Impact
 
-- Classify each file as unaffected, directly modified (the change explicitly affects it), indirectly affected (a side-effect such as a broken transition chain), or removed (the change makes it obsolete), with justification
+- Classify files the change touches as directly modified, indirectly affected, or removed, each with a one-line justification, per the [Impact Analysis Guide](../resources/impact-analysis.md#template)
+- Summarize unaffected files in one short note (counts / categories)
 
 ### 3. Check Transition Integrity
 
@@ -54,7 +55,7 @@ Absolute path to the written impact-analysis artifact.
 
 ### 7. Persist Report
 
-- Persist the full impact classification, integrity checks, and the removals inventory via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `impact-analysis.md`
+- Persist the report via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `impact-analysis.md`, following the [Impact Analysis Guide](../resources/impact-analysis.md#template)
 - Capture the written location as `{impact_analysis_path}`
 
 ## Rules

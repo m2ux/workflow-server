@@ -113,3 +113,7 @@ When work is a sequence of already-defined sibling operations (audit passes, pip
 ## 25. State Contract Contribution
 
 Capability on a container `TECHNIQUE.md` (workflow-root or group) names what shared Inputs, Outputs, Rules, or domain invariants the contract contributes. Loader composition — inheritance merge, `Initial`/`Final` wrap, renumbering, folder-implied membership — lives in workflow-canonical and the schema construct inventory, not in the contract's Capability.
+
+## 26. Creation Guide for Generated Documents
+
+Every planning artifact a workflow persists has an associated creation-guide resource with a `## Template` section (and operative `## Rules` for how to fill it). Persist techniques cite that template; they do not invent layout in protocol prose. Shared shapes may share one guide; every bare filename still maps to a guide.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -16,10 +16,6 @@ Must be `update` for this technique to apply.
 ### change_category
 
 Categorized change request for the update (when set).
-
-### user_description
-
-Free-form description of the requested change.
 
 ### structural_inventory
 

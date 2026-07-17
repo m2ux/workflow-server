@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 ## Capability
@@ -13,6 +13,10 @@ Audit every `rules[]` entry for structural backing by applying `structure-backed
 
 Text-only rules found — each with its file, rule content, whether it is critical, and the recommended structural mechanism (checkpoint, condition, validate action, or decision).
 
+#### artifact
+
+`enforcement-findings.md`
+
 ### enforcement_finding_count
 
 Count of entries in `{enforcement_findings}`.
@@ -20,10 +24,6 @@ Count of entries in `{enforcement_findings}`.
 ### enforcement_findings_path
 
 Absolute path to the persisted findings artifact when `{enforcement_finding_count}` is greater than zero; empty otherwise.
-
-#### artifact
-
-`enforcement-findings.md`
 
 ## Protocol
 
@@ -41,5 +41,5 @@ Absolute path to the persisted findings artifact when `{enforcement_finding_coun
 ### 3. Persist Findings
 
 - Set `{enforcement_finding_count}` to the number of findings
-- When `{enforcement_finding_count}` is greater than zero: persist `{enforcement_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `enforcement-findings.md`; capture `{enforcement_findings_path}`
+- When `{enforcement_finding_count}` is greater than zero: persist `{enforcement_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `enforcement-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{enforcement_findings_path}`
 - When `{enforcement_finding_count}` is zero: leave `{enforcement_findings_path}` empty

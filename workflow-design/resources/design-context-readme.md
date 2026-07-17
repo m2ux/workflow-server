@@ -2,13 +2,13 @@
 name: design-context-readme
 description: Template and guidelines for the README.md entry-point of a workflow-design session's planning folder. Conforms to the canonical meta planning-readme guide, with design-session sections appended.
 metadata:
-  version: 1.0.0
+  version: 1.0.1
   order: 5
 ---
 
 # Design Session README Guide
 
-The `README.md` is the entry point for a workflow-design session's planning folder. It follows the canonical [Planning Folder README Guide](../../meta/resources/planning-readme.md); this resource supplies the concrete design-session seed template and documents the design-session-specific sections (Design Decisions, Compliance Findings, Scope Manifest) appended after Solution Overview.
+The `README.md` is the entry point for a workflow-design session's planning folder. It is an **index**: summary plus links to canonical artifacts. It follows the canonical [Planning Folder README Guide](../../meta/resources/planning-readme.md); this resource supplies the design-session seed template and the design-session sections (Design Decisions, Compliance Findings, Scope Manifest) after Solution Overview.
 
 ## Template
 
@@ -33,7 +33,7 @@ The `README.md` is the entry point for a workflow-design session's planning fold
 
 ## Design Decisions
 
-*[Key design decisions and their rationale — activity sequencing, checkpoint necessity, technique bindings, rule enforcement. Placeholder until confirmed.]*
+*[Short pointers + links to canonical artifacts (spec, assumptions, impact) — not full rationale restatements.]*
 
 ## Compliance Findings
 
@@ -45,7 +45,7 @@ The `README.md` is the entry point for a workflow-design session's planning fold
 
 ## Scope Manifest
 
-*[Files to create, modify, or remove — placeholder until confirmed.]*
+*[Link/pointer to the scope-manifest artifact — not a full file-list mirror.]*
 
 ## 📊 Progress
 
@@ -74,12 +74,12 @@ The shared header-line, Executive Summary, Problem/Solution Overview, Progress-t
 
 ### Design Decisions
 
-Capture the non-obvious design choices and their rationale as they are confirmed — activity boundaries, which constraints become checkpoints, technique bindings chosen, rule scope. This is the durable record of *why* the workflow is shaped the way it is; COMPLETE.md draws its Design Decisions from here.
+Short pointers + links to the canonical artifacts (design specification, assumptions log, impact analysis, and other confirmed surfaces). Do not restate full rationales or choice essays in the README body; COMPLETE.md links here and to those same homes.
 
 ### Compliance Findings
 
-Use the severity ordering Critical → High → Medium → Low, one row per finding. Leave the single "None yet" row until findings exist.
+Use the severity ordering Critical → High → Medium → Low, one row per finding. Leave the single "None yet" row until findings exist. Detail lives in audit/satellite finding files; this table is the index.
 
 ### Scope Manifest
 
-The complete list of files to create, modify, or remove, confirmed before drafting. Mirrors the `scope_manifest` variable.
+A link/pointer to the confirmed scope-manifest artifact. Do not mirror the complete file list in the README.

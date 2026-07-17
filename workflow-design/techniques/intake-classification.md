@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.4.0
+  version: 2.5.1
 ---
 
 ## Capability
@@ -31,23 +31,19 @@ Ordered list of workflow ids to audit in review mode. One element for single-tar
 
 ### structural_inventory
 
-Per-target structural inventory: file counts and entity counts (activities, techniques, resources, checkpoints, transitions).
-
-### structural_inventory_path
-
-Absolute path to the persisted structural-inventory artifact when `{operation_type}` is `update` or `review`; empty otherwise.
+Per-target structural inventory following the [Structural Inventory Guide](../resources/structural-inventory.md#template): file counts, entity counts, activity ids, and one-line update scope.
 
 #### artifact
 
 `structural-inventory.md`
 
+### structural_inventory_path
+
+Absolute path to the persisted structural-inventory artifact when `{operation_type}` is `update` or `review`; empty otherwise.
+
 ### change_category
 
 When `{operation_type}` is `update`, the categorized change request derived from `{user_description}`: add/modify activity, technique, resource, metadata, or structural refactor (see [update-mode-guide](../resources/update-mode-guide.md)). Unset otherwise.
-
-### design_intent
-
-Summarized key design intent from `{user_description}` — purpose, domain, rough activity count, and constraints.
 
 ## Protocol
 
@@ -62,11 +58,11 @@ Summarized key design intent from `{user_description}` — purpose, domain, roug
 
 ### 3. Build Structural Inventory
 
-- Build `{structural_inventory}` for each target: file counts and entity counts (activities, techniques, resources, checkpoints, transitions)
+- Build `{structural_inventory}` for each target following the [Structural Inventory Guide](../resources/structural-inventory.md#template)
 
 ### 4. Persist Structural Inventory
 
-- When `{operation_type}` is `update` or `review`: persist `{structural_inventory}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `structural-inventory.md`; capture `{structural_inventory_path}`
+- When `{operation_type}` is `update` or `review`: persist `{structural_inventory}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `structural-inventory.md` per [structural-inventory](../resources/structural-inventory.md#template); capture `{structural_inventory_path}`
 - When create mode: leave `{structural_inventory_path}` empty
 
 ### 5. Parse Change Request
@@ -75,4 +71,4 @@ Summarized key design intent from `{user_description}` — purpose, domain, roug
 
 ### 6. Summarize Design Intent
 
-- Accept the `{user_description}` and summarize key design intent into `{design_intent}` — purpose, domain, rough activity count, and constraints
+- Accept the `{user_description}` and summarize key design intent into `{$design_intent}` — purpose, domain, rough activity count, and constraints

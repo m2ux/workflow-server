@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 ## Capability
@@ -13,6 +13,10 @@ Audit drafted content for schema expressiveness: walk prose against the schema c
 
 Expressiveness findings — each a flagged instance with its file, the prose passage, the substituting construct, and the before/after rewrite.
 
+#### artifact
+
+`expressiveness-findings.md`
+
 ### expressiveness_finding_count
 
 Count of entries in `{expressiveness_findings}`.
@@ -20,10 +24,6 @@ Count of entries in `{expressiveness_findings}`.
 ### expressiveness_findings_path
 
 Absolute path to the persisted findings artifact when `{expressiveness_finding_count}` is greater than zero; empty otherwise.
-
-#### artifact
-
-`expressiveness-findings.md`
 
 ## Protocol
 
@@ -40,5 +40,5 @@ Absolute path to the persisted findings artifact when `{expressiveness_finding_c
 ### 3. Persist Findings
 
 - Set `{expressiveness_finding_count}` to the number of findings
-- When `{expressiveness_finding_count}` is greater than zero: persist `{expressiveness_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `expressiveness-findings.md`; capture `{expressiveness_findings_path}`
+- When `{expressiveness_finding_count}` is greater than zero: persist `{expressiveness_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `expressiveness-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{expressiveness_findings_path}`
 - When `{expressiveness_finding_count}` is zero: leave `{expressiveness_findings_path}` empty

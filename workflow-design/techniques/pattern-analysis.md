@@ -1,21 +1,25 @@
 ---
 metadata:
-  version: 1.2.1
+  version: 1.2.4
 ---
 
 ## Capability
 
-Extract structural and content patterns from comparable existing workflows for reuse in the target, and persist the comparison alongside the proposed structure.
+Extract structural and content patterns from comparable existing workflows for reuse in the target, and persist a lean alignment / divergence table.
 
 ## Outputs
 
-### pattern_analysis_path
+### pattern_analysis
 
-Absolute path to the written pattern-analysis artifact.
+Lean alignment / divergence table following the [Pattern Analysis Guide](../resources/pattern-analysis.md#template).
 
 #### artifact
 
 `pattern-analysis.md`
+
+### pattern_analysis_path
+
+Absolute path to the written pattern-analysis artifact.
 
 ## Protocol
 
@@ -30,9 +34,9 @@ Absolute path to the written pattern-analysis artifact.
 
 ### 3. Assemble Comparison
 
-- Assemble a comparison of extracted patterns alongside the proposed structure, noting alignments and divergences
+- Assemble `{pattern_analysis}` following the [Pattern Analysis Guide](../resources/pattern-analysis.md#template)
 
 ### 4. Persist Pattern Analysis
 
-- Persist the comparison via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `pattern-analysis.md`
+- Persist via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `pattern-analysis.md` per [pattern-analysis](../resources/pattern-analysis.md#template)
 - Capture the written location as `{pattern_analysis_path}`

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.12.0
+  version: 1.12.1
 ---
 
 ## Capability
@@ -13,13 +13,13 @@ Audit a workflow's authored content against the anti-pattern catalog: load the c
 
 Findings grouped by catalog entry **name** / **designator**: file path, offending content, and recommended fix.
 
-### anti_pattern_findings_path
-
-Absolute path to the persisted anti-pattern-findings artifact.
-
 #### artifact
 
 `anti-pattern-findings.md`
+
+### anti_pattern_findings_path
+
+Absolute path to the persisted anti-pattern-findings artifact.
 
 ## Protocol
 
@@ -39,4 +39,4 @@ Absolute path to the persisted anti-pattern-findings artifact.
 
 ### 3. Persist Findings
 
-- Persist `{anti_pattern_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `anti-pattern-findings.md`; capture `{anti_pattern_findings_path}`
+- Persist `{anti_pattern_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `anti-pattern-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{anti_pattern_findings_path}`

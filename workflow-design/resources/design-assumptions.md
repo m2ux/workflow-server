@@ -1,13 +1,13 @@
 ---
 name: design-assumptions
-description: Categories and log template for surfacing and reviewing the design assumptions made while authoring a workflow.
+description: Categories and log template for the assumptions-log planning artifact in workflow-design sessions.
 metadata:
   order: 7
 ---
 
 # Design Assumptions Guide
 
-Assumption categories and log template for design-time assumptions — the workflow-design counterpart of the work-package [assumptions-review](../../work-package/resources/assumptions-review.md) guide. Shared methodology (false-assumption sources, risk assessment, judgement-augmentation review) is reused from that guide; this resource defines only workflow-design-specific categories and log shape.
+Creation guide for bare filename `assumptions-log.md`. Design-time assumption categories and log shape — the workflow-design counterpart of the work-package [assumptions-review](../../work-package/resources/assumptions-review.md) guide. Shared methodology (false-assumption sources, risk assessment, judgement-augmentation review) is reused from that guide; this resource owns the design-session log layout.
 
 ## Assumption Categories
 
@@ -27,7 +27,9 @@ Assumption categories and log template for design-time assumptions — the workf
 | `audit` | Settleable by schema / convention / principle checks — see [design-assumption-reconciliation](./design-assumption-reconciliation.md) |
 | `open` | Genuine design judgement for the user |
 
-## Assumptions Log Template
+## Template
+
+<a id="assumptions-log-template"></a>
 
 ```markdown
 # Design Assumptions Log
@@ -56,3 +58,12 @@ One row per assumption, updated in place across its lifecycle — surfaced, reco
 |----|----------|------|---------------|------------|-----------|---------|---------|
 | A-1 | [category] | H/M/L | audit / open | [statement] | [why it seemed reasonable] | ✅ Confirmed / 🔄 Corrected / ⏸️ Deferred | [changes made] |
 ```
+
+## Rules
+
+- **Bare filename** `assumptions-log.md` — design sessions fill **this** template (not the work-package assumptions-review shape), including when collect/record ops are borrowed from work-package.
+- **Table is the record** — no prose duplicate of the log elsewhere (README / COMPLETE link here).
+- **One row per assumption**, updated in place through reconcile and interview.
+- **Null ceremony:** if none significant, one row stating that — do not prompt the user to confirm null.
+- **Categories** come from the activity's `assumption_categories` input (design set above).
+- **Line budget:** summary + log rows only; keep under ~80 lines unless the interview set is large.
