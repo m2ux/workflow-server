@@ -142,7 +142,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`audit-rule-enforcement`](./techniques/audit-rule-enforcement.md) | Flag critical rules lacking structural enforcement | Quality Review |
 | [`verify-high-findings`](./techniques/verify-high-findings.md) | Adversarially verify High findings and recalibrate severity before remediation | Quality Review |
 | [`audit-principles`](./techniques/audit-principles.md) | Audit against the design principles (review mode) | Quality Review |
-| [`audit-anti-patterns`](./techniques/audit-anti-patterns.md) | Scan for all prohibited patterns (review mode) | Quality Review |
+| [`audit-anti-patterns`](./techniques/audit-anti-patterns.md) | Apply the anti-patterns catalog to target workflow content | Quality Review |
 | [`audit-schema-validation`](./techniques/audit-schema-validation.md) | Validate every YAML file against its schema | Quality Review, Validate and Commit |
 | [`audit-consistency`](./techniques/audit-consistency.md) | Audit tool/technique/doc consistency (review mode) | Quality Review |
 | [`compile-report`](./techniques/compile-report.md) | Compile the severity-rated compliance report (review mode) | Quality Review |
