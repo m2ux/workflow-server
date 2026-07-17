@@ -6,9 +6,7 @@ metadata:
   legacy_id: 2
 ---
 
-## Overview
-
-Patterns explicitly prohibited during workflow creation and modification.
+# Overview
 
 ## Creation Rules
 
@@ -66,7 +64,8 @@ Cross-references name the sibling (e.g. see also `io-agnostic-contract`) without
 
 If deleting a sentence loses no Detect, carve-out, or Fix step, delete it.
 
----
+
+# Catalog
 
 ## Structural Anti-Patterns
 
