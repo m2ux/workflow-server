@@ -40,7 +40,7 @@ steps:
       variable: is_review_mode
       operator: ==
       value: true
-    message: Here is the consolidated review summary. Ready to post to the PR?
+    message: Here is the consolidated review summary. Select whether to post it to the PR, refine it, or keep it local.
     options:
       - id: post-review
         label: Post review to PR
@@ -100,10 +100,10 @@ steps:
     options:
       - id: certify
         label: I certify all of the above — proceed
-        description: DCO attestation recorded. Timestamp and identity logged to provenance-log.md.
+        description: DCO attestation recorded. Timestamp and identity logged to the [provenance log]({provenance_log_path}).
       - id: flag-legal
         label: I have reservations — flag for legal review
-        description: Document concern in provenance-log.md before proceeding. Consider escalating to legal or OSS program review.
+        description: Document concern in the [provenance log]({provenance_log_path}) before proceeding. Consider escalating to legal or OSS program review.
   - kind: technique
     id: verify-push-remote
     technique: manage-git::verify-remote-private
@@ -119,7 +119,7 @@ steps:
       variable: stealth_mode
       operator: ==
       value: true
-    message: "FINAL ISOLATION CHECK: you are about to push to remote '{push_remote}' ({push_remote_url}). Is this the verified PRIVATE remote? (Never push to a public remote in stealth mode.)"
+    message: "FINAL ISOLATION CHECK: you are about to push to remote '{push_remote}' ({push_remote_url}). Confirm this is the verified PRIVATE remote — never push to a public remote in stealth mode."
     blocking: true
     options:
       - id: confirmed
@@ -143,7 +143,7 @@ steps:
       variable: stealth_mode
       operator: ==
       value: true
-    message: Ready to push the fix to the private remote '{push_remote}'. Confirm to proceed?
+    message: Push to the private remote '{push_remote}' is prepared. Select whether to confirm the push or cancel.
     blocking: true
     options:
       - id: confirm
@@ -330,7 +330,7 @@ steps:
               variable: stealth_mode
               operator: "!="
               value: true
-        message: Has the PR received manual review feedback?
+        message: Select whether the PR has received manual review feedback, or is still waiting.
         options:
           - id: yes-review
             label: Yes, review comments received
@@ -391,7 +391,7 @@ steps:
       Reviewer comments:
       {review_comments_summary}
 
-      Recommended outcome: {recommended_outcome}. Auto-advancing in 30s.
+      Recommended outcome: {recommended_outcome}.
     blocking: false
     defaultOption: approved
     autoAdvanceMs: 30000

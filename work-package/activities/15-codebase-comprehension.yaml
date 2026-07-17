@@ -60,14 +60,14 @@ steps:
           variable: has_open_questions
           operator: ==
           value: true
-        message: Open questions remain after deep-dive (see above). Proceeding in 30s — intervene to explore further.
+        message: Open questions remain after deep-dive (see above). Select whether understanding is sufficient or further exploration is needed.
         blocking: false
         defaultOption: sufficient
         autoAdvanceMs: 30000
         options:
           - id: sufficient
             label: Understanding sufficient
-            description: Accept remaining gaps and proceed (default — auto-proceeds after 30s)
+            description: Accept remaining gaps and proceed
             effect:
               setVariable:
                 needs_comprehension: false

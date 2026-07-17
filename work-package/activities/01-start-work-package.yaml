@@ -24,7 +24,7 @@ steps:
       variable: is_review_mode
       operator: ==
       value: true
-    message: This appears to be a review of an existing PR. Is that correct?
+    message: This appears to be a review of an existing PR. Select whether to continue in review mode or treat this as new implementation.
     options:
       - id: confirm-review
         label: Yes, review existing PR
@@ -122,7 +122,7 @@ steps:
         - type: simple
           variable: issue_number
           operator: notExists
-    message: I didn't find a GitHub or Jira issue associated with this work package. Which option would you like?
+    message: No GitHub or Jira issue is associated with this work package. Select how to proceed.
     options:
       - id: provide-existing
         label: Provide existing issue
@@ -203,13 +203,13 @@ steps:
           variable: github_issue_found
           operator: ==
           value: false
-    message: No GitHub issue found for Jira ticket {jira_issue_key}. A linked GitHub issue enables PR traceability in the target repo. Create one now?
+    message: No GitHub issue found for Jira ticket {jira_issue_key}. A linked GitHub issue enables PR traceability in the target repo. Select whether to create one.
     blocking: false
     defaultOption: create
     autoAdvanceMs: 30000
     options:
       - id: create
-        label: Create GitHub issue (default — auto-creates after 30s)
+        label: Create GitHub issue
         description: Create a GitHub issue in the target repo mirroring the Jira ticket
         effect:
           setVariable:
@@ -238,7 +238,7 @@ steps:
       variable: issue_platform
       operator: ==
       value: jira
-    message: Which Jira project should I create this issue in?
+    message: Select the Jira project for the new issue.
     options:
       - id: select
         label: Select from list
@@ -259,7 +259,7 @@ steps:
       variable: needs_issue_creation
       operator: ==
       value: true
-    message: What type of issue is this?
+    message: Select the issue type.
     options:
       - id: feature
         label: Feature / Story
@@ -298,14 +298,14 @@ steps:
       variable: needs_issue_creation
       operator: ==
       value: true
-    message: Here's the drafted issue. Creating in 30s unless you intervene.
+    message: Here is the drafted issue. Select whether to create it, edit it, or cancel.
     blocking: false
     defaultOption: create
     autoAdvanceMs: 30000
     options:
       - id: create
         label: Create issue
-        description: Proceed to create the issue (default — auto-creates after 30s)
+        description: Proceed to create the issue
         effect:
           setVariable:
             issue_approved: true
@@ -336,7 +336,7 @@ steps:
       variable: needs_issue_creation
       operator: ==
       value: true
-    message: Which platform should I create this issue in?
+    message: Select the platform for the new issue.
     options:
       - id: github
         label: GitHub
@@ -487,7 +487,7 @@ steps:
       variable: pr_exists
       operator: ==
       value: true
-    message: "Found existing PR #{existing_pr_number} for this branch. Would you like to use it or create a new one?"
+    message: "Found existing PR #{existing_pr_number} for this branch. Select whether to use it or create a new one."
     options:
       - id: use-existing
         label: Use existing PR
@@ -542,7 +542,7 @@ steps:
           variable: use_existing_pr
           operator: "!="
           value: true
-    message: Issue confirmed. Creating feature branch and draft PR in 30s unless you intervene.
+    message: Issue confirmed. Ready to create the feature branch and draft PR.
     blocking: false
     defaultOption: proceed
     autoAdvanceMs: 30000

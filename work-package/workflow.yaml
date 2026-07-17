@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.30.0
+version: 3.31.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
@@ -58,7 +58,7 @@ techniques:
 variables:
   - name: target_path
     type: string
-    description: Path to the working directory where edits, branch creation, builds, and PR operations occur. As of work-package 3.10, this is a dedicated git worktree of the component repo at the canonical path '~/projects/work/{component_name}/{wp-slug}/' — NOT the component's checkout inside the reference monorepo.
+    description: Path to the working directory where edits, branch creation, builds, and PR operations occur — a dedicated git worktree of the component repo at '~/projects/work/{component_name}/{wp-slug}/', distinct from the component's checkout inside the reference monorepo.
   - name: reference_path
     type: string
     description: Path to the reference checkout used for codebase comprehension, GitNexus indexing, and code-resolvable assumption analysis. When the component is a submodule of a monorepo, this is the monorepo root; when the component is a standalone repo, this equals the component's primary checkout. NOT used for edits — edits happen in target_path. Resolved by start-work-package's resolve-target step from the path the user originally pointed at. No default — absence drives the start-work-package exists gate on reference-dependent steps.
@@ -405,10 +405,6 @@ variables:
     type: boolean
     description: True when abort was selected on body-non-conformant.
     defaultValue: false
-  - name: path_gating_complexity
-    type: string
-    description: Path-gating mirror of problem_complexity. Used by design-philosophy's classification-and-path-confirmed.skip-optional effect.
-    defaultValue: ""
   - name: gitnexus_indexed
     type: boolean
     description: Whether reference_path has a usable GitNexus index (gates GitNexus-dependent steps and protocol phases).

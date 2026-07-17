@@ -100,14 +100,14 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
-    message: Approach presented above. Confirming in 30s unless you want to revise.
+    message: Approach presented above. Select whether to confirm or revise.
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:
       - id: confirmed
         label: Approach confirmed
-        description: Proceed with this approach (default — auto-confirms after 30s)
+        description: Proceed with this approach
       - id: revise
         label: Revise approach
         description: Adjust the approach before planning continues

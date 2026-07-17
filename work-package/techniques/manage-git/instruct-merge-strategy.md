@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Present DCO-compliant merge guidance for the PR, branching on whether the repo allows squash merges. Advisory and read-only — it instructs the human on the correct merge procedure and performs no merge itself.
+Assemble DCO-compliant merge guidance for the PR, branching on whether the repo allows squash merges. Advisory and read-only — it emits guidance on the correct merge procedure and performs no merge itself.
 
 ## Inputs
 
@@ -25,7 +25,7 @@ The PR number being merged
 
 ### presented_merge_guidance
 
-The DCO-compliant merge guidance presented to the human for the `{pr_number}` PR, branched on `{squash_merge_supported}`: the local GPG-signed squash-merge flow when squash merge is supported, or the plain-branch-merge note when it is not. This op is advisory and read-only — it sets no workflow state and performs no merge; the output is solely the guidance shown for the human to act on.
+The DCO-compliant merge guidance for the `{pr_number}` PR, branched on `{squash_merge_supported}`: the local GPG-signed squash-merge flow when squash merge is supported, or the plain-branch-merge note when it is not. This op is advisory and read-only — it sets no workflow state and performs no merge; the output is solely the bindable guidance text for the binding activity to surface.
 
 ## Protocol
 
@@ -37,4 +37,4 @@ The DCO-compliant merge guidance presented to the human for the `{pr_number}` PR
    git push
    ```
 2. When `{squash_merge_supported}` is false, instruct the human that branch commits land as-is on a plain branch merge — no local signing flow is required.
-3. Present the guidance as advice the human acts on; do not perform the merge.
+3. Emit `{presented_merge_guidance}` as advice for the human to act on; do not perform the merge.

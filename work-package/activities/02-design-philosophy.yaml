@@ -60,7 +60,7 @@ steps:
         description: Well-defined issue — no additional discovery needed
         effect:
           setVariable:
-            path_gating_complexity: simple
+            problem_complexity: simple
             needs_elicitation: false
             needs_research: false
             skip_optional_activities: true
@@ -115,7 +115,7 @@ steps:
       variable: is_review_mode
       operator: ==
       value: true
-    message: Would you like to refactor the ticket based on the gaps found?
+    message: Ticket completeness gaps were identified. Select whether to refactor the ticket or proceed with gaps noted.
     blocking: false
     defaultOption: proceed-with-gaps
     autoAdvanceMs: 30000
@@ -128,7 +128,7 @@ steps:
             ticket_refactor_needed: true
       - id: proceed-with-gaps
         label: Proceed with gaps noted
-        description: Document gaps in assumptions-log.md and continue review with gaps as tracked findings
+        description: Document gaps in the [assumptions log]({assumptions_log}) and continue review with gaps as tracked findings
         effect:
           setVariable:
             ticket_refactor_needed: false
@@ -151,7 +151,7 @@ steps:
         target: needs_elicitation
         value: false
       - action: message
-        message: "Review mode: classification recorded ({problem_type}, {problem_complexity} complexity). The path-confirmation checkpoint is skipped in review mode — proceeding headlessly to implementation-analysis to establish the PR's pre-change baseline; elicitation and research are not run."
+        message: "Review mode: classification recorded ({problem_type}, {problem_complexity} complexity)."
 transitions:
   - to: codebase-comprehension
     isDefault: true

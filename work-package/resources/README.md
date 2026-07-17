@@ -2,12 +2,12 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-The workflow includes 27 resources that provide templates, guidance, and reference material for techniques and activities. Each resource lives as `resources/<id>.md` and is loaded by id (e.g. `get_resource({ resource_id: "pr-description" })`). The numbering system is deprecated — resources are obtained by id only.
+The workflow includes 27 resources that provide templates, guidance, and reference material for techniques and activities. Each resource lives as `resources/<id>.md` and is loaded by resource id (for example `pr-description`). Resource ids are the sole load key.
 
 | Resource ID | Title | Purpose |
 |-------------|-------|---------|
 | `readme` | README Guide | Entry point and artifact index template for planning folders |
-| `readme-deprecated-notice` | README Guide (deprecated) | **Deprecated** — consolidated into `readme` as of v2.0.0; retained as a redirect stub. New planning-folder work uses `id: readme`. |
+| `readme-deprecated-notice` | README Guide redirect | Redirect stub that points loaders at `readme` for planning-folder work |
 | `github-issue-creation` | GitHub Issue Creation | Guide for creating well-structured GitHub issues |
 | `jira-issue-creation` | Jira Issue Creation | Guide for creating Jira issues with proper field mapping |
 | `requirements-elicitation` | Requirements Elicitation | Question domains and elicitation output template |
