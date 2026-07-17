@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -29,7 +29,7 @@ The pull request number.
 
 ### 3. Create Or Update Draft PR
 
-- Apply [create-pr](../../meta/techniques/github-cli-protocol/create-pr.md) with *repo_path* the workflows worktree, *branch* `{workflow_branch}`, *base_branch* `workflows`, *title* `{$pr_title}`, *body* `{$pr_body}`, and *draft* true; capture `{pr_number}` and `{pr_url}`
+- Apply [create-pr](../../meta/techniques/github-cli-protocol/create-pr.md) with *repo_path* the workflows worktree, *branch* `{workflow_branch}`, *base_branch* `workflows`, *title* `{pr_title}`, *body* `{pr_body}`, and *draft* true; capture `{pr_number}` and `{pr_url}`
 
 ### 4. Mark Ready
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -31,4 +31,4 @@ The running design specification assembled from all dimensions elicited so far, 
 
 ### 2. Fold Accumulated Design
 
-- Fold `{$dimension_capture}` into `{accumulated_design}`
+- Fold `{dimension_capture}` into `{accumulated_design}`

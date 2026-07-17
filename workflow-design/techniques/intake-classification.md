@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.5.0
+  version: 2.5.1
 ---
 
 ## Capability
@@ -33,13 +33,13 @@ Ordered list of workflow ids to audit in review mode. One element for single-tar
 
 Per-target structural inventory following the [Structural Inventory Guide](../resources/structural-inventory.md#template): file counts, entity counts, activity ids, and one-line update scope.
 
-### structural_inventory_path
-
-Absolute path to the persisted structural-inventory artifact when `{operation_type}` is `update` or `review`; empty otherwise.
-
 #### artifact
 
 `structural-inventory.md`
+
+### structural_inventory_path
+
+Absolute path to the persisted structural-inventory artifact when `{operation_type}` is `update` or `review`; empty otherwise.
 
 ### change_category
 
