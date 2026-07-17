@@ -1,20 +1,22 @@
 {
   "schemaVersion": 1,
-  "status": "running",
+  "status": "completed",
   "workflowId": "meta",
   "workflowVersion": "5.7.0",
   "agentId": "orchestrator",
   "sessionIndex": "7CJDOU",
-  "currentActivity": "dispatch-client-workflow",
+  "currentActivity": "__terminal__",
   "currentTechnique": "version-control::initialize-folder",
-  "condition": "default",
-  "seq": 13,
-  "ts": 1784297219,
+  "condition": "",
+  "seq": 19,
+  "ts": 1784314175,
   "startedAt": "2026-07-17T13:41:39.059Z",
   "completedActivities": [
     "discover-session",
     "initialize-session",
-    "resolve-target"
+    "resolve-target",
+    "dispatch-client-workflow",
+    "end-workflow"
   ],
   "skippedActivities": [],
   "variables": {
@@ -27,7 +29,17 @@
     "target_path": ".",
     "workflow_match_ambiguous": false
   },
-  "checkpointResponses": {},
+  "checkpointResponses": {
+    "end-workflow-completion-confirmed": {
+      "effects": {
+        "variablesSet": {
+          "abort_completion": false
+        }
+      },
+      "optionId": "confirm",
+      "respondedAt": "2026-07-17T18:49:10.000Z"
+    }
+  },
   "history": [
     {
       "timestamp": "2026-07-17T13:41:39.059Z",
@@ -210,6 +222,94 @@
       "activity": "dispatch-client-workflow",
       "timestamp": "2026-07-17T13:45:27.210Z",
       "type": "activity_entered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-07-17T16:13:00.372Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-07-17T16:13:00.372Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "verify-outcomes",
+        "techniqueId": "workflow-engine::verify-outcomes"
+      },
+      "timestamp": "2026-07-17T16:13:13.170Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "generate-summary",
+        "techniqueId": "workflow-engine::generate-summary"
+      },
+      "timestamp": "2026-07-17T16:13:13.170Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "bundled": true,
+        "resourceId": "activity-worker-prompt"
+      },
+      "timestamp": "2026-07-17T16:13:13.170Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "bundled": true,
+        "resourceId": "session-summary-template#session-summary-template"
+      },
+      "timestamp": "2026-07-17T16:13:13.170Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "timestamp": "2026-07-17T16:15:39.259Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "data": {
+        "optionId": "confirm"
+      },
+      "timestamp": "2026-07-17T18:49:10.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "name": "abort_completion",
+        "value": false
+      },
+      "timestamp": "2026-07-17T18:49:10.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-07-17T18:49:35.489Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "__terminal__",
+      "timestamp": "2026-07-17T18:49:35.489Z",
+      "type": "activity_entered"
+    },
+    {
+      "timestamp": "2026-07-17T18:49:35.489Z",
+      "type": "workflow_completed"
     }
   ],
   "triggeredWorkflows": [
@@ -292,10 +392,11 @@
           "impact-analysis",
           "scope-and-draft",
           "validate-and-commit",
-          "post-update-review"
+          "post-update-review",
+          "retrospective"
         ],
         "condition": "",
-        "currentActivity": "retrospective",
+        "currentActivity": "__terminal__",
         "currentTechnique": "create-completion-doc",
         "deliveredContent": {
           "orchestrator": {
@@ -1822,16 +1923,30 @@
             },
             "timestamp": "2026-07-17T16:08:50.853Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "retrospective",
+            "timestamp": "2026-07-17T16:12:57.525Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "__terminal__",
+            "timestamp": "2026-07-17T16:12:57.525Z",
+            "type": "activity_entered"
+          },
+          {
+            "timestamp": "2026-07-17T16:12:57.525Z",
+            "type": "workflow_completed"
           }
         ],
         "schemaVersion": 1,
-        "seq": 129,
+        "seq": 130,
         "sessionIndex": "ZEUS3I",
         "skippedActivities": [],
         "startedAt": "2026-07-17T13:44:03.698Z",
-        "status": "running",
+        "status": "completed",
         "triggeredWorkflows": [],
-        "ts": 1784304758,
+        "ts": 1784304777,
         "variables": {
           "addressed_count": 0,
           "anti_pattern_findings_path": "",
@@ -1897,14 +2012,17 @@
       "bundle:workflow-engine::yield-checkpoint": "1b1e6a4df3a7ceb1",
       "resource:activity-worker-prompt": "948395fc2617142d",
       "resource:planning-readme": "f196b0a58405bd04",
+      "resource:session-summary-template#session-summary-template": "72ba2aa5aef385bc",
       "technique:version-control::detect-repo-type": "2f2fe89bd9b2f928",
       "technique:version-control::initialize-folder": "35eda3ec08ee4d9e",
       "technique:workflow-engine::create-session": "ef82ddce858c06d5",
       "technique:workflow-engine::extract-identifying-context": "87d005b8511b9611",
+      "technique:workflow-engine::generate-summary": "458f66ad05d86441",
       "technique:workflow-engine::list-workflows": "7dcdb88a423eea38",
       "technique:workflow-engine::match-saved-session": "d73a26bd036932b0",
       "technique:workflow-engine::match-target-workflow": "157194e2fb0628ee",
-      "technique:workflow-engine::scan-saved-sessions": "7ecfadad59f5cd3a"
+      "technique:workflow-engine::scan-saved-sessions": "7ecfadad59f5cd3a",
+      "technique:workflow-engine::verify-outcomes": "2ed183cf3d866873"
     }
   }
 }
