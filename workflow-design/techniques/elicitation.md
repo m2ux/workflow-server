@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -11,7 +11,17 @@ Elicit a single design dimension of the workflow specification — posing the qu
 
 ### current_dimension
 
-The design dimension to elicit this iteration — one of the dimensions listed in the [elicitation-guide](../resources/elicitation-guide.md).
+The design dimension to elicit — one of the dimensions listed in the [elicitation-guide](../resources/elicitation-guide.md).
+
+## Outputs
+
+### dimension_capture
+
+The captured answers for `{current_dimension}` at the depth the guide's Capture column describes for that dimension.
+
+### accumulated_design
+
+The running design specification assembled from all dimensions elicited so far, including `{dimension_capture}` for the current dimension.
 
 ## Protocol
 
@@ -21,8 +31,8 @@ The design dimension to elicit this iteration — one of the dimensions listed i
 
 ### 2. Capture Dimension
 
-- Capture the dimension at the depth the guide's Capture column describes for that dimension — do not restate the per-dimension capture lists here
+- Capture the dimension at the depth the guide's Capture column describes for that dimension — do not restate the per-dimension capture lists here; record the result as `{dimension_capture}`
 
 ### 3. Present Accumulated Design
 
-- Present the accumulated design after the answer so the user can track progress; confirmation is batched once after the dimension loop at `spec-confirmed`, not per dimension
+- Fold `{dimension_capture}` into `{accumulated_design}` and present `{accumulated_design}` so progress is visible

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -9,9 +9,13 @@ Audit drafted content for convention conformance against reference workflows —
 
 ## Outputs
 
+### conformance_findings
+
+Conformance divergences — each a divergence with its file, the diverging construct, the reference convention, and the justified/bring-into-conformance disposition.
+
 ### conformance_finding_count
 
-Count of conformance divergences — each a divergence with its file, the diverging construct, the reference convention, and the justified/bring-into-conformance disposition. Interpolated into the conformance-confirmed checkpoint message.
+Count of entries in `{conformance_findings}`.
 
 ## Protocol
 
@@ -27,11 +31,11 @@ Count of conformance divergences — each a divergence with its file, the diverg
 ### 3. Audit Conformance
 
 - Compare drafted `workflow.yaml`, activities, techniques, resources, and READMEs against the reference baseline using every concern in convention-conformance
-- For each divergence: record file, construct, reference convention, and disposition (justified vs bring into conformance)
+- For each divergence: record file, construct, reference convention, and disposition (justified vs bring into conformance) into `{conformance_findings}`
 
 ### 4. Present Findings
 
-- Present conventions followed, conventions diverged, and justification status for each divergence
+- Present `{conformance_findings}`: conventions followed, conventions diverged, and justification status for each divergence
 
 ### 5. Set Findings Count
 

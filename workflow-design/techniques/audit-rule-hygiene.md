@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -9,9 +9,13 @@ Audit `rules[]` across the workflow, activities, and techniques against the Rule
 
 ## Outputs
 
+### rule_hygiene_findings
+
+Rule-hygiene findings — each a flagged rule with its file, rule key, the hygiene class (restatement, contradiction, cross-level duplication, prefix pattern, ambiguity, single-step), and the recommended action.
+
 ### rule_hygiene_finding_count
 
-Count of rule-hygiene findings — each a flagged rule with its file, rule key, the hygiene class (restatement, contradiction, cross-level duplication, prefix pattern, ambiguity, single-step), and the recommended action. Interpolated into the rule-hygiene-confirmed checkpoint message.
+Count of entries in `{rule_hygiene_findings}`.
 
 ## Protocol
 
@@ -25,11 +29,11 @@ Count of rule-hygiene findings — each a flagged rule with its file, rule key, 
 
 - Walk every in-scope `### AP-XX. name` against `rules[]` / technique `## Rules` on the target workflow, activities, and techniques
 - For each entry: apply its **Detect** (or equivalent prose), honor **Do not flag** / caveats, and record **Fix** when a violation is found
-- For each finding record: entry **name** (primary), **AP-XX** designator, file path, rule key, offending content, recommended fix
+- For each finding record into `{rule_hygiene_findings}`: entry **name** (primary), **AP-XX** designator, file path, rule key, offending content, recommended fix
 
 ### 3. Present Findings
 
-- Present findings grouped by catalog entry **name** / **designator**: file, rule key, content, recommended fix
+- Present `{rule_hygiene_findings}` grouped by catalog entry **name** / **designator**: file, rule key, content, recommended fix
 
 ### 4. Set Findings Count
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -33,4 +33,4 @@ Run the post-update compliance audit over a committed workflow: expressiveness, 
 
 ### do-not-restate-child-protocols
 
-Do not restate each child technique's protocol here. Create/update drafting still uses the separate `audit-rule-hygiene` / `audit-rule-enforcement` checkpoints in quality-review; this post-update pass relies on the full anti-patterns catalog for those concerns.
+Do not restate each child technique's protocol here. Create/update drafting still uses separate rule-hygiene and rule-enforcement audit techniques; this post-update pass relies on the full anti-patterns catalog for those concerns.

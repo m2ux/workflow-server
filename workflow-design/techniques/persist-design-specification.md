@@ -1,17 +1,17 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Persist the accumulated design specification elicited across the design dimensions into the planning folder so `spec-confirmed` can link the user to a durable review surface.
+Persist the accumulated design specification elicited across the design dimensions into the planning folder as a durable review surface.
 
 ## Outputs
 
 ### specification_path
 
-Absolute path to the written design-specification artifact. Interpolated into the `spec-confirmed` checkpoint message as a markdown link.
+Absolute path to the written design-specification artifact.
 
 #### artifact
 
@@ -21,7 +21,7 @@ Absolute path to the written design-specification artifact. Interpolated into th
 
 ### 1. Assemble Specification
 
-- Assemble the full elicited specification from the dimension-elicitation loop (purpose, activity list, activity model when elicited, checkpoints, artifacts, variables, techniques, rules — whichever dimensions ran for this mode)
+- Assemble the full elicited specification from the elicited dimensions (purpose, activity list, activity model when elicited, checkpoints, artifacts, variables, techniques, rules — whichever dimensions ran for this mode)
 
 ### 2. Persist Specification Artifact
 

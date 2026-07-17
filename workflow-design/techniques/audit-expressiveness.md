@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -9,9 +9,13 @@ Audit drafted content for schema expressiveness: walk prose against the schema c
 
 ## Outputs
 
+### expressiveness_findings
+
+Expressiveness findings — each a flagged instance with its file, the prose passage, the substituting construct, and the before/after rewrite.
+
 ### expressiveness_finding_count
 
-Count of expressiveness findings — each a flagged instance with its file, the prose passage, the substituting construct, and the before/after rewrite. Interpolated into the expressiveness-confirmed checkpoint message.
+Count of entries in `{expressiveness_findings}`.
 
 ## Protocol
 
@@ -23,11 +27,11 @@ Count of expressiveness findings — each a flagged instance with its file, the 
 ### 2. Audit Expressiveness
 
 - Walk every prose passage in `workflow.yaml`, activity files, and technique files against the inventory
-- For each match where prose substitutes for a formal construct: record file, passage, target construct, and a before/after rewrite (construct in place, or move to the fitting field)
+- For each match where prose substitutes for a formal construct: record file, passage, target construct, and a before/after rewrite (construct in place, or move to the fitting field) into `{expressiveness_findings}`
 
 ### 3. Present Findings
 
-- Present findings: counts, affected files, replacement constructs, and before/after for each instance
+- Present `{expressiveness_findings}`: counts, affected files, replacement constructs, and before/after for each instance
 
 ### 4. Set Findings Count
 

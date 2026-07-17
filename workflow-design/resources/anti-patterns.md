@@ -897,15 +897,15 @@ A rule slug is negation or narration instead of a positive invariant.
 
 ### AP-68. technique-stage-agnostic
 
-"return to the planning stage" / "at the validate activity" / "present the … checkpoint" / "after each task, before confirmation"
+"return to the planning stage" / "at the validate activity" / "present the … checkpoint" / "after each task, before confirmation" / "flag every removal for explicit confirmation with a diff-style view"
 
-A technique name encodes stage or position in the workflow.
+A technique encodes workflow stage, or a user-facing decision it cannot surface.
 
-**Detect:** Technique Capability/Protocol/Rules mention stage/activity (named or "calling/consuming/producing activity"), checkpoint, loop/iteration, transition/decision routing, or position/timing in the activity flow ("after each task", "before user confirmation", "before the next step"). Test: if the sentence answers *where/when in the workflow?* or *which checkpoint/loop surrounds me?*, flag it. Techniques answer only *what do I do and what value do I produce?*
+**Detect:** Technique Capability/Protocol/Rules (a) mention stage/activity (named or "calling/consuming/producing activity"), checkpoint, loop/iteration, transition/decision routing, or position/timing in the activity flow ("after each task", "before user confirmation", "before the next step"), or (b) prescribe user confirmation, approval, or choice ("confirm with the user", "explicit confirmation", "require the user to…") as if the technique itself surfaces that decision. Test: if the sentence answers *where/when in the workflow?*, *which checkpoint surrounds me?*, or *how does the user decide?*, flag it. Techniques answer only *what value do I produce?* — gateable outputs and durable artifacts; activities own checkpoints that link those artifacts (`structure-backed-constraints`, `link-named-artifacts`).
 
-**Do not flag:** Purpose-phrased work with no orchestration locus ("final validation", "no separate commit step follows"); values the technique emits for the activity to route (severity, recommended option id).
+**Do not flag:** Purpose-phrased work with no orchestration locus ("final validation", "no separate commit step follows"); values the technique emits for the activity to route (counts, paths, severity, recommended option id); inventoring decisions *into* an artifact the activity will gate on.
 
-**Fix:** Migrate orchestration detail to the activity first (transitions, steps, `step.technique.inputs`/`outputs`, variables, checkpoints, or a technique `rule` — not activity prose rules; see `no-activity-prose-rules`), then delete the reference from the technique. Rewrite remaining prose as purpose, not position.
+**Fix:** Migrate user-facing decisions to activity `kind: checkpoint` steps gated on technique outputs; migrate other orchestration to activity transitions/`when`/loops. Rewrite the technique to produce the durable evidence (artifact section, count, path) without naming the gate. See also `no-activity-prose-rules`.
 
 ### AP-69. no-activity-prose-rules
 

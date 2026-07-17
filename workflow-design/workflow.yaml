@@ -60,7 +60,7 @@ variables:
     defaultValue: 0
   - name: removal_count
     type: number
-    description: Count of content removals flagged by impact-analysis. Gates the impact-and-preservation-confirmed checkpoint (presented only when greater than zero).
+    description: Count of content removals inventoried by impact-analysis. The impact-analysis activity presents impact-and-preservation-confirmed only when greater than zero.
     defaultValue: 0
   - name: pass_count
     type: number

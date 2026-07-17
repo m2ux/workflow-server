@@ -1,21 +1,21 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Assess the impact of proposed changes against an existing workflow: enumerate its files, classify each file's impact, verify transition-chain, reference, and variable integrity, and flag content being removed for explicit confirmation.
+Assess the impact of proposed changes against an existing workflow: enumerate its files, classify each file's impact, verify transition-chain, reference, and variable integrity, and record a diff-style inventory of material being removed.
 
 ## Outputs
 
 ### removal_count
 
-Number of content removals flagged for user confirmation (diff-based and obsolete-file removals). Gates the `impact-and-preservation-confirmed` checkpoint — presented only when greater than zero.
+Number of distinct content removals in the inventory (diff-based and obsolete-file removals). Zero when the change is additive or string-only with no material deleted.
 
 ### impact_analysis_path
 
-Absolute path to the written impact-analysis artifact. Interpolated into the impact checkpoint message as a markdown link.
+Absolute path to the written impact-analysis artifact.
 
 #### artifact
 
@@ -46,24 +46,25 @@ Absolute path to the written impact-analysis artifact. Interpolated into the imp
 - Verify all `effect.setVariable` keys in `kind: checkpoint` steps resolve to defined variables
 - Check for orphaned variables (defined but never referenced)
 
-### 6. Flag Removals
+### 6. Inventory Removals
 
-- Inventory the material being removed across modified files (diff-based) and surface it for explicit user confirmation
+- Compare planned changes against existing content and list every material removal (fewer lines, removed sections, dropped fields, obsolete files)
+- For each removal, record a diff-style entry: what is removed and what is preserved in that region — never omit a removal from the inventory
 
 ### 7. Set Removal Count
 
-- Set `{removal_count}` to the number of distinct flagged removals (0 when the change is additive or string-only with no material deleted)
+- Set `{removal_count}` to the number of distinct inventoried removals (0 when none)
 
 ### 8. Persist Report
 
-- Persist the full impact classification, integrity checks, and flagged removals via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and bare filename `impact-analysis.md`
+- Persist the full impact classification, integrity checks, and the removals inventory via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and bare filename `impact-analysis.md`
 - Capture the written location as `{impact_analysis_path}`
 
 ## Rules
 
 ### content-preservation
 
-Before modifying any file, compare the planned changes against the existing content and identify material being removed. Flag every removal for explicit confirmation with a diff-style view of what changes and what is preserved — never silently remove content. Prefer additive changes; a modification that reduces a file (fewer lines, removed sections, dropped fields) requires the user to confirm each removal.
+Prefer additive changes. Every material reduction must appear in the removals inventory with a diff-style removed-vs-preserved entry in the impact artifact. Never silently drop content from that inventory.
 
 ### side-effect-detection
 

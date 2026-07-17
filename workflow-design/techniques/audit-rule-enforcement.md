@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -9,9 +9,13 @@ Audit every `rules[]` entry for structural backing by applying `structure-backed
 
 ## Outputs
 
+### enforcement_findings
+
+Text-only rules found — each with its file, rule content, whether it is critical, and the recommended structural mechanism (checkpoint, condition, validate action, or decision).
+
 ### enforcement_finding_count
 
-Count of text-only rules found — each with its file, rule content, whether it is critical, and the recommended structural mechanism (checkpoint, condition, validate action, or decision). Interpolated into the enforcement-confirmed checkpoint message.
+Count of entries in `{enforcement_findings}`.
 
 ## Protocol
 
@@ -24,11 +28,11 @@ Count of text-only rules found — each with its file, rule content, whether it 
 
 - Walk every `rules[]` entry in `workflow.yaml` and activity files (and technique `## Rules` when the entry's scope implies)
 - Apply Detect / Do not flag / Fix from `structure-backed-constraints`
-- For each finding record: file, rule content, criticality, recommended structural mechanism
+- For each finding record into `{enforcement_findings}`: file, rule content, criticality, recommended structural mechanism
 
 ### 3. Present Findings
 
-- Present text-only rules, structurally-enforced rules, and recommendations for adding enforcement where needed
+- Present `{enforcement_findings}`: text-only rules, structurally-enforced rules, and recommendations for adding enforcement where needed
 
 ### 4. Set Findings Count
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -21,11 +21,11 @@ The [log](../resources/design-assumptions.md#assumptions-log-template) with audi
 
 ### open_assumptions
 
-The assumptions still open after reconciliation — the genuine design judgements that require user input; empty when audits settled everything.
+The assumptions still open after reconciliation — the genuine design judgements that remain unsettled; empty when audits settled everything.
 
 ### has_open_assumptions
 
-Boolean gate — true iff open design judgements remain after reconciliation.
+Boolean — true iff open design judgements remain after reconciliation.
 
 ## Protocol
 
@@ -33,7 +33,7 @@ Boolean gate — true iff open design judgements remain after reconciliation.
 
 - Read all open assumptions from `{assumptions_log}`
 - For each, decide whether an audit pass could settle it using the resolvability vocabulary in [design-assumption-reconciliation](../resources/design-assumption-reconciliation.md): schema-validity → [audit-schema-validation](./audit-schema-validation.md); convention / naming → [audit-conformance](./audit-conformance.md); tool / technique / doc consistency (including Tool-Technique-Doc Consistency anti-patterns) → [audit-anti-patterns](./audit-anti-patterns.md); design-principle adherence → [audit-principles](./audit-principles.md)
-- An assumption that is a genuine design judgement (activity boundaries, checkpoint necessity, model choice) is **open** and stays open
+- An assumption that is a genuine design judgement (activity boundaries, whether a gate is needed, model choice) is **open** and stays open
 
 ### 2. Resolve Via Audits
 
@@ -51,4 +51,4 @@ Boolean gate — true iff open design judgements remain after reconciliation.
 
 ### no-user-interaction
 
-Reconciliation runs autonomously, without user interaction — the user is presented only the converged result.
+Reconciliation runs autonomously, without user interaction — only the converged result is presented.

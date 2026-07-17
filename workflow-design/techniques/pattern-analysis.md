@@ -1,17 +1,17 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
 
-Extract structural and content patterns from comparable existing workflows for reuse in the target, persist the comparison for linked review, and present it alongside the proposed structure.
+Extract structural and content patterns from comparable existing workflows for reuse in the target, persist the comparison, and present it alongside the proposed structure.
 
 ## Outputs
 
 ### pattern_analysis_path
 
-Absolute path to the written pattern-analysis artifact. Interpolated into the `patterns-confirmed` checkpoint message as a markdown link.
+Absolute path to the written pattern-analysis artifact.
 
 #### artifact
 
@@ -39,4 +39,4 @@ Absolute path to the written pattern-analysis artifact. Interpolated into the `p
 
 ### 5. Present Patterns
 
-- Present the comparison (or point the user at the artifact) as the surface for `patterns-confirmed`
+- Present the comparison (or point at the artifact)

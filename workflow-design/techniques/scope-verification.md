@@ -1,25 +1,25 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Verify `{scope_manifest}` is fully addressed before commit: check every manifest item for file presence, performed action, and content match against the reviewed draft, flagging any unaddressed item.
+Verify `{scope_manifest}` is fully addressed: check every manifest item for file presence, performed action, and content match against the reviewed draft, flagging any unaddressed item.
 
 ## Outputs
 
 ### total_count
 
-Total number of items in `{scope_manifest}`. Interpolated into the scope-verified checkpoint message.
+Total number of items in `{scope_manifest}`.
 
 ### addressed_count
 
-Number of scope-manifest items confirmed addressed. Interpolated into the scope-verified checkpoint message.
+Number of scope-manifest items confirmed addressed.
 
 ### unaddressed_count
 
-Number of scope-manifest items still unaddressed (`{total_count}` − `{addressed_count}`). Gates the scope-verified checkpoint — presented only when greater than zero.
+Number of scope-manifest items still unaddressed (`{total_count}` − `{addressed_count}`).
 
 ## Protocol
 
@@ -31,6 +31,6 @@ Number of scope-manifest items still unaddressed (`{total_count}` − `{addresse
 
 - Flag any item that remains unaddressed
 
-### 3. Set Unaddressed Count
+### 3. Set Counts
 
-- Set `{unaddressed_count}` to the count of unaddressed items (0 when the manifest is fully addressed)
+- Set `{total_count}`, `{addressed_count}`, and `{unaddressed_count}` (0 when the manifest is fully addressed)

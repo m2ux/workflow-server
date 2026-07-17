@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Review the drafted workflow files as a block-indexed table — one row per drafted construct (activity, technique, resource, workflow metadata) — confirming each block's rationale and capturing a draft attestation.
+Review the drafted workflow files as a block-indexed table — one row per drafted construct (activity, technique, resource, workflow metadata) — recording each block's rationale and capturing a draft attestation.
 
 ## Inputs
 
@@ -25,11 +25,11 @@ The block-indexed review table: one row per drafted construct with its file, loc
 
 ### draft_attestation
 
-Confirmation, recorded in the planning folder, that every drafted block has been reviewed and is understood and intentional.
+Record in the planning folder that every drafted block has been reviewed and is understood and intentional.
 
 ### draft_attestation_path
 
-Absolute path to the written draft-attestation artifact (includes the block-indexed review). Interpolated into draft attestation checkpoints as a markdown link.
+Absolute path to the written draft-attestation artifact (includes the block-indexed review).
 
 #### artifact
 
@@ -52,4 +52,4 @@ Absolute path to the written draft-attestation artifact (includes the block-inde
 
 ### 4. Record Draft Attestation
 
-- Record `{draft_attestation}` in that artifact once every block is confirmed understood and intentional; flag any block the user marks for revision
+- Record `{draft_attestation}` in that artifact once every block is marked understood and intentional; flag any block marked for revision

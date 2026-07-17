@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -17,7 +17,7 @@ Whether update mode is active. Selects the update dimension set from the elicita
 
 ### design_dimensions
 
-The ordered design dimensions to elicit, iterated by the dimension-elicitation loop. Exact create vs update lists are defined in the elicitation-guide Mode Dimension Sets section.
+The ordered design dimensions to elicit. Exact create vs update lists are defined in the elicitation-guide Mode Dimension Sets section.
 
 ## Protocol
 
