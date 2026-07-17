@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.11.0
+version: 1.12.0
 name: Quality Review
 description: Quality review of drafted workflow content.
 required: true
@@ -339,22 +339,6 @@ steps:
           variable: scope_manifest_confirmed
           operator: ==
           value: true
-  - kind: action
-    id: announce-verified-findings
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
-    actions:
-      - action: message
-        message: "Verified audit findings ([verified findings]({verified_findings_path}))."
   - kind: action
     id: classify-audit-findings
     condition:

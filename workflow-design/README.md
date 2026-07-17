@@ -129,6 +129,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`derive-design-dimensions`](./techniques/derive-design-dimensions.md) | Derive the ordered design dimensions to elicit, per mode | Requirements Refinement |
 | [`prepare-dimension`](./techniques/prepare-dimension.md) | Assemble elicitation questions for one design dimension | Requirements Refinement |
 | [`capture-dimension`](./techniques/capture-dimension.md) | Record answers for one design dimension and fold into accumulated design | Requirements Refinement |
+| [`synthesize-update-specification`](./techniques/synthesize-update-specification.md) | Assemble the update-mode specification from the change request (no per-dimension elicitation) | Requirements Refinement |
 | [`persist-design-specification`](./techniques/persist-design-specification.md) | Persist the elicited design specification for linked review | Requirements Refinement |
 | [`reconcile-design-assumptions`](./techniques/reconcile-design-assumptions.md) | Autonomously resolve audit-resolvable design assumptions, leaving only genuine judgements open | Requirements Refinement |
 | [`pattern-analysis`](./techniques/pattern-analysis.md) | Extract patterns from reference workflows and persist the comparison | Pattern Analysis |
@@ -219,6 +220,7 @@ workflows/workflow-design/
 │   ├── derive-design-dimensions.md
 │   ├── prepare-dimension.md
 │   ├── capture-dimension.md
+│   ├── synthesize-update-specification.md
 │   ├── pattern-analysis.md
 │   ├── impact-analysis.md
 │   ├── scope-definition.md

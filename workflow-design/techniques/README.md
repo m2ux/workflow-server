@@ -17,7 +17,7 @@ For the full technique-to-activity table with capability summaries, see the [wor
 | Area | Techniques |
 |------|------------|
 | **Intake** | `intake-classification`, `context-loading`, `reload-workflow` |
-| **Elicitation** | `derive-design-dimensions`, `prepare-dimension`, `capture-dimension`, `reconcile-design-assumptions` |
+| **Elicitation** | `derive-design-dimensions`, `prepare-dimension`, `capture-dimension`, `synthesize-update-specification`, `reconcile-design-assumptions` |
 | **Analysis** | `pattern-analysis`, `impact-analysis` |
 | **Scope & draft** | `scope-definition`, `assemble-file-approach`, `review-drafted-file`, `yaml-authoring`, `review-draft-yaml` |
 | **Quality audits** | `audit-expressiveness`, `audit-conformance`, `audit-rule-hygiene`, `audit-rule-enforcement`, `verify-high-findings`, `audit-principles`, `audit-anti-patterns`, `audit-schema-validation`, `apply-audit-fixes`, `scope-audit` |

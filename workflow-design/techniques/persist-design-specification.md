@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 1.1.2
 ---
 
 ## Capability
@@ -21,7 +21,7 @@ Absolute path to the written design-specification artifact.
 
 ### 1. Assemble Specification
 
-- Assemble the full elicited specification from the elicited dimensions (purpose, activity list, activity model when elicited, checkpoints, artifacts, variables, techniques, rules — whichever dimensions ran for this mode)
+- Assemble the full specification from `{accumulated_design}` when bound (create elicitation or update synthesis); otherwise from the elicited dimensions (purpose, activity list, activity model when elicited, checkpoints, artifacts, variables, techniques, rules — whichever dimensions ran for this mode)
 
 ### 2. Persist Specification Artifact
 
