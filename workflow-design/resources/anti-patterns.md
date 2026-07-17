@@ -32,6 +32,8 @@ Patterns explicitly prohibited during workflow creation and modification. Derive
 
 8. **"Here are three questions..."** — One question per message, always.
 
+> Checkpoint messages that name a planning artifact the user must review also require an embedded path link — see AP-90 under Output Economy (enforced by `audit-anti-patterns`).
+
 ## Schema Expressiveness Anti-Patterns
 
 9. **"Ask the user whether to proceed"** (as prose) — Use a `kind: checkpoint` step with `message`, `options`, and `effects`, placed at the position in `steps[]` where the decision is presented.
