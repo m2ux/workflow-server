@@ -87,7 +87,7 @@ Review mode audits one or more existing workflows (`target_workflow_ids`, with e
 1. **Schema expressiveness** — flags prose that should be formal constructs
 2. **Convention conformance** — checks naming, structure, and field ordering
 3. **Rule-to-structure enforcement** — identifies critical rules lacking structural backing
-4. **Anti-pattern scan** — checks all 92 prohibited patterns (by kebab-case name)
+4. **Anti-pattern scan** — checks the anti-pattern catalog (cite findings by entry name)
 5. **Schema validation** — validates every YAML file
 
 The output is a severity-rated compliance report saved to the session's planning folder. After review, the user can opt to fix issues (transitions to update mode) or accept the report as-is.
@@ -169,7 +169,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 |---|----------|---------|
 | 00 | [Design Principles](./resources/design-principles.md) | Condensed reference of all 15 principles |
 | 01 | [Schema Construct Inventory](./resources/schema-construct-inventory.md) | Prose-to-formal construct mapping tables |
-| 02 | [Anti-Patterns](./resources/anti-patterns.md) | 92 prohibited patterns by category (cite by name) |
+| 02 | [Anti-Patterns](./resources/anti-patterns.md) | Prohibited-pattern catalog (AP-XX + name) by category |
 | 03 | [Update Mode Guide](./resources/update-mode-guide.md) | Update-mode activation and key differences from create mode |
 | 04 | [Review Mode Guide](./resources/review-mode-guide.md) | Compliance audit procedure and report structure |
 | 05 | [Design Context README](./resources/design-context-readme.md) | Planning-folder README template seeded at intake |
@@ -252,7 +252,7 @@ workflows/workflow-design/
     ├── README.md                         # Resource index
     ├── design-principles.md              # 15 principles reference
     ├── schema-construct-inventory.md     # Construct mapping tables
-    ├── anti-patterns.md                  # 92 anti-patterns (kebab-case names)
+    ├── anti-patterns.md                  # anti-pattern catalog (AP-XX + names)
     ├── update-mode-guide.md              # Update mode guide
     ├── review-mode-guide.md              # Review mode guide
     ├── design-context-readme.md          # Planning-folder README template
