@@ -13,9 +13,9 @@ steps:
     maxIterations: 20
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: review
     steps:
       - kind: technique
         id: load-all-workflow-files
@@ -40,16 +40,16 @@ steps:
     technique: persist-report
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: review
   - kind: checkpoint
     id: review-disposition
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: review
     message: "Compliance report complete. {review_findings_count} findings across {target_workflow_ids} ([compliance report]({report_path}))."
     options:
       - id: fix-issues
@@ -57,8 +57,7 @@ steps:
         description: Switch to update mode and apply recommended fixes
         effect:
           setVariable:
-            is_update_mode: true
-            is_review_mode: false
+            operation_type: update
             update_seeded_from_review: true
           transitionTo: intake-and-context
       - id: report-only
@@ -69,8 +68,7 @@ steps:
         description: Choose which findings to fix
         effect:
           setVariable:
-            is_update_mode: true
-            is_review_mode: false
+            operation_type: update
             update_seeded_from_review: true
           transitionTo: intake-and-context
   - kind: technique
@@ -80,9 +78,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
@@ -93,9 +91,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
@@ -113,9 +111,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
@@ -142,9 +140,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
@@ -155,9 +153,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
@@ -175,9 +173,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
@@ -207,9 +205,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
@@ -220,9 +218,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
@@ -240,9 +238,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
@@ -269,9 +267,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
@@ -282,9 +280,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
@@ -302,9 +300,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
@@ -334,9 +332,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==
@@ -347,9 +345,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: scope_manifest_confirmed
           operator: ==

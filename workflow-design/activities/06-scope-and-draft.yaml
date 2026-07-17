@@ -55,9 +55,9 @@ steps:
         id: file-approach-confirmed
         condition:
           type: simple
-          variable: is_update_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: update
         message: "Drafting approach for '{current_file}'."
         options:
           - id: confirmed
@@ -76,9 +76,9 @@ steps:
         id: file-review
         condition:
           type: simple
-          variable: is_update_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: update
         message: "Drafted content for '{current_file}'."
         options:
           - id: accepted
@@ -96,9 +96,9 @@ steps:
           type: and
           conditions:
             - type: simple
-              variable: is_update_mode
+              variable: operation_type
               operator: ==
-              value: true
+              value: update
             - type: simple
               variable: has_unflagged_removals
               operator: ==
@@ -121,9 +121,9 @@ steps:
     id: draft-attestation
     condition:
       type: simple
-      variable: is_update_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: update
     message: "Drafted-content review ([draft attestation]({draft_attestation_path}))."
     blocking: false
     defaultOption: attested
@@ -139,9 +139,9 @@ steps:
     id: batch-review-attested
     condition:
       type: simple
-      variable: is_update_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: update
     message: "All {file_count} files modified ([draft attestation]({draft_attestation_path}))."
     blocking: false
     defaultOption: attested

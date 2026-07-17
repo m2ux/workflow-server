@@ -10,9 +10,9 @@ steps:
     id: design-context
     condition:
       type: simple
-      variable: is_update_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: update
     message: "Optional design context — reference workflows, integration points, or operators and triggers."
     blocking: false
     defaultOption: skip-context
@@ -102,9 +102,9 @@ transitions:
   - to: impact-analysis
     condition:
       type: simple
-      variable: is_update_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: update
   - to: pattern-analysis
     isDefault: true
 outcome:

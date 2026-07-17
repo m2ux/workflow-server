@@ -47,7 +47,7 @@ An activity has a **single ordered `steps[]`** in which every step carries a req
 | Informal Pattern | Formal Construct | Schema Fields |
 |---|---|---|
 | "Track whether the user confirmed" | **Variable** | `variables[].name`, `.type`, `.description`, `.defaultValue` |
-| "Can run in fast or thorough mode" | **Activation variable + conditional flow** | a boolean `variable` set by a detection step/checkpoint early in the workflow, with `transitions[].condition` and step `when`/`condition` gates that branch on it |
+| "Can run in fast or thorough mode" | **Activation variable + conditional flow** | one authoritative mode `variable` (enum or boolean) set by a detection step/checkpoint early in the workflow, with `transitions[].condition` and step `when`/`condition` gates that compare it directly — no parallel derived shadow flags |
 | "The agent must always do X" (session conduct) | **Workflow rules** | `rules.workflow` / `rules.activity` / `rules.universal` (partitioned by audience). Runtime-relevant only — design-time authoring standards migrate to the workflow-design canon (`rule-audience-bucket`, `runtime-rules-only`). |
 | "Every activity needs this strategy technique" | **Inherited techniques** | `techniques.workflow` (orchestrator, bundled into `get_workflow`) / `techniques.activity` (inherited by every activity, injected into `get_activity`). Activity-local `techniques[]` is STRATEGY only — per-step ops bind via `step.technique` (`techniques-list-disjoint`). |
 | "Start with the first activity" | **Initial activity** | `initialActivity` (activity ID) |

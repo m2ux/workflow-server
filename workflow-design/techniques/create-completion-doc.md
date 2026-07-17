@@ -9,9 +9,9 @@ Create the completion summary for the design session — what workflow was creat
 
 ## Inputs
 
-### is_update_mode
+### operation_type
 
-Whether update mode is active. In update mode the summary frames the delivery as changes to an existing workflow; in create mode as a newly created workflow.
+The classified operation. When `update`, the summary frames the delivery as changes to an existing workflow; when `create`, as a newly created workflow.
 
 ## Outputs
 

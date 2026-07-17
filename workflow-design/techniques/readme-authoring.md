@@ -9,9 +9,9 @@ Generate a workflow README in create mode, or update it in update mode: a root R
 
 ## Inputs
 
-### is_update_mode
+### operation_type
 
-Whether update mode is active. In update mode the README is updated in place to reflect structural changes; in create mode it is generated fresh.
+The classified operation. When `update`, the README is updated in place to reflect structural changes; when `create`, it is generated fresh.
 
 ## Outputs
 

@@ -1,5 +1,5 @@
 id: intake-and-context
-version: 1.5.0
+version: 1.6.0
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 required: true
@@ -13,9 +13,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: update_seeded_from_review
           operator: "!="
@@ -28,13 +28,13 @@ steps:
         description: Create-mode classification confirmed.
         effect:
           setVariable:
-            is_update_mode: false
+            operation_type: create
       - id: confirm-update
         label: Yes, update an existing workflow
         description: Update-mode classification confirmed.
         effect:
           setVariable:
-            is_update_mode: true
+            operation_type: update
   - kind: action
     id: announce-review-seeded-update
     condition:
@@ -49,9 +49,9 @@ steps:
     id: review-scope-confirmed
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: review
     message: "Compliance review target set: {target_workflow_ids}."
     blocking: true
     options:
@@ -82,9 +82,9 @@ steps:
         readme_template: workflow-design/design-context-readme
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: technique
     id: context-loading
     technique: context-loading
@@ -100,18 +100,18 @@ steps:
         message: "**Problem Overview** (plain-language summary for stakeholder reference)"
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: checkpoint
     id: change-request-confirmed
     condition:
       type: and
       conditions:
         - type: simple
-          variable: is_update_mode
+          variable: operation_type
           operator: ==
-          value: true
+          value: update
         - type: simple
           variable: update_seeded_from_review
           operator: "!="
@@ -130,20 +130,14 @@ steps:
         description: Update path abandoned; mode flips back to create.
         effect:
           setVariable:
-            is_update_mode: false
+            operation_type: create
   - kind: checkpoint
     id: format-literacy
     condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_update_mode
-          operator: "!="
-          value: true
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: create
     message: "YAML syntax and project conventions ([format conventions]({format_conventions_path}))."
     options:
       - id: confirmed
@@ -159,9 +153,9 @@ steps:
     id: auto-confirm-literacy
     condition:
       type: simple
-      variable: is_update_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: update
     actions:
       - action: set
         target: format_literacy_confirmed
@@ -172,16 +166,10 @@ steps:
   - kind: checkpoint
     id: constructs-confirmed
     condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_update_mode
-          operator: "!="
-          value: true
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: create
     message: "Applicable schema constructs ([applicable constructs]({applicable_constructs_path}))."
     options:
       - id: confirmed
@@ -210,9 +198,9 @@ transitions:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: ==
-          value: true
+          value: review
         - type: simple
           variable: review_scope_confirmed
           operator: ==

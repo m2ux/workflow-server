@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -9,9 +9,9 @@ Derive the ordered set of design dimensions to elicit for the current operation 
 
 ## Inputs
 
-### is_update_mode
+### operation_type
 
-Whether update mode is active. Selects the update dimension set from the elicitation-guide when true.
+The classified operation. Selects the update dimension set when `update`; otherwise the create dimension set.
 
 ## Outputs
 
@@ -23,7 +23,7 @@ The ordered design dimensions to elicit. Exact create vs update lists are define
 
 ### 1. Select Dimension Set
 
-- Select the create or update dimension set from [elicitation-guide](../resources/elicitation-guide.md) `## Mode Dimension Sets` according to `{is_update_mode}` — do not hardcode or restate the lists here
+- Select the create or update dimension set from [elicitation-guide](../resources/elicitation-guide.md) `## Mode Dimension Sets` according to `{operation_type}` — do not hardcode or restate the lists here
 
 ### 2. Emit Design Dimensions
 

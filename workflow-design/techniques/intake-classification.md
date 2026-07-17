@@ -1,25 +1,21 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.3.0
 ---
 
 ## Capability
 
-Capture the operation type — create, update, or review — and establish the corresponding mode and target: load the existing workflow definition and structural inventory as a baseline (update/review), categorize the requested change (update), summarize design intent (create), and present the classification.
+Capture the operation type — create, update, or review — and establish the corresponding target: load the existing workflow definition and structural inventory as a baseline (update/review), categorize the requested change (update), summarize design intent (create), and present the classification.
 
 ## Outputs
 
 ### operation_type
 
-The classified operation: `create`, `update`, or `review`. Derived from whether a `{target_workflow_id}` is supplied (an existing-workflow reference signals update or review; its absence signals create) and from whether the request is an audit (review) or a change (update).
+The classified operation — sole mode state for the session:
 
-### is_update_mode
-
-Whether update mode is active — true when `{operation_type}` is `update`.
-
-### is_review_mode
-
-Whether review mode is active — true when `{operation_type}` is `review`.
+- **Review** — existing-workflow reference(s) plus an audit intent (recognition signals include "review workflow", "audit workflow", "check workflow compliance", "workflow review", "assess workflow quality", "evaluate workflow")
+- **Update** — existing-workflow reference plus a change request
+- **Create** — no existing-workflow reference
 
 ### workflow_id
 
@@ -39,7 +35,7 @@ Per-target structural inventory: file counts and entity counts (activities, tech
 
 ### change_category
 
-In update mode, the categorized change request derived from `{user_description}`: add/modify activity, technique, resource, metadata, or structural refactor (see [update-mode-guide](../resources/update-mode-guide.md)). Unset in create/review modes.
+When `{operation_type}` is `update`, the categorized change request derived from `{user_description}`: add/modify activity, technique, resource, metadata, or structural refactor (see [update-mode-guide](../resources/update-mode-guide.md)). Unset otherwise.
 
 ### design_intent
 
@@ -47,13 +43,14 @@ Summarized key design intent from `{user_description}` — purpose, domain, roug
 
 ## Protocol
 
-### 1. Load Target Definitions
+### 1. Classify Operation
 
-- For update or review mode, load the committed workflow catalog via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) and source each target's definition from the workflow-server context the orchestrator supplies — workers do not load full workflow definitions directly
+- Determine `{operation_type}` per the Output criteria
+- In review mode, resolve `{target_workflow_ids}` from the request and seed `{target_workflow_id}` to the first element; in update mode set `{target_workflow_id}` only; in create mode leave both unset
 
-### 2. Resolve Target Ids
+### 2. Load Target Definitions
 
-- In review mode, resolve `{target_workflow_ids}` from the request (one or more ids) and set `{target_workflow_id}` to the first element for singular bind sites; in update mode set `{target_workflow_id}` only
+- When `{operation_type}` is `update` or `review`, load the committed workflow catalog via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) and source each target's definition from the workflow-server context the orchestrator supplies — workers do not load full workflow definitions directly
 
 ### 3. Build Structural Inventory
 
@@ -65,19 +62,12 @@ Summarized key design intent from `{user_description}` — purpose, domain, roug
 
 ### 5. Parse Change Request
 
-- In update mode, categorize the change request derived from the `{user_description}` into `{change_category}`: add/modify activity, technique, resource, metadata, or structural refactor (see [update-mode-guide](../resources/update-mode-guide.md))
+- When `{operation_type}` is `update`, categorize the change request derived from the `{user_description}` into `{change_category}`: add/modify activity, technique, resource, metadata, or structural refactor (see [update-mode-guide](../resources/update-mode-guide.md))
 
 ### 6. Summarize Design Intent
 
 - Accept the `{user_description}` and summarize key design intent into `{design_intent}` — purpose, domain, rough activity count, and constraints
 
-### 7. Set Operation Flags
+### 7. Present Classification
 
-- Set `{operation_type}` and the corresponding `{is_update_mode}` / `{is_review_mode}` flags:
-  - **Review** — existing-workflow reference(s) plus an audit intent (recognition signals include "review workflow", "audit workflow", "check workflow compliance", "workflow review", "assess workflow quality", "evaluate workflow"). Resolve `{target_workflow_ids}` from the request (one or more ids); seed `{target_workflow_id}` to the first element
-  - **Update** — existing-workflow reference plus a change request → `{target_workflow_id}` only
-  - **Create** — no existing-workflow reference
-
-### 8. Present Classification
-
-- Present the classification, target set (`{target_workflow_ids}` in review), `{structural_inventory}`, and `{design_intent}` / `{change_category}` as applicable
+- Present the classification, target set (`{target_workflow_ids}` when `{operation_type}` is `review`), `{structural_inventory}`, and `{design_intent}` / `{change_category}` as applicable

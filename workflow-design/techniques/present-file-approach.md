@@ -13,9 +13,9 @@ Present the per-file drafting approach: the schema constructs to be used, the re
 
 The scope-manifest entry being drafted — its path, action (create/modify/remove), type, and one-line description.
 
-### is_update_mode
+### operation_type
 
-Whether update mode is active. In update mode the approach frames the change against the file's existing content rather than a from-scratch draft.
+The classified operation. When `update`, the approach frames the change against the file's existing content rather than a from-scratch draft.
 
 ## Outputs
 

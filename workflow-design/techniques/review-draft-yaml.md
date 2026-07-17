@@ -13,9 +13,9 @@ Review the drafted workflow files as a block-indexed table — one row per draft
 
 The set of files just drafted for this workflow — the entries of `{scope_manifest}` written under the workflows worktree.
 
-### is_update_mode
+### operation_type
 
-Whether update mode is active. In update mode each block is marked added / modified / unchanged against the committed target; in create mode every block is new.
+The classified operation. When `update`, each block is marked added / modified / unchanged against the committed target; when `create`, every block is new.
 
 ## Outputs
 
@@ -40,7 +40,7 @@ Absolute path to the written draft-attestation artifact (includes the block-inde
 ### 1. Index Blocks
 
 - Build a block-indexed table from `{drafted_files}`: one row per drafted construct — each activity, technique, and resource, plus the `workflow.yaml` metadata block — recording its file, location, and a one-line rationale for why it exists
-- In update mode, mark each block added / modified / unchanged by comparing against the committed `{target_workflow_id}`
+- When `{operation_type}` is `update`, mark each block added / modified / unchanged by comparing against the committed `{target_workflow_id}`
 
 ### 2. Persist Reviewed Blocks
 

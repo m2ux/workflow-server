@@ -1,18 +1,17 @@
 id: impact-analysis
-version: 1.4.0
+version: 1.5.0
 name: Impact Analysis
 description: Impact assessment of proposed changes against an existing workflow's files, transitions, and references.
 required: false
 steps:
-  - kind: action
-    id: verify-preconditions
-    actions:
-      - action: validate
-        target: is_update_mode
-        message: Impact analysis requires update mode — is_update_mode must be true
   - kind: technique
     id: impact-analysis
     technique: impact-analysis
+    condition:
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: update
   - kind: action
     id: impact-no-removals
     condition:

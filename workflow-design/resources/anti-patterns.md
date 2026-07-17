@@ -1,6 +1,6 @@
 ---
 name: anti-patterns
-description: Patterns explicitly prohibited during workflow creation and modification.
+description: Specific smell instances in authored workflow content — Detect / Do not flag / Fix. Covering stance lives in design-principles.
 metadata:
   order: 2
   legacy_id: 2
@@ -8,13 +8,21 @@ metadata:
 
 # Overview
 
+This catalogue lists **smells**: specific instances of bad patterns already present in authored workflow content. Each entry is a Detect / Do not flag / Fix test an auditor applies after the fact.
+
+[Design principles](./design-principles.md) hold the broader *prefer / before* stance that avoids these smells and related failures. One principle may cover many entries (and smells not yet catalogued). This file does not host positive authoring primers.
+
 ## Creation Rules
 
 Rules for authoring and maintaining entries in this catalogue.
 
+### Smell not stance
+
+An entry names and detects one observable defect instance. Do not encode prefer/before stance, style primers, or family-wide essays here — those belong in [design-principles](./design-principles.md) (or a convention resource). Fix may cite the covering principle; Detect must not be the sole home of the positive form. Entry **name** identifies the smell (`avoidance-voice-in-definitions`), not the stance (`documentation-voice-positive`, `prefer-…`).
+
 ### Entry identity
 
-Each entry is a subsection titled `### AP-XX. name` — monotonic **AP-XX** designator (file order, zero-padded) plus kebab-case **name**. Cross-references use the name in backticks (e.g. `bound-step-no-description`) — stable if the list is reordered. Do not cite bare historic numbers, and do not cite the catalog's entry count (it drifts).
+Each entry is a subsection titled `### AP-XX. name` — monotonic **AP-XX** designator (file order, zero-padded) plus kebab-case smell **name**. Cross-references use the name in backticks (e.g. `bound-step-no-description`) — stable if the list is reordered. Do not cite bare historic numbers, and do not cite the catalog's entry count (it drifts).
 
 ### Audit technique boundary
 
@@ -30,7 +38,7 @@ Each entry opens with exactly two lines: (1) a quoted anti-pattern exemplar; (2)
 
 ### Detect triad
 
-Every entry has **Detect** / **Do not flag** / **Fix**, each on its own block, separated by blank lines.
+Every entry has **Detect** / **Do not flag** / **Fix**, each on its own block, separated by blank lines. Detect states the structural mismatch; Fix states portable remediation (and may link a principle for the target stance).
 
 ### Keep audit signals
 
@@ -69,7 +77,7 @@ If deleting a sentence loses no Detect, carve-out, or Fix step, delete it.
 
 ## Structural Anti-Patterns
 
-File and packaging shape: no inlining, schema is fixed, finish the scope, invent no naming without approval.
+File and packaging smells: inlined content, schema workarounds, partial scope, invented naming.
 
 ### AP-01. no-inline-content
 
@@ -81,7 +89,7 @@ Content is embedded in a parent file instead of living in its own file.
 
 **Do not flag:** Short inline literals that the schema requires on the parent (e.g. a one-line `description:` field); hyperlinks to separate files.
 
-**Fix:** Extract into its own file under the correct directory; replace the inline body with a reference/bind the schema expects.
+**Fix:** Extract into its own file under the correct directory; replace the inline body with a reference/bind the schema expects. See [Modular Over Inline](./design-principles.md#21-modular-over-inline).
 
 ### AP-02. schema-is-constraint
 
@@ -121,7 +129,7 @@ A new naming convention is invented without search and user approval.
 
 ## Interaction Anti-Patterns
 
-User-session conduct: atomic checkpoints, no assumed intent, re-verify scope on done, one question per message. Design-time canon stays in [design-principles](./design-principles.md) and this catalogue — not in runtime `rules:` (see `runtime-rules-only`; checkpoint message form: `link-named-artifacts`, `no-next-step-narration`, `statement-not-question`, `no-caption-only-message`).
+Session-conduct smells: combined checkpoints, assumed intent, skipped scope re-verify, multi-question turns. Runtime `rules:` hosting design-time canon is `runtime-rules-only`; checkpoint message form smells are under Output Economy.
 
 ### AP-05. atomic-checkpoints
 
@@ -173,7 +181,7 @@ More than one question is asked in a single user-facing message.
 
 ## Schema Expressiveness Anti-Patterns
 
-Prose that must be a formal construct: checkpoint, loop, decision, artifact, variable, mode-as-state, or pure technique binding.
+Prose standing in for a formal construct: checkpoint, loop, decision, artifact, variable, mode-as-state, or pure technique binding.
 
 ### AP-09. checkpoint-not-prose
 
@@ -241,11 +249,11 @@ Approval or mode-like state is tracked in prose instead of a typed variable.
 
 Mode behaviour is written as rule/description text instead of ordinary state.
 
-**Detect:** Mode-specific skip/branch behaviour appears only as rules or prose rather than a boolean activation variable plus `when`/`transitions[].condition` (and `skipActivities` where needed).
+**Detect:** Mode-specific skip/branch behaviour appears only as rules or prose rather than a mode state variable (enum or boolean) plus `when`/`transitions[].condition` (and `skipActivities` where needed). Parallel boolean projections of an enum mode are `no-derived-state-shadow`.
 
 **Do not flag:** One-off `when` conditions unrelated to a named mode.
 
-**Fix:** Detect/set a mode variable early; express skips/branches as conditions on that state.
+**Fix:** Detect/set one authoritative mode variable early; express skips/branches as conditions on that state.
 
 ### AP-15. procedure-in-protocol
 
@@ -297,7 +305,7 @@ Multiple steps bind the same op and differ only by description.
 
 ## Rule Hygiene Anti-Patterns
 
-Rules must be novel, grouped, single-homed for their audience, non-contradictory, and not one-step guidance in disguise.
+Rule smells: protocol restatement, audience mis-bucket, contradiction, one-step guidance, duplicated authority.
 
 ### AP-19. no-rule-protocol-restatement
 
@@ -385,7 +393,7 @@ A technique rule applies to only one protocol step.
 
 ## Description Hygiene Anti-Patterns
 
-Description, message, outcome, and README prose state what the construct is or delivers — not rationale, sequence narration, avoidance/comparative framing, or mechanics.
+Definition-prose smells: rationale, sequence narration, avoidance/comparative framing, mechanics, or vessel-named outcomes.
 
 ### AP-26. no-rationale-in-description
 
@@ -565,23 +573,23 @@ README transcribes YAML structure instead of orienting.
 
 **Do not flag:** Mermaid/ASCII flow diagrams (activity- or step-flow); orientation the YAML lacks — PURPOSE, at-a-glance activity sequence (name + one-line role + connections), outcomes/value, file structure, techniques overview, links to authoritative YAMLs. A third checklist of which audit/technique passes run (drifting from activity binds) is `bind-site-is-orchestration-truth`.
 
-**Fix:** Delete prose/table enumerations of steps/checkpoints/loops/decisions/transitions/bindings and Variables/Rules/estimated-time sections; KEEP diagrams and orientation. Readers open the YAML definition for the rest.
+**Fix:** Delete prose/table enumerations of steps/checkpoints/loops/decisions/transitions/bindings and Variables/Rules/estimated-time sections; KEEP diagrams and orientation. Readers open the YAML definition for the rest. See [Complete Documentation Structure](./design-principles.md#10-complete-documentation-structure).
 
-### AP-41. documentation-voice-positive
+### AP-41. avoidance-voice-in-definitions
 
 "`Does not use inline content`" / "`Rather than X, the workflow now…`" / "`Never skip the checkpoint`"
 
-Documentation uses avoidance or comparative voice.
+Definition prose uses avoidance or comparative voice.
 
-**Detect:** In workflow/activity/technique/resource *definition* prose (`description`, `outcome`, option/action descriptions, README orientation for the defined workflow — not planning artifacts), a passage states what the system avoids or how it differs from a prior/alternative design, instead of stating current behaviour in positive declarative present tense. Comparative/avoidance framing that must be edited when the "old way" is forgotten is the signal — not every English negation.
+**Detect:** In workflow/activity/technique/resource *definition* prose (`description`, `outcome`, option/action descriptions, README orientation for the defined workflow — not planning artifacts), a passage states what the system avoids or how it differs from a prior/alternative design. Comparative/avoidance framing that must be edited when the "old way" is forgotten is the signal — not every English negation.
 
 **Do not flag:** Planning artifacts under `artifacts/planning/` (evolution by design); true runtime constraints in `rules.*` / technique `## Rules` ("must not write secrets"); schema/condition operators; negative examples inside this catalogue; `validate` messages that name a misconfiguration and fix command (`validate-message-economy`).
 
-**Fix:** Rewrite as what the system *does* or *is* in positive declarative present tense.
+**Fix:** Rewrite to current behaviour. See [Document in Positive Present](./design-principles.md#16-document-in-positive-present).
 
 ## Coupling Anti-Patterns
 
-Technique, resource, and I/O contracts stay reusable: no workflow-local producers/consumers, bare filenames, raw-tool recipes, delivery narration, or stage references.
+Contract and reference smells: caller-coupled I/O, wrong designator forms, delivery/tool narration, stage encoding in techniques.
 
 ### AP-42. io-agnostic-contract
 
@@ -593,7 +601,7 @@ An I/O id or description names a specific caller.
 
 **Do not flag:** Protocol/Capability utilisation ("use technique X", "go through cargo-operations::fmt-fix"); intrinsic/external origin ("git diff output", "the user's request", "provided by the server"); I/O links to a resource/template section (shape of the value).
 
-**Fix:** Rewrite the entry generically; drop workflow-internal source/destination naming.
+**Fix:** Rewrite the entry generically; drop workflow-internal source/destination naming. See [Maximize Schema Expressiveness](./design-principles.md#4-maximize-schema-expressiveness) (portable I/O).
 
 ### AP-43. canonical-artifact-ids
 
@@ -641,7 +649,7 @@ A resource backlinks or names its caller.
 
 **Do not flag:** Forward dependency — the resource tells ITS READER to run a technique (prompt/instruction applying workflow-engine / agent-conduct); "see also" to another technique's content; generic technique-model/ontology prose (Goal → Activity → Technique); citations of sibling resources or catalog entry **names**. Test: producer/consumer/enforcer/caller of this resource → remove; technique the reader should run → keep.
 
-**Fix:** Describe the resource by what it IS (Rule, template, vocabulary); drop caller/backlink/Enforcement inventories; move role→file and gate maps into the owning activity YAML or rendering technique.
+**Fix:** Describe the resource by what it IS (Rule, template, vocabulary); drop caller/backlink/Enforcement inventories; move role→file and gate maps into the owning activity YAML or rendering technique. See [Maximize Schema Expressiveness](./design-principles.md#4-maximize-schema-expressiveness) (portable contracts).
 
 ### AP-47. no-redundant-link-label
 
@@ -753,15 +761,15 @@ The same shared input is redeclared instead of hoisted.
 
 ### AP-56. paren-invocation-args
 
-"`gitnexus-operations::context {name: <symbol>}`"
+"`gitnexus-operations::context {name: <symbol>}`" / "with target_dir in backticks beside a braced value"
 
-Invocation arguments use braces instead of parentheses.
+Invocation argument names or lists use the wrong typographic namespace.
 
-**Detect:** A technique/operation invocation passes its argument list in braces (`::op {arg: value}`). Braces are the designator namespace; arg lists use parentheses on the op reference: `[group](path)::[op](path)(arg: value, …)`. Variable/input values inside parens keep braces; argument names and literals stay bare.
+**Detect:** (a) A technique/operation invocation passes its argument list in braces (`::op {arg: value}`) instead of parentheses on the op reference. (b) An operation argument *name* appears bare or backticked (sharing the designator/code-token form) rather than italic. Test: the token names a parameter slot of the applied op, not a declared `{id}` value and not a literal path/command.
 
-**Do not flag:** Brace objects that are not invocation arg lists (query/template/JSON payloads, raw tool-doc object shapes).
+**Do not flag:** Brace objects that are not invocation arg lists (query/template/JSON payloads, raw tool-doc object shapes); italic emphasis that is ordinary English, not an op parameter name; correctly braced/backticked argument *values* (`backtick-code-tokens`, `brace-declared-ids`).
 
-**Fix:** Replace brace arg lists with parentheses on the op reference; brace only argument values that are variables/inputs.
+**Fix:** Align with [Distinguish Designators from Parameters](./design-principles.md#15-distinguish-designators-from-parameters).
 
 ### AP-57. escape-literal-dollar
 
@@ -843,7 +851,7 @@ A code token appears bare without backticks.
 
 **Detect:** Bare-in-prose designators (`{id}`, `{$name}`, dotted rule addresses), CLI/shell (including 'single-quoted' commands), MCP tool calls, resource URIs (`scheme://…`), literal paths/filenames — outside an existing code span and not a markdown/`::` link target.
 
-**Do not flag:** Tokens already inside a code span/fence; descriptive prose nouns ("the planning folder"); hyperlink/`::` targets (backtick only invocation argument values). Fragmented spans (`` `git -C` `{x}` ``) are defects — must be one span. Backticks without braces still fail `brace-declared-ids` mode (c).
+**Do not flag:** Tokens already inside a code span/fence; descriptive prose nouns ("the planning folder"); hyperlink/`::` targets; invocation argument *names* (wrong form is `paren-invocation-args`, not this entry). Fragmented spans (`` `git -C` `{x}` ``) are defects — must be one span. Backticks without braces still fail `brace-declared-ids` mode (c).
 
 **Fix:** Wrap each bare code token in one backtick span (designators inside the same span as surrounding command text); convert 'single-quoted' commands; de-escape `{\$name}` to `` `{$name}` `` (math-exempt inside code; see `escape-literal-dollar`).
 
@@ -853,11 +861,11 @@ A code token appears bare without backticks.
 
 A boolean id is not an affirmative predicate.
 
-**Detect:** Boolean symbol ids use non-affirmative stems (`not_ready`, `no_merge`), generic-noun burials (`…_flag` / `…_status` / `…_check`), or ambiguous nouns. Prefer affirmative predicates (`squash_merge_supported`, `index_fresh`). Prefix `is_`/`has_`/`can_`/`should_` only when it sharpens; unprefixed affirmative / past-participle results (`worktree_created`, `*_confirmed`) already conform — do not re-prefix. Shape ≠ meaning: inverted meaning still passes shape.
+**Detect:** Boolean symbol ids use non-affirmative stems (`not_ready`, `no_merge`), generic-noun burials (`…_flag` / `…_status` / `…_check`), or ambiguous nouns. Shape ≠ meaning: inverted meaning still fails even if prefixed. Examples of conforming shapes: `squash_merge_supported`, `index_fresh`, `worktree_created`, `*_confirmed`.
 
-**Do not flag:** Conformant unprefixed affirmatives.
+**Do not flag:** Conformant unprefixed affirmatives; `is_`/`has_`/`can_`/`should_` only when the prefix sharpens an already-affirmative stem.
 
-**Fix:** Rename to an affirmative predicate shape.
+**Fix:** Rename to an affirmative predicate shape. See also [Name Symbols Affirmatively](./design-principles.md#18-name-symbols-affirmatively).
 
 ### AP-65. collection-id-shape
 
@@ -877,11 +885,11 @@ A collection/map id has the wrong noun shape.
 
 An I/O id encodes representation or direction.
 
-**Detect:** I/O ids that are direction-encoded; representation proxies (`-path`/`-list`, see `canonical-artifact-ids` / `hoist-shared-inputs`); synonym drift for one concept; bare single-word generics (`summary`, `artifact`, `coverage`, `state`, `result`, `prompt`). Prefer head-noun-last qualified phrases (`reconciled_assumptions`, `completion_summary`). Flag Inputs/Output heading name collisions within one technique (except true input∩output pass-through).
+**Detect:** I/O ids that are direction-encoded; representation proxies (`-path`/`-list`, see `canonical-artifact-ids` / `hoist-shared-inputs`); synonym drift for one concept; bare single-word generics (`summary`, `artifact`, `coverage`, `state`, `result`, `prompt`); Inputs/Output heading name collisions within one technique (except true input∩output pass-through).
 
-**Do not flag:** External tool/schema field spellings; bare plural collection item-nouns (`collection-id-shape`).
+**Do not flag:** External tool/schema field spellings; bare plural collection item-nouns (`collection-id-shape`); head-noun-last qualified phrases (`reconciled_assumptions`, `completion_summary`).
 
-**Fix:** Rename; hoist one concept to one shared id (`hoist-shared-inputs`); drop representation/direction encoding from I/O ids.
+**Fix:** Rename; hoist one concept to one shared id (`hoist-shared-inputs`); drop representation/direction encoding from I/O ids. See also [Name Symbols Affirmatively](./design-principles.md#18-name-symbols-affirmatively).
 
 ### AP-67. rule-slug-shape
 
@@ -893,7 +901,7 @@ A rule slug is negation or narration instead of a positive invariant.
 
 **Do not flag:** Clear intentional negations; NAME-class kebab identities that are not symbol ids.
 
-**Fix:** Rename toward a positive invariant when clearer; keep kebab.
+**Fix:** Rename toward a positive invariant when clearer; keep kebab. See also [Name Symbols Affirmatively](./design-principles.md#18-name-symbols-affirmatively).
 
 ### AP-68. technique-stage-agnostic
 
@@ -905,7 +913,7 @@ A technique encodes workflow stage, or a user-facing decision it cannot surface.
 
 **Do not flag:** Purpose-phrased work with no orchestration locus ("final validation", "no separate commit step follows"); values the technique emits for the activity to route (counts, paths, severity, recommended option id); inventoring decisions *into* an artifact the activity will gate on.
 
-**Fix:** Migrate user-facing decisions to activity `kind: checkpoint` steps gated on technique outputs; migrate other orchestration to activity transitions/`when`/loops. Rewrite the technique to produce the durable evidence (artifact section, count, path) without naming the gate. See also `no-activity-prose-rules`.
+**Fix:** Migrate user-facing decisions to activity `kind: checkpoint` steps gated on technique outputs; migrate other orchestration to activity transitions/`when`/loops. Rewrite the technique to produce the durable evidence (artifact section, count, path) without naming the gate. See [Keep Orchestration in Structure](./design-principles.md#19-keep-orchestration-in-structure); also `no-activity-prose-rules`.
 
 ### AP-69. no-activity-prose-rules
 
@@ -917,7 +925,7 @@ An activity carries prose rules: instead of pure mechanics.
 
 **Do not flag:** N/A — activity `rules:` should be empty; behavioral guidance belongs on bound techniques.
 
-**Fix:** (a) restates structure already enforced → **delete**; (b) technique-behavioral constraint → **migrate** to the owning technique (`single-rule-authority`); (c) genuine unenforced constraint → **encode** as `when`/`condition`, transition, decision, checkpoint, or `required: false` (hard gates use `when`/`condition`; step `required` is a worker hint only). End state: no activity `rules:` block.
+**Fix:** (a) restates structure already enforced → **delete**; (b) technique-behavioral constraint → **migrate** to the owning technique (`single-rule-authority`); (c) genuine unenforced constraint → **encode** as `when`/`condition`, transition, decision, checkpoint, or `required: false` (hard gates use `when`/`condition`; step `required` is a worker hint only). End state: no activity `rules:` block. See [Keep Orchestration in Structure](./design-principles.md#19-keep-orchestration-in-structure).
 
 ### AP-70. capability-group-placement
 
@@ -933,7 +941,7 @@ Technique folder/name disagrees with shape-origin (reuse boundary vs activity se
 
 ## Tool-Technique-Doc Consistency Anti-Patterns
 
-Tool names, return values, bootstrap paths, and behavioural guidance must match the actual harness surface and live in one authoritative place. Apply these entries by comparing authored claims in techniques, bootstrap/meta resources, and workflow docs/READMEs against that surface — not by prose-only skim.
+Harness-surface mismatch smells: false return claims, incomplete bootstrap paths, stale tool names, duplicated guidance. Apply by comparing authored claims to the actual tool surface — not a prose-only skim.
 
 ### AP-71. no-false-resource-delivery
 
@@ -945,7 +953,7 @@ A surface claims a tool return shape that is not accurate.
 
 **Do not flag:** Accurate descriptions; non-engine surfaces that correctly avoid tool recipes (`no-tool-usage-prescription`).
 
-**Fix:** Align the claim with actual tool behaviour, or delete the claim if the surface should not describe tools.
+**Fix:** Align the claim with actual tool behaviour, or delete the claim if the surface should not describe tools. See [Match the Harness Surface](./design-principles.md#20-match-the-harness-surface).
 
 ### AP-72. complete-bootstrap-path
 
@@ -981,7 +989,7 @@ The same behavioural guidance is multi-homed across techniques and tool docs.
 
 **Do not flag:** A single authoritative home with pointers elsewhere; meta surfaces whose domain is tool usage.
 
-**Fix:** Keep one authoritative location; replace duplicates with references to it.
+**Fix:** Keep one authoritative location; replace duplicates with references to it. See [One Authoritative Home](./design-principles.md#5-one-authoritative-home); harness claims also under [Match the Harness Surface](./design-principles.md#20-match-the-harness-surface).
 
 ### AP-75. describe-tool-value
 
@@ -1009,19 +1017,19 @@ A tool is redundant because its output is a strict subset of another tool's retu
 
 ## Execution Anti-Patterns
 
-Authoring-session discipline: confirm approach before edits, follow through on recommendations, back constraints with structure, preserve content and format literacy.
+Authoring-session smells: impl before confirmed approach, abandoned recommendations, text-only critical constraints, destructive README edits, skipped format literacy, work outside the activity graph.
 
-### AP-77. approach-before-impl
+### AP-77. impl-before-confirmed-approach
 
 "I'll just start implementing"
 
-Implementation starts before presenting an approach and getting confirmation.
+Implementation starts before the approach is confirmed.
 
 **Detect:** File/workflow modifications begin before the user has confirmed the proposed approach for the change.
 
 **Do not flag:** Trivial typos/formatting the user already authorized; continuing an explicitly approved plan.
 
-**Fix:** Present the approach and wait for confirmation before modifying.
+**Fix:** Present the approach; wait for confirmation; then modify. See [Confirm Before Irreversible Changes](./design-principles.md#7-confirm-before-irreversible-changes).
 
 ### AP-78. follow-through-on-recommend
 
@@ -1033,7 +1041,7 @@ A recommendation is presented without follow-through implementation.
 
 **Do not flag:** Pure advisory requests where the user asked for analysis only.
 
-**Fix:** After recommending, implement (or explicitly checkpoint the implement-or-stop decision).
+**Fix:** After recommending, implement (or explicitly checkpoint the implement-or-stop decision). See [Close the Loop](./design-principles.md#22-close-the-loop).
 
 ### AP-79. structure-backed-constraints
 
@@ -1045,7 +1053,7 @@ A critical constraint is text-only with no structural enforcement.
 
 **Do not flag:** Explicitly guidance-only / non-critical rules; rules already backed by structure on the same construct or a parent the actor always receives.
 
-**Fix:** Add structural enforcement (checkpoint, condition, validate, decision), or reclassify as non-critical guidance if structural backing is inappropriate.
+**Fix:** Add structural enforcement (checkpoint, condition, validate, decision), or reclassify as non-critical guidance if structural backing is inappropriate. See [Encode Constraints as Structure](./design-principles.md#8-encode-constraints-as-structure).
 
 ### AP-80. preserve-readme-content
 
@@ -1081,7 +1089,7 @@ Work bypasses defined activities via informal combination of results.
 
 **Do not flag:** In-activity orchestration that still goes through declared steps/checkpoints.
 
-**Fix:** Route work through the defined activities; do not informally merge outside the graph.
+**Fix:** Route work through the defined activities; do not informally merge outside the graph. See [Keep Orchestration in Structure](./design-principles.md#19-keep-orchestration-in-structure).
 
 ### AP-83. accept-correction
 
@@ -1097,7 +1105,7 @@ A user correction is pushed back without evidence, or output is not re-examined.
 
 ## Output Economy Anti-Patterns
 
-Artifacts and checkpoints stay lean: one home per fact, exception-only status, no null ceremony, link don't copy — backed by `manage-artifacts` discipline.
+Artifact and checkpoint smells: multi-home facts, all-green ceremony, null sections, split or decisionless checkpoints, caption-only messages.
 
 ### AP-84. single-closeout-artifact
 
@@ -1205,7 +1213,7 @@ A resource owns DOES procedure instead of fill/consult content.
 
 **Do not flag:** Artifact templates/anchors, format skeletons, vocabularies a template consumes, reference lexicons, calibration benchmarks — what the agent FILLS or CONSULTS.
 
-**Fix:** Move does-sections to the owning technique as protocol phases or named rules; replace with a one-line pointer; dissolve the resource when nothing template-shaped remains. Retarget stranded heading anchors; ensure every moved `{token}` resolves under guard coverage (declared id / `{$local}` / workflow variable).
+**Fix:** Move does-sections to the owning technique as protocol phases or named rules; replace with a one-line pointer; dissolve the resource when nothing template-shaped remains. Retarget stranded heading anchors; ensure every moved `{token}` resolves under guard coverage (declared id / `{$local}` / workflow variable). See [One Authoritative Home](./design-principles.md#5-one-authoritative-home).
 
 ### AP-93. canonical-fact-home
 
@@ -1325,11 +1333,11 @@ Operative criteria are dual-homed in technique and resource.
 
 **Do not flag:** A one-line pointer to the resource; technique-owned HOW the resource does not define; scan-scope paraphrase without repeating criteria. See also `operative-criteria-need-a-home`, `cited-home-owns-claim`, `no-shadow-audit-pass`.
 
-**Fix:** Choose one home (usually the resource for reusable criteria, the technique for procedure); delete the duplicate. Migrate unique technique-only criteria into the resource before deleting them from the technique.
+**Fix:** Choose one home (usually the resource for reusable criteria, the technique for procedure); delete the duplicate. Migrate unique technique-only criteria into the resource before deleting them from the technique. See [One Authoritative Home](./design-principles.md#5-one-authoritative-home).
 
 ## Canon Hygiene Anti-Patterns
 
-Operative criteria have one real home; citations must resolve there; audit/canon layers walk or cite — they do not re-author Detect; orchestration inventories defer to activity bind sites.
+Canon smells: false citations, homeless criteria, shadow audit Detect, upper layers restating Detect, pass inventories drifting from YAML binds.
 
 ### AP-103. cited-home-owns-claim
 
@@ -1353,7 +1361,7 @@ Reusable criteria live only in a technique with no catalog/resource home.
 
 **Do not flag:** One-off orchestration (order of steps, which files to open, how to present findings); thin walkers that only name a home and apply it (`no-technique-resource-dual-home` carve-out); criteria already homed in a resource/catalog even if the technique is still fat (that is dual-home, not missing-home).
 
-**Fix:** Migrate the criteria into a resource or this catalogue; leave the technique as a walker (load home → apply → present). Prefer a catalog entry when the criterion is a prohibited pattern; prefer a resource when it is a positive checklist/convention.
+**Fix:** Migrate the criteria into a resource or this catalogue; leave the technique as a walker (load home → apply → present). Prefer a catalog entry when the criterion is a prohibited pattern; prefer a resource when it is a positive checklist/convention. See [One Authoritative Home](./design-principles.md#5-one-authoritative-home).
 
 ### AP-105. no-shadow-audit-pass
 
@@ -1377,7 +1385,7 @@ An upper canon layer restates Detect/Fix already owned below.
 
 **Do not flag:** Short Rule statements plus named citations; Enforcement pointers to activities/checkpoints; a single clarifying sentence that does not repeat Detect steps; layers that are themselves the sole home (`operative-criteria-need-a-home`).
 
-**Fix:** Keep the upper layer as short principle stance prose; delete restated Detect, Detect-routing blocks, and host Enforcement inventories (`no-resource-caller-backlink`). If the upper layer held unique criteria, migrate them down before deleting.
+**Fix:** Keep the upper layer as short principle stance prose; delete restated Detect, Detect-routing blocks, and host Enforcement inventories (`no-resource-caller-backlink`). If the upper layer held unique criteria, migrate them down before deleting. See [One Authoritative Home](./design-principles.md#5-one-authoritative-home).
 
 ### AP-107. bind-site-is-orchestration-truth
 
@@ -1389,11 +1397,11 @@ A pass inventory disagrees with authoritative YAML bind sites.
 
 **Do not flag:** Purpose/value orientation without a pass inventory; pointers to the YAML; at-a-glance activity names with one-line roles (`readme-orients-not-transcribes`); a technique that only applies a sibling without listing a parallel set.
 
-**Fix:** Delete the third checklist, or replace it with a pointer to the binding activity/technique. If a summary is required, generate it from the YAML binds.
+**Fix:** Delete the third checklist, or replace it with a pointer to the binding activity/technique. If a summary is required, generate it from the YAML binds. See [One Authoritative Home](./design-principles.md#5-one-authoritative-home).
 
 ## Technique Protocol Anti-Patterns
 
-Numbered `### N. Title` headings under `## Protocol` are discrete sequential phases — not a multi-phase bullet dump under one step.
+Protocol indexing, I/O declaration, and composition smells on technique markdown.
 
 ### AP-108. numbered-protocol-phases
 
@@ -1405,7 +1413,7 @@ Discrete sequential protocol phases are collapsed into one numbered step.
 
 **Do not flag:** Multiple bullets that elaborate a single phase (how-to for one write, constraints on one apply, loop body over one entry, mode branches of one action); `>` caveats under a primary instruction; a single-bullet step.
 
-**Fix:** Split into consecutive numbered `### N. Title` steps — one phase per heading. Keep elaborating bullets only under the phase they refine.
+**Fix:** Split into consecutive numbered `### N. Title` steps — one phase per heading. Keep elaborating bullets only under the phase they refine. See also [Phase by Sequenced Outcome](./design-principles.md#14-phase-by-sequenced-outcome).
 
 ### AP-109. technique-outputs-declared
 
@@ -1419,14 +1427,38 @@ Capability or Protocol produces or presents a value that is not declared on Outp
 
 **Fix:** Declare `### <id>` under `## Outputs` naming what the value IS; reference `{id}` in Protocol when assembling/presenting. Add `#### artifact` when the value is a file.
 
-### AP-110. prefer-meta-capability
+### AP-110. duplicate-shared-capability
 
 "`publish-workflow-pr` re-teaches `gh pr create` / `gh pr ready` / `git push` already covered by meta ops"
 
-A workflow-local technique re-implements a capability that a meta (or other shared-workflow) technique already offers — novel diversity of callers is handled by parameterizing or lightly refactoring that shared op, not by inventing a parallel local recipe.
+A workflow-local technique re-implements a capability a meta or shared-workflow technique already offers.
 
 **Detect:** A non-meta technique's Protocol embeds a harness recipe (git push, `gh pr create`, `gh pr ready`, commit/stage, issue mutate, …) for a capability that already exists as a meta or cross-workflow shared op. Test: the local novelty is only parameters or caller-specific composition (title/body/path wiring); the verb/recipe is already owned elsewhere. Near-misses count — an existing shared op that almost fits but lacks an input, optional flag, or output still owns the capability.
 
 **Do not flag:** Local composition that *applies* the shared op via canonical hyperlink/`::` bind and keeps only caller-specific value assembly; parameterization or minor refactor of the shared/meta op itself to accommodate a new caller's diversity (new optional inputs, defaults, outputs, or small protocol branches) while preserving existing callers; adding a new shared op when no shared capability exists yet.
 
-**Fix:** Prefer, in order: (1) parameterize or lightly refactor the existing meta/shared op so the new caller can bind it; (2) add a sibling shared op in meta (or the owning shared workflow) when the capability is genuinely new; (3) only then keep local composition. Replace the local harness recipe with a bind or canonical hyperlink; keep only workflow-specific value assembly locally (`canonical-technique-reference`, `no-duplicated-guidance`).
+**Fix:** Replace the local harness recipe with a bind or canonical hyperlink; keep only caller-specific value assembly (`canonical-technique-reference`, `no-duplicated-guidance`). Remediation order under [Prefer Shared Capability](./design-principles.md#17-prefer-shared-capability).
+
+### AP-111. contract-not-procedure
+
+"### 7. Set Operation Flags" restating create/update/review recognition criteria already (or better) owned by Outputs
+
+Protocol carries identity criteria or a trailing "Set …" phase that belongs on the Output contract.
+
+**Detect:** A technique `## Protocol` (a) restates derivation, recognition, or decision-tree criteria for a declared Output (the bullets answer *what is this value?* rather than *what work do I do now?*), or (b) has a numbered phase whose sole job is to assign a pure projection of another output already produced earlier (e.g. boolean flags that are `true` iff `{operation_type}` is a given enum). Test: if deleting the Protocol copy leaves the Output description as the sole complete definition — or the phase only types derived fields — flag it.
+
+**Do not flag:** Protocol that determines or emits `{id}` by reference to Output criteria without restating the tree ("classify `{operation_type}` per the Output criteria"); emitting a count or path in the same phase that already produced the bag/artifact; mode branches that *use* an already-bound value; missing Outputs entirely (`technique-outputs-declared`).
+
+**Fix:** Move identity criteria onto the owning Output; collapse pure projections to one-line Output descriptions; keep Protocol as work phases that emit `{id}`. See [Separate Contract from Procedure](./design-principles.md#12-separate-contract-from-procedure). Workflow-variable shadows are `no-derived-state-shadow`.
+
+### AP-112. no-derived-state-shadow
+
+"`is_update_mode` / `is_review_mode` alongside `operation_type`"
+
+A derived shadow variable duplicates an authoritative state variable.
+
+**Detect:** A workflow declares two or more variables where one is a pure projection of another (booleans that are true iff a primary enum/string equals a constant; mirrored counts of the same bag). Gates, technique inputs, or `setVariable` effects write or read the shadow instead of — or in addition to — the source. Test: if a legal write can leave the shadow disagreeing with the source, flag it.
+
+**Do not flag:** Distinct facts that merely correlate; Output prose that defines a projection without declaring a second workflow variable (`contract-not-procedure`); mode encoded only as rules/prose with no state variable (`mode-as-state`).
+
+**Fix:** Keep the authoritative variable; rewrite conditions, technique inputs, and effects to compare it directly; delete the shadow declarations and every write to them. See also [Single Source of Truth](./design-principles.md#13-single-source-of-truth).

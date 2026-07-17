@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -9,9 +9,9 @@ Persist a workflow audit report into the planning folder as a numbered artifact 
 
 ## Inputs
 
-### is_review_mode
+### operation_type
 
-Whether review mode is active. Selects the report filename: a compliance report in review mode, a post-update review snapshot otherwise.
+The classified operation. Selects the report filename: a compliance report when `review`, a post-update review snapshot otherwise.
 
 ## Outputs
 
@@ -21,13 +21,13 @@ Path to the written report file
 
 #### artifact
 
-`compliance-review.md` (compliance review mode) / `post-update-review.md` (post-update review mode)
+`compliance-review.md` (when `{operation_type}` is `review`) / `post-update-review.md` (otherwise)
 
 ## Protocol
 
 ### 1. Choose Report Filename
 
-- Choose the bare filename for the mode: `compliance-review.md` for a compliance report, `post-update-review.md` for a post-update review snapshot
+- Choose the bare filename for `{operation_type}`: `compliance-review.md` when `review`, `post-update-review.md` otherwise
 
 ### 2. Persist Report Artifact
 

@@ -25,15 +25,7 @@ variables:
     description: Path to the unique planning folder for this workflow execution (e.g., .engineering/artifacts/planning/YYYY-MM-DD-workflow-design-{workflow_id})
   - name: operation_type
     type: string
-    description: The classified operation for the request — create, update, or review. Produced by intake-classification and interpolated into the mode-confirmation checkpoint message.
-  - name: is_update_mode
-    type: boolean
-    description: Whether update mode is active (modifying an existing workflow rather than creating a new one)
-    defaultValue: false
-  - name: is_review_mode
-    type: boolean
-    description: Whether review mode is active (auditing an existing workflow against design principles)
-    defaultValue: false
+    description: The classified operation for the request — create, update, or review. Sole mode state; gates and technique inputs compare this value directly.
   - name: review_findings_count
     type: number
     description: Total number of compliance findings identified during review

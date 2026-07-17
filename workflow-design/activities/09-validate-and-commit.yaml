@@ -9,34 +9,34 @@ steps:
     technique: persist-report
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: review
   - kind: technique
     id: commit-report
     technique: version-control::commit-regular-files
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: review
   - kind: technique
     id: run-schema-validation
     technique: audit-schema-validation
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: action
     id: validation-clean
     condition:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: fail_count
           operator: ==
@@ -50,9 +50,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: fail_count
           operator: ">"
@@ -73,18 +73,18 @@ steps:
     technique: scope-verification
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: action
     id: scope-complete
     condition:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: unaddressed_count
           operator: ==
@@ -98,9 +98,9 @@ steps:
       type: and
       conditions:
         - type: simple
-          variable: is_review_mode
+          variable: operation_type
           operator: "!="
-          value: true
+          value: review
         - type: simple
           variable: unaddressed_count
           operator: ">"
@@ -124,24 +124,24 @@ steps:
         readme_template: workflow-design/design-context-readme
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: technique
     id: readme-authoring
     technique: readme-authoring
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: checkpoint
     id: pre-commit-attestation
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
     message: "Ready to commit workflow '{workflow_id}' ([planning README]({planning_folder_path}/README.md), [draft attestation]({draft_attestation_path}))."
     blocking: true
     options:
@@ -158,17 +158,17 @@ steps:
     technique: prepare-workflow-branch
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: technique
     id: stage-and-commit
     technique: version-control::commit-regular-files
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: technique
     id: verify-commit
     technique: commit-verification
@@ -177,9 +177,9 @@ steps:
     technique: publish-workflow-pr
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: action
     id: announce-completion
     actions:
@@ -189,9 +189,9 @@ transitions:
   - to: post-update-review
     condition:
       type: simple
-      variable: is_update_mode
+      variable: operation_type
       operator: ==
-      value: true
+      value: update
   - to: retrospective
     isDefault: true
 outcome:

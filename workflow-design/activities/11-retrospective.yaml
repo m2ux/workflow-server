@@ -9,9 +9,9 @@ steps:
     technique: create-completion-doc
     condition:
       type: simple
-      variable: is_review_mode
+      variable: operation_type
       operator: "!="
-      value: true
+      value: review
   - kind: technique
     id: conduct-retrospective
     technique: conduct-retrospective

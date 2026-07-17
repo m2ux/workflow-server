@@ -10,9 +10,9 @@ Eleven markdown resources providing the design principles, construct inventories
 
 | Index | Resource | Purpose |
 |-------|----------|---------|
-| `00` | [Design Principles](design-principles.md) | Positive framing principles (stance only) |
+| `00` | [Design Principles](design-principles.md) | Prefer/before stance that avoids smell families (no Detect triad) |
 | `01` | [Schema Construct Inventory](schema-construct-inventory.md) | Prose-to-formal construct mapping tables for activity, workflow, technique, and condition schemas |
-| `02` | [Anti-Patterns](anti-patterns.md) | Prohibited-pattern catalog (AP-XX + kebab-case name) by category |
+| `02` | [Anti-Patterns](anti-patterns.md) | Specific smell instances — Detect/Do not flag/Fix (AP-XX + kebab-case name) |
 | `03` | [Update Mode Guide](update-mode-guide.md) | Change-request category vocabulary for update mode |
 | `04` | [Compliance Report](compliance-report.md) | Review-mode compliance report template |
 | `05` | [Design Context README](design-context-readme.md) | Planning-folder `README.md` seed template (design-session sections) |
@@ -28,7 +28,7 @@ Eleven markdown resources providing the design principles, construct inventories
 
 ### 00 — Design Principles
 
-Positive framing principles — stance only. Detect lives in the anti-pattern catalog and construct inventory; structural gates live in activity YAML.
+*Prefer / before / only after* stance — broader than any one defect; avoids families of smells (and related failures not yet catalogued). No Detect triad here; specific bad instances live in the anti-pattern catalog; structural gates live in activity YAML.
 
 ### 01 — Schema Construct Inventory
 
@@ -45,19 +45,19 @@ Also includes checkpoint effect types (`setVariable`, `transitionTo`, `skipActiv
 
 ### 02 — Anti-Patterns
 
-Prohibited patterns organized by category. Cite by kebab-case **name** (stable); each entry also carries a monotonic **AP-XX** list designator. Do not cite the catalog size.
+Specific smell instances already present in authored content — each entry is a Detect / Do not flag / Fix test for one bad pattern instance. Cite by kebab-case smell **name** (stable); each entry also carries a monotonic **AP-XX** list designator. Do not cite the catalog size. Covering stance lives in [Design Principles](./design-principles.md).
 
 | Category | Examples |
 |----------|----------|
 | Structural | `no-inline-content`, `schema-is-constraint`, `no-partial-implementation`, `no-invented-naming` |
 | Interaction | `atomic-checkpoints`, `no-assumption-execution`, `scope-reverify-completion`, `one-question-per-message` |
 | Schema expressiveness | `checkpoint-not-prose`, `loop-not-prose`, `procedure-in-protocol`, `bound-step-no-description`, `no-monolith-masking-steps` |
-| Technique protocol | `numbered-protocol-phases`, `technique-outputs-declared`, `prefer-meta-capability` |
+| Technique protocol | `numbered-protocol-phases`, `technique-outputs-declared`, `duplicate-shared-capability` |
 | Rule hygiene | `no-rule-protocol-restatement`–`no-one-step-rules`, `single-rule-authority`, `worker-rule-reach` |
-| Description hygiene | `no-rationale-in-description`–`role-rules-not-description`, `no-hand-authored-artifacts`, `techniques-list-disjoint`, `readme-orients-not-transcribes`, `documentation-voice-positive` |
+| Description hygiene | `no-rationale-in-description`–`role-rules-not-description`, `no-hand-authored-artifacts`, `techniques-list-disjoint`, `readme-orients-not-transcribes`, `avoidance-voice-in-definitions` |
 | Coupling | `io-agnostic-contract`, `no-delivery-mechanism-narration`, `no-tool-usage-prescription`, `canonical-technique-reference`, `anchored-protocol-references`, `technique-stage-agnostic`, `no-activity-prose-rules` |
 | Tool-technique-doc consistency | `no-false-resource-delivery`–`no-redundant-tools` |
-| Execution | `approach-before-impl`, `structure-backed-constraints`, `work-through-activities`, `accept-correction` |
+| Execution | `impl-before-confirmed-approach`, `structure-backed-constraints`, `work-through-activities`, `accept-correction` |
 | Output economy | `single-closeout-artifact`–`lifecycle-row-update`, `canonical-fact-home`–`artifact-audience-declared`, `link-named-artifacts`–`no-caption-only-message`, `runtime-rules-only`, `no-technique-resource-dual-home` |
 | Canon hygiene | `cited-home-owns-claim`, `operative-criteria-need-a-home`, `no-shadow-audit-pass`, `canon-layer-cites-not-restates`, `bind-site-is-orchestration-truth` |
 

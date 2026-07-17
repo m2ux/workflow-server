@@ -34,7 +34,7 @@ Absolute path to the written pattern-analysis artifact.
 
 ### 4. Persist Pattern Analysis
 
-- Persist the comparison via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and bare filename `pattern-analysis.md`
+- Persist the comparison via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `pattern-analysis.md`
 - Capture the written location as `{pattern_analysis_path}`
 
 ### 5. Present Patterns
