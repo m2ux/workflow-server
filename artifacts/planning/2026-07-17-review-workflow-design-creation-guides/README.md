@@ -1,24 +1,26 @@
 # Fix workflow-design compliance findings — July 2026
 
-> Update · Created 2026-07-17 · **Status:** Reviewing
+> Update · Created 2026-07-17 · **Status:** Drafting
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
 ## 🎯 Executive Summary
 
-Apply the two compliance findings from the prior review of `workflow-design` v1.24.3 (PR #254 worktree): declare the missing `pattern_analysis` technique Output, and normalize persist-guide cite anchors to `#template`. Scope stays technique-markdown only—no activity or resource structure changes.
+Apply the two compliance findings from the prior review of `workflow-design` v1.24.3 (PR #254 worktree): declare the missing `pattern_analysis` technique Output, and normalize persist-guide cite anchors to `#template`. On return-to-draft, also remove `quality-review`'s four per-pass disposition checkpoints so audit-fixable findings are fixed automatically instead of asking the user to elect a disposition on each pass. Scope is technique-markdown plus one activity YAML and its README blurb — no activity add/remove/reorder.
 
 ## Problem Overview
 
 `workflow-design` already ships the slim creation-guide structure on PR #254, but the compliance review left two open fixes before merge. The High issue is a binding gap: `pattern-analysis` assembles `{pattern_analysis}` without declaring that product as an Output, so agents and binding checks cannot treat it as a first-class result. The Low issue is cite-style drift—several persist steps link creation guides without the `#template` anchor that assemble steps already use—so readers and agents do not land on the same template home.
 
-Closing both keeps the lean guide model intact while restoring Output fidelity and consistent guide citations across the techniques that write planning artifacts.
+At pre-commit, the user rejected the attestation and asked for a different behavior: the quality-review activity should fix findings automatically rather than pausing at a checkpoint after every audit pass. Each of the four audit passes (expressiveness, conformance, rule hygiene, rule enforcement) had its own confirmation checkpoint with a 30-second auto-advance — technically non-blocking, but still a presentation the user did not want for findings that were always going to be fixed anyway.
+
+Closing all three keeps the lean guide model intact while restoring Output fidelity, consistent guide citations, and a quality-review pass that acts on its own findings without an intervening checkpoint.
 
 ## Solution Overview
 
-This update closes two compliance gaps on the Workflow Design definition without changing how the workflow runs. Agents will again see a declared product for the pattern-analysis comparison they assemble, and every step that writes a planning guide will point readers to the same template section of that guide.
+This update closes two compliance gaps on the Workflow Design definition and changes one piece of how quality review behaves. Agents will again see a declared product for the pattern-analysis comparison they assemble, every step that writes a planning guide will point readers to the same template section of that guide, and the quality-review activity now fixes what it finds instead of asking the user to confirm each fix in turn.
 
-The activity sequence, checkpoints, and creation-guide files stay as they are. After the seven technique files are updated and attested, a normal validate-and-commit pass can bump the workflow patch version and confirm the findings are closed.
+The activity sequence and creation-guide files stay as they are — only `quality-review`'s internal steps change. Its four audit passes still report a clean message when there is nothing to fix, but now report a plain statement (not a checkpoint) when findings remain, since the fix cycle that follows always applies them. The critical-finding blocker gate is untouched: a Critical finding still sends the workflow back to drafting regardless of how the other findings were resolved. After the nine files are updated and attested, a normal validate-and-commit pass can confirm the findings are closed and commit.
 
 ## Design Decisions
 
@@ -34,9 +36,11 @@ The activity sequence, checkpoints, and creation-guide files stay as they are. A
 
 Detail: [08-compliance-review.md](08-compliance-review.md)
 
+**Return-to-draft addition (not a compliance finding):** the user rejected pre-commit and asked that `quality-review` fix findings automatically instead of presenting a checkpoint per audit pass. See [05-impact-analysis.md §4](05-impact-analysis.md#4-follow-on-change--quality-review-auto-fix-2026-07-17-return-to-draft) for the removal detail.
+
 ## Scope Manifest
 
-[06-scope-manifest.md](06-scope-manifest.md) — seven technique modifies (Output + `#template` cites); `workflow.yaml` bump deferred.
+[06-scope-manifest.md](06-scope-manifest.md) — seven technique modifies (Output + `#template` cites) plus `activities/08-quality-review.yaml` + `activities/README.md` (quality-review auto-fix); `workflow.yaml` bump already applied (v1.24.4).
 
 ## 📊 Progress
 
@@ -67,7 +71,12 @@ Detail: [08-compliance-review.md](08-compliance-review.md)
 | 08 | Rule hygiene / enforcement | 0 findings each | — | ✅ Complete |
 | 08 | [Verified findings](08-verified-findings.md) | Post-draft verified set; no criticals | — | ✅ Complete |
 | 08 | Quality review | Post-draft audits + conformance fixes | — | ✅ Complete |
-| 09 | Validate and commit | Validate and commit in edit tree | — | ⬚ Pending |
+| 09 | Validate and commit | Validated; pre-commit returned to draft (no commit) | — | ↩ Returned to draft |
+| 03 | [Design specification](03-design-specification.md) | Refreshed — added quality-review auto-fix scope alongside the two prior fixes | — | ✅ Complete |
+| 05 | [Impact analysis](05-impact-analysis.md) | Refreshed §4 — 4 intentional checkpoint removals, no content-preservation gap | — | ✅ Complete |
+| 06 | [Scope manifest](06-scope-manifest.md) | Refreshed — added `activities/08-quality-review.yaml` + `activities/README.md` (file_count 7 → 9) | — | ✅ Complete |
+| 06 | [Draft attestation](06-draft-attestation.md) | Refreshed — 9 new blocks for the quality-review auto-fix change | — | ✅ Complete |
+| 06 | Scope and draft (return-to-draft) | `activities/08-quality-review.yaml` (v1.12.2 → 1.12.3) + `activities/README.md` drafted, schema-validated, attested | — | ✅ Complete |
 | 10 | Post-update review | Confirm findings closed | — | ⬚ Pending |
 | 11 | Retrospective | Close-out | — | ⬚ Pending |
 

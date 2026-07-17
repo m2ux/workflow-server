@@ -66,3 +66,39 @@ none — changes are additive (new Output section; `#template` appended to exist
 ## Decision ask
 
 No removals flagged. Impact scope is the seven technique files above (plus optional version bump).
+
+---
+
+## 4. Follow-on change — quality-review auto-fix (2026-07-17, return-to-draft)
+
+**Trigger:** User rejected pre-commit attestation and asked that the workflow automatically fix findings without presenting a checkpoint. Added to the same PR branch alongside the seven technique fixes above.
+
+### Directly modified (this follow-on)
+
+| File | Why |
+|------|-----|
+| `activities/08-quality-review.yaml` | Remove the four per-pass disposition checkpoints (`expressiveness-confirmed`, `conformance-confirmed`, `rule-hygiene-confirmed`, `enforcement-confirmed`); add a non-checkpoint flagged-findings action message per pass; rebase `classify-audit-findings`/`reassess-audit-fixes` on finding counts instead of user election; patch bump |
+| `activities/README.md` | Update the Quality Review blurb — it described per-pass confirmation checkpoints that no longer exist |
+
+### Removals inventory (this follow-on)
+
+| # | Location | Removed | Preserved |
+|---|----------|---------|-----------|
+| 1 | `activities/08-quality-review.yaml` | `expressiveness-confirmed` checkpoint (options: `confirmed`/`revise`) | Zero-finding path unchanged (`expressiveness-clean`); non-zero path keeps a message, now non-blocking |
+| 2 | `activities/08-quality-review.yaml` | `conformance-confirmed` checkpoint (options: `fix-all`/`selective`/`accept-as-is`) | Zero-finding path unchanged (`conformance-clean`); non-zero path keeps a message, now non-blocking |
+| 3 | `activities/08-quality-review.yaml` | `rule-hygiene-confirmed` checkpoint (options: `fix-all`/`selective`) | Zero-finding path unchanged (`rule-hygiene-clean`); non-zero path keeps a message, now non-blocking |
+| 4 | `activities/08-quality-review.yaml` | `enforcement-confirmed` checkpoint (options: `add-enforcement`/`accept-text-only`) | Zero-finding path unchanged (`enforcement-clean`); non-zero path keeps a message, now non-blocking |
+
+**removal_count (this follow-on): 4** — all four intentional per the explicit user directive. None require content preservation: each removed checkpoint offered only a disposition on findings the fix cycle now always applies, not distinct content the user could otherwise lose. `review-disposition` (review mode) and the `blocker-gate` decision are unaffected — out of scope for this change.
+
+### Integrity checks (this follow-on)
+
+| Check | Verdict |
+|-------|---------|
+| Transitions / `initialActivity` / reachability | **Pass** — no activity add/remove/reorder; `audit-fix-cycle` loop and `blocker-gate` decision unchanged |
+| Technique / resource references | **Pass** — no technique renamed or removed; `apply-audit-fixes` input contract unchanged |
+| Variables / `setVariable` / step conditions | **Pass** — `needs_audit_fixes` and `has_critical_finding` keep their names and types; only the messages describing how an agent derives them change, plus the removal of the `add-enforcement` checkpoint's `setVariable` effect (superseded by the same-named `action: set` on `classify-audit-findings`) |
+
+### Decision ask (this follow-on)
+
+Removing the four disposition checkpoints is intentional and directed by the user; no content-preservation gap results. Impact scope is `activities/08-quality-review.yaml` and `activities/README.md`.
