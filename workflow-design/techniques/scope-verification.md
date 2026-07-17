@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -30,7 +30,5 @@ Number of scope-manifest items still unaddressed (`{total_count}` − `{addresse
 ### 2. Flag Unaddressed Items
 
 - Flag any item that remains unaddressed
-
-### 3. Set Counts
-
 - Set `{total_count}`, `{addressed_count}`, and `{unaddressed_count}` (0 when the manifest is fully addressed)
+

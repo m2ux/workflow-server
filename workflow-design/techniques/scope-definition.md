@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -57,4 +57,4 @@ Absolute path to the written scope-manifest artifact.
 
 ### 6. Persist Scope Manifest
 
-- Persist `{scope_manifest}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and bare filename `scope-manifest.md`; capture the written location as `{scope_manifest_path}`
+- Persist `{scope_manifest}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `scope-manifest.md`; capture the written location as `{scope_manifest_path}`

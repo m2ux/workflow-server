@@ -82,13 +82,7 @@ The roles, the dispatch protocol, and the checkpoint protocol are defined once i
 
 ## Review Mode
 
-Review mode audits one or more existing workflows (`target_workflow_ids`, with each iteration binding `target_workflow_id`) against:
-
-1. **Design principles** — Pass / Partial / Violation per principle
-2. **Anti-pattern catalog** — full catalog (expressiveness, rule hygiene, structural enforcement, tool/doc consistency, output economy, …); cite findings by entry name
-3. **Schema validation** — every YAML file
-
-The output is a severity-rated compliance report saved to the session's planning folder. After review, the user can opt to fix issues (transitions to update mode) or accept the report as-is. Create/update drafting still runs separate expressiveness, conformance, rule-hygiene, and rule-enforcement passes with per-pass checkpoints.
+Review mode audits one or more existing workflows (`target_workflow_ids`, with each iteration binding `target_workflow_id`) against the design principles, anti-pattern catalog, and schema validation. Pass inventory, severity disposition, and fix transitions live in [`08-quality-review.yaml`](./activities/08-quality-review.yaml) — do not restate that inventory here. The output is a severity-rated compliance report in the session planning folder.
 
 ---
 
@@ -102,13 +96,24 @@ Positive design-time framing principles — see [design-principles](./resources/
 | 2 | Define complete scope before execution |
 | 3 | Clarify before assuming |
 | 4 | Maximize schema expressiveness |
-| 5 | Separate fill from does |
+| 5 | One authoritative home |
 | 6 | Convention over invention |
 | 7 | Confirm before irreversible changes |
 | 8 | Encode constraints as structure |
 | 9 | Non-destructive updates |
 | 10 | Complete documentation structure |
 | 11 | Output economy |
+| 12 | Separate contract from procedure |
+| 13 | Single source of truth |
+| 14 | Phase by sequenced outcome |
+| 15 | Distinguish designators from parameters |
+| 16 | Document in positive present |
+| 17 | Prefer shared capability |
+| 18 | Name symbols affirmatively |
+| 19 | Keep orchestration in structure |
+| 20 | Match the harness surface |
+| 21 | Modular over inline |
+| 22 | Close the loop |
 
 ---
 
@@ -119,12 +124,12 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | Technique | Capability | Bound by |
 |-----------|------------|----------|
 | [`intake-classification`](./techniques/intake-classification.md) | Classify the request as create/update/review and set mode + target | Intake and Context |
-| [`context-loading`](./techniques/context-loading.md) | Load schemas, survey references, persist format-conventions + applicable-constructs for literacy gates | Intake and Context |
+| [`context-loading`](./techniques/context-loading.md) | Load schemas, survey references, persist format-conventions + applicable-constructs | Intake and Context |
 | [`derive-design-dimensions`](./techniques/derive-design-dimensions.md) | Derive the ordered design dimensions to elicit, per mode | Requirements Refinement |
-| [`elicitation`](./techniques/elicitation.md) | Elicit a single design dimension — the per-iteration unit of the dimension-elicitation loop | Requirements Refinement |
-| [`persist-design-specification`](./techniques/persist-design-specification.md) | Persist the elicited design specification for linked review at `spec-confirmed` | Requirements Refinement |
+| [`elicitation`](./techniques/elicitation.md) | Elicit a single design dimension | Requirements Refinement |
+| [`persist-design-specification`](./techniques/persist-design-specification.md) | Persist the elicited design specification for linked review | Requirements Refinement |
 | [`reconcile-design-assumptions`](./techniques/reconcile-design-assumptions.md) | Autonomously resolve audit-resolvable design assumptions, leaving only genuine judgements open | Requirements Refinement |
-| [`pattern-analysis`](./techniques/pattern-analysis.md) | Extract patterns from reference workflows and persist the comparison for `patterns-confirmed` | Pattern Analysis |
+| [`pattern-analysis`](./techniques/pattern-analysis.md) | Extract patterns from reference workflows and persist the comparison | Pattern Analysis |
 | [`impact-analysis`](./techniques/impact-analysis.md) | Assess change impact on files, transitions, and references | Impact Analysis |
 | [`scope-definition`](./techniques/scope-definition.md) | Enumerate the complete file manifest and structural design | Scope and Draft |
 | [`present-file-approach`](./techniques/present-file-approach.md) | Present the per-file drafting approach before a file is written | Scope and Draft |

@@ -34,7 +34,7 @@ steps:
         source_material: the confirmed scope manifest and the structural design for the target workflow
     actions:
       - action: message
-        message: "**Solution Overview** (plain-language summary for stakeholder reference)"
+        message: "Solution Overview for `{workflow_id}` — plain-language summary ([planning README]({planning_folder_path}/README.md#solution-overview))"
   - kind: loop
     id: file-drafting-loop
     name: File Drafting Loop

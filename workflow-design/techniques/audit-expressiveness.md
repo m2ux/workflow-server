@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -32,7 +32,5 @@ Count of entries in `{expressiveness_findings}`.
 ### 3. Present Findings
 
 - Present `{expressiveness_findings}`: counts, affected files, replacement constructs, and before/after for each instance
-
-### 4. Set Findings Count
-
 - Set `{expressiveness_finding_count}` to the number of findings
+

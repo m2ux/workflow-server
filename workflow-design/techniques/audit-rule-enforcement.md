@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -33,7 +33,5 @@ Count of entries in `{enforcement_findings}`.
 ### 3. Present Findings
 
 - Present `{enforcement_findings}`: text-only rules, structurally-enforced rules, and recommendations for adding enforcement where needed
-
-### 4. Set Findings Count
-
 - Set `{enforcement_finding_count}` to the number of findings
+

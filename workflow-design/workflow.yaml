@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.18.0
+version: 1.19.0
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -32,35 +32,35 @@ variables:
     defaultValue: 0
   - name: update_seeded_from_review
     type: boolean
-    description: True when update mode was entered via quality-review disposition (fix-issues or selective-fixes). Suppresses mode-confirmation and change-request-confirmed on the subsequent intake pass; cleared at the end of that intake.
+    description: True when update mode was entered from a review-mode fix disposition (fix-issues or selective-fixes). Suppresses intake re-confirmation on the subsequent pass; cleared at the end of that intake.
     defaultValue: false
   - name: expressiveness_finding_count
     type: number
-    description: Count of expressiveness findings from audit-expressiveness. Gates the expressiveness-confirmed checkpoint (presented only when greater than zero).
+    description: Count of expressiveness findings from audit-expressiveness.
     defaultValue: 0
   - name: conformance_finding_count
     type: number
-    description: Count of convention-conformance divergences from audit-conformance. Gates the conformance-confirmed checkpoint (presented only when greater than zero).
+    description: Count of convention-conformance divergences from audit-conformance.
     defaultValue: 0
   - name: rule_hygiene_finding_count
     type: number
-    description: Count of rule-hygiene findings from audit-rule-hygiene. Gates the rule-hygiene-confirmed checkpoint (presented only when greater than zero).
+    description: Count of rule-hygiene findings from audit-rule-hygiene.
     defaultValue: 0
   - name: enforcement_finding_count
     type: number
-    description: Count of text-only rules from audit-rule-enforcement. Gates the enforcement-confirmed checkpoint (presented only when greater than zero).
+    description: Count of text-only rules from audit-rule-enforcement.
     defaultValue: 0
   - name: removal_count
     type: number
-    description: Count of content removals inventoried by impact-analysis. The impact-analysis activity presents impact-and-preservation-confirmed only when greater than zero.
+    description: Count of content removals inventoried by impact-analysis.
     defaultValue: 0
   - name: pass_count
     type: number
-    description: Count of YAML files that passed schema validation in validate-and-commit.
+    description: Count of YAML files that passed schema validation.
     defaultValue: 0
   - name: fail_count
     type: number
-    description: Count of YAML files that failed schema validation. Gates the validation-passed checkpoint (presented only when greater than zero).
+    description: Count of YAML files that failed schema validation.
     defaultValue: 0
   - name: total_count
     type: number
@@ -72,43 +72,43 @@ variables:
     defaultValue: 0
   - name: unaddressed_count
     type: number
-    description: Scope-manifest items still unaddressed. Gates the scope-verified checkpoint (presented only when greater than zero).
+    description: Scope-manifest items still unaddressed after scope-verification.
     defaultValue: 0
   - name: specification_path
     type: string
-    description: Absolute path to the persisted design-specification artifact. Linked from the spec-confirmed checkpoint.
+    description: Absolute path to the persisted design-specification artifact.
     defaultValue: ""
   - name: format_conventions_path
     type: string
-    description: Absolute path to the persisted format-conventions artifact. Linked from format-literacy.
+    description: Absolute path to the persisted format-conventions artifact.
     defaultValue: ""
   - name: applicable_constructs_path
     type: string
-    description: Absolute path to the persisted applicable-constructs artifact. Linked from constructs-confirmed.
+    description: Absolute path to the persisted applicable-constructs artifact.
     defaultValue: ""
   - name: pattern_analysis_path
     type: string
-    description: Absolute path to the persisted pattern-analysis artifact. Linked from patterns-confirmed.
+    description: Absolute path to the persisted pattern-analysis artifact.
     defaultValue: ""
   - name: impact_analysis_path
     type: string
-    description: Absolute path to the persisted impact-analysis artifact. Linked from impact-analysis gates.
+    description: Absolute path to the persisted impact-analysis artifact.
     defaultValue: ""
   - name: scope_manifest_path
     type: string
-    description: Absolute path to the persisted scope-manifest artifact. Linked from scope-and-structure-confirmed.
+    description: Absolute path to the persisted scope-manifest artifact.
     defaultValue: ""
   - name: draft_attestation_path
     type: string
-    description: Absolute path to the persisted draft-attestation artifact. Linked from draft attestation gates and pre-commit.
+    description: Absolute path to the persisted draft-attestation artifact.
     defaultValue: ""
   - name: report_path
     type: string
-    description: Absolute path to the persisted compliance or post-update review report. Linked from review-disposition, post-update gates, and the review-seeded update announce message.
+    description: Absolute path to the persisted compliance or post-update review report.
     defaultValue: ""
   - name: review_scope_confirmed
     type: boolean
-    description: "In review mode: whether the user confirmed the target workflow in intake — gates transition to quality-review"
+    description: "In review mode: whether the user confirmed the audit target set in intake"
     defaultValue: false
   - name: target_workflow_id
     type: string
@@ -121,15 +121,15 @@ variables:
     description: The ID of the workflow being created or updated
   - name: format_literacy_confirmed
     type: boolean
-    description: Whether the agent has demonstrated YAML format understanding — gates content drafting
+    description: Whether YAML format understanding has been demonstrated for this session
     defaultValue: false
   - name: schema_constructs_confirmed
     type: boolean
-    description: Whether applicable schema constructs have been identified and confirmed — gates content drafting
+    description: Whether applicable schema constructs have been identified and confirmed
     defaultValue: false
   - name: scope_manifest_confirmed
     type: boolean
-    description: Whether the complete file manifest has been confirmed — gates the file-drafting loop and the update-mode audit chain
+    description: Whether the complete file manifest has been confirmed
     defaultValue: false
   - name: scope_manifest
     type: array
@@ -139,32 +139,32 @@ variables:
     description: Current file being drafted during the content drafting loop
   - name: has_unflagged_removals
     type: boolean
-    description: True when content drafting detects removals not flagged during impact analysis. Gates the preservation-check checkpoint in the file-drafting loop (update mode). Produced by present-for-review.
+    description: True when content drafting detects removals not flagged during impact analysis. Produced by present-for-review.
     defaultValue: false
   - name: needs_audit_fixes
     type: boolean
-    description: Whether the quality-review audit passes surfaced findings the user elected to fix. Drives the bounded audit-fix-cycle loop in quality-review (apply fixes, re-run audits, re-assess); reset to false when the content is clean.
+    description: Whether audit passes surfaced findings the user elected to fix. Reset to false when the content is clean.
     defaultValue: false
   - name: has_critical_finding
     type: boolean
-    description: Whether any quality-review audit finding is Critical severity (a schema-invalid or structurally broken construct that must not be committed). Drives the blocker-gate decision that returns to scope-and-draft.
+    description: Whether any audit finding is Critical severity (a schema-invalid or structurally broken construct that must not be committed).
     defaultValue: false
   - name: assumptions_log
     type: object
     description: The design-assumptions log surfaced and reviewed during requirements-refinement — each assumption with its category, risk, resolvability, and outcome. Written via work-package::review-assumptions and reconcile-design-assumptions.
   - name: open_assumptions
     type: array
-    description: The design assumptions still open after audit reconciliation — the genuine design judgements the assumption-interview loop iterates.
+    description: The design assumptions still open after audit reconciliation — the genuine design judgements remaining for interview.
   - name: has_open_assumptions
     type: boolean
-    description: Whether open design judgements remain after reconcile-design-assumptions; gates the assumption interview loop.
+    description: Whether open design judgements remain after reconcile-design-assumptions.
     defaultValue: false
   - name: current_assumption
     type: object
-    description: "The open assumption under review in the current iteration of the assumption-interview loop (from open_assumptions). Sub-shape: { id, statement }."
+    description: "The open assumption under review from open_assumptions. Sub-shape: { id, statement }."
   - name: design_dimensions
     type: array
-    description: The ordered design dimensions to elicit in requirements-refinement, set per mode by derive-design-dimensions (create elicits all eight; update skips the already-established activity model, variables, and techniques). Iterated by the dimension-elicitation loop.
+    description: The ordered design dimensions to elicit in requirements-refinement, set per mode by derive-design-dimensions (create elicits all eight; update skips the already-established activity model, variables, and techniques).
   - name: workflow_branch
     type: string
     description: The feature branch in the workflows repo that the authored/updated workflow's changes are committed to (e.g., workflow/{workflow_id}); set by prepare-workflow-branch in create/update modes.

@@ -57,13 +57,13 @@ steps:
     options:
       - id: confirm-review-target
         label: Yes — audit this target set
-        description: Target set confirmed; review-mode quality-review iterates `target_workflow_ids` (binding each to `target_workflow_id` per iteration).
+        description: Confirms the compliance review target set (`target_workflow_ids`).
         effect:
           setVariable:
             review_scope_confirmed: true
       - id: wrong-review-target
         label: No — wrong target set
-        description: Target set rejected; checkpoint remains blocking until a correct `target_workflow_ids` list is supplied.
+        description: Rejects the target set; supply a corrected `target_workflow_ids` list.
         effect:
           setVariable:
             review_scope_confirmed: false
@@ -97,7 +97,7 @@ steps:
         source_material: the requested change, the target workflow's current shape, and any context gathered during this activity
     actions:
       - action: message
-        message: "**Problem Overview** (plain-language summary for stakeholder reference)"
+        message: "Problem Overview for `{workflow_id}` — plain-language summary ([planning README]({planning_folder_path}/README.md#problem-overview))"
     condition:
       type: simple
       variable: operation_type

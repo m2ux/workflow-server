@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 ## Capability
@@ -36,7 +36,5 @@ Count of entries in `{conformance_findings}`.
 ### 4. Present Findings
 
 - Present `{conformance_findings}`: conventions followed, conventions diverged, and justification status for each divergence
-
-### 5. Set Findings Count
-
 - Set `{conformance_finding_count}` to the number of findings
+

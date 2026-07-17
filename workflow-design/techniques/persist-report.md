@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.1.1
 ---
 
 ## Capability
@@ -31,4 +31,4 @@ Path to the written report file
 
 ### 2. Persist Report Artifact
 
-- Persist the report content via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and the chosen bare filename; the server find-or-creates the numbered instance. Capture the written location as `{report_path}`
+- Persist the report content via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and the chosen bare filename; the server find-or-creates the numbered instance. Capture the written location as `{report_path}`

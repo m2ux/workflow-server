@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -50,14 +50,11 @@ Absolute path to the written impact-analysis artifact.
 
 - Compare planned changes against existing content and list every material removal (fewer lines, removed sections, dropped fields, obsolete files)
 - For each removal, record a diff-style entry: what is removed and what is preserved in that region — never omit a removal from the inventory
-
-### 7. Set Removal Count
-
 - Set `{removal_count}` to the number of distinct inventoried removals (0 when none)
 
-### 8. Persist Report
+### 7. Persist Report
 
-- Persist the full impact classification, integrity checks, and the removals inventory via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and bare filename `impact-analysis.md`
+- Persist the full impact classification, integrity checks, and the removals inventory via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `impact-analysis.md`
 - Capture the written location as `{impact_analysis_path}`
 
 ## Rules

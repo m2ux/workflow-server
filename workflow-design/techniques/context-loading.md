@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -51,10 +51,10 @@ Absolute path to the written applicable-constructs artifact.
 
 ### 6. Persist Format Conventions
 
-- When `{planning_folder_path}` is bound and review mode is not active: persist a concise format-conventions summary (YAML syntax rules and observed project conventions — naming, folder structure, field ordering, versions, transition and checkpoint shapes) via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and bare filename `format-conventions.md`; capture `{format_conventions_path}`
+- When `{planning_folder_path}` is bound and review mode is not active: persist a concise format-conventions summary (YAML syntax rules and observed project conventions — naming, folder structure, field ordering, versions, transition and checkpoint shapes) via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `format-conventions.md`; capture `{format_conventions_path}`
 - Skip in review mode
 
 ### 7. Persist Applicable Constructs
 
-- When `{planning_folder_path}` is bound and review mode is not active: persist the applicable-constructs list (construct name, why it applies, reference example) via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and bare filename `applicable-constructs.md`; capture `{applicable_constructs_path}`
+- When `{planning_folder_path}` is bound and review mode is not active: persist the applicable-constructs list (construct name, why it applies, reference example) via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `applicable-constructs.md`; capture `{applicable_constructs_path}`
 - Skip in review mode

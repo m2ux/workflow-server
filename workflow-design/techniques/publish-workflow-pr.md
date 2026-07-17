@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -29,7 +29,7 @@ The pull request number.
 
 ### 1. Push Branch
 
-- Apply [push-branch](../../meta/techniques/version-control/push-branch.md) with `repo_path` the workflows worktree and `branch` `{workflow_branch}`
+- Apply [push-branch](../../meta/techniques/version-control/push-branch.md) with *repo_path* the workflows worktree and *branch* `{workflow_branch}`
 
 ### 2. Compose PR Description
 
@@ -37,8 +37,8 @@ The pull request number.
 
 ### 3. Create Or Update Draft PR
 
-- Apply [create-pr](../../meta/techniques/github-cli-protocol/create-pr.md) with `repo_path` the workflows worktree, `branch` `{workflow_branch}`, `base_branch` `workflows`, `title` `{pr_title}`, `body` `{pr_body}`, and `draft` true; capture `{pr_number}` and `{pr_url}`
+- Apply [create-pr](../../meta/techniques/github-cli-protocol/create-pr.md) with *repo_path* the workflows worktree, *branch* `{workflow_branch}`, *base_branch* `workflows`, *title* `{pr_title}`, *body* `{pr_body}`, and *draft* true; capture `{pr_number}` and `{pr_url}`
 
 ### 4. Mark Ready
 
-- Once the description is finalized and schema validation has passed, apply [mark-ready](../../meta/techniques/github-cli-protocol/mark-ready.md) with `repo_path` the workflows worktree and `{pr_number}`
+- Once the description is finalized, apply [mark-ready](../../meta/techniques/github-cli-protocol/mark-ready.md) with *repo_path* the workflows worktree and `{pr_number}`
