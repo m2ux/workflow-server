@@ -1,6 +1,6 @@
 # Fix workflow-design compliance findings — July 2026
 
-> Update · Created 2026-07-17 · **Status:** Reviewing
+> Update · Created 2026-07-17 · **Status:** Complete
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -92,7 +92,8 @@ Detail: [08-compliance-review.md](08-compliance-review.md)
 | 08 | Quality review | Third pass — audited commit `aad982cf` itself; fix cycle closed in 1 iteration; re-verified with `check-binding-fidelity.ts` (0 NEW, 4 baseline fixes), `check-all-refs.ts`, `validate-workflow-yaml.ts` | — | ✅ Complete |
 | 09 | Validate and commit | Committed at `4e0f75df`; binding-fidelity 0 NEW; PR #254 | — | ✅ Complete |
 | 10 | [Post-update review](10-post-update-review.md) | Post-commit audit — schema/refs/binding clean; 5 Low scope-manifest drifts accepted | — | ✅ Complete |
-| 11 | Retrospective | Close-out | — | ⬚ Pending |
+| 11 | [Completion summary](COMPLETE.md) | Delivery, scope outcome, known limitations, retrospective | — | ✅ Complete |
+| 11 | Retrospective | Close-out — 2 return-to-draft cycles analyzed, 3 recommendations | — | ✅ Complete |
 
 ## 🔗 Links
 
@@ -105,3 +106,4 @@ Detail: [08-compliance-review.md](08-compliance-review.md)
 | Format conventions | [01-format-conventions.md](01-format-conventions.md) |
 | Applicable constructs | [01-applicable-constructs.md](01-applicable-constructs.md) |
 | Compliance report | [08-compliance-review.md](08-compliance-review.md) |
+| Completion summary | [COMPLETE.md](COMPLETE.md) |
