@@ -21,7 +21,7 @@ For the full technique-to-activity table with capability summaries, see the [wor
 | **Analysis** | `pattern-analysis`, `impact-analysis` |
 | **Scope & draft** | `scope-definition`, `assemble-file-approach`, `review-drafted-file`, `yaml-authoring`, `review-draft-yaml` |
 | **Quality audits** | `audit-expressiveness`, `audit-conformance`, `audit-rule-hygiene`, `audit-rule-enforcement`, `verify-high-findings`, `audit-principles`, `audit-anti-patterns`, `audit-schema-validation`, `apply-audit-fixes`, `scope-audit` |
-| **Reporting** | `compile-report`, `summarize-findings`, `persist-report`, `run-audit-passes` |
+| **Reporting** | `compile-report`, `summarize-findings`, `persist-report` |
 | **Validate, commit & PR** | `scope-verification`, `readme-authoring`, `commit-verification`, `prepare-workflow-branch`, `publish-workflow-pr` |
 | **Completion** | `create-completion-doc`, `conduct-retrospective` |
 

@@ -68,7 +68,7 @@ Definition: [`09-validate-and-commit.yaml`](./09-validate-and-commit.yaml). Term
 
 ### 10. Post-Update Review
 
-Automatic post-commit compliance audit of the updated workflow against the design principles and anti-patterns. It reloads the committed state from the workflow-server (not cached data), runs a scope-discipline audit (`scope-audit`) comparing the committed change set against the scope manifest to flag drift, and produces a severity-rated findings summary persisted as a review snapshot, so update work is verified against the principles after it lands. When `review_findings_count` is zero it proceeds straight to the retrospective; otherwise `post-update-disposition` asks whether to accept, iterate, or revert. Update mode only.
+Automatic post-commit compliance audit of the updated workflow. Reloads the committed state, then binds expressiveness, conformance, principles, anti-patterns, and schema-validation audits as consecutive steps (plus `scope-audit`), summarizes findings, and persists a review snapshot. When `review_findings_count` is zero it proceeds to the retrospective; otherwise `post-update-disposition` asks whether to accept, iterate, or revert. Update mode only.
 
 Definition: [`10-post-update-review.yaml`](./10-post-update-review.yaml). Clean runs transition to the [Retrospective](#11-retrospective); the fix/revert dispositions restart the workflow at [Intake and Context](#01-intake-and-context).
 

@@ -115,6 +115,7 @@ Positive design-time framing principles — see [design-principles](./resources/
 | 21 | Modular over inline |
 | 22 | Close the loop |
 | 23 | Keep session interaction in activities |
+| 24 | Bind sibling operations as steps |
 
 ---
 
@@ -154,7 +155,6 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`prepare-workflow-branch`](./techniques/prepare-workflow-branch.md) | Create/checkout the feature branch in the workflows repo before committing | Validate and Commit |
 | [`publish-workflow-pr`](./techniques/publish-workflow-pr.md) | Push the branch and open/mark-ready a PR against the `workflows` branch | Validate and Commit |
 | [`persist-report`](./techniques/persist-report.md) | Persist the compliance/review report as an artifact | Quality Review (review mode), Validate and Commit, Post-Update Review |
-| [`run-audit-passes`](./techniques/run-audit-passes.md) | Run expressiveness, conformance, principles, anti-patterns, schema validation | Post-Update Review |
 | [`summarize-findings`](./techniques/summarize-findings.md) | Produce a severity-rated findings summary | Post-Update Review |
 | [`review-draft-yaml`](./techniques/review-draft-yaml.md) | Block-indexed review of the drafted YAML, capturing a draft attestation before the audit passes | Scope and Draft |
 | [`apply-audit-fixes`](./techniques/apply-audit-fixes.md) | Apply selected audit findings via `yaml-authoring`, re-validating each changed file | Quality Review |
@@ -233,7 +233,6 @@ workflows/workflow-design/
 │   ├── reload-workflow.md
 │   ├── persist-report.md
 │   ├── compile-report.md
-│   ├── run-audit-passes.md
 │   ├── summarize-findings.md
 │   ├── audit-principles.md
 │   ├── audit-anti-patterns.md

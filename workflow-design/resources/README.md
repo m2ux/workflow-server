@@ -52,7 +52,7 @@ Specific smell instances already present in authored content — each entry is a
 | Structural | `no-inline-content`, `schema-is-constraint`, `no-partial-implementation`, `no-invented-naming` |
 | Interaction | `atomic-checkpoints`, `no-assumption-execution`, `scope-reverify-completion`, `one-question-per-message` |
 | Schema expressiveness | `checkpoint-not-prose`, `loop-not-prose`, `procedure-in-protocol`, `bound-step-no-description`, `no-monolith-masking-steps` |
-| Technique protocol | `numbered-protocol-phases`, `technique-outputs-declared`, `duplicate-shared-capability`, `session-interaction-in-technique` |
+| Technique protocol | `numbered-protocol-phases`, `technique-outputs-declared`, `duplicate-shared-capability`, `session-interaction-in-technique`, `pass-orchestration-in-technique` |
 | Rule hygiene | `no-rule-protocol-restatement`–`no-one-step-rules`, `single-rule-authority`, `worker-rule-reach` |
 | Description hygiene | `no-rationale-in-description`–`role-rules-not-description`, `no-hand-authored-artifacts`, `techniques-list-disjoint`, `readme-orients-not-transcribes`, `avoidance-voice-in-definitions` |
 | Coupling | `io-agnostic-contract`, `no-delivery-mechanism-narration`, `no-tool-usage-prescription`, `canonical-technique-reference`, `anchored-protocol-references`, `technique-stage-agnostic`, `session-interaction-in-technique`, `no-activity-prose-rules` |

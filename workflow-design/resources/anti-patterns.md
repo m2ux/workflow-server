@@ -1474,3 +1474,15 @@ A technique performs or prescribes human/session interaction.
 **Do not flag:** Assembling or persisting a declared output the activity will surface; applying a tool/op whose domain is external delivery (push, open PR, send) when the technique only binds that op; naming "the user's request" as an input origin (`io-agnostic-contract`); stage/gate locus smells (`technique-stage-agnostic`).
 
 **Fix:** Delete Present/surface/show-to-user phases; keep assemble/derive/persist that emit `{id}`. Put human-facing delivery on the binding activity (`action: message` and/or checkpoint message linking `{id}` / path). See [Keep Session Interaction in Activities](./design-principles.md#23-keep-session-interaction-in-activities).
+
+### AP-114. pass-orchestration-in-technique
+
+"`run-audit-passes`: Apply audit-expressiveness, then audit-conformance, then audit-principles…"
+
+A technique's Protocol is only a pass inventory — sequencing sibling operations the activity could bind as consecutive steps.
+
+**Detect:** Technique Capability or Protocol's primary work is to apply, invoke, or run two or more sibling techniques/operations (or an ordered pass list) without assembling a distinct bindable product of its own. Signals: numbered phases that are each "Apply [sibling]"; Capability that names a multi-pass audit/pipeline; no `## Outputs` (or Outputs that only re-export children). Test: if deleting the technique and binding each sibling as its own `steps[]` entry preserves behavior, flag it.
+
+**Do not flag:** A technique that *composes* one shared/meta op with caller-specific value assembly (`duplicate-shared-capability` carve-out); a single capability whose protocol phases are facets of one produce path (load → audit → persist *one* findings bag); thin walkers that name one home and apply it (`no-technique-resource-dual-home`); stage/gate locus without a multi-op inventory (`technique-stage-agnostic`).
+
+**Fix:** Delete the façade technique; bind each sibling operation as its own activity step in the order required. Keep per-pass products on the sibling techniques. See [Bind Sibling Operations as Steps](./design-principles.md#24-bind-sibling-operations-as-steps); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`.

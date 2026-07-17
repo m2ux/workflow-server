@@ -1,15 +1,27 @@
 id: post-update-review
-version: 1.7.0
+version: 1.8.0
 name: Post-Update Review
-description: Post-commit compliance audit of the updated workflow — expressiveness, conformance, principles, anti-patterns, and schema validation via run-audit-passes.
+description: Post-commit compliance audit of the updated workflow — expressiveness, conformance, principles, anti-patterns, and schema validation.
 required: true
 steps:
   - kind: technique
     id: reload-updated-workflow
     technique: reload-workflow
   - kind: technique
-    id: run-audit-passes
-    technique: run-audit-passes
+    id: audit-expressiveness
+    technique: audit-expressiveness
+  - kind: technique
+    id: audit-conformance
+    technique: audit-conformance
+  - kind: technique
+    id: audit-principles
+    technique: audit-principles
+  - kind: technique
+    id: audit-anti-patterns
+    technique: audit-anti-patterns
+  - kind: technique
+    id: audit-schema-validation
+    technique: audit-schema-validation
   - kind: technique
     id: scope-audit
     technique: scope-audit

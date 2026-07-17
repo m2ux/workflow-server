@@ -105,3 +105,7 @@ When implementation is in scope, a recommendation is followed by action or an ex
 ## 23. Keep Session Interaction in Activities
 
 Techniques are session-blind: take inputs, process (including tools and composed ops), and emit outputs. They do not know about user sessions or how to interact with humans. Activities are session-aware — they own when and how technique products reach the user (`action: message`, checkpoint `message` / `options`, artifact links).
+
+## 24. Bind Sibling Operations as Steps
+
+When work is a sequence of already-defined sibling operations (audit passes, pipeline stages, or other multi-op runs), bind each as its own activity `steps[]` entry. A technique owns one capability's produce path — it does not host a pass inventory or multi-op pipeline the activity can express as consecutive binds.
