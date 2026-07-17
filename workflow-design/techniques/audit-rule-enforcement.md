@@ -18,8 +18,7 @@ Count of text-only rules found — each with its file, rule content, whether it 
 ### 1. Load Criterion
 
 - Load [anti-patterns](../resources/anti-patterns.md) entry `structure-backed-constraints` — sole Detect / Do not flag / Fix source for this pass
-- Do not restate that entry here; follow it as written
-- Principle 10 in [design-principles](../resources/design-principles.md) is the framing rule; the anti-pattern is the operative criterion
+- [Encode Constraints as Structure](../resources/design-principles.md#8-encode-constraints-as-structure) is the framing principle; the anti-pattern is the operative criterion
 
 ### 2. Apply structure-backed-constraints
 
@@ -30,4 +29,7 @@ Count of text-only rules found — each with its file, rule content, whether it 
 ### 3. Present Findings
 
 - Present text-only rules, structurally-enforced rules, and recommendations for adding enforcement where needed
+
+### 4. Set Findings Count
+
 - Set `{enforcement_finding_count}` to the number of findings

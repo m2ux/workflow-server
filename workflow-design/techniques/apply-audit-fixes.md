@@ -21,10 +21,16 @@ Per-finding record of the file edited and the change made, with the post-edit sc
 
 ## Protocol
 
-### 1. Apply Fixes
+### 1. Edit Findings
 
 - For each finding in `{selected_findings}`, edit the affected file from `{scope_manifest}` via [yaml-authoring](./yaml-authoring.md), making the smallest change that resolves the finding without touching unrelated content
+
+### 2. Re-Validate Changed Files
+
 - Re-validate every changed file with [audit-schema-validation](./audit-schema-validation.md); resolve any new schema failure before continuing
+
+### 3. Record Fixes Applied
+
 - Record `{fixes_applied}`: the file edited, the change made, and the post-edit validation result per finding
 
 ## Rules

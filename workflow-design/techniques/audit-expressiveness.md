@@ -19,7 +19,6 @@ Count of expressiveness findings — each a flagged instance with its file, the 
 
 - Load [schema-construct-inventory](../resources/schema-construct-inventory.md) — sole source of informal→formal construct mappings for this pass
 - Do not restate the inventory tables or construct lists here; apply each mapping as written
-- Schema Expressiveness anti-patterns in [anti-patterns](../resources/anti-patterns.md) sharpen the same concern for the full-catalog pass; this pass uses the inventory as its operative checklist
 
 ### 2. Audit Expressiveness
 
@@ -29,4 +28,7 @@ Count of expressiveness findings — each a flagged instance with its file, the 
 ### 3. Present Findings
 
 - Present findings: counts, affected files, replacement constructs, and before/after for each instance
+
+### 4. Set Findings Count
+
 - Set `{expressiveness_finding_count}` to the number of findings

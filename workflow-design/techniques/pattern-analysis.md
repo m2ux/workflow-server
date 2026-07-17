@@ -28,9 +28,15 @@ Absolute path to the written pattern-analysis artifact. Interpolated into the `p
 - Extract structural conventions across the references: activity naming (NN-name), step/checkpoint ratios, transitions, technique assignment (primary vs supporting), artifact naming, resource organization
 - Extract content conventions across the references: rule structuring, checkpoint effects, transition conditions, artifact-location references, technique protocol/inputs/output usage
 
-### 3. Persist And Present
+### 3. Assemble Comparison
 
 - Assemble a comparison of extracted patterns alongside the proposed structure, noting alignments and divergences
-- Persist it via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and bare filename `pattern-analysis.md`
+
+### 4. Persist Pattern Analysis
+
+- Persist the comparison via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and bare filename `pattern-analysis.md`
 - Capture the written location as `{pattern_analysis_path}`
+
+### 5. Present Patterns
+
 - Present the comparison (or point the user at the artifact) as the surface for `patterns-confirmed`

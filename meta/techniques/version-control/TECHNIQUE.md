@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Initialize planning folders and commit artifacts in the parent repository or a submodule — including the two-step submodule commit pattern that keeps parent pointers in sync with submodule HEADs.
+Initialize planning folders and commit artifacts in the parent repository or a submodule — including the two-step submodule commit pattern that keeps parent pointers in sync with submodule HEADs — and [push-branch](./push-branch.md) when a branch must be pushed without a new commit.
 
 ## Rules
 

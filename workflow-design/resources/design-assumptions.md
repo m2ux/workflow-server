@@ -7,15 +7,9 @@ metadata:
 
 # Design Assumptions Guide
 
-**Purpose:** Surface, classify, reconcile, and review the design assumptions made while authoring or updating a workflow — the workflow-design counterpart of the work-package [assumptions-review](../../work-package/resources/assumptions-review.md) guide.
-
-The shared methodology — sources of false assumptions, ambiguity sources, risk assessment (High / Medium / Low), the judgement-augmentation review format, best practices, and anti-patterns — is reused wholesale from the [assumptions-review](../../work-package/resources/assumptions-review.md) guide. This guide defines only what is workflow-design-specific: the assumption categories and the log template.
-
----
+Assumption categories and log template for design-time assumptions — the workflow-design counterpart of the work-package [assumptions-review](../../work-package/resources/assumptions-review.md) guide. Shared methodology (false-assumption sources, risk assessment, judgement-augmentation review) is reused from that guide; this resource defines only workflow-design-specific categories and log shape.
 
 ## Assumption Categories
-
-Classify each design assumption into one of these categories:
 
 | Category | Description | Examples |
 |----------|-------------|----------|
@@ -26,7 +20,12 @@ Classify each design assumption into one of these categories:
 | **Variable State** | What state the workflow must track, and its lifecycle | A new variable vs reusing one; default value; producer / consumer |
 | **Schema Construct Choice** | Which schema construct expresses a piece of logic | A decision vs a transition; a loop type; an inline checkpoint vs a gate |
 
----
+## Resolvability
+
+| Value | Meaning |
+|-------|---------|
+| `audit` | Settleable by schema / convention / principle checks — see [design-assumption-reconciliation](./design-assumption-reconciliation.md) |
+| `open` | Genuine design judgement for the user |
 
 ## Assumptions Log Template
 
@@ -56,13 +55,4 @@ One row per assumption, updated in place across its lifecycle — surfaced, reco
 | ID | Category | Risk | Resolvability | Assumption | Rationale | Outcome | Changes |
 |----|----------|------|---------------|------------|-----------|---------|---------|
 | A-1 | [category] | H/M/L | audit / open | [statement] | [why it seemed reasonable] | ✅ Confirmed / 🔄 Corrected / ⏸️ Deferred | [changes made] |
-
-Resolvability: `audit` = settleable by schema / convention checks; `open` = a genuine design judgement for the user.
 ```
-
----
-
-## Related Guides
-
-- [Assumptions Guide (work-package)](../../work-package/resources/assumptions-review.md) — the shared methodology this guide builds on
-- [Design Assumption Reconciliation](design-assumption-reconciliation.md)

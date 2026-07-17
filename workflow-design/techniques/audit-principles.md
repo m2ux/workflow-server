@@ -11,11 +11,14 @@ Audit a workflow's adherence to the design principles, classifying each principl
 
 ### 1. Audit Principle Compliance
 
-- Audit the workflow against each design principle in [design-principles](../resources/design-principles.md) — sole source of principle Rule / Enforcement text for this pass
-- For each principle, classify as compliant, partially compliant, or violating; record file, field, and line references
-- When a principle cites anti-patterns or the construct inventory, treat those as the detailed Detect home — do not re-derive criteria here; cite the named entries and score the principle from that evidence
-- Cross-reference schema field usage against `workflow.schema.json`, `activity.schema.json`, `technique.schema.json`, and `condition.schema.json` when the principle requires it
+- Audit the workflow against each design principle in [design-principles](../resources/design-principles.md) — sole source of principle stance text for this pass
+- For each principle, classify as compliant, partially compliant, or violating against that stance; record file, field, and line references
+- Do not re-derive prohibited-pattern Detect here — catalog and inventory walks own Detect; score only whether the authored content honors the principle's positive stance
 
-### 2. Present Findings
+### 2. Cross-Reference Schemas
+
+- Cross-reference schema field usage against `workflow.schema.json`, `activity.schema.json`, `technique.schema.json`, and `condition.schema.json` when the stance requires it
+
+### 3. Present Findings
 
 - Present per-principle Pass / Partial / Violation with citations

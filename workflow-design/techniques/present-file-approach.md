@@ -17,9 +17,18 @@ The scope-manifest entry being drafted this iteration — its path, action (crea
 
 Whether update mode is active. In update mode the approach frames the change against the file's existing content rather than a from-scratch draft.
 
+## Outputs
+
+### drafting_plan
+
+The per-file drafting plan for `{current_file}`: schema constructs to use (from [schema-construct-inventory](../resources/schema-construct-inventory.md)), reference patterns to follow, and intended content structure. Presented for confirmation before drafting.
+
 ## Protocol
 
-### 1. Present File Approach
+### 1. Assemble Drafting Plan
 
-- Present the per-file drafting plan for `{current_file}`: the schema constructs to be used, the reference patterns to be followed, and the intended content structure
-- Draft files in the confirmed order — `workflow.yaml`, activities, techniques, resources, README
+- Assemble `{drafting_plan}` for `{current_file}`: the schema constructs to be used, the reference patterns to be followed, and the intended content structure
+
+### 2. Present Drafting Plan
+
+- Present `{drafting_plan}` for confirmation before drafting proceeds

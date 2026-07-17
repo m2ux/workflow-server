@@ -29,3 +29,4 @@ The workflow's root README with title, description, activity sequence table, mod
 
 - In create mode, generate the README fresh with the workflow title, description, activity sequence table, mode descriptions, usage instructions, and resource links
 - In update mode, update the existing README to reflect structural changes such as new activities, modified activity descriptions, or changed modes
+- Orient with purpose, value, structure, and links; do not transcribe YAML; use positive declarative present tense

@@ -1,33 +1,22 @@
 ---
 name: update-mode-guide
-description: Guidance for modifying existing workflows.
+description: Change-request category vocabulary for modifying existing workflows.
 metadata:
   order: 3
 ---
 
 # Update Mode Guide
 
-Guidance for modifying existing workflows. Update mode activates when the user references an existing workflow by name or ID with a change request; `intake-classification` classifies the operation and sets `operation_type` to `update` with the corresponding mode flag.
+Vocabulary for categorizing a change request against an existing workflow.
 
----
+## Change Categories
 
-## Key Differences from Create Mode
+| Category | Meaning |
+|----------|---------|
+| **Activity** | Add, modify, or remove an activity |
+| **Technique** | Add, modify, or remove a technique or binding |
+| **Resource** | Add, modify, or remove a resource |
+| **Metadata** | Workflow id, title, description, tags, version, or similar root fields |
+| **Structural refactor** | Transitions, decisions, variables, or cross-cutting shape changes without a single-file focus |
 
-| Aspect | Create Mode | Update Mode |
-|---|---|---|
-| Pattern analysis | Required — extract patterns from reference workflows | Skipped — the existing workflow is the reference |
-| Impact analysis | Skipped | Required — enumerate affected files and side-effects |
-| Scope | All files are new | Mix of modified, added, and removed files |
-| Content drafting | Write from scratch | Modify existing content with preservation checks |
-| README | Generate new | Update existing to reflect changes |
-
-## Impact Analysis and Content Preservation
-
-The impact-analysis procedure — enumerate files, classify impact, check transition / reference / variable integrity, and flag removals — and the content-preservation rules that require every removal to be surfaced and confirmed are owned by the [impact-analysis](../techniques/impact-analysis.md) technique. Follow that technique's protocol and rules; this guide does not duplicate them.
-
----
-
-## Related Guides
-
-- [Design Principles](design-principles.md)
-- [Review Mode Guide](review-mode-guide.md)
+A request may span more than one category; record each that applies.

@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.14.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits one or more existing workflows against the 15 design principles and produces a compliance report.
+> v1.14.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
 
 ---
 
@@ -94,25 +94,21 @@ The output is a severity-rated compliance report saved to the session's planning
 
 ## Design Principles
 
-This workflow encodes 15 design principles derived from analysis of 175+ historical workflow creation sessions. Each principle is backed by structural enforcement (checkpoints, conditions, validate actions) rather than relying on rule text alone.
+Positive design-time framing principles — see [design-principles](./resources/design-principles.md). Stance only; Detect stays in the anti-pattern catalog. Structural gates live in activity YAML.
 
-| # | Principle | Enforcement |
-|---|-----------|-------------|
-| 1 | Internalize before producing | [Intake and Context](./activities/README.md#01-intake-and-context) gate checkpoints |
-| 2 | Define complete scope before execution | [Scope and Draft](./activities/README.md#06-scope-and-draft) `scope-and-structure-confirmed` checkpoint |
-| 3 | One question at a time | [Requirements Refinement](./activities/README.md#03-requirements-refinement) — per-dimension elicitation, one batch `spec-confirmed` |
-| 4 | Maximize schema expressiveness | [Quality Review](./activities/README.md#08-quality-review) `expressiveness-confirmed` checkpoint |
-| 5 | Convention over invention | [Quality Review](./activities/README.md#08-quality-review) `conformance-confirmed` checkpoint |
-| 6 | Never modify upward | Schema validation on every YAML file |
-| 7 | Confirm before irreversible changes | [Impact Analysis](./activities/README.md#05-impact-analysis) `impact-and-preservation-confirmed` when removals are flagged (update mode) |
-| 8 | Corrections must persist | Cross-cutting: tracked throughout all activities |
-| 9 | Modular over inline | [Quality Review](./activities/README.md#08-quality-review) conformance check |
-| 10 | Encode constraints as structure | [Quality Review](./activities/README.md#08-quality-review) `enforcement-confirmed` checkpoint |
-| 11 | Plan before acting | [Scope and Draft](./activities/README.md#06-scope-and-draft) `file-approach-confirmed` checkpoint |
-| 12 | Non-destructive updates | [Scope and Draft](./activities/README.md#06-scope-and-draft) `preservation-check` checkpoint (update mode) |
-| 13 | Format literacy before content | [Intake and Context](./activities/README.md#01-intake-and-context) `format-literacy` checkpoint |
-| 14 | Complete documentation structure | [Validate and Commit](./activities/README.md#09-validate-and-commit) README generation/update |
-| 15 | Output economy | Single terminal `COMPLETE.md`; single-row logs; no vestigial marker steps |
+| # | Principle |
+|---|-----------|
+| 1 | Internalize before producing |
+| 2 | Define complete scope before execution |
+| 3 | Clarify before assuming |
+| 4 | Maximize schema expressiveness |
+| 5 | Separate fill from does |
+| 6 | Convention over invention |
+| 7 | Confirm before irreversible changes |
+| 8 | Encode constraints as structure |
+| 9 | Non-destructive updates |
+| 10 | Complete documentation structure |
+| 11 | Output economy |
 
 ---
 
@@ -164,17 +160,17 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 
 | Order | Resource | Purpose |
 |---|----------|---------|
-| 00 | [Design Principles](./resources/design-principles.md) | Condensed reference of all 15 principles |
+| 00 | [Design Principles](./resources/design-principles.md) | Positive framing principles (stance only) |
 | 01 | [Schema Construct Inventory](./resources/schema-construct-inventory.md) | Prose-to-formal construct mapping tables |
 | 02 | [Anti-Patterns](./resources/anti-patterns.md) | Prohibited-pattern catalog (AP-XX + name) by category |
-| 03 | [Update Mode Guide](./resources/update-mode-guide.md) | Update-mode activation and key differences from create mode |
-| 04 | [Review Mode Guide](./resources/review-mode-guide.md) | Compliance audit procedure and report structure |
-| 05 | [Design Context README](./resources/design-context-readme.md) | Planning-folder README template seeded at intake |
+| 03 | [Update Mode Guide](./resources/update-mode-guide.md) | Update change-request category vocabulary |
+| 04 | [Compliance Report](./resources/compliance-report.md) | Review-mode compliance report template |
+| 05 | [Design Context README](./resources/design-context-readme.md) | Planning-folder README seed template |
 | 06 | [Completion Artifact](./resources/completion-artifact.md) | `COMPLETE.md` completion-summary template |
-| 07 | [Design Assumptions](./resources/design-assumptions.md) | Assumption categories + log template for the design-assumption lifecycle |
-| 08 | [Design Assumption Reconciliation](./resources/design-assumption-reconciliation.md) | Framing for audit-resolvable assumptions (mapping owned by reconcile technique) |
-| 09 | [Elicitation Guide](./resources/elicitation-guide.md) | Mode dimension sets + per-dimension capture/question bank |
-| 10 | [Convention Conformance](./resources/convention-conformance.md) | Reference conventions and documentation-voice criteria |
+| 07 | [Design Assumptions](./resources/design-assumptions.md) | Assumption categories and log template |
+| 08 | [Design Assumption Reconciliation](./resources/design-assumption-reconciliation.md) | Audit vs open resolvability vocabulary |
+| 09 | [Elicitation Guide](./resources/elicitation-guide.md) | Mode dimension sets + per-dimension question bank |
+| 10 | [Convention Conformance](./resources/convention-conformance.md) | Reference conventions vs sibling workflows |
 
 ---
 
@@ -247,15 +243,15 @@ workflows/workflow-design/
 │   └── publish-workflow-pr.md
 └── resources/
     ├── README.md                         # Resource index
-    ├── design-principles.md              # 15 principles reference
+    ├── design-principles.md              # Positive framing principles
     ├── schema-construct-inventory.md     # Construct mapping tables
     ├── anti-patterns.md                  # anti-pattern catalog (AP-XX + names)
     ├── update-mode-guide.md              # Update mode guide
-    ├── review-mode-guide.md              # Review mode guide
+    ├── compliance-report.md              # Review compliance report template
     ├── design-context-readme.md          # Planning-folder README template
     ├── completion-artifact.md            # COMPLETE.md completion-summary template
     ├── design-assumptions.md             # Assumption categories + log template
     ├── design-assumption-reconciliation.md  # Audit-based reconciliation guide
     ├── elicitation-guide.md              # Mode sets + per-dimension question bank
-    └── convention-conformance.md         # Reference conventions + doc voice
+    └── convention-conformance.md         # Reference conventions vs siblings
 ```

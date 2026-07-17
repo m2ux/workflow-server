@@ -7,24 +7,16 @@ metadata:
 
 # Elicitation Guide
 
-**Purpose:** A question bank for the guided, one-dimension-at-a-time elicitation in requirements-refinement — the workflow-design counterpart of the work-package [requirements-elicitation](../../work-package/resources/requirements-elicitation.md) guide. Each dimension is elicited from its question bank below; the full specification is confirmed once at `spec-confirmed` after the dimension loop.
-
-Conversation, not interrogation: ask what you need to capture the dimension, skip follow-ups the user's answer already settles, and present the accumulated design after each answer.
-
----
+Question bank and mode dimension sets for eliciting a workflow specification — the workflow-design counterpart of the work-package [requirements-elicitation](../../work-package/resources/requirements-elicitation.md) guide.
 
 ## Mode Dimension Sets
-
-`derive-design-dimensions` selects one of these ordered sets:
 
 | Mode | Dimensions (order) |
 |------|--------------------|
 | **Create** | purpose → activity list → activity model → checkpoints → artifacts → variables → techniques → rules |
 | **Update** | purpose → activity list → checkpoints → artifacts → rules |
 
-Update skips activity model, variables, and techniques — those are already established on the existing workflow and are not re-elicited.
-
----
+The update set omits activity model, variables, and techniques — those are already established on the existing workflow.
 
 ## Dimensions
 
@@ -39,15 +31,6 @@ Update skips activity model, variables, and techniques — those are already est
 | **Techniques** | Capability description and binding sites; reuse meta / cross-workflow before authoring local | What operations do steps perform? Does an existing meta or other-workflow technique already cover it? What's genuinely new? |
 | **Rules** | Cross-activity rules with enforcement classification — structural (checkpoint / condition / validate) or guidance-only | What constraints must always hold? Which can be violated by ignoring text, and so need structural backing? |
 
----
-
 ## Minimum Viable Elicitation
 
 For a small or well-understood workflow, at minimum settle: purpose, the activity list, the checkpoints, and the rules. The model, artifacts, variables, and techniques can often be derived from those four with a single confirmation each.
-
----
-
-## Related Guides
-
-- [Requirements Elicitation (work-package)](../../work-package/resources/requirements-elicitation.md) — the work-package counterpart
-- [Design Principles](design-principles.md)

@@ -49,9 +49,12 @@ Absolute path to the written impact-analysis artifact. Interpolated into the imp
 ### 6. Flag Removals
 
 - Inventory the material being removed across modified files (diff-based) and surface it for explicit user confirmation
+
+### 7. Set Removal Count
+
 - Set `{removal_count}` to the number of distinct flagged removals (0 when the change is additive or string-only with no material deleted)
 
-### 7. Persist Report
+### 8. Persist Report
 
 - Persist the full impact classification, integrity checks, and flagged removals via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and bare filename `impact-analysis.md`
 - Capture the written location as `{impact_analysis_path}`

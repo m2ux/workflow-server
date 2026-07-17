@@ -17,9 +17,12 @@ Total number of compliance findings across all review-mode audit passes. Interpo
 
 ### 1. Compile Report
 
-- Compile findings into a structured report following the [Compliance Report Structure](../resources/review-mode-guide.md#compliance-report-structure) template exactly — do not restate or invent section titles here
+- Compile findings into a structured report following the [Compliance Report Template](../resources/compliance-report.md) exactly — do not restate or invent section titles here
+
+### 2. Set Findings Count
+
 - Set `{review_findings_count}` to the total finding count across all passes
 
-### 2. Present Report
+### 3. Present Report
 
 - Present the compliance report to the user with severity-rated findings and recommended fixes

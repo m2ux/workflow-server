@@ -1,17 +1,25 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Push the workflow's feature branch, open (or update) a pull request against the `workflows` branch, and mark it ready for review.
+Compose the workflow-design PR title and body, then publish via meta push / create-pr / mark-ready — open (or refresh) a draft PR against `workflows` and mark it ready for review.
 
 ## Outputs
 
+### pr_title
+
+PR title naming the workflow and the change (create / update).
+
+### pr_body
+
+PR body summarizing the change, listing `{scope_manifest}`, and linking `{planning_folder_path}` (completion summary and review artifacts).
+
 ### pr_url
 
-URL of the pull request opened (or updated) for the workflow change.
+URL of the pull request opened (or updated).
 
 ### pr_number
 
@@ -21,13 +29,16 @@ The pull request number.
 
 ### 1. Push Branch
 
-- Push `{workflow_branch}` to `origin` in the workflows repo and verify the push succeeded
+- Apply [push-branch](../../meta/techniques/version-control/push-branch.md) with `repo_path` the workflows worktree and `branch` `{workflow_branch}`
 
-### 2. Open Or Update PR
+### 2. Compose PR Description
 
-- Compose the PR title and body from the session's artifacts: the title names the workflow and the change (create / update); the body summarizes the change, lists the scope manifest from `{scope_manifest}`, and links the planning folder `{planning_folder_path}` (its completion summary and review artifacts)
-- Open a draft PR for `{workflow_branch}` against the `workflows` branch (`gh pr create --base workflows --draft`); if a PR already exists for the branch, update its description instead. Capture `{pr_url}` and `{pr_number}`
+- Compose `{pr_title}` and `{pr_body}` from the session's artifacts: the title names the workflow and the change (create / update); the body summarizes the change, lists the scope manifest from `{scope_manifest}`, and links the planning folder `{planning_folder_path}` (its completion summary and review artifacts)
 
-### 3. Mark Ready
+### 3. Create Or Update Draft PR
 
-- Once the description is finalized and schema validation has passed, mark the PR ready for review (`gh pr ready`)
+- Apply [create-pr](../../meta/techniques/github-cli-protocol/create-pr.md) with `repo_path` the workflows worktree, `branch` `{workflow_branch}`, `base_branch` `workflows`, `title` `{pr_title}`, `body` `{pr_body}`, and `draft` true; capture `{pr_number}` and `{pr_url}`
+
+### 4. Mark Ready
+
+- Once the description is finalized and schema validation has passed, apply [mark-ready](../../meta/techniques/github-cli-protocol/mark-ready.md) with `repo_path` the workflows worktree and `{pr_number}`

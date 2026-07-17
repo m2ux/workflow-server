@@ -35,19 +35,37 @@ Ordered list of workflow ids to audit in review mode. One element for single-tar
 
 ## Protocol
 
-### 1. Load Baseline
+### 1. Load Target Definitions
 
 - For update or review mode, load the committed workflow catalog via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) and source each target's definition from the workflow-server context the orchestrator supplies — workers do not load full workflow definitions directly
+
+### 2. Resolve Target Ids
+
 - In review mode, resolve `{target_workflow_ids}` from the request (one or more ids) and set `{target_workflow_id}` to the first element for singular bind sites; in update mode set `{target_workflow_id}` only
+
+### 3. Build Structural Inventory
+
 - Build a structural inventory of each target: file counts and entity counts (activities, techniques, resources, checkpoints, transitions)
+
+### 4. Present Loaded Structure
+
 - Present the loaded structure(s) to the user as the scope-confirmation surface
 
-### 2. Parse Change Request
+### 5. Parse Change Request
 
 - In update mode, categorize the change request derived from the `{user_description}`: add/modify activity, technique, resource, metadata, or structural refactor (see [update-mode-guide](../resources/update-mode-guide.md))
 
-### 3. Classify Operation
+### 6. Summarize Design Intent
 
 - Accept the `{user_description}` and summarize key design intent — purpose, domain, rough activity count, and constraints
-- Set `{operation_type}` and the corresponding `{is_update_mode}` / `{is_review_mode}` flags: an existing-workflow reference for a change signals update, for an audit signals review, otherwise create
+
+### 7. Set Operation Flags
+
+- Set `{operation_type}` and the corresponding `{is_update_mode}` / `{is_review_mode}` flags:
+  - **Review** — existing-workflow reference(s) plus an audit intent (recognition signals include "review workflow", "audit workflow", "check workflow compliance", "workflow review", "assess workflow quality", "evaluate workflow"). Resolve `{target_workflow_ids}` from the request (one or more ids); seed `{target_workflow_id}` to the first element
+  - **Update** — existing-workflow reference plus a change request → `{target_workflow_id}` only
+  - **Create** — no existing-workflow reference
+
+### 8. Present Classification
+
 - Present the classification, target set (`{target_workflow_ids}` in review), and distilled intent for confirmation

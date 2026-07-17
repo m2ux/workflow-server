@@ -11,13 +11,13 @@ Autonomously resolve the design assumptions that the schema and conventions can 
 
 ### assumptions_log
 
-The running [log](../resources/design-assumption-reconciliation.md) of open and resolved design assumptions to reconcile.
+The running [log](../resources/design-assumptions.md#assumptions-log-template) of open and resolved design assumptions to reconcile.
 
 ## Outputs
 
 ### assumptions_log
 
-The [log](../resources/design-assumption-reconciliation.md) with audit-resolvable assumptions marked resolved (carrying the audit evidence) and only genuine design judgements left open.
+The [log](../resources/design-assumptions.md#assumptions-log-template) with audit-resolvable assumptions marked resolved (carrying the audit evidence) and only genuine design judgements left open.
 
 ### open_assumptions
 
@@ -32,16 +32,19 @@ Boolean gate — true iff open design judgements remain after reconciliation.
 ### 1. Classify Resolvability
 
 - Read all open assumptions from `{assumptions_log}`
-- For each, decide whether an audit pass could settle it: schema-validity → [audit-schema-validation](./audit-schema-validation.md); convention / naming → [audit-conformance](./audit-conformance.md); tool / technique / doc consistency (including Tool-Technique-Doc Consistency anti-patterns) → [audit-anti-patterns](./audit-anti-patterns.md); design-principle adherence → [audit-principles](./audit-principles.md) (see [design-assumption-reconciliation](../resources/design-assumption-reconciliation.md))
-- An assumption that is a genuine design judgement (activity boundaries, checkpoint necessity, model choice) is not audit-resolvable and stays open
+- For each, decide whether an audit pass could settle it using the resolvability vocabulary in [design-assumption-reconciliation](../resources/design-assumption-reconciliation.md): schema-validity → [audit-schema-validation](./audit-schema-validation.md); convention / naming → [audit-conformance](./audit-conformance.md); tool / technique / doc consistency (including Tool-Technique-Doc Consistency anti-patterns) → [audit-anti-patterns](./audit-anti-patterns.md); design-principle adherence → [audit-principles](./audit-principles.md)
+- An assumption that is a genuine design judgement (activity boundaries, checkpoint necessity, model choice) is **open** and stays open
 
 ### 2. Resolve Via Audits
 
 - For each audit-resolvable assumption, run the relevant audit technique against the drafted files and record the evidence (file, construct, verdict) in `{assumptions_log}`, marking it Validated, Invalidated, or Partially Validated
 
-### 3. Check Convergence
+### 3. Update Open Assumptions
 
 - Mark every audit-resolvable assumption resolved; update `{open_assumptions}` to the remaining genuine design judgements and set `{has_open_assumptions}` true iff any remain, false when all assumptions were settled by audits
+
+### 4. Record Open Rationales
+
 - For each remaining open assumption, record the rationale for why no audit can settle it
 
 ## Rules

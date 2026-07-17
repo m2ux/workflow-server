@@ -1,17 +1,17 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Mark the PR ready for review once its description is finalized.
+Mark the PR ready for review once its description is finalized — via meta [mark-ready](../../../meta/techniques/github-cli-protocol/mark-ready.md).
 
 ## Inputs
 
 ### pr_number
 
-The PR to mark ready for review via `gh pr ready`.
+The PR to mark ready for review.
 
 ## Outputs
 
@@ -29,5 +29,7 @@ Status after update (e.g., ready for review)
 
 ## Protocol
 
-1. Ensure the description is finalized before marking ready.
-2. Mark the `{pr_number}` PR ready for review using `gh pr ready`, yielding `{updated_pr}` with its URL and status.
+### 1. Mark Ready
+
+- Ensure the description is finalized before marking ready
+- Apply [mark-ready](../../../meta/techniques/github-cli-protocol/mark-ready.md) with `repo_path` `{target_path}` and `{pr_number}`; map the result onto `{updated_pr}` (`pr_url`, `pr_status`)

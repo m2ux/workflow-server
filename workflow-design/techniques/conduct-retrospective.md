@@ -23,11 +23,20 @@ COMPLETE.md
 
 - If a metadata or session-history source exists, capture the session interaction history.
 
-### 2. Conduct Retrospective
+### 2. Separate Interaction Types
 
 - Count total user messages; separate prompted checkpoint responses from substantive interactions (clarifications, corrections, process questions, frustration signals, feature requests, skip requests)
+
+### 3. Categorize Signals
+
 - Categorize the substantive messages by signal type and map each to the specific workflow section it implicates
+
+### 4. Formulate Recommendations
+
 - Identify root causes, determine pattern frequency, and formulate prioritized recommendations: high (repeated corrections, frustration), medium (single clarifications), low (edge cases)
+
+### 5. Write Retrospective Section
+
 - Write the `{retrospective_document}` as the `## Workflow Retrospective` section of the close-out document (update in place — it is the single terminal artifact) using the [workflow-retrospective](../../work-package/resources/workflow-retrospective.md#output-section-template) section template — omit the PR reference and report activities as a count out of the design workflow's activities — via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md). Include only the signal categories that have content.
 
 ## Rules

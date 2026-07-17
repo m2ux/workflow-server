@@ -56,3 +56,7 @@ Cross-cutting design invariants live in `workflow.yaml` `rules[]`. Apply those a
 ### consult-referenced-resources
 
 Before relying on a referenced resource's content, load that resource. Do not restate harness tool recipes here (`no-tool-usage-prescription`).
+
+### apply-anti-patterns-when-authoring
+
+When authoring or revising workflow definition content (YAML prose fields, technique/resource markdown, README orientation), apply [anti-patterns](../resources/anti-patterns.md) as write-time constraints — especially Schema Expressiveness and Description Hygiene — rather than relying on a later quality-review pass to discover violations. Do not restate entry Detect criteria here.

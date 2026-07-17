@@ -39,8 +39,14 @@ Absolute path to the written scope-manifest artifact. Interpolated into the scop
 
 - Enumerate every file to create/modify/remove with full paths: per-file path, action (create/modify/remove), type (workflow/activity/technique/resource/readme), and one-line description — no implicit files
 
-### 4. Present Design
+### 4. Present Structural Design
 
 - Present the directory tree of the proposed structure with its file manifest, a transition diagram (for sequential workflows), and a comparison against the adopted reference patterns
+
+### 5. Present Drafting Order
+
 - Present the drafting order (`workflow.yaml`, activities, techniques, resources, README) with rationale grounded in the reference-dependency chain
+
+### 6. Persist Scope Manifest
+
 - Persist `{scope_manifest}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and bare filename `scope-manifest.md`; capture the written location as `{scope_manifest_path}`

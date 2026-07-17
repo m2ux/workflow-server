@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Audit drafted content for convention conformance against reference workflows — apply the convention-conformance checklist, flag each divergence, and decide whether it is justified or should be brought into conformance.
+Audit drafted content for convention conformance against reference workflows — apply the convention-conformance checklist (naming, field order, structure), flag each divergence, and decide whether it is justified or should be brought into conformance. Definition prose voice is out of scope for this pass.
 
 ## Outputs
 
@@ -17,17 +17,22 @@ Count of conformance divergences — each a divergence with its file, the diverg
 
 ### 1. Load Conventions
 
-- Load [convention-conformance](../resources/convention-conformance.md) — sole source of reference-convention and documentation-voice criteria for this pass
+- Load [convention-conformance](../resources/convention-conformance.md) — sole source of reference-convention criteria for this pass
 - Do not restate that checklist here; follow it as written
+
+### 2. Survey Reference Workflows
+
 - Survey reference workflows of similar type (via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) / orchestrator-supplied definitions) as the live pattern baseline
 
-### 2. Audit Conformance
+### 3. Audit Conformance
 
 - Compare drafted `workflow.yaml`, activities, techniques, resources, and READMEs against the reference baseline using every concern in convention-conformance
 - For each divergence: record file, construct, reference convention, and disposition (justified vs bring into conformance)
-- Apply the documentation-voice section to definition prose (planning artifacts exempt per the resource)
 
-### 3. Present Findings
+### 4. Present Findings
 
 - Present conventions followed, conventions diverged, and justification status for each divergence
+
+### 5. Set Findings Count
+
 - Set `{conformance_finding_count}` to the number of findings

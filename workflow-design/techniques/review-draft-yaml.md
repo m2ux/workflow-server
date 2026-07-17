@@ -42,8 +42,14 @@ Absolute path to the written draft-attestation artifact (includes the block-inde
 - Build a block-indexed table from `{drafted_files}`: one row per drafted construct — each activity, technique, and resource, plus the `workflow.yaml` metadata block — recording its file, location, and a one-line rationale for why it exists
 - In update mode, mark each block added / modified / unchanged by comparing against the committed `{target_workflow_id}`
 
-### 2. Persist And Present
+### 2. Persist Reviewed Blocks
 
 - Persist `{reviewed_blocks}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and bare filename `draft-attestation.md`; capture the written location as `{draft_attestation_path}`
+
+### 3. Present Reviewed Blocks
+
 - Present `{reviewed_blocks}` (link the artifact; do not restate the full table in chat when the file carries it)
+
+### 4. Record Draft Attestation
+
 - Record `{draft_attestation}` in that artifact once every block is confirmed understood and intentional; flag any block the user marks for revision

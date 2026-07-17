@@ -253,7 +253,7 @@ Mode behaviour is written as rule/description text instead of ordinary state.
 
 HOW lives in the step description instead of the technique protocol.
 
-**Detect:** Step `description` holds HOW — numbered audit criteria, sequenced procedure, or per-item iteration logic. HOW belongs in the assigned technique's `protocol` (phase-keyed bullets); `description` is a one-line WHAT summary only.
+**Detect:** Step `description` holds HOW — numbered audit criteria, sequenced procedure, or per-item iteration logic. HOW belongs in the assigned technique's `protocol` as numbered phases (`numbered-protocol-phases`); `description` is a one-line WHAT summary only.
 
 **Do not flag:** Once a step BINDS a technique, absence of description is correct — `bound-step-no-description` requires removing `description` entirely (not merely de-proceduralizing) and homing content in the bound op.
 
@@ -267,7 +267,7 @@ Required inputs are named in description instead of `inputs[]`.
 
 **Detect:** Technique prose names a needed value (path, id, artifact) that is not declared in `inputs[]` with `id`/`description`.
 
-**Do not flag:** Inputs already declared; pure outputs or locals.
+**Do not flag:** Inputs already declared; pure outputs or locals. Produced values missing from Outputs are `technique-outputs-declared`.
 
 **Fix:** Declare the input on `inputs[]` and reference `{id}` in Protocol.
 
@@ -577,7 +577,7 @@ Documentation uses avoidance or comparative voice.
 
 **Do not flag:** Planning artifacts under `artifacts/planning/` (evolution by design); true runtime constraints in `rules.*` / technique `## Rules` ("must not write secrets"); schema/condition operators; negative examples inside this catalogue; `validate` messages that name a misconfiguration and fix command (`validate-message-economy`).
 
-**Fix:** Rewrite as what the system *does* or *is*. Positive convention checklist: [convention-conformance](./convention-conformance.md) Documentation Voice.
+**Fix:** Rewrite as what the system *does* or *is* in positive declarative present tense.
 
 ## Coupling Anti-Patterns
 
@@ -637,11 +637,11 @@ An opaque path array stands in for named artifact inputs.
 
 A resource backlinks or names its caller.
 
-**Detect:** A resource (template, schema, guide, prompt, reference) names/links techniques that produce, consume, or call it — body or frontmatter (`"produced by the X technique"`, `"Composed by [X]"`, `"Used by…"`), "Used By"/"Referenced By" catalogue columns, or technique/activity FILE PATHS as link targets / role-to-file tables (e.g. listing `techniques/review-code.md`). Reverse caller coupling breaks reuse (see also `io-agnostic-contract`).
+**Detect:** A resource (template, schema, guide, prompt, reference) names/links its host callers — techniques, activities, checkpoints, loops, or passes that produce, consume, enforce, or walk it. Signals: `"produced by the X technique"`, `"Composed by [X]"`, `"Used by…"`, "Used By"/"Referenced By" columns, technique/activity FILE PATHS as link targets / role-to-file tables, or bare host ids in Enforcement / "gated by" / "bound by" prose (`intake-and-context`, `expressiveness-confirmed`, `quality-review` anti-pattern pass). Reverse caller coupling breaks reuse (see also `io-agnostic-contract`, `bind-site-is-orchestration-truth`).
 
-**Do not flag:** Forward dependency — the resource tells ITS READER to run a technique (prompt/instruction applying workflow-engine / agent-conduct); "see also" to another technique's content; generic technique-model/ontology prose. Test: producer/consumer/caller of this resource → remove; technique the reader should run → keep.
+**Do not flag:** Forward dependency — the resource tells ITS READER to run a technique (prompt/instruction applying workflow-engine / agent-conduct); "see also" to another technique's content; generic technique-model/ontology prose (Goal → Activity → Technique); citations of sibling resources or catalog entry **names**. Test: producer/consumer/enforcer/caller of this resource → remove; technique the reader should run → keep.
 
-**Fix:** Describe the resource by what it IS; drop caller/backlink references; move role→file mapping into the rendering technique and keep the resource field abstract (link roles to the workflow file that defines them).
+**Fix:** Describe the resource by what it IS (Rule, template, vocabulary); drop caller/backlink/Enforcement inventories; move role→file and gate maps into the owning activity YAML or rendering technique.
 
 ### AP-47. no-redundant-link-label
 
@@ -1369,7 +1369,7 @@ An audit pass shadows another walker's Detect criteria.
 
 ### AP-106. canon-layer-cites-not-restates
 
-"Principle 4 Rule embeds the full Schema Expressiveness / Description Hygiene Detect body already in the catalogue"
+"Principle 4 prose embeds the full Schema Expressiveness / Description Hygiene Detect body already in the catalogue"
 
 An upper canon layer restates Detect/Fix already owned below.
 
@@ -1377,7 +1377,7 @@ An upper canon layer restates Detect/Fix already owned below.
 
 **Do not flag:** Short Rule statements plus named citations; Enforcement pointers to activities/checkpoints; a single clarifying sentence that does not repeat Detect steps; layers that are themselves the sole home (`operative-criteria-need-a-home`).
 
-**Fix:** Keep the upper layer as Rule + Enforcement + citations (`name` / resource link); delete restated Detect. If the upper layer held unique criteria, migrate them down before deleting.
+**Fix:** Keep the upper layer as short principle stance prose; delete restated Detect, Detect-routing blocks, and host Enforcement inventories (`no-resource-caller-backlink`). If the upper layer held unique criteria, migrate them down before deleting.
 
 ### AP-107. bind-site-is-orchestration-truth
 
@@ -1390,3 +1390,43 @@ A pass inventory disagrees with authoritative YAML bind sites.
 **Do not flag:** Purpose/value orientation without a pass inventory; pointers to the YAML; at-a-glance activity names with one-line roles (`readme-orients-not-transcribes`); a technique that only applies a sibling without listing a parallel set.
 
 **Fix:** Delete the third checklist, or replace it with a pointer to the binding activity/technique. If a summary is required, generate it from the YAML binds.
+
+## Technique Protocol Anti-Patterns
+
+Numbered `### N. Title` headings under `## Protocol` are discrete sequential phases — not a multi-phase bullet dump under one step.
+
+### AP-108. numbered-protocol-phases
+
+"### 1. Apply Fixes" with edit / re-validate / record as bullets under one heading
+
+Discrete sequential protocol phases are collapsed into one numbered step.
+
+**Detect:** A technique `## Protocol` has a numbered `### N. Title` whose body holds two or more bullets (or imperative sentences) that are distinct sequential phases — each produces a different outcome or must complete before the next (edit then validate then record; load then present; persist then present). Test: reordering or dropping a bullet changes the phase sequence, not merely the elaboration of one phase.
+
+**Do not flag:** Multiple bullets that elaborate a single phase (how-to for one write, constraints on one apply, loop body over one entry, mode branches of one action); `>` caveats under a primary instruction; a single-bullet step.
+
+**Fix:** Split into consecutive numbered `### N. Title` steps — one phase per heading. Keep elaborating bullets only under the phase they refine.
+
+### AP-109. technique-outputs-declared
+
+"Present the per-file drafting plan…" with no `## Outputs` entry
+
+Capability or Protocol produces or presents a value that is not declared on Outputs.
+
+**Detect:** Technique Capability or Protocol assembles, derives, presents, or returns a durable or gateable value (plan, findings, summary, classification, path, count, structured assessment) that has no matching `### <id>` under `## Outputs`. Test: a later step, checkpoint, or consumer could bind or cite the value — if so, it must be a declared output (files also need `#### artifact` per `artifact-not-buried`).
+
+**Do not flag:** Pure side-effects with no bindable product (push, open PR, mark ready) when no path/number is captured; ephemeral in-chat narration that is not confirmed or consumed; values already declared on Outputs; input-only gaps (`technique-inputs-declared`).
+
+**Fix:** Declare `### <id>` under `## Outputs` naming what the value IS; reference `{id}` in Protocol when assembling/presenting. Add `#### artifact` when the value is a file.
+
+### AP-110. prefer-meta-capability
+
+"`publish-workflow-pr` re-teaches `gh pr create` / `gh pr ready` / `git push` already covered by meta ops"
+
+A workflow-local technique re-implements a capability that a meta (or other shared-workflow) technique already offers — novel diversity of callers is handled by parameterizing or lightly refactoring that shared op, not by inventing a parallel local recipe.
+
+**Detect:** A non-meta technique's Protocol embeds a harness recipe (git push, `gh pr create`, `gh pr ready`, commit/stage, issue mutate, …) for a capability that already exists as a meta or cross-workflow shared op. Test: the local novelty is only parameters or caller-specific composition (title/body/path wiring); the verb/recipe is already owned elsewhere. Near-misses count — an existing shared op that almost fits but lacks an input, optional flag, or output still owns the capability.
+
+**Do not flag:** Local composition that *applies* the shared op via canonical hyperlink/`::` bind and keeps only caller-specific value assembly; parameterization or minor refactor of the shared/meta op itself to accommodate a new caller's diversity (new optional inputs, defaults, outputs, or small protocol branches) while preserving existing callers; adding a new shared op when no shared capability exists yet.
+
+**Fix:** Prefer, in order: (1) parameterize or lightly refactor the existing meta/shared op so the new caller can bind it; (2) add a sibling shared op in meta (or the owning shared workflow) when the capability is genuinely new; (3) only then keep local composition. Replace the local harness recipe with a bind or canonical hyperlink; keep only workflow-specific value assembly locally (`canonical-technique-reference`, `no-duplicated-guidance`).

@@ -25,7 +25,10 @@ Path to the written report file
 
 ## Protocol
 
-### 1. Persist Report
+### 1. Choose Report Filename
 
-- Choose the bare filename for the mode: `compliance-review.md` for a compliance report, `post-update-review.md` for a post-update review snapshot.
-- Persist the report content via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and the chosen bare filename; the server prepends the activity `artifactPrefix` and find-or-creates the instance. Capture the written location as `{report_path}`.
+- Choose the bare filename for the mode: `compliance-review.md` for a compliance report, `post-update-review.md` for a post-update review snapshot
+
+### 2. Persist Report Artifact
+
+- Persist the report content via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with `target_dir` `{planning_folder_path}` and the chosen bare filename; the server prepends the activity `artifactPrefix` and find-or-creates the instance. Capture the written location as `{report_path}`

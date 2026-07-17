@@ -23,8 +23,14 @@ Number of scope-manifest items still unaddressed (`{total_count}` − `{addresse
 
 ## Protocol
 
-### 1. Verify Scope Manifest
+### 1. Check Manifest Items
 
 - For every item in `{scope_manifest}`, check file presence, the performed action (create/modify/remove), and a content match against the reviewed draft
+
+### 2. Flag Unaddressed Items
+
 - Flag any item that remains unaddressed
+
+### 3. Set Unaddressed Count
+
 - Set `{unaddressed_count}` to the count of unaddressed items (0 when the manifest is fully addressed)

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Operations for common GitHub PR and issue tasks via the `gh` CLI, routing mutations through REST endpoints to avoid the Projects Classic GraphQL deprecation.
+Operations for common GitHub PR and issue tasks via the `gh` CLI, routing mutations through REST endpoints to avoid the Projects Classic GraphQL deprecation. Includes [create-pr](./create-pr.md) (open or refresh a draft/ready PR) and [mark-ready](./mark-ready.md) (mark a PR ready for review), plus view/list/update/label/assign helpers.
 
 ## Rules
 

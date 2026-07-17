@@ -25,7 +25,10 @@ True when the update-mode content comparison detects material being removed that
 
 ## Protocol
 
-### 1. Present for Review
+### 1. Present Drafted Content
 
 - Present the drafted content for `{current_file}` for user review, highlighting the schema constructs used and notable design decisions
+
+### 2. Compare And Flag Removals
+
 - In update mode, compare the new content against the existing content and surface any material being removed; set `{has_unflagged_removals}` true when a removal was not flagged during impact analysis

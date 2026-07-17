@@ -11,7 +11,7 @@ Derive the ordered set of design dimensions to elicit for the current operation 
 
 ### is_update_mode
 
-Whether update mode is active. Update mode uses the reduced dimension set from the elicitation-guide (already-established activity model, variables, and techniques are not re-elicited).
+Whether update mode is active. Selects the update dimension set from the elicitation-guide when true.
 
 ## Outputs
 
@@ -21,7 +21,10 @@ The ordered design dimensions to elicit, iterated by the dimension-elicitation l
 
 ## Protocol
 
-### 1. Derive Dimensions
+### 1. Select Dimension Set
 
 - Select the create or update dimension set from [elicitation-guide](../resources/elicitation-guide.md) `## Mode Dimension Sets` according to `{is_update_mode}` — do not hardcode or restate the lists here
+
+### 2. Emit Design Dimensions
+
 - Emit the ordered list as `{design_dimensions}`

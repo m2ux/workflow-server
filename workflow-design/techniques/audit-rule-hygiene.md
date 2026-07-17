@@ -30,4 +30,7 @@ Count of rule-hygiene findings — each a flagged rule with its file, rule key, 
 ### 3. Present Findings
 
 - Present findings grouped by catalog entry **name** / **designator**: file, rule key, content, recommended fix
+
+### 4. Set Findings Count
+
 - Set `{rule_hygiene_finding_count}` to the number of findings
