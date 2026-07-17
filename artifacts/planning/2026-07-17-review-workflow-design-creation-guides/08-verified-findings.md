@@ -1,19 +1,27 @@
-# Verified Findings — `workflow-design`
+# Verified Findings — `workflow-design` (update quality-review)
 
-**Mode:** review · **Date:** 2026-07-17  
+**Mode:** update · **Date:** 2026-07-17  
 **Pass:** verified  
-**Target:** `workflow-design` v1.24.3 (PR #254 worktree)
+**Target:** edit tree `2026-07-17-workflow-design-slim-planning-artifacts/workflow-design`
 
-## Findings
+## High findings
+
+None. Expressiveness, rule-hygiene, and rule-enforcement passes produced 0 High-tier findings — nothing to re-derive adversarially.
+
+## Medium / Low (spot-confirmed)
 
 | ID | Severity | Finding | Location | Fix | Verification |
 |----|----------|---------|----------|-----|--------------|
-| H-1 | High | Undeclared `{pattern_analysis}` in Protocol | `techniques/pattern-analysis.md` Outputs vs Assemble | Declare `### pattern_analysis` | **Confirmed** — file has only `pattern_analysis_path` artifact output; line 33 braces `{pattern_analysis}`; `check-binding-fidelity --root` PR worktree reports NEW `read-resolution`; catalog tip uses unbraced prose (no undeclared id) |
-| L-1 | Low | Inconsistent `#template` on persist cites | multiple persist techniques | Align anchors | **Confirmed** — spot-check: assemble uses `#template`, several persist lines use bare guide path |
+| C-1 | Low | Capability cites design-specification guide bare (no `#template`) | `techniques/persist-design-specification.md:8` | Append `#template` | **Confirmed** — sibling cites in same file already used `#template`; bare Capability cite was real at audit time. **Applied** (fix-all). |
+| C-2 | Low | `draft_attestation` Output cites draft-attestation guide bare | `techniques/review-draft-yaml.md:28` | Append `#template` | **Confirmed** — `reviewed_blocks` Output and persist Protocol already used `#template`. **Applied** (fix-all). |
 
-**Finding count:** 2 (1 High, 1 Low)
+**Finding count (verified for remediation):** 2 Low (both elected fix-all; both applied before re-audit)
 
-## Notes
+## Pass summary
 
-- Principle P-1 is the same construct as H-1 — counted once at High for remediation.
-- Pre-existing corpus `dead-output` / `orphan-input` NEW noise withdrawn from remediation set (also on catalog 1.24.1).
+| Pass | Count | Notes |
+|------|------:|-------|
+| Expressiveness | 0 | Clean |
+| Conformance | 2 | Fixed |
+| Rule hygiene | 0 | Clean |
+| Rule enforcement | 0 | Clean |

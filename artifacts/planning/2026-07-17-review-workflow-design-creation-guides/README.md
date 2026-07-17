@@ -62,7 +62,11 @@ Detail: [08-compliance-review.md](08-compliance-review.md)
 | 06 | [File review note](06-file-review-note.md) | Per-file attestation; no removals | — | ✅ Complete |
 | 06 | [Draft attestation](06-draft-attestation.md) | Block-indexed batch review | — | ✅ Complete |
 | 06 | Scope and draft | Seven technique files drafted and attested | — | ✅ Complete |
-| 08 | Quality review | Post-draft compliance pass | — | ⬚ Pending |
+| 08 | Expressiveness | Schema expressiveness — 0 findings | — | ✅ Complete |
+| 08 | [Conformance findings](08-conformance-findings.md) | 2 bare `#template` cites — fix-all applied | — | ✅ Complete |
+| 08 | Rule hygiene / enforcement | 0 findings each | — | ✅ Complete |
+| 08 | [Verified findings](08-verified-findings.md) | Post-draft verified set; no criticals | — | ✅ Complete |
+| 08 | Quality review | Post-draft audits + conformance fixes | — | ✅ Complete |
 | 09 | Validate and commit | Validate and commit in edit tree | — | ⬚ Pending |
 | 10 | Post-update review | Confirm findings closed | — | ⬚ Pending |
 | 11 | Retrospective | Close-out | — | ⬚ Pending |
