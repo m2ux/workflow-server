@@ -1,6 +1,6 @@
 # Slim work-package planning artifacts — July 2026
 
-> Update · Created 2026-07-17 · **Status:** Planning
+> Update · Created 2026-07-17 · **Status:** Reviewing
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -42,7 +42,7 @@ Full dimension deltas (purpose, activity list, checkpoints, artifacts, rules): [
 | 02 | Intake and context | Mode, literacy, problem overview | 15-25m | ✅ Complete |
 | 03 | [Design specification](03-design-specification.md) | Change request + acceptance criteria | 20-40m | ✅ Complete |
 | 03 | [Assumptions log](03-assumptions-log.md) | Design assumptions reconciled | 5-10m | ✅ Complete |
-| 05 | Impact analysis | Blast radius; confirm no topology change | 15-30m | ⬚ Pending |
+| 05 | [Impact analysis](05-impact-analysis.md) | Blast radius; confirm no topology change | 15-30m | ✅ Complete |
 | 06 | Scope manifest | Confirmed file list | 10-20m | ⬚ Pending |
 | 07 | Implementation | Edit techniques/resources/checkpoint messages | 45-90m | ⬚ Pending |
 | 08 | Quality review | Post-update compliance | 20-40m | ⬚ Pending |
