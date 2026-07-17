@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Audit `rules[]` across the workflow, activities, and techniques for hygiene: protocol restatement, sibling contradictions, cross-level duplication (with the worker-visibility carve-out), flat prefix patterns, ambiguity, and single-step rules (`no-rule-protocol-restatement`–`no-one-step-rules`).
+Audit `rules[]` across the workflow, activities, and techniques for hygiene: protocol restatement, sibling contradictions, cross-level duplication, worker-rule reach, flat prefix patterns, ambiguity, and single-step rules (`no-rule-protocol-restatement`–`no-one-step-rules`, including `worker-rule-reach`).
 
 ## Outputs
 
