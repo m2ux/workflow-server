@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.10.0
+version: 1.11.0
 name: Quality Review
 description: Quality review of drafted workflow content.
 required: true
@@ -50,7 +50,7 @@ steps:
       variable: operation_type
       operator: ==
       value: review
-    message: "Compliance report complete. {review_findings_count} findings across {target_workflow_ids} ([compliance report]({report_path}))."
+    message: "Compliance report complete. {review_findings_count} findings across {target_workflow_ids} ([compliance report]({report_path}); [principle findings]({principle_findings_path}); [anti-pattern findings]({anti_pattern_findings_path}); [verified findings]({verified_findings_path}))."
     options:
       - id: fix-issues
         label: Fix identified issues
@@ -122,7 +122,7 @@ steps:
           variable: expressiveness_finding_count
           operator: ">"
           value: 0
-    message: "Schema expressiveness review complete. {expressiveness_finding_count} findings."
+    message: "Schema expressiveness review complete. {expressiveness_finding_count} findings ([expressiveness findings]({expressiveness_findings_path}))."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
@@ -184,7 +184,7 @@ steps:
           variable: conformance_finding_count
           operator: ">"
           value: 0
-    message: "Convention conformance review complete. {conformance_finding_count} divergences found."
+    message: "Convention conformance review complete. {conformance_finding_count} divergences ([conformance findings]({conformance_findings_path}))."
     blocking: false
     defaultOption: fix-all
     autoAdvanceMs: 30000
@@ -249,7 +249,7 @@ steps:
           variable: rule_hygiene_finding_count
           operator: ">"
           value: 0
-    message: "Rule hygiene audit complete. {rule_hygiene_finding_count} findings (restatements, contradictions, duplications, prefix patterns)."
+    message: "Rule hygiene audit complete. {rule_hygiene_finding_count} findings ([rule hygiene findings]({rule_hygiene_findings_path}))."
     blocking: false
     defaultOption: fix-all
     autoAdvanceMs: 30000
@@ -311,7 +311,7 @@ steps:
           variable: enforcement_finding_count
           operator: ">"
           value: 0
-    message: "Rule-to-structure audit complete. {enforcement_finding_count} text-only rules found."
+    message: "Rule-to-structure audit complete. {enforcement_finding_count} text-only rules ([enforcement findings]({enforcement_findings_path}))."
     blocking: false
     defaultOption: add-enforcement
     autoAdvanceMs: 30000
@@ -339,6 +339,22 @@ steps:
           variable: scope_manifest_confirmed
           operator: ==
           value: true
+  - kind: action
+    id: announce-verified-findings
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
+    actions:
+      - action: message
+        message: "Verified audit findings ([verified findings]({verified_findings_path}))."
   - kind: action
     id: classify-audit-findings
     condition:

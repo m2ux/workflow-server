@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.19.0
+version: 1.21.0
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -106,6 +106,50 @@ variables:
     type: string
     description: Absolute path to the persisted compliance or post-update review report.
     defaultValue: ""
+  - name: structural_inventory_path
+    type: string
+    description: Absolute path to the persisted structural-inventory artifact (update/review).
+    defaultValue: ""
+  - name: drafting_plan_path
+    type: string
+    description: Absolute path to the persisted per-file drafting-plan artifact.
+    defaultValue: ""
+  - name: file_review_note_path
+    type: string
+    description: Absolute path to the persisted per-file review-note artifact.
+    defaultValue: ""
+  - name: expressiveness_findings_path
+    type: string
+    description: Absolute path to the persisted expressiveness-findings artifact when findings exist.
+    defaultValue: ""
+  - name: conformance_findings_path
+    type: string
+    description: Absolute path to the persisted conformance-findings artifact when findings exist.
+    defaultValue: ""
+  - name: rule_hygiene_findings_path
+    type: string
+    description: Absolute path to the persisted rule-hygiene-findings artifact when findings exist.
+    defaultValue: ""
+  - name: enforcement_findings_path
+    type: string
+    description: Absolute path to the persisted enforcement-findings artifact when findings exist.
+    defaultValue: ""
+  - name: verified_findings_path
+    type: string
+    description: Absolute path to the persisted verified-findings artifact.
+    defaultValue: ""
+  - name: principle_findings_path
+    type: string
+    description: Absolute path to the persisted principle-findings artifact (review mode).
+    defaultValue: ""
+  - name: anti_pattern_findings_path
+    type: string
+    description: Absolute path to the persisted anti-pattern-findings artifact (review mode).
+    defaultValue: ""
+  - name: dimension_questions
+    type: string
+    description: Markdown elicitation prompt for the current design dimension (from prepare-dimension).
+    defaultValue: ""
   - name: review_scope_confirmed
     type: boolean
     description: "In review mode: whether the user confirmed the audit target set in intake"
@@ -139,7 +183,7 @@ variables:
     description: Current file being drafted during the content drafting loop
   - name: has_unflagged_removals
     type: boolean
-    description: True when content drafting detects removals not flagged during impact analysis. Produced by present-for-review.
+    description: True when content drafting detects removals not flagged during impact analysis. Produced by review-drafted-file.
     defaultValue: false
   - name: needs_audit_fixes
     type: boolean

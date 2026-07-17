@@ -1,17 +1,25 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Audit a workflow's adherence to the design principles, classifying each principle as compliant, partially compliant, or violating with file/field/line citations.
+Audit a workflow's adherence to the design principles, classifying each principle as compliant, partially compliant, or violating with file/field/line citations, and persist the findings.
 
 ## Outputs
 
 ### principle_findings
 
 Per-principle Pass / Partial / Violation classifications with file, field, and line citations.
+
+### principle_findings_path
+
+Absolute path to the persisted principle-findings artifact.
+
+#### artifact
+
+`principle-findings.md`
 
 ## Protocol
 
@@ -25,6 +33,6 @@ Per-principle Pass / Partial / Violation classifications with file, field, and l
 
 - Cross-reference schema field usage against `workflow.schema.json`, `activity.schema.json`, `technique.schema.json`, and `condition.schema.json` when the stance requires it
 
-### 3. Present Findings
+### 3. Persist Findings
 
-- Present `{principle_findings}`: per-principle Pass / Partial / Violation with citations
+- Persist `{principle_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `principle-findings.md`; capture `{principle_findings_path}`

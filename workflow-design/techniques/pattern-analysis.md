@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
 
-Extract structural and content patterns from comparable existing workflows for reuse in the target, persist the comparison, and present it alongside the proposed structure.
+Extract structural and content patterns from comparable existing workflows for reuse in the target, and persist the comparison alongside the proposed structure.
 
 ## Outputs
 
@@ -36,7 +36,3 @@ Absolute path to the written pattern-analysis artifact.
 
 - Persist the comparison via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `pattern-analysis.md`
 - Capture the written location as `{pattern_analysis_path}`
-
-### 5. Present Patterns
-
-- Present the comparison (or point at the artifact)

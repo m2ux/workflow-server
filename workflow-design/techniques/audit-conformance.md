@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.3.1
+  version: 1.4.0
 ---
 
 ## Capability
 
-Audit drafted content for convention conformance against reference workflows — apply the convention-conformance checklist (naming, field order, structure), flag each divergence, and decide whether it is justified or should be brought into conformance. Definition prose voice is out of scope for this pass.
+Audit drafted content for convention conformance against reference workflows — apply the convention-conformance checklist (naming, field order, structure), flag each divergence with justified/bring-into-conformance disposition, and persist findings when any exist. Definition prose voice is out of scope for this pass.
 
 ## Outputs
 
@@ -16,6 +16,14 @@ Conformance divergences — each a divergence with its file, the diverging const
 ### conformance_finding_count
 
 Count of entries in `{conformance_findings}`.
+
+### conformance_findings_path
+
+Absolute path to the persisted findings artifact when `{conformance_finding_count}` is greater than zero; empty otherwise.
+
+#### artifact
+
+`conformance-findings.md`
 
 ## Protocol
 
@@ -33,8 +41,8 @@ Count of entries in `{conformance_findings}`.
 - Compare drafted `workflow.yaml`, activities, techniques, resources, and READMEs against the reference baseline using every concern in convention-conformance
 - For each divergence: record file, construct, reference convention, and disposition (justified vs bring into conformance) into `{conformance_findings}`
 
-### 4. Present Findings
+### 4. Persist Findings
 
-- Present `{conformance_findings}`: conventions followed, conventions diverged, and justification status for each divergence
 - Set `{conformance_finding_count}` to the number of findings
-
+- When `{conformance_finding_count}` is greater than zero: persist `{conformance_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `conformance-findings.md`; capture `{conformance_findings_path}`
+- When `{conformance_finding_count}` is zero: leave `{conformance_findings_path}` empty

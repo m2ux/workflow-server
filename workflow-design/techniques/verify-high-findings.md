@@ -1,17 +1,25 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Independently verify each High-tier audit finding before it drives remediation: re-derive the finding from the cited construct without relying on the originating pass's reasoning, refute by default, recalibrate severity, and confirm which Highs are real. Run a lighter confirmation pass over surviving Medium findings.
+Independently verify each High-tier audit finding before it drives remediation: re-derive the finding from the cited construct without relying on the originating pass's reasoning, refute by default, recalibrate severity, confirm which Highs are real, run a lighter confirmation pass over surviving Medium findings, and persist the verified set.
 
 ## Outputs
 
 ### verified_findings
 
 The recalibrated finding set after verification — each High finding marked confirmed, downgraded, or withdrawn with its re-derivation evidence, and each surviving Medium finding spot-confirmed. This is the finding set that drives classification and remediation.
+
+### verified_findings_path
+
+Absolute path to the persisted verified-findings artifact.
+
+#### artifact
+
+`verified-findings.md`
 
 ## Protocol
 
@@ -28,9 +36,9 @@ The recalibrated finding set after verification — each High finding marked con
 
 - Run a lighter confirmation pass over surviving Medium findings: spot-confirm that the cited construct exists and the finding class is right. No full adversarial re-derivation.
 
-### 4. Present Verified Findings
+### 4. Persist Verified Findings
 
-- Present `{verified_findings}` to the user: confirmed Highs with evidence, withdrawn or downgraded Highs with the reason, and the confirmation status of the Medium findings.
+- Persist `{verified_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `verified-findings.md`; capture `{verified_findings_path}`
 
 ## Rules
 

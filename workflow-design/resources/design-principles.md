@@ -88,7 +88,7 @@ Symbol ids state what the value *is* in affirmative, head-noun-last `snake_case`
 
 ## 19. Keep Orchestration in Structure
 
-Activities own stage, checkpoints, transitions, and graph progress. Techniques stay stage-agnostic: they produce values and durable evidence — they do not name the surrounding activity flow or prescribe user decisions they cannot surface as checkpoints.
+Activities own stage, checkpoints, transitions, and graph progress. Techniques stay stage-agnostic: they produce values and durable evidence — they do not name the surrounding activity flow or the gates that consume their outputs.
 
 ## 20. Match the Harness Surface
 
@@ -101,3 +101,7 @@ Constructs live in their own files. Parents reference siblings; they do not embe
 ## 22. Close the Loop
 
 When implementation is in scope, a recommendation is followed by action or an explicit stop gate — analysis alone is not the terminal deliverable.
+
+## 23. Keep Session Interaction in Activities
+
+Techniques are session-blind: take inputs, process (including tools and composed ops), and emit outputs. They do not know about user sessions or how to interact with humans. Activities are session-aware — they own when and how technique products reach the user (`action: message`, checkpoint `message` / `options`, artifact links).

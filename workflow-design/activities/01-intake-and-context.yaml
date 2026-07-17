@@ -1,9 +1,15 @@
 id: intake-and-context
-version: 1.6.0
+version: 1.7.0
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 required: true
 steps:
+  - kind: action
+    id: bind-planning-folder-path
+    actions:
+      - action: set
+        target: planning_folder_path
+        message: Server-resolved canonical absolute planning folder from the start_session / get_workflow summary (under the server's workspace .engineering planning root). Write location for ALL of this design session's planning artifacts.
   - kind: technique
     id: intake-classification
     technique: intake-classification
@@ -52,7 +58,7 @@ steps:
       variable: operation_type
       operator: ==
       value: review
-    message: "Compliance review target set: {target_workflow_ids}."
+    message: "Compliance review target set: {target_workflow_ids} ([structural inventory]({structural_inventory_path}))."
     blocking: true
     options:
       - id: confirm-review-target
@@ -67,12 +73,6 @@ steps:
         effect:
           setVariable:
             review_scope_confirmed: false
-  - kind: action
-    id: bind-planning-folder-path
-    actions:
-      - action: set
-        target: planning_folder_path
-        message: Server-resolved canonical absolute planning folder from the start_session / get_workflow summary (under the server's workspace .engineering planning root). Write location for ALL of this design session's planning artifacts.
   - kind: technique
     id: initialize-planning-folder
     technique:
@@ -116,7 +116,7 @@ steps:
           variable: update_seeded_from_review
           operator: "!="
           value: true
-    message: "Existing workflow structure and requested changes ([planning README]({planning_folder_path}/README.md#problem-overview))."
+    message: "Existing workflow structure and requested changes ([structural inventory]({structural_inventory_path}), [planning README]({planning_folder_path}/README.md#problem-overview))."
     blocking: true
     options:
       - id: confirmed

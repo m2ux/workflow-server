@@ -1,17 +1,25 @@
 ---
 metadata:
-  version: 1.11.0
+  version: 1.12.0
 ---
 
 ## Capability
 
-Audit a workflow's authored content against the anti-pattern catalog: load the catalog, apply each entry's detect / do-not-flag / fix guidance to the target files (and, for Tool-Technique-Doc Consistency entries, against the actual harness tool surface and authoritative bootstrap resources), and present findings with file, content, and recommended fix.
+Audit a workflow's authored content against the anti-pattern catalog: load the catalog, apply each entry's detect / do-not-flag / fix guidance to the target files (and, for Tool-Technique-Doc Consistency entries, against the actual harness tool surface and authoritative bootstrap resources), and persist findings with file, content, and recommended fix.
 
 ## Outputs
 
 ### anti_pattern_findings
 
 Findings grouped by catalog entry **name** / **designator**: file path, offending content, and recommended fix.
+
+### anti_pattern_findings_path
+
+Absolute path to the persisted anti-pattern-findings artifact.
+
+#### artifact
+
+`anti-pattern-findings.md`
 
 ## Protocol
 
@@ -29,7 +37,6 @@ Findings grouped by catalog entry **name** / **designator**: file path, offendin
 - Prefer structural evidence (fields, shapes, phrases named by the entry) over inferred intent
 - Do not cite or depend on the catalog's total entry count
 
-### 3. Present Findings
+### 3. Persist Findings
 
-- Present `{anti_pattern_findings}` grouped by catalog entry **name** / **designator**: file, content, recommended fix
-- Do not reproduce catalog essays in the presentation — cite the entry name and the concrete violation only
+- Persist `{anti_pattern_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `anti-pattern-findings.md`; capture `{anti_pattern_findings_path}`

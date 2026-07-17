@@ -1,5 +1,5 @@
 id: requirements-refinement
-version: 1.7.0
+version: 1.8.0
 name: Requirements Refinement
 description: A confirmed workflow specification across its design dimensions, with the design assumptions it rests on surfaced, reconciled, and reviewed.
 required: true
@@ -36,8 +36,21 @@ steps:
     maxIterations: 12
     steps:
       - kind: technique
-        id: elicit-dimension
-        technique: elicitation
+        id: prepare-dimension
+        technique: prepare-dimension
+      - kind: action
+        id: surface-dimension-questions
+        actions:
+          - action: message
+            message: "Design dimension `{current_dimension}` — elicit answers to:\n\n{dimension_questions}"
+      - kind: technique
+        id: capture-dimension
+        technique: capture-dimension
+      - kind: action
+        id: announce-dimension-captured
+        actions:
+          - action: message
+            message: "Captured design dimension `{current_dimension}` into the running specification."
   - kind: technique
     id: persist-specification
     technique: persist-design-specification

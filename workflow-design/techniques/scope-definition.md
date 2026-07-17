@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 1.2.0
 ---
 
 ## Capability
 
-Define the complete scope and structure: verify the workflows worktree, design the folder layout and naming scheme, enumerate every file to create/modify/remove, and present the structural design and drafting order.
+Define the complete scope and structure: verify the workflows worktree, design the folder layout and naming scheme, enumerate every file to create/modify/remove, assemble the structural design and drafting order, and persist the scope manifest (including those sections) for activity-layer review.
 
 ## Outputs
 
@@ -27,7 +27,7 @@ Number of files in `{scope_manifest}`.
 
 ### scope_manifest_path
 
-Absolute path to the written scope-manifest artifact.
+Absolute path to the written scope-manifest artifact (includes structural design and drafting order sections).
 
 #### artifact
 
@@ -47,14 +47,14 @@ Absolute path to the written scope-manifest artifact.
 
 - Enumerate every file to create/modify/remove with full paths: per-file path, action (create/modify/remove), type (workflow/activity/technique/resource/readme), and one-line description — no implicit files; capture as `{scope_manifest}` and set `{file_count}`
 
-### 4. Present Structural Design
+### 4. Assemble Structural Design
 
-- Assemble and present `{structural_design}`: the directory tree of the proposed structure with its file manifest, a transition diagram (for sequential workflows), and a comparison against the adopted reference patterns
+- Assemble `{structural_design}`: the directory tree of the proposed structure with its file manifest, a transition diagram (for sequential workflows), and a comparison against the adopted reference patterns
 
-### 5. Present Drafting Order
+### 5. Assemble Drafting Order
 
-- Assemble and present `{drafting_order}`: drafting order (`workflow.yaml`, activities, techniques, resources, README) with rationale grounded in the reference-dependency chain
+- Assemble `{drafting_order}`: drafting order (`workflow.yaml`, activities, techniques, resources, README) with rationale grounded in the reference-dependency chain
 
 ### 6. Persist Scope Manifest
 
-- Persist `{scope_manifest}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `scope-manifest.md`; capture the written location as `{scope_manifest_path}`
+- Persist `{scope_manifest}` together with `{structural_design}` and `{drafting_order}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `scope-manifest.md`; capture the written location as `{scope_manifest_path}`

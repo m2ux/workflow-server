@@ -907,13 +907,13 @@ A rule slug is negation or narration instead of a positive invariant.
 
 "return to the planning stage" / "at the validate activity" / "present the … checkpoint" / "after each task, before confirmation" / "flag every removal for explicit confirmation with a diff-style view"
 
-A technique encodes workflow stage, or a user-facing decision it cannot surface.
+A technique encodes workflow stage, graph position, or a decision gate it cannot own.
 
-**Detect:** Technique Capability/Protocol/Rules (a) mention stage/activity (named or "calling/consuming/producing activity"), checkpoint, loop/iteration, transition/decision routing, or position/timing in the activity flow ("after each task", "before user confirmation", "before the next step"), or (b) prescribe user confirmation, approval, or choice ("confirm with the user", "explicit confirmation", "require the user to…") as if the technique itself surfaces that decision. Test: if the sentence answers *where/when in the workflow?*, *which checkpoint surrounds me?*, or *how does the user decide?*, flag it. Techniques answer only *what value do I produce?* — gateable outputs and durable artifacts; activities own checkpoints that link those artifacts (`structure-backed-constraints`, `link-named-artifacts`).
+**Detect:** Technique Capability/Protocol/Rules (a) mention stage/activity (named or "calling/consuming/producing activity"), checkpoint, loop/iteration, transition/decision routing, or position/timing in the activity flow ("after each task", "before user confirmation", "before the next step"), or (b) prescribe user confirmation, approval, or choice ("confirm with the user", "explicit confirmation", "require the user to…") as if the technique itself owns that gate. Test: if the sentence answers *where/when in the workflow?*, *which checkpoint surrounds me?*, or *how does the user decide?*, flag it. Techniques answer only *what value do I produce?* — gateable outputs and durable artifacts; activities own checkpoints that link those artifacts (`structure-backed-constraints`, `link-named-artifacts`).
 
-**Do not flag:** Purpose-phrased work with no orchestration locus ("final validation", "no separate commit step follows"); values the technique emits for the activity to route (counts, paths, severity, recommended option id); inventoring decisions *into* an artifact the activity will gate on.
+**Do not flag:** Purpose-phrased work with no orchestration locus ("final validation", "no separate commit step follows"); values the technique emits for the activity to route (counts, paths, severity, recommended option id); inventoring decisions *into* an artifact the activity will gate on; bare present/surface-to-user with no stage or gate named (`session-interaction-in-technique`).
 
-**Fix:** Migrate user-facing decisions to activity `kind: checkpoint` steps gated on technique outputs; migrate other orchestration to activity transitions/`when`/loops. Rewrite the technique to produce the durable evidence (artifact section, count, path) without naming the gate. See [Keep Orchestration in Structure](./design-principles.md#19-keep-orchestration-in-structure); also `no-activity-prose-rules`.
+**Fix:** Migrate user-facing decisions to activity `kind: checkpoint` steps gated on technique outputs; migrate other orchestration to activity transitions/`when`/loops. Rewrite the technique to produce the durable evidence (artifact section, count, path) without naming the gate. See [Keep Orchestration in Structure](./design-principles.md#19-keep-orchestration-in-structure); also `no-activity-prose-rules`, `session-interaction-in-technique`.
 
 ### AP-69. no-activity-prose-rules
 
@@ -1409,7 +1409,7 @@ Protocol indexing, I/O declaration, and composition smells on technique markdown
 
 Discrete sequential protocol phases are collapsed into one numbered step.
 
-**Detect:** A technique `## Protocol` has a numbered `### N. Title` whose body holds two or more bullets (or imperative sentences) that are distinct sequential phases — each produces a different outcome or must complete before the next (edit then validate then record; load then present; persist then present). Test: reordering or dropping a bullet changes the phase sequence, not merely the elaboration of one phase.
+**Detect:** A technique `## Protocol` has a numbered `### N. Title` whose body holds two or more bullets (or imperative sentences) that are distinct sequential phases — each produces a different outcome or must complete before the next (edit then validate then record; load then assemble; assemble then persist). Test: reordering or dropping a bullet changes the phase sequence, not merely the elaboration of one phase.
 
 **Do not flag:** Multiple bullets that elaborate a single phase (how-to for one write, constraints on one apply, loop body over one entry, mode branches of one action); `>` caveats under a primary instruction; a single-bullet step.
 
@@ -1417,15 +1417,15 @@ Discrete sequential protocol phases are collapsed into one numbered step.
 
 ### AP-109. technique-outputs-declared
 
-"Present the per-file drafting plan…" with no `## Outputs` entry
+"Assemble the per-file drafting plan…" with no `## Outputs` entry
 
-Capability or Protocol produces or presents a value that is not declared on Outputs.
+Capability or Protocol produces a value that is not declared on Outputs.
 
-**Detect:** Technique Capability or Protocol assembles, derives, presents, or returns a durable or gateable value (plan, findings, summary, classification, path, count, structured assessment) that has no matching `### <id>` under `## Outputs`. Test: a later step, checkpoint, or consumer could bind or cite the value — if so, it must be a declared output (files also need `#### artifact` per `artifact-not-buried`).
+**Detect:** Technique Capability or Protocol assembles, derives, or returns a durable or gateable value (plan, findings, summary, classification, path, count, structured assessment) that has no matching `### <id>` under `## Outputs`. Test: a later step, checkpoint, or consumer could bind or cite the value — if so, it must be a declared output (files also need `#### artifact` per `artifact-not-buried`).
 
-**Do not flag:** Pure side-effects with no bindable product (push, open PR, mark ready) when no path/number is captured; ephemeral in-chat narration that is not confirmed or consumed; values already declared on Outputs; input-only gaps (`technique-inputs-declared`).
+**Do not flag:** Pure side-effects with no bindable product (push, open PR, mark ready) when no path/number is captured; values already declared on Outputs; input-only gaps (`technique-inputs-declared`); Protocol that only presents/surfaces a value to a user without declaring it (`session-interaction-in-technique` — and still declare the output if it is gateable).
 
-**Fix:** Declare `### <id>` under `## Outputs` naming what the value IS; reference `{id}` in Protocol when assembling/presenting. Add `#### artifact` when the value is a file.
+**Fix:** Declare `### <id>` under `## Outputs` naming what the value IS; reference `{id}` in Protocol when assembling. Add `#### artifact` when the value is a file. Do not add a Present phase — the activity surfaces `{id}` (`session-interaction-in-technique`).
 
 ### AP-110. duplicate-shared-capability
 
@@ -1462,3 +1462,15 @@ A derived shadow variable duplicates an authoritative state variable.
 **Do not flag:** Distinct facts that merely correlate; Output prose that defines a projection without declaring a second workflow variable (`contract-not-procedure`); mode encoded only as rules/prose with no state variable (`mode-as-state`).
 
 **Fix:** Keep the authoritative variable; rewrite conditions, technique inputs, and effects to compare it directly; delete the shadow declarations and every write to them. See also [Single Source of Truth](./design-principles.md#13-single-source-of-truth).
+
+### AP-113. session-interaction-in-technique
+
+"Present `{drafting_plan}`" / "Present findings to the user" / "surface the summary in chat"
+
+A technique performs or prescribes human/session interaction.
+
+**Detect:** Technique Capability, Protocol, or Rules instructs presenting, surfacing, showing, narrating, or otherwise delivering content to a user, session, or chat — or otherwise encodes how a human should be interacted with — rather than only producing bindable `{id}` outputs (and tool/op side-effects). Test: if the imperative requires a human audience or session channel to succeed, and no tool/op owns that channel, flag it. Techniques are session-blind: inputs → process → outputs; activities own `action: message`, checkpoint `message`/`options`, and artifact links.
+
+**Do not flag:** Assembling or persisting a declared output the activity will surface; applying a tool/op whose domain is external delivery (push, open PR, send) when the technique only binds that op; naming "the user's request" as an input origin (`io-agnostic-contract`); stage/gate locus smells (`technique-stage-agnostic`).
+
+**Fix:** Delete Present/surface/show-to-user phases; keep assemble/derive/persist that emit `{id}`. Put human-facing delivery on the binding activity (`action: message` and/or checkpoint message linking `{id}` / path). See [Keep Session Interaction in Activities](./design-principles.md#23-keep-session-interaction-in-activities).

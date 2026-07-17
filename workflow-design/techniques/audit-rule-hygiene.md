@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.1
+  version: 1.3.0
 ---
 
 ## Capability
 
-Audit `rules[]` across the workflow, activities, and techniques against the Rule Hygiene section of the anti-pattern catalog, and present findings with file, rule key, and recommended fix.
+Audit `rules[]` across the workflow, activities, and techniques against the Rule Hygiene section of the anti-pattern catalog, and persist findings when any exist.
 
 ## Outputs
 
@@ -16,6 +16,14 @@ Rule-hygiene findings — each a flagged rule with its file, rule key, the hygie
 ### rule_hygiene_finding_count
 
 Count of entries in `{rule_hygiene_findings}`.
+
+### rule_hygiene_findings_path
+
+Absolute path to the persisted findings artifact when `{rule_hygiene_finding_count}` is greater than zero; empty otherwise.
+
+#### artifact
+
+`rule-hygiene-findings.md`
 
 ## Protocol
 
@@ -31,8 +39,8 @@ Count of entries in `{rule_hygiene_findings}`.
 - For each entry: apply its **Detect** (or equivalent prose), honor **Do not flag** / caveats, and record **Fix** when a violation is found
 - For each finding record into `{rule_hygiene_findings}`: entry **name** (primary), **AP-XX** designator, file path, rule key, offending content, recommended fix
 
-### 3. Present Findings
+### 3. Persist Findings
 
-- Present `{rule_hygiene_findings}` grouped by catalog entry **name** / **designator**: file, rule key, content, recommended fix
 - Set `{rule_hygiene_finding_count}` to the number of findings
-
+- When `{rule_hygiene_finding_count}` is greater than zero: persist `{rule_hygiene_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `rule-hygiene-findings.md`; capture `{rule_hygiene_findings_path}`
+- When `{rule_hygiene_finding_count}` is zero: leave `{rule_hygiene_findings_path}` empty

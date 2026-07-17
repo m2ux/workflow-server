@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.1
+  version: 1.3.0
 ---
 
 ## Capability
 
-Audit every `rules[]` entry for structural backing by applying `structure-backed-constraints`, and present text-only critical rules with recommended enforcement mechanisms.
+Audit every `rules[]` entry for structural backing by applying `structure-backed-constraints`, and persist text-only critical rules with recommended enforcement mechanisms when any exist.
 
 ## Outputs
 
@@ -16,6 +16,14 @@ Text-only rules found — each with its file, rule content, whether it is critic
 ### enforcement_finding_count
 
 Count of entries in `{enforcement_findings}`.
+
+### enforcement_findings_path
+
+Absolute path to the persisted findings artifact when `{enforcement_finding_count}` is greater than zero; empty otherwise.
+
+#### artifact
+
+`enforcement-findings.md`
 
 ## Protocol
 
@@ -30,8 +38,8 @@ Count of entries in `{enforcement_findings}`.
 - Apply Detect / Do not flag / Fix from `structure-backed-constraints`
 - For each finding record into `{enforcement_findings}`: file, rule content, criticality, recommended structural mechanism
 
-### 3. Present Findings
+### 3. Persist Findings
 
-- Present `{enforcement_findings}`: text-only rules, structurally-enforced rules, and recommendations for adding enforcement where needed
 - Set `{enforcement_finding_count}` to the number of findings
-
+- When `{enforcement_finding_count}` is greater than zero: persist `{enforcement_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `enforcement-findings.md`; capture `{enforcement_findings_path}`
+- When `{enforcement_finding_count}` is zero: leave `{enforcement_findings_path}` empty

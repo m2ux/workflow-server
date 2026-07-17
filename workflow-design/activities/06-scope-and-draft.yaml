@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.6.0
+version: 1.7.0
 name: Scope and Draft
 description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file.
 required: true
@@ -11,7 +11,7 @@ steps:
     technique: scope-definition
   - kind: checkpoint
     id: scope-and-structure-confirmed
-    message: "Complete file manifest and implementation order ([scope manifest]({scope_manifest_path}))."
+    message: "Complete file manifest, structural design, and drafting order ([scope manifest]({scope_manifest_path}))."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
@@ -49,8 +49,8 @@ steps:
       value: true
     steps:
       - kind: technique
-        id: present-file-approach
-        technique: present-file-approach
+        id: assemble-file-approach
+        technique: assemble-file-approach
       - kind: checkpoint
         id: file-approach-confirmed
         condition:
@@ -58,7 +58,7 @@ steps:
           variable: operation_type
           operator: "!="
           value: update
-        message: "Drafting approach for '{current_file}'."
+        message: "Drafting approach for '{current_file}' ([drafting plan]({drafting_plan_path}))."
         options:
           - id: confirmed
             label: Yes, proceed with this approach
@@ -70,8 +70,8 @@ steps:
         id: yaml-authoring
         technique: yaml-authoring
       - kind: technique
-        id: present-for-review
-        technique: present-for-review
+        id: review-drafted-file
+        technique: review-drafted-file
       - kind: checkpoint
         id: file-review
         condition:
@@ -79,7 +79,7 @@ steps:
           variable: operation_type
           operator: "!="
           value: update
-        message: "Drafted content for '{current_file}'."
+        message: "Drafted content for '{current_file}' ([file review note]({file_review_note_path}))."
         options:
           - id: accepted
             label: Accepted
@@ -103,7 +103,7 @@ steps:
               variable: has_unflagged_removals
               operator: ==
               value: true
-        message: Content removal detected that was not flagged during impact analysis.
+        message: "Content removal detected that was not flagged during impact analysis ([file review note]({file_review_note_path}), [impact analysis]({impact_analysis_path}))."
         options:
           - id: proceed
             label: Proceed with changes

@@ -59,4 +59,4 @@ Before relying on a referenced resource's content, load that resource. Do not re
 
 ### apply-anti-patterns-when-authoring
 
-When authoring or revising workflow definition content (YAML prose fields, technique/resource markdown, README orientation), apply [anti-patterns](../resources/anti-patterns.md) as write-time constraints — especially Schema Expressiveness and Description Hygiene — rather than relying on a later quality-review pass to discover violations. Do not restate entry Detect criteria here.
+When authoring or revising workflow definition content (YAML prose fields, technique/resource markdown, README orientation), apply [anti-patterns](../resources/anti-patterns.md) as write-time constraints — especially Schema Expressiveness and Description Hygiene — rather than deferring discovery to a later audit. Do not restate entry Detect criteria here.
