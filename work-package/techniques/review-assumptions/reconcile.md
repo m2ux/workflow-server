@@ -57,7 +57,7 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 
 - Update the `{assumptions_log}` rows in place: write finding + evidence into the Resolution column and Validated / Invalidated / Partially Validated into the Outcome column; remove the Open Assumptions entry of any assumption that resolved
 - Add any newly surfaced assumptions as new rows, Outcome `Open`, with their classification (code-resolvable or not)
-- Present the scorecard (see [assumption-reconciliation](../../resources/assumption-reconciliation.md#scorecard)) in the session after each pass; do NOT persist count tables in the log — the rows are the record
+- Emit the scorecard data (see [assumption-reconciliation](../../resources/assumption-reconciliation.md#scorecard)) as a bindable pass result after each pass; do NOT persist count tables in the log — the rows are the record
 - In Open Assumptions entries, each bold-label line MUST end with two trailing spaces to produce a line break in rendered markdown (no bullet prefixes) — see the [markdown-line-breaks](../manage-artifacts/TECHNIQUE.md#markdown-line-breaks) rule
 
 ### 4. Check Convergence
@@ -77,11 +77,11 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 
 ### no-user-interaction
 
-Reconciliation runs autonomously, without user interaction. The user is presented only the final converged result.
+Reconciliation runs autonomously, without user interaction. Converged results bind as outputs for the activity to surface.
 
 ### classification-transparency
 
-When presenting the converged result, include the classification rationale for each remaining open assumption — explain why it cannot be resolved through code analysis.
+When emitting the converged result, include the classification rationale for each remaining open assumption — explain why it cannot be resolved through code analysis.
 
 ### code-resolvable
 

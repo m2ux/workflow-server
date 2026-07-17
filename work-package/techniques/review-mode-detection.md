@@ -42,8 +42,8 @@ The originating user request and any context gathered so far — the signal sour
 ## Protocol
 
 1. Inspect `{user_request}` for signals that it is a review of an existing PR rather than new work (an explicit "review", a PR number or URL, "is this safe to merge", and similar). Decide whether review mode applies.
-2. Set `is_review_mode` to `true` when review is indicated, otherwise `false`. When the signal is ambiguous, confirm with the user before committing the value.
-3. When `is_review_mode` is `true`, obtain the PR reference: take `{pr_reference}` if supplied, otherwise prompt the user for the PR number or URL. Record `review_pr_url`.
+2. Set `is_review_mode` to `true` when review is indicated, otherwise `false`. When the signal is ambiguous, emit an ambiguity flag and leave `is_review_mode` unset until the binding activity resolves it.
+3. When `is_review_mode` is `true`, obtain the PR reference: take `{pr_reference}` if supplied, otherwise emit that a PR number or URL is required and record `review_pr_url` from the activity response.
 4. Resolve the PR number from the reference and record `pr_number`.
 5. Check out the PR branch and record `branch_name` from it so downstream steps that skip branch derivation in review mode have it available.
 6. Extract the associated tracker ticket from the PR body or commit messages (e.g. a Jira key or GitHub issue reference) and record it as `review_ticket_ref` when present.

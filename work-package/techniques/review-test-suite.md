@@ -77,10 +77,7 @@ When `{prior_feedback_triage}` is present, every entry tagged as a reported runt
 
 - Document findings with severity and recommendations
 - Create the `{test_suite_review_report}` in `{planning_folder_path}`
-
-### 6. Present Summary
-
-- Summarize coverage gaps and critical issues
+- Emit a brief summary of coverage gaps and critical issues as part of the bindable report output for the binding activity to surface
 
 ## Rules
 

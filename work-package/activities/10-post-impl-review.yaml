@@ -28,7 +28,7 @@ steps:
         description: Agent rationale paragraphs are accurate. All changes understood. Proceed with automated reviews.
       - id: rationale-confirmed-with-issues
         label: Rationale confirmed (with corrections) — issues found
-        description: Provide rationale corrections (recorded in manual-diff-review-report.md) and comma-separated block indices with issues
+        description: Provide rationale corrections (recorded in the [manual diff review report]({code_review_report})) and comma-separated block indices with issues
         effect:
           setVariable:
             has_flagged_blocks: true
@@ -45,7 +45,7 @@ steps:
       variable: has_flagged_blocks
       operator: ==
       value: true
-    message: "Reviewing block {current_block_index}: {block_path}:{block_line_range}. What's the issue with this change?"
+    message: "Reviewing block {current_block_index}: {block_path}:{block_line_range}. Record the issue with this change, or mark it as a critical blocker."
     blocking: false
     defaultOption: issue-recorded
     autoAdvanceMs: 30000

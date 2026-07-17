@@ -14,7 +14,7 @@ steps:
       variable: unsigned_commits_in_pr
       operator: ==
       value: true
-    message: "Signature scan reports one or more commits without a valid GPG signature in this branch range: {unsigned_commit_list_summary}. Re-sign all unsigned commits now? This rewrites branch history and may require force-with-lease push."
+    message: "Signature scan reports one or more commits without a valid GPG signature in this branch range: {unsigned_commit_list_summary}. Select whether to re-sign all unsigned commits now. Re-signing rewrites branch history and may require force-with-lease push."
     blocking: true
     options:
       - id: resign-all
