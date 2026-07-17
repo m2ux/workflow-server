@@ -10,7 +10,7 @@ metadata:
 
 Condensed, agent-executable reference of the 15 design principles governing workflow creation and modification. Each principle includes the rule and the structural enforcement mechanism.
 
-These principles — together with [anti-patterns](./anti-patterns.md) and [schema-construct-inventory](./schema-construct-inventory.md) — are the design-time authoring corpus. Do **not** copy them into `workflow-design` `rules.activity` / `rules.workflow`: those buckets are session-runtime directives injected into every `get_activity` / `get_workflow` (progress tracker, corrections). Authoring constraints are loaded as resources and enforced by quality-review audits (AP-93).
+These principles — together with [anti-patterns](./anti-patterns.md) and [schema-construct-inventory](./schema-construct-inventory.md) — are the **workflow-design canon** for design-time authoring. Workflow / activity / technique `rules` (and technique `## Rules`) are runtime-relevant only; any design-time constraint found there is migrated into this canon (AP-93), not left as injected session prose.
 
 ---
 

@@ -48,7 +48,7 @@ An activity has a **single ordered `steps[]`** in which every step carries a req
 |---|---|---|
 | "Track whether the user confirmed" | **Variable** | `variables[].name`, `.type`, `.description`, `.defaultValue` |
 | "Can run in fast or thorough mode" | **Activation variable + conditional flow** | a boolean `variable` set by a detection step/checkpoint early in the workflow, with `transitions[].condition` and step `when`/`condition` gates that branch on it |
-| "The agent must always do X" (session conduct) | **Workflow rules** | `rules.workflow` / `rules.activity` / `rules.universal` (partitioned by audience). Design-time authoring standards for *target* workflows are NOT authored here — they live in design-principles / anti-patterns (AP-71, AP-93). |
+| "The agent must always do X" (session conduct) | **Workflow rules** | `rules.workflow` / `rules.activity` / `rules.universal` (partitioned by audience). Runtime-relevant only — design-time authoring standards migrate to the workflow-design canon (AP-71, AP-93). |
 | "Every activity needs this strategy technique" | **Inherited techniques** | `techniques.workflow` (orchestrator, bundled into `get_workflow`) / `techniques.activity` (inherited by every activity, injected into `get_activity`). Activity-local `techniques[]` is STRATEGY only — per-step ops bind via `step.technique` (AP-69). |
 | "Start with the first activity" | **Initial activity** | `initialActivity` (activity ID) |
 
