@@ -18,7 +18,7 @@ steps:
     technique: review-diff
   - kind: checkpoint
     id: file-index-table
-    message: "File index: {change_block_index}, one rationale paragraph per change block. Review the diff in your side-by-side app, then reply with the row numbers of any blocks with issues (e.g. '24, 31') or 'none', plus any rationale corrections (recorded in code-review.md's Manual Diff Review section). Your confirmation is the provenance attestation for each change."
+    message: "File index: {change_block_index}, one rationale paragraph per change block. Review the diff in your side-by-side app, then reply with the row numbers of any blocks with issues (e.g. '24, 31') or 'none', plus any rationale corrections (recorded in the [manual diff review report]({code_review_report}) Manual Diff Review section). Your confirmation is the provenance attestation for each change."
     blocking: false
     defaultOption: rationale-confirmed
     autoAdvanceMs: 30000

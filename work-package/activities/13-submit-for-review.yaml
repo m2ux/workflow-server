@@ -119,7 +119,7 @@ steps:
       variable: stealth_mode
       operator: ==
       value: true
-    message: "FINAL ISOLATION CHECK: you are about to push to remote '{push_remote}' ({push_remote_url}). Confirm this is the verified PRIVATE remote — never push to a public remote in stealth mode."
+    message: "FINAL ISOLATION CHECK: push target is remote '{push_remote}' ({push_remote_url}). Select whether this is the verified PRIVATE remote — never push to a public remote in stealth mode."
     blocking: true
     options:
       - id: confirmed
@@ -218,7 +218,7 @@ steps:
       Findings:
       {body_findings}
 
-      How do you want to proceed?
+      Select whether to proceed with override, provide missing input, or abort submission.
     blocking: true
     options:
       - id: proceed-with-override
