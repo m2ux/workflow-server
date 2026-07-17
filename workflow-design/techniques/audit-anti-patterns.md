@@ -16,7 +16,7 @@ Audit a workflow's authored content against the anti-pattern catalog: load the c
 
 ### 2. Apply Every Entry
 
-- Walk every catalog entry **AP-XX** designator against the target workflow (`workflow.yaml`, activities, techniques, resources, READMEs as each entry's scope implies)
+- Walk every catalog entry (monotonic **AP-XX** designator + kebab-case **name**) against the target workflow (`workflow.yaml`, activities, techniques, resources, READMEs as each entry's scope implies)
 - For each entry: apply its **Detect** (or equivalent prose), honor **Do not flag** / caveats / exceptions, and record **Fix** when a violation is found
 - For each finding record: entry **name** (primary), optional AP-XX designator, file path, offending content, recommended fix
 - Prefer structural evidence (fields, shapes, phrases named by the entry) over inferred intent
@@ -24,5 +24,5 @@ Audit a workflow's authored content against the anti-pattern catalog: load the c
 
 ### 3. Present Findings
 
-- Present findings grouped by catalog entry **name** (include AP-XX if helpful): file, content, recommended fix
+- Present findings grouped by catalog entry **name** and include designator): file, content, recommended fix
 - Do not reproduce catalog essays in the presentation — cite the entry name and the concrete violation only
