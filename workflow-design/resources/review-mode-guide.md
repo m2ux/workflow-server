@@ -74,7 +74,7 @@ The compliance report follows this structure:
 (per-convention pass/fail with details)
 
 ## Rule Hygiene Findings
-(per-rule violations from AP-24–29 with file, rule key, recommended action)
+(per-rule violations from `no-rule-protocol-restatement`–`no-one-step-rules` with file, rule key, recommended action)
 
 ## Rule Enforcement Findings
 (per-rule text-only vs. structurally enforced)

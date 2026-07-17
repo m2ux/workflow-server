@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -18,10 +18,10 @@ Audit a workflow's authored content against the anti-pattern catalog: load the c
 
 - Walk every numbered entry in the catalog against the target workflow (`workflow.yaml`, activities, techniques, resources, READMEs as each entry's scope implies)
 - For each entry: apply its **Detect** (or equivalent prose), honor **Do not flag** / caveats / exceptions, and record **Fix** when a violation is found
-- For each finding record: catalog entry identity (as labeled in the resource), file path, offending content, recommended fix
+- For each finding record: catalog entry **name** (kebab-case label in the resource), file path, offending content, recommended fix
 - Prefer structural evidence (fields, shapes, phrases named by the entry) over inferred intent
 
 ### 3. Present Findings
 
-- Present findings grouped by catalog entry: counts, file, content, recommended fix
-- Do not reproduce catalog essays in the presentation — cite the entry and the concrete violation only
+- Present findings grouped by catalog entry **name**: counts, file, content, recommended fix
+- Do not reproduce catalog essays in the presentation — cite the entry name and the concrete violation only

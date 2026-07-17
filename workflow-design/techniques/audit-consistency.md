@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Audit the tool / technique / bootstrap-resource / doc boundary for consistency: tool-name accuracy, return-value fidelity, bootstrap completeness, cross-technique consistency, behavioural-guidance duplication, tool-surface overlap, and doc parity (AP-30 through AP-35).
+Audit the tool / technique / bootstrap-resource / doc boundary for consistency: tool-name accuracy, return-value fidelity, bootstrap completeness, cross-technique consistency, behavioural-guidance duplication, tool-surface overlap, and doc parity (`no-false-resource-delivery`–`no-redundant-tools`).
 
 ## Protocol
 
@@ -17,4 +17,4 @@ Audit the tool / technique / bootstrap-resource / doc boundary for consistency: 
 - Verify multiple techniques describing the same tool action use the same tool name (canonical name only)
 - Verify behavioural guidance is not duplicated across techniques and tool descriptions
 - Verify no tool's output is a strict subset of another's (redundant tool detection)
-- Verify docs (workflow READMEs, technique protocols) use current tool names and descriptions; cross-check against anti-patterns 30-35
+- Verify docs (workflow READMEs, technique protocols) use current tool names and descriptions; cross-check against `no-false-resource-delivery`–`no-redundant-tools`
