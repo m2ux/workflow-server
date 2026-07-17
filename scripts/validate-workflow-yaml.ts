@@ -65,7 +65,16 @@ function checkTechniqueProtocolRefs(file: string): string[] {
   const rest = s.slice(m.index + 1);
   const next = rest.search(/^##\s+(?!#)/m);
   const protocol = next === -1 ? s.slice(m.index) : s.slice(m.index, m.index + 1 + next);
-  const stripCode = (t: string) => t.replace(/```[\s\S]*?```/g, '').replace(/`[^`]*`/g, '');
+  // Strip fenced/inline code and italic/bold emphasis so op argument names
+  // (*arg* / **arg**) and code tokens are not flagged as bare designators.
+  const stripCode = (t: string) =>
+    t
+      .replace(/```[\s\S]*?```/g, '')
+      .replace(/`[^`]*`/g, '')
+      .replace(/\*\*([^*]+)\*\*/g, '')
+      .replace(/\*([^*]+)\*/g, '')
+      .replace(/__([^_]+)__/g, '')
+      .replace(/_([^_]+)_/g, '');
   const bare = new Set<string>();
   for (const rawLine of protocol.split('\n')) {
     if (/^\s*#{1,4}\s/.test(rawLine)) continue; // skip headings
