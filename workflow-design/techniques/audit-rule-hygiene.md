@@ -19,8 +19,8 @@ Count of rule-hygiene findings — each a flagged rule with its file, rule key, 
 
 - Protocol restatement (`no-rule-protocol-restatement`): does the rule verbatim copy a protocol phase in the same technique? If so, flag for removal
 - Apparent contradictions (`rule-group-disambiguation`): do sibling rules within the same technique conflict?
-- Cross-level duplication (`single-rule-authority`): does the same rule appear at multiple levels (workflow / activity / technique)?
-- Worker-visibility carve-out for `single-rule-authority`: workers receive `get_activity` and `get_technique` responses but never `workflow.yaml`; behavioural rules workers must follow cannot be lifted to the workflow root. Per-technique duplication of worker-directed rules is correct, not a violation. Only flag cross-level duplication when the rule is orchestrator-only (variable management, transitions, commit policy, mode handling)
+- Cross-level duplication (`single-rule-authority`): does the same orchestrator-only / single-home rule appear at multiple levels (workflow / activity / technique)?
+- Worker reach (`worker-rule-reach`): apply the catalog entry — do not restate its Detect/Do not flag here
 - Flat prefix patterns (`grouped-rule-keys`): do rule keys share a common prefix (`foo-bar`, `foo-baz`)? Flag for grouped array refactoring
 - Ambiguity (`rule-group-disambiguation`): could a rule be interpreted in contradictory ways without its group context?
 - Single-step rules (`no-one-step-rules`): does the rule apply to only one protocol step? If so, fold into the step's description and delete the standalone rule

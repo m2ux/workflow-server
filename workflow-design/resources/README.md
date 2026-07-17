@@ -50,8 +50,8 @@ Prohibited patterns organized into nine categories. Cite by kebab-case **name** 
 |----------|----------|
 | Structural | `no-inline-content`, `schema-is-constraint`, `no-partial-implementation`, `no-invented-naming` |
 | Interaction | `atomic-checkpoints`, `no-assumption-execution`, `scope-reverify-completion`, `one-question-per-message` |
-| Schema expressiveness | `checkpoint-not-prose`, `loop-not-prose`, `procedure-in-protocol`, `pure-technique-binding` |
-| Rule hygiene | `no-rule-protocol-restatement`–`no-one-step-rules` (incl. worker-visibility carve-out on `single-rule-authority`) |
+| Schema expressiveness | `checkpoint-not-prose`, `loop-not-prose`, `procedure-in-protocol`, `bound-step-no-description`, `no-monolith-masking-steps` |
+| Rule hygiene | `no-rule-protocol-restatement`–`no-one-step-rules`, `single-rule-authority`, `worker-rule-reach` |
 | Description hygiene | `no-rationale-in-description`–`role-rules-not-description`, `no-hand-authored-artifacts`, `techniques-list-disjoint`, `readme-orients-not-transcribes` |
 | Coupling | `io-agnostic-contract`, `canonical-technique-reference`, `anchored-protocol-references`, `technique-stage-agnostic`, `no-activity-prose-rules` |
 | Tool-technique-doc consistency | `no-false-resource-delivery`–`no-redundant-tools` |
