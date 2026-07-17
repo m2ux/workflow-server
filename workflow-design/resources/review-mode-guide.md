@@ -80,7 +80,7 @@ The compliance report follows this structure:
 (per-rule text-only vs. structurally enforced)
 
 ## Anti-Pattern Findings
-(per-anti-pattern matches with locations)
+(per-entry **name** matches with locations)
 
 ## Schema Validation Results
 (per-file pass/fail)

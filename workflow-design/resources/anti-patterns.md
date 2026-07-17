@@ -6,7 +6,7 @@ metadata:
   legacy_id: 2
 ---
 
-# Anti-Patterns
+# Overview
 
 Patterns explicitly prohibited during workflow creation and modification.
 
@@ -352,7 +352,7 @@ Workflow-design defects that produce restatement, all-green verdict tables, null
 93. **runtime-rules-only** — "`Never use prose where a formal schema construct exists`" / "`Modular over inline`" / checkpoint-message or README authoring standards in `rules.*` or technique `## Rules` (a design-time authoring constraint filed as a runtime rule) —
 **Detect:** A rule in `rules.activity` / `rules.workflow` / `rules.universal` or technique `## Rules` governs how to *write* workflows (schema expressiveness, modular layout, technique binding shapes, README structure, checkpoint message form, approach-before-impl, output economy, …) rather than session runtime conduct. Signals: governs content shape of target YAML/technique/resource files; restates a design principle or anti-pattern; would apply in an unrelated authoring session; not actionable as current-activity session conduct.
 **Do not flag:** Runtime keepers — progress-tracker updates, corrections-must-persist, isolation/orchestration models, write-immediately, domain safety floors, worker permissions.
-**Fix:** (1) Remove from `rules.*` / technique `## Rules`. (2) Migrate into the workflow-design canon — [design-principles](./design-principles.md), this catalogue, and/or [schema-construct-inventory](./schema-construct-inventory.md) — or confirm an existing principle/AP already covers it. (3) Enforce at authoring time via quality-review anti-pattern audit / structural gate — do not re-inject into `rules.*`.
+**Fix:** (1) Remove from `rules.*` / technique `## Rules`. (2) Migrate into the workflow-design canon — [design-principles](./design-principles.md), this catalogue, and/or [schema-construct-inventory](./schema-construct-inventory.md) — or confirm an existing principle or anti-pattern already covers it. (3) Enforce at authoring time via quality-review anti-pattern audit / structural gate — do not re-inject into `rules.*`.
 
 94. **no-caption-only-message** — "`Structural patterns from existing workflows, with proposed structure shown alongside.`" / "`YAML syntax rules and project conventions summary.`" / "`Schema constructs identified as applicable to this workflow.`" (a checkpoint `message` that only captions the preceding presentation) — After a present-then-checkpoint technique step, the checkpoint `message` must not restate "what I just showed" with no durable subject and no decision-relevant fact. Options already carry the decision; a caption adds nothing the user can open or act on. A message earns its place when it (a) embeds a `link-named-artifacts` link to a persisted review artifact, (b) states a decision-relevant fact (counts, status, mode classification), or (c) names a loop discriminator the options alone do not (`{current_file}`). Fix: persist the presented material before the gate and link it (`[label]({path})`); if there is nothing worth persisting, drop the caption to the minimal subject that the options decide — never a prose paraphrase of the prior step.
 

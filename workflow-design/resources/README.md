@@ -12,7 +12,7 @@ Ten markdown resources providing the design principles, construct inventories, a
 |-------|----------|---------|
 | `00` | [Design Principles](design-principles.md) | Condensed reference of all 15 design principles with enforcement mechanisms |
 | `01` | [Schema Construct Inventory](schema-construct-inventory.md) | Prose-to-formal construct mapping tables for activity, workflow, technique, and condition schemas |
-| `02` | [Anti-Patterns](anti-patterns.md) | 95 prohibited patterns organized by category: structural, interaction, schema expressiveness, rule hygiene, description hygiene, coupling, tool-technique-doc consistency, execution, output economy |
+| `02` | [Anti-Patterns](anti-patterns.md) | 92 prohibited patterns (kebab-case names) organized by category: structural, interaction, schema expressiveness, rule hygiene, description hygiene, coupling, tool-technique-doc consistency, execution, output economy |
 | `03` | [Update Mode Guide](update-mode-guide.md) | Content preservation rules, impact analysis procedure, side-effect detection patterns |
 | `04` | [Review Mode Guide](review-mode-guide.md) | Supplementary guide: activation, activity flow, compliance report template, transition-to-update-mode contract. **The audit procedure itself is canonical in the quality-review activity's `audit-*` technique protocols** — this resource does not duplicate it. |
 | `05` | [Design Context README](design-context-readme.md) | Template + guidelines for the planning-folder `README.md` seeded at intake; the workflow-design counterpart of the work-package [readme](../../work-package/resources/readme.md) guide. |
@@ -44,19 +44,19 @@ Also includes checkpoint effect types (`setVariable`, `transitionTo`, `skipActiv
 
 ### 02 — Anti-Patterns
 
-82 prohibited patterns organized into nine categories:
+92 prohibited patterns organized into nine categories (cite by kebab-case **name**, not numeric designators):
 
 | Category | Count | Examples |
 |----------|-------|---------|
-| Structural | 4 | Inline content, schema modification, partial implementations, invented naming |
-| Interaction | 4 | Combined checkpoints, assumption-based execution, scope non-verification, multiple questions |
-| Schema expressiveness | 9 | Prose checkpoints, prose loops, prose decisions, prose artifacts, implicit variables, prose modes, prose protocols, prose inputs, bound-step purity (description/name on a bound step) |
-| Rule hygiene | 6 | Protocol-restating rules, ungrouped contradictory rules, flat prefix keys, cross-level duplication (with worker-visibility carve-out — workers receive get_activity + get_technique but never workflow.yaml, so behavioural rules workers must read cannot be lifted to the workflow root), contradictory siblings, single-step rules |
-| Description hygiene | 14 | Rationale/process narration in description fields, justification tails on validate messages, prose-based sequence in description, prescribing user-environment modification, role-rule baked into description, bound-step description/name |
-| Coupling | 23 | I/O contracts naming a workflow-internal producer/consumer, literal artifact names in protocol, raw tool names instead of canonical references, unanchored protocol references, identifier-shape and placement conventions, technique referencing activity-level constructs, prose rules at the activity level |
-| Tool-technique-doc consistency | 6 | Inaccurate return-value descriptions, incomplete bootstrap sequences, inconsistent tool names across techniques, behavioural guidance duplicated across techniques, mechanics-not-value tool descriptions, redundant tools with subset outputs |
-| Execution | 7 | Premature implementation, recommendations without action, text-only rules, destructive updates, invalid YAML syntax, informal execution, defending output |
-| Output economy | 9 | Redundant artifacts, two-representation logs, vestigial marker steps, always-defaulted checkpoints, acknowledgment-only checkpoints, resource content duplicating technique protocol |
+| Structural | 4 | `no-inline-content`, `schema-is-constraint`, `no-partial-implementation`, `no-invented-naming` |
+| Interaction | 4 | `atomic-checkpoints`, `no-assumption-execution`, `scope-reverify-completion`, `one-question-per-message` |
+| Schema expressiveness | 9 | `checkpoint-not-prose`, `loop-not-prose`, `procedure-in-protocol`, `pure-technique-binding` |
+| Rule hygiene | 6 | `no-rule-protocol-restatement`–`no-one-step-rules` (incl. worker-visibility carve-out on `single-rule-authority`) |
+| Description hygiene | 14 | `no-rationale-in-description`–`role-rules-not-description`, `no-hand-authored-artifacts`, `techniques-list-disjoint`, `readme-orients-not-transcribes` |
+| Coupling | 23 | `io-agnostic-contract`, `canonical-technique-reference`, `anchored-protocol-references`, `technique-stage-agnostic`, `no-activity-prose-rules` |
+| Tool-technique-doc consistency | 6 | `no-false-resource-delivery`–`no-redundant-tools` |
+| Execution | 7 | `approach-before-impl`, `structure-backed-constraints`, `work-through-activities`, `accept-correction` |
+| Output economy | 19 | `single-closeout-artifact`–`lifecycle-row-update`, `canonical-fact-home`–`artifact-audience-declared`, `link-named-artifacts`–`no-caption-only-message`, `runtime-rules-only`, `no-technique-resource-dual-home` |
 
 ### 03 — Update Mode Guide
 
