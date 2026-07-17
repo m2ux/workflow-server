@@ -458,7 +458,9 @@ A tool whose output is a strict subset of another tool's response adds selection
 
 "The agent must never do X" (as rule text only) — Critical constraints must be backed by structural enforcement, not just text.
 
-AP-78. **preserve-readme-content** (that removes content) — Content-reducing updates require explicit preservation audit and user confirmation.
+### AP-78. preserve-readme-content
+
+"Updated README" (that removes content) — Content-reducing updates require explicit preservation audit and user confirmation.
 
 ### AP-79. verify-format-literacy
 
