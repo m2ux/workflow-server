@@ -10,6 +10,8 @@ metadata:
 
 Condensed, agent-executable reference of the 15 design principles governing workflow creation and modification. Each principle includes the rule and the structural enforcement mechanism.
 
+These principles — together with [anti-patterns](./anti-patterns.md) and [schema-construct-inventory](./schema-construct-inventory.md) — are the design-time authoring corpus. Do **not** copy them into `workflow-design` `rules.activity` / `rules.workflow`: those buckets are session-runtime directives injected into every `get_activity` / `get_workflow` (progress tracker, corrections). Authoring constraints are loaded as resources and enforced by quality-review audits (AP-93).
+
 ---
 
 ## 1. Internalize Before Producing
@@ -35,6 +37,10 @@ Condensed, agent-executable reference of the 15 design principles governing work
 ## 4. Maximize Schema Expressiveness
 
 **Rule:** Every piece of structured workflow information must use the most specific formal construct the schema provides. Prose is only acceptable for the `description` and `outcome` fields. Even in those fields, prose must not (a) restate what the surrounding structure already encodes — step position, loop bounds, checkpoint effects, variable defaults; (b) narrate rationale, downstream consumers, or prior-implementation comparisons; (c) enumerate the sequence of activities, phases, or steps (the canonical declaration is `activities[]` or the on-disk directory); (d) prescribe modifications to user-owned environment state (git config, shell, GPG, GitHub account); or (e) carry behavioural rules / role-prescriptions ("The orchestrator coordinates only", "Workers MUST X"). The dedicated `rules:` section on the construct or a parent construct is the canonical home for behavioural constraints. See anti-patterns 36-40. The same placement discipline governs the resource/technique boundary: resources carry what the agent fills or consults (templates, format skeletons, template-consumed vocabularies, reference material); techniques carry what the agent does (protocol phases, named rules, decision criteria, commands) — a resource section shaped as procedure or rules is a technique in the wrong file (AP-85), unguarded and unaddressable there.
+
+**Technique binding:** Ordered procedure never lives in a step/activity `description` — it lives in the bound technique's `protocol[]`, reached via `step.technique` (bare `group::operation` / single-file id, or `{ name, inputs, outputs }` for deviations/remaps). A `kind: technique` step is pure binding: no `description`, no `name`, no `note` (AP-15, AP-64). Every procedural step binds exactly one operation; compound multi-operation steps are split. Pure action/control steps (`set`/`log`/`emit`/`message`, `when`, checkpoint/triggers) are exempt from a technique binding. Activity-level `techniques[]` is reserved for cross-cutting STRATEGY/capability techniques (e.g. `variable-binding`, `scatter-gather`) — never a re-list of per-step operations (AP-69).
+
+**Technique library as extension:** Techniques are the first-class extension mechanism. New strategic operations (scatter/gather, variable binding, retry/escalation, voting, dedup, …) are authored as techniques — preferentially universal ones in `meta` — in preference to schema or engine changes. The schema stays a minimal skeleton; capability grows in the technique library. Technique input/output names and shapes express the technique's intrinsic, generic, reusable semantics — never a caller's local variable name. Resolve a step-vs-technique name mismatch by aligning the caller's state variable (or an explicit `step.technique.inputs` deviation), not by bending the technique to the call-site (AP-41).
 
 **Enforcement:** `08-quality-review` with `expressiveness-confirmed` checkpoint. Schema construct inventory ([schema-construct-inventory](./schema-construct-inventory.md)) is the reference.
 
@@ -66,7 +72,7 @@ Condensed, agent-executable reference of the 15 design principles governing work
 
 **Rule:** workflow.yaml defines metadata and references only. Activities, techniques, and resources live in their own files. Content exists in exactly one location.
 
-**Enforcement:** Workflow rule. `08-quality-review` conformance check flags inline content.
+**Enforcement:** `08-quality-review` conformance check flags inline content (AP-1).
 
 ## 10. Encode Constraints as Structure
 

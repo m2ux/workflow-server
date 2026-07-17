@@ -12,7 +12,7 @@ Ten markdown resources providing the design principles, construct inventories, a
 |-------|----------|---------|
 | `00` | [Design Principles](design-principles.md) | Condensed reference of all 15 design principles with enforcement mechanisms |
 | `01` | [Schema Construct Inventory](schema-construct-inventory.md) | Prose-to-formal construct mapping tables for activity, workflow, technique, and condition schemas |
-| `02` | [Anti-Patterns](anti-patterns.md) | 92 prohibited patterns organized by category: structural, interaction, schema expressiveness, rule hygiene, description hygiene, coupling, tool-technique-doc consistency, execution, output economy |
+| `02` | [Anti-Patterns](anti-patterns.md) | 93 prohibited patterns organized by category: structural, interaction, schema expressiveness, rule hygiene, description hygiene, coupling, tool-technique-doc consistency, execution, output economy |
 | `03` | [Update Mode Guide](update-mode-guide.md) | Content preservation rules, impact analysis procedure, side-effect detection patterns |
 | `04` | [Review Mode Guide](review-mode-guide.md) | Supplementary guide: activation, activity flow, compliance report template, transition-to-update-mode contract. **The audit procedure itself is canonical in the quality-review activity's `audit-*` technique protocols** — this resource does not duplicate it. |
 | `05` | [Design Context README](design-context-readme.md) | Template + guidelines for the planning-folder `README.md` seeded at intake; the workflow-design counterpart of the work-package [readme](../../work-package/resources/readme.md) guide. |

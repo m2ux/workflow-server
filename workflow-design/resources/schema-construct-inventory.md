@@ -30,8 +30,8 @@ An activity has a **single ordered `steps[]`** in which every step carries a req
 
 | Informal Pattern | Formal Construct | Schema Fields |
 |---|---|---|
-| "Do X, then do Y, then do Z" | **Technique step** | `steps[]` entry with `kind: technique`, `.id`, `.technique` (a `group::operation` string, or `{ name, inputs?, outputs? }` for input/output deviations), optional `.actions` |
-| "When entering/finishing, log/validate/set" | **Action step** | `steps[]` entry with `kind: action`, `.id`, `.actions[]` (`log`/`validate`/`set`/`emit`/`message`); a leading/trailing control step carries lifecycle actions at the start/end of the sequence (`actions[]` may be empty for a marker step) |
+| "Do X, then do Y, then do Z" | **Technique step** | `steps[]` entry with `kind: technique`, `.id`, `.technique` (a `group::operation` string, or `{ name, inputs?, outputs? }` for input/output deviations), optional `.actions` — pure binding: no `description` / `name` / `note` (AP-15, AP-64). One operation per step; split compounds. |
+| "When entering/finishing, log/validate/set" | **Action step** | `steps[]` entry with `kind: action`, `.id`, `.actions[]` (`log`/`validate`/`set`/`emit`/`message`); a leading/trailing control step carries lifecycle actions at the start/end of the sequence (`actions[]` may be empty for a marker step). Pure action/control/checkpoint/loop steps need no `technique` binding. |
 | "Ask the user whether to proceed" | **Checkpoint step** | `steps[]` entry with `kind: checkpoint`, a stable `.id`, `.message` (statement of the subject — no `?` / confirm-imperative / next-step narration; embed `[label]({path})` when the subject is a planning artifact), `.options[]` with `.effect` (the decision space), optional `.defaultOption` / `.autoAdvanceMs` / `.blocking`; its POSITION in `steps[]` is when it is presented (present-then-checkpoint: place it immediately after the step whose output it confirms). See AP-90–92. |
 | "Repeat for each item" / "do until done" | **Loop step** | `steps[]` entry with `kind: loop`, `.id`, `.loopType` (forEach/while/doWhile), `.variable`, `.over`, `.condition`, `.breakCondition`, `.maxIterations`, optional `.name`; its body is a nested `.steps[]` |
 | "If X then do A, otherwise do B" (automated) | **Decision** (activity-level) | `decisions[].branches[]` with `.condition` and `.transitionTo` |
@@ -48,8 +48,8 @@ An activity has a **single ordered `steps[]`** in which every step carries a req
 |---|---|---|
 | "Track whether the user confirmed" | **Variable** | `variables[].name`, `.type`, `.description`, `.defaultValue` |
 | "Can run in fast or thorough mode" | **Activation variable + conditional flow** | a boolean `variable` set by a detection step/checkpoint early in the workflow, with `transitions[].condition` and step `when`/`condition` gates that branch on it |
-| "The agent must always do X" | **Workflow rules** | `rules.workflow` / `rules.activity` / `rules.universal` (partitioned by audience) |
-| "Every activity needs this strategy technique" | **Inherited techniques** | `techniques.workflow` (orchestrator, bundled into `get_workflow`) / `techniques.activity` (inherited by every activity, injected into `get_activity`) |
+| "The agent must always do X" (session conduct) | **Workflow rules** | `rules.workflow` / `rules.activity` / `rules.universal` (partitioned by audience). Design-time authoring standards for *target* workflows are NOT authored here — they live in design-principles / anti-patterns (AP-71, AP-93). |
+| "Every activity needs this strategy technique" | **Inherited techniques** | `techniques.workflow` (orchestrator, bundled into `get_workflow`) / `techniques.activity` (inherited by every activity, injected into `get_activity`). Activity-local `techniques[]` is STRATEGY only — per-step ops bind via `step.technique` (AP-69). |
 | "Start with the first activity" | **Initial activity** | `initialActivity` (activity ID) |
 
 ## Technique-Level Constructs (technique.schema.json)
