@@ -29,8 +29,8 @@ Absolute path to the written impact-analysis artifact.
 
 ### 2. Classify Impact
 
-- Classify files the change touches as directly modified, indirectly affected, or removed, each with a one-line justification
-- Summarize unaffected files in one short note (counts / categories) — do not write a per-file essay for unaffected paths
+- Classify files the change touches as directly modified, indirectly affected, or removed, each with a one-line justification, per the [Impact Analysis Guide](../resources/impact-analysis.md#template)
+- Summarize unaffected files in one short note (counts / categories)
 
 ### 3. Check Transition Integrity
 
@@ -55,7 +55,7 @@ Absolute path to the written impact-analysis artifact.
 
 ### 7. Persist Report
 
-- Persist a decision-facing report: classification summary (direct / indirect / removed), integrity verdicts, and the removals inventory — via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `impact-analysis.md`
+- Persist the report via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `impact-analysis.md`, following the [Impact Analysis Guide](../resources/impact-analysis.md#template)
 - Capture the written location as `{impact_analysis_path}`
 
 ## Rules

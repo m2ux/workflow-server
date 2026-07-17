@@ -40,4 +40,4 @@ COMPLETE.md
 
 ### 4. Persist Completion Document
 
-- Follow the [completion-artifact](../resources/completion-artifact.md) template (keep close-out short) and record `{completion_document}` in `{planning_folder_path}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md)
+- Follow the [Completion Artifact Guide](../resources/completion-artifact.md#template) and record `{completion_document}` in `{planning_folder_path}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md)

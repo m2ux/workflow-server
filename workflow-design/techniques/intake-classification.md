@@ -31,7 +31,7 @@ Ordered list of workflow ids to audit in review mode. One element for single-tar
 
 ### structural_inventory
 
-Per-target structural inventory: file counts and entity counts (activities, techniques, resources, checkpoints, transitions).
+Per-target structural inventory following the [Structural Inventory Guide](../resources/structural-inventory.md#template): file counts, entity counts, activity ids, and one-line update scope.
 
 ### structural_inventory_path
 
@@ -62,11 +62,11 @@ Summarized key design intent from `{user_description}` — purpose, domain, roug
 
 ### 3. Build Structural Inventory
 
-- Build `{structural_inventory}` for each target: file counts and entity counts (activities, techniques, resources, checkpoints, transitions)
+- Build `{structural_inventory}` for each target following the [Structural Inventory Guide](../resources/structural-inventory.md#template)
 
 ### 4. Persist Structural Inventory
 
-- When `{operation_type}` is `update` or `review`: persist `{structural_inventory}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `structural-inventory.md`; capture `{structural_inventory_path}`
+- When `{operation_type}` is `update` or `review`: persist `{structural_inventory}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `structural-inventory.md` per [structural-inventory](../resources/structural-inventory.md); capture `{structural_inventory_path}`
 - When create mode: leave `{structural_inventory_path}` empty
 
 ### 5. Parse Change Request

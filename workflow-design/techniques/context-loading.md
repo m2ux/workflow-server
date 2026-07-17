@@ -51,10 +51,10 @@ Absolute path to the written applicable-constructs artifact.
 
 ### 6. Persist Format Conventions
 
-- When `{planning_folder_path}` is bound and review mode is not active: persist a short table of YAML syntax and project conventions **needed for this change** (naming, folder layout, field order, versions, transition/checkpoint shapes that the draft will use) via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `format-conventions.md`; capture `{format_conventions_path}`
+- When `{planning_folder_path}` is bound and review mode is not active: persist the literacy surface via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `format-conventions.md`, following the [Format Conventions Guide](../resources/format-conventions.md#template); capture `{format_conventions_path}`
 - Skip in review mode
 
 ### 7. Persist Applicable Constructs
 
-- When `{planning_folder_path}` is bound and review mode is not active: persist a short table of constructs **this change needs** (construct, why it applies, one reference) via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `applicable-constructs.md`; capture `{applicable_constructs_path}`
+- When `{planning_folder_path}` is bound and review mode is not active: persist the construct table via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `applicable-constructs.md`, following the [Applicable Constructs Guide](../resources/applicable-constructs.md#template); capture `{applicable_constructs_path}`
 - Skip in review mode

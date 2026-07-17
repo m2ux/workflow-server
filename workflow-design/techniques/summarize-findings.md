@@ -21,6 +21,5 @@ Total number of findings in the post-update summary.
 
 ### 1. Compile Summary
 
-- When no findings exist, compile a clean pass into `{findings_summary}`; otherwise compile per finding: file, location, severity, and fix
-- Do not repeat the full compliance report structure unless findings exist
+- Compile `{findings_summary}` for the Executive Summary / Recommended Fixes of the [Compliance Report Guide](../resources/compliance-report.md#template) (post-update title) — clean pass when empty; otherwise severity rows plus per-finding file/location/fix
 - Set `{review_findings_count}` to the finding total

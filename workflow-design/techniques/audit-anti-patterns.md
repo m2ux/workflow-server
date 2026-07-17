@@ -39,4 +39,4 @@ Absolute path to the persisted anti-pattern-findings artifact.
 
 ### 3. Persist Findings
 
-- Persist `{anti_pattern_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `anti-pattern-findings.md`; capture `{anti_pattern_findings_path}`
+- Persist `{anti_pattern_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `anti-pattern-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{anti_pattern_findings_path}`

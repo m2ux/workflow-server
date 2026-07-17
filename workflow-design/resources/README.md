@@ -2,7 +2,7 @@
 
 > Part of the [Workflow Design Workflow](../README.md)
 
-Eleven markdown resources providing the design principles, construct inventories, anti-pattern catalog, convention-conformance checklist, mode-specific guidance, the planning-folder README and completion-summary templates, and the design-assumption and elicitation guides used by the workflow-design workflow.
+Markdown resources for design principles, construct inventories, anti-pattern catalog, mode guidance, elicitation, and **creation guides** for every planning-folder artifact (Template + Rules).
 
 ---
 
@@ -11,16 +11,51 @@ Eleven markdown resources providing the design principles, construct inventories
 | Index | Resource | Purpose |
 |-------|----------|---------|
 | `00` | [Design Principles](design-principles.md) | Prefer/before stance that avoids smell families (no Detect triad) |
-| `01` | [Schema Construct Inventory](schema-construct-inventory.md) | Prose-to-formal construct mapping tables for activity, workflow, technique, and condition schemas |
-| `02` | [Anti-Patterns](anti-patterns.md) | Specific smell instances — Detect/Do not flag/Fix (AP-XX + kebab-case name) |
+| `01` | [Schema Construct Inventory](schema-construct-inventory.md) | Prose-to-formal construct mapping tables |
+| `02` | [Anti-Patterns](anti-patterns.md) | Specific smell instances — Detect/Do not flag/Fix |
 | `03` | [Update Mode Guide](update-mode-guide.md) | Change-request category vocabulary for update mode |
-| `04` | [Compliance Report](compliance-report.md) | Review-mode compliance report template |
-| `05` | [Design Context README](design-context-readme.md) | Planning-folder `README.md` seed template (design-session sections) |
-| `06` | [Completion Artifact](completion-artifact.md) | `COMPLETE.md` close-out template |
-| `07` | [Design Assumptions](design-assumptions.md) | Assumption categories and log template |
+| `04` | [Compliance Report](compliance-report.md) | Creation guide: `compliance-review.md` / `post-update-review.md` |
+| `05` | [Design Context README](design-context-readme.md) | Creation guide: planning-folder `README.md` |
+| `06` | [Completion Artifact](completion-artifact.md) | Creation guide: `COMPLETE.md` |
+| `07` | [Design Assumptions](design-assumptions.md) | Creation guide: `assumptions-log.md` |
 | `08` | [Design Assumption Reconciliation](design-assumption-reconciliation.md) | Audit vs open resolvability vocabulary |
 | `09` | [Elicitation Guide](elicitation-guide.md) | Mode dimension sets + per-dimension capture/question bank |
-| `10` | [Convention Conformance](convention-conformance.md) | Reference conventions (naming, field order, structure) vs sibling workflows |
+| `10` | [Convention Conformance](convention-conformance.md) | Reference conventions vs sibling workflows |
+| `11` | [Structural Inventory](structural-inventory.md) | Creation guide: `structural-inventory.md` |
+| `12` | [Format Conventions](format-conventions.md) | Creation guide: `format-conventions.md` |
+| `13` | [Applicable Constructs](applicable-constructs.md) | Creation guide: `applicable-constructs.md` |
+| `14` | [Design Specification](design-specification.md) | Creation guide: `design-specification.md` |
+| `15` | [Impact Analysis](impact-analysis.md) | Creation guide: `impact-analysis.md` |
+| `16` | [Pattern Analysis](pattern-analysis.md) | Creation guide: `pattern-analysis.md` |
+| `17` | [Scope Manifest](scope-manifest.md) | Creation guide: `scope-manifest.md` |
+| `18` | [Drafting Plan](drafting-plan.md) | Creation guide: `drafting-plan.md` |
+| `19` | [File Review Note](file-review-note.md) | Creation guide: `file-review-note.md` |
+| `20` | [Draft Attestation](draft-attestation.md) | Creation guide: `draft-attestation.md` |
+| `21` | [Findings Satellite](findings-satellite.md) | Shared creation guide for audit finding satellites |
+
+---
+
+## Planning artifact → guide map
+
+| Bare filename | Guide |
+|---------------|-------|
+| `README.md` | [design-context-readme](design-context-readme.md) |
+| `COMPLETE.md` | [completion-artifact](completion-artifact.md) |
+| `assumptions-log.md` | [design-assumptions](design-assumptions.md) |
+| `structural-inventory.md` | [structural-inventory](structural-inventory.md) |
+| `format-conventions.md` | [format-conventions](format-conventions.md) |
+| `applicable-constructs.md` | [applicable-constructs](applicable-constructs.md) |
+| `design-specification.md` | [design-specification](design-specification.md) |
+| `impact-analysis.md` | [impact-analysis](impact-analysis.md) |
+| `pattern-analysis.md` | [pattern-analysis](pattern-analysis.md) |
+| `scope-manifest.md` | [scope-manifest](scope-manifest.md) |
+| `drafting-plan.md` | [drafting-plan](drafting-plan.md) |
+| `file-review-note.md` | [file-review-note](file-review-note.md) |
+| `draft-attestation.md` | [draft-attestation](draft-attestation.md) |
+| `compliance-review.md` / `post-update-review.md` | [compliance-report](compliance-report.md) |
+| `expressiveness-findings.md`, `conformance-findings.md`, `rule-hygiene-findings.md`, `enforcement-findings.md`, `principle-findings.md`, `anti-pattern-findings.md`, `verified-findings.md` | [findings-satellite](findings-satellite.md) |
+
+Each creation guide has a **Template** section and **Rules** for lean, decision-facing population. Persist techniques cite these guides; layout authority lives here, not in ad-hoc protocol prose.
 
 ---
 
@@ -28,62 +63,27 @@ Eleven markdown resources providing the design principles, construct inventories
 
 ### 00 — Design Principles
 
-*Prefer / before / only after* stance — broader than any one defect; avoids families of smells (and related failures not yet catalogued). No Detect triad here; specific bad instances live in the anti-pattern catalog; structural gates live in activity YAML.
+*Prefer / before / only after* stance — broader than any one defect; avoids families of smells. No Detect triad here; specific bad instances live in the anti-pattern catalog.
 
 ### 01 — Schema Construct Inventory
 
-Four mapping tables that translate informal prose patterns into their formal schema equivalents:
-
-| Table | Schema | Constructs Covered |
-|-------|--------|-------------------|
-| Activity-level | `activity.schema.json` | A unified `steps[]` with kinds (technique, action, checkpoint, loop), activity-level decisions and transitions, triggers, outcomes, step gates, rules |
-| Workflow-level | `workflow.schema.json` | Variables, workflow rules, inherited techniques, initial activity |
-| Technique-level | `technique.schema.json` | Protocol, inputs, output, rules (failure handling is inline in the triggering protocol step) |
-| Condition-level | `condition.schema.json` | Simple comparisons, AND/OR/NOT combinators, existence checks |
-
-Also includes checkpoint effect types (`setVariable`, `transitionTo`, `skipActivities`) and action types (`log`, `validate`, `set`, `emit`, `message`).
+Four mapping tables that translate informal prose patterns into formal schema equivalents (activity, workflow, technique, condition).
 
 ### 02 — Anti-Patterns
 
-Specific smell instances already present in authored content — each entry is a Detect / Do not flag / Fix test for one bad pattern instance. Cite by kebab-case smell **name** (stable); each entry also carries a monotonic **AP-XX** list designator. Do not cite the catalog size. Covering stance lives in [Design Principles](./design-principles.md).
-
-| Category | Examples |
-|----------|----------|
-| Structural | `no-inline-content`, `schema-is-constraint`, `no-partial-implementation`, `no-invented-naming` |
-| Interaction | `atomic-checkpoints`, `no-assumption-execution`, `scope-reverify-completion`, `one-question-per-message` |
-| Schema expressiveness | `checkpoint-not-prose`, `loop-not-prose`, `procedure-in-protocol`, `bound-step-no-description`, `no-monolith-masking-steps` |
-| Technique protocol | `numbered-protocol-phases`, `technique-outputs-declared`, `duplicate-shared-capability`, `session-interaction-in-technique`, `pass-orchestration-in-technique` |
-| Rule hygiene | `no-rule-protocol-restatement`–`no-one-step-rules`, `single-rule-authority`, `worker-rule-reach` |
-| Description hygiene | `no-rationale-in-description`–`role-rules-not-description`, `no-hand-authored-artifacts`, `techniques-list-disjoint`, `readme-orients-not-transcribes`, `avoidance-voice-in-definitions` |
-| Coupling | `io-agnostic-contract`, `no-delivery-mechanism-narration`, `no-tool-usage-prescription`, `canonical-technique-reference`, `anchored-protocol-references`, `technique-stage-agnostic`, `session-interaction-in-technique`, `no-activity-prose-rules` |
-| Tool-technique-doc consistency | `no-false-resource-delivery`–`no-redundant-tools` |
-| Execution | `impl-before-confirmed-approach`, `structure-backed-constraints`, `work-through-activities`, `accept-correction` |
-| Output economy | `single-closeout-artifact`–`lifecycle-row-update`, `canonical-fact-home`–`artifact-audience-declared`, `link-named-artifacts`–`no-caption-only-message`, `runtime-rules-only`, `no-technique-resource-dual-home` |
-| Canon hygiene | `cited-home-owns-claim`, `operative-criteria-need-a-home`, `no-shadow-audit-pass`, `canon-layer-cites-not-restates`, `bind-site-is-orchestration-truth` |
+Specific smell instances — Detect / Do not flag / Fix. Cite by kebab-case smell **name**.
 
 ### 03 — Update Mode Guide
 
 Change-request category vocabulary (activity, technique, resource, metadata, structural refactor).
 
-### 04 — Compliance Report
+### 04–07, 11–21 — Creation guides
 
-Review-mode compliance report template.
-
-### 05 — Design Context README
-
-Planning-folder `README.md` seed template and design-session section rules. Progress rows are seeded from the workflow activity list — not hard-coded here.
-
-### 06 — Completion Artifact
-
-`COMPLETE.md` close-out template and section rules.
-
-### 07 — Design Assumptions
-
-Assumption categories and log template. Shared methodology from work-package assumptions-review.
+Template + Rules for planning-folder artifacts. See the map above.
 
 ### 08 — Design Assumption Reconciliation
 
-Resolvability vocabulary (`audit` vs `open`). Subject→audit mapping stays in the reconciling operation.
+Resolvability vocabulary (`audit` vs `open`).
 
 ### 09 — Elicitation Guide
 
@@ -91,16 +91,14 @@ Mode dimension sets and per-dimension capture/question bank.
 
 ### 10 — Convention Conformance
 
-Reference-convention checklist (naming, field order, structure). Definition prose voice lives in the anti-patterns catalog. YAML syntax literacy is out of scope.
+Reference-convention checklist (naming, field order, structure).
 
 ---
 
 ## Cross-Workflow Access
 
-Other workflows may consult these by resource id (harness load mechanics live in meta tool guidance, not here):
+Other workflows may consult these by resource id:
 
-- `workflow-design/design-principles` — [Design principles](./design-principles.md)
-- `workflow-design/schema-construct-inventory` — [Construct inventory](./schema-construct-inventory.md)
-- `workflow-design/anti-patterns` — [Anti-patterns](./anti-patterns.md)
-
-Useful for workflows that self-audit against the design principles without running full review mode.
+- `workflow-design/design-principles`
+- `workflow-design/schema-construct-inventory`
+- `workflow-design/anti-patterns`

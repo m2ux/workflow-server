@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.24.2 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
+> v1.24.3 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
 
 ---
 
@@ -173,13 +173,14 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | 01 | [Schema Construct Inventory](./resources/schema-construct-inventory.md) | Prose-to-formal construct mapping tables |
 | 02 | [Anti-Patterns](./resources/anti-patterns.md) | Prohibited-pattern catalog (AP-XX + name) by category |
 | 03 | [Update Mode Guide](./resources/update-mode-guide.md) | Update change-request category vocabulary |
-| 04 | [Compliance Report](./resources/compliance-report.md) | Review-mode compliance report template |
-| 05 | [Design Context README](./resources/design-context-readme.md) | Planning-folder README seed template |
-| 06 | [Completion Artifact](./resources/completion-artifact.md) | `COMPLETE.md` completion-summary template |
-| 07 | [Design Assumptions](./resources/design-assumptions.md) | Assumption categories and log template |
+| 04 | [Compliance Report](./resources/compliance-report.md) | Creation guide: compliance / post-update review |
+| 05 | [Design Context README](./resources/design-context-readme.md) | Creation guide: planning-folder README |
+| 06 | [Completion Artifact](./resources/completion-artifact.md) | Creation guide: `COMPLETE.md` |
+| 07 | [Design Assumptions](./resources/design-assumptions.md) | Creation guide: `assumptions-log.md` |
 | 08 | [Design Assumption Reconciliation](./resources/design-assumption-reconciliation.md) | Audit vs open resolvability vocabulary |
 | 09 | [Elicitation Guide](./resources/elicitation-guide.md) | Mode dimension sets + per-dimension question bank |
 | 10 | [Convention Conformance](./resources/convention-conformance.md) | Reference conventions vs sibling workflows |
+| 11–21 | [Artifact creation guides](./resources/README.md#planning-artifact--guide-map) | Template + Rules for every planning artifact |
 
 ---
 
@@ -252,16 +253,27 @@ workflows/workflow-design/
 │   ├── prepare-workflow-branch.md
 │   └── publish-workflow-pr.md
 └── resources/
-    ├── README.md                         # Resource index
+    ├── README.md                         # Resource index + artifact→guide map
     ├── design-principles.md              # Positive framing principles
     ├── schema-construct-inventory.md     # Construct mapping tables
     ├── anti-patterns.md                  # anti-pattern catalog (AP-XX + names)
     ├── update-mode-guide.md              # Update mode guide
-    ├── compliance-report.md              # Review compliance report template
-    ├── design-context-readme.md          # Planning-folder README template
-    ├── completion-artifact.md            # COMPLETE.md completion-summary template
-    ├── design-assumptions.md             # Assumption categories + log template
+    ├── compliance-report.md              # Creation guide: compliance / post-update
+    ├── design-context-readme.md          # Creation guide: planning README
+    ├── completion-artifact.md            # Creation guide: COMPLETE.md
+    ├── design-assumptions.md             # Creation guide: assumptions-log.md
     ├── design-assumption-reconciliation.md  # Audit-based reconciliation guide
     ├── elicitation-guide.md              # Mode sets + per-dimension question bank
-    └── convention-conformance.md         # Reference conventions vs siblings
+    ├── convention-conformance.md         # Reference conventions vs siblings
+    ├── structural-inventory.md           # Creation guide
+    ├── format-conventions.md             # Creation guide
+    ├── applicable-constructs.md          # Creation guide
+    ├── design-specification.md           # Creation guide
+    ├── impact-analysis.md                # Creation guide
+    ├── pattern-analysis.md               # Creation guide
+    ├── scope-manifest.md                 # Creation guide
+    ├── drafting-plan.md                  # Creation guide
+    ├── file-review-note.md               # Creation guide
+    ├── draft-attestation.md              # Creation guide
+    └── findings-satellite.md             # Shared audit-satellite creation guide
 ```

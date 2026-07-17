@@ -49,13 +49,12 @@ Absolute path to the written scope-manifest artifact (includes structural design
 
 ### 4. Assemble Structural Design
 
-- Assemble `{structural_design}`: directory tree (unchanged is enough on update), transition note only when activities/transitions change, and a short alignment table against adopted patterns
+- Assemble `{structural_design}` for the Structural design section of the [Scope Manifest Guide](../resources/scope-manifest.md#template)
 
 ### 5. Assemble Drafting Order
 
-- Assemble `{drafting_order}`: order by reference-dependency (`workflow.yaml` → activities → techniques → resources → README) with a one-line rationale per tier
+- Assemble `{drafting_order}` for the Drafting order section of the [Scope Manifest Guide](../resources/scope-manifest.md#template)
 
 ### 6. Persist Scope Manifest
 
-- Persist the **file table** plus minimal structural/drafting sections via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `scope-manifest.md`; capture `{scope_manifest_path}`
-- Keep the artifact decision-facing: dense rows, no pattern essay
+- Persist the full lean manifest via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `scope-manifest.md`, following the [Scope Manifest Guide](../resources/scope-manifest.md#template); capture `{scope_manifest_path}`

@@ -21,7 +21,7 @@ The classified operation. When `update`, the review compares the drafted content
 
 ### file_review_note
 
-Per-file delta note for `{current_file}`: what changed, attestation that the delta is intentional, and when `{operation_type}` is `update`, the removal comparison (flagged vs unflagged).
+Per-file delta note for `{current_file}` following the [File Review Note Guide](../resources/file-review-note.md#template).
 
 ### file_review_note_path
 
@@ -43,10 +43,10 @@ True when `{operation_type}` is `update` and the content comparison detects mate
 
 ### 1. Assemble Review Note
 
-- Assemble `{file_review_note}` for `{current_file}` as a **delta / attestation** block: what landed, why it is intentional — omit constructs/patterns/decisions essays
+- Assemble `{file_review_note}` for `{current_file}` following the [File Review Note Guide](../resources/file-review-note.md#template)
 - When `{operation_type}` is `update`, compare against committed content; record `{removal_inventory}` and set `{has_unflagged_removals}` true when a removal was not inventoried during impact analysis
 
 ### 2. Persist Review Note
 
-- Persist `{file_review_note}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `file-review-note.md`
+- Persist `{file_review_note}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `file-review-note.md` per [file-review-note](../resources/file-review-note.md)
 - Capture the written location as `{file_review_note_path}`

@@ -1,21 +1,26 @@
 ---
 name: compliance-report
-description: Template for the review-mode compliance report.
+description: Guidelines for creating rolled-up compliance-review and post-update-review planning artifacts.
 metadata:
   order: 4
   legacy_id: 4
 ---
 
-# Compliance Report Template
+# Compliance Report Guide
 
-Review mode produces a compliance report without modifying the target workflow(s). Create/update drafting uses per-pass checkpoints instead.
+Rolled-up audit decision surface. Answers: how many findings, at what severity, and what to fix first? Human primary link at review disposition / post-update gates.
+
+**Bare filenames:** `compliance-review.md` when `{operation_type}` is `review`; `post-update-review.md` otherwise. Same template; title and filename differ.
+
+## Template
 
 ```markdown
-# Compliance Review: {workflow-id}
+# {Compliance Review | Post-Update Review}: {workflow-id}
 
 **Date:** YYYY-MM-DD
 **Workflow:** {workflow-id} v{version}
 **Files audited:** {count}
+**Mode:** review | post-update
 
 ## Executive Summary
 
@@ -33,7 +38,7 @@ Review mode produces a compliance report without modifying the target workflow(s
 |----------|---------|----------|-----|
 | … | … | file / field | … |
 
-(Detail and full principle prose live in the principle-findings satellite; this table is the decision surface.)
+(Detail in the principle-findings satellite; this table is the decision surface.)
 
 ## Anti-Pattern Findings
 
@@ -41,7 +46,7 @@ Review mode produces a compliance report without modifying the target workflow(s
 |----------|-------|----------|-----|
 | … | catalog **name** | file / field | … |
 
-(Detail lives in the anti-pattern-findings satellite.)
+(Detail in the anti-pattern-findings satellite.)
 
 ## Schema Validation Results
 
@@ -49,7 +54,25 @@ Review mode produces a compliance report without modifying the target workflow(s
 |------|--------|
 | … | pass / fail |
 
+## Other pass summaries
+
+| Pass | Count | Satellite |
+|------|------:|-----------|
+| Expressiveness | N | [link or —] |
+| Conformance | N | … |
+| Rule hygiene | N | … |
+| Enforcement | N | … |
+
+(Omit rows for passes not run in this mode.)
+
 ## Recommended Fixes
 
-Prioritized list by severity. Link satellites when a fix needs more context than one row.
+Prioritized by severity. Link satellites when a fix needs more than one row.
 ```
+
+## Rules
+
+- **Finding tables + satellite links** — do not embed full principle or anti-pattern prose.
+- **Clean pass:** executive summary zeros and a one-line "No findings" under Recommended Fixes; omit empty finding tables or leave a single dash row.
+- **Post-update:** same shape; note new-vs-pre-existing only when it changes the decision.
+- **Line budget:** ~80 lines plus finding rows.

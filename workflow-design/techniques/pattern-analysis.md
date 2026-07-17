@@ -30,9 +30,9 @@ Absolute path to the written pattern-analysis artifact.
 
 ### 3. Assemble Comparison
 
-- Assemble a short alignment / divergence table: pattern → proposed structure → note (align / diverge + one line). Skip extract-and-compare narrative prose
+- Assemble `{pattern_analysis}` following the [Pattern Analysis Guide](../resources/pattern-analysis.md#template)
 
 ### 4. Persist Pattern Analysis
 
-- Persist that lean table via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `pattern-analysis.md`
+- Persist via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `pattern-analysis.md` per [pattern-analysis](../resources/pattern-analysis.md)
 - Capture the written location as `{pattern_analysis_path}`
