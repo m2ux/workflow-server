@@ -26,13 +26,33 @@ Audit techniques load this resource and apply each subsection in place — they 
 
 Write for an audit agent scanning under scrutiny, not for case-law.
 
+### Entry intro
+
+Each entry opens with exactly two lines: (1) a quoted anti-pattern exemplar; (2) one framing sentence naming the failure mode (include any detail that would otherwise need a gloss). No parenthetical glosses on the exemplar line and no `>` notes under it. A blank line separates the intro from the Detect triad.
+
 ### Detect triad
 
-Prefer **Detect** / **Do not flag** / **Fix** whenever an entry needs more than one sentence; keep short entries to a single sentence when that is enough.
+Every entry has **Detect** / **Do not flag** / **Fix**, each on its own block, separated by blank lines.
 
 ### Keep audit signals
 
 Keep observable Detect signals, false-positive carve-outs, and branched Fix order.
+
+### Resist over-fit
+
+Detect must state a **structural test** that transfers to a foreign workflow on the same schema — not the originating incident’s nouns, paths, tool roster, or paraphrase list. Concrete names belong on the exemplar line (and at most one illustrative example inside Detect); they must not be required matches.
+
+Ban these Detect/Fix shapes:
+
+- **Incident freeze** — phrase blacklists, filename/noun whitelists, or command/tool rosters that stand in for the test (“durable file subject without a path link”, not a planning-folder vocabulary).
+- **Host coupling** — instructions that only apply to this catalogue’s authoring loop or a named host workflow (e.g. “when auditing workflow-design…”, Fix paths that name one repo’s canon files). Scope and remediation stay portable; the audit technique owns walk scope.
+- **Taxonomy-as-Detect** — mini-frameworks or placement essays the auditor must re-derive. One observable mismatch per entry; longer taxonomies live in a convention resource and are cited.
+- **Umbrella restatement** — re-teaching sibling Detect bodies. Point once; do not multiply findings for one bad sentence.
+- **Smuggled rules** — a second prohibition buried under an unrelated `name` (split or delete).
+
+Fix states the portable remediation (delete, migrate, encode, rename). Repo-specific destinations are examples, not the rule.
+
+Before adding or expanding an entry, ask: would this still fire correctly on a different workflow that never saw the originating bug? If not, rewrite the test.
 
 ### Cut provenance ballast
 
@@ -54,41 +74,103 @@ File and packaging shape: no inlining, schema is fixed, finish the scope, invent
 
 ### AP-01. no-inline-content
 
-"Let me just inline that" — No content embedding in parent files. Activities, techniques, and resources live in their own files.
+"Let me just inline that"
+
+Content is embedded in a parent file instead of living in its own file.
+
+**Detect:** An activity, technique, or resource body is inlined into a parent YAML/markdown file (or a new construct is authored inline rather than as a sibling file).
+
+**Do not flag:** Short inline literals that the schema requires on the parent (e.g. a one-line `description:` field); hyperlinks to separate files.
+
+**Fix:** Extract into its own file under the correct directory; replace the inline body with a reference/bind the schema expects.
 
 ### AP-02. schema-is-constraint
 
-"Let me adjust the schema to match" — The schema is a fixed constraint. Fix content to conform to the schema, never the reverse.
+"Let me adjust the schema to match"
+
+The schema is bent to fit content instead of content being fixed to the schema.
+
+**Detect:** A change proposes altering workflow/activity/technique schema (or inventing fields) so existing content validates.
+
+**Do not flag:** Legitimate schema evolution requested explicitly by the user as a separate task.
+
+**Fix:** Rewrite content to conform to the current schema; never patch the schema to match a one-off authoring choice.
 
 ### AP-03. no-partial-implementation
 
-"I'll fix the rest later" — No partial implementations. The scope manifest must be fully addressed before committing.
+"I'll fix the rest later"
+
+Scope is left partially implemented before commit or close-out.
+
+**Detect:** A commit, handoff, or "done" claim leaves items in the scope manifest unaddressed or explicitly deferred without user approval.
+
+**Do not flag:** An explicitly scoped partial deliverable the user approved (remaining items stay open in the manifest).
+
+**Fix:** Complete every scope-manifest item, or get approval to shrink scope and update the manifest before committing.
 
 ### AP-04. no-invented-naming
 
-"I'll name it [new_thing]" — No new naming conventions without searching for existing ones and getting user approval.
+"I'll name it [new_thing]"
+
+A new naming convention is invented without search and user approval.
+
+**Detect:** A new id, filename pattern, rule slug, or vocabulary term is introduced without checking existing conventions and without user approval.
+
+**Do not flag:** Reuse of an already-established convention found in-repo or in this catalogue.
+
+**Fix:** Search for an existing name/pattern; if none fits, propose the new convention and get approval before adopting it.
 
 ## Interaction Anti-Patterns
 
-User-session conduct: atomic checkpoints, no assumed intent, re-verify scope on done, one question per message.
+User-session conduct: atomic checkpoints, no assumed intent, re-verify scope on done, one question per message. Design-time canon stays in [design-principles](./design-principles.md) and this catalogue — not in runtime `rules:` (see `runtime-rules-only`; checkpoint message form: `link-named-artifacts`, `no-next-step-narration`, `statement-not-question`, `no-caption-only-message`).
 
 ### AP-05. atomic-checkpoints
 
-"Skip/combine these checkpoints" — Each checkpoint is atomic and independent. Never collapse multiple decisions into one.
+"Skip/combine these checkpoints"
+
+Multiple independent decisions are collapsed into one checkpoint.
+
+**Detect:** Two or more distinct user decisions are packed into a single checkpoint (or one checkpoint is skipped by bundling its decision into another).
+
+**Do not flag:** A single decision whose options naturally cover one atomic choice (`one-decision-one-checkpoint`).
+
+**Fix:** Restore one checkpoint per atomic decision; split combined options into separate gates.
 
 ### AP-06. no-assumption-execution
 
-"The user probably means..." — No assumption-based execution. If uncertain, ask.
+"The user probably means..."
+
+Execution proceeds on assumed intent instead of asking when uncertain.
+
+**Detect:** The agent chooses among materially different interpretations of user intent without asking, then executes.
+
+**Do not flag:** Unambiguous instructions; routine defaults the user already established in-session.
+
+**Fix:** Ask a single clarifying question (`one-question-per-message`) before acting on the ambiguous point.
 
 ### AP-07. scope-reverify-completion
 
-"Done!" (without scope re-verification) — Completion requires checking every item in the scope manifest.
+"Done!"
+
+Completion is claimed without re-checking every item in the scope manifest.
+
+**Detect:** A done/complete claim, commit, or close-out proceeds without verifying each scope-manifest item is addressed.
+
+**Do not flag:** An interim status update that does not claim completion.
+
+**Fix:** Walk the scope manifest item-by-item and resolve gaps before claiming done.
 
 ### AP-08. one-question-per-message
 
-"Here are three questions..." — One question per message, always.
+"Here are three questions..."
 
-> Design-time authoring standards live in [design-principles](./design-principles.md) and this catalogue — not in workflow/activity/technique runtime rules. See `link-named-artifacts`, `no-next-step-narration`, `statement-not-question`, `no-caption-only-message` (checkpoint message form) and `runtime-rules-only` (rules must be runtime-relevant; migrate design-time discoveries into the workflow-design canon).
+More than one question is asked in a single user-facing message.
+
+**Detect:** A user-facing message contains two or more distinct questions (or stacked prompts that each require an answer).
+
+**Do not flag:** A single question with clarifying context that is not itself a second question; option lists on one checkpoint.
+
+**Fix:** Ask one question per message; wait for the answer before the next.
 
 ## Schema Expressiveness Anti-Patterns
 
@@ -96,52 +178,123 @@ Prose that must be a formal construct: checkpoint, loop, decision, artifact, var
 
 ### AP-09. checkpoint-not-prose
 
-"Ask the user whether to proceed" (as prose) — Use a `kind: checkpoint` step with `message`, `options`, and `effects`, placed at the position in `steps[]` where the decision is presented.
+"Ask the user whether to proceed"
+
+A user decision is written as prose instead of a `kind: checkpoint` step.
+
+**Detect:** Step/activity description (or protocol prose) tells the agent to ask/confirm/choose without a `kind: checkpoint` at that `steps[]` position.
+
+**Do not flag:** Non-blocking informational messages (`action: message`) with no decision; decisions already modeled as checkpoints.
+
+**Fix:** Add a `kind: checkpoint` with `message`, `options`, and `effects` at the decision point in `steps[]`.
 
 ### AP-10. loop-not-prose
 
-"Repeat this for each item" (as prose) — Use a `kind: loop` step with `loopType: "forEach"`, `over`, and a nested `steps[]` body.
+"Repeat this for each item"
+
+Iteration is written as prose instead of a `kind: loop` step.
+
+**Detect:** Description/protocol says to repeat/iterate/for-each without a `kind: loop` (`loopType`, `over`, nested `steps[]`).
+
+**Do not flag:** Truly one-shot steps; loops already declared in `steps[]`.
+
+**Fix:** Replace the prose with a `kind: loop` step and move repeated work into the loop body.
 
 ### AP-11. decision-not-prose
 
-"If X then do A, otherwise B" (as prose) — Use an activity-level `decision` with `branches` and `conditions` (cross-activity routing remains activity-level, not a step).
+"If X then do A, otherwise B"
+
+Cross-activity routing is written as prose instead of an activity-level `decision`.
+
+**Detect:** Prose describes branching to different activities/paths without an activity-level `decision` with `branches`/`conditions`.
+
+**Do not flag:** In-step `when`/`condition` on steps; checkpoints that set variables consumed by declared decisions.
+
+**Fix:** Declare an activity-level `decision` with branches/conditions; remove the prose branch recipe.
 
 ### AP-12. artifact-not-buried
 
-"This produces a report" (buried in description) — Declare the output as a `#### artifact` (filename) on the producing technique's `## Outputs`. The activity's artifact contract is then synthesized from its steps' techniques (`no-hand-authored-artifacts`) — do NOT bury artifact production in a `description`, and do NOT hand-author an activity `artifacts[]` block.
+"This produces a report"
+
+Artifact production is buried in description instead of declared on technique Outputs.
+
+**Detect:** A technique/activity claims to produce a file/report only in `description` (or similar prose) without a `#### artifact` on the producing technique's `## Outputs`.
+
+**Do not flag:** Non-artifact outputs (variables, structured data) correctly declared as non-artifact outputs.
+
+**Fix:** Declare `#### artifact` on the producing technique Outputs; do not hand-author activity `artifacts[]` (`no-hand-authored-artifacts`).
 
 ### AP-13. variable-for-approval
 
-"Track whether the user approved" (implicit) — Use a `variable` with `type` and `defaultValue`, wired to checkpoint `effects`.
+"Track whether the user approved"
+
+Approval or mode-like state is tracked in prose instead of a typed variable.
+
+**Detect:** Prose instructs remembering/tracking approval or similar state without a `variable` wired through checkpoint `effects`.
+
+**Do not flag:** Ephemeral in-message acknowledgements that do not gate later steps.
+
+**Fix:** Add a `variable` with `type`/`defaultValue` and set it from checkpoint effects; gate later steps on it.
 
 ### AP-14. mode-as-state
 
-"In fast mode, skip the research steps" (as a rule) — Express mode behaviour as ordinary state: a boolean activation `variable` set by a detection step/checkpoint early in the workflow, with `transitions[].condition` and step `when`/`condition` gates that branch on it (and checkpoint `effect.skipActivities` where activities are skipped).
+"In fast mode, skip the research steps"
+
+Mode behaviour is written as rule/description text instead of ordinary state.
+
+**Detect:** Mode-specific skip/branch behaviour appears only as rules or prose rather than a boolean activation variable plus `when`/`transitions[].condition` (and `skipActivities` where needed).
+
+**Do not flag:** One-off `when` conditions unrelated to a named mode.
+
+**Fix:** Detect/set a mode variable early; express skips/branches as conditions on that state.
 
 ### AP-15. procedure-in-protocol
 
-"First load the workflow, then get the activity" (as prose, OR as a multi-bullet checklist crammed into a step `description`) —
-**Detect:** Step `description` holds HOW — numbered audit criteria (`"Audit X. Check: (1)…"`), sequenced procedure (`"Run pass A. Then pass B…"`), or per-item iteration logic. HOW belongs in the assigned technique's `protocol` (phase-keyed bullets); `description` is a one-line WHAT summary only. Reflexive: when auditing in review mode, also scan workflow-design's own step descriptions.
+"First load the workflow, then get the activity"
+
+HOW lives in the step description instead of the technique protocol.
+
+**Detect:** Step `description` holds HOW — numbered audit criteria, sequenced procedure, or per-item iteration logic. HOW belongs in the assigned technique's `protocol` (phase-keyed bullets); `description` is a one-line WHAT summary only.
+
 **Do not flag:** Once a step BINDS a technique, absence of description is correct — `bound-step-no-description` requires removing `description` entirely (not merely de-proceduralizing) and homing content in the bound op.
+
 **Fix:** Move imperative bullets into the technique protocol; leave a one-line WHAT in unbound `description`, or delete `description` entirely when the step is bound (`bound-step-no-description`).
 
 ### AP-16. technique-inputs-declared
 
-"This technique needs a file path" (buried in description) — Use technique `inputs[]` with `id` and `description`.
+"This technique needs a file path"
+
+Required inputs are named in description instead of `inputs[]`.
+
+**Detect:** Technique prose names a needed value (path, id, artifact) that is not declared in `inputs[]` with `id`/`description`.
+
+**Do not flag:** Inputs already declared; pure outputs or locals.
+
+**Fix:** Declare the input on `inputs[]` and reference `{id}` in Protocol.
 
 ### AP-17. bound-step-no-description
 
-"`kind: technique` / `description` / `name` on a bound step" (bound technique or action step carries prose fields) —
-**Detect:** (1) `kind: technique` step has `description` or `name`. (2) `kind: action` step has `description` or `name`. (3) Explicit `required: true` on any step (default noise). Bound steps allow only `kind`, `id`, `technique` (string or `{ name, inputs, outputs }`), plus structural `actions` / `when` / `required: false`. WHAT/HOW live in the bound op's `## Capability` / `## Protocol`. Unbound procedure-in-description is `procedure-in-protocol`; once bound, description is removed entirely.
+"`kind: technique` / `description` / `name` on a bound step"
+
+A bound step still carries description/name prose.
+
+**Detect:** A `kind: technique` or `kind: action` step that binds an op still carries `description` or `name`. Bound steps allow only `kind`, `id`, `technique` (string or `{ name, inputs, outputs }`), plus structural `actions` / `when` / `required: false`. WHAT/HOW live in the bound op's `## Capability` / `## Protocol`. Unbound procedure-in-description is `procedure-in-protocol`; once bound, description is removed entirely.
+
 **Do not flag:** `kind: loop` may have `name` plus loop fields and nested `steps[]`. `kind: checkpoint` uses inline `message`/`options` and a stable `id` (not `name`/`description`). Checkpoints/loops are inline in `steps[]` — never `step.checkpoint` or separate `checkpoints[]`/`loops[]` arrays.
+
 **Fix:** Bind an existing meta/workflow-local op when one fits and delete the description; otherwise enrich the op's `## Capability` / `## Protocol` and strip step prose. Even a one-line non-procedural WHAT is removed from the step. Resulting bound step = `id` + `technique` + structural fields only. For N steps that differ only by description, see `no-monolith-masking-steps`.
 
 ### AP-18. no-monolith-masking-steps
 
-"N steps bind one technique and differ only by `description`" (monolith-masking / unsplit phases) —
+"N steps bind one technique and differ only by `description`"
+
+Multiple steps bind the same op and differ only by description.
+
 **Detect:** Several steps bind the same technique and differ only by `description` (or equivalent prose), with no distinguishing `when` / `actions` / input-output deviation.
+
 **Do not flag:** Distinct structural attach points already expressed (checkpoint/`when` between phases); mutually exclusive `when` branches; distinct-purpose invocations at different pipeline points — see also `no-duplicate-technique-steps`.
-**Fix (reuse → collapse → split):** (1) **Reuse** — bind an existing op and delete descriptions. (2) **Collapse** — consecutive same-technique steps with no intervening checkpoint and no structural deviation → one step. (3) **Split** — distinct phases → group with one op per phase; bind `technique: <group>::<op>`; delete descriptions. New techniques are last resort. Field purity on each resulting step is `bound-step-no-description`.
+
+**Fix:** (1) **Reuse** — bind an existing op and delete descriptions. (2) **Collapse** — consecutive same-technique steps with no intervening checkpoint and no structural deviation → one step. (3) **Split** — distinct phases → group with one op per phase; bind `technique: <group>::<op>`; delete descriptions. New techniques are last resort. Field purity on each resulting step is `bound-step-no-description`.
 
 ## Rule Hygiene Anti-Patterns
 
@@ -149,37 +302,87 @@ Rules must be novel, grouped, single-homed for their audience, non-contradictory
 
 ### AP-19. no-rule-protocol-restatement
 
-"The rule restates the protocol" — Rules that verbatim copy a protocol phase add no information and create maintenance drift. Rules should state novel constraints or invariants that the protocol's procedural steps don't convey. If a rule says the same thing as a protocol bullet, delete the rule.
+"The rule restates the protocol"
+
+A rule verbatim copies a protocol phase and adds no novel constraint.
+
+**Detect:** A technique/activity/workflow rule restates a protocol bullet or phase without adding an invariant the steps do not already convey.
+
+**Do not flag:** Rules that state cross-cutting constraints the protocol does not encode.
+
+**Fix:** Delete the redundant rule; keep protocol as the procedural source.
 
 ### AP-20. rule-group-disambiguation
 
-"Explain why / Avoid attribution" (without group context) — Rules that appear contradictory when read together must be disambiguated by their group name. Use grouped rule arrays where the key provides the missing context (e.g., `code-commentary` vs `attribution-prohibition`).
+"Explain why / Avoid attribution"
+
+Apparently contradictory rules lack a disambiguating group key.
+
+**Detect:** Two rules read as conflicting when co-listed, and they are not separated by grouped rule keys that supply context.
+
+**Do not flag:** Rules that are truly contradictory (`no-contradictory-rules`); already-grouped arrays with clear keys.
+
+**Fix:** Place each rule under a descriptive group key that supplies the missing context (e.g. `code-commentary` vs `attribution-prohibition`).
 
 ### AP-21. grouped-rule-keys
 
-"code-foo, code-bar, code-baz" (flat prefix keys) — Rules sharing a prefix belong in a grouped array under a descriptive key. The key name replaces the prefix and provides semantic context. Use `z.union([z.string(), z.array(z.string())])` rule format.
+"code-foo, code-bar, code-baz"
+
+Shared-prefix rules sprawl as flat keys instead of a grouped array.
+
+**Detect:** Multiple rules share a naming prefix (or obvious family) but remain flat strings/keys instead of a grouped array under one descriptive key.
+
+**Do not flag:** Unrelated rules; a single rule with no family.
+
+**Fix:** Collapse into a grouped array under a key that replaces the prefix; use the schema's string|array rule union.
 
 ### AP-22. single-rule-authority
 
-"This rule appears in the technique AND the activity AND the workflow" (orchestrator-only or truly single-home rule duplicated) —
+"This rule appears in the technique AND the activity AND the workflow"
+
+The same rule is duplicated across technique/activity/workflow levels.
+
 **Detect:** The same *orchestrator-only* rule (variable management, transitions, commit policy, mode handling) — or a rule that does not need worker reach — appears at multiple levels (workflow → activity → technique). Cross-level copies drift.
+
 **Do not flag:** Worker-directed behavioural rules that must stay reachable on activity/technique surfaces — see `worker-rule-reach`.
+
 **Fix:** Keep one authoritative home at the level where the rule is enforced; delete the duplicates.
 
 ### AP-23. worker-rule-reach
 
-"prefer gitnexus over grep" lifted to `workflow.yaml` / duplicated across techniques for worker visibility —
+"prefer gitnexus over grep" lifted to `workflow.yaml` / duplicated across techniques for worker visibility
+
+A worker-directed rule is mis-placed where workers never receive it.
+
 **Detect:** A behavioural rule workers must read is present only under `rules.workflow` (workers never receive `workflow.yaml`), or an audit flags per-technique copies of a worker-directed rule as hygiene violations.
+
 **Do not flag:** Orchestrator-only rules (those belong under `single-rule-authority`). Correct placement: worker → `rules.activity` / technique `## Rules`; same directive for both actors → `rules.universal` (`rule-audience-bucket`).
+
 **Fix:** Keep worker-directed rules on activity/technique (duplication across techniques is correct for reach). Do not lift them to workflow root. Consolidate only into a shared technique that every affected activity loads.
 
 ### AP-24. no-contradictory-rules
 
-"status-proposed" AND "status-accepted-directly" — Contradictory rules in the same technique. Every rule must be checked for logical consistency with its siblings. If two rules describe mutually exclusive behaviors, one is stale — identify and remove it.
+"status-proposed" AND "status-accepted-directly"
+
+Sibling rules in the same technique contradict each other.
+
+**Detect:** Two rules in the same technique (or same rules bucket) prescribe mutually exclusive behaviours.
+
+**Do not flag:** Rules disambiguated by group keys for different contexts (`rule-group-disambiguation`).
+
+**Fix:** Identify the stale rule and remove or rewrite it so the set is logically consistent.
 
 ### AP-25. no-one-step-rules
 
-"persist-output" rule on a technique with a "write-artifact" step — A rule that applies to only one protocol step is not a cross-cutting constraint — it's step-level guidance masquerading as a rule. Move the content into the step's description prose and delete the rule. Technique-level rules should span multiple protocol phases.
+"persist-output" rule on a technique with a "write-artifact" step
+
+A technique rule applies to only one protocol step.
+
+**Detect:** A `## Rules` entry constrains a single protocol step/phase rather than a cross-cutting invariant.
+
+**Do not flag:** Cross-cutting rules that span multiple phases; step-local caveats already filed as `>` notes (`constraint-as-blockquote`).
+
+**Fix:** Move the guidance into that step's protocol prose (or a `>` caveat) and delete the rule.
 
 ## Description Hygiene Anti-Patterns
 
@@ -187,99 +390,194 @@ Description, message, outcome, and README prose state what the construct is or d
 
 ### AP-26. no-rationale-in-description
 
-"Let me explain why this is here" — `description`, `message`, action-description, option-description, and procedure-bullet fields must say what the construct does, not why it exists, what depends on it, or what consumes its output. Rationale ("so the retrospective captures..."), process narration ("interpolated into checkpoint X", "drives the loop's exit condition", "consumed by activity Y"), comparison with prior implementations ("as today", "no further server-side aggregation needed"), and restatement of facts already encoded by adjacent structure (the step's position in `steps[]`, the loop's `condition`/`maxIterations`, the checkpoint's `effect.setVariable`, the option's `transitionTo`, the variable's `defaultValue`) belong in commit messages, ADRs, or planning docs — not in workflow files. Every sentence in a workflow description should survive the test "if I deleted this, would any structural fact be lost?" — if the answer is no, delete it.
+"Let me explain why this is here"
+
+Description fields carry rationale, process narration, or structural restatement.
+
+**Detect:** `description`, `message`, option/action descriptions, or procedure bullets explain why a construct exists, what consumes it, compare to prior impls, or restate facts already encoded by adjacent structure (`steps[]` order, `when`, effects, transitions, defaults).
+
+**Do not flag:** One-line WHAT summaries that state what the construct does; structural fields themselves.
+
+**Fix:** Delete rationale/narration/restatement; keep only WHAT that would lose a fact if removed. Put rationale in commits/ADRs/planning docs.
 
 ### AP-27. validate-message-economy
 
-"Without X, Y will happen" (justification tail on validate messages) — Validate-action messages must state the cause and the fix command only. Trailing paragraphs explaining the consequences of the misconfiguration ("Without a configured signing key, every commit made by this workflow will be unsigned and strategic-review will refuse to advance...") repeat what the failing validate already proves and add noise the user has to skim past to find the fix. Format: `<what's wrong>. Run '<command>'.` Stop there.
+"Without X, Y will happen"
+
+A validate message justifies consequences instead of stating cause + fix only.
+
+**Detect:** A validate-action message includes trailing consequence essays after the failure cause and fix command.
+
+**Do not flag:** Messages that are exactly `<what's wrong>. Run '<command>'.` (or equivalent minimal cause + fix).
+
+**Fix:** Strip consequence paragraphs; keep cause and fix command only.
 
 ### AP-28. no-sequence-in-description
 
-"Workflow X first does A, then B, then C" (prose sequence in description) — `description:` fields on `workflow.yaml`, activities, and techniques must not enumerate the sequence of activities, phases, modes, or steps in prose. That information is canonical in `activities[]`, `transitions[]`, `steps[]`, or the equivalent on-disk directory (e.g., `activities/*.yaml` resolved by the loader); restating it in description creates a duplicate that drifts when the sequence changes. Remove from description; rely on the canonical declaration. If the sequence must be highlighted somewhere prose-shaped (a README, a planning artifact), that's where it belongs — not in the workflow definition itself.
+"Workflow X first does A, then B, then C"
+
+Activity/step sequence is restated in description prose.
+
+**Detect:** `description:` on workflow/activity/technique enumerates the sequence of activities, phases, modes, or steps already canonical in `activities[]`/`transitions[]`/`steps[]` (or the on-disk layout).
+
+**Do not flag:** Purpose/value orientation that does not enumerate sequence; README orientation under `readme-orients-not-transcribes`.
+
+**Fix:** Remove the sequence prose from description; rely on the canonical declaration.
 
 ### AP-29. no-user-env-mutation
 
-"Run 'git config --global ...'" (prescribing user-environment modification) — Workflow file content (descriptions, `validate` messages, procedure bullets, option descriptions) must not instruct the user or agent to modify user-owned environment state: git configuration, shell settings, system packages, GPG agent state, GitHub account settings, etc. The workflow may detect a misconfiguration and surface the diagnostic — "git config commit.gpgsign is not true" — but the fix is the user's responsibility at whatever scope (system, global, local) they choose. Specifically prohibited inside workflow definitions: `git config --global ...`, `git config --system ...`, `gh auth login` (as a directive), `gpgconf --launch` (as a directive), or any other command whose effect is to mutate user-owned state outside the workflow's working tree. A workflow-level rule on the relevant `workflow.yaml` is the canonical place to declare this scope boundary.
+"Run 'git config --global ...'"
+
+Workflow prose directs mutation of user-owned environment state.
+
+**Detect:** Descriptions, validate messages, procedure bullets, or options direct the user or agent to mutate user-owned environment state outside the working tree (e.g. global git/gh/gpg config, package installs).
+
+**Do not flag:** Diagnostics that report misconfiguration without directing the mutating fix; in-repo file edits.
+
+**Fix:** Surface the diagnostic only; leave the fix scope to the user. Declare the boundary in workflow rules if needed.
 
 ### AP-30. role-rules-not-description
 
-"The orchestrator coordinates only" (role-rule baked into description) — Description fields must describe what the construct IS, not how its participants (orchestrator, workers, sub-agents) should behave. Role-prescriptive sentences ("The X coordinates only", "The Y MUST Z", "Workers do not call W", "Analysis is delegated to sub-agents") are rules and belong in a `rules:` section on the same construct or a parent construct — never in `description:`. Before adding to rules, check whether an equivalent rule already exists at any scope (technique rules — including a containing group's or the workflow root's — activity rules, workflow rules); if it does, drop the description prose without re-migration. The same applies to variable descriptions: "MUST be set by V's output" is a behavioral constraint and belongs in a rule, not in the variable's description, which should define what the variable means.
+"The orchestrator coordinates only"
+
+Role/behaviour constraints sit in description instead of rules.
+
+**Detect:** Description (including variable descriptions) prescribes orchestrator/worker/sub-agent behaviour ("MUST", "coordinates only", "do not call") rather than saying what the construct is.
+
+**Do not flag:** WHAT summaries with no role prescription; equivalent constraints already in `rules:` (drop the description duplicate).
+
+**Fix:** Move role constraints into `rules:` on the owning construct (or drop if already present); leave description as WHAT.
 
 ### AP-31. no-hand-authored-artifacts
 
-"`artifacts: - id: evaluation-report / name: EVALUATION-REPORT.md / location: evaluation`" (an activity hand-authors an `artifacts[]` block) —
+"`artifacts: - id: evaluation-report / name: EVALUATION-REPORT.md / location: evaluation`"
+
+Activity artifacts[] is hand-authored instead of synthesized from techniques.
+
 **Detect:** Activity YAML declares `artifacts[]`. Artifact contract is synthesized by the server from bound techniques' `## Outputs` (`#### artifact` filenames, activity-group-shorthand resolution). Hand-authored lists duplicate/drift from the single source of truth (`artifact-name-in-io`) and re-encode provenance the server already traces.
+
 **Do not flag:** Non-file side effects (commit, PR) — not artifacts; simply not declared.
+
 **Fix:** Delete the activity `artifacts[]` block. If a produced file is missing from the synthesized contract, add `#### artifact` (bare filename, `{token}` template, or discriminator-keyed note per `artifact-name-in-io`) on the producing technique's `## Outputs` — never back onto the activity.
 
 ### AP-32. outcome-names-value
 
-"`EVALUATION-REPORT.md written with per-dimension findings…`" / "`Output directory created`" / "`dimension_plan … populated`" (an activity `outcome[]` restates delivery mechanics instead of value delivered) —
+"`EVALUATION-REPORT.md written with per-dimension findings…`" / "`Output directory created`" / "`dimension_plan … populated`"
+
+An outcome names the vessel (file/variable) instead of delivered value.
+
 **Detect:** Outcome names the mechanical act, not the VALUE delivered. Forbidden shapes: "`<file>` written/created" (artifact contract already encodes existence); re-listing artifact contents ("with findings…"); "`<var>` populated/set" (encoded by step `set`/`actions`). Test: outcome must still read true/useful if the file or variable were renamed — it names the value, not the vessel.
+
 **Do not flag:** A mechanical name used only in service of the value it carries.
+
 **Fix:** Rewrite as delivered value ("cross-dimensional risks evaluated and prioritised for go/no-go", not "EVALUATION-REPORT.md written…"); delete or fold pure-plumbing outcomes ("directory created", "variable populated").
 
 ### AP-33. no-set-of-technique-output
 
-"`technique: …` + `set` of the technique's own product" (bound step `set`s what the technique already outputs) —
+"`technique: …` + `set` of the technique's own product"
+
+An activity set duplicates a bound technique's output.
+
 **Detect:** Step has `technique` and a `set` whose `target` is a value the bound technique computes (assessment, classification, derived structure, artifact path). Bound-technique outputs already land via `variable-binding`; the `set` re-encodes them on the activity.
+
 **Do not flag:** (a) cross-iteration accumulator / scatter-gather gather over a `forEach`; (b) caller-specific derivation from a generic tool-wrapper op (keep on activity — `io-agnostic-contract`); (c) value-BEARING `set` on a pure control step recording orchestration/flow state. Value-LESS procedural control sets — see `no-valueless-control-set`.
+
 **Fix:** Declare `### <target>` on the bound technique's `## Outputs` (same id), fold the `set` description into `## Protocol`, delete the activity `set`.
 
 ### AP-34. no-valueless-control-set
 
-"control step `set` with `target` + `description`, no `value:`" (derivation HOW misfiled as activity sets) —
+"control step `set` with `target` + `description`, no `value:`"
+
+Control sets carry no derived value.
+
 **Detect:** A control step (no `technique`) has value-LESS `set`s (`target` + `description`, no `value:`) whose descriptions carry sourcing/derivation HOW for a domain payload.
+
 **Do not flag:** Value-BEARING control `set`s for orchestration/flow state; bound-step `set` of technique product (`no-set-of-technique-output`).
+
 **Fix:** Bind a technique whose outputs/protocol own the derivation; delete the value-LESS activity sets.
 
 ### AP-35. no-intra-step-input-set
 
-"`commit_message: "docs({target_name}): …"` + same-step `set` of `target_name`" (a step `set`s a value its own technique binding consumes as an input) —
+"`commit_message: "docs({target_name}): …"` + same-step `set` of `target_name`"
+
+A step set feeds that same step's own inputs.
+
 **Detect:** A bound step's `technique.inputs` interpolates a variable that the SAME step's `set` actions write. Inputs resolve at invocation; `set`s are side-effects with no before-input contract → ordering hazard / self-reference (input-side counterpart of `no-set-of-technique-output`).
+
 **Do not flag:** A `set` whose `target` is NOT interpolated by that step's `technique.inputs` — scatter-gather gather (`no-set-of-technique-output` excl. a), value for a later step, or pure control-step orchestration.
+
 **Fix:** Hoist the derivation to where its source is first established (or declare it as an earlier producing technique's output per `no-set-of-technique-output`); delete the `set` from the consuming step, leaving a pure binding.
 
 ### AP-36. techniques-list-disjoint
 
-"`techniques: - workflow-engine::list-workflows …` with matching `step.technique`" (activity top-level `techniques[]` re-lists operations its steps bind) —
+"`techniques: - workflow-engine::list-workflows …` with matching `step.technique`"
+
+Activity techniques[] overlaps step technique binds.
+
 **Detect:** An entry in activity-level `techniques[]` is also bound by any step (top-level or loop) via `step.technique`. Activity `techniques[]` is for cross-cutting STRATEGY/capability techniques (`variable-binding`, `scatter-gather`) spanning the whole activity — not per-step operations. Lists must be DISJOINT (see also `bound-step-no-description`).
+
 **Do not flag:** Strategy techniques listed at activity level that no step binds. (Inverse smell — binding a cross-cutting strategy as a step operation — is separate; THIS fix always removes the activity-level duplicate.)
+
 **Fix:** Remove every overlapping entry from activity `techniques[]`; keep only cross-cutting strategies; delete the block if none remain.
 
 ### AP-37. rule-audience-bucket
 
-"`rules: workflow: - \"WORKER PERMISSIONS: Workers MUST write all artifacts directly …\"`" (rule in the wrong audience bucket) —
+"`rules: workflow: - \"WORKER PERMISSIONS: Workers MUST write all artifacts directly …\"`"
+
+A rule sits in the wrong rules.* audience bucket.
+
 **Detect:** Classify each rule by who must act: orchestrator (`get_workflow` only), worker (`get_activity` inject), or both identically. Flag worker directives (write-immediately, no-permission-questions, blocker-surfacing, artifact-verification, lens-loading-by-worker) under `rules.workflow`. Flag orchestration directives (dispatch isolation, output forwarding, checkpoint cadence, orchestrator handoff) under `rules.activity`.
+
 **Do not flag:** Correct placements — orchestrator → `rules.workflow`, worker → `rules.activity`, same directive for both → `rules.universal`.
+
 **Fix:** Move to the bucket for the actor commanded. If one prose rule commands the two actors differently, split into two rules (orchestrator handoff vs worker load).
 
 ### AP-38. no-duplicate-technique-steps
 
-"`steps: - id: map-findings / technique: compare-finding-sets …` (×N)" (same technique bound by N separate step definitions) —
+"`steps: - id: map-findings / technique: compare-finding-sets …` (×N)"
+
+N steps bind one technique without structural reason to split.
+
 **Detect:** Two or more step definitions in one activity bind the same technique reference. Classify: (a) **redundant re-execution** — differ only by which already-produced output to surface → collapse to one step; (b) **unrolled iteration** — same op on N collection items → one `forEach` with one binding; (c) **monolith-masking** — distinguished only by a sub-mode input → split into a group with one named op per mode (`no-monolith-masking-steps`).
+
 **Do not flag:** Fixed roster of distinct static targets with different structured inputs (not a clean iterable); mutually exclusive `when` branches (only one fires); distinct-purpose invocations at different pipeline points (initial vs final commit); same op as distinct phases inside one loop iteration.
+
 **Fix:** Apply collapse / loop / split per classification; leave the exceptions above.
 
 ### AP-39. hoist-universal-techniques
 
-"every activity carries `techniques: - variable-binding`" (a workflow-universal technique duplicated on each activity instead of declared once at workflow level) —
+"every activity carries `techniques: - variable-binding`"
+
+A universal technique is not hoisted to workflow.techniques.activity.
+
 **Detect:** A strategy technique appears on (nearly) every activity's `techniques[]`. Audience split mirrors rules (`rule-audience-bucket`): `techniques.workflow` = orchestrator (`get_workflow`); `techniques.activity` = inherited by every activity (`get_activity` inject). No `universal` bucket for techniques. Coverage discriminator: nearly-all → hoist; only some (e.g. `scatter-gather` on fan-out activities) → stay activity-local. Composes with `techniques-list-disjoint` (step-binding duplicates leave first).
+
 **Do not flag:** Activity-specific strategy techniques used by only some activities.
+
 **Fix:** Declare once under `workflow.techniques.activity`; delete from every activity `techniques[]`; drop emptied activity blocks.
 
 ### AP-40. readme-orients-not-transcribes
 
-"README `### NN. Activity` + `Steps:**` / checkpoints table / transitions / `## Variables` / `## Rules` / estimated times"** (README transcribes the YAML definition) —
+"README `### NN. Activity` + `Steps:**` / checkpoints table / transitions / `## Variables` / `## Rules` / estimated times"**
+
+README transcribes YAML structure instead of orienting.
+
 **Detect:** README enumerates in prose or tables: activity `steps[]` (including inline checkpoint options/`effect`/`autoAdvanceMs` and loops), `decisions[]`/`transitions[]`, per-step technique bindings, workflow `variables`, `rules`, or per-activity estimated times. Authoritative definition is `workflow.yaml` / `activities/NN-<id>.yaml`. Test: if the block must be edited when those YAML fields change, it is transcribing.
+
 **Do not flag:** Mermaid/ASCII flow diagrams (activity- or step-flow); orientation the YAML lacks — PURPOSE, at-a-glance activity sequence (name + one-line role + connections), outcomes/value, file structure, techniques overview, links to authoritative YAMLs. A third checklist of which audit/technique passes run (drifting from activity binds) is `bind-site-is-orchestration-truth`.
+
 **Fix:** Delete prose/table enumerations of steps/checkpoints/loops/decisions/transitions/bindings and Variables/Rules/estimated-time sections; KEEP diagrams and orientation. Readers open the YAML definition for the rest.
 
 ### AP-41. documentation-voice-positive
 
-"`Does not use inline content`" / "`Rather than X, the workflow now…`" / "`Never skip the checkpoint`" (definition prose framed as avoidance or comparison to a prior/alternative) —
+"`Does not use inline content`" / "`Rather than X, the workflow now…`" / "`Never skip the checkpoint`"
+
+Documentation uses avoidance or comparative voice.
+
 **Detect:** In workflow/activity/technique/resource *definition* prose (`description`, `outcome`, option/action descriptions, README orientation for the defined workflow — not planning artifacts), a passage states what the system avoids or how it differs from a prior/alternative design, instead of stating current behaviour in positive declarative present tense. Comparative/avoidance framing that must be edited when the "old way" is forgotten is the signal — not every English negation.
+
 **Do not flag:** Planning artifacts under `artifacts/planning/` (evolution by design); true runtime constraints in `rules.*` / technique `## Rules` ("must not write secrets"); schema/condition operators; negative examples inside this catalogue; `validate` messages that name a misconfiguration and fix command (`validate-message-economy`).
+
 **Fix:** Rewrite as what the system *does* or *is*. Positive convention checklist: [convention-conformance](./convention-conformance.md) Documentation Voice.
 
 ## Coupling Anti-Patterns
@@ -288,197 +586,351 @@ Technique, resource, and I/O contracts stay reusable: no workflow-local producer
 
 ### AP-42. io-agnostic-contract
 
-"`fix_strategy` from [analyze-failure]" (I/O contract names a workflow-internal source/destination) —
+"`fix_strategy` from [analyze-failure]"
+
+An I/O id or description names a specific caller.
+
 **Detect:** An input/output entry names or links a workflow-internal producer/consumer — another technique ("from [analyze-failure]", "produced by build-function-registry"), activity ("from the elicitation activity"), step, checkpoint, loop, or workflow/activity file. Describe what the value IS (meaning, shape, allowed values), never its position in a particular workflow.
+
 **Do not flag:** Protocol/Capability utilisation ("use technique X", "go through cargo-operations::fmt-fix"); intrinsic/external origin ("git diff output", "the user's request", "provided by the server"); I/O links to a resource/template section (shape of the value).
+
 **Fix:** Rewrite the entry generically; drop workflow-internal source/destination naming.
 
 ### AP-43. canonical-artifact-ids
 
-"Read all open assumptions from `assumptions-log.md`" (concrete artifact named instead of its canonical identifier) — A technique's `## Protocol` must reference data by its canonical Input/Output identifier, never by a literal artifact filename or path. Input/Output identifiers must be canonical names for the thing, not path-flavored proxies (`assumptions-log`, not `assumptions-log-path`). When an input or output is an artifact built from a template, hyperlink its noun to the **section** of the resource carrying that template — the same `[noun](path#section)` form techniques use in Protocol, anchored to the section to minimise context bloat, and with no explanatory verbiage (link the word; do not add a "Format: …" / "see …" clause). The server resolves those hyperlinks the same way technique links resolve to `::` refs — do not narrate the harness load recipe (`no-tool-usage-prescription`). Fix: rename path-flavored ids to the canonical name; replace literal artifact filenames in Protocol with the identifier; hyperlink the artifact noun to its template section.
+"Read all open assumptions from `assumptions-log.md`"
+
+Protocol cites a filename/path instead of a canonical I/O id.
+
+**Detect:** Protocol references data via literal artifact filename/path, or I/O ids are path-flavored proxies (`assumptions-log-path` vs `assumptions-log`).
+
+**Do not flag:** Filename literals correctly placed on `#### artifact` declarations (`artifact-name-in-io`); hyperlinked template nouns to resource sections.
+
+**Fix:** Rename to canonical ids; cite `{id}` in Protocol; hyperlink artifact nouns to template sections without tool recipes (`no-tool-usage-prescription`).
 
 ### AP-44. artifact-name-in-io
 
-"Create `NN-{package}-plan.md`" (artifact filename hardcoded in Protocol instead of the I/O contract) —
+"Create `NN-{package}-plan.md`"
+
+A filename lives in Protocol instead of the I/O declaration.
+
 **Detect:** Protocol prose names a concrete artifact filename (literal, or ad-hoc path) instead of a canonical Input/Output id. Fixed names belong as `#### artifact` literals; dynamic names as token-templates (`{package_name}-plan.md`); conditional names as discriminator-keyed notes on the I/O declaration.
+
 **Do not flag:** Protocol references that already use `{canonical_id}` only. Opaque multi-file path arrays — see `no-opaque-artifact-path-array`.
+
 **Fix:** Move the filename (literal, token-template, or discriminator-keyed note) into the I/O declaration; reference identifiers only in Protocol.
 
 ### AP-45. no-opaque-artifact-path-array
 
-"`all-artifact-paths` / `*-paths` input holding many files" (multiplicity hidden behind one opaque path array) —
+"`all-artifact-paths` / `*-paths` input holding many files"
+
+An opaque path array stands in for named artifact inputs.
+
 **Detect:** A technique consumes several artifacts via a single opaque `*-paths` (or similar) array that forces Protocol to name the files.
+
 **Do not flag:** A single artifact with a token-template or discriminator-keyed name on one Input (`artifact-name-in-io`).
+
 **Fix:** Split into individually named Inputs with canonical ids; Protocol references those ids only.
 
 ### AP-46. no-resource-caller-backlink
 
-"Composed by [generate-summary]" / "produced by the X technique" (a resource references the technique that calls it) —
+"Composed by [generate-summary]" / "produced by the X technique"
+
+A resource backlinks or names its caller.
+
 **Detect:** A resource (template, schema, guide, prompt, reference) names/links techniques that produce, consume, or call it — body or frontmatter (`"produced by the X technique"`, `"Composed by [X]"`, `"Used by…"`), "Used By"/"Referenced By" catalogue columns, or technique/activity FILE PATHS as link targets / role-to-file tables (e.g. listing `techniques/review-code.md`). Reverse caller coupling breaks reuse (see also `io-agnostic-contract`).
+
 **Do not flag:** Forward dependency — the resource tells ITS READER to run a technique (prompt/instruction applying workflow-engine / agent-conduct); "see also" to another technique's content; generic technique-model/ontology prose. Test: producer/consumer/caller of this resource → remove; technique the reader should run → keep.
+
 **Fix:** Describe the resource by what it IS; drop caller/backlink references; move role→file mapping into the rendering technique and keep the resource field abstract (link roles to the workflow file that defines them).
 
 ### AP-47. no-redundant-link-label
 
-"`deep_scan ([deep-scan](link))`" (label and link text repeat the same name) — A hyperlink whose display text is the same as the plain-text word immediately before it is purely redundant; the reader sees the name twice and the link adds no information the word doesn't already convey. Collapse the preceding word and the link into a single hyperlink: `deep_scan ([deep-scan](link))` → `[deep-scan](link)`. The same applies with case or punctuation variation: `L12 ([l12](link))` → `[L12](link)`, `claim ([claim](link))` → `[claim](link)`. A preceding word is NOT redundant when it carries a different label than the link's display text (e.g., `structural ([l12](link))` names the role, `structural`, distinct from the resource id `l12`; keep both). Fix: scan every `word ([link-text](url))` occurrence; when `word` and `link-text` are the same name (modulo case/hyphen), delete the plain-text word and the parentheses, leaving only `[link-text](url)`.
+`deep_scan ([deep-scan](link))`
+
+A hyperlink repeats the plain-text word immediately before it.
+
+**Detect:** A pattern `word ([link-text](url))` where `word` and `link-text` are the same name (modulo case/hyphen/underscore).
+
+**Do not flag:** Preceding words that name a distinct role (`structural ([l12](link))`).
+
+**Fix:** Collapse to a single `[link-text](url)` hyperlink.
 
 ### AP-48. brace-output-references
 
-"Structure the output" (Protocol step references output without a designator) — Every Protocol step that reads from or writes to an output must name which output it means by citing the output's canonical identifier (`{output_id}`) or a specific sub-field (`{output_id}.field`). Vague pronouns and generic nouns — "the output", "the result", "the artifact", "the analysis" — leave the agent to infer which declared output is meant, creating an inference gap when a technique has multiple outputs or when the output sub-field matters for correct behaviour. Look up the `## Output` / `## Outputs` declaration, find the id of the relevant entry (and sub-field if applicable), and substitute it for the vague reference (with `canonical-artifact-ids`: every data reference in Protocol anchors to the I/O contract). Fix: replace "the output" / "the result" with `{output_id}` or `{output_id}.field`; for multi-output techniques, ensure each step names the specific output it touches.
+"Structure the output"
+
+Protocol refers to "the output" without naming which output id.
+
+**Detect:** Protocol uses vague nouns ("the output", "the result", "the artifact", "the analysis") instead of `{output_id}` or `{output_id}.field`.
+
+**Do not flag:** References that already cite canonical output ids; non-output prose.
+
+**Fix:** Substitute the declared output id (and sub-field when needed) for every vague reference.
 
 ### AP-49. no-delivery-mechanism-narration
 
-"Resources are attached to technique responses (loaded via get_technique)" (a technique self-describes the delivery mechanism) —
+"Resources are attached to technique responses (loaded via get_technique)"
+
+Prose narrates delivery mechanism instead of the imperative + link.
+
 **Detect:** Protocol explains how the server delivers the technique, resources, or bundle — "Resources are attached to technique responses", "available in `_resources`", "loaded via `get_technique`", "in the technique response", "worker self-bootstraps via `get_activity`".
+
 **Do not flag:** workflow-engine techniques whose domain IS tool/delivery behaviour.
+
 **Fix:** Delete mechanism narration; keep the imperative action and the canonical resource/technique hyperlink ("Load the lens prompt for `{declared_id}`"). Tool-call recipes ("via `get_resource`", param shapes) are `no-tool-usage-prescription`.
 
 ### AP-50. no-tool-usage-prescription
 
-"Load [anti-patterns] via `get_resource`" / "call `get_technique { session_index, step_id }`" (a technique or non-engine resource teaches harness tool HOW) —
+"Load [anti-patterns] via `get_resource`" / "call `get_technique { session_index, step_id }`"
+
+Prose prescribes a harness/MCP tool-call recipe.
+
 **Detect:** Capability, Protocol, Rules, or non-engine resource prose prescribes how to invoke a harness/MCP tool — call name + "via"/"call"/"after", argument/param shape, or sequencing of tool calls (`get_resource`, `get_technique`, `get_activity`, `get_workflow`, `start_session`, `next_activity`, `list_workflows`, …). Agents already have independent tool/bootstrap guidance; restating it in techniques duplicates and drifts (`no-duplicated-guidance`).
+
 **Do not flag:** `meta` workflow-engine / harness-compat / agent-conduct / bootstrap and orchestrator/worker prompt resources whose domain IS tool usage; an operation that wraps a raw tool may name that tool (`canonical-technique-reference` carve-out). Naming WHAT to consult via a markdown/`::` hyperlink without a tool recipe is correct.
+
 **Fix:** Delete the tool recipe; keep the imperative and the canonical hyperlink or `{id}` ("Load [anti-patterns](path)"; "Apply the bound step's technique"). Role boundaries stay as role prose ("workers source definitions from orchestrator-provided context") — not as "do not call `get_workflow`".
 
 ### AP-51. canonical-technique-reference
 
-"Use `gitnexus_context` on the symbol" (a technique invokes another technique by its raw tool name instead of a canonical hyperlink) —
-**Detect:** Protocol uses a raw underlying tool name (`gitnexus_context`, `gitnexus_impact`, `gitnexus_cypher`, `gitnexus_query`, `gitnexus_list_repos`, …) for a capability another technique wraps. Must use canonical hyperlink (`[op](path)` or `[group](path)::[op](path)`), resolved by the server to `::`. Raw names couple to a harness, bypass the navigable reference model (also `consistent-tool-names`).
-**Do not flag:** The operation that wraps the primitive (`gitnexus-operations` ops, `harness-compat` ops) — naming the raw tool IS that technique's purpose.
+"Use `gitnexus_context` on the symbol"
+
+A raw harness tool name is used where a wrapping op exists.
+
+**Detect:** Protocol names a raw harness/MCP tool for a capability that another technique wraps. Must use the canonical hyperlink (`[op](path)` or `[group](path)::[op](path)`), resolved by the server to `::`. Raw names couple to a harness and bypass the navigable reference model (also `consistent-tool-names`).
+
+**Do not flag:** The operation that wraps the primitive — naming the raw tool IS that technique's purpose.
+
 **Fix:** Replace the raw tool name with the canonical hyperlinked wrapping op; preserve arguments.
 
 ### AP-52. brace-declared-ids
 
-"Examine target_path" / "for synthesis pass (index 23)" / "`reference_path`" / "`<files>`" (Protocol references a declared I/O or local without braces) —
+"Examine target_path" / "for synthesis pass (index 23)" / "`reference_path`" / "`<files>`"
+
+A declared id is used unbraced where a designator is required.
+
 **Detect:** (a) bare declared id as plain words; (b) orphan enum/index value not tied to its input ("index 23"); (c) disguised id in backticks or `<angles>` without braces. Spelling must match the declared id exactly (`### problem_statement` → `{problem_statement}`). Forms: `{input_id}` / `{output_id}` / `{output_id}.field` / `{$local}`.
+
 **Do not flag:** Ordinary English that only coincides with an id; backticked literals that are not declared ids (shell commands, filenames, tool params).
+
 **Fix:** Brace as `{declared_id}`; for orphan values write "when `{declared_id}` is 23"; replace disguise wrappers with braces. Brace only when the token is used as a reference to that value.
 
 ### AP-53. dotted-rule-address
 
-"per the gitnexus-operations index-freshness rule" (Protocol cites a rule in prose or `::` instead of its dotted symbol address) —
+"per the gitnexus-operations index-freshness rule"
+
+A rule is cited in prose instead of its dotted symbol address.
+
 **Detect:** A protocol step cites/relies on a rule as prose ("per the X rule", "following the X rule") or with `::` (invokes a technique, does not name a rule). Also: prose citation of a rule that is not declared anywhere (dangling).
+
 **Do not flag:** Correct dotted ancestry address — `[<workflow>.]<technique>.<rule-name>` (e.g. `meta.gitnexus-operations.index-freshness-first`). Shorten when in ancestry: omit workflow for same-workflow; bare rule name when inherited from self/group/workflow root. Full path only for rules outside current ancestry.
+
 **Fix:** Replace prose/`::` with the dotted symbol address (shortened per ancestry). For dangling citations, point at the real inline content — never invent a rule. Mnemonic: `::` invokes, `.` names.
 
 ### AP-54. anchored-protocol-references
 
-"Apply design framework to structure the approach" (a Protocol reference that does not resolve to a concrete target) —
-**Detect:** In every protocol step, every referential phrase must resolve to one of five anchors: **I/O** → `{id}` / `{id}.field` (also `canonical-artifact-ids`, `brace-output-references`, `brace-declared-ids`); **rule** → dotted symbol (`dotted-rule-address`); **technique/op** → canonical hyperlink / `::` (`canonical-technique-reference`); **resource** → markdown hyperlink to file/section. Flag bare prose nouns, backtick-disguised ids, and `<angle>` placeholders of declared ids — e.g. bare RESOURCE noun ("Apply design framework…") when `resources/design-framework.md` exists. Also check protocol-local `{$name}`/`{name}` balance (`bind-protocol-locals`) in the same walk.
-**Do not flag:** Ordinary domain prose naming no formal artifact ("the codebase", "the diff", "the user"); anaphora for a noun already linked once in the same step.
-**Fix:** Anchor each unresolved reference via the matching form. A reference with NO real target is dangling — fix the target or reword; never invent a link.
+"Apply design framework to structure the approach"
+
+A protocol reference has no resolvable target.
+
+**Detect:** A protocol phrase refers to a declared I/O, rule, technique/op, or resource but does not use that kind's resolvable form (`{id}`, dotted rule symbol, canonical `::`/hyperlink, or resource hyperlink). Apply sibling form rules on the same walk (`brace-declared-ids`, `brace-output-references`, `canonical-artifact-ids`, `dotted-rule-address`, `canonical-technique-reference`, `bind-protocol-locals`) — do not re-teach them here.
+
+**Do not flag:** Ordinary domain prose naming no formal artifact; anaphora for a noun already linked once in the same step.
+
+**Fix:** Anchor the reference with the matching form, or reword. A reference with no real target is dangling — fix the target or drop it; never invent a link.
 
 ### AP-55. hoist-shared-inputs
 
-"`### planning-folder` declared on every technique" (a common input re-declared per technique instead of inherited from the container) —
+"`### planning-folder` declared on every technique"
+
+The same shared input is redeclared instead of hoisted.
+
 **Detect:** The same input is re-declared on many techniques instead of once on the smallest common container (group or workflow-root `TECHNIQUE.md`; `composeLoaded` merges container I/O/Rules into descendants). Related smell: path-flavored id (`planning-folder-path`) — canonical id is the noun the value IS (`canonical-artifact-ids`). Synonym drift for one concept across leaves.
+
 **Do not flag:** Niche inputs shared by only two or three techniques — do not push those to the root just to dedup.
+
 **Fix:** Hoist the shared input to the container under one canonical id; delete per-technique declarations; reference `{id}` via inheritance. Hoist genuinely workflow-wide contextual inputs (artifact location, target path) even if some leaves never reference them. Producer/consumer values still hoist: shared input on ancestor + producing technique also declares it as output (input∩output, `snake-case-symbols`).
 
 ### AP-56. paren-invocation-args
 
-"`gitnexus-operations::context {name: <symbol>}`" (invocation passes its argument list in curly braces) —
-**Detect:** Technique/operation invocation wraps arguments in braces (`::op {arg: value}`). Braces are the designator namespace (`{input_id}`, `{output_id}.field`, `{$local}`); brace-args collide with designators. Parameter lists use **parentheses attached to the op reference**: `[group](path)::[op](path)(arg: value, …)`. Inside parens: variable/input values keep braces (`(name: {$symbol})`); literals stay bare (`(diagram_type: 'package')`); argument NAMES stay bare. Syntax-defining prose must itself show the paren shape.
-**Do not flag:** Brace-with-colon that is NOT an invocation arg list — Cypher node properties in a query string, JSON/output-template slots (`{file: symbol or region}`), raw MCP-tool object-arg docs (`gitnexus_query({query: "…"})`).
-**Fix:** Replace brace arg lists with parentheses on the op reference; brace only argument values that are variables/inputs. Mnemonic: `()` calls, `{}` names.
+"`gitnexus-operations::context {name: <symbol>}`"
+
+Invocation arguments use braces instead of parentheses.
+
+**Detect:** A technique/operation invocation passes its argument list in braces (`::op {arg: value}`). Braces are the designator namespace; arg lists use parentheses on the op reference: `[group](path)::[op](path)(arg: value, …)`. Variable/input values inside parens keep braces; argument names and literals stay bare.
+
+**Do not flag:** Brace objects that are not invocation arg lists (query/template/JSON payloads, raw tool-doc object shapes).
+
+**Fix:** Replace brace arg lists with parentheses on the op reference; brace only argument values that are variables/inputs.
 
 ### AP-57. escape-literal-dollar
 
-"costs $0.05 per call" / "the $schema field" (unescaped literal `$` in rendered prose breaks markdown) —
+"costs $0.05 per call" / "the $schema field"
+
+A literal $ is unescaped in rendered prose.
+
 **Detect:** Unescaped `$` in **rendered prose** outside fenced code blocks and inline code spans — prices (`$0.05`), `$schema`, shell `${VAR}` shown in text. GFM treats `$…$` as inline math; two unescaped `$` in one paragraph (or even one) can mis-render. Protocol variables are backticked (`backtick-code-tokens`), so their `$` is already math-exempt (do not use `{\$name}` outside code).
+
 **Do not flag:** `$` inside a fence or inline code span (`` `${{ github.event… }}` ``, `` `git -C {$component_git_dir}` ``) — escaping would corrupt the code.
+
 **Fix:** Backslash-escape every literal `$` in rendered prose (`\$0.05`); leave code spans/fences untouched. Displayed output stays `$`.
 
 ### AP-58. snake-case-symbols
 
-"`check_status` output, `scope` input (case marks direction)" / "kebab symbol id that won't bind" (mis-casing the symbol namespace) —
+"`check_status` output, `scope` input (case marks direction)" / "kebab symbol id that won't bind"
+
+Symbol ids use the wrong case convention.
+
 **Detect:** Symbol ids (inputs, outputs, sub-fields, `{$locals}`) in kebab/camel — they must be `snake_case` to bind to activity/condition/session state. Case used to encode input vs output direction. Rule/technique/resource/file/`::` targets wrongly snaked.
+
 **Do not flag:** Tool/MCP/CLI param mirrors keeping the tool's exact spelling (`session_index`, `cloudId`). NAME class stays `kebab-case`: technique/operation/resource identities, hyperlink/`::` targets, and rule names (cited by dotted address, never evaluated). One snake symbol declared in both Inputs and Outputs when the value is input∩output (hoistable per `hoist-shared-inputs`).
+
 **Fix:** Snake every symbol id; keep tool-param mirrors; keep kebab for names/rules; never encode direction in case — direction is the Inputs/Output section.
 
 ### AP-59. constraint-as-blockquote
 
-"`  - If the PR has not merged, wait`" (step-scoped caveat as indented sub-bullet instead of `>` note) —
+"`  - If the PR has not merged, wait`"
+
+A caveat is a protocol sub-bullet instead of a blockquote note.
+
 **Detect:** A constraint that qualifies a SINGLE primary instruction — conditional caveat, fallback, error-path, or prohibition — is an indented sub-bullet (`  - …`). The protocol parser's step regex strips leading whitespace, so that line becomes a disconnected *peer* step.
+
 **Do not flag:** Genuine enumerations or sequential sub-steps (per-harness branch tables, ordered sub-actions). Global/cross-step constraints belong in `## Rules` (`structure-backed-constraints`, `no-rule-protocol-restatement`). Single-block Rules misfiled as global — see `local-rule-as-note`. Distinct from `no-one-step-rules`.
+
 **Fix:** Convert to a `>` note under the primary instruction (two trailing spaces on the primary bullet, then `> ` on the next line). A `>` line is not a step — it folds into the parent.
 
 ### AP-60. local-rule-as-note
 
-"`## Rules` entry that scopes to only one protocol block" (global-looking rule that is really local) —
+"`## Rules` entry that scopes to only one protocol block"
+
+A local caveat is filed as a global-looking rule.
+
 **Detect:** A `## Rules` entry applies to only one protocol block/step rather than spanning the technique.
+
 **Do not flag:** True cross-cutting technique rules; step-scoped caveats already under the instruction as `>` (`constraint-as-blockquote`). Distinct from `no-one-step-rules` (misfiled guidance → protocol prose, not necessarily a `>` note).
+
 **Fix:** Demote the entry to a `>` note under the block it qualifies; leave workflow-wide constraints in Rules.
 
 ### AP-61. factor-repeated-paths
 
-"`.engineering/artifacts/adr/` repeated four times" (a literal path repeated or shared instead of factored into a variable) —
-**Detect:** A filesystem path appears more than once in a technique, or is shared across techniques, as a repeated literal. Fixed conventional location → input with `#### default` holding the literal; every use `{adr_dir}`. Runtime-derived path → `{$local}`. Also: a step hard-codes a path when a declared variable already exists.
-**Do not flag:** (a) genuinely single-use literals; (b) the one canonical literal — input `#### default`, producer that constructs it, or the rule that defines the location; (c) distinct values that look similar — per-work-package `{planning_folder_path}` vs workflow-wide root `.engineering/artifacts/planning/`.
-**Fix:** Factor repeated/shared paths into a defaulted input (or `{$local}` when derived); reference the designator; keep the literal only at its canonical definition. If the literal contradicts the artifact-location model, correct the LOCATION to the canonical variable — do not enshrine the wrong path in a new variable.
+"`.engineering/artifacts/adr/` repeated four times"
+
+A repeated path literal is not factored into a designator.
+
+**Detect:** A filesystem path appears more than once in a technique (or across techniques) as a repeated literal, or a step hard-codes a path when a declared variable already exists.
+
+**Do not flag:** Genuinely single-use literals; the one canonical literal at its definition site (input `#### default`, producer, or location rule); distinct values that merely look similar.
+
+**Fix:** Factor repeated/shared paths into a defaulted input (or `{$local}` when derived); reference the designator; keep the literal only at its canonical definition. If the literal contradicts an existing location variable, correct the usage — do not mint a second path variable for the wrong location.
 
 ### AP-62. bind-protocol-locals
 
-"`git -C {$component_git_dir} …` with no bind" / "`Maintain {$resolution_counts}` never read" (protocol local unbound or dead) —
+"`git -C {$component_git_dir} …` with no bind" / "`Maintain {$resolution_counts}` never read"
+
+A {$local} is dead or unbound at the consumer.
+
 **Detect:** (a) **Unbound local** — bare `{name}` that is not a declared I/O (nor ambient activity input such as `{target_path}` / `{branch_name}`) and has no `{$name}` bind in the protocol. (b) **Dead binding** — `{$name}` never read as `{name}`. Declare-once: `{$name}` only at the producing step; reads are bare `{name}` (backticked per `backtick-code-tokens`); bind textually before every read.
+
 **Do not flag:** `{$name}` in each mutually exclusive producing branch (one runtime path). A `{name}` that is a declared I/O or ambient activity input — if it wore `$`, strip `$` (mis-marked local), do not add a bind.
+
 **Fix:** (a) Name the value at the producer — `` `{$name}` `` inline (no "and bind it to…" narration). (b) Make the consumer read `{name}`, or drop a vestigial bind.
 
 ### AP-63. backtick-code-tokens
 
-"`set worktree_created = true`" / "run 'git -C …'" / "fetch concept-rag://…" (code-like token not backticked) —
+"`set worktree_created = true`" / "run 'git -C …'" / "fetch concept-rag://…"
+
+A code token appears bare without backticks.
+
 **Detect:** Bare-in-prose designators (`{id}`, `{$name}`, dotted rule addresses), CLI/shell (including 'single-quoted' commands), MCP tool calls, resource URIs (`scheme://…`), literal paths/filenames — outside an existing code span and not a markdown/`::` link target.
+
 **Do not flag:** Tokens already inside a code span/fence; descriptive prose nouns ("the planning folder"); hyperlink/`::` targets (backtick only invocation argument values). Fragmented spans (`` `git -C` `{x}` ``) are defects — must be one span. Backticks without braces still fail `brace-declared-ids` mode (c).
+
 **Fix:** Wrap each bare code token in one backtick span (designators inside the same span as surrounding command text); convert 'single-quoted' commands; de-escape `{\$name}` to `` `{$name}` `` (math-exempt inside code; see `escape-literal-dollar`).
 
 ### AP-64. boolean-id-shape
 
-"`…_flag` / `not_ready` / ambiguous boolean nouns" (boolean id shape does not encode an affirmative predicate) —
+"`…_flag` / `not_ready` / ambiguous boolean nouns"
+
+A boolean id is not an affirmative predicate.
+
 **Detect:** Boolean symbol ids use non-affirmative stems (`not_ready`, `no_merge`), generic-noun burials (`…_flag` / `…_status` / `…_check`), or ambiguous nouns. Prefer affirmative predicates (`squash_merge_supported`, `index_fresh`). Prefix `is_`/`has_`/`can_`/`should_` only when it sharpens; unprefixed affirmative / past-participle results (`worktree_created`, `*_confirmed`) already conform — do not re-prefix. Shape ≠ meaning: inverted meaning still passes shape.
+
 **Do not flag:** Conformant unprefixed affirmatives.
+
 **Fix:** Rename to an affirmative predicate shape.
 
 ### AP-65. collection-id-shape
 
-"`assumption_list` / singular id holding a collection" (collection/map id shape wrong) —
+"`assumption_list` / singular id holding a collection"
+
+A collection/map id has the wrong noun shape.
+
 **Detect:** Collection/map ids use `*_list`/`*_array`/`*_collection`/`*_set` suffixes, or a singular id holding an iterated collection. Collections: plural item noun (`tasks`, `failures`). Key-addressed maps: singular mapping name (`domain_to_range`).
+
 **Do not flag:** Bare plural collection item-nouns (correct); `_mode`/`_type`/`kind` discriminators (suffix is the head).
+
 **Fix:** Rename to plural item noun (collection) or singular mapping name (map).
 
 ### AP-66. io-id-shape
 
-"`summary` / `planning-folder-path` / direction-encoded I/O ids" (I/O id shape encodes representation or direction) —
+"`summary` / `planning-folder-path` / direction-encoded I/O ids"
+
+An I/O id encodes representation or direction.
+
 **Detect:** I/O ids that are direction-encoded; representation proxies (`-path`/`-list`, see `canonical-artifact-ids` / `hoist-shared-inputs`); synonym drift for one concept; bare single-word generics (`summary`, `artifact`, `coverage`, `state`, `result`, `prompt`). Prefer head-noun-last qualified phrases (`reconciled_assumptions`, `completion_summary`). Flag Inputs/Output heading name collisions within one technique (except true input∩output pass-through).
+
 **Do not flag:** External tool/schema field spellings; bare plural collection item-nouns (`collection-id-shape`).
+
 **Fix:** Rename; hoist one concept to one shared id (`hoist-shared-inputs`); drop representation/direction encoding from I/O ids.
 
 ### AP-67. rule-slug-shape
 
-"`do-not-review-unresolved` / process-narration rule slugs" (rule slug shape is bare negation or process narration when a positive invariant is clearer) —
+"`do-not-review-unresolved` / process-narration rule slugs"
+
+A rule slug is negation or narration instead of a positive invariant.
+
 **Detect:** Rule slugs that are bare negation, process-narration, or prohibited-state names when a positive invariant is at least as clear. Keep clear negations (`no-cargo-here`, `do-not-mask-flaky`, `never-resume`). Rule slugs stay kebab (`snake-case-symbols`).
+
 **Do not flag:** Clear intentional negations; NAME-class kebab identities that are not symbol ids.
+
 **Fix:** Rename toward a positive invariant when clearer; keep kebab.
 
 ### AP-68. technique-stage-agnostic
 
-"return to the planning stage" / "at the validate activity" / "present the … checkpoint" / "after each task, before confirmation" (technique references activity-level constructs or its own flow position) —
+"return to the planning stage" / "at the validate activity" / "present the … checkpoint" / "after each task, before confirmation"
+
+A technique name encodes stage or position in the workflow.
+
 **Detect:** Technique Capability/Protocol/Rules mention stage/activity (named or "calling/consuming/producing activity"), checkpoint, loop/iteration, transition/decision routing, or position/timing in the activity flow ("after each task", "before user confirmation", "before the next step"). Test: if the sentence answers *where/when in the workflow?* or *which checkpoint/loop surrounds me?*, flag it. Techniques answer only *what do I do and what value do I produce?*
+
 **Do not flag:** Purpose-phrased work with no orchestration locus ("final validation", "no separate commit step follows"); values the technique emits for the activity to route (severity, recommended option id).
+
 **Fix:** Migrate orchestration detail to the activity first (transitions, steps, `step.technique.inputs`/`outputs`, variables, checkpoints, or a technique `rule` — not activity prose rules; see `no-activity-prose-rules`), then delete the reference from the technique. Rewrite remaining prose as purpose, not position.
 
 ### AP-69. no-activity-prose-rules
 
-`rules: ["Manual diff review is FIRST", "all reviews must complete before validate"]` (prose rules at the activity level) —
+`rules: ["Manual diff review is FIRST", "all reviews must complete before validate"]` (prose rules at the activity level)
+
+An activity carries prose rules: instead of pure mechanics.
+
 **Detect:** Any activity-level `rules:` entry. Activity is pure mechanics — constraints live in `steps[]` order, `when`/`condition`, transitions, decisions, checkpoints, loops — not prose.
+
 **Do not flag:** N/A — activity `rules:` should be empty; behavioral guidance belongs on bound techniques.
-**Fix — classify each entry:** (a) restates structure already enforced → **delete**; (b) technique-behavioral constraint → **migrate** to the owning technique (`single-rule-authority`); (c) genuine unenforced constraint → **encode** as `when`/`condition`, transition, decision, checkpoint, or `required: false` (hard gates use `when`/`condition`; step `required` is a worker hint only). End state: no activity `rules:` block.
+
+**Fix:** (a) restates structure already enforced → **delete**; (b) technique-behavioral constraint → **migrate** to the owning technique (`single-rule-authority`); (c) genuine unenforced constraint → **encode** as `when`/`condition`, transition, decision, checkpoint, or `required: false` (hard gates use `when`/`condition`; step `required` is a worker hint only). End state: no activity `rules:` block.
 
 ### AP-70. capability-group-placement
 
-Reusable primitive trapped in a client workflow / seam-driven set named as a capability / cross-consumer capability buried under one activity name (technique placement ignores reuse + shape-origin) —
-**Detect:** Place by trichotomy — (1) **Reusable primitive** (op boundaries are the capability's own ops — cargo/gitnexus/git) → must live in **meta**, named for the capability. (2) **Cross-consumer / intrinsic capability** (same shape across activities, or reuse-ready remediation like analyze→fix) → **workflow root** (or meta if cross-workflow), named for the **capability** — never one activity's name. (3) **Activity-seam-driven set** (ops exist only because one activity interleaves checkpoints/loops/foreign steps; absent that activity they collapse) → workflow group folder **named for that activity**. Discriminator is **shape-origin**, not consumer count (single-consumer intrinsic capability stays capability-named). Also flag a redundant one-cluster group folder when the group's ops are the workflow's entire operation set (`<group>::` only restates the workflow).
-**Do not flag:** Activity-named group folder as organization only — op protocols inside still stay stage-agnostic (`technique-stage-agnostic`). Multiple distinct capability groups composed by one activity stay capability-named (not one seam-driven set). Do not invent a group for a hypothetical second cluster (YAGNI).
-**Fix:** Primitive → meta; seam-driven 1:1 → activity-named group; intrinsic/cross-consumer → capability name. Use a group folder only to bound a SUBSET against other top-level techniques; otherwise standalone `techniques/<op>.md` with shared contract in workflow-root `TECHNIQUE.md`.
+"Reusable primitive trapped in a client workflow" / "cross-consumer capability buried under one activity name"
+
+Technique folder/name disagrees with shape-origin (reuse boundary vs activity seam).
+
+**Detect:** A technique's directory or name encodes the wrong locus for its shape-origin: a reusable harness/capability primitive lives under a client workflow; a cross-activity intrinsic capability is named for one activity; or an activity-seam-only set is named as if it were a standalone capability. Also flag a group folder whose ops are the workflow's entire operation set (`<group>::` only restates the workflow). Discriminator is shape-origin, not consumer count.
+
+**Do not flag:** Activity-named group used only to organize seam-driven ops (protocols inside stay stage-agnostic — `technique-stage-agnostic`); multiple distinct capability groups composed by one activity; inventing a group for a hypothetical second cluster (YAGNI).
+
+**Fix:** Reusable primitive → meta, capability-named; intrinsic/cross-consumer → workflow root (or meta if cross-workflow), capability-named; activity-seam 1:1 → activity-named group. Use a group folder only to bound a subset against other top-level techniques; otherwise standalone `techniques/<op>.md` with shared contract in workflow-root `TECHNIQUE.md`.
 
 ## Tool-Technique-Doc Consistency Anti-Patterns
 
@@ -486,39 +938,75 @@ Tool names, return values, bootstrap paths, and behavioural guidance must match 
 
 ### AP-71. no-false-resource-delivery
 
-"Resources are in the response" (but they aren't) —
+"Resources are in the response"
+
+A surface claims a tool return shape that is not accurate.
+
 **Detect:** A technique, bootstrap/meta resource, or workflow doc/README describes a tool's return value, delivery shape, or payload inaccurately versus the actual harness behaviour (e.g. claims full resource bodies when the tool returns lightweight refs).
+
 **Do not flag:** Accurate descriptions; non-engine surfaces that correctly avoid tool recipes (`no-tool-usage-prescription`).
+
 **Fix:** Align the claim with actual tool behaviour, or delete the claim if the surface should not describe tools.
 
 ### AP-72. complete-bootstrap-path
 
-"Call start_session, then call next_activity" (skipping the map) —
+"Call start_session, then call next_activity"
+
+The bootstrap path has a discoverability gap between hops.
+
 **Detect:** An authoritative bootstrap sequence (meta bootstrap / engine technique / orchestrator prompt) omits a tool or step required to reach the first meaningful action, given what the prior tools actually return (e.g. no `initialActivity` and no `get_workflow`).
+
 **Do not flag:** Non-engine techniques that correctly omit tool recipes (`no-tool-usage-prescription`).
+
 **Fix:** Complete the path on the authoritative bootstrap surface so every hop is discoverable from the prior tool's real return.
 
 ### AP-73. consistent-tool-names
 
-"`get_step_technique`" / invented or stale tool name —
+"`get_step_technique`" / invented or stale tool name
+
+The same harness action is named inconsistently or with a stale name.
+
 **Detect:** (1) The same harness action is named differently across techniques, bootstrap resources, or docs. (2) A cited tool name does not exist on the actual harness tool surface. Canonical name for loading a step technique is `get_technique`.
+
 **Do not flag:** Historical names only inside supersession notes that are being deleted; wrapped raw-tool names inside the op that owns that primitive (`canonical-technique-reference` carve-out).
+
 **Fix:** Use one canonical name everywhere; replace or delete names absent from the harness surface.
 
 ### AP-74. no-duplicated-guidance
 
-"Pass token to all calls" — Behavioral guidance duplicated across techniques and tool descriptions. When the same instruction appears in multiple techniques and/or the tool description, updates to one create silent drift in the others. Guidance belongs in one authoritative location; others reference it. Harness tool HOW belongs only in meta engine/conduct/bootstrap surfaces — techniques must not restate it (`no-tool-usage-prescription`).
+"Pass token to all calls"
+
+The same behavioural guidance is multi-homed across techniques and tool docs.
+
+**Detect:** Identical or near-identical behavioural instructions appear in multiple techniques and/or tool descriptions (including harness HOW restated outside meta engine/conduct/bootstrap — see `no-tool-usage-prescription`).
+
+**Do not flag:** A single authoritative home with pointers elsewhere; meta surfaces whose domain is tool usage.
+
+**Fix:** Keep one authoritative location; replace duplicates with references to it.
 
 ### AP-75. describe-tool-value
 
-"Returns: Activity definition" (but it returns everything) —
+"Returns: Activity definition"
+
+A tool description undersells the value of the real return.
+
 **Detect:** On surfaces that legitimately describe tools (meta engine/bootstrap/tool docs), a description states mechanics or a partial return and omits the value the agent actually receives (e.g. "transitions to the next activity" without the full activity definition payload).
+
 **Do not flag:** Non-engine techniques that do not describe tools at all (`no-tool-usage-prescription`).
+
 **Fix:** Describe the value of the real return; drop underselling mechanics-only blurbs.
 
 ### AP-76. no-redundant-tools
 
-A tool whose output is a strict subset of another tool's response adds selection ambiguity without adding value. If `next_activity` returns transitions and `get_activities` returns only transitions (requiring `next_activity` to have been called first), the second tool is redundant. Flag when authored guidance or the harness surface still exposes or recommends the redundant tool.
+"Also call get_activities for transitions"
+
+A tool is redundant because its output is a strict subset of another tool's return.
+
+**Detect:** Authored guidance or the harness surface exposes/recommends a tool whose output is a strict subset of another tool already required (e.g. transitions-only helper after `next_activity`).
+
+**Do not flag:** Tools that return non-subset value; distinct audiences/permissions.
+
+**Fix:** Remove or stop recommending the redundant tool; document the surviving tool's return fully (`describe-tool-value`).
 
 ## Execution Anti-Patterns
 
@@ -526,34 +1014,87 @@ Authoring-session discipline: confirm approach before edits, follow through on r
 
 ### AP-77. approach-before-impl
 
-"I'll just start implementing" — Present approach and receive confirmation before any modification.
+"I'll just start implementing"
+
+Implementation starts before presenting an approach and getting confirmation.
+
+**Detect:** File/workflow modifications begin before the user has confirmed the proposed approach for the change.
+
+**Do not flag:** Trivial typos/formatting the user already authorized; continuing an explicitly approved plan.
+
+**Fix:** Present the approach and wait for confirmation before modifying.
 
 ### AP-78. follow-through-on-recommend
 
-"Here's what I recommend..." (without doing it) — Recommendations must be followed by implementation. Analysis without action is incomplete.
+"Here's what I recommend..."
+
+A recommendation is presented without follow-through implementation.
+
+**Detect:** The agent emits recommendations/analysis as the deliverable and stops without implementing the approved next action when implementation is in scope.
+
+**Do not flag:** Pure advisory requests where the user asked for analysis only.
+
+**Fix:** After recommending, implement (or explicitly checkpoint the implement-or-stop decision).
 
 ### AP-79. structure-backed-constraints
 
-"The agent must never do X" (as rule text only) —
+"The agent must never do X"
+
+A critical constraint is text-only with no structural enforcement.
+
 **Detect:** A critical rule in `rules[]` (workflow / activity) or technique `## Rules` can be violated by ignoring the text and has no structural backing (checkpoint, condition, validate action, or decision).
+
 **Do not flag:** Explicitly guidance-only / non-critical rules; rules already backed by structure on the same construct or a parent the actor always receives.
+
 **Fix:** Add structural enforcement (checkpoint, condition, validate, decision), or reclassify as non-critical guidance if structural backing is inappropriate.
 
 ### AP-80. preserve-readme-content
 
-"Updated README" (that removes content) — Content-reducing updates require explicit preservation audit and user confirmation.
+"Updated README"
+
+A README update reduces content without a preservation audit and confirmation.
+
+**Detect:** A README edit removes or shrinks substantive content without listing what was preserved/removed and getting user confirmation.
+
+**Do not flag:** Additive clarifications; deletions the user explicitly requested.
+
+**Fix:** Audit preservations/removals, confirm with the user, then apply (`readme-orients-not-transcribes` still applies to shape).
 
 ### AP-81. verify-format-literacy
 
-Verify format literacy before drafting. Validate all files before commit.
+"Draft first, validate later"
+
+Drafting proceeds without format literacy, or commit skips validation.
+
+**Detect:** New workflow/technique/resource files are drafted without checking the relevant format/schema conventions, or commits proceed without validating the touched files.
+
+**Do not flag:** Edits that only touch already-validated identical shapes with no format risk.
+
+**Fix:** Verify format literacy before drafting; validate all touched files before commit.
 
 ### AP-82. work-through-activities
 
-All work must flow through defined activities. Informal combination of results is prohibited.
+"I'll just merge the worker outputs here"
+
+Work bypasses defined activities via informal combination of results.
+
+**Detect:** Results are combined, advanced, or closed outside the workflow's defined activities/transitions.
+
+**Do not flag:** In-activity orchestration that still goes through declared steps/checkpoints.
+
+**Fix:** Route work through the defined activities; do not informally merge outside the graph.
 
 ### AP-83. accept-correction
 
-Re-examine the output. Never push back on a user correction without evidence.
+"That correction seems wrong — keeping my version"
+
+A user correction is pushed back without evidence, or output is not re-examined.
+
+**Detect:** The agent disputes a user correction without citing evidence, or fails to re-examine the output after a correction.
+
+**Do not flag:** Evidence-backed clarification questions about the correction.
+
+**Fix:** Re-examine the output; accept the correction or present evidence — never dismiss without evidence.
 
 ## Output Economy Anti-Patterns
 
@@ -561,124 +1102,231 @@ Artifacts and checkpoints stay lean: one home per fact, exception-only status, n
 
 ### AP-84. single-closeout-artifact
 
-"`COMPLETE.md` + `workflow-retrospective.md` + `close-out-summary.md` + a README footer narrative" (a terminal activity produces N overlapping end-of-session documents) — Each terminal document re-narrates the same session: delivered items, decisions, validation results, deferred follow-ups, lessons. A workflow defines exactly ONE close-out artifact; the retrospective is a SECTION of it (written by the retrospective technique via update-in-place); the engine's session summary is PRESENTED to the user, never persisted as an artifact (the session state file is the durable trace); the planning README stays an index whose status is one header line. Fix: collapse the terminal artifact contract to one close-out document; retarget the retrospective technique's `#### artifact` at it; delete summary-artifact writes.
+`COMPLETE.md` + `workflow-retrospective.md` + `close-out-summary.md` + a README footer narrative
+
+Multiple close-out documents re-narrate the same session.
+
+**Detect:** More than one terminal artifact (or README footer) re-states delivered items, decisions, validation, follow-ups, or lessons.
+
+**Do not flag:** A single close-out artifact with retrospective as a section; engine session summary presented but not persisted as a second artifact.
+
+**Fix:** Collapse to one close-out document; retarget retrospective writes to it; keep README as an index line only.
 
 ### AP-85. link-dont-copy-sections
 
-"### Test Results" / "### Files Changed" / "*Recorded from the [validation report]*" (a template section that mandates copying content whose canonical home is another artifact) — Every copy is re-read into context at every downstream activity and drifts the moment its source changes. A template section whose content is produced by another artifact INSTRUCTS A LINK ("see [validation report] — link, don't copy"), it does not lay out a table to fill. The discriminator is the canonical-home question: content is written out in full exactly once, in the artifact whose technique produces it; every other appearance is a markdown link plus at most a one-line pointer. Fix: rewrite the template section as a link instruction; name the canonical home in a comment.
+"### Test Results" / "### Files Changed" / "*Recorded from the [validation report]*"
+
+A template section forces copying content owned by another artifact.
+
+**Detect:** A template lays out sections to fill with content whose canonical home is another artifact, instead of instructing a link.
+
+**Do not flag:** Sections that are the canonical home for newly produced content; link-only slots already correct (`link-only-input-slots`).
+
+**Fix:** Rewrite the section as a link instruction to the canonical home; do not copy.
 
 ### AP-86. exception-only-verdict-tables
 
-"| Criterion | Target | Actual | Status |" with every row "✅ Met" (a template mandates a per-item verdict table whose expected steady state is all-pass) —
+"| Criterion | Target | Actual | Status |" with every row "✅ Met"
+
+A verdict table lists all-green rows instead of exceptions only.
+
 **Detect:** Template requires a verdict/status table where the expected steady state is all-pass (every row "✅ Met" / "✅ Done" / "✓"). All-green tables carry one bit in N rows and bury the divergence rows that are the payload.
+
 **Do not flag:** Vocabularies downstream steps parse (severity counts, README progress-tracker statuses) — data, not ceremony.
+
 **Fix:** Replace with a one-line all-pass form plus a divergences-only table.
 
 ### AP-87. omit-null-sections
 
-"Deferred Decisions:** None." / an empty "### Frustration Signals" table / asking the user to confirm that no assumptions were made** (null results rendered at full template shape) — A template defines the MAXIMUM shape of an artifact, not its required shape; a section whose content is "None"/"N/A" is omitted, and a null result is one line, never a headed section with an empty table. The interaction form of the same defect is a checkpoint that asks the user to confirm a null result ("no assumptions were surfaced — confirm?"): record the null and proceed. Fix: mark omissible template sections "[Omit if none]"; replace null-confirmation prompts with a logged one-liner.
+"Deferred Decisions: None." / empty "### Frustration Signals" table / "confirm no assumptions were made"
+
+Null/empty results get headed sections or confirmation ceremony.
+
+**Detect:** Artifacts include "None"/"N/A" headed sections or empty tables, or checkpoints ask the user to confirm a null result.
+
+**Do not flag:** Sections with real content; a one-line logged null without a headed empty section.
+
+**Fix:** Omit empty sections (mark templates `[Omit if none]`); log nulls in one line and proceed — no null-confirmation checkpoint.
 
 ### AP-88. one-decision-one-checkpoint
 
-"`classification-confirmed` immediately followed by `workflow-path-selected`" / "`rationale-amendment` re-asking what prior options already captured" (two checkpoints, one decision) —
-**Detect:** Second checkpoint's answer is subsumed by the first's options (choosing a path confirms the classification it was derived from; "rationale confirmed — no issues" already answers "any corrections?"). Distinct from `atomic-checkpoints` (agents must not combine declared checkpoints): here the definition itself declares two prompts for one decision.
+"`classification-confirmed` immediately followed by `workflow-path-selected`" / "`rationale-amendment` re-asking what prior options already captured"
+
+One decision is split across multiple checkpoints.
+
+**Detect:** Two declared checkpoints share one decision: the second's answer space is subsumed by the first's options. Distinct from `atomic-checkpoints` (agents must not combine declared checkpoints): here the definition itself splits one decision across two prompts.
+
 **Do not flag:** Distinct decisions with non-overlapping answer spaces.
-**Fix:** Merge into ONE checkpoint whose options carry the full decision space plus an escape hatch for the subsumed judgement ("revise classification"); move any recording side-effect of the removed checkpoint into the survivor; delete variables whose only consumer was the removed checkpoint's condition.
+
+**Fix:** Merge into one checkpoint whose options cover the full decision space plus an escape hatch for the subsumed judgement; move recording side-effects to the survivor; delete variables whose only consumer was the removed checkpoint's condition.
 
 ### AP-89. checkpoint-requires-decision
 
-"`merge-strategy-reminder` — options: [Understood]" (a checkpoint that carries no decision) —
+"`merge-strategy-reminder` — options: [Understood]"
+
+A checkpoint has no real decision in its options.
+
 **Detect:** Every option leads to the same next step, sets no variable, and exists only so the user can acknowledge guidance. Discriminator is recorded effect: acknowledgment/`autoAdvanceMs` that changes nothing is ceremony.
+
 **Do not flag:** Attestation gates (DCO sign-off) that record a certification with identity/timestamp — genuine decisions.
+
 **Fix:** Convert to an `action: message` step; reserve checkpoints for genuine gates. A checkpoint always answered with its default is also a merge (`one-decision-one-checkpoint`) or demote (`checkpoint-requires-decision`) candidate.
 
 ### AP-90. no-guide-wrapper-ceremony
 
-"Purpose:** … / ## Overview / > **Key Insight:** … / Good–Bad pairs / ## Quality Checklist / ## Relationship to Other Documents"** (a guide-wrapper resource 3–4× the size of the template it carries) —
+"Purpose:** … / ## Overview / > **Key Insight:** … / Good–Bad pairs / ## Quality Checklist / ## Relationship to Other Documents"**
+
+A guide is wrapper ceremony around a template.
+
 **Detect:** Agent-facing resource pads a template with tutorial ceremony — Purpose/Overview restating the title, Good/Bad pairs, Quality Checklists restating the body, relationship/related-guides tables. Runtime load taxes context; keep TEMPLATE plus operative rules (decision criteria, thresholds, format rules, classification vocabularies).
+
 **Do not flag:** Behavioral reference documents (mode mappings, review criteria) that are mostly operative — cut ceremony, keep every mapping.
+
 **Fix:** Rewrite as template + rules; fold each Good/Bad lesson into one rule bullet; drop wrapper sections; verify referenced heading anchors survive.
 
 ### AP-91. lifecycle-row-update
 
-"### Assumptions Surfaced → ### User Response → ### Outcome → Final Review scorecards" (a lifecycle log where each pipeline stage appends its own representation of the same item) —
-**Detect:** A tracked item (assumption, finding, task) gets a new section at each collect → analyze → decide stage, restating the `no-partial-implementation`–4 times. Aggregate scorecards persisted in the log.
+"### Assumptions Surfaced → ### User Response → ### Outcome → Final Review scorecards"
+
+Lifecycle rows are append-only instead of updated in place.
+
+**Detect:** A tracked item gets a new section (or appended block) at each lifecycle stage instead of one row updated in place. Aggregate scorecards are persisted in the log rather than presented in-session.
+
 **Do not flag:** A full per-item block while the item is still OPEN (deleted on resolution; outcome lives in the row).
-**Fix:** Restructure as ONE ROW PER ITEM updated in place — collection writes the row, analysis fills resolution, decision fills outcome. Present aggregate scorecards in-session, not persisted. Rewrite each stage technique's protocol as a row update, not an append.
+
+**Fix:** One row per item, updated in place across stages; present aggregate scorecards in-session, not persisted. Rewrite stage techniques as row updates, not appends.
 
 ### AP-92. resource-fills-not-does
 
-"## File Index Generation / 1. Ensure the branch is current…" (a `resources/*.md` section that reads as protocol or rules) —
+"## File Index Generation / 1. Ensure the branch is current…"
+
+A resource owns DOES procedure instead of fill/consult content.
+
 **Detect:** A resource section is shaped like procedure, rules list, or decision criteria — technique work in the wrong file. Costs: invisible to guards (unparsed `{token}` reads); unaddressable (no dotted rule symbol); dual-homing drift with a paired technique. Discriminators: vocabulary stays a resource when only a TEMPLATE consumes it; becomes a technique rule when OPERATIONS apply it behaviorally. Methodology consumed by a different technique than the filename suggests stays a resource for its real consumer — ownership, not name.
+
 **Do not flag:** Artifact templates/anchors, format skeletons, vocabularies a template consumes, reference lexicons, calibration benchmarks — what the agent FILLS or CONSULTS.
+
 **Fix:** Move does-sections to the owning technique as protocol phases or named rules; replace with a one-line pointer; dissolve the resource when nothing template-shaped remains. Retarget stranded heading anchors; ensure every moved `{token}` resolves under guard coverage (declared id / `{$local}` / workflow variable).
 
 ### AP-93. canonical-fact-home
 
-"### Problem Statement in wp-plan / requirements-elicitation / design-framework" (the same fact category prescribed as a full section by multiple templates of one workflow) —
+"### Problem Statement in wp-plan / requirements-elicitation / design-framework"
+
+A fact is multi-homed across templates.
+
 **Detect:** Several templates in one workflow each mandate a full section for the same fact category (problem statement, success criteria, assumptions/decisions/risks, …). Structural duplication — even a rule-compliant worker restates across documents.
+
 **Do not flag:** Distinct fact categories with genuinely different homes.
+
 **Fix:** Declare a canonical-home map (fact category → exactly ONE home template); other templates use a one-line link slot to the home; back with a conformance gate (`enforce-output-discipline`).
 
 ### AP-94. link-only-input-slots
 
-"### Key Findings Summary — From KB Research: [key concept discovered]…" (a template slot whose only possible content is a restatement of another artifact) —
+"### Key Findings Summary — From KB Research: [key concept discovered]…"
+
+An input slot restates another artifact's content.
+
 **Detect:** A section is shaped to hold a summary/copy of a different document — even when adjacent prose says "link, don't copy", the slot shape defeats the rule.
+
 **Do not flag:** Sections that record decisions/outcomes of the consuming document itself.
+
 **Fix:** Replace with a link-only inputs list — one line per consumed artifact linking the section that shaped the work (anchors permitted), never its content; the consuming document records only what it DECIDED.
 
 ### AP-95. enforce-output-discipline
 
-"state-once-per-artifact / single-source-and-link / exception-only-reporting … declared in a TECHNIQUE.md nobody re-checks" (output-discipline rules with no structural enforcement) —
+"state-once-per-artifact / single-source-and-link / exception-only-reporting … declared in a TECHNIQUE.md nobody re-checks"
+
+Output-discipline rules exist without a verify gate.
+
 **Detect:** An output-discipline ruleset exists only as prose with no verify operation at a workflow boundary — style decays per-worker with nothing detecting drift (duplicated homes, null sections, restated slots).
+
 **Do not flag:** Rules already paired with a bound verify/fix-in-place gate (verify-readme-conforms pattern).
+
 **Fix:** Pair every output-discipline ruleset with a verify operation at a workflow boundary — mechanical checks for structural rules, declared line budgets otherwise; gate verifies and fixes in place with no checkpoint, loop, or routing variable.
 
 ### AP-96. artifact-audience-declared
 
-"assumptions-log / change-block-index / provenance-log / debt-ledger — dense ID-bearing tables as prose markdown between human documents" (artifact audience undeclared, so format cannot follow function) —
+"assumptions-log / change-block-index / provenance-log / debt-ledger — dense ID-bearing tables as prose markdown between human documents"
+
+An artifact's primary audience is undeclared.
+
 **Detect:** Output declaration carries only a filename; agent-state artifacts (lifecycle logs, indexes, ledgers only downstream steps re-read) default to the same prose-markdown shape as human-facing documents.
+
 **Do not flag:** Human-primary documents that should stay prose.
+
 **Fix:** Decide each artifact's primary audience (human | agent) at design time — human → prose; agent state → structured one-row-per-item data. Record audience in the output declaration's description until the technique protocol carries a first-class audience attribute.
 
 ### AP-97. link-named-artifacts
 
-"`spec-confirmed` — message: Full specification across the elicited dimensions`" / "`findings in the report are the change specification.`" (no link) (a checkpoint or action `message` that names a durable artifact but does not link it) —
-**Detect:** User-presented checkpoint or action `message` names or implies a durable planning-folder artifact (specification, report, scope manifest, impact analysis, draft attestation, assumptions log, "change specification" as a file, bare filename) without `[label]({path_variable})`, or the link hard-codes a numeric `NN-` prefix.
-**Do not flag:** Pure in-chat subjects (mode classification, counts with no file subject, option choice with no durable artifact); internal `set`/`log` diagnostics that are not user-presented artifact references.
-**Fix:** Declare a path output on the producing technique; persist before the message when needed; interpolate `[label]({path_variable})`. Never hard-code `NN-` (write-artifact assigns it). On checkpoints the message stays a statement (`checkpoint-requires-decision` companion: options carry the decision).
+"`spec-confirmed` — message: Full specification across the elicited dimensions`" / "`findings in the report are the change specification.`"
+
+A durable artifact is named in a message but not linked.
+
+**Detect:** A user-presented checkpoint or action `message` names or implies a durable file artifact without `[label]({path_variable})`, or the link hard-codes a numeric `NN-` prefix.
+
+**Do not flag:** Pure in-chat subjects (no durable file); internal `set`/`log` diagnostics that are not user-presented artifact references.
+
+**Fix:** Declare a path output on the producing technique; persist before the message when needed; interpolate `[label]({path_variable})`. Never hard-code `NN-` (the write op assigns it). On checkpoints the message stays a statement (`checkpoint-requires-decision`: options carry the decision).
 
 ### AP-98. no-next-step-narration
 
-"`Impact analysis complete — no removals. Continuing to scope…`" / "`… Accepting in 30s unless you intervene`" / "`(default — auto-accepts after 30s)`" (message or option description narrates the next course of action) —
-**Detect:** Checkpoint/action `message` or option `description` contains next-step or auto-advance narration — "continuing to…", "proceeding in 30s", "unless you intervene", "accepting in…", "attesting in…", "skipping in…", "can proceed without", "(default — auto-accepts/proceeds/skips after …)".
-**Do not flag:** Pure factual status clauses ("0 findings", "{n} removals flagged").
+"`Impact analysis complete — no removals. Continuing to scope…`" / "`… Accepting in 30s unless you intervene`" / "`(default — auto-accepts after 30s)`"
+
+A message narrates the next step or auto-advance.
+
+**Detect:** Checkpoint/action `message` or option `description` narrates next-step routing or auto-advance timing that the schema already owns (`transitions`, `autoAdvanceMs`, `defaultOption`, option labels).
+
+**Do not flag:** Pure factual status clauses with no routing/timing narration.
+
 **Fix:** Delete the narration; keep timing/routing in `autoAdvanceMs`, `defaultOption`, `transitions`, and option labels only.
 
 ### AP-99. statement-not-question
 
-"`Here is the full specification. Is it accurate and complete?`" / "`Confirm this target set?`" (checkpoint `message` asks the question) —
+"`Here is the full specification. Is it accurate and complete?`" / "`Confirm this target set?`"
+
+A checkpoint message is phrased as a question.
+
 **Detect:** Checkpoint `message` has a trailing `?`, or confirm/interrogative openers ("confirm…", "is this…", "does this…", "would you like…", "which … should").
+
 **Do not flag:** `?` inside interpolated content that is not asking the user.
-**Fix:** Rewrite `message` as a statement of the subject (optionally with an item-90 artifact link); put the decision in `options[]` labels.
+
+**Fix:** Rewrite `message` as a statement of the subject (optionally with a `link-named-artifacts` path link); put the decision in `options[]` labels.
 
 ### AP-100. runtime-rules-only
 
-"`Never use prose where a formal schema construct exists`" / "`Modular over inline`" / checkpoint-message or README authoring standards in `rules.*` or technique `## Rules` (a design-time authoring constraint filed as a runtime rule) —
-**Detect:** A rule in `rules.activity` / `rules.workflow` / `rules.universal` or technique `## Rules` governs how to *write* workflows (schema expressiveness, modular layout, technique binding shapes, README structure, checkpoint message form, approach-before-impl, output economy, …) rather than session runtime conduct. Signals: governs content shape of target YAML/technique/resource files; restates a design principle or anti-pattern; would apply in an unrelated authoring session; not actionable as current-activity session conduct.
+"`Never use prose where a formal schema construct exists`" / "`Modular over inline`" / checkpoint-message or README authoring standards in `rules.*` or technique `## Rules`
+
+A design-time authoring standard is filed as a runtime rule.
+
+**Detect:** A rule in `rules.*` or technique `## Rules` governs how to *write* workflows (content shape of YAML/technique/resource files, authoring standards) rather than current-session runtime conduct. Signals: restates a design principle or anti-pattern; would apply in an unrelated authoring session.
+
 **Do not flag:** Runtime keepers — progress-tracker updates, corrections-must-persist, isolation/orchestration models, write-immediately, domain safety floors, worker permissions.
-**Fix:** (1) Remove from `rules.*` / technique `## Rules`. (2) Migrate into the workflow-design canon — [design-principles](./design-principles.md), this catalogue, and/or [schema-construct-inventory](./schema-construct-inventory.md) — or confirm an existing principle or anti-pattern already covers it. (3) Enforce at authoring time via quality-review anti-pattern audit / structural gate — do not re-inject into `rules.*`.
+
+**Fix:** (1) Remove from `rules.*` / technique `## Rules`. (2) Migrate into the workflow's design-time canon (principles, this catalogue, construct inventory, or an existing covering entry). (3) Enforce at authoring time via the workflow's quality/structural audit — do not re-inject into runtime `rules.*`.
 
 ### AP-101. no-caption-only-message
 
-"`Structural patterns from existing workflows, with proposed structure shown alongside.`" / "`YAML syntax rules and project conventions summary.`" / "`Schema constructs identified as applicable to this workflow.`" (a checkpoint `message` that only captions the preceding presentation) — After a present-then-checkpoint technique step, the checkpoint `message` must not restate "what I just showed" with no durable subject and no decision-relevant fact. Options already carry the decision; a caption adds nothing the user can open or act on. A message earns its place when it (a) embeds a `link-named-artifacts` link to a persisted review artifact, (b) states a decision-relevant fact (counts, status, mode classification), or (c) names a loop discriminator the options alone do not (`{current_file}`). Fix: persist the presented material before the gate and link it (`[label]({path})`); if there is nothing worth persisting, drop the caption to the minimal subject that the options decide — never a prose paraphrase of the prior step.
+`Structural patterns from existing workflows, with proposed structure shown alongside.`
+
+A checkpoint message is only a caption of the prior present step.
+
+**Detect:** After a present-then-checkpoint step, `message` restates "what I just showed" with no durable subject and no decision-relevant fact.
+
+**Do not flag:** Messages that link a persisted artifact (`link-named-artifacts`), state a decision-relevant fact, or name a loop discriminator options lack.
+
+**Fix:** Persist then link (`[label]({path})`), or reduce to the minimal subject the options decide — never a caption paraphrase.
 
 ### AP-102. no-technique-resource-dual-home
 
-"`audit-anti-patterns` protocol lists per-entry Flag/Skip/Fix…` while `anti-patterns.md` already defines those criteria" / technique restates a linked resource's checklist, vocabulary, or detect rules" (the same operative information dual-homed in a technique and its associated resource) —
-**Detect:** A technique that loads or links a resource also carries a parallel copy of that resource's operative content — per-item detect/skip/fix lists, classification vocabularies, format rules, numbered criteria, or protocol-shaped checklists that match (or compress) sections of the resource. Signals: protocol bullets keyed by the resource's entry ids; "apply the heuristics below" that restate the catalog; a technique that both says "load resource X" and embeds X's body. Distinct from `resource-fills-not-does` (resource holds DOES content with no technique home) and `no-resource-caller-backlink` (resource backlinks its caller): here both files hold the same facts.
-**Do not flag:** A one-line pointer or hyperlink to the resource; technique-owned HOW that the resource does not define (orchestration order, which files to walk, how to present findings); a thin paraphrase that adds scan scope without repeating criteria ("walk every catalog entry against activities and techniques"). Related gaps without a second home are `operative-criteria-need-a-home`; false "from X" attribution is `cited-home-owns-claim`; a second pass that restates a catalog section is `no-shadow-audit-pass`.
-**Fix:** Choose one home — usually the resource for reusable criteria/templates/vocabularies, the technique for agent procedure — and delete the duplicate. Technique protocol: load the resource, apply each entry as written, record findings. Migrate any technique-only detect/skip/fix detail into the resource before deleting it from the technique.
+"`audit-anti-patterns` protocol lists per-entry Flag/Skip/Fix…` while `anti-patterns.md` already defines those criteria" / technique restates a linked resource's checklist, vocabulary, or detect rules"
+
+Operative criteria are dual-homed in technique and resource.
+
+**Detect:** A technique that loads or links a resource also embeds operative criteria that must be applied from that resource (parallel detect/fix lists, vocabularies, or compressed checklists). Both files hold the same facts — distinct from `resource-fills-not-does` and `no-resource-caller-backlink`.
+
+**Do not flag:** A one-line pointer to the resource; technique-owned HOW the resource does not define; scan-scope paraphrase without repeating criteria. See also `operative-criteria-need-a-home`, `cited-home-owns-claim`, `no-shadow-audit-pass`.
+
+**Fix:** Choose one home (usually the resource for reusable criteria, the technique for procedure); delete the duplicate. Migrate unique technique-only criteria into the resource before deleting them from the technique.
 
 ## Canon Hygiene Anti-Patterns
 
@@ -686,35 +1334,60 @@ Operative criteria have one real home; citations must resolve there; audit/canon
 
 ### AP-103. cited-home-owns-claim
 
-"Select the set from [guide]" (while the set is hardcoded only in the technique) —
+"Select the set from [guide]"
+
+A citation attributes a fact to a home that lacks it.
+
 **Detect:** A technique, resource, or guide attributes an operative fact to a linked home ("from X", "per X", "defined in X", "select … from X") but that fact is absent from X — it lives only in the citer, or nowhere. Test: open the cited home; if the claim cannot be applied from X alone, the citation is false.
+
 **Do not flag:** Citations that correctly point at content in X; technique-owned orchestration that does not claim X owns it; aspirational "see also" without asserting ownership.
+
 **Fix:** Move the fact into the cited home, or stop attributing it to X and own it explicitly in the citer (one home only — see `operative-criteria-need-a-home` / `no-technique-resource-dual-home`).
 
 ### AP-104. operative-criteria-need-a-home
 
-"Flag every divergence matching: naming, field order, voice markers…" (checklist only in a technique protocol; no resource or catalog entry) —
+"Flag every divergence matching: naming, field order, voice markers…"
+
+Reusable criteria live only in a technique with no catalog/resource home.
+
 **Detect:** Reusable Detect / Do not flag / Fix criteria (or an equivalent multi-item checklist agents must reapply across sessions) exist only inside a technique protocol, with no resource or anti-pattern home. Signals: long criterion lists; classification vocabularies; "scan for these markers" tables that are not orchestration-only.
+
 **Do not flag:** One-off orchestration (order of steps, which files to open, how to present findings); thin walkers that only name a home and apply it (`no-technique-resource-dual-home` carve-out); criteria already homed in a resource/catalog even if the technique is still fat (that is dual-home, not missing-home).
+
 **Fix:** Migrate the criteria into a resource or this catalogue; leave the technique as a walker (load home → apply → present). Prefer a catalog entry when the criterion is a prohibited pattern; prefer a resource when it is a positive checklist/convention.
 
 ### AP-105. no-shadow-audit-pass
 
-"`audit-consistency` restates Tool-Technique-Doc Detect while `audit-anti-patterns` already walks that section" —
-**Detect:** A technique whose job is to audit against a catalog/resource also embeds a compressed copy of that home's Detect criteria (or of a named section of it), while another technique already walks the same home (full or scoped). Signals: capability cites an AP range and protocol re-lists those checks; "verify X / verify Y" bullets that paraphrase sibling catalog entries.
+"`audit-consistency` restates Tool-Technique-Doc Detect while `audit-anti-patterns` already walks that section"
+
+An audit pass shadows another walker's Detect criteria.
+
+**Detect:** An audit technique embeds a compressed copy of a catalog/resource's Detect criteria while another technique already walks that same home (full or scoped).
+
 **Do not flag:** A thin scoped walker that loads a named section and applies each entry as written without restating Detect; distinct passes with distinct homes (e.g. inventory walk vs full catalog walk); non-audit techniques.
+
 **Fix:** Delete the shadow Detect; keep at most one walker per home (or a scoped thin walker that does not re-author criteria). Fold unique surface-check *method* into the catalog entries or into the surviving walker's HOW — not a parallel criterion list.
 
 ### AP-106. canon-layer-cites-not-restates
 
-"Principle 4 Rule embeds the full Schema Expressiveness / Description Hygiene Detect body already in the catalogue" —
+"Principle 4 Rule embeds the full Schema Expressiveness / Description Hygiene Detect body already in the catalogue"
+
+An upper canon layer restates Detect/Fix already owned below.
+
 **Detect:** An upper canon layer (design principles, mode guides, README orientation) re-embeds multi-sentence Detect / Fix bodies that a lower layer already owns (this catalogue, construct inventory, convention resource). Signals: principle/guide paragraphs that could be replaced by a named entry citation without losing an enforceable test; duplicated marker lists or rewrite recipes.
+
 **Do not flag:** Short Rule statements plus named citations; Enforcement pointers to activities/checkpoints; a single clarifying sentence that does not repeat Detect steps; layers that are themselves the sole home (`operative-criteria-need-a-home`).
+
 **Fix:** Keep the upper layer as Rule + Enforcement + citations (`name` / resource link); delete restated Detect. If the upper layer held unique criteria, migrate them down before deleting.
 
 ### AP-107. bind-site-is-orchestration-truth
 
-"Review mode runs: expressiveness, conformance, rule-to-structure…" (while `activities/08-*.yaml` binds principles → anti-patterns → schema) —
-**Detect:** A guide, README, `run-*` / compile technique, or resource enumerates which activities, steps, or audit/technique passes execute (an ordered or complete pass list), and that list disagrees with the authoritative bind sites — activity `steps[]` / loop bodies / `technique:` fields (and workflow `initialActivity` / transitions for activity sequence). Test: if the prose must be edited when a bind is added/removed/reordered but the YAML was not the source of the list, it is a drifting third checklist.
-**Do not flag:** Purpose/value orientation without a pass inventory; "see activity X" / link to the YAML; at-a-glance activity *names* with one-line roles (no step/technique inventory) under `readme-orients-not-transcribes`; a technique that only `Apply [sibling](…)` without listing a parallel set.
-**Fix:** Delete the third checklist, or replace it with a pointer to the binding activity/technique. If a human-readable summary is required, generate it from the YAML binds — do not maintain a parallel list.
+"Review mode runs: expressiveness, conformance, rule-to-structure…"
+
+A pass inventory disagrees with authoritative YAML bind sites.
+
+**Detect:** Prose outside activity YAML enumerates an ordered or complete list of activities, steps, or technique passes, and that list is not generated from the authoritative bind sites (`steps[]` / loop bodies / `technique:`, plus `initialActivity` / transitions). Test: the prose must change when a bind changes, but the YAML was not the source of the list.
+
+**Do not flag:** Purpose/value orientation without a pass inventory; pointers to the YAML; at-a-glance activity names with one-line roles (`readme-orients-not-transcribes`); a technique that only applies a sibling without listing a parallel set.
+
+**Fix:** Delete the third checklist, or replace it with a pointer to the binding activity/technique. If a summary is required, generate it from the YAML binds.
