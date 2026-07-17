@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.4.1
+  version: 2.5.0
 ---
 
 ## Capability
@@ -45,10 +45,6 @@ Absolute path to the persisted structural-inventory artifact when `{operation_ty
 
 When `{operation_type}` is `update`, the categorized change request derived from `{user_description}`: add/modify activity, technique, resource, metadata, or structural refactor (see [update-mode-guide](../resources/update-mode-guide.md)). Unset otherwise.
 
-### design_intent
-
-Summarized key design intent from `{user_description}` — purpose, domain, rough activity count, and constraints.
-
 ## Protocol
 
 ### 1. Classify Operation
@@ -75,4 +71,4 @@ Summarized key design intent from `{user_description}` — purpose, domain, roug
 
 ### 6. Summarize Design Intent
 
-- Accept the `{user_description}` and summarize key design intent into `{design_intent}` — purpose, domain, rough activity count, and constraints
+- Accept the `{user_description}` and summarize key design intent into `{$design_intent}` — purpose, domain, rough activity count, and constraints

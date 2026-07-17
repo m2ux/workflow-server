@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.12.4
+version: 1.12.5
 name: Quality Review
 description: Quality review of drafted workflow content.
 required: true
@@ -37,7 +37,10 @@ steps:
         technique: compile-report
   - kind: technique
     id: persist-compliance-report
-    technique: persist-report
+    technique:
+      name: persist-report
+      inputs:
+        report_content: "{compliance_report}"
     condition:
       type: simple
       variable: operation_type

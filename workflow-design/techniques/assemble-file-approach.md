@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.3
+  version: 1.2.4
 ---
 
 ## Capability
@@ -23,13 +23,13 @@ The classified operation. When `update`, the approach frames the change against 
 
 The per-file delta for `{current_file}` following the [Drafting Plan Guide](../resources/drafting-plan.md#template).
 
-### drafting_plan_path
-
-Absolute path to the persisted drafting-plan artifact for the current file.
-
 #### artifact
 
 `drafting-plan.md`
+
+### drafting_plan_path
+
+Absolute path to the persisted drafting-plan artifact for the current file.
 
 ## Protocol
 

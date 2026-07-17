@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 ## Capability
@@ -13,6 +13,10 @@ Audit drafted content for schema expressiveness: walk prose against the schema c
 
 Expressiveness findings — each a flagged instance with its file, the prose passage, the substituting construct, and the before/after rewrite.
 
+#### artifact
+
+`expressiveness-findings.md`
+
 ### expressiveness_finding_count
 
 Count of entries in `{expressiveness_findings}`.
@@ -20,10 +24,6 @@ Count of entries in `{expressiveness_findings}`.
 ### expressiveness_findings_path
 
 Absolute path to the persisted findings artifact when `{expressiveness_finding_count}` is greater than zero; empty otherwise.
-
-#### artifact
-
-`expressiveness-findings.md`
 
 ## Protocol
 

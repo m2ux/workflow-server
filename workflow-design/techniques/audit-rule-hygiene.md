@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 ## Capability
@@ -13,6 +13,10 @@ Audit `rules[]` across the workflow, activities, and techniques against the Rule
 
 Rule-hygiene findings — each a flagged rule with its file, rule key, the hygiene class (restatement, contradiction, cross-level duplication, prefix pattern, ambiguity, single-step), and the recommended action.
 
+#### artifact
+
+`rule-hygiene-findings.md`
+
 ### rule_hygiene_finding_count
 
 Count of entries in `{rule_hygiene_findings}`.
@@ -20,10 +24,6 @@ Count of entries in `{rule_hygiene_findings}`.
 ### rule_hygiene_findings_path
 
 Absolute path to the persisted findings artifact when `{rule_hygiene_finding_count}` is greater than zero; empty otherwise.
-
-#### artifact
-
-`rule-hygiene-findings.md`
 
 ## Protocol
 

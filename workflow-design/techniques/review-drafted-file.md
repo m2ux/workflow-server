@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.2
+  version: 1.3.0
 ---
 
 ## Capability
@@ -23,17 +23,13 @@ The classified operation. When `update`, the review compares the drafted content
 
 Per-file delta note for `{current_file}` following the [File Review Note Guide](../resources/file-review-note.md#template).
 
-### file_review_note_path
-
-Absolute path to the persisted file-review note (updated in place each file iteration).
-
 #### artifact
 
 `file-review-note.md`
 
-### removal_inventory
+### file_review_note_path
 
-When `{operation_type}` is `update`, the list of material being removed relative to the committed content; empty when none or when not updating.
+Absolute path to the persisted file-review note (updated in place each file iteration).
 
 ### has_unflagged_removals
 
@@ -44,7 +40,7 @@ True when `{operation_type}` is `update` and the content comparison detects mate
 ### 1. Assemble Review Note
 
 - Assemble `{file_review_note}` for `{current_file}` following the [File Review Note Guide](../resources/file-review-note.md#template)
-- When `{operation_type}` is `update`, compare against committed content; record `{removal_inventory}` and set `{has_unflagged_removals}` true when a removal was not inventoried during impact analysis
+- When `{operation_type}` is `update`, compare against committed content; record the removal inventory as `{$removal_inventory}` (the material being removed relative to committed content, empty when none) and set `{has_unflagged_removals}` true when a removal was not inventoried during impact analysis
 
 ### 2. Persist Review Note
 

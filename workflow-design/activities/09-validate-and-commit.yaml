@@ -1,12 +1,15 @@
 id: validate-and-commit
-version: 1.6.0
+version: 1.6.1
 name: Validate and Commit
 description: Final validation, scope verification, and README generation/update, then commit of the workflow changes on a feature branch with a pull request opened against the workflows branch (create/update); in review mode the compliance report is committed directly.
 required: true
 steps:
   - kind: technique
     id: save-compliance-report
-    technique: persist-report
+    technique:
+      name: persist-report
+      inputs:
+        report_content: "{compliance_report}"
     condition:
       type: simple
       variable: operation_type

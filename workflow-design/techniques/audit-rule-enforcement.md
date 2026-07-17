@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 ## Capability
@@ -13,6 +13,10 @@ Audit every `rules[]` entry for structural backing by applying `structure-backed
 
 Text-only rules found — each with its file, rule content, whether it is critical, and the recommended structural mechanism (checkpoint, condition, validate action, or decision).
 
+#### artifact
+
+`enforcement-findings.md`
+
 ### enforcement_finding_count
 
 Count of entries in `{enforcement_findings}`.
@@ -20,10 +24,6 @@ Count of entries in `{enforcement_findings}`.
 ### enforcement_findings_path
 
 Absolute path to the persisted findings artifact when `{enforcement_finding_count}` is greater than zero; empty otherwise.
-
-#### artifact
-
-`enforcement-findings.md`
 
 ## Protocol
 

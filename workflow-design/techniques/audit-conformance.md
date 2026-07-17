@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.4.1
 ---
 
 ## Capability
@@ -13,6 +13,10 @@ Audit drafted content for convention conformance against reference workflows —
 
 Conformance divergences — each a divergence with its file, the diverging construct, the reference convention, and the justified/bring-into-conformance disposition.
 
+#### artifact
+
+`conformance-findings.md`
+
 ### conformance_finding_count
 
 Count of entries in `{conformance_findings}`.
@@ -20,10 +24,6 @@ Count of entries in `{conformance_findings}`.
 ### conformance_findings_path
 
 Absolute path to the persisted findings artifact when `{conformance_finding_count}` is greater than zero; empty otherwise.
-
-#### artifact
-
-`conformance-findings.md`
 
 ## Protocol
 

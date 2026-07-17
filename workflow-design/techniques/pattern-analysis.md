@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.3
+  version: 1.2.4
 ---
 
 ## Capability
@@ -13,13 +13,13 @@ Extract structural and content patterns from comparable existing workflows for r
 
 Lean alignment / divergence table following the [Pattern Analysis Guide](../resources/pattern-analysis.md#template).
 
-### pattern_analysis_path
-
-Absolute path to the written pattern-analysis artifact.
-
 #### artifact
 
 `pattern-analysis.md`
+
+### pattern_analysis_path
+
+Absolute path to the written pattern-analysis artifact.
 
 ## Protocol
 

@@ -1,5 +1,5 @@
 id: post-update-review
-version: 1.8.0
+version: 1.8.1
 name: Post-Update Review
 description: Post-commit compliance audit of the updated workflow — expressiveness, conformance, principles, anti-patterns, and schema validation.
 required: true
@@ -30,7 +30,10 @@ steps:
     technique: summarize-findings
   - kind: technique
     id: save-review-snapshot
-    technique: persist-report
+    technique:
+      name: persist-report
+      inputs:
+        report_content: "{findings_summary}"
   - kind: action
     id: post-update-clean
     condition:

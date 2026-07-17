@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -32,4 +32,4 @@ Status after update (e.g., ready for review)
 ### 1. Mark Ready
 
 - Ensure the description is finalized before marking ready
-- Apply [mark-ready](../../../meta/techniques/github-cli-protocol/mark-ready.md) with `repo_path` `{target_path}` and `{pr_number}`; map the result onto `{updated_pr}` (`pr_url`, `pr_status`)
+- Apply [mark-ready](../../../meta/techniques/github-cli-protocol/mark-ready.md) with `repo_path` `{target_path}` and `{pr_number}`; land its `{pr_url}` and `{pr_status}` onto `{updated_pr}`
