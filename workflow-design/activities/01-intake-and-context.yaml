@@ -1,5 +1,5 @@
 id: intake-and-context
-version: 1.7.0
+version: 1.7.1
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 required: true
@@ -116,7 +116,7 @@ steps:
           variable: update_seeded_from_review
           operator: "!="
           value: true
-    message: "Existing workflow structure and requested changes ([structural inventory]({structural_inventory_path}), [planning README]({planning_folder_path}/README.md#problem-overview))."
+    message: "Requested changes for '{workflow_id}' ([structural inventory]({structural_inventory_path}))."
     blocking: true
     options:
       - id: confirmed

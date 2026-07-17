@@ -31,9 +31,9 @@ metadata:
 
 ## Design Decisions
 
-[Decisions are canonically recorded in the assumptions log and the planning README's
-Design Decisions section — link them. Record here ONLY decisions made during drafting
-that are recorded nowhere else, in the Context / Decision / Rationale / Alternatives form.]
+Link the assumptions log and the planning README Design Decisions section.
+Record here ONLY drafting-time decisions with no other home (Context / Decision /
+Rationale / Alternatives). Keep this section short — no restated decision essay.
 
 ## Scope Outcome
 
@@ -59,6 +59,7 @@ outside the manifest or unaddressed items — folding in the scope-discipline au
 ## Rules
 
 - **What Was Delivered** is concrete — name the files produced or changed, not a vague summary.
-- **Link, don't restate.** Decisions live in the assumptions log; scope lives in the manifest; a copy here goes stale.
+- **Link, don't restate.** Decisions live in the assumptions log and README; scope lives in the manifest; COMPLETE stays a short close-out.
 - **Exception-only Scope Outcome.** All-✅ tables carry no information; only drift earns rows.
 - **Omit null sections** rather than writing "none".
+- **Keep close-out short.** Delivery + links + limitations; no design-decision / alternatives essay restatement.

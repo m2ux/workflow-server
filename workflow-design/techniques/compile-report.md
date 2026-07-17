@@ -1,17 +1,17 @@
 ---
 metadata:
-  version: 1.2.2
+  version: 1.2.3
 ---
 
 ## Capability
 
-Assemble the findings from every review-mode audit pass into a structured compliance report with severity-rated findings and recommended fixes.
+Assemble findings from every review-mode audit pass into a rolled-up compliance report: severity-rated finding tables, with detail left in satellite finding files.
 
 ## Outputs
 
 ### compliance_report
 
-The structured compliance report body following the [Compliance Report Template](../resources/compliance-report.md), with severity-rated findings and recommended fixes.
+Rolled-up compliance report body following the [Compliance Report Template](../resources/compliance-report.md): severity counts, finding tables, and recommended fixes. Principle and anti-pattern detail stays in satellite finding files linked from the report.
 
 ### review_findings_count
 
@@ -22,4 +22,5 @@ Total number of compliance findings across all review-mode audit passes.
 ### 1. Compile Report
 
 - Compile findings into `{compliance_report}` following the [Compliance Report Template](../resources/compliance-report.md) exactly — do not restate or invent section titles here
+- Use severity finding tables and link satellite finding files for detail; do not embed full principle or anti-pattern prose dumps in the rolled-up report
 - Set `{review_findings_count}` to the total finding count across all passes

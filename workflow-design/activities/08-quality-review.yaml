@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.12.1
+version: 1.12.2
 name: Quality Review
 description: Quality review of drafted workflow content.
 required: true
@@ -50,7 +50,7 @@ steps:
       variable: operation_type
       operator: ==
       value: review
-    message: "Compliance report complete. {review_findings_count} findings across {target_workflow_ids} ([compliance report]({report_path}); [principle findings]({principle_findings_path}); [anti-pattern findings]({anti_pattern_findings_path}); [verified findings]({verified_findings_path}))."
+    message: "Compliance report complete. {review_findings_count} findings across {target_workflow_ids} ([compliance report]({report_path}))."
     blocking: true
     options:
       - id: fix-issues

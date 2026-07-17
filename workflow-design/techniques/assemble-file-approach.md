@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.1
+  version: 1.2.2
 ---
 
 ## Capability
 
-Assemble the per-file drafting plan — schema constructs to use, reference patterns to follow, and intended content structure — and persist it for linked review. Drafting and per-file schema validation are out of scope for this technique (see [yaml-authoring](yaml-authoring.md)).
+Assemble a lean per-file drafting plan — the delta for this file only — and persist it for linked review. Drafting and per-file schema validation are out of scope for this technique (see [yaml-authoring](yaml-authoring.md)).
 
 ## Inputs
 
@@ -21,7 +21,7 @@ The classified operation. When `update`, the approach frames the change against 
 
 ### drafting_plan
 
-The per-file drafting plan for `{current_file}`: schema constructs to use (from [schema-construct-inventory](../resources/schema-construct-inventory.md)), reference patterns to follow, and intended content structure.
+The per-file delta for `{current_file}`: what changes, which constructs/patterns apply, and the intended content shape — one short block, not a constructs/patterns/decisions essay.
 
 ### drafting_plan_path
 
@@ -35,7 +35,8 @@ Absolute path to the persisted drafting-plan artifact for the current file.
 
 ### 1. Assemble Drafting Plan
 
-- Assemble `{drafting_plan}` for `{current_file}`: the schema constructs to be used, the reference patterns to be followed, and the intended content structure
+- Assemble `{drafting_plan}` for `{current_file}` as a **per-file delta**: path, action, what changes (and what stays), constructs/patterns that matter for this file only
+- When `{operation_type}` is `update`, frame against existing content; omit catalog dumps of constructs unused by this file
 
 ### 2. Persist Drafting Plan
 

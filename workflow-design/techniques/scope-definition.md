@@ -1,21 +1,21 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
 
-Define the complete scope and structure: verify the workflows worktree, design the folder layout and naming scheme, enumerate every file to create/modify/remove, assemble the structural design and drafting order, and persist the scope manifest (including those sections) for activity-layer review.
+Define the complete scope and structure: verify the workflows worktree, enumerate every file to create/modify/remove, note structural shape and drafting order briefly, and persist a lean scope manifest for activity-layer review.
 
 ## Outputs
 
 ### structural_design
 
-The proposed directory tree with file manifest, transition diagram (for sequential workflows), and comparison against the adopted reference patterns.
+Directory tree (or "unchanged" for update), short transition note when topology changes, and a compact pattern-alignment table — not a pattern-comparison essay.
 
 ### drafting_order
 
-The drafting order (`workflow.yaml`, activities, techniques, resources, README) with rationale grounded in the reference-dependency chain.
+Drafting order (`workflow.yaml`, activities, techniques, resources, README) with a one-line rationale per tier.
 
 ### scope_manifest
 
@@ -49,12 +49,13 @@ Absolute path to the written scope-manifest artifact (includes structural design
 
 ### 4. Assemble Structural Design
 
-- Assemble `{structural_design}`: the directory tree of the proposed structure with its file manifest, a transition diagram (for sequential workflows), and a comparison against the adopted reference patterns
+- Assemble `{structural_design}`: directory tree (unchanged is enough on update), transition note only when activities/transitions change, and a short alignment table against adopted patterns
 
 ### 5. Assemble Drafting Order
 
-- Assemble `{drafting_order}`: drafting order (`workflow.yaml`, activities, techniques, resources, README) with rationale grounded in the reference-dependency chain
+- Assemble `{drafting_order}`: order by reference-dependency (`workflow.yaml` → activities → techniques → resources → README) with a one-line rationale per tier
 
 ### 6. Persist Scope Manifest
 
-- Persist `{scope_manifest}` together with `{structural_design}` and `{drafting_order}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `scope-manifest.md`; capture the written location as `{scope_manifest_path}`
+- Persist the **file table** plus minimal structural/drafting sections via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `scope-manifest.md`; capture `{scope_manifest_path}`
+- Keep the artifact decision-facing: dense rows, no pattern essay

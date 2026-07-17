@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.24.1
+version: 1.24.2
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux

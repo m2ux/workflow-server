@@ -28,14 +28,28 @@ Review mode produces a compliance report without modifying the target workflow(s
 | Pass     | N |
 
 ## Principle Compliance Findings
-(per-principle Pass / Partial / Violation with file, field, and line references)
+
+| Severity | Finding | Location | Fix |
+|----------|---------|----------|-----|
+| … | … | file / field | … |
+
+(Detail and full principle prose live in the principle-findings satellite; this table is the decision surface.)
 
 ## Anti-Pattern Findings
-(per-entry **name** matches with locations — includes Schema Expressiveness, Rule Hygiene, `structure-backed-constraints`, Tool-Technique-Doc Consistency, Output Economy, and the rest of the catalog; note harness-surface mismatches where those entries require them)
+
+| Severity | Entry | Location | Fix |
+|----------|-------|----------|-----|
+| … | catalog **name** | file / field | … |
+
+(Detail lives in the anti-pattern-findings satellite.)
 
 ## Schema Validation Results
-(per-file pass/fail)
+
+| File | Result |
+|------|--------|
+| … | pass / fail |
 
 ## Recommended Fixes
-(prioritized list of changes, grouped by severity)
+
+Prioritized list by severity. Link satellites when a fix needs more context than one row.
 ```
