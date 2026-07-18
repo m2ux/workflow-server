@@ -1,7 +1,7 @@
 id: scope-and-draft
-version: 1.8.0
+version: 1.9.0
 name: Scope and Draft
-description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file.
+description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file, then planning-artifact conformance verify.
 required: true
 techniques:
   - scatter-gather
@@ -165,6 +165,9 @@ steps:
       - id: redraft-all
         label: Redraft all changes
         description: Entire drafting pass requires restart from scratch.
+  - kind: technique
+    id: verify-artifact-conforms
+    technique: verify-artifact-conforms
 transitions:
   - to: quality-review
     isDefault: true
@@ -173,3 +176,4 @@ outcome:
   - The folder structure and activity flow are agreed against established patterns, so the workflow's shape is sound before any file is written
   - The full workflow is drafted with create-mode per-file review or a single update-mode batch attestation, giving the user a known-good body of content rather than an unreviewed dump
   - Every YAML file is schema-valid, so downstream loading and validation start from clean, conformant content
+  - Planning artifacts conform to the design canonical-home map and template line budgets before quality-review audits

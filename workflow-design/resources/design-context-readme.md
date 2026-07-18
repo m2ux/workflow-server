@@ -2,7 +2,7 @@
 name: design-context-readme
 description: Template and guidelines for the README.md entry-point of a workflow-design session's planning folder. Conforms to the canonical meta planning-readme guide, with design-session sections appended.
 metadata:
-  version: 1.0.1
+  version: 1.1.0
   order: 5
 ---
 
@@ -25,11 +25,11 @@ The `README.md` is the entry point for a workflow-design session's planning fold
 
 ## Problem Overview
 
-*[What the current workflow does and why this session is needed — filled when known.]*
+[One-line pointer + link to design-specification.md — do not restate the purpose essay.]
 
 ## Solution Overview
 
-*[What the change does at a high level; link the scope manifest for the file breakdown — filled when known.]*
+[One or two short pointer sentences + links to design-specification.md and scope-manifest.md — do not restate the spec body.]
 
 ## Design Decisions
 
@@ -65,11 +65,11 @@ The `README.md` is the entry point for a workflow-design session's planning fold
 
 ## Rules
 
-The shared header-line, Executive Summary, Problem/Solution Overview, Progress-table, and Links-table rules are defined in the canonical [Planning Folder README Guide](../../meta/resources/planning-readme.md). Design-session specifics:
+The shared header-line, Executive Summary, Progress-table, and Links-table rules are defined in the canonical [Planning Folder README Guide](../../meta/resources/planning-readme.md). Design-session specifics:
 
 - **Classifier** — the session mode: `Create`, `Update`, or `Review`. Status values: `Planning`, `Drafting`, `Reviewing`, `Complete`.
-- **Problem Overview** — what the current workflow does and why it needs changing.
-- **Solution Overview** — what the change does at a high level; links the scope manifest for the file breakdown.
+- **Problem Overview** — link-only slot: pointer + link to `design-specification.md` (canonical home for purpose / change goals). Do not restate the purpose essay.
+- **Solution Overview** — link-only slot: short pointer + links to `design-specification.md` and `scope-manifest.md` for the file breakdown. Do not restate the spec body.
 - **Progress table** — one row per activity the active mode runs, seeded from the workflow definition (not a hard-coded list in this template).
 
 ### Design Decisions

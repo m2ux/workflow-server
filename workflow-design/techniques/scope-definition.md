@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.1
+  version: 1.3.0
 ---
 
 ## Capability
@@ -41,12 +41,14 @@ Absolute path to the written scope-manifest artifact (includes structural design
 
 ### 4. Assemble Structural Design
 
-- Assemble `{$structural_design}` for the Structural design section of the [Scope Manifest Guide](../resources/scope-manifest.md#template): directory tree (or "unchanged" for update), short transition note when topology changes, and a compact pattern-alignment table — not a pattern-comparison essay
+- Assemble `{$structural_design}` for the Structural design section of [scope-manifest](../resources/scope-manifest.md#template): directory tree (or "unchanged" for update), short transition note when topology changes, and a compact pattern-alignment table — not a pattern-comparison essay
 
 ### 5. Assemble Drafting Order
 
-- Assemble `{$drafting_order}` for the Drafting order section of the [Scope Manifest Guide](../resources/scope-manifest.md#template): drafting order (`workflow.yaml`, activities, techniques, resources, README) with a one-line rationale per tier
+- Assemble `{$drafting_order}` for the Drafting order section of [scope-manifest](../resources/scope-manifest.md#template): drafting order (`workflow.yaml`, activities, techniques, resources, README) with a one-line rationale per tier
 
 ### 6. Persist Scope Manifest
 
-- Persist `{scope_manifest}` together with `{structural_design}` and `{drafting_order}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `scope-manifest.md`, following the [Scope Manifest Guide](../resources/scope-manifest.md#template); capture `{scope_manifest_path}`
+- Persist `{scope_manifest}` together with `{$structural_design}` and `{$drafting_order}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `scope-manifest.md`, following [scope-manifest](../resources/scope-manifest.md#template)
+- Own facts only: link impact analysis and design specification rather than restating them
+- Capture `{scope_manifest_path}`

@@ -1,13 +1,14 @@
 ---
 name: scope-manifest
-description: Guidelines for creating the scope-manifest planning artifact (file list + minimal structure/order).
+description: Guidelines for creating the scope-manifest planning artifact (file table + lean structural notes).
 metadata:
+  version: 1.0.0
   order: 17
 ---
 
 # Scope Manifest Guide
 
-Authoritative file list for drafting and commit verify. Answers: which files, what action, in what order? Human gate at scope-and-structure.
+Activity-layer decision surface for create/update. Answers: which files, what structural shape, and in what drafting order? Human gate at `scope-and-structure-confirmed`. Canonical home for the file manifest, structural design, and drafting order ([canonical-home map](../techniques/TECHNIQUE.md#canonical-home-map)).
 
 ## Template
 
@@ -59,7 +60,7 @@ Authoritative file list for drafting and commit verify. Answers: which files, wh
 
 ## Rules
 
-- **File table is canonical** — README Scope Manifest links here; do not mirror the full list in README.
-- **Minimal structural/drafting sections** — tree + short order; no pattern essay.
-- **Every in-scope file** appears exactly once with action and one-line change.
-- **Line budget:** ~80 lines plus one row per file.
+- **File table is the payload** — structural design and drafting order stay compact.
+- **Own facts only.** Link design-specification and impact-analysis; do not restate purpose or removals essays ([canonical-home map](../techniques/TECHNIQUE.md#canonical-home-map)).
+- **Update:** folder layout may be "unchanged"; still enumerate every touched file.
+- **Line budget:** ~80 lines unless the file table is long (then table rows are the length).
