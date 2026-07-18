@@ -16,7 +16,9 @@ This update trims the generated artifacts and the checkpoint messages that point
 
 ## Solution Overview
 
-*[Filled when known; link scope manifest for file breakdown.]*
+This update shortens four checkpoint messages and option descriptions in `work-package` so each gate is answerable in one short read, with a working link wherever a path variable already exists. Topology stays intact: no activities, transitions, options, effects, or variables are added or removed.
+
+The change touches four activity files only — linking `{change_block_index}` and `{provenance_log_path}`, and dropping restated prose from those gates — while seven persist techniques were audited and left alone. File breakdown: [scope manifest](06-scope-manifest.md).
 
 ## Design Decisions
 
@@ -30,7 +32,7 @@ Full dimension deltas (purpose, activity list, checkpoints, artifacts, rules): [
 
 ## Scope Manifest
 
-*[Link to scope-manifest artifact when confirmed.]*
+[06-scope-manifest.md](06-scope-manifest.md) — 4 activity files, message/description-only; intentional removals: 5.
 
 ## 📊 Progress
 
@@ -43,8 +45,11 @@ Full dimension deltas (purpose, activity list, checkpoints, artifacts, rules): [
 | 03 | [Design specification](03-design-specification.md) | Change request + acceptance criteria | 20-40m | ✅ Complete |
 | 03 | [Assumptions log](03-assumptions-log.md) | Design assumptions reconciled | 5-10m | ✅ Complete |
 | 05 | [Impact analysis](05-impact-analysis.md) | Blast radius; confirm no topology change | 15-30m | ✅ Complete |
-| 06 | Scope manifest | Confirmed file list | 10-20m | ⬚ Pending |
-| 07 | Implementation | Edit techniques/resources/checkpoint messages | 45-90m | ⬚ Pending |
+| 06 | [Scope manifest](06-scope-manifest.md) | Confirmed file list | 10-20m | ✅ Complete |
+| 06 | [Drafting plan](06-drafting-plan.md) | Per-file deltas for 4 activities | 5-10m | ✅ Complete |
+| 06 | [File review note](06-file-review-note.md) | Removals vs impact §3 | 5-10m | ✅ Complete |
+| 06 | [Draft attestation](06-draft-attestation.md) | Block-indexed review of drafted edits | 5-10m | ✅ Complete |
+| 07 | Implementation | Edit techniques/resources/checkpoint messages | 45-90m | ✅ Complete |
 | 08 | Quality review | Post-update compliance | 20-40m | ⬚ Pending |
 | 09 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, decisions, limitations | 10-20m | ⬚ Pending |
 

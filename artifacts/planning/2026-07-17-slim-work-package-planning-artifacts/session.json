@@ -238,15 +238,29 @@
           "requirements-refinement-spec-confirmed": {
             "optionId": "confirmed",
             "respondedAt": "2026-07-17T16:22:32.000Z"
+          },
+          "scope-and-draft-batch-review-attested": {
+            "optionId": "attested",
+            "respondedAt": "2026-07-18T05:21:39.000Z"
+          },
+          "scope-and-draft-scope-and-structure-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "scope_manifest_confirmed": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-07-18T05:17:08.000Z"
           }
         },
         "completedActivities": [
           "intake-and-context",
-          "requirements-refinement"
+          "requirements-refinement",
+          "impact-analysis"
         ],
-        "condition": "operation_type == update",
-        "currentActivity": "impact-analysis",
-        "currentTechnique": "impact-analysis",
+        "condition": "isDefault",
+        "currentActivity": "scope-and-draft",
+        "currentTechnique": "review-drafted-file",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:8a067c5a3494a7c9": "8a067c5a3494a7c9",
@@ -262,23 +276,32 @@
             "resource:design-assumption-reconciliation": "e165321d3b6553ed",
             "resource:design-assumptions": "eeffdbf4bcb49d09",
             "resource:design-specification#template": "157eef44b67881d9",
+            "resource:draft-attestation#template": "59dcf89708d705f6",
+            "resource:drafting-plan#template": "0dc153bd0236f88e",
             "resource:elicitation-guide": "6513b79d4ee0f56c",
+            "resource:file-review-note#template": "39ee119b816c20f4",
             "resource:impact-analysis#template": "d3441f36cf0221f4",
             "resource:meta/activity-worker-prompt": "30541d7369da3310",
             "resource:schema-construct-inventory": "f7bfae0f013846ce",
+            "resource:scope-manifest#template": "78d7f0382322bb4f",
             "resource:update-mode-guide": "d8035e7643fce18d",
             "resource:workflow-design/design-context-readme": "3336d3aa686ee448",
+            "technique:assemble-file-approach": "e096cd0fa28f8b16",
             "technique:context-loading": "fa2d6e4552894299",
             "technique:derive-design-dimensions": "db4a356f47e296c9",
             "technique:impact-analysis": "6ce81fa8a8ce9fba",
             "technique:intake-classification": "7295893db22932b1",
             "technique:persist-design-specification": "37f632e0ca488b34",
             "technique:reconcile-design-assumptions": "227c9614fee236df",
+            "technique:review-draft-yaml": "9668980d9e91570d",
+            "technique:review-drafted-file": "199cad176c4bf742",
+            "technique:scope-definition": "634688f6f367ac21",
             "technique:synthesize-update-specification": "b9b2d6ea0445d92c",
             "technique:work-package::manage-artifacts::create-readme": "b5d443552594f495",
             "technique:work-package::review-assumptions::collect": "a651ce75f6af8338",
             "technique:work-package::review-assumptions::record": "88f2293f5342fb06",
-            "technique:work-package::stakeholder-overview": "b4331b941cb92ae2"
+            "technique:work-package::stakeholder-overview": "0a15e9ed2dab16a9",
+            "technique:yaml-authoring": "af754c32264d4052"
           }
         },
         "history": [
@@ -674,16 +697,163 @@
             },
             "timestamp": "2026-07-17T18:48:56.000Z",
             "type": "checkpoint_response"
+          },
+          {
+            "activity": "impact-analysis",
+            "timestamp": "2026-07-17T18:49:19.037Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-07-17T18:49:19.037Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "scope-definition",
+              "techniqueId": "scope-definition"
+            },
+            "timestamp": "2026-07-17T18:49:43.218Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "present-solution-overview",
+              "techniqueId": "work-package::stakeholder-overview"
+            },
+            "timestamp": "2026-07-17T18:49:43.218Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "review-draft-yaml",
+              "techniqueId": "review-draft-yaml"
+            },
+            "timestamp": "2026-07-17T18:49:43.218Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "scope-manifest#template"
+            },
+            "timestamp": "2026-07-17T18:49:43.218Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "draft-attestation#template"
+            },
+            "timestamp": "2026-07-17T18:49:43.218Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-and-structure-confirmed",
+            "timestamp": "2026-07-17T18:52:50.332Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-and-structure-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-18T05:17:08.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "value": true
+            },
+            "timestamp": "2026-07-18T05:17:08.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "assemble-file-approach",
+              "techniqueId": "assemble-file-approach"
+            },
+            "timestamp": "2026-07-18T05:17:22.558Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "yaml-authoring",
+              "techniqueId": "yaml-authoring"
+            },
+            "timestamp": "2026-07-18T05:17:31.734Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "drafting-plan#template"
+            },
+            "timestamp": "2026-07-18T05:17:31.756Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "review-drafted-file",
+              "techniqueId": "review-drafted-file"
+            },
+            "timestamp": "2026-07-18T05:17:48.928Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "file-review-note#template"
+            },
+            "timestamp": "2026-07-18T05:17:59.813Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "batch-review-attested",
+            "timestamp": "2026-07-18T05:18:16.371Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "batch-review-attested",
+            "data": {
+              "optionId": "attested"
+            },
+            "timestamp": "2026-07-18T05:21:39.000Z",
+            "type": "checkpoint_response"
           }
         ],
         "schemaVersion": 1,
-        "seq": 31,
+        "seq": 44,
         "sessionIndex": "PCVJDD",
         "skippedActivities": [],
         "startedAt": "2026-07-17T13:17:05.282Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784314148,
+        "ts": 1784352109,
         "variables": {
           "addressed_count": 0,
           "anti_pattern_findings_path": "",
@@ -719,7 +889,7 @@
           "rule_hygiene_finding_count": 0,
           "rule_hygiene_findings_path": "",
           "schema_constructs_confirmed": false,
-          "scope_manifest_confirmed": false,
+          "scope_manifest_confirmed": true,
           "scope_manifest_path": "",
           "specification_path": "",
           "structural_inventory_path": "",
