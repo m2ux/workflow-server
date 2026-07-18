@@ -1,5 +1,5 @@
 id: design-philosophy
-version: 1.11.0
+version: 1.11.1
 name: Design Philosophy
 description: Apply the design framework to classify the problem and decide the workflow path.
 required: true
