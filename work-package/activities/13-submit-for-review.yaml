@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.11.0
+version: 1.11.1
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 required: true
@@ -81,21 +81,12 @@ steps:
       operator: "!="
       value: true
     message: |-
-      Before pushing: please certify the Developer Certificate of Origin for this work package.
-
-      Provenance context:
-      - Model: {model_id}
-      - Context scope: {context_scope}
-      - Squash merge available: {squash_merge_supported}
-      - Provenance log: {provenance_log_path}
+      Before pushing: please certify the Developer Certificate of Origin for this work package ([provenance log]({provenance_log_path})).
 
       Certify that you:
-      1. Reviewed the entire diff and understand each material change
-      2. Have the right to submit this contribution under the project's license
-      3. Did not include code with unclear or incompatible provenance
-      4. Can explain where the solution came from (your design, repo context, or approved references)
-      5. Tests and linters have been run (or will run in CI)
-      6. Are willing to take responsibility for defects and licensing issues in this patch
+      1. Have the right to submit this contribution under the project's license
+      2. Did not include code with unclear or incompatible provenance
+      3. Are willing to take responsibility for defects and licensing issues in this patch
     blocking: true
     options:
       - id: certify
