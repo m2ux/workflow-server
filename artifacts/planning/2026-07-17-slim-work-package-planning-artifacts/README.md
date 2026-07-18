@@ -26,9 +26,11 @@ Full dimension deltas (purpose, activity list, checkpoints, artifacts, rules): [
 
 ## Compliance Findings
 
+Quality-review audits: **0 findings**. Detail: [08-verified-findings.md](08-verified-findings.md).
+
 | Severity | Finding | Location | Fix |
 |----------|---------|----------|-----|
-| — | *None yet* | — | — |
+| — | *None* | — | — |
 
 ## Scope Manifest
 
@@ -50,7 +52,7 @@ Full dimension deltas (purpose, activity list, checkpoints, artifacts, rules): [
 | 06 | [File review note](06-file-review-note.md) | Removals vs impact §3 | 5-10m | ✅ Complete |
 | 06 | [Draft attestation](06-draft-attestation.md) | Block-indexed review of drafted edits | 5-10m | ✅ Complete |
 | 07 | Implementation | Edit techniques/resources/checkpoint messages | 45-90m | ✅ Complete |
-| 08 | Quality review | Post-update compliance | 20-40m | ⬚ Pending |
+| 08 | [Verified findings](08-verified-findings.md) | Post-update compliance — 0 findings | 20-40m | ✅ Complete |
 | 09 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, decisions, limitations | 10-20m | ⬚ Pending |
 
 ## 🔗 Links
