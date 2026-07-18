@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.12.0
+version: 3.13.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 required: true
@@ -12,19 +12,49 @@ steps:
   - kind: technique
     id: detect-review-mode
     technique: review-mode-detection
+  - kind: action
+    id: announce-derived-review-mode
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: review_mode_ambiguous
+          operator: "!="
+          value: true
+    actions:
+      - action: message
+        message: "Review mode derived from the request."
+  - kind: action
+    id: announce-derived-review-pr
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: review_pr_missing
+          operator: "!="
+          value: true
+        - type: simple
+          variable: pr_number
+          operator: exists
+    actions:
+      - action: message
+        message: "Review PR derived as #{pr_number}."
   - kind: checkpoint
     id: review-mode-detection
     condition:
       type: simple
-      variable: is_review_mode
+      variable: review_mode_ambiguous
       operator: ==
       value: true
-    message: This appears to be a review of an existing PR. Select whether to continue in review mode or treat this as new implementation.
+    message: Review vs new-implementation intent is unclear from the request. Select whether to continue in review mode or treat this as new implementation.
     options:
       - id: confirm-review
         label: Yes, review existing PR
@@ -32,28 +62,48 @@ steps:
         effect:
           setVariable:
             is_review_mode: true
+            review_mode_ambiguous: false
       - id: new-implementation
         label: No, new implementation
         description: This is new work, not a review
         effect:
           setVariable:
             is_review_mode: false
-  - kind: technique
-    id: capture-pr-reference
-    technique: review-mode-detection
+            review_mode_ambiguous: false
+  - kind: action
+    id: mark-review-pr-captured
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: review_pr_missing
+          operator: "!="
+          value: true
+        - type: simple
+          variable: pr_number
+          operator: exists
+    actions:
+      - action: set
+        target: review_pr_captured
+        value: true
   - kind: checkpoint
     id: review-pr-reference
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
-    message: "Please provide the PR to review (number or URL):"
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: review_pr_missing
+          operator: ==
+          value: true
+    message: "Review mode needs a PR reference (number or URL)."
     options:
       - id: pr-provided
         label: PR reference provided
@@ -61,12 +111,31 @@ steps:
         effect:
           setVariable:
             review_pr_captured: true
+            review_pr_missing: false
       - id: cancel-review
         label: Cancel review mode
         description: Switch to standard work package mode
         effect:
           setVariable:
             is_review_mode: false
+            review_pr_missing: false
+  - kind: technique
+    id: capture-pr-reference
+    technique: review-mode-detection
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: review_pr_captured
+          operator: ==
+          value: true
+        - type: simple
+          variable: branch_name
+          operator: notExists
   - kind: technique
     id: ingest-prior-feedback
     technique: review-existing-feedback
@@ -480,13 +549,41 @@ steps:
       - action: set
         target: existing_pr_number
         description: PR number from the list-prs result when one was found
+      - action: set
+        target: use_existing_pr
+        description: true when pr_exists and an already-bound pr_number equals existing_pr_number (continue this work); otherwise leave the default false so pr-check can ask
+      - action: set
+        target: pr_number
+        description: When use_existing_pr was set true by a pr_number/existing_pr_number match, bind pr_number from existing_pr_number; otherwise leave unchanged
+  - kind: action
+    id: announce-auto-use-existing-pr
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: pr_exists
+          operator: ==
+          value: true
+        - type: simple
+          variable: use_existing_pr
+          operator: ==
+          value: true
+    actions:
+      - action: message
+        message: "Continuing with existing PR #{existing_pr_number} (already bound for this branch)."
   - kind: checkpoint
     id: pr-check
     condition:
-      type: simple
-      variable: pr_exists
-      operator: ==
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: pr_exists
+          operator: ==
+          value: true
+        - type: simple
+          variable: use_existing_pr
+          operator: "!="
+          value: true
     message: "Found existing PR #{existing_pr_number} for this branch. Select whether to use it or create a new one."
     options:
       - id: use-existing
