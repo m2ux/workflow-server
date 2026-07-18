@@ -1,5 +1,5 @@
 id: intake-and-context
-version: 1.7.1
+version: 1.8.0
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 required: true
@@ -14,33 +14,98 @@ steps:
     id: intake-classification
     technique: intake-classification
   - kind: checkpoint
-    id: mode-confirmation
+    id: design-intent-batch
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: intent_needs_confirmation
+          operator: ==
+          value: true
+        - type: simple
+          variable: update_seeded_from_review
+          operator: "!="
+          value: true
+    message: "Design intent needs confirmation — classified `{operation_type}` for `{workflow_id}` (mode ambiguous={operation_type_ambiguous}, change_request_clear={change_request_clear})."
+    blocking: true
+    options:
+      - id: confirm-intent
+        label: Confirm classified intent
+        description: Accept the classified mode, target, and change request as stated.
+        effect:
+          setVariable:
+            intent_needs_confirmation: false
+            review_scope_confirmed: true
+      - id: confirm-create
+        label: Create a new workflow
+        description: Correct classification to create mode.
+        effect:
+          setVariable:
+            operation_type: create
+            operation_type_ambiguous: false
+            intent_needs_confirmation: false
+      - id: confirm-update
+        label: Update an existing workflow
+        description: Correct classification to update mode.
+        effect:
+          setVariable:
+            operation_type: update
+            operation_type_ambiguous: false
+            intent_needs_confirmation: false
+      - id: wrong-review-target
+        label: Wrong review target set
+        description: Rejects the review target set; supply a corrected `target_workflow_ids` list.
+        effect:
+          setVariable:
+            review_scope_confirmed: false
+            intent_needs_confirmation: true
+      - id: cancel-as-create
+        label: Cancel update — create new instead
+        description: Abandon the update path; flip mode to create.
+        effect:
+          setVariable:
+            operation_type: create
+            operation_type_ambiguous: false
+            intent_needs_confirmation: false
+  - kind: action
+    id: announce-certain-intent
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: intent_needs_confirmation
+          operator: ==
+          value: false
+        - type: simple
+          variable: update_seeded_from_review
+          operator: "!="
+          value: true
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+    actions:
+      - action: message
+        message: "Classified as a {operation_type} operation for workflow `{workflow_id}` — proceeding without Gate 1."
+  - kind: action
+    id: announce-certain-review-scope
     condition:
       type: and
       conditions:
         - type: simple
           variable: operation_type
-          operator: "!="
+          operator: ==
           value: review
         - type: simple
-          variable: update_seeded_from_review
-          operator: "!="
-          value: true
-    message: "Classified as a {operation_type} operation for workflow '{workflow_id}'."
-    blocking: true
-    options:
-      - id: confirm-create
-        label: Yes, create a new workflow
-        description: Create-mode classification confirmed.
-        effect:
-          setVariable:
-            operation_type: create
-      - id: confirm-update
-        label: Yes, update an existing workflow
-        description: Update-mode classification confirmed.
-        effect:
-          setVariable:
-            operation_type: update
+          variable: intent_needs_confirmation
+          operator: ==
+          value: false
+    actions:
+      - action: set
+        target: review_scope_confirmed
+        value: true
+      - action: message
+        message: "Compliance review target set: {target_workflow_ids} ([structural inventory]({structural_inventory_path}))."
   - kind: action
     id: announce-review-seeded-update
     condition:
@@ -51,28 +116,26 @@ steps:
     actions:
       - action: message
         message: "Update seeded from compliance review — mode is update; findings in the [compliance report]({report_path}) are the change specification."
-  - kind: checkpoint
-    id: review-scope-confirmed
+  - kind: action
+    id: announce-headless
     condition:
       type: simple
-      variable: operation_type
+      variable: headless_mode
       operator: ==
-      value: review
-    message: "Compliance review target set: {target_workflow_ids} ([structural inventory]({structural_inventory_path}))."
-    blocking: true
-    options:
-      - id: confirm-review-target
-        label: Yes — audit this target set
-        description: Confirms the compliance review target set (`target_workflow_ids`).
-        effect:
-          setVariable:
-            review_scope_confirmed: true
-      - id: wrong-review-target
-        label: No — wrong target set
-        description: Rejects the target set; supply a corrected `target_workflow_ids` list.
-        effect:
-          setVariable:
-            review_scope_confirmed: false
+      value: true
+    actions:
+      - action: message
+        message: "Headless by default — soft mid-flow gates auto-resolve. Gate 2 (`approve-to-commit`) and safety gaps stay interactive. Say \"interactive\", \"not headless\", or \"with checkpoints\" to opt out."
+  - kind: action
+    id: announce-interactive
+    condition:
+      type: simple
+      variable: headless_mode
+      operator: ==
+      value: false
+    actions:
+      - action: message
+        message: "Interactive mode — soft mid-flow gates may present AskQuestion. Gate 2 (`approve-to-commit`) and safety gaps stay interactive."
   - kind: technique
     id: initialize-planning-folder
     technique:
@@ -103,59 +166,13 @@ steps:
       variable: operation_type
       operator: "!="
       value: review
-  - kind: checkpoint
-    id: change-request-confirmed
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: ==
-          value: update
-        - type: simple
-          variable: update_seeded_from_review
-          operator: "!="
-          value: true
-    message: "Requested changes for '{workflow_id}' ([structural inventory]({structural_inventory_path}))."
-    blocking: true
-    options:
-      - id: confirmed
-        label: Yes, that's correct
-        description: Change request and current structure both confirmed.
-      - id: refine
-        label: Needs refinement
-        description: Change request requires further clarification.
-      - id: cancel
-        label: Cancel — create new instead
-        description: Update path abandoned; mode flips back to create.
-        effect:
-          setVariable:
-            operation_type: create
-  - kind: checkpoint
-    id: format-literacy
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: create
-    message: "YAML syntax and project conventions ([format conventions]({format_conventions_path}))."
-    options:
-      - id: confirmed
-        label: Yes, proceed
-        description: Format understanding confirmed.
-        effect:
-          setVariable:
-            format_literacy_confirmed: true
-      - id: incorrect
-        label: Needs correction
-        description: Format understanding has errors that must be corrected before proceeding.
   - kind: action
     id: auto-confirm-literacy
     condition:
       type: simple
       variable: operation_type
-      operator: ==
-      value: update
+      operator: "!="
+      value: review
     actions:
       - action: set
         target: format_literacy_confirmed
@@ -163,24 +180,6 @@ steps:
       - action: set
         target: schema_constructs_confirmed
         value: true
-  - kind: checkpoint
-    id: constructs-confirmed
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: create
-    message: "Applicable schema constructs ([applicable constructs]({applicable_constructs_path}))."
-    options:
-      - id: confirmed
-        label: Yes, these are the right constructs
-        description: Construct coverage confirmed.
-        effect:
-          setVariable:
-            schema_constructs_confirmed: true
-      - id: adjust
-        label: Needs adjustment
-        description: Construct list requires additions or removals before proceeding.
   - kind: action
     id: clear-review-seed-flag
     condition:
@@ -219,7 +218,7 @@ transitions:
           value: true
     isDefault: true
 outcome:
-  - The workflow knows whether it is creating, updating, or reviewing, and against which target — every downstream branch can route on a confirmed operation
-  - The user-confirmed design intent gives drafting a stable north star to build toward
+  - The workflow knows whether it is creating, updating, or reviewing, and against which target — every downstream branch can route on a derived operation
+  - Derive-first intent lands gap flags and `{headless_mode}` (default true; false on interactive opt-out); Gate 1 fires only when intent needs confirmation
   - The agent can author schema-correct YAML without re-deriving syntax or guessing which constructs apply
-  - The set of schema constructs in play is agreed up front, so drafting reaches for the right construct instead of falling back to prose
+  - Format literacy and schema constructs are auto-confirmed for create/update so drafting reaches for the right construct instead of falling back to prose

@@ -1,7 +1,7 @@
 id: validate-and-commit
-version: 1.7.0
+version: 1.8.0
 name: Validate and Commit
-description: Final validation, scope verification, and README generation/update, then commit of the workflow changes on the session feature branch with a pull request opened against the workflows branch (create/update); in review mode the compliance report is committed directly.
+description: Final validation, scope verification, and README generation/update, then Gate 2 approve-to-commit and commit of the workflow changes on the session feature branch with a pull request opened against the workflows branch (create/update); in review mode the compliance report is committed directly.
 required: true
 steps:
   - kind: technique
@@ -139,18 +139,23 @@ steps:
       operator: "!="
       value: review
   - kind: checkpoint
-    id: pre-commit-attestation
+    id: approve-to-commit
     condition:
       type: simple
       variable: operation_type
       operator: "!="
       value: review
-    message: "Ready to commit workflow '{workflow_id}' ([planning README]({planning_folder_path}/README.md), [draft attestation]({draft_attestation_path}))."
+    message: "Approve commit for workflow '{workflow_id}' ([design specification]({specification_path}), [assumptions log]({assumptions_log}) open judgements when has_open_assumptions={has_open_assumptions}, [impact analysis]({impact_analysis_path}), [draft attestation]({draft_attestation_path}), [planning README]({planning_folder_path}/README.md))."
     blocking: true
     options:
       - id: approved
         label: Approved — commit
-        description: The staged changes are reviewed and approved for commit.
+        description: The batched design surfaces are reviewed and approved for commit.
+      - id: correct-assumptions
+        label: Correct open judgements
+        description: Open design judgements need correction before commit; return with assumption feedback.
+        effect:
+          transitionTo: requirements-refinement
       - id: return-to-draft
         label: Return to drafting
         description: The changes are not ready; return to scope-and-draft for revision.
@@ -192,5 +197,5 @@ transitions:
 outcome:
   - Every YAML file passes schema validation, so the workflow is guaranteed loadable and the server will run it without surprise
   - Nothing planned is left undone — every scope-manifest item is accounted for before the work lands
-  - A human-readable entry point exists for the workflow, so future users and authors can discover and understand it without reading the raw YAML
+  - Gate 2 (`approve-to-commit`) batches design specification, open judgements, impact, draft attestation, and planning README for a single interactive commit decision
   - The work is committed from the session `{target_path}` worktree on `{workflow_branch}`, with a PR opened against `workflows`

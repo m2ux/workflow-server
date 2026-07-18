@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.26.0
+version: 1.27.1
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -16,6 +16,7 @@ rules:
   activity:
     - Corrections must persist — record corrections and verify compliance at every subsequent checkpoint
     - On completing each activity, update the planning-folder `README.md` progress tracker — mark this activity's row ✅ Complete in the 📊 Progress table and set the header Status line to the current lifecycle state (Planning/Drafting/Reviewing/Complete). (The session README is present in create and update modes, where the seed step runs.)
+    - When `{headless_mode}` is true (the default), soft mid-flow checkpoints (those with `defaultOption` and `autoAdvanceMs`) auto-resolve without AskQuestion. Gap-only Gate 1 (`design-intent-batch`), Gate 2 (`approve-to-commit`), and safety gaps (`preservation-check`, `review-disposition`, post-update findings disposition) stay interactive. Soft-gate headless is the default; set `{headless_mode}` false at intake via an explicit interactive opt-out (“interactive”, “not headless”, “with checkpoints”).
 techniques:
   activity:
     - variable-binding
@@ -26,6 +27,26 @@ variables:
   - name: operation_type
     type: string
     description: The classified operation for the request — create, update, or review. Sole mode state; gates and technique inputs compare this value directly.
+  - name: operation_type_ambiguous
+    type: boolean
+    description: True when intake cannot confidently classify create vs update vs review from the request alone — contributes to Gate 1 (`intent_needs_confirmation`).
+    defaultValue: false
+  - name: change_request_clear
+    type: boolean
+    description: In update mode, true when the change request is clear enough to proceed without Gate 1 clarification. Ignored in create/review when unused by conditions.
+    defaultValue: true
+  - name: intent_needs_confirmation
+    type: boolean
+    description: Composite gap flag for Gate 1 (`design-intent-batch`) — true when mode is ambiguous, the update change request is unclear, and/or review targets are ambiguous.
+    defaultValue: false
+  - name: headless_mode
+    type: boolean
+    description: When true, soft mid-flow gates auto-resolve (no AskQuestion). Default true. Intake sets false only on an explicit interactive opt-out (“interactive”, “not headless”, “with checkpoints”). Does not skip Gate 2 or safety gaps.
+    defaultValue: true
+  - name: has_resolvable_assumptions
+    type: boolean
+    description: Whether audit-resolvable design assumptions remain — drives the requirements-refinement reconcile while-loop. False when the while-loop is a no-op.
+    defaultValue: false
   - name: review_findings_count
     type: number
     description: Total number of compliance findings identified during review
@@ -198,14 +219,11 @@ variables:
     description: The design-assumptions log surfaced and reviewed during requirements-refinement — each assumption with its category, risk, resolvability, and outcome. Written via work-package::review-assumptions and reconcile-design-assumptions.
   - name: open_assumptions
     type: array
-    description: The design assumptions still open after audit reconciliation — the genuine design judgements remaining for interview.
+    description: The design assumptions still open after audit reconciliation — genuine design judgements batched into Gate 2 (`approve-to-commit`).
   - name: has_open_assumptions
     type: boolean
-    description: Whether open design judgements remain after reconcile-design-assumptions.
+    description: Whether open design judgements remain after reconcile-design-assumptions — listed in the Gate 2 batch payload when true.
     defaultValue: false
-  - name: current_assumption
-    type: object
-    description: "The open assumption under review from open_assumptions. Sub-shape: { id, statement }."
   - name: design_dimensions
     type: array
     description: The ordered design dimensions to elicit in requirements-refinement, set per mode by derive-design-dimensions (create elicits all eight; update skips the already-established activity model, variables, and techniques).

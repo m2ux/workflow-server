@@ -1,7 +1,7 @@
 id: requirements-refinement
-version: 1.9.0
+version: 1.10.0
 name: Requirements Refinement
-description: A confirmed workflow specification across its design dimensions, with the design assumptions it rests on surfaced, reconciled, and reviewed.
+description: A workflow specification across its design dimensions, with design assumptions surfaced, reconciled in a while-loop, and open judgements deferred to Gate 2.
 required: true
 techniques:
   - scatter-gather
@@ -64,8 +64,10 @@ steps:
     technique: persist-design-specification
   - kind: checkpoint
     id: spec-confirmed
-    message: "Full specification across the design dimensions ({design_dimensions}): [design specification]({specification_path})."
-    blocking: true
+    message: "Full specification across the design dimensions ({design_dimensions}): [design specification]({specification_path}). Stakeholder attestation at Gate 2."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
     options:
       - id: confirmed
         label: Yes — specification is complete
@@ -73,6 +75,11 @@ steps:
       - id: refine
         label: Needs changes
         description: One or more dimensions require additions, removals, or modifications before drafting.
+  - kind: action
+    id: announce-specification
+    actions:
+      - action: message
+        message: "Design specification persisted ([design specification]({specification_path})). Open judgements after reconcile batch into Gate 2."
   - kind: technique
     id: collect-assumptions
     technique:
@@ -84,38 +91,28 @@ steps:
     id: reconcile-assumptions
     technique: reconcile-design-assumptions
   - kind: loop
-    id: assumption-interview-loop
-    name: Assumption Interview Loop
-    loopType: forEach
-    variable: current_assumption
-    over: open_assumptions
-    maxIterations: 20
+    id: assumption-reconciliation
+    name: Assumption Reconciliation Loop
+    loopType: while
+    condition:
+      type: simple
+      variable: has_resolvable_assumptions
+      operator: ==
+      value: true
+    steps:
+      - kind: technique
+        id: reconcile-iteration
+        technique: reconcile-design-assumptions
+  - kind: action
+    id: announce-open-judgements
     condition:
       type: simple
       variable: has_open_assumptions
       operator: ==
       value: true
-    steps:
-      - kind: technique
-        id: present-assumption
-        technique: work-package::review-assumptions::interview
-      - kind: checkpoint
-        id: assumption-decision#{current_assumption.id}
-        message: "Assumption {current_assumption.id}: {current_assumption.statement}"
-        blocking: true
-        options:
-          - id: accept
-            label: Accept assumption
-            description: This design assumption is valid — proceed with it.
-          - id: reject
-            label: Reject assumption
-            description: This assumption is wrong — provide a correction.
-          - id: defer
-            label: Defer
-            description: Not enough information to decide now — revisit later.
-      - kind: technique
-        id: record-decision
-        technique: work-package::review-assumptions::record
+    actions:
+      - action: message
+        message: "Open design judgements remain after reconcile — batched into Gate 2 (`approve-to-commit`), not interviewed mid-flow."
   - kind: technique
     id: update-assumptions-log
     technique: work-package::review-assumptions::record
@@ -129,4 +126,5 @@ transitions:
   - to: pattern-analysis
     isDefault: true
 outcome:
-  - A complete workflow specification — purpose, activities, checkpoints, artifacts, variables, techniques, and rules — that the user has confirmed in one batch after elicitation, so drafting proceeds from settled requirements rather than open questions
+  - A complete workflow specification — purpose, activities, checkpoints, artifacts, variables, techniques, and rules — persisted for drafting, with stakeholder attestation at Gate 2
+  - Audit-resolvable design assumptions converge via a while-loop; open judgements remain in the assumptions log for the late approve-to-commit batch
