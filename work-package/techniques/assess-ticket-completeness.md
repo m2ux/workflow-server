@@ -40,7 +40,7 @@ True when the user elects to refactor the ticket to address the identified gaps;
 - Set `{ticket_gaps_documented}` once the gaps are recorded.
 - Documented gaps are persistent findings, not ephemeral status text — they live in the assumptions log so review can proceed with them visible regardless of whether the ticket is refactored.
 
-### 3. Offer to Refactor
+### 3. Emit Gaps for Activity Decision
 
-- Present the gaps to the user and offer to refactor the ticket to address them.
-- Set `{ticket_refactor_needed}` from the user's decision: true to refactor, false to proceed with gaps noted or when no significant gaps were found.
+- Emit the documented gaps as bindable output for the binding activity to surface (refactor vs proceed-with-gaps).
+- `{ticket_refactor_needed}` is set from the activity checkpoint effect: true to refactor, false to proceed with gaps noted or when no significant gaps were found.

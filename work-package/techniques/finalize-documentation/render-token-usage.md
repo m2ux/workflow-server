@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -25,7 +25,7 @@ Per-activity token table, per-workflow totals, and cost estimate (labelled an es
 
 ## Protocol
 
-1. Read rolled-up usage from session state via `inspect_session { view: "usage" }` (or `get_workflow_status` for the same session). When `usage` is absent, skip artifact creation and README update — do not fabricate figures.
+1. Read rolled-up usage from session state. When usage is absent, skip artifact creation and README update — do not fabricate figures.
 2. Create `{token_usage_document}` at `{planning_folder_path}` (with the server-provided `artifactPrefix` on the filename) containing:
    - A title identifying this as a token-use and cost **estimate** for the work package.
    - A per-activity table: activity id, input/output/total tokens, cache-read and cache-write columns when present, model, `priceTableVersion`, and per-activity cost (or `unknown` when `cost_usd` is null).

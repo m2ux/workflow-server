@@ -55,14 +55,14 @@ steps:
     technique: review-assumptions::reconcile
   - kind: checkpoint
     id: elicitation-complete
-    message: All question domains have been covered. Proceeding in 30s unless you want to revisit.
+    message: All question domains have been covered. Select whether elicitation is complete or needs more work.
     blocking: false
     defaultOption: complete
     autoAdvanceMs: 30000
     options:
       - id: complete
         label: Elicitation complete
-        description: Requirements are captured — proceed to next activity (default — auto-proceeds after 30s)
+        description: Requirements are captured
         effect:
           setVariable:
             elicitation_complete: true

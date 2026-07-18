@@ -114,14 +114,14 @@ steps:
           variable: has_deferred_assumptions
           operator: ==
           value: true
-    message: Some assumptions were deferred and need external stakeholder attention. Post summary to {issue_platform}? Posting in 30s unless you intervene.
+    message: Some assumptions were deferred and need external stakeholder attention. Select whether to post the summary to {issue_platform}.
     blocking: false
     defaultOption: post-summary
     autoAdvanceMs: 30000
     options:
       - id: post-summary
         label: Post summary to issue tracker
-        description: Post the resolution summary (default — auto-posts after 30s)
+        description: Post the resolution summary
       - id: skip-posting
         label: Skip posting
         description: Do not post to issue tracker

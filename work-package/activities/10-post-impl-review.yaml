@@ -18,7 +18,7 @@ steps:
     technique: review-diff
   - kind: checkpoint
     id: file-index-table
-    message: "File index: {change_block_index}, one rationale paragraph per change block. Review the diff in your side-by-side app, then reply with the row numbers of any blocks with issues (e.g. '24, 31') or 'none', plus any rationale corrections (recorded in code-review.md's Manual Diff Review section). Your confirmation is the provenance attestation for each change."
+    message: "File index: {change_block_index}, one rationale paragraph per change block. Review the diff in your side-by-side app, then reply with the row numbers of any blocks with issues (e.g. '24, 31') or 'none', plus any rationale corrections (recorded in the [manual diff review report]({code_review_report}) Manual Diff Review section). Your confirmation is the provenance attestation for each change."
     blocking: false
     defaultOption: rationale-confirmed
     autoAdvanceMs: 30000
@@ -28,7 +28,7 @@ steps:
         description: Agent rationale paragraphs are accurate. All changes understood. Proceed with automated reviews.
       - id: rationale-confirmed-with-issues
         label: Rationale confirmed (with corrections) — issues found
-        description: Provide rationale corrections (recorded in manual-diff-review-report.md) and comma-separated block indices with issues
+        description: Provide rationale corrections (recorded in the [manual diff review report]({code_review_report})) and comma-separated block indices with issues
         effect:
           setVariable:
             has_flagged_blocks: true
@@ -45,7 +45,7 @@ steps:
       variable: has_flagged_blocks
       operator: ==
       value: true
-    message: "Reviewing block {current_block_index}: {block_path}:{block_line_range}. What's the issue with this change?"
+    message: "Reviewing block {current_block_index}: {block_path}:{block_line_range}. Record the issue with this change, or mark it as a critical blocker."
     blocking: false
     defaultOption: issue-recorded
     autoAdvanceMs: 30000

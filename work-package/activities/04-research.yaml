@@ -1,5 +1,5 @@
 id: research
-version: 2.11.0
+version: 2.12.0
 name: Research
 description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
 required: false
@@ -35,7 +35,7 @@ steps:
           variable: has_reconcilable_research
           operator: ==
           value: false
-        message: "Research has converged. Full candidate inventory (see kb-research.md → Open Research Candidates): {research_candidates}. Every research-reconcilable candidate was resolved; only irreconcilable items — or none — remain, each with its rationale and handoff target. Proceed to planning, or direct further research on a specific item?"
+        message: "Research has converged. Full candidate inventory ([Open Research Candidates]({research_document})): {research_candidates}. Every research-reconcilable candidate was resolved; only irreconcilable items — or none — remain, each with its rationale and handoff target. Select whether to accept research and proceed to planning, or direct further research on a specific item."
         blocking: false
         defaultOption: accept-research
         autoAdvanceMs: 30000
@@ -83,9 +83,33 @@ steps:
     actions:
       - action: message
         message: "**Resolved Assumptions** — the following assumptions were resolved through code analysis."
+  - kind: action
+    id: derive-context-scope
+    actions:
+      - action: set
+        target: context_scope
+        description: "From research run evidence — repo-only when no external web sources informed design; web-retrieval when only web did; mixed when both repository/kb and web did. Leave prior/default when evidence is insufficient and set context_scope_uncertain instead."
+      - action: set
+        target: context_scope_uncertain
+        description: true only when run evidence cannot decide among repo-only / web-retrieval / mixed; false when context_scope was derived confidently
+  - kind: action
+    id: announce-derived-context-scope
+    condition:
+      type: simple
+      variable: context_scope_uncertain
+      operator: "!="
+      value: true
+    actions:
+      - action: message
+        message: "Research context scope derived as `{context_scope}`."
   - kind: checkpoint
     id: context-scope-declaration
-    message: Did research use external web sources (web search, documentation URLs, external references)?
+    condition:
+      type: simple
+      variable: context_scope_uncertain
+      operator: ==
+      value: true
+    message: Research context scope could not be derived from run evidence. Declare whether research used repository only, external web sources, or both.
     blocking: false
     defaultOption: repo-only
     autoAdvanceMs: 15000
@@ -96,18 +120,21 @@ steps:
         effect:
           setVariable:
             context_scope: repo-only
+            context_scope_uncertain: false
       - id: web-retrieval
         label: External web sources used for design decisions
         description: Web search, external docs, or third-party references informed the approach
         effect:
           setVariable:
             context_scope: web-retrieval
+            context_scope_uncertain: false
       - id: mixed
         label: Both repository and external sources used
         description: Mix of codebase analysis and external references
         effect:
           setVariable:
             context_scope: mixed
+            context_scope_uncertain: false
   - kind: technique
     id: interview-open-assumptions
     technique: review-assumptions::interview
