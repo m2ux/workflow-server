@@ -25,7 +25,7 @@ Creation guide for bare filename `assumptions-log.md`. Design-time assumption ca
 | Value | Meaning |
 |-------|---------|
 | `audit` | Settleable by schema / convention / principle checks — see [design-assumption-reconciliation](./design-assumption-reconciliation.md) |
-| `open` | Genuine design judgement for the user |
+| `open` | Genuine design judgement — batched into Gate 2 (`approve-to-commit`) after reconcile |
 
 ## Template
 
@@ -63,7 +63,7 @@ One row per assumption, updated in place across its lifecycle — surfaced, reco
 
 - **Bare filename** `assumptions-log.md` — design sessions fill **this** template (not the work-package assumptions-review shape), including when collect/record ops are borrowed from work-package.
 - **Table is the record** — no prose duplicate of the log elsewhere (README / COMPLETE link here).
-- **One row per assumption**, updated in place through reconcile and interview.
+- **One row per assumption**, updated in place through reconcile; open judgements batch into Gate 2.
 - **Null ceremony:** if none significant, one row stating that — do not prompt the user to confirm null.
 - **Categories** come from the activity's `assumption_categories` input (design set above).
-- **Line budget:** summary + log rows only; keep under ~80 lines unless the interview set is large.
+- **Line budget:** summary + log rows only; keep under ~80 lines unless the open-judgement set is large.

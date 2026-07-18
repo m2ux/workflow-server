@@ -12,7 +12,7 @@ This file is an orientation map. The authoritative definition of each activity �
 
 ### 01. Intake and Context
 
-Classify the request as create, update, or review, set the corresponding mode + target (`target_workflow_id` for update; `target_workflow_ids` for review), bind the planning folder and seed its `README.md` (create/update), then internalize schemas/conventions via `context-loading` — which persists `format-conventions.md` and `applicable-constructs.md` that the literacy checkpoints link. In update mode it loads the existing workflow first; when update was seeded from a review disposition (`update_seeded_from_review`), it skips mode and change-request re-confirmation. In review mode it confirms the audit target set and branches straight to quality review. This is the literacy gate: nothing downstream proceeds until the agent has the schema and format baseline.
+Derive create/update/review from the request (`intake-classification`), land gap flags (`operation_type_ambiguous`, `change_request_clear`, composite `intent_needs_confirmation`) and `{headless_mode}` (default true; false on explicit interactive opt-out such as “interactive”, “not headless”, or “with checkpoints”), set targets (`target_workflow_id` / `target_workflow_ids`), bind the planning folder and seed its `README.md` (create/update), then internalize schemas/conventions via `context-loading`. Gate 1 (`design-intent-batch`) fires only when `intent_needs_confirmation`; the clear path announces and proceeds. Create/update auto-confirm format literacy and schema constructs. Review with certain targets announces and sets `review_scope_confirmed`; ambiguous review targets enter Gate 1. Review-seeded updates skip Gate 1.
 
 Definition: [`01-intake-and-context.yaml`](./01-intake-and-context.yaml). Leads to [Requirements Refinement](#03-requirements-refinement), or directly to [Quality Review](#08-quality-review) in review mode.
 
@@ -20,7 +20,7 @@ Definition: [`01-intake-and-context.yaml`](./01-intake-and-context.yaml). Leads 
 
 ### 03. Requirements Refinement
 
-Guided specification: create mode runs an optional design-context soft gate, then a `forEach` over design dimensions (prepare → surface questions → capture); update mode synthesizes the specification from the change request (`synthesize-update-specification`) with no per-dimension elicitation. Both paths persist the design specification and batch-confirm at `spec-confirmed`. It then surfaces design assumptions (`work-package::review-assumptions::collect`), reconciles audit-resolvable ones (`reconcile-design-assumptions`), and interviews open ones (`interview`/`record`). The value is a confirmed specification plus vetted design decisions.
+Guided specification: create mode runs an optional design-context soft gate, then a `forEach` over design dimensions (prepare → surface questions → capture); update mode synthesizes the specification from the change request (`synthesize-update-specification`) with no per-dimension elicitation. Both paths persist the design specification; `spec-confirmed` is a soft gate (stakeholder attestation at Gate 2). It then surfaces design assumptions (`work-package::review-assumptions::collect`), reconciles via `reconcile-design-assumptions` in a `while has_resolvable_assumptions` loop, and leaves open judgements in the assumptions log for Gate 2 — no per-assumption interview parade.
 
 Definition: [`03-requirements-refinement.yaml`](./03-requirements-refinement.yaml). Skipped in review mode; leads to [Pattern Analysis](#04-pattern-analysis) (create) or [Impact Analysis](#05-impact-analysis) (update).
 
@@ -28,7 +28,7 @@ Definition: [`03-requirements-refinement.yaml`](./03-requirements-refinement.yam
 
 ### 04. Pattern Analysis
 
-Extract structural and content patterns from comparable existing workflows, persist the comparison as a planning artifact, and gate adoption at `patterns-confirmed` with a link to that artifact. Create mode only.
+Extract structural and content patterns from comparable existing workflows, persist the comparison as a planning artifact, and soft-gate adoption at `patterns-confirmed` (`defaultOption` + `autoAdvanceMs`; auto-resolve when `{headless_mode}`). Create mode only.
 
 Definition: [`04-pattern-analysis.yaml`](./04-pattern-analysis.yaml). Leads to [Scope and Draft](#06-scope-and-draft).
 
@@ -60,7 +60,7 @@ Definition: [`08-quality-review.yaml`](./08-quality-review.yaml). Leads to [Vali
 
 ### 09. Validate and Commit
 
-Final schema validation, scope verification, and README generation/update, then — in create/update modes — a blocking pre-commit attestation gate, a commit from the session `{target_path}` worktree (already on `{workflow_branch}` from scope-and-draft ensure), and a pull request opened against the `workflows` branch and marked ready (`publish-workflow-pr`); workflow changes never land straight on `workflows`. Validation and scope soft gates are presented only when `fail_count` or `unaddressed_count` is greater than zero. In review mode it instead saves and commits the compliance report directly. The value is a workflow that is guaranteed loadable, has nothing left undone from its scope, has a human-readable entry point, and is delivered through a reviewable pull request after a deliberate sign-off.
+Final schema validation, scope verification, and README generation/update, then — in create/update modes — Gate 2 (`approve-to-commit`): a blocking batch that links design specification, assumptions/open judgements, impact, draft attestation, and planning README. Gate 2 stays interactive even when `{headless_mode}`. After approval: commit from the session `{target_path}` worktree (already on `{workflow_branch}` from scope-and-draft ensure), and a pull request opened against the `workflows` branch and marked ready (`publish-workflow-pr`); workflow changes never land straight on `workflows`. Validation and scope soft gates are presented only when `fail_count` or `unaddressed_count` is greater than zero. In review mode it instead saves and commits the compliance report directly.
 
 Definition: [`09-validate-and-commit.yaml`](./09-validate-and-commit.yaml). Terminal in create and review modes; leads to [Post-Update Review](#10-post-update-review) in update mode.
 
