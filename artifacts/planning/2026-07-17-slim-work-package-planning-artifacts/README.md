@@ -26,7 +26,7 @@ Full dimension deltas (purpose, activity list, checkpoints, artifacts, rules): [
 
 ## Compliance Findings
 
-Quality-review audits: **0 findings**. Detail: [08-verified-findings.md](08-verified-findings.md).
+Quality-review and post-update audits: **0 findings**. Detail: [08-verified-findings.md](08-verified-findings.md) · [10-post-update-review.md](10-post-update-review.md).
 
 | Severity | Finding | Location | Fix |
 |----------|---------|----------|-----|
@@ -55,7 +55,11 @@ Quality-review audits: **0 findings**. Detail: [08-verified-findings.md](08-veri
 | 08 | [Verified findings](08-verified-findings.md) | Post-update compliance — 0 findings | 20-40m | ✅ Complete |
 | 09 | Validate and commit | Schema validate, commit, open PR | 15-25m | ✅ Complete |
 | 09 | [Workflow README](../../../../workflows/work-package/README.md) | Version header synced to v3.31.0 | 5-10m | ✅ Complete |
-| 09 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, decisions, limitations | 10-20m | ⬚ Pending |
+| 10 | [Post-update review](10-post-update-review.md) | Re-audit committed state — 0 findings | 15-25m | ✅ Complete |
+| 10 | [Principle findings](10-principle-findings.md) | Post-update principle pass — 25/25 compliant | — | ✅ Complete |
+| 10 | [Anti-pattern findings](10-anti-pattern-findings.md) | Post-update anti-pattern pass — 0 findings | — | ✅ Complete |
+| 11 | Retrospective | Session close-out | 10-15m | ⬚ Pending |
+| — | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, decisions, limitations | 10-20m | ⬚ Pending |
 
 ## 🔗 Links
 

@@ -262,10 +262,11 @@
           "requirements-refinement",
           "impact-analysis",
           "scope-and-draft",
-          "quality-review"
+          "quality-review",
+          "validate-and-commit"
         ],
-        "condition": "isDefault",
-        "currentActivity": "validate-and-commit",
+        "condition": "operation_type == update",
+        "currentActivity": "post-update-review",
         "currentTechnique": "publish-workflow-pr",
         "deliveredContent": {
           "orchestrator": {
@@ -281,6 +282,7 @@
             "resource:convention-conformance": "d98a5217e42d4958",
             "resource:design-assumption-reconciliation": "e165321d3b6553ed",
             "resource:design-assumptions": "eeffdbf4bcb49d09",
+            "resource:design-principles": "42ad81dbf7fde45b",
             "resource:design-specification#template": "157eef44b67881d9",
             "resource:draft-attestation#template": "59dcf89708d705f6",
             "resource:drafting-plan#template": "0dc153bd0236f88e",
@@ -295,8 +297,10 @@
             "resource:update-mode-guide": "d8035e7643fce18d",
             "resource:workflow-design/design-context-readme": "3336d3aa686ee448",
             "technique:assemble-file-approach": "e096cd0fa28f8b16",
-            "technique:audit-conformance": "9f9aa03347f30f52",
-            "technique:audit-expressiveness": "40e9222b5f9609bc",
+            "technique:audit-anti-patterns": "a0c242349ff5ce2a",
+            "technique:audit-conformance": "cb209fe5e6261ff9",
+            "technique:audit-expressiveness": "ca3e2a2a877cbfbb",
+            "technique:audit-principles": "8e853ccc99f1e774",
             "technique:audit-rule-enforcement": "7847ab092bfbf2cd",
             "technique:audit-rule-hygiene": "6cbefbc103fbc8dc",
             "technique:audit-schema-validation": "6e64b4add57b7183",
@@ -306,14 +310,18 @@
             "technique:impact-analysis": "6ce81fa8a8ce9fba",
             "technique:intake-classification": "7295893db22932b1",
             "technique:persist-design-specification": "37f632e0ca488b34",
+            "technique:persist-report": "55c940f95a94ea43",
             "technique:prepare-workflow-branch": "91cc388f48e09d0d",
             "technique:publish-workflow-pr": "35af2a8fa2fc617c",
             "technique:readme-authoring": "46b6320cca3fa3b4",
             "technique:reconcile-design-assumptions": "227c9614fee236df",
+            "technique:reload-workflow": "49228205e8be05b9",
             "technique:review-draft-yaml": "9668980d9e91570d",
             "technique:review-drafted-file": "199cad176c4bf742",
+            "technique:scope-audit": "14ada8c35192f58b",
             "technique:scope-definition": "634688f6f367ac21",
             "technique:scope-verification": "e2dacbe36f08554a",
+            "technique:summarize-findings": "4ab5dd75eb804b0e",
             "technique:synthesize-update-specification": "b9b2d6ea0445d92c",
             "technique:verify-high-findings": "fb1b3c38359ca9b7",
             "technique:version-control::commit-regular-files": "73c1261ce62491fe",
@@ -1084,16 +1092,155 @@
             },
             "timestamp": "2026-07-18T05:46:44.040Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-18T05:47:41.065Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "post-update-review",
+            "timestamp": "2026-07-18T05:47:41.065Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "reload-updated-workflow",
+              "techniqueId": "reload-workflow"
+            },
+            "timestamp": "2026-07-18T05:48:19.500Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-expressiveness",
+              "techniqueId": "audit-expressiveness"
+            },
+            "timestamp": "2026-07-18T05:48:19.500Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-conformance",
+              "techniqueId": "audit-conformance"
+            },
+            "timestamp": "2026-07-18T05:48:19.500Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-principles",
+              "techniqueId": "audit-principles"
+            },
+            "timestamp": "2026-07-18T05:48:19.500Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-anti-patterns",
+              "techniqueId": "audit-anti-patterns"
+            },
+            "timestamp": "2026-07-18T05:48:19.500Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-schema-validation",
+              "techniqueId": "audit-schema-validation"
+            },
+            "timestamp": "2026-07-18T05:48:19.500Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "scope-audit",
+              "techniqueId": "scope-audit"
+            },
+            "timestamp": "2026-07-18T05:48:19.500Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "summarize-findings",
+              "techniqueId": "summarize-findings"
+            },
+            "timestamp": "2026-07-18T05:48:19.500Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "save-review-snapshot",
+              "techniqueId": "persist-report"
+            },
+            "timestamp": "2026-07-18T05:48:19.500Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "schema-construct-inventory"
+            },
+            "timestamp": "2026-07-18T05:48:19.500Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "convention-conformance"
+            },
+            "timestamp": "2026-07-18T05:48:19.500Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "design-principles"
+            },
+            "timestamp": "2026-07-18T05:48:19.500Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "anti-patterns"
+            },
+            "timestamp": "2026-07-18T05:56:12.833Z",
+            "type": "resource_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 69,
+        "seq": 72,
         "sessionIndex": "PCVJDD",
         "skippedActivities": [],
         "startedAt": "2026-07-17T13:17:05.282Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784353604,
+        "ts": 1784354172,
         "variables": {
           "addressed_count": 0,
           "anti_pattern_findings_path": "",
