@@ -1,6 +1,6 @@
 # Slim work-package planning artifacts — July 2026
 
-> Update · Created 2026-07-17 · **Status:** Reviewing
+> Update · Created 2026-07-17 · **Status:** Reviewing · Revised 2026-07-18
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -53,6 +53,8 @@ Quality-review audits: **0 findings**. Detail: [08-verified-findings.md](08-veri
 | 06 | [Draft attestation](06-draft-attestation.md) | Block-indexed review of drafted edits | 5-10m | ✅ Complete |
 | 07 | Implementation | Edit techniques/resources/checkpoint messages | 45-90m | ✅ Complete |
 | 08 | [Verified findings](08-verified-findings.md) | Post-update compliance — 0 findings | 20-40m | ✅ Complete |
+| 09 | Validate and commit | Schema validate, commit, open PR | 15-25m | ✅ Complete |
+| 09 | [Workflow README](../../../../workflows/work-package/README.md) | Version header synced to v3.31.0 | 5-10m | ✅ Complete |
 | 09 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, decisions, limitations | 10-20m | ⬚ Pending |
 
 ## 🔗 Links
@@ -60,6 +62,7 @@ Quality-review audits: **0 findings**. Detail: [08-verified-findings.md](08-veri
 | Resource | Link |
 |----------|------|
 | Target workflow | `workflows/work-package/` |
+| PR | [#255](https://github.com/m2ux/workflow-server/pull/255) |
 | Precedent (workflow-design) | [2026-07-17-simplify-workflow-design-planning-artifacts](../2026-07-17-simplify-workflow-design-planning-artifacts/) |
 | Precedent PR | [#254](https://github.com/paritytech/workflow-server/pull/254) |
 | Structural inventory | [01-structural-inventory.md](01-structural-inventory.md) |

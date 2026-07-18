@@ -251,17 +251,22 @@
             },
             "optionId": "confirmed",
             "respondedAt": "2026-07-18T05:17:08.000Z"
+          },
+          "validate-and-commit-pre-commit-attestation": {
+            "optionId": "approved",
+            "respondedAt": "2026-07-18T05:44:43.000Z"
           }
         },
         "completedActivities": [
           "intake-and-context",
           "requirements-refinement",
           "impact-analysis",
-          "scope-and-draft"
+          "scope-and-draft",
+          "quality-review"
         ],
         "condition": "isDefault",
-        "currentActivity": "quality-review",
-        "currentTechnique": "verify-high-findings",
+        "currentActivity": "validate-and-commit",
+        "currentTechnique": "publish-workflow-pr",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:8a067c5a3494a7c9": "8a067c5a3494a7c9",
@@ -284,6 +289,7 @@
             "resource:findings-satellite": "af083db810c17bf8",
             "resource:impact-analysis#template": "d3441f36cf0221f4",
             "resource:meta/activity-worker-prompt": "30541d7369da3310",
+            "resource:meta/planning-readme": "3a97f19a51c716a7",
             "resource:schema-construct-inventory": "f7bfae0f013846ce",
             "resource:scope-manifest#template": "78d7f0382322bb4f",
             "resource:update-mode-guide": "d8035e7643fce18d",
@@ -293,18 +299,26 @@
             "technique:audit-expressiveness": "40e9222b5f9609bc",
             "technique:audit-rule-enforcement": "7847ab092bfbf2cd",
             "technique:audit-rule-hygiene": "6cbefbc103fbc8dc",
+            "technique:audit-schema-validation": "6e64b4add57b7183",
+            "technique:commit-verification": "03c6107105355fdd",
             "technique:context-loading": "fa2d6e4552894299",
             "technique:derive-design-dimensions": "db4a356f47e296c9",
             "technique:impact-analysis": "6ce81fa8a8ce9fba",
             "technique:intake-classification": "7295893db22932b1",
             "technique:persist-design-specification": "37f632e0ca488b34",
+            "technique:prepare-workflow-branch": "91cc388f48e09d0d",
+            "technique:publish-workflow-pr": "35af2a8fa2fc617c",
+            "technique:readme-authoring": "46b6320cca3fa3b4",
             "technique:reconcile-design-assumptions": "227c9614fee236df",
             "technique:review-draft-yaml": "9668980d9e91570d",
             "technique:review-drafted-file": "199cad176c4bf742",
             "technique:scope-definition": "634688f6f367ac21",
+            "technique:scope-verification": "e2dacbe36f08554a",
             "technique:synthesize-update-specification": "b9b2d6ea0445d92c",
             "technique:verify-high-findings": "fb1b3c38359ca9b7",
+            "technique:version-control::commit-regular-files": "73c1261ce62491fe",
             "technique:work-package::manage-artifacts::create-readme": "b5d443552594f495",
+            "technique:work-package::manage-artifacts::verify-readme-conforms": "ddb889e3993df152",
             "technique:work-package::review-assumptions::collect": "a651ce75f6af8338",
             "technique:work-package::review-assumptions::record": "88f2293f5342fb06",
             "technique:work-package::stakeholder-overview": "0a15e9ed2dab16a9",
@@ -947,16 +961,139 @@
             },
             "timestamp": "2026-07-18T05:23:21.341Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-07-18T05:28:24.955Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-18T05:28:24.955Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-commit",
+              "techniqueId": "commit-verification"
+            },
+            "timestamp": "2026-07-18T05:28:50.479Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "run-schema-validation",
+              "techniqueId": "audit-schema-validation"
+            },
+            "timestamp": "2026-07-18T05:28:59.699Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-scope-manifest",
+              "techniqueId": "scope-verification"
+            },
+            "timestamp": "2026-07-18T05:30:34.078Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-planning-readme",
+              "techniqueId": "work-package::manage-artifacts::verify-readme-conforms"
+            },
+            "timestamp": "2026-07-18T05:30:39.597Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "readme-authoring",
+              "techniqueId": "readme-authoring"
+            },
+            "timestamp": "2026-07-18T05:30:40.977Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/design-context-readme"
+            },
+            "timestamp": "2026-07-18T05:30:49.917Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "pre-commit-attestation",
+            "timestamp": "2026-07-18T05:31:12.952Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "pre-commit-attestation",
+            "data": {
+              "optionId": "approved"
+            },
+            "timestamp": "2026-07-18T05:44:43.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "prepare-workflow-branch",
+              "techniqueId": "prepare-workflow-branch"
+            },
+            "timestamp": "2026-07-18T05:44:52.184Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "stage-and-commit",
+              "techniqueId": "version-control::commit-regular-files"
+            },
+            "timestamp": "2026-07-18T05:44:54.702Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "publish-workflow-pr",
+              "techniqueId": "publish-workflow-pr"
+            },
+            "timestamp": "2026-07-18T05:44:55.054Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "meta/planning-readme"
+            },
+            "timestamp": "2026-07-18T05:46:44.040Z",
+            "type": "resource_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 55,
+        "seq": 69,
         "sessionIndex": "PCVJDD",
         "skippedActivities": [],
         "startedAt": "2026-07-17T13:17:05.282Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784352201,
+        "ts": 1784353604,
         "variables": {
           "addressed_count": 0,
           "anti_pattern_findings_path": "",
