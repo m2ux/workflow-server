@@ -5,7 +5,7 @@ description: Detect the target repository structure (regular directory vs. submo
 required: true
 rules:
   - target_path MUST resolve to a directory containing a working git tree
-  - The workflows and .engineering infrastructure submodules are never a target component and never classify a repo as a monorepo on their own
+  - Exclude infrastructure submodules per version-control::infrastructure-submodule-paths
 steps:
   - kind: action
     id: announce-start

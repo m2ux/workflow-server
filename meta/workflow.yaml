@@ -74,7 +74,7 @@ variables:
     defaultValue: .
   - name: component_selection_needed
     type: boolean
-    description: Whether the monorepo has more than one target-component submodule (after excluding the workflows and .engineering infrastructure submodules), requiring the user to pick. Set by resolve-target's select-target-component step; gates the submodule-selection checkpoint so a single-component monorepo resolves headlessly.
+    description: Whether the monorepo has more than one target-component submodule (after excluding infrastructure submodules per version-control::infrastructure-submodule-paths), requiring the user to pick. Set by resolve-target's select-target-component step; gates the submodule-selection checkpoint so a single-component monorepo resolves headlessly.
     defaultValue: false
   - name: client_workflow_completed
     type: boolean
