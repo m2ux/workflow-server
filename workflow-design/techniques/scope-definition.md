@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
 
-Define the complete scope and structure: verify the workflows worktree, enumerate every file to create/modify/remove, note structural shape and drafting order briefly, and persist a lean scope manifest for activity-layer review.
+Define the complete scope and structure: verify the dedicated edit worktree at `{target_path}`, enumerate every file to create/modify/remove, note structural shape and drafting order briefly, and persist a lean scope manifest for activity-layer review.
 
 ## Outputs
 
@@ -27,9 +27,10 @@ Absolute path to the written scope-manifest artifact (includes structural design
 
 ## Protocol
 
-### 1. Verify Worktree
+### 1. Verify Edit Root
 
-- Verify the workflows branch is present and checked out at the expected path before any path definitions proceed
+- Verify `{target_path}` is present and checked out on `{workflow_branch}` (the dedicated session worktree from prepare-workflow-branch / ensure) before any path definitions proceed
+- Do not treat the shared workflows library checkout as the edit root
 
 ### 2. Design Folder Structure
 
@@ -37,7 +38,7 @@ Absolute path to the written scope-manifest artifact (includes structural design
 
 ### 3. Enumerate Files
 
-- Enumerate every file to create/modify/remove with full paths: per-file path, action (create/modify/remove), type (workflow/activity/technique/resource/readme), and one-line description — no implicit files; capture as `{scope_manifest}` and set `{file_count}`
+- Enumerate every file to create/modify/remove with full paths under `{target_path}/{workflow_id}/`: per-file path, action (create/modify/remove), type (workflow/activity/technique/resource/readme), and one-line description — no implicit files; capture as `{scope_manifest}` and set `{file_count}`
 
 ### 4. Assemble Structural Design
 

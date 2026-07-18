@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.25.0
+version: 1.26.0
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -209,9 +209,17 @@ variables:
   - name: design_dimensions
     type: array
     description: The ordered design dimensions to elicit in requirements-refinement, set per mode by derive-design-dimensions (create elicits all eight; update skips the already-established activity model, variables, and techniques).
+  - name: target_path
+    type: string
+    description: "Path to the dedicated git worktree where create/update edits, commits, and PRs run — typically ~/projects/work/workflows/{planning-slug}/. Distinct from planning_folder_path (server .engineering artifacts) and from the shared workflows library checkout used for catalog/literacy reads. Set by derive-workflows-target-path before ensure (prepare-workflow-branch)."
+    defaultValue: ""
+  - name: worktree_created
+    type: boolean
+    description: True when a dedicated worktree at target_path was created or reused by this workflow run (only those worktrees are eligible for optional retrospective cleanup).
+    defaultValue: false
   - name: workflow_branch
     type: string
-    description: The feature branch in the workflows repo that the authored/updated workflow's changes are committed to (e.g., workflow/{workflow_id}); set by prepare-workflow-branch in create/update modes.
+    description: The feature branch in the workflows repo that the authored/updated workflow's changes are committed to (e.g., workflow/{workflow_id}); set by prepare-workflow-branch (ensure worktree) in create/update modes.
     defaultValue: ""
   - name: pr_url
     type: string

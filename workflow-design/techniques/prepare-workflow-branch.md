@@ -1,28 +1,65 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.1
 ---
 
 ## Capability
 
-Ensure the workflows repo is on a dedicated feature branch for this workflow — creating `workflow/{workflow_id}` off the `workflows` branch, or checking it out if it already exists.
+Ensure a dedicated workflows edit worktree exists at `{target_path}` on feature branch `{workflow_branch}` — composing [work-package create-worktree](../../work-package/techniques/manage-git/create-worktree.md) with design defaults (`component_name=workflows`).
+
+## Inputs
+
+### target_path
+
+Absolute filesystem path of the dedicated workflows edit-root worktree for this session — where create/update edits land. Distinct from `{planning_folder_path}`.
+
+### workflow_id
+
+Workflow id used to name the feature branch (`workflow/{workflow_id}`, with an intent suffix when an update needs a distinct branch).
+
+### operation_type
+
+Create or update (review mode skips this ensure). Used only to decide whether an update intent suffix is needed when `workflow/{workflow_id}` already exists.
+
+### reference_path
+
+*(optional)* Monorepo or checkout that contains the shared `workflows` library component. Used when composing create-worktree to locate the component git directory.
 
 ## Outputs
 
 ### workflow_branch
 
-The feature branch the workflow's changes are committed to (e.g., `workflow/{workflow_id}`).
+Feature branch checked out in the worktree (e.g. `workflow/{workflow_id}`, or that name plus a short intent suffix).
+
+### worktree_created
+
+True when the worktree at `{target_path}` on `{workflow_branch}` was created or reused.
 
 ## Protocol
 
 ### 1. Derive Branch Name
 
-- In the workflows repo, derive the feature branch name `workflow/{workflow_id}`; for an update whose branch already exists, suffix the change intent to keep it distinct
+- Set `{$branch_name}` to `workflow/{workflow_id}`
+- When `{operation_type}` is `update` and that branch already exists for a prior change, suffix a short change-intent slug so the session has a distinct branch
 
-### 2. Create Or Check Out Branch
+### 2. Ensure Worktree
 
-- Create and check out the branch off the current `workflows` branch tip, carrying the drafted (uncommitted) files onto it; if the branch already exists, check it out instead
+- Compose [create-worktree](../../work-package/techniques/manage-git/create-worktree.md) with:
+  - `{target_path}` as declared
+  - `branch_name` = `{$branch_name}`
+  - `create_branch` = true
+  - `component_name` = `workflows`
+  - `{reference_path}` when supplied (otherwise create-worktree resolves the component from ambient context)
+  >
+  > Compose only the declared create-worktree inputs — no parallel git recipe and no undeclared compose params. create-worktree bases the new branch on that component's `origin/HEAD` default; the workflows library's HEAD must resolve to `workflows` (intervene before compose when it does not).
+- Reuse when `{target_path}` is already a registered worktree on that branch; surface path conflicts to the user (do not delete)
 
-### 3. Capture Branch Name
+### 3. Capture Outputs
 
-- Capture the branch name as `{workflow_branch}`
+- Set `{workflow_branch}` = `{$branch_name}` and `{worktree_created}` from create-worktree
+
+## Rules
+
+### edit-root-is-target-path
+
+All subsequent create/update edits, commits, and PRs use `{target_path}`. Catalog and literacy reads may use the shared library checkout; planning artifacts stay under `{planning_folder_path}`.

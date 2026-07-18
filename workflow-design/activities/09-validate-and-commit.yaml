@@ -1,7 +1,7 @@
 id: validate-and-commit
-version: 1.6.1
+version: 1.7.0
 name: Validate and Commit
-description: Final validation, scope verification, and README generation/update, then commit of the workflow changes on a feature branch with a pull request opened against the workflows branch (create/update); in review mode the compliance report is committed directly.
+description: Final validation, scope verification, and README generation/update, then commit of the workflow changes on the session feature branch with a pull request opened against the workflows branch (create/update); in review mode the compliance report is committed directly.
 required: true
 steps:
   - kind: technique
@@ -157,14 +157,6 @@ steps:
         effect:
           transitionTo: scope-and-draft
   - kind: technique
-    id: prepare-workflow-branch
-    technique: prepare-workflow-branch
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
-  - kind: technique
     id: stage-and-commit
     technique: version-control::commit-regular-files
     condition:
@@ -201,4 +193,4 @@ outcome:
   - Every YAML file passes schema validation, so the workflow is guaranteed loadable and the server will run it without surprise
   - Nothing planned is left undone — every scope-manifest item is accounted for before the work lands
   - A human-readable entry point exists for the workflow, so future users and authors can discover and understand it without reading the raw YAML
-  - The work is durably landed in the workflows worktree, available to every session that loads the library
+  - The work is committed from the session `{target_path}` worktree on `{workflow_branch}`, with a PR opened against `workflows`
