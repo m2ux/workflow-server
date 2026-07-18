@@ -1,5 +1,5 @@
 id: research
-version: 2.12.0
+version: 2.12.1
 name: Research
 description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
 required: false
@@ -35,7 +35,7 @@ steps:
           variable: has_reconcilable_research
           operator: ==
           value: false
-        message: "Research has converged. Full candidate inventory ([Open Research Candidates]({research_document})): {research_candidates}. Every research-reconcilable candidate was resolved; only irreconcilable items — or none — remain, each with its rationale and handoff target. Select whether to accept research and proceed to planning, or direct further research on a specific item."
+        message: "Research has converged. Full candidate inventory ([Open Research Candidates]({research_document})): {research_candidates}. Proceed to planning, or direct further research on a specific item?"
         blocking: false
         defaultOption: accept-research
         autoAdvanceMs: 30000
