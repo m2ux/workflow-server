@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Ensure a dedicated workflows edit worktree exists at `{target_path}` on feature branch `{workflow_branch}` before first draft write — composing [work-package create-worktree](../../work-package/techniques/manage-git/create-worktree.md) with design defaults (`component_name=workflows`).
+Ensure a dedicated workflows edit worktree exists at `{target_path}` on feature branch `{workflow_branch}` — composing [work-package create-worktree](../../work-package/techniques/manage-git/create-worktree.md) with design defaults (`component_name=workflows`).
 
 ## Inputs
 
 ### target_path
 
-Dedicated worktree path from [derive-workflows-target-path](./derive-workflows-target-path.md).
+Absolute filesystem path of the dedicated workflows edit-root worktree for this session — where create/update edits land. Distinct from `{planning_folder_path}`.
 
 ### workflow_id
 
