@@ -73,26 +73,21 @@ True if any block marked as critical blocker
 - Open the index with the lean-header summary line (branches compared · file count · hunk count · review-time estimate) and the reviewer instructions block from the header form
 - Below the index table, generate a '## Block Rationale' section containing one subsection per block (### Block N) with a descriptive paragraph per the rationale-quality rule
 - When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md)(name: `{$symbol}`) so the reviewer understands why the diff matters and which execution flows it touches.
-- Write index to the `{change_block_index}` under `{planning_folder_path}`
+- Write index to the `{change_block_index}` under `{planning_folder_path}` — the binding activity surfaces the index for external diff-tool review
 
-### 4. Present Index
+### 4. Collect Flagged
 
-- Present index to user for external diff tool review (VS Code, Meld, etc.)
-- User identifies issues in their external diff tool; agent does not pre-judge
-
-### 5. Collect Flagged
-
-- Collect flagged rows from the user, reported as row numbers only: `3, 7, 12` (those rows have issues) or `none` (skip the interview loop, proceed to automated reviews)
+- Consume flagged rows from the activity response, reported as row numbers only: `3, 7, 12` (those rows have issues) or `none` (skip the interview loop, proceed to automated reviews)
 - A bare row number covers all changes in that file; a row with a line reference (e.g. `3-L42`) focuses the interview on that specific line
 
-### 6. Interview Blocks
+### 5. Interview Blocks
 
-- For each flagged row: display the full diff content for that file (filename and path), then ask what the issue is
-- Record the user's description verbatim, noting severity if mentioned (critical, minor, etc.)
-- If user marks block as critical blocker, set `{has_critical_blocker}`=true
+- For each flagged row: assemble the full diff content for that file (filename and path) into the interview context the binding activity surfaces
+- Record the user's description verbatim from the activity response, noting severity if mentioned (critical, minor, etc.)
+- If the response marks the block as a critical blocker, set `{has_critical_blocker}`=true
 - Continue to the next flagged row until all are addressed
 
-### 7. Create Report
+### 6. Create Report
 
 - Write the `{manual_diff_review_report}` as the `## Manual Diff Review` section of `code-review.md`, following the [section template](../resources/manual-diff-review.md#manual-diff-review-section-template) (creating the artifact if this review runs first)
 - Include flagged rows, interview responses verbatim, and severity; when the user reported `none`, the section is its one-line header only

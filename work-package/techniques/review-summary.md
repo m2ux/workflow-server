@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Author a structured consolidated review summary from the consolidated review findings, following the [Consolidated Review Format](../resources/review-mode.md#consolidated-review-format) template defined in the review-mode resource, ready for confirmation and posting to the PR.
+Author a structured consolidated review summary from the consolidated review findings, following the [Consolidated Review Format](../resources/review-mode.md#consolidated-review-format) template defined in the review-mode resource, as bindable `{review_summary}` text for the binding activity to surface and post.
 
 ## Inputs
 
@@ -33,7 +33,7 @@ The authored surface — the PR's changed-files set. Used to enforce the finding
 
 ### review_summary
 
-The structured consolidated review summary text, organized per the Consolidated Review Format — executive summary, per-category findings, action items, and severity definitions — ready to present and post.
+The structured consolidated review summary text, organized per the Consolidated Review Format — executive summary, per-category findings, action items, and severity definitions — verbatim source for the posting step.
 
 ## Protocol
 
@@ -52,8 +52,4 @@ The structured consolidated review summary text, organized per the Consolidated 
 - Apply `{rating_cap}` to the Overall Rating: when the cap is the request-changes tier, the Overall Rating is held at or below Request Changes — never Approve or Comment Only — even if the review's own findings are light.
 - Render the attribution footer that closes the format template — resolving `{user}` and `{sha}` per the format's instruction — so `{review_summary}` carries it and the posted comment reaches the PR with it intact.
 - Produce `{review_summary}` as the rendered text.
-- Follow the loaded format exactly — do not invent a parallel structure; the review-mode resource is the authoritative owner of the format. `{review_summary}` is the verbatim source the posting step (`update-pr::post-review-comment`) emits, so what is confirmed is exactly what reaches the PR.
-
-### 3. Present for Confirmation
-
-- Present the rendered `{review_summary}` verbatim (or a faithful excerpt when long) at the approval checkpoint — never a paraphrase or a re-described summary. The bytes shown are the bytes posted.
+- Follow the loaded format exactly — do not invent a parallel structure; the review-mode resource is the authoritative owner of the format. `{review_summary}` is the verbatim source the posting step (`update-pr::post-review-comment`) emits — the bytes bound here are the bytes posted.

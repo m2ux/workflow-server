@@ -24,7 +24,7 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
-    message: "Lean-coding audit complete. Accept the audit as-is, apply the recommended simplifications, or flag the findings for correction?"
+    message: "Lean-coding audit complete. Select whether to accept the audit as-is, apply the recommended simplifications, or flag the findings for correction."
     blocking: true
     options:
       - id: audit-accepted

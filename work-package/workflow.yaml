@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.31.0
+version: 3.32.1
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
@@ -21,7 +21,7 @@ rules:
     - report-before-apply - The over-engineering review, debt harvest, and gain report are read-only - they list findings into their artifacts and change no code. Code is only ever changed in the simplification-apply-cycle, and only on simplifications the user accepted at the audit-findings-confirmed gate.
     - leanness-reported-honestly - The net-lines scoreboard and gain figures are reported honestly - the harvested debt ledger is the source of the real per-change count; aggregate or benchmark figures never overstate the gain.
     - complementary-not-duplicative-with-strategic-review - The lean-coding audit applies the over-engineering and leanness lens; it does not re-adjudicate scope-vs-issue fit, which remains strategic-review's concern. The two stages stay complementary.
-    - review-mode-headless-auto-advance - Once is_review_mode == true the run is headless. Every review-reachable checkpoint that carries defaultOption + autoAdvanceMs is resolved by calling respond_checkpoint with auto_advance:true (which applies the default option's full side effects unchanged) and surfacing the outcome as a plain message — never as an AskUserQuestion dialog. A checkpoint gated is_review_mode != true is cleared with respond_checkpoint condition_not_met. The only checkpoints presented interactively in review mode are the activation prompts (review-mode-detection, review-pr-reference) and review-summary-approval.
+    - "review-mode-headless-auto-advance - Once is_review_mode == true the run is headless. Every review-reachable checkpoint that carries defaultOption + autoAdvanceMs is resolved by calling respond_checkpoint with auto_advance:true (which applies the default option's full side effects unchanged) and surfacing the outcome as a plain message — never as an AskUserQuestion dialog. A checkpoint gated is_review_mode != true is cleared with respond_checkpoint condition_not_met. Interactive in review mode only when their gap conditions fire — review-mode-detection (when review_mode_ambiguous) and review-pr-reference (when review_pr_missing). review-summary-approval remains always interactive in review mode."
   activity:
     - On completing each activity, update the planning-folder README.md progress tracker — mark this activity's artifacts as ✅ Complete and set the work-package Status to reflect the current milestone.
 fragments:
@@ -58,7 +58,7 @@ techniques:
 variables:
   - name: target_path
     type: string
-    description: Path to the working directory where edits, branch creation, builds, and PR operations occur. As of work-package 3.10, this is a dedicated git worktree of the component repo at the canonical path '~/projects/work/{component_name}/{wp-slug}/' — NOT the component's checkout inside the reference monorepo.
+    description: Path to the working directory where edits, branch creation, builds, and PR operations occur — a dedicated git worktree of the component repo at '~/projects/work/{component_name}/{wp-slug}/', distinct from the component's checkout inside the reference monorepo.
   - name: reference_path
     type: string
     description: Path to the reference checkout used for codebase comprehension, GitNexus indexing, and code-resolvable assumption analysis. When the component is a submodule of a monorepo, this is the monorepo root; when the component is a standalone repo, this equals the component's primary checkout. NOT used for edits — edits happen in target_path. Resolved by start-work-package's resolve-target step from the path the user originally pointed at. No default — absence drives the start-work-package exists gate on reference-dependent steps.
@@ -89,6 +89,10 @@ variables:
   - name: is_review_mode
     type: boolean
     description: True when the work package reviews an existing PR instead of producing a new implementation.
+  - name: review_mode_ambiguous
+    type: boolean
+    description: True when review vs create intent cannot be derived confidently from the request; gates the review-mode-detection confirm.
+    defaultValue: false
   - name: pr_number
     type: string
     description: Pull request number
@@ -98,6 +102,10 @@ variables:
   - name: review_pr_url
     type: string
     description: URL of the PR being reviewed (review mode only)
+  - name: review_pr_missing
+    type: boolean
+    description: True when review mode is active but no PR number or URL could be derived; gates the review-pr-reference prompt.
+    defaultValue: false
   - name: needs_elicitation
     type: boolean
     description: Whether requirements elicitation is needed
@@ -335,6 +343,10 @@ variables:
     type: string
     description: "Provenance scope of AI-generated code in this work package. Values: repo-only (all context from repository), web-retrieval (web sources used), mixed (both). Recorded in the provenance log and PR description."
     defaultValue: repo-only
+  - name: context_scope_uncertain
+    type: boolean
+    description: True when research run evidence cannot decide repo-only vs web-retrieval vs mixed for context_scope; gates the context-scope-declaration confirm.
+    defaultValue: false
   - name: recommended_outcome
     type: string
     description: Agent-recommended PR review outcome (approved|minor-changes|significant-changes).
@@ -405,10 +417,6 @@ variables:
     type: boolean
     description: True when abort was selected on body-non-conformant.
     defaultValue: false
-  - name: path_gating_complexity
-    type: string
-    description: Path-gating mirror of problem_complexity. Used by design-philosophy's classification-and-path-confirmed.skip-optional effect.
-    defaultValue: ""
   - name: gitnexus_indexed
     type: boolean
     description: Whether reference_path has a usable GitNexus index (gates GitNexus-dependent steps and protocol phases).

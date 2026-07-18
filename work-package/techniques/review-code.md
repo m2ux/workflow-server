@@ -65,10 +65,7 @@ When the diff changes a `Config` impl, an associated type, or any trait-implemen
 
 - Document each finding with severity (critical, high, medium, low, informational)
 - Create the `{code_review_report}` in `{planning_folder_path}` — or update it in place when an earlier review (manual diff, structural analysis, lean-coding) already created it; each contributing review owns its `##` section and this review writes the code-review sections
-
-### 5. Present Summary
-
-- Summarize critical and high findings
+- Emit a brief summary of critical and high findings as part of the bindable report output for the binding activity to surface
 
 ## Rules
 

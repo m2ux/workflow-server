@@ -20,15 +20,9 @@ When activated, review mode:
 
 ### State-Driven Activation
 
-Review mode has no dedicated schema construct. It is driven by a single boolean variable, `is_review_mode`, declared like any other workflow variable (default `false`):
+Review mode has no dedicated schema construct. It is driven by ordinary state: `is_review_mode`, plus gap flags `review_mode_ambiguous` and `review_pr_missing` when derivation cannot settle mode or PR identity.
 
-```
-- name: is_review_mode
-  type: boolean
-  defaultValue: false
-```
-
-A detection step early in `start-work-package` (`detect-review-mode`) recognizes review intent, confirms with the user, and sets `is_review_mode = true`. Everything mode-specific downstream is a conditional step, checkpoint, or transition that reads this variable. There is no `skipActivities` list and no mode `defaults` block: activities are "skipped" only because their steps and inbound transitions are gated on `is_review_mode`, and mode-specific variable values (e.g. `needs_elicitation = false`) are set by an ordinary control step gated the same way.
+A derive-first detection step early in `start-work-package` (`detect-review-mode`) recognizes review intent and PR identity from `{user_request}` / `{pr_reference}`. When mode and PR are clear, the run continues without activation confirms. When mode is ambiguous, `review-mode-detection` asks; when review mode is active but the PR is missing, `review-pr-reference` asks. Everything mode-specific downstream is a conditional step, checkpoint, or transition that reads `is_review_mode`. There is no `skipActivities` list and no mode `defaults` block: activities are "skipped" only because their steps and inbound transitions are gated on `is_review_mode`, and mode-specific variable values (e.g. `needs_elicitation = false`) are set by an ordinary control step gated the same way.
 
 ### Activity-Level Behavior
 
@@ -43,9 +37,9 @@ Per-activity review guidance is in `resources/review-mode.md`.
 
 ### Headless After Activation
 
-Once review mode is active, the run is **headless**: every review-reachable checkpoint either auto-resolves to its recommended option, is gated out, or is bypassed by an unconditional transition, so a review-mode run can be dispatched and left to complete without a human at each gate. Two classes of interaction remain:
+Once review mode is active, the run is **headless**: every review-reachable checkpoint either auto-resolves to its recommended option, is gated out, or is bypassed by an unconditional transition, so a review-mode run can be dispatched and left to complete without a human at each gate. Interaction remains only for:
 
-- **Activation prompts** — `review-mode-detection` and `review-pr-reference` (`start-work-package`) stay interactive. They run before review mode is confirmed and identify the PR under review.
+- **Activation gap-fills** — `review-mode-detection` (when `review_mode_ambiguous`) and `review-pr-reference` (when `review_pr_missing`) in `start-work-package`. Clear derive paths skip both.
 - **The single post-to-PR confirmation** — `review-summary-approval` (`submit-for-review`) stays interactive. It is the one review-mode checkpoint whose recommended option has an outward-facing side effect (posting the consolidated review as a comment on the GitHub PR), so it confirms with the user before that action.
 
 Every other review-reachable checkpoint is headless, by one of three mechanisms:
@@ -64,7 +58,7 @@ The `strategic-review :: review-findings` checkpoint is **not** made to auto-adv
 
 ## Activating Review Mode
 
-The `detect-review-mode` step in `start-work-package` recognizes review mode from user request patterns such as:
+The `detect-review-mode` step in `start-work-package` derives review mode from user request patterns such as:
 
 | Pattern | Example |
 |---------|---------|
@@ -72,14 +66,12 @@ The `detect-review-mode` step in `start-work-package` recognizes review mode fro
 | "review pr" | `Review PR #456` |
 | "review existing implementation" | `Review the existing implementation` |
 
-When detected, you'll be asked to confirm:
+Clear review intent with a parseable PR number or URL skips activation confirms and announces the derived mode. Confirms fire only on gaps:
 
-```
-This appears to be a review of an existing PR. Is that correct?
+- **Mode unclear** — `review_mode_ambiguous` → `review-mode-detection` (review vs new implementation)
+- **PR missing** — `review_pr_missing` → `review-pr-reference` (number or URL)
 
-- [Yes, review existing PR] - Review mode activated
-- [No, new implementation] - Standard workflow
-```
+When the first derive pass already checked out the PR branch, a second bind is skipped. When the PR was supplied only at the gap confirm, a follow-up `capture-pr-reference` bind completes checkout and ticket extract.
 
 ---
 
@@ -140,7 +132,7 @@ graph TD
 
 | Activity | Mode Override |
 |----------|---------------|
-| `start-work-package` | Detect mode, capture PR reference; the `issue-verification` and `pr-creation` checkpoints and branch/PR-creation steps are gated `is_review_mode != true` so no issue/branch/PR is created |
+| `start-work-package` | Derive mode and PR reference (gap-fill confirms only when ambiguous/missing); the `issue-verification` and `pr-creation` checkpoints and branch/PR-creation steps are gated `is_review_mode != true` so no issue/branch/PR is created |
 | `design-philosophy` | Assess ticket completeness, force skip elicitation; `ticket-completeness` auto-advances to `proceed-with-gaps`; `classification-and-path-confirmed` is gated `is_review_mode != true` so no path confirmation is prompted — a message records the classification and the run proceeds to `implementation-analysis` |
 | `plan-prepare` | Plan the review approach; the `update-pr::render` (initial) step and `approach-confirmed` checkpoint are gated `is_review_mode != true` so the reviewed PR's body is never overwritten and no approach-confirmation is prompted |
 | `requirements-elicitation`, `research` | **Not on the headless review path.** With the path variables at their defaults (`needs_elicitation`/`needs_research` both `false`), `codebase-comprehension` routes straight to `implementation-analysis`, so neither activity is entered in review mode. Neither carries review-mode-specific handling — they are simply off the review path (create mode only). |
