@@ -1,6 +1,6 @@
 # Slim work-package planning artifacts — July 2026
 
-> Update · Created 2026-07-17 · **Status:** Reviewing · Revised 2026-07-18
+> Update · Created 2026-07-17 · **Status:** Complete · Revised 2026-07-18
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -58,8 +58,8 @@ Quality-review and post-update audits: **0 findings**. Detail: [08-verified-find
 | 10 | [Post-update review](10-post-update-review.md) | Re-audit committed state — 0 findings | 15-25m | ✅ Complete |
 | 10 | [Principle findings](10-principle-findings.md) | Post-update principle pass — 25/25 compliant | — | ✅ Complete |
 | 10 | [Anti-pattern findings](10-anti-pattern-findings.md) | Post-update anti-pattern pass — 0 findings | — | ✅ Complete |
-| 11 | Retrospective | Session close-out | 10-15m | ⬚ Pending |
-| — | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, decisions, limitations | 10-20m | ⬚ Pending |
+| 11 | Retrospective | Session close-out | 10-15m | ✅ Complete |
+| — | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, decisions, limitations | 10-20m | ✅ Complete |
 
 ## 🔗 Links
 

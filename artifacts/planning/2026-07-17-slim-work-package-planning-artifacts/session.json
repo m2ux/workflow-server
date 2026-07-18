@@ -263,11 +263,12 @@
           "impact-analysis",
           "scope-and-draft",
           "quality-review",
-          "validate-and-commit"
+          "validate-and-commit",
+          "post-update-review"
         ],
-        "condition": "operation_type == update",
-        "currentActivity": "post-update-review",
-        "currentTechnique": "publish-workflow-pr",
+        "condition": "isDefault",
+        "currentActivity": "retrospective",
+        "currentTechnique": "create-completion-doc",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:8a067c5a3494a7c9": "8a067c5a3494a7c9",
@@ -279,6 +280,7 @@
             "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
             "bundle:workflow-engine::yield-checkpoint": "1b1e6a4df3a7ceb1",
             "resource:anti-patterns": "4d457e82c0e38c4b",
+            "resource:completion-artifact#template": "5f9f6e14d02c66d7",
             "resource:convention-conformance": "d98a5217e42d4958",
             "resource:design-assumption-reconciliation": "e165321d3b6553ed",
             "resource:design-assumptions": "eeffdbf4bcb49d09",
@@ -295,6 +297,7 @@
             "resource:schema-construct-inventory": "f7bfae0f013846ce",
             "resource:scope-manifest#template": "78d7f0382322bb4f",
             "resource:update-mode-guide": "d8035e7643fce18d",
+            "resource:work-package/workflow-retrospective#output-section-template": "f955719a1184685b",
             "resource:workflow-design/design-context-readme": "3336d3aa686ee448",
             "technique:assemble-file-approach": "e096cd0fa28f8b16",
             "technique:audit-anti-patterns": "a0c242349ff5ce2a",
@@ -305,7 +308,9 @@
             "technique:audit-rule-hygiene": "6cbefbc103fbc8dc",
             "technique:audit-schema-validation": "6e64b4add57b7183",
             "technique:commit-verification": "03c6107105355fdd",
+            "technique:conduct-retrospective": "b45d0dcb14527f9b",
             "technique:context-loading": "fa2d6e4552894299",
+            "technique:create-completion-doc": "17006cf84f5a807a",
             "technique:derive-design-dimensions": "db4a356f47e296c9",
             "technique:impact-analysis": "6ce81fa8a8ce9fba",
             "technique:intake-classification": "7295893db22932b1",
@@ -1231,16 +1236,65 @@
             },
             "timestamp": "2026-07-18T05:56:12.833Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "timestamp": "2026-07-18T05:58:54.660Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "retrospective",
+            "timestamp": "2026-07-18T05:58:54.660Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "conduct-retrospective",
+              "techniqueId": "conduct-retrospective"
+            },
+            "timestamp": "2026-07-18T05:59:09.573Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "work-package/workflow-retrospective#output-section-template"
+            },
+            "timestamp": "2026-07-18T05:59:09.573Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-completion-doc",
+              "techniqueId": "create-completion-doc"
+            },
+            "timestamp": "2026-07-18T05:59:15.921Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "completion-artifact#template"
+            },
+            "timestamp": "2026-07-18T05:59:20.495Z",
+            "type": "resource_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 72,
+        "seq": 77,
         "sessionIndex": "PCVJDD",
         "skippedActivities": [],
         "startedAt": "2026-07-17T13:17:05.282Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784354172,
+        "ts": 1784354415,
         "variables": {
           "addressed_count": 0,
           "anti_pattern_findings_path": "",
