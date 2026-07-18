@@ -1,11 +1,27 @@
 id: scope-and-draft
-version: 1.9.0
+version: 1.10.0
 name: Scope and Draft
 description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file, then planning-artifact conformance verify.
 required: true
 techniques:
   - scatter-gather
 steps:
+  - kind: technique
+    id: derive-workflows-target-path
+    technique: derive-workflows-target-path
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "!="
+      value: review
+  - kind: technique
+    id: ensure-workflow-worktree
+    technique: prepare-workflow-branch
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "!="
+      value: review
   - kind: technique
     id: scope-definition
     technique: scope-definition

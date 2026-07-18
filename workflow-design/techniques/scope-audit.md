@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -17,7 +17,7 @@ Severity-rated drift findings: each names a file changed outside the manifest (a
 
 ### 1. List Changed Files
 
-- List the files actually changed for `{target_workflow_id}` in the workflows worktree (the committed diff)
+- List the files actually changed for `{target_workflow_id}` under `{target_path}` (the committed diff on `{workflow_branch}`)
 
 ### 2. Compare Against Manifest
 

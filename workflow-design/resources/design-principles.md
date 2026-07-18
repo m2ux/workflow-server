@@ -20,7 +20,7 @@ Demonstrate understanding of the conceptual model (Goal → Activity → operati
 
 ## 2. Define Complete Scope Before Execution
 
-Enumerate every file to create, modify, or remove before starting. Include the workflows worktree. Re-verify after completion.
+Enumerate every file to create, modify, or remove before starting. Include the dedicated session edit root at `{target_path}`. Re-verify after completion.
 
 ## 3. Clarify Before Assuming
 

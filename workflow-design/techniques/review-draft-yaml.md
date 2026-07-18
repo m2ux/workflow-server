@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.3
+  version: 1.2.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Review the drafted workflow files as a block-indexed table — one row per draft
 
 ### drafted_files
 
-The set of files just drafted for this workflow — the entries of `{scope_manifest}` written under the workflows worktree.
+The set of files just drafted for this workflow — the entries of `{scope_manifest}` written under `{target_path}/{workflow_id}/`.
 
 ### operation_type
 

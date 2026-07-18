@@ -19,10 +19,10 @@ For the full technique-to-activity table with capability summaries, see the [wor
 | **Intake** | `intake-classification`, `context-loading`, `reload-workflow` |
 | **Elicitation** | `derive-design-dimensions`, `prepare-dimension`, `capture-dimension`, `synthesize-update-specification`, `reconcile-design-assumptions` |
 | **Analysis** | `pattern-analysis`, `impact-analysis` |
-| **Scope & draft** | `scope-definition`, `assemble-file-approach`, `review-drafted-file`, `yaml-authoring`, `review-draft-yaml`, `verify-artifact-conforms` |
+| **Scope & draft** | `derive-workflows-target-path`, `prepare-workflow-branch` (ensure worktree), `scope-definition`, `assemble-file-approach`, `review-drafted-file`, `yaml-authoring`, `review-draft-yaml`, `verify-artifact-conforms` |
 | **Quality audits** | `audit-expressiveness`, `audit-conformance`, `audit-rule-hygiene`, `audit-rule-enforcement`, `verify-high-findings`, `audit-principles`, `audit-anti-patterns`, `audit-schema-validation`, `apply-audit-fixes`, `scope-audit` |
 | **Reporting** | `compile-report`, `summarize-findings`, `persist-report` |
-| **Validate, commit & PR** | `scope-verification`, `readme-authoring`, `commit-verification`, `prepare-workflow-branch`, `publish-workflow-pr` |
+| **Validate, commit & PR** | `scope-verification`, `readme-authoring`, `commit-verification`, `publish-workflow-pr` |
 | **Completion** | `create-completion-doc`, `conduct-retrospective` |
 
 ## Cross-workflow techniques bound by this workflow
@@ -32,6 +32,7 @@ These operations are referenced cross-workflow (resolved directly from the named
 | Reference | Used for |
 |-----------|----------|
 | [`work-package::manage-artifacts`](../../work-package/techniques/manage-artifacts/TECHNIQUE.md) | `create-readme` (seed the planning README), `write-artifact` (numbered artifacts), `verify-readme-conforms` (drift check) |
+| [`work-package::manage-git`](../../work-package/techniques/manage-git/TECHNIQUE.md) | `create-worktree` (via prepare-workflow-branch ensure), `remove-worktree` (optional retrospective teardown) |
 | [`work-package::stakeholder-overview`](../../work-package/techniques/stakeholder-overview.md) | Plain-language Problem Overview (intake) and Solution Overview (scope-and-draft) sections of the planning README |
 | [`work-package::review-assumptions`](../../work-package/techniques/review-assumptions/TECHNIQUE.md) | `collect`, `interview`, `record` for the design-assumption lifecycle |
 | [`meta::version-control`](../../meta/techniques/version-control/TECHNIQUE.md) | `commit-regular-files`, `push-branch` |
