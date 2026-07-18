@@ -2,12 +2,13 @@
 name: impact-analysis
 description: Guidelines for creating the impact-analysis planning artifact (classification, integrity, removals).
 metadata:
+  version: 1.1.0
   order: 15
 ---
 
 # Impact Analysis Guide
 
-Update-mode decision surface. Answers: what is touched, is integrity intact, and which removals are intentional? Human gate at impact-and-preservation.
+Update-mode decision surface. Answers: what is touched, is integrity intact, and which removals are intentional? Human gate at impact-and-preservation. Canonical home for impact classification, integrity, and removals ([canonical-home map](../techniques/TECHNIQUE.md#canonical-home-map)).
 
 ## Template
 
@@ -80,4 +81,5 @@ Confirm impact scope and intentional removals — or revise / preserve.
 - **No unaffected per-file essays** — summary note only.
 - **Every material removal** gets a removed-vs-preserved row (content-preservation).
 - **Integrity** is verdict + one line, not a walkthrough.
+- **Own facts only.** Link design-specification and structural-inventory; do not restate purpose or inventory body ([canonical-home map](../techniques/TECHNIQUE.md#canonical-home-map)).
 - **Line budget:** ~100 lines unless removals inventory is long (then table rows are the length).

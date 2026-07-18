@@ -2,12 +2,13 @@
 name: design-specification
 description: Guidelines for creating the design-specification planning artifact (purpose + dimension deltas).
 metadata:
+  version: 1.1.0
   order: 14
 ---
 
 # Design Specification Guide
 
-Confirmed design surface for create/update. Answers: what stays the same, and what changes per design dimension? Primary human gate at `spec-confirmed`.
+Confirmed design surface for create/update. Answers: what stays the same, and what changes per design dimension? Primary human gate at `spec-confirmed`. Canonical home for purpose and dimension deltas ([canonical-home map](../techniques/TECHNIQUE.md#canonical-home-map)).
 
 ## Template
 
@@ -32,6 +33,8 @@ Confirmed design surface for create/update. Answers: what stays the same, and wh
 | … | … |
 
 **Out of scope:** [bullets]
+
+**Also see:** [assumptions log](NN-assumptions-log.md) · [impact](NN-impact-analysis.md) when update
 
 ---
 
@@ -80,5 +83,6 @@ Confirmed design surface for create/update. Answers: what stays the same, and wh
 
 - **Purpose + dimension deltas only.** Omit encyclopedia restatement of unchanged dimensions.
 - **Tables over narrative.** Unchanged mode branches get one line, not a reprint of the workflow.
-- **Single-source:** README Design Decisions links here; do not restate the body in README or COMPLETE.
+- **Own facts only.** Assumptions, impact, inventory, and scope live in their homes — link, do not restate ([canonical-home map](../techniques/TECHNIQUE.md#canonical-home-map)).
+- **Single-source:** README Problem/Solution and Design Decisions link here; do not restate the body in README or COMPLETE.
 - **Line budget:** ~120 lines for update; create may run longer but still delta-shaped.

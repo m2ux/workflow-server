@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.24.4 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
+> v1.25.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description and systematically elicits design details through sequential checkpoints. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
 
 ---
 
@@ -14,7 +14,7 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 | 03 | [**Requirements Refinement**](./activities/README.md#03-requirements-refinement) | Create, Update | Elicit the spec one dimension at a time (forEach over the design dimensions), then surface, reconcile, and review the design assumptions |
 | 04 | [**Pattern Analysis**](./activities/README.md#04-pattern-analysis) | Create only | Audit 2+ reference workflows for reusable patterns |
 | 05 | [**Impact Analysis**](./activities/README.md#05-impact-analysis) | Update only | Enumerate affected files, check integrity, flag removals |
-| 06 | [**Scope and Draft**](./activities/README.md#06-scope-and-draft) | Create, Update | Define file manifest, then draft and validate each file per-file |
+| 06 | [**Scope and Draft**](./activities/README.md#06-scope-and-draft) | Create, Update | Define file manifest, draft and validate each file per-file, then verify planning artifacts against the design canonical-home map |
 | 08 | [**Quality Review**](./activities/README.md#08-quality-review) | All | Expressiveness, conformance, rule-hygiene, and rule-enforcement audits, then a bounded fix-revalidate loop (max 3) with a critical-blocker gate (full compliance audit in review mode; forEach over `target_workflow_ids`) |
 | 09 | [**Validate and Commit**](./activities/README.md#09-validate-and-commit) | All | Schema validation, then commit on a feature branch + open a PR against `workflows` (create/update) or save the compliance report (review) |
 | 10 | [**Post-Update Review**](./activities/README.md#10-post-update-review) | Update only | Automatic post-commit compliance audit of the updated workflow |
@@ -127,19 +127,20 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | Technique | Capability | Bound by |
 |-----------|------------|----------|
 | [`intake-classification`](./techniques/intake-classification.md) | Classify the request as create/update/review and set mode + target | Intake and Context |
-| [`context-loading`](./techniques/context-loading.md) | Load schemas, survey references, persist format-conventions + applicable-constructs | Intake and Context |
+| [`context-loading`](./techniques/context-loading.md) | Load schemas, survey references; persist format-conventions + applicable-constructs in create mode | Intake and Context |
 | [`derive-design-dimensions`](./techniques/derive-design-dimensions.md) | Derive the ordered design dimensions to elicit, per mode | Requirements Refinement |
 | [`prepare-dimension`](./techniques/prepare-dimension.md) | Assemble elicitation questions for one design dimension | Requirements Refinement |
 | [`capture-dimension`](./techniques/capture-dimension.md) | Record answers for one design dimension and fold into accumulated design | Requirements Refinement |
-| [`synthesize-update-specification`](./techniques/synthesize-update-specification.md) | Assemble the update-mode specification from the change request (no per-dimension elicitation) | Requirements Refinement |
+| [`synthesize-update-specification`](./techniques/synthesize-update-specification.md) | Assemble the update-mode specification from changed dimensions only (no per-dimension elicitation) | Requirements Refinement |
 | [`persist-design-specification`](./techniques/persist-design-specification.md) | Persist the elicited design specification for linked review | Requirements Refinement |
 | [`reconcile-design-assumptions`](./techniques/reconcile-design-assumptions.md) | Autonomously resolve audit-resolvable design assumptions, leaving only genuine judgements open | Requirements Refinement |
 | [`pattern-analysis`](./techniques/pattern-analysis.md) | Extract patterns from reference workflows and persist the comparison | Pattern Analysis |
 | [`impact-analysis`](./techniques/impact-analysis.md) | Assess change impact on files, transitions, and references | Impact Analysis |
-| [`scope-definition`](./techniques/scope-definition.md) | Enumerate the complete file manifest and structural design | Scope and Draft |
+| [`scope-definition`](./techniques/scope-definition.md) | Enumerate the file manifest with lean structural design and drafting order | Scope and Draft |
 | [`assemble-file-approach`](./techniques/assemble-file-approach.md) | Assemble and persist the per-file drafting plan | Scope and Draft |
 | [`review-drafted-file`](./techniques/review-drafted-file.md) | Assemble and persist a per-file review note (including update-mode removals) | Scope and Draft |
 | [`yaml-authoring`](./techniques/yaml-authoring.md) | Author syntactically valid YAML files that pass schema validation | Scope and Draft |
+| [`verify-artifact-conforms`](./techniques/verify-artifact-conforms.md) | Verify planning artifacts against the design canonical-home map and fix drift in place | Scope and Draft |
 | [`audit-expressiveness`](./techniques/audit-expressiveness.md) | Walk prose against the schema construct inventory | Quality Review (create/update), Post-Update |
 | [`audit-conformance`](./techniques/audit-conformance.md) | Apply convention-conformance against reference workflows | Quality Review (create/update), Post-Update |
 | [`audit-rule-hygiene`](./techniques/audit-rule-hygiene.md) | Apply Rule Hygiene anti-patterns to `rules[]` | Quality Review (create/update) |
@@ -210,7 +211,7 @@ workflows/workflow-design/
 │   ├── 03-requirements-refinement.yaml   # Elicit design details one question at a time
 │   ├── 04-pattern-analysis.yaml          # Audit reference workflows (create only)
 │   ├── 05-impact-analysis.yaml           # Impact analysis (update mode)
-│   ├── 06-scope-and-draft.yaml           # Define file manifest, then draft/validate per file
+│   ├── 06-scope-and-draft.yaml           # Manifest, draft/validate per file, verify artifact homes
 │   ├── 08-quality-review.yaml            # Audit passes (full compliance audit in review mode)
 │   ├── 09-validate-and-commit.yaml       # Validate and commit
 │   ├── 10-post-update-review.yaml        # Post-commit compliance audit (update mode)
@@ -245,6 +246,7 @@ workflows/workflow-design/
 │   ├── audit-rule-enforcement.md
 │   ├── verify-high-findings.md
 │   ├── review-draft-yaml.md
+│   ├── verify-artifact-conforms.md
 │   ├── apply-audit-fixes.md
 │   ├── scope-audit.md
 │   ├── create-completion-doc.md
