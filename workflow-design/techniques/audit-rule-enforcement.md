@@ -30,7 +30,7 @@ Absolute path to the persisted findings artifact when `{enforcement_finding_coun
 ### 1. Load Criterion
 
 - Load [anti-patterns](../resources/anti-patterns.md) entry `structure-backed-constraints` — sole Detect / Do not flag / Fix source for this pass
-- [Encode Constraints as Structure](../resources/design-principles.md#8-encode-constraints-as-structure) is the framing principle; the anti-pattern is the operative criterion
+- [Encode Constraints as Structure](../resources/design-principles.md#9-encode-constraints-as-structure) is the framing principle; the anti-pattern is the operative criterion
 
 ### 2. Apply structure-backed-constraints
 

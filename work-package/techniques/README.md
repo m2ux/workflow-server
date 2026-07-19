@@ -8,7 +8,7 @@ The technique library for the work-package workflow. Each technique is one capab
 
 The cross-cutting meta strategy techniques [`variable-binding`](../../meta/techniques/variable-binding.md) and [`scatter-gather`](../../meta/techniques/scatter-gather.md) are declared at `workflow.techniques.activity` / activity level, not bound per step.
 
-For the full technique-to-activity table with capability summaries, see the [workflow README](../README.md#techniques).
+For the full technique-to-activity table with capability summaries, see the [workflow README](../README.md#overview).
 
 ---
 
