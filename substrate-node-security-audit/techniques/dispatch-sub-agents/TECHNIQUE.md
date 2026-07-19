@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Assign crates to sub-agent groups, route reconnaissance leads to those agents, dispatch the roster concurrently with workflow-server bootstrap instructions and supplementary files, collect the structured results, and confirm every expected output file persisted. Each phase is a named operation; a step binds the one operation for its phase.
+Assign crates to sub-agent groups, route reconnaissance leads to those agents, compose domain-specific worker briefs, project gathered results into the audit dispatch shape, and confirm every expected output file persisted. Concurrent dispatch and ordered gather bind meta [orchestration-patterns](../../../meta/techniques/orchestration-patterns/TECHNIQUE.md)::[dispatch-workers](../../../meta/techniques/orchestration-patterns/dispatch-workers.md) / [gather-results](../../../meta/techniques/orchestration-patterns/gather-results.md) from the activity. Each phase is a named operation; a step binds the one operation for its phase.
 
 ## Inputs
 

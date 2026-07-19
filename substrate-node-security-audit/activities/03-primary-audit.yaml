@@ -1,8 +1,10 @@
 id: primary-audit
-version: 4.19.0
+version: 4.20.0
 name: Primary Audit
 description: Multi-agent primary audit via concurrent dispatch with verification and merge.
 required: true
+techniques:
+  - scatter-gather
 steps:
   - kind: action
     id: announce-start
@@ -10,8 +12,17 @@ steps:
       - action: log
         message: Starting primary audit — concurrent multi-agent dispatch
   - kind: technique
-    id: dispatch-all-agents
+    id: compose-all-agents
     technique: dispatch-sub-agents::dispatch-concurrent
+  - kind: technique
+    id: dispatch-all-agents
+    technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: gather-all-agents
+    technique:
+      name: orchestration-patterns::gather-results
+      inputs:
+        expected_ids: worker_briefs
   - kind: technique
     id: verify-checklist-prompt-coverage
     technique: verify-sub-agent-output
@@ -28,14 +39,23 @@ steps:
       inputs:
         expected_output_files: a1-nto.json, a2-midnight-ledger.json, a3-node-startup.json, a4-node-consensus.json, a5-runtime.json, a6-primitives.json, a7-governance.json, b-static-analysis.json, d1-ledger-helpers.json, d2-toolkit.json
   - kind: technique
+    id: compose-verification-agent
+    technique: dispatch-sub-agents::dispatch-concurrent
+  - kind: technique
     id: dispatch-verification-agent
+    technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: compose-gap-redispatch
     technique: dispatch-sub-agents::dispatch-concurrent
   - kind: technique
     id: act-on-gap-report
+    technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: compose-merge-agent
     technique: dispatch-sub-agents::dispatch-concurrent
   - kind: technique
     id: dispatch-merge-agent
-    technique: dispatch-sub-agents::dispatch-concurrent
+    technique: orchestration-patterns::dispatch-workers
   - kind: technique
     id: preserve-verification-report
     technique: dispatch-sub-agents::verify-output-files

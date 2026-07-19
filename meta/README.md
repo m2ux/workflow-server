@@ -26,7 +26,8 @@ The meta workflow is the structural home for the orchestration logic that used t
 **Detailed documentation:**
 
 - **Activities:** see [activities/README.md](./activities/README.md) for the role each activity plays and links to its authoritative definition.
-- **Techniques:** see [techniques/](./techniques/) for the universal techniques and the rule-authority map (the [`agent-conduct`](./techniques/agent-conduct.md) technique is the single source of truth for cross-cutting rules).
+- **Pattern library:** see [activities/patterns/README.md](./activities/patterns/README.md) for borrowable mid-phase multi-agent pipelines (`orchestration-patterns` technique group).
+- **Techniques:** see [techniques/](./techniques/) for the universal techniques and the rule-authority map (the [`agent-conduct`](./techniques/agent-conduct.md) technique is the single source of truth for cross-cutting rules). The [`orchestration-patterns`](./techniques/orchestration-patterns/TECHNIQUE.md) group supplies atomic dispatch/gather/synthesise ops for those pattern activities.
 - **Resources:** see [resources/README.md](./resources/README.md) for the bootstrap protocol and prompt templates.
 
 ---
