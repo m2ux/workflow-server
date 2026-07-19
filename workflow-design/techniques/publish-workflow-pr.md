@@ -21,4 +21,4 @@ PR body summarizing the change, listing the scope manifest from `{scope_manifest
 
 ### 1. Compose PR Description
 
-- Compose `{title}` and `{body}` from bound artifacts: the title names the workflow and the change (create / update); the body summarizes the change, lists the scope manifest from `{scope_manifest}`, and links the planning folder `{planning_folder_path}` (its completion summary and review artifacts)
+- Compose `{title}` and `{body}` from bound artifacts for the already-pushed `{pushed_branch}`: the title names the workflow and the change (create / update); the body summarizes the change, lists the scope manifest from `{scope_manifest}`, and links the planning folder `{planning_folder_path}` (its completion summary and review artifacts)

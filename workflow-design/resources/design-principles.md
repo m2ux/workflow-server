@@ -112,7 +112,7 @@ All multi-technique work lives in activity `steps[]` (and checkpoints/loops). Bi
 
 ## 25. Atomic Techniques; Compose at Activities
 
-Techniques are small, relatively atomic capabilities: a short produce path over tools and resources, without complex conditional/branching orchestration and without invoking other techniques to do work. Activities are the composition layer — they bind techniques (and checkpoints/loops) into useful work. Reuse a shared capability by binding it from an activity (or borrowing that activity), not by `Apply [other-technique]` inside a Protocol.
+Techniques are small, relatively atomic capabilities: a short produce path over tools and resources, without complex conditional/branching orchestration and without invoking other techniques to do work. Activities are the composition layer — they bind techniques (and checkpoints/loops) into useful work. Activity→activity composition is allowed: borrow, bind, or include activities to reuse standalone orchestration patterns. Technique→technique work calls remain forbidden — techniques stay atomic over tools and resources. Reuse a shared capability by binding it from an activity (or borrowing that activity), not by `Apply [other-technique]` inside a Protocol.
 
 ## 26. State Contract Contribution
 
