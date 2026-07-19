@@ -159,11 +159,11 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`scope-verification`](./techniques/scope-verification.md) | Verify every scope-manifest item is addressed | Validate and Commit |
 | [`readme-authoring`](./techniques/readme-authoring.md) | Generate or update the workflow README set | Validate and Commit |
 | [`commit-verification`](./techniques/commit-verification.md) | Verify the commit landed on `{target_path}` | Validate and Commit |
-| [`publish-workflow-pr`](./techniques/publish-workflow-pr.md) | Compose PR title/body; activity binds meta push / create-pr / mark-ready | Validate and Commit |
+| [`publish-workflow-pr`](./techniques/publish-workflow-pr.md) | Compose the workflow-design PR title and body from bound planning artifacts | Validate and Commit |
 | [`persist-report`](./techniques/persist-report.md) | Persist the compliance/review report as an artifact | Quality Review (review mode), Validate and Commit, Post-Update Review |
 | [`summarize-findings`](./techniques/summarize-findings.md) | Produce a severity-rated findings summary | Post-Update Review |
 | [`review-draft-yaml`](./techniques/review-draft-yaml.md) | Block-indexed review of the drafted YAML, capturing a draft attestation before the audit passes | Scope and Draft |
-| [`apply-audit-fixes`](./techniques/apply-audit-fixes.md) | Apply selected audit findings via `yaml-authoring`, re-validating each changed file | Quality Review |
+| [`apply-audit-fixes`](./techniques/apply-audit-fixes.md) | Record selected audit findings as `{fixes_applied}` after activity-bound edit and re-validation | Quality Review |
 | [`scope-audit`](./techniques/scope-audit.md) | Audit the committed change set against the scope manifest for drift | Post-Update Review |
 | [`create-completion-doc`](./techniques/create-completion-doc.md) | Record the `COMPLETE.md` completion summary in the planning folder | Retrospective |
 | [`conduct-retrospective`](./techniques/conduct-retrospective.md) | Analyse non-checkpoint interactions and record a prioritized session retrospective | Retrospective |

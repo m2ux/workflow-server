@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
 
-Compose the workflow-design PR title and body from bound planning artifacts — ready for the activity to bind meta push / create-pr / mark-ready as consecutive steps.
+Compose the workflow-design PR `{title}` and `{body}` from bound planning artifacts.
 
 ## Outputs
 
