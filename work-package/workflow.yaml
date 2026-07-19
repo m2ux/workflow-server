@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.32.1
+version: 3.33.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
@@ -33,25 +33,39 @@ fragments:
   checkpoints:
     assumption-interview:
       condition:
-        type: simple
-        variable: has_open_assumptions
-        operator: ==
-        value: true
-      message: "Assumption {current_assumption.id}: {current_assumption.statement}. Can you resolve this, or defer to stakeholders?"
+        type: and
+        conditions:
+          - type: simple
+            variable: is_review_mode
+            operator: "!="
+            value: true
+          - type: simple
+            variable: has_open_assumptions
+            operator: ==
+            value: true
+      message: "Open assumptions remain after analyse-challenge ({assumption_review_presentation}). Accept the agent's positions for the batch, defer all to stakeholders, or interview individually."
       blocking: true
       options:
-        - id: resolve-inline
-          label: Resolve now
-          description: Provide resolution for this assumption — it will be marked as resolved in the assumptions log
+        - id: accept-agent-positions
+          label: Accept agent positions
+          description: Confirm the agent's favored positions for all listed residual open assumptions
           effect:
             setVariable:
               assumption_resolved_inline: true
-        - id: defer-to-stakeholder
-          label: Defer to stakeholder review
-          description: Queue this assumption for stakeholder review in the issue tracker
+              assumption_batch_accepted: true
+        - id: defer-all
+          label: Defer all to stakeholders
+          description: Queue every listed open assumption for stakeholder review
           effect:
             setVariable:
               assumption_deferred: true
+              has_deferred_assumptions: true
+        - id: interview-individually
+          label: Interview individually
+          description: Walk each residual open assumption one at a time
+          effect:
+            setVariable:
+              needs_individual_interview: true
 techniques:
   activity:
     - variable-binding
@@ -254,7 +268,15 @@ variables:
     defaultValue: false
   - name: has_open_assumptions
     type: boolean
-    description: Whether unresolved assumptions remain after reconciliation that require stakeholder input. When false, all assumptions were resolved through code analysis and the stakeholder-response checkpoint is skipped.
+    description: Whether unresolved assumptions remain after analyse-challenge that require stakeholder input. When false, residue is empty and residual interview/batch checkpoints are skipped.
+    defaultValue: false
+  - name: needs_individual_interview
+    type: boolean
+    description: Whether the residual batch checkpoint selected individual drill-down; gates the optional per-assumption interview forEach.
+    defaultValue: false
+  - name: assumption_batch_accepted
+    type: boolean
+    description: Whether the user accepted the agent's positions for the residual open-assumption batch.
     defaultValue: false
   - name: has_flagged_blocks
     type: boolean
@@ -319,7 +341,7 @@ variables:
     defaultValue: false
   - name: open_assumptions
     type: array
-    description: List of open assumptions collected for forEach iteration during assumption interview loops
+    description: Residual open assumptions after analyse-challenge for batch presentation and optional individual forEach drill-down
   - name: ticket_gaps_documented
     type: boolean
     description: Whether ticket completeness gaps were documented during review mode design-philosophy assessment

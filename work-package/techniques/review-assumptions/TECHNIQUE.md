@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 3.0.0
+  version: 3.1.0
 ---
 
 ## Capability
 
-Own the human-facing assumption lifecycle — collect and classify the assumptions made during the work, interview the user on the open ones, and record their decisions back into the assumptions log.
+Own the human-facing assumption lifecycle — collect and classify assumptions, record decisions in the assumptions log, and present **residual** opens for interview/batch after [analyse-challenge](../analyse-challenge/TECHNIQUE.md) converges. The analyse → challenge → combine loop lives in analyse-challenge; this group supplies collect, reconcile (as `{analyse}`), interview (residue UX), and record.
 
 ## Inputs
 
@@ -36,3 +36,7 @@ Assumptions [log](../../resources/assumptions-review.md#assumptions-log-template
 ### elevate-implicit
 
 Make implicit decisions explicit — assumptions should be elevated for validation
+
+### residual-interview-only
+
+[interview](./interview.md) runs only when `{has_open_assumptions}` remains true after analyse-challenge (or a standalone reconcile when the construct is not bound). Empty residue skips user input.

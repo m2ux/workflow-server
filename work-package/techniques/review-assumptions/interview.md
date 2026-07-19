@@ -1,21 +1,25 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
 
-Assemble judgement-augmentation context for open (stakeholder-dependent, non-code-resolvable) assumptions — decision space, trade-offs, and technical context — as bindable `{assumption_review_presentation}` for the binding activity to surface.
+Assemble judgement-augmentation context for residual open (stakeholder-dependent) assumptions — decision space, trade-offs, and technical context — as bindable `{assumption_review_presentation}`. Used **outside** [analyse-challenge](../analyse-challenge/TECHNIQUE.md) when `{has_open_assumptions}` is true. Default assembly is **batch**; per-item interview mode is for optional individual drill-down.
 
 ## Inputs
 
 ### open_assumptions
 
-The open (non-code-resolvable) assumptions to assemble. In interview mode the current one is bound as `current_assumption`; in batch mode the whole list is assembled together.
+The residual open assumptions to assemble. Empty set → skip presentation and emit a one-line “all resolved” summary. In interview mode the current one is bound as `current_assumption`; in batch mode (default) the whole list is assembled together.
 
 ### assumptions_log
 
-The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) carrying each assumption's reconciliation history and technical context, linked into the presentation for full detail.
+The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) carrying each assumption's analyse/challenge history and technical context, linked into the presentation for full detail.
+
+### assembly_mode
+
+*(optional)* `batch` (default) or `interview`. Activities bind `interview` only for individual drill-down after a batch checkpoint selects that path.
 
 ## Outputs
 
@@ -25,23 +29,22 @@ Structured judgement-augmentation context for decision. For each open assumption
 
 ## Protocol
 
-### 1. Format Judgement Context
+### 1. Empty-Set Skip
 
-- For each open (non-code-resolvable) assumption, assemble structured context: (1) the decision space — what alternatives exist, (2) trade-off analysis for each alternative, (3) why the agent could not resolve it through code analysis, (4) relevant technical context discovered during reconciliation — code patterns found, constraints identified, related implementation details, (5) which alternative the agent's current assumption favors and why
-- Order the decision space (alternatives and trade-offs) before the agent's favored option. This ordering reduces anchoring bias — the options appear before the agent's interpretation
-- Trade-off analysis should cover relevant dimensions from: implementation complexity, maintenance burden, consistency with existing patterns, risk of unintended side-effects, decision reversibility (how hard to change course later), alignment with stated requirements, and time/effort cost. Include only dimensions that meaningfully differentiate the alternatives for each specific assumption
-- If reconciliation produced partial evidence (e.g. validated one aspect but not another), include that evidence so what is already known is clear
-- If no open assumptions remain after reconciliation, skip the judgement-augmentation format and emit a summary confirming all assumptions were resolved through code analysis
-- Focus trade-offs on measurable differences between alternatives, not uniform property lists. If two options are equivalent on a dimension, omit that dimension — it adds noise without aiding the decision
-- Flag decision reversibility: mark each assumption as easily-reversible (low-cost to change later) or path-committing (high-cost to reverse). This calibrates how much deliberation to invest
-- Apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[reversibility-signal](../../../meta/techniques/gitnexus-operations/reversibility-signal.md)(name: `{$symbol}`) to set the flag — high caller fan-out and broad process participation → path-committing; isolated symbols → easily-reversible.
+- If `{open_assumptions}` is empty (or `{has_open_assumptions}` is false), emit a one-line summary that analyse-challenge resolved all assumptions and **do not** assemble judgement context — no user input needed
 
-### 2. Emit Presentation Output
+### 2. Format Judgement Context
 
-- Support two assembly modes. Batch mode: assemble all open assumptions together as a structured list, ordered by decision impact. Interview mode: assemble assumptions one at a time. Use whichever mode the supplied inputs indicate.
-- In both modes, each assumption contains the decision space, trade-offs, non-resolvability rationale, technical context, the agent's current position, and a reversibility flag as assembled by format-judgement-context. Order by decision impact: assumptions whose resolution most affects the implementation approach come first.
-- Include a clickable markdown link to the assumptions-log for full details and reconciliation history
-- Frame the output as judgement augmentation: informed decisions on genuinely open questions, not triage or rubber-stamping. Everything code-resolvable is already resolved.
-- Omit code-resolved assumptions from the output — they are already validated with evidence in the assumptions log
-- When assembling 5 or more open assumptions in batch mode, group related assumptions by theme or domain to reduce cognitive load. Emit the group heading before its assumptions so the reader can orient before diving into details.
-- Emit `{assumption_review_presentation}` for the binding activity to surface.
+- For each residual open assumption, assemble structured context: (1) the decision space — what alternatives exist, (2) trade-off analysis for each alternative, (3) why analyse-challenge could not resolve it, (4) relevant technical context from reconcile/challenge — code patterns, constraints, partial evidence, (5) which alternative the agent's current assumption favors and why
+- Order the decision space (alternatives and trade-offs) before the agent's favored option to reduce anchoring bias
+- Trade-off analysis should cover relevant dimensions from: implementation complexity, maintenance burden, consistency with existing patterns, risk of unintended side-effects, decision reversibility, alignment with stated requirements, and time/effort cost. Include only dimensions that meaningfully differentiate the alternatives
+- If analyse/challenge produced partial evidence, include it so what is already known is clear
+- Flag decision reversibility: easily-reversible or path-committing via [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[reversibility-signal](../../../meta/techniques/gitnexus-operations/reversibility-signal.md) when a symbol is known
+
+### 3. Emit Presentation Output
+
+- Default `{assembly_mode}` is `batch`: assemble all open assumptions together, ordered by decision impact; when 5 or more, group by theme
+- `interview` mode: assemble the current assumption only (individual drill-down)
+- Include a clickable markdown link to the assumptions-log for full details
+- Frame as judgement augmentation on genuinely open questions — everything agent-resolvable is already resolved inside analyse-challenge
+- Emit `{assumption_review_presentation}` for the binding activity to surface at the residual batch (or individual) checkpoint

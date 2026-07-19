@@ -1,7 +1,7 @@
 id: assumptions-review
-version: 2.4.0
+version: 2.5.0
 name: Assumptions Review
-description: Review each open assumption with the user.
+description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
 required: true
 techniques:
   - scatter-gather
@@ -10,8 +10,22 @@ steps:
     id: evaluate-open-assumptions
     technique: review-assumptions::collect
   - kind: technique
-    id: interview-assumptions
-    technique: review-assumptions::interview
+    id: analyse-challenge-loop
+    technique:
+      name: analyse-challenge::run-loop
+      inputs:
+        concern_kind: assumptions
+        analyse: review-assumptions::reconcile
+        challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
+        convergence_flag: has_resolvable_assumptions
+        residue_flag: has_open_assumptions
+        residue_collection: open_assumptions
+  - kind: technique
+    id: present-residual-assumptions
+    technique:
+      name: review-assumptions::interview
+      inputs:
+        assembly_mode: batch
     condition:
       type: and
       conditions:
@@ -23,16 +37,55 @@ steps:
           variable: has_open_assumptions
           operator: ==
           value: true
+  - kind: checkpoint
+    id: residual-assumption-batch
+    ref: assumption-interview
+  - kind: technique
+    id: record-batch-decision
+    technique: review-assumptions::record
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: has_open_assumptions
+          operator: ==
+          value: true
+        - type: simple
+          variable: needs_individual_interview
+          operator: "!="
+          value: true
   - kind: loop
     id: assumption-interview-loop
-    name: Assumption Interview Loop
+    name: Individual Assumption Interview Loop
     loopType: forEach
     variable: current_assumption
     over: open_assumptions
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: needs_individual_interview
+          operator: ==
+          value: true
+        - type: simple
+          variable: has_open_assumptions
+          operator: ==
+          value: true
     steps:
       - kind: technique
         id: present-assumption
-        technique: review-assumptions::interview
+        technique:
+          name: review-assumptions::interview
+          inputs:
+            assembly_mode: interview
       - kind: checkpoint
         id: assumption-decision#{current_assumption.id}
         condition:
@@ -178,6 +231,7 @@ transitions:
   - to: implement
     isDefault: true
 outcome:
-  - Each open assumption reviewed individually with user
+  - Open assumptions converged through analyse-challenge before any residual ask
+  - Residual stakeholder judgements batched (or individually reviewed only when requested)
   - Implementation can proceed on a vetted set of assumption decisions, with any deferred items explicitly tracked
   - External stakeholders are notified of deferred assumptions that need their attention

@@ -1,8 +1,10 @@
 id: design-philosophy
-version: 1.11.1
+version: 1.12.0
 name: Design Philosophy
 description: Apply the design framework to classify the problem and decide the workflow path.
 required: true
+techniques:
+  - scatter-gather
 steps:
   - kind: technique
     id: define-problem
@@ -85,21 +87,16 @@ steps:
         activity_context: design-philosophy
         assumption_categories: Problem Interpretation, Complexity Assessment, Workflow Path
   - kind: technique
-    id: reconcile-assumptions
-    technique: review-assumptions::reconcile
-  - kind: loop
-    id: assumption-reconciliation
-    name: Assumption Reconciliation Loop
-    loopType: while
-    condition:
-      type: simple
-      variable: has_resolvable_assumptions
-      operator: ==
-      value: true
-    steps:
-      - kind: technique
-        id: reconcile-iteration
-        technique: review-assumptions::reconcile
+    id: analyse-challenge-loop
+    technique:
+      name: analyse-challenge::run-loop
+      inputs:
+        concern_kind: assumptions
+        analyse: review-assumptions::reconcile
+        challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
+        convergence_flag: has_resolvable_assumptions
+        residue_flag: has_open_assumptions
+        residue_collection: open_assumptions
   - kind: technique
     id: assess-ticket-completeness
     technique: assess-ticket-completeness

@@ -2,7 +2,7 @@
 name: assumptions-review
 description: Rules for identifying, documenting, and reviewing assumptions across the work package lifecycle, and the single-table assumptions log template.
 metadata:
-  version: 5.1.0
+  version: 5.2.0
   order: 13
   legacy_id: 13
 ---
@@ -10,7 +10,7 @@ metadata:
 
 # Assumptions Guide
 
-Make implicit decisions explicit so they can be validated: after each phase or task, surface the assumptions made, classify them, and track each one in the log until it is resolved. The log is the record of truth for assumptions — one row per assumption, updated in place as it moves through reconciliation and interview. Never restate assumption content in other artifacts (single-source-and-link).
+Make implicit decisions explicit so they can be validated: after each phase or task, surface the assumptions made, classify them, and track each one in the log until it is resolved. The log is the record of truth for assumptions — one row per assumption, updated in place as it moves through analyse-challenge and residual interview. Never restate assumption content in other artifacts (single-source-and-link).
 
 ## Surfacing Assumptions
 
@@ -38,9 +38,9 @@ Common origins of false assumptions, to check against: missing/stale information
 - **One row per assumption** (state-once-per-artifact): no separate surfaced/response/outcome sections, no per-phase count tables, no closing recap. The table IS the record.
 - **No null ceremony**: a phase with no significant assumptions gets one row — `— | [Phase] | — | — | No significant assumptions ([reason]) | — | —`. Do not ask the user to confirm a null result; record it and proceed.
 
-## Judgement Augmentation Review
+## Analyse-Challenge then Residual Ask
 
-After `review-assumptions::reconcile` converges, only stakeholder-dependent assumptions remain open. Present those per the [interview](../techniques/review-assumptions/interview.md) operation: decision space and trade-offs first, agent's position last (reduces anchoring), reversibility flagged, ordered by decision impact, grouped by theme when 5+. If reconciliation resolved everything, present a one-line summary — no user input needed.
+Assumption-bearing activities bind [analyse-challenge](../techniques/analyse-challenge/TECHNIQUE.md) with `analyse: review-assumptions::reconcile` and adversarial perspectives. The construct runs analyse → parallel challenge → combine until convergence. Residual stakeholder opens are presented only when `{has_open_assumptions}` is true, via [interview](../techniques/review-assumptions/interview.md) in **batch** mode by default (decision space and trade-offs first, agent's position last, grouped by theme when 5+). Empty residue skips user input. Individual drill-down is optional after the batch checkpoint. Safety and approval gates stay interactive elsewhere in the workflow.
 
 ## Assumptions Log Template
 
