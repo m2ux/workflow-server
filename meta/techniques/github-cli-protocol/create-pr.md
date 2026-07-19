@@ -29,7 +29,7 @@ PR title.
 
 PR body markdown.
 
-### draft
+### as_draft
 
 *(optional, default: true)* When true, open as a draft (`--draft`). When false, open ready for review.
 
@@ -48,7 +48,7 @@ URL of the pull request.
 ### 1. Resolve Existing Or Create
 
 - From `{repo_path}`, if a PR already exists for `{branch}`, capture its `{pr_number}` and `{pr_url}` and update its body via [update-pr-description](./update-pr-description.md) (resolve `{owner}` / `{repo}` / `{number}` from `gh` context for that PR)
-- Otherwise open the PR: `gh pr create --base {base_branch} --title "{title}" --body "{body}"` with `--draft` when `{draft}` is true; capture `{pr_number}` and `{pr_url}` from the command output
+- Otherwise open the PR: `gh pr create --base {base_branch} --title "{title}" --body "{body}"` with `--draft` when `{as_draft}` is true; capture `{pr_number}` and `{pr_url}` from the command output
 
 ## Rules
 

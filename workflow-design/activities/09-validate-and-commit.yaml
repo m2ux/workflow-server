@@ -179,7 +179,7 @@ steps:
       inputs:
         repo_path: target_path
         branch: workflow_branch
-        remote: origin
+        remote_name: origin
     condition:
       type: simple
       variable: operation_type
@@ -201,7 +201,7 @@ steps:
         repo_path: target_path
         branch: workflow_branch
         base_branch: workflows
-        draft: true
+        as_draft: true
     condition:
       type: simple
       variable: operation_type
