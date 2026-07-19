@@ -92,33 +92,34 @@ Positive design-time framing principles — see [design-principles](./resources/
 
 | # | Principle |
 |---|-----------|
-| 1 | Internalize before producing |
-| 2 | Define complete scope before execution |
-| 3 | Clarify before assuming |
-| 4 | Maximize schema expressiveness |
-| 5 | One authoritative home |
-| 6 | Convention over invention |
-| 7 | Confirm before irreversible changes |
-| 8 | Encode constraints as structure |
-| 9 | Non-destructive updates |
-| 10 | Complete documentation structure |
-| 11 | Output economy |
-| 12 | Separate contract from procedure |
-| 13 | Single source of truth |
-| 14 | Phase by sequenced outcome |
-| 15 | Distinguish designators from parameters |
-| 16 | Document in positive present |
-| 17 | Prefer shared capability |
-| 18 | Name symbols affirmatively |
-| 19 | Keep orchestration in structure |
-| 20 | Match the harness surface |
-| 21 | Modular over inline |
-| 22 | Close the loop |
-| 23 | Keep session interaction in activities |
-| 24 | Bind sibling operations as steps |
-| 25 | Atomic techniques; compose at activities |
-| 26 | State contract contribution |
-| 27 | Creation guide for generated documents |
+| 1 | Workflows ossify patterns |
+| 2 | Internalize before producing |
+| 3 | Define complete scope before execution |
+| 4 | Clarify before assuming |
+| 5 | Maximize schema expressiveness |
+| 6 | One authoritative home |
+| 7 | Convention over invention |
+| 8 | Confirm before irreversible changes |
+| 9 | Encode constraints as structure |
+| 10 | Non-destructive updates |
+| 11 | Complete documentation structure |
+| 12 | Output economy |
+| 13 | Separate contract from procedure |
+| 14 | Single source of truth |
+| 15 | Phase by sequenced outcome |
+| 16 | Distinguish designators from parameters |
+| 17 | Document in positive present |
+| 18 | Prefer shared capability |
+| 19 | Name symbols affirmatively |
+| 20 | Keep orchestration in structure |
+| 21 | Match the harness surface |
+| 22 | Modular over inline |
+| 23 | Close the loop |
+| 24 | Keep session interaction in activities |
+| 25 | Bind sibling operations as steps |
+| 26 | Atomic techniques; compose at activities |
+| 27 | State contract contribution |
+| 28 | Creation guide for generated documents |
 
 ---
 
