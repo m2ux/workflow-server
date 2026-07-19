@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.27.1 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description, derives intent first, reconciles assumptions in a while-loop, and batches stakeholder decisions into Gate 1 (gap-only) and Gate 2 (approve-to-commit); `{headless_mode}` defaults to true so soft mid-flow gates auto-resolve (opt out with “interactive”, “not headless”, or “with checkpoints”). Create/update edits run in a dedicated `{target_path}` worktree. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
+> v1.28.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description, derives intent first, reconciles assumptions in a while-loop, and batches stakeholder decisions into Gate 1 (gap-only) and Gate 2 (approve-to-commit); `{headless_mode}` defaults to true so soft mid-flow gates auto-resolve (opt out with “interactive”, “not headless”, or “with checkpoints”). Create/update edits run in a dedicated `{target_path}` worktree. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
 
 ---
 
@@ -116,7 +116,9 @@ Positive design-time framing principles — see [design-principles](./resources/
 | 22 | Close the loop |
 | 23 | Keep session interaction in activities |
 | 24 | Bind sibling operations as steps |
-| 25 | State contract contribution |
+| 25 | Atomic techniques; compose at activities |
+| 26 | State contract contribution |
+| 27 | Creation guide for generated documents |
 
 ---
 
