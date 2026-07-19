@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -48,12 +48,9 @@ Lean mechanical summary of resolved trace events (tool counts, durations, errors
 
 ### 2. Resolve Session Trace
 
-- When `{trace_tokens}` is non-empty, resolve once via `get_trace { session_index, trace_tokens }` (optionally enrich with `inspect_session` for fetch/fidelity context). Do not call `get_trace` per activity mid-run.
+- When `{trace_tokens}` is non-empty, resolve once at close-out before writing mechanical content. Do not resolve per activity mid-run.
 - When `{trace_tokens}` is absent or empty, write a one-line skip into `{session_trace_document}` (or omit the artifact) and continue — no fabrication.
-- Write `{session_trace_document}` under `{planning_folder_path}` (server `artifactPrefix` on first write) as a lean summary:
-  - Per-activity (or per-token slice): tool-call counts, total/`ms` durations, error count + sample `err`, validation-warning (`vw`) clusters when present.
-  - Cross-link `token-usage.md` when that artifact exists in the planning folder — join by reference; do not estimate cost on this path.
-- Keep the body exception-oriented: omit empty metric rows; prefer compact tables over narrative.
+- Write `{session_trace_document}` under `{planning_folder_path}` (server `artifactPrefix` on first write) following [session-trace](session-trace#template).
 
 ### 3. Conduct Retrospective
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ Path to the planning folder where the final outcome and retrospective are record
 
 ### trace_tokens
 
-*(optional)* Opaque HMAC-signed trace tokens accumulated across the run (orchestrator/meta bag via [dispatch-activity](../../../meta/techniques/workflow-engine/dispatch-activity.md)). When present and non-empty, resolve once at close-out; when absent or empty, skip the mechanical session-trace path.
+*(optional)* Opaque HMAC-signed trace-token collection accumulated across the run. When present and non-empty, resolve once at close-out; when absent or empty, skip the mechanical session-trace path.
 
 ## Outputs
 
