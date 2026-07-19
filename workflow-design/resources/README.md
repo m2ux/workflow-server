@@ -63,7 +63,7 @@ Each creation guide has a **Template** section and **Rules** for lean, decision-
 
 ### 00 — Design Principles
 
-*Prefer / before / only after* stance — broader than any one defect; avoids families of smells. No Detect triad here; specific bad instances live in the anti-pattern catalog. Includes **§25 Atomic Techniques; Compose at Activities** and **§27 Creation Guide for Generated Documents** (every persisted planning artifact maps to a Template+Rules guide).
+*Prefer / before / only after* stance — broader than any one defect; avoids families of smells. No Detect triad here; specific bad instances live in the anti-pattern catalog. Includes **§1 Workflows Ossify Patterns** (why workflows exist — reuse of fixed patterns vs on-the-fly novelty), **§26 Atomic Techniques; Compose at Activities**, and **§28 Creation Guide for Generated Documents** (every persisted planning artifact maps to a Template+Rules guide).
 
 ### 01 — Schema Construct Inventory
 
