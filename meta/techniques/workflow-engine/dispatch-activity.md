@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -33,12 +33,13 @@ The envelope the worker returned, passed through unchanged — one of two tagged
 
 ### trace_token
 
-Trace token captured from `next_activity` response, appended to `trace_tokens`.
+Opaque HMAC-signed trace token from the `next_activity` response `_meta.trace_token`. **Required protocol output:** append each token to the orchestrator/session `trace_tokens[]` collection in handoff order. Do not decode mid-flight.
 
 ## Protocol
 
-1. Call `next_activity { session_index, activity_id, step_manifest, usage? }`; capture `_meta.trace-token`.
+1. Call `next_activity { session_index, activity_id, step_manifest, usage? }`; capture `_meta.trace_token`.
    - **`usage` (optional):** relay the harness-reported token usage for the activity the worker just completed — the figure the orchestrator reads from the worker's completion result (e.g. subagent token counts and cache/model fields when the harness surfaces them). Pass it on this transition call, keyed to the activity being exited. When the harness does not surface per-sub-agent usage, omit the param entirely — the run still completes and nothing is fabricated.
+   - **Trace accumulate (required):** when `_meta.trace_token` is present, append it to `trace_tokens[]`. Tokens stay opaque — no routine per-activity `get_trace`.
 2. Apply [compose-prompt](./compose-prompt.md) with `{prompt_template}` substituting `{state}` values.
 3. Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await the worker's envelope and return it unchanged as `{worker_result}`.
    - If the worker does not return within the expected time, apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) if it is still running; otherwise dispatch a fresh worker for the same `{activity_id}`.
@@ -54,6 +55,14 @@ When calling `next_activity`, include a `step_manifest` array. Each entry is an 
 ### relay-harness-usage
 
 When the harness surfaces per-sub-agent token usage on the worker's completion result, relay it as the optional `usage` object on the subsequent `next_activity` call — the transition off the activity the worker just finished. The worker cannot self-measure; this populate step is orchestrator-only. Omit `usage` when the figure is unavailable.
+
+### accumulate-trace-tokens
+
+Every successful `next_activity` handoff that returns `_meta.trace_token` MUST append that opaque string to `trace_tokens[]`. Accumulation is an engine protocol duty of this operation — not an optional aside. Live `_meta.validation` self-correct remains; do not resolve tokens mid-run.
+
+### resolve-trace-at-close-out
+
+Client finalize/retrospective paths that consume execution history MUST resolve accumulated `trace_tokens[]` once via `get_trace { session_index, trace_tokens }` (optionally `inspect_session` for fetch/fidelity context). This operation owns the accumulate half of the contract; the client's close-out path owns the resolve call and any planning artifacts. Skip resolve when `trace_tokens` is empty.
 
 ### no-get-activity-from-orchestrator
 
