@@ -80,7 +80,7 @@ Definition prose (`description`, `outcome`, option text, README orientation for 
 
 ## 17. Prefer Shared Capability
 
-When a meta or shared-workflow technique already owns a capability, compose or parameterize that op. Invent a parallel local recipe only after the shared surface cannot absorb the caller's diversity.
+When a meta or shared-workflow technique already owns a capability, reuse it by binding that op from an activity (or borrowing an activity that already binds it). Invent a parallel local recipe only after the shared surface cannot absorb the caller's diversity.
 
 ## 18. Name Symbols Affirmatively
 
@@ -104,16 +104,20 @@ When implementation is in scope, a recommendation is followed by action or an ex
 
 ## 23. Keep Session Interaction in Activities
 
-Techniques are session-blind: take inputs, process (including tools and composed ops), and emit outputs. They do not know about user sessions or how to interact with humans. Activities are session-aware — they own when and how technique products reach the user (`action: message`, checkpoint `message` / `options`, artifact links).
+Techniques are session-blind: take inputs, process over tools and resources, and emit outputs. They do not know about user sessions or how to interact with humans. Activities are session-aware — they own when and how technique products reach the user (`action: message`, checkpoint `message` / `options`, artifact links).
 
 ## 24. Bind Sibling Operations as Steps
 
-When work is a sequence of already-defined sibling operations (audit passes, pipeline stages, or other multi-op runs), bind each as its own activity `steps[]` entry. A technique owns one capability's produce path — it does not host a pass inventory or multi-op pipeline the activity can express as consecutive binds.
+All multi-technique work lives in activity `steps[]` (and checkpoints/loops). Bind each already-defined sibling or shared operation as its own activity step. A technique owns one capability's produce path — its Protocol does not `Apply` sibling or meta ops for work. Loader ancestor wrap (`Initial`/`Final`) and container I/O merge are platform composition, not technique→technique work calls.
 
-## 25. State Contract Contribution
+## 25. Atomic Techniques; Compose at Activities
+
+Techniques are small, relatively atomic capabilities: a short produce path over tools and resources, without complex conditional/branching orchestration and without invoking other techniques to do work. Activities are the composition layer — they bind techniques (and checkpoints/loops) into useful work. Reuse a shared capability by binding it from an activity (or borrowing that activity), not by `Apply [other-technique]` inside a Protocol.
+
+## 26. State Contract Contribution
 
 Capability on a container `TECHNIQUE.md` (workflow-root or group) names what shared Inputs, Outputs, Rules, or domain invariants the contract contributes. Loader composition — inheritance merge, `Initial`/`Final` wrap, renumbering, folder-implied membership — lives in workflow-canonical and the schema construct inventory, not in the contract's Capability.
 
-## 26. Creation Guide for Generated Documents
+## 27. Creation Guide for Generated Documents
 
 Every planning artifact a workflow persists has an associated creation-guide resource with a `## Template` section (and operative `## Rules` for how to fill it). Persist techniques cite that template; they do not invent layout in protocol prose. Shared shapes may share one guide; every bare filename still maps to a guide.

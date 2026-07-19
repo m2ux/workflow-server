@@ -1435,9 +1435,9 @@ A workflow-local technique re-implements a capability a meta or shared-workflow 
 
 **Detect:** A non-meta technique's Protocol embeds a harness recipe (git push, `gh pr create`, `gh pr ready`, commit/stage, issue mutate, …) for a capability that already exists as a meta or cross-workflow shared op. Test: the local novelty is only parameters or caller-specific composition (title/body/path wiring); the verb/recipe is already owned elsewhere. Near-misses count — an existing shared op that almost fits but lacks an input, optional flag, or output still owns the capability.
 
-**Do not flag:** Local composition that *applies* the shared op via canonical hyperlink/`::` bind and keeps only caller-specific value assembly; parameterization or minor refactor of the shared/meta op itself to accommodate a new caller's diversity (new optional inputs, defaults, outputs, or small protocol branches) while preserving existing callers; adding a new shared op when no shared capability exists yet.
+**Do not flag:** Parameterization or minor refactor of the shared/meta op itself to accommodate a new caller's diversity (new optional inputs, defaults, outputs, or small protocol branches) while preserving existing callers; adding a new shared op when no shared capability exists yet; a local technique that only assembles caller-specific values (title/body/path wiring) while the activity binds the shared op as its own step.
 
-**Fix:** Replace the local harness recipe with a bind or canonical hyperlink; keep only caller-specific value assembly (`canonical-technique-reference`, `no-duplicated-guidance`). Remediation order under [Prefer Shared Capability](./design-principles.md#17-prefer-shared-capability).
+**Fix:** Delete the local harness recipe; bind the shared/meta op from the activity (or borrow an activity that already binds it); keep only caller-specific value assembly in a local technique if needed (`canonical-technique-reference`, `no-duplicated-guidance`, `pass-orchestration-in-technique`). Remediation order under [Prefer Shared Capability](./design-principles.md#17-prefer-shared-capability) and [Atomic Techniques; Compose at Activities](./design-principles.md#25-atomic-techniques-compose-at-activities).
 
 ### AP-111. contract-not-procedure
 
@@ -1471,21 +1471,21 @@ A technique performs or prescribes human/session interaction.
 
 **Detect:** Technique Capability, Protocol, or Rules instructs presenting, surfacing, showing, narrating, or otherwise delivering content to a user, session, or chat — or otherwise encodes how a human should be interacted with — rather than only producing bindable `{id}` outputs (and tool/op side-effects). Test: if the imperative requires a human audience or session channel to succeed, and no tool/op owns that channel, flag it. Techniques are session-blind: inputs → process → outputs; activities own `action: message`, checkpoint `message`/`options`, and artifact links.
 
-**Do not flag:** Assembling or persisting a declared output the activity will surface; applying a tool/op whose domain is external delivery (push, open PR, send) when the technique only binds that op; naming "the user's request" as an input origin (`io-agnostic-contract`); stage/gate locus smells (`technique-stage-agnostic`).
+**Do not flag:** Assembling or persisting a declared output the activity will surface; an activity binding a tool/op whose domain is external delivery (push, open PR, send); naming "the user's request" as an input origin (`io-agnostic-contract`); stage/gate locus smells (`technique-stage-agnostic`).
 
 **Fix:** Delete Present/surface/show-to-user phases; keep assemble/derive/persist that emit `{id}`. Put human-facing delivery on the binding activity (`action: message` and/or checkpoint message linking `{id}` / path). See [Keep Session Interaction in Activities](./design-principles.md#23-keep-session-interaction-in-activities).
 
 ### AP-114. pass-orchestration-in-technique
 
-"`run-audit-passes`: Apply audit-expressiveness, then audit-conformance, then audit-principles…"
+"`run-audit-passes`: Apply audit-expressiveness…" / "`publish-workflow-pr`: Apply push-branch, then create-pr…"
 
-A technique's Protocol is only a pass inventory — sequencing sibling operations the activity could bind as consecutive steps.
+A technique's Protocol invokes other techniques to do work — sequencing sibling or shared operations the activity should bind as consecutive steps.
 
-**Detect:** Technique Capability or Protocol's primary work is to apply, invoke, or run two or more sibling techniques/operations (or an ordered pass list) without assembling a distinct bindable product of its own. Signals: numbered phases that are each "Apply [sibling]"; Capability that names a multi-pass audit/pipeline; no `## Outputs` (or Outputs that only re-export children). Test: if deleting the technique and binding each sibling as its own `steps[]` entry preserves behavior, flag it.
+**Detect:** Technique Capability or Protocol applies, invokes, or runs another technique/operation for work via Protocol `Apply [technique]` / `::` op invocation (one or many). Signals: numbered phases that are each "Apply […]"; Capability that names a multi-pass audit/pipeline or a façade over shared ops; Outputs that only re-export children. Test: if moving each invoked op to its own activity `steps[]` entry (keeping any local value-assembly technique separate) preserves behavior, flag it.
 
-**Do not flag:** A technique that *composes* one shared/meta op with caller-specific value assembly (`duplicate-shared-capability` carve-out); a single capability whose protocol phases are facets of one produce path (load → audit → persist *one* findings bag); thin walkers that name one home and apply it (`no-technique-resource-dual-home`); stage/gate locus without a multi-op inventory (`technique-stage-agnostic`).
+**Do not flag:** Citing resources (including creation-guide Templates); non-invoking technique hyperlinks used as documentation/canonical reference; loader `Initial`/`Final` wrap and container I/O merge; activity `steps[]` technique binds; tools; a single capability whose protocol phases are facets of one produce path over tools and resources (load → derive → persist *one* product bag) with no Protocol Apply/`::` work invoke; stage/gate locus without an op inventory (`technique-stage-agnostic`).
 
-**Fix:** Delete the façade technique; bind each sibling operation as its own activity step in the order required. Keep per-pass products on the sibling techniques. See [Bind Sibling Operations as Steps](./design-principles.md#24-bind-sibling-operations-as-steps); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`.
+**Fix:** Delete the façade or strip Apply/`::` work invokes from the Protocol; bind each sibling or shared operation as its own activity step in the order required; keep only distinct local value assembly (if any) as a separate atomic technique. See [Bind Sibling Operations as Steps](./design-principles.md#24-bind-sibling-operations-as-steps), [Atomic Techniques; Compose at Activities](./design-principles.md#25-atomic-techniques-compose-at-activities); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`.
 
 ### AP-115. platform-semantics-in-capability
 
@@ -1497,7 +1497,7 @@ Capability (or a techniques-folder README) teaches loader composition instead of
 
 **Do not flag:** Authoritative platform homes — [schema-construct-inventory](./schema-construct-inventory.md), [workflow-canonical](../../meta/resources/workflow-canonical.md) (Base-contract inheritance), design-principles, this catalogue, or meta harness/engine resources whose domain is the platform; a one-line contribution statement (shared domain inputs/invariants) with no merge/wrap lecture; README notes that `techniques.activity` strategy techniques apply to every activity without teaching container protocol wrap rules; delivery/tool recipes (`no-delivery-mechanism-narration`, `no-tool-usage-prescription`).
 
-**Fix:** Delete composition, placement, and inherit-trailer prose. Leave a short contribution statement (what shared I/O/rules/invariants this contract holds). Loader HOW stays in workflow-canonical / the schema construct inventory. See [State Contract Contribution](./design-principles.md#25-state-contract-contribution).
+**Fix:** Delete composition, placement, and inherit-trailer prose. Leave a short contribution statement (what shared I/O/rules/invariants this contract holds). Loader HOW stays in workflow-canonical / the schema construct inventory. See [State Contract Contribution](./design-principles.md#26-state-contract-contribution).
 
 ### AP-116. no-template-creation-guide
 
@@ -1509,4 +1509,4 @@ A planning artifact is persisted without a creation-guide Template, or the techn
 
 **Do not flag:** Non-planning outputs (variables, PRs, commits); citing an existing Template with short when/which bullets only; `no-guide-wrapper-ceremony` (too much wrapper around a template — opposite pole); fill content that lives correctly in the resource Template while Protocol only orders persist.
 
-**Fix:** Author or extend a creation-guide resource with `## Template` + `## Rules`; map the bare filename in the resources index; replace Protocol layout essays with a cite to `#template`. See [Creation Guide for Generated Documents](./design-principles.md#26-creation-guide-for-generated-documents); also `resource-fills-not-does`, `no-technique-resource-dual-home`.
+**Fix:** Author or extend a creation-guide resource with `## Template` + `## Rules`; map the bare filename in the resources index; replace Protocol layout essays with a cite to `#template`. See [Creation Guide for Generated Documents](./design-principles.md#27-creation-guide-for-generated-documents); also `resource-fills-not-does`, `no-technique-resource-dual-home`.

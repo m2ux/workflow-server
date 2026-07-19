@@ -156,7 +156,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`scope-verification`](./techniques/scope-verification.md) | Verify every scope-manifest item is addressed | Validate and Commit |
 | [`readme-authoring`](./techniques/readme-authoring.md) | Generate or update the workflow README set | Validate and Commit |
 | [`commit-verification`](./techniques/commit-verification.md) | Verify the commit landed on `{target_path}` | Validate and Commit |
-| [`publish-workflow-pr`](./techniques/publish-workflow-pr.md) | Push from `{target_path}` and open/mark-ready a PR against the `workflows` branch | Validate and Commit |
+| [`publish-workflow-pr`](./techniques/publish-workflow-pr.md) | Compose PR title/body; activity binds meta push / create-pr / mark-ready | Validate and Commit |
 | [`persist-report`](./techniques/persist-report.md) | Persist the compliance/review report as an artifact | Quality Review (review mode), Validate and Commit, Post-Update Review |
 | [`summarize-findings`](./techniques/summarize-findings.md) | Produce a severity-rated findings summary | Post-Update Review |
 | [`review-draft-yaml`](./techniques/review-draft-yaml.md) | Block-indexed review of the drafted YAML, capturing a draft attestation before the audit passes | Scope and Draft |

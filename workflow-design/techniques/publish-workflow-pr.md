@@ -1,36 +1,24 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
 
-Compose the workflow-design PR title and body, then publish via meta push / create-pr / mark-ready — open (or refresh) a draft PR against `workflows` and mark it ready for review.
+Compose the workflow-design PR title and body from bound planning artifacts — ready for the activity to bind meta push / create-pr / mark-ready as consecutive steps.
 
 ## Outputs
 
-### pr_url
+### title
 
-URL of the pull request opened (or updated).
+PR title naming the workflow and the change (create / update).
 
-### pr_number
+### body
 
-The pull request number.
+PR body summarizing the change, listing the scope manifest from `{scope_manifest}`, and linking the planning folder `{planning_folder_path}` (completion summary and review artifacts).
 
 ## Protocol
 
-### 1. Push Branch
+### 1. Compose PR Description
 
-- Apply [push-branch](../../meta/techniques/version-control/push-branch.md) with *repo_path* `{target_path}` and *branch* `{workflow_branch}`; capture `{pushed_branch}`
-
-### 2. Compose PR Description
-
-- Compose `{$pr_title}` and `{$pr_body}` from bound artifacts: the title names the workflow and the change (create / update); the body summarizes the change, lists the scope manifest from `{scope_manifest}`, and links the planning folder `{planning_folder_path}` (its completion summary and review artifacts)
-
-### 3. Create Or Update Draft PR
-
-- Apply [create-pr](../../meta/techniques/github-cli-protocol/create-pr.md) with *repo_path* `{target_path}`, *branch* `{workflow_branch}`, *base_branch* `workflows`, *title* `{pr_title}`, *body* `{pr_body}`, and *draft* true; capture `{pr_number}` and `{pr_url}`
-
-### 4. Mark Ready
-
-- Once the description is finalized, apply [mark-ready](../../meta/techniques/github-cli-protocol/mark-ready.md) with *repo_path* `{target_path}` and `{pr_number}`; capture `{pr_status}`
+- Compose `{title}` and `{body}` from bound artifacts: the title names the workflow and the change (create / update); the body summarizes the change, lists the scope manifest from `{scope_manifest}`, and links the planning folder `{planning_folder_path}` (its completion summary and review artifacts)
