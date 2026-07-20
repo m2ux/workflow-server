@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.0.0
 ---
 
 ## Capability
@@ -50,17 +50,8 @@ URL of the pull request.
 - From `{repo_path}`, if a PR already exists for `{branch}`, capture its `{pr_number}` and `{pr_url}` and update its body via [update-pr-description](./update-pr-description.md) (resolve `{owner}` / `{repo}` / `{number}` from `gh` context for that PR)
 - Otherwise open the PR: `gh pr create --base {base_branch} --title "{title}" --body "{body}"` with `--draft` when `{as_draft}` is true; capture `{pr_number}` and `{pr_url}` from the command output
 
-### 2. Report PR Outputs
-
-- Include `{pr_url}` and `{pr_number}` in the activity's `activity_complete.variables_changed` so session state carries the pull-request identity for terminal activities
-- When `{target_path}`, `{workflow_branch}`, or `{worktree_created}` are still empty in session state, re-assert any known values in the same `variables_changed` map
-
 ## Rules
 
 ### no-graphql-create-path
 
 Do not use `gh pr edit` or other GraphQL mutations for assignee/body updates — use REST via [update-pr-description](./update-pr-description.md) / sibling ops (`no-graphql-mutations` on the group contract).
-
-### ambient-bag-variables-changed
-
-Declared `{pr_url}` and `{pr_number}` appear in the activity's `variables_changed`. Terminal consumers read session state; PR identity is not left only in the dispatch brief.

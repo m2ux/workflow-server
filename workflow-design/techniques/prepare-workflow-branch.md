@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.2
+  version: 2.0.1
 ---
 
 ## Capability
@@ -57,14 +57,9 @@ True when the worktree at `{target_path}` on `{workflow_branch}` was created or 
 ### 3. Capture Outputs
 
 - Set `{workflow_branch}` = `{$branch_name}` and `{worktree_created}` from create-worktree
-- Include `{workflow_branch}` and `{worktree_created}` in the activity's `activity_complete.variables_changed` so session state carries branch and worktree facts for terminal activities
 
 ## Rules
 
 ### edit-root-is-target-path
 
 All subsequent create/update edits, commits, and PRs use `{target_path}`. Catalog and literacy reads may use the shared library checkout; planning artifacts stay under `{planning_folder_path}`.
-
-### ambient-bag-variables-changed
-
-Declared `{workflow_branch}` and `{worktree_created}` appear in the activity's `variables_changed`. Terminal consumers read session state; branch and worktree facts are not left only in the dispatch brief.
