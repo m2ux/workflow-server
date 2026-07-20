@@ -257,10 +257,11 @@
           "design-philosophy",
           "codebase-comprehension",
           "plan-prepare",
-          "assumptions-review"
+          "assumptions-review",
+          "implement"
         ],
         "condition": "isDefault",
-        "currentActivity": "implement",
+        "currentActivity": "lean-coding-audit",
         "currentTechnique": "manage-artifacts::create-readme",
         "deliveredContent": {
           "orchestrator": {
@@ -269,7 +270,7 @@
             "bundle:rules:710ac67a5e1549ff": "710ac67a5e1549ff",
             "bundle:scatter-gather": "d040478b537d828d",
             "bundle:variable-binding": "2e3db3b65f55f2c8",
-            "bundle:workflow-engine::finalize-activity": "4ee66ec52ea881f9",
+            "bundle:workflow-engine::finalize-activity": "5ea8365ed60aa839",
             "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
             "bundle:workflow-engine::yield-checkpoint": "1b1e6a4df3a7ceb1",
             "resource:assumption-reconciliation#integration-with-assumptions-log": "345bff0ba9591a27",
@@ -313,6 +314,8 @@
             "technique:naming-conventions": "e2d69a749fa5231e",
             "technique:plan-prepare::create-todos": "e59e41839f0d079e",
             "technique:plan-prepare::plan": "4f271b4b2636c0e1",
+            "technique:ponytail/harvest-debt": "a6815ec8a500242d",
+            "technique:ponytail/review-over-engineering": "88f0f5eef056f153",
             "technique:prism/portfolio-analysis": "100cd15384c1f0dd",
             "technique:project-type-detection": "335b1f7c8d05d69d",
             "technique:reference-resolution": "e62fc9c2b068c3e1",
@@ -1444,16 +1447,46 @@
             },
             "timestamp": "2026-07-20T11:43:53.411Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "implement",
+            "timestamp": "2026-07-20T12:12:46.654Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "timestamp": "2026-07-20T12:12:46.654Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "review-over-engineering",
+              "techniqueId": "ponytail/review-over-engineering"
+            },
+            "timestamp": "2026-07-20T12:12:56.891Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "harvest-debt",
+              "techniqueId": "ponytail/harvest-debt"
+            },
+            "timestamp": "2026-07-20T12:12:56.891Z",
+            "type": "technique_bundled"
           }
         ],
         "schemaVersion": 1,
-        "seq": 33,
+        "seq": 35,
         "sessionIndex": "YWPJR4",
         "skippedActivities": [],
         "startedAt": "2026-07-20T09:08:49.101Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784547833,
+        "ts": 1784549576,
         "variables": {
           "artifact_name": "",
           "assumption_deferred": false,
