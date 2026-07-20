@@ -15,15 +15,15 @@ The caller-facing goal or request text the pattern operates on.
 
 ### concurrency
 
-Positive integer. `1` = sequential dispatch; greater than `1` = parallel fan-out via [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-concurrent](../harness-compat/spawn-concurrent.md). Default `1`.
+*(optional)* Positive integer. Default `1`. `1` = sequential dispatch; greater than `1` = parallel fan-out via [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-concurrent](../harness-compat/spawn-concurrent.md).
 
 ### isolation_mode
 
-`context` (default) — each worker gets an isolated context window and must not write sibling workspaces. `worktree` — each worker also receives its own git worktree (or equivalent sandbox) under `{planning_folder_path}` before mutating files.
+*(optional)* Default `context`. `context` — each worker gets an isolated context window and must not write sibling workspaces. `worktree` — each worker also receives its own git worktree (or equivalent sandbox) under `{planning_folder_path}` before mutating files.
 
 ### effort_cap
 
-Optional positive integer bounding how many workers or follow-up rounds a pattern may spawn for one invocation.
+*(optional)* Positive integer bounding how many workers or follow-up rounds a pattern may spawn for one invocation.
 
 ### planning_folder_path
 

@@ -24,6 +24,16 @@ steps:
       name: orchestration-patterns::gather-results
       inputs:
         expected_ids: worker_briefs
+  - kind: action
+    id: announce-escalation
+    condition:
+      type: simple
+      variable: lane_id
+      operator: ==
+      value: escalate
+    actions:
+      - action: message
+        message: "Supervisor escalation — no lane matched. Rationale: {classification_rationale}"
   - kind: technique
     id: synthesise
     technique: orchestration-patterns::synthesise-results

@@ -13,7 +13,7 @@ steps:
         message: Starting primary audit — concurrent multi-agent dispatch
   - kind: technique
     id: compose-all-agents
-    technique: dispatch-sub-agents::dispatch-concurrent
+    technique: dispatch-sub-agents::compose-roster-briefs
   - kind: technique
     id: dispatch-all-agents
     technique: orchestration-patterns::dispatch-workers
@@ -40,19 +40,19 @@ steps:
         expected_output_files: a1-nto.json, a2-midnight-ledger.json, a3-node-startup.json, a4-node-consensus.json, a5-runtime.json, a6-primitives.json, a7-governance.json, b-static-analysis.json, d1-ledger-helpers.json, d2-toolkit.json
   - kind: technique
     id: compose-verification-agent
-    technique: dispatch-sub-agents::dispatch-concurrent
+    technique: dispatch-sub-agents::compose-roster-briefs
   - kind: technique
     id: dispatch-verification-agent
     technique: orchestration-patterns::dispatch-workers
   - kind: technique
     id: compose-gap-redispatch
-    technique: dispatch-sub-agents::dispatch-concurrent
+    technique: dispatch-sub-agents::compose-roster-briefs
   - kind: technique
     id: act-on-gap-report
     technique: orchestration-patterns::dispatch-workers
   - kind: technique
     id: compose-merge-agent
-    technique: dispatch-sub-agents::dispatch-concurrent
+    technique: dispatch-sub-agents::compose-roster-briefs
   - kind: technique
     id: dispatch-merge-agent
     technique: orchestration-patterns::dispatch-workers

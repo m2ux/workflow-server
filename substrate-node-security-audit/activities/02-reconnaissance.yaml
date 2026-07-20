@@ -13,7 +13,7 @@ steps:
         message: Starting codebase reconnaissance (§1.2) — dispatching reconnaissance sub-agent
   - kind: technique
     id: compose-reconnaissance-agent
-    technique: dispatch-sub-agents::dispatch-concurrent
+    technique: dispatch-sub-agents::compose-roster-briefs
   - kind: technique
     id: dispatch-reconnaissance-agent
     technique: orchestration-patterns::dispatch-workers
@@ -25,7 +25,7 @@ steps:
         expected_output_files: r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json
   - kind: technique
     id: compose-security-architecture-agent
-    technique: dispatch-sub-agents::dispatch-concurrent
+    technique: dispatch-sub-agents::compose-roster-briefs
   - kind: technique
     id: dispatch-security-architecture-agent
     technique: orchestration-patterns::dispatch-workers
