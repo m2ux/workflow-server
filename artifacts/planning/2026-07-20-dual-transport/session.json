@@ -225,6 +225,15 @@
             },
             "optionId": "skip-issue",
             "respondedAt": "2026-07-20T09:30:01.000Z"
+          },
+          "start-work-package-pr-creation": {
+            "effects": {
+              "variablesSet": {
+                "pr_skipped": false
+              }
+            },
+            "optionId": "proceed",
+            "respondedAt": "2026-07-20T09:43:22.000Z"
           }
         },
         "completedActivities": [],
@@ -240,6 +249,7 @@
             "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
             "bundle:workflow-engine::yield-checkpoint": "1b1e6a4df3a7ceb1",
             "resource:deferred-items": "b0a46ace68eb55c1",
+            "resource:pr-description#template-initial": "e99e73893e3affd2",
             "resource:work-package/readme": "1c8d2d7e71c74aaf",
             "technique:github-cli-protocol::list-prs": "84a7e9d598407704",
             "technique:gitnexus-operations::analyze": "b6527d83f8088472",
@@ -537,16 +547,49 @@
             },
             "timestamp": "2026-07-20T09:31:15.701Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "pr-description#template-initial"
+            },
+            "timestamp": "2026-07-20T09:39:12.881Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "pr-creation",
+            "timestamp": "2026-07-20T09:40:59.151Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "pr-creation",
+            "data": {
+              "optionId": "proceed"
+            },
+            "timestamp": "2026-07-20T09:43:22.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "pr_skipped",
+              "value": false
+            },
+            "timestamp": "2026-07-20T09:43:22.000Z",
+            "type": "variable_set"
           }
         ],
         "schemaVersion": 1,
-        "seq": 11,
+        "seq": 15,
         "sessionIndex": "YWPJR4",
         "skippedActivities": [],
         "startedAt": "2026-07-20T09:08:49.101Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784539875,
+        "ts": 1784540613,
         "variables": {
           "artifact_name": "",
           "assumption_deferred": false,

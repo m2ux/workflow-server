@@ -41,4 +41,4 @@ This work package adds an HTTP transport as a second, opt-in way to run the same
 | Resource | Link |
 |----------|------|
 | Issue | _skipped_ |
-| PR | _pending_ |
+| PR | [#265](https://github.com/m2ux/workflow-server/pull/265) |
