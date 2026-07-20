@@ -261,6 +261,15 @@
             "optionId": "proceed",
             "respondedAt": "2026-07-20T09:43:22.000Z"
           },
+          "strategic-review-review-findings": {
+            "effects": {
+              "variablesSet": {
+                "review_passed": true
+              }
+            },
+            "optionId": "acceptable",
+            "respondedAt": "2026-07-20T13:30:10.000Z"
+          },
           "strategic-review-unsigned-commits-prompt": {
             "effects": {
               "variablesSet": {
@@ -269,6 +278,10 @@
             },
             "optionId": "decline-resign",
             "respondedAt": "2026-07-20T13:17:51.000Z"
+          },
+          "submit-for-review-dco-sign-off-confirmation": {
+            "optionId": "certify",
+            "respondedAt": "2026-07-20T13:31:49.000Z"
           }
         },
         "completedActivities": [
@@ -280,11 +293,12 @@
           "implement",
           "lean-coding-audit",
           "post-impl-review",
-          "validate"
+          "validate",
+          "strategic-review"
         ],
-        "condition": "isDefault",
-        "currentActivity": "strategic-review",
-        "currentTechnique": "manage-artifacts::create-readme",
+        "condition": "review_passed == true",
+        "currentActivity": "submit-for-review",
+        "currentTechnique": "update-pr::mark-ready",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:89bbdae40e12504b": "89bbdae40e12504b",
@@ -308,6 +322,7 @@
             "resource:design-framework#design-philosophy-artifact-template": "d746d9e5b3ec3c0c",
             "resource:manual-diff-review#file-index-generation": "6b1069b50ad98df2",
             "resource:manual-diff-review#manual-diff-review-section-template": "a2a859bdf494ef60",
+            "resource:pr-description": "b14af26a0c41991d",
             "resource:pr-description#template-initial": "e99e73893e3affd2",
             "resource:prism/pedagogy": "0edf3ca7f6d1ebc9",
             "resource:prism/rejected-paths": "3804141fca0fd460",
@@ -327,6 +342,7 @@
             "technique:codebase-comprehension::survey": "555ed1ca46307c8e",
             "technique:create-test-plan": "f0380b57ab957c3b",
             "technique:dco-provenance::append-task-row": "9e8c07543dacaf9c",
+            "technique:dco-provenance::record-attestation": "9a3e20d2b0cdcec8",
             "technique:design-philosophy::classify": "b2bbdd2554959974",
             "technique:design-philosophy::define": "16aef98fe714c462",
             "technique:design-philosophy::determine-path": "817252cd9165c172",
@@ -342,6 +358,7 @@
             "technique:manage-artifacts::write-artifact": "cc45b522103ea09c",
             "technique:manage-git::artifact-commits": "19b361ba9207828e",
             "technique:manage-git::detect-merge-strategy": "810fc9074a3c3afe",
+            "technique:manage-git::push-commits": "c4e1db54f9ab65bd",
             "technique:manage-git::sync-branch": "9e0d10fdb592587b",
             "technique:manage-git::update-reference-submodules": "b928d855784b60a4",
             "technique:manage-git::verify-feature-branch": "9eadb553eb8bdc0c",
@@ -369,7 +386,9 @@
             "technique:strategic-review::verify-fragment": "7dd3feb551c16607",
             "technique:summarize-architecture": "a363f28bcab1c00e",
             "technique:task-completion-review": "bf14b14b00293142",
-            "technique:update-pr::create-pr": "0ce4712d9bd0de5c"
+            "technique:update-pr::create-pr": "0ce4712d9bd0de5c",
+            "technique:update-pr::mark-ready": "00fd70bc3b5bf2d5",
+            "technique:update-pr::render": "3a4354d3718a9d50"
           }
         },
         "history": [
@@ -1856,16 +1875,114 @@
             },
             "timestamp": "2026-07-20T13:18:22.179Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "checkpoint": "review-findings",
+            "timestamp": "2026-07-20T13:24:03.227Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "strategic-review",
+            "checkpoint": "review-findings",
+            "data": {
+              "optionId": "acceptable"
+            },
+            "timestamp": "2026-07-20T13:30:10.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "review_passed",
+              "value": true
+            },
+            "timestamp": "2026-07-20T13:30:10.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "timestamp": "2026-07-20T13:30:45.718Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-07-20T13:30:45.718Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "dco-sign-off",
+              "techniqueId": "dco-provenance::record-attestation"
+            },
+            "timestamp": "2026-07-20T13:31:05.116Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "dco-sign-off-confirmation",
+            "timestamp": "2026-07-20T13:31:25.662Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "dco-sign-off-confirmation",
+            "data": {
+              "optionId": "certify"
+            },
+            "timestamp": "2026-07-20T13:31:49.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "push-commits",
+              "techniqueId": "manage-git::push-commits"
+            },
+            "timestamp": "2026-07-20T13:32:24.381Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "update-description",
+              "techniqueId": "update-pr::render"
+            },
+            "timestamp": "2026-07-20T13:34:05.523Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "pr-description"
+            },
+            "timestamp": "2026-07-20T13:34:18.810Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "mark-ready",
+              "techniqueId": "update-pr::mark-ready"
+            },
+            "timestamp": "2026-07-20T13:36:03.245Z",
+            "type": "technique_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 48,
+        "seq": 61,
         "sessionIndex": "YWPJR4",
         "skippedActivities": [],
         "startedAt": "2026-07-20T09:08:49.101Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784553502,
+        "ts": 1784554563,
         "variables": {
           "artifact_name": "",
           "assumption_deferred": false,
@@ -1926,7 +2043,7 @@
           "resign_unsigned_commits_requested": false,
           "review_comments_summary": "",
           "review_mode_ambiguous": false,
-          "review_passed": false,
+          "review_passed": true,
           "review_posted": false,
           "review_pr_captured": false,
           "review_pr_missing": false,

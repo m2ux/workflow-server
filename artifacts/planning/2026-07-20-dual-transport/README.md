@@ -1,6 +1,6 @@
 # Dual Transport Support - July 2026
 
-> Feature · Created 2026-07-20 · **Status:** Strategic review complete, awaiting findings decision
+> Feature · Created 2026-07-20 · **Status:** Submitted — PR marked ready for review
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -41,7 +41,8 @@ This groundwork is deliberately narrow: it does not add user accounts, logins, o
 | — | Validation | `npm run build` / `typecheck` / `vitest run` — all green (pre-existing unrelated failures excluded) | 15-30m | ✅ Complete |
 | 12 | [Strategic review](12-strategic-review-1.md) | Scope, orphan, minimality, commit-signature, and PR-body checks | 15-30m | ✅ Complete (1 finding: unsigned commits, accepted) |
 | — | `Comprehension artifact` | Persistent codebase knowledge | 20-45m | ⬚ Pending |
-| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
+| — | DCO attestation | [Provenance log](08-provenance-log.md#attestation) | — | ✅ Complete |
+| — | PR review | External review feedback cycle | 30-60m | ✅ Marked ready — no reviewer feedback yet |
 | 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ⬚ Pending |
 
 ## 🔗 Links
