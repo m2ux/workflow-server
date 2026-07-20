@@ -1,6 +1,6 @@
 # Assumptions Log
 
-> Phase 1 Cloud Migration Update — Agent-Managed Worktree Architecture · issue skipped · updated 2026-07-20
+> Phase 1 Cloud Migration Update — Agent-Managed Worktree Architecture · issue skipped · updated 2026-07-20 (plan-prepare)
 
 ## Log
 
@@ -30,10 +30,16 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 | IA-3 | Implementation Analysis | Baseline Interpretation | M | Existing fail-fast `WorkspaceConfigError` + `/ready` `workspaceDir` existence check already implement the hard-cutover readiness pattern for SC-1/SC-2; Phase 1 extends naming (`WORKTREE_ROOT` alias), slug config, validator, Docker, and docs rather than inventing readiness from scratch | Code: `resolveWorkspaceDir` / `registerHealthRoutes`; tests in `config.test.ts` and `http-transport.test.ts` | Validated |
 | IA-4 | Implementation Analysis | Dependency Understanding | H | Making planning slug configurable must preserve `planningRoot(workspaceDir)` call-site shape — GitNexus upstream impact on `planningRoot` is CRITICAL (15 processes / Session+tools fan-out); inject slug via config or module default, avoid signature churn | Code: GitNexus `impact(planningRoot, upstream)` CRITICAL; callers `ensurePlanningFolder`, `findPlanningFolderBySlug`, `resolveSessionLocation`, tests | Validated |
 | IA-5 | Implementation Analysis | Current Behavior | L | Neither `WORKTREE_ROOT` nor `PLANNING_SLUG` env vars exist in `loadConfig` today — only `--workspace` / `WORKFLOW_WORKSPACE` and hard-coded `PLANNING_RELATIVE_DIR` | Code: `src/config.ts` `resolveWorkspaceDir`; `store.ts` `PLANNING_RELATIVE_DIR` | Validated |
+| PL-1 | Planning | Design Approach | L | Env precedence for the required root is CLI `--workspace` > `WORKFLOW_WORKSPACE` > `WORKTREE_ROOT` — extends the existing CLI > env pattern without inventing a second optional root | Plan: [06-work-package-plan.md](06-work-package-plan.md) Task 2; mirrors `resolveWorkspaceDir` today | Open (validate in Task 2 tests) |
+| PL-2 | Planning | Design Approach | H | Planning slug is injected via startup-set module/config default so `planningRoot(workspaceDir)` keeps a one-arg signature — avoids CRITICAL call-graph churn (IA-4) | Plan Task 3; GitNexus `impact(planningRoot)` CRITICAL | Open (validate in Task 3 / typecheck) |
+| PL-3 | Planning | Scope Decisions | M | `/ready` JSON keeps `checks.workspaceDir` (document as worktree root) rather than renaming the check key in Phase 1 — preserves HTTP consumers | Plan Task 5; existing `http-transport.test.ts` contract | Open (validate in Task 5) |
+| PL-4 | Planning | Task Breakdown | M | Containment is enforced at planning write/ensure entry points (`ensurePlanningFolder` and equivalent) first; exhaustive audit of every path read is out of Phase 1 unless a write path is found during impl | Plan Task 4; IA-1 basename-slug already limits session hint escape | Open (validate in Task 4) |
+| PL-5 | Planning | Test Strategy | L | Pre-implementation test plan uses non-hyperlinked `PR267-TC-*` IDs; source links are added after implementation per test-plan lifecycle | Plan: [06-test-plan.md](06-test-plan.md); technique lifecycle-phases | Open (finalize-documentation) |
+| PL-6 | Planning | Dependency Assumptions | M | Greenfield `Dockerfile` / Compose are in-scope for this work package (IA-2) and do not require a separate ops ticket before implementation — CI/CD approval remains a PR review concern | Requirements scope item 8; IA-2 | Open (PR #267 review) |
 
 ## Open Assumptions
 
-*(none — IA-1…IA-5 code-validated during implementation analysis; no stakeholder-dependent residue)*
+*(none — PL-1…PL-6 are implementation- or review-validatable; no stakeholder-dependent residue from plan-prepare)*
 
 ## Stakeholder-Resolved (comprehension-sufficient · 2026-07-20)
 
@@ -73,6 +79,12 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 **Captured in:** [implementation analysis](05-implementation-analysis.md).  
 **User:** Checkpoint `analysis-confirmed` → `confirmed` (2026-07-20) — analysis artifact accepted; no open IA assumptions required interview.
 
+## Plan-Prepare Notes (2026-07-20)
+
+### PL-1…PL-6: Planning decisions
+**Decision:** Selected Option A (env alias + inject slug without `planningRoot` signature change); rejected rename of `workspaceDir`, inventing `apply_workflow`, and widening `planningRoot` arity. PL rows track precedence, injection strategy, `/ready` check-key stability, validator wiring scope, test-plan link lifecycle, and Docker greenfield inclusion — all code/review resolvable.  
+**Captured in:** [work package plan](06-work-package-plan.md), [test plan](06-test-plan.md).
+
 ## Wrap-Up
 
-21 assumptions — all validated/confirmed. Implementation analysis added IA-1…IA-5 (containment absence, Docker greenfield, readiness baseline, planningRoot blast radius, missing env aliases). User confirmed analysis at `analysis-confirmed`. No open or deferred residue for interview.
+27 assumptions — 21 prior validated/confirmed; PL-1…PL-6 recorded for implementation validation. No stakeholder-dependent open residue; interview skipped (`has_open_assumptions: false`).

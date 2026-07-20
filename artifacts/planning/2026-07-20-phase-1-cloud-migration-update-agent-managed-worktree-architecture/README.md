@@ -1,12 +1,12 @@
 # Phase 1 Cloud Migration Update — Agent-Managed Worktree Architecture - July 2026
 
-> Enhancement · Created 2026-07-20 · **Status:** Implementation analysis complete — next: plan & prepare
+> Enhancement · Created 2026-07-20 · **Status:** Plan & prepare complete — awaiting approach confirmation
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
 ## 🎯 Executive Summary
 
-Work package started for the Phase 1 agent-managed worktree architecture update: feature branch and draft PR are ready, requirements and research are locked, and implementation analysis has baselined current `workspaceDir` / planning-store / `/ready` behaviour plus gaps (validator, `PLANNING_SLUG`, Docker, docs) with GitNexus blast radius on `planningRoot`.
+Work package planned for the Phase 1 agent-managed worktree architecture update: required startup worktree root (`WORKTREE_ROOT` alias), configurable `PLANNING_SLUG`, new path validator, Docker RW bind, and agent/operator docs — seven implementation tasks sequenced to protect the CRITICAL `planningRoot` call graph. Feature branch and draft PR [#267](https://github.com/m2ux/workflow-server/pull/267) are ready for approach confirmation before coding.
 
 ## Problem Overview
 
@@ -16,7 +16,9 @@ This work package updates Phase 1 so the agent (MCP client) creates and owns the
 
 ## Solution Overview
 
-*[Brief solution statement — filled when the plan is prepared; link the work package plan for the task breakdown.]*
+This work makes the MCP client (the agent) responsible for creating Git worktrees and setting up each project’s `.engineering` area, while the workflow server only needs a required worktree root at startup. From that root it derives where planning files live (by default under `.engineering/artifacts/planning`), checks that paths stay inside the root, and writes artifacts there. Operators start the server with a worktree root (`WORKTREE_ROOT` or the existing workspace settings); readiness means that root is configured and available.
+
+The payoff is a thinner, safer server: no Git or repository credentials in the container, clearer per-project isolation, and a documented agent sequence from “create worktree” through “start a session.” The detailed task breakdown is in the [work package plan](06-work-package-plan.md); verification coverage is in the [test plan](06-test-plan.md).
 
 ## 📊 Progress
 
@@ -27,8 +29,8 @@ This work package updates Phase 1 so the agent (MCP client) creates and owns the
 | 03 | [Requirements elicitation](03-requirements-elicitation.md) | Scope, success criteria, agent/operator contract | 20-40m | ✅ Complete |
 | 04 | [Knowledge-base research](04-kb-research.md) | Patterns for validator, config bind, readiness, Docker, agent contract | 20-40m | ✅ Complete |
 | 05 | [Implementation analysis](05-implementation-analysis.md) | Baselines, gaps, blast radius for config/ready/validator/Docker | 20-40m | ✅ Complete |
-| 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
+| 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
 | — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
 | 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
