@@ -9,7 +9,7 @@ This test plan validates required worktree-root startup (including `WORKTREE_ROO
 Key changes to validate:
 1. `resolveWorkspaceDir` / `loadConfig` — `WORKTREE_ROOT` alias and fail-fast
 2. `planningRoot` / planning relative dir — default + `PLANNING_SLUG` override (signature preserved)
-3. `worktree-validator` — resolve + sep-aware (+ realpath) containment
+3. `worktree-validator` — **containment only**: resolve + sep-aware (+ realpath) path-inside-root checks (not worktree lifecycle)
 4. `registerHealthRoutes` `/ready` — configured root present
 5. Agent/operator contract — docs + session slug bind (no per-call root)
 

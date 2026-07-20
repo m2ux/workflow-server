@@ -36,10 +36,11 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 | PL-4 | Planning | Task Breakdown | M | Containment is enforced at planning write/ensure entry points (`ensurePlanningFolder` and equivalent) first; exhaustive audit of every path read is out of Phase 1 unless a write path is found during impl | Plan Task 4; IA-1 basename-slug already limits session hint escape | Open (validate in Task 4) |
 | PL-5 | Planning | Test Strategy | L | Pre-implementation test plan uses non-hyperlinked `PR267-TC-*` IDs; source links are added after implementation per test-plan lifecycle | Plan: [06-test-plan.md](06-test-plan.md); technique lifecycle-phases | Open (finalize-documentation) |
 | PL-6 | Planning | Dependency Assumptions | M | Greenfield `Dockerfile` / Compose are in-scope for this work package (IA-2) and do not require a separate ops ticket before implementation — CI/CD approval remains a PR review concern | Requirements scope item 8; IA-2 | Open (PR #267 review) |
+| PL-7 | Planning | Scope Decisions | M | `src/worktree-validator.ts` is **containment only** (path-inside-root / traversal safety) — it does not create, list, or remove Git worktrees or init `.engineering`; agent owns lifecycle | User at `approach-confirmed` → `confirmed` (2026-07-20); plan Task 1 scope boundary | Confirmed |
 
 ## Open Assumptions
 
-*(none — PL-1…PL-6 are implementation- or review-validatable; no stakeholder-dependent residue from plan-prepare)*
+*(none — PL-1…PL-6 are implementation- or review-validatable; PL-7 confirmed at approach checkpoint; no stakeholder-dependent residue)*
 
 ## Stakeholder-Resolved (comprehension-sufficient · 2026-07-20)
 
@@ -85,6 +86,10 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 **Decision:** Selected Option A (env alias + inject slug without `planningRoot` signature change); rejected rename of `workspaceDir`, inventing `apply_workflow`, and widening `planningRoot` arity. PL rows track precedence, injection strategy, `/ready` check-key stability, validator wiring scope, test-plan link lifecycle, and Docker greenfield inclusion — all code/review resolvable.  
 **Captured in:** [work package plan](06-work-package-plan.md), [test plan](06-test-plan.md).
 
+### PL-7: Validator containment-only (approach confirmed)
+**Decision:** User confirmed approach with clarification that `worktree-validator` is path-containment / traversal safety only — not broader worktree lifecycle ownership. Reflected in plan Task 1 scope boundary and test-plan overview.  
+**Checkpoint:** `approach-confirmed` → `confirmed` (2026-07-20).
+
 ## Wrap-Up
 
-27 assumptions — 21 prior validated/confirmed; PL-1…PL-6 recorded for implementation validation. No stakeholder-dependent open residue; interview skipped (`has_open_assumptions: false`).
+28 assumptions — 21 prior validated/confirmed; PL-1…PL-6 open for impl/review validation; PL-7 confirmed at approach checkpoint. No stakeholder-dependent open residue (`has_open_assumptions: false`).

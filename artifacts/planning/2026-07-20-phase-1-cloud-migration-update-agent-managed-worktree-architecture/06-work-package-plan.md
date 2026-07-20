@@ -1,6 +1,6 @@
 # Phase 1 Agent-Managed Worktree Architecture - Implementation Plan
 
-> plan · HIGH · Ready · 2-3h agentic + 1h review · 2026-07-20
+> plan · HIGH · Ready · 2-3h agentic + 1h review · 2026-07-20 · approach confirmed
 
 ## Overview
 
@@ -17,7 +17,7 @@ Problem, scope, and success criteria: [requirements](03-requirements-elicitation
 
 ### Solution Design
 
-Keep the existing required startup bind (`ServerConfig.workspaceDir`) as the Phase 1 worktree/workspace root. Accept brief `WORKTREE_ROOT` as an env alias into the same resolver (CLI `--workspace` > `WORKFLOW_WORKSPACE` > `WORKTREE_ROOT`). Make the planning relative segment configurable via `PLANNING_SLUG` while **preserving** `planningRoot(workspaceDir)`’s call-site signature (GitNexus upstream: CRITICAL — 15 processes; d=1: `ensurePlanningFolder`, `findPlanningFolderBySlug`, `resolveSessionLocation`). Add greenfield `src/worktree-validator.ts` for resolve + sep-aware (+ realpath) containment. Leave `/ready` gated on `workspaceDir` existence. Add Docker/Compose with RW worktree-root bind (no server-managed global planning volume). Document agent lifecycle and operator migration. Do **not** invent `apply_workflow` or per-call root.
+Keep the existing required startup bind (`ServerConfig.workspaceDir`) as the Phase 1 worktree/workspace root. Accept brief `WORKTREE_ROOT` as an env alias into the same resolver (CLI `--workspace` > `WORKFLOW_WORKSPACE` > `WORKTREE_ROOT`). Make the planning relative segment configurable via `PLANNING_SLUG` while **preserving** `planningRoot(workspaceDir)`’s call-site signature (GitNexus upstream: CRITICAL — 15 processes; d=1: `ensurePlanningFolder`, `findPlanningFolderBySlug`, `resolveSessionLocation`). Add greenfield `src/worktree-validator.ts` for **path containment only** (resolve + sep-aware + realpath traversal safety — not Git worktree create/list/remove or other lifecycle ownership; the agent owns that). Leave `/ready` gated on `workspaceDir` existence. Add Docker/Compose with RW worktree-root bind (no server-managed global planning volume). Document agent lifecycle and operator migration. Do **not** invent `apply_workflow` or per-call root.
 
 ### Alternatives Considered
 
@@ -33,8 +33,9 @@ Assumptions underlying the approach: [assumptions log](02-assumptions-log.md).
 
 ## Implementation Tasks
 
-### Task 1: Worktree path validator module (25-40 min)
-**Goal:** Greenfield containment helper for SC-4 / G3.  
+### Task 1: Path-containment validator module (25-40 min)
+**Goal:** Greenfield **containment-only** helper for SC-4 / G3 (path inside configured root; reject traversal/escape).  
+**Scope boundary:** This module does **not** own worktree lifecycle (no create/add/remove/list, no Git, no `.engineering` init). Filename `worktree-validator` means “validate paths under the worktree root,” not “manage worktrees.”  
 **Depends on:** none (leaf).  
 **Deliverables:**
 - `src/worktree-validator.ts` — `assertPathInsideRoot(root, candidate)` (and planning-path helper): absolute resolve, optional `realpath`, reject if not `root` or `root + sep` prefix; actionable errors (RE-3 / G7)
@@ -57,11 +58,11 @@ Assumptions underlying the approach: [assumptions log](02-assumptions-log.md).
 - `src/utils/session/store.ts` — `planningRoot` joins active relative dir; `createServer` / `loadConfig` path sets active dir once at startup (prefer explicit set over scattered `process.env` reads in hot paths)
 - `tests/config.test.ts` + `tests/session-store.test.ts` — default unchanged; override changes derived root; empty/whitespace slug falls back to default
 
-### Task 4: Wire validator into planning-path derivation (20-30 min)
-**Goal:** Containment on derived/ensured planning paths (SC-4).  
+### Task 4: Wire containment checks into planning-path derivation (20-30 min)
+**Goal:** Apply Task 1 containment (only) on derived/ensured planning paths (SC-4).  
 **Depends on:** Tasks 1 and 3.  
 **Deliverables:**
-- Call validator from `ensurePlanningFolder` (and any other write-path entry that materialises folders under the root) so escaped or non-descendant paths fail closed
+- Call the containment helper from `ensurePlanningFolder` (and any other write-path entry that materialises folders under the root) so escaped or non-descendant paths fail closed — no lifecycle APIs added here
 - Keep `start_session` basename-slug behaviour (no per-call root); root remains startup-only (SC-7 / G6)
 
 ### Task 5: Confirm `/ready` worktree-root gate (10-15 min)
