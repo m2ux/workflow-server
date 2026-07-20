@@ -2,7 +2,7 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-The workflow includes 29 resources that provide templates, guidance, and reference material for techniques and activities. Each resource lives as `resources/<id>.md` and is loaded by resource id (for example `pr-description`). Resource ids are the sole load key.
+Markdown resources for planning-folder templates, elicitation and review guidance, and close-out artifacts.
 
 | Resource ID | Title | Purpose |
 |-------------|-------|---------|

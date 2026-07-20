@@ -565,15 +565,15 @@ A universal technique is not hoisted to workflow.techniques.activity.
 
 ### AP-40. readme-orients-not-transcribes
 
-"README `### NN. Activity` + `Steps:**` / checkpoints table / transitions / `## Variables` / `## Rules` / estimated times"**
+"README `### NN. Activity` + `Steps:**` / checkpoints table / transitions / `## Variables` / `## Rules` / estimated times" / "The workflow includes 27 resources… Each resource lives as `resources/<id>.md`"
 
-README transcribes YAML structure instead of orienting.
+README transcribes YAML structure, inventory counts, or loader packaging instead of orienting.
 
-**Detect:** README enumerates in prose or tables: activity `steps[]` (including inline checkpoint options/`effect`/`autoAdvanceMs` and loops), `decisions[]`/`transitions[]`, per-step technique bindings, workflow `variables`, `rules`, or per-activity estimated times. Authoritative definition is `workflow.yaml` / `activities/NN-<id>.yaml`. Test: if the block must be edited when those YAML fields change, it is transcribing.
+**Detect:** README enumerates in prose or tables: activity `steps[]` (including inline checkpoint options/`effect`/`autoAdvanceMs` and loops), `decisions[]`/`transitions[]`, per-step technique bindings, workflow `variables`, `rules`, or per-activity estimated times; or states inventory counts ("N resources/techniques/activities") or loader/path HOW (`resources/<id>.md`, "loaded by resource id", "sole load key"). Authoritative definition is `workflow.yaml` / `activities/NN-<id>.yaml` / the folder index. Test: if the block must be edited when those YAML fields or folder contents change, it is transcribing.
 
-**Do not flag:** Mermaid/ASCII flow diagrams (activity- or step-flow); orientation the YAML lacks — PURPOSE, at-a-glance activity sequence (name + one-line role + connections), outcomes/value, file structure, techniques overview, links to authoritative YAMLs. A third checklist of which audit/technique passes run (drifting from activity binds) is `bind-site-is-orchestration-truth`.
+**Do not flag:** Mermaid/ASCII flow diagrams (activity- or step-flow); orientation the YAML lacks — PURPOSE, at-a-glance activity sequence (name + one-line role + connections), outcomes/value, file structure overview without counts, techniques overview, links to authoritative YAMLs, a purpose sentence plus index table of ids. A third checklist of which audit/technique passes run (drifting from activity binds) is `bind-site-is-orchestration-truth`.
 
-**Fix:** Delete prose/table enumerations of steps/checkpoints/loops/decisions/transitions/bindings and Variables/Rules/estimated-time sections; KEEP diagrams and orientation. Readers open the YAML definition for the rest. See [Complete Documentation Structure](./design-principles.md#11-complete-documentation-structure).
+**Fix:** Delete prose/table enumerations of steps/checkpoints/loops/decisions/transitions/bindings, Variables/Rules/estimated-time sections, inventory counts, and loader HOW; KEEP diagrams and purpose orientation. Readers open the YAML definition or index table for the rest. See [Complete Documentation Structure](./design-principles.md#11-complete-documentation-structure).
 
 ### AP-41. avoidance-voice-in-definitions
 
