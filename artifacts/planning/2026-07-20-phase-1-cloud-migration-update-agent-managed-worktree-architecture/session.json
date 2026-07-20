@@ -275,6 +275,15 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "codebase-comprehension-comprehension-sufficient": {
+            "effects": {
+              "variablesSet": {
+                "needs_comprehension": false
+              }
+            },
+            "optionId": "sufficient",
+            "respondedAt": "2026-07-20T16:21:44.000Z"
+          },
           "design-philosophy-classification-and-path-confirmed": {
             "effects": {
               "variablesSet": {
@@ -326,13 +335,18 @@
             "resource:assumptions-review#assumptions-log-template": "553093758d4d9956",
             "resource:assumptions-review#classification-vocabulary": "288f0f350267c099",
             "resource:assumptions-review#probe-vocabulary": "7cdb7489af93e5c6",
+            "resource:codebase-comprehension": "0beac6d84712b349",
+            "resource:codebase-comprehension#artifact-template": "d09a59182b2f083a",
             "resource:deferred-items": "f2fe7746e1e1e297",
             "resource:design-framework#design-framework-trizics-approach": "d6c4c47de2ea7d77",
             "resource:design-framework#design-philosophy-artifact-template": "0e0251e3cec8a4cc",
             "resource:meta/planning-readme": "c00771f2180831f1",
             "resource:pr-description#template-initial": "82ace6cadfc010d7",
             "resource:work-package/readme": "6317501107feed7d",
-            "technique:analyse-challenge::run-loop": "fc3d208a51d9544b",
+            "technique:analyse-challenge::run-loop": "b3359dd23bf54d41",
+            "technique:codebase-comprehension::deep-dive": "76fa95b6d9f5700a",
+            "technique:codebase-comprehension::revise-questions": "863b8a68a7408193",
+            "technique:codebase-comprehension::survey": "555ed1ca46307c8e",
             "technique:design-philosophy::classify": "b2bbdd2554959974",
             "technique:design-philosophy::define": "16aef98fe714c462",
             "technique:design-philosophy::determine-path": "817252cd9165c172",
@@ -341,6 +355,7 @@
             "technique:gitnexus-operations::analyze": "b6527d83f8088472",
             "technique:issue-reference-detection": "0f54731a08d194e9",
             "technique:manage-artifacts::create-readme": "bb25e731276caf8f",
+            "technique:manage-artifacts::write-artifact": "cc45b522103ea09c",
             "technique:manage-git::create-worktree": "c5aa47363f34fe66",
             "technique:manage-git::detect-merge-strategy": "810fc9074a3c3afe",
             "technique:manage-git::update-reference-submodules": "b928d855784b60a4",
@@ -891,16 +906,130 @@
             "activity": "codebase-comprehension",
             "timestamp": "2026-07-20T16:13:35.310Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "build-comprehension",
+              "techniqueId": "codebase-comprehension::survey"
+            },
+            "timestamp": "2026-07-20T16:13:52.834Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-comprehension-artifact",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-20T16:13:52.834Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "initial-deep-dive",
+              "techniqueId": "codebase-comprehension::deep-dive"
+            },
+            "timestamp": "2026-07-20T16:13:52.834Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "update-artifact-initial",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-20T16:13:52.834Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "revise-initial-questions",
+              "techniqueId": "codebase-comprehension::revise-questions"
+            },
+            "timestamp": "2026-07-20T16:13:52.834Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "codebase-comprehension#artifact-template"
+            },
+            "timestamp": "2026-07-20T16:13:52.834Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-20T16:13:52.834Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "codebase-comprehension"
+            },
+            "timestamp": "2026-07-20T16:13:52.834Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "analyse-challenge-pass",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-07-20T16:15:55.222Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "checkpoint": "comprehension-sufficient",
+            "timestamp": "2026-07-20T16:16:33.175Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "checkpoint": "comprehension-sufficient",
+            "data": {
+              "optionId": "sufficient"
+            },
+            "timestamp": "2026-07-20T16:21:44.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "needs_comprehension",
+              "value": false
+            },
+            "timestamp": "2026-07-20T16:21:44.000Z",
+            "type": "variable_set"
           }
         ],
         "schemaVersion": 1,
-        "seq": 23,
+        "seq": 28,
         "sessionIndex": "H7H32D",
         "skippedActivities": [],
         "startedAt": "2026-07-20T15:44:48.036Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784564015,
+        "ts": 1784564541,
         "variables": {
           "artifact_name": "",
           "assumption_batch_accepted": false,
@@ -941,7 +1070,7 @@
           "jira_issue_key": "",
           "needs_cleanup": false,
           "needs_code_fixes": false,
-          "needs_comprehension": true,
+          "needs_comprehension": false,
           "needs_elicitation": true,
           "needs_further_discussion": false,
           "needs_github_issue_creation": false,

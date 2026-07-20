@@ -1,6 +1,6 @@
 # Phase 1 Cloud Migration Update — Agent-Managed Worktree Architecture - July 2026
 
-> Enhancement · Created 2026-07-20 · **Status:** Design philosophy complete — next: codebase comprehension
+> Enhancement · Created 2026-07-20 · **Status:** Codebase comprehension complete — next: requirements elicitation
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -31,7 +31,7 @@ This work package updates Phase 1 so the agent (MCP client) creates and owns the
 | 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
 | 06 | [Test suite review](test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
 | 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
-| — | `Comprehension artifact` | Persistent codebase knowledge | 20-45m | ⬚ Pending |
+| — | [Comprehension artifact](../../comprehension/workflow-server.md) | Persistent codebase knowledge (workspace binding deep-dive) | 20-45m | ✅ Complete |
 | — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ⬚ Pending |

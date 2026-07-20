@@ -1,8 +1,6 @@
 # Workflow Server — Comprehension Artifact
 
-> **Last updated**: 2026-07-20
-> **Coverage**: Cross-cutting behavioral analysis of the current source tree (src/, tests/, schemas/); transport extension points (2026-07-20)
-> **Related artifacts**: [orchestration.md](orchestration.md), [utils-layer.md](utils-layer.md), [zod-schemas.md](zod-schemas.md), [json-schemas.md](json-schemas.md)
+> 2026-07-20 · work packages: dual-transport; [phase-1-agent-managed-worktree](../planning/2026-07-20-phase-1-cloud-migration-update-agent-managed-worktree-architecture/) · coverage: `src/` / `tests/` / `schemas/` cross-cutting behaviour; transport extension points; workspace binding and planning-path derivation · related: [orchestration.md](orchestration.md), [utils-layer.md](utils-layer.md), [state-tools.md](state-tools.md), [zod-schemas.md](zod-schemas.md), [json-schemas.md](json-schemas.md)
 
 ## Architecture Overview
 
@@ -185,6 +183,12 @@ which maps `SessionStoreError` codes onto actionable MCP responses via `describe
 - **Rationale**: A single sealed file captures the entire dispatch tree, so parent/child correlation and resume need no separate server-side index. `parentChainDepth` walks `parentSession` for diagnostics (soft-warn past `PARENT_CHAIN_DEPTH_WARN_THRESHOLD = 5`). The `TraceStore` records events keyed by `sessionIndex`.
 - **Trade-offs**: The file grows with tree depth; a transient orchestrator-bootstrap (meta) session created in `os.tmpdir()` is *promoted* onto a stable workspace planning folder at the first `dispatch_child`, retaining its original `session_index` for the server's lifetime.
 
+### DR-5: Process-Scoped Workspace Bind (not per-call worktree)
+- **Observation**: `loadConfig` resolves a single absolute `workspaceDir` from `--workspace` / `WORKFLOW_WORKSPACE` and refuses to start without it ([`config.ts`](../../../src/config.ts#L126)). Every authenticated tool resolves sessions under `planningRoot(workspaceDir)` = `<workspaceDir>/.engineering/artifacts/planning` ([`PLANNING_RELATIVE_DIR`](../../../src/utils/session/store.ts#L48)). `start_session`'s optional `planning_folder` is an absolute-path *hint*: only `basename` becomes the slug; the rest of the path is ignored ([`resource-tools.ts`](../../../src/tools/resource-tools.ts#L107)).
+- **Hypothesized rationale**: Binding once at process start keeps path math server-owned, avoids trusting agent-composed absolute paths, and matches local IDE MCP where one project workspace equals one server process.
+- **Trade-offs**: Optimizes for single-project local use and seal integrity under a known root; sacrifices the multi-worktree / thin-container model where each agent call supplies a distinct `worktreeRoot` under a shared mount.
+- **Implications for changes**: Stakeholder direction (2026-07-20): treat worktree root as **required startup config** (brief `WORKTREE_ROOT`), fail startup and `/ready` without it, and place agent-managed per-run worktrees under that root — not dual-bind an optional legacy root and not invent an `apply_workflow`-only root. Adaptation target remains today's `workspaceDir` / `--workspace` / `WORKFLOW_WORKSPACE` surface. See [assumptions DP-1a / DP-5 / DP-6](../planning/2026-07-20-phase-1-cloud-migration-update-agent-managed-worktree-architecture/02-assumptions-log.md).
+
 ## Data Flow and Operational Context
 
 ### Session File Model
@@ -232,6 +236,41 @@ Tool call received with session_index (6-char base32)
   └── saveSessionForTool(loaded, next)                  ← atomic write + re-seal
 ```
 
+### Data Flow Map — Workspace → Planning Folder (change surface)
+
+| Stage | Producer | Transformation | Consumer |
+|-------|----------|----------------|----------|
+| Process start | Operator CLI/env | `resolveWorkspaceDir` → absolute `workspaceDir` | `ServerConfig`, `/ready`, all tools |
+| Planning root | `planningRoot(workspaceDir)` | join with constant `PLANNING_RELATIVE_DIR` | `resolveSessionLocation`, `findPlanningFolderBySlug`, `ensurePlanningFolder` |
+| Session open | Agent `start_session({ planning_folder? })` | require absolute path if present; **basename → slug only**; resolve under planning root | `session.json` + seal; response `planning_folder_path` |
+| Authenticated call | Agent `session_index` | walk planning root / transient registry → folder + jsonPath | tool handlers |
+
+### Invariant Alignment — Path Trust
+
+| Invariant | Producer Enforces? | Consumer Assumes? | Gap? |
+|-----------|-------------------|-------------------|------|
+| `workspaceDir` is absolute and present at startup | yes — `resolveWorkspaceDir` / `WorkspaceConfigError` | yes — all session FS ops | none for process-scoped bind |
+| Planning slug is a single path segment (no traversal via slug) | yes — `assertValidSlug` | yes — `ensurePlanningFolder` / find-by-slug | none for slug-based layout |
+| Agent-supplied absolute path prefix is used as the write root | **no** — prefix ignored; only basename used | brief / cloud agents may assume full-path honor | **gap vs agent-managed worktree brief** |
+| Agent-supplied root is contained under a configured mount (`WORKTREE_ROOT`) | **no** — no such config or validator | brief requires containment | **gap — `worktree-validator` not present** |
+| Planning relative path is configurable (`PLANNING_SLUG`) | **no** — `PLANNING_RELATIVE_DIR` constant | brief proposes env override | **gap — product choice DP-2a** |
+
+### Execution Context (planning writes)
+
+- **Dispatch class**: MCP tool handlers (stdio or HTTP Streamable); single process, one `workspaceDir` for the process lifetime.
+- **Error propagation**: `SessionStoreError` / thrown `Error` → MCP error or HTTP JSON error middleware; does not halt other sessions. `/ready` returns 503 when `workspaceDir`/`workflowDir`/`schemasDir` missing — liveness (`/health`) stays 200.
+- **Failure consequence of bad agent path today**: absolute `planning_folder` with wrong parent still succeeds if basename is unique — server creates/resumes under *its* planning root. Wrong-root writes are not possible via the hint; wrong-*slug* creates a sibling folder under the server root.
+
+### Operational Scenarios (workspace binding)
+
+| Scenario | Effect on This Code Path | Risk |
+|----------|------------------------|------|
+| First `start_session` with new slug | `ensurePlanningFolder` creates `<planningRoot>/<slug>` mode 0700 | Low — expected |
+| Agent passes stale absolute `planning_folder` outside workspace | Basename still resolves under server planning root | Medium for cloud UX — agent believes path was honored |
+| Recovery after process restart | Sessions reload from disk under same `workspaceDir`; transient tmp sessions lost | Medium if meta bootstrap not yet promoted |
+| Multiple concurrent HTTP clients, one workspace | Safe — state on disk keyed by `session_index` (see OQ #10) | Low under single-workspace deploy |
+| Multi-worktree agents under one container (brief target) | Not supported — one `workspaceDir` per process; no per-call root | High vs Phase 1 cloud goals |
+
 ### Trace Event Pipeline
 
 ```
@@ -263,6 +302,25 @@ withAuditLog wraps handler
 | Transition | `Transition` in activity schema | Directed edge between activities with optional condition |
 | TOON | `@toon-format/toon` library | Configuration file format for workflow definitions |
 | Parent Session | `SessionFile.parentSession` / `triggeredWorkflows[]` | Embedded link between a dispatched child workflow and its parent, inside the one `session.json` |
+| Workspace | `ServerConfig.workspaceDir`, `--workspace` / `WORKFLOW_WORKSPACE` | Process-scoped project root; planning lives under its `.engineering/artifacts/planning/` |
+| Planning root | `planningRoot()` / `PLANNING_RELATIVE_DIR` | Absolute directory holding per-slug planning folders |
+| Planning slug | basename of `planning_folder` hint / folder basename | Single path segment naming a planning folder; traversal-rejected by `assertValidSlug` |
+| Worktree root (brief / target) | *not in code* — proposed agent-supplied root | Intended cloud bind: agent-owned Git worktree; server validates containment and derives planning path |
+
+### Domain Model (workspace vs brief)
+
+```
+Today (code):
+  Process ──binds──► workspaceDir
+                         └── .engineering/artifacts/planning/<slug>/session.json
+
+Brief intent (Phase 1 v3):
+  Agent ──creates──► worktreeRoot (under WORKTREE_ROOT)
+  Agent ──calls──► tool(worktreeRoot)
+  Server ──validates──► containment + {worktreeRoot}/{PLANNING_SLUG}
+```
+
+The brief names `apply_workflow` and `.engineering/planning`; this repo's live surface is `start_session` / `workspaceDir` / `.engineering/artifacts/planning`. Treat the brief as architectural intent; map APIs during elicitation ([DP-1](../planning/2026-07-20-phase-1-cloud-migration-update-agent-managed-worktree-architecture/02-assumptions-log.md)).
 
 ## Tool Inventory
 
@@ -298,20 +356,77 @@ handler calls `assertNoActiveCheckpoint` (which throws if `state.activeCheckpoin
 
 ## Open Questions
 
-| # | Question | Status | Resolution |
-|---|----------|--------|------------|
-| 1 | How is parent/child session context represented? | Resolved | A child is embedded under the parent's `triggeredWorkflows[]` (`EmbeddedSessionRef.state` is a full `SessionFile`) and links back via `SessionFile.parentSession`; the whole tree lives in one `session.json`. `parentChainDepth` walks the chain; the trace event carries `pdepth`. Set by `dispatch_child`, not `start_session`. |
-| 2 | How does `get_workflow_status` derive completed activities? | Resolved | Reads `state.completedActivities` from the authoritative session file. Only when that is empty (e.g. tracing-derived recovery) does it fall back to scanning the trace store for `ok` `next_activity` events (`workflow-tools.ts:816`). |
-| 3 | What happens when a checkpoint is active and a gated tool is called? | Resolved | `assertNoActiveCheckpoint(state)` throws a hard error when `state.activeCheckpoint` is set. Only the checkpoint-resolution tools are exempt, so the orchestrator can inspect/clear it. |
-| 4 | How does technique resolution handle bare vs. `::`-qualified refs? | Resolved | `get_technique` tries the activity-group convention first: a bare op resolves against `<currentActivity>::<op>`; if no such op exists it falls back to the as-authored ref. Qualified `group::op` / `workflow::group::op` refs resolve as written (`resource-tools.ts:547`). |
-| 5 | What is the resource frontmatter format? | Resolved | YAML frontmatter between `---` delimiters. The canonical id is the frontmatter `name:` (the folder slug); `version` is read from a top-level `version:` or a nested `  version:`. Body is the content after the frontmatter (`resource-loader.ts:186`). |
-| 6 | How does `get_technique` resolve `step_id` across loops? | Resolved | `flattenActivitySteps(activity)` walks top-level steps and every `kind:loop` body recursively; `get_technique` finds the step by id in that flattened list and reads `techniqueName(step.technique)`. Loop bodies are nested `steps[]` within each `kind:loop` step. |
-| 7 | How is session state persisted and tamper-checked? | Resolved | Server-owned `session.json` (canonicalised, mode 0600) plus a `.session-token` HMAC seal in the planning folder. `loadSessionForTool` verifies the seal on every authenticated call; `saveSessionForTool` writes atomically and re-seals. Sessions are addressed by a 6-char base32 `session_index` derived from the folder realpath. |
-| 8 | What composes the technique bundle returned by `get_workflow` / `get_activity`? | Open | `core-ops.ts` defines `CORE_ORCHESTRATOR_TECHNIQUES` and `CORE_WORKER_TECHNIQUES` (baseline refs unioned with the workflow's `techniques.workflow` / each activity's declared + inherited `techniques.activity`). The exact merge/dedup order and how inline (non-re-resolved) refs like `compose-prompt` are forced into the bundle warrants a dedicated trace. |
-| 9 | What is the transient→workspace promotion lifecycle for meta-bootstrap sessions? | Open | A `start_session` without `planning_folder` mints a tmp folder + synthetic UUID slug; the first `dispatch_child` promotes the parent onto a stable workspace folder while retaining the original `session_index`. The transient registry (`registerTransient` / `redirectTransientToWorkspace`) and its process-lifetime guarantees deserve a focused write-up. |
-| 10 | Does `createServer` (or anything it calls) assume a single-connection process, in a way that would break under multiple concurrent HTTP connections? | Resolved | No. `createServer(config)` (`server.ts:10-27`) is a pure factory — it builds one `McpServer` and registers stateless tool/resource handlers against it; per-call state lives in `session.json` on disk (keyed by `session_index`), not in module-level or closure state. `TraceStore` is per-`ServerConfig` (one instance shared by whichever transport(s) hold that config), and `setAuditWorkspaceDir` is the only module-level mutable value in the request path — it is set once at startup from the single `workspaceDir`, not per-connection, so it is safe under concurrent HTTP requests as long as only one `workspaceDir` is served per process (true for both transports today). |
+| # | Question | Status | Resolution | Deep-Dive Section |
+|---|----------|--------|------------|-------------------|
+| 1 | How is parent/child session context represented? | Resolved | A child is embedded under the parent's `triggeredWorkflows[]` (`EmbeddedSessionRef.state` is a full `SessionFile`) and links back via `SessionFile.parentSession`; the whole tree lives in one `session.json`. `parentChainDepth` walks the chain; the trace event carries `pdepth`. Set by `dispatch_child`, not `start_session`. | — |
+| 2 | How does `get_workflow_status` derive completed activities? | Resolved | Reads `state.completedActivities` from the authoritative session file. Only when that is empty (e.g. tracing-derived recovery) does it fall back to scanning the trace store for `ok` `next_activity` events (`workflow-tools.ts:816`). | — |
+| 3 | What happens when a checkpoint is active and a gated tool is called? | Resolved | `assertNoActiveCheckpoint(state)` throws a hard error when `state.activeCheckpoint` is set. Only the checkpoint-resolution tools are exempt, so the orchestrator can inspect/clear it. | — |
+| 4 | How does technique resolution handle bare vs. `::`-qualified refs? | Resolved | `get_technique` tries the activity-group convention first: a bare op resolves against `<currentActivity>::<op>`; if no such op exists it falls back to the as-authored ref. Qualified `group::op` / `workflow::group::op` refs resolve as written (`resource-tools.ts:547`). | — |
+| 5 | What is the resource frontmatter format? | Resolved | YAML frontmatter between `---` delimiters. The canonical id is the frontmatter `name:` (the folder slug); `version` is read from a top-level `version:` or a nested `  version:`. Body is the content after the frontmatter (`resource-loader.ts:186`). | — |
+| 6 | How does `get_technique` resolve `step_id` across loops? | Resolved | `flattenActivitySteps(activity)` walks top-level steps and every `kind:loop` body recursively; `get_technique` finds the step by id in that flattened list and reads `techniqueName(step.technique)`. Loop bodies are nested `steps[]` within each `kind:loop` step. | — |
+| 7 | How is session state persisted and tamper-checked? | Resolved | Server-owned `session.json` (canonicalised, mode 0600) plus a `.session-token` HMAC seal in the planning folder. `loadSessionForTool` verifies the seal on every authenticated call; `saveSessionForTool` writes atomically and re-seals. Sessions are addressed by a 6-char base32 `session_index` derived from the folder realpath. | — |
+| 8 | What composes the technique bundle returned by `get_workflow` / `get_activity`? | Resolved | `get_workflow`: `Set([...wfTechRefs, ...CORE_ORCHESTRATOR_TECHNIQUES])` ([`workflow-tools.ts`](../../../src/tools/workflow-tools.ts#L306)). `get_activity`: `Set([...inheritedTechRefs, ...ownTechRefs, ...CORE_WORKER_TECHNIQUES])` ([`workflow-tools.ts`](../../../src/tools/workflow-tools.ts#L582)). Dedup via `Set`; core lists in [`core-ops.ts`](../../../src/loaders/core-ops.ts) explicitly include inline-invoked refs (`compose-prompt`, commit ops, spawn-agent) because inline refs are not re-resolved. | Analyse-Challenge Pass |
+| 9 | What is the transient→workspace promotion lifecycle for meta-bootstrap sessions? | Resolved | `start_session` without `planning_folder` → `createTransientFolder` under `os.tmpdir()/workflow-server-transient-<uuid>/` + `registerTransient`. First `dispatch_child` on a transient parent: `ensurePlanningFolder` with slug from arg / registered slug / `YYYY-MM-DD-<workflow_id>`; write promoted `session.json`; `redirectTransientToWorkspace` repoints `transientFolderByIndex` so the original `session_index` keeps resolving, drops slug registry entry, `rm` tmp folder. Registry is process-local — restart orphans tmp leftovers. | Workspace Binding & Planning Path Derivation |
+| 10 | Does `createServer` (or anything it calls) assume a single-connection process, in a way that would break under multiple concurrent HTTP connections? | Resolved | No. `createServer(config)` (`server.ts:10-27`) is a pure factory — it builds one `McpServer` and registers stateless tool/resource handlers against it; per-call state lives in `session.json` on disk (keyed by `session_index`), not in module-level or closure state. `TraceStore` is per-`ServerConfig` (one instance shared by whichever transport(s) hold that config), and `setAuditWorkspaceDir` is the only module-level mutable value in the request path — it is set once at startup from the single `workspaceDir`, not per-connection, so it is safe under concurrent HTTP requests as long as only one `workspaceDir` is served per process (true for both transports today). | Dual-Transport Extension Points |
+| 11 | Does `start_session` honor the full agent-supplied `planning_folder` path, or only its basename? | Resolved | Only the basename is the slug; the path prefix is ignored. Server always resolves under `planningRoot(workspaceDir)`. | Workspace Binding & Planning Path Derivation |
+| 12 | Is there path-containment validation for an agent-supplied root (worktree / mount)? | Resolved | No. Existing guard is `assertValidSlug` (single segment). No `WORKTREE_ROOT`, no `worktree-validator.ts`, no Docker assets in-repo. | Workspace Binding & Planning Path Derivation |
+| 13 | Can `PLANNING_RELATIVE_DIR` be overridden via env today? | Resolved | No — exported constant `'.engineering/artifacts/planning'`. Brief's `PLANNING_SLUG` would be new config surface (open product choice → assumptions DP-2a). | Workspace Binding & Planning Path Derivation |
+| 14 | Which live tool/config entry point should accept `worktreeRoot`? | Resolved | Stakeholder (comprehension-sufficient): worktree root is a **required server startup argument** (CLI/config), aligned with brief `WORKTREE_ROOT` — not an `apply_workflow`-only root surface. Per-run agent paths sit under that configured root; map onto today's `workspaceDir` / `--workspace` bind. See [assumptions DP-1a](../planning/2026-07-20-phase-1-cloud-migration-update-agent-managed-worktree-architecture/02-assumptions-log.md). | Workspace Binding & Planning Path Derivation |
+| 15 | What should `/ready` check after agent-managed worktrees? | Resolved | Stakeholder: `/ready` verifies worktree root was **provided at startup** (configured/available); server must not start / must not be ready without it. Replaces today's optional-feel workspace existence check with a required-root readiness gate. See [assumptions DP-5 / DP-6](../planning/2026-07-20-phase-1-cloud-migration-update-agent-managed-worktree-architecture/02-assumptions-log.md). | Workspace Binding & Planning Path Derivation |
+
+### Remaining follow-up items (out of scope)
+
+- Docker/Compose authoring — no in-repo Dockerfile yet; container layout follows elicitation on mount + slug (DP-2a still open).
+- Process-local transient registry across multi-replica HTTP — out of Phase 1 worktree scope; note if cloud runs multiple server processes.
 
 ## Deep-Dive Sections
+
+### Workspace Binding & Planning Path Derivation — 2026-07-20
+
+Targeted for [Phase 1 agent-managed worktree](../planning/2026-07-20-phase-1-cloud-migration-update-agent-managed-worktree-architecture/) (source brief `/home/mike1/Incoming/phase1_update_agent_worktrees.md`).
+
+**Call chain (start → write):**
+
+1. `loadConfig` → `resolveWorkspaceDir` ([`config.ts`](../../../src/config.ts#L126)) — CLI flag wins over `WORKFLOW_WORKSPACE`; missing → `WorkspaceConfigError`.
+2. `createServer` stamps `setAuditWorkspaceDir(workspaceDir)` and registers tools with that config.
+3. `start_session` ([`resource-tools.ts`](../../../src/tools/resource-tools.ts#L98)):
+   - optional `planning_folder` must be absolute if present;
+   - `planning_slug = basename(resolve(planning_folder))`;
+   - `findPlanningFolderBySlug` / `ensurePlanningFolder` / transient tmp under `os.tmpdir()`;
+   - persists `planningFolderPath` as the *server-resolved* absolute folder.
+4. Later tools: `loadSessionForTool(workspaceDir, session_index)` → `resolveSessionLocation` walks `planningRoot(workspaceDir)`.
+
+**Edge cases:**
+
+- Slug with `/` or `..` → `SessionStoreError` `INVALID_INDEX` from `assertValidSlug`.
+- Same slug at multiple nesting depths → `COLLISION`.
+- Off-workspace absolute hint → still creates under server planning root (silent path ignore).
+- `/ready` ([`http.ts`](../../../src/transports/http.ts#L76)) checks directory *existence* of the three roots, not that planning subdirs or agent worktrees exist.
+- No `apply_workflow` tool; no `PLANNING_FOLDER` / `WORKTREE_ROOT` / `PLANNING_SLUG` env names in `src/`.
+
+**Implication for the work package:** Stakeholder closed the bind/readiness residue: required startup worktree root + `/ready` gated on it (brief `WORKTREE_ROOT`). Remaining elicitation gap is planning-slug policy ([DP-2a](../planning/2026-07-20-phase-1-cloud-migration-update-agent-managed-worktree-architecture/02-assumptions-log.md)). Comprehension of producers (`config`, `start_session`, `planningRoot`, `/ready`) is sufficient to scope the change.
+
+**Transient promotion (resolved OQ #9):** in-memory maps `transientFolderByIndex` / `transientFolderBySlug`; promotion must repoint the index because `session_index` is derived from folder realpath and would otherwise break after the folder moves. Implication for multi-worktree cloud: a process restart loses unresolved transient bootstraps; durable sessions must already live under the workspace planning root.
+
+### Analyse-Challenge Pass — Open Questions — 2026-07-20
+
+**Analyse:** Closed OQ #8 (bundle = `Set` union of declared + core lists; inline refs listed explicitly in `core-ops.ts`) and OQ #9 (transient promotion mechanics above). OQ #14–#15 were left as stakeholder residue.
+
+**Challenge findings:**
+
+| Perspective | Item | Verdict | Evidence |
+|-------------|------|---------|----------|
+| pedagogy | OQ #11–#13 (path honor / containment / slug constant) | confirmed | Resolutions cite `resource-tools.ts` basename rule, absence of validator, `PLANNING_RELATIVE_DIR` constant — teachable as "slug under process workspace" |
+| pedagogy | OQ #14–#15 (`worktreeRoot` bind / `/ready`) | irreducible → later stakeholder-resolved | Soft gate presented decision space; see post-gate resolution below |
+| pedagogy | OQ #8–#9 | resolved-by-challenge | Code cites sufficient; no comprehension gap remains for this WP |
+| rejected-paths | "Honor full `planning_folder` path as write root" | newly-surfaced (rejected) | Would break seal/index derivation tied to server planning root; contradicts current basename-hint design |
+| rejected-paths | "Add `apply_workflow` without mapping to `start_session`" | newly-surfaced (rejected for silent add) | No such tool exists; dual surfaces would confuse agents — root binds at startup instead |
+| rejected-paths | "Hard-code brief slug `.engineering/planning`" | weakened | Would diverge from monorepo `artifacts/planning` without configurability (DP-2a) |
+| rejected-paths | Further deep-dive on OQ #8 merge order micro-details | resolved-by-challenge | `Set` union order is insertion order of declared-then-core; enough for this WP |
+
+**Combine (pre-gate):** Agent-resolvable code questions exhausted; OQ #14–#15 held as residue for the soft sufficiency gate.
+
+**Post-gate stakeholder resolution (`sufficient` + product direction):** OQ #14–#15 and DP-1a / DP-5 / DP-6 closed — required startup worktree root; no start / not ready without it; `/ready` = that configured root. `needs_comprehension` → false; `has_open_questions` → false for this activity. Carry into requirements elicitation.
 
 ### Dual-Transport Extension Points — 2026-07-20
 
