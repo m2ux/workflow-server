@@ -25,10 +25,15 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 | RS-2 | Research | Pattern Applicability | L | Path containment in `worktree-validator` should use resolve + `root + path.sep` (and `realpath` when symlinks can escape) — rationale: Node path APIs trust input; community/official guidance rejects join/normalize-as-sanitization | Research: [04-kb-research.md](04-kb-research.md) RC-2; web Node path-traversal guides | Validated |
 | RS-3 | Research | Synthesis Decisions | M | Phase 1 deploys one server process bound to one worktree/monorepo root; multi-worktree-per-process via per-call `worktreeRoot` stays out of scope — rationale: locked startup-only root + current `planningRoot(workspaceDir)` model | Research: [04-kb-research.md](04-kb-research.md) RC-3; locked DP-1a/RE-2 | Validated |
 | RS-4 | Research | Source Relevance | L | Concept-rag KB gap on Node path security / K8s probes is acceptable — repo patterns plus current official/web docs sufficiently inform planning — rationale: identify-patterns/practices returned little domain match; repo is authoritative for adaptation | Research: [04-kb-research.md](04-kb-research.md) Research Approach KB gap note | Validated |
+| IA-1 | Implementation Analysis | Current Behavior | L | No dedicated worktree/path-containment module exists today; `start_session` already ignores agent `planning_folder` path beyond basename, so root escape via that hint is not a current hole — Phase 1 still needs `worktree-validator` for derived/verified paths under the configured root | Code: no `src/worktree-validator.ts`; `resource-tools.ts` basename-as-slug; grep shows no sep-aware containment helper | Validated |
+| IA-2 | Implementation Analysis | Gap Identification | M | Docker/Compose for a worktree-root volume do not exist in this repo yet — Phase 1 adds them greenfield (not a patch of an existing image) | Code: glob for `Dockerfile*` / `docker-compose*` under reference and target worktrees returned 0 | Validated |
+| IA-3 | Implementation Analysis | Baseline Interpretation | M | Existing fail-fast `WorkspaceConfigError` + `/ready` `workspaceDir` existence check already implement the hard-cutover readiness pattern for SC-1/SC-2; Phase 1 extends naming (`WORKTREE_ROOT` alias), slug config, validator, Docker, and docs rather than inventing readiness from scratch | Code: `resolveWorkspaceDir` / `registerHealthRoutes`; tests in `config.test.ts` and `http-transport.test.ts` | Validated |
+| IA-4 | Implementation Analysis | Dependency Understanding | H | Making planning slug configurable must preserve `planningRoot(workspaceDir)` call-site shape — GitNexus upstream impact on `planningRoot` is CRITICAL (15 processes / Session+tools fan-out); inject slug via config or module default, avoid signature churn | Code: GitNexus `impact(planningRoot, upstream)` CRITICAL; callers `ensurePlanningFolder`, `findPlanningFolderBySlug`, `resolveSessionLocation`, tests | Validated |
+| IA-5 | Implementation Analysis | Current Behavior | L | Neither `WORKTREE_ROOT` nor `PLANNING_SLUG` env vars exist in `loadConfig` today — only `--workspace` / `WORKFLOW_WORKSPACE` and hard-coded `PLANNING_RELATIVE_DIR` | Code: `src/config.ts` `resolveWorkspaceDir`; `store.ts` `PLANNING_RELATIVE_DIR` | Validated |
 
 ## Open Assumptions
 
-*(none — research assumptions RS-1…RS-4 validated from research artifact; no stakeholder-dependent residue)*
+*(none — IA-1…IA-5 code-validated during implementation analysis; no stakeholder-dependent residue)*
 
 ## Stakeholder-Resolved (comprehension-sufficient · 2026-07-20)
 
@@ -61,6 +66,13 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 ### RS-3: Multiplicity model
 **Decision:** One configured root per process for Phase 1; per-call multi-worktree root remains out of scope.
 
+## Implementation-Analysis-Resolved (2026-07-20)
+
+### IA-1…IA-5: Current baselines and gaps
+**Decision:** Code-validated — no path-containment module or Docker assets yet; fail-fast/`/ready` already cover required-root readiness under `workspaceDir` names; `planningRoot` changes are CRITICAL blast radius; `WORKTREE_ROOT`/`PLANNING_SLUG` absent today.  
+**Captured in:** [implementation analysis](05-implementation-analysis.md).  
+**User:** Checkpoint `analysis-confirmed` → `confirmed` (2026-07-20) — analysis artifact accepted; no open IA assumptions required interview.
+
 ## Wrap-Up
 
-16 assumptions — all validated/confirmed. Research added RS-1…RS-4 (env alias, path containment, one-root-per-process, KB-gap acceptability). No open or deferred residue for interview.
+21 assumptions — all validated/confirmed. Implementation analysis added IA-1…IA-5 (containment absence, Docker greenfield, readiness baseline, planningRoot blast radius, missing env aliases). User confirmed analysis at `analysis-confirmed`. No open or deferred residue for interview.
