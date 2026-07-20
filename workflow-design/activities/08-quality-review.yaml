@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.12.5
+version: 1.13.0
 name: Quality Review
 description: Quality review of drafted workflow content.
 required: true
@@ -336,6 +336,12 @@ steps:
       value: true
     maxIterations: 3
     steps:
+      - kind: technique
+        id: yaml-authoring
+        technique: yaml-authoring
+      - kind: technique
+        id: audit-schema-validation
+        technique: audit-schema-validation
       - kind: technique
         id: apply-audit-fixes
         technique: apply-audit-fixes

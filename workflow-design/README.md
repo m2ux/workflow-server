@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.27.1 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description, derives intent first, reconciles assumptions in a while-loop, and batches stakeholder decisions into Gate 1 (gap-only) and Gate 2 (approve-to-commit); `{headless_mode}` defaults to true so soft mid-flow gates auto-resolve (opt out with “interactive”, “not headless”, or “with checkpoints”). Create/update edits run in a dedicated `{target_path}` worktree. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
+> v1.28.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description, derives intent first, reconciles assumptions in a while-loop, and batches stakeholder decisions into Gate 1 (gap-only) and Gate 2 (approve-to-commit); `{headless_mode}` defaults to true so soft mid-flow gates auto-resolve (opt out with “interactive”, “not headless”, or “with checkpoints”). Create/update edits run in a dedicated `{target_path}` worktree. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
 
 ---
 
@@ -92,31 +92,34 @@ Positive design-time framing principles — see [design-principles](./resources/
 
 | # | Principle |
 |---|-----------|
-| 1 | Internalize before producing |
-| 2 | Define complete scope before execution |
-| 3 | Clarify before assuming |
-| 4 | Maximize schema expressiveness |
-| 5 | One authoritative home |
-| 6 | Convention over invention |
-| 7 | Confirm before irreversible changes |
-| 8 | Encode constraints as structure |
-| 9 | Non-destructive updates |
-| 10 | Complete documentation structure |
-| 11 | Output economy |
-| 12 | Separate contract from procedure |
-| 13 | Single source of truth |
-| 14 | Phase by sequenced outcome |
-| 15 | Distinguish designators from parameters |
-| 16 | Document in positive present |
-| 17 | Prefer shared capability |
-| 18 | Name symbols affirmatively |
-| 19 | Keep orchestration in structure |
-| 20 | Match the harness surface |
-| 21 | Modular over inline |
-| 22 | Close the loop |
-| 23 | Keep session interaction in activities |
-| 24 | Bind sibling operations as steps |
-| 25 | State contract contribution |
+| 1 | Workflows ossify patterns |
+| 2 | Internalize before producing |
+| 3 | Define complete scope before execution |
+| 4 | Clarify before assuming |
+| 5 | Maximize schema expressiveness |
+| 6 | One authoritative home |
+| 7 | Convention over invention |
+| 8 | Confirm before irreversible changes |
+| 9 | Encode constraints as structure |
+| 10 | Non-destructive updates |
+| 11 | Complete documentation structure |
+| 12 | Output economy |
+| 13 | Separate contract from procedure |
+| 14 | Single source of truth |
+| 15 | Phase by sequenced outcome |
+| 16 | Distinguish designators from parameters |
+| 17 | Document in positive present |
+| 18 | Prefer shared capability |
+| 19 | Name symbols affirmatively |
+| 20 | Keep orchestration in structure |
+| 21 | Match the harness surface |
+| 22 | Modular over inline |
+| 23 | Close the loop |
+| 24 | Keep session interaction in activities |
+| 25 | Bind sibling operations as steps |
+| 26 | Atomic techniques; compose at activities |
+| 27 | State contract contribution |
+| 28 | Creation guide for generated documents |
 
 ---
 
@@ -156,11 +159,11 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`scope-verification`](./techniques/scope-verification.md) | Verify every scope-manifest item is addressed | Validate and Commit |
 | [`readme-authoring`](./techniques/readme-authoring.md) | Generate or update the workflow README set | Validate and Commit |
 | [`commit-verification`](./techniques/commit-verification.md) | Verify the commit landed on `{target_path}` | Validate and Commit |
-| [`publish-workflow-pr`](./techniques/publish-workflow-pr.md) | Push from `{target_path}` and open/mark-ready a PR against the `workflows` branch | Validate and Commit |
+| [`publish-workflow-pr`](./techniques/publish-workflow-pr.md) | Compose the workflow-design PR title and body from bound planning artifacts | Validate and Commit |
 | [`persist-report`](./techniques/persist-report.md) | Persist the compliance/review report as an artifact | Quality Review (review mode), Validate and Commit, Post-Update Review |
 | [`summarize-findings`](./techniques/summarize-findings.md) | Produce a severity-rated findings summary | Post-Update Review |
 | [`review-draft-yaml`](./techniques/review-draft-yaml.md) | Block-indexed review of the drafted YAML, capturing a draft attestation before the audit passes | Scope and Draft |
-| [`apply-audit-fixes`](./techniques/apply-audit-fixes.md) | Apply selected audit findings via `yaml-authoring`, re-validating each changed file | Quality Review |
+| [`apply-audit-fixes`](./techniques/apply-audit-fixes.md) | Record selected audit findings as `{fixes_applied}` after activity-bound edit and re-validation | Quality Review |
 | [`scope-audit`](./techniques/scope-audit.md) | Audit the committed change set against the scope manifest for drift | Post-Update Review |
 | [`create-completion-doc`](./techniques/create-completion-doc.md) | Record the `COMPLETE.md` completion summary in the planning folder | Retrospective |
 | [`conduct-retrospective`](./techniques/conduct-retrospective.md) | Analyse non-checkpoint interactions and record a prioritized session retrospective | Retrospective |

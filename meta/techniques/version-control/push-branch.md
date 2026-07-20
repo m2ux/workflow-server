@@ -17,7 +17,7 @@ Working tree of the repository to push from.
 
 Local branch name to push.
 
-### remote
+### remote_name
 
 *(optional, default: `origin`)* Remote name to push to.
 
@@ -25,11 +25,11 @@ Local branch name to push.
 
 ### pushed_branch
 
-The branch that was pushed (`{remote}/{branch}` form or the branch name when verification only needs the local name).
+The branch that was pushed (`{remote_name}/{branch}` form or the branch name when verification only needs the local name).
 
 ## Protocol
 
 ### 1. Push Branch
 
-- From `{repo_path}`, push `{branch}` to `{remote}`: `git push {remote} {branch}`
+- From `{repo_path}`, push `{branch}` to `{remote_name}`: `git push {remote_name} {branch}`
 - Verify the push succeeded; capture `{pushed_branch}`

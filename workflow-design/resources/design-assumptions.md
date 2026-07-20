@@ -27,9 +27,7 @@ Creation guide for bare filename `assumptions-log.md`. Design-time assumption ca
 | `audit` | Settleable by schema / convention / principle checks — see [design-assumption-reconciliation](./design-assumption-reconciliation.md) |
 | `open` | Genuine design judgement — batched into Gate 2 (`approve-to-commit`) after reconcile |
 
-## Template
-
-<a id="assumptions-log-template"></a>
+## Assumptions Log Template
 
 ```markdown
 # Design Assumptions Log

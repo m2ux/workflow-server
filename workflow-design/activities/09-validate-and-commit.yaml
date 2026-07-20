@@ -173,8 +173,46 @@ steps:
     id: verify-commit
     technique: commit-verification
   - kind: technique
-    id: publish-workflow-pr
+    id: push-branch
+    technique:
+      name: version-control::push-branch
+      inputs:
+        repo_path: target_path
+        branch: workflow_branch
+        remote_name: origin
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "!="
+      value: review
+  - kind: technique
+    id: compose-workflow-pr-description
     technique: publish-workflow-pr
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "!="
+      value: review
+  - kind: technique
+    id: create-pr
+    technique:
+      name: github-cli-protocol::create-pr
+      inputs:
+        repo_path: target_path
+        branch: workflow_branch
+        base_branch: workflows
+        as_draft: true
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "!="
+      value: review
+  - kind: technique
+    id: mark-ready
+    technique:
+      name: github-cli-protocol::mark-ready
+      inputs:
+        repo_path: target_path
     condition:
       type: simple
       variable: operation_type
