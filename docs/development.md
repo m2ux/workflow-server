@@ -34,8 +34,12 @@ npm run typecheck
 # Build for production
 npm run build
 
-# Run in development mode (with hot reload via tsx)
+# Run in development mode (with hot reload via tsx) — stdio default
 npm run dev
+
+# Run over HTTP (development / production entry points)
+npm run dev:http
+npm run start:http
 ```
 
 ## Project Structure
@@ -191,7 +195,7 @@ WORKFLOWS_DIR=/path/to/workflows npm run --silent bench:token -- \
 npm run --silent bench:token -- --label=raw --context-mode=persistent --no-compare
 ```
 
-Stderr: compact vs-A0 scorecard. Stdout: one JSON object (`getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals, optional `vsReference`). Exit `2` if the walk does not complete. See [Reference Delivery](api-reference.md#reference-delivery) for the contract under test.
+Stderr: compact vs-A0 scorecard. Stdout: one JSON object (`getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals, optional `vsReference`). Exit `2` if the walk does not complete. See [Reference Delivery](resource_resolution_model.md#11-reference-delivery) for the contract under test.
 
 ## Validating Workflows
 

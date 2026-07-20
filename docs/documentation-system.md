@@ -19,9 +19,10 @@ Two site sections have no markdown counterpart because their canonical source is
 | [`README.md`](../README.md) | Project overview, quick start, the workflow model at a glance | Everyone — first contact |
 | [`SETUP.md`](../SETUP.md) | Full installation, MCP client configuration, deploying the engineering-branch pattern to projects | Integrators |
 | [`docs/ide-setup.md`](ide-setup.md) | The always-applied bootstrap rule and connection verification | Integrators configuring an agent |
-| [`docs/api-reference.md`](api-reference.md) | Prose reference for the MCP tools: usage guidance, session lifecycle | Integrators and agents |
+| [`docs/api-reference.md`](api-reference.md) | Catalog of MCP tools and HTTP routes (brief; links out for depth) | Integrators |
 | [`docs/architecture.md`](architecture.md) | Hub for the six architecture models | Contributors |
-| [`docs/dispatch_model.md`](dispatch_model.md), [`checkpoint_model.md`](checkpoint_model.md), [`state_management_model.md`](state_management_model.md), [`artifact_management_model.md`](artifact_management_model.md), [`resource_resolution_model.md`](resource_resolution_model.md), [`workflow-fidelity.md`](workflow-fidelity.md) | One architecture model each | Contributors |
+| [`docs/dispatch_model.md`](dispatch_model.md), [`checkpoint_model.md`](checkpoint_model.md), [`state_management_model.md`](state_management_model.md), [`artifact_management_model.md`](artifact_management_model.md), [`resource_resolution_model.md`](resource_resolution_model.md), [`workflow-fidelity.md`](workflow-fidelity.md) | Behavioral deep specs (session, checkpoints, delivery, fidelity, …) | Contributors and agents needing depth |
+| [`site/api/tools.html`](../site/api/tools.html) | Wire tool descriptions and parameter schemas (generated from `src/tools/`) | Agents / IDE tooling |
 | [`docs/technique-protocol-specification.md`](technique-protocol-specification.md) | Normative contract for technique files: anatomy, addressing, composition, delivery | Workflow authors |
 | [`docs/orchestra-specification.md`](orchestra-specification.md) | Normative workflow/activity definition language: primitives, grammar, constraints | Workflow authors |
 | [`docs/development.md`](development.md) | Contributing to the server: build, test, conventions | Contributors |
@@ -37,7 +38,7 @@ Workflow definitions themselves (the `workflows` branch, checked out as a worktr
 
 - **A user-facing how-to** (installing, configuring, running) → the relevant root guide (`README.md` for first contact, `SETUP.md` for installation detail, `docs/ide-setup.md` for agent wiring), plus a page under `site/guide/` if it warrants the illustrated treatment.
 - **A new architecture model or a change to one** → a `docs/*_model.md` document, linked from the [`docs/architecture.md`](architecture.md) hub, with a matching page under `site/specs/`.
-- **Tool or schema surface changes** → the code and Zod schemas are the source; regenerate `schemas/` (`npm run build:schemas`) and the site's API pages (`npm run build:site`), and update [`docs/api-reference.md`](api-reference.md) prose where guidance changes.
+- **Tool or schema surface changes** → the code and Zod schemas are the source; regenerate `schemas/` (`npm run build:schemas`) and the site's API pages (`npm run build:site`). Keep [`docs/api-reference.md`](api-reference.md) as a short index (update one-line descriptions and links); put behavioral depth in the relevant architecture model.
 - **Workflow-authoring contracts** → the normative specifications ([`technique-protocol-specification.md`](technique-protocol-specification.md), [`orchestra-specification.md`](orchestra-specification.md)) and [`schemas/README.md`](../schemas/README.md).
 - **Implementation documentation** (module structure, request handling, on-disk state, the guard and test system) → a page under `site/internals/`, linking to the source files it describes.
 - **Design rationale** (why an architectural decision stands) → record the decision as an ADR on the engineering branch first, then surface the distilled rationale on `site/design/rationale.html`.
