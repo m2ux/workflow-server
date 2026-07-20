@@ -28,7 +28,7 @@ The technique library for the substrate-node-security-audit workflow. Each opera
 | [`assign-roster`](dispatch-sub-agents/assign-roster.md) | Assign each in-scope crate to a sub-agent group and identify its supplementary files |
 | [`route-leads`](dispatch-sub-agents/route-leads.md) | Route every reconnaissance lead to a specific agent designator |
 | [`dispatch-concurrent`](dispatch-sub-agents/dispatch-concurrent.md) | Compose each agent's bootstrap prompt and dispatch the roster concurrently |
-| [`collect-results`](dispatch-sub-agents/collect-results.md) | Collect each structured output and produce the dispatch manifest |
+| [`collect-results`](dispatch-sub-agents/collect-results.md) | Collect each structured output into the audit `{dispatch_results}` shape and produce the dispatch manifest |
 | [`verify-output-files`](dispatch-sub-agents/verify-output-files.md) | Confirm every expected output file persisted, re-dispatching for any missing file |
 
 ---
