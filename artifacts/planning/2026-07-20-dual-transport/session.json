@@ -268,10 +268,11 @@
           "codebase-comprehension",
           "plan-prepare",
           "assumptions-review",
-          "implement"
+          "implement",
+          "lean-coding-audit"
         ],
         "condition": "isDefault",
-        "currentActivity": "lean-coding-audit",
+        "currentActivity": "post-impl-review",
         "currentTechnique": "manage-artifacts::create-readme",
         "deliveredContent": {
           "orchestrator": {
@@ -291,12 +292,17 @@
             "resource:deferred-items": "b0a46ace68eb55c1",
             "resource:design-framework#design-framework-trizics-approach": "5f95cb1f05ddedff",
             "resource:design-framework#design-philosophy-artifact-template": "8c8321ca6e2c0fcf",
+            "resource:manual-diff-review#file-index-generation": "6b1069b50ad98df2",
+            "resource:manual-diff-review#manual-diff-review-section-template": "a2a859bdf494ef60",
             "resource:pr-description#template-initial": "e99e73893e3affd2",
             "resource:prism/pedagogy": "0edf3ca7f6d1ebc9",
             "resource:prism/rejected-paths": "3804141fca0fd460",
+            "resource:rust-substrate-code-review": "efd56efbbaedd397",
+            "resource:rust-substrate-code-review#report-template": "baf82029fa8608ad",
             "resource:tdd-concepts-rust": "7bccd44de8dce6fb",
             "resource:test-plan#templates": "ec2274505f624424",
             "resource:test-plan#test-plan-structure": "3a513db17e25bfbb",
+            "resource:test-suite-review": "cc2b0c0691a4f1f3",
             "resource:work-package/readme": "1c8d2d7e71c74aaf",
             "resource:wp-plan": "df3ebf9c411db0eb",
             "resource:wp-plan#template": "194e8a0db55dea8f",
@@ -310,6 +316,7 @@
             "technique:design-philosophy::define": "16aef98fe714c462",
             "technique:design-philosophy::determine-path": "817252cd9165c172",
             "technique:design-philosophy::document": "9e02b34914799ade",
+            "technique:findings-classification": "9d76ce481954a27b",
             "technique:github-cli-protocol::list-prs": "84a7e9d598407704",
             "technique:gitnexus-operations::analyze": "b6527d83f8088472",
             "technique:implement-task": "568cec29977ca789",
@@ -333,7 +340,10 @@
             "technique:review-assumptions::interview": "dd3b02157f65cd19",
             "technique:review-assumptions::reconcile": "2a6ba6b01381bb4a",
             "technique:review-assumptions::record": "9e2c7c8aa9109cdc",
+            "technique:review-code": "2738403addb34b69",
+            "technique:review-diff": "92800c336f871463",
             "technique:review-mode-detection": "6c6b64ca502bcedf",
+            "technique:review-test-suite": "06356e427773ee2f",
             "technique:stakeholder-overview": "3c82018808c24e5d",
             "technique:task-completion-review": "bf14b14b00293142",
             "technique:update-pr::create-pr": "0ce4712d9bd0de5c"
@@ -1520,16 +1530,126 @@
             },
             "timestamp": "2026-07-20T12:27:51.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "timestamp": "2026-07-20T13:03:13.896Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "post-impl-review",
+            "timestamp": "2026-07-20T13:03:13.896Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "manual-diff-review",
+              "techniqueId": "review-diff"
+            },
+            "timestamp": "2026-07-20T13:03:19.125Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "code-review",
+              "techniqueId": "review-code"
+            },
+            "timestamp": "2026-07-20T13:03:19.125Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "test-suite-review",
+              "techniqueId": "review-test-suite"
+            },
+            "timestamp": "2026-07-20T13:03:19.125Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "classify-and-route-findings",
+              "techniqueId": "findings-classification"
+            },
+            "timestamp": "2026-07-20T13:03:19.125Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "manual-diff-review#file-index-generation"
+            },
+            "timestamp": "2026-07-20T13:03:19.125Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "manual-diff-review#manual-diff-review-section-template"
+            },
+            "timestamp": "2026-07-20T13:03:19.125Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "rust-substrate-code-review"
+            },
+            "timestamp": "2026-07-20T13:03:19.125Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "rust-substrate-code-review#report-template"
+            },
+            "timestamp": "2026-07-20T13:03:19.125Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "test-suite-review"
+            },
+            "timestamp": "2026-07-20T13:03:19.125Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "tdd-concepts-rust"
+            },
+            "timestamp": "2026-07-20T13:03:19.125Z",
+            "type": "resource_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 38,
+        "seq": 40,
         "sessionIndex": "YWPJR4",
         "skippedActivities": [],
         "startedAt": "2026-07-20T09:08:49.101Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784550490,
+        "ts": 1784552599,
         "variables": {
           "artifact_name": "",
           "assumption_deferred": false,

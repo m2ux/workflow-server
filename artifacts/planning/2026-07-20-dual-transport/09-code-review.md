@@ -27,3 +27,15 @@ Hoisted the duplicated `beforeEach`/`afterEach` (`buildConfig()` → `createHttp
 net: **-46 lines** (103 insertions, 149 deletions in `tests/http-transport.test.ts`; commit `767f531a`)
 
 No accepted-but-unapplied simplifications remain — re-review surfaces no further findings. `needs_simplification` → `false`; the apply cycle exits after one iteration.
+
+## Code Review (post-impl-review)
+
+Full review of the branch diff (11 files, +1008/-11 at review time) for correctness, security, and maintainability, beyond the lean-coding pass above.
+
+| Severity | Location | Finding |
+|---|---|---|
+| Low | `src/transports/http.ts` `registerMcpRoute` | The `transports: Map<string, StreamableHTTPServerTransport>` has no idle-session eviction. A client that `initialize`s and never sends `DELETE /mcp` (or whose transport-level `close`/error never fires) leaves its entry — and its `McpServer` — resident for the life of the process. Same pattern as the MCP SDK's own `simpleStreamableHttp.js` sample; not a regression this work package introduces, but worth naming rather than leaving implicit. |
+
+**Disposition:** rolled into deferred item **D-2** (session resumability / multi-process sharing) rather than a separate ledger entry — an eviction policy (idle timeout, max-sessions cap) is the natural follow-up alongside an `EventStore`, and this work package's trusted-network, low-concurrency deployment model (per [02-design-philosophy.md](02-design-philosophy.md)) makes it acceptable to defer rather than block on. No `needs_code_fixes`.
+
+No other correctness, security, or API-contract issues found. Middleware ordering (`requestId` → `requestLogging` → routes → 404 → `errorHandler`) is correct — `errorHandler`'s 4-arg signature is what makes Express treat it as the error handler, and it sits last so both route errors and the catch-all 404 flow through the same JSON shape.

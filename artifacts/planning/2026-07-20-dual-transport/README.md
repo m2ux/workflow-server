@@ -1,6 +1,6 @@
 # Dual Transport Support - July 2026
 
-> Feature · Created 2026-07-20 · **Status:** Plan approved, ready for implementation
+> Feature · Created 2026-07-20 · **Status:** Post-implementation review complete, proceeding to validation
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -29,10 +29,15 @@ This groundwork is deliberately narrow: it does not add user accounts, logins, o
 | 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
 | 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete (initial) |
 | 06 | [Deferred items](06-deferred-items.md) | Consciously descoped items (D-1: HTTP auth) | — | ✅ Complete |
-| — | Implementation | Code changes per plan | 4-6h | ⬚ Pending |
-| 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
-| 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
-| 06 | [Test suite review](test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
+| 08 | Implementation | 5 tasks: CLI flags, transports/middleware modules, CLI router, deps/scripts | 4-6h | ✅ Complete |
+| 08 | [Provenance log](08-provenance-log.md) | Per-task assistant/model/context provenance | — | ✅ Complete |
+| 09 | [Lean-coding audit](09-code-review.md) | Over-engineering findings + applied simplification | 10-20m | ✅ Complete (1 finding, applied, net -46 lines) |
+| 09 | [Debt ledger](09-debt-ledger.md) | `ponytail:` deliberate-shortcut markers | — | ✅ Complete (clean, none) |
+| 10 | [Change block index](10-change-block-index.md) | Per-block rationale for manual diff review | 5-10m | ✅ Complete |
+| 10 | [Code review](09-code-review.md#code-review-post-impl-review) | Correctness/security/maintainability review | 10-20m | ✅ Complete (1 low-severity finding, deferred to D-2) |
+| 10 | [Structural analysis](10-structural-analysis.md) | Layering/coupling risk across the change set | 10-15m | ✅ Complete (no findings) |
+| 10 | [Test suite review](10-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ✅ Complete (1 gap found and closed) |
+| 10 | [Architecture summary](10-architecture-summary.md) | Stakeholder-readable overview of the change | 10-15m | ✅ Complete |
 | 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
 | — | `Comprehension artifact` | Persistent codebase knowledge | 20-45m | ⬚ Pending |
 | — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
