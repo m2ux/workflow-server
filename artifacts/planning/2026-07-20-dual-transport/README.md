@@ -1,9 +1,5 @@
 # Dual Transport Support - July 2026
 
-> Feature · Created 2026-07-20 · **Status:** Complete (planning/documentation) — PR #265 ready for review, merge outstanding
-
-> **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
-
 ## 🎯 Executive Summary
 
 Adds an HTTP/SSE transport alongside the server's existing stdio transport, selectable via a `--transport` CLI flag, with stdio remaining the default and unchanged. Forward-compatible HTTP-only middleware (request IDs, structured logging, error handling), health/readiness endpoints, and graceful shutdown are included to prepare for a future Docker/cloud phase without altering stdio behavior.
