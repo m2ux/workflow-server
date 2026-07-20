@@ -49,5 +49,6 @@ If the agent skips `discover`, your rule has not been picked up — re-check the
 
 - [README.md](../README.md) — project overview and quick-start.
 - [SETUP.md](../SETUP.md) — full installation and MCP client configuration.
-- [API Reference](api-reference.md) — tool roster, parameters, and session lifecycle.
+- [API Reference](api-reference.md) — tool catalog (links out for depth).
+- [Site API](../site/api/tools.html) — wire descriptions generated from source.
 - [Workflow Fidelity](workflow-fidelity.md) — enforcement layers and what the bootstrap procedure protects against.

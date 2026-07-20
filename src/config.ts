@@ -31,6 +31,26 @@ export interface ServerConfig {
   traceStore?: TraceStore;
   /** Minimum seconds between checkpoint issuance and response. Default 3. Set to 0 for testing. */
   minCheckpointResponseSeconds?: number;
+  /**
+   * Which transport connects the server built by createServer(). Optional on
+   * the interface — a config literal that omits it (as pre-existing tests
+   * and scripts do) is still valid — but `loadConfig` always populates it
+   * (default 'stdio') so real CLI startup never sees `undefined` here.
+   */
+  transport?: Transport;
+  /** Port the HTTP transport listens on. Default 3000. Ignored under stdio. */
+  port?: number;
+  /** Host the HTTP transport binds to. Default 'localhost'. Ignored under stdio. */
+  host?: string;
+}
+
+/** Transports the server can be connected to; see src/transports/. */
+export type Transport = 'stdio' | 'http';
+
+const VALID_TRANSPORTS: readonly Transport[] = ['stdio', 'http'];
+
+function isTransport(value: string): value is Transport {
+  return (VALID_TRANSPORTS as readonly string[]).includes(value);
 }
 
 /** Config shape after startup — traceStore is guaranteed present. */
@@ -116,6 +136,97 @@ function resolveWorkspaceDir(argv: readonly string[]): string {
 }
 
 /**
+ * Parse `--transport=stdio|http` or `--transport stdio|http`, mirroring
+ * `parseWorkspaceFlag`. Returns `undefined` when absent so the caller can
+ * fall through to the env var and then the 'stdio' default.
+ */
+function parseTransportFlag(argv: readonly string[]): string | undefined {
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === undefined) continue;
+    if (arg.startsWith('--transport=')) {
+      const value = arg.slice('--transport='.length).trim();
+      if (value) return value;
+    } else if (arg === '--transport') {
+      const next = argv[i + 1]?.trim();
+      if (next) return next;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Resolve the transport with CLI > env > 'stdio' default precedence. Throws
+ * WorkspaceConfigError on an unrecognized value — an explicit failure beats
+ * silently falling back to stdio when the caller made a typo.
+ */
+function resolveTransport(argv: readonly string[]): Transport {
+  const raw = parseTransportFlag(argv) ?? process.env['TRANSPORT']?.trim();
+  if (!raw) return 'stdio';
+  if (!isTransport(raw)) {
+    throw new WorkspaceConfigError(
+      `Unrecognized --transport value '${raw}'. Valid values: ${VALID_TRANSPORTS.join(', ')}.`,
+    );
+  }
+  return raw;
+}
+
+/**
+ * Parse `--port=N` or `--port N`, mirroring `parseWorkspaceFlag`.
+ */
+function parsePortFlag(argv: readonly string[]): string | undefined {
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === undefined) continue;
+    if (arg.startsWith('--port=')) {
+      const value = arg.slice('--port='.length).trim();
+      if (value) return value;
+    } else if (arg === '--port') {
+      const next = argv[i + 1]?.trim();
+      if (next) return next;
+    }
+  }
+  return undefined;
+}
+
+const DEFAULT_HTTP_PORT = 3000;
+
+/**
+ * Resolve the HTTP port with CLI > env > default precedence. Falls back to
+ * the default on a missing or non-positive-integer value rather than
+ * throwing — the port only matters when `--transport=http` is selected, so a
+ * bad value here shouldn't block stdio users.
+ */
+function resolvePort(argv: readonly string[]): number {
+  const raw = parsePortFlag(argv) ?? process.env['PORT']?.trim();
+  if (!raw) return DEFAULT_HTTP_PORT;
+  const parsed = Number(raw);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : DEFAULT_HTTP_PORT;
+}
+
+/**
+ * Parse `--host=HOST` or `--host HOST`, mirroring `parseWorkspaceFlag`.
+ */
+function parseHostFlag(argv: readonly string[]): string | undefined {
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === undefined) continue;
+    if (arg.startsWith('--host=')) {
+      const value = arg.slice('--host='.length).trim();
+      if (value) return value;
+    } else if (arg === '--host') {
+      const next = argv[i + 1]?.trim();
+      if (next) return next;
+    }
+  }
+  return undefined;
+}
+
+function resolveHost(argv: readonly string[]): string {
+  return parseHostFlag(argv) ?? envOrDefault('HOST', 'localhost');
+}
+
+/**
  * Build the server configuration from CLI args and environment variables.
  *
  * `argv` defaults to `process.argv.slice(2)` so the function can be invoked
@@ -131,5 +242,8 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
     serverVersion: envOrDefault('SERVER_VERSION', '2.1.0'),
     bundleHeadroomFraction: envNumberOrDefault('BUNDLE_HEADROOM_FRACTION', DEFAULT_BUNDLE_HEADROOM_FRACTION),
     bundleCharsPerToken: envNumberOrDefault('BUNDLE_CHARS_PER_TOKEN', DEFAULT_BUNDLE_CHARS_PER_TOKEN),
+    transport: resolveTransport(argv),
+    port: resolvePort(argv),
+    host: resolveHost(argv),
   };
 }

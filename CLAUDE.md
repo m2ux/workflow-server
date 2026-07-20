@@ -10,7 +10,8 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 
 - **Install:** `npm install`
 - **Build:** `npm run build`
-- **Run:** `npm start` or `npm run dev`
+- **Run (stdio, default):** `npm start` or `npm run dev`
+- **Run (HTTP):** `npm run start:http` or `npm run dev:http`
 - **Tests:** `npm test`
 - **Typecheck:** `npm run typecheck`
 - **Workflow data:** `git worktree add ./workflows workflows` (see [README.md](README.md) and [SETUP.md](SETUP.md)).

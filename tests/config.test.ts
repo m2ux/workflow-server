@@ -94,3 +94,77 @@ describe('loadConfig — workspace argument', () => {
     });
   });
 });
+
+describe('loadConfig — transport selection', () => {
+  const envKeys = ['TRANSPORT', 'PORT', 'HOST'] as const;
+  let envBefore: Record<string, string | undefined>;
+
+  beforeEach(() => {
+    envBefore = Object.fromEntries(envKeys.map((k) => [k, process.env[k]]));
+    for (const k of envKeys) delete process.env[k];
+  });
+
+  afterEach(() => {
+    for (const k of envKeys) {
+      if (envBefore[k] === undefined) delete process.env[k];
+      else process.env[k] = envBefore[k];
+    }
+  });
+
+  it('defaults transport to stdio when --transport is absent', () => {
+    const config = loadConfig(['--workspace=/tmp/ws']);
+    expect(config.transport).toBe('stdio');
+  });
+
+  it('parses --transport=http', () => {
+    const config = loadConfig(['--workspace=/tmp/ws', '--transport=http']);
+    expect(config.transport).toBe('http');
+  });
+
+  it('parses the space-separated --transport http form', () => {
+    const config = loadConfig(['--workspace=/tmp/ws', '--transport', 'http']);
+    expect(config.transport).toBe('http');
+  });
+
+  it('falls back to the TRANSPORT env var when no CLI flag is supplied', () => {
+    process.env['TRANSPORT'] = 'http';
+    const config = loadConfig(['--workspace=/tmp/ws']);
+    expect(config.transport).toBe('http');
+  });
+
+  it('prefers --transport over TRANSPORT when both are present', () => {
+    process.env['TRANSPORT'] = 'http';
+    const config = loadConfig(['--workspace=/tmp/ws', '--transport=stdio']);
+    expect(config.transport).toBe('stdio');
+  });
+
+  it('throws WorkspaceConfigError on an unrecognized --transport value', () => {
+    expect(() => loadConfig(['--workspace=/tmp/ws', '--transport=websocket'])).toThrow(WorkspaceConfigError);
+    expect(() => loadConfig(['--workspace=/tmp/ws', '--transport=websocket'])).toThrow(/Unrecognized --transport/);
+  });
+
+  it('defaults port to 3000 and host to localhost', () => {
+    const config = loadConfig(['--workspace=/tmp/ws']);
+    expect(config.port).toBe(3000);
+    expect(config.host).toBe('localhost');
+  });
+
+  it('parses --port and --host', () => {
+    const config = loadConfig(['--workspace=/tmp/ws', '--port=8080', '--host=0.0.0.0']);
+    expect(config.port).toBe(8080);
+    expect(config.host).toBe('0.0.0.0');
+  });
+
+  it('prefers --port/--host CLI values over PORT/HOST env vars', () => {
+    process.env['PORT'] = '9999';
+    process.env['HOST'] = '10.0.0.1';
+    const config = loadConfig(['--workspace=/tmp/ws', '--port=8080', '--host=0.0.0.0']);
+    expect(config.port).toBe(8080);
+    expect(config.host).toBe('0.0.0.0');
+  });
+
+  it('falls back to the default port on a non-positive-integer PORT value', () => {
+    const config = loadConfig(['--workspace=/tmp/ws', '--port=not-a-number']);
+    expect(config.port).toBe(3000);
+  });
+});

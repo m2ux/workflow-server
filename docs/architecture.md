@@ -24,6 +24,6 @@ Because agents are autonomous, they must be audited to ensure they actually foll
 
 ## Tool Reference
 
-See [API Reference](api-reference.md) for the complete list of MCP tools, their parameters, and the `session_index` lifecycle.
+See [API Reference](api-reference.md) for the tool catalog. Wire contracts live in [`site/api/tools.html`](../site/api/tools.html); session and navigation behavior live in the models above.
 
 See [Development Guide](development.md) for setup, build commands, and testing.

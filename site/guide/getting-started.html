@@ -113,6 +113,7 @@ chmod +x deploy.sh
   }
 }</code></pre>
   <p>Set <code>WORKFLOW_WORKSPACE</code> to the project root from <a href="#deploy">step 2</a>. It points at the repository whose <code>.engineering/artifacts/planning/</code> folder holds session state. It is required: the server refuses to start without a workspace (you can pass <code>--workspace=PATH</code> as a command-line argument instead). Restart your MCP client after editing the configuration.</p>
+  <p class="prose">IDE MCP clients use the default <strong>stdio</strong> transport. For the opt-in HTTP transport, see <a href="#http-transport">HTTP transport</a> below.</p>
 
   <div class="table-wrap">
     <table>
@@ -123,9 +124,31 @@ chmod +x deploy.sh
         <tr><td><code>SCHEMAS_DIR</code></td><td><code>./schemas</code></td><td>JSON Schemas served via the <code>workflow-server://schemas</code> MCP resource</td></tr>
         <tr><td><code>SERVER_NAME</code></td><td><code>workflow-server</code></td><td>Name reported by <code>health_check</code></td></tr>
         <tr><td><code>SERVER_VERSION</code></td><td><code>1.0.0</code></td><td>Version reported by <code>health_check</code></td></tr>
+        <tr><td><code>TRANSPORT</code> or <code>--transport</code></td><td><code>stdio</code></td><td>Transport to start (<code>stdio</code> or <code>http</code>); CLI flag takes precedence over the env var</td></tr>
+        <tr><td><code>PORT</code> or <code>--port</code></td><td><code>3000</code></td><td>Port the HTTP transport listens on; ignored under stdio</td></tr>
+        <tr><td><code>HOST</code> or <code>--host</code></td><td><code>localhost</code></td><td>Host the HTTP transport binds to; ignored under stdio</td></tr>
       </tbody>
     </table>
   </div>
+
+  <h2 id="http-transport">HTTP transport</h2>
+  <p class="prose">To listen on HTTP instead of stdio:</p>
+  <pre><code>npm run build
+npm run start:http
+# equivalent:
+# node dist/index.js --workspace=/path/to/your/project --transport=http --port=3000 --host=localhost</code></pre>
+  <p class="prose">During development, <code>npm run dev:http</code> runs the same entry point via <code>tsx</code>.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Endpoint</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET /health</code></td><td>Liveness probe</td></tr>
+        <tr><td><code>GET /ready</code></td><td>Readiness probe (workflow, schemas, and workspace paths)</td></tr>
+        <tr><td><code>POST /mcp</code></td><td>MCP Streamable HTTP</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="prose">Place the HTTP listener behind network-level access control or a reverse proxy; the server does not implement application-level authentication. Source detail: <a href="https://github.com/m2ux/workflow-server/blob/main/SETUP.md#http-transport">SETUP.md</a> and <a href="https://github.com/m2ux/workflow-server/blob/main/docs/api-reference.md">API reference</a>.</p>
 
   <h2 id="bootstrap-rule">4. Add the bootstrap rule</h2>
   <p>Add this to your IDE's always-applied rule set (a Cursor rule, a Claude Code project rule, or the equivalent in your client):</p>

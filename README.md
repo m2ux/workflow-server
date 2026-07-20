@@ -1,4 +1,4 @@
-# 🔄 Workflow Orchestration MCP Server
+# 🧭 Workflow Orchestration MCP Server
 
 [![Node.js 18+](https://img.shields.io/badge/node-18%2B-blue.svg)](https://nodejs.org/en/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -92,6 +92,21 @@ npm run build
 ```
 
 `WORKFLOW_WORKSPACE` is required: it points at the project whose `.engineering/artifacts/planning/` folder holds session state (`--workspace=PATH` on the command line works too). Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs.
+
+The default transport is **stdio** (what IDE MCP clients use). To run over HTTP instead:
+
+```bash
+npm run start:http
+# or: node dist/index.js --workspace=/path/to/your/project --transport=http --port=3000
+```
+
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /health` | Liveness |
+| `GET /ready` | Readiness (workflow/schemas/workspace paths) |
+| `POST /mcp` | MCP Streamable HTTP |
+
+HTTP is opt-in. Place it behind network access control or a reverse proxy; the server does not implement application-level authentication. See [SETUP.md](SETUP.md#http-transport) and [docs/development.md](docs/development.md) for `TRANSPORT` / `PORT` / `HOST`.
 
 ### Deploy to Your Project
 

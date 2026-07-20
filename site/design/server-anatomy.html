@@ -72,12 +72,12 @@
   <p class="prose contributor-note">For contributors. Build and test instructions: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/development.md">Development guide (source)</a>.</p>
 
   <h2 id="shape">The shape of the codebase</h2>
-  <p>Startup is a short, linear path: the entry point parses configuration, a factory builds the MCP server, and two registrar functions attach all sixteen tools as closures. There is no routing layer and no dependency-injection framework — the registrars close over the <code>ServerConfig</code> and call shared machinery directly.</p>
+  <p>Startup is a short, linear path: the entry point parses configuration and selects a transport, a factory builds the MCP server, and two registrar functions attach all seventeen tools as closures. There is no dependency-injection framework — the registrars close over the <code>ServerConfig</code> and call shared machinery directly.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 380" role="img" aria-labelledby="shape-title shape-desc">
       <title id="shape-title">Startup and registration structure</title>
-      <desc id="shape-desc">The entry point src/index.ts calls createServer in src/server.ts, which invokes three registrars: registerWorkflowTools with twelve tools, registerResourceTools with four tools, and registerSchemaResources for the schemas MCP resource. The two tool registrars sit on shared machinery: loaders, schemas, the session store, validators, delivery, and trace.</desc>
+      <desc id="shape-desc">The entry point src/index.ts loads config and dispatches to a transport module (stdio or http), each of which calls createServer in src/server.ts, which invokes three registrars: registerWorkflowTools with twelve tools, registerResourceTools with four tools, and registerSchemaResources for the schemas MCP resource. The two tool registrars sit on shared machinery: loaders, schemas, the session store, validators, delivery, and trace.</desc>
       <defs>
         <marker id="arrowsa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
@@ -86,7 +86,7 @@
       <g font-size="15" font-weight="600" text-anchor="middle">
         <rect x="330" y="15" width="300" height="52" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
         <text x="480" y="38" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace">src/index.ts</text>
-        <text x="480" y="58" fill="var(--diagram-note)" font-size="13" font-weight="400">parses config, connects stdio</text>
+        <text x="480" y="58" fill="var(--diagram-note)" font-size="13" font-weight="400">parses config, selects transport</text>
         <rect x="330" y="99" width="300" height="52" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
         <text x="480" y="122" fill="var(--diagram-label)" font-family="ui-monospace, Menlo, Consolas, monospace">createServer()</text>
         <text x="480" y="142" fill="var(--diagram-note)" font-size="13" font-weight="400">src/server.ts, wires the MCP surface</text>
@@ -112,7 +112,7 @@
         <line x1="490" y1="263" x2="490" y2="307" marker-end="url(#arrowsa)"/>
       </g>
     </svg>
-    <figcaption>Startup and registration. <code>main()</code> loads the configuration and connects the stdio transport; <code>createServer()</code> attaches every tool. Individual tools are closures inside the two registrars — <a href="https://github.com/m2ux/workflow-server/blob/main/src/tools/workflow-tools.ts"><code>workflow-tools.ts</code></a> registers the twelve navigation, checkpoint, and trace tools, and <a href="https://github.com/m2ux/workflow-server/blob/main/src/tools/resource-tools.ts"><code>resource-tools.ts</code></a> registers <code>start_session</code>, <code>dispatch_child</code>, <code>get_technique</code>, and <code>get_resource</code>.</figcaption>
+    <figcaption>Startup and registration. <code>main()</code> loads the configuration and dispatches to <code>startStdioServer</code> or <code>startHttpServer</code> (<code>src/transports/</code>); each transport calls <code>createServer()</code> to attach every tool. Individual tools are closures inside the two registrars — <a href="https://github.com/m2ux/workflow-server/blob/main/src/tools/workflow-tools.ts"><code>workflow-tools.ts</code></a> registers the twelve navigation, checkpoint, and trace tools, and <a href="https://github.com/m2ux/workflow-server/blob/main/src/tools/resource-tools.ts"><code>resource-tools.ts</code></a> registers <code>start_session</code>, <code>dispatch_child</code>, <code>get_technique</code>, and <code>get_resource</code>.</figcaption>
   </figure>
 
   <h2 id="modules">Module map</h2>

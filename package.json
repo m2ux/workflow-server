@@ -12,7 +12,9 @@
     "check:site": "tsx scripts/check-site-links.ts",
     "check:svg": "tsx scripts/check-svg-layout.ts",
     "start": "node dist/index.js",
+    "start:http": "node dist/index.js --transport=http",
     "dev": "tsx src/index.ts",
+    "dev:http": "tsx src/index.ts --transport=http",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "check:binding": "tsx scripts/check-binding-fidelity.ts",
@@ -31,13 +33,17 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/node": "^20.19.30",
+    "supertest": "^7.1.4",
+    "@types/supertest": "^6.0.3",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "vitest": "^1.6.1"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.2",
+    "express": "^5.2.1",
     "yaml": "^2.9.0",
     "zod": "^3.22.4",
     "zod-to-json-schema": "^3.22.4"
