@@ -1,6 +1,6 @@
 # Phase 1 Cloud Migration Update — Agent-Managed Worktree Architecture - July 2026
 
-> Enhancement · Created 2026-07-20 · **Status:** Codebase comprehension complete — next: requirements elicitation
+> Enhancement · Created 2026-07-20 · **Status:** Requirements elicitation complete — next: research
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -24,6 +24,7 @@ This work package updates Phase 1 so the agent (MCP client) creates and owns the
 |---|------|-------------|----------|--------|
 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
+| 03 | [Requirements elicitation](03-requirements-elicitation.md) | Scope, success criteria, agent/operator contract | 20-40m | ✅ Complete |
 | 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
 | 05 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
 | — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |

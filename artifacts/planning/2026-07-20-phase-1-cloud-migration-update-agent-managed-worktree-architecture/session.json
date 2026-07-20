@@ -296,6 +296,24 @@
             "optionId": "full-workflow",
             "respondedAt": "2026-07-20T16:11:46.000Z"
           },
+          "requirements-elicitation-elicitation-complete": {
+            "effects": {
+              "variablesSet": {
+                "elicitation_complete": true
+              }
+            },
+            "optionId": "complete",
+            "respondedAt": "2026-07-20T16:34:38.000Z"
+          },
+          "requirements-elicitation-stakeholder-transcript": {
+            "effects": {
+              "variablesSet": {
+                "has_stakeholder_input": false
+              }
+            },
+            "optionId": "skip-discussion",
+            "respondedAt": "2026-07-20T16:31:08.000Z"
+          },
           "start-work-package-issue-verification": {
             "effects": {
               "variablesSet": {
@@ -317,10 +335,11 @@
         },
         "completedActivities": [
           "start-work-package",
-          "design-philosophy"
+          "design-philosophy",
+          "codebase-comprehension"
         ],
-        "condition": "isDefault",
-        "currentActivity": "codebase-comprehension",
+        "condition": "needs_elicitation == true",
+        "currentActivity": "requirements-elicitation",
         "currentTechnique": "analyse-challenge::run-loop",
         "deliveredContent": {
           "orchestrator": {
@@ -332,6 +351,8 @@
             "bundle:workflow-engine::finalize-activity": "5ea8365ed60aa839",
             "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
             "bundle:workflow-engine::yield-checkpoint": "1b1e6a4df3a7ceb1",
+            "resource:assumption-reconciliation#integration-with-assumptions-log": "4caf91efceeec93a",
+            "resource:assumption-reconciliation#scorecard": "696280de9a73ac01",
             "resource:assumptions-review#assumptions-log-template": "553093758d4d9956",
             "resource:assumptions-review#classification-vocabulary": "288f0f350267c099",
             "resource:assumptions-review#probe-vocabulary": "7cdb7489af93e5c6",
@@ -342,6 +363,8 @@
             "resource:design-framework#design-philosophy-artifact-template": "0e0251e3cec8a4cc",
             "resource:meta/planning-readme": "c00771f2180831f1",
             "resource:pr-description#template-initial": "82ace6cadfc010d7",
+            "resource:requirements-elicitation": "390b186c709f7846",
+            "resource:requirements-elicitation#document-template": "aa5218f62051cdb3",
             "resource:work-package/readme": "6317501107feed7d",
             "technique:analyse-challenge::run-loop": "b3359dd23bf54d41",
             "technique:codebase-comprehension::deep-dive": "76fa95b6d9f5700a",
@@ -363,8 +386,13 @@
             "technique:naming-conventions": "e2d69a749fa5231e",
             "technique:project-type-detection": "335b1f7c8d05d69d",
             "technique:reference-resolution": "e62fc9c2b068c3e1",
-            "technique:review-assumptions::collect": "6fb01242b44f1f1e",
-            "technique:review-assumptions::record": "c6c87068ca9434d3",
+            "technique:requirements-elicitation::ask-question": "446410b583a6adf4",
+            "technique:requirements-elicitation::create-document": "1b69798535df2b4b",
+            "technique:requirements-elicitation::discuss": "60e27d428d6200ab",
+            "technique:requirements-elicitation::elicit": "bb25e336a20ed666",
+            "technique:review-assumptions::collect": "8839d712ff1b8fc9",
+            "technique:review-assumptions::reconcile": "e25d03f0f9554be2",
+            "technique:review-assumptions::record": "e46aab42627ff6e4",
             "technique:review-mode-detection": "6c6b64ca502bcedf",
             "technique:stakeholder-overview": "4f4dbdf44a365143",
             "technique:update-pr::create-pr": "0ce4712d9bd0de5c"
@@ -1020,16 +1048,234 @@
             },
             "timestamp": "2026-07-20T16:21:44.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "timestamp": "2026-07-20T16:23:13.904Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "timestamp": "2026-07-20T16:23:13.904Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "stakeholder-discussion",
+              "techniqueId": "requirements-elicitation::discuss"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "elicit-requirements",
+              "techniqueId": "requirements-elicitation::elicit"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "ask-question",
+              "techniqueId": "requirements-elicitation::ask-question"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-document",
+              "techniqueId": "requirements-elicitation::create-document"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "review-assumptions::reconcile"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "requirements-elicitation#document-template"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "requirements-elicitation"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumptions-review#probe-vocabulary"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumptions-review#classification-vocabulary"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumption-reconciliation#integration-with-assumptions-log"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "codebase-comprehension#artifact-template"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumption-reconciliation#scorecard"
+            },
+            "timestamp": "2026-07-20T16:23:27.696Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "stakeholder-transcript",
+            "timestamp": "2026-07-20T16:23:51.399Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "stakeholder-transcript",
+            "data": {
+              "optionId": "skip-discussion"
+            },
+            "timestamp": "2026-07-20T16:31:08.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "has_stakeholder_input",
+              "value": false
+            },
+            "timestamp": "2026-07-20T16:31:08.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "elicitation-complete",
+            "timestamp": "2026-07-20T16:32:33.221Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "elicitation-complete",
+            "data": {
+              "optionId": "complete"
+            },
+            "timestamp": "2026-07-20T16:34:38.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "elicitation_complete",
+              "value": true
+            },
+            "timestamp": "2026-07-20T16:34:38.000Z",
+            "type": "variable_set"
           }
         ],
         "schemaVersion": 1,
-        "seq": 28,
+        "seq": 36,
         "sessionIndex": "H7H32D",
         "skippedActivities": [],
         "startedAt": "2026-07-20T15:44:48.036Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784564541,
+        "ts": 1784565295,
         "variables": {
           "artifact_name": "",
           "assumption_batch_accepted": false,
@@ -1049,7 +1295,7 @@
           "context_scope_uncertain": false,
           "current_block_index": 0,
           "current_branch": "",
-          "elicitation_complete": false,
+          "elicitation_complete": true,
           "existing_pr_number": "",
           "github_issue_found": false,
           "gitnexus_indexed": false,

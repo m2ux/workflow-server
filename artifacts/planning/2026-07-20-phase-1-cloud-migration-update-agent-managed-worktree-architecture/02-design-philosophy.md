@@ -55,7 +55,7 @@ The workflow server (TypeScript/Node MCP) loads config from `src/config.ts`, reg
 
 ## Success Criteria
 
-Success criteria: [requirements](requirements-elicitation.md#success-criteria) once elicited.
+Success criteria: [requirements](03-requirements-elicitation.md#success-criteria).
 
 ## Notes
 
