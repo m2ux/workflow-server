@@ -1,6 +1,6 @@
 # Dual Transport Support - July 2026
 
-> Feature · Created 2026-07-20 · **Status:** Post-implementation review complete, proceeding to validation
+> Feature · Created 2026-07-20 · **Status:** Strategic review complete, awaiting findings decision
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -38,9 +38,9 @@ This groundwork is deliberately narrow: it does not add user accounts, logins, o
 | 10 | [Structural analysis](10-structural-analysis.md) | Layering/coupling risk across the change set | 10-15m | ✅ Complete (no findings) |
 | 10 | [Test suite review](10-test-suite-review.md) | Test quality and coverage assessment | 10-20m | ✅ Complete (1 gap found and closed) |
 | 10 | [Architecture summary](10-architecture-summary.md) | Stakeholder-readable overview of the change | 10-15m | ✅ Complete |
-| 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
+| — | Validation | `npm run build` / `typecheck` / `vitest run` — all green (pre-existing unrelated failures excluded) | 15-30m | ✅ Complete |
+| 12 | [Strategic review](12-strategic-review-1.md) | Scope, orphan, minimality, commit-signature, and PR-body checks | 15-30m | ✅ Complete (1 finding: unsigned commits, accepted) |
 | — | `Comprehension artifact` | Persistent codebase knowledge | 20-45m | ⬚ Pending |
-| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ⬚ Pending |
 

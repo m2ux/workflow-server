@@ -260,6 +260,15 @@
             },
             "optionId": "proceed",
             "respondedAt": "2026-07-20T09:43:22.000Z"
+          },
+          "strategic-review-unsigned-commits-prompt": {
+            "effects": {
+              "variablesSet": {
+                "resign_unsigned_commits_requested": false
+              }
+            },
+            "optionId": "decline-resign",
+            "respondedAt": "2026-07-20T13:17:51.000Z"
           }
         },
         "completedActivities": [
@@ -269,10 +278,12 @@
           "plan-prepare",
           "assumptions-review",
           "implement",
-          "lean-coding-audit"
+          "lean-coding-audit",
+          "post-impl-review",
+          "validate"
         ],
         "condition": "isDefault",
-        "currentActivity": "post-impl-review",
+        "currentActivity": "strategic-review",
         "currentTechnique": "manage-artifacts::create-readme",
         "deliveredContent": {
           "orchestrator": {
@@ -284,14 +295,17 @@
             "bundle:workflow-engine::finalize-activity": "5ea8365ed60aa839",
             "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
             "bundle:workflow-engine::yield-checkpoint": "1b1e6a4df3a7ceb1",
+            "resource:architecture-review": "adddcfd364e18a3f",
+            "resource:architecture-summary": "64c85c4989ed3ba2",
+            "resource:architecture-summary#architecture-summary-artifact-template": "f4b196df60ad3f29",
             "resource:assumption-reconciliation#integration-with-assumptions-log": "345bff0ba9591a27",
             "resource:assumption-reconciliation#scorecard": "8f8e6ca927739149",
             "resource:assumptions-review#assumptions-log-template": "9f56c0e28957d579",
             "resource:codebase-comprehension": "924e800f9cd45d7b",
             "resource:codebase-comprehension#artifact-template": "fbd3a97aff91ef49",
-            "resource:deferred-items": "b0a46ace68eb55c1",
+            "resource:deferred-items": "552e8d2e0b52d875",
             "resource:design-framework#design-framework-trizics-approach": "5f95cb1f05ddedff",
-            "resource:design-framework#design-philosophy-artifact-template": "8c8321ca6e2c0fcf",
+            "resource:design-framework#design-philosophy-artifact-template": "d746d9e5b3ec3c0c",
             "resource:manual-diff-review#file-index-generation": "6b1069b50ad98df2",
             "resource:manual-diff-review#manual-diff-review-section-template": "a2a859bdf494ef60",
             "resource:pr-description#template-initial": "e99e73893e3affd2",
@@ -299,11 +313,12 @@
             "resource:prism/rejected-paths": "3804141fca0fd460",
             "resource:rust-substrate-code-review": "efd56efbbaedd397",
             "resource:rust-substrate-code-review#report-template": "baf82029fa8608ad",
+            "resource:strategic-review#strategic-review-artifact-template": "5f8cc46669093050",
             "resource:tdd-concepts-rust": "7bccd44de8dce6fb",
             "resource:test-plan#templates": "ec2274505f624424",
             "resource:test-plan#test-plan-structure": "3a513db17e25bfbb",
             "resource:test-suite-review": "cc2b0c0691a4f1f3",
-            "resource:work-package/readme": "1c8d2d7e71c74aaf",
+            "resource:work-package/readme": "5d748de97b346295",
             "resource:wp-plan": "df3ebf9c411db0eb",
             "resource:wp-plan#template": "194e8a0db55dea8f",
             "technique:cargo-operations::test": "eeb7b49a939649e5",
@@ -322,6 +337,8 @@
             "technique:implement-task": "568cec29977ca789",
             "technique:issue-reference-detection": "0f54731a08d194e9",
             "technique:manage-artifacts::create-readme": "bb25e731276caf8f",
+            "technique:manage-artifacts::verify-artifact-conforms": "db1ee70f40b4888e",
+            "technique:manage-artifacts::verify-readme-conforms": "4b54bccccd4ffa2e",
             "technique:manage-artifacts::write-artifact": "cc45b522103ea09c",
             "technique:manage-git::artifact-commits": "19b361ba9207828e",
             "technique:manage-git::detect-merge-strategy": "810fc9074a3c3afe",
@@ -345,6 +362,12 @@
             "technique:review-mode-detection": "6c6b64ca502bcedf",
             "technique:review-test-suite": "06356e427773ee2f",
             "technique:stakeholder-overview": "3c82018808c24e5d",
+            "technique:strategic-findings-analysis": "c5a8c5e0118e2044",
+            "technique:strategic-review::changes-folder": "fd29005c69aedf5b",
+            "technique:strategic-review::document-findings": "2ad7436916cab025",
+            "technique:strategic-review::review-scope": "4905b94b08292e25",
+            "technique:strategic-review::verify-fragment": "7dd3feb551c16607",
+            "technique:summarize-architecture": "a363f28bcab1c00e",
             "technique:task-completion-review": "bf14b14b00293142",
             "technique:update-pr::create-pr": "0ce4712d9bd0de5c"
           }
@@ -1640,16 +1663,209 @@
             },
             "timestamp": "2026-07-20T13:03:19.125Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "timestamp": "2026-07-20T13:11:26.135Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate",
+            "timestamp": "2026-07-20T13:11:26.135Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "validate",
+            "timestamp": "2026-07-20T13:12:10.617Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "strategic-review",
+            "timestamp": "2026-07-20T13:12:10.617Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "review-strategy",
+              "techniqueId": "strategic-review::review-scope"
+            },
+            "timestamp": "2026-07-20T13:12:15.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-readme",
+              "techniqueId": "manage-artifacts::verify-readme-conforms"
+            },
+            "timestamp": "2026-07-20T13:12:15.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-artifact-conformance",
+              "techniqueId": "manage-artifacts::verify-artifact-conforms"
+            },
+            "timestamp": "2026-07-20T13:12:15.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "ensure-changes-folder-entry",
+              "techniqueId": "strategic-review::changes-folder"
+            },
+            "timestamp": "2026-07-20T13:12:15.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-change-fragment",
+              "techniqueId": "strategic-review::verify-fragment"
+            },
+            "timestamp": "2026-07-20T13:12:15.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "document-findings",
+              "techniqueId": "strategic-review::document-findings"
+            },
+            "timestamp": "2026-07-20T13:12:15.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-architecture-summary",
+              "techniqueId": "summarize-architecture"
+            },
+            "timestamp": "2026-07-20T13:12:15.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "analyze-strategic-findings",
+              "techniqueId": "strategic-findings-analysis"
+            },
+            "timestamp": "2026-07-20T13:12:15.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "architecture-review"
+            },
+            "timestamp": "2026-07-20T13:12:15.878Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "architecture-summary#architecture-summary-artifact-template"
+            },
+            "timestamp": "2026-07-20T13:12:15.878Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-20T13:12:15.878Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "strategic-review#strategic-review-artifact-template"
+            },
+            "timestamp": "2026-07-20T13:12:15.878Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "design-framework#design-philosophy-artifact-template"
+            },
+            "timestamp": "2026-07-20T13:12:15.878Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "architecture-summary"
+            },
+            "timestamp": "2026-07-20T13:12:15.878Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "checkpoint": "unsigned-commits-prompt",
+            "timestamp": "2026-07-20T13:13:15.551Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "strategic-review",
+            "checkpoint": "unsigned-commits-prompt",
+            "data": {
+              "optionId": "decline-resign"
+            },
+            "timestamp": "2026-07-20T13:17:51.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "resign_unsigned_commits_requested",
+              "value": false
+            },
+            "timestamp": "2026-07-20T13:17:51.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "work-package/readme"
+            },
+            "timestamp": "2026-07-20T13:18:22.179Z",
+            "type": "resource_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 40,
+        "seq": 48,
         "sessionIndex": "YWPJR4",
         "skippedActivities": [],
         "startedAt": "2026-07-20T09:08:49.101Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784552599,
+        "ts": 1784553502,
         "variables": {
           "artifact_name": "",
           "assumption_deferred": false,
