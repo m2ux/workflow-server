@@ -1,6 +1,6 @@
 # Dual Transport Support - July 2026
 
-> Feature · Created 2026-07-20 · **Status:** Planning
+> Feature · Created 2026-07-20 · **Status:** Plan approved, ready for implementation
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -16,17 +16,20 @@ This work package adds an HTTP transport as a second, opt-in way to run the same
 
 ## Solution Overview
 
-*Populated during plan-prepare activity.*
+The server will learn a second way to start up: alongside the existing mode (talking to a single local tool over its input/output streams), it can now start as a small local web server that listens on a network port, turned on with one command-line switch. Nothing changes for anyone who doesn't use that switch — the server behaves exactly as it does today. Turning it on adds a health check anyone can ping to confirm the server is alive, readable structured logs for every request, and a clean shutdown when the server is stopped, so it stops mid-task work instead of dropping requests.
+
+This groundwork is deliberately narrow: it does not add user accounts, logins, or network security by itself, and it is meant to run behind existing network protections (a private network or a reverse proxy) rather than being exposed directly to the internet. What it does deliver is the missing piece that was blocking browser-based tools, shared team setups, and a future move to running the server in the cloud — all of which need to reach the server over a network rather than as a local subprocess.
 
 ## 📊 Progress
 
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
-| 01 | `Design philosophy` | Problem classification, design rationale, workflow path | 15-30m | ⬚ Pending |
-| 01 | `Assumptions log` | Tracked assumptions across all activities | 10-15m | ⬚ Pending |
-| 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
-| 05 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
-| — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
+| 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
+| 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete (11 assumptions) |
+| 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
+| 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete (initial) |
+| 06 | [Deferred items](06-deferred-items.md) | Consciously descoped items (D-1: HTTP auth) | — | ✅ Complete |
+| — | Implementation | Code changes per plan | 4-6h | ⬚ Pending |
 | 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
 | 06 | [Test suite review](test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
