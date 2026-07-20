@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.3.0
 ---
 
 ## Capability
@@ -17,6 +17,10 @@ The PR number for this work package — its merge gates the status update and th
 
 Path to the planning folder where the final outcome and retrospective are recorded
 
+### trace_tokens
+
+*(optional)* Opaque HMAC-signed trace-token collection accumulated across the run. When present and non-empty, resolve once at close-out; when absent or empty, skip the mechanical session-trace path.
+
 ## Outputs
 
 ### retrospective_document
@@ -27,6 +31,14 @@ Workflow [retrospective](../../resources/workflow-retrospective.md#output-sectio
 
 `COMPLETE.md`
 
+### session_trace_document
+
+Lean mechanical session-trace summary when `{trace_tokens}` resolves to non-empty events — per-activity tool counts, durations, errors, and validation-warning (`vw`) clusters. Omit or one-line skip when tokens are absent/empty.
+
+#### artifact
+
+`session-trace.md`
+
 ## Rules
 
 ### retrospective-honest
@@ -35,7 +47,7 @@ Retrospective should be honest about what worked and what didn't — avoid gener
 
 ### skip-if-trivial
 
-Skip retrospective if: only prompted responses occurred (no clarifications, corrections, or process questions), OR work package was trivial (<30 min, single task).
+Skip the user-message retrospective when only prompted responses occurred (no clarifications, corrections, or process questions), OR the work package was trivial (<30 min, single task) — **unless** resolved trace data shows non-trivial mechanical friction (`vw` clusters, error bursts, or redundant fetch storms). In that carve-in, write the mechanical observations and recommendations even when user-message signals are empty.
 
 ### history-private
 

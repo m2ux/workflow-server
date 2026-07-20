@@ -2,7 +2,7 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
-The workflow includes 27 resources that provide templates, guidance, and reference material for techniques and activities. Each resource lives as `resources/<id>.md` and is loaded by resource id (for example `pr-description`). Resource ids are the sole load key.
+Markdown resources for planning-folder templates, elicitation and review guidance, and close-out artifacts.
 
 | Resource ID | Title | Purpose |
 |-------------|-------|---------|
@@ -25,6 +25,7 @@ The workflow includes 27 resources that provide templates, guidance, and referen
 | `strategic-review` | Strategic Review | Strategic review artifact template (procedure and rules live on the strategic-review ops) |
 | `architecture-summary` | Architecture Summary | Architecture summary template with UML diagram guidance |
 | `workflow-retrospective` | Workflow Retrospective | Retrospective section template (written into COMPLETE.md) |
+| `session-trace` | Session Trace | Lean mechanical session-trace artifact template (written at close-out) |
 | `complete-wp` | Complete Work Package | Close-out document template — the single terminal artifact |
 | `manual-diff-review` | Manual Diff Review | Index-table, header, and report-section forms — the report renders as a code-review.md section (procedure and rules live on review-diff) |
 | `deferred-items` | Deferred Items | Register template — the single canonical home for deferred work that every other artifact links to |

@@ -111,12 +111,11 @@ Acknowledge the reviewer's point first, then state the actions taken explicitly;
 Standard response shapes:
 
 ```
-Acknowledgment + action:  "Valid point. [Change made]. This [explains benefit]."
-Question resolution:      "Correct about [concern]. [Action taken] to address this."
+Action taken:             "[Change made]. [Brief rationale if needed]."
+Question resolution:      "[Action taken] for [concern]. [Where it lands]."
 Implementation confirmed: "Implemented as suggested. [Brief description] in [location]."
 Technical explanation:    "[Direct answer]. [Implementation details] to resolve this."
 ```
-
 ### verify-reference-links
 
 Verify every source-code reference link in responses and the review document resolves; cite technical details properly.

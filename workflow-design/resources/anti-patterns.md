@@ -565,15 +565,15 @@ A universal technique is not hoisted to workflow.techniques.activity.
 
 ### AP-40. readme-orients-not-transcribes
 
-"README `### NN. Activity` + `Steps:**` / checkpoints table / transitions / `## Variables` / `## Rules` / estimated times"**
+"README `### NN. Activity` + `Steps:**` / checkpoints table / transitions / `## Variables` / `## Rules` / estimated times" / "The workflow includes 27 resources… Each resource lives as `resources/<id>.md`"
 
-README transcribes YAML structure instead of orienting.
+README transcribes YAML structure, inventory counts, or loader packaging instead of orienting.
 
-**Detect:** README enumerates in prose or tables: activity `steps[]` (including inline checkpoint options/`effect`/`autoAdvanceMs` and loops), `decisions[]`/`transitions[]`, per-step technique bindings, workflow `variables`, `rules`, or per-activity estimated times. Authoritative definition is `workflow.yaml` / `activities/NN-<id>.yaml`. Test: if the block must be edited when those YAML fields change, it is transcribing.
+**Detect:** README enumerates in prose or tables: activity `steps[]` (including inline checkpoint options/`effect`/`autoAdvanceMs` and loops), `decisions[]`/`transitions[]`, per-step technique bindings, workflow `variables`, `rules`, or per-activity estimated times; or states inventory counts ("N resources/techniques/activities") or loader/path HOW (`resources/<id>.md`, "loaded by resource id", "sole load key"). Authoritative definition is `workflow.yaml` / `activities/NN-<id>.yaml` / the folder index. Test: if the block must be edited when those YAML fields or folder contents change, it is transcribing.
 
-**Do not flag:** Mermaid/ASCII flow diagrams (activity- or step-flow); orientation the YAML lacks — PURPOSE, at-a-glance activity sequence (name + one-line role + connections), outcomes/value, file structure, techniques overview, links to authoritative YAMLs. A third checklist of which audit/technique passes run (drifting from activity binds) is `bind-site-is-orchestration-truth`.
+**Do not flag:** Mermaid/ASCII flow diagrams (activity- or step-flow); orientation the YAML lacks — PURPOSE, at-a-glance activity sequence (name + one-line role + connections), outcomes/value, file structure overview without counts, techniques overview, links to authoritative YAMLs, a purpose sentence plus index table of ids. A third checklist of which audit/technique passes run (drifting from activity binds) is `bind-site-is-orchestration-truth`.
 
-**Fix:** Delete prose/table enumerations of steps/checkpoints/loops/decisions/transitions/bindings and Variables/Rules/estimated-time sections; KEEP diagrams and orientation. Readers open the YAML definition for the rest. See [Complete Documentation Structure](./design-principles.md#11-complete-documentation-structure).
+**Fix:** Delete prose/table enumerations of steps/checkpoints/loops/decisions/transitions/bindings, Variables/Rules/estimated-time sections, inventory counts, and loader HOW; KEEP diagrams and purpose orientation. Readers open the YAML definition or index table for the rest. See [Complete Documentation Structure](./design-principles.md#11-complete-documentation-structure).
 
 ### AP-41. avoidance-voice-in-definitions
 
@@ -1510,3 +1510,15 @@ A planning artifact is persisted without a creation-guide Template, or the techn
 **Do not flag:** Non-planning outputs (variables, PRs, commits); citing an existing Template with short when/which bullets only; `no-guide-wrapper-ceremony` (too much wrapper around a template — opposite pole); fill content that lives correctly in the resource Template while Protocol only orders persist.
 
 **Fix:** Author or extend a creation-guide resource with `## Template` + `## Rules`; map the bare filename in the resources index; replace Protocol layout essays with a cite to `#template`. See [Creation Guide for Generated Documents](./design-principles.md#28-creation-guide-for-generated-documents); also `resource-fills-not-does`, `no-technique-resource-dual-home`.
+
+### AP-117. no-engine-mechanics-as-rules
+
+"ambient-bag-variables-changed — Declared outputs appear in the activity's `variables_changed`"
+
+A leaf Rule (or a Protocol phase whose only job is the same restatement) re-encodes engine or binding mechanics that already have an authoritative home.
+
+**Detect:** A technique, activity, or workflow `## Rules` / `rules[]` entry — or a Protocol phase that only restates bag/envelope/binding/dispatch HOW — repeats a contract owned by meta workflow-engine, variable-binding, finalize-activity, or schema composition (e.g. declared outputs land via `variables_changed`; mutations use the sanctioned channel; loops and conditions are structural, not prose rules) without adding a domain invariant those homes do not already encode.
+
+**Do not flag:** Novel domain constraints the engine does not already enforce; engine/conduct/bootstrap surfaces whose domain IS that contract; activity `set` that duplicates a technique output (`no-set-of-technique-output`); tool/delivery recipes (`no-tool-usage-prescription`, `no-delivery-mechanism-narration`); a rule that restates its own technique's Protocol without claiming engine HOW (`no-rule-protocol-restatement`).
+
+**Fix:** Delete the leaf restatement. Keep declared Outputs and rely on variable-binding / finalize-activity (or the authoritative engine home). If that home is incomplete, fix it once there — do not copy the contract onto producer leaves. See also `no-one-step-rules`, `platform-semantics-in-capability`.
