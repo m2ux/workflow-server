@@ -6,7 +6,7 @@ import { resolve, join } from 'node:path';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import type { ServerConfig } from '../src/config.js';
-import { createHttpApp, shutdownHandler } from '../src/transports/http.js';
+import { createHttpApp, shutdownHandler, startHttpServer } from '../src/transports/http.js';
 
 function buildConfig(overrides: Partial<ServerConfig> = {}): ServerConfig {
   return {
@@ -125,6 +125,20 @@ describe('HTTP transport', () => {
         .send({ jsonrpc: '2.0', method: 'tools/list', params: {}, id: 2 });
 
       expect(listRes.status).toBe(200);
+    });
+  });
+
+  describe('startHttpServer binding', () => {
+    it('binds to config.host/config.port rather than a hardcoded address', async () => {
+      const config = buildConfig({ host: '127.0.0.1', port: 0 });
+      const httpServer = await startHttpServer(config);
+      try {
+        const address = httpServer.address();
+        expect(address).not.toBeNull();
+        expect(typeof address === 'object' && address?.address).toBe('127.0.0.1');
+      } finally {
+        await new Promise((resolveClose) => httpServer.close(resolveClose));
+      }
     });
   });
 
