@@ -6,10 +6,10 @@
   "agentId": "orchestrator",
   "sessionIndex": "G4RPFD",
   "currentActivity": "dispatch-client-workflow",
-  "currentTechnique": "workflow-engine::present-checkpoint-to-user",
+  "currentTechnique": "workflow-engine::evaluate-transition",
   "condition": "",
-  "seq": 17,
-  "ts": 1784562382,
+  "seq": 19,
+  "ts": 1784563718,
   "startedAt": "2026-07-20T15:41:12.178Z",
   "completedActivities": [
     "discover-session",
@@ -247,6 +247,26 @@
       },
       "timestamp": "2026-07-20T15:46:22.278Z",
       "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "commit-activity-artifacts",
+        "techniqueId": "workflow-engine::commit-and-persist"
+      },
+      "timestamp": "2026-07-20T16:07:50.470Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "advance-activity",
+        "techniqueId": "workflow-engine::evaluate-transition"
+      },
+      "timestamp": "2026-07-20T16:08:38.548Z",
+      "type": "technique_fetched"
     }
   ],
   "triggeredWorkflows": [
@@ -263,6 +283,15 @@
             },
             "optionId": "skip-issue",
             "respondedAt": "2026-07-20T15:57:22.000Z"
+          },
+          "start-work-package-pr-creation": {
+            "effects": {
+              "variablesSet": {
+                "pr_skipped": false
+              }
+            },
+            "optionId": "proceed",
+            "respondedAt": "2026-07-20T16:06:03.000Z"
           }
         },
         "completedActivities": [],
@@ -278,6 +307,7 @@
             "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
             "bundle:workflow-engine::yield-checkpoint": "1b1e6a4df3a7ceb1",
             "resource:deferred-items": "f2fe7746e1e1e297",
+            "resource:meta/planning-readme": "c00771f2180831f1",
             "resource:pr-description#template-initial": "82ace6cadfc010d7",
             "resource:work-package/readme": "6317501107feed7d",
             "technique:github-cli-protocol::list-prs": "84a7e9d598407704",
@@ -588,16 +618,49 @@
             },
             "timestamp": "2026-07-20T16:01:42.644Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "pr-creation",
+            "timestamp": "2026-07-20T16:03:47.309Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "pr-creation",
+            "data": {
+              "optionId": "proceed"
+            },
+            "timestamp": "2026-07-20T16:06:03.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "pr_skipped",
+              "value": false
+            },
+            "timestamp": "2026-07-20T16:06:03.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "meta/planning-readme"
+            },
+            "timestamp": "2026-07-20T16:06:45.852Z",
+            "type": "resource_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 12,
+        "seq": 16,
         "sessionIndex": "H7H32D",
         "skippedActivities": [],
         "startedAt": "2026-07-20T15:44:48.036Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784563302,
+        "ts": 1784563605,
         "variables": {
           "artifact_name": "",
           "assumption_batch_accepted": false,
@@ -707,8 +770,10 @@
       "resource:planning-readme": "f9df793930ea4e35",
       "technique:version-control::detect-repo-type": "c5b8d9ee93a20c9e",
       "technique:version-control::initialize-folder": "877638197d6028e1",
+      "technique:workflow-engine::commit-and-persist": "745764305919abc3",
       "technique:workflow-engine::create-session": "ef82ddce858c06d5",
       "technique:workflow-engine::dispatch-activity": "c4db7e7b2d36f238",
+      "technique:workflow-engine::evaluate-transition": "432b38187cddb6c6",
       "technique:workflow-engine::extract-identifying-context": "87d005b8511b9611",
       "technique:workflow-engine::list-workflows": "7dcdb88a423eea38",
       "technique:workflow-engine::match-saved-session": "d73a26bd036932b0",
