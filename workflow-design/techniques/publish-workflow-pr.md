@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 ## Capability
@@ -34,3 +34,14 @@ The pull request number.
 ### 4. Mark Ready
 
 - Once the description is finalized, apply [mark-ready](../../meta/techniques/github-cli-protocol/mark-ready.md) with *repo_path* `{target_path}` and `{pr_number}`; capture `{pr_status}`
+
+### 5. Report PR Outputs
+
+- Include `{pr_url}` and `{pr_number}` in the activity's `activity_complete.variables_changed` so session state carries the pull-request identity for terminal activities
+- When `{target_path}`, `{workflow_branch}`, or `{worktree_created}` are still empty in session state, re-assert any known values in the same `variables_changed` map
+
+## Rules
+
+### ambient-bag-variables-changed
+
+Declared `{pr_url}` and `{pr_number}` appear in the activity's `variables_changed`. Terminal consumers read session state; PR identity is not left only in the dispatch brief.

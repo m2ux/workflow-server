@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -33,8 +33,16 @@ Filesystem path of the dedicated workflows worktree for this session: `~/project
 
 - Do not treat `{planning_folder_path}` as `{target_path}`; do not nest planning under the worktree
 
+### 4. Report Target Path
+
+- Include `{target_path}` in the activity's `activity_complete.variables_changed` so session state carries the edit-root path for terminal activities
+
 ## Rules
 
 ### worktree-distinct-from-planning-folder
 
 `{target_path}` is the edit/commit/PR root; `{planning_folder_path}` is the server-owned artifact folder. Never conflate them.
+
+### ambient-bag-variables-changed
+
+Declared `{target_path}` appears in the activity's `variables_changed`. Terminal consumers read session state; the path is not left only in the dispatch brief.
