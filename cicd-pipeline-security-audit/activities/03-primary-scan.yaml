@@ -1,8 +1,9 @@
 id: primary-scan
-version: 1.2.0
+version: 1.3.0
 name: Primary Scan
 description: Run per-submodule scanner agents and merge their findings.
 techniques:
+  - scatter-gather
   - execute-cicd-audit
 required: true
 steps:
@@ -12,8 +13,20 @@ steps:
       - action: log
         message: Starting primary scan — dispatching per-submodule scanner agents
   - kind: technique
+    id: compose-all-scanners
+    technique: dispatch-scanners::compose-scanner-briefs
+  - kind: technique
     id: dispatch-all-scanners
-    technique: dispatch-scanners::dispatch-all
+    technique:
+      name: orchestration-patterns::dispatch-workers
+      inputs:
+        concurrency: scanners_assigned
+  - kind: technique
+    id: gather-all-scanners
+    technique:
+      name: orchestration-patterns::gather-results
+      inputs:
+        expected_ids: worker_briefs
   - kind: technique
     id: verify-dispatch-completeness
     technique: dispatch-scanners::verify-dispatch-completeness
@@ -24,14 +37,23 @@ steps:
     id: verify-scanner-output-files
     technique: dispatch-scanners::verify-output-files
   - kind: technique
+    id: compose-verification-agent
+    technique: dispatch-scanners::compose-verification-brief
+  - kind: technique
     id: dispatch-verification-agent
-    technique: dispatch-scanners::dispatch-verification
+    technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: compose-gap-redispatch
+    technique: dispatch-scanners::compose-gap-briefs
   - kind: technique
     id: act-on-gap-report
-    technique: dispatch-scanners::act-on-gap-report
+    technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: compose-merge-agent
+    technique: dispatch-scanners::compose-merge-brief
   - kind: technique
     id: dispatch-merge-agent
-    technique: dispatch-scanners::dispatch-merge
+    technique: orchestration-patterns::dispatch-workers
   - kind: technique
     id: validate-reconciliation
     technique: dispatch-scanners::verify-reconciliation
