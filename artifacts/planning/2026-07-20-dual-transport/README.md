@@ -1,6 +1,6 @@
 # Dual Transport Support - July 2026
 
-> Feature · Created 2026-07-20 · **Status:** Submitted — PR marked ready for review
+> Feature · Created 2026-07-20 · **Status:** Complete (planning/documentation) — PR #265 ready for review, merge outstanding
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -40,10 +40,10 @@ This groundwork is deliberately narrow: it does not add user accounts, logins, o
 | 10 | [Architecture summary](10-architecture-summary.md) | Stakeholder-readable overview of the change | 10-15m | ✅ Complete |
 | — | Validation | `npm run build` / `typecheck` / `vitest run` — all green (pre-existing unrelated failures excluded) | 15-30m | ✅ Complete |
 | 12 | [Strategic review](12-strategic-review-1.md) | Scope, orphan, minimality, commit-signature, and PR-body checks | 15-30m | ✅ Complete (1 finding: unsigned commits, accepted) |
-| — | `Comprehension artifact` | Persistent codebase knowledge | 20-45m | ⬚ Pending |
+| — | `Comprehension artifact` | Persistent codebase knowledge | 20-45m | N/A (findings folded into plan/assumptions log instead) |
 | — | DCO attestation | [Provenance log](08-provenance-log.md#attestation) | — | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ✅ Marked ready — no reviewer feedback yet |
-| 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ⬚ Pending |
+| — | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ✅ Complete |
 
 ## 🔗 Links
 

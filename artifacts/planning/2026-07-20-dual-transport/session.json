@@ -294,11 +294,12 @@
           "lean-coding-audit",
           "post-impl-review",
           "validate",
-          "strategic-review"
+          "strategic-review",
+          "submit-for-review"
         ],
-        "condition": "review_passed == true",
-        "currentActivity": "submit-for-review",
-        "currentTechnique": "update-pr::mark-ready",
+        "condition": "review_requires_changes == false",
+        "currentActivity": "complete",
+        "currentTechnique": "finalize-documentation::ensure-docs",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:89bbdae40e12504b": "89bbdae40e12504b",
@@ -317,6 +318,7 @@
             "resource:assumptions-review#assumptions-log-template": "9f56c0e28957d579",
             "resource:codebase-comprehension": "924e800f9cd45d7b",
             "resource:codebase-comprehension#artifact-template": "fbd3a97aff91ef49",
+            "resource:complete-wp#template": "de88fb29b55c76a6",
             "resource:deferred-items": "552e8d2e0b52d875",
             "resource:design-framework#design-framework-trizics-approach": "5f95cb1f05ddedff",
             "resource:design-framework#design-philosophy-artifact-template": "d746d9e5b3ec3c0c",
@@ -328,18 +330,23 @@
             "resource:prism/rejected-paths": "3804141fca0fd460",
             "resource:rust-substrate-code-review": "efd56efbbaedd397",
             "resource:rust-substrate-code-review#report-template": "baf82029fa8608ad",
+            "resource:session-trace#template": "59d38fa3d128066a",
             "resource:strategic-review#strategic-review-artifact-template": "5f8cc46669093050",
             "resource:tdd-concepts-rust": "7bccd44de8dce6fb",
             "resource:test-plan#templates": "ec2274505f624424",
             "resource:test-plan#test-plan-structure": "3a513db17e25bfbb",
             "resource:test-suite-review": "cc2b0c0691a4f1f3",
             "resource:work-package/readme": "5d748de97b346295",
+            "resource:workflow-retrospective": "12cc64fa2f8794a4",
+            "resource:workflow-retrospective#output-section-template": "953c74cf59a2d114",
             "resource:wp-plan": "df3ebf9c411db0eb",
             "resource:wp-plan#template": "194e8a0db55dea8f",
             "technique:cargo-operations::test": "eeb7b49a939649e5",
             "technique:codebase-comprehension::deep-dive": "76fa95b6d9f5700a",
             "technique:codebase-comprehension::revise-questions": "863b8a68a7408193",
             "technique:codebase-comprehension::survey": "555ed1ca46307c8e",
+            "technique:conduct-retrospective::retrospective": "e151f6c3a9f29cce",
+            "technique:conduct-retrospective::select-next": "6663e69faa01e6dd",
             "technique:create-test-plan": "f0380b57ab957c3b",
             "technique:dco-provenance::append-task-row": "9e8c07543dacaf9c",
             "technique:dco-provenance::record-attestation": "9a3e20d2b0cdcec8",
@@ -347,6 +354,10 @@
             "technique:design-philosophy::define": "16aef98fe714c462",
             "technique:design-philosophy::determine-path": "817252cd9165c172",
             "technique:design-philosophy::document": "9e02b34914799ade",
+            "technique:finalize-documentation::create-complete-doc": "f64198c47c9f0471",
+            "technique:finalize-documentation::ensure-docs": "25611f3e3cea695d",
+            "technique:finalize-documentation::finalize-test-plan": "1b2f4fba3e39054a",
+            "technique:finalize-documentation::render-token-usage": "d208419a62dfa078",
             "technique:findings-classification": "9d76ce481954a27b",
             "technique:github-cli-protocol::list-prs": "84a7e9d598407704",
             "technique:gitnexus-operations::analyze": "b6527d83f8088472",
@@ -1973,16 +1984,129 @@
             },
             "timestamp": "2026-07-20T13:36:03.245Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-07-20T13:38:17.331Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "complete",
+            "timestamp": "2026-07-20T13:38:17.331Z",
+            "type": "activity_entered"
+          },
+          {
+            "timestamp": "2026-07-20T13:38:17.331Z",
+            "type": "workflow_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "conduct-retrospective",
+              "techniqueId": "conduct-retrospective::retrospective"
+            },
+            "timestamp": "2026-07-20T13:38:22.815Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "select-next",
+              "techniqueId": "conduct-retrospective::select-next"
+            },
+            "timestamp": "2026-07-20T13:38:22.815Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "session-trace#template"
+            },
+            "timestamp": "2026-07-20T13:38:22.815Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "workflow-retrospective"
+            },
+            "timestamp": "2026-07-20T13:38:22.815Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "workflow-retrospective#output-section-template"
+            },
+            "timestamp": "2026-07-20T13:38:22.815Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "finalize-test-plan",
+              "techniqueId": "finalize-documentation::finalize-test-plan"
+            },
+            "timestamp": "2026-07-20T13:38:57.827Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-complete-doc",
+              "techniqueId": "finalize-documentation::create-complete-doc"
+            },
+            "timestamp": "2026-07-20T13:38:58.219Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "render-token-usage",
+              "techniqueId": "finalize-documentation::render-token-usage"
+            },
+            "timestamp": "2026-07-20T13:38:58.916Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "ensure-docs",
+              "techniqueId": "finalize-documentation::ensure-docs"
+            },
+            "timestamp": "2026-07-20T13:38:59.805Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "complete-wp#template"
+            },
+            "timestamp": "2026-07-20T13:40:48.308Z",
+            "type": "resource_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 61,
+        "seq": 68,
         "sessionIndex": "YWPJR4",
         "skippedActivities": [],
         "startedAt": "2026-07-20T09:08:49.101Z",
-        "status": "running",
+        "status": "completed",
         "triggeredWorkflows": [],
-        "ts": 1784554563,
+        "ts": 1784554848,
         "variables": {
           "artifact_name": "",
           "assumption_deferred": false,
