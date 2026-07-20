@@ -7,7 +7,7 @@ metadata:
 
 # Design Assumptions Guide
 
-Creation guide for bare filename `assumptions-log.md`. Design-time assumption categories and log shape — the workflow-design counterpart of the work-package [assumptions-review](../../work-package/resources/assumptions-review.md) guide. Shared methodology (false-assumption sources, risk assessment, judgement-augmentation review) is reused from that guide; this resource owns the design-session log layout.
+Creation guide for bare filename `assumptions-log.md`. Design-time assumption categories and log shape — the workflow-design counterpart of the work-package [assumptions-review](../../work-package/resources/assumptions-review.md) guide. Shared methodology (false-assumption sources, risk assessment, review practice) is reused from that guide; this resource owns the design-session log layout.
 
 ## Assumption Categories
 
@@ -25,7 +25,7 @@ Creation guide for bare filename `assumptions-log.md`. Design-time assumption ca
 | Value | Meaning |
 |-------|---------|
 | `audit` | Settleable by schema / convention / principle checks — see [design-assumption-reconciliation](./design-assumption-reconciliation.md) |
-| `open` | Genuine design judgement — batched into Gate 2 (`approve-to-commit`) after reconcile |
+| `open` | Genuine design judgement — remains open after reconcile until confirmed, corrected, or deferred |
 
 ## Assumptions Log Template
 
@@ -61,7 +61,7 @@ One row per assumption, updated in place across its lifecycle — surfaced, reco
 
 - **Bare filename** `assumptions-log.md` — design sessions fill **this** template (not the work-package assumptions-review shape), including when collect/record ops are borrowed from work-package.
 - **Table is the record** — no prose duplicate of the log elsewhere (README / COMPLETE link here).
-- **One row per assumption**, updated in place through reconcile; open judgements batch into Gate 2.
-- **Null ceremony:** if none significant, one row stating that — do not prompt the user to confirm null.
-- **Categories** come from the activity's `assumption_categories` input (design set above).
+- **One row per assumption**, updated in place through reconcile.
+- **Null row format:** if none significant, one row stating that (same shape as a normal log row).
+- **Categories** use the design set in the table above.
 - **Line budget:** summary + log rows only; keep under ~80 lines unless the open-judgement set is large.

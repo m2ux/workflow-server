@@ -1,8 +1,8 @@
 ---
 name: codebase-comprehension
-description: Resource for the codebase-comprehension activity. Provides the artifact template and comprehension techniques for building persistent knowledge artifacts.
+description: Comprehension techniques, artifact template, and deep-dive guidance from reverse engineering and code forensics literature.
 metadata:
-  version: 1.1.0
+  version: 1.1.1
   order: 25
   legacy_id: 25
 ---
@@ -79,21 +79,21 @@ Structural comprehension answers "what exists", not "how data moves" or "what ha
 
 #### Data Flow Tracing
 
-For each function or code path the work package will modify, trace end-to-end before proposing any design:
+Consult end-to-end data-flow for each function or code path the work package will modify:
 
-- **Upstream**: where does input data originate? Read the producer's implementation, not just the consumer's expectations. If the producer is in a different module, crate, or service, comprehension must extend there.
+- **Upstream**: where does input data originate? The producer's implementation, not just the consumer's expectations. If the producer is in a different module, crate, or service, comprehension extends there.
 - **Transformations**: intermediate steps that filter, aggregate, clamp, or reformat between production and consumption.
 - **Downstream**: who reads the outputs, and how do consumers react to different output states?
-- **Invariant alignment**: what invariants does the producer guarantee vs. what the consumer assumes? Before adding a validation (e.g. an `ensure!` guard), verify the producer can always satisfy it. A consumer-side assertion for an invariant the producer doesn't enforce rejects legitimate data.
+- **Invariant alignment**: what invariants does the producer guarantee vs. what the consumer assumes? A consumer-side assertion for an invariant the producer doesn't enforce rejects legitimate data.
 
-The most common comprehension failure is staying inside the module being modified: if function F in module M takes inputs from module P, comprehension must include P — otherwise guards are structurally correct within M but operationally wrong.
+The most common comprehension failure is staying inside the module being modified: if function F in module M takes inputs from module P, comprehension includes P — otherwise guards are structurally correct within M but operationally wrong.
 
 #### Operational Context and Failure Modes
 
-For the code path being modified:
+Lexicon for the code path under study:
 
 - **Execution context**: dispatch class, thread model, execution priority. In Substrate, a `Mandatory` dispatch returning an error rejects the block; in a consensus system where all nodes process the same inputs, that halts the network. Execution context determines whether an error is a local retry, a skipped item, or a system-wide halt.
-- **Error propagation**: trace what happens on error — caught and handled? Rolled back at a transaction boundary? Surfaced to the user? Halts processing? For inherent extrinsics, check `IsFatalError` — if all variants return `true`, every error is fatal.
+- **Error propagation**: what happens on error — caught and handled? Rolled back at a transaction boundary? Surfaced to the user? Halts processing? For inherent extrinsics, `IsFatalError` — if all variants return `true`, every error is fatal.
 - **Operational scenarios** beyond the steady-state happy path:
   - **Startup and genesis**: initial values; a guard assuming "previous value is meaningful" may fail on the first block after genesis when the previous value is zero/default.
   - **Recovery after downtime**: if external state advanced significantly while offline, a bounded-advance guard may reject the catch-up jump.
@@ -101,7 +101,7 @@ For the code path being modified:
   - **Reorganization and rollback**: if an external chain (e.g. Cardano) reorganizes, can the same numeric position appear with a different hash?
 - **Consensus implications**: if every node receives the same input, every node hits the same error — a guard that rejects "invalid" data doesn't protect the system, it halts it. Any assertion in a consensus-critical consumer must be matched by enforcement in the producer; if the producer doesn't guarantee the invariant, the consumer must handle violations without halting.
 
-Weave these into the architecture survey and deep dives, not as a separate end step: when examining key abstractions ask "where does this data come from?"; when documenting rationale ask "what happens if this fails?"; when mapping domain concepts ask "what is the timing relationship with dependencies?". The artifact's Open Questions should include questions of this kind ("Does the producer enforce the window bound?", "What happens at genesis when the previous position is zero?") — they prevent guards from becoming halt vectors.
+These concerns belong in the architecture survey and deep dives, not as a separate end step: key abstractions raise "where does this data come from?"; rationale raises "what happens if this fails?"; domain mapping raises "what is the timing relationship with dependencies?". Open Questions of this kind ("Does the producer enforce the window bound?", "What happens at genesis when the previous position is zero?") prevent guards from becoming halt vectors.
 
 ## Artifact Template
 

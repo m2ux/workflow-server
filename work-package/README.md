@@ -8,7 +8,7 @@
 
 This workflow guides the complete lifecycle of a single work package through 15 activities total — 14 main activities plus 1 sub-flow (codebase comprehension, entered from design-philosophy or assumptions-review). Each activity has defined techniques, checkpoints, and transitions. Activities may be conditional (skipped based on complexity), looped (repeated on failure), or overridden (adapted for review mode).
 
-Assumption and comprehension stages bind the reusable [`analyse-challenge`](./techniques/analyse-challenge/TECHNIQUE.md) technique group (analyse → parallel challenge → combine → converge) so agent-resolvable concerns converge before residual stakeholder interview or batch checkpoints.
+Assumption and comprehension stages converge agent-resolvable concerns (analyse → parallel challenge → combine) before residual stakeholder asks.
 
 | # | Activity | Required | Description |
 |---|----------|----------|-------------|

@@ -641,15 +641,15 @@ An opaque path array stands in for named artifact inputs.
 
 ### AP-46. no-resource-caller-backlink
 
-"Composed by [generate-summary]" / "produced by the X technique"
+"Composed by [generate-summary]" / "activities bind [analyse-challenge]… via [interview]" / "live on the producing technique: [research]"
 
-A resource backlinks or names its caller.
+A resource backlinks its callers or narrates host orchestration.
 
-**Detect:** A resource (template, schema, guide, prompt, reference) names/links its host callers — techniques, activities, checkpoints, loops, or passes that produce, consume, enforce, or walk it. Signals: `"produced by the X technique"`, `"Composed by [X]"`, `"Used by…"`, "Used By"/"Referenced By" columns, technique/activity FILE PATHS as link targets / role-to-file tables, or bare host ids in Enforcement / "gated by" / "bound by" prose (`intake-and-context`, `expressiveness-confirmed`, `quality-review` anti-pattern pass). Reverse caller coupling breaks reuse (see also `io-agnostic-contract`, `bind-site-is-orchestration-truth`).
+**Detect:** A resource (template, schema, creation guide, reference — not a meta prompt whose domain is engine/conduct) names/links host callers or bind/gate topology. Signals include: `"produced by the X technique"`, `"live on the producing/consuming technique"`, `"Composed by [X]"`, `"Used by…"`, role-to-file tables, technique/activity FILE PATHS as link targets, bare host ids in Enforcement / "gated by" / "bound by" prose, **and** orchestration essays — `"activities bind…"`, `analyse:` / `::` bind recipes, residual gates (`{has_open_assumptions}`, `{has_open_questions}`), "via [interview]", checkpoint/batch routing that belongs in activity YAML. Reverse caller coupling and bind-topology narration both break reuse (see also `io-agnostic-contract`, `bind-site-is-orchestration-truth`, `resource-fills-not-does`).
 
-**Do not flag:** Forward dependency — the resource tells ITS READER to run a technique (prompt/instruction applying workflow-engine / agent-conduct); "see also" to another technique's content; generic technique-model/ontology prose (Goal → Activity → Technique); citations of sibling resources or catalog entry **names**. Test: producer/consumer/enforcer/caller of this resource → remove; technique the reader should run → keep.
+**Do not flag:** (1) Meta / bootstrap / agent-conduct / workflow-engine **prompt** resources whose domain IS instructing the reader to run engine techniques. (2) Sibling **resource** citations and catalog entry **names**. (3) A single "see also" to a shared **format** rule the filler applies while filling (e.g. markdown line-breaks, canonical-home map) — not a host op. (4) Generic technique-model ontology (Goal → Activity → Technique) with no host ids. Test: if deleting the passage would still leave a usable template/vocab/guide, and the deleted text named who binds/produces/gates this resource → flag.
 
-**Fix:** Describe the resource by what it IS (Rule, template, vocabulary); drop caller/backlink/Enforcement inventories; move role→file and gate maps into the owning activity YAML or rendering technique. See [Maximize Schema Expressiveness](./design-principles.md#5-maximize-schema-expressiveness) (portable contracts).
+**Fix:** Describe the resource by what it IS (template, vocabulary, fill rules); drop caller/backlink/Enforcement inventories and bind/gate essays; move role→file and orchestration into the owning activity YAML or technique Protocol. See [Maximize Schema Expressiveness](./design-principles.md#5-maximize-schema-expressiveness) (portable contracts).
 
 ### AP-47. no-redundant-link-label
 
@@ -1205,15 +1205,15 @@ Lifecycle rows are append-only instead of updated in place.
 
 ### AP-92. resource-fills-not-does
 
-"## File Index Generation / 1. Ensure the branch is current…"
+"## Surfacing Assumptions / Ask after each phase/task…" / "## Research Protocol / 1. Ensure…"
 
-A resource owns DOES procedure instead of fill/consult content.
+A resource owns DOES procedure (session cadence or operational HOW) instead of fill/consult content.
 
-**Detect:** A resource section is shaped like procedure, rules list, or decision criteria — technique work in the wrong file. Costs: invisible to guards (unparsed `{token}` reads); unaddressable (no dotted rule symbol); dual-homing drift with a paired technique. Discriminators: vocabulary stays a resource when only a TEMPLATE consumes it; becomes a technique rule when OPERATIONS apply it behaviorally. Methodology consumed by a different technique than the filename suggests stays a resource for its real consumer — ownership, not name.
+**Detect:** A resource section is shaped like technique Protocol or session orchestration — imperative cadence ("after each phase/task", "Ask after…", "surface… then classify…"), numbered operational HOW ops apply, or behavioral routing ("validate before proceeding", "confirm at checkpoint", "proceed to interview/batch"). Costs: invisible to guards (unparsed `{token}` reads); unaddressable (no dotted rule symbol); dual-homing drift with a paired technique. Discriminators: **vocabulary / labels / probe lists** a TEMPLATE consumes stay; **behavioral cadence and gate routing** that OPERATIONS apply move to the technique. Methodology consumed by a different technique than the filename suggests stays a resource for its real consumer — ownership, not name. Bind-topology essays are also `no-resource-caller-backlink`.
 
-**Do not flag:** Artifact templates/anchors, format skeletons, vocabularies a template consumes, reference lexicons, calibration benchmarks — what the agent FILLS or CONSULTS.
+**Do not flag:** Artifact templates/anchors, format skeletons, category/risk/status **labels**, probe lists framed as fill vocabulary (not "Ask after each…"), reference lexicons, calibration benchmarks, and fill Rules that constrain row/section **shape** (null-row format, one-row-per-item) without prescribing when to interview or which activity runs next.
 
-**Fix:** Move does-sections to the owning technique as protocol phases or named rules; replace with a one-line pointer; dissolve the resource when nothing template-shaped remains. Retarget stranded heading anchors; ensure every moved `{token}` resolves under guard coverage (declared id / `{$local}` / workflow variable). See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Move does-sections to the owning technique as protocol phases or named rules; leave templates + consult vocabulary; dissolve the resource when nothing template-shaped remains. Retarget stranded heading anchors; ensure every moved `{token}` resolves under guard coverage (declared id / `{$local}` / workflow variable). See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
 ### AP-93. canonical-fact-home
 

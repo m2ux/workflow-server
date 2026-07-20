@@ -2,7 +2,7 @@
 name: test-suite-review
 description: Guidelines for reviewing and evaluating test suites. Covers test quality assessment, coverage analysis, anti-pattern detection, and improvement recommendations.
 metadata:
-  version: 1.1.0
+  version: 1.1.1
   order: 17
   legacy_id: 17
 ---
@@ -11,23 +11,6 @@ metadata:
 # Test Suite Review Guide
 
 Act as a **Senior Test Architect**: test strategy, unit/integration/e2e methodology, TDD/BDD, test automation and CI/CD, coverage analysis, risk-based testing.
-
-## Pre-Review Setup
-
-1. Get current date and time for timestamping.
-2. Analyze the target module: test file organization and naming, production code under test, test types (unit vs integration vs e2e), framework and tools.
-3. Determine review scope: recent test changes (if git history available), module complexity and coverage, dependencies and external integrations, critical business logic.
-4. Analyze cross-crate coverage patterns: asymmetric test distribution, crates with excessive volume vs minimal coverage, coverage imbalances.
-5. Analyze dependency stack and test boundaries: external dependencies' testing responsibilities, wrapper vs library functionality boundaries, appropriate test layer placement.
-
-## MANDATORY: Systematic Individual Test Analysis
-
-You MUST evaluate EVERY individual test function in the specified file:
-
-1. **Enumerate** every test function.
-2. **Check EACH test against ALL anti-patterns** (see [Anti-Patterns](#anti-patterns)).
-3. **Evaluate EACH test** for: relevance and business alignment, coverage completeness, effectiveness, salience and risk focus.
-4. **No test left behind** — verify every test function was reviewed.
 
 ## Review Criteria
 
@@ -60,11 +43,7 @@ Low-value patterns to flag (each can only fail if the language/framework is brok
 
 High-value patterns to encourage: protocol compliance (calculated values vs protocol specification), business rule enforcement (invalid input rejected with error), error boundary testing (timeouts, failure handling), state transition validation, real client logic (actual conversion/validation methods, not mocks).
 
-## Report Generation
-
-After completing the review, create the report artifact at `planning/test-suite-review-{n}.md` (the activity's `artifactPrefix` is prepended at write time; n increments on successive reviews), using the template below with review metadata (reviewer, timestamp, scope).
-
-### Test Suite Review Report Template
+## Report Template
 
 Reference this guide in the header's Author link so readers understand the methodology used.
 

@@ -2,7 +2,7 @@
 name: rust-substrate-code-review
 description: Guidelines for conducting code reviews of Rust and Substrate codebases. Covers scope determination, review criteria, and report generation.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   order: 16
   legacy_id: 16
 ---
@@ -69,28 +69,9 @@ The report header links back to this guide so readers know the methodology used.
 | [Divergent category] | ✗ | X% |
 ```
 
-## Reviewer Role & Instructions
+## Review Stance (consult)
 
-You are a **Senior Rust/Substrate Architect** with expertise in: idiomatic Rust patterns, Substrate framework and Polkadot ecosystem conventions, blockchain and distributed systems architecture, code review methodology and security analysis, performance optimization and memory safety.
-
-Language & tone: measured, technical, professional; no hyperbole or superlatives; factual observations and technical merit; precise, descriptive language; respectful, constructive feedback focused on improving code quality.
-
-Review approach:
-- Understand change context, rationale, and goals
-- Review high-level design and architecture for soundness
-- Examine idiomatic Rust correctness, ownership patterns, error handling, and lifetimes
-- Review performance considerations and security implications
-- Defer style and formatting issues primarily to tooling (`rustfmt`, `clippy`)
-
-When implementing review recommendations: write comments that explain what the code does and why it exists; never add comments referencing the review process or historical context; make the code self-documenting and maintainable.
-
-## Pre-Review Setup
-
-1. **Determine scope type** (see Review Scope): what triggered the review, which files are in scope, review depth (quick check vs comprehensive audit), whether it is Substrate-specific code (pallets, runtime, etc.)
-2. **Get current date and time** for timestamping
-3. **Identify files to review:** implementation reviews → `git diff --name-only`; PR reviews → files in the PR diff; audits → all `.rs` files in the target path
-4. **Analyze the target structure:** file organization and naming patterns, public APIs and main entry points, documentation and comments, integration with parent modules
-5. **Determine output destination:** implementation review → optional report artifact; standalone review → required report file
+Tone: measured, technical, professional; no hyperbole; factual observations; constructive feedback on technical merit. Prefer tooling (`rustfmt`, `clippy`) for style/formatting. Implementation comments explain what code does and why — never reference the review process.
 
 ## Review Criteria
 

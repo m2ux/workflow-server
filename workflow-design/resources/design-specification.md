@@ -8,7 +8,7 @@ metadata:
 
 # Design Specification Guide
 
-Confirmed design surface for create/update. Answers: what stays the same, and what changes per design dimension? Persisted after elicitation/synthesis; mid-flow `spec-confirmed` is a soft gate. Stakeholder attestation of the specification is part of Gate 2 (`approve-to-commit`). Canonical home for purpose and dimension deltas ([canonical-home map](../techniques/TECHNIQUE.md#canonical-home-map)).
+Confirmed design surface for create/update. Answers: what stays the same, and what changes per design dimension? Canonical home for purpose and dimension deltas ([canonical-home map](../techniques/TECHNIQUE.md#canonical-home-map)).
 
 ## Template
 

@@ -1,8 +1,8 @@
 ---
 name: strategic-review
-description: Strategic review artifact template; the review procedure, finding classification, and cleanup rules live on the strategic-review technique group.
+description: Strategic review artifact template for speculative-change, over-engineering, and orphaned-infrastructure findings.
 metadata:
-  version: 1.2.0
+  version: 1.2.1
   order: 18
   legacy_id: 18
 ---
@@ -10,8 +10,6 @@ metadata:
 # Strategic Review Guide
 
 Problem-solving commonly leaves behind speculative changes, debugging infrastructure, or exploratory code that becomes unnecessary once the root cause is understood. The strategic review finds and removes these before finalizing the PR, so PRs are clean, reviewable, and contain only intentional changes.
-
-The review procedure and its rules — speculative-changes audit, per-file necessity, minimality checks, finding classification, revert mechanics — live on the [strategic-review](../techniques/strategic-review/TECHNIQUE.md#rules) technique group and its ops [review-scope](../techniques/strategic-review/review-scope.md#rules) and [apply-cleanup](../techniques/strategic-review/apply-cleanup.md).
 
 ## Strategic Review Artifact Template
 

@@ -1,22 +1,22 @@
 ---
 name: design-framework
-description: TRIZICS solution-design methodology (conventional-first, inventive principles, synthesis) applied at plan time, and the design-philosophy artifact template. Problem definition and classification live on the design-philosophy technique operations.
+description: TRIZICS solution-design methodology (conventional-first, inventive principles, synthesis) and the design-philosophy artifact template.
 metadata:
-  version: 1.3.0
+  version: 1.3.1
   order: 9
   legacy_id: 9
 ---
 
 # Design Framework Guide
 
-Systematic solution design: explore the solution space conventional-before-inventive and record trade-offs with rationale. Problem definition, classification, and path selection are owned by the [design-philosophy operations](../techniques/design-philosophy/TECHNIQUE.md) (define, classify, determine-path); this framework's solution-space areas are applied by plan-prepare, scoped to the assessed complexity (simple: definition + conventional + synthesis; moderate: add classification; complex: include inventive solutions).
+Systematic solution design: explore the solution space conventional-before-inventive and record trade-offs with rationale.
 
 ## Design Framework: TRIZICS Approach
 
 Uses the **TRIZICS Software Design** methodology, adapted from systematic innovation principles. Five areas:
 
-1. **Identify & Define Problem** — Problem statement, system understanding, impact, constraints, root cause ([define](../techniques/design-philosophy/define.md))
-2. **Classify Problem Type** — Specific problem (cause known/unknown) vs. inventive goal (improvement/prevention) ([classify](../techniques/design-philosophy/classify.md))
+1. **Identify & Define Problem** — Problem statement, system understanding, impact, constraints, root cause
+2. **Classify Problem Type** — Specific problem (cause known/unknown) vs. inventive goal (improvement/prevention)
 3. **Conventional Solutions** — Design patterns, best practices, existing solutions, constraint analysis
 4. **Inventive Solutions** — Contradictions, inventive principles, ideal solution thinking (only if conventional solutions inadequate)
 5. **Solution Synthesis** — Architecture design, trade-offs, implementation roadmap, success metrics

@@ -1,8 +1,8 @@
 ---
 name: web-research
-description: Web research findings template appended to the research document; the research protocol, depth selection, and source rules live on the research technique.
+description: Web research findings template appended to the research document.
 metadata:
-  version: 1.2.0
+  version: 1.2.1
   order: 8
   legacy_id: 8
 ---
@@ -10,7 +10,7 @@ metadata:
 
 # Web Research Guide
 
-Format skeleton for web research findings. The research protocol and its rules — depth selection, source validation, staleness threshold, official-docs and URL-per-finding requirements — live on the producing technique: [research](../techniques/research/research.md#rules).
+Format skeleton for web research findings.
 
 ## Planning Artifact
 

@@ -1,15 +1,15 @@
 ---
 name: manual-diff-review
-description: Index-table, header, and report-section forms for the manual diff review; the review procedure and rules live on the review-diff technique.
+description: Index-table, header, and report-section forms for the manual diff review.
 metadata:
-  version: 2.0.0
+  version: 2.0.1
   order: 22
   legacy_id: 22
 ---
 
 # Manual Diff Review Forms
 
-Forms consumed by [review-diff](../techniques/review-diff.md), which owns the procedure (branch sync, diff parsing, index generation, the row-number reporting protocol, the interview loop) and the rationale-quality and review-conduct rules. Outputs: **File Index Table** (`change-block-index.md`) and the **Manual Diff Review section** written into `code-review.md`.
+Outputs: **File Index Table** (`change-block-index.md`) and the **Manual Diff Review section** written into `code-review.md`.
 
 ## File Index Generation
 

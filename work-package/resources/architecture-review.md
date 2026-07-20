@@ -2,7 +2,7 @@
 name: architecture-review
 description: Guidelines for conducting architecture reviews that evaluate design decisions against quality attributes, constraints, and trade-offs. Produces an Architecture Decision Record (ADR).
 metadata:
-  version: 1.1.0
+  version: 1.1.1
   order: 15
   legacy_id: 15
 ---
@@ -41,7 +41,7 @@ Also write an ADR when choosing between multiple valid approaches with different
 
 ## Timing
 
-Create the ADR **after implementation is complete**, not before — decisions are not finalized until implementation constraints are encountered. Commit the ADR and proceed to the validate activity.
+Create the ADR **after implementation is complete**, not before — decisions are not finalized until implementation constraints are encountered. Commit the ADR with the implementation.
 
 Initial status: **Accepted** is typical (implementation validates the decision); **Proposed** only when additional review/approval is needed before merging; **RFC** when seeking broader input before finalizing.
 

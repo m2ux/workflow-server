@@ -2,7 +2,7 @@
 name: requirements-elicitation
 description: Reference material for requirements elicitation methodology, including question domains, anti-patterns, and the document template.
 metadata:
-  version: 2.2.0
+  version: 2.2.1
   order: 5
   legacy_id: 5
 ---
@@ -10,7 +10,7 @@ metadata:
 
 # Requirements Elicitation Guide
 
-Requirements elicitation discovers **what** the user needs before planning **how** to implement it — a dialogue, not a checklist. Ask **one question at a time** and adapt based on responses; flow and question sequencing are defined in the activity. Use for new features and major enhancements only; skip for bug fixes, refactors, chores, and minor updates.
+Requirements elicitation discovers **what** the user needs before planning **how** to implement it — a dialogue, not a checklist. Use for new features and major enhancements only; skip for bug fixes, refactors, chores, and minor updates.
 
 Goals: discover what the user actually needs (which may differ from the initial ask), clarify ambiguities before they become implementation assumptions, establish scope boundaries, define measurable success criteria.
 

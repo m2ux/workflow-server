@@ -2,7 +2,7 @@
 name: knowledge-base-research
 description: Guidelines for researching the knowledge base during work package planning to discover relevant concepts, design patterns, and best practices.
 metadata:
-  version: 1.1.0
+  version: 1.1.1
   order: 7
   legacy_id: 7
 ---
@@ -10,17 +10,9 @@ metadata:
 
 # Knowledge Base Research Guide
 
-Before designing a solution, research the knowledge base with the concept-rag MCP tools to surface best practices, design patterns, architectural guidance, documentation conventions, and testing strategies — informed design reuses proven approaches instead of reinventing them.
+Before designing a solution, research the knowledge base to surface best practices, design patterns, architectural guidance, documentation conventions, and testing strategies — informed design reuses proven approaches instead of reinventing them. Research findings fill the artifact template below.
 
 **Full research** when the work package involves architectural decisions, multiple possible implementation approaches, an unfamiliar or complex domain, or performance/reliability requirements. **Lightweight research** acceptable for simple well-understood changes, work following established patterns, or minor bug fixes with clear solutions.
-
-## Research Protocol
-
-- Fetch `concept-rag://activities` at the start of the session (MANDATORY), match an activity to the research goal, and follow the technique workflow for that activity (Activity → Technique → Tool model).
-- Consult multiple sources; validate patterns across documents. A single source or vague generic findings are insufficient.
-- Extract specific guidance with direct quotes or specific references; map each finding to a work package requirement.
-- Identify applicable patterns, best practices, and risks/anti-patterns with mitigations.
-- Synthesize answers with citations — no search narration.
 
 ## Planning Artifact
 
@@ -85,7 +77,7 @@ Based on research findings:
 |----------|-----------|--------------|
 | [Document 1] | [Why relevant] | [Specific sections] |
 
-**Status:** Ready for plan-prepare activity
+**Status:** [Draft / Complete]
 ```
 
 ## Rules
