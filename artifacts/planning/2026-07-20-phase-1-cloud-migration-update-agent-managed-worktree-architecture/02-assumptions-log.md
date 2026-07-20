@@ -1,6 +1,6 @@
 # Assumptions Log
 
-> Phase 1 Cloud Migration Update — Agent-Managed Worktree Architecture · issue skipped · updated 2026-07-20 (plan-prepare)
+> Phase 1 Cloud Migration Update — Agent-Managed Worktree Architecture · issue skipped · updated 2026-07-20 (assumptions-review)
 
 ## Log
 
@@ -37,10 +37,11 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 | PL-5 | Planning | Test Strategy | L | Pre-implementation test plan uses non-hyperlinked `PR267-TC-*` IDs; source links are added after implementation per test-plan lifecycle | Plan: [06-test-plan.md](06-test-plan.md); technique lifecycle-phases | Open (finalize-documentation) |
 | PL-6 | Planning | Dependency Assumptions | M | Greenfield `Dockerfile` / Compose are in-scope for this work package (IA-2) and do not require a separate ops ticket before implementation — CI/CD approval remains a PR review concern | Requirements scope item 8; IA-2 | Open (PR #267 review) |
 | PL-7 | Planning | Scope Decisions | M | `src/worktree-validator.ts` is **containment only** (path-inside-root / traversal safety) — it does not create, list, or remove Git worktrees or init `.engineering`; agent owns lifecycle | User at `approach-confirmed` → `confirmed` (2026-07-20); plan Task 1 scope boundary | Confirmed |
+| AR-1 | Assumptions Review | Scope Decisions | L | No significant assumptions (planning residuals PL-1…PL-6 remain implementation-/PR-review-validatable; locked clarifications cover validator containment-only, `planningRoot` signature freeze, required startup root, and PLANNING_SLUG default — no new stakeholder-dependent residue at assumptions-review) | Log + approach/elicitation locks | Validated — null collect |
 
 ## Open Assumptions
 
-*(none — PL-1…PL-6 are implementation- or review-validatable; PL-7 confirmed at approach checkpoint; no stakeholder-dependent residue)*
+*(none — PL-1…PL-6 are implementation- or review-validatable; PL-7 confirmed at approach checkpoint; AR-1 null collect; no stakeholder-dependent residue)*
 
 ## Stakeholder-Resolved (comprehension-sufficient · 2026-07-20)
 
@@ -90,6 +91,12 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 **Decision:** User confirmed approach with clarification that `worktree-validator` is path-containment / traversal safety only — not broader worktree lifecycle ownership. Reflected in plan Task 1 scope boundary and test-plan overview.  
 **Checkpoint:** `approach-confirmed` → `confirmed` (2026-07-20).
 
+## Assumptions-Review (2026-07-20)
+
+### AR-1: Residual stakeholder scan
+**Decision:** Null collect at assumptions-review — no new implicit decisions beyond locked clarifications and PL/IA/RE/DP/RS rows. Analyse-challenge loop not entered (`has_resolvable_assumptions: false`; empty stakeholder open set). Interview/batch skipped.  
+**Gates:** `has_open_assumptions: false`; `has_deferred_assumptions: false`.
+
 ## Wrap-Up
 
-28 assumptions — 21 prior validated/confirmed; PL-1…PL-6 open for impl/review validation; PL-7 confirmed at approach checkpoint. No stakeholder-dependent open residue (`has_open_assumptions: false`).
+29 assumptions — 22 validated/confirmed (incl. AR-1 null); PL-1…PL-6 remain open for impl/PR-review validation only. No stakeholder-dependent open residue; no deferred items.

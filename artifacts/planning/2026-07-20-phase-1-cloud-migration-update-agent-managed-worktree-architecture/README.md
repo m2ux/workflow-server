@@ -1,12 +1,12 @@
 # Phase 1 Cloud Migration Update — Agent-Managed Worktree Architecture - July 2026
 
-> Enhancement · Created 2026-07-20 · **Status:** Approach confirmed — ready for implementation
+> Enhancement · Created 2026-07-20 · **Status:** Assumptions reviewed — ready for implementation
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
 ## 🎯 Executive Summary
 
-Work package planned for the Phase 1 agent-managed worktree architecture update: required startup worktree root (`WORKTREE_ROOT` alias), configurable `PLANNING_SLUG`, path-containment validator (not lifecycle ownership), Docker RW bind, and agent/operator docs — seven implementation tasks sequenced to protect the CRITICAL `planningRoot` call graph. Approach confirmed on [#267](https://github.com/m2ux/workflow-server/pull/267); next is implement per the [plan](06-work-package-plan.md).
+Work package planned for the Phase 1 agent-managed worktree architecture update: required startup worktree root (`WORKTREE_ROOT` alias), configurable `PLANNING_SLUG`, path-containment validator (not lifecycle ownership), Docker RW bind, and agent/operator docs — seven implementation tasks sequenced to protect the CRITICAL `planningRoot` call graph. Approach confirmed and assumptions reviewed on [#267](https://github.com/m2ux/workflow-server/pull/267); next is implement per the [plan](06-work-package-plan.md).
 
 ## Problem Overview
 

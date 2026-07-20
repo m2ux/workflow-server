@@ -392,7 +392,7 @@
             "resource:work-package/readme": "6317501107feed7d",
             "resource:wp-plan": "bfc99b1c91902f02",
             "resource:wp-plan#template": "06fa3a86dc2b9e24",
-            "technique:analyse-challenge::run-loop": "db565487aebc77da",
+            "technique:analyse-challenge::run-loop": "d38c47aa6e38d15a",
             "technique:codebase-comprehension::deep-dive": "76fa95b6d9f5700a",
             "technique:codebase-comprehension::revise-questions": "863b8a68a7408193",
             "technique:codebase-comprehension::survey": "555ed1ca46307c8e",
@@ -426,10 +426,10 @@
             "technique:research::research": "8625f1e201788635",
             "technique:research::synthesize": "24efe4bf84b2ad28",
             "technique:research::triage": "eb40e8eda30ce676",
-            "technique:review-assumptions::collect": "462c710bf1b98d35",
+            "technique:review-assumptions::collect": "a574a42bdb7dc1f8",
             "technique:review-assumptions::interview": "0779ea4ed6677e43",
             "technique:review-assumptions::reconcile": "e25d03f0f9554be2",
-            "technique:review-assumptions::record": "c0d10d54d9b1d43b",
+            "technique:review-assumptions::record": "81edd4422b736e8b",
             "technique:review-mode-detection": "6c6b64ca502bcedf",
             "technique:stakeholder-overview": "3c82018808c24e5d",
             "technique:update-pr::create-pr": "0ce4712d9bd0de5c",
@@ -1928,16 +1928,95 @@
             "activity": "assumptions-review",
             "timestamp": "2026-07-20T16:59:58.829Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "evaluate-open-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-07-20T17:00:15.746Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-07-20T17:00:15.746Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-20T17:00:15.746Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-07-20T17:00:15.746Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumptions-review#probe-vocabulary"
+            },
+            "timestamp": "2026-07-20T17:00:15.746Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumptions-review#classification-vocabulary"
+            },
+            "timestamp": "2026-07-20T17:00:15.746Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-20T17:00:15.746Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "meta/planning-readme"
+            },
+            "timestamp": "2026-07-20T17:01:01.925Z",
+            "type": "resource_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 60,
+        "seq": 62,
         "sessionIndex": "H7H32D",
         "skippedActivities": [],
         "startedAt": "2026-07-20T15:44:48.036Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784566798,
+        "ts": 1784566861,
         "variables": {
           "artifact_name": "",
           "assumption_batch_accepted": false,
