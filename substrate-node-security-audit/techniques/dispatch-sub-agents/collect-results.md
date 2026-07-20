@@ -1,11 +1,21 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Wait for every dispatched agent to return, collect each structured output, and produce the dispatch manifest that records which roster agents were dispatched and returned.
+Project meta [gather-results](../../../meta/techniques/orchestration-patterns/gather-results.md) output plus the domain `{agent_roster}` into the audit `{dispatch_results}` shape (per-agent structured output, summary counts, crate-aware manifest).
+
+## Inputs
+
+### gathered_results
+
+Ordered keyed collection from [orchestration-patterns](../../../meta/techniques/orchestration-patterns/TECHNIQUE.md)::[gather-results](../../../meta/techniques/orchestration-patterns/gather-results.md).
+
+### agent_roster
+
+Domain roster used to attach crate / assignment columns to the manifest.
 
 ## Outputs
 
@@ -15,7 +25,7 @@ Collected results from all dispatched sub-agents.
 
 #### per_agent_output
 
-Per-agent structured output conforming to the [output schema](../../resources/sub-agent-output-schema.md#schema).
+Per-agent structured output conforming to the [output schema](../../resources/sub-agent-output-schema.md#schema), parsed from `{gathered_results.items}` where possible.
 
 #### dispatch_summary
 
@@ -23,7 +33,7 @@ Count of agents dispatched and failures encountered.
 
 #### dispatch_manifest
 
-Per-agent table with `agent_id`, assigned crate, dispatched, returned, and status.
+Per-agent table with `agent_id`, assigned crate, dispatched, returned, and status (from `{gathered_results.dispatch_manifest}` enriched with roster crate fields).
 
 #### agents_dispatched
 
@@ -31,12 +41,9 @@ Count of agents actually dispatched and returned.
 
 ## Protocol
 
-### 1. Collect All
+### 1. Project Gather Into Audit Shape
 
-- Wait for all agents in `{dispatched_agents}` to return; collect each structured output into `{dispatch_results}`.
-  > If an agent fails or does not return within the expected time, record the failure in `{dispatch_results}` and proceed with the available results.
-
-### 2. Verify Dispatch Completeness
-
-- Compare `{agent_roster}` against `{dispatched_agents}`; produce the `{dispatch_results.dispatch_manifest}` table with one row per agent (`agent_id`, assigned crate, dispatched, returned, status) and set `{dispatch_results.agents_dispatched}`.
-  > If any roster agent was not dispatched or returned, mark the manifest `INCOMPLETE`; dispatch the missing agents before proceeding.
+- Walk `{gathered_results.items}` in order; parse each non-null `result` into structured per-agent output when it conforms to the [output schema](../../resources/sub-agent-output-schema.md#schema).
+- Build `{dispatch_results.dispatch_manifest}` by joining `{gathered_results.dispatch_manifest}` rows to `{agent_roster}` for assigned crate.
+- Set `{dispatch_results.dispatch_summary}`, `{dispatch_results.agents_dispatched}`, and `{dispatch_results.per_agent_output}` from the projected rows.
+- If `{gathered_results.completeness}` is not `complete`, mark the manifest `INCOMPLETE` so verification / re-dispatch can act.

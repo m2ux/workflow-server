@@ -1,0 +1,42 @@
+id: isolated-fan-out
+version: 1.0.0
+name: Isolated Fan Out
+description: Orchestrator-workers fan-out with isolation_mode (context or worktree) and completeness verification — borrowable subagent-isolation pattern.
+required: false
+techniques:
+  - scatter-gather
+steps:
+  - kind: technique
+    id: decompose
+    technique: orchestration-patterns::decompose-work-units
+  - kind: technique
+    id: compose-briefs
+    technique:
+      name: orchestration-patterns::compose-worker-briefs
+      inputs:
+        isolation_mode: isolation_mode
+  - kind: technique
+    id: dispatch
+    technique:
+      name: orchestration-patterns::dispatch-workers
+      inputs:
+        concurrency: concurrency
+  - kind: technique
+    id: gather
+    technique:
+      name: orchestration-patterns::gather-results
+      inputs:
+        expected_ids: work_units
+  - kind: action
+    id: require-complete
+    actions:
+      - action: validate
+        target: gathered_results.completeness
+        message: "Dispatch incompleteness — gathered_results.completeness must be complete before synthesis. Re-dispatch missing workers."
+  - kind: technique
+    id: synthesise
+    technique: orchestration-patterns::synthesise-results
+outcome:
+  - Workers ran under the seeded isolation_mode
+  - Gather manifest is complete before synthesis
+  - Combined synthesis is in the bag

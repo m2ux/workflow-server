@@ -1,0 +1,30 @@
+id: orchestrator-workers
+version: 1.0.0
+name: Orchestrator Workers
+description: Runtime-decompose a goal into work units, dispatch workers, gather ordered results, and synthesise — borrowable mid-phase orchestrator-workers pattern.
+required: false
+techniques:
+  - scatter-gather
+steps:
+  - kind: technique
+    id: decompose
+    technique: orchestration-patterns::decompose-work-units
+  - kind: technique
+    id: compose-briefs
+    technique: orchestration-patterns::compose-worker-briefs
+  - kind: technique
+    id: dispatch
+    technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: gather
+    technique:
+      name: orchestration-patterns::gather-results
+      inputs:
+        expected_ids: work_units
+  - kind: technique
+    id: synthesise
+    technique: orchestration-patterns::synthesise-results
+outcome:
+  - Goal decomposed into work units whose count and shape depend on the input
+  - Workers executed from self-contained briefs only
+  - Ordered gathered results and a single synthesis are in the bag

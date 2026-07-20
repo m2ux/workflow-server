@@ -1,22 +1,25 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Confirm every assigned scanner was dispatched and returned, assembling the dispatch manifest and flagging any shortfall for re-dispatch.
+Confirm every assigned scanner was gathered with a non-empty return, using meta gather completeness plus the domain roster count.
 
 ## Inputs
 
-### dispatched_scanners
+### gathered_results
 
-The set of scanner agents handed off in the concurrent dispatch batch.
+Ordered keyed collection from [orchestration-patterns](../../../meta/techniques/orchestration-patterns/TECHNIQUE.md)::[gather-results](../../../meta/techniques/orchestration-patterns/gather-results.md).
+
+### scanners_assigned
+
+Count of scanner agents in the roster.
 
 ## Protocol
 
 ### 1. Verify Dispatch Completeness
 
-- Compare the `{scanner_assignments}` roster against `{dispatched_scanners}` and assemble `{dispatch_status}`: a dispatch manifest (scanner id, assigned submodule, dispatched, returned, status) plus the `{dispatch_status.scanners_dispatched}` and `{dispatch_status.scanners_returned}` counts.
-- Confirm `{dispatch_status.scanners_dispatched}` equals `{scanners_assigned}`.  
-  > If any roster scanner was not dispatched, flag `{dispatch_status}` as incomplete and return the manifest for re-dispatch.
+- Confirm `{gathered_results.completeness}` is `complete` and that the number of `ok` rows in `{gathered_results.dispatch_manifest}` equals `{scanners_assigned}`.
+- When either check fails, flag `{dispatch_status}` (or the gather manifest) as incomplete and return the shortfall list for re-dispatch — do not invent missing results.

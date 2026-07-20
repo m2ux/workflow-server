@@ -72,7 +72,7 @@ cicd-pipeline-security-audit/
 │   ├── execute-sub-agent.md               # Sub-agent bootstrap + structured output (standalone)
 │   ├── inventory-workflows/               # File discovery + classification (group: 10 ops)
 │   ├── scan-injection-patterns/           # 7-pattern detection engine (group: load + P1-P7 + assemble)
-│   ├── dispatch-scanners/                 # Agent dispatch + collection (group: 8 ops)
+│   ├── dispatch-scanners/                 # Domain brief compose + gather project (group); dispatch/gather bind meta orchestration-patterns
 │   ├── score-cicd-severity/               # Impact x Exploitability scoring (group: apply + calibrate)
 │   ├── verify-scan-output/                # Coverage verification (group: 4 ops)
 │   ├── merge-scan-findings/               # Dedup + reconciliation (group: 5 ops)
@@ -120,7 +120,7 @@ Most capabilities are operation-groups: a `<group>/` directory holding a `TECHNI
 | 01 | [score-cicd-severity](./techniques/score-cicd-severity/) | group | Impact x Exploitability severity scoring | Report Generation (step-level) |
 | 02 | [inventory-workflows](./techniques/inventory-workflows/) | group | Workflow file discovery + classification | Scope Setup, Reconnaissance (step-level) |
 | 03 | [scan-injection-patterns](./techniques/scan-injection-patterns/) | group | 7-pattern detection (P1-P7) | Sub-agents S1-Sn (step-level) |
-| 04 | [dispatch-scanners](./techniques/dispatch-scanners/) | group | Sub-agent dispatch + collection | Primary Scan (step-level) |
+| 04 | [dispatch-scanners](./techniques/dispatch-scanners/) | group | Domain brief compose + gather project; concurrent dispatch/gather bind meta `orchestration-patterns` | Primary Scan (step-level) |
 | 05 | [verify-scan-output](./techniques/verify-scan-output/) | group | Coverage verification | Sub-agent V (step-level), Report Generation (step-level) |
 | 06 | [merge-scan-findings](./techniques/merge-scan-findings/) | group | Dedup + reconciliation | Sub-agent M (step-level) |
 | 07 | [write-cicd-report](./techniques/write-cicd-report/) | group | Report generation | Report Generation (step-level) |
