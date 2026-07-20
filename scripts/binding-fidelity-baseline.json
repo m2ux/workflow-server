@@ -131,6 +131,36 @@
   },
   {
     "check": "dead-output",
+    "site": "meta/techniques/orchestration-patterns/assess-research-gaps.md",
+    "detail": "output 'has_research_gaps' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/orchestration-patterns/classify-request.md",
+    "detail": "output 'classification_rationale' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/orchestration-patterns/classify-request.md",
+    "detail": "output 'lane_id' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/orchestration-patterns/compose-worker-brief.md",
+    "detail": "output 'worker_brief' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/orchestration-patterns/execute-plan-step.md",
+    "detail": "output 'step_result' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
+    "site": "meta/techniques/orchestration-patterns/invoke-as-tool.md",
+    "detail": "output 'tool_result' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
     "site": "meta/techniques/version-control/identify-path-type.md",
     "detail": "output 'kind' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
@@ -251,11 +281,6 @@
   },
   {
     "check": "dead-output",
-    "site": "substrate-node-security-audit/techniques/dispatch-sub-agents/collect-results.md",
-    "detail": "output 'dispatch_results' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
-  },
-  {
-    "check": "dead-output",
     "site": "substrate-node-security-audit/techniques/extract-invariants.md",
     "detail": "output 'invariant_table' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
@@ -346,11 +371,6 @@
   },
   {
     "check": "dead-output",
-    "site": "work-package/techniques/design-philosophy/classify.md",
-    "detail": "output 'classification_rationale' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
-  },
-  {
-    "check": "dead-output",
     "site": "work-package/techniques/finalize-documentation/ensure-docs.md",
     "detail": "output 'documented_apis' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
@@ -381,11 +401,6 @@
   },
   {
     "check": "dead-output",
-    "site": "work-package/techniques/manage-artifacts/verify-artifact-conforms.md",
-    "detail": "output 'artifact_conformance' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
-  },
-  {
-    "check": "dead-output",
     "site": "work-package/techniques/manage-artifacts/verify-readme-conforms.md",
     "detail": "output 'readme_conformance' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
@@ -403,11 +418,6 @@
     "check": "dead-output",
     "site": "work-package/techniques/manage-git/instruct-merge-strategy.md",
     "detail": "output 'presented_merge_guidance' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
-  },
-  {
-    "check": "dead-output",
-    "site": "work-package/techniques/manage-git/push-commits.md",
-    "detail": "output 'pushed_branch' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
   {
     "check": "dead-output",
@@ -521,11 +531,6 @@
   },
   {
     "check": "dead-output",
-    "site": "work-package/techniques/update-pr/push-commits.md",
-    "detail": "output 'pushed_branch' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
-  },
-  {
-    "check": "dead-output",
     "site": "work-package/techniques/validate-build/analyze-failure.md",
     "detail": "output 'root_cause' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
@@ -583,11 +588,6 @@
     "check": "dead-output",
     "site": "workflow-design/techniques/apply-audit-fixes.md",
     "detail": "output 'fixes_applied' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
-  },
-  {
-    "check": "dead-output",
-    "site": "workflow-design/techniques/derive-design-dimensions.md",
-    "detail": "output 'design_dimensions' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
   {
     "check": "dead-output",
@@ -1268,10 +1268,5 @@
     "check": "read-resolution",
     "site": "work-package/techniques/review-summary.md:53",
     "detail": "{user} has no producer (declared id / $-local / workflow var / set-target)"
-  },
-  {
-    "check": "read-resolution",
-    "site": "workflow-design/techniques/audit-anti-patterns.md:21",
-    "detail": "{VAR} has no producer (declared id / $-local / workflow var / set-target)"
   }
 ]

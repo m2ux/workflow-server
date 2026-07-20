@@ -50,6 +50,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "announce-start",
+        "detect-review-mode",
         "resolve-reference",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
@@ -86,7 +87,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           "setVariable": {
             "needs_elicitation": false,
             "needs_research": false,
-            "path_gating_complexity": "simple",
+            "problem_complexity": "simple",
             "skip_optional_activities": true,
           },
         },
@@ -481,6 +482,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "announce-start",
+        "detect-review-mode",
         "resolve-reference",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
@@ -988,6 +990,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "announce-start",
+        "detect-review-mode",
         "resolve-reference",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
@@ -1123,15 +1126,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "04-kb-research.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "context-scope-declaration",
-          "option": "repo-only",
-          "setVariable": {
-            "context_scope": "repo-only",
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "warning",
       "next": "implementation-analysis",
       "orphanCheckpoints": [],
@@ -1144,6 +1139,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "update-assumptions-log",
         "reconcile-assumptions",
         "present-resolved-assumptions",
+        "derive-context-scope",
+        "announce-derived-context-scope",
         "interview-open-assumptions",
         "present-assumption",
         "record-response",
@@ -1531,6 +1528,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "announce-start",
+        "detect-review-mode",
         "resolve-reference",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
@@ -1626,15 +1624,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "04-kb-research.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "context-scope-declaration",
-          "option": "repo-only",
-          "setVariable": {
-            "context_scope": "repo-only",
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "valid",
       "next": "implementation-analysis",
       "orphanCheckpoints": [],
@@ -1647,6 +1637,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "update-assumptions-log",
         "reconcile-assumptions",
         "present-resolved-assumptions",
+        "derive-context-scope",
+        "announce-derived-context-scope",
         "interview-open-assumptions",
         "present-assumption",
         "record-response",
@@ -2011,29 +2003,14 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "artifactsWritten": [
         "01-prior-feedback-triage.md",
       ],
-      "checkpoints": [
-        {
-          "id": "review-mode-detection",
-          "option": "confirm-review",
-          "setVariable": {
-            "is_review_mode": true,
-          },
-        },
-        {
-          "id": "review-pr-reference",
-          "option": "pr-provided",
-          "setVariable": {
-            "review_pr_captured": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "valid",
       "next": "design-philosophy",
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "announce-start",
         "detect-review-mode",
-        "capture-pr-reference",
+        "announce-derived-review-mode",
         "ingest-prior-feedback",
         "resolve-reference",
         "analyze-reference-with-gitnexus",
@@ -2410,6 +2387,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "announce-start",
+        "detect-review-mode",
         "resolve-reference",
         "analyze-reference-with-gitnexus",
         "verify-signing-precondition",
@@ -2446,7 +2424,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           "setVariable": {
             "needs_elicitation": false,
             "needs_research": false,
-            "path_gating_complexity": "simple",
+            "problem_complexity": "simple",
             "skip_optional_activities": true,
           },
         },
