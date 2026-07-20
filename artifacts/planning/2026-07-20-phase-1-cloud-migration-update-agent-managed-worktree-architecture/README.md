@@ -1,12 +1,12 @@
 # Phase 1 Cloud Migration Update — Agent-Managed Worktree Architecture - July 2026
 
-> Enhancement · Created 2026-07-20 · **Status:** Requirements elicitation complete — next: research
+> Enhancement · Created 2026-07-20 · **Status:** Research complete — next: plan & prepare
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
 ## 🎯 Executive Summary
 
-Work package started for the Phase 1 agent-managed worktree architecture update: feature branch and draft PR are ready, planning folder is live, and design/requirements work is next.
+Work package started for the Phase 1 agent-managed worktree architecture update: feature branch and draft PR are ready, requirements are locked, and research has mapped implementation onto existing `workspaceDir` / planning-store / `/ready` / `start_session` patterns (no invent-only `apply_workflow` root bind).
 
 ## Problem Overview
 
@@ -25,6 +25,7 @@ This work package updates Phase 1 so the agent (MCP client) creates and owns the
 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, design rationale, workflow path | 15-30m | ✅ Complete |
 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across all activities | 10-15m | ✅ Complete |
 | 03 | [Requirements elicitation](03-requirements-elicitation.md) | Scope, success criteria, agent/operator contract | 20-40m | ✅ Complete |
+| 04 | [Knowledge-base research](04-kb-research.md) | Patterns for validator, config bind, readiness, Docker, agent contract | 20-40m | ✅ Complete |
 | 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
 | 05 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
 | — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |

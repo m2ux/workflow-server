@@ -21,10 +21,14 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 | RE-2 | Requirements Elicitation | Scope Boundaries | M | Per-session planning bind (which folder under the root) stays on `start_session` / `planning_folder` / returned `planning_folder_path` patterns; Phase 1 does not invent `apply_workflow` as the root or sole planning bind | Brief vs repo tools (DP-1); elicitation scope | Confirmed |
 | RE-3 | Requirements Elicitation | Implicit Requirements | L | Path-containment errors must be actionable for agents (guide init of `.engineering` / correct root) — brief risk table | Elicitation from brief §8 risks | Confirmed as success/quality expectation (SC-4/SC-5) |
 | RE-4 | Requirements Elicitation | Success Criteria Interpretation | M | SC-3 default slug `.engineering/artifacts/planning` is the measurable expression of DP-2a — cloud layouts override only via explicit `PLANNING_SLUG` | DP-2a confirmation + store.ts constant | Confirmed |
+| RS-1 | Research | Pattern Applicability | M | `WORKTREE_ROOT` can be accepted as an env alias into the same required `workspaceDir` field (keeping `--workspace` / `WORKFLOW_WORKSPACE`) without introducing a second optional root — rationale: matches brief naming while preserving hard cutover (DP-5) and existing fail-fast config | Research: [04-kb-research.md](04-kb-research.md) RC-1; Code: `resolveWorkspaceDir` in `src/config.ts` | Validated |
+| RS-2 | Research | Pattern Applicability | L | Path containment in `worktree-validator` should use resolve + `root + path.sep` (and `realpath` when symlinks can escape) — rationale: Node path APIs trust input; community/official guidance rejects join/normalize-as-sanitization | Research: [04-kb-research.md](04-kb-research.md) RC-2; web Node path-traversal guides | Validated |
+| RS-3 | Research | Synthesis Decisions | M | Phase 1 deploys one server process bound to one worktree/monorepo root; multi-worktree-per-process via per-call `worktreeRoot` stays out of scope — rationale: locked startup-only root + current `planningRoot(workspaceDir)` model | Research: [04-kb-research.md](04-kb-research.md) RC-3; locked DP-1a/RE-2 | Validated |
+| RS-4 | Research | Source Relevance | L | Concept-rag KB gap on Node path security / K8s probes is acceptable — repo patterns plus current official/web docs sufficiently inform planning — rationale: identify-patterns/practices returned little domain match; repo is authoritative for adaptation | Research: [04-kb-research.md](04-kb-research.md) Research Approach KB gap note | Validated |
 
 ## Open Assumptions
 
-*(none — DP-2a closed in elicitation; no stakeholder-dependent residue)*
+*(none — research assumptions RS-1…RS-4 validated from research artifact; no stakeholder-dependent residue)*
 
 ## Stakeholder-Resolved (comprehension-sufficient · 2026-07-20)
 
@@ -46,6 +50,17 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 **Decision:** Default planning slug is **`.engineering/artifacts/planning`** (monorepo / `PLANNING_RELATIVE_DIR` truth). Keep slug **configurable** so deployments may set the brief’s `.engineering/planning` (or another layout) explicitly — never silently replace the repo default.  
 **Captured in:** [requirements](03-requirements-elicitation.md) scope item 5 and SC-3.
 
+## Research-Resolved (2026-07-20)
+
+### RS-1: Env alias surface
+**Decision:** Prefer `WORKTREE_ROOT` as an env alias into the same required `workspaceDir` resolution; keep `--workspace` / `WORKFLOW_WORKSPACE`; document brief mapping. Optional flag rename deferred to plan — not a reopen of required-root.
+
+### RS-2: Validator containment algorithm
+**Decision:** Implement resolve + sep-aware containment, with `realpath` when validating paths that may involve symlinks.
+
+### RS-3: Multiplicity model
+**Decision:** One configured root per process for Phase 1; per-call multi-worktree root remains out of scope.
+
 ## Wrap-Up
 
-Design-philosophy + elicitation: 12 rows — prior DP set retained; DP-2a confirmed (repo-default slug + configurability); RE-1…RE-4 recorded and confirmed from agent-led elicitation (stakeholder transcript skipped). No open assumptions remain for interview. Research next can detail rename/`WORKTREE_ROOT` vs `workspaceDir` mechanics without reopening the required-root or default-slug product decisions.
+16 assumptions — all validated/confirmed. Research added RS-1…RS-4 (env alias, path containment, one-root-per-process, KB-gap acceptability). No open or deferred residue for interview.
