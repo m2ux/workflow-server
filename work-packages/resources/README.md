@@ -2,7 +2,7 @@
 
 > Part of the [Work Packages Workflow](../README.md)
 
-The workflow includes 7 resources that provide templates and guidance for techniques and activities.
+Markdown resources for initiative planning, package plans, prioritization, and roadmap templates.
 
 | # | Resource ID | Title | Purpose |
 |---|-------------|-------|---------|

@@ -4,6 +4,8 @@
 
 Five sequential activities that run inside the meta session: identify the target client workflow and any saved session, create or resume the client session, resolve target_path, drive the client workflow's activity loop inline and mediate its yielded checkpoints, and close out the session.
 
+Borrowable mid-phase orchestration pattern activities live under [`patterns/`](./patterns/README.md) and are **not** part of this lifecycle list.
+
 The authoritative definition of each activity — its steps, technique bindings, checkpoints, loop, transitions, and outcomes — lives in the linked `.yaml` file and is served by `get_activity`. The entries below are orientation only.
 
 ---

@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Compose and concurrently dispatch per-submodule scanner sub-agents — each receiving its assigned submodule path, workflow file list, workflow inventory classification data, and injection pattern catalog — verify dispatch completeness and output-file persistence, then dispatch the verification (V) and merge (M) coordination agents and enforce the coverage and reconciliation gates. The operations in this set decompose that orchestration into scanner-dispatch, dispatch-completeness, result-collection, output-file-verification, verification-dispatch, gap-remediation, merge-dispatch, and reconciliation-gate phases.
+Compose domain-specific scanner / verification / merge / gap-remediation worker briefs, project gathered results into the CI/CD dispatch shape, verify output-file persistence, and enforce coverage and reconciliation gates. Concurrent dispatch and ordered gather bind meta [orchestration-patterns](../../../meta/techniques/orchestration-patterns/TECHNIQUE.md)::[dispatch-workers](../../../meta/techniques/orchestration-patterns/dispatch-workers.md) / [gather-results](../../../meta/techniques/orchestration-patterns/gather-results.md) from the activity. Each phase is a named operation; a step binds the one operation for its phase.
 
 ## Inputs
 
@@ -22,6 +22,10 @@ Complete [inventory of workflow files](../../resources/intermediate-artifact-sch
 Count of scanner agents in the roster.
 
 ## Outputs
+
+### worker_briefs
+
+Ordered `{ id, description, prompt }` array produced by compose operations for the next meta dispatch step.
 
 ### dispatch_status
 

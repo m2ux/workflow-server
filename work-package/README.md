@@ -26,7 +26,7 @@ Assumption and comprehension stages bind the reusable [`analyse-challenge`](./te
 | 11 | [**Validate**](./activities/README.md#11-validate) | yes | Run tests, build, and lint checks |
 | 12 | [**Strategic Review**](./activities/README.md#12-strategic-review) | yes | Ensure minimal, focused changes |
 | 13 | [**Submit for Review**](./activities/README.md#13-submit-for-review) | yes | Push PR, mark ready, handle reviewer feedback |
-| 14 | [**Complete**](./activities/README.md#14-complete) | yes | Finalize documentation, create ADR, conduct retrospective |
+| 14 | [**Complete**](./activities/README.md#14-complete) | yes | Finalize documentation, create ADR, resolve session traces, and conduct retrospective |
 
 **Detailed documentation:**
 
@@ -176,6 +176,7 @@ start-work-package → design-philosophy → implementation-analysis → plan-pr
 | Location | Path | Purpose |
 |----------|------|---------|
 | Planning | `{planning_folder_path}` | Work package planning documents and review artifacts |
+| Session trace | `{planning_folder_path}/session-trace.md` | Lean mechanical close-out summary (tool counts, durations, errors, validation-warning clusters) when opaque handoff tokens resolve |
 | Reviews | `.engineering/artifacts/reviews` | PR review analysis documents |
 | ADR | `.engineering/artifacts/adr` | Architecture Decision Records |
 | Comprehension | `.engineering/artifacts/comprehension` | Persistent codebase knowledge artifacts (cumulative across work packages) |

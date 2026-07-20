@@ -1,0 +1,68 @@
+id: lead-researcher
+version: 1.0.0
+name: Lead Researcher
+description: Plan parallel research questions, fan out, synthesise, and follow up while gaps remain — borrowable lead-researcher pattern.
+required: false
+techniques:
+  - scatter-gather
+steps:
+  - kind: technique
+    id: plan-questions
+    technique: orchestration-patterns::plan-research-questions
+  - kind: technique
+    id: compose-briefs
+    technique: orchestration-patterns::compose-worker-briefs
+  - kind: technique
+    id: dispatch
+    technique:
+      name: orchestration-patterns::dispatch-workers
+      inputs:
+        concurrency: concurrency
+  - kind: technique
+    id: gather
+    technique:
+      name: orchestration-patterns::gather-results
+      inputs:
+        expected_ids: work_units
+  - kind: technique
+    id: synthesise
+    technique: orchestration-patterns::synthesise-results
+  - kind: technique
+    id: assess-gaps
+    technique: orchestration-patterns::assess-research-gaps
+  - kind: loop
+    id: gap-followup
+    name: Research Gap Follow-up
+    loopType: while
+    maxIterations: 3
+    condition:
+      type: simple
+      variable: has_research_gaps
+      operator: "=="
+      value: true
+    steps:
+      - kind: technique
+        id: compose-followup-briefs
+        technique: orchestration-patterns::compose-worker-briefs
+      - kind: technique
+        id: dispatch-followup
+        technique:
+          name: orchestration-patterns::dispatch-workers
+          inputs:
+            concurrency: concurrency
+      - kind: technique
+        id: gather-followup
+        technique:
+          name: orchestration-patterns::gather-results
+          inputs:
+            expected_ids: work_units
+      - kind: technique
+        id: synthesise-followup
+        technique: orchestration-patterns::synthesise-results
+      - kind: technique
+        id: reassess-gaps
+        technique: orchestration-patterns::assess-research-gaps
+outcome:
+  - Breadth-first research questions planned and fanned out
+  - Synthesis updated after each round
+  - Follow-up rounds stop when gaps are closed or the loop cap is hit

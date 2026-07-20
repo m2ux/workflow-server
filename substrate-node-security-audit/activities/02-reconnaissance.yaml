@@ -1,8 +1,10 @@
 id: reconnaissance
-version: 3.3.0
+version: 3.4.0
 name: Reconnaissance
 description: Run codebase reconnaissance and security decomposition.
 required: true
+techniques:
+  - scatter-gather
 steps:
   - kind: action
     id: announce-start
@@ -10,8 +12,11 @@ steps:
       - action: log
         message: Starting codebase reconnaissance (§1.2) — dispatching reconnaissance sub-agent
   - kind: technique
+    id: compose-reconnaissance-agent
+    technique: dispatch-sub-agents::compose-roster-briefs
+  - kind: technique
     id: dispatch-reconnaissance-agent
-    technique: dispatch-sub-agents::dispatch-concurrent
+    technique: orchestration-patterns::dispatch-workers
   - kind: technique
     id: verify-reconnaissance-files
     technique:
@@ -19,8 +24,11 @@ steps:
       inputs:
         expected_output_files: r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json
   - kind: technique
+    id: compose-security-architecture-agent
+    technique: dispatch-sub-agents::compose-roster-briefs
+  - kind: technique
     id: dispatch-security-architecture-agent
-    technique: dispatch-sub-agents::dispatch-concurrent
+    technique: orchestration-patterns::dispatch-workers
   - kind: technique
     id: verify-security-architecture-file
     technique:
@@ -48,8 +56,6 @@ transitions:
   - to: primary-audit
     isDefault: true
 outcome:
-  - The in-scope surface is fully classified by crate priority, so review effort can be concentrated where consensus-critical risk lives
-  - Trust boundaries and consensus-critical paths are known, telling agents where untrusted input crosses into privileged execution
-  - Priority crates have an enumerated function inventory agents can drive exhaustive coverage from
-  - A security model of the system — interaction trust assumptions, privilege map, ranked candidate points, and vulnerability domains beyond the §3 checklist — exists to derive what could go wrong from how the system is built
-  - Every in-scope area is bound to a responsible agent with its cross-crate context, so primary dispatch has complete, non-overlapping coverage
+  - Codebase map and function registry available for primary audit dispatch
+  - Security architecture analysis persisted for cross-boundary checks
+  - Every reconnaissance lead routed to a roster agent

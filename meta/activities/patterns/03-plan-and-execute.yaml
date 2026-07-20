@@ -1,0 +1,67 @@
+id: plan-and-execute
+version: 1.0.0
+name: Plan and Execute
+description: Plan once, gate optionally, execute steps in order, and replan while surprise remains — borrowable mid-phase plan-and-execute pattern.
+required: false
+steps:
+  - kind: technique
+    id: plan
+    technique: orchestration-patterns::plan-steps
+  - kind: checkpoint
+    id: plan-confirmed
+    message: "Execution plan for the goal is ready ([planning folder]({planning_folder_path}))."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
+    options:
+      - id: confirmed
+        label: Proceed with plan
+        description: Execute the planned steps in order.
+      - id: revise
+        label: Revise plan
+        description: Return to planning with feedback before executing.
+  - kind: loop
+    id: execute-steps
+    name: Execute Plan Steps
+    loopType: forEach
+    variable: current_step
+    over: execution_plan.steps
+    maxIterations: 50
+    condition:
+      type: simple
+      variable: plan_needs_replan
+      operator: "!="
+      value: true
+    steps:
+      - kind: technique
+        id: execute-step
+        technique: orchestration-patterns::execute-plan-step
+  - kind: loop
+    id: replan-until-stable
+    name: Replan Until Stable
+    loopType: while
+    maxIterations: 5
+    condition:
+      type: simple
+      variable: plan_needs_replan
+      operator: "=="
+      value: true
+    steps:
+      - kind: technique
+        id: replan
+        technique: orchestration-patterns::replan
+      - kind: loop
+        id: execute-after-replan
+        name: Execute After Replan
+        loopType: forEach
+        variable: current_step
+        over: execution_plan.steps
+        maxIterations: 50
+        steps:
+          - kind: technique
+            id: execute-step-after-replan
+            technique: orchestration-patterns::execute-plan-step
+outcome:
+  - Inspectable execution plan produced before tool-heavy work
+  - Steps executed in plan order
+  - Replan path available when execution surfaces surprise
