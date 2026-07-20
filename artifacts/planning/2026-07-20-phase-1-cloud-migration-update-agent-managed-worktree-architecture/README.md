@@ -1,0 +1,45 @@
+# Phase 1 Cloud Migration Update — Agent-Managed Worktree Architecture - July 2026
+
+> Enhancement · Created 2026-07-20 · **Status:** Planning
+
+> **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
+
+## 🎯 Executive Summary
+
+*[Filled as planning proceeds.]*
+
+## Problem Overview
+
+Today the workflow server assumes it owns a global planning folder and, in the Phase 1 container plan, would also take on Git worktree and project lifecycle work. That couples the server to credentials, Git tooling, and a shared planning volume, which fights a simple, stateless container and makes it hard to isolate one project’s artifacts from another.
+
+This work package updates Phase 1 so the agent (MCP client) creates and owns the Git worktree and initialises `.engineering`, while the server only accepts a `worktreeRoot`, derives the planning path, validates it, and writes artifacts there. The result is a thinner server image, clearer security boundaries, and per-project isolation without the server managing Git.
+
+## Solution Overview
+
+*[Brief solution statement — filled when the plan is prepared; link the work package plan for the task breakdown.]*
+
+## 📊 Progress
+
+| # | Item | Description | Estimate | Status |
+|---|------|-------------|----------|--------|
+| 01 | `Design philosophy` | Problem classification, design rationale, workflow path | 15-30m | ⬚ Pending |
+| 01 | `Assumptions log` | Tracked assumptions across all activities | 10-15m | ⬚ Pending |
+| 05 | `Work package plan` | Implementation tasks, estimates, dependencies | 20-45m | ⬚ Pending |
+| 05 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ Pending |
+| — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
+| 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
+| 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
+| 06 | [Test suite review](test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
+| 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
+| — | `Comprehension artifact` | Persistent codebase knowledge | 20-45m | ⬚ Pending |
+| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
+| — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
+| 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ⬚ Pending |
+
+## 🔗 Links
+
+| Resource | Link |
+|----------|------|
+| Source document | [`phase1_update_agent_worktrees.md`](/home/mike1/Incoming/phase1_update_agent_worktrees.md) |
+| Issue | — (skipped) |
+| PR | — |
