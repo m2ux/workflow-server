@@ -65,7 +65,7 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 - Re-classify all open assumptions after the analysis pass
 - If any open assumptions are code-resolvable (including newly surfaced ones), signal that another iteration is needed — set `{has_resolvable_assumptions}` to true
 - If no open assumptions are code-resolvable, convergence is reached (see the [convergence-definition](#convergence-definition) rule): the assumptions log is now the `{assumptions_log}` output, with all code-resolvable assumptions resolved and only stakeholder-dependent ones remaining — set `{has_resolvable_assumptions}` to false
-- After convergence, evaluate whether any non-code-resolvable assumptions remain open. If none remain (all resolved), set `{has_open_assumptions}` to false. If stakeholder-dependent assumptions remain, set `{has_open_assumptions}` to true — they proceed to the interview per the [handoff-to-interview](#handoff-to-interview) rule.
+- After convergence, evaluate whether any non-code-resolvable assumptions remain open. If none remain (all resolved), set `{has_open_assumptions}` to false. If stakeholder-dependent assumptions remain, set `{has_open_assumptions}` to true.
 
 ### 5. Update Comprehension Artifact
 
