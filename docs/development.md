@@ -43,9 +43,16 @@ npm run dev
 ```
 workflow-server/
 ├── src/
-│   ├── index.ts              # Entry point: config → server → stdio transport
-│   ├── server.ts             # MCP server creation and tool/resource registration
-│   ├── config.ts             # ServerConfig: workflowDir, schemasDir, schemaPreamble, traceStore, minCheckpointResponseSeconds
+│   ├── index.ts              # Entry point: config → dispatch to the transport it selects
+│   ├── server.ts             # MCP server creation and tool/resource registration (shared by every transport)
+│   ├── config.ts             # ServerConfig: workflowDir, schemasDir, schemaPreamble, traceStore, minCheckpointResponseSeconds, transport, port, host
+│   ├── transports/           # One module per transport, each owning that transport's connect/listen/shutdown lifecycle
+│   │   ├── stdio.ts          # Default transport — unchanged behavior from before dual-transport support
+│   │   └── http.ts           # Opt-in transport: Express app, /health + /ready, /mcp (StreamableHTTPServerTransport), graceful shutdown
+│   ├── middleware/            # HTTP-only cross-cutting concerns, no footprint on the stdio path
+│   │   ├── request-id.ts     # Correlation id generation/propagation
+│   │   ├── logging.ts        # Structured per-request log line
+│   │   └── error-handler.ts  # Shared { error, message, requestId, timestamp } JSON error body
 │   ├── errors.ts             # Custom error classes (WorkflowNotFoundError, etc.)
 │   ├── result.ts             # Result<T, E> monad for typed error handling
 │   ├── logging.ts            # Structured JSON logging + audit event wrapper (withAuditLog)
@@ -112,6 +119,11 @@ workflow-server/
 | `WORKFLOW_DIR` | `./workflows` | Path to workflow directories |
 | `SERVER_NAME` | `workflow-server` | Server name in health check |
 | `SERVER_VERSION` | `1.0.0` | Server version in health check |
+| `TRANSPORT` | `stdio` | Transport to start (`stdio` or `http`); `--transport` takes precedence |
+| `PORT` | `3000` | Port the HTTP transport listens on; ignored under stdio; `--port` takes precedence |
+| `HOST` | `localhost` | Host the HTTP transport binds to; ignored under stdio; `--host` takes precedence |
+
+Equivalently, `node dist/index.js --transport=http --port=3000 --host=localhost` (or `npm run start:http` / `npm run dev:http` for the defaults).
 
 ## Testing
 
