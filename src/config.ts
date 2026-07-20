@@ -31,12 +31,17 @@ export interface ServerConfig {
   traceStore?: TraceStore;
   /** Minimum seconds between checkpoint issuance and response. Default 3. Set to 0 for testing. */
   minCheckpointResponseSeconds?: number;
-  /** Which transport connects the server built by createServer(). Default 'stdio'. */
-  transport: Transport;
+  /**
+   * Which transport connects the server built by createServer(). Optional on
+   * the interface — a config literal that omits it (as pre-existing tests
+   * and scripts do) is still valid — but `loadConfig` always populates it
+   * (default 'stdio') so real CLI startup never sees `undefined` here.
+   */
+  transport?: Transport;
   /** Port the HTTP transport listens on. Default 3000. Ignored under stdio. */
-  port: number;
+  port?: number;
   /** Host the HTTP transport binds to. Default 'localhost'. Ignored under stdio. */
-  host: string;
+  host?: string;
 }
 
 /** Transports the server can be connected to; see src/transports/. */
