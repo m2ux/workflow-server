@@ -2,7 +2,7 @@
 name: implementation-analysis
 description: Guidelines for analyzing the existing implementation during work package planning to establish baselines, evaluate effectiveness, and identify improvement opportunities.
 metadata:
-  version: 1.2.0
+  version: 1.3.0
   order: 6
   legacy_id: 6
 ---
@@ -10,18 +10,22 @@ metadata:
 
 # Implementation Analysis Guide
 
-Analyze the existing implementation before designing a solution: establish baselines, evaluate effectiveness with evidence, and derive quantitative success criteria. You cannot validate an improvement without a measured baseline.
+Document template and section vocabulary for analyzing an existing implementation: baselines, effectiveness evidence, and quantitative success criteria.
 
-**Full analysis** when the work package modifies existing functionality, expects performance improvements, defines quality metrics, or needs before/after comparison. **Lightweight analysis** acceptable for greenfield work, simple bug fixes with obvious solutions, or documentation-only changes.
+**Full analysis** fills every template section when the work modifies existing functionality, expects performance improvements, defines quality metrics, or needs before/after comparison. **Lightweight analysis** may omit or shorten sections for greenfield work, simple bug fixes with obvious solutions, or documentation-only changes.
 
-## Analysis Framework
+## Section Vocabulary
 
-1. **Implementation review** — locate the code (files/modules), map usage (how it is called, what triggers it, call frequency), dependencies in both directions, architecture patterns, and integration points. Methods: code search for function/class usage, call-path tracing, imports/exports review, configuration examination.
-2. **Effectiveness evaluation** — gather evidence: logs (error rates, latency, throughput), dashboards/monitoring alerts, test pass rates and coverage gaps, bug reports and user complaints, TODO/workaround comments. Answer with evidence: what works well, what doesn't, what workarounds exist, what error logs show.
-3. **Baseline metrics** — quantify: performance (latency P50/P95/P99, throughput, memory), quality (error/success rates, test coverage), usage (call frequency, adoption, feature utilization), reliability (uptime, failure rate, recovery time). Record the measurement method for each metric so it is reproducible.
-4. **Gap analysis** — compare existing vs desired state: functional (missing capabilities), performance (short of targets), quality (defects), maintainability (hard to change). Prioritize: HIGH (blocking/critical), MEDIUM (significant, not blocking), LOW (nice to have).
-5. **Opportunity identification** — classify: quick wins (low effort, immediate benefit), structural (larger effort, foundational), optimization (performance refinement), cleanup (technical debt).
-6. **Success criteria definition** — measurable targets derived from baselines. Format: "Improve [metric] from [baseline] to [target] ([X]% improvement)". Each criterion states its validation method using the same methodology as the baseline.
+Consult when filling the template (not a session procedure):
+
+| Section | Fill with |
+|---------|-----------|
+| **Implementation review** | Code location (files/modules), usage (callers, triggers, frequency), dependencies both ways, architecture patterns, integration points |
+| **Effectiveness evaluation** | Evidence from logs, dashboards, tests, bugs, TODOs/workarounds — what works, what does not |
+| **Baseline metrics** | Performance / quality / usage / reliability numbers plus reproducible measurement method |
+| **Gap analysis** | Existing vs desired (functional, performance, quality, maintainability); priority HIGH / MEDIUM / LOW |
+| **Opportunities** | Quick wins, structural, optimization, cleanup |
+| **Success criteria** | Measurable targets from baselines — format: "Improve [metric] from [baseline] to [target] ([X]% improvement)" with the same validation method as the baseline |
 
 ## Document Template
 

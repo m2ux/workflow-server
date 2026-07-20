@@ -1,15 +1,13 @@
 ---
 name: pr-review-response
-description: Response format and review-document templates for PR review responses; the gathering commands, relevance analysis, and response-crafting rules live on the respond-to-pr-review technique.
+description: Response format and review-document templates for PR review responses.
 metadata:
-  version: 1.2.0
+  version: 1.2.1
   order: 28
   legacy_id: 28
 ---
 
 # PR Review Response Templates
-
-The comment-gathering procedure, relevance analysis, and response-crafting rules live on the consuming technique: [respond-to-pr-review](../techniques/respond-to-pr-review.md#rules).
 
 ## Response Format Template
 

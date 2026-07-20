@@ -1,5 +1,5 @@
 id: implement
-version: 2.10.0
+version: 2.11.0
 name: Implement Tasks
 description: Execute the implementation plan task by task.
 required: true
@@ -75,44 +75,85 @@ steps:
         id: collect-assumptions
         technique: review-assumptions::collect
   - kind: technique
-    id: reconcile-assumptions
-    technique: review-assumptions::reconcile
-  - kind: loop
-    id: assumption-reconciliation
-    name: Assumption Reconciliation Loop
-    loopType: while
-    condition:
-      type: simple
-      variable: has_resolvable_assumptions
-      operator: ==
-      value: true
-    steps:
-      - kind: technique
-        id: reconcile-iteration
-        technique: review-assumptions::reconcile
+    id: analyse-challenge-loop
+    technique:
+      name: analyse-challenge::run-loop
+      inputs:
+        concern_kind: assumptions
+        analyse: review-assumptions::reconcile
+        challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
+        convergence_flag: has_resolvable_assumptions
+        residue_flag: has_open_assumptions
+        residue_collection: open_assumptions
   - kind: technique
     id: present-resolved-assumptions
-    technique: review-assumptions::interview
+    technique:
+      name: review-assumptions::interview
+      inputs:
+        assembly_mode: batch
     actions:
       - action: message
-        message: "**Resolved Assumptions** — the following implementation assumptions were resolved through code analysis."
+        message: "**Assumptions** — analyse-challenge outcomes for implementation (residual opens listed when any remain)."
+  - kind: checkpoint
+    id: implementation-assumption-interview
+    ref: assumption-interview
   - kind: technique
-    id: interview-open-assumptions
-    technique: review-assumptions::interview
+    id: record-batch-response
+    technique: review-assumptions::record
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: has_open_assumptions
+          operator: ==
+          value: true
+        - type: simple
+          variable: needs_individual_interview
+          operator: "!="
+          value: true
   - kind: loop
     id: assumption-interview
-    name: Assumption Interview Loop
+    name: Individual Assumption Interview Loop
     loopType: forEach
     variable: current_assumption
     over: open_assumptions
     maxIterations: 20
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: needs_individual_interview
+          operator: ==
+          value: true
+        - type: simple
+          variable: has_open_assumptions
+          operator: ==
+          value: true
     steps:
       - kind: technique
         id: present-assumption
-        technique: review-assumptions::interview
+        technique:
+          name: review-assumptions::interview
+          inputs:
+            assembly_mode: interview
       - kind: checkpoint
-        id: implementation-assumption-interview
-        ref: assumption-interview
+        id: implementation-assumption-decision#{current_assumption.id}
+        message: "Assumption {current_assumption.id}: {current_assumption.statement}. Resolve now or defer."
+        blocking: true
+        options:
+          - id: resolve-inline
+            label: Resolve now
+            description: Provide resolution for this assumption
+            effect:
+              setVariable:
+                assumption_resolved_inline: true
+          - id: defer-to-stakeholder
+            label: Defer to stakeholder review
+            description: Queue this assumption for stakeholder review
+            effect:
+              setVariable:
+                assumption_deferred: true
+                has_deferred_assumptions: true
       - kind: technique
         id: record-response
         technique: review-assumptions::record

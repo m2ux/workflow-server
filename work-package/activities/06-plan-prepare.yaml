@@ -1,8 +1,10 @@
 id: plan-prepare
-version: 1.9.0
+version: 1.10.0
 name: Plan & Prepare
 description: Design the approach, create the work package plan, and prepare for implementation.
 required: true
+techniques:
+  - scatter-gather
 steps:
   - kind: action
     id: env-prerequisites
@@ -55,21 +57,16 @@ steps:
     id: update-assumptions-log
     technique: review-assumptions::record
   - kind: technique
-    id: reconcile-assumptions
-    technique: review-assumptions::reconcile
-  - kind: loop
-    id: assumption-reconciliation
-    name: Assumption Reconciliation Loop
-    loopType: while
-    condition:
-      type: simple
-      variable: has_resolvable_assumptions
-      operator: ==
-      value: true
-    steps:
-      - kind: technique
-        id: reconcile-iteration
-        technique: review-assumptions::reconcile
+    id: analyse-challenge-loop
+    technique:
+      name: analyse-challenge::run-loop
+      inputs:
+        concern_kind: assumptions
+        analyse: review-assumptions::reconcile
+        challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
+        convergence_flag: has_resolvable_assumptions
+        residue_flag: has_open_assumptions
+        residue_collection: open_assumptions
   - kind: technique
     id: create-todos
     technique: create-todos

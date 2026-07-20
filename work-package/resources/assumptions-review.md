@@ -1,8 +1,8 @@
 ---
 name: assumptions-review
-description: Rules for identifying, documenting, and reviewing assumptions across the work package lifecycle, and the single-table assumptions log template.
+description: Assumptions log template plus category, risk, and probe vocabulary for filling log rows.
 metadata:
-  version: 5.1.0
+  version: 5.3.0
   order: 13
   legacy_id: 13
 ---
@@ -10,37 +10,33 @@ metadata:
 
 # Assumptions Guide
 
-Make implicit decisions explicit so they can be validated: after each phase or task, surface the assumptions made, classify them, and track each one in the log until it is resolved. The log is the record of truth for assumptions — one row per assumption, updated in place as it moves through reconciliation and interview. Never restate assumption content in other artifacts (single-source-and-link).
+The assumptions log is the single record of truth for assumptions — one row per assumption, updated in place. Never restate assumption content in other artifacts (single-source-and-link).
 
-## Surfacing Assumptions
+## Probe Vocabulary
 
-Ask after each phase/task:
+Consult these prompts when filling Log rows (they do not prescribe session cadence):
 
-- **Requirements** — What did I assume about requirements (ambiguities resolved without asking)? Is the information current and valid? Did I treat a preference as a constraint (or vice versa)? What implicit requirements (error handling, logging, security boundaries) did I assume?
-- **Design** — What alternatives did I reject, and why? Is this already solved by existing infrastructure, configuration, or an adjacent layer (check build scripts and deployment tools before proposing new code)? Is this the simplest solution? What implicit contracts (inputs, ordering, state) exist? Which edge cases did I handle or ignore?
-- **Scope** — What did I assume is out of scope? What would I do differently with more context (decisions I'm uncertain about)?
-- **Context-free** — Who should have been consulted? Did I solve the right problem? Am I asking the right questions?
+- **Requirements** — Ambiguities resolved without asking; information currency; preference treated as constraint (or vice versa); implicit requirements (error handling, logging, security boundaries).
+- **Design** — Alternatives rejected and why; existing infrastructure / config / adjacent layer; simplest solution; implicit contracts (inputs, ordering, state); edge cases handled or ignored.
+- **Scope** — What is out of scope; what would change with more context (uncertain decisions).
+- **Context-free** — Who should have been consulted; whether the right problem is being solved; whether the right questions are being asked.
 
-Common origins of false assumptions, to check against: missing/stale information, conditions that changed mid-implementation, requirements communicated verbally but never documented, overlooking existing solutions, and interpretation differences (observation, recall, requirement reading, ambiguous problem statements).
+Common origins of false assumptions: missing/stale information, conditions that changed mid-implementation, requirements communicated verbally but never documented, overlooking existing solutions, and interpretation differences (observation, recall, requirement reading, ambiguous problem statements).
 
-## Classification
+## Classification Vocabulary
 
-**Categories** (choose per phase; the bound activity's `assumption_categories` input is the authoritative list): Behavioral (defaults, fallbacks, edge-case handling), Architectural (component boundaries, data flow direction, abstraction levels), Interface (function signatures, return types, error types), Performance (lazy vs eager, caching, algorithm choice), Compatibility (breaking changes, deprecation, migration paths), Scope (deferred features, intentional limitations), Implicit Requirements (unstated needs assumed present or absent) — plus phase-specific ones (Problem Interpretation, Complexity Assessment, Workflow Path, Requirement Interpretation, Scope Boundaries, Success Criteria Interpretation, Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment, Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding, Design Approach, Task Breakdown, Dependency, Test Strategy, Scope Decisions).
+**Categories** (choose per phase; the category list supplied for the current collection pass is authoritative): Behavioral (defaults, fallbacks, edge-case handling), Architectural (component boundaries, data flow direction, abstraction levels), Interface (function signatures, return types, error types), Performance (lazy vs eager, caching, algorithm choice), Compatibility (breaking changes, deprecation, migration paths), Scope (deferred features, intentional limitations), Implicit Requirements (unstated needs assumed present or absent) — plus phase-specific ones (Problem Interpretation, Complexity Assessment, Workflow Path, Requirement Interpretation, Scope Boundaries, Success Criteria Interpretation, Pattern Applicability, Source Relevance, Synthesis Decisions, Risk Assessment, Current Behavior, Gap Identification, Baseline Interpretation, Dependency Understanding, Design Approach, Task Breakdown, Dependency, Test Strategy, Scope Decisions).
 
-**Risk**: **H** — affects multiple components, external interfaces, or security: validate before proceeding. **M** — affects current task scope: confirm at checkpoint. **L** — easily reversible: log for reference, batch validation acceptable.
+**Risk letters** (column vocabulary): **H** — affects multiple components, external interfaces, or security. **M** — affects current task scope. **L** — easily reversible.
 
-## Rules
+## Fill Rules
 
 - **Be specific and include rationale** — a vague assumption without its "why" cannot be validated.
 - **Document confirmations, not just corrections** — the audit trail explains decisions to future maintainers.
 - **Update the row when the resolution happens** — assumptions are harder to recall accurately later.
 - **Record trade-offs for architectural assumptions** — the alternatives considered and why one was chosen (this feeds the open-assumption decision space).
 - **One row per assumption** (state-once-per-artifact): no separate surfaced/response/outcome sections, no per-phase count tables, no closing recap. The table IS the record.
-- **No null ceremony**: a phase with no significant assumptions gets one row — `— | [Phase] | — | — | No significant assumptions ([reason]) | — | —`. Do not ask the user to confirm a null result; record it and proceed.
-
-## Judgement Augmentation Review
-
-After `review-assumptions::reconcile` converges, only stakeholder-dependent assumptions remain open. Present those per the [interview](../techniques/review-assumptions/interview.md) operation: decision space and trade-offs first, agent's position last (reduces anchoring), reversibility flagged, ordered by decision impact, grouped by theme when 5+. If reconciliation resolved everything, present a one-line summary — no user input needed.
+- **Null row format**: a phase with no significant assumptions gets one row — `— | [Phase] | — | — | No significant assumptions ([reason]) | — | —`.
 
 ## Assumptions Log Template
 

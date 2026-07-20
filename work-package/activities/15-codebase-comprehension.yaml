@@ -1,8 +1,10 @@
 id: codebase-comprehension
-version: 1.8.0
+version: 1.9.0
 name: Codebase Comprehension
 description: Build or augment a mental model of the codebase.
 required: false
+techniques:
+  - scatter-gather
 steps:
   - kind: technique
     id: build-comprehension
@@ -16,12 +18,6 @@ steps:
   - kind: technique
     id: initial-deep-dive
     technique: deep-dive
-  - kind: technique
-    id: initial-lens-pass
-    technique:
-      name: prism/portfolio-analysis
-      inputs:
-        selected_lenses: '["pedagogy", "rejected-paths"]'
   - kind: technique
     id: update-artifact-initial
     technique: manage-artifacts::write-artifact
@@ -39,20 +35,19 @@ steps:
       value: true
     steps:
       - kind: technique
-        id: select-area
-        technique: deep-dive
-      - kind: technique
-        id: portfolio-lens-pass
+        id: analyse-challenge-pass
         technique:
-          name: prism/portfolio-analysis
+          name: analyse-challenge::run-loop
           inputs:
-            selected_lenses: '["pedagogy", "rejected-paths"]'
+            concern_kind: open_questions
+            analyse: codebase-comprehension::deep-dive
+            challenge_perspectives: '["pedagogy", "rejected-paths"]'
+            convergence_flag: needs_comprehension
+            residue_flag: has_open_questions
+            iteration_mode: once
       - kind: technique
         id: update-artifact
         technique: manage-artifacts::write-artifact
-      - kind: technique
-        id: revise-open-questions
-        technique: revise-questions
       - kind: checkpoint
         id: comprehension-sufficient
         condition:
@@ -60,7 +55,7 @@ steps:
           variable: has_open_questions
           operator: ==
           value: true
-        message: Open questions remain after deep-dive (see above). Select whether understanding is sufficient or further exploration is needed.
+        message: Open questions remain after analyse-challenge (see above). Select whether understanding is sufficient or further exploration is needed.
         blocking: false
         defaultOption: sufficient
         autoAdvanceMs: 30000
@@ -74,9 +69,15 @@ steps:
           - id: dive-deeper
             label: Dive deeper
             description: Investigate remaining open questions in more detail
+            effect:
+              setVariable:
+                needs_comprehension: true
           - id: different-area
             label: Explore a different area
             description: Shift focus to a different part of the codebase
+            effect:
+              setVariable:
+                needs_comprehension: true
 transitions:
   - to: requirements-elicitation
     condition:
@@ -109,4 +110,4 @@ outcome:
   - Key abstractions and design rationale documented
   - Domain concepts mapped to technical constructs
   - A reusable comprehension reference exists that future work can build on without re-investigating the same area
-  - User confident to evaluate design assumptions in subsequent activities
+  - Open questions converged via analyse-challenge before the soft sufficiency gate

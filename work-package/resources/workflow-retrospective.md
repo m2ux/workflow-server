@@ -2,7 +2,7 @@
 name: workflow-retrospective
 description: Methodology and section template for the workflow retrospective written into the COMPLETE.md close-out document.
 metadata:
-  version: 2.1.0
+  version: 2.1.1
   order: 20
   legacy_id: 20
 ---
@@ -10,7 +10,7 @@ metadata:
 
 # Workflow Retrospective Guide
 
-Analyze the session's **non-checkpoint** user interactions and, when a resolved session trace is available, its **mechanical** friction to surface workflow defects — then record the result as the `## Workflow Retrospective` section of [COMPLETE.md](complete-wp.md). Complementary lean detail lives in `session-trace.md` when produced; join the planning-folder `token-usage.md` by link when present.
+Record the session's **non-checkpoint** user-interaction friction and, when a resolved session trace is available, its **mechanical** friction as the `## Workflow Retrospective` section of [COMPLETE.md](complete-wp.md). Complementary lean detail lives in `session-trace.md` when produced; join the planning-folder `token-usage.md` by link when present.
 
 ## Signals to Scan For
 
@@ -72,4 +72,3 @@ Priority: **high** = repeated corrections, frustration, missing guidance that ca
 - **State each lesson once.** No Summary/Lessons/Takeaway triple-statement — the takeaway line is the recap.
 - **Honest, specific, prioritized ruthlessly** — no generic positives, no recommendation lists longer than can be actioned.
 - **Join, don't duplicate cost** — session-trace never estimates cost; link `token-usage.md` when present.
-- Skip entirely per conduct-retrospective's `skip-if-trivial` rule (including its mechanical-friction carve-in).

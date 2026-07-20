@@ -1,8 +1,8 @@
 ---
 name: assumption-reconciliation
-description: Assumptions-log integration shape, resolution statuses, and scorecard format for assumption reconciliation; the classify-analyze-converge protocol and classification rules live on the review-assumptions reconcile technique.
+description: Assumptions-log integration shape, resolution statuses, and scorecard format for assumption reconciliation.
 metadata:
-  version: 1.3.0
+  version: 1.4.0
   order: 26
   legacy_id: 26
 ---
@@ -10,7 +10,7 @@ metadata:
 
 # Assumption Reconciliation
 
-Activities throughout the work-package workflow produce assumptions — implicit decisions that may or may not hold. Assumption reconciliation resolves the code-resolvable ones autonomously so the user reviews only the irreducible set. The classify-analyze-converge procedure, classification criteria, convergence definition, and interview handoff live on [reconcile](../techniques/review-assumptions/reconcile.md#rules); this resource carries the log-integration shape and scorecard format that protocol consumes.
+Log-integration shape and scorecard format for assumption reconciliation. Status vocabulary and row update rules below; fill the [assumptions log template](assumptions-review.md#assumptions-log-template) accordingly.
 
 ## Integration with Assumptions Log
 
@@ -36,11 +36,9 @@ Bold-label entries follow the [markdown-line-breaks](../techniques/manage-artifa
 
 ## Scorecard
 
-After reconciliation, present a summary scorecard:
+Scorecard shape (counts only — not persisted in the log):
 
 ```
 Total: N | Validated: N | Invalidated: N | Partially Validated: N | Open: N
 Convergence iterations: N | Newly surfaced: N
 ```
-
-This gives the user an at-a-glance view of how the assumption set evolved through reconciliation. If open assumptions remain, they proceed to judgement augmentation review. If the open count is zero, no user review is needed.

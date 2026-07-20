@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Iteratively resolve code-analyzable assumptions through targeted codebase analysis until only stakeholder-dependent assumptions remain, before the open ones are taken to the user for interview.
+Resolve code-analyzable assumptions through targeted codebase analysis until only stakeholder-dependent assumptions remain. Callable as the `{analyse}` parameter of [analyse-challenge::run-loop](../analyse-challenge/run-loop.md); residual interview is activity-level and gated on `{has_open_assumptions}`.
 
 ## Inputs
 
@@ -42,7 +42,7 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 - Read all open assumptions from the `{assumptions_log}`
 - For each, determine whether targeted code analysis could validate or invalidate it, classifying per the [code-resolvable](#code-resolvable) and [not-code-resolvable](#not-code-resolvable) rules
 - If the `{assumptions_log}` contains no open assumptions, there is nothing to resolve — skip reconciliation and set `{has_resolvable_assumptions}` to false and `{has_open_assumptions}` to false.
-- If every open assumption classifies as not code-resolvable, convergence is immediate — set `{has_resolvable_assumptions}` to false and proceed to user review.
+- If every open assumption classifies as not code-resolvable, convergence is immediate — set `{has_resolvable_assumptions}` to false and evaluate `{has_open_assumptions}` from the remaining open set.
 
 ### 2. Targeted Analysis
 
@@ -65,7 +65,7 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 - Re-classify all open assumptions after the analysis pass
 - If any open assumptions are code-resolvable (including newly surfaced ones), signal that another iteration is needed — set `{has_resolvable_assumptions}` to true
 - If no open assumptions are code-resolvable, convergence is reached (see the [convergence-definition](#convergence-definition) rule): the assumptions log is now the `{assumptions_log}` output, with all code-resolvable assumptions resolved and only stakeholder-dependent ones remaining — set `{has_resolvable_assumptions}` to false
-- After convergence, evaluate whether any non-code-resolvable assumptions remain open. If none remain (all resolved), set `{has_open_assumptions}` to false. If stakeholder-dependent assumptions remain, set `{has_open_assumptions}` to true — they proceed to the interview per the [handoff-to-interview](#handoff-to-interview) rule.
+- After convergence, evaluate whether any non-code-resolvable assumptions remain open. If none remain (all resolved), set `{has_open_assumptions}` to false. If stakeholder-dependent assumptions remain, set `{has_open_assumptions}` to true.
 
 ### 5. Update Comprehension Artifact
 
@@ -120,15 +120,15 @@ Convergence is reached when no open assumption in the log — including assumpti
 - No newly surfaced assumption is classified as code-resolvable
 - The final open set has explicit reasons for non-resolvability
 
-### handoff-to-interview
+### handoff-to-residue
 
-After convergence, reconciliation feeds the [interview](./interview.md) operation:
+After convergence, set `{has_resolvable_assumptions}` false and `{has_open_assumptions}` from the irreducible open set. When bound as `{analyse}` inside [analyse-challenge](../analyse-challenge/TECHNIQUE.md), [challenge](../analyse-challenge/challenge.md) / [combine](../analyse-challenge/combine.md) may further shrink that set before the activity gates [interview](./interview.md) on `{has_open_assumptions}`.
 
 | Element | Source |
 |---------|--------|
-| **The irreducible open set** | Assumptions classified as not-code-resolvable after convergence |
+| **The irreducible open set** | Assumptions classified as not-code-resolvable after analyse (and combine, when used) |
 | **Non-resolvability rationale** | The classification rationale recorded for each open assumption |
-| **Technical context** | Findings from reconciliation cycles — validated assumptions, code patterns discovered, partial evidence gathered |
-| **Alternatives context** | Constraints and patterns identified during analysis that inform the trade-off space |
+| **Technical context** | Findings from analyse / challenge cycles — validated assumptions, code patterns, partial evidence |
+| **Alternatives context** | Constraints and patterns that inform the residual decision space |
 
-Trade-off assembly, impact ordering, anchoring-safe presentation, reversibility flagging, grouping, and interview formatting belong to [interview](./interview.md) — reconciliation only supplies the raw evidence.
+Trade-off assembly and batch/interview formatting belong to [interview](./interview.md) — reconcile supplies evidence and flags only.

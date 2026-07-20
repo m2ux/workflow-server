@@ -1,8 +1,8 @@
 ---
 name: test-plan
-description: Test plan templates and test-design principles; authoring rules live on the create-test-plan technique.
+description: Test plan templates and test-design principles.
 metadata:
-  version: 1.2.0
+  version: 1.2.1
   order: 11
   legacy_id: 11
 ---
@@ -107,4 +107,4 @@ pytest -k "test_name"       # Python
 
 ## Test Plan Structure
 
-Required sections, in order: header link line (ADR, Ticket, PR), Overview, Test Cases, Acceptance Criteria Matrix (when requirements exist), Running Tests. The authoring rules governing every section — table format, test-ID linking, content boundaries, naming — live on the producing technique: [create-test-plan](../techniques/create-test-plan.md#rules).
+Required sections, in order: header link line (ADR, Ticket, PR), Overview, Test Cases, Acceptance Criteria Matrix (when requirements exist), Running Tests. Fill rules for every section cover table format, test-ID linking, content boundaries, and naming.
