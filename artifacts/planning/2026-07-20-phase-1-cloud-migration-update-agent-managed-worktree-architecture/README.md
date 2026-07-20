@@ -1,12 +1,12 @@
 # Phase 1 Cloud Migration Update — Agent-Managed Worktree Architecture - July 2026
 
-> Enhancement · Created 2026-07-20 · **Status:** Planning
+> Enhancement · Created 2026-07-20 · **Status:** Ready
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
 ## 🎯 Executive Summary
 
-*[Filled as planning proceeds.]*
+Work package started for the Phase 1 agent-managed worktree architecture update: feature branch and draft PR are ready, planning folder is live, and design/requirements work is next.
 
 ## Problem Overview
 
@@ -42,4 +42,4 @@ This work package updates Phase 1 so the agent (MCP client) creates and owns the
 |----------|------|
 | Source document | [`phase1_update_agent_worktrees.md`](/home/mike1/Incoming/phase1_update_agent_worktrees.md) |
 | Issue | — (skipped) |
-| PR | — |
+| PR | [#267](https://github.com/m2ux/workflow-server/pull/267) |
