@@ -1510,3 +1510,15 @@ A planning artifact is persisted without a creation-guide Template, or the techn
 **Do not flag:** Non-planning outputs (variables, PRs, commits); citing an existing Template with short when/which bullets only; `no-guide-wrapper-ceremony` (too much wrapper around a template — opposite pole); fill content that lives correctly in the resource Template while Protocol only orders persist.
 
 **Fix:** Author or extend a creation-guide resource with `## Template` + `## Rules`; map the bare filename in the resources index; replace Protocol layout essays with a cite to `#template`. See [Creation Guide for Generated Documents](./design-principles.md#28-creation-guide-for-generated-documents); also `resource-fills-not-does`, `no-technique-resource-dual-home`.
+
+### AP-117. no-engine-mechanics-as-rules
+
+"ambient-bag-variables-changed — Declared outputs appear in the activity's `variables_changed`"
+
+A leaf Rule (or a Protocol phase whose only job is the same restatement) re-encodes engine or binding mechanics that already have an authoritative home.
+
+**Detect:** A technique, activity, or workflow `## Rules` / `rules[]` entry — or a Protocol phase that only restates bag/envelope/binding/dispatch HOW — repeats a contract owned by meta workflow-engine, variable-binding, finalize-activity, or schema composition (e.g. declared outputs land via `variables_changed`; mutations use the sanctioned channel; loops and conditions are structural, not prose rules) without adding a domain invariant those homes do not already encode.
+
+**Do not flag:** Novel domain constraints the engine does not already enforce; engine/conduct/bootstrap surfaces whose domain IS that contract; activity `set` that duplicates a technique output (`no-set-of-technique-output`); tool/delivery recipes (`no-tool-usage-prescription`, `no-delivery-mechanism-narration`); a rule that restates its own technique's Protocol without claiming engine HOW (`no-rule-protocol-restatement`).
+
+**Fix:** Delete the leaf restatement. Keep declared Outputs and rely on variable-binding / finalize-activity (or the authoritative engine home). If that home is incomplete, fix it once there — do not copy the contract onto producer leaves. See also `no-one-step-rules`, `platform-semantics-in-capability`.
