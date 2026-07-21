@@ -84,7 +84,7 @@ Full IDE setup: [SETUP.md](SETUP.md).
       "args": [
         "/path/to/workflow-server/dist/index.js",
         "--workspace=/path/to/worktree-root",
-        "--workflow-dir=/path/to/workflow-server/workflows"
+        "--workflow-dir=/path/to/workflows"
       ]
     }
   }
