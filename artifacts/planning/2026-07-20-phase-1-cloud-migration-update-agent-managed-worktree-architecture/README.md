@@ -1,12 +1,12 @@
 # Phase 1 Cloud Migration Update — Agent-Managed Worktree Architecture - July 2026
 
-> Enhancement · Created 2026-07-20 · **Status:** Assumptions reviewed — ready for implementation
+> Enhancement · Created 2026-07-20 · **Status:** Implementation complete — ready for lean coding audit
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
 ## 🎯 Executive Summary
 
-Work package planned for the Phase 1 agent-managed worktree architecture update: required startup worktree root (`WORKTREE_ROOT` alias), configurable `PLANNING_SLUG`, path-containment validator (not lifecycle ownership), Docker RW bind, and agent/operator docs — seven implementation tasks sequenced to protect the CRITICAL `planningRoot` call graph. Approach confirmed and assumptions reviewed on [#267](https://github.com/m2ux/workflow-server/pull/267); next is implement per the [plan](06-work-package-plan.md).
+Work package implemented for the Phase 1 agent-managed worktree architecture update: required startup worktree root (`WORKTREE_ROOT` alias), configurable `PLANNING_SLUG`, path-containment validator (not lifecycle ownership), Docker RW bind, and agent/operator docs — seven tasks on [#267](https://github.com/m2ux/workflow-server/pull/267) with `planningRoot` one-arg signature preserved. Next: lean coding audit / review.
 
 ## Problem Overview
 
@@ -31,7 +31,8 @@ The payoff is a thinner, safer server: no Git or repository credentials in the c
 | 05 | [Implementation analysis](05-implementation-analysis.md) | Baselines, gaps, blast radius for config/ready/validator/Docker | 20-40m | ✅ Complete |
 | 06 | [Work package plan](06-work-package-plan.md) | Implementation tasks, estimates, dependencies | 20-45m | ✅ Complete |
 | 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ Complete |
-| — | Implementation | Code changes per plan | 1-4h | ⬚ Pending |
+| 08 | [Provenance log](08-provenance-log.md) | Per-task DCO provenance rows for implement | 5-10m | ✅ Complete |
+| — | Implementation | Code changes per plan (Tasks 1–7 on feature branch) | 1-4h | ✅ Complete |
 | 06 | `Change block index` | Indexed diff hunks for manual review | 5-10m | ⬚ Pending |
 | 06 | `Code review` | Automated code quality review | 10-20m | ⬚ Pending |
 | 06 | [Test suite review](test-suite-review.md) | Test quality and coverage assessment | 10-20m | ⬚ Pending |
