@@ -1,18 +1,33 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { resolve } from 'node:path';
-import { loadConfig, WorkspaceConfigError } from '../src/config.js';
+import { join, resolve } from 'node:path';
+import {
+  loadConfig,
+  resolvePlanningRelativeDir,
+  WorkspaceConfigError,
+} from '../src/config.js';
+import {
+  PLANNING_RELATIVE_DIR,
+  planningRoot,
+  setPlanningRelativeDir,
+} from '../src/utils/session/store.js';
 
 describe('loadConfig — workspace argument', () => {
   let envBefore: string | undefined;
+  let worktreeRootBefore: string | undefined;
 
   beforeEach(() => {
     envBefore = process.env['WORKFLOW_WORKSPACE'];
+    worktreeRootBefore = process.env['WORKTREE_ROOT'];
     delete process.env['WORKFLOW_WORKSPACE'];
+    delete process.env['WORKTREE_ROOT'];
   });
 
   afterEach(() => {
     if (envBefore === undefined) delete process.env['WORKFLOW_WORKSPACE'];
     else process.env['WORKFLOW_WORKSPACE'] = envBefore;
+    if (worktreeRootBefore === undefined) delete process.env['WORKTREE_ROOT'];
+    else process.env['WORKTREE_ROOT'] = worktreeRootBefore;
+    setPlanningRelativeDir(PLANNING_RELATIVE_DIR);
   });
 
   describe('--workspace=PATH CLI flag', () => {
@@ -60,18 +75,61 @@ describe('loadConfig — workspace argument', () => {
     });
   });
 
+  describe('WORKTREE_ROOT env alias', () => {
+    it('uses WORKTREE_ROOT alone when CLI and WORKFLOW_WORKSPACE are absent (PR267-TC-02)', () => {
+      process.env['WORKTREE_ROOT'] = '/tmp/worktree-root-alone';
+      const config = loadConfig([]);
+      expect(config.workspaceDir).toBe(resolve('/tmp/worktree-root-alone'));
+    });
+
+    it('trims whitespace from WORKTREE_ROOT', () => {
+      process.env['WORKTREE_ROOT'] = '  /tmp/worktree-root-trimmed  ';
+      const config = loadConfig([]);
+      expect(config.workspaceDir).toBe(resolve('/tmp/worktree-root-trimmed'));
+    });
+  });
+
+  describe('CLI > WORKFLOW_WORKSPACE > WORKTREE_ROOT precedence (PR267-TC-03)', () => {
+    it('prefers --workspace over both env vars', () => {
+      process.env['WORKFLOW_WORKSPACE'] = '/tmp/env-workspace';
+      process.env['WORKTREE_ROOT'] = '/tmp/worktree-root';
+      const config = loadConfig(['--workspace=/tmp/cli-workspace']);
+      expect(config.workspaceDir).toBe(resolve('/tmp/cli-workspace'));
+    });
+
+    it('prefers WORKFLOW_WORKSPACE over WORKTREE_ROOT when CLI is absent', () => {
+      process.env['WORKFLOW_WORKSPACE'] = '/tmp/env-workspace';
+      process.env['WORKTREE_ROOT'] = '/tmp/worktree-root';
+      const config = loadConfig([]);
+      expect(config.workspaceDir).toBe(resolve('/tmp/env-workspace'));
+    });
+
+    it('falls through to WORKTREE_ROOT when CLI and WORKFLOW_WORKSPACE are absent', () => {
+      process.env['WORKTREE_ROOT'] = '/tmp/worktree-root';
+      const config = loadConfig([]);
+      expect(config.workspaceDir).toBe(resolve('/tmp/worktree-root'));
+    });
+  });
+
   describe('neither source provided', () => {
     it('throws WorkspaceConfigError when no CLI flag and no env var', () => {
       expect(() => loadConfig([])).toThrow(WorkspaceConfigError);
     });
 
-    it('throws an actionable message naming both --workspace and WORKFLOW_WORKSPACE', () => {
+    it('throws an actionable message naming --workspace, WORKFLOW_WORKSPACE, and WORKTREE_ROOT (PR267-TC-01)', () => {
       expect(() => loadConfig([])).toThrow(/--workspace/);
       expect(() => loadConfig([])).toThrow(/WORKFLOW_WORKSPACE/);
+      expect(() => loadConfig([])).toThrow(/WORKTREE_ROOT/);
+      expect(() => loadConfig([])).toThrow(/worktree root/i);
     });
 
     it('treats whitespace-only WORKFLOW_WORKSPACE as absent', () => {
       process.env['WORKFLOW_WORKSPACE'] = '   ';
+      expect(() => loadConfig([])).toThrow(WorkspaceConfigError);
+    });
+
+    it('treats whitespace-only WORKTREE_ROOT as absent', () => {
+      process.env['WORKTREE_ROOT'] = '   ';
       expect(() => loadConfig([])).toThrow(WorkspaceConfigError);
     });
   });
@@ -166,5 +224,104 @@ describe('loadConfig — transport selection', () => {
   it('falls back to the default port on a non-positive-integer PORT value', () => {
     const config = loadConfig(['--workspace=/tmp/ws', '--port=not-a-number']);
     expect(config.port).toBe(3000);
+  });
+});
+
+describe('loadConfig — PLANNING_SLUG', () => {
+  let slugBefore: string | undefined;
+  let workspaceBefore: string | undefined;
+
+  beforeEach(() => {
+    slugBefore = process.env['PLANNING_SLUG'];
+    workspaceBefore = process.env['WORKFLOW_WORKSPACE'];
+    delete process.env['PLANNING_SLUG'];
+    delete process.env['WORKFLOW_WORKSPACE'];
+    delete process.env['WORKTREE_ROOT'];
+    setPlanningRelativeDir(PLANNING_RELATIVE_DIR);
+  });
+
+  afterEach(() => {
+    if (slugBefore === undefined) delete process.env['PLANNING_SLUG'];
+    else process.env['PLANNING_SLUG'] = slugBefore;
+    if (workspaceBefore === undefined) delete process.env['WORKFLOW_WORKSPACE'];
+    else process.env['WORKFLOW_WORKSPACE'] = workspaceBefore;
+    setPlanningRelativeDir(PLANNING_RELATIVE_DIR);
+  });
+
+  it('defaults planningRelativeDir to .engineering/artifacts/planning (PR267-TC-04)', () => {
+    const config = loadConfig(['--workspace=/tmp/ws']);
+    expect(config.planningRelativeDir).toBe(PLANNING_RELATIVE_DIR);
+    expect(planningRoot('/tmp/ws')).toBe(join('/tmp/ws', PLANNING_RELATIVE_DIR));
+  });
+
+  it('overrides planning root via PLANNING_SLUG (PR267-TC-05)', () => {
+    process.env['PLANNING_SLUG'] = '.engineering/planning';
+    const config = loadConfig(['--workspace=/tmp/ws']);
+    expect(config.planningRelativeDir).toBe('.engineering/planning');
+    expect(planningRoot('/tmp/ws')).toBe(join('/tmp/ws', '.engineering/planning'));
+  });
+
+  it('falls back to default when PLANNING_SLUG is empty or whitespace', () => {
+    process.env['PLANNING_SLUG'] = '   ';
+    expect(resolvePlanningRelativeDir()).toBe(PLANNING_RELATIVE_DIR);
+    const config = loadConfig(['--workspace=/tmp/ws']);
+    expect(config.planningRelativeDir).toBe(PLANNING_RELATIVE_DIR);
+  });
+});
+
+describe('loadConfig — workflowDir', () => {
+  let workflowDirBefore: string | undefined;
+  let workspaceBefore: string | undefined;
+
+  beforeEach(() => {
+    workflowDirBefore = process.env['WORKFLOW_DIR'];
+    workspaceBefore = process.env['WORKFLOW_WORKSPACE'];
+    delete process.env['WORKFLOW_DIR'];
+    delete process.env['WORKFLOW_WORKSPACE'];
+    delete process.env['WORKTREE_ROOT'];
+  });
+
+  afterEach(() => {
+    if (workflowDirBefore === undefined) delete process.env['WORKFLOW_DIR'];
+    else process.env['WORKFLOW_DIR'] = workflowDirBefore;
+    if (workspaceBefore === undefined) delete process.env['WORKFLOW_WORKSPACE'];
+    else process.env['WORKFLOW_WORKSPACE'] = workspaceBefore;
+  });
+
+  it('defaults workflowDir to ./workflows under the install root', () => {
+    const config = loadConfig(['--workspace=/tmp/ws']);
+    expect(config.workflowDir).toBe(resolve(import.meta.dirname, '..', 'workflows'));
+  });
+
+  it('accepts --workflow-dir=PATH', () => {
+    const config = loadConfig([
+      '--workspace=/tmp/ws',
+      '--workflow-dir=/tmp/custom-workflows',
+    ]);
+    expect(config.workflowDir).toBe(resolve('/tmp/custom-workflows'));
+  });
+
+  it('accepts space-separated --workflow-dir PATH', () => {
+    const config = loadConfig([
+      '--workspace=/tmp/ws',
+      '--workflow-dir',
+      '/tmp/custom-workflows',
+    ]);
+    expect(config.workflowDir).toBe(resolve('/tmp/custom-workflows'));
+  });
+
+  it('prefers --workflow-dir over WORKFLOW_DIR env', () => {
+    process.env['WORKFLOW_DIR'] = '/tmp/env-workflows';
+    const config = loadConfig([
+      '--workspace=/tmp/ws',
+      '--workflow-dir=/tmp/cli-workflows',
+    ]);
+    expect(config.workflowDir).toBe(resolve('/tmp/cli-workflows'));
+  });
+
+  it('uses WORKFLOW_DIR when CLI is absent', () => {
+    process.env['WORKFLOW_DIR'] = '/tmp/env-workflows';
+    const config = loadConfig(['--workspace=/tmp/ws']);
+    expect(config.workflowDir).toBe(resolve('/tmp/env-workflows'));
   });
 });

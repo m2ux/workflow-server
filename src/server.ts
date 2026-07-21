@@ -6,6 +6,7 @@ import { registerResourceTools } from './tools/resource-tools.js';
 
 import { registerSchemaResources } from './resources/schema-resources.js';
 import { logInfo, setAuditWorkspaceDir } from './logging.js';
+import { PLANNING_RELATIVE_DIR, setPlanningRelativeDir } from './utils/session/store.js';
 
 export function createServer(config: ServerConfig): McpServer {
   const resolvedConfig: ResolvedServerConfig = {
@@ -13,6 +14,11 @@ export function createServer(config: ServerConfig): McpServer {
     traceStore: config.traceStore ?? new TraceStore(),
   };
 
+  // Apply planning slug once at startup so planningRoot(workspaceDir) callers
+  // keep a stable one-arg signature (CRITICAL blast radius if arity changes).
+  setPlanningRelativeDir(
+    resolvedConfig.planningRelativeDir ?? PLANNING_RELATIVE_DIR,
+  );
   setAuditWorkspaceDir(resolvedConfig.workspaceDir);
 
   const server = new McpServer(

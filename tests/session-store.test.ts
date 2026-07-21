@@ -1,4 +1,4 @@
-import { describe, it, expect, afterAll, beforeEach } from 'vitest';
+import { describe, it, expect, afterAll, afterEach, beforeEach } from 'vitest';
 import {
   chmod,
   mkdir,
@@ -26,6 +26,7 @@ import {
   sealFilePath,
   sessionFileExists,
   sessionFilePath,
+  setPlanningRelativeDir,
   verifySeal,
   writeSeal,
   writeSessionFile,
@@ -378,9 +379,25 @@ describe('session-store primitives', () => {
 
     beforeEach(async () => {
       workspace = await mkdtemp(join(tmpdir(), 'sx-folder-'));
+      setPlanningRelativeDir(PLANNING_RELATIVE_DIR);
     });
 
-    it('planningRoot joins workspaceDir with the canonical relative path', () => {
+    afterEach(() => {
+      setPlanningRelativeDir(PLANNING_RELATIVE_DIR);
+    });
+
+    it('planningRoot joins workspaceDir with the canonical relative path (PR267-TC-04/06)', () => {
+      // One-arg signature preserved — callers pass only workspaceDir.
+      expect(planningRoot(workspace)).toBe(join(workspace, PLANNING_RELATIVE_DIR));
+    });
+
+    it('planningRoot uses the active relative dir set at startup (PR267-TC-05)', () => {
+      setPlanningRelativeDir('.engineering/planning');
+      expect(planningRoot(workspace)).toBe(join(workspace, '.engineering/planning'));
+    });
+
+    it('setPlanningRelativeDir falls back to default on empty/whitespace', () => {
+      setPlanningRelativeDir('   ');
       expect(planningRoot(workspace)).toBe(join(workspace, PLANNING_RELATIVE_DIR));
     });
 
@@ -403,6 +420,13 @@ describe('session-store primitives', () => {
       const a = await ensurePlanningFolder(workspace, '2026-05-14-tc-idem');
       const b = await ensurePlanningFolder(workspace, '2026-05-14-tc-idem');
       expect(b).toBe(a);
+    });
+
+    it('ensurePlanningFolder fails closed when active planning root escapes workspace (PR267-TC-12)', async () => {
+      setPlanningRelativeDir('../../../escape-planning');
+      await expect(ensurePlanningFolder(workspace, '2026-05-14-escape')).rejects.toThrow(
+        /outside the configured worktree root/,
+      );
     });
 
     afterEachCleanup(() => workspace);

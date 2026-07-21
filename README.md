@@ -74,30 +74,35 @@ npm run build
 
 ### Configure MCP Client
 
-**Cursor** (`~/.cursor/mcp.json`):
+Full IDE setup: [SETUP.md](SETUP.md).
 
 ```json
 {
   "mcpServers": {
     "workflow-server": {
       "command": "node",
-      "args": ["/path/to/workflow-server/dist/index.js"],
-      "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflows",
-        "WORKFLOW_WORKSPACE": "/path/to/your/project"
-      }
+      "args": [
+        "/path/to/workflow-server/dist/index.js",
+        "--workspace=/path/to/worktree-root",
+        "--workflow-dir=/path/to/workflows"
+      ]
     }
   }
 }
 ```
 
-`WORKFLOW_WORKSPACE` is required: it points at the project whose `.engineering/artifacts/planning/` folder holds session state (`--workspace=PATH` on the command line works too). Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs.
+Startup args (one line each):
+
+- `--workspace=PATH` — required worktree root (env: `WORKFLOW_WORKSPACE` or `WORKTREE_ROOT`)
+- `--workflow-dir=PATH` — workflows directory (env: `WORKFLOW_DIR`; default `./workflows`)
+- `--transport=stdio|http` — transport (env: `TRANSPORT`; default `stdio`)
+- `--port=N` / `--host=HOST` — HTTP only (env: `PORT` / `HOST`)
 
 The default transport is **stdio** (what IDE MCP clients use). To run over HTTP instead:
 
 ```bash
 npm run start:http
-# or: node dist/index.js --workspace=/path/to/your/project --transport=http --port=3000
+# or: node dist/index.js --workspace=/path/to/worktree-root --workflow-dir=/path/to/workflows --transport=http --port=3000
 ```
 
 | Endpoint | Purpose |

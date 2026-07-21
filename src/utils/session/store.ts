@@ -13,6 +13,7 @@ import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { getOrCreateServerKey } from './crypto.js';
 import type { SessionJsonPath } from './derivation.js';
+import { assertPathInsideRoot } from '../../worktree-validator.js';
 
 /**
  * Tiny FS adapter object used internally by `writeAtomic`. Existing only so
@@ -42,10 +43,27 @@ export const SESSION_FILE_NAME = 'session.json';
 export const SEAL_FILE_NAME = '.session-token';
 
 /**
- * Subdirectory under the workspace root that holds planning folders. Every
- * session lives at `<workspaceDir>/<PLANNING_RELATIVE_DIR>/<slug>/`.
+ * Default subdirectory under the worktree / workspace root that holds planning
+ * folders. Every session lives at `<workspaceDir>/<activeRelativeDir>/<slug>/`.
+ * The active relative segment defaults to this constant and may be overridden
+ * once at startup via `setPlanningRelativeDir` (from `PLANNING_SLUG` / config).
+ * `planningRoot(workspaceDir)` keeps its one-argument call-site signature.
  */
 export const PLANNING_RELATIVE_DIR = '.engineering/artifacts/planning';
+
+/** Active planning relative directory used by `planningRoot`. */
+let activePlanningRelativeDir = PLANNING_RELATIVE_DIR;
+
+/**
+ * Set the planning relative directory used by `planningRoot`. Empty / whitespace
+ * falls back to `PLANNING_RELATIVE_DIR`. Call once at server startup from
+ * `createServer` / `loadConfig` — prefer this over scattered `process.env` reads
+ * on hot paths.
+ */
+export function setPlanningRelativeDir(relativeDir: string): void {
+  const trimmed = relativeDir.trim();
+  activePlanningRelativeDir = trimmed || PLANNING_RELATIVE_DIR;
+}
 
 /** Directory mode for planning folders (`drwx------`). */
 export const PLANNING_DIR_MODE = 0o700;
@@ -375,10 +393,12 @@ export async function verifySeal(
 
 /**
  * Absolute path to the planning-folder root for a workspace.
- * `<workspaceDir>/.engineering/artifacts/planning`.
+ * `<workspaceDir>/<activePlanningRelativeDir>` (default
+ * `.engineering/artifacts/planning`). Signature is intentionally one argument
+ * — configure the relative segment via `setPlanningRelativeDir` at startup.
  */
 export function planningRoot(workspaceDir: string): string {
-  return join(workspaceDir, PLANNING_RELATIVE_DIR);
+  return join(workspaceDir, activePlanningRelativeDir);
 }
 
 /**
@@ -606,15 +626,21 @@ export async function findPlanningFolderBySlug(
 
 /**
  * Create a top-level planning folder at
- * `<workspaceDir>/<PLANNING_RELATIVE_DIR>/<slug>` with mode 0700.
- * Idempotent. Returns the absolute path.
+ * `<workspaceDir>/<activePlanningRelativeDir>/<slug>` with mode 0700.
+ * Idempotent. Returns the absolute path. Requires the derived planning root
+ * and folder path to resolve inside the configured worktree / workspace root.
  */
 export async function ensurePlanningFolder(
   workspaceDir: string,
   slug: string,
 ): Promise<string> {
   assertValidSlug(slug);
-  const folder = resolve(planningRoot(workspaceDir), slug);
+  const absoluteWorkspace = resolve(workspaceDir);
+  const root = planningRoot(absoluteWorkspace);
+  // Assert derived paths stay inside the worktree root before mkdir.
+  assertPathInsideRoot(absoluteWorkspace, root);
+  const folder = resolve(root, slug);
+  assertPathInsideRoot(absoluteWorkspace, folder);
   await mkdir(folder, { recursive: true, mode: PLANNING_DIR_MODE });
   return folder;
 }

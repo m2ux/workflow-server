@@ -73,6 +73,9 @@ function registerHealthRoutes(app: Express, config: ServerConfig): void {
   });
 
   // Readiness: the directories every tool call depends on are resolvable.
+  // `checks.workspaceDir` is the configured worktree / workspace root
+  // (`--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT`); the JSON key
+  // stays `workspaceDir` for existing HTTP consumers.
   app.get('/ready', (_req, res) => {
     const checks = {
       workflowDir: existsSync(config.workflowDir),
