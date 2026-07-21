@@ -1,6 +1,6 @@
 # Phase 1 Cloud Migration Update — Agent-Managed Worktree Architecture - July 2026
 
-> Enhancement · Created 2026-07-20 · **Status:** Review approved — ready for close-out / squash-merge
+> Enhancement · Created 2026-07-20 · **Status:** Close-out in progress — awaiting PR #267 merge
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -44,7 +44,9 @@ The payoff is a thinner, safer server: no Git or repository credentials in the c
 | — | Validation | Build, test, lint verification | 15-30m | ✅ Complete |
 | 13 | [PR review analysis](13-2026-07-21-pr267-review-analysis.md) | Stakeholder-passed review; no GitHub comments | 10-20m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ✅ Complete |
-| 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ⬚ Pending |
+| — | [ADR-0007](../../adr/0007-agent-managed-worktree-architecture.md) | Agent-managed worktree architecture (status: Proposed until merge) | 10-15m | ✅ Complete |
+| 06 | [Test plan](06-test-plan.md) (finalized) | Test IDs linked to source at `9bdaaba5` | 10-15m | ✅ Complete |
+| 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ⏳ Blocked on PR merge |
 
 ## 🔗 Links
 
