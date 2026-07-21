@@ -1,11 +1,13 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig, ResolvedServerConfig } from './config.js';
+import { DEFAULT_PLANNING_RELATIVE_DIR } from './config.js';
 import { TraceStore } from './trace.js';
 import { registerWorkflowTools } from './tools/workflow-tools.js';
 import { registerResourceTools } from './tools/resource-tools.js';
 
 import { registerSchemaResources } from './resources/schema-resources.js';
 import { logInfo, setAuditWorkspaceDir } from './logging.js';
+import { setPlanningRelativeDir } from './utils/session/store.js';
 
 export function createServer(config: ServerConfig): McpServer {
   const resolvedConfig: ResolvedServerConfig = {
@@ -13,6 +15,11 @@ export function createServer(config: ServerConfig): McpServer {
     traceStore: config.traceStore ?? new TraceStore(),
   };
 
+  // Apply planning slug once at startup so planningRoot(workspaceDir) callers
+  // keep a stable one-arg signature (CRITICAL blast radius if arity changes).
+  setPlanningRelativeDir(
+    resolvedConfig.planningRelativeDir ?? DEFAULT_PLANNING_RELATIVE_DIR,
+  );
   setAuditWorkspaceDir(resolvedConfig.workspaceDir);
 
   const server = new McpServer(

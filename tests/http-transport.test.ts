@@ -6,7 +6,9 @@ import { resolve, join } from 'node:path';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import type { ServerConfig } from '../src/config.js';
+import { loadConfig } from '../src/config.js';
 import { createHttpApp, shutdownHandler, startHttpServer } from '../src/transports/http.js';
+import { PLANNING_RELATIVE_DIR, setPlanningRelativeDir } from '../src/utils/session/store.js';
 
 function buildConfig(overrides: Partial<ServerConfig> = {}): ServerConfig {
   return {
@@ -55,6 +57,35 @@ describe('HTTP transport', () => {
       expect(res.status).toBe(503);
       expect(res.body.status).toBe('not-ready');
       expect(res.body.checks.workspaceDir).toBe(false);
+    });
+
+    it('GET /ready returns 200 when root was resolved from WORKTREE_ROOT alone (PR267-TC-11)', async () => {
+      const prevWorkspace = process.env['WORKFLOW_WORKSPACE'];
+      const prevWorktree = process.env['WORKTREE_ROOT'];
+      delete process.env['WORKFLOW_WORKSPACE'];
+      const root = mkdtempSync(join(tmpdir(), 'wf-worktree-root-'));
+      process.env['WORKTREE_ROOT'] = root;
+      try {
+        const loaded = loadConfig([]);
+        const config = buildConfig({
+          workspaceDir: loaded.workspaceDir,
+          planningRelativeDir: loaded.planningRelativeDir,
+        });
+        const readyApp = createHttpApp(config);
+        const res = await request(readyApp).get('/ready');
+        expect(res.status).toBe(200);
+        expect(res.body.status).toBe('ready');
+        expect(res.body.checks.workspaceDir).toBe(true);
+        // JSON key remains workspaceDir for existing consumers (worktree root).
+        expect(res.body.checks).toHaveProperty('workspaceDir');
+      } finally {
+        rmSync(root, { recursive: true, force: true });
+        if (prevWorkspace === undefined) delete process.env['WORKFLOW_WORKSPACE'];
+        else process.env['WORKFLOW_WORKSPACE'] = prevWorkspace;
+        if (prevWorktree === undefined) delete process.env['WORKTREE_ROOT'];
+        else process.env['WORKTREE_ROOT'] = prevWorktree;
+        setPlanningRelativeDir(PLANNING_RELATIVE_DIR);
+      }
     });
   });
 
