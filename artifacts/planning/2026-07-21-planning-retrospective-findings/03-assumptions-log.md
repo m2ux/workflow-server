@@ -1,7 +1,7 @@
 # Design Assumptions Log
 
 **Workflow:** workflow-design (primary) / work-package (secondary)
-**Mode:** Update
+**Mode:** Update · Iterate lap 2
 **Created:** 2026-07-21
 **Last Updated:** 2026-07-21
 
@@ -11,15 +11,15 @@
 
 | Category | Surfaced | Audit-resolved | Confirmed | Corrected | Deferred |
 |----------|----------|----------------|-----------|-----------|----------|
-| Technique Selection | 2 | 1 | 1 | 0 | 0 |
-| Checkpoint Necessity | 3 | 1 | 2 | 0 | 0 |
-| Activity Boundaries | 1 | 1 | 0 | 0 | 0 |
-| Rule Scope | 2 | 2 | 0 | 0 | 0 |
+| Technique Selection | 3 | 1 | 1 | 0 | 0 |
+| Checkpoint Necessity | 4 | 1 | 2 | 0 | 0 |
+| Activity Boundaries | 2 | 2 | 0 | 0 | 0 |
+| Rule Scope | 3 | 3 | 0 | 0 | 0 |
 | Variable State | 2 | 0 | 1 | 0 | 1 |
-| Schema Construct Choice | 1 | 1 | 0 | 0 | 0 |
-| **Total** | **11** | **6** | **4** | **0** | **1** |
+| Schema Construct Choice | 2 | 1 | 0 | 0 | 0 |
+| **Total** | **16** | **8** | **4** | **0** | **1** |
 
-Gate 2 (`approve-to-commit`) accepted A-3, A-4, A-7, and A-11 as drafted; 1 row remains deferred; 6 rows were settled by direct audit against the current target-workflow files.
+Lap-1 Gate 2 accepted A-3, A-4, A-7, and A-11 as drafted. Iterate lap 2 adds A-12–A-16; A-12 remains open for Gate 2. D-1 remains deferred.
 
 ---
 
@@ -38,10 +38,20 @@ Gate 2 (`approve-to-commit`) accepted A-3, A-4, A-7, and A-11 as drafted; 1 row 
 | A-9 | Rule Scope | H | audit | The transition-condition claim/registration mismatch fix is a workflow-content-only change (authoring canon), not an engine/schema change. | The user request and repository boundary rules scope this session to `workflow-design`/`work-package` content. | ✅ Validated — `AGENTS.md`/`CLAUDE.md` boundary rules forbid modifying `src/`/`schemas/` without explicit user direction, which was not given; the fix is confined to transition-authoring guidance. | None |
 | A-10 | Variable State | L | audit | The `path_gating_complexity` vs. `problem_complexity` naming-ambiguity finding needs no active Gate 2 decision. | The finding explicitly self-classifies as "low-priority legibility fix," i.e. the disposition is already stated by its source. | ⏸️ Deferred — see [deferred-items.md#D-1](deferred-items.md#d-1). | Logged to deferred-items register |
 | A-11 | Technique Selection | M | confirmed | This activity's own `update-assumptions-log` step (technique `work-package::review-assumptions::record`) declares an `assumption_decisions` input with no producer in `requirements-refinement`'s `steps[]` — no checkpoint in this activity collects per-assumption user decisions; they are batched to Gate 2 in a *later* activity. | Discovered while executing this very step (see `get_activity` bundle: input `assumption_decisions` marked `UNRESOLVED — no workflow variable, prior step output, or step-binding supplies it`). | ✅ Confirmed at Gate 2 — accept drafted producer/binding fix for `assumption_decisions` in `requirements-refinement`. | Accepted as drafted |
+| A-12 | Checkpoint Necessity | H | open | After an in-activity post-update remedia loop clears findings by editing already-committed files, the flow must re-enter `validate-and-commit` (or an equivalent commit path) before treating the update as clean and transitioning to retrospective. | Post-update runs *after* commit today; remedia without re-commit would leave a clean audit against a dirty worktree, or an unclean catalog against a committed tree. Alternatives: (1) remedia → `validate-and-commit` → retrospective (skip re-audit or short-circuit when findings already 0); (2) embed commit inside the remedia loop; (3) skip in-activity remedia and always auto-intake for a full cycle when findings > 0. | Open — batched to Gate 2 | — |
+| A-13 | Technique Selection | M | audit | Prefer migrating remaining `persist-report` activity binds to `work-package::manage-artifacts::write-artifact` with activity-appropriate bare filenames, retiring `persist-report` as a separate writer. | Matches lap-1 write-artifact migration and F-2's preferred option; activities already know the report name (`post-update-review.md` / `compliance-review.md`). | ✅ Validated — current `persist-report.md` Protocol §2 assumes a sibling bound `write-artifact` step that no call site declares; call sites in `08-quality-review.yaml`, `10-post-update-review.yaml`, and `09-validate-and-commit.yaml` bind `persist-report` only. Migration to direct binds removes the phantom handoff. | Spec prefers write-artifact migration |
+| A-14 | Activity Boundaries | L | audit | Iterate still adds/removes/reorders **no** activities — only steps/conditions/transitions inside existing `post-update-review` (and a message edit on work-package `complete`). | Change request names files and gates, not new activity ids. | ✅ Validated — [structural-inventory.md](structural-inventory.md#update-scope) iterate bullets name `10-post-update-review.yaml`, `persist-report.md`, and `14-complete.yaml` only. | None |
+| A-15 | Rule Scope | M | audit | Count-gating `persist-post-expressiveness` / `persist-post-conformance` is a structural `condition` copy of quality-review's gated persists — no new variable or technique required. | F-1 / P-1 already name the mirror pattern and variable ids. | ✅ Validated — `08-quality-review.yaml` `persist-expressiveness-findings` / `persist-conformance-findings` already use `expressiveness_finding_count` / `conformance_finding_count` `> 0` conditions; post-update audit steps already emit those counts. | None |
+| A-16 | Schema Construct Choice | M | audit | The automatic remedia loop reuses `kind: loop` / `loopType: while` + `maxIterations` as in quality-review `audit-fix-cycle`, gated on a needs-fixes / findings-count variable — not a new loop kind. | Change request prefers quality-review-style remedia; QR already proves the construct. | ✅ Validated — `08-quality-review.yaml` `audit-fix-cycle` is `while` + `needs_audit_fixes == true` + `maxIterations: 3` with apply + re-audit + reassess. | Spec prefers mirror pattern |
 
 ---
 
 ## Open Assumptions
 
-None remaining. A-3, A-4, A-7, and A-11 were confirmed at Gate 2 (`approve-to-commit`, option `approved`) as drafted.
-
+### A-12: Re-commit after post-update remedia
+**Assumption:** Successful in-activity remedia that edits committed files must re-enter `validate-and-commit` (or equivalent) before retrospective.  
+**Decision space:** (1) remedia → `validate-and-commit` → retrospective / short-circuit post-update; (2) commit inside remedia loop; (3) skip in-activity remedia and auto-intake whenever findings > 0.  
+**Why not code-resolvable:** Chooses post-commit lifecycle shape (when the catalog is considered clean), not schema validity.  
+**Technical context:** Today `post-update-review` follows `validate-and-commit`; disposition `iterate` returned to intake. Mandate forbids asking but does not name the commit boundary.  
+**Agent's position:** Prefer (1) — keep QR-style remedia in-activity, then re-commit once, matching “fix then validate” elsewhere.  
+**Reversibility:** path-committing

@@ -1,23 +1,17 @@
-# Drafting Plan — Planning Retrospective Findings
+# Drafting Plan — Iterate Lap 2 (batch)
 
-**Mode:** update · **Target:** `workflow-design` + `work-package` · Last file: `work-package/resources/workflow-retrospective.md`
+**Mode:** update · **Files:** 9 · **Worktree:** `/home/mike1/projects/work/workflows/2026-07-21-planning-retrospective-findings/`
+
+## Per-file deltas
 
 | # | File | Delta |
 |---|------|-------|
-| 1 | `workflow-design/workflow.yaml` | Version 1.29.0; add `assumption_decisions` bag var |
-| 2–10 | `workflow-design/activities/*.yaml` | Bound `write-artifact` persist steps; A-11 seed; completed-steps note |
-| 11 | `workflow-design/techniques/TECHNIQUE.md` | Canonical-home: follow-ups vs deferred-items |
-| 12–30 | `workflow-design/techniques/*.md` | Protocol handoff to bound write-artifact; MCP fallback; binding-fidelity; completed-steps |
-| 31 | `workflow-design/resources/anti-patterns.md` | MR-1..MR-4 authoring guidance |
-| 32 | `workflow-design/resources/format-conventions.md` | Transition quoting / isDefault; plain-technical-language |
-| 33 | `workflow-design/resources/follow-ups.md` | Create in-task follow-ups template |
-| 34 | `work-package/workflow.yaml` | Version 3.34.0 |
-| 35 | `work-package/activities/01-start-work-package.yaml` | Announce `project_type` bag seed |
-| 36 | `work-package/activities/05-implementation-analysis.yaml` | Remove `analysis-confirmed` |
-| 37 | `work-package/activities/08-implement.yaml` | Remove switch-model pre/post |
-| 38 | `work-package/activities/10-post-impl-review.yaml` | forEach block-interview; manual-edit detect |
-| 39 | `work-package/activities/14-complete.yaml` | Retrospective confirm-before-continue |
-| 40 | `work-package/activities/README.md` | Diagram nodes for removals/restructure |
-| 41–42 | `manual-diff-review.md` / `review-diff.md` | file:line Block titles; no Instructions/table |
-| 43–45 | `deferred-items` / `follow-ups` / manage-artifacts map | Out-of-scope vs in-task split |
-| 46–48 | `project-type-detection` / retrospective technique+resource | Bag clarity; one-item interview |
+| 1 | `10-post-update-review.yaml` | Add `*_finding_count > 0` on expressiveness/conformance persists; remove `post-update-disposition`; add `classify-post-update-fixes` + `post-update-remedia-cycle` while-loop (mirror QR); rebind snapshot to `write-artifact` → `report_path`; transitions: dirty→intake, remedia-success→validate-and-commit, clean→retrospective |
+| 2 | `08-quality-review.yaml` | `persist-compliance-report` → bound `write-artifact` (`compliance-review.md`) with `written_artifact`→`report_path` |
+| 3 | `09-validate-and-commit.yaml` | `save-compliance-report` same rebind |
+| 4 | `persist-report.md` | **Remove** — no remaining call sites |
+| 5 | `14-complete.yaml` | Message: `Retrospective interview complete for this item set.` |
+| 6 | `workflow.yaml` | 1.29.0→1.30.0; drop disposition from headless rule; add `needs_recommit`; clarify `needs_audit_fixes` |
+| 7–9 | READMEs | Orientation: auto-remedia, no `persist-report` catalog/tree |
+
+**drafting_plan_path:** this artifact (updated in place for the lap batch).

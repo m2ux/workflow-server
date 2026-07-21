@@ -1,19 +1,22 @@
-# File Review Note — Planning Retrospective Findings
+# File Review Note — Iterate Lap 2 (batch)
 
-**Mode:** update · **Target:** `workflow-design` + `work-package`
+**Mode:** update · **Files:** 9 · **has_unflagged_removals:** false
 
-| File | Status | Delta / attestation | Removals (update) |
-|------|--------|---------------------|-------------------|
-| `workflow-design/workflow.yaml` | drafted | v1.29.0 + `assumption_decisions` | none |
-| `workflow-design/activities/*` (9) | drafted | write-artifact binds; A-11; completed-steps | none unflagged |
-| `workflow-design/techniques/*` (19+map) | drafted | bound-step handoff; fidelity; MCP fallback | protocol-only write-artifact invokes (impact §3 row 7) |
-| `workflow-design/resources/anti-patterns.md` | drafted | MR-1..MR-4 | none |
-| `workflow-design/resources/format-conventions.md` | drafted | transition + PTL notes | none |
-| `workflow-design/resources/follow-ups.md` | drafted | create | n/a |
-| `work-package/workflow.yaml` | drafted | v3.34.0 | none |
-| `work-package/activities/01/05/08/10/14` + README | drafted | project_type; removals; forEach interview; diagrams | analysis-confirmed; switch-model-* (impact §3 rows 1–3) |
-| `manual-diff-review` + `review-diff` | drafted | file:line index | Instructions + file-index table (rows 4–5) |
-| `deferred-items` + `follow-ups` + maps | drafted | split homes | in-task claim on deferred (row 6) |
-| `project-type-detection` + retrospective surfaces | drafted | bag + one-item interview | none |
+## Removals (vs committed)
 
-**has_unflagged_removals:** false — all removals match impact inventory rows 1–7.
+| Location | Removed | Inventoried? |
+|----------|---------|--------------|
+| `10-post-update-review.yaml` · `post-update-disposition` | Entire accept/iterate/revert checkpoint | Yes — impact §3 #1 |
+| `14-complete.yaml` · message clause | `— select-next / cleanup is next` | Yes — impact §3 #2 |
+| `techniques/persist-report.md` (+ three activity binds) | Separate writer; call sites → `write-artifact` | Yes — impact §3 #3 |
+
+## Delivered deltas
+
+- Count gates on `persist-post-expressiveness` / `persist-post-conformance`
+- `post-update-remedia-cycle` while-loop + classify/reassess actions; no disposition ask
+- Transitions: dirty→intake; remedia-success→validate-and-commit (`needs_recommit`); clean→retrospective
+- Report persists bind `write-artifact` with `written_artifact`→`report_path`
+- Headless rule no longer names post-update disposition; `needs_recommit` bag var added
+- README orientation matches auto-remedia / retired writer
+
+**file_review_note_path:** this artifact.
