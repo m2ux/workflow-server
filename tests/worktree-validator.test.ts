@@ -1,10 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdtempSync, mkdirSync, symlinkSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, resolve, sep } from 'node:path';
+import { join, resolve } from 'node:path';
 import {
   assertPathInsideRoot,
-  assertPlanningPathInsideRoot,
   isPathInsideRoot,
   PathContainmentError,
 } from '../src/worktree-validator.js';
@@ -88,33 +87,5 @@ describe('worktree-validator — path containment', () => {
       symlinkSync(nested, link);
       expect(assertPathInsideRoot(root, link)).toBe(resolve(nested));
     });
-
-    it('can skip realpath when explicitly disabled', () => {
-      const outsideFile = join(outside, 'secret.txt');
-      writeFileSync(outsideFile, 'secret');
-      const linkInside = join(root, 'escape-link');
-      symlinkSync(outside, linkInside);
-      // Lexical path still looks inside root when realpath is off.
-      const lexical = join(linkInside, 'secret.txt');
-      expect(assertPathInsideRoot(root, lexical, { realpath: false })).toBe(resolve(lexical));
-    });
-  });
-
-  describe('assertPlanningPathInsideRoot', () => {
-    it('accepts a planning path under the worktree root', () => {
-      const planning = join(root, '.engineering', 'artifacts', 'planning', 'slug');
-      mkdirSync(planning, { recursive: true });
-      expect(assertPlanningPathInsideRoot(root, planning)).toBe(resolve(planning));
-    });
-
-    it('rejects a planning path that escapes the root', () => {
-      const escaped = join(root, '..', 'not-under-root', 'planning');
-      expect(() => assertPlanningPathInsideRoot(root, escaped)).toThrow(PathContainmentError);
-    });
-  });
-
-  it('documents separator-aware containment (sep sanity)', () => {
-    // Guard the assumption that Node's sep is what we prefix with.
-    expect(sep === '/' || sep === '\\').toBe(true);
   });
 });

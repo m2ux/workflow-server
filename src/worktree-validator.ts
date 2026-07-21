@@ -17,15 +17,6 @@ export class PathContainmentError extends Error {
   }
 }
 
-export interface AssertPathInsideRootOptions {
-  /**
-   * When true (default), resolve existing path segments through symlinks via
-   * `realpath` so a link that escapes the root is rejected. Non-existent
-   * candidates are checked on their lexical resolved path only.
-   */
-  realpath?: boolean;
-}
-
 /**
  * Return true when `candidate` is exactly `root` or a path under `root`,
  * using a separator-aware prefix check (rejects `/uploads-evil` when root is
@@ -48,24 +39,17 @@ function resolveExistingRealpath(path: string): string {
 
 /**
  * Assert that `candidate` resolves inside `root`. Both sides are made absolute;
- * when `realpath` is enabled, existing paths are canonicalised so symlink
- * escapes fail closed.
+ * existing paths are canonicalised via realpath so symlink escapes fail closed.
  *
  * Returns the (possibly realpath-resolved) absolute candidate on success.
  */
-export function assertPathInsideRoot(
-  root: string,
-  candidate: string,
-  options: AssertPathInsideRootOptions = {},
-): string {
-  const useRealpath = options.realpath !== false;
+export function assertPathInsideRoot(root: string, candidate: string): string {
+  // ponytail: always realpath, add options when a caller needs lexical-only checks
   const absoluteRoot = resolve(root);
   const absoluteCandidate = isAbsolute(candidate) ? resolve(candidate) : resolve(absoluteRoot, candidate);
 
-  const checkedRoot = useRealpath ? resolveExistingRealpath(absoluteRoot) : absoluteRoot;
-  const checkedCandidate = useRealpath
-    ? resolveExistingRealpath(absoluteCandidate)
-    : absoluteCandidate;
+  const checkedRoot = resolveExistingRealpath(absoluteRoot);
+  const checkedCandidate = resolveExistingRealpath(absoluteCandidate);
 
   if (!isPathInsideRoot(checkedRoot, checkedCandidate)) {
     throw new PathContainmentError(
@@ -77,12 +61,4 @@ export function assertPathInsideRoot(
   }
 
   return checkedCandidate;
-}
-
-/**
- * Assert a derived planning-folder path lies inside the configured worktree
- * root. Thin wrapper so write-path callers share the same containment contract.
- */
-export function assertPlanningPathInsideRoot(root: string, planningPath: string): string {
-  return assertPathInsideRoot(root, planningPath);
 }

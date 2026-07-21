@@ -20,7 +20,6 @@ import {
   SessionStoreError,
   canonicaliseJson,
   ensurePlanningFolder,
-  getPlanningRelativeDir,
   planningRoot,
   readSessionFile,
   resolveSessionLocation,
@@ -399,7 +398,6 @@ describe('session-store primitives', () => {
 
     it('setPlanningRelativeDir falls back to default on empty/whitespace', () => {
       setPlanningRelativeDir('   ');
-      expect(getPlanningRelativeDir()).toBe(PLANNING_RELATIVE_DIR);
       expect(planningRoot(workspace)).toBe(join(workspace, PLANNING_RELATIVE_DIR));
     });
 

@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { join, resolve } from 'node:path';
 import {
-  DEFAULT_PLANNING_RELATIVE_DIR,
   loadConfig,
   resolvePlanningRelativeDir,
   WorkspaceConfigError,
@@ -251,7 +250,7 @@ describe('loadConfig — PLANNING_SLUG', () => {
 
   it('defaults planningRelativeDir to .engineering/artifacts/planning (PR267-TC-04)', () => {
     const config = loadConfig(['--workspace=/tmp/ws']);
-    expect(config.planningRelativeDir).toBe(DEFAULT_PLANNING_RELATIVE_DIR);
+    expect(config.planningRelativeDir).toBe(PLANNING_RELATIVE_DIR);
     expect(planningRoot('/tmp/ws')).toBe(join('/tmp/ws', PLANNING_RELATIVE_DIR));
   });
 
@@ -264,8 +263,8 @@ describe('loadConfig — PLANNING_SLUG', () => {
 
   it('falls back to default when PLANNING_SLUG is empty or whitespace', () => {
     process.env['PLANNING_SLUG'] = '   ';
-    expect(resolvePlanningRelativeDir()).toBe(DEFAULT_PLANNING_RELATIVE_DIR);
+    expect(resolvePlanningRelativeDir()).toBe(PLANNING_RELATIVE_DIR);
     const config = loadConfig(['--workspace=/tmp/ws']);
-    expect(config.planningRelativeDir).toBe(DEFAULT_PLANNING_RELATIVE_DIR);
+    expect(config.planningRelativeDir).toBe(PLANNING_RELATIVE_DIR);
   });
 });

@@ -65,11 +65,6 @@ export function setPlanningRelativeDir(relativeDir: string): void {
   activePlanningRelativeDir = trimmed || PLANNING_RELATIVE_DIR;
 }
 
-/** Current planning relative directory (for tests and diagnostics). */
-export function getPlanningRelativeDir(): string {
-  return activePlanningRelativeDir;
-}
-
 /** Directory mode for planning folders (`drwx------`). */
 export const PLANNING_DIR_MODE = 0o700;
 

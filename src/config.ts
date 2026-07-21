@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 import type { TraceStore } from './trace.js';
-import { setPlanningRelativeDir } from './utils/session/store.js';
+import { PLANNING_RELATIVE_DIR, setPlanningRelativeDir } from './utils/session/store.js';
 
 export interface ServerConfig {
   workflowDir: string;
@@ -107,9 +107,6 @@ export class WorkspaceConfigError extends Error {
   }
 }
 
-/** Default relative planning directory under the worktree / workspace root. */
-export const DEFAULT_PLANNING_RELATIVE_DIR = '.engineering/artifacts/planning';
-
 /**
  * Resolve `PLANNING_SLUG`: trim; empty / whitespace falls back to the monorepo
  * default `.engineering/artifacts/planning`.
@@ -118,7 +115,7 @@ export function resolvePlanningRelativeDir(
   env: NodeJS.ProcessEnv = process.env,
 ): string {
   const raw = env['PLANNING_SLUG']?.trim();
-  return raw || DEFAULT_PLANNING_RELATIVE_DIR;
+  return raw || PLANNING_RELATIVE_DIR;
 }
 
 /**
