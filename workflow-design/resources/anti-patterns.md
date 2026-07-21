@@ -1522,3 +1522,47 @@ A leaf Rule (or a Protocol phase whose only job is the same restatement) re-enco
 **Do not flag:** Novel domain constraints the engine does not already enforce; engine/conduct/bootstrap surfaces whose domain IS that contract; activity `set` that duplicates a technique output (`no-set-of-technique-output`); tool/delivery recipes (`no-tool-usage-prescription`, `no-delivery-mechanism-narration`); a rule that restates its own technique's Protocol without claiming engine HOW (`no-rule-protocol-restatement`).
 
 **Fix:** Delete the leaf restatement. Keep declared Outputs and rely on variable-binding / finalize-activity (or the authoritative engine home). If that home is incomplete, fix it once there — do not copy the contract onto producer leaves. See also `no-one-step-rules`, `platform-semantics-in-capability`.
+
+## Authoring Guidance (MR)
+
+Write-time guidance for workflow YAML, technique/resource markdown, and planning artifacts. Detect at draft; fix in place before audit.
+
+### MR-1. cut-comment-jsdoc-verbosity
+
+Long comment or JSDoc blocks that narrate what the next line does, restate types already in the signature, or walk through control flow the reader can see.
+
+**Detect:** Comments or JSDoc whose removal leaves the code equally clear; multi-line blocks that paraphrase identifiers; "what" narration without a non-obvious "why".
+
+**Do not flag:** One-line rationale for a surprising constraint, safety invariant, or non-local coupling; license headers; public API contracts that the language cannot express.
+
+**Fix:** Delete or collapse to a single why-line. Prefer renaming and structure over commentary.
+
+### MR-2. no-dense-prose-after-config-examples
+
+A fenced config or YAML example followed by a long prose restatement of the same fields.
+
+**Detect:** After a complete example fence, a paragraph (or more) that only re-explains keys already shown; duplicate "how to fill" essays beside a Template.
+
+**Do not flag:** One sentence that adds a non-obvious constraint the example cannot show; a Rules list that constrains use without restating the fence.
+
+**Fix:** Keep the example; cut the restatement. Point to the Template/Rules for fill constraints.
+
+### MR-3. worktree-root-placeholders
+
+Hard-coded absolute paths or host-specific checkout roots in workflow content, templates, or agent-facing guides.
+
+**Detect:** Literal home directories, machine-specific worktree roots, or copied absolute paths where `{target_path}`, `{planning_folder_path}`, or a relative-from-worktree placeholder belongs.
+
+**Do not flag:** Schema examples that intentionally show a shape with braced placeholders; planning-folder artifacts that record a resolved path for one session.
+
+**Fix:** Use worktree-root or bag placeholders (`{target_path}`, `{planning_folder_path}`, `{workflow_id}/…`) so content is portable across checkouts.
+
+### MR-4. no-parallel-runbook-when-setup-covers-it
+
+A second how-to (README section, resource, or technique Protocol) that duplicates install/run steps already owned by `SETUP.md` (or the repo's canonical setup doc).
+
+**Detect:** Parallel runbooks that restate clone/install/build/start already in SETUP; technique Protocol that teaches environment bootstrap the setup doc owns.
+
+**Do not flag:** Workflow-specific orientation that links to SETUP; deltas unique to this workflow that SETUP does not cover.
+
+**Fix:** Link to SETUP once; keep only the workflow-specific delta here.

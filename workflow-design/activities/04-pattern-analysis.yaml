@@ -7,6 +7,14 @@ steps:
   - kind: technique
     id: pattern-analysis
     technique: pattern-analysis
+  - kind: technique
+    id: persist-pattern-analysis
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: pattern-analysis.md
+        artifact_content: pattern_analysis
+        target_dir: planning_folder_path
   - kind: checkpoint
     id: patterns-confirmed
     message: "Pattern comparison and proposed structure ([pattern analysis]({pattern_analysis_path}))."

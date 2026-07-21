@@ -25,19 +25,15 @@ PR identifier, used to resolve the authoritative base branch via `gh pr view`
 
 ### change_block_index
 
-[Index](../resources/manual-diff-review.md#file-index-generation) of changed blocks for external diff review, with per-block rationale paragraphs hyperlinked from the index table to aid manual review
+[Index](../resources/manual-diff-review.md#file-index-generation) of changed blocks for external diff review, with per-block rationale paragraphs whose Block titles hyperlink to `file:line`
 
 #### artifact
 
 `change-block-index.md`
 
-#### index_table
-
-Row (hyperlinked to rationale) | Path | File with review time estimate
-
 #### block_rationale
 
-Per-block descriptive paragraphs explaining intent, context, and non-obvious design choices
+Per-block descriptive paragraphs explaining intent, context, and non-obvious design choices; Block titles link to the primary `file:line`
 
 ### manual_diff_review_report
 
@@ -69,23 +65,23 @@ True if any block marked as critical blocker
 
 ### 3. Create Index
 
-- Create the file index table — columns Row | Path (directory without filename) | File (filename only), one row per changed file sorted alphabetically by path — per the [table and header forms](../resources/manual-diff-review.md#file-index-generation); each `{row_index}` hyperlinks to its rationale section (e.g. [1](#block-1))
-- Open the index with the lean-header summary line (branches compared · file count · hunk count · review-time estimate) and the reviewer instructions block from the header form
-- Below the index table, generate a '## Block Rationale' section containing one subsection per block (### Block N) with a descriptive paragraph per the rationale-quality rule
+- Build the change-block index per the [index and header forms](../resources/manual-diff-review.md#file-index-generation): lean-header summary line (branches compared · file count · hunk count · review-time estimate), then `## Block Rationale` with one `### [Block N — file:line](relative-path:line)` subsection per block — no Instructions section and no file-index table
 - When a block centres on a graph-resolvable symbol, enrich the Block Rationale with caller/callee/process context from [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md)(name: `{$symbol}`) so the reviewer understands why the diff matters and which execution flows it touches.
 - Write index to the `{change_block_index}` under `{planning_folder_path}` — the binding activity surfaces the index for external diff-tool review
 
 ### 4. Collect Flagged
 
-- Consume flagged rows from the activity response, reported as row numbers only: `3, 7, 12` (those rows have issues) or `none` (skip the interview loop, proceed to automated reviews)
-- A bare row number covers all changes in that file; a row with a line reference (e.g. `3-L42`) focuses the interview on that specific line
+- Consume flagged rows from the activity response, reported as block numbers only: `3, 7, 12` (those blocks have issues) or `none` (skip the interview loop, proceed to automated reviews)
+- A bare block number covers all changes in that file; a block with a line reference (e.g. `3-L42`) focuses the interview on that specific line
+- Populate `{flagged_block_indices}` from the flagged set so the activity `forEach` can bind `{current_block_index}`
 
 ### 5. Interview Blocks
 
-- For each flagged row: assemble the full diff content for that file (filename and path) into the interview context the binding activity surfaces
+- For each flagged block (activity `forEach` over `{flagged_block_indices}`): assemble the full diff content for that file into the interview context; confirm before continuing to the next block
 - Record the user's description verbatim from the activity response, noting severity if mentioned (critical, minor, etc.)
 - If the response marks the block as a critical blocker, set `{has_critical_blocker}`=true
-- Continue to the next flagged row until all are addressed
+- Continue to the next flagged block until all are addressed
+- Detect manual review edits: compare the working tree to the last agent-written tip for paths under review; when the reviewer applied edits outside the agent, record each confirmed pattern as a retrospective candidate (in-task follow-up)
 
 ### 6. Create Report
 

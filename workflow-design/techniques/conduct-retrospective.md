@@ -37,7 +37,7 @@ COMPLETE.md
 
 ### 5. Write Retrospective Section
 
-- Write the `{retrospective_document}` as the `## Workflow Retrospective` section of the close-out document (update in place — it is the single terminal artifact) using the [workflow-retrospective](../../work-package/resources/workflow-retrospective.md#output-section-template) section template — omit the PR reference and report activities as a count out of the design workflow's activities — via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md). Include only the signal categories that have content.
+- Write the `{retrospective_document}` as the `## Workflow Retrospective` section of the close-out document (update in place — it is the single terminal artifact) using the [workflow-retrospective](../../work-package/resources/workflow-retrospective.md#output-section-template) section template — omit the PR reference and report activities as a count out of the design workflow's activities — via the calling activity's bound `manage-artifacts::write-artifact` step. Include only the signal categories that have content.
 
 ## Rules
 

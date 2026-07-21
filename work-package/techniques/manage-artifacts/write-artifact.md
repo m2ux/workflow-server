@@ -11,7 +11,7 @@ Write (create or update) an artifact in the planning folder. A logical artifact 
 
 ### artifact_prefix
 
-The numeric `artifactPrefix` that orders artifacts (e.g., `09`); provided by the server.
+*(optional)* The numeric `artifactPrefix` that orders artifacts (e.g., `09`); provided by the server on `get_activity` (not step-bound).
 
 ### bare_filename
 

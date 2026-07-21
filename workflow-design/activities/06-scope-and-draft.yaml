@@ -25,6 +25,14 @@ steps:
   - kind: technique
     id: scope-definition
     technique: scope-definition
+  - kind: technique
+    id: persist-scope-manifest
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: scope-manifest.md
+        artifact_content: scope_manifest
+        target_dir: planning_folder_path
   - kind: checkpoint
     id: scope-and-structure-confirmed
     message: "Complete file manifest, structural design, and drafting order ([scope manifest]({scope_manifest_path}))."
@@ -67,6 +75,14 @@ steps:
       - kind: technique
         id: assemble-file-approach
         technique: assemble-file-approach
+      - kind: technique
+        id: persist-drafting-plan
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: drafting-plan.md
+            artifact_content: drafting_plan
+            target_dir: planning_folder_path
       - kind: checkpoint
         id: file-approach-confirmed
         condition:
@@ -91,6 +107,14 @@ steps:
       - kind: technique
         id: review-drafted-file
         technique: review-drafted-file
+      - kind: technique
+        id: persist-file-review-note
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: file-review-note.md
+            artifact_content: file_review_note
+            target_dir: planning_folder_path
       - kind: checkpoint
         id: file-review
         condition:
@@ -139,6 +163,14 @@ steps:
   - kind: technique
     id: review-draft-yaml
     technique: review-draft-yaml
+  - kind: technique
+    id: persist-draft-attestation
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: draft-attestation.md
+        artifact_content: reviewed_blocks
+        target_dir: planning_folder_path
   - kind: checkpoint
     id: draft-attestation
     condition:

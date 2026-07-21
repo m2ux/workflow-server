@@ -13,6 +13,25 @@ steps:
   - kind: technique
     id: intake-classification
     technique: intake-classification
+  - kind: technique
+    id: persist-structural-inventory
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: structural-inventory.md
+        artifact_content: structural_inventory
+        target_dir: planning_folder_path
+    condition:
+      type: or
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: ==
+          value: update
+        - type: simple
+          variable: operation_type
+          operator: ==
+          value: review
   - kind: checkpoint
     id: design-intent-batch
     condition:
@@ -151,6 +170,27 @@ steps:
   - kind: technique
     id: context-loading
     technique: context-loading
+  - kind: technique
+    id: persist-format-conventions
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: format-conventions.md
+        artifact_content: format_conventions
+        target_dir: planning_folder_path
+  - kind: technique
+    id: persist-applicable-constructs
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: applicable-constructs.md
+        artifact_content: applicable_constructs
+        target_dir: planning_folder_path
+    condition:
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: create
   - kind: technique
     id: present-problem-overview
     technique:

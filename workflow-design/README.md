@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.28.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description, derives intent first, reconciles assumptions in a while-loop, and batches stakeholder decisions into Gate 1 (gap-only) and Gate 2 (approve-to-commit); `{headless_mode}` defaults to true so soft mid-flow gates auto-resolve (opt out with “interactive”, “not headless”, or “with checkpoints”). Create/update edits run in a dedicated `{target_path}` worktree. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
+> v1.30.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description, derives intent first, reconciles assumptions in a while-loop, and batches stakeholder decisions into Gate 1 (gap-only) and Gate 2 (approve-to-commit); `{headless_mode}` defaults to true so soft mid-flow gates auto-resolve (opt out with “interactive”, “not headless”, or “with checkpoints”). Create/update edits run in a dedicated `{target_path}` worktree. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
 
 ---
 
@@ -17,14 +17,14 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 | 06 | [**Scope and Draft**](./activities/README.md#06-scope-and-draft) | Create, Update | Ensure dedicated `{target_path}` worktree, define file manifest, draft and validate each file, then verify planning artifacts against the design canonical-home map |
 | 08 | [**Quality Review**](./activities/README.md#08-quality-review) | All | Expressiveness, conformance, rule-hygiene, and rule-enforcement audits, then a bounded fix-revalidate loop (max 3) with a critical-blocker gate (full compliance audit in review mode; forEach over `target_workflow_ids`) |
 | 09 | [**Validate and Commit**](./activities/README.md#09-validate-and-commit) | All | Schema validation, Gate 2 `approve-to-commit`, then commit from `{target_path}` on `{workflow_branch}` + open a PR against `workflows` (create/update) or save the compliance report (review) |
-| 10 | [**Post-Update Review**](./activities/README.md#10-post-update-review) | Update only | Automatic post-commit compliance audit of the updated workflow |
+| 10 | [**Post-Update Review**](./activities/README.md#10-post-update-review) | Update only | Post-commit compliance audit with automatic remedia when findings remain (never asks disposition) |
 | 11 | [**Retrospective**](./activities/README.md#11-retrospective) | All | Record a completion summary (create/update) and conduct a session retrospective |
 
 **Detailed documentation:**
 
 - **Activities:** See [activities/README.md](./activities/README.md) for the per-activity orientation map (purpose, value, and how each activity connects in the flow), with links to the authoritative activity YAML files. The full step/checkpoint/transition definitions are served by `get_activity`.
 - **Techniques:** See [techniques/](techniques/) for the full technique library (workflow-local standalone techniques plus the shared `TECHNIQUE.md` base contract) with protocol flows and rules.
-- **Resources:** See [resources/README.md](./resources/README.md) for the resource index (11 resources) with usage context and cross-workflow access.
+- **Resources:** See [resources/README.md](./resources/README.md) for the resource index (23 resources) with usage context and cross-workflow access.
 
 ---
 
@@ -160,10 +160,9 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`readme-authoring`](./techniques/readme-authoring.md) | Generate or update the workflow README set | Validate and Commit |
 | [`commit-verification`](./techniques/commit-verification.md) | Verify the commit landed on `{target_path}` | Validate and Commit |
 | [`publish-workflow-pr`](./techniques/publish-workflow-pr.md) | Compose the workflow-design PR title and body from bound planning artifacts | Validate and Commit |
-| [`persist-report`](./techniques/persist-report.md) | Persist the compliance/review report as an artifact | Quality Review (review mode), Validate and Commit, Post-Update Review |
 | [`summarize-findings`](./techniques/summarize-findings.md) | Produce a severity-rated findings summary | Post-Update Review |
 | [`review-draft-yaml`](./techniques/review-draft-yaml.md) | Block-indexed review of the drafted YAML, capturing a draft attestation before the audit passes | Scope and Draft |
-| [`apply-audit-fixes`](./techniques/apply-audit-fixes.md) | Record selected audit findings as `{fixes_applied}` after activity-bound edit and re-validation | Quality Review |
+| [`apply-audit-fixes`](./techniques/apply-audit-fixes.md) | Record selected audit findings as `{fixes_applied}` after activity-bound edit and re-validation | Quality Review, Post-Update Review |
 | [`scope-audit`](./techniques/scope-audit.md) | Audit the committed change set against the scope manifest for drift | Post-Update Review |
 | [`create-completion-doc`](./techniques/create-completion-doc.md) | Record the `COMPLETE.md` completion summary in the planning folder | Retrospective |
 | [`conduct-retrospective`](./techniques/conduct-retrospective.md) | Analyse non-checkpoint interactions and record a prioritized session retrospective | Retrospective |
@@ -238,7 +237,6 @@ workflows/workflow-design/
 │   ├── readme-authoring.md
 │   ├── commit-verification.md
 │   ├── reload-workflow.md
-│   ├── persist-report.md
 │   ├── compile-report.md
 │   ├── summarize-findings.md
 │   ├── audit-principles.md

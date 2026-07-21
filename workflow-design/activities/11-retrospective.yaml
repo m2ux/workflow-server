@@ -13,8 +13,29 @@ steps:
       operator: "!="
       value: review
   - kind: technique
+    id: persist-completion-doc
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: completion.md
+        artifact_content: completion_document
+        target_dir: planning_folder_path
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "!="
+      value: review
+  - kind: technique
     id: conduct-retrospective
     technique: conduct-retrospective
+  - kind: technique
+    id: persist-retrospective
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: completion.md
+        artifact_content: retrospective_document
+        target_dir: planning_folder_path
   - kind: technique
     id: remove-session-worktree
     technique:

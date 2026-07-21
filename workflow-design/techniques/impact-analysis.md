@@ -54,7 +54,7 @@ Absolute path to the written impact-analysis artifact.
 
 ### 7. Persist Report
 
-- Persist classification, integrity checks, and the removals inventory via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `impact-analysis.md`, following [impact-analysis](../resources/impact-analysis.md#template)
+- Persist classification, integrity checks, and the removals inventory via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `impact-analysis.md`, following [impact-analysis](../resources/impact-analysis.md#template)
 - Own facts only: link [design-specification](../resources/design-specification.md) and structural inventory rather than restating them
 - Capture the written location as `{impact_analysis_path}`
 

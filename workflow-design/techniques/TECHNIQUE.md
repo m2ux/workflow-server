@@ -80,6 +80,8 @@ The canonical home for each shared design-session fact category. Templates carry
 | Structural inventory baseline | `structural-inventory.md` |
 | Pattern analysis findings | `pattern-analysis.md` |
 | Compliance / audit findings | `compliance-report.md` (and findings satellites) |
+| In-task follow-ups | `follow-ups.md` (see [follow-ups](../resources/follow-ups.md)) |
+| Out-of-scope deferred items | `deferred-items.md` |
 | Session index (Progress, Links, Design Decisions pointers) | `README.md` |
 
 README Problem Overview and Solution Overview are link-only slots pointing at `design-specification.md` (Solution also links `scope-manifest.md` for the file breakdown).

@@ -1,52 +1,46 @@
 ---
 name: manual-diff-review
-description: Index-table, header, and report-section forms for the manual diff review.
+description: Lean-header and report-section forms for the manual diff review.
 metadata:
-  version: 2.0.1
+  version: 2.1.0
   order: 22
   legacy_id: 22
 ---
 
 # Manual Diff Review Forms
 
-Outputs: **File Index Table** (`change-block-index.md`) and the **Manual Diff Review section** written into `code-review.md`.
+Outputs: **Change Block Index** (`change-block-index.md`) and the **Manual Diff Review section** written into `code-review.md`.
 
 ## File Index Generation
 
-### Table Format
+### Index Format
 
-One row per changed file, sorted alphabetically by path. Each row number is a markdown hyperlink to its rationale section further down the document:
-
-```markdown
-| Row | Path | File |
-|-----|------|------|
-| [1](#block-1) | src/api/ | handlers.rs |
-| [2](#block-2) | src/api/ | routes.rs |
-| [3](#block-3) | src/core/ | processor.rs |
-```
-
-### Header Information
-
-Summary statistics at the top of the index file (lean-header):
+Open with a lean-header summary line, then one rationale section per changed block. Each **Block** title hyperlinks to the primary `file:line` in the diff (path and starting line of the hunk). No separate Instructions section and no file-index table — the Block titles are the navigation.
 
 ```markdown
 # Change Block Index
 
 > feature/my-feature vs main · 24 files · 47 hunks · est. review ~24 minutes (30 sec/change)
 
-## Instructions
+## Block Rationale
 
-Review changes in your side-by-side diff tool using this index for reference.
-Click any row number to jump to its rationale paragraph for context on why the change was made.
-Report row numbers for files with issues (e.g., "3, 7, 12") or "none" if all looks good.
+### [Block 1 — handlers.rs:42](../../src/api/handlers.rs:42)
+
+[Descriptive paragraph explaining what the change does and why.]
+
+### [Block 2 — routes.rs:18](../../src/api/routes.rs:18)
+
+[Descriptive paragraph explaining what the change does and why.]
 ```
+
+Reviewers use their side-by-side diff tool with this index for context. Reply with block numbers that have issues (e.g. `3, 7, 12`) or `none`.
 
 ### Block Rationale Form
 
 ```markdown
 ## Block Rationale
 
-### Block 1
+### [Block N — file:line](relative-path:line)
 
 [Descriptive paragraph explaining what the change does and why.]
 ```
@@ -66,7 +60,7 @@ Written as a `## Manual Diff Review` section of `code-review.md`, the review fin
 
 ### MD-1: [Brief Title]
 
-**File:** `path/to/file.ext` · **Row:** [N] · **Severity:** Critical / High / Medium / Low  
+**File:** `path/to/file.ext` · **Block:** [N] · **Severity:** Critical / High / Medium / Low  
 **Issue:** [User's description of the issue]  
 **Recommendation:** [Suggested fix or action, if provided]
 ```

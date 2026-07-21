@@ -62,6 +62,14 @@ steps:
   - kind: technique
     id: persist-specification
     technique: persist-design-specification
+  - kind: technique
+    id: persist-design-specification-artifact
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: design-specification.md
+        artifact_content: design_specification
+        target_dir: planning_folder_path
   - kind: checkpoint
     id: spec-confirmed
     message: "Full specification across the design dimensions ({design_dimensions}): [design specification]({specification_path}). Stakeholder attestation at Gate 2."
@@ -113,9 +121,20 @@ steps:
     actions:
       - action: message
         message: "Open design judgements remain after reconcile — batched into Gate 2 (`approve-to-commit`), not interviewed mid-flow."
+  - kind: action
+    id: seed-assumption-decisions
+    actions:
+      - action: set
+        target: assumption_decisions
+        value: []
+      - action: message
+        message: "Gate-2 batch — no mid-flow per-assumption decisions; empty decision list for record (open judgements stay in the assumptions log)."
   - kind: technique
     id: update-assumptions-log
-    technique: work-package::review-assumptions::record
+    technique:
+      name: work-package::review-assumptions::record
+      inputs:
+        assumption_decisions: assumption_decisions
 transitions:
   - to: impact-analysis
     condition:

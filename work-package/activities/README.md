@@ -191,9 +191,7 @@ graph TD
 
     reviewImpl --> collectAssumptions["Collect assumptions"]
     collectAssumptions --> createDoc["Create analysis document"]
-    createDoc --> cpAnalysis{"analysis-confirmed checkpoint"}
-    cpAnalysis -->|"confirmed"| updateLog["Update assumptions log"]
-    cpAnalysis -->|"clarify / more analysis"| reviewImpl
+    createDoc --> updateLog["Update assumptions log"]
 
     updateLog --> reconcile["Reconcile assumptions"]
     reconcile --> presentResolved["Present resolved assumptions"]
@@ -271,8 +269,7 @@ Definition: [`08-implement.yaml`](./08-implement.yaml)
 graph TD
     entryNode(["Entry"]) --> verifyBranch["Verify feature branch"]
     verifyBranch --> nextTask{"Next task in plan?"}
-    nextTask -->|"yes"| cpPreImpl{"switch-model-pre-impl checkpoint"}
-    cpPreImpl --> implementTask["Implement task"]
+    nextTask -->|"yes"| implementTask["Implement task"]
     implementTask --> runTests["Run tests"]
     runTests --> commitChanges["Commit changes"]
     commitChanges --> logProvenance["Log AI provenance"]
@@ -287,8 +284,7 @@ graph TD
     interviewLoop -->|"yes"| cpInterview{"implementation-assumption-interview checkpoint"}
     cpInterview --> interviewLoop
     interviewLoop -->|"all done"| updateLog["Update assumptions log"]
-    updateLog --> cpPostImpl{"switch-model-post-impl checkpoint"}
-    cpPostImpl --> exitNode(["lean-coding-audit"])
+    updateLog --> exitNode(["lean-coding-audit"])
 ```
 
 ---
@@ -328,8 +324,9 @@ graph TD
     entryNode(["Entry"]) --> preflight["GitNexus detect-changes preflight"]
     preflight --> manualDiff["Manual diff review"]
     manualDiff --> cpFileIndex{"file-index-table checkpoint"}
-    cpFileIndex --> interviewLoop{"Next flagged block?"}
-    interviewLoop -->|"yes"| cpInterview{"block-interview checkpoint"}
+    cpFileIndex --> detectManual["Detect manual review edits"]
+    detectManual --> interviewLoop{"Next flagged block? (forEach)"}
+    interviewLoop -->|"yes"| cpInterview{"block-interview#{current_block_index} checkpoint"}
     cpInterview --> interviewLoop
     interviewLoop -->|"all done"| codeReview["Code review"]
 

@@ -1,7 +1,7 @@
 id: post-update-review
-version: 1.8.1
+version: 1.9.1
 name: Post-Update Review
-description: Post-commit compliance audit of the updated workflow — expressiveness, conformance, principles, anti-patterns, and schema validation.
+description: Post-commit compliance audit of the updated workflow — expressiveness, conformance, principles, anti-patterns, and schema validation. When findings remain, remediates automatically (never asks accept/iterate/revert).
 required: true
 steps:
   - kind: technique
@@ -11,14 +11,56 @@ steps:
     id: audit-expressiveness
     technique: audit-expressiveness
   - kind: technique
+    id: persist-post-expressiveness
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: expressiveness-findings.md
+        artifact_content: expressiveness_findings
+        target_dir: planning_folder_path
+    condition:
+      type: simple
+      variable: expressiveness_finding_count
+      operator: ">"
+      value: 0
+  - kind: technique
     id: audit-conformance
     technique: audit-conformance
+  - kind: technique
+    id: persist-post-conformance
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: conformance-findings.md
+        artifact_content: conformance_findings
+        target_dir: planning_folder_path
+    condition:
+      type: simple
+      variable: conformance_finding_count
+      operator: ">"
+      value: 0
   - kind: technique
     id: audit-principles
     technique: audit-principles
   - kind: technique
+    id: persist-post-principles
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: principle-findings.md
+        artifact_content: principle_findings
+        target_dir: planning_folder_path
+  - kind: technique
     id: audit-anti-patterns
     technique: audit-anti-patterns
+  - kind: technique
+    id: persist-post-anti-patterns
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: anti-pattern-findings.md
+        artifact_content: anti_pattern_findings
+        target_dir: planning_folder_path
   - kind: technique
     id: audit-schema-validation
     technique: audit-schema-validation
@@ -31,9 +73,13 @@ steps:
   - kind: technique
     id: save-review-snapshot
     technique:
-      name: persist-report
+      name: work-package::manage-artifacts::write-artifact
       inputs:
-        report_content: "{findings_summary}"
+        bare_filename: post-update-review.md
+        artifact_content: findings_summary
+        target_dir: planning_folder_path
+      outputs:
+        written_artifact: report_path
   - kind: action
     id: post-update-clean
     condition:
@@ -42,40 +88,120 @@ steps:
       operator: ==
       value: 0
     actions:
+      - action: set
+        target: needs_audit_fixes
+        message: Set false — this pass's audit is already clean; do not enter remedia from a sticky prior value.
+      - action: set
+        target: needs_recommit
+        message: Set false — clean audit this pass means no remedia edits are pending recommit; clear any sticky prior value.
       - action: message
         message: "Post-update review complete — 0 findings ([post-update review]({report_path}))."
-  - kind: checkpoint
-    id: post-update-disposition
+  - kind: action
+    id: classify-post-update-fixes
     condition:
       type: simple
       variable: review_findings_count
       operator: ">"
       value: 0
-    message: "Post-update review complete. {review_findings_count} findings ([post-update review]({report_path}))."
-    options:
-      - id: accept
-        label: Accept — update complete
-        description: Update accepted as-is; proceed to the retrospective.
-        effect:
-          transitionTo: retrospective
-      - id: iterate
-        label: Fix findings — start another update cycle
-        description: Findings become the change spec for a fresh update cycle starting at intake.
-        effect:
-          transitionTo: intake-and-context
-      - id: revert
-        label: Revert commit
-        description: Update commit rolled back; flow re-enters intake.
-        effect:
-          transitionTo: intake-and-context
-transitions:
-  - to: retrospective
+    actions:
+      - action: set
+        target: needs_audit_fixes
+        message: Set true when review_findings_count is greater than 0 so the remedia while-loop runs. False only when the summary is already clean.
+      - action: set
+        target: needs_recommit
+        message: Set true — remedia edits already-committed files and must re-enter validate-and-commit before retrospective.
+      - action: message
+        message: "Post-update review complete. {review_findings_count} findings — remediating automatically ([post-update review]({report_path}))."
+  - kind: loop
+    id: post-update-remedia-cycle
+    name: Post-Update Remedia Cycle
+    loopType: while
     condition:
       type: simple
-      variable: review_findings_count
+      variable: needs_audit_fixes
       operator: ==
-      value: 0
+      value: true
+    maxIterations: 3
+    steps:
+      - kind: technique
+        id: remedia-yaml-authoring
+        technique: yaml-authoring
+      - kind: technique
+        id: remedia-audit-schema
+        technique: audit-schema-validation
+      - kind: technique
+        id: remedia-apply-fixes
+        technique: apply-audit-fixes
+      - kind: technique
+        id: remedia-audit-expressiveness
+        technique: audit-expressiveness
+      - kind: technique
+        id: remedia-audit-conformance
+        technique: audit-conformance
+      - kind: technique
+        id: remedia-audit-principles
+        technique: audit-principles
+      - kind: technique
+        id: remedia-audit-anti-patterns
+        technique: audit-anti-patterns
+      - kind: technique
+        id: remedia-revalidate-schema
+        technique: audit-schema-validation
+      - kind: technique
+        id: remedia-summarize
+        technique: summarize-findings
+      - kind: action
+        id: remedia-reassess
+        actions:
+          - action: set
+            target: needs_audit_fixes
+            message: After re-running the audits and summarize-findings, set true iff review_findings_count is still greater than 0; false when every pass comes back at 0 findings.
+  - kind: action
+    id: remedia-still-dirty
+    condition:
+      type: simple
+      variable: needs_audit_fixes
+      operator: ==
+      value: true
+    actions:
+      - action: message
+        message: "Post-update remedia exhausted with findings remaining ([post-update review]({report_path}))."
+transitions:
+  - to: intake-and-context
+    condition:
+      type: simple
+      variable: needs_audit_fixes
+      operator: ==
+      value: true
+  - to: validate-and-commit
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: needs_recommit
+          operator: ==
+          value: true
+        - type: simple
+          variable: review_findings_count
+          operator: ==
+          value: 0
+  - to: retrospective
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: review_findings_count
+          operator: ==
+          value: 0
+        - type: simple
+          variable: needs_recommit
+          operator: ==
+          value: false
+        - type: simple
+          variable: needs_audit_fixes
+          operator: ==
+          value: false
     isDefault: true
 outcome:
-  - The user knows whether the committed update is clean or carries new compliance debt, with severity-rated findings to decide the next move from
+  - The committed update is either clean or automatically remediated — findings never wait on an accept/iterate/revert choice
   - A dated compliance snapshot of the committed state exists to compare future audits against and to show the update was checked, not assumed

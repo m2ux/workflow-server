@@ -35,4 +35,4 @@ Absolute path to the persisted principle-findings artifact.
 
 ### 3. Persist Findings
 
-- Persist `{principle_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `principle-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{principle_findings_path}`
+- Persist `{principle_findings}` via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `principle-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{principle_findings_path}`

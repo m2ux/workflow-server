@@ -44,5 +44,5 @@ Absolute path to the persisted findings artifact when `{conformance_finding_coun
 ### 4. Persist Findings
 
 - Set `{conformance_finding_count}` to the number of findings
-- When `{conformance_finding_count}` is greater than zero: persist `{conformance_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `conformance-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{conformance_findings_path}`
+- When `{conformance_finding_count}` is greater than zero: persist `{conformance_findings}` via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `conformance-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{conformance_findings_path}`
 - When `{conformance_finding_count}` is zero: leave `{conformance_findings_path}` empty

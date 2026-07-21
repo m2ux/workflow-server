@@ -22,19 +22,6 @@ steps:
       - kind: technique
         id: implement-task
         technique: implement-task
-      - kind: checkpoint
-        id: switch-model-pre-impl
-        message: Implementation requires the full model for code generation. You may switch to your preferred implementation model. Proceeding in 10s.
-        blocking: false
-        defaultOption: continue-current
-        autoAdvanceMs: 10000
-        options:
-          - id: switched
-            label: Switched model — proceed
-            description: Model has been switched to a higher-capability model for implementation
-          - id: continue-current
-            label: Continue with current model
-            description: Proceed with the current model without switching
       - kind: technique
         id: run-tests
         technique:
@@ -160,19 +147,6 @@ steps:
   - kind: technique
     id: update-assumptions-log
     technique: review-assumptions::record
-  - kind: checkpoint
-    id: switch-model-post-impl
-    message: Implementation complete. You may switch to a lower-cost model for the review phases. Proceeding in 10s.
-    blocking: false
-    defaultOption: continue-current
-    autoAdvanceMs: 10000
-    options:
-      - id: switched
-        label: Switched model — proceed
-        description: Model has been switched for the review phases
-      - id: continue-current
-        label: Continue with current model
-        description: Proceed with the current model without switching
 transitions:
   - to: lean-coding-audit
     isDefault: true

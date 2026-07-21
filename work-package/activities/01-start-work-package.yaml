@@ -176,6 +176,11 @@ steps:
   - kind: technique
     id: detect-project-type
     technique: project-type-detection
+  - kind: action
+    id: announce-project-type
+    actions:
+      - action: message
+        message: "Session bag `project_type`={project_type} (from detect-project-type)."
   - kind: technique
     id: check-issue
     technique: issue-reference-detection

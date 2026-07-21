@@ -27,7 +27,8 @@ The canonical home for each shared fact category. Templates carry link-only slot
 | Research findings and recommended approach | `knowledge-base-research.md` |
 | Test cases and acceptance matrix | `test-plan.md` |
 | Review findings (code, test, structural, lean-coding, manual-diff) | `code-review.md` and the reviews' own artifacts — consolidated surfaces reference findings by ID + disposition |
-| Deferred items | `deferred-items.md` (the single register — see [deferred-items](../../resources/deferred-items.md)) |
+| In-task follow-ups | `follow-ups.md` (see [follow-ups](../../resources/follow-ups.md)) |
+| Out-of-scope deferred items | `deferred-items.md` (see [deferred-items](../../resources/deferred-items.md)) |
 
 ### exception-only-reporting
 

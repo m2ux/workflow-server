@@ -26,22 +26,6 @@ steps:
   - kind: technique
     id: document
     technique: document
-  - kind: checkpoint
-    id: analysis-confirmed
-    message: Implementation analysis is complete. Select whether to confirm, clarify, or request more analysis.
-    blocking: false
-    defaultOption: confirmed
-    autoAdvanceMs: 30000
-    options:
-      - id: confirmed
-        label: Analysis confirmed
-        description: Proceed to determine next steps
-      - id: clarify
-        label: Need clarification
-        description: Some findings need discussion
-      - id: more-analysis
-        label: More analysis needed
-        description: Additional areas need investigation
   - kind: technique
     id: update-assumptions-log
     technique: review-assumptions::record

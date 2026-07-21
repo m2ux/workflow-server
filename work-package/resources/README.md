@@ -27,8 +27,9 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `workflow-retrospective` | Workflow Retrospective | Retrospective section template (written into COMPLETE.md) |
 | `session-trace` | Session Trace | Lean mechanical session-trace artifact template (written at close-out) |
 | `complete-wp` | Complete Work Package | Close-out document template — the single terminal artifact |
-| `manual-diff-review` | Manual Diff Review | Index-table, header, and report-section forms — the report renders as a code-review.md section |
-| `deferred-items` | Deferred Items | Register template — the single canonical home for deferred work that every other artifact links to |
+| `manual-diff-review` | Manual Diff Review | Lean-header and Block Rationale forms (`file:line` titles) — the report renders as a code-review.md section |
+| `deferred-items` | Deferred Items | Register template — the single canonical home for out-of-scope deferred work that every other artifact links to |
+| `follow-ups` | Follow-ups | In-task follow-ups register template (distinct from out-of-scope `deferred-items`) |
 | `tdd-concepts-rust` | TDD Concepts Rust | TDD best practices for Rust: Red-Green-Refactor, FIRST principles |
 | `review-mode` | Review Mode | Complete guide for review mode behavior and PR review formats |
 | `codebase-comprehension` | Codebase Comprehension | Comprehension techniques, artifact template, and deep-dive guidance from reverse engineering and code forensics literature |
