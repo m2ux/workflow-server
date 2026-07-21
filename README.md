@@ -91,7 +91,7 @@ npm run build
 }
 ```
 
-`WORKFLOW_WORKSPACE` is required: it points at the project whose `.engineering/artifacts/planning/` folder holds session state (`--workspace=PATH` on the command line works too). Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs.
+A worktree / workspace root is required: set `WORKFLOW_WORKSPACE`, `WORKTREE_ROOT`, or pass `--workspace=PATH`. Session state lives under `{root}/.engineering/artifacts/planning/` (override the relative segment with `PLANNING_SLUG`). Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs, Docker, and the [agent-managed worktree](docs/agent-managed-worktrees.md) runbook.
 
 The default transport is **stdio** (what IDE MCP clients use). To run over HTTP instead:
 
