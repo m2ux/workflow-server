@@ -36,17 +36,19 @@ Edit `~/.cursor/mcp.json`:
   "mcpServers": {
     "workflow-server": {
       "command": "node",
-      "args": ["/path/to/workflow-server/dist/index.js"],
+      "args": [
+        "/path/to/workflow-server/dist/index.js",
+        "--workspace=/path/to/your/project"
+      ],
       "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflows",
-        "WORKFLOW_WORKSPACE": "/path/to/your/project"
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
       }
     }
   }
 }
 ```
 
-IDE MCP clients use the default **stdio** transport. For HTTP, see [HTTP transport](#http-transport) below.
+`--workspace` binds the required worktree / workspace root (equivalent env binds: `WORKFLOW_WORKSPACE` or `WORKTREE_ROOT`; precedence CLI > `WORKFLOW_WORKSPACE` > `WORKTREE_ROOT`). IDE MCP clients use the default **stdio** transport. For HTTP, see [HTTP transport](#http-transport) below.
 
 ### Claude Desktop
 
@@ -59,10 +61,12 @@ IDE MCP clients use the default **stdio** transport. For HTTP, see [HTTP transpo
   "mcpServers": {
     "workflow-server": {
       "command": "node",
-      "args": ["/path/to/workflow-server/dist/index.js"],
+      "args": [
+        "/path/to/workflow-server/dist/index.js",
+        "--workspace=/path/to/your/project"
+      ],
       "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflows",
-        "WORKFLOW_WORKSPACE": "/path/to/your/project"
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
       }
     }
   }
@@ -134,7 +138,7 @@ The HTTP transport is intended to sit behind network-level access control or a r
 
 ## Agent-managed worktrees
 
-The agent owns Git worktree lifecycle and `.engineering` initialisation. The server validates paths under the configured root and writes planning artifacts.
+Agents create Git worktrees and initialise `.engineering`. The server validates paths under the configured root and writes planning artifacts.
 
 Typical sequence:
 
@@ -145,13 +149,13 @@ Typical sequence:
 5. Call `start_session` with a planning folder slug / hint; the server resolves under `{root}/{PLANNING_SLUG}/`.
 6. Run the workflow; the server writes artifacts under the derived planning path.
 
-Container layout: see [`Dockerfile`](Dockerfile) and [`docker-compose.yml`](docker-compose.yml). Bind the host worktree root RW to `WORKTREE_ROOT` (default `/worktrees`). Align container UID/GID with the host user that creates worktrees. There is no global server-managed planning volume.
+Container layout: see [`Dockerfile`](Dockerfile) and [`docker-compose.yml`](docker-compose.yml). Bind the host worktree root RW to `WORKTREE_ROOT` (default `/worktrees`). Planning paths derive under that root. Align container UID/GID with the host user that creates worktrees.
 
 Operator migration checklist:
 
 - Supply a required root via `--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT`.
 - Default planning slug is `.engineering/artifacts/planning`; set `PLANNING_SLUG` only when the layout differs.
-- Session planning bind stays on `start_session` (slug hint); there is no per-call worktree-root tool parameter.
+- Session planning bind stays on `start_session` (slug hint) under the configured root.
 
 Further detail: [docs/agent-managed-worktrees.md](docs/agent-managed-worktrees.md).
 

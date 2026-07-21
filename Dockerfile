@@ -1,6 +1,5 @@
-# Workflow server — Node-only image (no Git/SSH). The agent owns worktree
-# lifecycle on the host; the server validates paths and writes artifacts under
-# the configured worktree root.
+# Workflow server — Node 20 runtime image. Binds WORKTREE_ROOT at startup;
+# the MCP server validates paths and writes planning artifacts under that root.
 FROM node:20-bookworm-slim AS build
 WORKDIR /app
 COPY package.json package-lock.json ./

@@ -46,8 +46,8 @@ export const SEAL_FILE_NAME = '.session-token';
  * Default subdirectory under the worktree / workspace root that holds planning
  * folders. Every session lives at `<workspaceDir>/<activeRelativeDir>/<slug>/`.
  * The active relative segment defaults to this constant and may be overridden
- * once at startup via `setPlanningRelativeDir` (from `PLANNING_SLUG` / config)
- * without changing `planningRoot(workspaceDir)`'s call-site signature.
+ * once at startup via `setPlanningRelativeDir` (from `PLANNING_SLUG` / config).
+ * `planningRoot(workspaceDir)` keeps its one-argument call-site signature.
  */
 export const PLANNING_RELATIVE_DIR = '.engineering/artifacts/planning';
 
@@ -627,8 +627,8 @@ export async function findPlanningFolderBySlug(
 /**
  * Create a top-level planning folder at
  * `<workspaceDir>/<activePlanningRelativeDir>/<slug>` with mode 0700.
- * Idempotent. Returns the absolute path. Fails closed if the derived planning
- * root or folder path escapes the configured worktree / workspace root.
+ * Idempotent. Returns the absolute path. Requires the derived planning root
+ * and folder path to resolve inside the configured worktree / workspace root.
  */
 export async function ensurePlanningFolder(
   workspaceDir: string,
@@ -637,7 +637,7 @@ export async function ensurePlanningFolder(
   assertValidSlug(slug);
   const absoluteWorkspace = resolve(workspaceDir);
   const root = planningRoot(absoluteWorkspace);
-  // Containment only — reject escaped derived paths before mkdir.
+  // Assert derived paths stay inside the worktree root before mkdir.
   assertPathInsideRoot(absoluteWorkspace, root);
   const folder = resolve(root, slug);
   assertPathInsideRoot(absoluteWorkspace, folder);

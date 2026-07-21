@@ -1,9 +1,9 @@
 # Phase 1 agent-managed worktree layout.
-# Agent creates Git worktrees under the host worktree root; the server binds
-# that root RW and derives planning paths. No global planning volume.
+# Host worktree root is bound RW; the server derives planning paths under it.
+# Agents create worktrees on the host before the server writes artifacts.
 #
 # UID/GID: run the container as the same user that owns host worktrees
-# (user: user: "${UID}:${GID}") so writes into the RW bind succeed.
+# (user: "${UID}:${GID}") so writes into the RW bind succeed.
 services:
   workflow-server:
     build: .

@@ -1,6 +1,6 @@
 # Agent-Managed Worktrees
 
-The workflow server binds to one required worktree / workspace root at startup and derives planning paths under that root. Agents own Git worktree creation and `.engineering` initialisation; the server validates containment and writes artifacts.
+The workflow server binds to one required worktree / workspace root at startup and derives planning paths under that root. Agents create Git worktrees and initialise `.engineering`; the server validates containment and writes artifacts.
 
 ## Required root
 
@@ -22,7 +22,7 @@ Supply exactly one of:
 
 Derived planning root: `{workspaceDir}/{PLANNING_SLUG}/`. Empty or whitespace `PLANNING_SLUG` falls back to the default. Session folders are `{planningRoot}/{slug}/`.
 
-`start_session` accepts a planning folder slug / hint; the server resolves under the configured planning root (basename-safe). There is no per-call worktree-root tool parameter.
+`start_session` accepts a planning folder slug / hint; the server resolves under the configured planning root (basename-safe). The worktree root itself is a startup bind only.
 
 ## Agent sequence
 
@@ -37,8 +37,7 @@ Derived planning root: `{workspaceDir}/{PLANNING_SLUG}/`. Empty or whitespace `P
 
 See [`Dockerfile`](../Dockerfile) and [`docker-compose.yml`](../docker-compose.yml):
 
-- Node image only — no Git or SSH in the server image.
-- `ENV WORKTREE_ROOT=/worktrees` (and optional `PLANNING_SLUG`).
+- Node 20 runtime image with `ENV WORKTREE_ROOT=/worktrees` (and optional `PLANNING_SLUG`).
 - RW bind of the host worktree root; workflows/schemas may be RO.
 - Align container UID/GID with the host user that creates worktrees so RW writes succeed.
 

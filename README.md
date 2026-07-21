@@ -81,17 +81,19 @@ npm run build
   "mcpServers": {
     "workflow-server": {
       "command": "node",
-      "args": ["/path/to/workflow-server/dist/index.js"],
+      "args": [
+        "/path/to/workflow-server/dist/index.js",
+        "--workspace=/path/to/your/project"
+      ],
       "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflows",
-        "WORKFLOW_WORKSPACE": "/path/to/your/project"
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
       }
     }
   }
 }
 ```
 
-A worktree / workspace root is required: set `WORKFLOW_WORKSPACE`, `WORKTREE_ROOT`, or pass `--workspace=PATH`. Session state lives under `{root}/.engineering/artifacts/planning/` (override the relative segment with `PLANNING_SLUG`). Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs, Docker, and the [agent-managed worktree](docs/agent-managed-worktrees.md) runbook.
+`--workspace` binds the required worktree / workspace root (equivalent env binds: `WORKFLOW_WORKSPACE` or `WORKTREE_ROOT`; precedence CLI > `WORKFLOW_WORKSPACE` > `WORKTREE_ROOT`). Session state lives under `{root}/.engineering/artifacts/planning/` (override the relative segment with `PLANNING_SLUG`). Restart your MCP client. See [SETUP.md](SETUP.md) for other IDEs, Docker, and the [agent-managed worktree](docs/agent-managed-worktrees.md) runbook.
 
 The default transport is **stdio** (what IDE MCP clients use). To run over HTTP instead:
 
