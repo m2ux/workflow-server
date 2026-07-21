@@ -9,3 +9,9 @@
 | Task 5 | cursor-grok | cursor-grok-4.5 | code-generation | mixed | /ready comment + WORKTREE_ROOT-backed readiness test; checks.workspaceDir key kept |
 | Task 6 | cursor-grok | cursor-grok-4.5 | docs | mixed | Dockerfile + docker-compose RW worktree-root bind (no Git in image) |
 | Task 7 | cursor-grok | cursor-grok-4.5 | docs | mixed | README/SETUP + docs/agent-managed-worktrees.md agent/operator runbook |
+
+## Attestation
+
+- **Timestamp:** 2026-07-21T07:39:57Z
+- **Certifier:** Mike Clay <mike.clay@shielded.io>
+- **Option:** certify
