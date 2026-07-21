@@ -386,11 +386,13 @@
           "plan-prepare",
           "assumptions-review",
           "implement",
-          "lean-coding-audit"
+          "lean-coding-audit",
+          "post-impl-review",
+          "validate"
         ],
         "condition": "isDefault",
-        "currentActivity": "post-impl-review",
-        "currentTechnique": "summarize-architecture",
+        "currentActivity": "strategic-review",
+        "currentTechnique": "cargo-operations::run-suite",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:89bbdae40e12504b": "89bbdae40e12504b",
@@ -436,6 +438,8 @@
             "resource:wp-plan": "bfc99b1c91902f02",
             "resource:wp-plan#template": "06fa3a86dc2b9e24",
             "technique:analyse-challenge::run-loop": "a5e78e676b203375",
+            "technique:cargo-operations::preflight": "0baa0c7771521754",
+            "technique:cargo-operations::run-suite": "0068a603b8cf28bc",
             "technique:cargo-operations::test": "eeb7b49a939649e5",
             "technique:codebase-comprehension::deep-dive": "76fa95b6d9f5700a",
             "technique:codebase-comprehension::revise-questions": "863b8a68a7408193",
@@ -2571,16 +2575,65 @@
             },
             "timestamp": "2026-07-21T06:48:02.247Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "timestamp": "2026-07-21T06:48:56.433Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate",
+            "timestamp": "2026-07-21T06:48:56.433Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "validate",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "preflight",
+              "techniqueId": "cargo-operations::preflight"
+            },
+            "timestamp": "2026-07-21T06:49:46.765Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "meta/planning-readme"
+            },
+            "timestamp": "2026-07-21T06:50:27.517Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "run-suite",
+              "techniqueId": "cargo-operations::run-suite"
+            },
+            "timestamp": "2026-07-21T06:54:41.948Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate",
+            "timestamp": "2026-07-21T06:54:59.999Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "strategic-review",
+            "timestamp": "2026-07-21T06:54:59.999Z",
+            "type": "activity_entered"
           }
         ],
         "schemaVersion": 1,
-        "seq": 94,
+        "seq": 100,
         "sessionIndex": "H7H32D",
         "skippedActivities": [],
         "startedAt": "2026-07-20T15:44:48.036Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784616482,
+        "ts": 1784616899,
         "variables": {
           "artifact_name": "",
           "assumption_batch_accepted": false,

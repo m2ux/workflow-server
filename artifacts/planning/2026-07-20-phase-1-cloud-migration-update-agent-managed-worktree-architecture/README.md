@@ -1,12 +1,12 @@
 # Phase 1 Cloud Migration Update — Agent-Managed Worktree Architecture - July 2026
 
-> Enhancement · Created 2026-07-20 · **Status:** Post-implementation review complete — ready for validate
+> Enhancement · Created 2026-07-20 · **Status:** Validation complete — ready for strategic review
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
 ## 🎯 Executive Summary
 
-Work package implemented for the Phase 1 agent-managed worktree architecture update: required startup worktree root (`WORKTREE_ROOT` alias), configurable `PLANNING_SLUG`, path-containment validator, Docker RW bind, and agent/operator docs — seven tasks on [#267](https://github.com/m2ux/workflow-server/pull/267) with `planningRoot` one-arg signature preserved. Lean-coding audit applied (−65 net lines); post-impl review complete (manual MD fixes + automated reviews green).
+Work package implemented for the Phase 1 agent-managed worktree architecture update: required startup worktree root (`WORKTREE_ROOT` alias), configurable `PLANNING_SLUG`, path-containment validator, Docker RW bind, and agent/operator docs — seven tasks on [#267](https://github.com/m2ux/workflow-server/pull/267) with `planningRoot` one-arg signature preserved. Lean-coding audit applied (−65 net lines); post-impl review and validation complete (typecheck + 84/84 PR267 tests green; SC-1–SC-7 covered).
 
 ## Problem Overview
 
@@ -41,7 +41,7 @@ The payoff is a thinner, safer server: no Git or repository credentials in the c
 | 10 | [Architecture summary](10-architecture-summary.md) | Stakeholder architecture overview | 15-30m | ✅ Complete |
 | 07 | [Strategic review](strategic-review.md) | Scope focus and artifact cleanliness | 15-30m | ⬚ Pending |
 | — | [Comprehension artifact](../../comprehension/workflow-server.md) | Persistent codebase knowledge (workspace binding deep-dive) | 20-45m | ✅ Complete |
-| — | Validation | Build, test, lint verification | 15-30m | ⬚ Pending |
+| — | Validation | Build, test, lint verification | 15-30m | ✅ Complete |
 | — | PR review | External review feedback cycle | 30-60m | ⬚ Pending |
 | 08 | [Close-out (COMPLETE.md)](complete-wp.md) | Deliverables, known limitations, lessons, retrospective | 10-20m | ⬚ Pending |
 
