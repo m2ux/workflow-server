@@ -42,7 +42,7 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 
 ## Open Assumptions
 
-*(none — PL-1…PL-6 are implementation- or review-validatable; PL-7 confirmed at approach checkpoint; AR-1 null collect; no stakeholder-dependent residue)*
+*(none — PL-1…PL-4 validated in implement; PL-5 open only for finalize-documentation; PL-6 partially validated pending PR review; no stakeholder-dependent residue)*
 
 ## Stakeholder-Resolved (comprehension-sufficient · 2026-07-20)
 
