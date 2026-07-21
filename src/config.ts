@@ -7,18 +7,10 @@ export interface ServerConfig {
   schemasDir: string;
   /**
    * Absolute path to the worktree / workspace root the server is bound to.
-   * This is the required startup root (CLI `--workspace`, `WORKFLOW_WORKSPACE`,
-   * or `WORKTREE_ROOT` alias). Planning folders are derived under this path
-   * (default `.engineering/artifacts/planning/`); session state
-   * (`session.json` + `.session-token`) lives under that planning tree.
    */
   workspaceDir: string;
   /**
-   * Relative planning directory under `workspaceDir`. Default
-   * `.engineering/artifacts/planning`. Override with `PLANNING_SLUG`.
-   * `loadConfig` always populates this; optional on the interface so test
-   * literals may omit it. Applied once at startup via `setPlanningRelativeDir`
-   * so `planningRoot` keeps its one-argument call-site signature.
+   * Relative planning directory under `workspaceDir`.
    */
   planningRelativeDir?: string;
   serverName: string;
@@ -138,14 +130,7 @@ function parseWorkspaceFlag(argv: readonly string[]): string | undefined {
   return undefined;
 }
 
-/**
- * Resolve the worktree / workspace root with
- * CLI `--workspace` > `WORKFLOW_WORKSPACE` > `WORKTREE_ROOT` precedence.
- * Returns an absolute path. Throws WorkspaceConfigError when no source
- * supplies a value — an explicit failure beats silently defaulting to
- * `process.cwd()`. The resolved path is stored as `ServerConfig.workspaceDir`
- * and is the configured worktree root for readiness and planning derivation.
- */
+/** CLI `--workspace` > `WORKFLOW_WORKSPACE` > `WORKTREE_ROOT`; throws if unset. */
 function resolveWorkspaceDir(argv: readonly string[]): string {
   const fromCli = parseWorkspaceFlag(argv);
   if (fromCli) return resolve(fromCli);
@@ -153,13 +138,35 @@ function resolveWorkspaceDir(argv: readonly string[]): string {
   const fromEnv = process.env['WORKFLOW_WORKSPACE']?.trim();
   if (fromEnv) return resolve(fromEnv);
 
-  // Alias for the same required root bind (brief naming / container layouts).
   const fromWorktreeRoot = process.env['WORKTREE_ROOT']?.trim();
   if (fromWorktreeRoot) return resolve(fromWorktreeRoot);
 
   throw new WorkspaceConfigError(
     'Workspace / worktree root is required. Pass --workspace=PATH on the command line, or set WORKFLOW_WORKSPACE or WORKTREE_ROOT in the environment. The resolved path is ServerConfig.workspaceDir (the configured worktree root).',
   );
+}
+
+/** Parse `--workflow-dir=PATH` or `--workflow-dir PATH`. */
+function parseWorkflowDirFlag(argv: readonly string[]): string | undefined {
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === undefined) continue;
+    if (arg.startsWith('--workflow-dir=')) {
+      const value = arg.slice('--workflow-dir='.length).trim();
+      if (value) return value;
+    } else if (arg === '--workflow-dir') {
+      const next = argv[i + 1]?.trim();
+      if (next) return next;
+    }
+  }
+  return undefined;
+}
+
+/** CLI `--workflow-dir` > `WORKFLOW_DIR` > `./workflows` (relative to install root). */
+function resolveWorkflowDir(argv: readonly string[]): string {
+  const fromCli = parseWorkflowDirFlag(argv);
+  if (fromCli) return resolve(PROJECT_ROOT, fromCli);
+  return resolve(PROJECT_ROOT, envOrDefault('WORKFLOW_DIR', './workflows'));
 }
 
 /**
@@ -266,7 +273,7 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
   // callers see the configured slug without a second argument.
   setPlanningRelativeDir(planningRelativeDir);
   return {
-    workflowDir: resolve(PROJECT_ROOT, envOrDefault('WORKFLOW_DIR', './workflows')),
+    workflowDir: resolveWorkflowDir(argv),
     schemasDir: resolve(PROJECT_ROOT, envOrDefault('SCHEMAS_DIR', './schemas')),
     workspaceDir: resolveWorkspaceDir(argv),
     planningRelativeDir,

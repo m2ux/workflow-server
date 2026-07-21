@@ -1,5 +1,4 @@
-# Workflow server — Node 20 runtime image. Binds WORKTREE_ROOT at startup;
-# the MCP server validates paths and writes planning artifacts under that root.
+# Workflow server — Node 20 runtime image.
 FROM node:20-bookworm-slim AS build
 WORKDIR /app
 COPY package.json package-lock.json ./

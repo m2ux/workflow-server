@@ -268,3 +268,60 @@ describe('loadConfig — PLANNING_SLUG', () => {
     expect(config.planningRelativeDir).toBe(PLANNING_RELATIVE_DIR);
   });
 });
+
+describe('loadConfig — workflowDir', () => {
+  let workflowDirBefore: string | undefined;
+  let workspaceBefore: string | undefined;
+
+  beforeEach(() => {
+    workflowDirBefore = process.env['WORKFLOW_DIR'];
+    workspaceBefore = process.env['WORKFLOW_WORKSPACE'];
+    delete process.env['WORKFLOW_DIR'];
+    delete process.env['WORKFLOW_WORKSPACE'];
+    delete process.env['WORKTREE_ROOT'];
+  });
+
+  afterEach(() => {
+    if (workflowDirBefore === undefined) delete process.env['WORKFLOW_DIR'];
+    else process.env['WORKFLOW_DIR'] = workflowDirBefore;
+    if (workspaceBefore === undefined) delete process.env['WORKFLOW_WORKSPACE'];
+    else process.env['WORKFLOW_WORKSPACE'] = workspaceBefore;
+  });
+
+  it('defaults workflowDir to ./workflows under the install root', () => {
+    const config = loadConfig(['--workspace=/tmp/ws']);
+    expect(config.workflowDir).toBe(resolve(import.meta.dirname, '..', 'workflows'));
+  });
+
+  it('accepts --workflow-dir=PATH', () => {
+    const config = loadConfig([
+      '--workspace=/tmp/ws',
+      '--workflow-dir=/tmp/custom-workflows',
+    ]);
+    expect(config.workflowDir).toBe(resolve('/tmp/custom-workflows'));
+  });
+
+  it('accepts space-separated --workflow-dir PATH', () => {
+    const config = loadConfig([
+      '--workspace=/tmp/ws',
+      '--workflow-dir',
+      '/tmp/custom-workflows',
+    ]);
+    expect(config.workflowDir).toBe(resolve('/tmp/custom-workflows'));
+  });
+
+  it('prefers --workflow-dir over WORKFLOW_DIR env', () => {
+    process.env['WORKFLOW_DIR'] = '/tmp/env-workflows';
+    const config = loadConfig([
+      '--workspace=/tmp/ws',
+      '--workflow-dir=/tmp/cli-workflows',
+    ]);
+    expect(config.workflowDir).toBe(resolve('/tmp/cli-workflows'));
+  });
+
+  it('uses WORKFLOW_DIR when CLI is absent', () => {
+    process.env['WORKFLOW_DIR'] = '/tmp/env-workflows';
+    const config = loadConfig(['--workspace=/tmp/ws']);
+    expect(config.workflowDir).toBe(resolve('/tmp/env-workflows'));
+  });
+});

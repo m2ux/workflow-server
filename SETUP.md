@@ -38,17 +38,15 @@ Edit `~/.cursor/mcp.json`:
       "command": "node",
       "args": [
         "/path/to/workflow-server/dist/index.js",
-        "--workspace=/path/to/your/project"
-      ],
-      "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
-      }
+        "--workspace=/path/to/worktree-root",
+        "--workflow-dir=/path/to/workflow-server/workflows"
+      ]
     }
   }
 }
 ```
 
-`--workspace` binds the required worktree / workspace root (equivalent env binds: `WORKFLOW_WORKSPACE` or `WORKTREE_ROOT`; precedence CLI > `WORKFLOW_WORKSPACE` > `WORKTREE_ROOT`). IDE MCP clients use the default **stdio** transport. For HTTP, see [HTTP transport](#http-transport) below.
+IDE MCP clients use the default **stdio** transport. For HTTP, see [HTTP transport](#http-transport) below.
 
 ### Claude Desktop
 
@@ -63,11 +61,9 @@ Edit `~/.cursor/mcp.json`:
       "command": "node",
       "args": [
         "/path/to/workflow-server/dist/index.js",
-        "--workspace=/path/to/your/project"
-      ],
-      "env": {
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
-      }
+        "--workspace=/path/to/worktree-root",
+        "--workflow-dir=/path/to/workflow-server/workflows"
+      ]
     }
   }
 }
@@ -105,7 +101,7 @@ The server reads these environment variables at startup (see `src/config.ts`):
 | `WORKFLOW_WORKSPACE` | — (required*) | Worktree / workspace root the server is bound to. Session state lives under `{root}/{PLANNING_SLUG}/`. Also accepted as `--workspace=PATH`. |
 | `WORKTREE_ROOT` | — (required*) | Alias for the same required root as `WORKFLOW_WORKSPACE` (useful in containers). Precedence: `--workspace` > `WORKFLOW_WORKSPACE` > `WORKTREE_ROOT`. |
 | `PLANNING_SLUG` | `.engineering/artifacts/planning` | Relative planning directory under the worktree root. Override for alternate layouts (e.g. `.engineering/planning`). |
-| `WORKFLOW_DIR` | `./workflows` | Path to workflow directories (each contains `workflow.yaml`, `activities/`, `techniques/`, `resources/`) |
+| `WORKFLOW_DIR` | `./workflows` | Workflows directory. Also `--workflow-dir=PATH` (CLI wins). |
 | `SCHEMAS_DIR` | `./schemas` | Path to JSON Schema definitions served via the `workflow-server://schemas` MCP resource |
 | `SERVER_NAME` | `workflow-server` | Server name reported by `health_check` |
 | `SERVER_VERSION` | `1.0.0` | Server version reported by `health_check` |
@@ -123,7 +119,7 @@ stdio is the default and is what Cursor / Claude Desktop spawn via `command` / `
 npm run build
 npm run start:http
 # equivalent:
-# node dist/index.js --workspace=/path/to/your/project --transport=http --port=3000 --host=localhost
+# node dist/index.js --workspace=/path/to/worktree-root --workflow-dir=/path/to/workflows --transport=http --port=3000 --host=localhost
 ```
 
 During development, `npm run dev:http` runs the same entry point via `tsx`.
@@ -156,8 +152,6 @@ Operator migration checklist:
 - Supply a required root via `--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT`.
 - Default planning slug is `.engineering/artifacts/planning`; set `PLANNING_SLUG` only when the layout differs.
 - Session planning bind stays on `start_session` (slug hint) under the configured root.
-
-Further detail: [docs/agent-managed-worktrees.md](docs/agent-managed-worktrees.md).
 
 ---
 
