@@ -20,6 +20,13 @@
 **Recommendation:** Show `--workspace=/path/to/your/project` on `args` (matching `.cursor/mcp.json`); keep `WORKFLOW_DIR` in `env`; document the three equivalent root binds in the surrounding prose.  
 **Correction applied:** README and SETUP MCP examples updated to the `--workspace` args form with affirmative bind prose.
 
+### MD-3: Worktree-root path semantics in MCP examples
+
+**File:** `README.md`, `SETUP.md` · **Row:** 2 · **Severity:** Medium  
+**Issue:** MCP client config examples used `--workspace=/path/to/your/project` (and matching HTTP one-liners). That placeholder reads as a single project path; under agent-managed worktrees the startup bind is a **worktree root** (a directory that may hold many agent worktrees / projects).  
+**Recommendation:** Use worktree-root placeholders such as `--workspace=/path/to/worktree-root` or `/worktrees`; keep the real bind forms visible (`--workspace=...`, `WORKFLOW_WORKSPACE`, `WORKTREE_ROOT`); describe what the path is in affirmative docs voice.  
+**Correction applied:** README and SETUP MCP/HTTP examples and surrounding prose updated to `/path/to/worktree-root` with explicit worktree-root semantics. `docs/agent-managed-worktrees.md` already used worktree-root language for the startup bind — no change required there.
+
 ## Lean-Coding Audit
 
 Scope: PR #267 change (`src/config.ts`, `src/server.ts`, `src/worktree-validator.ts`, `src/utils/session/store.ts`, `src/transports/http.ts`, `tests/*`, `Dockerfile`, `docker-compose.yml`, docs). Lens: over-engineering only (delete / stdlib / native / yagni / shrink) — correctness, security, and performance out of scope (safety floor).
@@ -58,7 +65,7 @@ No accepted-but-unapplied simplifications remain — `needs_simplification` → 
 
 **Overall Quality:** 4/5 — Critical: 0 · High: 0 · Medium: 0 open · Low: 0 · Informational: 1
 
-Automated post-impl review of PR #267 (14 authored files + uncommitted doc-voice / MCP-example corrections). Manual findings MD-1 and MD-2 are Medium and corrected. Lean audit already applied. No open code defects at Minor or above.
+Automated post-impl review of PR #267 (14 authored files + uncommitted doc-voice / MCP-example corrections). Manual findings MD-1, MD-2, and MD-3 are Medium and corrected. Lean audit already applied. No open code defects at Minor or above.
 
 ## Module Overview
 
@@ -78,11 +85,11 @@ Phase 1 agent-managed worktree bind: `WORKTREE_ROOT` alias into required `worksp
 - `planningRoot(workspaceDir)` arity unchanged; CRITICAL fan-out contained via module-level relative-dir injection
 - Containment helper uses separator-aware prefix + realpath; `ensurePlanningFolder` asserts before mkdir (PR267-TC-12 covered)
 - Config fail-fast lists all three root sources; HTTP `checks.workspaceDir` key preserved for consumers
-- MCP client examples now match live `--workspace` args pattern after MD-2
+- MCP client examples use `--workspace` on args with worktree-root placeholders (MD-2, MD-3)
 
 ## Recommendations Summary
 
-1. **Immediate:** None — MD-1/MD-2 corrections applied; no open Minor+ code findings
+1. **Immediate:** None — MD-1/MD-2/MD-3 corrections applied; no open Minor+ code findings
 2. **Near-term:** Refresh GitNexus index on the feature worktree (CR-1)
 3. **Long-term:** None from this review
 

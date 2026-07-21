@@ -89,12 +89,13 @@ sequenceDiagram
 | `src/utils/session/store.ts` | Modified | Injectable planning relative dir; containment on ensure |
 | `src/server.ts` | Modified | Apply planning slug at createServer |
 | `src/transports/http.ts` | Modified | Document `/ready` root semantics |
-| Docker / docs | Added/Modified | Container bind + agent runbook + MCP examples |
+| Docker / docs | Added/Modified | Container bind + SETUP agent lifecycle + MCP examples |
 
 ### Key Changes
 
 - **Required root:** Server starts only with a worktree root; `/ready` checks that path
 - **Configurable planning slug:** Default monorepo path; override via `PLANNING_SLUG` without changing `planningRoot` call sites
+- **Workflows bind:** `--workflow-dir` / `WORKFLOW_DIR` (default `./workflows`)
 - **Agent lifecycle:** Agents create worktrees; server validates and writes
 
 ## Impact

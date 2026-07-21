@@ -374,6 +374,15 @@
             },
             "optionId": "proceed",
             "respondedAt": "2026-07-20T16:06:03.000Z"
+          },
+          "strategic-review-unsigned-commits-prompt": {
+            "effects": {
+              "variablesSet": {
+                "resign_unsigned_commits_requested": false
+              }
+            },
+            "optionId": "decline-resign",
+            "respondedAt": "2026-07-21T07:34:16.000Z"
           }
         },
         "completedActivities": [
@@ -392,7 +401,7 @@
         ],
         "condition": "isDefault",
         "currentActivity": "strategic-review",
-        "currentTechnique": "cargo-operations::run-suite",
+        "currentTechnique": "strategic-review::apply-cleanup",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:89bbdae40e12504b": "89bbdae40e12504b",
@@ -403,6 +412,8 @@
             "bundle:workflow-engine::finalize-activity": "5ea8365ed60aa839",
             "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
             "bundle:workflow-engine::yield-checkpoint": "1b1e6a4df3a7ceb1",
+            "resource:architecture-review": "831b599fb4f4a158",
+            "resource:architecture-summary": "5702f7ad099372f1",
             "resource:architecture-summary#architecture-summary-artifact-template": "0e0308daf8ec931d",
             "resource:assumption-reconciliation#integration-with-assumptions-log": "4caf91efceeec93a",
             "resource:assumption-reconciliation#scorecard": "696280de9a73ac01",
@@ -429,6 +440,7 @@
             "resource:research-reconciliation#integration-with-research-artifact": "aa15ef7769b569fe",
             "resource:rust-substrate-code-review": "dfc5e7c4f61ff118",
             "resource:rust-substrate-code-review#report-template": "19785667822ded85",
+            "resource:strategic-review#strategic-review-artifact-template": "e786757d7c2970e1",
             "resource:tdd-concepts-rust": "e64d9ad915c9a670",
             "resource:test-plan#templates": "762025b339a18ce9",
             "resource:test-plan#test-plan-structure": "ffeb1d0a5e9c791b",
@@ -459,6 +471,8 @@
             "technique:implementation-analysis::document": "05a3e7e41abcfb30",
             "technique:issue-reference-detection": "0f54731a08d194e9",
             "technique:manage-artifacts::create-readme": "bb25e731276caf8f",
+            "technique:manage-artifacts::verify-artifact-conforms": "db1ee70f40b4888e",
+            "technique:manage-artifacts::verify-readme-conforms": "4b54bccccd4ffa2e",
             "technique:manage-artifacts::write-artifact": "cc45b522103ea09c",
             "technique:manage-git::artifact-commits": "19b361ba9207828e",
             "technique:manage-git::create-worktree": "c5aa47363f34fe66",
@@ -491,6 +505,12 @@
             "technique:review-mode-detection": "6c6b64ca502bcedf",
             "technique:review-test-suite": "06356e427773ee2f",
             "technique:stakeholder-overview": "3c82018808c24e5d",
+            "technique:strategic-findings-analysis": "c5a8c5e0118e2044",
+            "technique:strategic-review::apply-cleanup": "3a865ebbd51b5b1e",
+            "technique:strategic-review::changes-folder": "fd29005c69aedf5b",
+            "technique:strategic-review::document-findings": "2ad7436916cab025",
+            "technique:strategic-review::review-scope": "4905b94b08292e25",
+            "technique:strategic-review::verify-fragment": "7dd3feb551c16607",
             "technique:summarize-architecture": "a363f28bcab1c00e",
             "technique:task-completion-review": "bf14b14b00293142",
             "technique:update-pr::create-pr": "0ce4712d9bd0de5c",
@@ -2624,16 +2644,199 @@
             "activity": "strategic-review",
             "timestamp": "2026-07-21T06:54:59.999Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "review-strategy",
+              "techniqueId": "strategic-review::review-scope"
+            },
+            "timestamp": "2026-07-21T07:32:28.441Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-readme",
+              "techniqueId": "manage-artifacts::verify-readme-conforms"
+            },
+            "timestamp": "2026-07-21T07:32:28.441Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-artifact-conformance",
+              "techniqueId": "manage-artifacts::verify-artifact-conforms"
+            },
+            "timestamp": "2026-07-21T07:32:28.441Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "ensure-changes-folder-entry",
+              "techniqueId": "strategic-review::changes-folder"
+            },
+            "timestamp": "2026-07-21T07:32:28.441Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-change-fragment",
+              "techniqueId": "strategic-review::verify-fragment"
+            },
+            "timestamp": "2026-07-21T07:32:28.441Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "document-findings",
+              "techniqueId": "strategic-review::document-findings"
+            },
+            "timestamp": "2026-07-21T07:32:28.441Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-architecture-summary",
+              "techniqueId": "summarize-architecture"
+            },
+            "timestamp": "2026-07-21T07:32:28.441Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "analyze-strategic-findings",
+              "techniqueId": "strategic-findings-analysis"
+            },
+            "timestamp": "2026-07-21T07:32:28.441Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "architecture-review"
+            },
+            "timestamp": "2026-07-21T07:32:28.441Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "architecture-summary#architecture-summary-artifact-template"
+            },
+            "timestamp": "2026-07-21T07:32:28.441Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-21T07:32:28.441Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "strategic-review#strategic-review-artifact-template"
+            },
+            "timestamp": "2026-07-21T07:32:28.441Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "design-framework#design-philosophy-artifact-template"
+            },
+            "timestamp": "2026-07-21T07:32:28.441Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "architecture-summary"
+            },
+            "timestamp": "2026-07-21T07:32:28.441Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "apply-cleanup",
+              "techniqueId": "strategic-review::apply-cleanup"
+            },
+            "timestamp": "2026-07-21T07:33:30.887Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "checkpoint": "unsigned-commits-prompt",
+            "timestamp": "2026-07-21T07:33:35.584Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "strategic-review",
+            "checkpoint": "unsigned-commits-prompt",
+            "data": {
+              "optionId": "decline-resign"
+            },
+            "timestamp": "2026-07-21T07:34:16.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "resign_unsigned_commits_requested",
+              "value": false
+            },
+            "timestamp": "2026-07-21T07:34:16.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "work-package/readme"
+            },
+            "timestamp": "2026-07-21T07:34:47.627Z",
+            "type": "resource_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 100,
+        "seq": 106,
         "sessionIndex": "H7H32D",
         "skippedActivities": [],
         "startedAt": "2026-07-20T15:44:48.036Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784616899,
+        "ts": 1784619287,
         "variables": {
           "artifact_name": "",
           "assumption_batch_accepted": false,
