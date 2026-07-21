@@ -1,5 +1,5 @@
 id: complete
-version: 1.6.0
+version: 1.6.1
 name: Complete Work Package
 description: Wrap up the work package after PR merge.
 required: true
@@ -81,7 +81,7 @@ steps:
     technique: conduct-retrospective::retrospective
   - kind: checkpoint
     id: retrospective-confirm
-    message: "Retrospective interview complete for this item set — select-next / cleanup is next."
+    message: "Retrospective interview complete for this item set."
     blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000

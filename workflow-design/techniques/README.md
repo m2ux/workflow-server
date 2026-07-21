@@ -21,7 +21,7 @@ For the full technique-to-activity table with capability summaries, see the [wor
 | **Analysis** | `pattern-analysis`, `impact-analysis` |
 | **Scope & draft** | `derive-workflows-target-path`, `prepare-workflow-branch` (ensure worktree), `scope-definition`, `assemble-file-approach`, `review-drafted-file`, `yaml-authoring`, `review-draft-yaml`, `verify-artifact-conforms` |
 | **Quality audits** | `audit-expressiveness`, `audit-conformance`, `audit-rule-hygiene`, `audit-rule-enforcement`, `verify-high-findings`, `audit-principles`, `audit-anti-patterns`, `audit-schema-validation`, `apply-audit-fixes`, `scope-audit` |
-| **Reporting** | `compile-report`, `summarize-findings`, `persist-report` |
+| **Reporting** | `compile-report`, `summarize-findings` (compliance / post-update snapshots bind `work-package::manage-artifacts::write-artifact`) |
 | **Validate, commit & PR** | `scope-verification`, `readme-authoring`, `commit-verification`, `publish-workflow-pr` (title/body); activity binds `version-control::push-branch`, `github-cli-protocol::create-pr`, `github-cli-protocol::mark-ready` |
 | **Completion** | `create-completion-doc`, `conduct-retrospective` |
 

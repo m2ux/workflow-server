@@ -1,5 +1,5 @@
 id: quality-review
-version: 1.13.0
+version: 1.13.1
 name: Quality Review
 description: Quality review of drafted workflow content.
 required: true
@@ -62,9 +62,13 @@ steps:
   - kind: technique
     id: persist-compliance-report
     technique:
-      name: persist-report
+      name: work-package::manage-artifacts::write-artifact
       inputs:
-        report_content: "{compliance_report}"
+        bare_filename: compliance-review.md
+        artifact_content: compliance_report
+        target_dir: planning_folder_path
+      outputs:
+        written_artifact: report_path
     condition:
       type: simple
       variable: operation_type

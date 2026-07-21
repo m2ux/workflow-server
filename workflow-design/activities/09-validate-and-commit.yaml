@@ -1,5 +1,5 @@
 id: validate-and-commit
-version: 1.8.0
+version: 1.8.1
 name: Validate and Commit
 description: Final validation, scope verification, and README generation/update, then Gate 2 approve-to-commit and commit of the workflow changes on the session feature branch with a pull request opened against the workflows branch (create/update); in review mode the compliance report is committed directly.
 required: true
@@ -7,9 +7,13 @@ steps:
   - kind: technique
     id: save-compliance-report
     technique:
-      name: persist-report
+      name: work-package::manage-artifacts::write-artifact
       inputs:
-        report_content: "{compliance_report}"
+        bare_filename: compliance-review.md
+        artifact_content: compliance_report
+        target_dir: planning_folder_path
+      outputs:
+        written_artifact: report_path
     condition:
       type: simple
       variable: operation_type

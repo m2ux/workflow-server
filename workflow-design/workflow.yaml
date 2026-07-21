@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.29.0
+version: 1.30.0
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -16,7 +16,7 @@ rules:
   activity:
     - Corrections must persist — record corrections and verify compliance at every subsequent checkpoint
     - On completing each activity, update the planning-folder `README.md` progress tracker — mark this activity's row ✅ Complete in the 📊 Progress table and set the header Status line to the current lifecycle state (Planning/Drafting/Reviewing/Complete). (The session README is present in create and update modes, where the seed step runs.)
-    - When `{headless_mode}` is true (the default), soft mid-flow checkpoints (those with `defaultOption` and `autoAdvanceMs`) auto-resolve without AskQuestion. Gap-only Gate 1 (`design-intent-batch`), Gate 2 (`approve-to-commit`), and safety gaps (`preservation-check`, `review-disposition`, post-update findings disposition) stay interactive. Soft-gate headless is the default; set `{headless_mode}` false at intake via an explicit interactive opt-out (“interactive”, “not headless”, “with checkpoints”).
+    - When `{headless_mode}` is true (the default), soft mid-flow checkpoints (those with `defaultOption` and `autoAdvanceMs`) auto-resolve without AskQuestion. Gap-only Gate 1 (`design-intent-batch`), Gate 2 (`approve-to-commit`), and safety gaps (`preservation-check`, `review-disposition`) stay interactive. Soft-gate headless is the default; set `{headless_mode}` false at intake via an explicit interactive opt-out (“interactive”, “not headless”, “with checkpoints”).
 techniques:
   activity:
     - variable-binding
@@ -212,7 +212,11 @@ variables:
     defaultValue: false
   - name: needs_audit_fixes
     type: boolean
-    description: Whether audit passes surfaced findings the user elected to fix. Reset to false when the content is clean.
+    description: Whether audit passes surfaced findings that still need remedia. Drives quality-review audit-fix-cycle and post-update remedia while-loops. Reset to false when the content is clean.
+    defaultValue: false
+  - name: needs_recommit
+    type: boolean
+    description: True when post-update remedia edited already-committed files and validate-and-commit must run again before retrospective.
     defaultValue: false
   - name: has_critical_finding
     type: boolean

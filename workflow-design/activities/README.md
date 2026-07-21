@@ -68,9 +68,9 @@ Definition: [`09-validate-and-commit.yaml`](./09-validate-and-commit.yaml). Term
 
 ### 10. Post-Update Review
 
-Automatic post-commit compliance audit of the updated workflow. Reloads the committed state, then binds expressiveness, conformance, principles, anti-patterns, and schema-validation audits as consecutive steps (plus `scope-audit`), summarizes findings, and persists a review snapshot. When `review_findings_count` is zero it proceeds to the retrospective; otherwise `post-update-disposition` asks whether to accept, iterate, or revert. Update mode only.
+Automatic post-commit compliance audit of the updated workflow. Reloads the committed state, then binds expressiveness, conformance, principles, anti-patterns, and schema-validation audits as consecutive steps (plus `scope-audit`), summarizes findings, and persists a review snapshot via bound `write-artifact`. Empty expressiveness/conformance satellites are skipped (`*_finding_count > 0`). When `review_findings_count` is zero it proceeds to the retrospective; otherwise a quality-review-style remedia while-loop applies fixes and re-audits automatically (never asks accept/iterate/revert). Remedia success re-enters [Validate and Commit](#09-validate-and-commit); remedia still dirty restarts at [Intake and Context](#01-intake-and-context). Update mode only.
 
-Definition: [`10-post-update-review.yaml`](./10-post-update-review.yaml). Clean runs transition to the [Retrospective](#11-retrospective); the fix/revert dispositions restart the workflow at [Intake and Context](#01-intake-and-context).
+Definition: [`10-post-update-review.yaml`](./10-post-update-review.yaml).
 
 ---
 
