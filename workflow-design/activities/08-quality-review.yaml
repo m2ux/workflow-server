@@ -24,14 +24,38 @@ steps:
         id: principle-compliance-audit
         technique: audit-principles
       - kind: technique
+        id: persist-principle-findings
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: principle-findings.md
+            artifact_content: principle_findings
+            target_dir: planning_folder_path
+      - kind: technique
         id: anti-pattern-scan
         technique: audit-anti-patterns
+      - kind: technique
+        id: persist-anti-pattern-findings
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: anti-pattern-findings.md
+            artifact_content: anti_pattern_findings
+            target_dir: planning_folder_path
       - kind: technique
         id: schema-validation-check
         technique: audit-schema-validation
       - kind: technique
         id: verify-high-findings-review
         technique: verify-high-findings
+      - kind: technique
+        id: persist-verified-findings-review
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: verified-findings.md
+            artifact_content: verified_findings
+            target_dir: planning_folder_path
       - kind: technique
         id: compile-report
         technique: compile-report
@@ -89,6 +113,29 @@ steps:
           variable: scope_manifest_confirmed
           operator: ==
           value: true
+  - kind: technique
+    id: persist-expressiveness-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: expressiveness-findings.md
+        artifact_content: expressiveness_findings
+        target_dir: planning_folder_path
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
+        - type: simple
+          variable: expressiveness_finding_count
+          operator: ">"
+          value: 0
   - kind: action
     id: expressiveness-clean
     condition:
@@ -143,6 +190,29 @@ steps:
           variable: scope_manifest_confirmed
           operator: ==
           value: true
+  - kind: technique
+    id: persist-conformance-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: conformance-findings.md
+        artifact_content: conformance_findings
+        target_dir: planning_folder_path
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
+        - type: simple
+          variable: conformance_finding_count
+          operator: ">"
+          value: 0
   - kind: action
     id: conformance-clean
     condition:
@@ -197,6 +267,29 @@ steps:
           variable: scope_manifest_confirmed
           operator: ==
           value: true
+  - kind: technique
+    id: persist-rule-hygiene-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: rule-hygiene-findings.md
+        artifact_content: rule_hygiene_findings
+        target_dir: planning_folder_path
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
+        - type: simple
+          variable: rule_hygiene_finding_count
+          operator: ">"
+          value: 0
   - kind: action
     id: rule-hygiene-clean
     condition:
@@ -251,6 +344,29 @@ steps:
           variable: scope_manifest_confirmed
           operator: ==
           value: true
+  - kind: technique
+    id: persist-enforcement-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: enforcement-findings.md
+        artifact_content: enforcement_findings
+        target_dir: planning_folder_path
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
+        - type: simple
+          variable: enforcement_finding_count
+          operator: ">"
+          value: 0
   - kind: action
     id: enforcement-clean
     condition:
@@ -294,6 +410,25 @@ steps:
   - kind: technique
     id: verify-high-findings
     technique: verify-high-findings
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: scope_manifest_confirmed
+          operator: ==
+          value: true
+  - kind: technique
+    id: persist-verified-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: verified-findings.md
+        artifact_content: verified_findings
+        target_dir: planning_folder_path
     condition:
       type: and
       conditions:

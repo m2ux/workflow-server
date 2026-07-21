@@ -44,5 +44,5 @@ True when `{operation_type}` is `update` and the content comparison detects mate
 
 ### 2. Persist Review Note
 
-- Persist `{file_review_note}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `file-review-note.md` per [file-review-note](../resources/file-review-note.md#template)
+- Persist `{file_review_note}` via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `file-review-note.md` per [file-review-note](../resources/file-review-note.md#template)
 - Capture the written location as `{file_review_note_path}`

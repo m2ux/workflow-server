@@ -12,6 +12,19 @@ steps:
       variable: operation_type
       operator: ==
       value: update
+  - kind: technique
+    id: persist-impact-analysis
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: impact-analysis.md
+        artifact_content: impact_analysis
+        target_dir: planning_folder_path
+    condition:
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: update
   - kind: action
     id: impact-no-removals
     condition:

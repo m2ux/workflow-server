@@ -35,4 +35,4 @@ Path to the written report file
 
 ### 2. Persist Report Artifact
 
-- Persist `{report_content}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and the chosen bare filename, following the [Compliance Report Guide](../resources/compliance-report.md#template); the server find-or-creates the numbered instance. Capture the written location as `{report_path}`
+- Persist `{report_content}` via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and the chosen bare filename, following the [Compliance Report Guide](../resources/compliance-report.md#template); the server find-or-creates the numbered instance. Capture the written location as `{report_path}`

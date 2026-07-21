@@ -79,6 +79,19 @@ steps:
   - kind: technique
     id: conduct-retrospective
     technique: conduct-retrospective::retrospective
+  - kind: checkpoint
+    id: retrospective-confirm
+    message: "Retrospective interview complete for this item set — select-next / cleanup is next."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
+    options:
+      - id: confirmed
+        label: Confirmed — continue
+        description: Retrospective items reviewed one at a time; proceed.
+      - id: revise
+        label: Revisit an item
+        description: Return to a retrospective observation or recommendation before continuing.
   - kind: technique
     id: remove-worktree
     technique: manage-git::remove-worktree

@@ -37,6 +37,17 @@ Literacy surface for [create/update] of `{workflow-id}`. Grounded in schema docs
 | Artifacts | Declared on technique outputs; activity `artifacts[]` is server-computed |
 | Artifact links | `[label]({path_variable})` in checkpoint/action messages |
 
+## Transition authoring
+
+- Quote string `condition.value` scalars that contain special characters; prefer plain unquoted booleans/numbers.
+- Use `isDefault: true` for the fallback arm; do not also attach a tautological variable condition on that same arm.
+- Non-default arms carry explicit `condition` objects; keep `to` ids reachable in the activity graph.
+
+## Plain technical language
+
+- Protocol bullets state the operative action only — trim trailing rationale clauses that belong in design principles or assumptions logs.
+- Description / outcome / message fields stay positive declarative present tense; no buried procedure.
+
 ## Change-relevant shapes
 
 - [Only rows/bullets this draft will use — omit the rest.]
@@ -46,5 +57,5 @@ Literacy surface for [create/update] of `{workflow-id}`. Grounded in schema docs
 
 - **Only what this change needs.** Drop convention rows the draft will not touch.
 - **Tables over prose.** No tutorial narrative; the schema README stays the deep home.
-- **Line budget:** ~40 lines.
+- **Line budget:** ~50 lines.
 - Skip writing this artifact in review mode.

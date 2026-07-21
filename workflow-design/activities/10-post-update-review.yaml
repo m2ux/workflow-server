@@ -11,14 +11,46 @@ steps:
     id: audit-expressiveness
     technique: audit-expressiveness
   - kind: technique
+    id: persist-post-expressiveness
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: expressiveness-findings.md
+        artifact_content: expressiveness_findings
+        target_dir: planning_folder_path
+  - kind: technique
     id: audit-conformance
     technique: audit-conformance
+  - kind: technique
+    id: persist-post-conformance
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: conformance-findings.md
+        artifact_content: conformance_findings
+        target_dir: planning_folder_path
   - kind: technique
     id: audit-principles
     technique: audit-principles
   - kind: technique
+    id: persist-post-principles
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: principle-findings.md
+        artifact_content: principle_findings
+        target_dir: planning_folder_path
+  - kind: technique
     id: audit-anti-patterns
     technique: audit-anti-patterns
+  - kind: technique
+    id: persist-post-anti-patterns
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: anti-pattern-findings.md
+        artifact_content: anti_pattern_findings
+        target_dir: planning_folder_path
   - kind: technique
     id: audit-schema-validation
     technique: audit-schema-validation

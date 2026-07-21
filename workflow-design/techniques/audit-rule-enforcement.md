@@ -41,5 +41,5 @@ Absolute path to the persisted findings artifact when `{enforcement_finding_coun
 ### 3. Persist Findings
 
 - Set `{enforcement_finding_count}` to the number of findings
-- When `{enforcement_finding_count}` is greater than zero: persist `{enforcement_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `enforcement-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{enforcement_findings_path}`
+- When `{enforcement_finding_count}` is greater than zero: persist `{enforcement_findings}` via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `enforcement-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{enforcement_findings_path}`
 - When `{enforcement_finding_count}` is zero: leave `{enforcement_findings_path}` empty

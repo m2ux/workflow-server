@@ -2,12 +2,12 @@
 name: deferred-items
 description: Template and rules for the single deferred-items register every other artifact links to.
 metadata:
-  version: 1.0.1
+  version: 1.1.0
 ---
 
 # Deferred Items Register Guide
 
-The register is the one canonical home for work consciously deferred during a work package — descoped requirements, deferred assumptions, review findings deferred at a checkpoint, and post-completion follow-ups. Every other artifact links here (see the [canonical-home map](../techniques/manage-artifacts/TECHNIQUE.md#canonical-home-map)); none restates a deferred item.
+The register is the one canonical home for work consciously deferred **out of scope** for this work package — descoped requirements, deferred assumptions, and review findings deferred at a checkpoint. In-task work that still belongs inside the package lives in [follow-ups](./follow-ups.md). Every other artifact links here for out-of-scope deferrals (see the [canonical-home map](../techniques/manage-artifacts/TECHNIQUE.md#canonical-home-map)); none restates a deferred item.
 
 ## Template
 
@@ -18,11 +18,12 @@ The register is the one canonical home for work consciously deferred during a wo
 
 | ID | Deferred at | Item | Reason | Follow-up |
 |----|-------------|------|--------|-----------|
-| D-1 | [activity or checkpoint] | [what was deferred, one line] | [why] | [issue link, or — until raised] |
+| D-1 | [activity or checkpoint] | [what was deferred, one line] | [why out of scope] | [issue link, or — until raised] |
 ```
 
 ## Rules
 
+- **Out-of-scope only** — rows are conscious deferrals beyond this package. In-task remainders use `follow-ups.md`.
 - **One row per item, updated in place** — when a deferred item is raised as a tracker issue, add the link to its Follow-up cell; when it is picked up, mark the row `→ #[issue]` rather than deleting it.
 - **Created lazily** — create the register when the first deferred item appears (standard numbered-artifact semantics); a run that defers nothing has no register.
 - **Link, don't restate** — producers (requirements Deferred scope, assumption deferrals, review-finding deferrals, COMPLETE.md) record one pointer line to this register; the row here is the single statement of the item.

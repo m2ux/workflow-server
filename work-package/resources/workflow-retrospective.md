@@ -35,6 +35,14 @@ Priority: **high** = repeated corrections, frustration, missing guidance that ca
 
 **Friction → fix:** every mechanical observation maps to a prioritized recommendation that names the canonical technique, resource, or activity prose to change — never agent blame.
 
+## Interview Format
+
+Run the retrospective as a dedicated close-out interview in the same one-item-at-a-time shape as the post-impl block interview:
+
+1. Surface the next observation or recommendation candidate.
+2. Confirm with the reviewer before continuing to the next item.
+3. Do not batch multiple unresolved items into a single confirm.
+
 ## Output Section Template
 
 ```markdown
@@ -67,6 +75,7 @@ Priority: **high** = repeated corrections, frustration, missing guidance that ca
 
 ## Rules
 
+- **One item, then confirm** — interview loop presents a single observation or recommendation; confirm before the next.
 - **Workflow improvements, never user or agent error:** users and mechanical traces reveal workflow gaps — analyze as defects in instructions, not blame.
 - **Exception-only:** include only signal categories with content; a smooth session's retrospective is the message counts, a takeaway, and "action required: no".
 - **State each lesson once.** No Summary/Lessons/Takeaway triple-statement — the takeaway line is the recap.

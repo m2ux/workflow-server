@@ -29,7 +29,7 @@ Absolute path to the written applicable-constructs artifact (create mode only).
 
 ### 1. Load Schemas
 
-- Load all five JSON schema definitions (workflow, activity, technique, condition, state) from `workflow-server://schemas` — the conformance reference for all drafted content
+- Load all five JSON schema definitions (workflow, activity, technique, condition, state) from `workflow-server://schemas` — the conformance reference for all drafted content. Prefer `get_resource { session_index, resource_id }` (or the client's MCP resource-fetch) for `workflow-server://schemas` and sectioned schema ids; when `get_resource` is unavailable in this harness, fall back to reading the same schema JSON from the server workspace `schemas/` tree and note the fallback in the step output.
 - Read `schemas/README.md` for the full schema ontology, entity relationships, field tables, examples, and validation guidance
 
 ### 2. Load Design-Time Canon
@@ -51,10 +51,10 @@ Absolute path to the written applicable-constructs artifact (create mode only).
 
 ### 6. Persist Format Conventions
 
-- When `{operation_type}` is `create` and `{planning_folder_path}` is bound: persist a concise format-conventions summary (YAML syntax rules and observed project conventions — naming, folder structure, field ordering, versions, transition and checkpoint shapes) via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `format-conventions.md`; capture `{format_conventions_path}`
+- When `{operation_type}` is `create` and `{planning_folder_path}` is bound: persist a concise format-conventions summary (YAML syntax rules and observed project conventions — naming, folder structure, field ordering, versions, transition and checkpoint shapes) via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `format-conventions.md`; capture `{format_conventions_path}`
 - Skip when `{operation_type}` is `update` or `review`
 
 ### 7. Persist Applicable Constructs
 
-- When `{operation_type}` is `create` and `{planning_folder_path}` is bound: persist the applicable-constructs list (construct name, why it applies, reference example) via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `applicable-constructs.md`; capture `{applicable_constructs_path}`
+- When `{operation_type}` is `create` and `{planning_folder_path}` is bound: persist the applicable-constructs list (construct name, why it applies, reference example) via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `applicable-constructs.md`; capture `{applicable_constructs_path}`
 - Skip when `{operation_type}` is `update` or `review`

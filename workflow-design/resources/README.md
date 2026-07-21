@@ -32,6 +32,7 @@ Markdown resources for design principles, construct inventories, anti-pattern ca
 | `19` | [File Review Note](file-review-note.md) | Creation guide: `file-review-note.md` |
 | `20` | [Draft Attestation](draft-attestation.md) | Creation guide: `draft-attestation.md` |
 | `21` | [Findings Satellite](findings-satellite.md) | Shared creation guide for audit finding satellites |
+| `22` | [Follow-ups](follow-ups.md) | Creation guide: in-task `follow-ups.md` (distinct from out-of-scope deferred items) |
 
 ---
 
@@ -52,6 +53,7 @@ Markdown resources for design principles, construct inventories, anti-pattern ca
 | `drafting-plan.md` | [drafting-plan](drafting-plan.md) |
 | `file-review-note.md` | [file-review-note](file-review-note.md) |
 | `draft-attestation.md` | [draft-attestation](draft-attestation.md) |
+| `follow-ups.md` | [follow-ups](follow-ups.md) |
 | `compliance-review.md` / `post-update-review.md` | [compliance-report](compliance-report.md) |
 | `expressiveness-findings.md`, `conformance-findings.md`, `rule-hygiene-findings.md`, `enforcement-findings.md`, `principle-findings.md`, `anti-pattern-findings.md`, `verified-findings.md` | [findings-satellite](findings-satellite.md) |
 

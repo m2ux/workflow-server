@@ -42,5 +42,5 @@ Absolute path to the persisted findings artifact when `{rule_hygiene_finding_cou
 ### 3. Persist Findings
 
 - Set `{rule_hygiene_finding_count}` to the number of findings
-- When `{rule_hygiene_finding_count}` is greater than zero: persist `{rule_hygiene_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `rule-hygiene-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{rule_hygiene_findings_path}`
+- When `{rule_hygiene_finding_count}` is greater than zero: persist `{rule_hygiene_findings}` via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `rule-hygiene-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{rule_hygiene_findings_path}`
 - When `{rule_hygiene_finding_count}` is zero: leave `{rule_hygiene_findings_path}` empty

@@ -44,8 +44,9 @@ Absolute path to the written draft-attestation artifact (includes the block-inde
 
 ### 2. Persist Reviewed Blocks
 
-- Persist `{reviewed_blocks}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `draft-attestation.md` per [draft-attestation](../resources/draft-attestation.md#template); capture the written location as `{draft_attestation_path}`
+- Persist `{reviewed_blocks}` via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `draft-attestation.md` per [draft-attestation](../resources/draft-attestation.md#template); capture the written location as `{draft_attestation_path}`
 
 ### 3. Record Draft Attestation
 
 - Record `{draft_attestation}` in that artifact once every block is marked understood and intentional; flag any block marked for revision
+- Binding-fidelity pass: for each drafted activity step that persists a planning artifact, confirm `manage-artifacts::write-artifact` (or equivalent) is a bound `steps[]` entry — not protocol-only prose — and that every technique input marked required has a producer in the same activity (or an explicit step-binding). Flag gaps for revision before attestation closes.

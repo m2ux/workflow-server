@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.28.0
+version: 1.29.0
 title: Workflow Design Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -43,6 +43,10 @@ variables:
     type: boolean
     description: When true, soft mid-flow gates auto-resolve (no AskQuestion). Default true. Intake sets false only on an explicit interactive opt-out (“interactive”, “not headless”, “with checkpoints”). Does not skip Gate 2 or safety gaps.
     defaultValue: true
+  - name: assumption_decisions
+    type: array
+    description: Per-assumption decisions (accept/reject/defer) for review-assumptions::record. Mid-flow requirements-refinement seeds an empty list when judgements are batched to Gate 2.
+    defaultValue: []
   - name: has_resolvable_assumptions
     type: boolean
     description: Whether audit-resolvable design assumptions remain — drives the requirements-refinement reconcile while-loop. False when the while-loop is a no-op.

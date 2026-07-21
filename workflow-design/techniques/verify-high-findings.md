@@ -38,7 +38,7 @@ Absolute path to the persisted verified-findings artifact.
 
 ### 4. Persist Verified Findings
 
-- Persist `{verified_findings}` via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `verified-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{verified_findings_path}`
+- Persist `{verified_findings}` via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `verified-findings.md`, following the [Findings Satellite Guide](../resources/findings-satellite.md#template); capture `{verified_findings_path}`
 
 ## Rules
 

@@ -27,7 +27,7 @@ Absolute path to the written design-specification artifact.
 
 ### 2. Persist Specification Artifact
 
-- Persist it via [write-artifact](../../work-package/techniques/manage-artifacts/write-artifact.md) with *target_dir* `{planning_folder_path}` and bare filename `design-specification.md`, following [design-specification](../resources/design-specification.md#template)
+- Persist it via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `design-specification.md`, following [design-specification](../resources/design-specification.md#template)
 - Capture the written location as `{specification_path}`
 
 ### 3. Mirror Decisions To README

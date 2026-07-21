@@ -1,6 +1,6 @@
 # Workflow Design Workflow
 
-> v1.28.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description, derives intent first, reconciles assumptions in a while-loop, and batches stakeholder decisions into Gate 1 (gap-only) and Gate 2 (approve-to-commit); `{headless_mode}` defaults to true so soft mid-flow gates auto-resolve (opt out with “interactive”, “not headless”, or “with checkpoints”). Create/update edits run in a dedicated `{target_path}` worktree. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
+> v1.29.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description, derives intent first, reconciles assumptions in a while-loop, and batches stakeholder decisions into Gate 1 (gap-only) and Gate 2 (approve-to-commit); `{headless_mode}` defaults to true so soft mid-flow gates auto-resolve (opt out with “interactive”, “not headless”, or “with checkpoints”). Create/update edits run in a dedicated `{target_path}` worktree. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
 
 ---
 
@@ -24,7 +24,7 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 
 - **Activities:** See [activities/README.md](./activities/README.md) for the per-activity orientation map (purpose, value, and how each activity connects in the flow), with links to the authoritative activity YAML files. The full step/checkpoint/transition definitions are served by `get_activity`.
 - **Techniques:** See [techniques/](techniques/) for the full technique library (workflow-local standalone techniques plus the shared `TECHNIQUE.md` base contract) with protocol flows and rules.
-- **Resources:** See [resources/README.md](./resources/README.md) for the resource index (11 resources) with usage context and cross-workflow access.
+- **Resources:** See [resources/README.md](./resources/README.md) for the resource index (23 resources) with usage context and cross-workflow access.
 
 ---
 
