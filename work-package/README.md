@@ -1,6 +1,6 @@
 # Work Package Implementation Workflow
 
-> v3.34.0 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
+> v3.35.2 — Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. **Supports review mode** for conducting structured reviews of existing PRs.
 
 ---
 
@@ -96,7 +96,7 @@ Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](../met
 
 This workflow supports **review mode** for reviewing existing PRs rather than implementing new code. There is no special mode schema: review mode is expressed entirely through ordinary state. A detection step early in `start-work-package` sets the boolean `is_review_mode` variable, and every mode-specific behaviour is a conditional step/checkpoint/transition gated on that variable.
 
-**Activation:** A detection step in `start-work-package` recognizes review intent (e.g. "start review work package", "review PR #123", "review existing implementation"), confirms with the user, and sets `is_review_mode = true`.
+**Activation:** A detection step in `start-work-package` recognizes review intent (e.g. "start review work package", "review PR #123", "review existing implementation"), confirms with the user, and sets `is_review_mode = true`. When review mode is known, start-work-package also seeds a review-native `{target_workflow_outcomes}` list for close-out verification.
 
 **Skipped activities:** Requirements Elicitation (03) and Implement (08) are effectively skipped in review mode — not by a schema list, but because their steps and inbound transitions are gated `when is_review_mode != true`. Elicitation is unnecessary because requirements come solely from the associated ticket; implementation is skipped because the code already exists.
 
@@ -112,7 +112,7 @@ This workflow supports **review mode** for reviewing existing PRs rather than im
 | [Validate](./activities/README.md#11-validate) (11) | Document failures as findings; do not fix |
 | [Strategic Review](./activities/README.md#12-strategic-review) (12) | Document cleanup recommendations; do not apply. Override transition to submit-for-review |
 | [Submit for Review](./activities/README.md#13-submit-for-review) (13) | Consolidate all review findings; post PR review comments. Override transition to workflow-end |
-| [Complete](./activities/README.md#14-complete) (14) | Skip ADR and documentation steps; retrospective only |
+| [Complete](./activities/README.md#14-complete) (14) | Skip ADR and documentation steps; review-mode-native retrospective close-out; status updates apply only to this work package's own PR |
 
 **Review mode flow:**
 

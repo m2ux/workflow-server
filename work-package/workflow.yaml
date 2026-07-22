@@ -1,8 +1,8 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.35.0
+version: 3.35.2
 title: Work Package Implementation Workflow
-description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first.
+description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first. Also supports review mode for auditing an existing PR or implementation end-to-end.
 author: m2ux
 tags:
   - implementation
@@ -11,6 +11,7 @@ tags:
   - feature
   - bug-fix
   - pr
+  - review
 rules:
   workflow:
     - ref: interaction-discipline
@@ -101,6 +102,9 @@ variables:
   - name: is_review_mode
     type: boolean
     description: True when the work package reviews an existing PR instead of producing a new implementation.
+  - name: target_workflow_outcomes
+    type: string
+    description: Mode-seeded plain outcome list for meta verify-outcomes. Review mode seeds a review-native list at start-work-package; create path leaves this unset and uses activity outcome lists.
   - name: review_mode_ambiguous
     type: boolean
     description: True when review vs create intent cannot be derived confidently from the request; gates the review-mode-detection confirm.
