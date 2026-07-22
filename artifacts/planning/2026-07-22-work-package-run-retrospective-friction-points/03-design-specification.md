@@ -1,67 +1,62 @@
-# Design Specification — Work-Package Run Retrospective Friction Points
+# Design Specification — Work-Package Run Retrospective Friction Points (Review-Mode Pass)
 
-**Workflow:** `work-package` v3.34.0 (primary) · `meta` / `harness-compat` (coupled)
+**Workflow:** `work-package` v3.35.0 (primary) · `meta` / `ponytail` (coupled)
 **Mode:** Update
 **Date:** 2026-07-22
-**Change categories:** Activity, Technique, Resource, Structural refactor
-**Change request:** Address nine workflow-server-owned friction points from [issue #272](https://github.com/m2ux/workflow-server/issues/272), plus planning-artifact progress write+push discipline, so real work-package runs finish without improvisation on tool bans, next-activity routing, external validation, build artifacts, single-option gates, async dispatch, comment trim, artifact minting, PR tense, or stale remote READMEs.
+**Change categories:** Technique, Resource, Rule (per-step edits within existing activities — no activities added, removed, or reordered)
+**Change request:** Address the still-open, workflow-server-owned friction points from [issue #271](https://github.com/m2ux/workflow-server/issues/271) — a retrospective on a **review-mode** run of `work-package` against midnight-node PR #1900 — grounded against the current committed tip rather than the issue text as frozen truth. Companion issue #270 owns the template/links/commit-ordering surface (items 12, 13, 17) and is excluded here. Issue #272's nine items (delivered on PR #273, this same planning folder) are baseline, not this scope.
 **Baseline:** [01-structural-inventory.md](01-structural-inventory.md)
 
 ---
 
 ## Purpose
 
-`work-package` (with coupled `meta` / harness-compat surfaces) remains the end-to-end implementation path. This session closes nine gaps observed in a live run — plus planning-folder README progress that must be both updated and pushed — so workers and orchestrators have supported paths instead of ad-hoc envelopes, guessed transitions, or hand reconciliation.
+Seven change goals cover the eleven still-open, in-scope #271 findings (of 28 total, minus 3 owned by #270):
 
-| Goal | Meaning |
-|------|---------|
-| Reconcile discover vs worker tools | `discover-session` can obtain a workflow catalog without contradicting activity-worker tool rules. |
-| Deterministic next activity | Orchestrator learns the resolved next activity (and evaluated condition) without calling `get_activity`. |
-| Externalize validation | When the agent cannot run the suite locally, Progress Validation is marked cancelled/N/A (`⊘`); no user-reported pass/fail/skip hand-off. |
-| Flag build-only artifacts | Changes that need agent-unproducible regen (e.g. `.scale` metadata) are flagged and routed to the user before CI is the first signal. |
-| Presentable checkpoints | Every presentable checkpoint has ≥2 options, or single-option presentation is handled. |
-| Async = blocking-equivalent | Harness-compat treats async dispatch + completion notification as valid foreground/blocking. |
-| Comment proportionality | Lean-coding audit trims comment over-verbosity relative to surrounding code. |
-| One logical artifact | `write-artifact` cannot mint a second numbered instance of an existing bare filename; duplicates are logged. |
-| PR tense refresh | After implementation lands, PR body leaves future-tense / “coming next” placeholder state. |
-| README progress write + push | After each activity, planning-folder README Progress/Status is updated and pushed via orchestrator `commit-and-persist` — not rule-only or per-activity steps. |
+| Goal | Meaning | #271 items |
+|------|---------|------------|
+| Cross-workflow resource ids resolve at the call site | `ponytail::*` techniques dispatched from `work-package/lean-coding-audit` reference their own resources (`review-taxonomy`, `the-ladder`, `ponytail-marker-convention`) with the owning workflow's qualifier, not a bare id that only resolves inside `ponytail`'s own context. | 3 |
+| Distrust-then-reconcile over blind bag trust | Before an orchestrator decision depends on a critical path/state variable, a stale or unmirrored `inspect_session` read-back is cross-checked against the worker's own `activity_complete` envelope and, when still uncertain, planning-folder evidence — mirrors the coping pattern #272's own retrospective already named, made explicit rather than incidental. | 7, 8, 9, 10, 11 |
+| Review-mode-native close-out | `conduct-retrospective` and its `COMPLETE.md` coupling, plus the "update status once merged" step, have a path that doesn't assume the reviewed PR is this work package's to merge. | 15 |
+| Review-mode outcome set | `verify-outcomes` evaluates a review-mode-appropriate outcome list instead of reporting create-path outcomes (ADR recorded, docs updated) as unmet gaps when their producing steps were correctly gated out. | 16 |
+| Discovery favors the actionable target | A request naming a specific existing PR/implementation to review routes to `work-package` review mode rather than a dedicated review workflow, without a re-scan. | 19 |
+| Checkpoint capability is verified, not asserted | A worker or orchestrator confirms `defaultOption` / `autoAdvanceMs` via the presentation layer before treating a checkpoint as auto-advanceable. | 25 |
+| Commit-rule scoping is legible | The hook-level `commit-after-activity` duty and the ad-hoc `explicit-commit` rule cross-reference their scopes so they read as non-conflicting, not just as separately located. | 27 |
 
 **Out of scope:**
-- Environment/harness bugs listed as non-workflow-server in #272 (OOM cargo, permission-stream loss, bash guard false-positive, index staleness, cross-repo linkage, MCP auth flapping) except where they inform the design of items 3–4 and 6.
-- Filing or fixing Cursor/Claude host bugs as the primary remedy.
-- MCP server source (`src/`, `schemas/`) unless impact analysis proves an `activity_complete` envelope field cannot be carried by workflow/technique convention alone — prefer workflow/technique first.
 
-**Also see:** [assumptions log](03-assumptions-log.md) (A-1–A-2, A-4–A-5, A-9 open → Gate 2; A-3 corrected Progress N/A; A-11–A-12 audit for item 10) · [follow-ups](follow-ups.md) · [structural inventory](01-structural-inventory.md)
+- **Owned by #270** (excluded from this pass, tracked separately): items 12, 13, 17 — consolidated review template abandonment, dead template links, rating-cap self-refutation carve-in.
+- **Already delivered** — confirmed live on current tip, no redraft:
+  - Item 14 (validate demands local `cargo`) — `local-validation-permission` checkpoint + `run_local_validation` / `{mark_progress_na}` gate already give an externalized/N/A path (`work-package/activities/11-validate.yaml`); delivered as #272 A-3.
+  - Item 21 (base-drift diff trap) — `review-baseline-state.md` / `review-scope.md` / `review-diff.md` already use three-dot diffs against `{base_branch}` with an explicit merge-base recompute-and-log guard when HEAD is a merge commit.
+  - Item 26 (`foreground-always` vs background dispatch) — `harness-compat/cursor.md` already documents async dispatch + completion-notification wait as blocking-equivalent; delivered as #272 A-6.
+- **Server/tool-layer, not workflow content** (flagged for a separate engineering ticket against `src/`, not this workflow-design pass): items 1 (`get_activity` payload cap), 2 (path-typo-compounded retry loop), 4 (`ToolSearch` bootstrap tax), 5 (`next_activity` missing `trace_token`), 6 (`next_activity` `usage` field rejected by `additionalProperties: false`).
+- **Environment/harness context, not workflow-server-owned** (recorded per the #272 precedent classification; no workflow action): items 20 (inaccessible sibling submodule), 22 (GitNexus multi-repo disambiguation), 23 (WebFetch 404 on GitHub URLs), 24 (sandbox loop guardrail).
+- **Recorded for completeness:** item 28 (operator error) — enabled by #270's dead-link condition; no separate action beyond #270.
+
+**Also see:** [assumptions log](03-assumptions-log.md) (A-2, A-3, A-5 open → Gate 2; A-1, A-4, A-6, A-7, A-8 audit-validated) · [structural inventory](01-structural-inventory.md)
 
 ---
 
 ## Activity list
 
-No activities added, removed, or reordered. Step/technique/resource edits inside existing activities (plus meta lifecycle / harness-compat).
+No activities added, removed, or reordered. Step/technique/resource edits inside existing activities (work-package + coupled meta).
 
 | Activity / surface | Role in this change |
 |--------------------|---------------------|
-| `meta` `discover-session` | Reconcile `list-available-workflows` / `list_workflows` with worker tool rules (move off worker, or explicit bound-step permit + prompt/rule alignment). |
-| `meta` `resolve-target` | Fix `submodule-selection` single-option presentation (≥2 options or single-option present path). |
-| `meta` orchestration (`finalize-activity` / `evaluate-transition` / dispatch) | Carry resolved `next_activity_id` (+ evaluated condition) in `activity_complete` so orchestrator need not infer from prose. |
-| `meta` harness-compat | Acknowledge async spawn + notification as blocking-equivalent under `foreground-always`. |
-| `meta` `commit-and-persist` / orchestrator prompt / dispatch loop | After each `activity_complete`: sync planning README Progress/Status, commit and **push** engineering artifacts (item 10). |
-| WP `validate` | Simple local-run gate; when unavailable, `{mark_progress_na}` → Progress cancelled/N/A via commit-and-persist (no externalized suite reporting). |
-| WP `validate` / `submit-for-review` | Flag build-dependent artifacts the agent cannot produce; route hand-off to user. |
-| WP `lean-coding-audit` (+ ponytail / comment heuristics) | Hard trim bar: comment bulk proportional to surrounding code. |
-| WP `manage-artifacts::write-artifact` (+ implement / assumption writers) | Enforce find-or-update at write time; mint-attempt or existing duplicate → assumptions-log row. |
-| WP `update-pr` / PR templates / post-impl refresh bind | Refresh tense/checklist when implementation lands (not only at late `submit-for-review` final render). |
+| WP `lean-coding-audit` (+ `ponytail::*` resource links) | Qualify `review-taxonomy` / `the-ladder` / `ponytail-marker-convention` as `ponytail/…` at every cross-workflow call site so `get_resource` resolves them from a `work-package` dispatch context (item 3). |
+| WP `complete` (`conduct-retrospective::retrospective`) | Review-mode-native retrospective: decouple `## Workflow Retrospective` from requiring a pre-existing `COMPLETE.md`, and gate "Update Status" on this work package's own merge, not the reviewed third-party PR's (item 15). |
+| meta `end-workflow` (`workflow-engine::verify-outcomes`) | Evaluate a review-mode-appropriate outcome list (via `target_workflow_outcomes` or a mode-aware derivation) instead of the unconditional create-path array (item 16). |
+| meta `discover-session` (`workflow-engine::match-target-workflow`) | Disambiguate a review-of-existing-PR request toward `work-package` review mode over a dedicated review workflow absent an explicit ask for the latter (item 19). |
+| meta `present-checkpoint-to-user` / `respond-checkpoint` | Add a verify-capability step before a worker or orchestrator asserts `defaultOption` / `autoAdvanceMs` (item 25). |
+| meta `dispatch-activity` / `commit-and-persist` | Add a reconcile step: when `inspect_session` state disagrees with the worker's own `activity_complete` envelope, the envelope (and planning-folder evidence) governs, and the discrepancy is logged (items 7–11). |
+| meta `version-control::TECHNIQUE.md` / `commit-and-persist.md` (documentation only) | One-line cross-reference so `commit-after-activity` (hook-level, mandatory) and `explicit-commit` (ad-hoc, opt-in) read as scoped, not contradictory (item 27). |
 
 ---
 
 ## Checkpoints
 
-| Gate family | Change |
-|-------------|--------|
-| `submodule-selection` (`resolve-target`) | Guarantee ≥2 presentable options (e.g. chosen + cancel/re-list) **or** present-checkpoint / AskQuestion path that accepts a single confirmation option. |
-| Validate — local availability (simplified) | Blocking question: may validation run locally? Yes → run suite. No → set `{mark_progress_na}`; skip suite; commit-and-persist marks Progress cancelled/N/A. No user-reported pass/fail/skip. Suite-only. |
-| Submit — build-artifact hand-off (migrated) | Before mark-ready (create / non-stealth): ask whether regen is owed; if yes, pause with commands / ownership. Replaces prior validate hand-off + thin submit recheck. Do not wait for red CI. |
-| Soft mid-flow gates | Unchanged headless policy; new gates follow existing soft/blocking conventions unless safety requires interactive. |
+No checkpoints added or removed this pass. Item 25's fix is a verification step inside the existing `present-checkpoint-to-user` / `respond-checkpoint` call flow, not a new gate — see Activity list. All other in-scope items are technique/rule/resource edits with no checkpoint-surface impact.
 
 ---
 
@@ -69,34 +64,28 @@ No activities added, removed, or reordered. Step/technique/resource edits inside
 
 | Artifact / surface | Target shape |
 |--------------------|--------------|
-| `activity_complete` envelope (finalize-activity + worker prompt) | Include resolved `next_activity_id` and evaluated condition summary (or equivalent fields). Prefer technique/convention; schema only if required. |
-| `activity-worker-prompt` / agent-conduct | Aligned wording for which control-plane tools workers may call when a step binds them. |
-| harness-compat `TECHNIQUE.md` (`foreground-always`) | Document async dispatch + completion notification as blocking-equivalent. |
-| WP validate techniques / variables | `run_local_validation` + `{mark_progress_na}` for Progress N/A when suite unavailable; drop `validation_skipped_by_user` / user-reported suite results. |
-| Build-dependent artifact checklist / step output | Named flag + user-routed command list (e.g. `.scale` / metadata regen). |
-| `write-artifact` + assumptions log | Write-time find-or-update; on mint conflict or discovered duplicate, append assumptions-log row (do not create a second `<NN>-bare`). |
-| Lean-coding / comment guidance | Proportionality-to-surrounding-code as a hard trim criterion (implement-time + audit). |
-| `pr-description` + `update-pr::render` bind sites | Post-implementation refresh so “Implementation (coming next)” / future-tense checklist does not persist after code lands. |
-| `commit-and-persist` + orchestrator prompt | Post-activity README Progress/Status sync + mandatory engineering push (covers all client activities without per-activity binds). |
+| Ponytail resource links (`review-taxonomy.md`, `the-ladder.md`, `ponytail-marker-convention.md`) | Referenced as `ponytail/review-taxonomy#tags` etc. at cross-workflow call sites (or a documented dispatch-time id-qualification rule in meta) — mirrors the pattern `ponytail/resources/README.md` already documents for its own callers. |
+| `dispatch-activity` / `commit-and-persist` reconcile step | When a critical routing/state variable's `inspect_session` value disagrees with the worker's reported `variables_changed`, the envelope value governs; the discrepancy is logged rather than silently resolved either way. |
+| `conduct-retrospective::retrospective` / `COMPLETE.md` | Review-mode retrospective path that writes its own minimal review-mode close-out section when `create-complete-doc` was gated out, and defers "Update Status" to this work package's own PR (if any), never the audited third-party PR. |
+| `target_workflow_outcomes` / `verify-outcomes` | A review-mode outcome list (e.g., review posted, findings documented, worktree cleaned) that stands in for the create-path array (ADR recorded, docs updated) when `is_review_mode == true`. |
+| Workflow catalog tags / `match-target-workflow` guidance | A disambiguating signal (tag or scoring note) so a request naming a specific PR/implementation to review favors `work-package` over tag-overlap-only candidates like `midnight-system-review`. |
+| `present-checkpoint-to-user` / `respond-checkpoint` | Explicit verify-capability step reading the checkpoint definition's actual `defaultOption` / `autoAdvanceMs` before a resolution assumes either. |
+| `commit-and-persist` / `version-control::TECHNIQUE.md` | One-line cross-reference: `commit-after-activity` governs the orchestrator's post-activity hook only; `explicit-commit` governs ad-hoc, outside-the-hook commits; neither overrides the other's scope. |
 
 ---
 
 ## Rules
 
 | Rule / principle | Application |
-|------------------|---------------|
-| Step ↔ rule consistency | No activity step may bind a tool that worker rules forbid; reconcile by relocating the step or updating the permit. |
-| Orchestrator stays definition-blind | Keep `no-get-activity-from-orchestrator`; supply next-activity via worker-evaluated transition report in `activity_complete`. |
-| Supported states over improvisation | Build-artifact hand-offs and Progress N/A (`mark_progress_na`) are declared variables/checkpoints, not ad-hoc result types or user-reported suite envelopes. |
-| Presentable gates | Present-checkpoint contract: ≥2 options or an explicit single-option presentation path. |
-| Blocking-equivalent dispatch | Foreground intent is “orchestrator sees yields/completion”; async+notify satisfies when the host cannot true-block. |
-| Comment proportionality | Why-rationale does not excuse doc blocks larger than the code they annotate; trim is a lean-coding pass criterion. |
-| Single logical artifact | Bare filename → one numbered instance; updates in place; duplicates logged, never minted. |
-| PR body tracks lifecycle | Template variant / re-render follows implementation phase, not only submit-for-review. |
-| Artifact progress is orchestrator-enforced | README Progress Status writes go through `sync-progress-status` (all icons); `commit-and-persist` Applies it for complete then pushes. Client workflows and workers do not restate that duty. Progress Status column is icon-only (`⊘` = cancelled/N/A); `#`/`@` columns; header lifecycle Status remains text. |
+|------------------|--------------|
+| Distrust-then-reconcile over blind bag trust | Critical routing/path state read from `inspect_session` is cross-checked against the worker's own `activity_complete` envelope and, when still uncertain, planning-folder evidence, before an orchestrator decision depends on it. |
+| Cross-workflow resource ids are qualified at the call site | A technique dispatched into a foreign workflow context references its own resources with the owning workflow's qualifier, not a bare id assumed local to the caller. |
+| Outcome sets are mode-aware | A workflow whose activities branch on a mode variable (e.g., `is_review_mode`) declares or derives a per-mode outcome set, so `verify-outcomes` never reports a structurally-inapplicable outcome as an unmet gap. |
+| Checkpoint capability is verified, not assumed | A worker or orchestrator confirms `defaultOption` / `autoAdvanceMs` via the presentation layer before treating a checkpoint as auto-advanceable. |
+| Discovery scoring favors specific-request signals over broad tag overlap | `match-target-workflow` (or the catalog tags feeding it) resolves a request naming a specific existing PR/implementation toward the workflow that can act on it end-to-end, not the workflow with the closest tag match on a single word like "review". |
 
 ---
 
 ## Confirmation ask
 
-Approving this specification means: proceed to pattern → impact → scope-and-draft to implement the nine #272 items across `work-package` and coupled `meta` / harness-compat, settling open design judgements (catalog ownership, envelope vs schema, gate blocking level) at Gate 2.
+Approving this specification means: proceed to pattern → impact → scope-and-draft to implement the seven in-scope #271 goals (eleven numbered findings) across `work-package` (`lean-coding-audit`, `complete`) and coupled `meta` (`end-workflow`, `discover-session`, `dispatch-activity` / `commit-and-persist`, `present-checkpoint-to-user` / `respond-checkpoint`, `version-control`) surfaces, settling open design judgements (bag-reconciliation mechanism, review-mode outcome-list contents, discovery-disambiguation approach) at Gate 2.

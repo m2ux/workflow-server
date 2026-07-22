@@ -16,7 +16,13 @@ Many of those friction points overlap with a separate, already-completed design 
 
 ## Solution Overview
 
-*Populated by the producing step (a `stakeholder-overview` call).*
+See [design specification](03-design-specification.md) for change goals and dimension deltas (review-mode close-out, validation substitute, bag fidelity, MCP ergonomics, discovery fit). File breakdown lands in [scope manifest](06-scope-manifest.md) after impact.
+
+## Design Decisions
+
+- Seven change goals across eleven still-open #271 findings (cross-workflow resource ids, bag-mirroring resilience, review-mode close-out fit, review-mode outcome set, discovery disambiguation, checkpoint capability verification, commit-rule scoping) — see [design specification](03-design-specification.md) Purpose for the full goal table and the Out-of-scope classification (already-delivered / server-layer / environment / #270-owned / recorded-for-completeness).
+- Five assumptions audit-validated against current tip (A-1, A-4, A-6, A-7, A-8); three open judgements — bag-mirroring reconciliation mechanism, review-mode close-out shape, discovery-disambiguation approach — batched to Gate 2. See [assumptions log](03-assumptions-log.md).
+- Prior #272 close-out retained for reference: [COMPLETE.md](COMPLETE.md)
 
 ## 📊 Progress
 
@@ -24,8 +30,8 @@ Many of those friction points overlap with a separate, already-completed design 
 |---|---|------|-------------|----------|--------|
 | 1 | 01 | Intake and context | Target, mode, planning folder | 15-30m | ✅ |
 | 2 | 01 | [Format conventions](format-conventions.md) | Authoring literacy notes | 5-10m | ⊘ |
-| 3 | 03 | [Design specification](03-design-specification.md) | Change goals and constraints | 20-40m | ⬚ |
-| 4 | 03 | [Assumptions log](03-assumptions-log.md) | Open and settled assumptions | 10-15m | ⬚ |
+| 3 | 03 | [Design specification](03-design-specification.md) | Change goals and constraints | 20-40m | ✅ |
+| 4 | 03 | [Assumptions log](03-assumptions-log.md) | Open and settled assumptions | 10-15m | ✅ |
 | 5 | 04 | Pattern analysis | Applicable patterns and practices | 20-40m | ⬚ |
 | 6 | 05 | [Impact analysis](05-impact-analysis.md) | Blast radius and preservations | 20-40m | ⬚ |
 | 7 | 06 | [Scope manifest](06-scope-manifest.md) | File-level change inventory | 15-30m | ⬚ |

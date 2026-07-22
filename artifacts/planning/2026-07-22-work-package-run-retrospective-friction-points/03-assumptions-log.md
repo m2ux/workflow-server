@@ -1,9 +1,9 @@
 # Design Assumptions Log
 
-**Workflow:** work-package (primary) · meta / harness-compat (coupled)
+**Workflow:** work-package (primary) · meta / ponytail (coupled)
 **Mode:** Update
 **Created:** 2026-07-22
-**Last Updated:** 2026-07-22 (revise-block×20: validate Progress N/A; drop externalized suite reporting)
+**Last Updated:** 2026-07-22 (requirements-refinement — #271 review-mode pass; supersedes this file's #272-era rows)
 
 ---
 
@@ -11,15 +11,15 @@
 
 | Category | Surfaced | Audit-resolved | Confirmed | Corrected | Deferred |
 |----------|----------|----------------|-----------|-----------|----------|
-| Activity Boundaries | 3 | 0 | 0 | 0 | 0 |
-| Checkpoint Necessity | 1 | 0 | 0 | 1 | 0 |
-| Technique Selection | 4 | 3 | 0 | 0 | 0 |
-| Rule Scope | 3 | 3 | 0 | 0 | 0 |
-| Variable State | 1 | 1 | 0 | 0 | 0 |
-| Schema Construct Choice | 1 | 0 | 0 | 0 | 0 |
-| **Total** | **13** | **7** | **0** | **1** | **0** |
+| Activity Boundaries | 2 | 0 | 0 | 0 | 0 |
+| Checkpoint Necessity | 0 | 0 | 0 | 0 | 0 |
+| Technique Selection | 2 | 2 | 0 | 0 | 0 |
+| Rule Scope | 2 | 2 | 0 | 0 | 0 |
+| Variable State | 2 | 1 | 0 | 0 | 0 |
+| Schema Construct Choice | 0 | 0 | 0 | 0 | 0 |
+| **Total** | **8** | **5** | **0** | **0** | **0** |
 
-Five open judgements (A-1–A-2, A-5, A-9) batch into Gate 2. A-3 corrected (Progress N/A). A-4 corrected (submit-only build-artifact). Seven audit-settled (A-6–A-8, A-10–A-13).
+Three open judgements (A-2, A-3, A-5) batch into Gate 2. Five audit-settled (A-1, A-4, A-6, A-7, A-8), each validated against the current committed tip rather than left as a mid-flow interview.
 
 ---
 
@@ -27,71 +27,42 @@ Five open judgements (A-1–A-2, A-5, A-9) batch into Gate 2. A-3 corrected (Pro
 
 | ID | Category | Risk | Resolvability | Assumption | Rationale | Outcome | Changes |
 |----|----------|------|---------------|------------|-----------|---------|---------|
-| A-1 | Activity Boundaries | H | open | Catalog acquisition for `discover-session` stays on the activity worker via the existing bound `list-available-workflows` step, with worker prompt/rules explicitly permitting `list_workflows` only when that step binds it — not relocated to the meta-orchestrator. | #272 item 1; current `activity-worker-prompt` already permits bound-step `list_workflows`, but the run still treated the call as forbidden — reconciliation must make the permit unmistakable or relocate the step. Alternatives: (1) worker bound-step (assumed); (2) orchestrator pre-fetches catalog before dispatch. | Open — batched to Gate 2 | — |
-| A-2 | Schema Construct Choice | H | open | Resolved `next_activity_id` (+ evaluated condition summary) is carried in the worker `activity_complete` envelope via `finalize-activity` / technique convention; MCP schema changes are out of scope unless impact proves the field cannot land otherwise. | #272 item 2; `evaluate-transition` already emits `next_activity_id`; gap is wiring into the envelope the orchestrator reads under `no-get-activity-from-orchestrator`. | Open — batched to Gate 2 | — |
-| A-3 | Checkpoint Necessity | M | corrected | When local validation is unavailable: simple blocking gate only; set `{mark_progress_na}` and skip the suite — Progress Validation marked cancelled/N/A via commit-and-persist / sync-progress-status. No user-reported pass/fail/skip hand-off. | #272 item 3; stakeholder revise-block×20 — reject externalized suite reporting complexity. | 🔄 Corrected — Progress N/A instead of externalized-validation | Spec Checkpoints / Variables |
-| A-4 | Activity Boundaries | M | corrected | Build-dependent artifact check + hand-off live in `submit-for-review` only (create / non-stealth, before mark-ready). Validate stays suite-only. | #272 item 4; stakeholder revise-block×21 — migrate out of validate; avoid duplicate recheck. | 🔄 Corrected — submit-only primary gate | Spec Checkpoints |
-| A-5 | Technique Selection | M | open | Prefer guaranteeing ≥2 YAML options on presentable checkpoints (e.g. `submodule-selection` adds cancel/re-list) over teaching AskQuestion / present-checkpoint a single-option special case — unless harness-compat must still accept one-option for other hosts. | #272 item 5; `submodule-selection` currently has one option (`submodule-chosen`). Dual path (YAML ≥2 + present tolerates 1) is the fallback if Gate 2 wants belt-and-suspenders. | Open — batched to Gate 2 | — |
-| A-6 | Rule Scope | M | audit | `foreground-always` is satisfied by async dispatch + completion notification when the host cannot true-block; change is harness-compat rule/guidance text, not a new spawn primitive. | #272 item 6; intent is “orchestrator sees yields/completion,” not a specific sync syscall. | ✅ Validated — `harness-compat/TECHNIQUE.md` `foreground-always` currently forbids `run_in_background` without acknowledging notify-as-block; additive rule text matches inventory coupled scope. | Spec Rules / Artifacts |
-| A-7 | Technique Selection | M | audit | Comment proportionality is a hard trim criterion on the existing lean-coding / ponytail audit path (and implement-time guidance), not a new activity. | #272 item 7; audit already owns leanness; missed comment bulk is a heuristic gap inside that path. | ✅ Validated — `09-lean-coding-audit.yaml` binds ponytail over-engineering review; no separate comment-audit activity exists or is needed. | Spec Activity list / Rules |
-| A-8 | Technique Selection | H | audit | `manage-artifacts::write-artifact` already defines find-or-update by bare filename; the fix is write-time enforcement plus an assumptions-log row on mint conflict / discovered duplicate — not a second writer technique. | #272 item 8; run minted `08-assumptions-log.md` beside `01-assumptions-log.md`. | ✅ Validated — `write-artifact.md` Protocol steps 1–3 already require update-in-place; gap is compliance + conflict logging called out in #272. | Spec Artifacts / Rules |
-| A-9 | Activity Boundaries | M | open | PR tense/checklist refresh runs once implementation has landed (bind after `implement` or at `strategic-review`), not only the `submit-for-review` `final` render — so “Implementation (coming next)” does not linger through mid-flow reviews. | #272 item 9; `plan-prepare` renders `initial`; `submit-for-review` renders `final` late; strategic-review already noticed stale tense. | Open — batched to Gate 2 | — |
-| A-10 | Variable State | H | audit | Build-artifact hand-offs and Progress N/A use declared workflow variables / checkpoint effects (`mark_progress_na`, build-artifact flags), never ad-hoc result_type values outside `activity_complete` / `checkpoint_pending`. | Spec Rules “Supported states over improvisation”; engine `variable-mutation-source`. | ✅ Validated — finalize-activity envelopes unchanged; `validation_skipped_by_user` removed. | Spec Artifacts / Rules |
-| A-11 | Technique Selection | H | audit | Planning README Progress write + push is enforced at the **orchestrator** via `sync-progress-status` + `commit-and-persist` (and orchestrator prompt / dispatch-activity), not via per-activity manage-artifacts binds. Progress tracks **activities** (`#` row index, `@` artifactPrefix); Status icon-only (`⬚`/`◐`/`✅`/`❌`/`⊘`); `⊘` = cancelled/N/A. sync-progress-status owns all Status transitions; commit-and-persist Applies it for `✅` then pushes. | #272-adjacent item 10; Progress schema evolved across revises. | ✅ Validated — post-revise-11: dedicated sync-progress-status technique; dispatch ◐; persist ✅; blocked/skip documented. | Spec Activity list / Artifacts / Rules |
-| A-13 | Rule Scope | L | audit | Optional-path Progress rows (elicitation/research/analysis) stay `⬚` at seed until path selection; path-skipped → `⊘`. Seed-time mode exclusion also uses `⊘` (same icon — cancelled / N/A). Do not invent a separate N/A glyph. | Stakeholder revise-block×10; share `⊘` for exclusion and post-path skip. | ✅ Validated — planning-readme + readme-seed profiles + create-readme use `⊘` only. | Spec / Progress |
-| A-12 | Activity Boundaries | L | audit | Client workflows must not carry worker-duty README Progress/Status rules; meta `commit-and-persist` is the sole enforcement. Align by **deleting** the duplicated activity rules on `workflow-design` and `requirements-refinement` (same sentence class as WP). | Same gap as WP; prefer delete over pointer prose. | ✅ Validated — rules removed in post-revise-4; see [follow-ups](follow-ups.md) F-1 done. | Spec / follow-ups |
+| A-1 | Technique Selection | M | audit | Fixing #271 item 3 (`get_resource` miss on `review-taxonomy` / `the-ladder` / `ponytail-marker-convention`) means qualifying the cross-workflow id at the ponytail technique markdown link sites (or a meta dispatch-time rule), not adding a new loader mechanism. | `ponytail/resources/README.md` already documents the correct form (`get_resource({ resource_id: "ponytail/the-ladder" })`, `#section` narrows further); `work-package/activities/09-lean-coding-audit.yaml` already qualifies its *technique* binds (`ponytail/review-over-engineering`, `ponytail/harvest-debt`, `ponytail/report-gain`) but the ponytail technique files' own resource links (`../resources/review-taxonomy.md#tags`) are bare relative paths, not `ponytail/`-qualified — the pattern to align to already exists in the same directory. | ✅ Validated — align resource links to the already-documented `ponytail/<id>` form; no new mechanism needed. | Spec Artifacts / Activity list |
+| A-2 | Variable State | H | open | Bag-mirroring resilience (#271 items 7–11) is fixed by an explicit reconcile step in `dispatch-activity` / `commit-and-persist` (envelope-and-planning-folder governs over a stale `inspect_session` read), not by a server-side persistence fix, which is out of this workflow-design pass's reach. | Reproduced live in this very session: `inspect_session { view: variables }` returned `structural_inventory_path: ""`, `format_literacy_confirmed: false`, `target_path: ""` immediately after `intake-and-context` completed and after the orchestrator's own dispatch prompt supplied the correct populated values — the same class of staleness #271 items 7–10 describe, and the same coping pattern #272's own retrospective already named ("path reconstruction from planning folder") but never made structural. Decision space: (1) reconcile step in `dispatch-activity`/`commit-and-persist` (assumed); (2) accept as a known limitation and only document it; (3) defer entirely to a server-side fix (`src/`) outside this pass's boundary. | Open — batched to Gate 2 | — |
+| A-3 | Activity Boundaries | M | open | `conduct-retrospective::retrospective`'s review-mode fit (#271 item 15) is fixed by making the technique write its own minimal review-mode close-out section (instead of requiring a pre-existing `COMPLETE.md`) and by scoping "Update Status" to this work package's own PR — not by removing the retrospective step from review mode entirely. | `work-package/activities/14-complete.yaml` already gates `create-complete-doc` on `is_review_mode != true`, but `conduct-retrospective::retrospective`'s Protocol still writes `## Workflow Retrospective` as an update-in-place section of `COMPLETE.md` unconditionally, and its "Update Status" step ("Once the PR identified by `{pr_number}` has merged...") assumes an authored PR under this work package's control — exactly the manufactured-`14-COMPLETE.md` friction #271 item 15 describes, still present on current tip. Decision space: (1) review-mode-native minimal close-out section (assumed); (2) skip the retrospective's `COMPLETE.md` coupling entirely in review mode and rely on the review-mode `README.md` / consolidated review as the close-out record; (3) always pre-create a stub `COMPLETE.md` ahead of the retrospective step regardless of mode. | Open — batched to Gate 2 | — |
+| A-4 | Variable State | M | audit | `verify-outcomes` needs a review-mode-aware outcome set (#271 item 16) expressed the same way other mode-conditioned constructs already are in this workflow (`is_review_mode`-gated steps/checkpoints/transitions), not a new schema construct. | `work-package/workflow.yaml` carries no root-level `outcome:` array (per AP-66, outcomes are stated per-activity); `work-package/activities/14-complete.yaml`'s own `outcome:` list ("key design decision is durably recorded", "project documentation reflects the delivered change") is unconditional prose even though the steps that produce those outcomes (`create-adr`, `ensure-docs`) are already `is_review_mode != true`-gated — so `verify-outcomes` would report them as unmet gaps in review mode though correctly skipped. Precedent for a mode-aware fix already exists throughout the workflow (every other #271-item-15/16-adjacent construct is `is_review_mode`-conditioned); exact outcome-list wording is a drafting detail, not a stakeholder judgement. | ✅ Validated — mirror the existing `is_review_mode`-conditioning convention on the affected `outcome:` entries / `target_workflow_outcomes` derivation. | Spec Activity list / Artifacts |
+| A-5 | Technique Selection | M | open | Discovery disambiguation (#271 item 19) is fixed by a combination of catalog-tag adjustment and `match-target-workflow` scoring guidance, not by scoring logic alone. | `midnight-system-review/workflow.yaml` carries tags `[review, merge-readiness, evidence-driven]`; `work-package/workflow.yaml` carries `[implementation, engineering, planning]` — no disambiguating tag at all for "review an existing PR/implementation" requests, confirming item 19 is still live on current tip. `match-target-workflow.md`'s Protocol is generic ("Score each catalog entry... by title, description keywords, and tags") with no tie-breaker for a request naming a specific actionable PR vs a broad audit ask. Decision space: (1) add a `review` tag to `work-package` (risks flipping ambiguity the other way for genuine merge-readiness-audit requests); (2) add scoring guidance in `match-target-workflow.md` that favors an actionable-target signal (a parseable PR/issue reference) over tag overlap; (3) both. | Open — batched to Gate 2 | — |
+| A-6 | Rule Scope | L | audit | Checkpoint-capability verification (#271 item 25) is a discipline addition to the existing `present-checkpoint-to-user` / `respond-checkpoint` call flow, not a new construct — consistent with the existing `present-before-any-resolution` discipline these techniques already carry for a different concern (never fabricating an `option_id`). | `checkpoint-discipline-explicit-user-decision` already establishes the precedent (never fabricate a resolution without presenting first); extending the same presentation-layer source-of-truth stance to `defaultOption` / `autoAdvanceMs` claims is the same class of fix, not a new mechanism. | ✅ Validated — extend the existing verify-before-resolve discipline to auto-advance capability claims. | Spec Activity list / Rules |
+| A-7 | Rule Scope | L | audit | Commit-rule scoping (#271 item 27) is a one-line documentation cross-reference, not a rule redesign. | `commit-after-activity` (`meta/techniques/workflow-engine/commit-and-persist.md`) is already scoped explicitly to the orchestrator's post-activity hook ("After every completed activity... MUST be committed and pushed before evaluating transitions"); `explicit-commit` (`meta/techniques/version-control/TECHNIQUE.md`) is already scoped explicitly to ad-hoc action ("NEVER commit changes unless the user explicitly asks"). The two rules do not in fact overlap in scope on current tip — the residual gap is that neither cross-references the other, so a reader has to infer the non-overlap rather than see it stated. | ✅ Validated — add a one-line mutual cross-reference; no rule-text change beyond that. | Spec Artifacts |
+| A-8 | Variable State | L | audit | #271 item 18 (`workflow_completed` fired before `complete`'s own steps ran) has no workflow-content fix available this pass — `client_workflow_completed` is never set `true` by any workflow YAML `setVariable` effect (only ever set `false`, in `end-workflow`'s `return` option), so the premature-completion signal item 18 describes is emitted by the session-status layer itself, not by a workflow construct this pass can edit. | Confirmed by inspection: `client_workflow_completed` (meta/workflow.yaml) has no producing `setVariable` anywhere in the workflow tree. Item 18 itself characterizes the effect as "harmless but had to be caveated" — low severity. | ✅ Validated — no in-scope fix; recorded for a separate engineering ticket, not this pass's change goals. | Spec Purpose (Out of scope) |
 
 ---
 
 ## Open Assumptions
 
-### A-1: Discover-session catalog ownership
-**Assumption:** Keep `list_workflows` on the discover-session worker via the bound step, with explicit permit in worker **prompt / agent-conduct** (not an activity `rules:` entry that names the step).  
-**Decision space:** (1) worker bound-step + prompt/conduct permit (assumed); (2) meta-orchestrator fetches catalog before/without worker calling `list_workflows`.  
-**Why not code-resolvable:** Role split preference — both can be made consistent with rules.  
-**Technical context:** `00-discover-session.yaml` step `list-available-workflows` → `workflow-engine::list-workflows`; activity-level step-referencing rules are an anti-pattern (revise-block).  
-**Agent's position:** Prefer (1) via `activity-worker-prompt` + `agent-conduct` bundled-tools-only — no discover-session activity rule modulating mechanics.  
-**Reversibility:** reversible  
-**Draft note (revise-block):** Removed the activity rule that referenced `list-available-workflows` / `list_workflows`. 
+### A-2: Bag-mirroring reconciliation mechanism
+**Assumption:** Fix #271 items 7–11 with an explicit reconcile step in `dispatch-activity` / `commit-and-persist` — the worker's `activity_complete` envelope (and, when still uncertain, planning-folder evidence) governs over a disagreeing `inspect_session` read, with the discrepancy logged.  
+**Decision space:** (1) reconcile step in `dispatch-activity`/`commit-and-persist` (assumed); (2) document as a known limitation only, no structural change; (3) defer entirely to a server-side (`src/`) fix, out of this pass's boundary.
+**Evidence:** Reproduced live in this session — see Log row A-2.
 
-### A-2: next_activity envelope vs schema
-**Assumption:** Technique/convention fields on `activity_complete` are enough; schema change only if impact proves otherwise.  
-**Decision space:** (1) finalize-activity + worker reporting convention (assumed); (2) formal schema/envelope field in server.  
-**Why not code-resolvable:** Depends on whether orchestrators already accept unknown envelope keys vs require schema.  
-**Technical context:** `evaluate-transition` already outputs `next_activity_id`; finalize-activity does not yet fold it into the envelope.  
-**Agent's position:** Prefer (1); escalate to (2) only after impact analysis.  
-**Reversibility:** path-committing if schema lands  
+### A-3: Review-mode retrospective / close-out shape
+**Assumption:** `conduct-retrospective::retrospective` gains a review-mode-native minimal close-out section (not requiring a pre-existing `COMPLETE.md`), and its "Update Status" step scopes to this work package's own PR, never the audited third-party PR.  
+**Decision space:** (1) review-mode-native minimal close-out section (assumed); (2) drop the `COMPLETE.md` coupling entirely in review mode, relying on the review-mode README / consolidated review as the close-out record; (3) always pre-create a stub `COMPLETE.md` ahead of the retrospective step regardless of mode.
+**Evidence:** See Log row A-3.
 
-### A-3: Validation unavailable → Progress N/A
-**Assumption (corrected):** Ask a simple blocking question whether the agent may run validation locally (`run_local_validation`). When no, set `{mark_progress_na}` true, skip suite steps, and let commit-and-persist mark Progress cancelled/N/A — do **not** collect user-reported pass/fail/skip.  
-**Decision space:** (1) Progress N/A via `{mark_progress_na}` (assumed / stakeholder); (2) externalized suite reporting (rejected); (3) soft auto-skip without Progress update (rejected).  
-**Why not code-resolvable:** Product preference on how “cannot validate” is recorded.  
-**Technical context:** `local-validation-permission` only; `externalized-validation` removed; `validation_skipped_by_user` dropped.  
-**Agent's position:** (1) per stakeholder revise-block×20.  
-**Reversibility:** reversible  
-**Outcome:** 🔄 Corrected — Progress N/A instead of externalized validation reporting.
+### A-5: Discovery disambiguation approach
+**Assumption:** Combine a catalog-tag adjustment on `work-package` with scoring guidance in `match-target-workflow.md` that favors an actionable-target signal (parseable PR/issue reference) over tag overlap alone.  
+**Decision space:** (1) tag-only; (2) scoring-guidance-only; (3) both (assumed) — risk of tag-only is flipping ambiguity toward `work-package` for requests that are genuinely a broad merge-readiness audit rather than a PR-specific review.
+**Evidence:** See Log row A-5.
 
-### A-4: Build-artifact hand-off sites
-**Assumption:** Primary build-artifact check + hand-off at `submit-for-review` before mark-ready (create / non-stealth); validate remains suite-only.  
-**Decision space:** (1) both validate + submit; (2) validate only; (3) submit only (chosen).  
-**Why not code-resolvable:** Coverage vs step churn; which activity owns “before CI is first signal.”  
-**Technical context:** Simple checkpoint questions — not prose assess-and-set action logs.  
-**Agent's position:** (3) per stakeholder revise-block×21.  
-**Reversibility:** reversible  
-**Outcome:** 🔄 Corrected — submit-only; thin `build-artifact-recheck-submit` folded into primary check + hand-off.
+---
 
-### A-5: Single-option presentation strategy
-**Assumption:** Author ≥2 options on presentable checkpoints as the primary fix.  
-**Decision space:** (1) YAML ≥2 options (assumed); (2) present-checkpoint accepts 1 option; (3) both.  
-**Why not code-resolvable:** Whether harness AskQuestion constraint is treated as authoring rule or present-layer duty.  
-**Technical context:** `submodule-selection` options: only `submodule-chosen`.  
-**Agent's position:** Prefer (1), add (2) only if other one-option gates must remain.  
-**Reversibility:** reversible  
+## Deferred / Out-of-Scope Register (for later activities)
 
-### A-9: PR tense refresh bind site
-**Assumption:** Refresh after implementation lands (post-`implement` or `strategic-review`), not only at submit-for-review final render.  
-**Decision space:** (1) after implement; (2) at strategic-review; (3) submit-for-review only but earlier verify-body fail-closed on future-tense (weaker).  
-**Why not code-resolvable:** Where in the lifecycle the PR should stop looking “planned.”  
-**Technical context:** `update-pr::render` `initial` at plan-prepare; `final` at submit-for-review.  
-**Agent's position:** Prefer (2) strategic-review — after code+audit exist, before submit; or (1) if stale tense confuses post-impl review.  
-**Reversibility:** reversible  
+Not this activity's artifact to finalize (see [design-specification.md](03-design-specification.md) Purpose → Out of scope for the full classification and citations); recorded here so scope-manifest / follow-ups can pick them up without re-deriving:
+
+- **Already delivered, no redraft:** items 14, 21, 26.
+- **Server/tool-layer (`src/`), not workflow content:** items 1, 2, 4, 5, 6.
+- **Environment/harness context, not workflow-server-owned:** items 20, 22, 23, 24.
+- **Owned by #270:** items 12, 13, 17.
+- **Recorded for completeness, no separate action:** item 28.
